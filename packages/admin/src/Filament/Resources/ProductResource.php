@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
@@ -12,16 +13,26 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
+use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
+use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
+use Lunar\Admin\Filament\Widgets\Products\VariantSwitcherTable;
 use Lunar\Admin\Support\Forms\Components\Attributes;
+use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
+use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
+use Lunar\Models\Tag;
 
 class ProductResource extends BaseResource
 {
@@ -29,9 +40,11 @@ class ProductResource extends BaseResource
 
     protected static ?string $model = Product::class;
 
-    protected static ?string $recordTitleAttribute = 'record_title';
+    protected static ?string $recordTitleAttribute = 'recordTitle';
 
     protected static ?int $navigationSort = 1;
+
+    protected static int $globalSearchResultsLimit = 5;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -72,10 +85,36 @@ class ProductResource extends BaseResource
         ]);
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            ProductOptionsWidget::class,
+            VariantSwitcherTable::class,
+        ];
+    }
+
     public static function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
+                Shout::make('product-status')
+                    ->content(
+                        __('lunarpanel::product.status.unpublished.content')
+                    )->type('info')->hidden(
+                        fn (Model $record) => $record?->status == 'published'
+                    ),
+                Shout::make('product-customer-groups')
+                    ->content(
+                        __('lunarpanel::product.status.availability.customer_groups')
+                    )->type('warning')->hidden(function (Model $record) {
+                        return $record->customerGroups()->where('enabled', true)->count();
+                    }),
+                Shout::make('product-channels')
+                    ->content(
+                        __('lunarpanel::product.status.availability.channels')
+                    )->type('warning')->hidden(function (Model $record) {
+                        return $record->channels()->where('enabled', true)->count();
+                    }),
                 Forms\Components\Section::make()
                     ->schema(
                         static::getMainFormComponents(),
@@ -90,7 +129,6 @@ class ProductResource extends BaseResource
         return [
             static::getBrandFormComponent(),
             static::getProductTypeFormComponent(),
-            static::getStatusFormComponent(),
             static::getTagsFormComponent(),
         ];
     }
@@ -134,7 +172,7 @@ class ProductResource extends BaseResource
 
     public static function getBaseNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TranslatedText::make('name')
             ->label(__('lunarpanel::product.form.name.label'))->required();
     }
 
@@ -162,22 +200,11 @@ class ProductResource extends BaseResource
             ->required();
     }
 
-    protected static function getStatusFormComponent(): Component
-    {
-        return Forms\Components\Select::make('status')
-            ->label(__('lunarpanel::product.form.status.label'))
-            ->options([
-                'draft' => 'Draft',
-                'published' => 'Published',
-            ])
-            ->selectablePlaceholder(false);
-    }
-
     protected static function getTagsFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('tags')
-            ->label(__('lunarpanel::product.form.tags.label'))
-            ->placeholder('TODO: convert to Spatie Tags');
+        return TagsComponent::make('tags')
+            ->suggestions(Tag::all()->pluck('value')->all())
+            ->label(__('lunarpanel::product.form.tags.label'));
     }
 
     protected static function getAttributeDataFormComponent(): Component
@@ -205,7 +232,7 @@ class ProductResource extends BaseResource
             ->deferLoading();
     }
 
-    protected static function getTableColumns(): array
+    public static function getTableColumns(): array
     {
         return [
             Tables\Columns\TextColumn::make('status')
@@ -221,19 +248,10 @@ class ProductResource extends BaseResource
                 ->limit(1)
                 ->square()
                 ->label(''),
-            Tables\Columns\TextColumn::make('attribute_data.name')
-                ->formatStateUsing(fn (Model $record): string => $record->translateAttribute('name'))
+            TranslatedTextColumn::make('attribute_data.name')
+                ->attributeData()
+                ->limitedTooltip()
                 ->limit(50)
-                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-                    $state = $column->getState();
-
-                    if (strlen($record->translateAttribute('name')) <= $column->getCharacterLimit()) {
-                        return null;
-                    }
-
-                    // Only render the tooltip if the column contents exceeds the length limit.
-                    return $record->translateAttribute('name');
-                })
                 ->label(__('lunarpanel::product.table.name.label')),
             Tables\Columns\TextColumn::make('brand.name')
                 ->label(__('lunarpanel::product.table.brand.label'))
@@ -241,6 +259,22 @@ class ProductResource extends BaseResource
                 ->searchable(),
             Tables\Columns\TextColumn::make('variants.sku')
                 ->label(__('lunarpanel::product.table.sku.label'))
+                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
+
+                    if ($record->variants->count() <= $column->getListLimit()) {
+                        return null;
+                    }
+
+                    if ($record->variants->count() > 30) {
+                        $record->variants = $record->variants->slice(0, 30);
+                    }
+
+                    return $record->variants
+                        ->map(fn ($variant) => $variant->sku)
+                        ->implode(', ');
+                })
+                ->listWithLineBreaks()
+                ->limitList(1)
                 ->toggleable(),
             Tables\Columns\TextColumn::make('variants_sum_stock')
                 ->label(__('lunarpanel::product.table.stock.label'))
@@ -270,6 +304,8 @@ class ProductResource extends BaseResource
                 CustomerGroupRelationManager::class,
             ]),
             MediaRelationManager::class,
+            PriceRelationManager::class,
+            CustomerGroupPricingRelationManager::class,
         ];
     }
 
@@ -288,6 +324,37 @@ class ProductResource extends BaseResource
             'urls' => Pages\ManageProductUrls::route('/{record}/urls'),
             'collections' => Pages\ManageProductCollections::route('/{record}/collections'),
             'associations' => Pages\ManageProductAssociations::route('/{record}/associations'),
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->translateAttribute('name');
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'variants.sku',
+            'tags.value',
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'variants',
+            'brand',
+            'tags',
+        ]);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            __('lunarpanel::product.table.sku.label') => $record->variants->first()->getIdentifier(),
+            __('lunarpanel::product.table.stock.label') => $record->variants->first()->stock,
+            __('lunarpanel::product.table.brand.label') => $record->brand?->name,
         ];
     }
 }

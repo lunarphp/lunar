@@ -72,6 +72,7 @@ class Attribute extends BaseModel implements \Lunar\Models\Contracts\Attribute
      */
     protected $casts = [
         'name' => AsCollection::class,
+        'description' => AsCollection::class,
         'configuration' => AsCollection::class,
     ];
 

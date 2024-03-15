@@ -31,6 +31,10 @@ class Channel extends BaseModel implements \Lunar\Models\Contracts\Channel
     use LogsActivity;
     use SoftDeletes;
 
+    public $casts = [
+        'enabled' => 'boolean',
+    ];
+
     /**
      * Return a new factory instance for the model.
      */

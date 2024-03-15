@@ -71,7 +71,7 @@ test('will only apply to lines with correct brand', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -85,7 +85,7 @@ test('will only apply to lines with correct brand', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -173,7 +173,7 @@ test('will not apply to lines with excluded brand', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -187,7 +187,7 @@ test('will not apply to lines with excluded brand', function () {
 
     Price::factory()->create([
         'price' => 2000, // £20
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -271,7 +271,7 @@ test('will only apply to lines with correct product', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -285,7 +285,7 @@ test('will only apply to lines with correct product', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -368,7 +368,7 @@ test('will only apply to lines with correct product variant', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -382,7 +382,7 @@ test('will only apply to lines with correct product variant', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -465,7 +465,7 @@ test('will not apply to lines with excluded product', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -479,7 +479,7 @@ test('will not apply to lines with excluded product', function () {
 
     Price::factory()->create([
         'price' => 2000, // £20
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -562,7 +562,7 @@ test('will not apply to lines with excluded product variant', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -576,7 +576,7 @@ test('will not apply to lines with excluded product variant', function () {
 
     Price::factory()->create([
         'price' => 2000, // £20
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -642,7 +642,7 @@ test('can apply fixed amount discount', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -707,7 +707,7 @@ test('fixed amount discount distributes across cart lines', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -715,7 +715,7 @@ test('fixed amount discount distributes across cart lines', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -723,7 +723,7 @@ test('fixed amount discount distributes across cart lines', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableC),
         'priceable_id' => $purchasableC->id,
@@ -801,7 +801,7 @@ test('can apply percentage discount', function () {
 
     Price::factory()->create([
         'price' => 1000,
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -879,7 +879,7 @@ test('can only same discount to line once', function () {
 
     Price::factory()->create([
         'price' => 1000,
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasable),
         'priceable_id' => $purchasable->id,
@@ -956,7 +956,7 @@ test('can apply discount without coupon code', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1018,7 +1018,7 @@ test('cannot apply discount coupon without coupon code', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1080,7 +1080,7 @@ test('can apply discount with max uses', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1143,7 +1143,7 @@ test('cannot apply discount with max uses', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1205,7 +1205,7 @@ test('can apply discount with min spend', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1273,7 +1273,7 @@ test('cannot apply discount with min spend', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1335,7 +1335,7 @@ test('can apply discount with conditions', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1420,7 +1420,7 @@ test('can apply discount with max user uses', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1498,7 +1498,7 @@ test('cannot apply discount with max user uses', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1570,7 +1570,7 @@ test('fixed amount discount distributes across cart lines with different values'
 
     Price::factory()->create([
         'price' => 15, // £0.15
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1578,7 +1578,7 @@ test('fixed amount discount distributes across cart lines with different values'
 
     Price::factory()->create([
         'price' => 20, // £0.20
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -1586,7 +1586,7 @@ test('fixed amount discount distributes across cart lines with different values'
 
     Price::factory()->create([
         'price' => 40, // £0.40
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableC),
         'priceable_id' => $purchasableC->id,
@@ -1594,7 +1594,7 @@ test('fixed amount discount distributes across cart lines with different values'
 
     Price::factory()->create([
         'price' => 40, // £0.40
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableD),
         'priceable_id' => $purchasableD->id,
@@ -1602,7 +1602,7 @@ test('fixed amount discount distributes across cart lines with different values'
 
     Price::factory()->create([
         'price' => 40, // £0.40
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableE),
         'priceable_id' => $purchasableE->id,
@@ -1702,7 +1702,7 @@ test('can apply discount dynamically', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'tier' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -1759,3 +1759,55 @@ test('can apply discount dynamically', function () {
     expect($cart->taxTotal->value)->toEqual(190);
     expect($cart->discounts)->toHaveCount(1);
 });
+
+test('can handle malformed discount', function () {
+    $currency = Currency::getDefault();
+
+    $customerGroup = CustomerGroup::getDefault();
+
+    $channel = Channel::getDefault();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $purchasableA = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasableA),
+        'priceable_id' => $purchasableA->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasableA),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 2,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'coupon' => '10OFF',
+        'data' => [],
+    ]);
+
+    // Calculate method called for the first time
+    CartSession::use($cart)->calculate();
+
+    // Update cart with coupon code
+    $cart->update([
+        'coupon_code' => '10OFF',
+    ]);
+
+    // Get current cart which runs the calculate method for the second time
+    $cart = CartSession::current();
+
+    // Calculate method called for the third time
+    $cart = $cart->calculate();
+
+    expect($cart->discountTotal->value)->toEqual(0);
+})->group('this');

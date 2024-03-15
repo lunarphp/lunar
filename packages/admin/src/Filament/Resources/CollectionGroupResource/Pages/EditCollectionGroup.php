@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets;
@@ -14,7 +15,16 @@ class EditCollectionGroup extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->before(function ($record, Actions\DeleteAction $action) {
+                    if ($record->collections->count() > 0) {
+                        Notification::make()
+                            ->warning()
+                            ->body(__('lunarpanel::collectiongroup.action.delete.notification.error_protected'))
+                            ->send();
+                        $action->cancel();
+                    }
+                }),
         ];
     }
 

@@ -424,7 +424,6 @@ When creating variants there are some exceptions that will be thrown if certain 
 
 | Exception                                        | Conditions                                                                             |
 |:-------------------------------------------------|:---------------------------------------------------------------------------------------|
-| `Lunar\Exceptions\InvalidProductValuesException` | Thrown if you try and create a variant with less option values than what are required. |
 | `Illuminate\Validation\ValidationException`      | Thrown if validation fails on the value options array.                                 |
 
 ## Pricing
@@ -440,7 +439,7 @@ front end.
 | `price`             | A integer value for the price                                                        | `null`  | yes      |
 | `compare_price`     | For display purposes, allows you to show a comparison price, e.g. RRP.               | `null`  | no       |
 | `currency_id`       | The ID of the related currency                                                       | `null`  | yes      |
-| `tier`              | The lower limit to get this price, 1 is the default for base pricing.                | `1`     | no       |
+| `min_quantity`      | The minimum quantity required to get this price.                                     | `1`     | no       |
 | `customer_group_id` | The customer group this price relates to, leaving as `null` means any customer group | `null`  | no       |
 | `priceable_type`    | This is the class reference to the related model which owns the price                | `null`  | yes      |
 | `priceable_id`      | This is the id of the related model which owns the price                             | `null`  | yes      |
@@ -450,7 +449,7 @@ $price = \Lunar\Models\Price::create([
     'price' => 199,
     'compare_price' => 299,
     'currency_id' => 1,
-    'tier' => 1,
+    'min_quantity' => 1,
     'customer_group_id' => null,
     'priceable_type' => 'Lunar\Models\ProductVariant',
     'priceable_id' => 1,
@@ -476,7 +475,7 @@ relationship method.
     'price' => 199,
     'compare_price' => 299,
     'currency_id' => 1,
-    'tier' => 1,
+    'min_quantity' => 1,
     'customer_group_id' => null,
     'priceable_type' => 'Lunar\Models\ProductVariant',
     'priceable_id' => 1,
@@ -491,26 +490,26 @@ $variant->prices()->create([/* .. */]);
 
 You can specify which customer group the price applies to by setting the `customer_group_id` column. If left as `null`
 the price will apply to all customer groups. This is useful if you want to have different pricing for certain customer
-groups and also different price tiers per customer group.
+groups and also different price quantity breaks per customer group.
 
-### Tiered Pricing
+### Price Break Pricing
 
-Tiered pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing
-on Lunar, this is determined by the `tier` column when creating prices. For example:
+Price Break pricing is a concept in which when you buy in bulk, the cost per item will change (usually go down). With Pricing
+on Lunar, this is determined by the `min_quantity` column when creating prices. For example:
 
 ```php
 Price::create([
     // ...
     'price' => 199,
     'compare_price' => 399,
-    'tier' => 1,
+    'min_quantity' => 1,
 ]);
 
 Price::create([
     // ...
     'price' => 150,
     'compare_price' => 399,
-    'tier' => 10,
+    'min_quantity' => 10,
 ]);
 ```
 
@@ -522,7 +521,7 @@ will pay `1.50` per item.
 Once you've got your pricing all set up, you're likely going to want to display it on your storefront. We've created
 a `PricingManager` which is available via a facade to make this process as painless as possible.
 
-To get the pricing for a product you can simple use the following helpers:
+To get the pricing for a product you can simply use the following helpers:
 
 #### Minimum example
 
@@ -605,9 +604,9 @@ $pricing->matched;
 $pricing->base;
 
 /**
- * A collection of all the price tiers available for the given criteria.
+ * A collection of all the price quantity breaks available for the given criteria.
  */
-$pricing->tiers;
+$pricing->priceBreaks;
 
 /**
  * All customer group pricing available for the given criteria.

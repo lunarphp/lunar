@@ -44,6 +44,14 @@ class Currency extends BaseModel implements \Lunar\Models\Contracts\Currency
         return CurrencyFactory::new();
     }
 
+    public function scopeEnabled($query, $enabled = true)
+    {
+        return $query->whereEnabled($enabled);
+    }
+
+    /**
+     * Return the prices relationship
+     */
     public function prices(): HasMany
     {
         return $this->hasMany(Price::class);

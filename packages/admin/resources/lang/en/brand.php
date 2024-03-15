@@ -10,6 +10,9 @@ return [
         'name' => [
             'label' => 'Name',
         ],
+        'products_count' => [
+            'label' => 'No. Products',
+        ],
     ],
 
     'form' => [
@@ -18,4 +21,11 @@ return [
         ],
     ],
 
+    'action' => [
+        'delete' => [
+            'notification' => [
+                'error_protected' => 'This brand can not be deleted as there are products associated.',
+            ],
+        ],
+    ],
 ];

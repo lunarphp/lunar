@@ -11,6 +11,6 @@ test('can return correct searchable data', function () {
 
     $data = app(ProductOptionIndexer::class)->toSearchableArray($productOption);
 
-    expect($data['name_en'])->toEqual($productOption->name->en);
-    expect($data['label_en'])->toEqual($productOption->label->en);
+    expect($data['name_en'])->toEqual($productOption->name['en']);
+    expect($data['label_en'])->toEqual($productOption->label['en']);
 });

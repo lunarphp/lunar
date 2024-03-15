@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Admin;
 
+use Awcodes\Shout\ShoutServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
@@ -61,6 +62,7 @@ class TestCase extends BaseTestCase
             WidgetsServiceProvider::class,
             BladeLucideIconsServiceProvider::class,
             FilamentInputSelectAffixServiceProvider::class,
+            ShoutServiceProvider::class,
 
             LunarPanelTestServiceProvider::class,
 

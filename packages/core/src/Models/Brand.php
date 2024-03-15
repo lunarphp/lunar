@@ -70,4 +70,11 @@ class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHa
     {
         return $this->hasMany(Product::class);
     }
+
+    public function discounts()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(Discount::class, "{$prefix}brand_discount");
+    }
 }

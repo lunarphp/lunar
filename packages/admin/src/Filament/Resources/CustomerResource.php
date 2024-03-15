@@ -7,6 +7,9 @@ use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages;
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\AddressRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
@@ -22,6 +25,8 @@ class CustomerResource extends BaseResource
     protected static ?string $model = Customer::class;
 
     protected static ?int $navigationSort = 2;
+
+    protected static int $globalSearchResultsLimit = 5;
 
     public static function getWidgets(): array
     {
@@ -190,7 +195,8 @@ class CustomerResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->selectCurrentPageOnly();
     }
 
     public static function getDefaultRelations(): array
@@ -210,5 +216,49 @@ class CustomerResource extends BaseResource
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
             'view' => Pages\ViewCustomer::route('/{record}'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->company_name ?: $record->fullName;
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'first_name',
+            'last_name',
+            'company_name',
+            'account_ref',
+            'vat_no',
+            'users.name',
+            'users.email',
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with([
+            'users',
+        ]);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        /** @var Customer $record */
+        $details = [
+            __('lunarpanel::customer.table.full_name.label') => $record->fullName,
+            __('lunarpanel::customer.table.title.label') => $record->title,
+        ];
+
+        if ($record->account_ref) {
+            $details[__('lunarpanel::customer.table.account_reference.label')] = $record->account_ref;
+        }
+
+        if ($record->users() && $record->users()->count() >= 1) {
+            $details[__('lunarpanel::user.table.email.label')] = $record->users()->first()->email;
+        }
+
+        return $details;
     }
 }

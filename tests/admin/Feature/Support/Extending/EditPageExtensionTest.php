@@ -21,7 +21,9 @@ it('can change data before fill', function () {
         'first_name' => 'Geoff',
     ]);
 
-    LunarPanel::registerExtension($class, EditCustomer::class);
+    LunarPanel::extensions([
+        EditCustomer::class => $class::class,
+    ]);
 
     $this->asStaff(admin: true);
 
@@ -51,7 +53,9 @@ it('can change data before save', function () {
         'first_name' => 'Geoff',
     ]);
 
-    LunarPanel::registerExtension($class, EditCustomer::class);
+    LunarPanel::extensions([
+        EditCustomer::class => $class::class,
+    ]);
 
     $this->asStaff(admin: true);
 

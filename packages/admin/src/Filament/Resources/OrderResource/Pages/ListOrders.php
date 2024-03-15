@@ -2,8 +2,8 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
-use Filament\Actions;
 use Filament\Resources\Components\Tab;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\OrderResource;
@@ -13,7 +13,7 @@ class ListOrders extends BaseListRecords
 {
     protected static string $resource = OrderResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             // Actions\CreateAction::make(),
@@ -22,26 +22,30 @@ class ListOrders extends BaseListRecords
 
     public function getTabs(): array
     {
+        $statuses = collect(
+            config('lunar.orders.statuses', [])
+        )->filter(
+            fn ($config) => $config['favourite'] ?? false
+        );
+
         return [
             'all' => Tab::make('All'),
-            'in-process' => Tab::make('In Process')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'in-process')),
-            'on-back-order' => Tab::make('On Backorder')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'on-back-order')),
-            'collection-processed' => Tab::make('Collection Processed')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'collection-processed')),
-            'dispatched' => Tab::make('Dispatched')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'dispatched')),
+            ...collect($statuses)->mapWithKeys(
+                fn ($config, $status) => [
+                    $status => Tab::make($config['label'])
+                        ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $status)),
+                ]
+            ),
         ];
     }
 
     protected function paginateTableQuery(Builder $query): Paginator
     {
-        return $query->simplePaginate($this->getTableRecordsPerPage());
+        return $query->paginate($this->getTableRecordsPerPage());
     }
 
-    public function getMaxContentWidth(): ?string
+    public function getMaxContentWidth(): MaxWidth
     {
-        return 'full';
+        return MaxWidth::Full;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
-use Filament\Resources\Pages\ListRecords;
 use Lunar\Admin\Filament\Resources\CollectionResource;
+use Lunar\Admin\Support\Pages\BaseListRecords;
 
-class ListCollections extends ListRecords
+class ListCollections extends BaseListRecords
 {
     protected static string $resource = CollectionResource::class;
 
@@ -14,7 +14,7 @@ class ListCollections extends ListRecords
         abort(404);
     }
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [];
     }

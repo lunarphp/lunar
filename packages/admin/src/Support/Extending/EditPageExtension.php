@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class EditPageExtension extends BaseExtension
 {
+    public function heading($title, Model $record): string
+    {
+        return $title;
+    }
+
+    public function subheading($title, Model $record): ?string
+    {
+        return $title;
+    }
+
     public function formActions(array $actions): array
     {
         return $actions;

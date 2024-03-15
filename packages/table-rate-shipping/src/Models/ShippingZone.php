@@ -3,6 +3,7 @@
 namespace Lunar\Shipping\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Models\Country;
@@ -75,5 +76,23 @@ class ShippingZone extends BaseModel
     public function postcodes()
     {
         return $this->hasMany(ShippingZonePostcode::class);
+    }
+
+    public function rates()
+    {
+        return $this->hasMany(ShippingRate::class);
+    }
+
+    /**
+     * Return the shipping exclusions property.
+     */
+    public function shippingExclusions(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            ShippingExclusionList::class,
+            config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
+            'shipping_zone_id',
+            'exclusion_id',
+        )->withTimestamps();
     }
 }

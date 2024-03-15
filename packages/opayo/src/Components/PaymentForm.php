@@ -140,7 +140,7 @@ class PaymentForm extends Component
         ], $this->browser))->authorize();
 
         if ($result->success) {
-            if ($result->status == Opayo::THREE_D_AUTH) {
+            if ($result->status == Opayo::THREED_AUTH) {
                 $this->threeDSecure['acsUrl'] = $result->acsUrl;
                 $this->threeDSecure['acsTransId'] = $result->acsTransId;
                 $this->threeDSecure['dsTransId'] = $result->dsTransId;
