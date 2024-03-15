@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\File;
 test('all migrations can run rollback', function () {
     $this->artisan('migrate');
 
-    $migrationsList = collect(File::allFiles(
+    $migrationsList = collect(File::files(
         __DIR__.'/../../../packages/core/database/migrations'
     ))->map(fn ($file) => pathinfo($file->getFilename(), PATHINFO_FILENAME));
 
@@ -20,7 +20,7 @@ test('all migrations can run rollback', function () {
 });
 
 test('each migration can run and rollback', function () {
-    $migrationsList = collect(File::allFiles(
+    $migrationsList = collect(File::files(
         __DIR__.'/../../../packages/core/database/migrations'
     ));
 

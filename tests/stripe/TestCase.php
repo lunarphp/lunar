@@ -8,14 +8,15 @@ use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Stripe\StripePaymentsServiceProvider;
+use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\LunarTestCase;
 use Lunar\Tests\Stripe\Stripe\MockClient;
-use Lunar\Tests\Stubs\User;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 use Stripe\ApiRequestor;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends LunarTestCase
 {
     protected function setUp(): void
     {
@@ -31,32 +32,15 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ApiRequestor::setHttpClient($mockClient);
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
-        return [
-            LunarServiceProvider::class,
-            BlinkServiceProvider::class,
+        return array_merge(parent::getPackageProviders($app), [
             StripePaymentsServiceProvider::class,
             LivewireServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ActivitylogServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
-        ];
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        // perform environment setup
-    }
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
+        ]);
     }
 }

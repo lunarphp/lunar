@@ -7,14 +7,13 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
-use Lunar\LunarServiceProvider;
 use Lunar\Opayo\OpayoServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
+use Lunar\Tests\LunarTestCase;
 use Spatie\Activitylog\ActivitylogServiceProvider;
-use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends LunarTestCase
 {
     protected function setUp(): void
     {
@@ -44,34 +43,16 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ]);
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
-        return [
-            LunarServiceProvider::class,
+        return array_merge(parent::getPackageProviders($app), [
             LivewireServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ActivitylogServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
             ShippingServiceProvider::class,
-            BlinkServiceProvider::class,
             OpayoServiceProvider::class,
-
-        ];
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        // perform environment setup
-    }
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
+        ]);
     }
 }
