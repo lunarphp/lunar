@@ -267,6 +267,10 @@ by default:
 - gal
 - floz
 
+::: tip
+You can define a default unit of all measurements by adding a `'default' => true` key/value pair to the desired unit.
+:::
+
 ### Getting and converting measurement values
 
 You are free to access to the `*_value` and `*_unit` values for the variant and use them in their raw form, however we
