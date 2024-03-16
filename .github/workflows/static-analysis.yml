@@ -34,6 +34,9 @@ jobs:
           tools: "composer:v2"
           coverage: "none"
 
+      - name: "Configure GitHub token for Composer"
+        run: "composer config github-oauth.github.com '${{ secrets.GITHUB_TOKEN }}'"
+
       - name: "Install dependencies from composer.json"
         if: "matrix.dependencies != 'lowest'"
         run: "composer update --with='laravel/framework:${{ matrix.laravel }}' --no-interaction --no-progress"
