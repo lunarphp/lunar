@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Http\UploadedFile;
 use Lunar\Base\StandardMediaDefinitions;
 use Lunar\Models\Product;
