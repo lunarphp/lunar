@@ -6,7 +6,7 @@ Version 1.x is very much in-development. It is incomplete and not production rea
 
 ## Server Requirements
 
-- PHP ^8.1
+- PHP ^8.2
 - Laravel 10+
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
@@ -107,7 +107,7 @@ You can use our `dev-laravel-11` branch of this repository.
 While we wait for our 3rd party dependencies to be update their packages to Laravel 11, we have forked the following repositories to provide Laravel 11 support for Lunar v1.
 
 - [leandrocfe/filament-apex-charts](https://github.com/adam-code-labx/filament-apex-charts)
-- [cartalyst/converter](https://github.com/laravel-shift/converter.git)
+- [cartalyst/converter](https://github.com/adam-code-labx/converter.git)
 - [kalnoy/nestedset](https://github.com/laravel-shift/laravel-nestedset.git)
 
 You can use these forks by updating your main project `composer.json` to include the following repositories.
@@ -120,11 +120,11 @@ You can use these forks by updating your main project `composer.json` to include
     },
     {
         "type": "vcs",
-        "url": "https://github.com/laravel-shift/converter.git"
+        "url": "https://github.com/adam-code-labx/converter.git"
     },
     {
         "type": "vcs",
-        "url": "https://github.com/laravel-shift/laravel-nestedset.git"
+        "url": "https://github.com/adam-code-labx/laravel-nestedset"
     }
 ]
 ```

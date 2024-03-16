@@ -27,7 +27,7 @@ test('conversions are loaded', function () {
     expect($image->hasGeneratedConversion('medium'))->toBeTrue();
     expect($image->hasGeneratedConversion('large'))->toBeTrue();
     expect($image->hasGeneratedConversion('zoom'))->toBeTrue();
-})->skipOnPhp('<=8.1');
+});
 
 test('images can have fallback url', function () {
     $testImageUrl = 'https://picsum.photos/200';

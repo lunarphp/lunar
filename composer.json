@@ -27,10 +27,10 @@
         "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
         "marvinosswald/filament-input-select-affix": "0.2.0",
-        "php": "^8.1",
+        "php": "^8.2",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.6",
-        "spatie/laravel-medialibrary": "^10.0|^11.0",
+        "spatie/laravel-medialibrary": "^11.0",
         "spatie/laravel-permission": "^6.4",
         "stripe/stripe-php": "^7.114",
         "technikermathe/blade-lucide-icons": "^v3.0"
