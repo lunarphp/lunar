@@ -11,7 +11,7 @@
     "require": {
         "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
-        "cartalyst/converter": "dev-l11-compatibility",
+        "cartalyst/converter": "dev-main",
         "doctrine/dbal": "^3.6",
         "ext-bcmath": "*",
         "ext-exif": "*",
@@ -20,7 +20,7 @@
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/http": "^10.0|^11.0",
-        "kalnoy/nestedset": "dev-l11-compatibility",
+        "kalnoy/nestedset": "dev-main",
         "laravel/framework": "^10.0|^11.0",
         "laravel/scout": "^10.0",
         "leandrocfe/filament-apex-charts": "dev-master",
@@ -51,11 +51,11 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/laravel-shift/converter.git"
+            "url": "https://github.com/adam-code-labx/converter"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/laravel-shift/laravel-nestedset.git"
+            "url": "https://github.com/adam-code-labx/laravel-nestedset"
         }
     ],
     "autoload": {

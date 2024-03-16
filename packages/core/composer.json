@@ -37,8 +37,8 @@
         "spatie/laravel-medialibrary": "^10.0|^11.0",
         "spatie/laravel-activitylog": "^4.4",
         "laravel/scout": "^10.0",
-        "cartalyst/converter": "dev-l11-compatibility",
-        "kalnoy/nestedset": "dev-l11-compatibility",
+        "cartalyst/converter": "dev-main",
+        "kalnoy/nestedset": "dev-main",
         "doctrine/dbal": "^3.6",
         "spatie/laravel-blink": "^1.6",
         "lukascivil/treewalker": "0.9.1"

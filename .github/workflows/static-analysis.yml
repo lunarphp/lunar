@@ -21,11 +21,9 @@ jobs:
         exclude:
           - laravel: 11.*
             php: 8.1
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          token: ${{ github.token }}
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
@@ -39,7 +37,6 @@ jobs:
           coverage: none
       - name: Install dependencies
         run: |
-          composer config github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"
           composer require "laravel/framework:${{ matrix.laravel }}"  --no-interaction --no-update
           composer require "orchestra/testbench:${{ matrix.testbench }}" --dev --no-interaction --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
