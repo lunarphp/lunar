@@ -23,7 +23,7 @@
         "kalnoy/nestedset": "dev-main",
         "laravel/framework": "^10.0|^11.0",
         "laravel/scout": "^10.0",
-        "leandrocfe/filament-apex-charts": "dev-master",
+        "leandrocfe/filament-apex-charts": "^3.1",
         "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
         "marvinosswald/filament-input-select-affix": "0.2.0",
@@ -45,10 +45,6 @@
         "symplify/monorepo-builder": "^10.0"
     },
     "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/adam-code-labx/filament-apex-charts"
-        },
         {
             "type": "vcs",
             "url": "https://github.com/adam-code-labx/converter"
