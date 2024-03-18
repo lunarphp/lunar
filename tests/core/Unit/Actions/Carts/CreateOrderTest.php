@@ -23,9 +23,7 @@ use Lunar\Models\TaxRateAmount;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-/** @test  */
-function cant_create_order_if_already_has_complete_and_multiple_disabled()
-{
+it('cant create order if already has complete and multiple disabled', function () {
     TaxClass::factory()->create([
         'default' => true,
     ]);
@@ -43,10 +41,8 @@ function cant_create_order_if_already_has_complete_and_multiple_disabled()
         'placed_at' => now(),
     ]);
 
-    $this->expectException(DisallowMultipleCartOrdersException::class);
-
     (new CreateOrder)->execute($cart);
-}
+})->throws(DisallowMultipleCartOrdersException::class);
 
 test('can create order if multiple enabled', function () {
     TaxClass::factory()->create([

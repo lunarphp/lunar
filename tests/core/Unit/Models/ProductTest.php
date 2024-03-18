@@ -493,7 +493,7 @@ test('can retrieve prices', function () {
 
     Price::factory()->create([
         'priceable_id' => $variant->id,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
     ]);
 
     expect($product->refresh()->prices)->toHaveCount(1);
