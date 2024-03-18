@@ -97,28 +97,40 @@ class ModelManifest implements ModelManifestInterface
         return 'Lunar\\Models\\Contracts\\'.$shortName;
     }
 
-    public function getResolvedTableName(BaseModel $model): string
+    public function guessModelClass(string $modelContract): string
     {
+        $shortName = (new \ReflectionClass($modelContract))->getShortName();
+
+        return 'Lunar\\Models\\'.$shortName;
+    }
+
+    public function isLunarModel(BaseModel $model): bool
+    {
+        $class = (new \ReflectionClass($model));
+
+        return $class->getNamespaceName() == 'Lunar\\Models';
+    }
+
+    public function getTable(BaseModel $model): string
+    {
+        $formatTableName = fn ($class) => Str::snake(
+            Str::pluralStudly(
+                class_basename($class)
+            )
+        );
+
         $class = (new \ReflectionClass($model));
 
         $contract = array_flip($this->models)[$class->getName()] ?? null;
 
-        $tableClass = $model;
-
-        if ($contract) {
-            $tableClass = collect(Discover::in(__DIR__.'/../Models')->classes()->implementing(
-                $contract
-            )->get())->first();
+        if ($this->isLunarModel($model) || ! $contract) {
+            return $formatTableName($model);
         }
 
-        return Str::snake(
-            Str::pluralStudly(
-                class_basename($tableClass)
-            )
-        );
+        return $formatTableName($this->guessModelClass($contract));
     }
 
-    public function morphMap()
+    public function morphMap(): void
     {
         $modelClasses = collect(
             Discover::in(__DIR__.'/../Models')
