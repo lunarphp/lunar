@@ -2,10 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Brand;
 
-class BrandFactory extends Factory
+class BrandFactory extends BaseFactory
 {
     protected $model = Brand::class;
 
