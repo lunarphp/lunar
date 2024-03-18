@@ -10,7 +10,7 @@ interface OrderAddress
      * Return the order relationship.
      */
     public function order(): BelongsTo;
-    
+
     /**
      * Return the country relationship.
      */

@@ -21,7 +21,7 @@ interface ProductType
      * Return the variant attributes relationship.
      */
     public function variantAttributes(): MorphToMany;
-    
+
     /**
      * Get the products relation.
      */

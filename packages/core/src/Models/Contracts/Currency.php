@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 interface Currency
 {
     public function scopeEnabled(Builder $query, $enabled = true): Builder;
-    
+
     /**
      * Return the prices relationship
      */

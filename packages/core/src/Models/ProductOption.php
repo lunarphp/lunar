@@ -24,7 +24,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductOption extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contracts\ProductOption
+class ProductOption extends BaseModel implements \Lunar\Models\Contracts\ProductOption, SpatieHasMedia
 {
     use HasFactory;
     use HasMacros;
