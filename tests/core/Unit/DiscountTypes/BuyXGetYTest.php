@@ -309,7 +309,7 @@ test('can discount eligible products', function () {
 
     expect($cart->total->value)->toEqual(1200);
     expect($cart->freeItems)->toHaveCount(1);
-})->group('thisthis');
+});
 
 test('can discount purchasable with priority', function () {
     $customerGroup = CustomerGroup::factory()->create([
@@ -560,7 +560,7 @@ test('can apply multiple different discounts', function () {
 
     expect($cart->discountTotal->value)->toEqual(700);
     expect($cart->discountBreakdown)->toHaveCount(2);
-})->group('flub');
+});
 
 test('can supplement correct quantities', function () {
     $customerGroup = CustomerGroup::factory()->create([
