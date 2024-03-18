@@ -55,7 +55,7 @@ class BuyXGetY extends AbstractDiscountType
         // Get all purchasables that are eligible.
         $conditions = $cart->lines->reject(function ($line) {
             return ! $this->discount->purchasableConditions->first(function ($item) use ($line) {
-                return $item->purchasable_type == Product::class &&
+                return $item->purchasable_type == (new Product)->getMorphClass() &&
                     $item->purchasable_id == $line->purchasable->product->id;
             });
         });
@@ -86,7 +86,7 @@ class BuyXGetY extends AbstractDiscountType
         // Get the reward lines and sort by cheapest first.
         $rewardLines = $cart->lines->filter(function ($line) {
             return $this->discount->purchasableRewards->first(function ($item) use ($line) {
-                return $item->purchasable_type == Product::class &&
+                return $item->purchasable_type == (new Product)->getMorphClass() &&
                     $item->purchasable_id == $line->purchasable->product->id;
             });
         })->sortBy('subTotal.value');

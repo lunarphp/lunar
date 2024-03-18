@@ -53,7 +53,7 @@ test('can set up available guest pricing', function () {
 
     Price::factory()->create([
         'price' => 50,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 1,
@@ -87,7 +87,7 @@ test('can get purchasable price with defaults', function () {
 
     $price = Price::factory()->create([
         'price' => 100,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 1,
@@ -120,7 +120,7 @@ test('can fetch customer group price', function () {
 
     $base = Price::factory()->create([
         'price' => 100,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 1,
@@ -128,7 +128,7 @@ test('can fetch customer group price', function () {
 
     $customerGroupPrice = Price::factory()->create([
         'price' => 150,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 1,
@@ -170,7 +170,7 @@ test('can fetch quantity break price', function () {
 
     $base = Price::factory()->create([
         'price' => 100,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 1,
@@ -178,7 +178,7 @@ test('can fetch quantity break price', function () {
 
     $break10 = Price::factory()->create([
         'price' => 90,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 10,
@@ -186,7 +186,7 @@ test('can fetch quantity break price', function () {
 
     $break20 = Price::factory()->create([
         'price' => 80,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 20,
@@ -194,7 +194,7 @@ test('can fetch quantity break price', function () {
 
     $break30 = Price::factory()->create([
         'price' => 70,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 30,
@@ -264,7 +264,7 @@ test('can match based on currency', function () {
 
     $base = Price::factory()->create([
         'price' => 100,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
         'min_quantity' => 1,
@@ -272,7 +272,7 @@ test('can match based on currency', function () {
 
     $additional = Price::factory()->create([
         'price' => 120,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $secondCurrency->id,
         'min_quantity' => 1,
@@ -315,7 +315,7 @@ function can_fetch_correct_price_for_user()
 
     $base = Price::factory()->create([
         'price' => 100,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
         'min_quantity' => 1,
@@ -323,7 +323,7 @@ function can_fetch_correct_price_for_user()
 
     $groupPrice = Price::factory()->create([
         'price' => 100,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $defaultCurrency->id,
         'min_quantity' => 1,
@@ -369,7 +369,7 @@ test('can pipeline purchasable price', function () {
 
     $price = Price::factory()->create([
         'price' => 100,
-        'purchasable_type' => $variant->getMorphClass(),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
         'currency_id' => $currency->id,
         'min_quantity' => 1,

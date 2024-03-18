@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\Unit\Base\Extendable\ExtendableTestCase::class);
+uses(\Lunar\Tests\Core\Unit\Base\Extendable\ExtendableTestCase::class)->group('model_extending');
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Product;
@@ -9,10 +9,17 @@ use Lunar\Models\ProductOption;
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(
-    fn () => \Lunar\Facades\ModelManifest::replace(
-        \Lunar\Models\Contracts\Product::class,
-        \Lunar\Tests\Core\Stubs\Models\Product::class
-    )
+    function () {
+        \Lunar\Facades\ModelManifest::replace(
+            \Lunar\Models\Contracts\Product::class,
+            \Lunar\Tests\Core\Stubs\Models\Product::class
+        );
+
+        \Lunar\Facades\ModelManifest::replace(
+            \Lunar\Models\Contracts\ProductOption::class,
+            \Lunar\Tests\Core\Stubs\Models\ProductOption::class
+        );
+    }
 );
 
 test('can get new instance of the registered model', function () {
@@ -37,24 +44,4 @@ test('can forward static method calls to extended model', function () {
 
     expect($newStaticMethod)->toBeInstanceOf(Collection::class);
     expect($newStaticMethod)->toHaveCount(3);
-});
-
-test('can swap registered model implementation', function () {
-    /** @var Product $product */
-    $product = Product::find(1);
-
-    $newProductModel = $product->swap(
-        \Lunar\Tests\Core\Stubs\Models\ProductSwapModel::class,
-    );
-
-    expect($product)->toBeInstanceOf(\Lunar\Tests\Core\Stubs\Models\Product::class);
-    expect($newProductModel)->toBeInstanceOf(\Lunar\Tests\Core\Stubs\Models\ProductSwapModel::class);
-});
-
-test('can get base model morph class name', function () {
-    $product = \Lunar\Tests\Core\Stubs\Models\Product::query()->create(
-        Product::factory()->raw()
-    );
-
-    expect($product->getMorphClass())->toEqual(Product::class);
 });

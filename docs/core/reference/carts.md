@@ -47,7 +47,7 @@ Lunar\Models\CartLine
 |:-----------------|:---------------------------------------------|
 | id               |                                              |
 | cart_id          |                                              |
-| purchasable_type | e.g. `Lunar\Models\ProductVariant`.          |
+| purchasable_type | e.g. `product_variant`                       |
 | purchasable_id   |                                              |
 | quantity         |                                              |
 | created_at       |                                              |

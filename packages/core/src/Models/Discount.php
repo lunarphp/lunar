@@ -179,7 +179,7 @@ class Discount extends BaseModel implements \Lunar\Models\Contracts\Discount
             fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
-                        ->wherePurchasableType(Product::class)
+                        ->wherePurchasableType((new Product)->getMorphClass())
                         ->when(
                             $types,
                             fn ($query) => $query->whereIn('type', $types)
@@ -200,7 +200,7 @@ class Discount extends BaseModel implements \Lunar\Models\Contracts\Discount
             fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
-                        ->wherePurchasableType(ProductVariant::class)
+                        ->wherePurchasableType((new ProductVariant)->getMorphClass())
                         ->when(
                             $types,
                             fn ($query) => $query->whereIn('type', $types)
