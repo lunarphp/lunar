@@ -19,7 +19,7 @@ class RemapPolymorphicRelations extends Migration
                 ->get()
         )->mapWithKeys(
             fn ($class) => [
-                $class => \Illuminate\Support\Str::snake(class_basename($class))
+                $class => \Illuminate\Support\Str::snake(class_basename($class)),
             ]
         );
 
@@ -42,19 +42,19 @@ class RemapPolymorphicRelations extends Migration
         foreach ($modelClasses as $modelClass => $mapping) {
 
             $activityLog->where('subject_type', '=', $modelClass)->update([
-                'subject_type' => $mapping
+                'subject_type' => $mapping,
             ]);
 
             $media->where('model_type', '=', $modelClass)->update([
-                'model_type' => $mapping
+                'model_type' => $mapping,
             ]);
 
             $permissions->where('model_type', '=', $modelClass)->update([
-                'model_type' => $mapping
+                'model_type' => $mapping,
             ]);
 
             $roles->where('model_type', '=', $modelClass)->update([
-                'model_type' => $mapping
+                'model_type' => $mapping,
             ]);
 
             foreach ($tables as $tableName => $columns) {
@@ -64,7 +64,7 @@ class RemapPolymorphicRelations extends Migration
 
                 foreach ($columns as $column) {
                     $table->where($column, '=', $modelClass)->update([
-                        $column => $mapping
+                        $column => $mapping,
                     ]);
                 }
             }
