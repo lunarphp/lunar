@@ -59,7 +59,7 @@ test('can fetch product options', function () {
 
     expect($product->refresh()->productOptions)->toHaveCount(2);
 
-})->group('momo');
+});
 
 test('can fetch using status scope', function () {
     $attribute_data = collect([
@@ -282,7 +282,7 @@ test('customer groups can be unscheduled', function () {
             'visible' => 0,
         ],
     );
-})->group('mosh');
+});
 
 test('product can sync tags', function () {
     $channel = Channel::factory()->create();

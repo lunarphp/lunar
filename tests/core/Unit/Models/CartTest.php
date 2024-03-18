@@ -963,4 +963,4 @@ test('can get estimated shipping', function () {
 
     expect($cart->shippingOptionOverride)->toBeInstanceOf(ShippingOption::class);
     expect($shippingOption->identifier)->toEqual($cart->shippingOptionOverride->identifier);
-})->group('foofoo');
+});

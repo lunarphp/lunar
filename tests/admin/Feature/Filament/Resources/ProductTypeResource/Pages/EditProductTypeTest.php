@@ -57,4 +57,4 @@ it('can associate attributes', function () {
         'attributable_id' => $component->get('record')->id,
         'attribute_id' => $attributeB->id,
     ]);
-})->group('ytho');
+});

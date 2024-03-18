@@ -1810,4 +1810,4 @@ test('can handle malformed discount', function () {
     $cart = $cart->calculate();
 
     expect($cart->discountTotal->value)->toEqual(0);
-})->group('this');
+});

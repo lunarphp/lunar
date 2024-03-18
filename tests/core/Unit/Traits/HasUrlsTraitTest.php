@@ -34,7 +34,7 @@ function can_generate_urls()
 
     expect($product->refresh()->urls)->toHaveCount(1);
 
-    $this->assertDatabaseHas((new Url)->getTable(), [
+    \Pest\Laravel\assertDatabaseHas((new Url)->getTable(), [
         'element_type' => $product->getMorphClass(),
         'element_id' => $product->id,
         'slug' => Str::slug($product->translateAttribute('name')),

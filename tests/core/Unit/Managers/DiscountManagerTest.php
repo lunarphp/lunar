@@ -379,4 +379,4 @@ test('can get discount with coupon', function () {
     ]);
 
     expect(Discounts::getDiscounts($cart->refresh()))->toHaveCount(1);
-})->group('moomoo');
+});
