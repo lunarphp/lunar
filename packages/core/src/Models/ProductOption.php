@@ -71,7 +71,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia, \Lunar\Models\C
 
     public function values(): HasMany
     {
-        return $this->hasMany(ProductOptionValue::class)->orderBy('position');
+        return $this->hasMany(ProductOptionValue::modelClass())->orderBy('position');
     }
 
     public function products(): BelongsToMany
@@ -79,7 +79,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia, \Lunar\Models\C
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::class,
+            Product::modelClass(),
             "{$prefix}product_product_option"
         )->withPivot(['position'])->orderByPivot('position');
     }

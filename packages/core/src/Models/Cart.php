@@ -197,12 +197,12 @@ class Cart extends BaseModel implements \Lunar\Models\Contracts\Cart
 
     public function lines(): HasMany
     {
-        return $this->hasMany(CartLine::class, 'cart_id', 'id');
+        return $this->hasMany(CartLine::modelClass(), 'cart_id', 'id');
     }
 
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::class);
+        return $this->belongsTo(Currency::modelClass());
     }
 
     public function user(): BelongsTo
@@ -212,7 +212,7 @@ class Cart extends BaseModel implements \Lunar\Models\Contracts\Cart
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::modelClass());
     }
 
     public function scopeUnmerged(Builder $query): Builder
@@ -222,22 +222,22 @@ class Cart extends BaseModel implements \Lunar\Models\Contracts\Cart
 
     public function addresses(): HasMany
     {
-        return $this->hasMany(CartAddress::class, 'cart_id');
+        return $this->hasMany(CartAddress::modelClass(), 'cart_id');
     }
 
     public function shippingAddress(): HasOne
     {
-        return $this->hasOne(CartAddress::class, 'cart_id')->whereType('shipping');
+        return $this->hasOne(CartAddress::modelClass(), 'cart_id')->whereType('shipping');
     }
 
     public function billingAddress(): HasOne
     {
-        return $this->hasOne(CartAddress::class, 'cart_id')->whereType('billing');
+        return $this->hasOne(CartAddress::modelClass(), 'cart_id')->whereType('billing');
     }
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::modelClass());
     }
 
     public function scopeActive(Builder $query): Builder
@@ -249,7 +249,7 @@ class Cart extends BaseModel implements \Lunar\Models\Contracts\Cart
 
     public function draftOrder(int $draftOrderId = null): HasOne
     {
-        return $this->hasOne(Order::class)
+        return $this->hasOne(Order::modelClass())
             ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
                 $query->where('id', $draftOrderId);
             })->whereNull('placed_at');
@@ -257,7 +257,7 @@ class Cart extends BaseModel implements \Lunar\Models\Contracts\Cart
 
     public function completedOrder(int $completedOrderId = null): HasOne
     {
-        return $this->hasOne(Order::class)
+        return $this->hasOne(Order::modelClass())
             ->when($completedOrderId, function (Builder $query, int $completedOrderId) {
                 $query->where('id', $completedOrderId);
             })->whereNotNull('placed_at');
@@ -265,7 +265,7 @@ class Cart extends BaseModel implements \Lunar\Models\Contracts\Cart
 
     public function completedOrders(): HasMany
     {
-        return $this->hasMany(Order::class)
+        return $this->hasMany(Order::modelClass())
             ->whereNotNull('placed_at');
     }
 

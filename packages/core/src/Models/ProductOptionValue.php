@@ -55,7 +55,7 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia, \Lunar\Mod
 
     public function option(): BelongsTo
     {
-        return $this->belongsTo(ProductOption::class, 'product_option_id');
+        return $this->belongsTo(ProductOption::modelClass(), 'product_option_id');
     }
 
     public function variants(): BelongsToMany
@@ -63,7 +63,7 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia, \Lunar\Mod
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            ProductVariant::class,
+            ProductVariant::modelClass(),
             "{$prefix}product_option_value_product_variant",
             'value_id',
             'variant_id',

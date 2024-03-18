@@ -64,7 +64,7 @@ class Transaction extends BaseModel implements \Lunar\Models\Contracts\Transacti
      */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::modelClass());
     }
 
     /**
@@ -73,8 +73,8 @@ class Transaction extends BaseModel implements \Lunar\Models\Contracts\Transacti
     public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
-            Currency::class,
-            Order::class,
+            Currency::modelClass(),
+            Order::modelClass(),
             'id',
             'code',
             'order_id',

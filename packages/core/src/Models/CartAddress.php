@@ -128,11 +128,11 @@ class CartAddress extends BaseModel implements \Lunar\Models\Contracts\CartAddre
 
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(Cart::modelClass());
     }
 
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::modelClass());
     }
 }

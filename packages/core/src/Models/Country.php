@@ -45,6 +45,6 @@ class Country extends BaseModel implements \Lunar\Models\Contracts\Country
 
     public function states(): HasMany
     {
-        return $this->hasMany(State::class);
+        return $this->hasMany(State::modelClass());
     }
 }

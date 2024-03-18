@@ -94,27 +94,27 @@ class Discount extends BaseModel implements \Lunar\Models\Contracts\Discount
 
     public function purchasables(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::class);
+        return $this->hasMany(DiscountPurchasable::modelClass());
     }
 
     public function purchasableConditions(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::class)->whereType('condition');
+        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('condition');
     }
 
     public function purchasableExclusions(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::class)->whereType('exclusion');
+        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('exclusion');
     }
 
     public function purchasableLimitations(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::class)->whereType('limitation');
+        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('limitation');
     }
 
     public function purchasableRewards(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::class)->whereType('reward');
+        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('reward');
     }
 
     public function getType(): AbstractDiscountType
@@ -127,7 +127,7 @@ class Discount extends BaseModel implements \Lunar\Models\Contracts\Discount
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Collection::class,
+            Collection::modelClass(),
             "{$prefix}collection_discount"
         )->withPivot(['type'])->withTimestamps();
     }
@@ -137,7 +137,7 @@ class Discount extends BaseModel implements \Lunar\Models\Contracts\Discount
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::class,
+            CustomerGroup::modelClass(),
             "{$prefix}customer_group_discount"
         )->withPivot([
             'visible',
@@ -152,7 +152,7 @@ class Discount extends BaseModel implements \Lunar\Models\Contracts\Discount
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Brand::class,
+            Brand::modelClass(),
             "{$prefix}brand_discount"
         )->withPivot(['type'])->withTimestamps();
     }

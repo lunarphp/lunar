@@ -43,7 +43,7 @@ class ProductType extends BaseModel implements Contracts\ProductType
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
-            Attribute::class,
+            Attribute::modelClass(),
             'attributable',
             "{$prefix}attributables"
         )->withTimestamps();
@@ -51,16 +51,16 @@ class ProductType extends BaseModel implements Contracts\ProductType
 
     public function productAttributes(): MorphToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(Product::class);
+        return $this->mappedAttributes()->whereAttributeType(Product::modelClass());
     }
 
     public function variantAttributes(): MorphToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(ProductVariant::class);
+        return $this->mappedAttributes()->whereAttributeType(ProductVariant::modelClass());
     }
 
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::modelClass());
     }
 }

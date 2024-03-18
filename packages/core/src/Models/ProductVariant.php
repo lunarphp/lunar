@@ -85,12 +85,12 @@ class ProductVariant extends BaseModel implements Purchasable, \Lunar\Models\Con
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class)->withTrashed();
+        return $this->belongsTo(Product::modelClass())->withTrashed();
     }
 
     public function taxClass(): BelongsTo
     {
-        return $this->belongsTo(TaxClass::class);
+        return $this->belongsTo(TaxClass::modelClass());
     }
 
     public function values(): BelongsToMany
@@ -98,7 +98,7 @@ class ProductVariant extends BaseModel implements Purchasable, \Lunar\Models\Con
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            ProductOptionValue::class,
+            ProductOptionValue::modelClass(),
             "{$prefix}product_option_value_product_variant",
             'variant_id',
             'value_id'

@@ -88,11 +88,11 @@ class OrderAddress extends BaseModel implements Addressable, \Lunar\Models\Contr
 
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::modelClass());
     }
 
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::modelClass());
     }
 }

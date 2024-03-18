@@ -41,7 +41,7 @@ class CustomerGroup extends BaseModel implements \Lunar\Models\Contracts\Custome
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Customer::class,
+            Customer::modelClass(),
             "{$prefix}customer_customer_group"
         )->withTimestamps();
     }

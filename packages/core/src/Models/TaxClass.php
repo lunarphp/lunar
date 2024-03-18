@@ -59,11 +59,11 @@ class TaxClass extends BaseModel implements \Lunar\Models\Contracts\TaxClass
 
     public function taxRateAmounts(): HasMany
     {
-        return $this->hasMany(TaxRateAmount::class);
+        return $this->hasMany(TaxRateAmount::modelClass());
     }
 
     public function productVariants(): HasMany
     {
-        return $this->hasMany(ProductVariant::class);
+        return $this->hasMany(ProductVariant::modelClass());
     }
 }

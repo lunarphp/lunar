@@ -70,7 +70,7 @@ class Address extends BaseModel implements \Lunar\Models\Contracts\Address, Addr
      */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::modelClass());
     }
 
     /**

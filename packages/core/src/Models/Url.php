@@ -63,7 +63,7 @@ class Url extends BaseModel implements \Lunar\Models\Contracts\Url
      */
     public function language(): BelongsTo
     {
-        return $this->belongsTo(Language::class);
+        return $this->belongsTo(Language::modelClass());
     }
 
     /**

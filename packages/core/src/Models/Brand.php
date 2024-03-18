@@ -50,7 +50,7 @@ class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHa
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): BrandFactory
+    protected static function newFactory()
     {
         return BrandFactory::new();
     }

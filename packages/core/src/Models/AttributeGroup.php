@@ -52,6 +52,6 @@ class AttributeGroup extends BaseModel implements \Lunar\Models\Contracts\Attrib
 
     public function attributes(): HasMany
     {
-        return $this->hasMany(Attribute::class)->orderBy('position');
+        return $this->hasMany(Attribute::modelClass())->orderBy('position');
     }
 }

@@ -83,7 +83,7 @@ class Attribute extends BaseModel implements \Lunar\Models\Contracts\Attribute
 
     public function attributeGroup(): BelongsTo
     {
-        return $this->belongsTo(AttributeGroup::class);
+        return $this->belongsTo(AttributeGroup::modelClass());
     }
 
     public function scopeSystem(Builder $query, $type): Builder

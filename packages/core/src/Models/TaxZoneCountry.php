@@ -41,7 +41,7 @@ class TaxZoneCountry extends BaseModel implements \Lunar\Models\Contracts\TaxZon
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::class);
+        return $this->belongsTo(TaxZone::modelClass());
     }
 
     /**
@@ -49,6 +49,6 @@ class TaxZoneCountry extends BaseModel implements \Lunar\Models\Contracts\TaxZon
      */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::modelClass());
     }
 }

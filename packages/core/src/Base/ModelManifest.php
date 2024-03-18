@@ -3,8 +3,10 @@
 namespace Lunar\Base;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Lunar\Admin\Models\Staff;
 use Spatie\StructureDiscoverer\Discover;
 
 class ModelManifest implements ModelManifestInterface
@@ -93,5 +95,46 @@ class ModelManifest implements ModelManifestInterface
         $shortName = (new \ReflectionClass($modelClass))->getShortName();
 
         return 'Lunar\\Models\\Contracts\\'.$shortName;
+    }
+
+    public function getResolvedTableName(BaseModel $model): string
+    {
+        $class = (new \ReflectionClass($model));
+
+        $contract = array_flip($this->models)[$class->getName()] ?? null;
+
+        $tableClass = $model;
+
+        if ($contract) {
+            $tableClass = collect(Discover::in(__DIR__.'/../Models')->classes()->implementing(
+                $contract
+            )->get())->first();
+        }
+
+        return Str::snake(
+            Str::pluralStudly(
+                class_basename($tableClass)
+            )
+        );
+    }
+
+    public function morphMap()
+    {
+        $modelClasses = collect(
+            Discover::in(__DIR__.'/../Models')
+                ->classes()
+                ->extending(BaseModel::class)
+                ->get()
+        )->mapWithKeys(
+            fn ($class) => [
+                \Illuminate\Support\Str::snake(class_basename($class)) => $class::modelClass(),
+            ]
+        )->merge([
+            'staff' => Staff::class,
+        ]);
+
+        Relation::enforceMorphMap(
+            $modelClasses->toArray()
+        );
     }
 }

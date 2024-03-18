@@ -32,6 +32,6 @@ class CollectionGroup extends BaseModel implements \Lunar\Models\Contracts\Colle
 
     public function collections(): HasMany
     {
-        return $this->hasMany(Collection::class);
+        return $this->hasMany(Collection::modelClass());
     }
 }

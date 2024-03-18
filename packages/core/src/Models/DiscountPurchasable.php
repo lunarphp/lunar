@@ -48,7 +48,7 @@ class DiscountPurchasable extends BaseModel implements \Lunar\Models\Contracts\D
      */
     public function discount(): BelongsTo
     {
-        return $this->belongsTo(Discount::class);
+        return $this->belongsTo(Discount::modelClass());
     }
 
     /**
