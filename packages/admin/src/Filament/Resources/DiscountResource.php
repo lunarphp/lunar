@@ -96,7 +96,7 @@ class DiscountResource extends BaseResource
                 )->schema(
                     static::getAmountOffFormComponents()
                 ),
-            ...$discountSchemas
+            ...$discountSchemas,
         ]);
     }
 
