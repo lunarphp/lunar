@@ -15,6 +15,19 @@ trait HasModelExtending
         )->setModel(new $realClass);
     }
 
+    public static function __callStatic($method, $parameters)
+    {
+        if (
+            static::modelClass() != static::class
+        ) {
+            $extendedClass = static::modelClass();
+
+            return (new $extendedClass)->$method(...$parameters);
+        }
+
+        return (new static)->$method(...$parameters);
+    }
+
     /**
      * Returns the model class registered in the model manifest.
      */

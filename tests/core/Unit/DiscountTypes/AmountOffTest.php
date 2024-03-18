@@ -332,7 +332,7 @@ test('will only apply to lines with correct product', function () {
 
     expect($cart->discountTotal->value)->toEqual(100);
     expect($cart->total->value)->toEqual(2280);
-});
+})->group('thisone');
 
 test('will only apply to lines with correct product variant', function () {
     $customerGroup = CustomerGroup::getDefault();
