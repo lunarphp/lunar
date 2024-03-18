@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunar\FieldTypes\Text;
@@ -17,7 +18,7 @@ test('urls dont generate by default', function () {
     expect($product->refresh()->urls)->toHaveCount(0);
 
     $this->assertDatabaseMissing((new Url)->getTable(), [
-        'element_type' => Product::class,
+        'element_type' => $product->getMorphClass(),
         'element_id' => $product->id,
     ]);
 });
@@ -34,7 +35,7 @@ function can_generate_urls()
     expect($product->refresh()->urls)->toHaveCount(1);
 
     $this->assertDatabaseHas((new Url)->getTable(), [
-        'element_type' => Product::class,
+        'element_type' => $product->getMorphClass(),
         'element_id' => $product->id,
         'slug' => Str::slug($product->translateAttribute('name')),
     ]);

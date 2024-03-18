@@ -34,28 +34,25 @@ class RemapPolymorphicRelations extends Migration
             'urls' => ['element_type'],
         ];
 
-        $activityLog = \Illuminate\Support\Facades\DB::table('activity_log');
-        $media = \Illuminate\Support\Facades\DB::table('media');
-        $permissions = \Illuminate\Support\Facades\DB::table('model_has_permissions');
-        $roles = \Illuminate\Support\Facades\DB::table('model_has_roles');
+        $nonLunarTables = [
+            'activity_log' => 'subject_type',
+            'media' => 'model_type',
+            'model_has_permissions' => 'model_type',
+            'model_has_roles' => 'model_type',
+        ];
 
         foreach ($modelClasses as $modelClass => $mapping) {
 
-            $activityLog->where('subject_type', '=', $modelClass)->update([
-                'subject_type' => $mapping,
-            ]);
-
-            $media->where('model_type', '=', $modelClass)->update([
-                'model_type' => $mapping,
-            ]);
-
-            $permissions->where('model_type', '=', $modelClass)->update([
-                'model_type' => $mapping,
-            ]);
-
-            $roles->where('model_type', '=', $modelClass)->update([
-                'model_type' => $mapping,
-            ]);
+            foreach ($nonLunarTables as $table => $column) {
+                if (! Schema::hasTable($table)) {
+                    continue;
+                }
+                \Illuminate\Support\Facades\DB::table($table)
+                    ->where($column, '=', $modelClass)
+                    ->update([
+                        $column => $mapping,
+                    ]);
+            }
 
             foreach ($tables as $tableName => $columns) {
                 $table = \Illuminate\Support\Facades\DB::table(

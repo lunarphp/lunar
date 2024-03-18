@@ -13,7 +13,7 @@ use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\Models\AttributeGroup;
+use Lunar\Models\Contracts\AttributeGroup;
 use Lunar\Models\Language;
 
 class AttributeGroupResource extends BaseResource

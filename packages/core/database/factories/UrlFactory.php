@@ -16,7 +16,7 @@ class UrlFactory extends BaseFactory
             'slug' => $this->faker->slug,
             'default' => true,
             'language_id' => Language::factory(),
-            'element_type' => Product::class,
+            'element_type' => (new Product)->getMorphClass(),
             'element_id' => 1,
         ];
     }
