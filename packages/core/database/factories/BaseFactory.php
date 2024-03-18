@@ -2,7 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-abstract class BaseFactory extends BaseFactory
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+abstract class BaseFactory extends Factory
 {
     public function modelName()
     {
