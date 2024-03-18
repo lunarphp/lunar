@@ -57,6 +57,18 @@ class DiscountResource extends BaseResource
 
     public static function getDefaultForm(Form $form): Form
     {
+        $discountSchemas = Discounts::getTypes()->map(function ($discount) {
+            if (! method_exists($discount, 'lunarPanelSchema')) {
+                return;
+            }
+
+            return Forms\Components\Section::make(Str::slug(get_class($discount)))
+                ->heading($discount->getName())
+                ->visible(
+                    fn (Forms\Get $get) => $get('type') == get_class($discount)
+                )->schema($discount->lunarPanelSchema());
+        })->filter();
+
         return $form->schema([
             Forms\Components\Section::make('')->schema(
                 static::getMainFormComponents()
@@ -84,6 +96,7 @@ class DiscountResource extends BaseResource
                 )->schema(
                     static::getAmountOffFormComponents()
                 ),
+            ...$discountSchemas
         ]);
     }
 

@@ -19,8 +19,29 @@ class EditDiscount extends BaseEditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if (class_exists($data['type'])) {
+            $type = new $data['type'];
+
+            if (method_exists($type, 'lunarPanelOnSave')) {
+                return $type->lunarPanelOnFill($data);
+            }
+        }
+
+        return $data;
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        if (class_exists($data['type'])) {
+            $type = new $data['type'];
+
+            if (method_exists($type, 'lunarPanelOnSave')) {
+                return $type->lunarPanelOnSave($data);
+            }
+        }
+
         $minPrices = $data['data']['min_prices'] ?? [];
         $fixedPrices = $data['data']['fixed_values'] ?? [];
         $currencies = Currency::enabled()->get();
