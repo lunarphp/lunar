@@ -12,7 +12,7 @@ use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\Models\ProductOption;
+use Lunar\Models\Contracts\ProductOption;
 
 class ProductOptionResource extends BaseResource
 {

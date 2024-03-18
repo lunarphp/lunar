@@ -9,7 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\CustomerGroup;
+use Lunar\Models\Contracts\CustomerGroup;
 
 class CustomerGroupResource extends BaseResource
 {

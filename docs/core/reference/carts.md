@@ -55,10 +55,11 @@ Lunar\Models\CartLine
 | meta             | JSON data for saving any custom information. |
 
 ```php
+$purchasable = \Lunar\Models\ProductVariant::create([/** ... */]);
 $cartLine = new \Lunar\Models\CartLine([
     'cart_id' => 1,
-    'purchasable_type' => ProductVariant::class,
-    'purchasable_id' => 123,
+    'purchasable_type' => $purchasable->getMorhClass(),
+    'purchasable_id' => $purchasable->id,
     'quantity' => 2,
     'meta' => [
         'personalization' => 'Love you mum xxx',

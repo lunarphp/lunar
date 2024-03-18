@@ -22,8 +22,8 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
+use Lunar\Models\Contracts\Discount;
 use Lunar\Models\Currency;
-use Lunar\Models\Discount;
 
 class DiscountResource extends BaseResource
 {

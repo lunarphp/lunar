@@ -8,7 +8,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Currency;
+use Lunar\Models\Contracts\Currency;
 
 class CurrencyResource extends BaseResource
 {

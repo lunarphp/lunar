@@ -29,8 +29,8 @@ use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
+use Lunar\Models\Contracts\Product;
 use Lunar\Models\Currency;
-use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Tag;
 

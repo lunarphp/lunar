@@ -21,7 +21,7 @@ test('can create a price', function () {
     $data = [
         'currency_id' => $currency->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 123,
         'min_quantity' => 1,
     ];
@@ -41,7 +41,7 @@ test('price is cast to a datatype', function () {
     $price = Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 123,
         'min_quantity' => 1,
     ]);
@@ -62,7 +62,7 @@ function can_handle_non_int_values()
     $price = Price::factory()->create([
         'currency_id' => $currencyGBP->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 12.99,
         'min_quantity' => 1,
     ]);
@@ -79,7 +79,7 @@ function can_handle_non_int_values()
     $price = Price::factory()->create([
         'currency_id' => $currencyUSD->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 12.995,
         'min_quantity' => 1,
     ]);
@@ -91,7 +91,7 @@ function can_handle_non_int_values()
     $price = Price::factory()->create([
         'currency_id' => $currencyGBP->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 1299,
         'min_quantity' => 1,
     ]);
@@ -108,7 +108,7 @@ function can_handle_non_int_values()
     $price = Price::factory()->create([
         'currency_id' => $currencyEUR->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => '1,250.950',
         'min_quantity' => 1,
     ]);
@@ -120,7 +120,7 @@ function can_handle_non_int_values()
     $price = Price::factory()->create([
         'currency_id' => $currencyEUR->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => '1,250.955',
         'min_quantity' => 1,
     ]);
@@ -141,7 +141,7 @@ test('compare price is cast correctly', function () {
     $price = Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 12.99,
         'compare_price' => 13.99,
         'min_quantity' => 1,
@@ -175,7 +175,7 @@ test('can get a price', function () {
     Price::factory()->create([
         'currency_id' => $currencyUSD->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 123,
         'min_quantity' => 1,
     ]);
@@ -183,7 +183,7 @@ test('can get a price', function () {
     Price::factory()->create([
         'currency_id' => $currencyGBP->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 99,
         'min_quantity' => 1,
     ]);
@@ -191,7 +191,7 @@ test('can get a price', function () {
     Price::factory()->create([
         'currency_id' => $currencyUSD->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 101,
         'min_quantity' => 5,
     ]);
@@ -200,7 +200,7 @@ test('can get a price', function () {
         'currency_id' => $currencyUSD->id,
         'customer_group_id' => $customerGroup->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 75,
         'min_quantity' => 1,
     ]);
@@ -240,7 +240,7 @@ test('can get a price ex tax', function () {
     $price = Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 999,
         'min_quantity' => 1,
     ]);
@@ -262,7 +262,7 @@ test('can get a price inc tax', function () {
     $price = Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'price' => 833,
         'min_quantity' => 1,
     ]);

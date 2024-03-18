@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Channel;
+use Lunar\Models\Contracts\Channel;
 
 class ChannelResource extends BaseResource
 {
