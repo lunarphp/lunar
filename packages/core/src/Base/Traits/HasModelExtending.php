@@ -6,13 +6,6 @@ use Lunar\Facades\ModelManifest;
 
 trait HasModelExtending
 {
-    protected static function bootHasModelExtending(): void
-    {
-        static::retrieved(function ($model) {
-            return null;
-        });
-    }
-
     public function newModelQuery()
     {
         $realClass = static::modelClass();
@@ -36,6 +29,6 @@ trait HasModelExtending
 
     public function getTable(): string
     {
-        return $this->table ?? ModelManifest::getResolvedTableName($this);
+        return $this->table ?? ModelManifest::getTable($this);
     }
 }
