@@ -8,6 +8,13 @@ use Lunar\Models\ProductOption;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
+beforeEach(
+    fn () => \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\Product::class,
+        \Lunar\Tests\Core\Stubs\Models\Product::class
+    )
+);
+
 test('can get new instance of the registered model', function () {
     $product = Product::find(1);
 

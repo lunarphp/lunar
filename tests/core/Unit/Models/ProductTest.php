@@ -117,7 +117,7 @@ test('product can be scheduled', function () {
         'lunar_channelables',
         [
             'channel_id' => $channel->id,
-            'channelable_type' => Product::class,
+            'channelable_type' => $product->getMorphClass(),
             'channelable_id' => $product->id,
             'enabled' => '1',
             'starts_at' => $publishDate->toDateTimeString(),
