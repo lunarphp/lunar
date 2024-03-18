@@ -145,8 +145,6 @@ class ModelManifest implements ModelManifestInterface
             'staff' => Staff::class,
         ]);
 
-        Relation::enforceMorphMap(
-            $modelClasses->toArray()
-        );
+        Relation::morphMap($modelClasses->toArray(), true);
     }
 }
