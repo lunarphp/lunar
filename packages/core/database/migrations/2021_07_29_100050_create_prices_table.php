@@ -16,11 +16,11 @@ class CreatePricesTable extends Migration
         Schema::create($this->prefix.'prices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_group_id')->nullable()->constrained($this->prefix.'customer_groups');
-            $table->foreignId('currency_id')->nullable()->constrained($this->prefix.'currencies');
+            $table->foreignId('currency_id')->constrained($this->prefix.'currencies');
             $table->morphs('priceable');
-            $table->integer('price')->unsigned()->index();
-            $table->integer('compare_price')->unsigned()->nullable();
-            $table->integer('tier')->default(1)->index();
+            $table->unsignedBigInteger('price')->index();
+            $table->unsignedBigInteger('compare_price')->nullable();
+            $table->integer('min_quantity')->default(1)->index();
             $table->timestamps();
         });
     }

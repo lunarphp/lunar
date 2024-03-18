@@ -11,6 +11,11 @@ class CreateProductOptionsTable extends Migration
         Schema::create($this->prefix.'product_options', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->json('name');
+            $table->json('label')->nullable();
+            $table->string('handle')->nullable();
+            $table->boolean('shared')->default(true)->index();
+            // @todo check if we really need should drop this column RemovePositionFromProductOptionsTable?
+            // $table->integer('position')->default(0)->index();
             $table->timestamps();
         });
     }

@@ -18,9 +18,6 @@ class CreateCurrenciesTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->decimal('exchange_rate', 10, 4);
-            $table->string('format');
-            $table->string('decimal_point');
-            $table->string('thousand_point');
             $table->integer('decimal_places')->default(2)->index();
             $table->boolean('enabled')->default(0)->index();
             $table->boolean('default')->default(0)->index();

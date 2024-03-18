@@ -10,17 +10,22 @@ class CreateOrdersTable extends Migration
     {
         Schema::create($this->prefix.'orders', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->foreignId('customer_id')->nullable()->constrained($this->prefix.'customers');
+            $table->foreignId('cart_id')->nullable()->constrained($this->prefix.'carts')->nullOnDelete();
             $table->userForeignKey(nullable: true);
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
+            $table->boolean('new_customer')->default(false)->index();
             $table->string('status')->index();
             $table->string('reference')->nullable()->unique();
             $table->string('customer_reference')->nullable();
-            $table->integer('sub_total')->unsigned()->index();
-            $table->integer('discount_total')->default(0)->unsigned()->index();
-            $table->integer('shipping_total')->default(0)->unsigned()->index();
-            $table->json('tax_breakdown');
-            $table->integer('tax_total')->unsigned()->index();
-            $table->integer('total')->unsigned()->index();
+            $table->unsignedBigInteger('sub_total')->index();
+            $table->unsignedBigInteger('discount_total')->default(0)->index();
+            $table->unsignedBigInteger('shipping_total')->default(0)->index();
+            $table->json('discount_breakdown')->nullable();
+            $table->json('shipping_breakdown')->nullable();
+            $table->json('tax_breakdown')->nullable();
+            $table->unsignedBigInteger('tax_total')->index();
+            $table->unsignedBigInteger('total')->index();
             $table->text('notes')->nullable();
             $table->string('currency_code', 3);
             $table->string('compare_currency_code', 3)->nullable();

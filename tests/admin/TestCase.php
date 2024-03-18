@@ -14,41 +14,26 @@ use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Lunar\Admin\LunarPanelProvider;
 use Lunar\Admin\Models\Staff;
-use Lunar\LunarServiceProvider;
 use Lunar\Tests\Admin\Providers\LunarPanelTestServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
+use Lunar\Tests\LunarTestCase;
 use Marvinosswald\FilamentInputSelectAffix\FilamentInputSelectAffixServiceProvider;
-use Orchestra\Testbench\TestCase as BaseTestCase;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
-use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
 use Technikermathe\LucideIcons\BladeLucideIconsServiceProvider;
 
-class TestCase extends BaseTestCase
+class TestCase extends LunarTestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // Freeze time to avoid timestamp errors
-        $this->freezeTime();
-    }
-
     protected function getPackageProviders($app): array
     {
-        return [
-            LunarServiceProvider::class,
+        return array_merge(parent::getPackageProviders($app), [
             LunarPanelProvider::class,
-
             ActionsServiceProvider::class,
             BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
@@ -63,23 +48,14 @@ class TestCase extends BaseTestCase
             BladeLucideIconsServiceProvider::class,
             FilamentInputSelectAffixServiceProvider::class,
             ShoutServiceProvider::class,
-
             LunarPanelTestServiceProvider::class,
-
             LivewireServiceProvider::class,
             MediaLibraryServiceProvider::class,
             PermissionServiceProvider::class,
             ActivitylogServiceProvider::class,
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
-            BlinkServiceProvider::class,
-
-        ];
-    }
-
-    protected function defineDatabaseMigrations(): void
-    {
-        $this->loadLaravelMigrations();
+        ]);
     }
 
     protected function getEnvironmentSetUp($app): void
@@ -90,7 +66,10 @@ class TestCase extends BaseTestCase
 
     protected function asStaff($admin = true): TestCase
     {
-        return $this->actingAs($this->makeStaff($admin), 'staff');
+        return $this->actingAs(
+            user: $this->makeStaff($admin),
+            guard: 'staff',
+        );
     }
 
     protected function makeStaff($admin = true): Staff

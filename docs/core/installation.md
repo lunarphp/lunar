@@ -6,8 +6,8 @@ Version 1.x is very much in-development. It is incomplete and not production rea
 
 ## Server Requirements
 
-- PHP ^8.1
-- Laravel 10
+- PHP ^8.2
+- Laravel 10+
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - intl PHP extension (on most systems it will be installed by default)
@@ -94,4 +94,32 @@ You can optionally publish Lunar's migrations so they're added to your Laravel a
 
 ```sh
 php artisan vendor:publish --tag=lunar.migrations
+```
+
+## Early Opt-In Laravel 11 Support
+
+::: warning
+Laravel 11 has now been released. We are working on full support for Laravel 11, but it is not yet complete. If you want to try Lunar with Laravel 11. 
+You can use our `dev-laravel-11` branch of this repository.
+:::
+
+### Forked Repositories
+While we wait for our 3rd party dependencies to be update their packages to Laravel 11, we have forked the following repositories to provide Laravel 11 support for Lunar v1.
+
+- [cartalyst/converter](https://github.com/adam-code-labx/converter.git)
+- [kalnoy/nestedset](https://github.com/laravel-shift/laravel-nestedset.git)
+
+You can use these forks by updating your main project `composer.json` to include the following repositories.
+
+```json
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/adam-code-labx/converter.git"
+    },
+    {
+        "type": "vcs",
+        "url": "https://github.com/adam-code-labx/laravel-nestedset"
+    }
+]
 ```

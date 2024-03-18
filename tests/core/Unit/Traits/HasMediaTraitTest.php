@@ -1,11 +1,11 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Http\UploadedFile;
 use Lunar\Base\StandardMediaDefinitions;
 use Lunar\Models\Product;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
 
 test('conversions are loaded', function () {
     $definitions = config('lunar.media.definitions');

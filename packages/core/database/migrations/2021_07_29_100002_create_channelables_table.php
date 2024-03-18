@@ -18,7 +18,8 @@ class CreateChannelablesTable extends Migration
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
             $table->morphs('channelable');
             $table->boolean('enabled')->default(false);
-            $table->datetime('published_at')->nullable();
+            $table->datetime('starts_at')->nullable();
+            $table->dateTime('ends_at')->nullable()->index();
             $table->timestamps();
         });
     }

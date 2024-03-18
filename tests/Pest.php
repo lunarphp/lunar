@@ -35,10 +35,6 @@ use Lunar\Models\Language;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
-
 /*
 |--------------------------------------------------------------------------
 | Functions
