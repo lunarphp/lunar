@@ -78,3 +78,14 @@ test('can detect table name', function () {
         ModelManifest::getTable(new \Lunar\Tests\Core\Stubs\Models\CustomProduct())
     )->toBe('products');
 });
+
+test('can add additional morph mapping', function () {
+    ModelManifest::replace(
+        \Lunar\Models\Contracts\Product::class,
+        \Lunar\Tests\Core\Stubs\Models\CustomProduct::class,
+    );
+
+    expect(
+        ModelManifest::getTable(new \Lunar\Tests\Core\Stubs\Models\CustomProduct())
+    )->toBe('products');
+});

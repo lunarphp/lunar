@@ -67,9 +67,7 @@ class ScoutIndexer implements ScoutIndexerInterface
 
     protected function mapSearchableAttributes(Model $model): array
     {
-        $attributes = AttributeManifest::getSearchableAttributes(
-            $model->getMorphClass()
-        );
+        $attributes = AttributeManifest::getSearchableAttributes(get_class($model));
 
         $attributeData = $model->attribute_data;
 
