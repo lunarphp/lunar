@@ -27,13 +27,13 @@ it('can associate attributes', function () {
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::class,
+        'attributable_type' => (new ProductType)->getMorphClass(),
         'attributable_id' => $component->get('record')->id,
         'attribute_id' => $attributeA->id,
     ]);
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::class,
+        'attributable_type' => (new ProductType)->getMorphClass(),
         'attributable_id' => $component->get('record')->id,
         'attribute_id' => $attributeB->id,
     ]);
@@ -47,13 +47,13 @@ it('can associate attributes', function () {
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::class,
+        'attributable_type' => (new ProductType)->getMorphClass(),
         'attributable_id' => $component->get('record')->id,
         'attribute_id' => $attributeA->id,
     ]);
 
     $this->assertDatabaseMissing((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::class,
+        'attributable_type' => (new ProductType)->getMorphClass(),
         'attributable_id' => $component->get('record')->id,
         'attribute_id' => $attributeB->id,
     ]);

@@ -10,9 +10,15 @@ trait HasModelExtending
     {
         $realClass = static::modelClass();
 
+        // If they are both the same class i.e. they haven't changed
+        // then just call the parent method.
+        if ($this instanceof $realClass) {
+            return parent::newModelQuery();
+        }
+
         return $this->newEloquentBuilder(
             $this->newBaseQueryBuilder()
-        )->setModel(new $realClass);
+        )->setModel(new $realClass($this->toArray()));
     }
 
     public static function __callStatic($method, $parameters)

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kalnoy\Nestedset\NodeTrait;
+use Kalnoy\Nestedset\QueryBuilder;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasChannels;
@@ -138,8 +139,13 @@ class Collection extends BaseModel implements \Lunar\Models\Contracts\Collection
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Brand::class,
+            Brand::modelClass(),
             "{$prefix}brand_collection"
         )->withTimestamps();
+    }
+
+    public function newEloquentBuilder($query): QueryBuilder
+    {
+        return new QueryBuilder($query);
     }
 }
