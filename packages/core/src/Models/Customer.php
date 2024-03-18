@@ -66,7 +66,7 @@ class Customer extends BaseModel implements \Lunar\Models\Contracts\Customer
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::class,
+            CustomerGroup::modelClass(),
             "{$prefix}customer_customer_group"
         )->withTimestamps();
     }
@@ -83,12 +83,12 @@ class Customer extends BaseModel implements \Lunar\Models\Contracts\Customer
 
     public function addresses(): HasMany
     {
-        return $this->hasMany(Address::class);
+        return $this->hasMany(Address::modelClass());
     }
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::modelClass());
     }
 
     public function mappedAttributes(): MorphToMany
@@ -96,7 +96,7 @@ class Customer extends BaseModel implements \Lunar\Models\Contracts\Customer
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
-            Attribute::class,
+            Attribute::modelClass(),
             'attributable',
             "{$prefix}attributables"
         )->withTimestamps();

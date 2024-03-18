@@ -42,7 +42,7 @@ class TaxZonePostcode extends BaseModel implements \Lunar\Models\Contracts\TaxZo
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::class);
+        return $this->belongsTo(TaxZone::modelClass());
     }
 
     /**
@@ -50,6 +50,6 @@ class TaxZonePostcode extends BaseModel implements \Lunar\Models\Contracts\TaxZo
      */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::modelClass());
     }
 }

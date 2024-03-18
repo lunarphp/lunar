@@ -55,7 +55,7 @@ class Currency extends BaseModel implements \Lunar\Models\Contracts\Currency
      */
     public function prices(): HasMany
     {
-        return $this->hasMany(Price::class);
+        return $this->hasMany(Price::modelClass());
     }
 
     public function getFactorAttribute(): string

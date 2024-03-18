@@ -87,17 +87,17 @@ class Order extends BaseModel implements \Lunar\Models\Contracts\Order
 
     public function channel(): BelongsTo
     {
-        return $this->belongsTo(Channel::class);
+        return $this->belongsTo(Channel::modelClass());
     }
 
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(Cart::modelClass());
     }
 
     public function lines(): HasMany
     {
-        return $this->hasMany(OrderLine::class);
+        return $this->hasMany(OrderLine::modelClass());
     }
 
     public function physicalLines(): HasMany
@@ -122,27 +122,27 @@ class Order extends BaseModel implements \Lunar\Models\Contracts\Order
 
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::class, 'currency_code', 'code');
+        return $this->belongsTo(Currency::modelClass(), 'currency_code', 'code');
     }
 
     public function addresses(): HasMany
     {
-        return $this->hasMany(OrderAddress::class, 'order_id');
+        return $this->hasMany(OrderAddress::modelClass(), 'order_id');
     }
 
     public function shippingAddress(): HasOne
     {
-        return $this->hasOne(OrderAddress::class, 'order_id')->whereType('shipping');
+        return $this->hasOne(OrderAddress::modelClass(), 'order_id')->whereType('shipping');
     }
 
     public function billingAddress(): HasOne
     {
-        return $this->hasOne(OrderAddress::class, 'order_id')->whereType('billing');
+        return $this->hasOne(OrderAddress::modelClass(), 'order_id')->whereType('billing');
     }
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(Transaction::modelClass())->orderBy('created_at', 'desc');
     }
 
     public function captures(): HasMany

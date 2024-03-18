@@ -31,7 +31,7 @@ class Price extends BaseModel implements \Lunar\Models\Contracts\Price
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): PriceFactory
+    protected static function newFactory()
     {
         return PriceFactory::new();
     }

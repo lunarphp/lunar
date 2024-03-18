@@ -41,7 +41,7 @@ class TaxZoneCustomerGroup extends BaseModel implements \Lunar\Models\Contracts\
      */
     public function customerGroup(): BelongsTo
     {
-        return $this->belongsTo(CustomerGroup::class);
+        return $this->belongsTo(CustomerGroup::modelClass());
     }
 
     /**
@@ -49,6 +49,6 @@ class TaxZoneCustomerGroup extends BaseModel implements \Lunar\Models\Contracts\
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::class);
+        return $this->belongsTo(TaxZone::modelClass());
     }
 }

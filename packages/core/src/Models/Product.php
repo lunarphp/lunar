@@ -109,25 +109,25 @@ class Product extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contrac
 
     public function variants(): HasMany
     {
-        return $this->hasMany(ProductVariant::class);
+        return $this->hasMany(ProductVariant::modelClass());
     }
 
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
-            \Lunar\Models\Collection::class,
+            \Lunar\Models\Collection::modelClass(),
             config('lunar.database.table_prefix').'collection_product'
         )->withPivot(['position'])->withTimestamps();
     }
 
     public function associations(): HasMany
     {
-        return $this->hasMany(ProductAssociation::class, 'product_parent_id');
+        return $this->hasMany(ProductAssociation::modelClass(), 'product_parent_id');
     }
 
     public function inverseAssociations(): HasMany
     {
-        return $this->hasMany(ProductAssociation::class, 'product_target_id');
+        return $this->hasMany(ProductAssociation::modelClass(), 'product_target_id');
     }
 
     public function associate(mixed $product, string $type): void
@@ -145,7 +145,7 @@ class Product extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contrac
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::class,
+            CustomerGroup::modelClass(),
             "{$prefix}customer_group_product"
         )->withPivot([
             'purchasable',
@@ -158,7 +158,7 @@ class Product extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contrac
 
     public function brand(): BelongsTo
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Brand::modelClass());
     }
 
     public function scopeStatus(Builder $query, string $status): Builder
@@ -169,11 +169,11 @@ class Product extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contrac
     public function prices(): HasManyThrough
     {
         return $this->hasManyThrough(
-            Price::class,
-            ProductVariant::class,
+            Price::modelClass(),
+            ProductVariant::modelClass(),
             'product_id',
             'priceable_id'
-        )->wherePriceableType(ProductVariant::class);
+        )->wherePriceableType('product_variant');
     }
 
     public function productOptions(): BelongsToMany
@@ -181,7 +181,7 @@ class Product extends BaseModel implements SpatieHasMedia, \Lunar\Models\Contrac
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            ProductOption::class,
+            ProductOption::modelClass(),
             "{$prefix}product_product_option"
         )->withPivot(['position'])->orderByPivot('position');
     }

@@ -116,13 +116,13 @@ class CartLine extends BaseModel implements \Lunar\Models\Contracts\CartLine
 
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(Cart::modelClass());
     }
 
     public function taxClass(): HasOneThrough
     {
         return $this->hasOneThrough(
-            TaxClass::class,
+            TaxClass::modelClass(),
             $this->purchasable_type,
             'tax_class_id',
             'id'
@@ -134,7 +134,7 @@ class CartLine extends BaseModel implements \Lunar\Models\Contracts\CartLine
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::class,
+            Discount::modelClass(),
             "{$prefix}cart_line_discount"
         );
     }

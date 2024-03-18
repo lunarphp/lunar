@@ -75,7 +75,7 @@ class Collection extends BaseModel implements \Lunar\Models\Contracts\Collection
      */
     public function group(): BelongsTo
     {
-        return $this->belongsTo(CollectionGroup::class, 'collection_group_id');
+        return $this->belongsTo(CollectionGroup::modelClass(), 'collection_group_id');
     }
 
     public function scopeInGroup(Builder $builder, int $id): Builder
@@ -91,7 +91,7 @@ class Collection extends BaseModel implements \Lunar\Models\Contracts\Collection
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::class,
+            Product::modelClass(),
             "{$prefix}collection_product"
         )->withPivot([
             'position',
@@ -113,7 +113,7 @@ class Collection extends BaseModel implements \Lunar\Models\Contracts\Collection
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::class,
+            CustomerGroup::modelClass(),
             "{$prefix}collection_customer_group"
         )->withPivot([
             'visible',
@@ -128,7 +128,7 @@ class Collection extends BaseModel implements \Lunar\Models\Contracts\Collection
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::class,
+            Discount::modelClass(),
             "{$prefix}collection_discount"
         )->withPivot(['type'])->withTimestamps();
     }

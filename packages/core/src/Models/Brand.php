@@ -50,7 +50,7 @@ class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHa
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): BrandFactory
+    protected static function newFactory()
     {
         return BrandFactory::new();
     }
@@ -60,7 +60,7 @@ class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHa
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
-            Attribute::class,
+            Attribute::modelClass(),
             'attributable',
             "{$prefix}attributables"
         )->withTimestamps();
@@ -68,13 +68,13 @@ class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHa
 
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::modelClass());
     }
 
     public function discounts()
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return $this->belongsToMany(Discount::class, "{$prefix}brand_discount");
+        return $this->belongsToMany(Discount::modelClass(), "{$prefix}brand_discount");
     }
 }

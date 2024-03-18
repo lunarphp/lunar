@@ -33,11 +33,11 @@ class DiscountCollection extends BaseModel implements \Lunar\Models\Contracts\Di
 
     public function discount(): BelongsTo
     {
-        return $this->belongsTo(Discount::class);
+        return $this->belongsTo(Discount::modelClass());
     }
 
     public function collection(): BelongsTo
     {
-        return $this->belongsTo(Collection::class);
+        return $this->belongsTo(Collection::modelClass());
     }
 }

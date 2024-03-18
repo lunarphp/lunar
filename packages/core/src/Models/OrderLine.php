@@ -74,10 +74,10 @@ class OrderLine extends BaseModel implements \Lunar\Models\Contracts\OrderLine
         'discount_total' => Price::class,
         'total' => Price::class,
     ];
-    
+
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::modelClass());
     }
 
     public function purchasable(): MorphTo
@@ -88,8 +88,8 @@ class OrderLine extends BaseModel implements \Lunar\Models\Contracts\OrderLine
     public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
-            Currency::class,
-            Order::class,
+            Currency::modelClass(),
+            Order::modelClass(),
             'id',
             'code',
             'order_id',

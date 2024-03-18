@@ -43,7 +43,7 @@ class TaxRate extends BaseModel implements \Lunar\Models\Contracts\TaxRate
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::class);
+        return $this->belongsTo(TaxZone::modelClass());
     }
 
     /**
@@ -51,6 +51,6 @@ class TaxRate extends BaseModel implements \Lunar\Models\Contracts\TaxRate
      */
     public function taxRateAmounts(): HasMany
     {
-        return $this->hasMany(TaxRateAmount::class);
+        return $this->hasMany(TaxRateAmount::modelClass());
     }
 }
