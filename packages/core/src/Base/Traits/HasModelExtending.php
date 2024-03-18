@@ -20,9 +20,7 @@ trait HasModelExtending
      */
     public static function modelClass(): string
     {
-        $shortName = (new \ReflectionClass(static::class))->getShortName();
-
-        $contractClass = 'Lunar\\Models\\Contracts\\'.$shortName;
+        $contractClass = ModelManifest::guessContractClass(static::class);
 
         return ModelManifest::get($contractClass) ?? static::class;
     }
