@@ -52,7 +52,7 @@ abstract class BaseListRecords extends ListRecords
         return $query;
     }
 
-    protected function paginateTableQuery(Builder $query): Paginator | CursorPaginator
+    protected function paginateTableQuery(Builder $query): Paginator|CursorPaginator
     {
         return $query->paginate($this->getTableRecordsPerPage());
     }
