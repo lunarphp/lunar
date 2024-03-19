@@ -6,7 +6,7 @@ return [
     'number.label' => 'Number',
     'list.label' => 'List',
     'dropdown.label' => 'Dropdown',
-    'dropdown.missing_labels' => 'You must ensure each row as a label',
+    'dropdown.missing_labels' => 'You must ensure each row has a label',
     'dropdown.value_placeholder' => 'Leave blank to use label',
     'file.label' => 'File Upload',
     'file.max_files.label' => 'Max Files',
@@ -22,5 +22,5 @@ return [
     'toggle.on_label' => 'On Value',
     'toggle.off_label' => 'Off Value',
     'youtube.label' => 'YouTube Video',
-    'richtext.config' => 'You can you enter any available configuration below supported by :url.',
+    'richtext.config' => 'You can enter any available configuration below supported by :url.',
 ];
