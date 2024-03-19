@@ -73,7 +73,7 @@ class Order extends BaseModel implements \Lunar\Models\Contracts\Order
      */
     protected $guarded = [];
 
-    protected static function newFactory(): OrderFactory
+    protected static function newFactory()
     {
         return OrderFactory::new();
     }

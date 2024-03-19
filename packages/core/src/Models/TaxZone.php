@@ -42,7 +42,7 @@ class TaxZone extends BaseModel implements \Lunar\Models\Contracts\TaxZone
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TaxZoneFactory
+    protected static function newFactory()
     {
         return TaxZoneFactory::new();
     }

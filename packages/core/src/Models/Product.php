@@ -55,7 +55,7 @@ class Product extends BaseModel implements \Lunar\Models\Contracts\Product, Spat
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductFactory
+    protected static function newFactory()
     {
         return ProductFactory::new();
     }

@@ -25,7 +25,7 @@ class ProductType extends BaseModel implements Contracts\ProductType
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductTypeFactory
+    protected static function newFactory()
     {
         return ProductTypeFactory::new();
     }

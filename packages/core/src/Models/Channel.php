@@ -38,7 +38,7 @@ class Channel extends BaseModel implements \Lunar\Models\Contracts\Channel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ChannelFactory
+    protected static function newFactory()
     {
         return ChannelFactory::new();
     }

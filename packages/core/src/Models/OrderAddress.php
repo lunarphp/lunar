@@ -45,7 +45,7 @@ class OrderAddress extends BaseModel implements \Lunar\Models\Contracts\OrderAdd
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): OrderAddressFactory
+    protected static function newFactory()
     {
         return OrderAddressFactory::new();
     }

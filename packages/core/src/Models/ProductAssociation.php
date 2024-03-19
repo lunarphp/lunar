@@ -51,7 +51,7 @@ class ProductAssociation extends BaseModel implements \Lunar\Models\Contracts\Pr
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductAssociationFactory
+    protected static function newFactory()
     {
         return ProductAssociationFactory::new();
     }

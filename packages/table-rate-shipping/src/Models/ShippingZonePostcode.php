@@ -24,7 +24,7 @@ class ShippingZonePostcode extends BaseModel implements \Lunar\Shipping\Models\C
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingZonePostcodeFactory
+    protected static function newFactory()
     {
         return ShippingZonePostcodeFactory::new();
     }

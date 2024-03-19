@@ -25,7 +25,7 @@ class CollectionGroup extends BaseModel implements \Lunar\Models\Contracts\Colle
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CollectionGroupFactory
+    protected static function newFactory()
     {
         return CollectionGroupFactory::new();
     }

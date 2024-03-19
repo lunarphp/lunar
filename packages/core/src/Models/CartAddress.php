@@ -86,7 +86,7 @@ class CartAddress extends BaseModel implements \Lunar\Models\Contracts\CartAddre
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CartAddressFactory
+    protected static function newFactory()
     {
         return CartAddressFactory::new();
     }

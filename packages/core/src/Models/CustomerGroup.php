@@ -31,7 +31,7 @@ class CustomerGroup extends BaseModel implements \Lunar\Models\Contracts\Custome
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CustomerGroupFactory
+    protected static function newFactory()
     {
         return CustomerGroupFactory::new();
     }

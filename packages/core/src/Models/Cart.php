@@ -172,7 +172,7 @@ class Cart extends BaseModel implements \Lunar\Models\Contracts\Cart
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CartFactory
+    protected static function newFactory()
     {
         return CartFactory::new();
     }

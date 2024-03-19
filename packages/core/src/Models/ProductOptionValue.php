@@ -48,7 +48,7 @@ class ProductOptionValue extends BaseModel implements \Lunar\Models\Contracts\Pr
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductOptionValueFactory
+    protected static function newFactory()
     {
         return ProductOptionValueFactory::new();
     }

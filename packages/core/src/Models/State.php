@@ -24,7 +24,7 @@ class State extends BaseModel implements \Lunar\Models\Contracts\State
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): StateFactory
+    protected static function newFactory()
     {
         return StateFactory::new();
     }

@@ -91,7 +91,7 @@ class CartLine extends BaseModel implements \Lunar\Models\Contracts\CartLine
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CartLineFactory
+    protected static function newFactory()
     {
         return CartLineFactory::new();
     }

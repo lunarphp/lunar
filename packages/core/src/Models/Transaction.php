@@ -54,7 +54,7 @@ class Transaction extends BaseModel implements \Lunar\Models\Contracts\Transacti
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TransactionFactory
+    protected static function newFactory()
     {
         return TransactionFactory::new();
     }

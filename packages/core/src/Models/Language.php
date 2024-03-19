@@ -26,7 +26,7 @@ class Language extends BaseModel implements \Lunar\Models\Contracts\Language
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): LanguageFactory
+    protected static function newFactory()
     {
         return LanguageFactory::new();
     }

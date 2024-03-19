@@ -38,7 +38,7 @@ class DiscountPurchasable extends BaseModel implements \Lunar\Models\Contracts\D
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): DiscountPurchasableFactory
+    protected static function newFactory()
     {
         return DiscountPurchasableFactory::new();
     }

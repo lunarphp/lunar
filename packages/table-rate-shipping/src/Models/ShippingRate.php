@@ -30,7 +30,7 @@ class ShippingRate extends BaseModel implements \Lunar\Shipping\Models\Contracts
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingRateFactory
+    protected static function newFactory()
     {
         return ShippingRateFactory::new();
     }

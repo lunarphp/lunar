@@ -25,7 +25,7 @@ class TaxRate extends BaseModel implements \Lunar\Models\Contracts\TaxRate
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TaxRateFactory
+    protected static function newFactory()
     {
         return TaxRateFactory::new();
     }

@@ -60,7 +60,7 @@ class Discount extends BaseModel implements \Lunar\Models\Contracts\Discount
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): DiscountFactory
+    protected static function newFactory()
     {
         return DiscountFactory::new();
     }

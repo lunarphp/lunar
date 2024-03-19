@@ -25,7 +25,7 @@ class ShippingExclusionList extends BaseModel implements \Lunar\Shipping\Models\
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingExclusionListFactory
+    protected static function newFactory()
     {
         return ShippingExclusionListFactory::new();
     }

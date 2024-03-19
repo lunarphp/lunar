@@ -22,7 +22,7 @@ class Tag extends BaseModel implements \Lunar\Models\Contracts\Tag
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TagFactory
+    protected static function newFactory()
     {
         return TagFactory::new();
     }

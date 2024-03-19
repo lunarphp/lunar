@@ -29,7 +29,7 @@ class ShippingMethod extends BaseModel implements \Lunar\Shipping\Models\Contrac
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingMethodFactory
+    protected static function newFactory()
     {
         return ShippingMethodFactory::new();
     }
