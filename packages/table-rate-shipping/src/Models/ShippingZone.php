@@ -10,7 +10,7 @@ use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Shipping\Database\Factories\ShippingZoneFactory;
 
-class ShippingZone extends BaseModel
+class ShippingZone extends BaseModel implements \Lunar\Shipping\Models\Contracts\ShippingZone
 {
     use HasFactory;
 
@@ -24,72 +24,47 @@ class ShippingZone extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Shipping\Factories\ShippingZoneFactory
      */
     protected static function newFactory(): ShippingZoneFactory
     {
         return ShippingZoneFactory::new();
     }
 
-    /**
-     * Return the shipping methods relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function shippingMethods()
+    public function shippingMethods(): HasMany
     {
-        return $this->hasMany(ShippingMethod::class);
+        return $this->hasMany(ShippingMethod::modelClass());
     }
 
-    /**
-     * Return the countries relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function countries()
+    public function countries(): BelongsToMany
     {
         return $this->belongsToMany(
-            Country::class,
+            Country::modelClass(),
             config('lunar.database.table_prefix').'country_shipping_zone'
         )->withTimestamps();
     }
 
-    /**
-     * Return the states relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function states()
+    public function states(): BelongsToMany
     {
         return $this->belongsToMany(
-            State::class,
+            State::modelClass(),
             config('lunar.database.table_prefix').'state_shipping_zone'
         )->withTimestamps();
     }
 
-    /**
-     * Return the postcodes relationship.
-     *
-     * @return HasMany
-     */
-    public function postcodes()
+    public function postcodes(): HasMany
     {
-        return $this->hasMany(ShippingZonePostcode::class);
+        return $this->hasMany(ShippingZonePostcode::modelClass());
     }
 
-    public function rates()
+    public function rates(): HasMany
     {
-        return $this->hasMany(ShippingRate::class);
+        return $this->hasMany(ShippingRate::modelClass());
     }
 
-    /**
-     * Return the shipping exclusions property.
-     */
     public function shippingExclusions(): BelongsToMany
     {
         return $this->belongsToMany(
-            ShippingExclusionList::class,
+            ShippingExclusionList::modelClass(),
             config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
             'shipping_zone_id',
             'exclusion_id',
