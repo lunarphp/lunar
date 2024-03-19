@@ -18,6 +18,47 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+## [Unreleased]
+
+### High Impact
+
+#### Model Extending
+
+Model extending has been completely rewritten and will require changes to your Laravel app if you have previously extended Lunar models.
+
+The biggest difference is now Lunar models implement a contract (interface) and support Dependency injection across your storefront and the Lunar panel.
+
+You will need to update how you register models in Lunar.
+
+##### Old
+```php
+    ModelManifest::register(collect([
+        Product::class => \App\Models\Product::class,
+        // ...
+    ]));
+```
+
+##### New
+```php
+ModelManifest::replace(
+    \Lunar\Models\Contracts\Product::class,
+    \App\Models\Product::class
+);
+```
+
+::: tip
+If your models are not extending their Lunar counterpart, you must implement the relevant contract in `Lunar\Models\Contracts`
+:::
+
+Look at the [model extending](/core/extending/models) section for all available functionality.
+
+#### Polymorphic relationships
+
+In order to support model extending better, all polymorphic relationships now use an alias instead of the fully qualified class name, this allows relationships to resolve to your custom model when interacting with Eloquent.
+
+There is a migration which will handle this change over for Lunar tables and some third party tables, however you may need to add your own migrations to other tables or to switch any custom models you may have.
+
+
 
 ## 1.0
 
