@@ -48,6 +48,6 @@ class ShippingModifiers
      */
     public function remove($modifier)
     {
-        $this->modifiers->forget($modifier);
+        $this->modifiers = $this->modifiers->reject(fn ($value) => $value == $modifier);
     }
 }
