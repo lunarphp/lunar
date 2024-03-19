@@ -2,11 +2,13 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Lunar\Facades\ModelManifest;
 
 trait HasModelExtending
 {
-    public function newModelQuery()
+    public function newModelQuery(): Builder
     {
         $realClass = static::modelClass();
 
@@ -24,7 +26,7 @@ trait HasModelExtending
     public static function __callStatic($method, $parameters)
     {
         if (
-            static::modelClass() != static::class
+            ! static::isLunarInstance()
         ) {
             $extendedClass = static::modelClass();
 
@@ -47,5 +49,26 @@ trait HasModelExtending
     public function getTable(): string
     {
         return $this->table ?? ModelManifest::getTable($this);
+    }
+
+    public static function isLunarInstance(): bool
+    {
+        return static::class == static::modelClass();
+    }
+
+    public static function observe($classes): void
+    {
+        $instance = new static;
+
+        if (
+            ! static::isLunarInstance()
+        ) {
+            $extendedClass = static::modelClass();
+            $instance = new $extendedClass;
+        }
+
+        foreach (Arr::wrap($classes) as $class) {
+            $instance->registerObserver($class);
+        }
     }
 }
