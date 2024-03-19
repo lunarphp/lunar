@@ -5,6 +5,7 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 use Filament\Resources\Components\Tab;
 use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
@@ -39,7 +40,7 @@ class ListOrders extends BaseListRecords
         ];
     }
 
-    protected function paginateTableQuery(Builder $query): Paginator
+    protected function paginateTableQuery(Builder $query): Paginator | CursorPaginator
     {
         return $query->paginate($this->getTableRecordsPerPage());
     }
