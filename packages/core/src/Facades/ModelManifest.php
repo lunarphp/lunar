@@ -10,6 +10,7 @@ use Lunar\Base\ModelManifestInterface;
  * Class ModelManifest.
  *
  * @method static void register()
+ * @method static void addDirectory(string $dir)
  * @method static void add(string $interfaceClass, string $modelClass)
  * @method static void replace(string $interfaceClass, string $modelClass)
  * @method static string|null get(string $interfaceClass)

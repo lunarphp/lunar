@@ -4,10 +4,12 @@ namespace Lunar\Base;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Lunar\Admin\Models\Staff;
 use Spatie\StructureDiscoverer\Discover;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 class ModelManifest implements ModelManifestInterface
 {
@@ -31,6 +33,27 @@ class ModelManifest implements ModelManifestInterface
             $interfaceClass = $this->guessContractClass($modelClass);
             $this->models[$interfaceClass] = $modelClass;
             $this->bindModel($interfaceClass, $modelClass);
+        }
+    }
+
+    /**
+     * Add a directory of models.
+     */
+    public function addDirectory(string $dir): void
+    {
+        try {
+            $modelClasses = Discover::in($dir)
+                ->classes()
+                ->extending(BaseModel::class)
+                ->get();
+
+            foreach ($modelClasses as $modelClass) {
+                $interfaceClass = $this->guessContractClass($modelClass);
+                $this->models[$interfaceClass] = $modelClass;
+                $this->bindModel($interfaceClass, $modelClass);
+            }
+        } catch (DirectoryNotFoundException $e) {
+            Log::error($e->getMessage());
         }
     }
 
@@ -92,9 +115,11 @@ class ModelManifest implements ModelManifestInterface
 
     public function guessContractClass(string $modelClass): string
     {
-        $shortName = (new \ReflectionClass($modelClass))->getShortName();
+        $class = (new \ReflectionClass($modelClass));
+        $shortName = $class->getShortName();
+        $namespace = $class->getNamespaceName();
 
-        return 'Lunar\\Models\\Contracts\\'.$shortName;
+        return "{$namespace}\\Contracts\\$shortName";
     }
 
     public function guessModelClass(string $modelContract): string
@@ -145,6 +170,6 @@ class ModelManifest implements ModelManifestInterface
             'staff' => Staff::class,
         ]);
 
-        Relation::morphMap($modelClasses->toArray(), true);
+        Relation::morphMap($modelClasses->toArray());
     }
 }
