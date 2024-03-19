@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Lunar\Admin\Models\Staff;
 use Spatie\StructureDiscoverer\Discover;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
@@ -116,10 +115,17 @@ class ModelManifest implements ModelManifestInterface
     public function guessContractClass(string $modelClass): string
     {
         $class = (new \ReflectionClass($modelClass));
+
         $shortName = $class->getShortName();
         $namespace = $class->getNamespaceName();
 
-        return "{$namespace}\\Contracts\\$shortName";
+        $lunarContract = collect(
+            $class->getInterfaceNames()
+        )->first(
+            fn ($contract) => str_contains("Lunar\\Models\\Contracts\\{$shortName}", $contract)
+        );
+
+        return $lunarContract ?: "{$namespace}\\Contracts\\$shortName";
     }
 
     public function guessModelClass(string $modelContract): string
@@ -166,9 +172,7 @@ class ModelManifest implements ModelManifestInterface
             fn ($class) => [
                 \Illuminate\Support\Str::snake(class_basename($class)) => $class::modelClass(),
             ]
-        )->merge([
-            'staff' => Staff::class,
-        ]);
+        );
 
         Relation::morphMap($modelClasses->toArray());
     }
