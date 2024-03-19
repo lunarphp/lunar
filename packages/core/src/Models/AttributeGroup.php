@@ -28,7 +28,7 @@ class AttributeGroup extends BaseModel implements \Lunar\Models\Contracts\Attrib
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): AttributeGroupFactory
+    protected static function newFactory()
     {
         return AttributeGroupFactory::new();
     }

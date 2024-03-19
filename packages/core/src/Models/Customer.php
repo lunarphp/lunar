@@ -56,7 +56,7 @@ class Customer extends BaseModel implements \Lunar\Models\Contracts\Customer
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CustomerFactory
+    protected static function newFactory()
     {
         return CustomerFactory::new();
     }

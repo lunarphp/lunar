@@ -28,7 +28,7 @@ class Url extends BaseModel implements \Lunar\Models\Contracts\Url
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): UrlFactory
+    protected static function newFactory()
     {
         return UrlFactory::new();
     }

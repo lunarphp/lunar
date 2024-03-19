@@ -78,7 +78,7 @@ class ProductVariant extends BaseModel implements \Lunar\Models\Contracts\Produc
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductVariantFactory
+    protected static function newFactory()
     {
         return ProductVariantFactory::new();
     }

@@ -25,7 +25,7 @@ class ShippingZone extends BaseModel implements \Lunar\Shipping\Models\Contracts
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingZoneFactory
+    protected static function newFactory()
     {
         return ShippingZoneFactory::new();
     }

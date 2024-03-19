@@ -45,7 +45,7 @@ class OrderLine extends BaseModel implements \Lunar\Models\Contracts\OrderLine
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): OrderLineFactory
+    protected static function newFactory()
     {
         return OrderLineFactory::new();
     }

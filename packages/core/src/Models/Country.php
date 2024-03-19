@@ -30,7 +30,7 @@ class Country extends BaseModel implements \Lunar\Models\Contracts\Country
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CountryFactory
+    protected static function newFactory()
     {
         return CountryFactory::new();
     }

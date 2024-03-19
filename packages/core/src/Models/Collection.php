@@ -61,7 +61,7 @@ class Collection extends BaseModel implements \Lunar\Models\Contracts\Collection
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CollectionFactory
+    protected static function newFactory()
     {
         return CollectionFactory::new();
     }

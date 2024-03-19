@@ -52,7 +52,7 @@ class Attribute extends BaseModel implements \Lunar\Models\Contracts\Attribute
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): AttributeFactory
+    protected static function newFactory()
     {
         return AttributeFactory::new();
     }

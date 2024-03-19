@@ -41,7 +41,7 @@ class Address extends BaseModel implements \Lunar\Models\Contracts\Address, Addr
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): AddressFactory
+    protected static function newFactory()
     {
         return AddressFactory::new();
     }

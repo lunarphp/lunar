@@ -40,7 +40,7 @@ class Currency extends BaseModel implements \Lunar\Models\Contracts\Currency
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CurrencyFactory
+    protected static function newFactory()
     {
         return CurrencyFactory::new();
     }
