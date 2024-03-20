@@ -18,16 +18,19 @@ class ManageProductAssociations extends BaseManageRelatedRecords
 
     protected static string $relationship = 'associations';
 
-    protected static ?string $title = 'Product Associations';
-
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::product-associations');
     }
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::product.pages.associations.label');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return 'Product Associations';
+        return __('lunarpanel::product.pages.associations.label');
     }
 
     public function form(Form $form): Form

@@ -2,9 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
+use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,9 +58,8 @@ class OrderResource extends BaseResource
     {
         return $table
             ->columns(static::getTableColumns())
-            ->filters([
-                //
-            ])
+            ->filters(static::getTableFilters())
+            ->persistFiltersInSession()
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->url(fn ($record) => ManageOrder::getUrl(['record' => $record])),
@@ -70,7 +71,6 @@ class OrderResource extends BaseResource
                         ->deselectRecordsAfterCompletion(),
                 ]),
             ])
-            ->filters(static::getTableFilters())
             ->defaultSort('id', 'DESC')
             ->selectCurrentPageOnly()
             ->deferLoading()
@@ -93,7 +93,7 @@ class OrderResource extends BaseResource
             Tables\Columns\TextColumn::make('customer_reference')
                 ->label(__('lunarpanel::order.table.customer_reference.label'))
                 ->toggleable(),
-            Tables\Columns\TextColumn::make('shippingAddress.fullName')
+            Tables\Columns\TextColumn::make('billingAddress.fullName')
                 ->label(__('lunarpanel::order.table.customer.label'))
                 ->toggleable(),
             Tables\Columns\TextColumn::make('new_customer')
@@ -108,16 +108,16 @@ class OrderResource extends BaseResource
                 ->badge()
                 ->toggleable()
                 ->separator(','),
-            Tables\Columns\TextColumn::make('shippingAddress.postcode')
+            Tables\Columns\TextColumn::make('billingAddress.postcode')
                 ->label(__('lunarpanel::order.table.postcode.label'))
                 ->toggleable(),
-            Tables\Columns\TextColumn::make('shippingAddress.contact_email')
+            Tables\Columns\TextColumn::make('billingAddress.contact_email')
                 ->label(__('lunarpanel::order.table.email.label'))
                 ->toggleable()
                 ->copyable()
                 ->copyMessage(__('lunarpanel::order.table.email.copy_message'))
                 ->copyMessageDuration(1500),
-            Tables\Columns\TextColumn::make('shippingAddress.contact_phone')
+            Tables\Columns\TextColumn::make('billingAddress.contact_phone')
                 ->label(__('lunarpanel::order.table.phone.label'))
                 ->toggleable(),
             Tables\Columns\TextColumn::make('total')
@@ -142,10 +142,10 @@ class OrderResource extends BaseResource
 
                 ->form([
                     Forms\Components\DatePicker::make('placed_after')
-                        ->label(__('lunarpanel::order.table.placed_after.label')),
+                        ->label(__('lunarpanel::order.table.placed_after.label'))
+                        ->default(Carbon::now()->subMonths(6)),
                     Forms\Components\DatePicker::make('placed_before')
-                        ->label(__('lunarpanel::order.table.placed_before.label'))
-                        ->default(now()),
+                        ->label(__('lunarpanel::order.table.placed_before.label')),
                 ])
                 ->query(function (Builder $query, array $data): Builder {
                     return $query
@@ -157,6 +157,21 @@ class OrderResource extends BaseResource
                             $data['placed_before'],
                             fn (Builder $query, $date): Builder => $query->whereDate('placed_at', '<=', $date),
                         );
+                })
+                ->indicateUsing(function (array $data): array {
+                    $indicators = [];
+
+                    if ($data['placed_after'] ?? null) {
+                        $indicators[] = Indicator::make(__('lunarpanel::order.table.placed_after.label').' '.Carbon::parse($data['placed_after'])->toFormattedDateString())
+                            ->removeField('placed_after');
+                    }
+
+                    if ($data['placed_before'] ?? null) {
+                        $indicators[] = Indicator::make(__('lunarpanel::order.table.placed_before.label').' '.Carbon::parse($data['placed_before'])->toFormattedDateString())
+                            ->removeField('placed_before');
+                    }
+
+                    return $indicators;
                 }),
             Tables\Filters\SelectFilter::make('tags')
                 ->label(__('lunarpanel::order.table.tags.label'))
@@ -200,9 +215,9 @@ class OrderResource extends BaseResource
             'reference',
             'customer_reference',
             'notes',
-            'shippingAddress.first_name',
-            'shippingAddress.last_name',
-            'shippingAddress.contact_email',
+            'billingAddress.first_name',
+            'billingAddress.last_name',
+            'billingAddress.contact_email',
             'tags.value',
         ];
     }
@@ -210,7 +225,7 @@ class OrderResource extends BaseResource
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with([
-            'shippingAddress',
+            'billingAddress',
             'tags',
         ]);
     }

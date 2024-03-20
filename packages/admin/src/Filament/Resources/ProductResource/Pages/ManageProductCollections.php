@@ -17,16 +17,19 @@ class ManageProductCollections extends BaseManageRelatedRecords
 
     protected static string $relationship = 'collections';
 
-    protected static ?string $title = 'Collections';
-
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::collections');
     }
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::product.pages.collections.label');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return 'Collections';
+        return __('lunarpanel::product.pages.collections.label');
     }
 
     public function table(Table $table): Table

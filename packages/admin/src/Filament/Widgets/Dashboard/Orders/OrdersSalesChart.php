@@ -17,6 +17,8 @@ class OrdersSalesChart extends ApexChartWidget
      */
     protected static ?string $chartId = 'ordersSalesChart';
 
+    protected static ?string $pollingInterval = '60s';
+
     protected function getHeading(): ?string
     {
         return __('lunarpanel::widgets.dashboard.orders.order_sales_chart.heading');
