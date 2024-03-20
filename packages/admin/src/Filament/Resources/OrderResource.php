@@ -137,7 +137,8 @@ class OrderResource extends BaseResource
             Tables\Filters\SelectFilter::make('status')
                 ->label(__('lunarpanel::order.table.status.label'))
                 ->options(collect(config('lunar.orders.statuses', []))
-                    ->mapWithKeys(fn ($data, $status) => [$status => $data['label']])),
+                    ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
+                ->multiple(),
             Tables\Filters\Filter::make('placed_at')
 
                 ->form([
