@@ -20,7 +20,7 @@
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/http": "^10.0|^11.0",
-        "kalnoy/nestedset": "dev-main",
+        "kalnoy/nestedset": "^v6.x-dev",
         "laravel/framework": "^10.0|^11.0",
         "laravel/scout": "^10.0",
         "leandrocfe/filament-apex-charts": "^3.1",
@@ -48,10 +48,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/adam-code-labx/converter"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/adam-code-labx/laravel-nestedset"
         }
     ],
     "autoload": {
