@@ -24,7 +24,8 @@ class OrderObserver
 
     protected function updateShippingZone(Order $order)
     {
-        $shippingAddress = $order->shippingAddress;
+        $shippingAddress = $order->shippingAddress ?: $order->cart->shippingAddress;
+
         if ($shippingAddress && $shippingAddress->postcode) {
             $postcodeLookup = new PostcodeLookup(
                 $shippingAddress->country,
@@ -34,9 +35,9 @@ class OrderObserver
             $shippingZones = Shipping::zones()->postcode($postcodeLookup)->get();
 
             if ($shippingZone = $shippingZones->first()) {
-                // Order::withoutSyncingToSearch(function () use ($order, $shippingZone) {
-                //     $order->shippingZone()->sync([$shippingZone->id]);
-                // });
+                Order::withoutSyncingToSearch(function () use ($order, $shippingZone) {
+                    $order->shippingZone()->sync([$shippingZone->id]);
+                });
                 $meta = (array) $order->meta;
                 $meta['shipping_zone'] = $shippingZone->name;
                 $order->meta = $meta;
