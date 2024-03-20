@@ -10,8 +10,6 @@ class RemapPolymorphicRelations extends Migration
 {
     public function up()
     {
-        // TODO: Copy to shipping table.
-
         $modelClasses = collect(
             Discover::in(__DIR__.'/../../src/Models')
                 ->classes()
