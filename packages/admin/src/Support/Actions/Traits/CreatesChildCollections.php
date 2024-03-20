@@ -2,13 +2,16 @@
 
 namespace Lunar\Admin\Support\Actions\Traits;
 
+use Lunar\Facades\DB;
 use Lunar\Models\Attribute;
 use Lunar\Models\Collection;
 
 trait CreatesChildCollections
 {
-    public function createChildCollection(Collection $parent, array $name): void
+    public function createChildCollection(Collection $parent, array $name)
     {
+        DB::beginTransaction();
+
         $attribute = Attribute::whereHandle('name')->whereAttributeType(Collection::class)->first()->type;
 
         $parent->appendNode(Collection::create([
@@ -17,5 +20,7 @@ trait CreatesChildCollections
                 'name' => new $attribute($name),
             ],
         ]));
+
+        DB::commit();
     }
 }
