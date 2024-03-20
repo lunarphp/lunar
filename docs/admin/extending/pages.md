@@ -199,6 +199,8 @@ An example of extending a list page.
 
 ```php
 use Filament\Actions;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Pagination\Paginator;
 use Lunar\Admin\Support\Extending\ListPageExtension;
 use Lunar\Admin\Filament\Widgets;
 
@@ -236,6 +238,11 @@ class MyListExtension extends ListPageExtension
         ];
 
         return $actions;
+    }
+    
+    public function paginateTableQuery(Builder $query, int $perPage = 25): Paginator
+    {
+        return $query->paginate($perPage);
     }
 
     public function footerWidgets(array $widgets): array
