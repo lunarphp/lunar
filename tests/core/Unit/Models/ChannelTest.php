@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Models\Channel;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -33,4 +34,20 @@ test('changes are recorded in activity log', function () {
     $log = $channel->activities()->whereEvent('updated')->first();
 
     expect($log)->not->toBeNull();
+});
+
+test('can return associated discounts', function () {
+
+    $channel = Channel::factory()->create();
+
+    // Stop observers creating the channel association.
+    \Illuminate\Support\Facades\Event::fake();
+
+    $discount = \Lunar\Models\Discount::factory()->create();
+
+    expect($channel->discounts)->toHaveCount(0);
+
+    $discount->channels()->attach($channel->id);
+
+    expect($channel->refresh()->discounts)->toHaveCount(1);
 });
