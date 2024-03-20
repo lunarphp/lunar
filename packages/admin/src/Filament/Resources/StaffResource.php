@@ -202,7 +202,7 @@ class StaffResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListStaff::route('/'),
