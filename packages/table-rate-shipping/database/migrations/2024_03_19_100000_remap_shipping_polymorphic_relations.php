@@ -1,8 +1,8 @@
--<?php
+<?php
 
 use Lunar\Base\Migration;
 
-class RemapPolymorphicRelations extends Migration
+class RemapShippingPolymorphicRelations extends Migration
 {
     public function up()
     {
