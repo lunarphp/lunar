@@ -77,6 +77,19 @@ class Attributes extends Forms\Components\Group
                     return $groupComponents;
                 },
             ]
-        )->configure()->key('attributeData');
+        )
+        ->configure()
+        ->key('attributeData')
+        ->mutateStateForValidationUsing(function ($state) {
+            foreach ($state as $key => $value) {
+                if (! $value instanceof \Lunar\Base\Fieldtype) {
+                    continue;
+                }
+
+                $state[$key] = $value->getValue();
+            }
+
+            return $state;
+        });
     }
 }
