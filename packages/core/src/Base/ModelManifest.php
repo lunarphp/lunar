@@ -114,7 +114,7 @@ class ModelManifest implements ModelManifestInterface
 
     public function guessContractClass(string $modelClass): string
     {
-        $class = (new \ReflectionClass($modelClass));
+        $class = new \ReflectionClass($modelClass);
 
         $shortName = $class->getShortName();
         $namespace = $class->getNamespaceName();
