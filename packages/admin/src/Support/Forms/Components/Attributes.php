@@ -81,6 +81,10 @@ class Attributes extends Forms\Components\Group
         ->configure()
         ->key('attributeData')
         ->mutateStateForValidationUsing(function ($state) {
+            if (! is_array($state)) {
+                return $state;
+            }
+
             foreach ($state as $key => $value) {
                 if (! $value instanceof \Lunar\Base\Fieldtype) {
                     continue;
