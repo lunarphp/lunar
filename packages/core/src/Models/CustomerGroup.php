@@ -50,6 +50,19 @@ class CustomerGroup extends BaseModel
     }
 
     /**
+     * Return the discounts relationship.
+     */
+    public function discounts(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Discount::class,
+            "{$prefix}customer_group_discount"
+        )->withTimestamps();
+    }
+
+    /**
      * Return the product relationship.
      */
     public function products(): BelongsToMany
