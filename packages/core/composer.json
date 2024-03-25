@@ -37,7 +37,7 @@
         "spatie/laravel-medialibrary": "^11.0",
         "spatie/laravel-activitylog": "^4.4",
         "laravel/scout": "^10.0",
-        "cartalyst/converter": "dev-main",
+        "cartalyst/converter": "^8.0|^9.0",
         "kalnoy/nestedset": "^v6.x-dev",
         "doctrine/dbal": "^3.6",
         "spatie/laravel-blink": "^1.6",

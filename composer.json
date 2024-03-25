@@ -11,7 +11,7 @@
     "require": {
         "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
-        "cartalyst/converter": "dev-main",
+        "cartalyst/converter": "^8.0|^9.0",
         "doctrine/dbal": "^3.6",
         "ext-bcmath": "*",
         "ext-exif": "*",
@@ -44,12 +44,6 @@
         "pestphp/pest-plugin-laravel": "^2.0",
         "symplify/monorepo-builder": "^10.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/adam-code-labx/converter"
-        }
-    ],
     "autoload": {
         "files": [
             "packages/admin/src/helpers.php",

@@ -95,26 +95,3 @@ You can optionally publish Lunar's migrations so they're added to your Laravel a
 ```sh
 php artisan vendor:publish --tag=lunar.migrations
 ```
-
-## Early Opt-In Laravel 11 Support
-
-::: warning
-Laravel 11 has now been released. We are working on full support for Laravel 11, but it is not yet complete. If you want to try Lunar with Laravel 11. 
-You can use our `dev-laravel-11` branch of this repository.
-:::
-
-### Forked Repositories
-Only one of our dependencies has been forked to support Laravel 11. You can use the following fork to install Lunar with Laravel 11.
-
-- [cartalyst/converter](https://github.com/adam-code-labx/converter.git)
-
-You can use this fork by updating your main project `composer.json` to include the following repository.
-
-```json
-"repositories": [
-    {
-        "type": "vcs",
-        "url": "https://github.com/adam-code-labx/converter.git"
-    }
-]
-```
