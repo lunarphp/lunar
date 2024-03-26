@@ -28,4 +28,25 @@ return [
             ],
         ],
     ],
+    'pages' => [
+        'products' => [
+            'label' => 'Products',
+            'actions' => [
+                'attach' => [
+                    'notification' => [
+                        'success' => 'Product attached to brand',
+                    ],
+                ],
+                'detach' => [
+                    'notification' => [
+                        'success' => 'Product detached.',
+                    ],
+                ],
+            ],
+        ],
+        'collections' => [
+            'label' => 'Collections',
+        ],
+    ],
+
 ];
