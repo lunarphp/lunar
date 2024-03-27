@@ -43,6 +43,8 @@ trait ManagesProductPricing
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        $data = $this->callLunarHook('beforeUpdate', $data, $record);
+
         $variant = $this->getOwnerRecord();
 
         $prices = collect($data['basePrices']);
@@ -70,7 +72,7 @@ trait ManagesProductPricing
 
         $this->basePrices = $this->getBasePrices($variant);
 
-        return $record;
+        return $this->callLunarHook('afterUpdate', $record, $data);
     }
 
     public function getBasePriceFormSection(): Section
@@ -144,7 +146,7 @@ trait ManagesProductPricing
             $this->basePrices = $this->getBasePrices();
         }
 
-        return $form->schema([
+        $form->schema([
             Forms\Components\Section::make()->schema([
                 Forms\Components\Group::make([
                     ProductVariantResource::getTaxClassIdFormComponent(),
@@ -153,6 +155,10 @@ trait ManagesProductPricing
             ]),
             $this->getBasePriceFormSection(),
         ])->statePath('');
+
+        $this->callLunarHook('extendForm', $form);
+
+        return $form;
     }
 
     protected function getBasePrices(): array
