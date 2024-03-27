@@ -26,7 +26,7 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 Model extending has been completely rewritten and will require changes to your Laravel app if you have previously extended Lunar models.
 
-The biggest difference is now Lunar models implement a contract (interface) and support Dependency injection across your storefront and the Lunar panel.
+The biggest difference is now Lunar models implement a contract (interface) and support dependency injection across your storefront and the Lunar panel.
 
 You will need to update how you register models in Lunar.
 
