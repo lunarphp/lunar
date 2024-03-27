@@ -16,7 +16,7 @@ class ManageProductVariants extends BaseManageRelatedRecords
 
     protected static string $relationship = 'variants';
 
-    protected function getHeaderWidgets(): array
+    protected function getDefaultHeaderWidgets(): array
     {
         return [
             ProductResource\Widgets\ProductOptionsWidget::class,
