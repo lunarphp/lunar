@@ -33,6 +33,7 @@ return [
             'label' => 'Products',
             'actions' => [
                 'attach' => [
+                    'label' => 'Associate a product',
                     'notification' => [
                         'success' => 'Product attached to brand',
                     ],
@@ -46,6 +47,11 @@ return [
         ],
         'collections' => [
             'label' => 'Collections',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Associate a collection',
+                ],
+            ],
         ],
     ],
 

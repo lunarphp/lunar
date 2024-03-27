@@ -39,7 +39,12 @@ class ManageBrandProducts extends BaseManageRelatedRecords
     public function table(Table $table): Table
     {
         return $table->columns([
-            ProductResource::getNameTableColumn()->searchable(),
+            ProductResource::getNameTableColumn()->searchable()
+                ->url(function (Model $record) {
+                    return ProductResource::getUrl('edit', [
+                        'record' => $record->getKey(),
+                    ]);
+                }),
             ProductResource::getSkuTableColumn(),
         ])->actions([
             DetachAction::make()
@@ -55,11 +60,14 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                 }),
         ])->headerActions([
             AttachAction::make()
+                ->label(
+                    __('lunarpanel::brand.pages.products.actions.attach.label')
+                )
                 ->form([
                     Forms\Components\Select::make('recordId')
                         ->label('Product')
                         ->required()
-                        ->searchable(true)
+                        ->searchable()
                         ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                             return Product::search($search)
                                 ->get()
