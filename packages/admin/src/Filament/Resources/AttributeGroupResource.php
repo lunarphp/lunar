@@ -8,11 +8,13 @@ use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\AttributeGroup;
+use Lunar\Models\Language;
 
 class AttributeGroupResource extends BaseResource
 {
@@ -77,6 +79,13 @@ class AttributeGroupResource extends BaseResource
             ->label(__('lunarpanel::attributegroup.form.name.label'))
             ->required()
             ->maxLength(255)
+            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+                $set('handle', Str::slug($state[Language::getDefault()->code]));
+            })
+            ->live(onBlur: true)
             ->autofocus();
     }
 
