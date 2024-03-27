@@ -56,7 +56,7 @@
                     </x-hub::input.select>
                 </x-hub::input.group>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-3 gap-4">
                     <x-hub::input.group :label="__('adminhub::inputs.active.label')"
                                         for="active"
                                         :error="$errors->first('taxZone.active')">
@@ -67,6 +67,12 @@
                                         for="active"
                                         :error="$errors->first('taxZone.default')">
                         <x-hub::input.toggle wire:model="taxZone.default" />
+                    </x-hub::input.group>
+
+                    <x-hub::input.group :label="__('adminhub::inputs.tax_on_shipping.label')"
+                                        for="active"
+                                        :error="$errors->first('taxZone.tax_on_shipping')">
+                        <x-hub::input.toggle wire:model="taxZone.tax_on_shipping" />
                     </x-hub::input.group>
                 </div>
 

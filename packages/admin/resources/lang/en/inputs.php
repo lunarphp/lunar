@@ -112,4 +112,5 @@ return [
     'max_uses.label' => 'Max uses',
     'max_uses_per_user.label' => 'Max uses per user',
     'size.placeholder' => 'Size',
+    'tax_on_shipping.label' => 'Tax on shipping',
 ];

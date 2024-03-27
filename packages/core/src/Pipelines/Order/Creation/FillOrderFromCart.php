@@ -27,7 +27,7 @@ class FillOrderFromCart
             'total' => $cart->total->value,
             'discount_total' => $cart->discountTotal?->value,
             'discount_breakdown' => [],
-            'shipping_total' => $cart->shippingTotal?->value ?: 0,
+            'shipping_total' => $cart->shippingSubTotal?->value ?: 0,
             'shipping_breakdown' => $cart->shippingBreakdown,
             'tax_breakdown' => $cart->taxBreakdown,
             'tax_total' => $cart->taxTotal->value,
