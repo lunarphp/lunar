@@ -121,3 +121,18 @@ class YourCustomModel extends Model
 ```
 
 Now your models will auto generate transforms as defined in your configuration and still use medialibrary under the hood.
+
+## Use custom disk
+
+By default, media is stored on the `public` disk. If you want to use a different disk, you need to set the environment variable `MEDIA_DISK` to the name of the disk you want to use.
+
+```shell
+MEDIA_DISK=s3
+```
+If you need more customisation, you can install publish the configuration file of `spatie/laravel-medialibrary`.
+
+```shell
+php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="config"
+```
+
+Then you can change the disk in the configuration file `config/media-library.php`.
