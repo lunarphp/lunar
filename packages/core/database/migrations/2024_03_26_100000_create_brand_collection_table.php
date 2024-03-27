@@ -18,6 +18,6 @@ class CreateBrandCollectionTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('brand_collection');
+        Schema::dropIfExists($this->prefix.'brand_collection');
     }
 }
