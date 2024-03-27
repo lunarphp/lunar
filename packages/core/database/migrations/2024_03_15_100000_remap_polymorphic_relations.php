@@ -1,6 +1,5 @@
 -<?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Migration;
@@ -68,8 +67,6 @@ class RemapPolymorphicRelations extends Migration
 
     public function down()
     {
-        Schema::table($this->prefix.'prices', function (Blueprint $table) {
-            $table->renameColumn('min_quantity', 'tier');
-        });
+        // ...
     }
 }
