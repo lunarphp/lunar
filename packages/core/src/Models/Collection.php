@@ -135,4 +135,14 @@ class Collection extends BaseModel implements SpatieHasMedia
             "{$prefix}collection_discount"
         )->withPivot(['type'])->withTimestamps();
     }
+
+    public function brands(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Brand::class,
+            "{$prefix}brand_collection"
+        )->withTimestamps();
+    }
 }
