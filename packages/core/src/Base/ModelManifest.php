@@ -170,10 +170,18 @@ class ModelManifest implements ModelManifestInterface
                 ->get()
         )->mapWithKeys(
             fn ($class) => [
-                \Illuminate\Support\Str::snake(class_basename($class)) => $class::modelClass(),
+                $this->getMorphMapKey($class) => $class::modelClass(),
             ]
         );
 
         Relation::morphMap($modelClasses->toArray());
+    }
+
+    public function getMorphMapKey($className): string
+    {
+        $prefix = config('lunar.database.morph_prefix', null);
+        $key = \Illuminate\Support\Str::snake(class_basename($className));
+
+        return "{$prefix}{$key}";
     }
 }

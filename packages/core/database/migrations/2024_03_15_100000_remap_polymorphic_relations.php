@@ -16,7 +16,7 @@ class RemapPolymorphicRelations extends Migration
                 ->get()
         )->mapWithKeys(
             fn ($class) => [
-                $class => \Illuminate\Support\Str::snake(class_basename($class)),
+                $class => \Lunar\Facades\ModelManifest::getMorphMapKey($class),
             ]
         );
 

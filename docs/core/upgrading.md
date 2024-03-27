@@ -56,9 +56,15 @@ Look at the [model extending](/core/extending/models) section for all available 
 
 In order to support model extending better, all polymorphic relationships now use an alias instead of the fully qualified class name, this allows relationships to resolve to your custom model when interacting with Eloquent.
 
+There is an additional config setting in `config/lunar/database.php`, where you can set whether these polymorph mappings should be prefixed in Lunar's context.
+
+```php
+'morph_prefix' => null,
+```
+
+By default, this is set as `null` so the mapping for a product would just be `product`.
+
 There is a migration which will handle this change over for Lunar tables and some third party tables, however you may need to add your own migrations to other tables or to switch any custom models you may have.
-
-
 
 ## 1.0
 
