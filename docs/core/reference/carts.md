@@ -58,7 +58,7 @@ Lunar\Models\CartLine
 $purchasable = \Lunar\Models\ProductVariant::create([/** ... */]);
 $cartLine = new \Lunar\Models\CartLine([
     'cart_id' => 1,
-    'purchasable_type' => $purchasable->getMorhClass(),
+    'purchasable_type' => $purchasable->getMorphClass(),
     'purchasable_id' => $purchasable->id,
     'quantity' => 2,
     'meta' => [
