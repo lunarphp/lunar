@@ -65,7 +65,9 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                 )
                 ->form([
                     Forms\Components\Select::make('recordId')
-                        ->label('Product')
+                        ->label(
+                            __('lunarpanel::brand.pages.products.actions.attach.form.record_id.label')
+                        )
                         ->required()
                         ->searchable()
                         ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {

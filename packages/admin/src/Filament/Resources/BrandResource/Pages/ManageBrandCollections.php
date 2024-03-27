@@ -48,7 +48,9 @@ class ManageBrandCollections extends BaseManageRelatedRecords
             Tables\Actions\AttachAction::make()
                 ->recordSelect(
                     function (Forms\Components\Select $select) {
-                        return $select->placeholder('Select a collection') // TODO: needs translation
+                        return $select->placeholder(
+                            __('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder')
+                        )
                             ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                 return Collection::search($search)
                                     ->get()
