@@ -18,7 +18,6 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Lunar\Admin\Support\Facades\ActivityLog;
-use Lunar\Facades\ModelManifest;
 
 class ActivityLogFeed extends Component implements HasActions, HasForms
 {
@@ -127,9 +126,7 @@ class ActivityLogFeed extends Component implements HasActions, HasForms
     #[Computed]
     public function renderers()
     {
-        $subjectClass = ModelManifest::getMorphClassBaseModel(get_class($this->subject)) ?? get_class($this->subject);
-
-        return ActivityLog::getItems($subjectClass);
+        return ActivityLog::getItems($this->subject::modelClass());
     }
 
     #[Computed]

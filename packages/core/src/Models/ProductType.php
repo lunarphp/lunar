@@ -16,7 +16,7 @@ use Lunar\Database\Factories\ProductTypeFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductType extends BaseModel
+class ProductType extends BaseModel implements Contracts\ProductType
 {
     use HasAttributes;
     use HasFactory;
