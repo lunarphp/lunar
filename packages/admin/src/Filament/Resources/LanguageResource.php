@@ -4,8 +4,10 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
+use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Language;
@@ -75,11 +77,14 @@ class LanguageResource extends BaseResource
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('name')
+                ->iconPosition(IconPosition::After)
+                ->iconColor('success')
+                ->icon(function (Model $model) {
+                    return $model->default ? 'heroicon-o-check-circle' : '';
+                })
                 ->label(__('lunarpanel::language.table.name.label')),
             Tables\Columns\TextColumn::make('code')
                 ->label(__('lunarpanel::language.table.code.label')),
-            Tables\Columns\BooleanColumn::make('default')
-                ->label(__('lunarpanel::language.table.default.label')),
         ]);
     }
 

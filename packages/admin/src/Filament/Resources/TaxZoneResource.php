@@ -4,6 +4,7 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
+use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -318,13 +319,17 @@ class TaxZoneResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\BooleanColumn::make('default')
-                ->label(__('lunarpanel::taxzone.table.default.label')),
             Tables\Columns\TextColumn::make('name')
+                ->iconPosition(IconPosition::After)
+                ->iconColor('success')
+                ->icon(function (Model $model) {
+                    return $model->default ? 'heroicon-o-check-circle' : '';
+                })
                 ->label(__('lunarpanel::taxzone.table.name.label')),
             Tables\Columns\TextColumn::make('zone_type')
                 ->label(__('lunarpanel::taxzone.table.zone_type.label')),
-            Tables\Columns\BooleanColumn::make('active')
+            Tables\Columns\IconColumn::make('active')
+                ->boolean()
                 ->label(__('lunarpanel::taxzone.table.active.label')),
         ];
     }
