@@ -6,6 +6,7 @@ use Filament\Facades\Filament;
 use Filament\Support\Assets\Css;
 use Filament\Support\Events\FilamentUpgraded;
 use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
@@ -77,6 +78,10 @@ class LunarPanelProvider extends ServiceProvider
                 MakeLunarAdminCommand::class,
             ]);
         }
+
+        Relation::morphMap([
+            'staff' => Staff::class,
+        ]);
 
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunarpanel'),

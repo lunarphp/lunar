@@ -47,7 +47,7 @@ Lunar\Models\CartLine
 |:-----------------|:---------------------------------------------|
 | id               |                                              |
 | cart_id          |                                              |
-| purchasable_type | e.g. `Lunar\Models\ProductVariant`.          |
+| purchasable_type | e.g. `product_variant`                       |
 | purchasable_id   |                                              |
 | quantity         |                                              |
 | created_at       |                                              |
@@ -55,10 +55,11 @@ Lunar\Models\CartLine
 | meta             | JSON data for saving any custom information. |
 
 ```php
+$purchasable = \Lunar\Models\ProductVariant::create([/** ... */]);
 $cartLine = new \Lunar\Models\CartLine([
     'cart_id' => 1,
-    'purchasable_type' => ProductVariant::class,
-    'purchasable_id' => 123,
+    'purchasable_type' => $purchasable->getMorphClass(),
+    'purchasable_id' => $purchasable->id,
     'quantity' => 2,
     'meta' => [
         'personalization' => 'Love you mum xxx',

@@ -300,12 +300,12 @@ test('can get discount with coupon', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -379,4 +379,4 @@ test('can get discount with coupon', function () {
     ]);
 
     expect(Discounts::getDiscounts($cart->refresh()))->toHaveCount(1);
-})->group('moomoo');
+});

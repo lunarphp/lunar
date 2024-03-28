@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection;
 
 class CollectionResource extends BaseResource
 {

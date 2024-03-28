@@ -103,7 +103,7 @@ class ManageProductPricing extends BaseEditRecord
                     ->preload(),
                 Tables\Filters\SelectFilter::make('min_quantity')->options(
                     Price::where('priceable_id', $this->getOwnerRecord()->id)
-                        ->where('priceable_type', get_class($this->getOwnerRecord()))
+                        ->where('priceable_type', $this->getOwnerRecord()->getMorphClass())
                         ->get()
                         ->pluck('min_quantity', 'min_quantity')
                 ),

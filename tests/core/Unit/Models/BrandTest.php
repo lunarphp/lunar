@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Support\Facades\Config;
 use Lunar\Generators\UrlGenerator;
 use Lunar\Models\Brand;
@@ -29,7 +30,7 @@ test('can generate url', function () {
 
     $this->assertDatabaseHas((new Url)->getTable(), [
         'slug' => 'test-brand',
-        'element_type' => Brand::class,
+        'element_type' => $brand->getMorphClass(),
         'element_id' => $brand->id,
     ]);
 });

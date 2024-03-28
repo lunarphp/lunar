@@ -50,7 +50,7 @@ it('can handle failed payments', function () {
         'type' => 'capture',
         'success' => false,
     ]);
-})->group('foo');
+});
 
 it('can retrieve existing payment intent', function () {
     $cart = CartBuilder::build([

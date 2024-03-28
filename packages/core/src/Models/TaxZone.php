@@ -20,7 +20,7 @@ use Lunar\Database\Factories\TaxZoneFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxZone extends BaseModel
+class TaxZone extends BaseModel implements \Lunar\Models\Contracts\TaxZone
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -42,7 +42,7 @@ class TaxZone extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TaxZoneFactory
+    protected static function newFactory()
     {
         return TaxZoneFactory::new();
     }
@@ -70,7 +70,7 @@ class TaxZone extends BaseModel
      */
     public function countries(): HasMany
     {
-        return $this->hasMany(TaxZoneCountry::class);
+        return $this->hasMany(TaxZoneCountry::modelClass());
     }
 
     /**
@@ -78,7 +78,7 @@ class TaxZone extends BaseModel
      */
     public function states(): HasMany
     {
-        return $this->hasMany(TaxZoneState::class);
+        return $this->hasMany(TaxZoneState::modelClass());
     }
 
     /**
@@ -86,7 +86,7 @@ class TaxZone extends BaseModel
      */
     public function postcodes(): HasMany
     {
-        return $this->hasMany(TaxZonePostcode::class);
+        return $this->hasMany(TaxZonePostcode::modelClass());
     }
 
     /**
@@ -94,7 +94,7 @@ class TaxZone extends BaseModel
      */
     public function customerGroups(): HasMany
     {
-        return $this->hasMany(TaxZoneCustomerGroup::class);
+        return $this->hasMany(TaxZoneCustomerGroup::modelClass());
     }
 
     /**
@@ -102,7 +102,7 @@ class TaxZone extends BaseModel
      */
     public function taxRates(): HasMany
     {
-        return $this->hasMany(TaxRate::class);
+        return $this->hasMany(TaxRate::modelClass());
     }
 
     /**
@@ -110,6 +110,6 @@ class TaxZone extends BaseModel
      */
     public function taxAmounts(): HasManyThrough
     {
-        return $this->hasManyThrough(TaxRateAmount::class, TaxRate::class);
+        return $this->hasManyThrough(TaxRateAmount::modelClass(), TaxRate::modelClass());
     }
 }

@@ -2,11 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
 
-class ProductAssociationFactory extends Factory
+class ProductAssociationFactory extends BaseFactory
 {
     protected $model = ProductAssociation::class;
 

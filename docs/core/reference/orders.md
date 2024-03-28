@@ -195,29 +195,29 @@ You can find out more in the Extending Lunar section for [Order Modifiers](/core
 Lunar\Models\OrderLine
 ```
 
-| Field            | Description                                                                                 |
-|:-----------------|:--------------------------------------------------------------------------------------------|
-| id               |                                                                                             |
-| order_id         |                                                                                             |
-| purchasable_type | Class reference for the purchasable item e.g. `Lunar\Models\ProductVariant`                 |
+| Field            | Description                                                                                                                                      |
+|:-----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
+| id               |                                                                                                                                                  |
+| order_id         |                                                                                                                                                  |
+| purchasable_type | Morph reference for the purchasable item e.g. `product_variant`                                                                                  |
 | purchasable_id   |
-| type             | Whether `digital`,`physical` etc                                                            
-| description      | A description of the line item                                                              
-| option           | If this was a variant, the option info is here                                              
-| identifier       | Something to identify the purchasable item, usually an `sku`                                
-| unit_price       | The unit price of the line                                                                  
-| unit_quantity    | The line unit quantity, usually this is 1                                                   
-| quantity         | The amount of this item purchased                                                           
-| sub_total        | The sub total minus any discounts, excl. tax                                                
-| discount_total   | Any discount amount excl. tax                                                               
+| type             | Whether `digital`,`physical` etc                                                                                                                 
+| description      | A description of the line item                                                                                                                   
+| option           | If this was a variant, the option info is here                                                                                                   
+| identifier       | Something to identify the purchasable item, usually an `sku`                                                                                     
+| unit_price       | The unit price of the line                                                                                                                       
+| unit_quantity    | The line unit quantity, usually this is 1                                                                                                        
+| quantity         | The amount of this item purchased                                                                                                                
+| sub_total        | The sub total minus any discounts, excl. tax                                                                                                     
+| discount_total   | Any discount amount excl. tax                                                                                                                    
 | tax_breakdown    | A json field for the tax breakdown e.g. `[{"description": "VAT", "identifier" : "vat", "value": 123, "percentage": 20, "currency_code": "GBP"}]` 
-| shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
-| tax_total        | The total amount of tax applied                                                             
-| total            | The grand total with tax                                                                    
-| notes            | Any additional order notes                                                                  
-| meta             | Any additional meta info you wish to store                                                  
-| created_at       |                                                                                             |
-| updated_at       |                                                                                             |
+| shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`                                
+| tax_total        | The total amount of tax applied                                                                                                                  
+| total            | The grand total with tax                                                                                                                         
+| notes            | Any additional order notes                                                                                                                       
+| meta             | Any additional meta info you wish to store                                                                                                       
+| created_at       |                                                                                                                                                  |
+| updated_at       |                                                                                                                                                  |
 
 
 ### Create an order line

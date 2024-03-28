@@ -171,7 +171,7 @@ class ManageShippingRates extends ManageRelatedRecords
         $basePrice = $shippingRate->basePrices->first() ?: new Price;
 
         $basePrice->price = (int) ($data['price'] * $currency->factor);
-        $basePrice->priceable_type = get_class($shippingRate);
+        $basePrice->priceable_type = $shippingRate->getMorphClass();
         $basePrice->currency_id = $currency->id;
         $basePrice->priceable_id = $shippingRate->id;
         $basePrice->customer_group_id = null;

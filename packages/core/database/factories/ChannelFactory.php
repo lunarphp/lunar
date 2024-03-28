@@ -2,11 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Lunar\Models\Channel;
 
-class ChannelFactory extends Factory
+class ChannelFactory extends BaseFactory
 {
     protected $model = Channel::class;
 

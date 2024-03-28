@@ -10,9 +10,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Models\Contracts\TaxZone;
 use Lunar\Models\Country;
 use Lunar\Models\State;
-use Lunar\Models\TaxZone;
 
 class TaxZoneResource extends BaseResource
 {

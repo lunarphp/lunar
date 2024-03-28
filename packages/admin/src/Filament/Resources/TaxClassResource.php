@@ -9,7 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\TaxClass;
+use Lunar\Models\Contracts\TaxClass;
 
 class TaxClassResource extends BaseResource
 {

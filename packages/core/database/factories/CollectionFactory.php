@@ -2,12 +2,11 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\FieldTypes\Text;
 use Lunar\Models\Collection;
 use Lunar\Models\CollectionGroup;
 
-class CollectionFactory extends Factory
+class CollectionFactory extends BaseFactory
 {
     protected $model = Collection::class;
 

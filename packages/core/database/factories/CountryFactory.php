@@ -2,10 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Country;
 
-class CountryFactory extends Factory
+class CountryFactory extends BaseFactory
 {
     protected $model = Country::class;
 

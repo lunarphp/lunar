@@ -25,7 +25,7 @@ class ProductType extends BaseModel implements Contracts\ProductType
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductTypeFactory
+    protected static function newFactory()
     {
         return ProductTypeFactory::new();
     }
@@ -38,41 +38,29 @@ class ProductType extends BaseModel implements Contracts\ProductType
      */
     protected $guarded = [];
 
-    /**
-     * Get the mapped attributes relation.
-     */
     public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
-            Attribute::class,
+            Attribute::modelClass(),
             'attributable',
             "{$prefix}attributables"
         )->withTimestamps();
     }
 
-    /**
-     * Return the product attributes relationship.
-     */
     public function productAttributes(): MorphToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(Product::class);
+        return $this->mappedAttributes()->whereAttributeType(Product::modelClass());
     }
 
-    /**
-     * Return the variant attributes relationship.
-     */
     public function variantAttributes(): MorphToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(ProductVariant::class);
+        return $this->mappedAttributes()->whereAttributeType(ProductVariant::modelClass());
     }
 
-    /**
-     * Get the products relation.
-     */
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::modelClass());
     }
 }

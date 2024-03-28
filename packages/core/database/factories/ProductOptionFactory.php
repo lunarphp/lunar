@@ -2,11 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Lunar\Models\ProductOption;
 
-class ProductOptionFactory extends Factory
+class ProductOptionFactory extends BaseFactory
 {
     private static $position = 1;
 

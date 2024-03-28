@@ -49,4 +49,4 @@ it('can create child categories', function () {
     ])->assertHasNoErrors();
 
     expect($record->children()->count())->toBe(1);
-});
+})->group('thisone');

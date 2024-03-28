@@ -2,11 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 
-class CartAddressFactory extends Factory
+class CartAddressFactory extends BaseFactory
 {
     protected $model = CartAddress::class;
 

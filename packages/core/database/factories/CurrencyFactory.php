@@ -2,10 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Currency;
 
-class CurrencyFactory extends Factory
+class CurrencyFactory extends BaseFactory
 {
     protected $model = Currency::class;
 

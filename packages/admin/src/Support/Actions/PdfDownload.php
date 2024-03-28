@@ -38,7 +38,7 @@ class PdfDownload extends Action
                     now()->addMinutes(2),
                     [
                         'record' => $record->id,
-                        'record_type' => get_class($record),
+                        'record_type' => $record->getMorphClass(),
                         'view' => $this->evaluate($this->pdfView),
                     ]
                 );

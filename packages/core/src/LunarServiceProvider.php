@@ -192,6 +192,8 @@ class LunarServiceProvider extends ServiceProvider
         $this->registerBlueprintMacros();
         $this->registerStateListeners();
 
+        \Lunar\Facades\ModelManifest::morphMap();
+
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
                 $this->publishes([

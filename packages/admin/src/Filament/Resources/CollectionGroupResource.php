@@ -11,7 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\CollectionGroup;
+use Lunar\Models\Contracts\CollectionGroup;
 
 class CollectionGroupResource extends BaseResource
 {

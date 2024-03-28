@@ -91,9 +91,11 @@ test('can create lines', function () {
 
     expect($order->lines)->toHaveCount(0);
 
+    $variant = ProductVariant::factory()->create();
+
     OrderLine::factory()->create([
-        'purchasable_type' => ProductVariant::class,
-        'purchasable_id' => ProductVariant::factory()->create()->id,
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
         'order_id' => $order->id,
     ]);
 

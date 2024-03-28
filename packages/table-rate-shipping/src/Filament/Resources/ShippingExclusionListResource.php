@@ -12,7 +12,7 @@ use Filament\Tables\Table;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Pages;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\RelationManagers\ShippingExclusionRelationManager;
-use Lunar\Shipping\Models\ShippingExclusionList;
+use Lunar\Shipping\Models\Contracts\ShippingExclusionList;
 
 class ShippingExclusionListResource extends BaseResource
 {

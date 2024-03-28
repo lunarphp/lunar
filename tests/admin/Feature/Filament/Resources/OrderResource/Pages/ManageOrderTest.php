@@ -84,7 +84,7 @@ it('can render order manage page', function () {
 
         $lines->push([
             'quantity' => $quantity,
-            'purchasable_type' => $variant::class,
+            'purchasable_type' => $variant->getMorphClass(),
             'purchasable_id' => $variant->id,
             'type' => 'physical',
             'description' => $variant->product->translateAttribute('name'),

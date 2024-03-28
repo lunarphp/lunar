@@ -29,7 +29,9 @@ class ConvertProductTypeAttributesToProducts
             ]);
 
         DB::table("{$prefix}attribute_groups")
-            ->whereAttributableType(ProductType::class)
+            ->whereAttributableType(
+                (new ProductType)->getMorphClass()
+            )
             ->update([
                 'attributable_type' => Product::class,
             ]);
