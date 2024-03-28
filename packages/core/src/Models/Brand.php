@@ -27,14 +27,14 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHasMedia
 {
-    use HasAttributes,
-        HasFactory,
-        HasMacros,
-        HasMedia,
-        HasTranslations,
-        HasUrls,
-        LogsActivity,
-        Searchable;
+    use HasAttributes;
+    use HasFactory;
+    use HasMacros;
+    use HasMedia;
+    use HasTranslations;
+    use HasUrls;
+    use LogsActivity;
+    use Searchable;
 
     /**
      * {@inheritDoc}
