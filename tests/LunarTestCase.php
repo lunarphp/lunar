@@ -3,6 +3,7 @@
 namespace Lunar\Tests;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Facades\Taxes;
 use Lunar\LunarServiceProvider;
@@ -15,7 +16,7 @@ use Spatie\LaravelBlink\BlinkServiceProvider;
 
 class LunarTestCase extends TestCase
 {
-    use LazilyRefreshDatabase, WithWorkbench;
+    use RefreshDatabase, WithWorkbench;
 
     protected function setUp(): void
     {
