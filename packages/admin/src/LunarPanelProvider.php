@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin;
 
+use Filament\Facades\Filament;
 use Filament\Support\Assets\Css;
 use Filament\Support\Events\FilamentUpgraded;
 use Filament\Support\Facades\FilamentAsset;
@@ -24,7 +25,6 @@ use Lunar\Admin\Support\Synthesizers\PriceSynth;
 class LunarPanelProvider extends ServiceProvider
 {
     protected $configFiles = [
-        'search',
         'panel',
     ];
 
@@ -67,6 +67,12 @@ class LunarPanelProvider extends ServiceProvider
         });
 
         if ($this->app->runningInConsole()) {
+            collect($this->configFiles)->each(function ($config) {
+                $this->publishes([
+                    "{$this->root}/config/$config.php" => config_path("lunar/$config.php"),
+                ], 'lunar');
+            });
+
             $this->commands([
                 MakeLunarAdminCommand::class,
             ]);
@@ -102,9 +108,11 @@ class LunarPanelProvider extends ServiceProvider
 
     protected function registerPanelAssets(): void
     {
-        FilamentAsset::register([
-            Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
-        ], 'lunarphp/panel');
+        Filament::serving(function () {
+            FilamentAsset::register([
+                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
+            ], 'lunarphp/panel');
+        });
     }
 
     /**

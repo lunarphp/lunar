@@ -3,6 +3,7 @@
 namespace Lunar\Opayo;
 
 use Illuminate\Support\Facades\Http;
+use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 
 class Opayo implements OpayoInterface
 {
@@ -17,8 +18,8 @@ class Opayo implements OpayoInterface
     {
         $this->http = Http::baseUrl(
             strtolower(config('services.opayo.env', 'test')) == 'test' ?
-             'https://pi-test.sagepay.com/api/v1/' :
-             'https://pi-live.sagepay.com/api/v1/'
+             'https://sandbox.opayo.eu.elavon.com/api/v1/' :
+             'https://live.opayo.eu.elavon.com/api/v1/'
         )->withHeaders([
             'Authorization' => 'Basic '.$this->getCredentials(),
             'Content-Type' => 'application/json',
@@ -73,6 +74,73 @@ class Opayo implements OpayoInterface
         }
 
         return $response->object();
+    }
+
+    public function getAuthPayload(AuthPayloadParameters $parameters): array
+    {
+        $payload = [
+            'transactionType' => $parameters->transactionType,
+            'paymentMethod' => [
+                'card' => [
+                    'merchantSessionKey' => $parameters->merchantSessionKey,
+                    'cardIdentifier' => $parameters->cardIdentifier,
+                ],
+            ],
+            'vendorTxCode' => $parameters->vendorTxCode,
+            'amount' => $parameters->amount,
+            'currency' => $parameters->currency,
+            'description' => 'Webstore Transaction',
+            'apply3DSecure' => 'UseMSPSetting',
+            'customerFirstName' => $parameters->customerFirstName,
+            'customerLastName' => $parameters->customerLastName,
+            'billingAddress' => [
+                'address1' => $parameters->billingAddressLineOne,
+                'city' => $parameters->billingAddressCity,
+                'postalCode' => $parameters->billingAddressPostcode,
+                'country' => $parameters->billingAddressCountryIso,
+            ],
+            'strongCustomerAuthentication' => [
+                'customerMobilePhone' => $parameters->customerMobilePhone,
+                'transType' => 'GoodsAndServicePurchase',
+                'browserLanguage' => $parameters->browserLanguage,
+                'challengeWindowSize' => $parameters->challengeWindowSize,
+                'browserIP' => $parameters->browserIP,
+                'notificationURL' => $parameters->notificationURL,
+                'browserAcceptHeader' => $parameters->browserAcceptHeader,
+                'browserJavascriptEnabled' => true,
+                'browserUserAgent' => $parameters->browserUserAgent,
+                'browserJavaEnabled' => $parameters->browserJavaEnabled,
+                'browserColorDepth' => $parameters->browserColorDepth,
+                'browserScreenHeight' => $parameters->browserScreenHeight,
+                'browserScreenWidth' => $parameters->browserScreenWidth,
+                'browserTZ' => $parameters->browserTZ,
+            ],
+            'entryMethod' => 'Ecommerce',
+        ];
+
+        if ($parameters->saveCard) {
+            $payload['credentialType'] = [
+                'cofUsage' => 'First',
+                'initiatedType' => 'CIT',
+                'mitType' => 'Unscheduled',
+            ];
+            $payload['paymentMethod']['card']['save'] = true;
+        }
+
+        if ($parameters->reusable) {
+            $payload['credentialType'] = [
+                'cofUsage' => 'Subsequent',
+                'initiatedType' => 'CIT',
+                'mitType' => 'Unscheduled',
+            ];
+            $payload['paymentMethod']['card']['reusable'] = true;
+        }
+
+        if ($parameters->authCode) {
+            $payload['strongCustomerAuthentication']['threeDSRequestorPriorAuthenticationInfo']['threeDSReqPriorRef'] = $parameters->authCode;
+        }
+
+        return $payload;
     }
 
     /**

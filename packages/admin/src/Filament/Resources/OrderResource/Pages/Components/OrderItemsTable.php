@@ -49,16 +49,10 @@ class OrderItemsTable extends TableComponent
                                     ->getStateUsing(fn ($record) => $record->purchasable?->getOptions())
                                     ->badge(),
                             ]),
-
                             Tables\Columns\Layout\Stack::make([
                                 Tables\Columns\TextColumn::make('unit')
                                     ->alignEnd()
-                                    ->color(Color::Gray)
-                                    ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->unit_price->formatted}"),
-                                Tables\Columns\TextColumn::make('sub_total')
-                                    ->alignEnd()
-                                    ->weight(FontWeight::Bold)
-                                    ->formatStateUsing(fn ($state) => $state->formatted),
+                                    ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->sub_total->formatted}"),
                             ]),
                         ])
                             ->extraAttributes(['style' => 'align-items: start;']),
@@ -89,7 +83,7 @@ class OrderItemsTable extends TableComponent
 
                                 $states = [];
 
-                                $states['unit_price'] = "{$record->unit_price->formatted} / {$record->unit_quantity}";
+                                $states['unit_price'] = "{$record->unit_price->unitFormatted(decimalPlaces: 4)}";
                                 $states['quantity'] = $record->quantity;
                                 $states['sub_total'] = $record->sub_total?->formatted;
                                 $states['discount_total'] = $record->discount_total?->formatted;

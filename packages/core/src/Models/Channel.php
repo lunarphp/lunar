@@ -31,6 +31,10 @@ class Channel extends BaseModel
     use LogsActivity;
     use SoftDeletes;
 
+    public $casts = [
+        'enabled' => 'boolean',
+    ];
+
     /**
      * Return a new factory instance for the model.
      */
@@ -61,6 +65,20 @@ class Channel extends BaseModel
     public function channelable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Return the discounts relationship
+     */
+    public function discounts(): MorphToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->morphedByMany(
+            Discount::class,
+            'channelable',
+            "{$prefix}channelables"
+        );
     }
 
     /**

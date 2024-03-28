@@ -28,7 +28,10 @@ class ShippingExclusionRelationManager extends RelationManager
                 Forms\Components\MorphToSelect::make('purchasable')
                     ->types([
                         Forms\Components\MorphToSelect\Type::make(Product::class)
-                            ->titleAttribute('name.en')
+                            ->titleAttribute('name')
+                            ->getOptionLabelUsing(
+                                fn (Model $record) => $record->purchasable->attr('name')
+                            )
                             ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                 return Product::search($search)
                                     ->get()
@@ -54,22 +57,30 @@ class ShippingExclusionRelationManager extends RelationManager
                     ->limit(1)
                     ->square()
                     ->label(''),
-                Tables\Columns\TextColumn::make('purchasable.attribute_data.name')
-                    ->formatStateUsing(fn (Model $record): string => $record->purchasable->translateAttribute('name'))
+                Tables\Columns\TextColumn::make('purchasable')
+                    ->formatStateUsing(
+                        fn ($state) => $state->attr('name')
+                    )
                     ->limit(50)
-                    ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-                        $state = $column->getState();
-                        $record = $record->purchasable;
-
-                        if (strlen($record->translateAttribute('name')) <= $column->getCharacterLimit()) {
-                            return null;
-                        }
-
-                        return $record->translateAttribute('name');
-                    })
                     ->label(__('lunarpanel::product.table.name.label')),
                 Tables\Columns\TextColumn::make('purchasable.variants.sku')
                     ->label(__('lunarpanel::product.table.sku.label'))
+                    ->tooltip(function (Tables\Columns\TextColumn $column, $state): ?string {
+
+                        $skus = collect($state);
+
+                        if ($skus->count() <= $column->getListLimit()) {
+                            return null;
+                        }
+
+                        if ($skus->count() > 30) {
+                            $skus = $skus->slice(0, 30);
+                        }
+
+                        return $skus->implode(', ');
+                    })
+                    ->listWithLineBreaks()
+                    ->limitList(1)
                     ->toggleable(),
             ])
             ->filters([

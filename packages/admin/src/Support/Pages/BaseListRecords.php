@@ -12,11 +12,12 @@ abstract class BaseListRecords extends ListRecords
     use Concerns\ExtendsHeaderActions;
     use Concerns\ExtendsHeaderWidgets;
     use Concerns\ExtendsHeadings;
+    use Concerns\ExtendsTablePagination;
     use \Lunar\Admin\Support\Concerns\CallsHooks;
 
     protected function applySearchToTableQuery(Builder $query): Builder
     {
-        $scoutEnabled = config('lunar.search.scout_enabled', false);
+        $scoutEnabled = config('lunar.panel.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive(static::getModel()));
 
         $this->applyColumnSearchesToTableQuery($query);
