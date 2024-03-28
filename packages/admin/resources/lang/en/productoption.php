@@ -16,6 +16,9 @@ return [
         'handle' => [
             'label' => 'Handle',
         ],
+        'shared' => [
+            'label' => 'Shared',
+        ],
     ],
 
     'form' => [
