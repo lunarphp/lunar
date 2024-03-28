@@ -33,7 +33,7 @@ class ShippingExclusionRelationManager extends RelationManager
                                 fn (Model $record) => $record->purchasable->attr('name')
                             )
                             ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                return Product::search($search)
+                                return get_search_builder(Product::class, $search)
                                     ->get()
                                     ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                     ->all();
