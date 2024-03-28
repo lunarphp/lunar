@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'roles.admin.label' => 'Admin',
+    'roles.admin.description' => 'Administrateur avec accès complet',
+    'roles.staff.label' => 'Personnel',
+    'roles.staff.description' => 'Personnel avec accès fondamental',
+    'permissions.settings.label' => 'Réglementations',
+    'permissions.settings.description' => 'Donne accès à la zone de réglementation du hub',
+    'permissions.settings:core.label' => 'Réglages de base',
+    'permissions.settings:core.description' => 'Accès aux réglages fondamentaux de la boutique, tels que les canaux, les langues, les devises, etc.',
+    'permissions.settings:manage-staff.label' => 'Gérer le personnel',
+    'permissions.settings:manage-staff.description' => 'Autorisez le membre du personnel à éditer les autres membres du personnel',
+    'permissions.settings:manage-attributes.label' => 'Gérer les attributs',
+    'permissions.settings:manage-attributes.description' => 'Autorisez le membre du personnel à éditer et créer des attributs supplémentaires',
+    'permissions.catalog:manage-products.label' => 'Gérer les produits',
+    'permissions.catalog:manage-products.description' => 'Autorisez le membre du personnel à éditer les produits, types de produits et marques',
+    'permissions.catalog:manage-collections.label' => 'Gérer les collections',
+    'permissions.catalog:manage-collections.description' => 'Autorisez le membre du personnel à éditer les collections et leurs groupes',
+    'permissions.sales:manage-orders.label' => 'Gérer les commandes',
+    'permissions.sales:manage-orders.description' => 'Autorisez le membre du personnel à gérer les commandes',
+    'permissions.sales:manage-customers.label' => 'Gérer les clients',
+    'permissions.sales:manage-customers.description' => 'Autorisez le membre du personnel à gérer les clients',
+    'permissions.sales:manage-discounts.label' => 'Gérer les réductions',
+    'permissions.sales:manage-discounts.description' => 'Autorisez le membre du personnel à gérer les réductions',
+];
