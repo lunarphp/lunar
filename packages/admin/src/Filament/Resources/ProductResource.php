@@ -248,34 +248,12 @@ class ProductResource extends BaseResource
                 ->limit(1)
                 ->square()
                 ->label(''),
-            TranslatedTextColumn::make('attribute_data.name')
-                ->attributeData()
-                ->limitedTooltip()
-                ->limit(50)
-                ->label(__('lunarpanel::product.table.name.label')),
+            static::getNameTableColumn(),
             Tables\Columns\TextColumn::make('brand.name')
                 ->label(__('lunarpanel::product.table.brand.label'))
                 ->toggleable()
                 ->searchable(),
-            Tables\Columns\TextColumn::make('variants.sku')
-                ->label(__('lunarpanel::product.table.sku.label'))
-                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-
-                    if ($record->variants->count() <= $column->getListLimit()) {
-                        return null;
-                    }
-
-                    if ($record->variants->count() > 30) {
-                        $record->variants = $record->variants->slice(0, 30);
-                    }
-
-                    return $record->variants
-                        ->map(fn ($variant) => $variant->sku)
-                        ->implode(', ');
-                })
-                ->listWithLineBreaks()
-                ->limitList(1)
-                ->toggleable(),
+            static::getSkuTableColumn(),
             Tables\Columns\TextColumn::make('variants_sum_stock')
                 ->label(__('lunarpanel::product.table.stock.label'))
                 ->sum('variants', 'stock'),
@@ -294,6 +272,38 @@ class ProductResource extends BaseResource
                 })
                 ->toggleable(),
         ];
+    }
+
+    public static function getNameTableColumn(): Tables\Columns\Column
+    {
+        return TranslatedTextColumn::make('attribute_data.name')
+            ->attributeData()
+            ->limitedTooltip()
+            ->limit(50)
+            ->label(__('lunarpanel::product.table.name.label'));
+    }
+
+    public static function getSkuTableColumn(): Tables\Columns\Column
+    {
+        return Tables\Columns\TextColumn::make('variants.sku')
+            ->label(__('lunarpanel::product.table.sku.label'))
+            ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
+
+                if ($record->variants->count() <= $column->getListLimit()) {
+                    return null;
+                }
+
+                if ($record->variants->count() > 30) {
+                    $record->variants = $record->variants->slice(0, 30);
+                }
+
+                return $record->variants
+                    ->map(fn ($variant) => $variant->sku)
+                    ->implode(', ');
+            })
+            ->listWithLineBreaks()
+            ->limitList(1)
+            ->toggleable();
     }
 
     public static function getDefaultRelations(): array

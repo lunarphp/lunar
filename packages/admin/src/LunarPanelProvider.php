@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin;
 
+use Filament\Facades\Filament;
 use Filament\Support\Assets\Css;
 use Filament\Support\Events\FilamentUpgraded;
 use Filament\Support\Facades\FilamentAsset;
@@ -107,9 +108,11 @@ class LunarPanelProvider extends ServiceProvider
 
     protected function registerPanelAssets(): void
     {
-        FilamentAsset::register([
-            Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
-        ], 'lunarphp/panel');
+        Filament::serving(function () {
+            FilamentAsset::register([
+                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
+            ], 'lunarphp/panel');
+        });
     }
 
     /**
