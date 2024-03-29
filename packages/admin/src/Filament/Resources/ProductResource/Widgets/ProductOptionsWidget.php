@@ -283,7 +283,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
             $optionValue = $option['value'];
 
-            if (! $optionModel->exists) {
+            if (! $optionModel->shared) {
                 $optionModel->name = [
                     $language->code => $optionValue,
                 ];
