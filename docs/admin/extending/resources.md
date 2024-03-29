@@ -40,7 +40,7 @@ class MyProductResourceExtension extends \Lunar\Admin\Support\Extending\Resource
             ...$pages,
             // This is just a standard Filament page
             // see https://filamentphp.com/docs/3.x/panels/pages#creating-a-page
-            "my-page-route-name" => MyPage::route('/{record}/my-page'),
+            'my-page-route-name' => MyPage::route('/{record}/my-page'),
         ];
     }
     
