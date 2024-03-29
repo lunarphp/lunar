@@ -8,7 +8,7 @@ trait ExtendsSubnavigation
 {
     public static function getRecordSubNavigation(Page $page): array
     {
-        $pages = self::callLunarHook('getSubNavigation', static::getDefaultSubnavigation());
+        $pages = self::callLunarHook('extendNavigation', static::getDefaultSubnavigation());
 
         return $page->generateNavigationItems($pages);
     }

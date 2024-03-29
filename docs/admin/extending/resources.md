@@ -34,17 +34,17 @@ class MyProductResourceExtension extends \Lunar\Admin\Support\Extending\Resource
         ];
     }
     
-    public function getPages(array $pages) : array
+    public function extendPages(array $pages) : array
     {
         return [
             ...$pages,
             // This is just a standard Filament page
             // see https://filamentphp.com/docs/3.x/panels/pages#creating-a-page
-            MyPage::class,
+            MyPage::route('/{record}/my-page'),,
         ];
     }
     
-    public function getSubNavigation(array $nav) : array
+    public function extendNavigation(array $nav) : array
     {
         return [
             ...$nav,
