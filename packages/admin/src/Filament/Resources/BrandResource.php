@@ -58,7 +58,7 @@ class BrandResource extends BaseResource
             Pages\ManageBrandUrls::class,
             Pages\ManageBrandProducts::class,
             Pages\ManageBrandCollections::class,
-        ]);
+        ];
     }
 
     public static function getDefaultForm(Form $form): Form
