@@ -85,25 +85,17 @@ class CalculateTax
                 $shippingTotal += $shippingTaxTotal?->value;
             }
 
-            $shippingSubTotal = new Price(
-                $shippingSubTotal,
-                $cart->currency,
-                1
-            );
-
             $shippingTotal = new Price(
                 $shippingTotal,
                 $cart->currency,
                 1
             );
 
-            $cart->shippingSubTotal = $shippingSubTotal;
             $cart->shippingTotal = $shippingTotal;
 
             if ($cart->shippingAddress && ! $cart->shippingOptionOverride) {
                 $cart->shippingAddress->taxBreakdown = $shippingTax;
                 $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
-                $cart->shippingAddress->shippingSubTotal = $shippingSubTotal;
                 $cart->shippingAddress->shippingTotal = $shippingTotal;
             }
         }
