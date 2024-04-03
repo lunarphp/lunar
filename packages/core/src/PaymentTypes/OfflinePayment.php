@@ -30,6 +30,8 @@ class OfflinePayment extends AbstractPayment
         $this->order->update([
             'status' => $status ?? ($this->config['authorized'] ?? null),
             'meta' => $orderMeta,
+            'notes' => $this->data['notes'] ?? $this->order->notes,
+            'customer_reference' => $this->data['customer_reference'] ?? $this->order->customer_reference,
             'placed_at' => now(),
         ]);
 

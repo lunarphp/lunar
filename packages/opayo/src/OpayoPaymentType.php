@@ -45,6 +45,11 @@ class OpayoPaymentType extends AbstractPayment
             }
         }
 
+        $this->order->updateQuietly([
+            'customer_reference' => $this->data['customer_reference'] ?? $this->order->customer_reference,
+            'notes' => $this->data['notes'] ?? $this->order->notes,
+        ]);
+
         if ($this->order->placed_at) {
 
             // Something's gone wrong!
