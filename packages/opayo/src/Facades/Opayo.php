@@ -8,6 +8,9 @@ use Lunar\Opayo\OpayoInterface;
 
 /**
  * @method static getAuthPayload(AuthPayloadParameters $parameters): array
+ * @method static getMerchantKey(): ?string
+ * @method static api(): PendingRequest
+ * @method static getTransaction(string $id, $attempt = 1): ?object
  */
 class Opayo extends Facade
 {
