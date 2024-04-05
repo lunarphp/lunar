@@ -17,7 +17,7 @@ class AddBrandIdToProductsTable extends Migration
 
         Schema::table($this->prefix.'products', function (Blueprint $table) {
             if (Schema::hasIndex($this->prefix.'products', ['brand'])) {
-                $table->dropIndex($this->prefix . 'products_brand_index');
+                $table->dropIndex($this->prefix.'products_brand_index');
             }
             $table->dropColumn('brand');
         });
