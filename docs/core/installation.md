@@ -6,8 +6,8 @@ Version 1.x is very much in-development. It is incomplete and not production rea
 
 ## Server Requirements
 
-- PHP ^8.1
-- Laravel 10
+- PHP ^8.2
+- Laravel 10+
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - intl PHP extension (on most systems it will be installed by default)
