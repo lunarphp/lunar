@@ -19,6 +19,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->loadLaravelMigrations();
+
         // additional setup
         Config::set('providers.users.model', User::class);
         Config::set('lunar.urls.generator', TestUrlGenerator::class);
@@ -49,15 +52,5 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getEnvironmentSetUp($app)
     {
         // perform environment setup
-    }
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
     }
 }
