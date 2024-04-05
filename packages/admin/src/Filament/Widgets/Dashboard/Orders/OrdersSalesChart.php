@@ -15,7 +15,7 @@ class OrdersSalesChart extends ApexChartWidget
     /**
      * Chart Id
      */
-    protected static ?string $chartId = 'ordersSalesChart';
+    protected static string $chartId = 'ordersSalesChart';
 
     protected static ?string $pollingInterval = '60s';
 
