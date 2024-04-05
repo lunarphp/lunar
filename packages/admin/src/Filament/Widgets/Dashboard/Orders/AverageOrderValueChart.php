@@ -14,7 +14,7 @@ class AverageOrderValueChart extends ApexChartWidget
     /**
      * Chart Id
      */
-    protected static string $chartId = 'averageOrderValue';
+    protected static ?string $chartId = 'averageOrderValue';
 
     protected static ?string $pollingInterval = '60s';
 
