@@ -58,18 +58,9 @@
             "Lunar\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Database\\State\\": "packages/core/database/state",
-            "Lunar\\Meilisearch\\": [
-                "packages/meilisearch/src",
-                "packages/meilisearch/src/"
-            ],
-            "Lunar\\Opayo\\": [
-                "packages/opayo/src",
-                "packages/opayo/src/"
-            ],
-            "Lunar\\Paypal\\": [
-                "packages/paypal/src",
-                "packages/paypal/src/"
-            ],
+            "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
+            "Lunar\\Opayo\\": "packages/opayo/src/",
+            "Lunar\\Paypal\\": "packages/paypal/src/",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
             "Lunar\\Stripe\\": "packages/stripe/src/"
