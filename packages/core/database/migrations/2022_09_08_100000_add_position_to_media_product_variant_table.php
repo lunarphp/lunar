@@ -16,6 +16,7 @@ class AddPositionToMediaProductVariantTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'media_product_variant', function (Blueprint $table) {
+            $table->dropIndex($this->prefix.'media_product_variant_position_index');
             $table->dropColumn('position');
         });
     }

@@ -9,6 +9,7 @@ class RemovePositionFromProductOptionsTable extends Migration
     public function up()
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
+            $table->dropIndex($this->prefix.'product_options_position_index');
             $table->dropColumn('position');
         });
     }
