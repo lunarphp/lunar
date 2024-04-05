@@ -22,7 +22,7 @@ class AddAndSetSharedToProductOptionsTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
-            $table->dropIndex($this->prefix.'product_options_shared_index');
+            $table->dropIndex(['shared']);
             $table->dropColumn('shared');
         });
     }

@@ -27,7 +27,7 @@ class AddStartsEndsAtToChannelablesTable extends Migration
         });
 
         Schema::table($this->prefix.'channelables', function ($table) {
-            $table->dropIndex($this->prefix.'channelables_ends_at_index');
+            $table->dropIndex(['ends_at']);
             $table->dropColumn('ends_at');
         });
     }

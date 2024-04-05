@@ -28,7 +28,7 @@ class AddHandlePositionToProductOptionsTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
-            $table->dropIndex($this->prefix.'product_options_handle_unique');
+            $table->dropUnique(['handle']);
             $table->dropColumn(['handle', 'position']);
         });
     }

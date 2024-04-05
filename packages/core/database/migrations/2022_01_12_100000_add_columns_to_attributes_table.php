@@ -18,8 +18,8 @@ class AddColumnsToAttributesTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'attributes', function (Blueprint $table) {
-            $table->dropIndex($this->prefix.'attributes_searchable_index');
-            $table->dropIndex($this->prefix.'attributes_filterable_index');
+            $table->dropIndex(['searchable']);
+            $table->dropIndex(['filterable']);
             $table->dropColumn(['searchable', 'filterable', 'validation_rules']);
         });
     }

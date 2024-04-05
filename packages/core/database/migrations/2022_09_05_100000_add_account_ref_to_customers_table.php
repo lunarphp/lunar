@@ -16,7 +16,7 @@ class AddAccountRefToCustomersTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'customers', function (Blueprint $table) {
-            $table->dropIndex($this->prefix.'customers_account_ref_index');
+            $table->dropIndex(['account_ref']);
             $table->dropColumn('account_ref');
         });
     }
