@@ -44,6 +44,7 @@ class AttributeData
         return $fieldType::getFilamentComponent($attribute)->label(
             $attribute->translate('name')
         )
+            ->formatStateUsing(fn ($state) => ($state ?: new $attribute->type))
             ->required($attribute->required)
             ->default($attribute->default_value);
     }
