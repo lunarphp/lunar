@@ -240,9 +240,14 @@ class ProductResource extends BaseResource
             Tables\Columns\TextColumn::make('status')
                 ->label(__('lunarpanel::product.table.status.label'))
                 ->badge()
+                ->getStateUsing(
+                    fn (Model $record) => $record->deleted_at ? 'deleted' : $record->status
+                )
+                ->formatStateUsing(fn ($state) => __('lunarpanel::product.table.status.states.'.$state))
                 ->color(fn (string $state): string => match ($state) {
                     'draft' => 'warning',
                     'published' => 'success',
+                    'deleted' => 'danger',
                 }),
             SpatieMediaLibraryImageColumn::make('thumbnail')
                 ->collection('images')
