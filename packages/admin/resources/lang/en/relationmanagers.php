@@ -87,7 +87,7 @@ return [
     ],
     'medias' => [
         'title' => 'Media',
-        'title_plural' => 'Medias',
+        'title_plural' => 'Media',
         'actions' => [
             'create' => [
                 'label' => 'Create Media',
