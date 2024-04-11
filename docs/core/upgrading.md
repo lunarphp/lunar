@@ -70,6 +70,10 @@ There is a migration which will handle this change over for Lunar tables and som
 
 ### High Impact
 
+#### Spatie Media Library
+This package has been upgrade to version 11, which introduces some breaking changes.
+See here for more information https://github.com/spatie/laravel-medialibrary/blob/main/UPGRADING.md
+
 #### Media Conversions
 The `lunar.media.conversions` configuration has been removed, in favour of registering custom media definitionss instead.
 Media definition classes allow you to register media collections, conversions and much more. See [Media Collections](/core/reference/media.html#media-collections)

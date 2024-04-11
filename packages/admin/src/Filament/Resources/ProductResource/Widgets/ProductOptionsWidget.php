@@ -283,14 +283,16 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
             $optionValue = $option['value'];
 
-            $optionModel->name = [
-                $language->code => $optionValue,
-            ];
-            $optionModel->label = [
-                $language->code => $optionValue,
-            ];
-            $optionModel->handle = Str::slug($optionValue);
-            $optionModel->save();
+            if (! $optionModel->shared) {
+                $optionModel->name = [
+                    $language->code => $optionValue,
+                ];
+                $optionModel->label = [
+                    $language->code => $optionValue,
+                ];
+                $optionModel->handle = Str::slug($optionValue);
+                $optionModel->save();
+            }
 
             $this->configuredOptions[$optionIndex]['id'] = $optionModel->id;
             $option['id'] = $optionModel->id;

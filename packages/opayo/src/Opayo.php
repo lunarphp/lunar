@@ -2,6 +2,7 @@
 
 namespace Lunar\Opayo;
 
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 
@@ -29,17 +30,15 @@ class Opayo implements OpayoInterface
 
     /**
      * Return the merchant key for payment.
-     *
-     * @return string
      */
-    public function getMerchantKey()
+    public function getMerchantKey(): ?string
     {
         $response = $this->http->post('merchant-session-keys', [
             'vendorName' => $this->getVendor(),
         ]);
 
         if (! $response->successful()) {
-            return;
+            return null;
         }
 
         return $response->json()['merchantSessionKey'] ?? null;
@@ -48,18 +47,15 @@ class Opayo implements OpayoInterface
     /**
      * Return the Http client.
      */
-    public function api()
+    public function api(): PendingRequest
     {
         return $this->http;
     }
 
     /**
      * Return a transaction from the API
-     *
-     * @param  string  $id
-     * @return mixed
      */
-    public function getTransaction($id, $attempt = 1)
+    public function getTransaction(string $id, $attempt = 1): ?object
     {
         $response = $this->http->get("transactions/{$id}");
 
@@ -145,20 +141,16 @@ class Opayo implements OpayoInterface
 
     /**
      * Get the service credentials.
-     *
-     * @return string
      */
-    protected function getCredentials()
+    protected function getCredentials(): string
     {
         return base64_encode(config('services.opayo.key').':'.config('services.opayo.password'));
     }
 
     /**
      * Get the vendor name.
-     *
-     * @return string
      */
-    protected function getVendor()
+    protected function getVendor(): string
     {
         return config('services.opayo.vendor');
     }

@@ -18,6 +18,7 @@ class AddFieldsToTransactionsTable extends Migration
         });
 
         Schema::table($this->prefix.'transactions', function (Blueprint $table) {
+            $table->dropIndex(['refund']);
             $table->dropColumn('refund');
         });
     }
@@ -28,6 +29,7 @@ class AddFieldsToTransactionsTable extends Migration
             if (DB::getDriverName() !== 'sqlite') {
                 $table->dropForeign(['parent_transaction_id']);
             }
+            $table->dropIndex(['type']);
             $table->dropColumn(['parent_transaction_id', 'type']);
         });
 
