@@ -56,6 +56,11 @@ trait HasModelExtending
         return static::class == static::modelClass();
     }
 
+    public static function morphKey(): string
+    {
+        return ModelManifest::getMorphMapKey(static::class);
+    }
+
     public static function observe($classes): void
     {
         $instance = new static;
