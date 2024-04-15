@@ -11,7 +11,7 @@
     "require": {
         "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
-        "dompdf/dompdf": "2.0.7",
+        "dompdf/dompdf": "^2.0.7",
         "cartalyst/converter": "^8.0|^9.0",
         "doctrine/dbal": "^3.6",
         "ext-bcmath": "*",
