@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Spatie\Image\Enums\BorderType;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection;
@@ -14,6 +15,8 @@ class StandardMediaDefinitions implements MediaDefinitionsInterface
         // Add a conversion for the admin panel to use
         $model->addMediaConversion('small')
             ->fit(Fit::Fill, 300, 300)
+            ->border(0, BorderType::Overlay)
+            ->background('#FFF')
             ->sharpen(10)
             ->keepOriginalImageFormat();
     }
