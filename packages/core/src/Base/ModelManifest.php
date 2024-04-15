@@ -130,6 +130,14 @@ class ModelManifest implements ModelManifestInterface
 
     public function guessModelClass(string $modelContract): string
     {
+        // Are we passing through the morph class name?
+        if (
+            ! class_exists($modelContract) &&
+            $morphedClass = Relation::morphMap()[$modelContract] ?? null
+        ) {
+            return $morphedClass;
+        }
+
         $shortName = (new \ReflectionClass($modelContract))->getShortName();
 
         return 'Lunar\\Models\\'.$shortName;
