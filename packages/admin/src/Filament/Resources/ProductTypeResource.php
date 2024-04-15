@@ -54,7 +54,7 @@ class ProductTypeResource extends BaseResource
                     Forms\Components\Tabs\Tab::make(__('lunarpanel::producttype.tabs.product_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
-                                ->withType(Product::class)
+                                ->withType((new Product)->getMorphClass())
                                 ->relationship(name: 'mappedAttributes')
                                 ->label('')
                                 ->columnSpan(2),
@@ -62,7 +62,7 @@ class ProductTypeResource extends BaseResource
                     Forms\Components\Tabs\Tab::make(__('lunarpanel::producttype.tabs.variant_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
-                                ->withType(ProductVariant::class)
+                                ->withType((new ProductVariant)->getMorphClass())
                                 ->relationship(name: 'mappedAttributes')
                                 ->label('')
                                 ->columnSpan(2),
