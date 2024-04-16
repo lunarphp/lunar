@@ -67,6 +67,11 @@ class AddressRelationManager extends RelationManager
                 ),
             ])->actions([
                 Tables\Actions\EditAction::make('editAddress')
+                    ->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
+                    )
                     ->fillForm(fn (Address $record): array => [
                         'title' => $record->title,
                         'first_name' => $record->first_name,

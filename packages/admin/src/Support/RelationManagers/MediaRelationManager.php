@@ -91,10 +91,18 @@ class MediaRelationManager extends RelationManager
                                 'primary' => $data['custom_properties']['primary'],
                             ])
                             ->toMediaCollection($this->mediaCollection);
-                    }),
+                    })->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
+                    ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
                 Tables\Actions\DeleteAction::make(),
                 Action::make('view_open')
                     ->label('View')
@@ -104,7 +112,11 @@ class MediaRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ])
             ->reorderable('order_column');

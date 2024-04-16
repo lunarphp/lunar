@@ -85,14 +85,26 @@ class ManageProductAssociations extends BaseManageRelatedRecords
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ]);
     }

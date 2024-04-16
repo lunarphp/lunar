@@ -27,6 +27,11 @@ class UserRelationManager extends RelationManager
                 ->label(__('lunarpanel::user.table.email.label')),
         ])->actions([
             Tables\Actions\EditAction::make('edit')
+                ->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                )
                 ->form([
                     Group::make([
                         TextInput::make('email')

@@ -94,6 +94,10 @@ class CustomerGroupRelationManager extends RelationManager
                 })->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::relationmanagers.customer_groups.actions.attach.label')
+                    )->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
                     ),
             ])->columns([
                 ...[
@@ -111,7 +115,11 @@ class CustomerGroupRelationManager extends RelationManager
                     )->dateTime(),
                 ],
             ])->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ]);
     }
 }

@@ -73,7 +73,11 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
                 return CollectionResource::getUrl('edit', ['record' => $record]);
             }),
         ])->headerActions([
-            CreateChildCollection::make('createChildCollection'),
+            CreateChildCollection::make('createChildCollection')->after(
+                fn () => sync_with_search(
+                    $this->getOwnerRecord()
+                )
+            ),
         ]);
     }
 }

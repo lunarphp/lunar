@@ -148,8 +148,12 @@ class CustomerGroupPricingRelationManager extends RelationManager
                     return $data;
                 })->label(
                     __('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.label')
-                )
-                    ->modalHeading(__('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.modal.heading')),
+                )->modalHeading(__('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.modal.heading'))
+                    ->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
+                    ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->mutateFormDataUsing(function (array $data): array {
@@ -159,7 +163,11 @@ class CustomerGroupPricingRelationManager extends RelationManager
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
                     return $data;
-                }),
+                })->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
                 Tables\Actions\DeleteAction::make(),
             ]);
     }

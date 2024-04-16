@@ -62,7 +62,11 @@ class ChannelRelationManager extends RelationManager
                     ...static::getFormInputs(),
                 ])->recordTitle(function ($record) {
                     return $record->name;
-                })->preloadRecordSelect()
+                })->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                )->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::relationmanagers.channels.actions.attach.label')
                     ),
@@ -88,7 +92,11 @@ class ChannelRelationManager extends RelationManager
                     __('lunarpanel::relationmanagers.channels.table.ends_at.label')
                 )->dateTime(),
             ])->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ]);
     }
 }

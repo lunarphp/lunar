@@ -80,7 +80,11 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         fn ($value) => $this->mapOptionValue($value, true)
                     )->toArray()
                 );
-            });
+            })->after(
+                fn () => sync_with_search(
+                    $this->record
+                )
+            );
     }
 
     public function configureBaseOptions(): void
@@ -432,7 +436,11 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 Notification::make()->title(
                     __('lunarpanel::productoption.widgets.product-options.notifications.save-variants.success.title')
                 )->success()->send();
-            });
+            })->after(
+                fn () => sync_with_search(
+                    $this->record
+                )
+            );
     }
 
     public function getVariantLink($variantId)

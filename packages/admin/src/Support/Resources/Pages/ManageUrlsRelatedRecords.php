@@ -95,15 +95,31 @@ class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label(
                     __('lunarpanel::relationmanagers.urls.actions.create.label')
+                )->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
                 ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
+                Tables\Actions\DeleteAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ]);
     }

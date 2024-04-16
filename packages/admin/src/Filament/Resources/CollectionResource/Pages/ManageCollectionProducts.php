@@ -67,7 +67,11 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                 ->formatStateUsing(fn (Model $record): string => $record->translateAttribute('name'))
                 ->label(__('lunarpanel::product.table.name.label')),
         ])->actions([
-            Tables\Actions\DetachAction::make(),
+            Tables\Actions\DetachAction::make()->after(
+                fn () => sync_with_search(
+                    $this->getOwnerRecord()
+                )
+            ),
             Tables\Actions\EditAction::make()->url(
                 fn (Model $record) => ProductResource::getUrl('edit', [
                     'record' => $record,
@@ -96,6 +100,8 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                     $relationship->attach($product, [
                         'position' => $relationship->count() + 1,
                     ]);
+
+                    $product->searchable();
                 }),
         ])->reorderable('position');
     }

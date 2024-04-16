@@ -179,6 +179,10 @@ class PriceRelationManager extends RelationManager
                     return $data;
                 })->label(
                     __('lunarpanel::relationmanagers.pricing.table.actions.create.label')
+                )->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
                 ),
             ])
             ->actions([
@@ -188,8 +192,16 @@ class PriceRelationManager extends RelationManager
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
                     return $data;
-                }),
-                Tables\Actions\DeleteAction::make(),
+                })->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
+                Tables\Actions\DeleteAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ]);
     }
 }

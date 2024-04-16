@@ -58,14 +58,26 @@ class ManageProductCollections extends BaseManageRelatedRecords
                                         ->all();
                                 });
                         }
+                    )->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
                     ),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DetachAction::make()->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DetachBulkAction::make(),
+                    Tables\Actions\DetachBulkAction::make()->after(
+                        fn () => sync_with_search(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ]);
     }
