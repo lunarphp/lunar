@@ -24,14 +24,18 @@ final class ApplyShipping
         $shippingOption = $cart->shippingOptionOverride ?: ShippingManifest::getShippingOption($cart);
 
         if ($shippingOption) {
-            $shippingBreakdown->items->put(
-                $shippingOption->getIdentifier(),
-                new ShippingBreakdownItem(
-                    name: $shippingOption->getName(),
-                    identifier: $shippingOption->getIdentifier(),
-                    price: $shippingOption->price,
-                )
-            );
+            if ($cart->shippingOptionOverride) {
+                $shippingBreakdown = new ShippingBreakdown(collect([$shippingOption]));
+            } else {
+                $shippingBreakdown->items->put(
+                    $shippingOption->getIdentifier(),
+                    new ShippingBreakdownItem(
+                        name: $shippingOption->getName(),
+                        identifier: $shippingOption->getIdentifier(),
+                        price: $shippingOption->price,
+                    )
+                );
+            }
 
             $shippingSubTotal = $shippingOption->price->value;
             $shippingTotal = $shippingSubTotal;
