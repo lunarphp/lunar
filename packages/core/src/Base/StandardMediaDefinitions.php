@@ -15,7 +15,7 @@ class StandardMediaDefinitions implements MediaDefinitionsInterface
         // Add a conversion for the admin panel to use
         $model->addMediaConversion('small')
             ->fit(Fit::Fill, 300, 300)
-            ->border(0, BorderType::Overlay)
+            ->border(0, BorderType::Overlay, color: '#FFF')
             ->background('#FFF')
             ->sharpen(10)
             ->keepOriginalImageFormat();
@@ -66,7 +66,10 @@ class StandardMediaDefinitions implements MediaDefinitionsInterface
                         Fit::Fill,
                         $conversion['width'],
                         $conversion['height']
-                    )->keepOriginalImageFormat();
+                    )
+                    ->border(0, BorderType::Overlay, color: '#FFF')
+                    ->background('#FFF')
+                    ->keepOriginalImageFormat();
             }
         });
     }
