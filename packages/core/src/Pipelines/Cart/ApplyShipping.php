@@ -25,17 +25,17 @@ final class ApplyShipping
 
         if ($shippingOption) {
             if ($cart->shippingOptionOverride) {
-                $shippingBreakdown = new ShippingBreakdown(collect([$shippingOption]));
-            } else {
-                $shippingBreakdown->items->put(
-                    $shippingOption->getIdentifier(),
-                    new ShippingBreakdownItem(
-                        name: $shippingOption->getName(),
-                        identifier: $shippingOption->getIdentifier(),
-                        price: $shippingOption->price,
-                    )
-                );
+                $shippingBreakdown->items = collect();
             }
+
+            $shippingBreakdown->items->put(
+                $shippingOption->getIdentifier(),
+                new ShippingBreakdownItem(
+                    name: $shippingOption->getName(),
+                    identifier: $shippingOption->getIdentifier(),
+                    price: $shippingOption->price,
+                )
+            );
 
             $shippingSubTotal = $shippingOption->price->value;
             $shippingTotal = $shippingSubTotal;
