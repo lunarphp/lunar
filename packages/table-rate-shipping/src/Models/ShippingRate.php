@@ -3,6 +3,7 @@
 namespace Lunar\Shipping\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
@@ -34,12 +35,12 @@ class ShippingRate extends BaseModel implements Purchasable
         return ShippingRateFactory::new();
     }
 
-    public function shippingZone()
+    public function shippingZone(): BelongsTo
     {
         return $this->belongsTo(ShippingZone::class);
     }
 
-    public function shippingMethod()
+    public function shippingMethod(): BelongsTo
     {
         return $this->belongsTo(ShippingMethod::class);
     }
@@ -65,7 +66,7 @@ class ShippingRate extends BaseModel implements Purchasable
         return TaxClass::getDefault();
     }
 
-    public function getTaxReference()
+    public function getTaxReference(): ?string
     {
         return $this->shippingMethod->code;
     }
@@ -73,7 +74,7 @@ class ShippingRate extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getType()
+    public function getType(): string
     {
         return 'shipping';
     }
@@ -81,7 +82,7 @@ class ShippingRate extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function isShippable()
+    public function isShippable(): bool
     {
         return false;
     }
@@ -89,7 +90,7 @@ class ShippingRate extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->shippingMethod->name ?: $this->driver()->name();
     }
@@ -97,7 +98,7 @@ class ShippingRate extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getOption()
+    public function getOption(): ?string
     {
         return $this->shippingMethod->code;
     }
@@ -105,7 +106,7 @@ class ShippingRate extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getOptions()
+    public function getOptions(): Collection
     {
         return collect();
     }
@@ -113,12 +114,12 @@ class ShippingRate extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getIdentifier()
+    public function getIdentifier(): ?string
     {
         return $this->shippingMethod->code;
     }
 
-    public function getThumbnail()
+    public function getThumbnail(): ?string
     {
         return null;
     }

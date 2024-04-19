@@ -2,9 +2,11 @@
 
 namespace Lunar\Shipping\Resolvers;
 
+use Illuminate\Support\Collection;
+
 class PostcodeResolver
 {
-    public function getParts($postcode)
+    public function getParts($postcode): Collection
     {
         $postcode = str_replace(' ', '', strtoupper($postcode));
 
