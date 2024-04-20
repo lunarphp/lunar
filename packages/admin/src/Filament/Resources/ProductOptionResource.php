@@ -111,6 +111,7 @@ class ProductOptionResource extends BaseResource
             ->modifyQueryUsing(
                 fn ($query) => $query->shared()
             )
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->values->count() == 0)
             ->searchable();
     }
 

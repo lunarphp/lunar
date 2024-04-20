@@ -104,7 +104,7 @@ class ProductTypeResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->products->count() == 0);
     }
 
     protected static function getTableColumns(): array

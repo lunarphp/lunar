@@ -132,6 +132,7 @@ class AttributeGroupResource extends BaseResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->attributes->count() == 0)
             ->defaultSort('position', 'asc')
             ->reorderable('position');
     }

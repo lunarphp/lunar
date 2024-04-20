@@ -87,7 +87,7 @@ class CustomerGroupResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->customers->count() == 0);
     }
 
     protected static function getTableColumns(): array

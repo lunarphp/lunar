@@ -109,7 +109,9 @@ class BrandResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])->searchable();
+            ])
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->products->count() == 0)
+            ->searchable();
     }
 
     protected static function getTableColumns(): array

@@ -101,7 +101,8 @@ class CollectionGroupResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->collections->count() == 0);
     }
 
     protected static function getTableColumns(): array
