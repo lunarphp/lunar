@@ -7,6 +7,7 @@ use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
@@ -111,7 +112,8 @@ class ProductOptionResource extends BaseResource
             ->modifyQueryUsing(
                 fn ($query) => $query->shared()
             )
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->values->count() == 0)
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['values']))
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->values_count == 0)
             ->searchable();
     }
 

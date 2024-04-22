@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages;
 use Lunar\Admin\Support\Forms\Components\AttributeSelector;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -104,7 +105,9 @@ class ProductTypeResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->products->count() == 0);
+            ])
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['products']))
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->products_count == 0);
     }
 
     protected static function getTableColumns(): array

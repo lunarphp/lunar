@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers;
@@ -132,7 +133,8 @@ class AttributeGroupResource extends BaseResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->attributes->count() == 0)
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['attributes']))
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->attributes_count == 0)
             ->defaultSort('position', 'asc')
             ->reorderable('position');
     }

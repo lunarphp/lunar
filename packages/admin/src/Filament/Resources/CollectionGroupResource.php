@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -102,7 +103,8 @@ class CollectionGroupResource extends BaseResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->collections->count() == 0);
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['collections']))
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->collections_count == 0);
     }
 
     protected static function getTableColumns(): array

@@ -7,6 +7,7 @@ use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\CustomerGroup;
@@ -87,7 +88,9 @@ class CustomerGroupResource extends BaseResource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->customers->count() == 0);
+            ])
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['customers']))
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->customers_count == 0);
     }
 
     protected static function getTableColumns(): array

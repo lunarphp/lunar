@@ -196,7 +196,8 @@ class CustomerResource extends BaseResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => ($record->addresses->count() || $record->users->count() || $record->orders->count()) == 0)
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['addresses', 'users', 'orders']))
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => ($record->addresses_count || $record->users_count || $record->orders_count) == 0)
             ->selectCurrentPageOnly();
     }
 

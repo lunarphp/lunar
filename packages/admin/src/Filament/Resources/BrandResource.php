@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
@@ -110,7 +111,8 @@ class BrandResource extends BaseResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->products->count() == 0)
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['products']))
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->products_count == 0)
             ->searchable();
     }
 
