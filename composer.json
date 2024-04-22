@@ -11,33 +11,36 @@
     "require": {
         "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
-        "cartalyst/converter": "^8.0",
+        "dompdf/dompdf": "^2.0.7",
+        "cartalyst/converter": "^8.0|^9.0",
         "doctrine/dbal": "^3.6",
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",
-        "filament/filament": "^3.1.23",
-        "filament/spatie-laravel-media-library-plugin": "^3.0-stable",
+        "filament/filament": "^3.2.25",
+        "filament/spatie-laravel-media-library-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.3",
-        "illuminate/http": "^10.0",
-        "kalnoy/nestedset": "^6.0",
-        "laravel/framework": "^10.0",
+        "kalnoy/nestedset": "^v6.x-dev",
+        "laravel/framework": "^10.0|^11.0",
         "laravel/scout": "^10.0",
-        "leandrocfe/filament-apex-charts": "^3.1.2",
+        "leandrocfe/filament-apex-charts": "^3.1.3",
+        "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
-        "marvinosswald/filament-input-select-affix": "^0.1.0",
-        "php": "^8.1",
+        "marvinosswald/filament-input-select-affix": "^0.2.0",
+        "meilisearch/meilisearch-php": "^v1.6.0",
+        "php": "^8.2",
         "spatie/laravel-activitylog": "^4.4",
-        "spatie/laravel-blink": "^1.6",
-        "spatie/laravel-medialibrary": "^10.0.0",
-        "spatie/laravel-permission": "^5.10",
-        "technikermathe/blade-lucide-icons": "^v2.24.0"
+        "spatie/laravel-blink": "^1.7",
+        "spatie/laravel-medialibrary": "^11.0.0",
+        "spatie/laravel-permission": "^6.4",
+        "stripe/stripe-php": "^7.114",
+        "technikermathe/blade-lucide-icons": "^v3.0"
     },
     "require-dev": {
+        "larastan/larastan": "^2.9",
         "laravel/pint": "1.13.1",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/larastan": "^2.0",
-        "orchestra/testbench": "^8.0",
+        "orchestra/testbench": "^8.0|^9.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
         "symplify/monorepo-builder": "^10.0"
@@ -55,17 +58,12 @@
             "Lunar\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Database\\State\\": "packages/core/database/state",
-            "Lunar\\Opayo\\": [
-                "packages/opayo/src",
-                "packages/opayo/src/"
-            ],
-            "Lunar\\Paypal\\": [
-                "packages/paypal/src",
-                "packages/paypal/src/"
-            ],
-            "Lunar\\ScoutDatabaseEngine\\": "packages/scout-database-engine/src",
+            "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
+            "Lunar\\Opayo\\": "packages/opayo/src/",
+            "Lunar\\Paypal\\": "packages/paypal/src/",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
-            "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories"
+            "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
+            "Lunar\\Stripe\\": "packages/stripe/src/"
         }
     },
     "autoload-dev": {
@@ -74,9 +72,9 @@
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",
             "Lunar\\Tests\\Paypal\\": "tests/paypal",
-            "Lunar\\Tests\\ScoutDatabaseEngine\\": "tests/scout-database-engine",
             "Lunar\\Tests\\Shipping\\": "tests/shipping",
-            "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests"
+            "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
+            "Lunar\\Tests\\Stripe\\": "tests/stripe"
         }
     },
     "extra": {
@@ -84,15 +82,18 @@
             "name": [
                 "Table Rate Shipping",
                 "Opayo Payments",
-                "Paypal Payments"
+                "Meilisearch",
+                "Paypal Payments",
+                "Stripe Payments"
             ]
         },
         "laravel": {
             "providers": [
+                "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
+                "Lunar\\Meilisearch\\MeilisearchServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
-                "Lunar\\ScoutDatabaseEngine\\ScoutDatabaseServiceProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
                 "Lunar\\LunarServiceProvider"
             ]
@@ -101,9 +102,10 @@
     "replace": {
         "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version",
+        "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
-        "lunarphp/scout-database-engine": "self.version",
+        "lunarphp/stripe": "self.version",
         "lunarphp/table-rate-shipping": "self.version"
     },
     "scripts": {
@@ -117,7 +119,8 @@
     },
     "config": {
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "dev",

@@ -24,8 +24,6 @@ class ShippingZone extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Shipping\Factories\ShippingZoneFactory
      */
     protected static function newFactory(): ShippingZoneFactory
     {
@@ -34,20 +32,16 @@ class ShippingZone extends BaseModel
 
     /**
      * Return the shipping methods relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function shippingMethods()
+    public function shippingMethods(): HasMany
     {
         return $this->hasMany(ShippingMethod::class);
     }
 
     /**
      * Return the countries relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function countries()
+    public function countries(): BelongsToMany
     {
         return $this->belongsToMany(
             Country::class,
@@ -57,10 +51,8 @@ class ShippingZone extends BaseModel
 
     /**
      * Return the states relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function states()
+    public function states(): BelongsToMany
     {
         return $this->belongsToMany(
             State::class,
@@ -70,15 +62,13 @@ class ShippingZone extends BaseModel
 
     /**
      * Return the postcodes relationship.
-     *
-     * @return HasMany
      */
-    public function postcodes()
+    public function postcodes(): HasMany
     {
         return $this->hasMany(ShippingZonePostcode::class);
     }
 
-    public function rates()
+    public function rates(): HasMany
     {
         return $this->hasMany(ShippingRate::class);
     }

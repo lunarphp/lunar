@@ -24,7 +24,7 @@ class AddonsDiscover extends Command
     /**
      * Execute the console command.
      */
-    public function handle(Manifest $manifest): void
+    public function handle(Manifest $manifest)
     {
         $manifest->build();
 
@@ -33,5 +33,7 @@ class AddonsDiscover extends Command
         }
 
         $this->components->info('Addon manifest generated successfully.');
+
+        return self::SUCCESS;
     }
 }

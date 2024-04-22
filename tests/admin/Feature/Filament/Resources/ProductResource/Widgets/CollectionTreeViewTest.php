@@ -36,18 +36,18 @@ it('can create root collection', function () {
 
     \Lunar\Models\Attribute::factory()->create([
         'handle' => 'name',
-        'type' => \Lunar\FieldTypes\Text::class,
+        'type' => \Lunar\FieldTypes\TranslatedText::class,
         'attribute_type' => \Lunar\Models\Collection::class,
     ]);
 
-    \Lunar\Models\Language::factory()->create([
+    $language = \Lunar\Models\Language::factory()->create([
         'default' => true,
     ]);
 
     \Livewire\Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->callAction('createRootCollection', [
-        'name' => 'Foo Bar',
+        'name' => [$language->code => 'Foo Bar'],
     ])->assertSet('nodes.0.name', 'Foo Bar')
         ->assertHasNoErrors();
 });
@@ -86,11 +86,11 @@ it('can create child collection', function () {
 
     \Lunar\Models\Attribute::factory()->create([
         'handle' => 'name',
-        'type' => \Lunar\FieldTypes\Text::class,
+        'type' => \Lunar\FieldTypes\TranslatedText::class,
         'attribute_type' => \Lunar\Models\Collection::class,
     ]);
 
-    \Lunar\Models\Language::factory()->create([
+    $language = \Lunar\Models\Language::factory()->create([
         'default' => true,
     ]);
 
@@ -107,7 +107,7 @@ it('can create child collection', function () {
     \Livewire\Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->callAction('addChildCollection', [
-        'name' => 'Sub Collection',
+        'name' => [$language->code => 'Sub Collection'],
     ], ['id' => $collection->id])
         ->assertCount('nodes', 1)
         ->assertSet('nodes.0.children.0.id', $child->id)
@@ -122,11 +122,11 @@ it('can set child collection as root', function () {
 
     \Lunar\Models\Attribute::factory()->create([
         'handle' => 'name',
-        'type' => \Lunar\FieldTypes\Text::class,
+        'type' => \Lunar\FieldTypes\TranslatedText::class,
         'attribute_type' => \Lunar\Models\Collection::class,
     ]);
 
-    \Lunar\Models\Language::factory()->create([
+    $language = \Lunar\Models\Language::factory()->create([
         'default' => true,
     ]);
 
@@ -137,7 +137,7 @@ it('can set child collection as root', function () {
     \Livewire\Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->callAction('addChildCollection', [
-        'name' => 'Sub Collection',
+        'name' => [$language->code => 'Sub Collection'],
     ], ['id' => $collection->id])
         ->assertSet('nodes.0.children.0.name', 'Sub Collection');
 });

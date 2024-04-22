@@ -146,7 +146,7 @@ test('can discount eligible product', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -160,7 +160,7 @@ test('can discount eligible product', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -245,7 +245,7 @@ test('can discount eligible products', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -253,7 +253,7 @@ test('can discount eligible products', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -341,7 +341,7 @@ test('can discount purchasable with priority', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -349,7 +349,7 @@ test('can discount purchasable with priority', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -453,7 +453,7 @@ test('can apply multiple different discounts', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -461,7 +461,7 @@ test('can apply multiple different discounts', function () {
 
     Price::factory()->create([
         'price' => 500, // £5
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -588,7 +588,7 @@ test('can supplement correct quantities', function () {
 
     Price::factory()->create([
         'price' => 1064, // $10.64
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -596,7 +596,7 @@ test('can supplement correct quantities', function () {
 
     Price::factory()->create([
         'price' => 2280, // $22.80
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -725,7 +725,7 @@ test('can count condition qty in discount breakdown', function () {
 
     Price::factory()->create([
         'price' => 1000, // £10
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableA),
         'priceable_id' => $purchasableA->id,
@@ -733,7 +733,7 @@ test('can count condition qty in discount breakdown', function () {
 
     Price::factory()->create([
         'price' => 500, // £5
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableB),
         'priceable_id' => $purchasableB->id,
@@ -741,7 +741,7 @@ test('can count condition qty in discount breakdown', function () {
 
     Price::factory()->create([
         'price' => 200, // £2
-        'quantity_break' => 1,
+        'min_quantity' => 1,
         'currency_id' => $currency->id,
         'priceable_type' => get_class($purchasableC),
         'priceable_id' => $purchasableC->id,

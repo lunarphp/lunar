@@ -4,21 +4,19 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 
-class ManageProductVariants extends ManageRelatedRecords
+class ManageProductVariants extends BaseManageRelatedRecords
 {
     protected static string $resource = ProductResource::class;
 
     protected static string $relationship = 'variants';
 
-    protected static ?string $title = 'Variants';
-
-    protected function getHeaderWidgets(): array
+    protected function getDefaultHeaderWidgets(): array
     {
         return [
             ProductResource\Widgets\ProductOptionsWidget::class,
@@ -44,9 +42,14 @@ class ManageProductVariants extends ManageRelatedRecords
         return parent::canAccess($parameters);
     }
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::product.pages.variants.label');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return 'Variants';
+        return __('lunarpanel::product.pages.variants.label');
     }
 
     public function form(Form $form): Form

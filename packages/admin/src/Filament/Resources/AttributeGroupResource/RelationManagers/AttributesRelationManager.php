@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Support\Facades\AttributeData;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
+use Lunar\Models\Language;
 
 class AttributesRelationManager extends RelationManager
 {
@@ -27,7 +30,7 @@ class AttributesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name.en') // TODO: localise
+                TranslatedText::make('name')
                     ->label(
                         __('lunarpanel::attribute.form.name.label')
                     )
@@ -38,7 +41,7 @@ class AttributesRelationManager extends RelationManager
                         if ($operation !== 'create') {
                             return;
                         }
-                        $set('handle', Str::slug($state));
+                        $set('handle', Str::slug($state[Language::getDefault()->code]));
                     }),
                 Forms\Components\TextInput::make('description.en') // TODO: localise
                     ->label(
@@ -101,7 +104,7 @@ class AttributesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name.en')->label(
+                TranslatedTextColumn::make('name')->label(
                     __('lunarpanel::attribute.table.name.label')
                 ),
                 Tables\Columns\TextColumn::make('description.en')->label(

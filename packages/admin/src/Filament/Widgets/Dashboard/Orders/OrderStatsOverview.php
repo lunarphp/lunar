@@ -10,6 +10,8 @@ use Lunar\Models\Order;
 
 class OrderStatsOverview extends BaseWidget
 {
+    protected static ?string $pollingInterval = '60s';
+
     protected function getOrderQuery(\DateTime $from = null, \DateTime $to = null)
     {
         return Order::whereNotNull('placed_at')
@@ -25,24 +27,24 @@ class OrderStatsOverview extends BaseWidget
             'monthOverflow' => false,
         ]);
 
-        $currentMonth = $this->getOrderQuery(
-            from: $date->clone()->startOfMonth(),
+        $current30Days = $this->getOrderQuery(
+            from: $date->clone()->subDays(30),
             to: $date->clone(),
         );
 
-        $previousMonth = $this->getOrderQuery(
-            from: $date->clone()->subMonth()->startOfMonth(),
+        $previous30Days = $this->getOrderQuery(
+            from: $date->clone()->subDays(60),
+            to: $date->clone()->subDays(30),
+        );
+
+        $current7Days = $this->getOrderQuery(
+            from: $date->clone()->subDays(7),
             to: $date->clone(),
         );
 
-        $currentWeek = $this->getOrderQuery(
-            from: $date->clone()->startOfWeek(),
-            to: $date->clone(),
-        );
-
-        $previousWeek = $this->getOrderQuery(
-            from: $date->clone()->subWeek()->startOfWeek(),
-            to: $date->clone()->subWeek(),
+        $previous7Days = $this->getOrderQuery(
+            from: $date->clone()->subDays(14),
+            to: $date->clone()->subDays(7),
         );
 
         $today = $this->getOrderQuery(
@@ -57,11 +59,11 @@ class OrderStatsOverview extends BaseWidget
 
         return [
             $this->getStatCount($today, $yesterday, 'stat_one'),
-            $this->getStatCount($currentWeek, $previousWeek, 'stat_two'),
-            $this->getStatCount($currentMonth, $previousMonth, 'stat_three'),
+            $this->getStatCount($current7Days, $previous7Days, 'stat_two'),
+            $this->getStatCount($current30Days, $previous30Days, 'stat_three'),
             $this->getStatTotal($today, $yesterday, 'stat_four'),
-            $this->getStatTotal($currentWeek, $previousWeek, 'stat_five'),
-            $this->getStatTotal($currentMonth, $previousMonth, 'stat_six'),
+            $this->getStatTotal($current7Days, $previous7Days, 'stat_five'),
+            $this->getStatTotal($current30Days, $previous30Days, 'stat_six'),
         ];
     }
 

@@ -15,7 +15,9 @@ class PaymentAuthorize extends GcPaymentAuthorize
         public ?string $cReq = null,
         public ?string $paReq = null,
         public ?string $transactionId = null,
-        public ?string $message = null
+        public ?string $message = null,
+        public ?int $orderId = null,
+        public ?string $paymentType = null,
     ) {
         //
     }

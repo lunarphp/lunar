@@ -2,13 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 
-class ManageProductMedia extends ManageRelatedRecords
+class ManageProductMedia extends BaseManageRelatedRecords
 {
     protected static string $resource = ProductResource::class;
 

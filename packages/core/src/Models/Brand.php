@@ -3,8 +3,8 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
@@ -56,24 +56,24 @@ class Brand extends BaseModel implements SpatieHasMedia
     }
 
     /**
-     * Get the mapped attributes relation.
-     */
-    public function mappedAttributes(): MorphToMany
-    {
-        $prefix = config('lunar.database.table_prefix');
-
-        return $this->morphToMany(
-            Attribute::class,
-            'attributable',
-            "{$prefix}attributables"
-        )->withTimestamps();
-    }
-
-    /**
      * Return the product relationship.
      */
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function discounts()
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(Discount::class, "{$prefix}brand_discount");
+    }
+
+    public function collections(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(Collection::class, "{$prefix}brand_collection");
     }
 }

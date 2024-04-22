@@ -30,7 +30,9 @@ it('can extend relationship managers', function () {
         }
     };
 
-    LunarPanel::registerExtension($class, CustomerResource::class);
+    LunarPanel::extensions([
+        CustomerResource::class => $class::class,
+    ]);
 
     $relations = CustomerResource::getRelations();
     expect($relations)->toContain(TestCustomerAddressRelationManager::class);
@@ -48,7 +50,9 @@ it('can extend table columns', function ($resource, $page) {
         }
     };
 
-    LunarPanel::registerExtension($class, $resource);
+    LunarPanel::extensions([
+        $resource => $class::class,
+    ]);
 
     $this->asStaff();
 
@@ -74,7 +78,9 @@ it('can extend form schema', function ($resource, $page) {
         }
     };
 
-    LunarPanel::registerExtension($class, $resource);
+    LunarPanel::extensions([
+        $resource => $class::class,
+    ]);
 
     $this->asStaff(admin: true);
 

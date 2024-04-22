@@ -6,6 +6,8 @@ return [
         'form' => [
             'lookups' => [
                 'label' => 'Lookups',
+                'key_label' => 'Label',
+                'value_label' => 'Value',
             ],
         ],
     ],
@@ -26,6 +28,7 @@ return [
             'richtext' => [
                 'label' => 'Rich Text',
             ],
+            'locales' => 'Locales',
         ],
     ],
     'toggle' => [

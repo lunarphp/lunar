@@ -17,14 +17,18 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
+use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
 use Lunar\Admin\Filament\Widgets\Products\VariantSwitcherTable;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
+use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
@@ -168,7 +172,7 @@ class ProductResource extends BaseResource
 
     public static function getBaseNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TranslatedText::make('name')
             ->label(__('lunarpanel::product.form.name.label'))->required();
     }
 
@@ -228,7 +232,7 @@ class ProductResource extends BaseResource
             ->deferLoading();
     }
 
-    protected static function getTableColumns(): array
+    public static function getTableColumns(): array
     {
         return [
             Tables\Columns\TextColumn::make('status')
@@ -244,42 +248,12 @@ class ProductResource extends BaseResource
                 ->limit(1)
                 ->square()
                 ->label(''),
-            Tables\Columns\TextColumn::make('attribute_data.name')
-                ->formatStateUsing(fn (Model $record): string => $record->translateAttribute('name'))
-                ->limit(50)
-                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-
-                    if (strlen($record->translateAttribute('name')) <= $column->getCharacterLimit()) {
-                        return null;
-                    }
-
-                    // Only render the tooltip if the column contents exceeds the length limit.
-                    return $record->translateAttribute('name');
-                })
-                ->label(__('lunarpanel::product.table.name.label')),
+            static::getNameTableColumn(),
             Tables\Columns\TextColumn::make('brand.name')
                 ->label(__('lunarpanel::product.table.brand.label'))
                 ->toggleable()
                 ->searchable(),
-            Tables\Columns\TextColumn::make('variants.sku')
-                ->label(__('lunarpanel::product.table.sku.label'))
-                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-
-                    if ($record->variants->count() <= $column->getListLimit()) {
-                        return null;
-                    }
-
-                    if ($record->variants->count() > 30) {
-                        $record->variants = $record->variants->slice(0, 30);
-                    }
-
-                    return $record->variants
-                        ->map(fn ($variant) => $variant->sku)
-                        ->implode(', ');
-                })
-                ->listWithLineBreaks()
-                ->limitList(1)
-                ->toggleable(),
+            static::getSkuTableColumn(),
             Tables\Columns\TextColumn::make('variants_sum_stock')
                 ->label(__('lunarpanel::product.table.stock.label'))
                 ->sum('variants', 'stock'),
@@ -300,6 +274,38 @@ class ProductResource extends BaseResource
         ];
     }
 
+    public static function getNameTableColumn(): Tables\Columns\Column
+    {
+        return TranslatedTextColumn::make('attribute_data.name')
+            ->attributeData()
+            ->limitedTooltip()
+            ->limit(50)
+            ->label(__('lunarpanel::product.table.name.label'));
+    }
+
+    public static function getSkuTableColumn(): Tables\Columns\Column
+    {
+        return Tables\Columns\TextColumn::make('variants.sku')
+            ->label(__('lunarpanel::product.table.sku.label'))
+            ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
+
+                if ($record->variants->count() <= $column->getListLimit()) {
+                    return null;
+                }
+
+                if ($record->variants->count() > 30) {
+                    $record->variants = $record->variants->slice(0, 30);
+                }
+
+                return $record->variants
+                    ->map(fn ($variant) => $variant->sku)
+                    ->implode(', ');
+            })
+            ->listWithLineBreaks()
+            ->limitList(1)
+            ->toggleable();
+    }
+
     public static function getDefaultRelations(): array
     {
         return [
@@ -308,6 +314,8 @@ class ProductResource extends BaseResource
                 CustomerGroupRelationManager::class,
             ]),
             MediaRelationManager::class,
+            PriceRelationManager::class,
+            CustomerGroupPricingRelationManager::class,
         ];
     }
 
