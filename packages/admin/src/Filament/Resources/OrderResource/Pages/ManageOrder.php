@@ -284,7 +284,7 @@ class ManageOrder extends BaseViewRecord
             ]);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function getDefaultInfolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
