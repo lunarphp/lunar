@@ -12,7 +12,7 @@ We highly suggest using your own Eloquent Models to add additional data, rather 
 All Lunar models are replaceable, this means you can instruct Lunar to use your own custom model, throughout the ecosystem, using dependency injection.
 
 
-### Registration:
+### Registration
 We recommend registering your own models for your application within the boot method of your Service Provider.
 
 When registering your models, you will need to set the Lunar model's contract as the first argument then your own model implementation for the second.
