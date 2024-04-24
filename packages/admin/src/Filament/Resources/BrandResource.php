@@ -112,7 +112,7 @@ class BrandResource extends BaseResource
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['products']))
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->products_count == 0)
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => ! $record->products_count)
             ->searchable();
     }
 

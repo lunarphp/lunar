@@ -104,7 +104,7 @@ class CollectionGroupResource extends BaseResource
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['collections']))
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->collections_count == 0);
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => ! $record->collections_count);
     }
 
     protected static function getTableColumns(): array

@@ -90,7 +90,7 @@ class CustomerGroupResource extends BaseResource
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['customers']))
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->customers_count == 0);
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => ! $record->customers_count);
     }
 
     protected static function getTableColumns(): array

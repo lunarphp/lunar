@@ -134,7 +134,7 @@ class AttributeGroupResource extends BaseResource
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['attributes']))
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => $record->attributes_count == 0)
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => ! $record->attributes_count)
             ->defaultSort('position', 'asc')
             ->reorderable('position');
     }

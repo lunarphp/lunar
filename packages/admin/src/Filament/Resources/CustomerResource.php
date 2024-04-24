@@ -197,7 +197,7 @@ class CustomerResource extends BaseResource
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['addresses', 'users', 'orders']))
-            ->checkIfRecordIsSelectableUsing(fn ($record): bool => ($record->addresses_count || $record->users_count || $record->orders_count) == 0)
+            ->checkIfRecordIsSelectableUsing(fn ($record): bool => ! ($record->addresses_count || $record->users_count || $record->orders_count))
             ->selectCurrentPageOnly();
     }
 
