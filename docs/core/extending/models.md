@@ -84,7 +84,7 @@ $product->variants->first(); // App\Models\ProductVariant
 
 ### Static call forwarding
 
-If you have custom methods in your on model, you can call those functions directly from the Lunar model instance.
+If you have custom methods in your own model, you can call those functions directly from the Lunar model instance.
 
 Assuming we want to provide a new function to a product variant model.
 
