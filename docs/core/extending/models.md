@@ -131,7 +131,7 @@ want to add your own custom observers, you can just reference the Lunar model an
 
 ## Dynamic Eloquent Relationships
 
-Eloquent relationships can be dynamically specified in code, allowing you to add additional relationships to the Lunar Models.
+If you don't need to completely override or extend the Lunar models using the techniques above, you are still free to resolve relationships dynamically as Laravel provides out the box.
 
 e.g. 
 
