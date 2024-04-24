@@ -29,7 +29,7 @@ use Lunar\Database\Factories\CustomerFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Customer extends BaseModel implements \Lunar\Models\Contracts\Customer
+class Customer extends BaseModel implements Contracts\Customer
 {
     use HasAttributes;
     use HasFactory;

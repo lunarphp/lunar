@@ -19,7 +19,7 @@ use Lunar\Database\Factories\AttributeGroupFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class AttributeGroup extends BaseModel implements \Lunar\Models\Contracts\AttributeGroup
+class AttributeGroup extends BaseModel implements Contracts\AttributeGroup
 {
     use HasFactory;
     use HasMacros;

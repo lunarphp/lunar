@@ -17,7 +17,7 @@ use Lunar\Database\Factories\LanguageFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Language extends BaseModel implements \Lunar\Models\Contracts\Language
+class Language extends BaseModel implements Contracts\Language
 {
     use HasDefaultRecord;
     use HasFactory;

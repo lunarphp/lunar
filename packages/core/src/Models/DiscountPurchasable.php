@@ -18,7 +18,7 @@ use Lunar\Database\Factories\DiscountPurchasableFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class DiscountPurchasable extends BaseModel implements \Lunar\Models\Contracts\DiscountPurchasable
+class DiscountPurchasable extends BaseModel implements Contracts\DiscountPurchasable
 {
     use HasFactory;
 

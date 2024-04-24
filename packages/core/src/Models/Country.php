@@ -22,7 +22,7 @@ use Lunar\Database\Factories\CountryFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Country extends BaseModel implements \Lunar\Models\Contracts\Country
+class Country extends BaseModel implements Contracts\Country
 {
     use HasFactory;
     use HasMacros;

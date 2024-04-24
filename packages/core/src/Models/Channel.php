@@ -23,7 +23,7 @@ use Lunar\Database\Factories\ChannelFactory;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Channel extends BaseModel implements \Lunar\Models\Contracts\Channel
+class Channel extends BaseModel implements Contracts\Channel
 {
     use HasDefaultRecord;
     use HasFactory;

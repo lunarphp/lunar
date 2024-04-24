@@ -24,7 +24,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Brand extends BaseModel implements \Lunar\Models\Contracts\Brand, SpatieHasMedia
+class Brand extends BaseModel implements Contracts\Brand, SpatieHasMedia
 {
     use HasAttributes;
     use HasFactory;

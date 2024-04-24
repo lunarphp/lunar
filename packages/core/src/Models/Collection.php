@@ -33,7 +33,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Collection extends BaseModel implements \Lunar\Models\Contracts\Collection, SpatieHasMedia
+class Collection extends BaseModel implements Contracts\Collection, SpatieHasMedia
 {
     use HasChannels,
         HasCustomerGroups,

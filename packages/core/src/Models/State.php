@@ -16,7 +16,7 @@ use Lunar\Database\Factories\StateFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class State extends BaseModel implements \Lunar\Models\Contracts\State
+class State extends BaseModel implements Contracts\State
 {
     use HasFactory;
     use HasMacros;

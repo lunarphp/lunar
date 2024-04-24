@@ -14,7 +14,7 @@ use Lunar\Database\Factories\TagFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Tag extends BaseModel implements \Lunar\Models\Contracts\Tag
+class Tag extends BaseModel implements Contracts\Tag
 {
     use HasFactory;
     use HasMacros;

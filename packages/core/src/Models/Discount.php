@@ -29,7 +29,7 @@ use Lunar\DiscountTypes\AbstractDiscountType;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Discount extends BaseModel implements \Lunar\Models\Contracts\Discount
+class Discount extends BaseModel implements Contracts\Discount
 {
     use HasChannels,
         HasCustomerGroups,

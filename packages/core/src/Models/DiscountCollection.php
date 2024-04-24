@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Database\Factories\DiscountPurchasableFactory;
 
-class DiscountCollection extends BaseModel implements \Lunar\Models\Contracts\DiscountCollection
+class DiscountCollection extends BaseModel implements Contracts\DiscountCollection
 {
     use HasFactory;
 

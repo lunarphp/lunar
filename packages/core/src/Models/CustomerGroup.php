@@ -17,7 +17,7 @@ use Lunar\Database\Factories\CustomerGroupFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CustomerGroup extends BaseModel implements \Lunar\Models\Contracts\CustomerGroup
+class CustomerGroup extends BaseModel implements Contracts\CustomerGroup
 {
     use HasDefaultRecord;
     use HasFactory;

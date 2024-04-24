@@ -17,7 +17,7 @@ use Lunar\Database\Factories\ProductAssociationFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductAssociation extends BaseModel implements \Lunar\Models\Contracts\ProductAssociation
+class ProductAssociation extends BaseModel implements Contracts\ProductAssociation
 {
     use HasFactory;
     use HasMacros;

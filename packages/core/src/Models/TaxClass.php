@@ -16,7 +16,7 @@ use Lunar\Database\Factories\TaxClassFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxClass extends BaseModel implements \Lunar\Models\Contracts\TaxClass
+class TaxClass extends BaseModel implements Contracts\TaxClass
 {
     use HasDefaultRecord;
     use HasFactory;

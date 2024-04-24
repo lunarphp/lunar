@@ -33,7 +33,7 @@ use Lunar\Facades\DB;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Attribute extends BaseModel implements \Lunar\Models\Contracts\Attribute
+class Attribute extends BaseModel implements Contracts\Attribute
 {
     use HasFactory;
     use HasMacros;

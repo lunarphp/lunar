@@ -31,7 +31,7 @@ use Lunar\Facades\Payments;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Transaction extends BaseModel implements \Lunar\Models\Contracts\Transaction
+class Transaction extends BaseModel implements Contracts\Transaction
 {
     use HasFactory;
     use HasMacros;

@@ -26,7 +26,7 @@ use Lunar\DataTypes\Price;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CartLine extends BaseModel implements \Lunar\Models\Contracts\CartLine
+class CartLine extends BaseModel implements Contracts\CartLine
 {
     use CachesProperties;
     use HasFactory;

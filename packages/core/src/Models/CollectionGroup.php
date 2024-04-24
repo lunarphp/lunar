@@ -15,7 +15,7 @@ use Lunar\Database\Factories\CollectionGroupFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CollectionGroup extends BaseModel implements \Lunar\Models\Contracts\CollectionGroup
+class CollectionGroup extends BaseModel implements Contracts\CollectionGroup
 {
     use HasFactory;
     use HasMacros;

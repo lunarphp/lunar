@@ -22,7 +22,7 @@ use Lunar\Database\Factories\CurrencyFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Currency extends BaseModel implements \Lunar\Models\Contracts\Currency
+class Currency extends BaseModel implements Contracts\Currency
 {
     use HasDefaultRecord;
     use HasFactory;

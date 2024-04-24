@@ -54,7 +54,7 @@ use Lunar\Validation\Cart\ValidateCartForOrderCreation;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Cart extends BaseModel implements \Lunar\Models\Contracts\Cart
+class Cart extends BaseModel implements Contracts\Cart
 {
     use CachesProperties;
     use HasFactory;

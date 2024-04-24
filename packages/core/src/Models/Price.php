@@ -23,7 +23,7 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Price extends BaseModel implements \Lunar\Models\Contracts\Price
+class Price extends BaseModel implements Contracts\Price
 {
     use HasFactory;
     use HasMacros;

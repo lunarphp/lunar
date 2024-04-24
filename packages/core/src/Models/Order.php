@@ -43,7 +43,7 @@ use Lunar\Database\Factories\OrderFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Order extends BaseModel implements \Lunar\Models\Contracts\Order
+class Order extends BaseModel implements Contracts\Order
 {
     use HasFactory,
         HasMacros,

@@ -36,7 +36,7 @@ use Lunar\Database\Factories\OrderLineFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class OrderLine extends BaseModel implements \Lunar\Models\Contracts\OrderLine
+class OrderLine extends BaseModel implements Contracts\OrderLine
 {
     use HasFactory;
     use HasMacros;

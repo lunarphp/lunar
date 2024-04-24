@@ -38,7 +38,7 @@ use Lunar\DataTypes\ShippingOption;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CartAddress extends BaseModel implements \Lunar\Models\Contracts\CartAddress, Addressable
+class CartAddress extends BaseModel implements Addressable, Contracts\CartAddress
 {
     use CachesProperties;
     use HasFactory;
