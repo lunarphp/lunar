@@ -30,11 +30,17 @@ class ShippingExclusion extends BaseModel implements \Lunar\Shipping\Models\Cont
         return ShippingExclusionFactory::new();
     }
 
+    /**
+     * Return the shipping zone relationship.
+     */
     public function list(): BelongsTo
     {
         return $this->belongsTo(ShippingZone::modelClass());
     }
 
+    /**
+     * Return the purchasable relationship.
+     */
     public function purchasable(): MorphTo
     {
         return $this->morphTo('purchasable');

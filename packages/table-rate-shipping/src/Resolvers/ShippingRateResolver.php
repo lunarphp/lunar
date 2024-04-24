@@ -18,22 +18,16 @@ class ShippingRateResolver
 
     /**
      * The country to use when resolving.
-     *
-     * @var Country
      */
     protected ?Country $country = null;
 
     /**
      * The state to use when resolving.
-     *
-     * @var State
      */
     protected ?string $state = null;
 
     /**
      * The postcode to use when resolving.
-     *
-     * @var string
      */
     protected ?string $postcode = null;
 
@@ -46,8 +40,6 @@ class ShippingRateResolver
 
     /**
      * Initialise the resolver.
-     *
-     * @param  Cart  $cart
      */
     public function __construct(Cart $cart = null)
     {
@@ -138,8 +130,8 @@ class ShippingRateResolver
             State::whereName($this->state)->first()
         )->postcode(
             new PostcodeLookup(
-                postcode: $this->postcode,
-                country: $this->country
+                country: $this->country,
+                postcode: $this->postcode
             )
         )->get();
 

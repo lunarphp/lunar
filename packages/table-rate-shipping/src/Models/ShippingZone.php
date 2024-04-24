@@ -30,11 +30,17 @@ class ShippingZone extends BaseModel implements \Lunar\Shipping\Models\Contracts
         return ShippingZoneFactory::new();
     }
 
+    /**
+     * Return the shipping methods relationship.
+     */
     public function shippingMethods(): HasMany
     {
         return $this->hasMany(ShippingMethod::modelClass());
     }
 
+    /**
+     * Return the countries relationship.
+     */
     public function countries(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -43,6 +49,9 @@ class ShippingZone extends BaseModel implements \Lunar\Shipping\Models\Contracts
         )->withTimestamps();
     }
 
+    /**
+     * Return the states relationship.
+     */
     public function states(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -51,6 +60,9 @@ class ShippingZone extends BaseModel implements \Lunar\Shipping\Models\Contracts
         )->withTimestamps();
     }
 
+    /**
+     * Return the postcodes relationship.
+     */
     public function postcodes(): HasMany
     {
         return $this->hasMany(ShippingZonePostcode::modelClass());

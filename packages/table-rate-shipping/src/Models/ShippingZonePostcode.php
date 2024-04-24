@@ -29,6 +29,9 @@ class ShippingZonePostcode extends BaseModel implements \Lunar\Shipping\Models\C
         return ShippingZonePostcodeFactory::new();
     }
 
+    /**
+     * Return the shipping zone relationship.
+     */
     public function shippingZone(): BelongsTo
     {
         return $this->belongsTo(ShippingZone::modelClass());

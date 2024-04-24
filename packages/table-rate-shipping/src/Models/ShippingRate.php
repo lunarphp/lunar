@@ -66,7 +66,7 @@ class ShippingRate extends BaseModel implements \Lunar\Shipping\Models\Contracts
         return TaxClass::getDefault();
     }
 
-    public function getTaxReference()
+    public function getTaxReference(): ?string
     {
         return $this->shippingMethod->code;
     }
@@ -74,7 +74,7 @@ class ShippingRate extends BaseModel implements \Lunar\Shipping\Models\Contracts
     /**
      * {@inheritDoc}
      */
-    public function getType()
+    public function getType(): string
     {
         return 'shipping';
     }
@@ -82,7 +82,7 @@ class ShippingRate extends BaseModel implements \Lunar\Shipping\Models\Contracts
     /**
      * {@inheritDoc}
      */
-    public function isShippable()
+    public function isShippable(): bool
     {
         return false;
     }
@@ -90,7 +90,7 @@ class ShippingRate extends BaseModel implements \Lunar\Shipping\Models\Contracts
     /**
      * {@inheritDoc}
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->shippingMethod->name ?: $this->driver()->name();
     }
@@ -98,7 +98,7 @@ class ShippingRate extends BaseModel implements \Lunar\Shipping\Models\Contracts
     /**
      * {@inheritDoc}
      */
-    public function getOption()
+    public function getOption(): ?string
     {
         return $this->shippingMethod->code;
     }
@@ -106,7 +106,7 @@ class ShippingRate extends BaseModel implements \Lunar\Shipping\Models\Contracts
     /**
      * {@inheritDoc}
      */
-    public function getOptions()
+    public function getOptions(): Collection
     {
         return collect();
     }
@@ -114,12 +114,12 @@ class ShippingRate extends BaseModel implements \Lunar\Shipping\Models\Contracts
     /**
      * {@inheritDoc}
      */
-    public function getIdentifier()
+    public function getIdentifier(): ?string
     {
         return $this->shippingMethod->code;
     }
 
-    public function getThumbnail()
+    public function getThumbnail(): ?string
     {
         return null;
     }
