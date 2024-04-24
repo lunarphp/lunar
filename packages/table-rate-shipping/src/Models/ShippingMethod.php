@@ -10,7 +10,7 @@ use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 
-class ShippingMethod extends BaseModel implements \Lunar\Shipping\Models\Contracts\ShippingMethod
+class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
 {
     use HasFactory;
 

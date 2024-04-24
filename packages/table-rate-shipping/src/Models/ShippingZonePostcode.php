@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Factories\ShippingZonePostcodeFactory;
 
-class ShippingZonePostcode extends BaseModel implements \Lunar\Shipping\Models\Contracts\ShippingZonePostcode
+class ShippingZonePostcode extends BaseModel implements Contracts\ShippingZonePostcode
 {
     use HasFactory;
 

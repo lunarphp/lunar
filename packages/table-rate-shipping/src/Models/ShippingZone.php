@@ -10,7 +10,7 @@ use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Shipping\Database\Factories\ShippingZoneFactory;
 
-class ShippingZone extends BaseModel implements \Lunar\Shipping\Models\Contracts\ShippingZone
+class ShippingZone extends BaseModel implements Contracts\ShippingZone
 {
     use HasFactory;
 

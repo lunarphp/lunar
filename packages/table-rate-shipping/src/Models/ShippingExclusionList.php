@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Factories\ShippingExclusionListFactory;
 
-class ShippingExclusionList extends BaseModel implements \Lunar\Shipping\Models\Contracts\ShippingExclusionList
+class ShippingExclusionList extends BaseModel implements Contracts\ShippingExclusionList
 {
     use HasFactory;
 

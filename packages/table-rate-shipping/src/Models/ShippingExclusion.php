@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Factories\ShippingExclusionFactory;
 
-class ShippingExclusion extends BaseModel implements \Lunar\Shipping\Models\Contracts\ShippingExclusion
+class ShippingExclusion extends BaseModel implements Contracts\ShippingExclusion
 {
     use HasFactory;
 
