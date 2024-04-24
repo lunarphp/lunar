@@ -176,7 +176,7 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(DiscountManager::class);
         });
 
-        \Lunar\Facades\ModelManifest::register(); // Facade is the same name as the class, change??
+        \Lunar\Facades\ModelManifest::register();
     }
 
     /**
