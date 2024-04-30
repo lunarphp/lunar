@@ -7,6 +7,7 @@ use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Models\ShippingZone;
+use Lunar\Shipping\Models\ShippingZonePostcode;
 
 class ShippingZoneResolver
 {
@@ -78,6 +79,19 @@ class ShippingZoneResolver
     {
         $query = ShippingZone::query();
 
+        if ($this->postcodeLookup) {
+            $postcodeZone = ShippingZonePostcode::whereIn(
+                'postcode',
+                (new PostcodeResolver)->getParts(
+                    $this->postcodeLookup->postcode
+                )
+            )->orderBy('postcode', 'desc')->first();
+
+            if ($postcodeZone) {
+                return collect([$postcodeZone->shippingZone]);
+            }
+        }
+
         $query->where(function ($builder) {
             if ($this->country) {
                 $builder->orWhere(function ($qb) {
@@ -92,25 +106,6 @@ class ShippingZoneResolver
                     $qb->whereHas('states', function ($query) {
                         $query->where('state_id', $this->state->id);
                     })->whereType('states');
-                });
-            }
-
-            if ($this->postcodeLookup) {
-                $builder->orWhere(function ($qb) {
-                    $qb->whereHas('postcodes', function ($query) {
-                        $postcodeParts = (new PostcodeResolver)->getParts(
-                            $this->postcodeLookup->postcode
-                        );
-                        $query->whereIn('postcode', $postcodeParts);
-                    })->where(function ($qb) {
-                        $qb->whereHas('countries', function ($query) {
-                            $query->where('country_id', $this->postcodeLookup->country->id);
-                        });
-                    })->whereType('postcodes');
-                })->orWhere(function ($qb) {
-                    $qb->whereHas('countries', function ($query) {
-                        $query->where('country_id', $this->postcodeLookup->country->id);
-                    })->whereType('countries');
                 });
             }
         });
