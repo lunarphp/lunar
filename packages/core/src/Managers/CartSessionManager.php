@@ -239,7 +239,7 @@ class CartSessionManager implements CartSessionInterface
         $cart = Cart::create([
             'currency_id' => $this->getCurrency()->id,
             'channel_id' => $this->getChannel()->id,
-            'user_id' => $user?->id,
+            'user_id' => optional($user)->id,
             'customer_id' => optional($user)->latestCustomer()?->id,
         ]);
 
