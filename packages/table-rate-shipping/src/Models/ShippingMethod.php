@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
+use Lunar\Shipping\Interfaces\ShippingRateInterface;
 
 class ShippingMethod extends BaseModel
 {
@@ -38,7 +39,7 @@ class ShippingMethod extends BaseModel
         return $this->hasMany(ShippingRate::class);
     }
 
-    public function driver()
+    public function driver(): ShippingRateInterface
     {
         return Shipping::driver($this->driver);
     }

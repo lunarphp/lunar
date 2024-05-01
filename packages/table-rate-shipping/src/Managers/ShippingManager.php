@@ -56,7 +56,7 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
      */
     public function zones(): ShippingZoneResolver
     {
-        return new ShippingZoneResolver();
+        return app(ShippingZoneResolver::class);
     }
 
     public function shippingRates(Cart $cart = null): ShippingRateResolver
