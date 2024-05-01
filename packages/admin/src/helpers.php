@@ -33,7 +33,7 @@ if (! function_exists('sync_with_search')) {
             $model->customer()->first()->searchable();
         }
 
-        if ($model instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+        if (is_lunar_user($model)) {
             foreach ($model->customers()->get() as $customer) {
                 $customer->searchable();
             }
