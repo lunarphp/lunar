@@ -28,6 +28,16 @@ if (! function_exists('sync_with_search')) {
         if ($model instanceof \Lunar\Models\ProductVariant) {
             $model->product()->first()->searchable();
         }
+
+        if ($model instanceof \Lunar\Models\Address) {
+            $model->customer()->first()->searchable();
+        }
+
+        if ($model instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+            foreach ($model->customers()->get() as $customer) {
+                $customer->searchable();
+            }
+        }
     }
 }
 

@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Admin\Events\ProductPricingUpdated;
 use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
@@ -150,9 +151,7 @@ class CustomerGroupPricingRelationManager extends RelationManager
                     __('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.label')
                 )->modalHeading(__('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.modal.heading'))
                     ->after(
-                        fn () => sync_with_search(
-                            $this->getOwnerRecord()
-                        )
+                        fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
                     ),
             ])
             ->actions([
@@ -164,9 +163,7 @@ class CustomerGroupPricingRelationManager extends RelationManager
 
                     return $data;
                 })->after(
-                    fn () => sync_with_search(
-                        $this->getOwnerRecord()
-                    )
+                    fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
                 ),
                 Tables\Actions\DeleteAction::make(),
             ]);

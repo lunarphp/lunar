@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Admin\Events\ModelMediaUpdated;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaRelationManager extends RelationManager
@@ -92,14 +93,14 @@ class MediaRelationManager extends RelationManager
                             ])
                             ->toMediaCollection($this->mediaCollection);
                     })->after(
-                        fn () => sync_with_search(
+                        fn () => ModelMediaUpdated::dispatch(
                             $this->getOwnerRecord()
                         )
                     ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->after(
-                    fn () => sync_with_search(
+                    fn () => ModelMediaUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
@@ -113,7 +114,7 @@ class MediaRelationManager extends RelationManager
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->after(
-                        fn () => sync_with_search(
+                        fn () => ModelMediaUpdated::dispatch(
                             $this->getOwnerRecord()
                         )
                     ),

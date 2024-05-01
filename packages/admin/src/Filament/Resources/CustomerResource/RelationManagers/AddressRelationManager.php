@@ -7,6 +7,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Events\CustomerAddressEdited;
 use Lunar\Models\Address;
 use Lunar\Models\State;
 
@@ -68,9 +69,7 @@ class AddressRelationManager extends RelationManager
             ])->actions([
                 Tables\Actions\EditAction::make('editAddress')
                     ->after(
-                        fn () => sync_with_search(
-                            $this->getOwnerRecord()
-                        )
+                        fn (Model $record) => CustomerAddressEdited::dispatch($record)
                     )
                     ->fillForm(fn (Address $record): array => [
                         'title' => $record->title,

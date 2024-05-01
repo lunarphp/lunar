@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Admin\Events\ModelChannelsUpdated;
 
 class ChannelRelationManager extends RelationManager
 {
@@ -93,7 +94,7 @@ class ChannelRelationManager extends RelationManager
                 )->dateTime(),
             ])->actions([
                 Tables\Actions\EditAction::make()->after(
-                    fn () => sync_with_search(
+                    fn () => ModelChannelsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),

@@ -14,6 +14,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
+use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Facades\DB;
 use Lunar\Models\Language;
@@ -81,9 +82,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     )->toArray()
                 );
             })->after(
-                fn () => sync_with_search(
-                    $this->record
-                )
+                fn () => ProductVariantOptionsUpdated::dispatch($this->record)
             );
     }
 
@@ -437,9 +436,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     __('lunarpanel::productoption.widgets.product-options.notifications.save-variants.success.title')
                 )->success()->send();
             })->after(
-                fn () => sync_with_search(
-                    $this->record
-                )
+                fn () => ProductVariantOptionsUpdated::dispatch($this->record)
             );
     }
 

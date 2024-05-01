@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 
 class CustomerGroupRelationManager extends RelationManager
 {
@@ -95,9 +96,7 @@ class CustomerGroupRelationManager extends RelationManager
                     ->label(
                         __('lunarpanel::relationmanagers.customer_groups.actions.attach.label')
                     )->after(
-                        fn () => sync_with_search(
-                            $this->getOwnerRecord()
-                        )
+                        fn () => ProductCustomerGroupsUpdated::dispatch($this->getOwnerRecord())
                     ),
             ])->columns([
                 ...[
@@ -116,7 +115,7 @@ class CustomerGroupRelationManager extends RelationManager
                 ],
             ])->actions([
                 Tables\Actions\EditAction::make()->after(
-                    fn () => sync_with_search(
+                    fn () => ProductCustomerGroupsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),

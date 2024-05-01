@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Admin\Events\ModelUrlsUpdated;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 
 class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
@@ -96,19 +97,19 @@ class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
                 Tables\Actions\CreateAction::make()->label(
                     __('lunarpanel::relationmanagers.urls.actions.create.label')
                 )->after(
-                    fn () => sync_with_search(
+                    fn () => ModelUrlsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->after(
-                    fn () => sync_with_search(
+                    fn () => ModelUrlsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
                 Tables\Actions\DeleteAction::make()->after(
-                    fn () => sync_with_search(
+                    fn () => ModelUrlsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
@@ -116,7 +117,7 @@ class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->after(
-                        fn () => sync_with_search(
+                        fn () => ModelUrlsUpdated::dispatch(
                             $this->getOwnerRecord()
                         )
                     ),

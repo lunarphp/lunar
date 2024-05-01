@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Admin\Events\ProductAssociationsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Models\Product;
@@ -86,14 +87,14 @@ class ManageProductAssociations extends BaseManageRelatedRecords
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->after(
-                    fn () => sync_with_search(
+                    fn () => ProductAssociationsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make()->after(
-                    fn () => sync_with_search(
+                    fn () => ProductAssociationsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
@@ -101,7 +102,7 @@ class ManageProductAssociations extends BaseManageRelatedRecords
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->after(
-                        fn () => sync_with_search(
+                        fn () => ProductAssociationsUpdated::dispatch(
                             $this->getOwnerRecord()
                         )
                     ),

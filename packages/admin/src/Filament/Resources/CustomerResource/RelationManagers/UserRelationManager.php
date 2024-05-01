@@ -7,7 +7,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Lunar\Admin\Events\CustomerUserEdited;
 
 class UserRelationManager extends RelationManager
 {
@@ -28,9 +30,7 @@ class UserRelationManager extends RelationManager
         ])->actions([
             Tables\Actions\EditAction::make('edit')
                 ->after(
-                    fn () => sync_with_search(
-                        $this->getOwnerRecord()
-                    )
+                    fn (Model $record) => CustomerUserEdited::dispatch($record)
                 )
                 ->form([
                     Group::make([

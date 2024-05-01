@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Events\ChildCollectionCreated;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\Tables\Actions\Collections\CreateChildCollection;
@@ -74,9 +75,7 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
             }),
         ])->headerActions([
             CreateChildCollection::make('createChildCollection')->after(
-                fn () => sync_with_search(
-                    $this->getOwnerRecord()
-                )
+                fn () => ChildCollectionCreated::dispatch($this->getRecord())
             ),
         ]);
     }

@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Admin\Events\ModelPricesUpdated;
 use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
@@ -180,7 +181,7 @@ class PriceRelationManager extends RelationManager
                 })->label(
                     __('lunarpanel::relationmanagers.pricing.table.actions.create.label')
                 )->after(
-                    fn () => sync_with_search(
+                    fn () => ModelPricesUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
@@ -193,12 +194,12 @@ class PriceRelationManager extends RelationManager
 
                     return $data;
                 })->after(
-                    fn () => sync_with_search(
+                    fn () => ModelPricesUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
                 Tables\Actions\DeleteAction::make()->after(
-                    fn () => sync_with_search(
+                    fn () => ModelPricesUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
