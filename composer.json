@@ -11,6 +11,7 @@
     "require": {
         "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
+        "dompdf/dompdf": "^2.0.7",
         "cartalyst/converter": "^8.0|^9.0",
         "doctrine/dbal": "^3.6",
         "ext-bcmath": "*",
@@ -39,7 +40,6 @@
         "larastan/larastan": "^2.9",
         "laravel/pint": "1.13.1",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/larastan": "^2.0",
         "orchestra/testbench": "^8.0|^9.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
