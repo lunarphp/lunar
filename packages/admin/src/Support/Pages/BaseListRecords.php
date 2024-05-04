@@ -13,6 +13,7 @@ abstract class BaseListRecords extends ListRecords
     use Concerns\ExtendsHeaderWidgets;
     use Concerns\ExtendsHeadings;
     use Concerns\ExtendsTablePagination;
+    use Concerns\ExtendsTabs;
     use \Lunar\Admin\Support\Concerns\CallsHooks;
 
     protected function applySearchToTableQuery(Builder $query): Builder
