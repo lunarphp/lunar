@@ -36,7 +36,7 @@ If you installed the Lunar package in an existing project and you would like to 
 php artisan lunar:search:index
 ```
 
-The command will import the records of the models listed in the `lunar/indexer.php` configuration file. Type `--help` to see the available options.
+The command will import the records of the models listed in the `lunar/search.php` configuration file. Type `--help` to see the available options.
 
 ## Engine Mapping
 

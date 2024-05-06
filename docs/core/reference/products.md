@@ -40,7 +40,7 @@ $product->schedule($customerGroup, now()->addDays(14));
 // Schedule the product to be enabled straight away
 $product->schedule($customerGroup);
 
-// The schedule method will accept and array or collection of customer groups.
+// The schedule method will accept an array or collection of customer groups.
 $product->schedule(CustomerGroup::get());
 ```
 

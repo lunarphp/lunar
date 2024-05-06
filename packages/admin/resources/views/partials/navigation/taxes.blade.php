@@ -16,6 +16,6 @@
       'hover:text-gray-700 text-gray-500' =>  request()->route()->getName() != 'hub.taxes.tax-classes.index'
     ])
   >
-    {{ __('adminhub::settings.tax-classes.index.title') }}
+    {{ __('adminhub::settings.taxes.tax-classes.index.title') }}
   </a>
 </nav>
