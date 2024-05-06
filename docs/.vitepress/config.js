@@ -49,11 +49,11 @@ export default defineConfig({
                 ]
             },
             {
-                text: '0.7',
+                text: '0.8',
                 items: [
                     {text: 'Changelog', link: '/core/upgrading'},
                     {text: 'Contributing', link: '/core/contributing'},
-                    {text: 'Docs Next', link: 'https://docs-next.lunarphp.io/'}
+                    {text: '1.x Docs', link: 'https://docs-v1.lunarphp.io/'}
                 ]
             }
         ],

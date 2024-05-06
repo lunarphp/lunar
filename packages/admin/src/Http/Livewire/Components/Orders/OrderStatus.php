@@ -133,7 +133,7 @@ class OrderStatus extends Component
     {
         $mailer = $this->availableMailers[$this->previewTemplate] ?? null;
 
-        if (!$mailer) {
+        if (! $mailer) {
             return 'Unable to load preview';
         }
 
@@ -169,7 +169,7 @@ class OrderStatus extends Component
 
                 if (method_exists($mailable, 'render')) {
                 }
-                $storedPath = 'orders/activity/' . Str::random() . '.html';
+                $storedPath = 'orders/activity/'.Str::random().'.html';
 
                 $storedMailer = Storage::put(
                     $storedPath,

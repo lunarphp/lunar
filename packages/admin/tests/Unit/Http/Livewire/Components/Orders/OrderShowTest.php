@@ -51,7 +51,7 @@ class OrderShowTest extends TestCase
             'currency_code' => Currency::getDefault()->code,
             'meta' => [
                 'foo' => 'bar',
-            ]
+            ],
         ]);
 
         $this->assertCount(0, $order->lines);

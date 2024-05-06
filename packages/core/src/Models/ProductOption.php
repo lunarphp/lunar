@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
@@ -48,12 +49,12 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         return ProductOptionFactory::new();
     }
 
-    public function getNameAttribute($value)
+    public function getNameAttribute(string $value = null): mixed
     {
         return json_decode($value);
     }
 
-    protected function setNameAttribute($value)
+    protected function setNameAttribute(mixed $value): void
     {
         $this->attributes['name'] = json_encode($value);
     }
@@ -77,9 +78,9 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     /**
      * Get the values.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<ProductOptionValue>
+     * @return HasMany<ProductOptionValue>
      */
-    public function values()
+    public function values(): HasMany
     {
         return $this->hasMany(ProductOptionValue::class)->orderBy('position');
     }

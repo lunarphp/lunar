@@ -29,7 +29,7 @@ class OrderIndexerTest extends TestCase
             'placed_at' => now(),
             'meta' => [
                 'foo' => 'bar',
-            ]
+            ],
         ]);
 
         $data = app(OrderIndexer::class)->toSearchableArray($order);
