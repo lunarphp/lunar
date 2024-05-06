@@ -17,6 +17,6 @@ class AddTypeToCollectionDiscountTable extends Migration
     {
         Schema::table($this->prefix.'collection_discount', function ($table) {
             $table->dropColumn('type');
-        });        
+        });
     }
 }

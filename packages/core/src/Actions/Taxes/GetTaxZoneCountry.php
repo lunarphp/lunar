@@ -14,7 +14,7 @@ class GetTaxZoneCountry
             return $taxZone;
         }
 
-        if (!$taxZone) {
+        if (! $taxZone) {
             return null;
         }
     }
@@ -22,7 +22,6 @@ class GetTaxZoneCountry
     /**
      * Return the zone or zones which match this country.
      *
-     * @param int $countryId
      * @return TaxZoneCountry|null
      */
     protected function getZone(int $countryId)

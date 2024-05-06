@@ -219,8 +219,12 @@ class AdminHubServiceProvider extends ServiceProvider
         $this->registerPublishables();
         $this->registerStateListeners();
 
-        Route::bind('product', function ($id) {
-            return Product::withTrashed()->findOrFail($id);
+        Route::bind('product', function (mixed $value, \Illuminate\Routing\Route $route) {
+            if (in_array(\Lunar\Hub\Http\Middleware\Authenticate::class, $route->middleware())) {
+                return Product::withTrashed()->findOrFail($value);
+            }
+
+            return $value;
         });
 
         // Commands
@@ -334,7 +338,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub.components.orders.capture', OrderCapture::class);
         Livewire::component('hub.components.orders.status', OrderStatus::class);
         Livewire::component('hub.components.tables.actions.update-status', UpdateStatus::class);
-        Livewire::component('hub.components.orders.emil-notification', EmailNotification::class);
+        Livewire::component('hub.components.orders.email-notification', EmailNotification::class);
 
         Livewire::component('hub.components.orders.table', OrdersTable::class);
     }
