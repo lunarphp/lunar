@@ -4,10 +4,12 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
+use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
+use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\CustomerGroup;
 
@@ -45,6 +47,7 @@ class CustomerGroupResource extends BaseResource
             static::getNameFormComponent(),
             static::getHandleFormComponent(),
             static::getDefaultFormComponent(),
+            static::getAttributeDataFormComponent(),
         ];
     }
 
@@ -71,6 +74,11 @@ class CustomerGroupResource extends BaseResource
     {
         return Forms\Components\Toggle::make('default')
             ->label(__('lunarpanel::customergroup.form.default.label'));
+    }
+
+    protected static function getAttributeDataFormComponent(): Component
+    {
+        return Attributes::make()->statePath('attribute_data');
     }
 
     public static function getDefaultTable(Table $table): Table
