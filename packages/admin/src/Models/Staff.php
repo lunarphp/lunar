@@ -59,6 +59,13 @@ class Staff extends Authenticatable
     ];
 
     /**
+     * Append attributes to the model.
+     *
+     * @var array
+     */
+    protected $appends = ['fullName', 'gravatar'];
+
+    /**
      * Create a new instance of the Model.
      */
     public function __construct(array $attributes = [])
