@@ -129,5 +129,6 @@ return [
     'billing_email' => 'Billing Email',
     'add_new' => 'Add new',
     'tabs' => 'Tabs',
-    'sidebar' => 'Sidebar'
+    'sidebar' => 'Sidebar',
+    'store' => 'Store',
 ];

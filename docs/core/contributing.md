@@ -10,12 +10,6 @@ You can contribute to the project in many different ways. Reporting bugs, fixing
 
 Lunar uses a monorepo [lunarphp/lunar](https://github.com/lunarphp/lunar) approach to maintaining its codebase. [Monorepos](https://en.wikipedia.org/wiki/Monorepo) are quite common, but may not be familiar to some. The monorepo helps us to organise the code for ease of development.
 
-## Repository Branching
-
-**Bug Fixes** should target the latest compatible branch version i.e `0.6`. The `main` branch should never have bug fix PR's unless they fix features that are in an upcoming release.
-
-**Features** that bring new (or enhance current) functionality to Lunar should always target the `main` branch.
-
 ## Contributing Code
 
 The basic process for contributing to Lunar is as follows...

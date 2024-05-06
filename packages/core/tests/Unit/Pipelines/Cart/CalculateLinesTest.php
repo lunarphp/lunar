@@ -19,6 +19,7 @@ class CalculateLinesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider providePurchasableData
      */
     public function can_calculate_lines($expectedUnitPrice, $incomingUnitPrice, $unitQuantity)
@@ -46,7 +47,6 @@ class CalculateLinesTest extends TestCase
             'purchasable_id' => $purchasable->id,
             'quantity' => 1,
         ]);
-
 
         $cart = app(CalculateLines::class)->handle($cart, function ($cart) {
             return $cart;
@@ -79,7 +79,7 @@ class CalculateLinesTest extends TestCase
                 '0.55',
                 '5503',
                 '100',
-            ]
+            ],
         ];
     }
 }

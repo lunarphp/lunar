@@ -100,6 +100,40 @@ class ProductShowTest extends TestCase
     }
 
     /** @test */
+    public function cant_view_soft_deleted_products()
+    {
+        $this->setupRolesPermissions();
+
+        $staff = Staff::factory()->create([
+            'admin' => false,
+        ]);
+
+        $staff->givePermissionTo('catalogue:manage-products');
+
+        $this->actingAs($staff, 'staff');
+
+        $product = Product::factory()->create([
+            'deleted_at' => now(),
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        foreach (Currency::get() as $currency) {
+            Price::factory()->create([
+                'priceable_type' => ProductVariant::class,
+                'priceable_id' => $variant->id,
+                'currency_id' => $currency->id,
+                'tier' => 1,
+            ]);
+        }
+
+        $this->get(route('hub.products.show', $product->id))
+            ->assertSeeLivewire('hub.components.products.show');
+    }
+
+    /** @test */
     public function product_with_one_variant_has_variant_components_visible()
     {
         $this->setupRolesPermissions();
