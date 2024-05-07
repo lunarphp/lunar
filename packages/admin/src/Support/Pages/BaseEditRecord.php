@@ -32,4 +32,11 @@ abstract class BaseEditRecord extends EditRecord
 
         return $this->callLunarHook('afterUpdate', $record, $data);
     }
+
+    public function afterSave()
+    {
+        sync_with_search(
+            $this->getRecord()
+        );
+    }
 }
