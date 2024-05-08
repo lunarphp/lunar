@@ -1,7 +1,8 @@
 # Installation
 
-::: danger Work In Progress
-Version 1.x is very much in-development. It is incomplete and not production ready.
+::: danger Alpha Release
+Version 1.x is currently in alpha release. We recommend this version for new projects, however, it is not
+feature-complete and therefore may not be deemed production-ready.
 :::
 
 ## Requirements
