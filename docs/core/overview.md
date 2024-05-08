@@ -1,8 +1,8 @@
 # Welcome to Lunar!
 
 ::: danger Alpha Release
-Version 1.x is currently in alpha release. We recommend this version for new projects, however, it is not 
-feature-complete and therefore may not be deemed production-ready.
+Although many Lunar sites have been launched using v1.x, you may not consider this version production-ready for your own 
+use and should exercise the same amount of caution as you would with any software in an alpha state. 🚀
 :::
 
 We are delighted you are considering Lunar for your project. We've spent a lot of time developing this package to bring headless e-commerce functionality to Laravel.
