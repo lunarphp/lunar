@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Lunar\Admin\LunarPanelManager register()
  * @method static \Lunar\Admin\LunarPanelManager panel(\Closure $closure)
  * @method static \Filament\Panel getPanel()
- * @method static static \Lunar\Admin\LunarPanelManager extensions(array $extensions)
+ * @method static \Lunar\Admin\LunarPanelManager extensions(array $extensions)
  * @method static array<class-string<\Filament\Resources\Resource>> getResources()
  * @method static array<class-string<\Filament\Pages\Page>> getPages()
  * @method static array<class-string<\Filament\Widgets\Widget>> getWidgets()
