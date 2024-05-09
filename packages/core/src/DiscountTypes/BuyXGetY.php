@@ -217,14 +217,14 @@ class BuyXGetY extends AbstractDiscountType
                     }
 
                     $rewardLine = app(Pipeline::class)
-                    ->send($rewardLine)
-                    ->through(
-                        config('lunar.cart.pipelines.cart_lines', [])
-                    )->thenReturn(function ($cartLine) {
-                        $cartLine->cacheProperties();
+                        ->send($rewardLine)
+                        ->through(
+                            config('lunar.cart.pipelines.cart_lines', [])
+                        )->thenReturn(function ($cartLine) {
+                            $cartLine->cacheProperties();
 
-                        return $cartLine;
-                    });
+                            return $cartLine;
+                        });
 
                     $unitQuantity = $purchasable->getUnitQuantity();
 
@@ -279,7 +279,7 @@ class BuyXGetY extends AbstractDiscountType
                 $remainingRewardQty--;
             }
 
-        // we have lines to remove
+            // we have lines to remove
         } elseif ($remainingRewardQty < 0) {
             // while handles the situation where quantity of an item may be more than 1
             while ($remainingRewardQty > 0 && ! empty($automaticLines)) {
