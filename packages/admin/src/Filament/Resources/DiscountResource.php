@@ -310,7 +310,7 @@ class DiscountResource extends BaseResource
                     __('lunarpanel::discount.form.automatic_rewards.label')
                 )->helperText(
                     __('lunarpanel::discount.form.automatic_rewards.helper_text')
-                )->numeric(),
+                ),
         ];
     }
 
