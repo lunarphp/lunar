@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateCustomerGroupProductTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -23,4 +23,4 @@ class CreateCustomerGroupProductTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'customer_group_product');
     }
-}
+};

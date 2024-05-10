@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateOrdersTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -35,4 +35,4 @@ class CreateOrdersTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'orders');
     }
-}
+};

@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class UpdateQuantityOnOrderLinesTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -19,4 +19,4 @@ class UpdateQuantityOnOrderLinesTable extends Migration
             $table->smallInteger('quantity')->unsigned()->change();
         });
     }
-}
+};

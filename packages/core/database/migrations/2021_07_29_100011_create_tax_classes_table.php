@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateTaxClassesTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -19,4 +19,4 @@ class CreateTaxClassesTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'tax_classes');
     }
-}
+};

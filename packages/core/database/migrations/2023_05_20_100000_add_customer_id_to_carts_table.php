@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddCustomerIdToCartsTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -26,4 +26,4 @@ class AddCustomerIdToCartsTable extends Migration
             $table->dropColumn('customer_id');
         });
     }
-}
+};

@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateTaxZoneCustomerGroupsTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -20,4 +20,4 @@ class CreateTaxZoneCustomerGroupsTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'tax_zone_customer_groups');
     }
-}
+};

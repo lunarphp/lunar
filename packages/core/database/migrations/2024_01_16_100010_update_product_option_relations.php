@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 use Lunar\Facades\DB;
 
-class UpdateProductOptionRelations extends Migration
+return new class extends Migration
 {
     public $withinTransaction = true;
 
@@ -61,4 +61,4 @@ class UpdateProductOptionRelations extends Migration
     {
         Schema::dropIfExists($this->prefix.'product_product_option');
     }
-}
+};

@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateProductVariantsTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -32,4 +32,4 @@ class CreateProductVariantsTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'product_variants');
     }
-}
+};

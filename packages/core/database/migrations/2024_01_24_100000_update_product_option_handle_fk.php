@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class UpdateProductOptionHandleFk extends Migration
+return new class extends Migration
 {
     public $withinTransaction = true;
 
@@ -33,4 +33,4 @@ class UpdateProductOptionHandleFk extends Migration
             $table->unique('handle');
         });
     }
-}
+};

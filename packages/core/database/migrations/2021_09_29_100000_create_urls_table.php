@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateUrlsTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -22,4 +22,4 @@ class CreateUrlsTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'urls');
     }
-}
+};

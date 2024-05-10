@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateAttributeGroupsTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -22,4 +22,4 @@ class CreateAttributeGroupsTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'attribute_groups');
     }
-}
+};

@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddAccountRefToCustomersTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -20,4 +20,4 @@ class AddAccountRefToCustomersTable extends Migration
             $table->dropColumn('account_ref');
         });
     }
-}
+};

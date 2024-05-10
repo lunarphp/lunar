@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddAndSetSharedToProductOptionsTable extends Migration
+return new class extends Migration
 {
     public $withinTransaction = true;
 
@@ -26,4 +26,4 @@ class AddAndSetSharedToProductOptionsTable extends Migration
             $table->dropColumn('shared');
         });
     }
-}
+};

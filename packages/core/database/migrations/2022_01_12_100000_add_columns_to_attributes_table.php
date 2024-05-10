@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddColumnsToAttributesTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -23,4 +23,4 @@ class AddColumnsToAttributesTable extends Migration
             $table->dropColumn(['searchable', 'filterable', 'validation_rules']);
         });
     }
-}
+};

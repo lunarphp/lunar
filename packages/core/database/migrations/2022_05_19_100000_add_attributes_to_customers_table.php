@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddAttributesToCustomersTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -19,4 +19,4 @@ class AddAttributesToCustomersTable extends Migration
             $table->dropColumn('attribute_data');
         });
     }
-}
+};

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 use Lunar\Facades\DB;
 
-class AddFieldsToTransactionsTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -37,4 +37,4 @@ class AddFieldsToTransactionsTable extends Migration
             $table->boolean('refund')->default(false)->index();
         });
     }
-}
+};

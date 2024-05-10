@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddStartsEndsAtToChannelablesTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -31,4 +31,4 @@ class AddStartsEndsAtToChannelablesTable extends Migration
             $table->dropColumn('ends_at');
         });
     }
-}
+};

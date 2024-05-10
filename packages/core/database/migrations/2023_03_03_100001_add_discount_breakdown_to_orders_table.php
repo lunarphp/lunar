@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddDiscountBreakdownToOrdersTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -19,4 +19,4 @@ class AddDiscountBreakdownToOrdersTable extends Migration
             $table->dropColumn('discount_breakdown');
         });
     }
-}
+};

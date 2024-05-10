@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateCurrenciesTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -27,4 +27,4 @@ class CreateCurrenciesTable extends Migration
     {
         Schema::dropIfExists($this->prefix.'currencies');
     }
-}
+};

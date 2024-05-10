@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 use Lunar\Facades\DB;
 
-class AddBrandIdToProductsTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -32,4 +32,4 @@ class AddBrandIdToProductsTable extends Migration
             $table->dropColumn('brand_id');
         });
     }
-}
+};
