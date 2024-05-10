@@ -26,7 +26,7 @@ abstract class Migration extends BaseMigration
      */
     public function getConnection()
     {
-        if ($connection = config('lunar.database.connection', false)) {
+        if ($connection = config('lunar.database.connection')) {
             return $connection;
         }
 
