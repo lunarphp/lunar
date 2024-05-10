@@ -7,7 +7,7 @@ use Lunar\Facades\DB;
 
 class AddFieldsToTransactionsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'transactions', function (Blueprint $table) {
             $table->foreignId('parent_transaction_id')->after('id')
@@ -23,7 +23,7 @@ class AddFieldsToTransactionsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'transactions', function ($table) {
             if (DB::getDriverName() !== 'sqlite') {

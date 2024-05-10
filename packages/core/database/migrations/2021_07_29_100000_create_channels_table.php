@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateChannelsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'channels', function (Blueprint $table) {
             $table->id();
@@ -19,7 +19,7 @@ class CreateChannelsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'channels');
     }

@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateCartsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'carts', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -22,7 +22,7 @@ class CreateCartsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'carts');
     }

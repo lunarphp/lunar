@@ -8,7 +8,7 @@ class AddAndSetSharedToProductOptionsTable extends Migration
 {
     public $withinTransaction = true;
 
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->boolean('shared')->after('handle')->default(false)->index();
@@ -19,7 +19,7 @@ class AddAndSetSharedToProductOptionsTable extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->dropIndex(['shared']);

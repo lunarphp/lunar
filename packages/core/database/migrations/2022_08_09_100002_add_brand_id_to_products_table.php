@@ -7,7 +7,7 @@ use Lunar\Facades\DB;
 
 class AddBrandIdToProductsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'products', function (Blueprint $table) {
             $table->foreignId('brand_id')->after('id')
@@ -23,7 +23,7 @@ class AddBrandIdToProductsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'products', function ($table) {
             if (DB::getDriverName() !== 'sqlite') {

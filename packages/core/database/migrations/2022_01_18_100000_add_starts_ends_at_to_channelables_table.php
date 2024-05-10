@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class AddStartsEndsAtToChannelablesTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         /**
          * SQLite will only allow one per transaction when modifying columns.
@@ -20,7 +20,7 @@ class AddStartsEndsAtToChannelablesTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'channelables', function ($table) {
             $table->renameColumn('starts_at', 'published_at');

@@ -8,7 +8,7 @@ class UpdateProductOptionHandleFk extends Migration
 {
     public $withinTransaction = true;
 
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->dropUnique(
@@ -21,7 +21,7 @@ class UpdateProductOptionHandleFk extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->dropIndex(

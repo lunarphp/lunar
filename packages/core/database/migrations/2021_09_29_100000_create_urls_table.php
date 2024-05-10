@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateUrlsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'urls', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -18,7 +18,7 @@ class CreateUrlsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'urls');
     }

@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateProductProductOptionTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'product_product_option', function (Blueprint $table) {
             $table->id();
@@ -16,7 +16,7 @@ class CreateProductProductOptionTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'product_product_option');
     }

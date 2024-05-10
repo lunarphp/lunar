@@ -7,7 +7,7 @@ use Lunar\Facades\DB;
 
 class AddCustomerIdToOrdersTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->foreignId('customer_id')->after('id')
@@ -16,7 +16,7 @@ class AddCustomerIdToOrdersTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'orders', function ($table) {
             if (DB::getDriverName() !== 'sqlite') {

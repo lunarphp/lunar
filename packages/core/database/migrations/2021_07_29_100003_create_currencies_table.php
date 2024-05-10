@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateCurrenciesTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'currencies', function (Blueprint $table) {
             $table->id();
@@ -23,7 +23,7 @@ class CreateCurrenciesTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'currencies');
     }

@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateCollectionCustomerGroupTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'collection_customer_group', function (Blueprint $table) {
             $table->id();
@@ -18,7 +18,7 @@ class CreateCollectionCustomerGroupTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'collection_customer_group');
     }

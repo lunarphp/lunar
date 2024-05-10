@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateActivityLogTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $tableName = config('activitylog.table_name');
 
@@ -26,7 +26,7 @@ class CreateActivityLogTable extends Migration
         }
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists(config('activitylog.table_name'));
     }

@@ -6,14 +6,14 @@ use Lunar\Base\Migration;
 
 class AddDiscountBreakdownToOrdersTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->json('discount_breakdown')->nullable()->after('sub_total');
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'orders', function ($table) {
             $table->dropColumn('discount_breakdown');

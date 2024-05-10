@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class RemovePositionFromProductOptionsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->dropIndex(['position']);
@@ -14,7 +14,7 @@ class RemovePositionFromProductOptionsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->smallInteger('position')->after('label');

@@ -6,14 +6,14 @@ use Lunar\Base\Migration;
 
 class AddPositionToMediaProductVariantTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'media_product_variant', function (Blueprint $table) {
             $table->smallInteger('position')->after('primary')->default(1)->index();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'media_product_variant', function (Blueprint $table) {
             $table->dropIndex(['position']);

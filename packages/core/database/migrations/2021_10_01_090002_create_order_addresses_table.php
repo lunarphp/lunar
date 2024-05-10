@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateOrderAddressesTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'order_addresses', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -32,7 +32,7 @@ class CreateOrderAddressesTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'order_addresses');
     }

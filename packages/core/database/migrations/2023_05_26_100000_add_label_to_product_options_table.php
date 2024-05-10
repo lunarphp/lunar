@@ -6,14 +6,14 @@ use Lunar\Base\Migration;
 
 class AddLabelToProductOptionsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->json('label')->nullable()->after('name');
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'product_options', function ($table) {
             $table->dropColumn('label');

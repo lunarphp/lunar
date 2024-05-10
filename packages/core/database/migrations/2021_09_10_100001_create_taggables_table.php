@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateTaggablesTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'taggables', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -16,7 +16,7 @@ class CreateTaggablesTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'taggables');
     }

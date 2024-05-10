@@ -6,14 +6,14 @@ use Lunar\Base\Migration;
 
 class AddNewCustomerFlagToOrdersTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->boolean('new_customer')->after('channel_id')->default(false)->index();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->dropIndex(['new_customer']);

@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class CreateDiscountsTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'discounts', function (Blueprint $table) {
             $table->id();
@@ -26,7 +26,7 @@ class CreateDiscountsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'discounts');
     }

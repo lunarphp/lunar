@@ -6,7 +6,7 @@ use Lunar\Base\Migration;
 
 class UpdatePricesOnPricesTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'prices', function (Blueprint $table) {
             $table->unsignedBigInteger('price')->change();
@@ -14,7 +14,7 @@ class UpdatePricesOnPricesTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'prices', function (Blueprint $table) {
             $table->unsignedInteger('price')->change();

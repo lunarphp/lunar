@@ -6,14 +6,14 @@ use Lunar\Base\Migration;
 
 class AddPositionToProductOptionValuesTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'product_option_values', function (Blueprint $table) {
             $table->integer('position')->after('name')->default(0)->index();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'product_option_values', function (Blueprint $table) {
             $table->dropIndex(['position']);

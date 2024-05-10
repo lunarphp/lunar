@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateMediaTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasTable('media')) {
             Schema::create('media', function (Blueprint $table) {
