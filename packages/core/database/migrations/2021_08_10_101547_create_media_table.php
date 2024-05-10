@@ -31,4 +31,9 @@ return new class extends Migration
             });
         }
     }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('media');
+    }
 };
