@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasTranslations;
@@ -21,11 +24,13 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property \Illuminate\Support\Collection $label
  * @property int $position
  * @property ?string $handle
+ * @property ?array $attribute_data
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
 class ProductOption extends BaseModel implements SpatieHasMedia
 {
+    use HasAttributes;
     use HasFactory;
     use HasMacros;
     use HasMedia;
@@ -41,6 +46,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         'name' => AsCollection::class,
         'label' => AsCollection::class,
         'shared' => 'boolean',
+        'attribute_data' => AsAttributeData::class,
     ];
 
     /**
@@ -87,5 +93,19 @@ class ProductOption extends BaseModel implements SpatieHasMedia
             Product::class,
             "{$prefix}product_product_option"
         )->withPivot(['position'])->orderByPivot('position');
+    }
+
+    /**
+     * Get the mapped attributes relation.
+     */
+    public function mappedAttributes(): MorphToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->morphToMany(
+            Attribute::class,
+            'attributable',
+            "{$prefix}attributables"
+        )->withTimestamps();
     }
 }
