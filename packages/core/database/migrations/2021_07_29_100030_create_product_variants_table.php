@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class CreateProductVariantsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create($this->prefix.'product_variants', function (Blueprint $table) {
@@ -33,11 +28,6 @@ class CreateProductVariantsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists($this->prefix.'product_variants');

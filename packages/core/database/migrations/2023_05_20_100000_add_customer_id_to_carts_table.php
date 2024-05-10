@@ -7,11 +7,6 @@ use Lunar\Base\Migration;
 
 class AddCustomerIdToCartsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::table($this->prefix.'carts', function (Blueprint $table) {
@@ -21,11 +16,6 @@ class AddCustomerIdToCartsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table($this->prefix.'carts', function (Blueprint $table) {

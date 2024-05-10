@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class CreateCollectionProductTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create($this->prefix.'collection_product', function (Blueprint $table) {
@@ -22,11 +17,6 @@ class CreateCollectionProductTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists($this->prefix.'collection_product');

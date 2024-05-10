@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class AddHandlePositionToProductOptionsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
@@ -20,11 +15,6 @@ class AddHandlePositionToProductOptionsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {

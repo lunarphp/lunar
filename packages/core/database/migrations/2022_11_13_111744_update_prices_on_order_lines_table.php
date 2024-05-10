@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class UpdatePricesOnOrderLinesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::table($this->prefix.'order_lines', function (Blueprint $table) {
@@ -22,11 +17,6 @@ class UpdatePricesOnOrderLinesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table($this->prefix.'order_lines', function (Blueprint $table) {

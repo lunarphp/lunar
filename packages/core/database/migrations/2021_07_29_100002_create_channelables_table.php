@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class CreateChannelablesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create($this->prefix.'channelables', function (Blueprint $table) {
@@ -23,11 +18,6 @@ class CreateChannelablesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists($this->prefix.'channelables');

@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class AddNewCustomerFlagToOrdersTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
@@ -18,11 +13,6 @@ class AddNewCustomerFlagToOrdersTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {

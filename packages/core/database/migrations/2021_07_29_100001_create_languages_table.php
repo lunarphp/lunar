@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class CreateLanguagesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create($this->prefix.'languages', function (Blueprint $table) {
@@ -22,11 +17,6 @@ class CreateLanguagesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists($this->prefix.'languages');

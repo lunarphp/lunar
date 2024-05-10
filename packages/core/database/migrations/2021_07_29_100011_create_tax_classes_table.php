@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class CreateTaxClassesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create($this->prefix.'tax_classes', function (Blueprint $table) {
@@ -20,11 +15,6 @@ class CreateTaxClassesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists($this->prefix.'tax_classes');

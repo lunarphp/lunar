@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class CreateAddressesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create($this->prefix.'addresses', function (Blueprint $table) {
@@ -37,11 +32,6 @@ class CreateAddressesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists($this->prefix.'addresses');

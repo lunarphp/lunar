@@ -6,11 +6,6 @@ use Lunar\Base\Migration;
 
 class CreateCustomerCustomerGroupTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create($this->prefix.'customer_customer_group', function (Blueprint $table) {
@@ -21,11 +16,6 @@ class CreateCustomerCustomerGroupTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists($this->prefix.'customer_customer_group');
