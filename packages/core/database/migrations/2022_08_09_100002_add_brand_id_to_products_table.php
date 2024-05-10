@@ -25,7 +25,7 @@ class AddBrandIdToProductsTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'products', function ($table) {
+        Schema::table($this->prefix.'products', function (Blueprint $table) {
             if (DB::getDriverName() !== 'sqlite') {
                 $table->dropForeign(['brand_id']);
             }

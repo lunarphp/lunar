@@ -15,7 +15,7 @@ class AddAttributesToCustomersTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'customers', function ($table) {
+        Schema::table($this->prefix.'customers', function (Blueprint $table) {
             $table->dropColumn('attribute_data');
         });
     }

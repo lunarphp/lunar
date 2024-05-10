@@ -15,7 +15,7 @@ class AddShippingBreakdownToOrdersTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'orders', function ($table) {
+        Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->dropColumn('shipping_breakdown');
         });
     }

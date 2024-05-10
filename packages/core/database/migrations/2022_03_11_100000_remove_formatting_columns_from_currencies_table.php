@@ -15,7 +15,7 @@ class RemoveFormattingColumnsFromCurrenciesTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'currencies', function ($table) {
+        Schema::table($this->prefix.'currencies', function (Blueprint $table) {
             $table->string('format')->nullable();
             $table->string('decimal_point')->nullable();
             $table->string('thousand_point')->nullable();

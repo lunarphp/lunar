@@ -15,7 +15,7 @@ class AddDescriptionToAttributesTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'attributes', function ($table) {
+        Schema::table($this->prefix.'attributes', function (Blueprint $table) {
             $table->dropColumn('description');
         });
     }

@@ -18,7 +18,7 @@ class AddCustomerIdToOrdersTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'orders', function ($table) {
+        Schema::table($this->prefix.'orders', function (Blueprint $table) {
             if (DB::getDriverName() !== 'sqlite') {
                 $table->dropForeign(['customer_id']);
             }

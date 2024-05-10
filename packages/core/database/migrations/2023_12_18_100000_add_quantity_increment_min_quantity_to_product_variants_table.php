@@ -16,11 +16,12 @@ class AddQuantityIncrementMinQuantityToProductVariantsTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'product_variants', function ($table) {
+        Schema::table($this->prefix.'product_variants', function (Blueprint $table) {
             $table->dropIndex(['quantity_increment']);
             $table->dropColumn('quantity_increment');
         });
-        Schema::table($this->prefix.'product_variants', function ($table) {
+
+        Schema::table($this->prefix.'product_variants', function (Blueprint $table) {
             $table->dropIndex(['min_quantity']);
             $table->dropColumn('min_quantity');
         });

@@ -15,7 +15,7 @@ class FixLastFourOnTransactionsTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'transactions', function ($table) {
+        Schema::table($this->prefix.'transactions', function (Blueprint $table) {
             $table->smallInteger('last_four')->unsigned()->change();
         });
     }

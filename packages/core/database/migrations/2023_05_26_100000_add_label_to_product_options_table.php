@@ -15,7 +15,7 @@ class AddLabelToProductOptionsTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'product_options', function ($table) {
+        Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->dropColumn('label');
         });
     }

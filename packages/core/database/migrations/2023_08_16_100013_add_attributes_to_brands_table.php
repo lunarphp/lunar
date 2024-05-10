@@ -15,7 +15,7 @@ class AddAttributesToBrandsTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'brands', function ($table) {
+        Schema::table($this->prefix.'brands', function (Blueprint $table) {
             $table->dropColumn('attribute_data');
         });
     }

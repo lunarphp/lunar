@@ -15,7 +15,7 @@ class AddMaxUsesPerUserToDiscountsTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'discounts', function ($table) {
+        Schema::table($this->prefix.'discounts', function (Blueprint $table) {
             $table->dropColumn('max_uses_per_user');
         });
     }

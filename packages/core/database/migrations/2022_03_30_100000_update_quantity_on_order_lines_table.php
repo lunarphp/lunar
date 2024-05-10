@@ -15,7 +15,7 @@ class UpdateQuantityOnOrderLinesTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'order_lines', function ($table) {
+        Schema::table($this->prefix.'order_lines', function (Blueprint $table) {
             $table->smallInteger('quantity')->unsigned()->change();
         });
     }

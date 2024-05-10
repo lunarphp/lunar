@@ -15,7 +15,7 @@ class UpdateQuantityOnCartLinesTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'cart_lines', function ($table) {
+        Schema::table($this->prefix.'cart_lines', function (Blueprint $table) {
             $table->smallInteger('quantity')->unsigned()->change();
         });
     }

@@ -22,11 +22,11 @@ class AddStartsEndsAtToChannelablesTable extends Migration
 
     public function down(): void
     {
-        Schema::table($this->prefix.'channelables', function ($table) {
+        Schema::table($this->prefix.'channelables', function (Blueprint $table) {
             $table->renameColumn('starts_at', 'published_at');
         });
 
-        Schema::table($this->prefix.'channelables', function ($table) {
+        Schema::table($this->prefix.'channelables', function (Blueprint $table) {
             $table->dropIndex(['ends_at']);
             $table->dropColumn('ends_at');
         });
