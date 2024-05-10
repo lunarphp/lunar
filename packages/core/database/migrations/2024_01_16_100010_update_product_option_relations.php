@@ -6,8 +6,6 @@ use Lunar\Facades\DB;
 
 return new class extends Migration
 {
-    public $withinTransaction = true;
-
     public function up(): void
     {
         $variantsTable = $this->prefix.'product_variants';

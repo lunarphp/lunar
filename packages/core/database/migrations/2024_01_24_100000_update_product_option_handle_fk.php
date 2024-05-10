@@ -6,8 +6,6 @@ use Lunar\Base\Migration;
 
 return new class extends Migration
 {
-    public $withinTransaction = true;
-
     public function up(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
