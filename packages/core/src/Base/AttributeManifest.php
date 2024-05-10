@@ -10,6 +10,7 @@ use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Customer;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
 
 class AttributeManifest
@@ -25,6 +26,7 @@ class AttributeManifest
         Product::class,
         ProductVariant::class,
         ProductOption::class,
+        ProductOptionValue::class,
         ModelsCollection::class,
         Customer::class,
         Brand::class,
