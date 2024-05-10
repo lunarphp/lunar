@@ -12,7 +12,7 @@ class CreateChannelsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('handle')->unique();
-            $table->boolean('default')->default(0)->index();
+            $table->boolean('default')->default(false)->index();
             $table->string('url')->nullable();
             $table->timestamps();
             $table->softDeletes();

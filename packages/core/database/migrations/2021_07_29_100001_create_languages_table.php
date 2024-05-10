@@ -12,7 +12,7 @@ class CreateLanguagesTable extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
-            $table->boolean('default')->default(0)->index();
+            $table->boolean('default')->default(false)->index();
             $table->timestamps();
         });
     }
