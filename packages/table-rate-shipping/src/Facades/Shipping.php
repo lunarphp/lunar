@@ -7,7 +7,7 @@ use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 
 class Shipping extends Facade
 {
-    public static function getFacadeAccessor()
+    public static function getFacadeAccessor(): string
     {
         return ShippingMethodManagerInterface::class;
     }

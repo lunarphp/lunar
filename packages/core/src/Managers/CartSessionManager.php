@@ -234,10 +234,13 @@ class CartSessionManager implements CartSessionInterface
      */
     protected function createNewCart()
     {
+        $user = $this->authManager->user();
+
         $cart = Cart::create([
             'currency_id' => $this->getCurrency()->id,
             'channel_id' => $this->getChannel()->id,
-            'user_id' => $this->authManager->user()?->id,
+            'user_id' => optional($user)->id,
+            'customer_id' => optional($user)->latestCustomer()?->id,
         ]);
 
         return $this->use($cart);

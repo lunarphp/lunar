@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Admin\Events\ModelMediaUpdated;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaRelationManager extends RelationManager
@@ -96,10 +97,18 @@ class MediaRelationManager extends RelationManager
                                 'primary' => $data['custom_properties']['primary'],
                             ])
                             ->toMediaCollection($this->mediaCollection);
-                    }),
+                    })->after(
+                        fn () => ModelMediaUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => ModelMediaUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
                 Tables\Actions\DeleteAction::make(),
                 Action::make('view_open')
                     ->label(__('lunarpanel::relationmanagers.medias.actions.view.label'))
@@ -109,7 +118,11 @@ class MediaRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->after(
+                        fn () => ModelMediaUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ])
             ->reorderable('order_column');
