@@ -1,9 +1,11 @@
 <?php
 
-namespace Lunar\Tests\Admin\Unit\Support\Extending;
-
-use Filament;
 use Lunar\Admin\Filament\Resources\ActivityResource;
+use \Lunar\Admin\Filament\Resources\LanguageResource\Pages\EditLanguage;
+use \Lunar\Admin\Filament\Resources\CurrencyResource\Pages\EditCurrency;
+use \Filament\Forms\Form;
+use \Filament\Tables\Table;
+use \Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ListActivities;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\ListAttributeGroups;
@@ -12,9 +14,9 @@ use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\LanguageResource;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\ListLanguages;
-use Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Tests\Admin\Stubs\Filament\TestCustomerAddressRelationManager;
+
 
 uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('extending', 'extending.resources');
@@ -22,7 +24,7 @@ uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
 it('can extend relationship managers', function () {
     $class = new class extends ResourceExtension
     {
-        public function getRelations(array $managers): array
+        function getRelations(array $managers): array
         {
             return [
                 TestCustomerAddressRelationManager::class,
@@ -34,14 +36,14 @@ it('can extend relationship managers', function () {
         CustomerResource::class => $class::class,
     ]);
 
-    $relations = CustomerResource::getRelations();
+    $relations = getRelations();
     expect($relations)->toContain(TestCustomerAddressRelationManager::class);
 });
 
 it('can extend table columns', function ($resource, $page) {
     $class = new class extends ResourceExtension
     {
-        public function extendTable(Filament\Tables\Table $table): Filament\Tables\Table
+        function extendTable(Filament\Tables\Table $table): Filament\Tables\Table
         {
             return $table->columns([
                 ...$table->getColumns(),
@@ -67,7 +69,7 @@ it('can extend table columns', function ($resource, $page) {
 it('can extend form schema', function ($resource, $page) {
     $class = new class extends \Lunar\Admin\Support\Extending\ResourceExtension
     {
-        public function extendForm(Filament\Forms\Form $form): Filament\Forms\Form
+        function extendForm(Filament\Forms\Form $form): Filament\Forms\Form
         {
             $form->schema([
                 ...$form->getComponents(true),

@@ -1,59 +1,43 @@
 <?php
 
-namespace Lunar\Tests\Unit\Base;
+uses(\Lunar\Tests\Core\TestCase::class);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Base\ShippingModifier;
 use Lunar\Base\ShippingModifiers;
+use \Lunar\Base\ShippingModifier;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
-use Lunar\Tests\TestCase;
 
-class ShippingModifiersTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    private Cart $cart;
+beforeEach(function () {
+    $currency = Currency::factory()->create([
+        'decimal_places' => 2,
+    ]);
 
-    private ShippingModifiers $shippingModifiers;
+    $this->cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
 
-    private ShippingModifier $class;
-
-    public function setUp(): void
+    $this->class = new class extends ShippingModifier
     {
-        parent::setUp();
-
-        $currency = Currency::factory()->create([
-            'decimal_places' => 2,
-        ]);
-
-        $this->cart = Cart::factory()->create([
-            'currency_id' => $currency->id,
-        ]);
-
-        $this->class = new class extends ShippingModifier
+        function handle(Cart $cart)
         {
-            public function handle(Cart $cart)
-            {
-                //
-            }
-        };
+            //
+        }
+    };
 
-        $this->shippingModifiers = new ShippingModifiers();
-    }
+    $this->shippingModifiers = new ShippingModifiers();
+});
 
-    /** @test */
-    public function can_add_modifier()
-    {
-        $this->shippingModifiers->add($this->class::class);
+test('can add modifier', function () {
+    $this->shippingModifiers->add($this->class::class);
 
-        $this->assertCount(1, $this->shippingModifiers->getModifiers());
-    }
+    expect($this->shippingModifiers->getModifiers())->toHaveCount(1);
+});
 
-    public function can_remove_modifier()
-    {
-        $this->shippingModifiers->remove($this->class::class);
+function can_remove_modifier()
+{
+    $this->shippingModifiers->remove($this->class::class);
 
-        $this->assertCount(0, $this->shippingModifiers->getModifiers());
-    }
+    expect($this->shippingModifiers->getModifiers())->toHaveCount(0);
 }
