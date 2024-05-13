@@ -2,8 +2,8 @@
 
 uses(\Lunar\Tests\Core\TestCase::class);
 
+use Lunar\Base\ShippingModifier;
 use Lunar\Base\ShippingModifiers;
-use \Lunar\Base\ShippingModifier;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 
@@ -20,7 +20,7 @@ beforeEach(function () {
 
     $this->class = new class extends ShippingModifier
     {
-        function handle(Cart $cart)
+        public function handle(Cart $cart)
         {
             //
         }

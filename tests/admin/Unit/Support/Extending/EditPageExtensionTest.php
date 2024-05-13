@@ -9,7 +9,7 @@ uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
 it('can extend header actions', function () {
     $class = new class extends \Lunar\Admin\Support\Extending\EditPageExtension
     {
-        function headerActions(array $actions): array
+        public function headerActions(array $actions): array
         {
             return [
                 \Filament\Actions\Action::make('header_action_a'),
@@ -35,7 +35,7 @@ it('can extend header actions', function () {
 it('can extend form actions', function () {
     $class = new class extends \Lunar\Admin\Support\Extending\EditPageExtension
     {
-        function formActions(array $actions): array
+        public function formActions(array $actions): array
         {
             return [
                 \Filament\Actions\Action::make('form_action_a'),
