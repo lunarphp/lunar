@@ -28,16 +28,16 @@ class CartPruneTest extends TestCase
             'meta' => ['foo' => 'bar'],
             'updated_at' => Carbon::now()->subDay(120),
         ]);
-        
+
         $cart = Cart::create([
             'currency_id' => $currency->id,
             'channel_id' => $channel->id,
             'meta' => ['foo' => 'bar'],
             'updated_at' => Carbon::now()->subDay(20),
         ]);
-        
+
         $this->assertCount(2, Cart::query()->get());
-        
+
         $this->artisan('lunar:prune:carts');
 
         $this->assertCount(1, Cart::query()->get());
