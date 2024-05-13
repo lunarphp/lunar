@@ -4,7 +4,6 @@ uses(\Lunar\Tests\Core\TestCase::class);
 
 use Lunar\Models\Product;
 
-
 beforeEach(function () {
     $this->model = new Product();
 });
@@ -21,7 +20,7 @@ test('can register a new macro', function () {
 test('can register a new macro and be invoked', function () {
     $this->model::macro('newMethod', new class()
     {
-        function __invoke()
+        public function __invoke()
         {
             return 'newValue';
         }
