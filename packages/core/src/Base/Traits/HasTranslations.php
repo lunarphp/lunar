@@ -4,6 +4,7 @@ namespace Lunar\Base\Traits;
 
 use Illuminate\Support\Arr;
 use Lunar\Base\FieldType;
+use Lunar\Models\Language;
 
 trait HasTranslations
 {
@@ -40,17 +41,23 @@ trait HasTranslations
 
     /**
      * Translate a value from attribute data.
-     *
-     * @param  string  $attribute
-     * @param  string  $locale
-     * @return string|null
      */
-    public function translateAttribute($attribute, $locale = null)
+    public function translateAttribute(string $attribute, string $locale = null): ?string
     {
         $field = Arr::get($this->getAttribute('attribute_data'), $attribute);
 
         if (! $field) {
             return null;
+        }
+
+        $appLocale = app()->getLocale();
+        $defaultLocale = Language::getDefault()?->code;
+
+        // If a locale isn't explicitly passed then determine whether
+        // we are on a different locale in the app to our default
+        // language and if so use that.
+        if (! $locale) {
+            $locale = $appLocale != $defaultLocale ? $appLocale : $defaultLocale;
         }
 
         $translations = $field->getValue();
@@ -59,8 +66,21 @@ trait HasTranslations
             return $translations;
         }
 
-        $value = Arr::get($translations, $locale ?: app()->getLocale(), Arr::first($translations));
+        //        dd($translations, $field);
 
+        // Filter out any translations which don't actually have a value.
+        // We also sort by whether the translation is for the default locale
+        // so in the event we fall back to the first translation, it should
+        // be the default language.
+        $translations = $translations->reject(
+            fn ($fieldType) => ! $fieldType->getValue()
+        )->sortBy(
+            fn ($fieldType, $key) => $key == $defaultLocale
+        );
+
+        $value = Arr::get($translations, $locale, Arr::first($translations));
+
+        dd($value);
         // When we don't have a value, we just return null as it may not have a value.
         if (! $value) {
             return null;
@@ -74,7 +94,7 @@ trait HasTranslations
             return $field->getValue();
         }
 
-        return $value ? $value->getValue() : null;
+        return $value?->getValue();
     }
 
     /**

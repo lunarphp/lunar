@@ -54,18 +54,21 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     public static function mapCollections($collections)
     {
+
         return collect($collections)->map(
-            fn ($collection) => [
-                'id' => $collection->id,
-                'parent_id' => $collection->parent_id,
-                'name' => $collection->attr('name'),
-                'edit_url' => CollectionResource::getUrl('edit', [
-                    'record' => $collection,
-                ]),
-                'thumbnail' => $collection->thumbnail?->getUrl('small'),
-                'children' => [],
-                'children_count' => $collection->children_count,
-            ]
+            function ($collection) {
+                return [
+                    'id' => $collection->id,
+                    'parent_id' => $collection->parent_id,
+                    'name' => $collection->attr('name'),
+                    'edit_url' => CollectionResource::getUrl('edit', [
+                        'record' => $collection,
+                    ]),
+                    'thumbnail' => $collection->thumbnail?->getUrl('small'),
+                    'children' => [],
+                    'children_count' => $collection->children_count,
+                ];
+            }
         )->toArray();
     }
 

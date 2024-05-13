@@ -1,6 +1,7 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class)->group('translations');
+
 use Lunar\FieldTypes\Dropdown;
 use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Text;
@@ -249,7 +250,7 @@ test('handle if we try and translate a non translatable attribute', function () 
     expect($product->translateAttribute('name'))->toEqual('Test Name');
     expect($product->translateAttribute('dropdown'))->toEqual('Foobar');
     expect($product->translateAttribute('list'))->toEqual(['One', 'Two', 'Three']);
-});
+})->group('a');
 
 test('can use shorthand function to translate attributes', function () {
     $attributeGroup = AttributeGroup::factory()->create([
