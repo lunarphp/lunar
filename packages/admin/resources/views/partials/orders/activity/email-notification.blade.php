@@ -1,5 +1,5 @@
 <div>
-    @livewire('hub.components.orders.emil-notification', [
+    @livewire('hub.components.orders.email-notification', [
         'log' => $log,
     ])
 </div>
