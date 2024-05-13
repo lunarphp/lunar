@@ -31,7 +31,7 @@ it('can extend relationship managers', function () {
         CustomerResource::class => $class::class,
     ]);
 
-    $relations = getRelations();
+    $relations = CustomerResource::getRelations();
     expect($relations)->toContain(TestCustomerAddressRelationManager::class);
 });
 
