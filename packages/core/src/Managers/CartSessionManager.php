@@ -145,6 +145,8 @@ class CartSessionManager implements CartSessionInterface
             );
         }
 
+        $this->use($this->cart);
+
         return $this->cart->calculate();
     }
 
