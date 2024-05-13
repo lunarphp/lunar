@@ -50,12 +50,10 @@ class ShippingModifiersTest extends TestCase
         $this->assertCount(1, $this->shippingModifiers->getModifiers());
     }
 
-
     public function can_remove_modifier()
     {
         $this->shippingModifiers->remove($this->class::class);
 
         $this->assertCount(0, $this->shippingModifiers->getModifiers());
     }
-
 }
