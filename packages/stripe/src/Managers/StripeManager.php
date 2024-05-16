@@ -4,6 +4,8 @@ namespace Lunar\Stripe\Managers;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
+use Lunar\Stripe\MockClient;
+use Stripe\ApiRequestor;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
@@ -14,6 +16,12 @@ class StripeManager
     public function __construct()
     {
         Stripe::setApiKey(config('services.stripe.key'));
+    }
+
+    public function fake(): void
+    {
+        $mockClient = new MockClient();
+        ApiRequestor::setHttpClient($mockClient);
     }
 
     /**
