@@ -86,14 +86,11 @@ class StripeManager
 
     /**
      * Fetch an intent from the Stripe API.
-     *
-     * @param  string  $intentId
-     * @return null|\Stripe\PaymentIntent
      */
-    public function fetchIntent($intentId)
+    public function fetchIntent(string $intentId, $options = null): ?PaymentIntent
     {
         try {
-            $intent = PaymentIntent::retrieve($intentId);
+            $intent = PaymentIntent::retrieve($intentId, $options);
         } catch (InvalidRequestException $e) {
             return null;
         }
