@@ -21,7 +21,7 @@ class Stripe extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'gc:stripe';
+        return 'lunar:stripe';
     }
 
     public static function fake(): void
