@@ -111,26 +111,7 @@ class MockClient implements ClientInterface
             return [$this->rBody, $this->rcode, $this->rheaders];
         }
 
-        dd($method, $absUrl, $headers, $params, $hasFile);
-
-        // // Handle Laravel Cashier creating/getting a customer
-        // if ($method == "get" && strpos($absUrl, "https://api.stripe.com/v1/customers/") === 0) {
-        //     $this->rBody = $this->getCustomer(str_replace("https://api.stripe.com/v1/customers/", "", $absUrl));
-        //     return [$this->rBody, $this->rcode, $this->rheaders];
-        // }
-
-        // if ($method == "post" && $absUrl == "https://api.stripe.com/v1/customers") {
-        //     $this->rBody = $this->getCustomer("cus_".Str::random(14));
-        //     return [$this->rBody, $this->rcode, $this->rheaders];
-        // }
-
-        // // Handle creating a Stripe Checkout session
-        // if ($method == "post" && $absUrl == "https://api.stripe.com/v1/checkout/sessions") {
-        //     $this->rBody = $this->getSession($this->url);
-        //     return [$this->rBody, $this->rcode, $this->rheaders];
-        // }
-
-        // return [$this->rbody, $this->rcode, $this->rheaders];
+        return [$this->rBody, $this->rcode, $this->rheaders];
     }
 
     /**
