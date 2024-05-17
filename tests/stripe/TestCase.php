@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Lunar\LunarServiceProvider;
-use Lunar\Stripe\Facades\StripeFacade;
+use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentsServiceProvider;
 use Lunar\Tests\Stubs\User;
 use Spatie\Activitylog\ActivitylogServiceProvider;
@@ -26,7 +26,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         activity()->disableLogging();
 
-        StripeFacade::fake();
+        Stripe::fake();
     }
 
     protected function getPackageProviders($app)
