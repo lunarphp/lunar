@@ -8,7 +8,6 @@
 /vendor
 .phpunit.result.cache
 composer.lock
-package-lock.json
 phpstan.neon
 .phpunit.cache
 Thumbs.db
