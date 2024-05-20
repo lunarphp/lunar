@@ -21,9 +21,8 @@ jobs:
           node-version: 20
 
       - name: Install Composer dependencies
-        working-directory: ./packages/admin
         run: |
-          composer upgrade --no-interaction
+          composer install --no-interaction
 
       - name: Install dependencies
         working-directory: ./packages/admin
