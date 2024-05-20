@@ -23,7 +23,7 @@ jobs:
       - name: Install Composer dependencies
         working-directory: ./packages/admin
         run: |
-          composer install --no-interaction --prefer-dist
+          composer upgrade --no-interaction
 
       - name: Install dependencies
         working-directory: ./packages/admin
