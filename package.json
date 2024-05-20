@@ -2,11 +2,11 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev:styles": "npx tailwindcss -i resources/css/index.css -o resources/dist/lunar-panel.css --postcss --watch",
-        "dev:scripts": "node bin/build.js --dev",
-        "build:styles": "npx tailwindcss -i resources/css/index.css -o resources/dist/lunar-panel.css --postcss --minify && npm run purge",
-        "build:scripts": "node bin/build.js",
-        "purge": "filament-purge -i resources/dist/lunar-panel.css -o resources/dist/lunar-panel.css -v 3.x",
+        "dev:styles": "npx tailwindcss -i packages/admin/resources/css/index.css -o packages/admin/resources/dist/lunar-panel.css --postcss --watch",
+        "dev:scripts": "node packages/admin/bin/build.js --dev",
+        "build:styles": "npx tailwindcss -i packages/admin/resources/css/index.css -o packages/admin/resources/dist/lunar-panel.css --postcss --minify && npm run purge",
+        "build:scripts": "node packages/admin/bin/build.js",
+        "purge": "filament-purge -i packages/admin/resources/dist/lunar-panel.css -o packages/admin/resources/dist/lunar-panel.css -v 3.x",
         "dev": "npm-run-all --parallel dev:*",
         "build": "npm-run-all build:*"
     },
