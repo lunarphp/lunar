@@ -3,29 +3,34 @@
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Forms;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Collection;
 
-class ManageProductCollections extends ManageRelatedRecords
+class ManageProductCollections extends BaseManageRelatedRecords
 {
     protected static string $resource = ProductResource::class;
 
     protected static string $relationship = 'collections';
-
-    protected static ?string $title = 'Collections';
 
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::collections');
     }
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::product.pages.collections.label');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return 'Collections';
+        return __('lunarpanel::product.pages.collections.label');
     }
 
     public function table(Table $table): Table
@@ -33,20 +38,10 @@ class ManageProductCollections extends ManageRelatedRecords
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('attribute_data.name')
-                    ->formatStateUsing(fn (Collection $record): string => $record->translateAttribute('name'))
+                TranslatedTextColumn::make('attribute_data.name')
+                    ->attributeData()
+                    ->limitedTooltip()
                     ->limit(50)
-                    ->tooltip(function (Tables\Columns\TextColumn $column, Collection $record): ?string {
-                        $state = $column->getState();
-
-                        if (strlen($record->translateAttribute('name')) <= $column->getCharacterLimit()) {
-                            return null;
-                        }
-
-                        // Only render the tooltip if the column contents exceeds the length limit.
-                        return $record->translateAttribute('name');
-                    })
-                    ->description(fn (Collection $record): string => $record->breadcrumb->join(' > '))
                     ->label(__('lunarpanel::product.table.name.label')),
             ])
             ->filters([
@@ -64,14 +59,26 @@ class ManageProductCollections extends ManageRelatedRecords
                                         ->all();
                                 });
                         }
+                    )->after(
+                        fn () => ProductCollectionsUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
                     ),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DetachAction::make()->after(
+                    fn () => ProductCollectionsUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DetachBulkAction::make(),
+                    Tables\Actions\DetachBulkAction::make()->after(
+                        fn () => ProductCollectionsUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ]);
     }

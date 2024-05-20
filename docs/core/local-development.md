@@ -6,7 +6,7 @@ This guide is here to help you set-up Lunar locally so you can contribute to the
 
 ## Before your start
 
-You will need a Laravel application to run Lunar in. You can either use a fresh install of [Laravel](https://laravel.com/docs/installation) or the [Lunar Livewire Starter Kit](https://github.com/lunarphp/livewire-starter-kit).
+You will need a Laravel application to run Lunar in.
 
 ## Set-Up
 
@@ -31,7 +31,7 @@ Fork and then clone the [monorepo](https://github.com/lunarphp/lunar) to the `pa
 git clone https://github.com/YOUR-USERNAME/lunar
 ````
 
-Update your `composer.json` file similar to the following. Note we are targeting `lunar/lunar` and not `lunar/admin`.
+Update your `composer.json` file similar to the following.
 
 ```json
     "repositories": [{
@@ -41,7 +41,7 @@ Update your `composer.json` file similar to the following. Note we are targeting
     }],
 
     "require": {
-        "lunarphp/lunar": "dev-main",
+        "lunarphp/lunar": "*",
     }
 ````
 

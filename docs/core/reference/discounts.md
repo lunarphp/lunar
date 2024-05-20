@@ -66,6 +66,14 @@ Discount::usable()->get();
 Discount::products($productIds, $type = 'condition');
 ```
 
+### Resetting the discount cache
+
+For performance reasons the applicable discounts are cached per request. If you need to reset this cache (for example after adding a discount code) you should call `resetDiscounts()`:
+
+```php
+Discount::resetDiscounts();
+```
+
 ## Discount Purchasable
 
 You can relate a purchasable to a discount via this model. Each has a type for whether it's a `condition` or `reward`.

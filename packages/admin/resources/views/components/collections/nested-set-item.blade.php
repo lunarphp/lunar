@@ -9,8 +9,7 @@
 @endphp
 <div class="relative group">
     <div @class([
-        'w-full flex justify-between',
-        'dark:bg-gray-900 dark:border-white/10',
+        'w-full flex justify-between rounded'
     ])>
         <div class="flex w-full space-x-2">
             <div @class([
@@ -20,9 +19,9 @@
                 <x-filament::icon alias="lunar::reorder" class="w-5 h-5" />
             </div>
 
-            <div class="flex grow bg-white border shadow-sm rounded">
+            <div class="flex grow bg-white border-gray-600 dark:bg-gray-900 shadow-sm rounded">
                     <button
-                            class="px-3 text-gray-500 appearance-none disabled:text-gray-50"
+                            class="px-3 text-gray-500 appearance-none"
                             type="button"
                             title=""
                             wire:click.prevent="toggleChildren('{{ $id }}')"
@@ -33,6 +32,7 @@
                                 @class([
                                     'w-3.5 h-3.5 transition ease-in-out duration-200 rtl:rotate-180',
                                     'ltr:rotate-90 rtl:!rotate-90' => !!count($children),
+                                    'opacity-0' => !$childrenCount
                                 ])
                         />
                     </button>
@@ -48,16 +48,16 @@
                     <div class="flex items-center space-x-2">
                         <div>
                             @if($thumbnail)
-                                <img src="{{ $thumbnail }}" class="w-10 border rounded p-0.5">
+                                <img src="{{ $thumbnail }}" class="w-10 border border-gray-100 dark:border-gray-600 rounded p-0.5">
                             @else
                                 <x-filament::icon alias="lunar::image-placeholder" class="p-1 text-gray-200 w-10 h-10" />
                             @endif
                         </div>
-                        <x-filament::link :href="$editUrl" class="text-base">{{ $name }}</x-filament::link>
+                        <x-filament::link :href="$editUrl" class="text-base pl-2">{{ $name }}</x-filament::link>
                     </div>
                 </button>
 
-                <div class="items-center flex-shrink-0 hidden px-2 space-x-2 rtl:space-x-reverse group-hover:flex">
+                <div class="flex items-center flex-shrink-0 px-2 space-x-2 rtl:space-x-reverse">
                     <x-filament-actions::group
                             :actions="$actions"
                             label="Actions"

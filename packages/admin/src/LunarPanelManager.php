@@ -7,26 +7,30 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables\Table;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
 use Lunar\Admin\Filament\Pages;
 use Lunar\Admin\Filament\Resources;
-use Lunar\Admin\Filament\Widgets\Dashboard\LatestOrders;
-use Lunar\Admin\Filament\Widgets\Dashboard\SalesPerformance;
-use Lunar\Admin\Filament\Widgets\Dashboard\StatsOverview;
-use Lunar\Admin\Support\Extending\BaseExtension;
-use Lunar\Admin\Support\Extending\ResourceExtension;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
+use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
+use Lunar\Admin\Http\Controllers\DownloadPdfController;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
 
 class LunarPanelManager
@@ -47,11 +51,13 @@ class LunarPanelManager
         Resources\CurrencyResource::class,
         Resources\CustomerGroupResource::class,
         Resources\CustomerResource::class,
+        Resources\DiscountResource::class,
         Resources\LanguageResource::class,
         Resources\OrderResource::class,
         Resources\ProductOptionResource::class,
         Resources\ProductResource::class,
         Resources\ProductTypeResource::class,
+        Resources\ProductVariantResource::class,
         Resources\StaffResource::class,
         Resources\TagResource::class,
         Resources\TaxClassResource::class,
@@ -63,9 +69,13 @@ class LunarPanelManager
     ];
 
     protected static $widgets = [
-        StatsOverview::class,
-        SalesPerformance::class,
-        LatestOrders::class,
+        OrderStatsOverview::class,
+        OrderTotalsChart::class,
+        OrdersSalesChart::class,
+        AverageOrderValueChart::class,
+        NewVsReturningCustomersChart::class,
+        PopularProductsTable::class,
+        LatestOrdersTable::class,
     ];
 
     public function register(): self
@@ -76,8 +86,6 @@ class LunarPanelManager
             $fn = $this->closure;
             $panel = $fn($panel);
         }
-
-        $panel->id($this->panelId);
 
         Filament::registerPanel($panel);
 
@@ -103,6 +111,9 @@ class LunarPanelManager
             'lunar::customers' => 'lucide-users',
             'lunar::customer-groups' => 'lucide-users',
             'lunar::dashboard' => 'lucide-bar-chart-big',
+            'lunar::discounts' => 'lucide-percent-circle',
+            'lunar::discount-limitations' => 'lucide-list-x',
+            'lunar::info' => 'lucide-info',
             'lunar::languages' => 'lucide-languages',
             'lunar::media' => 'lucide-image',
             'lunar::orders' => 'lucide-inbox',
@@ -121,12 +132,25 @@ class LunarPanelManager
             'lunar::reorder' => 'lucide-grip-vertical',
             'lunar::chevron-right' => 'lucide-chevron-right',
             'lunar::image-placeholder' => 'lucide-image',
+            'lunar::trending-up' => 'lucide-trending-up',
+            'lunar::trending-down' => 'lucide-trending-down',
+            'lunar::exclamation-circle' => 'lucide-alert-circle',
         ]);
 
         FilamentColor::register([
             'chartPrimary' => Color::Blue,
             'chartSecondary' => Color::Green,
         ]);
+
+        if (app('request')->is($panel->getPath().'*')) {
+            app('config')->set('livewire.inject_assets', true);
+        }
+
+        Table::configureUsing(function (Table $table): void {
+            $table
+                ->paginationPageOptions([10, 25, 50, 100])
+                ->defaultPaginationPageOption(25);
+        });
 
         return $this;
     }
@@ -158,7 +182,25 @@ class LunarPanelManager
             }
         };
 
+        $panelMiddleware = [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+        ];
+
+        if (config('lunar.panel.pdf_rendering', 'download') == 'stream') {
+            Route::get('lunar/pdf/download', DownloadPdfController::class)
+                ->name('lunar.pdf.download')->middleware($panelMiddleware);
+        }
+
         return Panel::make()
+            ->spa()
             ->default()
             ->id($this->panelId)
             ->brandName('Lunar')
@@ -174,17 +216,7 @@ class LunarPanelManager
                 'primary' => Color::Sky,
             ])
             ->font('Poppins')
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
+            ->middleware($panelMiddleware)
             ->pages(
                 static::getPages()
             )
@@ -197,6 +229,9 @@ class LunarPanelManager
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->plugins([
+                \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
+            ])
             ->discoverLivewireComponents(__DIR__.'/Livewire', 'Lunar\\Admin\\Livewire')
             ->livewireComponents([
                 Resources\OrderResource\Pages\Components\OrderItemsTable::class,
@@ -208,20 +243,14 @@ class LunarPanelManager
                 NavigationGroup::make()
                     ->label('Settings')
                     ->collapsed(),
-            ])
-            ->navigationItems([
-                NavigationItem::make('Discounts')
-                    ->url('#')
-                    ->icon('lucide-percent-circle')
-                    ->group('Sales')
-                    ->sort(3),
-            ])
-            ->sidebarCollapsibleOnDesktop();
+            ])->sidebarCollapsibleOnDesktop();
     }
 
-    public function registerExtension(BaseExtension|ResourceExtension $extension, string $pageClass): self
+    public function extensions(array $extensions): self
     {
-        $this->extensions[$pageClass][] = $extension;
+        foreach ($extensions as $class => $extension) {
+            $this->extensions[$class][] = new $extension;
+        }
 
         return $this;
     }
@@ -255,7 +284,9 @@ class LunarPanelManager
     {
         if (isset($this->extensions[$class])) {
             foreach ($this->extensions[$class] as $extension) {
-                $args[0] = $extension->{$hookName}(...$args);
+                if (method_exists($extension, $hookName)) {
+                    $args[0] = $extension->{$hookName}(...$args);
+                }
             }
         }
 

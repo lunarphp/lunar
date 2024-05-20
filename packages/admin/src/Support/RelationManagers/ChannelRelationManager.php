@@ -3,14 +3,16 @@
 namespace Lunar\Admin\Support\RelationManagers;
 
 use Filament;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Admin\Events\ModelChannelsUpdated;
 
 class ChannelRelationManager extends RelationManager
 {
+    protected static bool $isLazy = false;
+
     protected static string $relationship = 'channels';
 
     public function isReadOnly(): bool
@@ -30,7 +32,7 @@ class ChannelRelationManager extends RelationManager
         return [
             Filament\Forms\Components\Toggle::make('enabled')->label(
                 __('lunarpanel::relationmanagers.channels.form.enabled.label')
-            )->hint(fn (Forms\Get $get): string => match ($get('enabled')) {
+            )->hint(fn (bool $state): string => match ($state) {
                 false => __('lunarpanel::relationmanagers.channels.form.enabled.helper_text_false'),
                 true => '',
             })->hintColor('danger')->live()->columnSpan(2),
@@ -61,7 +63,11 @@ class ChannelRelationManager extends RelationManager
                     ...static::getFormInputs(),
                 ])->recordTitle(function ($record) {
                     return $record->name;
-                })->preloadRecordSelect()
+                })->after(
+                    fn () => sync_with_search(
+                        $this->getOwnerRecord()
+                    )
+                )->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::relationmanagers.channels.actions.attach.label')
                     ),
@@ -73,12 +79,12 @@ class ChannelRelationManager extends RelationManager
                 Tables\Columns\IconColumn::make('enabled')->label(
                     __('lunarpanel::relationmanagers.channels.table.enabled.label')
                 )
-                    ->color(fn (string $state): string => match ($state) {
-                        '1' => 'success',
-                        '0' => 'warning',
-                    })->icon(fn (string $state): string => match ($state) {
-                        '0' => 'heroicon-o-x-circle',
-                        '1' => 'heroicon-o-check-circle',
+                    ->color(fn (bool $state): string => match ($state) {
+                        true => 'success',
+                        false => 'warning',
+                    })->icon(fn (bool $state): string => match ($state) {
+                        false => 'heroicon-o-x-circle',
+                        true => 'heroicon-o-check-circle',
                     }),
                 Tables\Columns\TextColumn::make('starts_at')->label(
                     __('lunarpanel::relationmanagers.channels.table.starts_at.label')
@@ -87,7 +93,11 @@ class ChannelRelationManager extends RelationManager
                     __('lunarpanel::relationmanagers.channels.table.ends_at.label')
                 )->dateTime(),
             ])->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => ModelChannelsUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ]);
     }
 }

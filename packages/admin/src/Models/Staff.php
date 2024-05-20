@@ -59,6 +59,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**
@@ -103,9 +104,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
             $parts = explode(' ', $term);
 
             foreach ($parts as $part) {
-                $query->where('email', 'LIKE', "%$part%")
-                    ->orWhere('firstname', 'LIKE', "%$part%")
-                    ->orWhere('lastname', 'LIKE', "%$part%");
+                $query->whereAny(['email', 'firstname', 'lastname'], 'LIKE', "%$part%");
             }
         }
     }

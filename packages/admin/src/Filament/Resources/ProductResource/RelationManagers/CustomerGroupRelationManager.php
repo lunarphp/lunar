@@ -7,9 +7,12 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 
 class CustomerGroupRelationManager extends RelationManager
 {
+    protected static bool $isLazy = false;
+
     protected static string $relationship = 'customerGroups';
 
     public function isReadOnly(): bool
@@ -38,7 +41,7 @@ class CustomerGroupRelationManager extends RelationManager
     {
         $columns = collect($pivotColumns)->map(function ($column) {
             return Filament\Forms\Components\Toggle::make($column)->label(
-                __("lunarpanel::relationmanagers.customer_groups.form.${column}.label")
+                __("lunarpanel::relationmanagers.customer_groups.form.{$column}.label")
             );
         });
 
@@ -92,6 +95,8 @@ class CustomerGroupRelationManager extends RelationManager
                 })->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::relationmanagers.customer_groups.actions.attach.label')
+                    )->after(
+                        fn () => ProductCustomerGroupsUpdated::dispatch($this->getOwnerRecord())
                     ),
             ])->columns([
                 ...[
@@ -109,7 +114,11 @@ class CustomerGroupRelationManager extends RelationManager
                     )->dateTime(),
                 ],
             ])->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => ProductCustomerGroupsUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ]);
     }
 }

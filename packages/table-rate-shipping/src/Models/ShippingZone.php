@@ -3,6 +3,7 @@
 namespace Lunar\Shipping\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Models\Country;
@@ -23,8 +24,6 @@ class ShippingZone extends BaseModel
 
     /**
      * Return a new factory instance for the model.
-     *
-     * @return \Lunar\Shipping\Factories\ShippingZoneFactory
      */
     protected static function newFactory(): ShippingZoneFactory
     {
@@ -33,20 +32,16 @@ class ShippingZone extends BaseModel
 
     /**
      * Return the shipping methods relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function shippingMethods()
+    public function shippingMethods(): HasMany
     {
         return $this->hasMany(ShippingMethod::class);
     }
 
     /**
      * Return the countries relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function countries()
+    public function countries(): BelongsToMany
     {
         return $this->belongsToMany(
             Country::class,
@@ -56,10 +51,8 @@ class ShippingZone extends BaseModel
 
     /**
      * Return the states relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function states()
+    public function states(): BelongsToMany
     {
         return $this->belongsToMany(
             State::class,
@@ -69,11 +62,27 @@ class ShippingZone extends BaseModel
 
     /**
      * Return the postcodes relationship.
-     *
-     * @return HasMany
      */
-    public function postcodes()
+    public function postcodes(): HasMany
     {
         return $this->hasMany(ShippingZonePostcode::class);
+    }
+
+    public function rates(): HasMany
+    {
+        return $this->hasMany(ShippingRate::class);
+    }
+
+    /**
+     * Return the shipping exclusions property.
+     */
+    public function shippingExclusions(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            ShippingExclusionList::class,
+            config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
+            'shipping_zone_id',
+            'exclusion_id',
+        )->withTimestamps();
     }
 }

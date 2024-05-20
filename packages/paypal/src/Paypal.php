@@ -20,7 +20,7 @@ class Paypal implements PaypalInterface
     {
         return config('services.paypal.env', 'sandbox') == 'sandbox' ?
             'https://api-m.sandbox.paypal.com' :
-            'https://api-m.live.paypal.com';
+            'https://api-m.paypal.com';
     }
 
     public function getAccessToken()
@@ -48,6 +48,20 @@ class Paypal implements PaypalInterface
         return $this->baseHttpClient()->withToken($this->getAccessToken())
             ->withBody('', 'application/json')
             ->post("/v2/checkout/orders/{$orderId}/capture")
+            ->json();
+    }
+
+    public function refund($transactionId, string $amount, string $currencyCode)
+    {
+        return $this->baseHttpClient()->withToken($this->getAccessToken())
+            ->withBody(json_encode([
+                'amount' => [
+                    'value' => $amount,
+                    'currency_code' => $currencyCode,
+                ],
+            ]), 'application/json')
+            ->post("/v2/payments/captures/{$transactionId}/refund")
+            ->throw()
             ->json();
     }
 

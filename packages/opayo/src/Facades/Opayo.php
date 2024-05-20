@@ -3,8 +3,14 @@
 namespace Lunar\Opayo\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 use Lunar\Opayo\OpayoInterface;
 
+/**
+ * @method static getAuthPayload(AuthPayloadParameters $parameters): array
+ * @method static getMerchantKey(): ?string
+ * @method static api(): PendingRequest
+ */
 class Opayo extends Facade
 {
     /**
@@ -20,7 +26,7 @@ class Opayo extends Facade
     /**
      * Status when the payment requires Three D Secure authentication.
      */
-    const THREE_D_AUTH = 20;
+    const THREED_AUTH = 20;
 
     /**
      * Status for when Three D Secure fails.

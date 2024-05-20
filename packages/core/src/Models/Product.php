@@ -4,9 +4,13 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -90,97 +94,75 @@ class Product extends BaseModel implements SpatieHasMedia
 
     /**
      * Returns the attributes to be stored against this model.
-     *
-     * @return array
      */
-    public function mappedAttributes()
+    public function mappedAttributes(): Collection
     {
         return $this->productType->mappedAttributes;
     }
 
     /**
      * Return the product type relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function productType()
+    public function productType(): BelongsTo
     {
         return $this->belongsTo(ProductType::class);
     }
 
     /**
      * Return the product images relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function images()
+    public function images(): MorphMany
     {
         return $this->media()->where('collection_name', 'images');
     }
 
     /**
      * Return the product variants relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function variants()
+    public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
     }
 
     /**
      * Return the product collections relation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function collections()
+    public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
-            Collection::class,
+            \Lunar\Models\Collection::class,
             config('lunar.database.table_prefix').'collection_product'
         )->withPivot(['position'])->withTimestamps();
     }
 
     /**
      * Return the associations relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function associations()
+    public function associations(): HasMany
     {
         return $this->hasMany(ProductAssociation::class, 'product_parent_id');
     }
 
     /**
      * Return the associations relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function inverseAssociations()
+    public function inverseAssociations(): HasMany
     {
         return $this->hasMany(ProductAssociation::class, 'product_target_id');
     }
 
     /**
      * Associate a product to another with a type.
-     *
-     * @param  mixed  $product
-     * @param  string  $type
-     * @return void
      */
-    public function associate($product, $type)
+    public function associate(mixed $product, string $type): void
     {
         Associate::dispatch($this, $product, $type);
     }
 
     /**
      * Dissociate a product to another with a type.
-     *
-     * @param  mixed  $product
-     * @param  string  $type
-     * @return void
      */
-    public function dissociate($product, $type = null)
+    public function dissociate(mixed $product, string $type = null): void
     {
         Dissociate::dispatch($this, $product, $type);
     }
@@ -206,31 +188,24 @@ class Product extends BaseModel implements SpatieHasMedia
 
     /**
      * Return the brand relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function brand()
+    public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
     }
 
     /**
      * Apply the status scope.
-     *
-     * @param  string  $status
-     * @return Builder
      */
-    public function scopeStatus(Builder $query, $status)
+    public function scopeStatus(Builder $query, string $status): Builder
     {
         return $query->whereStatus($status);
     }
 
     /**
      * Return the prices relationship.
-     *
-     * @return HasManyThrough
      */
-    public function prices()
+    public function prices(): HasManyThrough
     {
         return $this->hasManyThrough(
             Price::class,
@@ -238,5 +213,15 @@ class Product extends BaseModel implements SpatieHasMedia
             'product_id',
             'priceable_id'
         )->wherePriceableType(ProductVariant::class);
+    }
+
+    public function productOptions(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            ProductOption::class,
+            "{$prefix}product_product_option"
+        )->withPivot(['position'])->orderByPivot('position');
     }
 }

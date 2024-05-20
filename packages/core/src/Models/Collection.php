@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kalnoy\Nestedset\NodeTrait;
 use Lunar\Base\BaseModel;
@@ -71,25 +72,21 @@ class Collection extends BaseModel implements SpatieHasMedia
 
     /**
      * Return the group relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function group()
+    public function group(): BelongsTo
     {
         return $this->belongsTo(CollectionGroup::class, 'collection_group_id');
     }
 
-    public function scopeInGroup(Builder $builder, $id)
+    public function scopeInGroup(Builder $builder, int $id): Builder
     {
         return $builder->where('collection_group_id', $id);
     }
 
     /**
      * Return the products relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function products()
+    public function products(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -103,10 +100,8 @@ class Collection extends BaseModel implements SpatieHasMedia
 
     /**
      * Get the translated name of ancestor collections.
-     *
-     * @return Illuminate\Support\Collection
      */
-    public function getBreadcrumbAttribute()
+    public function getBreadcrumbAttribute(): \Illuminate\Support\Collection
     {
         return $this->ancestors->map(function ($ancestor) {
             return $ancestor->translateAttribute('name');
@@ -139,5 +134,15 @@ class Collection extends BaseModel implements SpatieHasMedia
             Discount::class,
             "{$prefix}collection_discount"
         )->withPivot(['type'])->withTimestamps();
+    }
+
+    public function brands(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Brand::class,
+            "{$prefix}brand_collection"
+        )->withTimestamps();
     }
 }

@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
@@ -66,20 +67,16 @@ class Address extends BaseModel implements Addressable
 
     /**
      * Return the country relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function country()
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }
 
     /**
      * Return the customer relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }

@@ -2,9 +2,11 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
@@ -38,6 +40,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     protected $casts = [
         'name' => AsCollection::class,
         'label' => AsCollection::class,
+        'shared' => 'boolean',
     ];
 
     /**
@@ -48,24 +51,6 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         return ProductOptionFactory::new();
     }
 
-    public function getNameAttribute($value)
-    {
-        return json_decode($value);
-    }
-
-    protected function setNameAttribute($value)
-    {
-        $this->attributes['name'] = json_encode($value);
-    }
-
-    protected function label(): Attribute
-    {
-        return Attribute::make(
-            get: fn (string $value) => json_decode($value),
-            set: fn ($value) => json_encode($value),
-        );
-    }
-
     /**
      * Define which attributes should be
      * protected from mass assignment.
@@ -74,13 +59,33 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
+    public function scopeShared(Builder $builder)
+    {
+        return $builder->where('shared', '=', true);
+    }
+
+    public function scopeExclusive(Builder $builder)
+    {
+        return $builder->where('shared', '=', false);
+    }
+
     /**
      * Get the values.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<ProductOptionValue>
+     * @return HasMany<ProductOptionValue>
      */
-    public function values()
+    public function values(): HasMany
     {
         return $this->hasMany(ProductOptionValue::class)->orderBy('position');
+    }
+
+    public function products(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Product::class,
+            "{$prefix}product_product_option"
+        )->withPivot(['position'])->orderByPivot('position');
     }
 }

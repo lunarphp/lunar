@@ -34,6 +34,7 @@ return [
             'color' => '#848a8c',
             'mailers' => [],
             'notifications' => [],
+            'favourite' => true,
         ],
 
         'payment-offline' => [
@@ -41,6 +42,7 @@ return [
             'color' => '#0A81D7',
             'mailers' => [],
             'notifications' => [],
+            'favourite' => true,
         ],
 
         'payment-received' => [
@@ -48,12 +50,14 @@ return [
             'color' => '#6a67ce',
             'mailers' => [],
             'notifications' => [],
+            'favourite' => true,
         ],
 
         'dispatched' => [
             'label' => 'Dispatched',
             'mailers' => [],
             'notifications' => [],
+            'favourite' => true,
         ],
 
     ],

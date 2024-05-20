@@ -11,6 +11,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Models\ProductVariant;
 use Marvinosswald\FilamentInputSelectAffix\TextInputSelectAffix;
@@ -83,7 +84,20 @@ class ManageProductShipping extends BaseEditRecord
             ...[
                 'shippable' => $this->shippable,
                 'volume_unit' => 'l',
-                'volume_value' => $this->volume,
+                'volume_value' => ManageVariantShipping::getVolume(
+                    [
+                        'value' => $this->dimensions['width_value'],
+                        'unit' => $this->dimensions['width_unit'],
+                    ],
+                    [
+                        'value' => $this->dimensions['length_value'],
+                        'unit' => $this->dimensions['length_unit'],
+                    ],
+                    [
+                        'value' => $this->dimensions['height_value'],
+                        'unit' => $this->dimensions['height_unit'],
+                    ]
+                ),
             ],
             ...$this->dimensions,
         ]);
@@ -101,30 +115,6 @@ class ManageProductShipping extends BaseEditRecord
         return [
             $this->getSaveFormAction(),
         ];
-    }
-
-    public function getVolumeProperty()
-    {
-        $dimensions = $this->dimensions;
-
-        $width = Converter::value($dimensions['width_value'])
-            ->from('length.'.$dimensions['width_unit'])
-            ->to('length.cm')
-            ->convert()
-            ->getValue();
-        $length = Converter::value($dimensions['length_value'])
-            ->from('length.'.$dimensions['length_unit'])
-            ->to('length.cm')
-            ->convert()
-            ->getValue();
-
-        $height = Converter::value($dimensions['height_value'])
-            ->from('length.'.$dimensions['height_unit'])
-            ->to('length.cm')
-            ->convert()
-            ->getValue();
-
-        return Converter::from('volume.ml')->to('volume.l')->value($length * $width * $height)->convert()->getValue();
     }
 
     public function form(Form $form): Form
@@ -146,55 +136,55 @@ class ManageProductShipping extends BaseEditRecord
         return $form->schema([
             Section::make()->schema([
                 Toggle::make('shippable')->label(
-                    __('lunarpanel::product.pages.shipping.form.shippable.label')
+                    __('lunarpanel::productvariant.form.shippable.label')
                 )->columnSpan(2),
 
                 TextInputSelectAffix::make('dimensions.length_value')
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.length_value.label')
+                        __('lunarpanel::productvariant.form.length_value.label')
                     )
                     ->numeric()
                     ->select(
                         fn () => Select::make('length_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::product.pages.shipping.form.length_unit.label')
+                                __('lunarpanel::pproductvariant.form.length_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.width_value')
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.width_value.label')
+                        __('lunarpanel::productvariant.form.width_value.label')
                     )
                     ->numeric()
                     ->select(
                         fn () => Select::make('width_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::product.pages.shipping.form.width_unit.label')
+                                __('lunarpanel::productvariant.form.width_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.height_value')
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.height_value.label')
+                        __('lunarpanel::productvariant.form.height_value.label')
                     )
                     ->numeric()
                     ->select(
                         fn () => Select::make('height_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::product.pages.shipping.form.height_unit.label')
+                                __('lunarpanel::productvariant.form.height_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.weight_value')
                     ->label(
-                        __('lunarpanel::product.pages.shipping.form.weight_value.label')
+                        __('lunarpanel::productvariant.form.weight_value.label')
                     )
                     ->numeric()
                     ->select(
                         fn () => Select::make('weight_unit')
                             ->options($weights)
                             ->label(
-                                __('lunarpanel::product.pages.shipping.form.weight_unit.label')
+                                __('lunarpanel::productvariant.form.weight_unit.label')
                             )->selectablePlaceholder(false)
                     ),
             ])->columns([

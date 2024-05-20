@@ -3,6 +3,8 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
@@ -23,6 +25,19 @@ class TaxZone extends BaseModel
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+
+    protected static function booted(): void
+    {
+        $handleDefaultFunction = fn (TaxZone $taxZone) => TaxZone::when(
+            $taxZone->default,
+            fn ($query) => $query->where('id', '!=', $taxZone->id)->update([
+                'default' => false,
+            ])
+        );
+        static::created($handleDefaultFunction);
+
+        static::updated($handleDefaultFunction);
+    }
 
     /**
      * Return a new factory instance for the model.
@@ -52,60 +67,48 @@ class TaxZone extends BaseModel
 
     /**
      * Return the countries relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function countries()
+    public function countries(): HasMany
     {
         return $this->hasMany(TaxZoneCountry::class);
     }
 
     /**
      * Return the states relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function states()
+    public function states(): HasMany
     {
         return $this->hasMany(TaxZoneState::class);
     }
 
     /**
      * Return the postcodes relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function postcodes()
+    public function postcodes(): HasMany
     {
         return $this->hasMany(TaxZonePostcode::class);
     }
 
     /**
      * Return the customer groups relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function customerGroups()
+    public function customerGroups(): HasMany
     {
         return $this->hasMany(TaxZoneCustomerGroup::class);
     }
 
     /**
      * Return the tax rates relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function taxRates()
+    public function taxRates(): HasMany
     {
         return $this->hasMany(TaxRate::class);
     }
 
     /**
      * Return the tax amounts relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function taxAmounts()
+    public function taxAmounts(): HasManyThrough
     {
         return $this->hasManyThrough(TaxRateAmount::class, TaxRate::class);
     }

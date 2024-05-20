@@ -1,0 +1,46 @@
+name: Lunar Stripe Tests
+on:
+  pull_request:
+defaults:
+  run:
+    working-directory: ./
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [8.2, 8.3]
+        laravel: [10.*, 11.*]
+        phpunit-versions: ['latest']
+    name: PHP:${{ matrix.php }} / Laravel:${{ matrix.laravel }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, amqp, dba
+          tools: composer:v2, phpunit:${{ matrix.php }}
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-
+
+      - name: Install Composer dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update --dev
+          composer update --prefer-stable --no-interaction --no-suggest
+
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: testing
+          DB_DATABASE: ":memory:"
+        run: vendor/bin/pest  --testsuite stripe

@@ -6,16 +6,24 @@
     <coverage/>
     <testsuites>
         <testsuite name="admin">
-            <directory suffix="Test.php">packages/admin/tests/Feature</directory>
-            <directory suffix="Test.php">packages/admin/tests/Unit</directory>
+            <directory suffix="Test.php">tests/admin/Feature</directory>
+            <directory suffix="Test.php">tests/admin/Unit</directory>
         </testsuite>
         <testsuite name="core">
-            <directory suffix="Test.php">packages/core/tests/Database</directory>
-            <directory suffix="Test.php">packages/core/tests/Feature</directory>
-            <directory suffix="Test.php">packages/core/tests/Unit</directory>
+            <directory suffix="Test.php">tests/core/Database</directory>
+            <directory suffix="Test.php">tests/core/Feature</directory>
+            <directory suffix="Test.php">tests/core/Unit</directory>
         </testsuite>
-        <testsuite name="table-rate-shipping">
-            <directory suffix="Test.php">packages/core/tests/Unit</directory>
+        <testsuite name="opayo">
+            <directory suffix="Test.php">tests/opayo/Unit</directory>
+            <directory suffix="Test.php">tests/opayo/Feature</directory>
+        </testsuite>
+        <testsuite name="stripe">
+            <directory suffix="Test.php">tests/stripe/Unit</directory>
+        </testsuite>
+        <testsuite name="shipping">
+            <directory suffix="Test.php">tests/shipping/Feature</directory>
+            <directory suffix="Test.php">tests/shipping/Unit</directory>
         </testsuite>
     </testsuites>
     <php>

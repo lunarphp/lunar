@@ -2,20 +2,27 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lunar\Models\Cart;
 use Lunar\Models\Customer;
 use Lunar\Models\Order;
 
 trait LunarUser
 {
-    public function customers()
+    public function customers(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(Customer::class, "{$prefix}customer_user");
     }
 
-    public function latestCustomer()
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function latestCustomer(): ?Customer
     {
         return $this->customers()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first();
     }

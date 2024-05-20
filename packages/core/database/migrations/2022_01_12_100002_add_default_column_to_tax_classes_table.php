@@ -16,6 +16,7 @@ class AddDefaultColumnToTaxClassesTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'tax_classes', function (Blueprint $table) {
+            $table->dropIndex(['default']);
             $table->dropColumn('default');
         });
     }

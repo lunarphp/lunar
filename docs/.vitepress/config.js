@@ -48,11 +48,12 @@ export default defineConfig({
                 ]
             },
             {
-                text: '0.x',
+                text: '1.x',
                 items: [
                     {text: 'Changelog', link: '/core/upgrading'},
                     {text: 'Contributing', link: '/core/contributing'},
-                    {text: 'Docs Next', link: 'https://docs-next.lunarphp.io/'}
+                    {text: 'Roadmap', link: 'https://github.com/orgs/lunarphp/projects/8'},
+                    {text: '0.x Docs', link: 'https://v0.lunarphp.io/'},
                 ]
             }
         ],
@@ -67,7 +68,6 @@ export default defineConfig({
                     items: [
                         {text: 'Overview', link: '/core/overview'},
                         {text: 'Installation', link: '/core/installation'},
-                        {text: 'Starter Kits', link: '/core/starter-kits'},
                         {text: 'Configuration', link: '/core/configuration'},
                         {text: 'Initial Set-Up', link: '/core/set-up'},
                         {text: 'Upgrade Guide', link: '/core/upgrading'},
@@ -111,7 +111,7 @@ export default defineConfig({
                 },
                 {
                     text: 'Extending',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         {text: 'Carts', link: '/core/extending/carts'},
                         {text: 'Discounts', link: '/core/extending/discounts'},
@@ -131,15 +131,15 @@ export default defineConfig({
                     collapsed: false,
                     items: [
                         {text: 'Overview', link: '/admin/overview'},
-                        {text: 'Installation', link: '/admin/installation'},
-                        {text: 'Upgrading', link: '/admin/upgrading'}
                     ]
                 },
                 {
                     text: 'Extending',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
+                        {text: 'Overview', link: '/admin/extending/overview'},
                         {text: 'Access Control', link: '/admin/extending/access-control'},
+                        {text: 'Add-ons', link: '/admin/extending/addons'},
                         {text: 'Attributes', link: '/admin/extending/attributes'},
                         {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Panel', link: '/admin/extending/panel'},

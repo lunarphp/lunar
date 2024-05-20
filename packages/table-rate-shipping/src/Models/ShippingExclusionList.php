@@ -3,6 +3,8 @@
 namespace Lunar\Shipping\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Factories\ShippingExclusionListFactory;
 
@@ -28,28 +30,32 @@ class ShippingExclusionList extends BaseModel
         return ShippingExclusionListFactory::new();
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (ShippingExclusionList $list) {
+            $list->exclusions()->delete();
+            $list->shippingZones()->detach();
+        });
+    }
+
     /**
      * Return the shipping zone relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function exclusions()
+    public function exclusions(): HasMany
     {
         return $this->hasMany(ShippingExclusion::class);
     }
 
     /**
      * Return the shipping methods relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function shippingMethods()
+    public function shippingZones(): BelongsToMany
     {
         return $this->belongsToMany(
-            ShippingMethod::class,
-            config('lunar.database.table_prefix').'exclusion_list_shipping_method',
+            ShippingZone::class,
+            config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
             'exclusion_id',
-            'method_id',
+            'shipping_zone_id',
         );
     }
 }

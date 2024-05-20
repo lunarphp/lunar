@@ -6,11 +6,11 @@ use Illuminate\Support\ServiceProvider;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
-use Lunar\Observers\OrderObserver;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Managers\ShippingManager;
 use Lunar\Shipping\Models\ShippingExclusion;
 use Lunar\Shipping\Models\ShippingZone;
+use Lunar\Shipping\Observers\OrderObserver;
 
 class ShippingServiceProvider extends ServiceProvider
 {
@@ -22,14 +22,14 @@ class ShippingServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'shipping');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunarpanel.shipping');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
 
         $shippingModifiers->add(
-            ShippingModifier::class, // TODO: param typed incorrectly
+            ShippingModifier::class,
         );
 
         Order::observe(OrderObserver::class);

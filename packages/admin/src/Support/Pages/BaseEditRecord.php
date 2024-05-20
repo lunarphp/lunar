@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseEditRecord extends EditRecord
 {
+    use Concerns\ExtendsFooterWidgets;
     use Concerns\ExtendsFormActions;
     use Concerns\ExtendsHeaderActions;
+    use Concerns\ExtendsHeaderWidgets;
+    use Concerns\ExtendsHeadings;
     use \Lunar\Admin\Support\Concerns\CallsHooks;
 
     protected function mutateFormDataBeforeFill(array $data): array
@@ -28,5 +31,12 @@ abstract class BaseEditRecord extends EditRecord
         $record = parent::handleRecordUpdate($record, $data);
 
         return $this->callLunarHook('afterUpdate', $record, $data);
+    }
+
+    public function afterSave()
+    {
+        sync_with_search(
+            $this->getRecord()
+        );
     }
 }

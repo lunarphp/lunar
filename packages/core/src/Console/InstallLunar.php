@@ -4,6 +4,7 @@ namespace Lunar\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Lunar\Admin\Models\Staff;
 use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Hub\AdminHubServiceProvider;
@@ -19,6 +20,8 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\TaxClass;
+
+use function Laravel\Prompts\confirm;
 
 class InstallLunar extends Command
 {
@@ -41,35 +44,39 @@ class InstallLunar extends Command
      */
     public function handle(): void
     {
-        $this->newLine();
-        $this->comment('Installing Lunar...');
+        $this->components->info('Installing Lunar...');
 
-        $this->newLine();
-        $this->info('Publishing configuration...');
+        $this->components->info('Publishing configuration...');
 
         if (! $this->configExists('lunar')) {
             $this->publishConfiguration();
         } else {
             if ($this->shouldOverwriteConfig()) {
-                $this->line('Overwriting configuration file...');
-                $this->publishConfiguration($force = true);
+                $this->components->info('Overwriting configuration file...');
+                $this->publishConfiguration(forcePublish: true);
             } else {
-                $this->line('Existing configuration was not overwritten');
+                $this->components->info('Existing configuration was not overwritten');
             }
         }
 
-        if ($this->confirm('Run database migrations?', true)) {
+        if (confirm('Run database migrations?')) {
             $this->call('migrate');
         }
 
         DB::transaction(function () {
+
+            if (class_exists(Staff::class) && ! Staff::whereAdmin(true)->exists()) {
+                $this->components->info('First create a lunar admin user');
+                $this->call('lunar:create-admin');
+            }
+
             if (! Country::count()) {
-                $this->info('Importing countries');
+                $this->components->info('Importing countries');
                 $this->call('lunar:import:address-data');
             }
 
             if (! Channel::whereDefault(true)->exists()) {
-                $this->info('Setting up default channel');
+                $this->components->info('Setting up default channel');
 
                 Channel::create([
                     'name' => 'Webstore',
@@ -80,7 +87,7 @@ class InstallLunar extends Command
             }
 
             if (! Language::count()) {
-                $this->info('Adding default language');
+                $this->components->info('Adding default language');
 
                 Language::create([
                     'code' => 'en',
@@ -90,7 +97,7 @@ class InstallLunar extends Command
             }
 
             if (! Currency::whereDefault(true)->exists()) {
-                $this->info('Adding a default currency (USD)');
+                $this->components->info('Adding a default currency (USD)');
 
                 Currency::create([
                     'code' => 'USD',
@@ -103,7 +110,7 @@ class InstallLunar extends Command
             }
 
             if (! CustomerGroup::whereDefault(true)->exists()) {
-                $this->info('Adding a default customer group.');
+                $this->components->info('Adding a default customer group.');
 
                 CustomerGroup::create([
                     'name' => 'Retail',
@@ -113,7 +120,7 @@ class InstallLunar extends Command
             }
 
             if (! CollectionGroup::count()) {
-                $this->info('Adding an initial collection group');
+                $this->components->info('Adding an initial collection group');
 
                 CollectionGroup::create([
                     'name' => 'Main',
@@ -122,7 +129,7 @@ class InstallLunar extends Command
             }
 
             if (! TaxClass::count()) {
-                $this->info('Adding a default tax class.');
+                $this->components->info('Adding a default tax class.');
 
                 TaxClass::create([
                     'name' => 'Default Tax Class',
@@ -131,7 +138,7 @@ class InstallLunar extends Command
             }
 
             if (! Attribute::count()) {
-                $this->info('Setting up initial attributes');
+                $this->components->info('Setting up initial attributes');
 
                 $group = AttributeGroup::create([
                     'attributable_type' => Product::class,
@@ -167,6 +174,7 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -185,6 +193,7 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -203,6 +212,7 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
+                    'description' => '',
                 ]);
 
                 Attribute::create([
@@ -221,11 +231,12 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
+                    'description' => '',
                 ]);
             }
 
             if (! ProductType::count()) {
-                $this->info('Adding a product type.');
+                $this->components->info('Adding a product type.');
 
                 $type = ProductType::create([
                     'name' => 'Stock',
@@ -238,26 +249,30 @@ class InstallLunar extends Command
         });
 
         if ($this->isHubInstalled()) {
-            $this->newLine();
-            $this->line('Installing Admin Hub.');
+            $this->components->info('Installing Admin Hub.');
             $this->call('lunar:hub:install');
         }
 
-        $this->newLine();
-        $this->comment('Lunar is now installed 🚀');
-        $this->newLine();
+        $this->components->info('Publishing Filament assets');
+        $this->call('filament:assets');
 
-        $this->line('Please show some love for Lunar by giving us a star on GitHub ⭐️');
-        $this->info('https://github.com/lunarphp/lunar');
-        $this->newLine(3);
+        $this->components->info('Lunar is now installed 🚀');
+
+        if (confirm('Would you like to show some love by giving us a star on GitHub?')) {
+            match (PHP_OS_FAMILY) {
+                'Darwin' => exec('open https://github.com/lunarphp/lunar'),
+                'Linux' => exec('xdg-open https://github.com/lunarphp/lunar'),
+                'Windows' => exec('start https://github.com/lunarphp/lunar'),
+            };
+
+            $this->components->info('Thank you!');
+        }
     }
 
     /**
      * Checks if config exists given a filename.
-     *
-     * @param  string  $fileName
      */
-    private function configExists($fileName): bool
+    private function configExists(string $fileName): bool
     {
         if (! File::isDirectory(config_path($fileName))) {
             return false;
@@ -271,7 +286,7 @@ class InstallLunar extends Command
      */
     private function shouldOverwriteConfig(): bool
     {
-        return $this->confirm(
+        return confirm(
             'Config file already exists. Do you want to overwrite it?',
             false
         );
@@ -279,10 +294,8 @@ class InstallLunar extends Command
 
     /**
      * Publishes configuration for the Service Provider.
-     *
-     * @param  bool  $forcePublish
      */
-    private function publishConfiguration($forcePublish = false): void
+    private function publishConfiguration(bool $forcePublish = false): void
     {
         $params = [
             '--provider' => "Lunar\LunarServiceProvider",
@@ -298,10 +311,8 @@ class InstallLunar extends Command
 
     /**
      * Determines if the admin hub is installed.
-     *
-     * @return bool
      */
-    private function isHubInstalled()
+    private function isHubInstalled(): bool
     {
         return class_exists(AdminHubServiceProvider::class);
     }

@@ -14,24 +14,72 @@ Run any migrations
 php artisan migrate
 ```
 
-Re-publish the admin hub assets
-
-```sh
-php artisan lunar:hub:install
-```
-
 ## Support Policy
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
-## [UNRELEASED]
+
+## 1.0
 
 ### High Impact
+
+#### Change to Staff model namespace
+
+The Staff model has changed location from `Lunar\Hub\Models\Staff` to `Lunar\Admin\Models\Staff` so this will need to be updated within
+your codebase and any polymorphic relations.
+
+#### Spatie Media Library
+This package has been upgrade to version 11, which introduces some breaking changes.
+See here for more information https://github.com/spatie/laravel-medialibrary/blob/main/UPGRADING.md
 
 #### Media Conversions
 The `lunar.media.conversions` configuration has been removed, in favour of registering custom media definitionss instead.
 Media definition classes allow you to register media collections, conversions and much more. See [Media Collections](/core/reference/media.html#media-collections)
 for further information.
+
+#### Product Options
+The `position` field has been removed from the `product_options` table and is now found on the `product_product_option` 
+pivot table. Any position data will be automatically adjusted when running migrations.
+
+#### Tiers renamed to Price Breaks
+
+The `tier` column on pricing has been renamed to `min_quantity`, any references in code to `tiers` needs to be updated.
+
+##### Price Model
+
+```php
+// Old
+$priceModel->tier
+// New
+$priceModel->min_quantity
+
+// Old
+$priceModel->tiers
+// New
+$priceModel->priceBreaks
+```
+
+##### Lunar\Base\DataTransferObjects\PricingResponse
+
+```php
+// Old
+public Collection $tiered,
+// New
+public Collection $priceBreaks,
+```
+
+##### Lunar\Base\DataTransferObjects\PaymentAuthorize
+
+Two new properties have been added to the constructor for this DTO.
+
+```php
+public ?int $orderId = null,
+public ?string $paymentType = null
+```
+
+## 0.8
+
+No significant changes.
 
 ## 0.7
 

@@ -3,10 +3,13 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Purchasable;
+use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasDimensions;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasPrices;
@@ -23,6 +26,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property array $attribute_data
  * @property ?string $tax_ref
  * @property int $unit_quantity
+ * @property int $min_quantity
+ * @property int $quantity_increment
  * @property ?string $sku
  * @property ?string $gtin
  * @property ?string $mpn
@@ -47,6 +52,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  */
 class ProductVariant extends BaseModel implements Purchasable
 {
+    use HasAttributes;
     use HasDimensions;
     use HasFactory;
     use HasMacros;
@@ -79,30 +85,24 @@ class ProductVariant extends BaseModel implements Purchasable
 
     /**
      * The related product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class)->withTrashed();
     }
 
     /**
      * Return the tax class relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function taxClass()
+    public function taxClass(): BelongsTo
     {
         return $this->belongsTo(TaxClass::class);
     }
 
     /**
      * Return the related product option values.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function values()
+    public function values(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -137,7 +137,7 @@ class ProductVariant extends BaseModel implements Purchasable
         });
     }
 
-    public function getTaxReference()
+    public function getTaxReference(): ?string
     {
         return $this->tax_ref;
     }
@@ -145,7 +145,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->shippable ? 'physical' : 'digital';
     }
@@ -153,7 +153,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function isShippable()
+    public function isShippable(): bool
     {
         return $this->shippable;
     }
@@ -161,7 +161,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->product->translateAttribute('name');
     }
@@ -169,7 +169,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getOption()
+    public function getOption(): string
     {
         return $this->values->map(fn ($value) => $value->translate('name'))->join(', ');
     }
@@ -177,7 +177,7 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getOptions()
+    public function getOptions(): Collection
     {
         return $this->values->map(fn ($value) => $value->translate('name'));
     }
@@ -185,12 +185,12 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * {@inheritDoc}
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->sku;
     }
 
-    public function images()
+    public function images(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -200,7 +200,7 @@ class ProductVariant extends BaseModel implements Purchasable
             ->withTimestamps();
     }
 
-    public function getThumbnail()
+    public function getThumbnail(): ?Media
     {
         return $this->images->first(function ($media) {
             return (bool) $media->pivot?->primary;

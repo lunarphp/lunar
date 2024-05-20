@@ -34,13 +34,16 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::PACKAGE_DIRECTORIES, [
         // default value
         __DIR__.'/packages',
-        __DIR__.'/utils',
     ]);
 
     // for "merge" command
     $parameters->set(Option::DATA_TO_APPEND, [
         ComposerJsonSection::REQUIRE_DEV => [
-            'phpunit/phpunit' => '^9.5',
+            'laravel/pint' => '1.13.1',
+            'mockery/mockery' => '^1.4.4',
+            'nunomaduro/larastan' => '^2.0',
+            'pestphp/pest' => '^2.0',
+            'pestphp/pest-plugin-laravel' => '^2.0',
             'symplify/monorepo-builder' => '^10.0',
         ],
     ]);

@@ -14,16 +14,16 @@ class Number extends BaseFieldType
     public static function getFilamentComponent(Attribute $attribute): Component
     {
         $min = (int) $attribute->configuration->get('min');
-        $max = (int) $attribute->configuration->get('min');
+        $max = (int) $attribute->configuration->get('max');
 
         $input = TextField::getFilamentComponent($attribute)->numeric();
 
         if ($min) {
-            $input->min($min);
+            $input->minValue($min);
         }
 
         if ($max) {
-            $input->max($max);
+            $input->maxValue($max);
         }
 
         return $input;
