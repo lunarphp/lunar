@@ -1,19 +1,14 @@
 name: npm-build
-
 on:
   pull_request:
-  : #    branches:
-  : #      - 1.x
-  : #    types:
-  : #      - closed
-
+defaults:
+  run:
+    working-directory: ./packages/admin
 jobs:
   npm-build:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
-    defaults:
-      run:
-        working-directory: ./packages/admin
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
