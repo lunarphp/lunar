@@ -23,6 +23,11 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ### High Impact
 
+#### Change to Staff model namespace
+
+The Staff model has changed location from `Lunar\Hub\Models\Staff` to `Lunar\Admin\Models\Staff` so this will need to be updated within
+your codebase and any polymorphic relations.
+
 #### Spatie Media Library
 This package has been upgrade to version 11, which introduces some breaking changes.
 See here for more information https://github.com/spatie/laravel-medialibrary/blob/main/UPGRADING.md
