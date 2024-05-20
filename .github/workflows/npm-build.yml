@@ -13,7 +13,7 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, intl, amqp, dba, bcmath
       - name: Install Composer dependencies
-        run: composer install --prefer-stable --no-interaction --no-suggest
+        run: composer install --no-interaction
       - name: Setup Node
         uses: actions/setup-node@v2
       - name: Install dependencies
