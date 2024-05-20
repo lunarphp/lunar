@@ -1,9 +1,6 @@
 name: npm-build
 on:
   pull_request:
-defaults:
-  run:
-    working-directory: ./packages/admin
 jobs:
   npm-build:
     runs-on: ubuntu-latest
@@ -26,13 +23,16 @@ jobs:
           node-version: 20
 
       - name: Install Composer dependencies
+        working-directory: ./packages/admin
         run: |
           composer install --no-interaction --prefer-dist
 
       - name: Install dependencies
+        working-directory: ./packages/admin
         run: npm ci
 
       - name: Build assets
+        working-directory: ./packages/admin
         run: npm run build
 
       - name: Pull changes
