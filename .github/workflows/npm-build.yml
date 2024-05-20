@@ -21,8 +21,9 @@ jobs:
           node-version: 20
 
       - name: Install Composer dependencies
+        working-directory: ./packages/admin
         run: |
-          composer install --no-interaction
+          composer require lunarphp/lunar:"^1.0.0-alpha" -W --no-interaction --no-update --dev
 
       - name: Install dependencies
         working-directory: ./packages/admin
