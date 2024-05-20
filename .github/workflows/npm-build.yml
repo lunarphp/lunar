@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./packages/admin
-        run: npm i
+        run: npm ci
 
       - name: Build assets
         working-directory: ./packages/admin
@@ -41,6 +41,5 @@ jobs:
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: 1.x
           commit_message: >
-            chore: build assets
+            chore: fix code style
