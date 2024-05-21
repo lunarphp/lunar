@@ -4,6 +4,8 @@ namespace Lunar\Stripe;
 
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Base\DataTransferObjects\PaymentCheck;
+use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Exceptions\DisallowMultipleCartOrdersException;
@@ -13,7 +15,6 @@ use Lunar\Stripe\Actions\UpdateOrderFromIntent;
 use Lunar\Stripe\Facades\StripeFacade;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
-use Stripe\Stripe;
 
 class StripePaymentType extends AbstractPayment
 {
@@ -193,5 +194,44 @@ class StripePaymentType extends AbstractPayment
         return new PaymentRefund(
             success: true
         );
+    }
+
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    {
+        $meta = $transaction->meta;
+
+        $checks = new PaymentChecks;
+
+        if (isset($meta['address_line1_check'])) {
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $meta['address_line1_check'] == 'pass',
+                    label: 'Address Line 1',
+                    message: $meta['address_line1_check'],
+                )
+            );
+        }
+
+        if (isset($meta['address_postal_code_check'])) {
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $meta['address_postal_code_check'] == 'pass',
+                    label: 'Postal Code',
+                    message: $meta['address_postal_code_check'],
+                )
+            );
+        }
+
+        if (isset($meta['cvc_check'])) {
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $meta['cvc_check'] == 'pass',
+                    label: 'CVC Check',
+                    message: $meta['cvc_check'],
+                )
+            );
+        }
+
+        return $checks;
     }
 }

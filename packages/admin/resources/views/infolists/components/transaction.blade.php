@@ -19,7 +19,7 @@
         '!border-red-500 bg-red-50' => !$transaction->success,
         'bg-gray-50' => $transaction->success,
     ])
->    
+>
     <div class="p-2 space-y-2">
         <div class="px-4 py-2 rounded text-xs bg-white dark:bg-gray-800 shadow text-gray-600 dark:text-gray-400 ring-1 ring-gray-100 dark:ring-gray-700">
             <span>{{ $transaction->driver }}</span> //
@@ -53,7 +53,7 @@
                 @endif
             </div>
 
-            <strong 
+            <strong
                 @class([
                     "text-sm",
                     'text-red-500' => !$transaction->success,
@@ -75,26 +75,20 @@
                         class="w-4"
                     />
                 </div>
-                
+
                 <span>{{ $transaction->created_at->format('jS F Y h:ma') }}</span>
             </div>
 
-            @if($threeD = $transaction->meta['threedSecure'] ?? null)
-                <div class="flex space-x-2">
-                    @foreach([
-                        'address' => 'Address',
-                        'postalCode' => 'Postal Code',
-                        'securityCode' => 'Security Code',
-                    ] as $metaKey => $metaLabel)
-                        <x-filament::badge
-                            :icon="$threeD[$metaKey] ?? false ? 'heroicon-m-check' : 'heroicon-m-x-mark'"
-                            :color="$threeD[$metaKey] ?? false ? \Filament\Support\Colors\Color::Sky : 'gray'"
-                        >
-                            {{ $metaLabel }}
-                        </x-filament::badge>
-                    @endforeach
-                </div>
-            @endif
+            <div class="flex space-x-2">
+            @foreach($transaction->paymentChecks() as $check)
+                    <x-filament::badge
+                        :icon="$check->successful ? 'heroicon-m-check' : 'heroicon-m-x-mark'"
+                        :color="$check->successful ?? false ? \Filament\Support\Colors\Color::Sky : 'gray'"
+                    >
+                        {{ $check->label }}: {{ $check->message }}
+                    </x-filament::badge>
+            @endforeach
+            </div>
         </div>
 
         @if($transaction->notes)
@@ -111,7 +105,7 @@
         @endif
     </div>
 
-    <div 
+    <div
         @class([
             "bottom-0 left-0 block w-full text-center rounded-b-lg border-t text-xs py-1",
             "!bg-red-50 !dark:bg-red-400/10 !border-red-300 !text-red-600 !dark:text-red-400" => !$transaction->success,
