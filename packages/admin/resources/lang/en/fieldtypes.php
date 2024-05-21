@@ -22,6 +22,14 @@ return [
             ],
         ],
     ],
+    'textarea' => [
+        'label' => 'Textarea',
+        'form' => [
+            'autosize' => [
+                'label' => 'Autosize',
+            ],
+        ],
+    ],
     'translatedtext' => [
         'label' => 'Translated Text',
         'form' => [

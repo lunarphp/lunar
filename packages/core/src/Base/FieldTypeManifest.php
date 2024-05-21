@@ -9,6 +9,7 @@ use Lunar\FieldTypes\File;
 use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\Textarea;
 use Lunar\FieldTypes\Toggle;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\FieldTypes\YouTube;
@@ -29,6 +30,7 @@ class FieldTypeManifest
             ListField::class,
             Number::class,
             Text::class,
+            Textarea::class,
             Toggle::class,
             TranslatedText::class,
             YouTube::class,

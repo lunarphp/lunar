@@ -9,6 +9,7 @@ use Lunar\Admin\Support\FieldTypes\File;
 use Lunar\Admin\Support\FieldTypes\ListField;
 use Lunar\Admin\Support\FieldTypes\Number;
 use Lunar\Admin\Support\FieldTypes\TextField;
+use Lunar\Admin\Support\FieldTypes\TextareaField;
 use Lunar\Admin\Support\FieldTypes\Toggle;
 use Lunar\Admin\Support\FieldTypes\TranslatedText;
 use Lunar\Admin\Support\FieldTypes\YouTube;
@@ -17,6 +18,7 @@ use Lunar\FieldTypes\File as FileFieldType;
 use Lunar\FieldTypes\ListField as ListFieldFieldType;
 use Lunar\FieldTypes\Number as NumberFieldType;
 use Lunar\FieldTypes\Text as TextFieldType;
+use Lunar\FieldTypes\Textarea as TextareaFieldType;
 use Lunar\FieldTypes\Toggle as ToggleFieldType;
 use Lunar\FieldTypes\TranslatedText as TranslatedTextFieldType;
 use Lunar\FieldTypes\YouTube as YouTubeFieldType;
@@ -28,6 +30,7 @@ class AttributeData
         DrodownFieldType::class => Dropdown::class,
         ListFieldFieldType::class => ListField::class,
         TextFieldType::class => TextField::class,
+        TextareaFieldType::class => TextareaField::class,
         TranslatedTextFieldType::class => TranslatedText::class,
         ToggleFieldType::class => Toggle::class,
         YouTubeFieldType::class => YouTube::class,
