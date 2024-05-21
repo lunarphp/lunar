@@ -456,7 +456,7 @@ class OpayoPaymentType extends AbstractPayment
 
         if (isset($meta['postalCode'])) {
             $message = $meta['postalCode'];
-            $successful = $meta['address'] == 'Matched';
+            $successful = $meta['postalCode'] == 'Matched';
 
             if (is_bool($message) && ! $message) {
                 $message = 'NotMatched';
@@ -477,7 +477,7 @@ class OpayoPaymentType extends AbstractPayment
 
         if (isset($meta['securityCode'])) {
             $message = $meta['securityCode'];
-            $successful = $meta['address'] == 'Matched';
+            $successful = $meta['securityCode'] == 'Matched';
 
             if (is_bool($message) && ! $message) {
                 $message = 'NotMatched';
