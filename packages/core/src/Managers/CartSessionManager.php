@@ -114,6 +114,10 @@ class CartSessionManager implements CartSessionInterface
             $this->getSessionKey()
         );
 
+        if (! $cartId && $user = $this->authManager->user()) {
+            $cartId = $user->carts()->active()->first()?->id;
+        }
+
         if (! $cartId) {
             return $create ? $this->cart = $this->createNewCart() : null;
         }
@@ -140,6 +144,8 @@ class CartSessionManager implements CartSessionInterface
                 setOverride: true
             );
         }
+
+        $this->use($this->cart);
 
         return $this->cart->calculate();
     }
