@@ -131,7 +131,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     {
         $hash = md5(strtolower(trim($this->attributes['email'])));
 
-        return "https://www.gravatar.com/avatar/$hash?d=mp";
+        return "https://www.gravatar.com/avatar/{$hash}?d=mp";
     }
 
     public function canAccessPanel(Panel $panel): bool
