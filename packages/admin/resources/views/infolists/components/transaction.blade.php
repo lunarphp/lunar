@@ -83,7 +83,7 @@
             @foreach($transaction->paymentChecks() as $check)
                     <x-filament::badge
                         :icon="$check->successful ? 'heroicon-m-check' : 'heroicon-m-x-mark'"
-                        :color="$check->successful ?? false ? \Filament\Support\Colors\Color::Sky : 'gray'"
+                        :color="$check->successful ?  \Filament\Support\Colors\Color::Sky : 'gray'"
                     >
                         {{ $check->label }}: {{ $check->message }}
                     </x-filament::badge>
