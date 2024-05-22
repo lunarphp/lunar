@@ -26,6 +26,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('providers.users.model', User::class);
         Config::set('lunar.urls.generator', TestUrlGenerator::class);
         Config::set('lunar.taxes.driver', 'test');
+        Config::set('lunar.media.collection', 'images');
 
         Taxes::extend('test', function ($app) {
             return $app->make(TestTaxDriver::class);

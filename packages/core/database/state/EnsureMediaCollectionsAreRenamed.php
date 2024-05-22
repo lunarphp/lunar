@@ -21,7 +21,7 @@ class EnsureMediaCollectionsAreRenamed
             return;
         }
 
-        $this->getOutdatedMediaQuery()->update(['collection_name' => 'images']);
+        $this->getOutdatedMediaQuery()->update(['collection_name' => config('lunar.media.collection')]);
     }
 
     protected function shouldRun()
