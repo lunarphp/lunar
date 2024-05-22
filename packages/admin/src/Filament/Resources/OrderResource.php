@@ -93,7 +93,7 @@ class OrderResource extends BaseResource
             Tables\Columns\TextColumn::make('customer_reference')
                 ->label(__('lunarpanel::order.table.customer_reference.label'))
                 ->toggleable(),
-            Tables\Columns\TextColumn::make('shippingAddress.fullName')
+            Tables\Columns\TextColumn::make('billingAddress.fullName')
                 ->label(__('lunarpanel::order.table.customer.label'))
                 ->toggleable(),
             Tables\Columns\TextColumn::make('new_customer')
@@ -108,16 +108,16 @@ class OrderResource extends BaseResource
                 ->badge()
                 ->toggleable()
                 ->separator(','),
-            Tables\Columns\TextColumn::make('shippingAddress.postcode')
+            Tables\Columns\TextColumn::make('billingAddress.postcode')
                 ->label(__('lunarpanel::order.table.postcode.label'))
                 ->toggleable(),
-            Tables\Columns\TextColumn::make('shippingAddress.contact_email')
+            Tables\Columns\TextColumn::make('billingAddress.contact_email')
                 ->label(__('lunarpanel::order.table.email.label'))
                 ->toggleable()
                 ->copyable()
                 ->copyMessage(__('lunarpanel::order.table.email.copy_message'))
                 ->copyMessageDuration(1500),
-            Tables\Columns\TextColumn::make('shippingAddress.contact_phone')
+            Tables\Columns\TextColumn::make('billingAddress.contact_phone')
                 ->label(__('lunarpanel::order.table.phone.label'))
                 ->toggleable(),
             Tables\Columns\TextColumn::make('total')
@@ -137,7 +137,8 @@ class OrderResource extends BaseResource
             Tables\Filters\SelectFilter::make('status')
                 ->label(__('lunarpanel::order.table.status.label'))
                 ->options(collect(config('lunar.orders.statuses', []))
-                    ->mapWithKeys(fn ($data, $status) => [$status => $data['label']])),
+                    ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
+                ->multiple(),
             Tables\Filters\Filter::make('placed_at')
 
                 ->form([
@@ -215,9 +216,9 @@ class OrderResource extends BaseResource
             'reference',
             'customer_reference',
             'notes',
-            'shippingAddress.first_name',
-            'shippingAddress.last_name',
-            'shippingAddress.contact_email',
+            'billingAddress.first_name',
+            'billingAddress.last_name',
+            'billingAddress.contact_email',
             'tags.value',
         ];
     }
@@ -225,7 +226,7 @@ class OrderResource extends BaseResource
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with([
-            'shippingAddress',
+            'billingAddress',
             'tags',
         ]);
     }

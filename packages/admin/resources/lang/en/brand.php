@@ -28,4 +28,45 @@ return [
             ],
         ],
     ],
+    'pages' => [
+        'products' => [
+            'label' => 'Products',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Associate a product',
+                    'form' => [
+                        'record_id' => [
+                            'label' => 'Product',
+                        ],
+                    ],
+                    'notification' => [
+                        'success' => 'Product attached to brand',
+                    ],
+                ],
+                'detach' => [
+                    'notification' => [
+                        'success' => 'Product detached.',
+                    ],
+                ],
+            ],
+        ],
+        'collections' => [
+            'label' => 'Collections',
+            'table' => [
+                'header_actions' => [
+                    'attach' => [
+                        'record_select' => [
+                            'placeholder' => 'Select a collection',
+                        ],
+                    ],
+                ],
+            ],
+            'actions' => [
+                'attach' => [
+                    'label' => 'Associate a collection',
+                ],
+            ],
+        ],
+    ],
+
 ];

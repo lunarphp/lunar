@@ -63,6 +63,13 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     ];
 
     /**
+     * Append attributes to the model.
+     *
+     * @var array
+     */
+    protected $appends = ['fullName', 'gravatar'];
+
+    /**
      * Create a new instance of the Model.
      */
     public function __construct(array $attributes = [])
@@ -104,9 +111,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
             $parts = explode(' ', $term);
 
             foreach ($parts as $part) {
-                $query->where('email', 'LIKE', "%$part%")
-                    ->orWhere('firstname', 'LIKE', "%$part%")
-                    ->orWhere('lastname', 'LIKE', "%$part%");
+                $query->whereAny(['email', 'firstname', 'lastname'], 'LIKE', "%$part%");
             }
         }
     }
@@ -117,6 +122,16 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     public function getFullNameAttribute(): string
     {
         return $this->firstname.' '.$this->lastname;
+    }
+
+    /**
+     * Get staff member's Gravatar URLs.
+     */
+    public function getGravatarAttribute(): string
+    {
+        $hash = md5(strtolower(trim($this->attributes['email'])));
+
+        return "https://www.gravatar.com/avatar/{$hash}?d=mp";
     }
 
     public function canAccessPanel(Panel $panel): bool
