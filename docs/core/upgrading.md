@@ -18,6 +18,21 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+## 1.0.0-alpha.20
+
+### High Impact
+
+#### Stripe addon facade change
+
+If you are using the Stripe addon, you need to update the facade as the name has changed.
+
+```php
+// Old
+\Lunar\Stripe\Facades\StripeFacade;
+
+// New
+\Lunar\Stripe\Facades\Stripe;
+```
 
 ## 1.0
 
