@@ -29,6 +29,15 @@ class MyCreateExtension extends CreatePageExtension
     {
         return $title . ' - Example';
     }
+    
+    public function getTabs(array $tabs): array
+    {
+        return [
+            ...$tabs,
+            'review' => Tab::make('Review')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'review')),
+        ];
+    }
 
     public function headerWidgets(array $widgets): array
     {
