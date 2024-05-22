@@ -24,6 +24,10 @@ final class ApplyShipping
         $shippingOption = $cart->shippingOptionOverride ?: ShippingManifest::getShippingOption($cart);
 
         if ($shippingOption) {
+            if ($cart->shippingOptionOverride) {
+                $shippingBreakdown->items = collect();
+            }
+
             $shippingBreakdown->items->put(
                 $shippingOption->getIdentifier(),
                 new ShippingBreakdownItem(

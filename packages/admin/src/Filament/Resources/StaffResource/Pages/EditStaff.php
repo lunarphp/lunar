@@ -10,7 +10,7 @@ class EditStaff extends BaseEditRecord
 {
     protected static string $resource = StaffResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),

@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Channel;
@@ -59,6 +60,13 @@ class ChannelResource extends BaseResource
             ->label(__('lunarpanel::channel.form.name.label'))
             ->required()
             ->maxLength(255)
+            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+                $set('handle', Str::slug($state));
+            })
+            ->live(onBlur: true)
             ->autofocus();
     }
 

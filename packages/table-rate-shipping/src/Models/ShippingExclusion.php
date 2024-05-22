@@ -3,8 +3,9 @@
 namespace Lunar\Shipping\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
-use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Factories\ShippingExclusionFactory;
 
 class ShippingExclusion extends BaseModel
@@ -31,20 +32,16 @@ class ShippingExclusion extends BaseModel
 
     /**
      * Return the shipping zone relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function list()
+    public function list(): BelongsTo
     {
         return $this->belongsTo(ShippingZone::class);
     }
 
     /**
      * Return the purchasable relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function purchasable()
+    public function purchasable(): MorphTo
     {
         return $this->morphTo('purchasable');
     }

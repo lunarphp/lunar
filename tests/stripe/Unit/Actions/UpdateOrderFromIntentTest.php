@@ -8,7 +8,7 @@ it('creates pending transaction when status is requires_action', function () {
 
     $order = $cart->createOrder();
 
-    $paymentIntent = \Lunar\Stripe\Facades\StripeFacade::getClient()
+    $paymentIntent = \Lunar\Stripe\Facades\Stripe::getClient()
         ->paymentIntents
         ->retrieve('PI_REQUIRES_ACTION');
 
