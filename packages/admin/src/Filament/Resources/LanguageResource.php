@@ -2,9 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Awcodes\FilamentBadgeableColumn\Components\Badge;
+use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
-use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
@@ -76,12 +77,14 @@ class LanguageResource extends BaseResource
     protected static function getDefaultTable(Tables\Table $table): Tables\Table
     {
         return $table->columns([
-            Tables\Columns\TextColumn::make('name')
-                ->iconPosition(IconPosition::After)
-                ->iconColor('success')
-                ->icon(function (Model $model) {
-                    return $model->default ? 'heroicon-o-check-circle' : '';
-                })
+            BadgeableColumn::make('name')
+                ->separator('')
+                ->suffixBadges([
+                    Badge::make('default')
+                        ->label(__('lunarpanel::language.table.default.label'))
+                        ->color('gray')
+                        ->visible(fn(Model $record) => $record->default),
+                ])
                 ->label(__('lunarpanel::language.table.name.label')),
             Tables\Columns\TextColumn::make('code')
                 ->label(__('lunarpanel::language.table.code.label')),

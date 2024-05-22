@@ -2,9 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Awcodes\FilamentBadgeableColumn\Components\Badge;
+use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
-use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -319,12 +320,14 @@ class TaxZoneResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name')
-                ->iconPosition(IconPosition::After)
-                ->iconColor('success')
-                ->icon(function (Model $model) {
-                    return $model->default ? 'heroicon-o-check-circle' : '';
-                })
+            BadgeableColumn::make('name')
+                ->separator('')
+                ->suffixBadges([
+                    Badge::make('default')
+                        ->label(__('lunarpanel::taxzone.table.default.label'))
+                        ->color('gray')
+                        ->visible(fn(Model $record) => $record->default),
+                ])
                 ->label(__('lunarpanel::taxzone.table.name.label')),
             Tables\Columns\TextColumn::make('zone_type')
                 ->label(__('lunarpanel::taxzone.table.zone_type.label')),
