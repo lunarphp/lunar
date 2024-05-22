@@ -277,10 +277,26 @@ An example of extending a view page.
 
 ```php
 use Filament\Actions;
+
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 use Lunar\Admin\Support\Extending\ViewPageExtension;
+use Lunar\Admin\Filament\Widgets;
 
 class MyViewExtension extends ViewPageExtension
 {
+    public function headerWidgets(array $widgets): array
+    {
+        $widgets = [
+            ...$widgets,
+            Widgets\Dashboard\Orders\OrderStatsOverview::make(),
+        ];
+
+        return $widgets;
+    }
+
     public function heading($title): string
     {
         return $title . ' - Example';
@@ -302,7 +318,24 @@ class MyViewExtension extends ViewPageExtension
 
         return $actions;
     }
-  
+
+    public function extendsInfolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            ...$infolist->getComponents(true),
+            TextEntry::make('custom_title'),
+        ]);
+    }
+    
+    public function footerWidgets(array $widgets): array
+    {
+        $widgets = [
+            ...$widgets,
+            Widgets\Dashboard\Orders\LatestOrdersTable::make(),
+        ];
+
+        return $widgets;
+    }
 }
 
 // Typically placed in your AppServiceProvider file...
