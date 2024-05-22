@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Admin\Events\ModelPricesUpdated;
 use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
@@ -178,6 +179,10 @@ class PriceRelationManager extends BaseRelationManager
                     return $data;
                 })->label(
                     __('lunarpanel::relationmanagers.pricing.table.actions.create.label')
+                )->after(
+                    fn () => ModelPricesUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
                 ),
             ])
             ->actions([
@@ -187,8 +192,16 @@ class PriceRelationManager extends BaseRelationManager
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
                     return $data;
-                }),
-                Tables\Actions\DeleteAction::make(),
+                })->after(
+                    fn () => ModelPricesUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
+                Tables\Actions\DeleteAction::make()->after(
+                    fn () => ModelPricesUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ]);
     }
 }

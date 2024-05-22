@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Support\Pages;
 
 use Filament\Resources\Pages\ListRecords;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Base\Traits\Searchable;
 
@@ -13,6 +12,8 @@ abstract class BaseListRecords extends ListRecords
     use Concerns\ExtendsHeaderActions;
     use Concerns\ExtendsHeaderWidgets;
     use Concerns\ExtendsHeadings;
+    use Concerns\ExtendsTablePagination;
+    use Concerns\ExtendsTabs;
     use \Lunar\Admin\Support\Concerns\CallsHooks;
 
     protected function applySearchToTableQuery(Builder $query): Builder
@@ -31,7 +32,7 @@ abstract class BaseListRecords extends ListRecords
             $scoutEnabled &&
             $isScoutSearchable
         ) {
-            $ids = collect(static::getModel()::search($search)->keys())->map(
+            $ids = collect(static::getModel()::search($search)->take(100)->keys())->map(
                 fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
 
@@ -49,10 +50,5 @@ abstract class BaseListRecords extends ListRecords
         }
 
         return $query;
-    }
-
-    protected function paginateTableQuery(Builder $query): Paginator
-    {
-        return $query->paginate($this->getTableRecordsPerPage());
     }
 }

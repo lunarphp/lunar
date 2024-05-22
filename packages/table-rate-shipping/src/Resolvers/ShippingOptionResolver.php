@@ -11,15 +11,11 @@ class ShippingOptionResolver
 {
     /**
      * The cart to use when resolving.
-     *
-     * @var Cart
      */
     protected ?Cart $cart;
 
     /**
      * Initialise the resolver.
-     *
-     * @param  Cart  $cart
      */
     public function __construct(Cart $cart = null)
     {

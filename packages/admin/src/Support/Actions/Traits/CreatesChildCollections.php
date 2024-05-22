@@ -8,7 +8,7 @@ use Lunar\Models\Collection;
 
 trait CreatesChildCollections
 {
-    public function createChildCollection(Collection $parent, array $name)
+    public function createChildCollection(Collection $parent, array|string $name)
     {
         DB::beginTransaction();
 

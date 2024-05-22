@@ -3,6 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -67,5 +68,12 @@ class Brand extends BaseModel implements SpatieHasMedia
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(Discount::class, "{$prefix}brand_discount");
+    }
+
+    public function collections(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(Collection::class, "{$prefix}brand_collection");
     }
 }

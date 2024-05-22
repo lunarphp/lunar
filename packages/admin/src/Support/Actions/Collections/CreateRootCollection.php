@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Support\Actions\Collections;
 
 use Filament\Actions\CreateAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Facades\DB;
@@ -55,8 +56,17 @@ class CreateRootCollection extends CreateAction
             $this->success();
         });
 
+        $attribute = Attribute::where('attribute_type', '=', Collection::class)
+            ->where('handle', '=', 'name')->first();
+
+        $formInput = TextInput::class;
+
+        if ($attribute?->type == \Lunar\FieldTypes\TranslatedText::class) {
+            $formInput = TranslatedText::class;
+        }
+
         $this->form([
-            TranslatedText::make('name')->required(),
+            $formInput::make('name')->required(),
         ]);
 
         $this->label(

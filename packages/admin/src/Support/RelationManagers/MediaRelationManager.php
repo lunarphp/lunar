@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Admin\Events\ModelMediaUpdated;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaRelationManager extends BaseRelationManager
@@ -54,12 +55,12 @@ class MediaRelationManager extends BaseRelationManager
             ->heading(function () {
                 $product = $this->getOwnerRecord();
 
-                return $product->getMediaCollectionTitle($this->mediaCollection) ?? Str::ucfirst($this->mediaCollection);
+                return $product->getMediaCollectionTitle(config('lunar.media.collection')) ?? Str::ucfirst($this->mediaCollection);
             })
             ->description(function () {
                 $product = $this->getOwnerRecord();
 
-                return $product->getMediaCollectionDescription($this->mediaCollection) ?? '';
+                return $product->getMediaCollectionDescription(config('lunar.media.collection')) ?? '';
             })
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', $this->mediaCollection)->orderBy('order_column'))
@@ -90,10 +91,18 @@ class MediaRelationManager extends BaseRelationManager
                                 'primary' => $data['custom_properties']['primary'],
                             ])
                             ->toMediaCollection($this->mediaCollection);
-                    }),
+                    })->after(
+                        fn () => ModelMediaUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => ModelMediaUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
                 Tables\Actions\DeleteAction::make(),
                 Action::make('view_open')
                     ->label('View')
@@ -103,7 +112,11 @@ class MediaRelationManager extends BaseRelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->after(
+                        fn () => ModelMediaUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ])
             ->reorderable('order_column');

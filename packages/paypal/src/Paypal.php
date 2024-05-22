@@ -20,7 +20,7 @@ class Paypal implements PaypalInterface
     {
         return config('services.paypal.env', 'sandbox') == 'sandbox' ?
             'https://api-m.sandbox.paypal.com' :
-            'https://api-m.live.paypal.com';
+            'https://api-m.paypal.com';
     }
 
     public function getAccessToken()
