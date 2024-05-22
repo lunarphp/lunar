@@ -76,7 +76,7 @@
                     />
                 </div>
                 
-                <span>{{ $transaction->created_at->format('jS F Y h:i:s') }}</span>
+                <span>{{ $transaction->created_at->format('jS F Y h:ia') }}</span>
             </div>
 
             @if($threeD = $transaction->meta['threedSecure'] ?? null)
