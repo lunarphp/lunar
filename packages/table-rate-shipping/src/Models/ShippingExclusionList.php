@@ -30,7 +30,7 @@ class ShippingExclusionList extends BaseModel
         return ShippingExclusionListFactory::new();
     }
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::deleting(function (ShippingExclusionList $list) {
             $list->exclusions()->delete();
