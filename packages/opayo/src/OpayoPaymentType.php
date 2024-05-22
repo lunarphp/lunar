@@ -109,10 +109,14 @@ class OpayoPaymentType extends AbstractPayment
             );
         }
 
-        $this->storeTransaction(
-            transaction: $response,
-            success: $successful
-        );
+        $transaction = Opayo::getTransaction($response->transactionId);
+
+        if (! empty($transaction)) {
+            $this->storeTransaction(
+                transaction: $transaction,
+                success: $successful
+            );
+        }
 
         $status = $this->data['status'] ?? null;
 

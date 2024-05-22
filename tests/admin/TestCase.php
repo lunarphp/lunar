@@ -39,6 +39,8 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        $this->loadLaravelMigrations();
+
         // Freeze time to avoid timestamp errors
         $this->freezeTime();
     }
@@ -75,11 +77,6 @@ class TestCase extends BaseTestCase
             BlinkServiceProvider::class,
 
         ];
-    }
-
-    protected function defineDatabaseMigrations(): void
-    {
-        $this->loadLaravelMigrations();
     }
 
     protected function getEnvironmentSetUp($app): void

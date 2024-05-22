@@ -15,7 +15,7 @@ class UpdatePricesOnPricesTable extends Migration
     {
         Schema::table($this->prefix.'prices', function (Blueprint $table) {
             $table->unsignedBigInteger('price')->change();
-            $table->unsignedBigInteger('compare_price')->change();
+            $table->unsignedBigInteger('compare_price')->nullable()->change();
         });
     }
 

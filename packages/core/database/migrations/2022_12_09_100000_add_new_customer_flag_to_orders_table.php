@@ -26,6 +26,7 @@ class AddNewCustomerFlagToOrdersTable extends Migration
     public function down()
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
+            $table->dropIndex(['new_customer']);
             $table->dropColumn('new_customer');
         });
     }

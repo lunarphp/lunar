@@ -37,6 +37,9 @@ return [
     'youtube' => [
         'label' => 'YouTube',
     ],
+    'vimeo' => [
+        'label' => 'Vimeo',
+    ],
     'number' => [
         'label' => 'Number',
         'form' => [
