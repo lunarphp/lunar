@@ -77,7 +77,7 @@ it('can assign staff role and permissions', function () {
 
     // C
 
-    if ($result) {
+    if (! $result) {
         var_dump($roles);
         var_dump($staff->roles->pluck('name'));
     }
