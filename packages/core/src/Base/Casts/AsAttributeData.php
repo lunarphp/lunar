@@ -47,6 +47,10 @@ class AsAttributeData implements Castable
                 $data = [];
 
                 foreach ($value ?? [] as $handle => $item) {
+                    if ($item === null) {
+                        continue;
+                    }
+
                     $data[$handle] = [
                         'field_type' => get_class($item),
                         'value' => $item->getValue(),
