@@ -60,7 +60,7 @@ class MediaRelationManager extends RelationManager
             })
             ->description(function () {
                 $product = $this->getOwnerRecord();
-              
+
                 return $product->getMediaCollectionDescription(config('lunar.media.collection')) ?? '';
             })
             ->recordTitleAttribute('name')
