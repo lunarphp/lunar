@@ -72,7 +72,13 @@ it('can assign staff role and permissions', function () {
         ->call('save')
         ->assertHasNoFormErrors();
 
-    expect($staff->hasExactRoles($roles))
+    $result = $staff->hasExactRoles($roles);
+
+    if (! $result) {
+        var_dump($roles);
+        var_dump($staff->roles);
+    }
+    expect($result)
         ->toBeTrue();
 
     // check assigned permissions does not include role's permissions
