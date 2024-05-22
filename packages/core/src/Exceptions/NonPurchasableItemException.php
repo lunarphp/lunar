@@ -2,9 +2,7 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class NonPurchasableItemException extends Exception
+class NonPurchasableItemException extends LunarException
 {
     public function __construct(string $classname)
     {
