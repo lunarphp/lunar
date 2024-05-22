@@ -74,7 +74,7 @@ it('can assign staff role and permissions', function () {
 
     $result = $staff->hasExactRoles($roles);
 
-    // A
+    // C
 
     if ($result) {
         var_dump($roles);
