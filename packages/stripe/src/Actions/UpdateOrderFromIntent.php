@@ -4,7 +4,7 @@ namespace Lunar\Stripe\Actions;
 
 use Illuminate\Support\Facades\DB;
 use Lunar\Models\Order;
-use Lunar\Stripe\Facades\StripeFacade;
+use Lunar\Stripe\Facades\Stripe;
 use Stripe\PaymentIntent;
 
 class UpdateOrderFromIntent
@@ -17,7 +17,7 @@ class UpdateOrderFromIntent
     ): Order {
         return DB::transaction(function () use ($order, $paymentIntent) {
 
-            $charges = StripeFacade::getCharges($paymentIntent->id);
+            $charges = Stripe::getCharges($paymentIntent->id);
 
             $order = app(StoreCharges::class)->store($order, $charges);
             $requiresCapture = $paymentIntent->status === PaymentIntent::STATUS_REQUIRES_CAPTURE;
