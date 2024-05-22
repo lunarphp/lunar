@@ -743,7 +743,9 @@ class ManageOrder extends BaseViewRecord
                     ->default(fn ($record) => number_format($this->availableToRefund / $record->currency->factor, $record->currency->decimal_places, '.', ''))
                     ->live()
                     ->autocomplete(false)
-                    ->minValue(1)
+                    ->minValue(
+                        1 / $this->getRecord()->currency->factor
+                    )
                     ->numeric(),
 
                 Forms\Components\Textarea::make('notes')
