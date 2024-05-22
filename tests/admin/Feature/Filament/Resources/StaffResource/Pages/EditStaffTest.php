@@ -69,6 +69,7 @@ it('can assign staff role and permissions', function () {
             'roles' => $roles,
             'permissions' => $permissions->toArray(),
         ])
+        ->assertSet('data.roles', $roles)
         ->call('save')
         ->assertHasNoFormErrors();
 
