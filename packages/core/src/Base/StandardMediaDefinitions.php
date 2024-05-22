@@ -2,7 +2,8 @@
 
 namespace Lunar\Base;
 
-use Spatie\Image\Manipulations;
+use Spatie\Image\Enums\BorderType;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -13,7 +14,9 @@ class StandardMediaDefinitions implements MediaDefinitionsInterface
     {
         // Add a conversion for the admin panel to use
         $model->addMediaConversion('small')
-            ->fit(Manipulations::FIT_FILL, 300, 300)
+            ->fit(Fit::Fill, 300, 300)
+            ->border(0, BorderType::Overlay, color: '#FFF')
+            ->background('#FFF')
             ->sharpen(10)
             ->keepOriginalImageFormat();
     }
@@ -62,10 +65,13 @@ class StandardMediaDefinitions implements MediaDefinitionsInterface
             foreach ($conversions as $key => $conversion) {
                 $model->addMediaConversion($key)
                     ->fit(
-                        Manipulations::FIT_FILL,
+                        Fit::Fill,
                         $conversion['width'],
                         $conversion['height']
-                    )->keepOriginalImageFormat();
+                    )
+                    ->border(0, BorderType::Overlay, color: '#FFF')
+                    ->background('#FFF')
+                    ->keepOriginalImageFormat();
             }
         });
     }

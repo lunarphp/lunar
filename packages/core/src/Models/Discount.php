@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasCustomerGroups;
@@ -192,20 +193,22 @@ class Discount extends BaseModel
     /**
      * Return the products scope.
      */
-    public function scopeProducts(Builder $query, iterable $productIds = [], string $type = null): Builder
+    public function scopeProducts(Builder $query, iterable $productIds = [], array|string $types = []): Builder
     {
         if (is_array($productIds)) {
             $productIds = collect($productIds);
         }
 
+        $types = Arr::wrap($types);
+
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
                         ->wherePurchasableType(Product::class)
                         ->when(
-                            $type,
-                            fn ($query) => $query->whereType($type)
+                            $types,
+                            fn ($query) => $query->whereIn('type', $types)
                         )
                 )
         );
@@ -214,20 +217,22 @@ class Discount extends BaseModel
     /**
      * Return the product variants scope.
      */
-    public function scopeProductVariants(Builder $query, iterable $variantIds = [], string $type = null): Builder
+    public function scopeProductVariants(Builder $query, iterable $variantIds = [], array|string $types = []): Builder
     {
         if (is_array($variantIds)) {
             $variantIds = collect($variantIds);
         }
 
+        $types = Arr::wrap($types);
+
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables')
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
                         ->wherePurchasableType(ProductVariant::class)
                         ->when(
-                            $type,
-                            fn ($query) => $query->whereType($type)
+                            $types,
+                            fn ($query) => $query->whereIn('type', $types)
                         )
                 )
         );

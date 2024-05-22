@@ -6,7 +6,6 @@ use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
 use Lunar\Models\Collection;
 
 class AmountOff extends AbstractDiscountType
@@ -21,8 +20,6 @@ class AmountOff extends AbstractDiscountType
 
     /**
      * Called just before cart totals are calculated.
-     *
-     * @return CartLine
      */
     public function apply(Cart $cart): Cart
     {
@@ -32,15 +29,15 @@ class AmountOff extends AbstractDiscountType
             return $cart;
         }
 
-        if ($data['fixed_value']) {
+        if ($data['fixed_value'] ?? false) {
             return $this->applyFixedValue(
-                values: $data['fixed_values'],
+                values: $data['fixed_values'] ?? [],
                 cart: $cart,
             );
         }
 
         return $this->applyPercentage(
-            value: $data['percentage'],
+            value: $data['percentage'] ?? 0,
             cart: $cart
         );
     }
@@ -150,9 +147,9 @@ class AmountOff extends AbstractDiscountType
         $cart->discounts->push($this);
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
-            discount: $this->discount,
+            price: new Price($value - $remaining, $cart->currency, 1),
             lines: $affectedLines,
-            price: new Price($value - $remaining, $cart->currency, 1)
+            discount: $this->discount,
         ));
 
         return $cart;
@@ -224,12 +221,8 @@ class AmountOff extends AbstractDiscountType
 
     /**
      * Apply the percentage to the cart line.
-     *
-     * @param  int  $value
-     * @param  CartLine  $cartLine
-     * @return CartLine
      */
-    private function applyPercentage($value, $cart): Cart
+    private function applyPercentage(int $value, Cart $cart): Cart
     {
         $lines = $this->getEligibleLines($cart);
 
@@ -283,9 +276,9 @@ class AmountOff extends AbstractDiscountType
         $cart->discounts->push($this);
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
-            discount: $this->discount,
+            price: new Price($totalDiscount, $cart->currency, 1),
             lines: $affectedLines,
-            price: new Price($totalDiscount, $cart->currency, 1)
+            discount: $this->discount,
         ));
 
         return $cart;

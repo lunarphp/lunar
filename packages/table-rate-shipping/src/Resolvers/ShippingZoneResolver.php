@@ -12,22 +12,16 @@ class ShippingZoneResolver
 {
     /**
      * The country to use when resolving zones.
-     *
-     * @var Country
      */
     protected ?Country $country = null;
 
     /**
      * The state to use when resolving zones.
-     *
-     * @var State
      */
     protected ?State $state = null;
 
     /**
      * The postcode lookup to use when resolving zones.
-     *
-     * @var PostcodeLookup
      */
     protected ?PostcodeLookup $postcodeLookup = null;
 
@@ -46,8 +40,6 @@ class ShippingZoneResolver
 
     /**
      * Set the country.
-     *
-     * @param  Country  $country
      */
     public function country(Country $country = null): self
     {
@@ -59,8 +51,6 @@ class ShippingZoneResolver
 
     /**
      * Set the state.
-     *
-     * @param  State  $state
      */
     public function state(State $state = null): self
     {
@@ -72,8 +62,6 @@ class ShippingZoneResolver
 
     /**
      * Set the postcode to use when resolving.
-     *
-     * @param  string  $postcode
      */
     public function postcode(PostcodeLookup $postcodeLookup): self
     {
@@ -85,10 +73,8 @@ class ShippingZoneResolver
 
     /**
      * Return the shipping zones based on the criteria.
-     *
-     * @return Collection
      */
-    public function get()
+    public function get(): Collection
     {
         $query = ShippingZone::query();
 

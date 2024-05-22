@@ -14,6 +14,7 @@ return [
         'capture' => 'Captured',
         'intent' => 'Intent',
         'refund' => 'Refunded',
+        'failed' => 'Failed',
     ],
 
     'table' => [
@@ -29,11 +30,15 @@ return [
         'customer' => [
             'label' => 'Customer',
         ],
+        'tags' => [
+            'label' => 'Tags',
+        ],
         'postcode' => [
             'label' => 'Postcode',
         ],
         'email' => [
             'label' => 'Email',
+            'copy_message' => 'Email address copied',
         ],
         'phone' => [
             'label' => 'Phone',
@@ -46,6 +51,12 @@ return [
         ],
         'new_customer' => [
             'label' => 'Customer Type',
+        ],
+        'placed_after' => [
+            'label' => 'Placed after',
+        ],
+        'placed_before' => [
+            'label' => 'Placed before',
         ],
     ],
 

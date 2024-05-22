@@ -54,7 +54,7 @@ class BaseResource extends Resource
      */
     protected static function applyGlobalSearchAttributeConstraints(Builder $query, string $search): void
     {
-        $scoutEnabled = config('lunar.search.scout_enabled', false);
+        $scoutEnabled = config('lunar.panel.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive(static::getModel()));
 
         if (

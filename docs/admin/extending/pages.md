@@ -1,18 +1,5 @@
 # Extending Pages
 
-You can add and change the behaviour of existing Filament pages. This might be useful if you wish to add a button for 
-additional custom functionality.
-
-To extend a page you need to create and register an extension.
-
-For example, the code below will register a custom extension called `MyEditExtension` for the `EditProduct` Filament page.
-
-```php
-use Lunar\Admin\Support\Facades\LunarPanel;
-
-LunarPanel::registerExtension(new MyEditExtension, EditProduct::class);
-```
-
 ## Writing Extensions
 
 There are three extension types Lunar provides, these are for Create, Edit and Listing pages.
@@ -28,13 +15,21 @@ An example of extending a create page.
 
 ```php
 use Filament\Actions;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Lunar\Admin\Support\Extending\CreatePageExtension;
 use Lunar\Admin\Filament\Widgets;
 
 class MyCreateExtension extends CreatePageExtension
 {
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+
     public function headerWidgets(array $widgets): array
     {
         $widgets = [
@@ -94,7 +89,9 @@ class MyCreateExtension extends CreatePageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyCreateExtension, \Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup::class);
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup::class => MyCreateExtension::class,
+]);
 ```
 
 ## EditPageExtension
@@ -103,13 +100,21 @@ An example of extending an edit page.
 
 ```php
 use Filament\Actions;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Lunar\Admin\Support\Extending\EditPageExtension;
 use Lunar\Admin\Filament\Widgets;
 
 class MyEditExtension extends EditPageExtension
 {
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+
     public function headerWidgets(array $widgets): array
     {
         $widgets = [
@@ -183,7 +188,9 @@ class MyEditExtension extends EditPageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyEditExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class);
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class => MyEditExtension::class,
+]);
 ```
 
 ## ListPageExtension
@@ -192,13 +199,23 @@ An example of extending a list page.
 
 ```php
 use Filament\Actions;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Pagination\Paginator;
 use Lunar\Admin\Support\Extending\ListPageExtension;
 use Lunar\Admin\Filament\Widgets;
 
 class MyListExtension extends ListPageExtension
 {
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+
     public function headerWidgets(array $widgets): array
     {
         $widgets = [
@@ -222,6 +239,11 @@ class MyListExtension extends ListPageExtension
 
         return $actions;
     }
+    
+    public function paginateTableQuery(Builder $query, int $perPage = 25): Paginator
+    {
+        return $query->paginate($perPage);
+    }
 
     public function footerWidgets(array $widgets): array
     {
@@ -235,7 +257,9 @@ class MyListExtension extends ListPageExtension
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyListExtension, \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class);
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class => MyListExtension::class,
+]);
 ```
 
 ## ViewPageExtension
@@ -244,12 +268,36 @@ An example of extending a view page.
 
 ```php
 use Filament\Actions;
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 use Lunar\Admin\Support\Extending\ViewPageExtension;
+use Lunar\Admin\Filament\Widgets;
 
 class MyViewExtension extends ViewPageExtension
 {
+    public function headerWidgets(array $widgets): array
+    {
+        $widgets = [
+            ...$widgets,
+            Widgets\Dashboard\Orders\OrderStatsOverview::make(),
+        ];
+
+        return $widgets;
+    }
+
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+    
     public function headerActions(array $actions): array
     {
         $actions = [
@@ -261,11 +309,69 @@ class MyViewExtension extends ViewPageExtension
 
         return $actions;
     }
-  
+
+    public function extendsInfolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            ...$infolist->getComponents(true),
+            TextEntry::make('custom_title'),
+        ]);
+    }
+    
+    public function footerWidgets(array $widgets): array
+    {
+        $widgets = [
+            ...$widgets,
+            Widgets\Dashboard\Orders\LatestOrdersTable::make(),
+        ];
+
+        return $widgets;
+    }
 }
 
 // Typically placed in your AppServiceProvider file...
-LunarPanel::registerExtension(new MyViewExtension, \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class);
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder::class => MyViewExtension::class,
+]);
+```
+
+## RelationPageExtension
+
+An example of extending a relation page.
+
+```php
+use Filament\Actions;
+use Lunar\Admin\Support\Extending\RelationPageExtension;
+
+class MyRelationExtension extends RelationPageExtension
+{
+    public function heading($title): string
+    {
+        return $title . ' - Example';
+    }
+
+    public function subheading($title): string
+    {
+        return $title . ' - Example';
+    }
+    
+    public function headerActions(array $actions): array
+    {
+        $actions = [
+            ...$actions,
+            Actions\ActionGroup::make([
+                Actions\Action::make('Download PDF')
+            ])
+        ];
+
+        return $actions;
+    }
+}
+
+// Typically placed in your AppServiceProvider file...
+LunarPanel::extensions([
+    \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia::class => MyRelationExtension::class,
+]);
 ```
 
 ## Extending Pages In Addons

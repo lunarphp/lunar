@@ -3,16 +3,17 @@
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Events\ChildCollectionCreated;
 use Lunar\Admin\Filament\Resources\CollectionResource;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\Tables\Actions\Collections\CreateChildCollection;
 
-class ManageCollectionChildren extends ManageRelatedRecords
+class ManageCollectionChildren extends BaseManageRelatedRecords
 {
     protected static string $resource = CollectionResource::class;
 
@@ -73,7 +74,9 @@ class ManageCollectionChildren extends ManageRelatedRecords
                 return CollectionResource::getUrl('edit', ['record' => $record]);
             }),
         ])->headerActions([
-            CreateChildCollection::make('createChildCollection'),
+            CreateChildCollection::make('createChildCollection')->after(
+                fn () => ChildCollectionCreated::dispatch($this->getRecord())
+            ),
         ]);
     }
 }

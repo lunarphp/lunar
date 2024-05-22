@@ -65,3 +65,13 @@ test('generates unique urls', function () {
 
     expect($brand4->urls->first()->slug)->toEqual('brand-test');
 });
+
+test('can return mapped attributes', function () {
+    \Lunar\Models\Attribute::factory()->create([
+        'attribute_type' => Brand::class,
+    ]);
+    $brand = Brand::factory()->create([
+        'name' => 'Test Brand',
+    ]);
+    expect($brand->mappedAttributes)->toHaveCount(1);
+});

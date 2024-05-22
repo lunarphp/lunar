@@ -2,13 +2,11 @@
 
 namespace Lunar\Admin\Support\Actions\Traits;
 
-use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Lunar\Admin\Support\Forms\Components\MailerSelect;
 use Lunar\Models\Order;
 
 trait UpdatesOrderStatus
@@ -18,10 +16,6 @@ trait UpdatesOrderStatus
         return Forms\Components\Textarea::make('additional_content')
             ->label(__('lunarpanel::order.action.update_status.additional_content.label'))
             ->hidden(function (Forms\Get $get) {
-                return ! count(
-                    static::getMailers($get('status'))
-                );
-            })->hidden(function (Forms\Get $get) {
                 return ! count(
                     static::getMailers($get('status'))
                 );
@@ -48,11 +42,19 @@ trait UpdatesOrderStatus
                 }
 
                 return ! count($get('mailers') ?: [])
-                    || ! ($record?->billingAddress?->contact_email && $record->shippingAddress->contact_email);
+                    || ! ($record?->billingAddress?->contact_email && $record->shippingAddress?->contact_email);
+            })->afterStateHydrated(function (Order $record = null, Forms\Components\CheckboxList $component) {
+                $emails = collect([
+                    $record?->billingAddress?->contact_email,
+                    $record?->shippingAddress?->contact_email,
+                ])->filter()->unique()->map(
+                    fn ($email) => $email
+                )->toArray();
+                $component->state($emails);
             })->options(function (Order $record = null) {
                 return collect([
-                    $record?->billingAddress->contact_email,
-                    $record?->shippingAddress->contact_email,
+                    $record?->billingAddress?->contact_email,
+                    $record?->shippingAddress?->contact_email,
                 ])->filter()->unique()->mapWithKeys(
                     fn ($email) => [$email => $email]
                 )->toArray();
@@ -87,50 +89,29 @@ trait UpdatesOrderStatus
             return ! count(
                 static::getMailers($get('status'))
             );
-        });
+        })->live();
     }
 
     protected function getFormSteps()
     {
         return [
-            Forms\Components\Wizard\Step::make(
-                __('lunarpanel::actions.orders.update_status.wizard.step_one.label')
-            )->schema([
-                static::getStatusSelectInput(),
-            ]),
-            Forms\Components\Wizard\Step::make(
-                __('lunarpanel::actions.orders.update_status.wizard.step_two.label')
-            )->schema([
-                Shout::make('no-mailers')->content(
-                    __('lunarpanel::actions.orders.update_status.wizard.step_two.no_mailers')
-                )->hidden(function (Forms\Get $get) {
-                    return count(
-                        static::getMailers($get('status'))
-                    );
-                }),
+            static::getStatusSelectInput(),
+            Forms\Components\Group::make([
                 static::getMailersCheckboxInput(),
-                static::getAdditionalContentInput(),
-                static::getEmailAddressesInput(),
-                static::getAdditionalEmailInput(),
-            ]),
-
-            Forms\Components\Wizard\Step::make(
-                __('lunarpanel::actions.orders.update_status.wizard.step_three.label')
-            )->schema(function (Forms\Get $get, Order $record = null) {
-                $mailers = $get('mailers');
-
-                return [
-                    Shout::make('no-mailers')->content(
-                        __('lunarpanel::actions.orders.update_status.wizard.step_three.no_mailers')
-                    )->hidden(function (Forms\Get $get) {
-                        return count(
+                Forms\Components\Group::make([
+                    static::getAdditionalContentInput(),
+                    static::getEmailAddressesInput(),
+                    static::getAdditionalEmailInput(),
+                ])->hidden(function (Forms\Get $get) {
+                    return ! count($get('mailers')) ||
+                        ! count(
                             static::getMailers($get('status'))
                         );
-                    }),
-                    MailerSelect::make('mailer')->context($record)->mailers($mailers)->additionalContent(
-                        $get('additionalContent')
-                    ),
-                ];
+                }),
+            ])->hidden(function (Forms\Get $get) {
+                return ! count(
+                    static::getMailers($get('status'))
+                );
             }),
         ];
     }

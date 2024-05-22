@@ -56,6 +56,8 @@ class BrandResource extends BaseResource
             Pages\EditBrand::class,
             Pages\ManageBrandMedia::class,
             Pages\ManageBrandUrls::class,
+            Pages\ManageBrandProducts::class,
+            Pages\ManageBrandCollections::class,
         ]);
     }
 
@@ -130,10 +132,10 @@ class BrandResource extends BaseResource
         ];
     }
 
-    public static function getRelations(): array
+    public static function getDefaultRelations(): array
     {
         return [
-            //
+
         ];
     }
 
@@ -145,6 +147,8 @@ class BrandResource extends BaseResource
             'edit' => Pages\EditBrand::route('/{record}/edit'),
             'media' => Pages\ManageBrandMedia::route('/{record}/media'),
             'urls' => Pages\ManageBrandUrls::route('/{record}/urls'),
+            'products' => Pages\ManageBrandProducts::route('/{record}/products'),
+            'collections' => Pages\ManageBrandCollections::route('/{record}/collections'),
         ];
     }
 

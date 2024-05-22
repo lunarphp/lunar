@@ -62,7 +62,7 @@ trait ManagesProductPricing
 
         $prices->filter(
             fn ($price) => $price['id']
-        )->each(fn ($price) => Price::whereId($price['id'])->update([
+        )->each(fn ($price) => Price::find($price['id'])->update([
             'price' => (int) ($price['value'] * $price['factor']),
             'compare_price' => (int) ($price['compare_price'] * $price['factor']),
         ])

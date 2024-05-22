@@ -4,7 +4,6 @@ namespace Lunar\Admin\Support\Resources\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -13,8 +12,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Admin\Events\ModelUrlsUpdated;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 
-class ManageUrlsRelatedRecords extends ManageRelatedRecords
+class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
 {
     protected static string $relationship = 'urls';
 
@@ -95,15 +96,31 @@ class ManageUrlsRelatedRecords extends ManageRelatedRecords
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label(
                     __('lunarpanel::relationmanagers.urls.actions.create.label')
+                )->after(
+                    fn () => ModelUrlsUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
                 ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => ModelUrlsUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
+                Tables\Actions\DeleteAction::make()->after(
+                    fn () => ModelUrlsUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->after(
+                        fn () => ModelUrlsUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ]);
     }

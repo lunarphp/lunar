@@ -18,9 +18,19 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+
 ## 1.0
 
 ### High Impact
+
+#### Change to Staff model namespace
+
+The Staff model has changed location from `Lunar\Hub\Models\Staff` to `Lunar\Admin\Models\Staff` so this will need to be updated within
+your codebase and any polymorphic relations.
+
+#### Spatie Media Library
+This package has been upgrade to version 11, which introduces some breaking changes.
+See here for more information https://github.com/spatie/laravel-medialibrary/blob/main/UPGRADING.md
 
 #### Media Conversions
 The `lunar.media.conversions` configuration has been removed, in favour of registering custom media definitionss instead.
@@ -57,6 +67,19 @@ public Collection $tiered,
 // New
 public Collection $priceBreaks,
 ```
+
+##### Lunar\Base\DataTransferObjects\PaymentAuthorize
+
+Two new properties have been added to the constructor for this DTO.
+
+```php
+public ?int $orderId = null,
+public ?string $paymentType = null
+```
+
+## 0.8
+
+No significant changes.
 
 ## 0.7
 

@@ -40,10 +40,10 @@ composer require lunarphp/stripe
 
 ### Publish the configuration
 
-This will publish the configuration under `config/getcandy/stripe.php`.
+This will publish the configuration under `config/lunar/stripe.php`.
 
 ```sh
-php artisan vendor:publish --tag=getcandy.stripe.config
+php artisan vendor:publish --tag=lunar.stripe.config
 ```
 
 ### Publish the views (optional)
@@ -51,12 +51,12 @@ php artisan vendor:publish --tag=getcandy.stripe.config
 Lunar Stripe comes with some helper components for you to use on your checkout, if you intend to edit the views they provide, you can publish them.
 
 ```sh
-php artisan vendor:publish --tag=getcandy.stripe.components
+php artisan vendor:publish --tag=lunar.stripe.components
 ```
 
 ### Enable the driver
 
-Set the driver in `config/getcandy/payments.php`
+Set the driver in `config/lunar/payments.php`
 
 ```php
 <?php
@@ -87,7 +87,7 @@ Make sure you have the Stripe credentials set in `config/services.php`
 
 ## Configuration
 
-Below is a list of the available configuration options this package uses in `config/getcandy/stripe.php`
+Below is a list of the available configuration options this package uses in `config/lunar/stripe.php`
 
 | Key | Default | Description |
 | --- | --- | --- |
@@ -208,7 +208,7 @@ const buildForm = async () => {
         layout: "tabs",
         defaultValues: {
             billingDetails: {
-                name: `${billingAddress.value.first_name} ${billingAddress.value?.last_name}`,
+                name: `{$billingAddress.value.first_name} {$billingAddress.value?.last_name}`,
                 phone: billingAddress.value?.contact_phone,
             },
         },
@@ -237,7 +237,7 @@ const submit = async () => {
                 return_url: 'http://yoursite.com/checkout/complete',
                 payment_method_data: {
                     billing_details: {
-                        name: `${address.first_name} ${address.last_name}`,
+                        name: `{$address.first_name} {$address.last_name}`,
                         email: address.contact_email,
                         phone: address.contact_phone,
                         address: {
@@ -277,4 +277,4 @@ Contributions are welcome, if you are thinking of adding a feature, please submi
 
 ## Testing
 
-A [MockClient](https://github.com/getcandy/stripe/blob/main/tests/Stripe/MockClient.php) class is used to mock responses the Stripe API will return.
+A [MockClient](https://github.com/lunar/stripe/blob/main/tests/Stripe/MockClient.php) class is used to mock responses the Stripe API will return.

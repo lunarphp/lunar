@@ -7,10 +7,13 @@ use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
+use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
 
 class ProductOptionResource extends BaseResource
@@ -56,6 +59,13 @@ class ProductOptionResource extends BaseResource
             ->label(__('lunarpanel::productoption.form.name.label'))
             ->required()
             ->maxLength(255)
+            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+                $set('handle', Str::slug($state[Language::getDefault()->code]));
+            })
+            ->live(onBlur: true)
             ->autofocus();
     }
 
@@ -80,14 +90,9 @@ class ProductOptionResource extends BaseResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->formatStateUsing(
-                        fn (ProductOption $option) => $option->translate('name'),
-                    )->label(__('lunarpanel::productoption.table.name.label')),
-                Tables\Columns\TextColumn::make('label')
-                    ->formatStateUsing(
-                        fn (ProductOption $option) => $option->translate('label'),
-                    )
+                TranslatedTextColumn::make('name')
+                    ->label(__('lunarpanel::productoption.table.name.label')),
+                TranslatedTextColumn::make('label')
                     ->label(__('lunarpanel::productoption.table.label.label')),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(__('lunarpanel::productoption.table.handle.label')),
