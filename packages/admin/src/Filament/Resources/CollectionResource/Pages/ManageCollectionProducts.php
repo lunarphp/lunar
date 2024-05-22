@@ -60,7 +60,7 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
         return $table->columns([
 
             Tables\Columns\SpatieMediaLibraryImageColumn::make('thumbnail')
-                ->collection('images')
+                ->collection(config('lunar.media.collection'))
                 ->conversion('small')
                 ->limit(1)
                 ->square()
