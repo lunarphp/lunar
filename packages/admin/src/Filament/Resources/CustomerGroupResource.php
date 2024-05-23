@@ -2,11 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Awcodes\FilamentBadgeableColumn\Components\Badge;
+use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -100,12 +103,17 @@ class CustomerGroupResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name')
+            BadgeableColumn::make('name')
+                ->separator('')
+                ->suffixBadges([
+                    Badge::make('default')
+                        ->label(__('lunarpanel::customergroup.table.default.label'))
+                        ->color('gray')
+                        ->visible(fn(Model $record) => $record->default),
+                ])
                 ->label(__('lunarpanel::customergroup.table.name.label')),
             Tables\Columns\TextColumn::make('handle')
                 ->label(__('lunarpanel::customergroup.table.handle.label')),
-            Tables\Columns\BooleanColumn::make('default')
-                ->label(__('lunarpanel::customergroup.table.default.label')),
         ];
     }
 
