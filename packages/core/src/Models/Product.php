@@ -104,7 +104,7 @@ class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
 
     public function images(): MorphMany
     {
-        return $this->media()->where('collection_name', 'images');
+        return $this->media()->where('collection_name', config('lunar.media.collection'));
     }
 
     public function variants(): HasMany

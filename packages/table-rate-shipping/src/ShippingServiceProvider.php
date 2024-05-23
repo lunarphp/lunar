@@ -8,7 +8,6 @@ use Lunar\Base\ShippingModifiers;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
-use Lunar\Observers\OrderObserver;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Managers\ShippingManager;
 use Lunar\Shipping\Models\ShippingExclusion;
@@ -17,6 +16,7 @@ use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Models\ShippingZonePostcode;
+use Lunar\Shipping\Observers\OrderObserver;
 
 class ShippingServiceProvider extends ServiceProvider
 {

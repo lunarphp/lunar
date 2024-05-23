@@ -35,6 +35,35 @@ test('can associate a user', function () {
     ]);
 });
 
+test('can associate a user with a customer', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $this->assertDatabaseHas((new Cart)->getTable(), [
+        'user_id' => null,
+        'id' => $cart->id,
+        'merged_id' => null,
+    ]);
+
+    $action = new AssociateUser;
+
+    $user = User::factory()->create();
+    $customer = \Lunar\Models\Customer::factory()->create();
+    $user->customers()->attach($customer);
+
+    $action->execute($cart, $user);
+
+    $this->assertDatabaseHas((new Cart)->getTable(), [
+        'user_id' => $user->id,
+        'customer_id' => $customer->id,
+        'id' => $cart->id,
+        'merged_id' => null,
+    ]);
+});
+
 test('cant associate user to cart with order', function () {
     $currency = Currency::factory()->create();
 

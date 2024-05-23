@@ -66,9 +66,30 @@ By default, this is set as `null` so the mapping for a product would just be `pr
 
 There is a migration which will handle this change over for Lunar tables and some third party tables, however you may need to add your own migrations to other tables or to switch any custom models you may have.
 
+## 1.0.0-alpha.20
+
+### High Impact
+
+#### Stripe addon facade change
+
+If you are using the Stripe addon, you need to update the facade as the name has changed.
+
+```php
+// Old
+\Lunar\Stripe\Facades\StripeFacade;
+
+// New
+\Lunar\Stripe\Facades\Stripe;
+```
+
 ## 1.0
 
 ### High Impact
+
+#### Change to Staff model namespace
+
+The Staff model has changed location from `Lunar\Hub\Models\Staff` to `Lunar\Admin\Models\Staff` so this will need to be updated within
+your codebase and any polymorphic relations.
 
 #### Spatie Media Library
 This package has been upgrade to version 11, which introduces some breaking changes.
