@@ -21,9 +21,9 @@ class StripeManager
      */
     public function getClient(): StripeClient
     {
-        return new StripeClient(
-            config('services.stripe.key')
-        );
+        return new StripeClient([
+            'api_key' => config('services.stripe.key'),
+        ]);
     }
 
     /**
