@@ -57,12 +57,21 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function forget()
+    public function forget(bool $delete = true)
     {
+        if ($delete) {
+            Cart::destroy(
+                $this->sessionManager->get(
+                    $this->getSessionKey()
+                )
+            );
+        }
+
         $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(
             $this->getSessionKey()
         );
+
     }
 
     /**

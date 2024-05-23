@@ -18,6 +18,17 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+## 1.0.0-alpha.22
+
+### Medium Impact
+
+Carts now use soft deletes and a cart will be deleted when `CartSession::forget()` is called.
+If you don't want to delete the cart when you call `forget` you can pass `delete: false` as a parameter:
+
+```php
+\Lunar\Facades\CartSession::forget(delete: false);
+```
+
 ## 1.0.0-alpha.20
 
 ### High Impact

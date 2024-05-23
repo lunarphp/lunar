@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
@@ -53,6 +54,7 @@ use Lunar\Validation\Cart\ValidateCartForOrderCreation;
  * @property ?\Illuminate\Support\Carbon $completed_at
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
  */
 class Cart extends BaseModel
 {
@@ -60,6 +62,7 @@ class Cart extends BaseModel
     use HasFactory;
     use HasMacros;
     use LogsActivity;
+    use SoftDeletes;
 
     /**
      * Array of cachable class properties.
