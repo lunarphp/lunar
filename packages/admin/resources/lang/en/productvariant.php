@@ -56,7 +56,7 @@ return [
             'options' => [
                 'always' => 'Always',
                 'in_stock' => 'In Stock',
-                'backorder' => 'Backorder Only',
+                'in_stock_on_backorder' => 'In Stock or on Backorder',
             ],
         ],
         'unit_quantity' => [
