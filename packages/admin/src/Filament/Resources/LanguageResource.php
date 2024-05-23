@@ -83,7 +83,7 @@ class LanguageResource extends BaseResource
                     Badge::make('default')
                         ->label(__('lunarpanel::language.table.default.label'))
                         ->color('gray')
-                        ->visible(fn(Model $record) => $record->default),
+                        ->visible(fn (Model $record) => $record->default),
                 ])
                 ->label(__('lunarpanel::language.table.name.label')),
             Tables\Columns\TextColumn::make('code')

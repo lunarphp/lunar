@@ -121,7 +121,7 @@ class ChannelResource extends BaseResource
                     Badge::make('default')
                         ->label(__('lunarpanel::channel.table.default.label'))
                         ->color('gray')
-                        ->visible(fn(Model $record) => $record->default),
+                        ->visible(fn (Model $record) => $record->default),
                 ])
                 ->label(__('lunarpanel::channel.table.name.label')),
             Tables\Columns\TextColumn::make('handle')

@@ -91,7 +91,7 @@ class TaxClassResource extends BaseResource
                     Badge::make('default')
                         ->label(__('lunarpanel::taxclass.table.default.label'))
                         ->color('gray')
-                        ->visible(fn(Model $record) => $record->default),
+                        ->visible(fn (Model $record) => $record->default),
                 ])
                 ->label(__('lunarpanel::taxclass.table.name.label')),
         ];
