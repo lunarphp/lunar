@@ -134,3 +134,105 @@ it('can process a successful 3DSv2 response', function () {
         'last_four' => '1111',
     ]);
 });
+
+it('can return correct payment checks', function () {
+    \Lunar\Models\Currency::factory()->create();
+
+    $cart = buildCart();
+
+    $order = $cart->createOrder();
+
+    $transactionA = \Lunar\Models\Transaction::factory()->create([
+        'order_id' => $order->id,
+        'driver' => 'opayo',
+        'meta' => [
+            'threedSecure' => [
+                'address' => 'Matched',
+                'postalCode' => 'Matched',
+                'securityCode' => 'Matched',
+            ],
+        ],
+    ]);
+
+    $transactionB = \Lunar\Models\Transaction::factory()->create([
+        'order_id' => $order->id,
+        'driver' => 'opayo',
+        'meta' => [
+            'threedSecure' => [
+                'address' => true,
+                'postalCode' => true,
+                'securityCode' => true,
+            ],
+        ],
+    ]);
+
+    $transactionC = \Lunar\Models\Transaction::factory()->create([
+        'order_id' => $order->id,
+        'driver' => 'opayo',
+        'meta' => [
+            'threedSecure' => [
+                'address' => 'NotMatched',
+                'postalCode' => 'NotMatched',
+                'securityCode' => 'NotMatched',
+            ],
+        ],
+    ]);
+
+    $transactionD = \Lunar\Models\Transaction::factory()->create([
+        'order_id' => $order->id,
+        'driver' => 'opayo',
+        'meta' => [
+            'threedSecure' => [
+                'address' => false,
+                'postalCode' => false,
+                'securityCode' => false,
+            ],
+        ],
+    ]);
+
+    $paymentAChecks = $transactionA->paymentChecks();
+
+    expect($paymentAChecks)->toHaveCount(3)
+        ->and($paymentAChecks[0]->successful)
+        ->toBe(true)
+        ->and($paymentAChecks[1]->successful)
+        ->toBe(true)
+        ->and($paymentAChecks[2]->successful)
+        ->toBe(true);
+
+    $paymentBChecks = $transactionB->paymentChecks();
+
+    expect($paymentBChecks)->toHaveCount(3)
+        ->and($paymentBChecks[0]->successful)
+        ->toBe(true)
+        ->and($paymentBChecks[1]->successful)
+        ->toBe(true)
+        ->and($paymentBChecks[2]->successful)
+        ->toBe(true);
+
+    $paymentCChecks = $transactionC->paymentChecks();
+
+    expect($paymentCChecks)->toHaveCount(3)
+        ->and($paymentCChecks[0]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentCChecks[1]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentCChecks[2]->successful)
+        ->not
+        ->toBe(true);
+
+    $paymentDChecks = $transactionD->paymentChecks();
+
+    expect($paymentDChecks)->toHaveCount(3)
+        ->and($paymentCChecks[0]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentDChecks[1]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentDChecks[2]->successful)
+        ->not
+        ->toBe(true);
+});
