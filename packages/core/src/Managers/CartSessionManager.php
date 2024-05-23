@@ -235,11 +235,13 @@ class CartSessionManager implements CartSessionInterface
      */
     public function createOrder($forget = true)
     {
+        $order = $this->manager()->createOrder();
+
         if ($forget) {
             $this->forget();
         }
 
-        return $this->manager()->createOrder();
+        return $order;
     }
 
     /**
