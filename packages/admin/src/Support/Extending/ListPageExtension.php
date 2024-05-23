@@ -14,6 +14,11 @@ abstract class ListPageExtension extends BaseExtension
         return $title;
     }
 
+    public function getTabs(array $tabs): array
+    {
+        return $tabs;
+    }
+
     public function relationManagers(array $managers): array
     {
         return $managers;

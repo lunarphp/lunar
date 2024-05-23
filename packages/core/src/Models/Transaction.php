@@ -87,6 +87,11 @@ class Transaction extends BaseModel
         return Payments::driver($this->driver);
     }
 
+    public function paymentChecks()
+    {
+        return $this->driver()->getPaymentChecks($this);
+    }
+
     public function refund(int $amount, $notes = null)
     {
         return $this->driver()->refund($this, $amount, $notes);

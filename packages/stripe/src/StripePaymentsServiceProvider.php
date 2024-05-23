@@ -29,7 +29,7 @@ class StripePaymentsServiceProvider extends ServiceProvider
             return $app->make(ConstructWebhookEvent::class);
         });
 
-        $this->app->singleton('gc:stripe', function ($app) {
+        $this->app->singleton('lunar:stripe', function ($app) {
             return $app->make(StripeManager::class);
         });
 

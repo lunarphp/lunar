@@ -18,10 +18,30 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+## 1.0.0-alpha.20
+
+### High Impact
+
+#### Stripe addon facade change
+
+If you are using the Stripe addon, you need to update the facade as the name has changed.
+
+```php
+// Old
+\Lunar\Stripe\Facades\StripeFacade;
+
+// New
+\Lunar\Stripe\Facades\Stripe;
+```
 
 ## 1.0
 
 ### High Impact
+
+#### Change to Staff model namespace
+
+The Staff model has changed location from `Lunar\Hub\Models\Staff` to `Lunar\Admin\Models\Staff` so this will need to be updated within
+your codebase and any polymorphic relations.
 
 #### Spatie Media Library
 This package has been upgrade to version 11, which introduces some breaking changes.
