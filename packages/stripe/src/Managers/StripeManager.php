@@ -4,9 +4,6 @@ namespace Lunar\Stripe\Managers;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
-use Stripe\Charge;
-use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
@@ -31,8 +28,10 @@ class StripeManager
 
     /**
      * Create a payment intent from a Cart
+     *
+     * @return \Stripe\PaymentIntent
      */
-    public function createIntent(Cart $cart): PaymentIntent
+    public function createIntent(Cart $cart)
     {
         $shipping = $cart->shippingAddress;
 
@@ -69,7 +68,7 @@ class StripeManager
         return $paymentIntent;
     }
 
-    public function syncIntent(Cart $cart): void
+    public function syncIntent(Cart $cart)
     {
         $meta = (array) $cart->meta;
 
@@ -87,8 +86,11 @@ class StripeManager
 
     /**
      * Fetch an intent from the Stripe API.
+     *
+     * @param  string  $intentId
+     * @return null|\Stripe\PaymentIntent
      */
-    public function fetchIntent(string $intentId): ?PaymentIntent
+    public function fetchIntent($intentId)
     {
         try {
             $intent = PaymentIntent::retrieve($intentId);
@@ -114,21 +116,20 @@ class StripeManager
         return collect();
     }
 
-    public function getCharge(string $chargeId): ?Charge
+    public function getCharge($chargeId)
     {
-        try {
-            return $this->getClient()->charges->retrieve($chargeId);
-        } catch (ApiErrorException $e) {
-
-        }
-
-        return null;
+        return $this->getClient()->charges->retrieve($chargeId);
     }
 
     /**
      * Build the intent
+     *
+     * @param  int  $value
+     * @param  string  $currencyCode
+     * @param  \Lunar\Models\CartAddress  $shipping
+     * @return \Stripe\PaymentIntent
      */
-    protected function buildIntent(int $value, string $currencyCode, CartAddress $shipping): PaymentIntent
+    protected function buildIntent($value, $currencyCode, $shipping)
     {
         return PaymentIntent::create([
             'amount' => $value,
