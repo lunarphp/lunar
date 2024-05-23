@@ -33,24 +33,26 @@ class ValidateCartForOrderCreation extends BaseValidator
             return $this->fail('cart', $billingValidator->errors()->getMessages());
         }
 
-        // Is this cart shippable and if so, does it have a shipping address.
         if ($cart->isShippable()) {
-            if (! $cart->shippingAddress) {
-                return $this->fail('cart', __('lunar::exceptions.carts.shipping_missing'));
-            }
-
-            $shippingValidator = Validator::make(
-                $cart->shippingAddress->toArray(),
-                $this->getAddressRules()
-            );
-
-            if ($shippingValidator->fails()) {
-                return $this->fail('cart', $shippingValidator->errors()->getMessages());
-            }
-
             // Do we have a shipping option applied?
-            if (! $cart->getShippingOption()) {
+            if (! $shippingOption = $cart->getShippingOption()) {
                 return $this->fail('cart', __('lunar::exceptions.carts.shipping_option_missing'));
+            }
+
+            // Is this cart going to be shipped and if so, does it have a shipping address?
+            if (! $shippingOption->collect) {
+                if (! $cart->shippingAddress) {
+                    return $this->fail('cart', __('lunar::exceptions.carts.shipping_missing'));
+                }
+
+                $shippingValidator = Validator::make(
+                    $cart->shippingAddress->toArray(),
+                    $this->getAddressRules()
+                );
+
+                if ($shippingValidator->fails()) {
+                    return $this->fail('cart', $shippingValidator->errors()->getMessages());
+                }
             }
         }
 

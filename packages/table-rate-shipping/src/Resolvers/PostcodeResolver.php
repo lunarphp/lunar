@@ -18,6 +18,7 @@ class PostcodeResolver
             rtrim($postcode, '0..9').'*',
             substr($postcode, 0, 2),
             substr($postcode, 0, 2).'*',
+            substr($postcode, 0, 1),
         ])->filter()->unique()->values();
     }
 }

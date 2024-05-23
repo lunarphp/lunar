@@ -2,8 +2,7 @@
 
 namespace Lunar\Exceptions;
 
-use Exception;
-
-class SchedulingException extends Exception
+class SchedulingException extends LunarException
 {
+    //
 }
