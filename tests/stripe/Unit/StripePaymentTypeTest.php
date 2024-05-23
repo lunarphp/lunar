@@ -2,7 +2,7 @@
 
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Models\Transaction;
-use Lunar\Stripe\Facades\StripeFacade;
+use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
 
@@ -59,7 +59,7 @@ it('can retrieve existing payment intent', function () {
         ],
     ]);
 
-    StripeFacade::createIntent($cart->calculate());
+    Stripe::createIntent($cart->calculate());
 
     expect($cart->refresh()->meta['payment_intent'])->toBe('PI_FOOBAR');
 });

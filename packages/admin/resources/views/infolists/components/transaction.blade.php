@@ -75,8 +75,7 @@
                         class="w-4"
                     />
                 </div>
-
-                <span>{{ $transaction->created_at->format('jS F Y h:ma') }}</span>
+                <span>{{ $transaction->created_at->format('jS F Y h:ia') }}</span>
             </div>
 
             <div class="flex space-x-2">
