@@ -44,7 +44,7 @@ class MyProductResourceExtension extends \Lunar\Admin\Support\Extending\Resource
         ];
     }
     
-    public function extendNavigation(array $nav) : array
+    public function extendSubNavigation(array $nav) : array
     {
         return [
             ...$nav,
