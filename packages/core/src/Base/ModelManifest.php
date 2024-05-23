@@ -47,7 +47,7 @@ class ModelManifest implements ModelManifestInterface
      */
     public function removeModel(string $baseModelClass): void
     {
-        $this->models = $this->models->flip()->forget($baseModelClass);
+        $this->models = $this->models->flip()->forget($baseModelClass)->flip();
     }
 
     /**

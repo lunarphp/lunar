@@ -164,3 +164,32 @@ test('can validate quantity increment quantity', function (array $quantities, in
         'increment' => 14,
     ],
 ]);
+
+test('can validate from cart line id', function () {
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = \Lunar\Models\ProductVariant::factory()->create([
+        'quantity_increment' => 25,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => \Lunar\Models\ProductVariant::class,
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 50,
+    ]);
+
+    $validator = (new CartLineQuantity)->using(
+        cart: $cart,
+        purchasable: null,
+        cartLineId: $cart->lines()->first()->id,
+        quantity: 26,
+        meta: []
+    );
+
+    expect(fn () => $validator->validate())
+        ->toThrow(CartException::class);
+});

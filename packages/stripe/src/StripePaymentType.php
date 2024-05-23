@@ -10,10 +10,9 @@ use Lunar\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
-use Lunar\Stripe\Facades\StripeFacade;
+use Lunar\Stripe\Facades\Stripe;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
-use Stripe\Stripe;
 
 class StripePaymentType extends AbstractPayment
 {
@@ -41,7 +40,7 @@ class StripePaymentType extends AbstractPayment
      */
     public function __construct()
     {
-        $this->stripe = StripeFacade::getClient();
+        $this->stripe = Stripe::getClient();
 
         $this->policy = config('lunar.stripe.policy', 'automatic');
     }
@@ -137,9 +136,9 @@ class StripePaymentType extends AbstractPayment
             $payload['amount_to_capture'] = $amount;
         }
 
-        $charge = StripeFacade::getCharge($transaction->reference);
+        $charge = Stripe::getCharge($transaction->reference);
 
-        $paymentIntent = StripeFacade::fetchIntent($charge->payment_intent);
+        $paymentIntent = Stripe::fetchIntent($charge->payment_intent);
 
         try {
             $response = $this->stripe->paymentIntents->capture(
@@ -165,7 +164,7 @@ class StripePaymentType extends AbstractPayment
      */
     public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
-        $charge = StripeFacade::getCharge($transaction->reference);
+        $charge = Stripe::getCharge($transaction->reference);
 
         try {
             $refund = $this->stripe->refunds->create(
