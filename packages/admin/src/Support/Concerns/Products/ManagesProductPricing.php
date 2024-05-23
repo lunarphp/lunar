@@ -70,7 +70,7 @@ trait ManagesProductPricing
 
         $this->basePrices = $this->getBasePrices($variant);
 
-        $this->dispatch('base-prices-updated');
+        $this->dispatch('refresh-relation-manager');
 
         return $record;
     }
