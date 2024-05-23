@@ -78,7 +78,7 @@ class ListProducts extends BaseListRecords
         return $product;
     }
 
-    public function getTabs(): array
+    public function getDefaultTabs(): array
     {
         return [
             'all' => Tab::make('All'),

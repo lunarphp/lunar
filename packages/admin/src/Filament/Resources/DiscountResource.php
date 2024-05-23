@@ -52,7 +52,7 @@ class DiscountResource extends BaseResource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Sales';
+        return __('lunarpanel::global.sections.sales');
     }
 
     public static function getDefaultForm(Form $form): Form

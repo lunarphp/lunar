@@ -330,6 +330,20 @@ $order->charges; // Get all transactions that are charges.
 $order->refunds; // Get all transactions that are refunds.
 ```
 
+### Payment Checks
+
+Some providers return information based on checks that can occur before payment is validated and completed. 
+This is usually related to 3DSecure but in some cases can relate to credit checks or anything the payment provider has deemed relevant to the transaction.
+
+You can get access to these checks via the `paymentChecks()` method on the `Transaction`.
+
+```php
+foreach($transaction->paymentChecks() as $check) {
+    $check->successful;
+    $check->label;
+    $check->message;
+}
+```
 ## Payments
 
 We will be looking to add support for the most popular payment providers, so keep an eye out here as we will list them all out.

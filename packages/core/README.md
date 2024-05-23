@@ -9,8 +9,8 @@ We put developers first and try to ensure your experience is as smooth as possib
 ---
 
 ## Requirements
-- PHP ^8.1
-- Laravel 9+
+- PHP >= 8.2
+- Laravel 10 / Laravel 11
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - GD PHP extension (used for image manipulation)
