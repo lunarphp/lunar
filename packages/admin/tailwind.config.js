@@ -4,5 +4,6 @@ module.exports = {
     presets: [preset],
     content: [
         './resources/views/**/*.blade.php',
+        './vendor/awcodes/filament-badgeable-column/resources/**/*.blade.php',
     ],
 }

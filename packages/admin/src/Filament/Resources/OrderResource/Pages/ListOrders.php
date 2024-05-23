@@ -19,7 +19,7 @@ class ListOrders extends BaseListRecords
         ];
     }
 
-    public function getTabs(): array
+    public function getDefaultTabs(): array
     {
         $statuses = collect(
             config('lunar.orders.statuses', [])

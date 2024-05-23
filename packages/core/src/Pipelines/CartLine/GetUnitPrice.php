@@ -13,7 +13,7 @@ class GetUnitPrice
     /**
      * Called just before cart totals are calculated.
      *
-     * @return void
+     * @return mixed
      */
     public function handle(CartLine $cartLine, Closure $next)
     {

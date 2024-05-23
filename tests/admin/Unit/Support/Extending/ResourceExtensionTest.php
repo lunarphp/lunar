@@ -1,8 +1,5 @@
 <?php
 
-namespace Lunar\Tests\Admin\Unit\Support\Extending;
-
-use Filament;
 use Lunar\Admin\Filament\Resources\ActivityResource;
 use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ListActivities;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource;
