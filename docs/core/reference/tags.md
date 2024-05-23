@@ -36,7 +36,9 @@ You can then attach tags like so:
 ```php
 $tags = collect(['Tag One', 'Tag Two', 'Tag Three']);
 
-$model = SomethingWithTags::syncTags($tags);
+$model = SomethingWithTags::first();
+
+$model->syncTags($tags);
 
 $model->tags;
 

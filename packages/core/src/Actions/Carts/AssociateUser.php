@@ -33,6 +33,7 @@ class AssociateUser extends AbstractAction
 
         $cart->update([
             'user_id' => $user->getKey(),
+            'customer_id' => $user->latestCustomer()?->getKey(),
         ]);
 
         return $this;

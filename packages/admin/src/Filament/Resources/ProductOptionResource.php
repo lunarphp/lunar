@@ -84,7 +84,8 @@ class ProductOptionResource extends BaseResource
         return Forms\Components\TextInput::make('handle')
             ->label(__('lunarpanel::productoption.form.handle.label'))
             ->required()
-            ->maxLength(255);
+            ->maxLength(255)
+            ->disabled(fn ($record) => ! $record->shared);
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -97,9 +98,12 @@ class ProductOptionResource extends BaseResource
                     ->label(__('lunarpanel::productoption.table.label.label')),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(__('lunarpanel::productoption.table.handle.label')),
+                Tables\Columns\BooleanColumn::make('shared')
+                    ->label(__('lunarpanel::productoption.table.shared.label')),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('shared')
+                    ->query(fn (Builder $query): Builder => $query->where('shared', true)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
