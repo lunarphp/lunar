@@ -141,4 +141,9 @@ class ShippingRate extends BaseModel implements Purchasable
     {
         return true;
     }
+
+    public function getTrueStockValue(): int
+    {
+        return 1;
+    }
 }
