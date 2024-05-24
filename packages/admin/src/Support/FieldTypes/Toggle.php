@@ -18,7 +18,6 @@ class Toggle extends BaseFieldType
                 $attribute->translate('description')
             )
             ->default(false)
-            ->rule('boolean')
-            ->live();
+            ->rule('boolean');
     }
 }
