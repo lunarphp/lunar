@@ -72,4 +72,8 @@ interface Purchasable
      * @return string
      */
     public function getThumbnail();
+
+    public function canBeFulfilledAtQuantity(int $quantity): bool;
+
+    public function getTrueStockValue(): int;
 }

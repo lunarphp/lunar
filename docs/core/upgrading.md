@@ -18,6 +18,17 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+## [Unreleased]
+
+### Medium Impact
+
+If you are using your own classes that implement the `Purchasable` interface, you will need to add the following additional method:
+
+```php
+public function canBeFulfilledAtQuantity(int $quantity): bool;
+public function getTrueStockValue(): int;
+```
+
 ## 1.0.0-alpha.20
 
 ### High Impact

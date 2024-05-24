@@ -136,4 +136,9 @@ class ShippingRate extends BaseModel implements Purchasable
             )
         );
     }
+
+    public function canBeFulfilledAtQuantity(int $quantity): bool
+    {
+        return true;
+    }
 }

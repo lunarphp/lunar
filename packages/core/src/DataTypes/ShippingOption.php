@@ -135,4 +135,9 @@ class ShippingOption implements Purchasable
     {
         return null;
     }
+
+    public function canBeFulfilledAtQuantity(int $quantity): bool
+    {
+        return true;
+    }
 }
