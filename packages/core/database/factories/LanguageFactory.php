@@ -12,7 +12,7 @@ class LanguageFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => $this->faker->unique()->languageCode,
+            'code' => $this->faker->slug(),
             'name' => $this->faker->name(),
             'default' => true,
         ];
