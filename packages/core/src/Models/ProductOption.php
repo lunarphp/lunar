@@ -4,7 +4,6 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -50,24 +49,6 @@ class ProductOption extends BaseModel implements SpatieHasMedia
     protected static function newFactory(): ProductOptionFactory
     {
         return ProductOptionFactory::new();
-    }
-
-    public function getNameAttribute(string $value = null): mixed
-    {
-        return json_decode($value);
-    }
-
-    protected function setNameAttribute(mixed $value): void
-    {
-        $this->attributes['name'] = json_encode($value);
-    }
-
-    protected function label(): Attribute
-    {
-        return Attribute::make(
-            get: fn (string $value) => json_decode($value),
-            set: fn ($value) => json_encode($value),
-        );
     }
 
     /**
