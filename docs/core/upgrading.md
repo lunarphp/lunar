@@ -67,11 +67,6 @@ The `tier` column on pricing has been renamed to `min_quantity`, any references 
 $priceModel->tier
 // New
 $priceModel->min_quantity
-
-// Old
-$priceModel->tiers
-// New
-$priceModel->priceBreaks
 ```
 
 ##### Lunar\Base\DataTransferObjects\PricingResponse
