@@ -67,14 +67,14 @@ class Staff extends Authenticatable implements FilamentUser, HasName
         return StaffFactory::new();
     }
 
-    public function scopeSearch($query, $term)
+    public function scopeSearch(Builder $query, ?string $terms): void
     {
-        if ($term) {
-            $parts = explode(' ', $term);
+        if (! $terms) {
+            return;
+        }
 
-            foreach ($parts as $part) {
-                $query->whereAny(['email', 'firstname', 'lastname'], 'LIKE', "%$part%");
-            }
+        foreach (explode(' ', $terms) as $term) {
+            $query->whereAny(['email', 'firstname', 'lastname'], 'LIKE', "%{$term}%");
         }
     }
 
