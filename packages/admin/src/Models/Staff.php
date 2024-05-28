@@ -111,21 +111,6 @@ class Staff extends Authenticatable implements FilamentUser, HasName
         }
     }
 
-    /**
-     * Retrieve the model for a bound value.
-     *
-     * Currently Livewire doesn't support route bindings for
-     * soft deleted models so we need to rewire it here.
-     *
-     * @param  mixed  $value
-     * @param  string|null  $field
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
-    public function resolveRouteBinding($value, $field = null)
-    {
-        return $this->resolveSoftDeletableRouteBinding($value, $field);
-    }
-
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
