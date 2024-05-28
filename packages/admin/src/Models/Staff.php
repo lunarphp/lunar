@@ -19,13 +19,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     use Notifiable;
     use SoftDeletes;
 
-    /**
-     * Return a new factory instance for the model.
-     */
-    protected static function newFactory(): StaffFactory
-    {
-        return StaffFactory::new();
-    }
+    protected $guard_name = 'staff';
 
     /**
      * The attributes that are mass assignable.
@@ -40,7 +34,15 @@ class Staff extends Authenticatable implements FilamentUser, HasName
         'password',
     ];
 
-    protected $guard_name = 'staff';
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -53,21 +55,21 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    /**
      * Append attributes to the model.
      *
      * @var array
      */
-    protected $appends = ['fullName'];
+    protected $appends = [
+        'fullName',
+    ];
+
+    /**
+     * Get staff member's full name.
+     */
+    public function getFullNameAttribute(): string
+    {
+        return $this->firstname.' '.$this->lastname;
+    }
 
     /**
      * Create a new instance of the Model.
@@ -84,18 +86,11 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     }
 
     /**
-     * Retrieve the model for a bound value.
-     *
-     * Currently Livewire doesn't support route bindings for
-     * soft deleted models so we need to rewire it here.
-     *
-     * @param  mixed  $value
-     * @param  string|null  $field
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * Return a new factory instance for the model.
      */
-    public function resolveRouteBinding($value, $field = null)
+    protected static function newFactory(): StaffFactory
     {
-        return $this->resolveSoftDeletableRouteBinding($value, $field);
+        return StaffFactory::new();
     }
 
     /**
@@ -117,11 +112,18 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     }
 
     /**
-     * Get staff member's full name.
+     * Retrieve the model for a bound value.
+     *
+     * Currently Livewire doesn't support route bindings for
+     * soft deleted models so we need to rewire it here.
+     *
+     * @param  mixed  $value
+     * @param  string|null  $field
+     * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function getFullNameAttribute(): string
+    public function resolveRouteBinding($value, $field = null)
     {
-        return $this->firstname.' '.$this->lastname;
+        return $this->resolveSoftDeletableRouteBinding($value, $field);
     }
 
     public function canAccessPanel(Panel $panel): bool
