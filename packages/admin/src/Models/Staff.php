@@ -14,6 +14,22 @@ use Illuminate\Notifications\Notifiable;
 use Lunar\Admin\Database\Factories\StaffFactory;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @property int $id
+ * @property bool $admin
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $full_name
+ * @property string $email
+ * @property string $password
+ * @property string $remember_token
+ * @property ?\Illuminate\Support\Carbon $email_verified_at
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder search(?string $terms)
+ */
 class Staff extends Authenticatable implements FilamentUser, HasName
 {
     use HasFactory;
