@@ -30,6 +30,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     ];
 
     protected $casts = [
+        'admin' => 'bool',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
