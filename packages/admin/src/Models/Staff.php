@@ -44,9 +44,11 @@ class Staff extends Authenticatable implements FilamentUser, HasName
         'fullName',
     ];
 
-    public function getFullNameAttribute(): string
+    protected function fullName(): Attribute
     {
-        return $this->firstname.' '.$this->lastname;
+        return Attribute::get(
+            fn (): string => "{$this->firstname} {$this->lastname}",
+        );
     }
 
     public function __construct(array $attributes = [])
