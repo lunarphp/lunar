@@ -43,7 +43,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     ];
 
     protected $appends = [
-        'fullName',
+        'full_name',
     ];
 
     protected function fullName(): Attribute
@@ -87,6 +87,6 @@ class Staff extends Authenticatable implements FilamentUser, HasName
 
     public function getFilamentName(): string
     {
-        return $this->fullName;
+        return $this->full_name;
     }
 }
