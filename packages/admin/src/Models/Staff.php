@@ -21,11 +21,6 @@ class Staff extends Authenticatable implements FilamentUser, HasName
 
     protected $guard_name = 'staff';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'firstname',
         'lastname',
@@ -34,46 +29,25 @@ class Staff extends Authenticatable implements FilamentUser, HasName
         'password',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Append attributes to the model.
-     *
-     * @var array
-     */
     protected $appends = [
         'fullName',
     ];
 
-    /**
-     * Get staff member's full name.
-     */
     public function getFullNameAttribute(): string
     {
         return $this->firstname.' '.$this->lastname;
     }
 
-    /**
-     * Create a new instance of the Model.
-     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -85,21 +59,11 @@ class Staff extends Authenticatable implements FilamentUser, HasName
         }
     }
 
-    /**
-     * Return a new factory instance for the model.
-     */
     protected static function newFactory(): StaffFactory
     {
         return StaffFactory::new();
     }
 
-    /**
-     * Apply the basic search scope to a given Eloquent query builder.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $term
-     * @return void
-     */
     public function scopeSearch($query, $term)
     {
         if ($term) {
