@@ -54,14 +54,10 @@ class MediaRelationManager extends RelationManager
     {
         return $table
             ->heading(function () {
-                $product = $this->getOwnerRecord();
-
-                return $product->getMediaCollectionTitle($this->mediaCollection) ?? Str::ucfirst($this->mediaCollection);
+                return $this->getOwnerRecord()->getMediaCollectionTitle($this->mediaCollection) ?? Str::ucfirst($this->mediaCollection);
             })
             ->description(function () {
-                $product = $this->getOwnerRecord();
-
-                return $product->getMediaCollectionDescription($this->mediaCollection) ?? '';
+                return $this->getOwnerRecord()->getMediaCollectionDescription($this->mediaCollection) ?? '';
             })
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', $this->mediaCollection)->orderBy('order_column'))
@@ -84,9 +80,7 @@ class MediaRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->using(function (array $data, string $model): Model {
-                        $product = $this->getOwnerRecord();
-
-                        return $product->addMedia($data['media'])
+                        return $this->getOwnerRecord()->addMedia($data['media'])
                             ->withCustomProperties([
                                 'name' => $data['custom_properties']['name'],
                                 'primary' => $data['custom_properties']['primary'],
