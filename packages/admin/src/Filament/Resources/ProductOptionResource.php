@@ -85,7 +85,7 @@ class ProductOptionResource extends BaseResource
             ->label(__('lunarpanel::productoption.form.handle.label'))
             ->required()
             ->maxLength(255)
-            ->disabled(fn ($record) => ! $record->shared);
+            ->disabled(fn ($operation, $record) => $operation == 'edit' && (! $record->shared));
     }
 
     public static function getDefaultTable(Table $table): Table
