@@ -3,13 +3,17 @@
 namespace Lunar\Admin\Support\Resources;
 
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Lunar\Admin\Support\Concerns;
+use Lunar\Admin\Support\Forms\Components\TranslatedText as TranslatedTextInput;
 use Lunar\Base\Traits\Searchable;
+use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 
@@ -47,6 +51,21 @@ class BaseResource extends Resource
         $user = Filament::auth()->user();
 
         return $user->can(static::$permission);
+    }
+
+    public static function getBaseNameFormComponent(): Component
+    {
+        $nameType = Attribute::whereHandle('name')
+            ->whereAttributeType(static::getModel())
+            ->first()?->type ?: TranslatedText::class;
+
+        $component = TranslatedTextInput::make('name');
+
+        if ($nameType == Text::class) {
+            $component = TextInput::make('name');
+        }
+
+        return $component->label(__('lunarpanel::product.form.name.label'))->required();
     }
 
     /**
