@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddColumnsToAttributesTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'attributes', function (Blueprint $table) {
             $table->boolean('searchable')->after('system')->default(true)->index();
@@ -15,7 +15,7 @@ class AddColumnsToAttributesTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'attributes', function (Blueprint $table) {
             $table->dropIndex(['searchable']);
@@ -23,4 +23,4 @@ class AddColumnsToAttributesTable extends Migration
             $table->dropColumn(['searchable', 'filterable', 'validation_rules']);
         });
     }
-}
+};

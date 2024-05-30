@@ -5,16 +5,16 @@ use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 use Lunar\Facades\DB;
 
-class AddCartIdToOrdersTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->foreignId('cart_id')->after('user_id')->nullable()->constrained($this->prefix.'carts')->nullOnDelete();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
             if (DB::getDriverName() !== 'sqlite') {
@@ -23,4 +23,4 @@ class AddCartIdToOrdersTable extends Migration
             $table->dropColumn('cart_id');
         });
     }
-}
+};

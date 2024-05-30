@@ -7,6 +7,7 @@ use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
@@ -83,7 +84,8 @@ class ProductOptionResource extends BaseResource
         return Forms\Components\TextInput::make('handle')
             ->label(__('lunarpanel::productoption.form.handle.label'))
             ->required()
-            ->maxLength(255);
+            ->maxLength(255)
+            ->disabled(fn ($operation, $record) => $operation == 'edit' && (! $record->shared));
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -96,9 +98,12 @@ class ProductOptionResource extends BaseResource
                     ->label(__('lunarpanel::productoption.table.label.label')),
                 Tables\Columns\TextColumn::make('handle')
                     ->label(__('lunarpanel::productoption.table.handle.label')),
+                Tables\Columns\BooleanColumn::make('shared')
+                    ->label(__('lunarpanel::productoption.table.shared.label')),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('shared')
+                    ->query(fn (Builder $query): Builder => $query->where('shared', true)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -108,9 +113,6 @@ class ProductOptionResource extends BaseResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->modifyQueryUsing(
-                fn ($query) => $query->shared()
-            )
             ->searchable();
     }
 

@@ -114,6 +114,10 @@ class CartSessionManager implements CartSessionInterface
             $this->getSessionKey()
         );
 
+        if (! $cartId && $user = $this->authManager->user()) {
+            $cartId = $user->carts()->active()->first()?->id;
+        }
+
         if (! $cartId) {
             return $create ? $this->cart = $this->createNewCart() : null;
         }
@@ -140,6 +144,8 @@ class CartSessionManager implements CartSessionInterface
                 setOverride: true
             );
         }
+
+        $this->use($this->cart);
 
         return $this->cart->calculate();
     }
@@ -234,10 +240,13 @@ class CartSessionManager implements CartSessionInterface
      */
     protected function createNewCart()
     {
+        $user = $this->authManager->user();
+
         $cart = Cart::create([
             'currency_id' => $this->getCurrency()->id,
             'channel_id' => $this->getChannel()->id,
-            'user_id' => $this->authManager->user()?->id,
+            'user_id' => optional($user)->id,
+            'customer_id' => optional($user)->latestCustomer()?->id,
         ]);
 
         return $this->use($cart);
