@@ -237,7 +237,7 @@ class OrderResource extends BaseResource
         $details = [
             __('lunarpanel::order.table.status.label') => $record->getStatusLabelAttribute(),
             __('lunarpanel::order.table.total.label') => $record->total?->formatted,
-            __('lunarpanel::order.table.customer.label') => $record->shippingAddress?->fullName,
+            __('lunarpanel::order.table.customer.label') => $record->customer->fullName,
         ];
 
         if ($record->shippingAddress?->contact_email) {
