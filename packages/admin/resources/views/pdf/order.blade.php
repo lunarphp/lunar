@@ -7,7 +7,7 @@
     <style>
         * {
             font-size:12px;
-            font-family: "Helvetica Neue', 'Helvetica', Helvetica, Arial", sans-serif;
+            font-family: 'DejaVu Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         .lines {
