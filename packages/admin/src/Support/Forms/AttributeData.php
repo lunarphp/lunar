@@ -44,10 +44,15 @@ class AttributeData
             $attribute->type
         ] ?? TextField::class;
 
-        return $fieldType::getFilamentComponent($attribute)->label(
-            $attribute->translate('name')
-        )
+        /** @var Component $component */
+        $component = $fieldType::getFilamentComponent($attribute);
+
+        return $component
+            ->label(
+                $attribute->translate('name')
+            )
             ->formatStateUsing(fn ($state) => ($state ?: new $attribute->type))
+            ->mutateDehydratedStateUsing(fn ($state) => ($state ?: new $attribute->type))
             ->required($attribute->required)
             ->default($attribute->default_value);
     }
