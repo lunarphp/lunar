@@ -4,19 +4,19 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddShippingBreakdownToOrdersTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->json('shipping_breakdown')->nullable()->after('discount_total');
         });
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::table($this->prefix.'orders', function ($table) {
+        Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->dropColumn('shipping_breakdown');
         });
     }
-}
+};

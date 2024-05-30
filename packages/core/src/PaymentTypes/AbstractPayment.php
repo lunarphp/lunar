@@ -2,9 +2,11 @@
 
 namespace Lunar\PaymentTypes;
 
+use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\PaymentTypeInterface;
 use Lunar\Models\Cart;
 use Lunar\Models\Order;
+use Lunar\Models\Transaction;
 
 abstract class AbstractPayment implements PaymentTypeInterface
 {
@@ -70,5 +72,10 @@ abstract class AbstractPayment implements PaymentTypeInterface
         $this->config = $config;
 
         return $this;
+    }
+
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    {
+        return new PaymentChecks;
     }
 }

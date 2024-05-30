@@ -1,7 +1,5 @@
 <?php
 
-namespace Unit\Base;
-
 uses(\Lunar\Tests\Core\TestCase::class);
 
 use Lunar\Models\Product;
