@@ -91,6 +91,8 @@ class Opayo implements OpayoInterface
             'customerLastName' => $parameters->customerLastName,
             'billingAddress' => [
                 'address1' => $parameters->billingAddressLineOne,
+                'address2' => $parameters->billingAddressLineTwo,
+                'address3' => $parameters->billingAddressLineThree,
                 'city' => $parameters->billingAddressCity,
                 'postalCode' => $parameters->billingAddressPostcode,
                 'country' => $parameters->billingAddressCountryIso,
@@ -113,6 +115,19 @@ class Opayo implements OpayoInterface
             ],
             'entryMethod' => 'Ecommerce',
         ];
+
+        if ($parameters->shippingAddressLineOne) {
+            $payload['shippingDetails'] = [
+                'recipientFirstName' => $parameters->recipientFirstName,
+                'recipientLastName' => $parameters->recipientLastName,
+                'shippingAddress1' => $parameters->shippingAddressLineOne,
+                'shippingAddress2' => $parameters->shippingAddressLineTwo,
+                'shippingAddress3' => $parameters->shippingAddressLineThree,
+                'shippingCity' => $parameters->shippingAddressCity,
+                'shippingPostalCode' => $parameters->shippingAddressPostcode,
+                'shippingCountry' => $parameters->shippingAddressCountryIso,
+            ];
+        }
 
         if ($parameters->saveCard) {
             $payload['credentialType'] = [
