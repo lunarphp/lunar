@@ -92,7 +92,12 @@ class AttributesRelationManager extends RelationManager
                     ->fill()),
                 Forms\Components\TextInput::make('validation_rules')->label(
                     __('lunarpanel::attribute.form.validation_rules.label')
-                )->string()->nullable(),
+                )
+                    ->string()
+                    ->nullable()
+                    ->helperText(
+                        __('lunarpanel::attribute.form.validation_rules.helper')
+                    ),
                 Forms\Components\Grid::make(1)
                     ->schema(function (Forms\Get $get) {
                         return AttributeData::getConfigurationFields($get('type'));
