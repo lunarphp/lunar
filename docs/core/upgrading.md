@@ -18,6 +18,15 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
 
+## 1.0.0-alpha.x
+
+### High Impact
+
+#### Unique index for Collection Group handle
+
+Collection Group now have unique index on the column `handle`.
+If you are creating Collection Group from the admin panel, there is no changes required.
+
 ## 1.0.0-alpha.20
 
 ### High Impact
