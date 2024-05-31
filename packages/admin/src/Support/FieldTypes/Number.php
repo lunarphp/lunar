@@ -16,7 +16,9 @@ class Number extends BaseFieldType
         $min = (int) $attribute->configuration->get('min');
         $max = (int) $attribute->configuration->get('max');
 
-        $input = TextField::getFilamentComponent($attribute)->numeric();
+        $input = TextField::getFilamentComponent($attribute)
+            ->numeric()
+            ->rules($attribute->validation_rules);
 
         if ($min) {
             $input->minValue($min);

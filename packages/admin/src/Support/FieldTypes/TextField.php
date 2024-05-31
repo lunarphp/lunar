@@ -25,10 +25,12 @@ class TextField extends BaseFieldType
     {
         if ($attribute->configuration->get('richtext')) {
             return RichEditor::make($attribute->handle)
+                ->rules($attribute->validation_rules)
                 ->helperText($attribute->translate('description'));
         }
 
         return TextInput::make($attribute->handle)
+            ->rules($attribute->validation_rules)
             ->helperText($attribute->translate('description'));
     }
 }

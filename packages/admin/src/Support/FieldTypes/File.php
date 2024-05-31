@@ -14,6 +14,7 @@ class File extends BaseFieldType
     public static function getFilamentComponent(Attribute $attribute): Component
     {
         return TextInput::make($attribute->handle)
+            ->rules($attribute->validation_rules)
             ->helperText($attribute->translate('description'));
     }
 }

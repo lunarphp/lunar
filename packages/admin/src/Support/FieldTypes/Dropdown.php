@@ -14,11 +14,13 @@ class Dropdown extends BaseFieldType
 
     public static function getFilamentComponent(Attribute $attribute): Component
     {
-        return Select::make($attribute->handle)->options(
-            collect($attribute->configuration->get('lookups'))->mapWithKeys(
-                fn ($lookup) => [$lookup['value'] => $lookup['label'] ?? $lookup['value']]
+        return Select::make($attribute->handle)
+            ->options(
+                collect($attribute->configuration->get('lookups'))->mapWithKeys(
+                    fn ($lookup) => [$lookup['value'] => $lookup['label'] ?? $lookup['value']]
+                )
             )
-        )
+            ->rules($attribute->validation_rules)
             ->helperText($attribute->translate('description'));
     }
 
