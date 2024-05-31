@@ -20,8 +20,8 @@ class TranslatedText extends BaseFieldType
     {
         return TranslatedTextComponent::make($attribute->handle)
             ->optionRichtext((bool) $attribute->configuration->get('richtext'))
-            ->required((bool) $attribute->configuration->get('required'))
             ->rules($attribute->validation_rules)
+            ->required((bool) $attribute->configuration->get('required'))
             ->helperText($attribute->translate('description'));
     }
 }

@@ -26,11 +26,13 @@ class TextField extends BaseFieldType
         if ($attribute->configuration->get('richtext')) {
             return RichEditor::make($attribute->handle)
                 ->rules($attribute->validation_rules)
+                ->required((bool) $attribute->configuration->get('required'))
                 ->helperText($attribute->translate('description'));
         }
 
         return TextInput::make($attribute->handle)
             ->rules($attribute->validation_rules)
+            ->required((bool) $attribute->configuration->get('required'))
             ->helperText($attribute->translate('description'));
     }
 }

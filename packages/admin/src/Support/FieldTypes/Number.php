@@ -18,7 +18,8 @@ class Number extends BaseFieldType
 
         $input = TextField::getFilamentComponent($attribute)
             ->numeric()
-            ->rules($attribute->validation_rules);
+            ->rules($attribute->validation_rules)
+            ->required((bool) $attribute->configuration->get('required'));
 
         if ($min) {
             $input->minValue($min);

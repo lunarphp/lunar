@@ -19,6 +19,7 @@ class Toggle extends BaseFieldType
             )
             ->default(false)
             ->rules($attribute->validation_rules)
-            ->rule('boolean');
+            ->rule('boolean')
+            ->required((bool) $attribute->configuration->get('required'));
     }
 }
