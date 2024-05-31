@@ -19,7 +19,7 @@ class ListProductVariants extends BaseListRecords
         return [];
     }
 
-    public function getTabs(): array
+    public function getDefaultTabs(): array
     {
         return [];
     }

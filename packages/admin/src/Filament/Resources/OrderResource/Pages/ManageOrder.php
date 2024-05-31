@@ -284,7 +284,7 @@ class ManageOrder extends BaseViewRecord
             ]);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function getDefaultInfolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
@@ -352,13 +352,20 @@ class ManageOrder extends BaseViewRecord
                             ->schema(fn ($state) => blank($state) ? [
                                 Infolists\Components\TextEntry::make('no_additional_info')
                                     ->hiddenLabel()
-                                    // ->weight(FontWeight::SemiBold)
                                     ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
                             ] : collect($state)
                                 ->map(fn ($value, $key) => Infolists\Components\TextEntry::make('meta_'.$key)
                                     ->state($value)
                                     ->label($key)
-                                    ->inlineLabel())
+                                    ->copyable()
+                                    ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
+                                        $state = $component->getState();
+                                        if (strlen($state) <= $component->getCharacterLimit()) {
+                                            return null;
+                                        }
+
+                                        return $state;
+                                    }))
                                 ->toArray()),
 
                     ])
