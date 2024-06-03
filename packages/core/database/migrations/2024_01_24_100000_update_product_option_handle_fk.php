@@ -4,11 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class UpdateProductOptionHandleFk extends Migration
+return new class extends Migration
 {
-    public $withinTransaction = true;
-
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->dropUnique(
@@ -21,7 +19,7 @@ class UpdateProductOptionHandleFk extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->dropIndex(
@@ -33,4 +31,4 @@ class UpdateProductOptionHandleFk extends Migration
             $table->unique('handle');
         });
     }
-}
+};
