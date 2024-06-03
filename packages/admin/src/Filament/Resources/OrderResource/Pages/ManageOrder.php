@@ -354,25 +354,21 @@ class ManageOrder extends BaseViewRecord
                                     ->hiddenLabel()
                                     ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
                             ] : collect($state)
-                                ->map(function ($value, $key) {
-                                    if (! is_array($value)) {
-                                        return Infolists\Components\TextEntry::make('meta_'.$key)
-                                            ->state($value)
-                                            ->label($key)
-                                            ->copyable()
-                                            ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
-                                                $state = $component->getState();
-                                                if (strlen($state) <= $component->getCharacterLimit()) {
-                                                    return null;
-                                                }
+                                ->map(fn ($value, $key) => is_array($value) ? Infolists\Components\KeyValueEntry::make('meta_'.$key)->state($value) :
+                                    Infolists\Components\TextEntry::make('meta_'.$key)
+                                        ->state($value)
+                                        ->label($key)
+                                        ->copyable()
+                                        ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
+                                            $state = $component->getState();
+                                            if (strlen($state) <= $component->getCharacterLimit()) {
+                                                return null;
+                                            }
 
-                                                return $state;
-                                            });
-                                    } else {
-                                        return Infolists\Components\KeyValueEntry::make('meta_'.$key)
-                                            ->state($value);
-                                    }
-                                })
+                                            return $state;
+                                        })
+
+                                )
                                 ->toArray()),
 
                     ])
