@@ -86,7 +86,7 @@ class MediaRelationManager extends RelationManager
                     ->using(function (array $data, string $model): Model {
                         $product = $this->getOwnerRecord();
 
-                        return $product->addMedia($data['media'])
+                        return $product->addMediaFromString($data['media']->get())
                             ->withCustomProperties([
                                 'name' => $data['custom_properties']['name'],
                                 'primary' => $data['custom_properties']['primary'],
