@@ -4,7 +4,6 @@ namespace Lunar\Admin\Support\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
@@ -14,7 +13,7 @@ use Illuminate\Support\Str;
 use Lunar\Admin\Events\ModelMediaUpdated;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class MediaRelationManager extends RelationManager
+class MediaRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
