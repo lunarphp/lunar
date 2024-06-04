@@ -2,6 +2,7 @@
 
 namespace Lunar\Database\State;
 
+use Illuminate\Support\Facades\Schema;
 use Lunar\Facades\DB;
 
 class ConvertBackOrderPurchasability
@@ -15,7 +16,7 @@ class ConvertBackOrderPurchasability
     {
         DB::usingConnection(config('lunar.database.connection') ?: DB::getDefaultConnection(), function () {
             $prefix = config('lunar.database.table_prefix');
-            if ($this->shouldRun()) {
+            if ($this->canRun() && $this->shouldRun()) {
                 DB::table("{$prefix}product_variants")->where([
                     'purchasable' => 'backorder',
                 ])->update([
@@ -23,6 +24,13 @@ class ConvertBackOrderPurchasability
                 ]);
             }
         });
+    }
+
+    protected function canRun(): bool
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return Schema::hasTable("{$prefix}product_variants");
     }
 
     protected function shouldRun(): bool
