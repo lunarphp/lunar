@@ -5,9 +5,9 @@
     <title>Order Invoice</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
-        body {
+        * {
             font-size:12px;
-            font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            font-family: 'DejaVu Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         .lines {
