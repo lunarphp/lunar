@@ -29,6 +29,16 @@ public function canBeFulfilledAtQuantity(int $quantity): bool;
 public function getTrueStockValue(): int;
 ```
 
+If you are checking the `ProductVariant` `purchasable` attribute in your code, you should update the following check:
+
+```php
+// Old
+$variant->purchasable == 'backorder';
+// New
+$variant->purchasable == 'in_stock_on_backorder';
+
+```
+
 ## 1.0.0-alpha.20
 
 ### High Impact
