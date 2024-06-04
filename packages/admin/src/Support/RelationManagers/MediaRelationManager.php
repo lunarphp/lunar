@@ -96,6 +96,7 @@ class MediaRelationManager extends RelationManager
                                 'name' => $data['custom_properties']['name'],
                                 'primary' => $data['custom_properties']['primary'],
                             ])
+                            ->preservingOriginal()
                             ->toMediaCollection($this->mediaCollection);
                     })->after(
                         fn () => ModelMediaUpdated::dispatch(
