@@ -344,7 +344,7 @@ class TaxZoneResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListTaxZones::route('/'),

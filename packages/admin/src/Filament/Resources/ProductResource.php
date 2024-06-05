@@ -69,9 +69,9 @@ class ProductResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             Pages\EditProduct::class,
             Pages\ManageProductAvailability::class,
             Pages\ManageProductMedia::class,
@@ -83,7 +83,7 @@ class ProductResource extends BaseResource
             Pages\ManageProductUrls::class,
             Pages\ManageProductCollections::class,
             Pages\ManageProductAssociations::class,
-        ]);
+        ];
     }
 
     public static function getWidgets(): array
@@ -326,7 +326,7 @@ class ProductResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListProducts::route('/'),
