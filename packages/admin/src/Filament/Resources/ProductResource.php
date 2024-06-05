@@ -7,7 +7,6 @@ use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
 use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\Page;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
@@ -16,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
@@ -68,9 +68,9 @@ class ProductResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             Pages\EditProduct::class,
             Pages\ManageProductAvailability::class,
             Pages\ManageProductMedia::class,
@@ -82,7 +82,7 @@ class ProductResource extends BaseResource
             Pages\ManageProductUrls::class,
             Pages\ManageProductCollections::class,
             Pages\ManageProductAssociations::class,
-        ]);
+        ];
     }
 
     public static function getWidgets(): array
@@ -219,6 +219,7 @@ class ProductResource extends BaseResource
             ->filters([
                 Tables\Filters\SelectFilter::make('brand')
                     ->relationship('brand', 'name'),
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -238,12 +239,17 @@ class ProductResource extends BaseResource
             Tables\Columns\TextColumn::make('status')
                 ->label(__('lunarpanel::product.table.status.label'))
                 ->badge()
+                ->getStateUsing(
+                    fn (Model $record) => $record->deleted_at ? 'deleted' : $record->status
+                )
+                ->formatStateUsing(fn ($state) => __('lunarpanel::product.table.status.states.'.$state))
                 ->color(fn (string $state): string => match ($state) {
                     'draft' => 'warning',
                     'published' => 'success',
+                    'deleted' => 'danger',
                 }),
             SpatieMediaLibraryImageColumn::make('thumbnail')
-                ->collection('images')
+                ->collection(config('lunar.media.collection'))
                 ->conversion('small')
                 ->limit(1)
                 ->square()
@@ -319,7 +325,7 @@ class ProductResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListProducts::route('/'),
@@ -348,6 +354,14 @@ class ProductResource extends BaseResource
             'variants.sku',
             'tags.value',
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder

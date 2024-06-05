@@ -40,7 +40,7 @@ $product->schedule($customerGroup, now()->addDays(14));
 // Schedule the product to be enabled straight away
 $product->schedule($customerGroup);
 
-// The schedule method will accept and array or collection of customer groups.
+// The schedule method will accept an array or collection of customer groups.
 $product->schedule(CustomerGroup::get());
 ```
 
@@ -105,7 +105,7 @@ $product->load(['productType']);
 ## Product Identifiers
 
 You can choose to add product identifiers to each product variant. These are fields which, as the name suggests, allow
-you to identify a product and it's variants for use in your internal systems. You can choose whether these are required
+you to identify a product and its variants for use in your internal systems. You can choose whether these are required
 and unique in the hub whilst editing.
 
 ### Available fields

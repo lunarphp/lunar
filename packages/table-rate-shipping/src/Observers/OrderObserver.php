@@ -24,7 +24,7 @@ class OrderObserver
 
     protected function updateShippingZone(Order $order): void
     {
-        $shippingAddress = $order->shippingAddress ?: $order->cart->shippingAddress;
+        $shippingAddress = $order->shippingAddress ?: $order->cart?->shippingAddress;
 
         if ($shippingAddress && $shippingAddress->postcode) {
             $postcodeLookup = new PostcodeLookup(
