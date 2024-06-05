@@ -4,12 +4,11 @@ namespace Lunar\Admin\Support\RelationManagers;
 
 use Filament;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Events\ModelChannelsUpdated;
 
-class ChannelRelationManager extends RelationManager
+class ChannelRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
