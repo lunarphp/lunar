@@ -50,15 +50,15 @@ class BrandResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             Pages\EditBrand::class,
             Pages\ManageBrandMedia::class,
             Pages\ManageBrandUrls::class,
             Pages\ManageBrandProducts::class,
             Pages\ManageBrandCollections::class,
-        ]);
+        ];
     }
 
     public static function getDefaultForm(Form $form): Form
@@ -139,7 +139,7 @@ class BrandResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListBrands::route('/'),
