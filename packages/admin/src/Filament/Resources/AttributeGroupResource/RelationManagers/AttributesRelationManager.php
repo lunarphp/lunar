@@ -41,7 +41,7 @@ class AttributesRelationManager extends RelationManager
                         if ($operation !== 'create') {
                             return;
                         }
-                        $set('handle', Str::slug($state[Language::getDefault()->code])); // TODO : create new global variable on LunarPanelManager with default language ?
+                        $set('handle', Str::slug($state[Language::getDefault()->code]));
                     }),
                 Forms\Components\TextInput::make('description.en') // TODO: localise
                     ->label(

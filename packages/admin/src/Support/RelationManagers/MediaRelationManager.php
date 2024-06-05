@@ -4,16 +4,16 @@ namespace Lunar\Admin\Support\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Admin\Events\ModelMediaUpdated;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class MediaRelationManager extends RelationManager
+class MediaRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
@@ -53,14 +53,10 @@ class MediaRelationManager extends RelationManager
     {
         return $table
             ->heading(function () {
-                $product = $this->getOwnerRecord();
-
-                return $product->getMediaCollectionTitle($this->mediaCollection) ?? Str::ucfirst($this->mediaCollection);
+                return $this->getOwnerRecord()->getMediaCollectionTitle($this->mediaCollection) ?? Str::ucfirst($this->mediaCollection);
             })
             ->description(function () {
-                $product = $this->getOwnerRecord();
-
-                return $product->getMediaCollectionDescription($this->mediaCollection) ?? '';
+                return $this->getOwnerRecord()->getMediaCollectionDescription($this->mediaCollection) ?? '';
             })
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', $this->mediaCollection)->orderBy('order_column'))
@@ -83,18 +79,25 @@ class MediaRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->using(function (array $data, string $model): Model {
-                        $product = $this->getOwnerRecord();
-
-                        return $product->addMedia($data['media'])
+                        return $this->getOwnerRecord()->addMedia($data['media'])
                             ->withCustomProperties([
                                 'name' => $data['custom_properties']['name'],
                                 'primary' => $data['custom_properties']['primary'],
                             ])
+                            ->preservingOriginal()
                             ->toMediaCollection($this->mediaCollection);
-                    }),
+                    })->after(
+                        fn () => ModelMediaUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->after(
+                    fn () => ModelMediaUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
                 Tables\Actions\DeleteAction::make(),
                 Action::make('view_open')
                     ->label('View')
@@ -104,7 +107,11 @@ class MediaRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->after(
+                        fn () => ModelMediaUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ])
             ->reorderable('order_column');

@@ -12,6 +12,7 @@ use Filament\Infolists;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\TextEntry\TextEntrySize;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\FontWeight;
@@ -283,7 +284,7 @@ class ManageOrder extends BaseViewRecord
             ]);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function getDefaultInfolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
@@ -351,13 +352,26 @@ class ManageOrder extends BaseViewRecord
                             ->schema(fn ($state) => blank($state) ? [
                                 Infolists\Components\TextEntry::make('no_additional_info')
                                     ->hiddenLabel()
-                                    // ->weight(FontWeight::SemiBold)
                                     ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
                             ] : collect($state)
-                                ->map(fn ($value, $key) => Infolists\Components\TextEntry::make('meta_'.$key)
-                                    ->state($value)
-                                    ->label($key)
-                                    ->inlineLabel())
+                                ->map(function ($value, $key) {
+                                    if (is_array($value)) {
+                                        return Infolists\Components\KeyValueEntry::make('meta_'.$key)->state($value);
+                                    }
+
+                                    return Infolists\Components\TextEntry::make('meta_'.$key)
+                                        ->state($value)
+                                        ->label($key)
+                                        ->copyable()
+                                        ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
+                                            $state = $component->getState();
+                                            if (strlen($state) <= $component->getCharacterLimit()) {
+                                                return null;
+                                            }
+
+                                            return $state;
+                                        });
+                                })
                                 ->toArray()),
 
                     ])
@@ -742,7 +756,9 @@ class ManageOrder extends BaseViewRecord
                     ->default(fn ($record) => number_format($this->availableToRefund / $record->currency->factor, $record->currency->decimal_places, '.', ''))
                     ->live()
                     ->autocomplete(false)
-                    ->minValue(1)
+                    ->minValue(
+                        1 / $this->getRecord()->currency->factor
+                    )
                     ->numeric(),
 
                 Forms\Components\Textarea::make('notes')
@@ -769,7 +785,9 @@ class ManageOrder extends BaseViewRecord
                 $response = $transaction->refund(bcmul($data['amount'], $record->currency->factor), $data['notes']);
 
                 if (! $response->success) {
-                    $action->failureNotification(fn () => $response->message);
+                    $action->failureNotification(
+                        fn () => Notification::make('refund_failure')->color('danger')->title($response->message)
+                    );
 
                     $action->failure();
 

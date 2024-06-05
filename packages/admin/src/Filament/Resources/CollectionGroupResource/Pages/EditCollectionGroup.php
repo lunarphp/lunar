@@ -4,15 +4,15 @@ namespace Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 
 use Filament\Actions;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\EditRecord;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets;
+use Lunar\Admin\Support\Pages\BaseEditRecord;
 
-class EditCollectionGroup extends EditRecord
+class EditCollectionGroup extends BaseEditRecord
 {
     protected static string $resource = CollectionGroupResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getDefaultHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make()
@@ -28,7 +28,7 @@ class EditCollectionGroup extends EditRecord
         ];
     }
 
-    protected function getFooterWidgets(): array
+    protected function getDefaultFooterWidgets(): array
     {
         return [
             Widgets\CollectionTreeView::class,

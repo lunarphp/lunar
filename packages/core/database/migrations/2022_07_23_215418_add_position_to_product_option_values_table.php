@@ -4,29 +4,20 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddPositionToProductOptionValuesTable extends Migration
+return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'product_option_values', function (Blueprint $table) {
             $table->integer('position')->after('name')->default(0)->index();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'product_option_values', function (Blueprint $table) {
+            $table->dropIndex(['position']);
             $table->dropColumn('position');
         });
     }
-}
+};

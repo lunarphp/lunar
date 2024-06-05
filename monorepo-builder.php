@@ -41,7 +41,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ComposerJsonSection::REQUIRE_DEV => [
             'laravel/pint' => '1.13.1',
             'mockery/mockery' => '^1.4.4',
-            'nunomaduro/larastan' => '^2.0',
             'pestphp/pest' => '^2.0',
             'pestphp/pest-plugin-laravel' => '^2.0',
             'symplify/monorepo-builder' => '^10.0',

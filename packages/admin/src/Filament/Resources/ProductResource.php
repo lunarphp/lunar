@@ -16,6 +16,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
@@ -219,6 +220,7 @@ class ProductResource extends BaseResource
             ->filters([
                 Tables\Filters\SelectFilter::make('brand')
                     ->relationship('brand', 'name'),
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -238,44 +240,27 @@ class ProductResource extends BaseResource
             Tables\Columns\TextColumn::make('status')
                 ->label(__('lunarpanel::product.table.status.label'))
                 ->badge()
+                ->getStateUsing(
+                    fn (Model $record) => $record->deleted_at ? 'deleted' : $record->status
+                )
+                ->formatStateUsing(fn ($state) => __('lunarpanel::product.table.status.states.'.$state))
                 ->color(fn (string $state): string => match ($state) {
                     'draft' => 'warning',
                     'published' => 'success',
+                    'deleted' => 'danger',
                 }),
             SpatieMediaLibraryImageColumn::make('thumbnail')
-                ->collection('images')
+                ->collection(config('lunar.media.collection'))
                 ->conversion('small')
                 ->limit(1)
                 ->square()
                 ->label(''),
-            TranslatedTextColumn::make('attribute_data.name')
-                ->attributeData()
-                ->limitedTooltip()
-                ->limit(50)
-                ->label(__('lunarpanel::product.table.name.label')),
+            static::getNameTableColumn(),
             Tables\Columns\TextColumn::make('brand.name')
                 ->label(__('lunarpanel::product.table.brand.label'))
                 ->toggleable()
                 ->searchable(),
-            Tables\Columns\TextColumn::make('variants.sku')
-                ->label(__('lunarpanel::product.table.sku.label'))
-                ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
-
-                    if ($record->variants->count() <= $column->getListLimit()) {
-                        return null;
-                    }
-
-                    if ($record->variants->count() > 30) {
-                        $record->variants = $record->variants->slice(0, 30);
-                    }
-
-                    return $record->variants
-                        ->map(fn ($variant) => $variant->sku)
-                        ->implode(', ');
-                })
-                ->listWithLineBreaks()
-                ->limitList(1)
-                ->toggleable(),
+            static::getSkuTableColumn(),
             Tables\Columns\TextColumn::make('variants_sum_stock')
                 ->label(__('lunarpanel::product.table.stock.label'))
                 ->sum('variants', 'stock'),
@@ -294,6 +279,38 @@ class ProductResource extends BaseResource
                 })
                 ->toggleable(),
         ];
+    }
+
+    public static function getNameTableColumn(): Tables\Columns\Column
+    {
+        return TranslatedTextColumn::make('attribute_data.name')
+            ->attributeData()
+            ->limitedTooltip()
+            ->limit(50)
+            ->label(__('lunarpanel::product.table.name.label'));
+    }
+
+    public static function getSkuTableColumn(): Tables\Columns\Column
+    {
+        return Tables\Columns\TextColumn::make('variants.sku')
+            ->label(__('lunarpanel::product.table.sku.label'))
+            ->tooltip(function (Tables\Columns\TextColumn $column, Model $record): ?string {
+
+                if ($record->variants->count() <= $column->getListLimit()) {
+                    return null;
+                }
+
+                if ($record->variants->count() > 30) {
+                    $record->variants = $record->variants->slice(0, 30);
+                }
+
+                return $record->variants
+                    ->map(fn ($variant) => $variant->sku)
+                    ->implode(', ');
+            })
+            ->listWithLineBreaks()
+            ->limitList(1)
+            ->toggleable();
     }
 
     public static function getDefaultRelations(): array
@@ -338,6 +355,14 @@ class ProductResource extends BaseResource
             'variants.sku',
             'tags.value',
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder

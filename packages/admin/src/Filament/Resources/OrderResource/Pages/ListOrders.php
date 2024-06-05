@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
 use Filament\Resources\Components\Tab;
 use Filament\Support\Enums\MaxWidth;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
@@ -20,7 +19,7 @@ class ListOrders extends BaseListRecords
         ];
     }
 
-    public function getTabs(): array
+    public function getDefaultTabs(): array
     {
         $statuses = collect(
             config('lunar.orders.statuses', [])
@@ -37,11 +36,6 @@ class ListOrders extends BaseListRecords
                 ]
             ),
         ];
-    }
-
-    protected function paginateTableQuery(Builder $query): Paginator
-    {
-        return $query->paginate($this->getTableRecordsPerPage());
     }
 
     public function getMaxContentWidth(): MaxWidth

@@ -68,6 +68,20 @@ class Channel extends BaseModel
     }
 
     /**
+     * Return the discounts relationship
+     */
+    public function discounts(): MorphToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->morphedByMany(
+            Discount::class,
+            'channelable',
+            "{$prefix}channelables"
+        );
+    }
+
+    /**
      * Return the products relationship
      */
     public function products(): MorphToMany
