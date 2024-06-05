@@ -172,9 +172,9 @@ class BuyXGetY extends AbstractDiscountType
         }
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
-            discount: $this->discount,
+            price: new Price($discountTotal, $cart->currency, 1),
             lines: $affectedLines,
-            price: new Price($discountTotal, $cart->currency, 1)
+            discount: $this->discount,
         ));
 
         return $cart;
@@ -182,14 +182,6 @@ class BuyXGetY extends AbstractDiscountType
 
     private function processAutomaticRewards(Cart $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
     {
-        $automaticLines = $cart->lines->filter(function ($line) {
-            return in_array($this->discount->id, array_keys($line->meta->added_by_discount ?? []));
-        });
-
-        $remainingRewardQty -= $automaticLines->sum(function ($line) {
-            return $line->meta->added_by_discount[$this->discount->id] ?? 0;
-        });
-
         // we have lines to add
         if ($remainingRewardQty > 0) {
             while ($remainingRewardQty > 0) {
@@ -222,7 +214,6 @@ class BuyXGetY extends AbstractDiscountType
                             config('lunar.cart.pipelines.cart_lines', [])
                         )->thenReturn(function ($cartLine) {
                             $cartLine->cacheProperties();
-
                             return $cartLine;
                         });
 
@@ -277,50 +268,6 @@ class BuyXGetY extends AbstractDiscountType
                 $rewardLine->save();
 
                 $remainingRewardQty--;
-            }
-
-            // we have lines to remove
-        } elseif ($remainingRewardQty < 0) {
-            // while handles the situation where quantity of an item may be more than 1
-            while ($remainingRewardQty > 0 && ! empty($automaticLines)) {
-                // loop over automatic lines and decrement quantity
-                foreach ($automaticLines as $index => $line) {
-                    if ($remainingRewardQty >= 0) {
-                        continue;
-                    }
-
-                    $meta = $line->meta;
-                    $addedByDiscountQty = $meta->added_by_discount[$this->discount->id] ?? 0;
-
-                    if ($addedByDiscountQty > 0) {
-                        $line->quantity = $line->quantity - 1;
-                        $addedByDiscountQty--;
-                        $remainingRewardQty++;
-
-                        if ($addedByDiscountQty < 1) {
-                            unset($meta->added_by_discount[$this->discount->id]);
-                        } else {
-                            $meta->added_by_discount[$this->discount->id] = $addedByDiscountQty;
-                        }
-
-                        if (empty($meta->added_by_discount)) {
-                            unset($meta->added_by_discount);
-                        }
-
-                        $line->meta = $meta;
-                    }
-
-                    if ($line->quantity > 0) {
-                        $line->save();
-                    } else {
-                        $line->delete();
-                        $cart->freeItems->remove($line->product);
-                    }
-
-                    if ($addedByDiscountQty <= 0) {
-                        unset($automaticLines[$index]);
-                    }
-                }
             }
         }
 
