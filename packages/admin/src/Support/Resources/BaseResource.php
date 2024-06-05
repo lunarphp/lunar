@@ -19,8 +19,8 @@ class BaseResource extends Resource
 {
     use Concerns\CallsHooks;
     use Concerns\ExtendsForms;
-    use Concerns\ExtendsRelationManagers;
     use Concerns\ExtendsPages;
+    use Concerns\ExtendsRelationManagers;
     use Concerns\ExtendsSubnavigation;
     use Concerns\ExtendsTables;
 
