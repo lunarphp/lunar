@@ -20,7 +20,7 @@ class Dropdown extends BaseFieldType
                     fn ($lookup) => [$lookup['value'] => $lookup['label'] ?? $lookup['value']]
                 )
             )
-            ->rules($attribute->validation_rules)
+            ->when(filled($attribute->validation_rules), fn (Select $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->configuration->get('required'))
             ->helperText($attribute->translate('description'));
     }
