@@ -40,6 +40,7 @@ class MediaRelationManager extends BaseRelationManager
                     ->hiddenOn('edit')
                     ->storeFiles(false)
                     ->imageEditor()
+                    ->required()
                     ->imageEditorAspectRatios([
                         null,
                         '16:9',
@@ -79,7 +80,11 @@ class MediaRelationManager extends BaseRelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->using(function (array $data, string $model): Model {
+
                         return $this->getOwnerRecord()->addMediaFromString($data['media']->get())
+                            ->usingFileName(
+                                $data['media']->getClientOriginalName()
+                            )
                             ->withCustomProperties([
                                 'name' => $data['custom_properties']['name'],
                                 'primary' => $data['custom_properties']['primary'],
