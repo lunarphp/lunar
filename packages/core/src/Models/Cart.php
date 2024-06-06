@@ -346,19 +346,9 @@ class Cart extends BaseModel
 
     public function isCalculated(): bool
     {
-        if ($this->total === null) {
-            return false;
-        }
-
-        $linesCalculated = $this->lines->every(function (CartLine $line) {
-            return $line->total !== null;
-        });
-
-        if (! $linesCalculated) {
-            return false;
-        }
-
-        return true;
+        return !blank($this->total) && $this->lines->every(
+            fn (CartLine $line) => !blank($line->total)
+        );
     }
 
     /**
