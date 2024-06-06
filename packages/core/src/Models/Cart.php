@@ -346,7 +346,7 @@ class Cart extends BaseModel
 
     public function isCalculated(): bool
     {
-        if (!$this->total) {
+        if (! $this->total) {
             return false;
         }
 
@@ -354,7 +354,7 @@ class Cart extends BaseModel
             return $line->total;
         });
 
-        if (!$linesCalculated) {
+        if (! $linesCalculated) {
             return false;
         }
 
