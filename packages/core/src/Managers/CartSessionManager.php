@@ -244,7 +244,7 @@ class CartSessionManager implements CartSessionInterface
 
     public function __call($method, $args)
     {
-        if (! $this->cart) {
+        if (! $this->cart?->exists) {
             $this->cart = $this->fetchOrCreate(true);
         }
 
