@@ -18,9 +18,9 @@ class CartSessionManager implements CartSessionInterface
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
-        protected ?Channel $channel = null,
-        protected ?Currency $currency = null,
-        public ?Cart $cart = null
+        protected $channel = null,
+        protected $currency = null,
+        public $cart = null
     ) {
         //
     }
