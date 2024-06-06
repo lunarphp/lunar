@@ -28,7 +28,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function current($estimateShipping = false): Cart|null
+    public function current($estimateShipping = false): ?Cart
     {
         return $this->fetchOrCreate(
             config('lunar.cart.auto_create', false),
@@ -70,7 +70,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function manager(): Cart|null
+    public function manager(): ?Cart
     {
         if (! $this->cart) {
             $this->fetchOrCreate(create: true);
@@ -105,7 +105,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Fetches a cart and optionally creates one if it doesn't exist.
      */
-    private function fetchOrCreate(bool $create = false, bool $estimateShipping = false): Cart|null
+    private function fetchOrCreate(bool $create = false, bool $estimateShipping = false): ?Cart
     {
         $cartId = $this->sessionManager->get(
             $this->getSessionKey()
@@ -213,7 +213,6 @@ class CartSessionManager implements CartSessionInterface
      * Create an order from a cart instance.
      *
      * @param  bool  $forget
-     * @return \Lunar\Models\Order
      */
     public function createOrder($forget = true): Order
     {

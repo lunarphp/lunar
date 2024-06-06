@@ -320,7 +320,7 @@ class Cart extends BaseModel
      */
     public function calculate(bool $force = false): Cart
     {
-        if (!$force && $this->total) {
+        if (! $force && $this->total) {
             // Don't recalculate
             return $this;
         }
