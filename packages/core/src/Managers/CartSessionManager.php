@@ -122,7 +122,7 @@ class CartSessionManager implements CartSessionInterface
             return $create ? $this->cart = $this->createNewCart() : null;
         }
 
-        $this->cart = Cart::with(
+        $this->cart = $this->cart ?: Cart::with(
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
