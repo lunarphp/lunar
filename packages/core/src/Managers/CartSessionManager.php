@@ -188,7 +188,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function getCurrency(): Currency
     {
-        return $this->currency?->exists ? $this->currency :  Currency::getDefault();
+        return $this->currency?->exists ? $this->currency : Currency::getDefault();
     }
 
     /**
