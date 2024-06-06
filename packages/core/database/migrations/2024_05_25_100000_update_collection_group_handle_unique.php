@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table($this->prefix . 'collection_groups', function (Blueprint $table) {
+        Schema::table($this->prefix.'collection_groups', function (Blueprint $table) {
             $table->dropIndex(['handle']);
         });
 
-        Schema::table($this->prefix . 'collection_groups', function (Blueprint $table) {
+        Schema::table($this->prefix.'collection_groups', function (Blueprint $table) {
             $table->unique(['handle']);
         });
     }
@@ -25,11 +25,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table($this->prefix . 'collection_groups', function (Blueprint $table) {
+        Schema::table($this->prefix.'collection_groups', function (Blueprint $table) {
             $table->dropUnique(['handle']);
         });
 
-        Schema::table($this->prefix . 'collection_groups', function (Blueprint $table) {
+        Schema::table($this->prefix.'collection_groups', function (Blueprint $table) {
             $table->index(['handle']);
         });
     }
