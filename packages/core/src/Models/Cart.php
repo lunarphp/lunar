@@ -320,7 +320,7 @@ class Cart extends BaseModel
      */
     public function calculate(bool $force = false): Cart
     {
-        if (! $force && $this->total) {
+        if (! $force && $this->isCalculated()) {
             // Don't recalculate
             return $this;
         }
@@ -342,6 +342,23 @@ class Cart extends BaseModel
     public function recalculate(): Cart
     {
         return $this->calculate(force: true);
+    }
+
+    public function isCalculated(): bool
+    {
+        if (!$this->total) {
+            return false;
+        }
+
+        $linesCalculated = $this->lines->every(function (CartLine $line) {
+            return $line->total;
+        });
+
+        if (!$linesCalculated) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
