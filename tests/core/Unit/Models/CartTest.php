@@ -724,7 +724,7 @@ test('can calculate shipping', function () {
 
     Config::set('lunar.pricing.stored_inclusive_of_tax', true);
 
-    $cart->calculate();
+    $cart->recalculate();
 
     expect($cart->shippingTotal->value)->toEqual(500);
     expect($cart->total->value)->toEqual(600);
@@ -893,7 +893,7 @@ test('can override shipping calculation', function () {
 
     $cart->shippingOptionOverride = $shippingOption;
 
-    $cart->calculate();
+    $cart->recalculate();
 
     expect($cart->shippingSubTotal->value)->toEqual(500);
 });

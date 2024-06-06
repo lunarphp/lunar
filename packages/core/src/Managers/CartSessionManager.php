@@ -5,20 +5,22 @@ namespace Lunar\Managers;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Session\SessionManager;
+use Illuminate\Support\Collection;
 use Lunar\Base\CartSessionInterface;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Models\Order;
 
 class CartSessionManager implements CartSessionInterface
 {
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
-        protected $channel = null,
-        protected $currency = null,
-        public $cart = null
+        protected ?Channel $channel = null,
+        protected ?Currency $currency = null,
+        public ?Cart $cart = null
     ) {
         //
     }
@@ -26,7 +28,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function current($estimateShipping = false)
+    public function current($estimateShipping = false): Cart|null
     {
         return $this->fetchOrCreate(
             config('lunar.cart.auto_create', false),
@@ -57,7 +59,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function forget()
+    public function forget(): void
     {
         $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(
@@ -68,7 +70,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function manager()
+    public function manager(): Cart|null
     {
         if (! $this->cart) {
             $this->fetchOrCreate(create: true);
@@ -80,7 +82,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function associate(Cart $cart, Authenticatable $user, $policy)
+    public function associate(Cart $cart, Authenticatable $user, $policy): void
     {
         $this->use(
             $cart->associate($user, $policy)
@@ -89,10 +91,8 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Set the cart to be used for the session.
-     *
-     * @return \Lunar\Models\Cart
      */
-    public function use(Cart $cart)
+    public function use(Cart $cart): Cart
     {
         $this->sessionManager->put(
             $this->getSessionKey(),
@@ -104,11 +104,8 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Fetches a cart and optionally creates one if it doesn't exist.
-     *
-     * @param  bool  $create
-     * @return \Lunar\Models\Cart|null
      */
-    private function fetchOrCreate($create = false, bool $estimateShipping = false)
+    private function fetchOrCreate(bool $create = false, bool $estimateShipping = false): Cart|null
     {
         $cartId = $this->sessionManager->get(
             $this->getSessionKey()
@@ -153,17 +150,15 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Get the cart session key.
      */
-    public function getSessionKey()
+    public function getSessionKey(): string
     {
         return config('lunar.cart.session_key');
     }
 
     /**
      * Set the current channel.
-     *
-     * @return void
      */
-    public function setChannel(Channel $channel)
+    public function setChannel(Channel $channel): void
     {
         $this->channel = $channel;
 
@@ -176,10 +171,8 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Set the current currency.
-     *
-     * @return void
      */
-    public function setCurrency(Currency $currency)
+    public function setCurrency(Currency $currency): void
     {
         $this->currency = $currency;
 
@@ -208,10 +201,8 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Return available shipping options for the current cart.
-     *
-     * @return \Illuminate\Support\Collection
      */
-    public function getShippingOptions()
+    public function getShippingOptions(): Collection
     {
         return ShippingManifest::getOptions(
             $this->current()
@@ -224,7 +215,7 @@ class CartSessionManager implements CartSessionInterface
      * @param  bool  $forget
      * @return \Lunar\Models\Order
      */
-    public function createOrder($forget = true)
+    public function createOrder($forget = true): Order
     {
         if ($forget) {
             $this->forget();
