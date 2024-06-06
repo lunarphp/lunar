@@ -18,9 +18,9 @@ class CartSessionManager implements CartSessionInterface
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
-        protected $channel = null,
-        protected $currency = null,
-        public $cart = null
+        protected ?Channel $channel = null,
+        protected ?Currency $currency = null,
+        public ?Cart $cart = null
     ) {
         //
     }
@@ -72,7 +72,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function manager(): ?Cart
     {
-        if (! $this->cart) {
+        if (! $this->cart?->exists) {
             $this->fetchOrCreate(create: true);
         }
 
@@ -119,11 +119,11 @@ class CartSessionManager implements CartSessionInterface
             return $create ? $this->cart = $this->createNewCart() : null;
         }
 
-        $this->cart = $this->cart ?: Cart::with(
+        $this->cart = $this->cart?->exists ? $this->cart : Cart::with(
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
-        if (! $this->cart) {
+        if (! $this->cart?->exists) {
             if (! $create) {
                 return null;
             }
@@ -188,7 +188,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function getCurrency(): Currency
     {
-        return $this->currency ?: Currency::getDefault();
+        return $this->currency?->exists ? $this->currency :  Currency::getDefault();
     }
 
     /**
@@ -196,7 +196,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function getChannel(): Channel
     {
-        return $this->channel ?: Channel::getDefault();
+        return $this->channel?->exists ? $this->channel : Channel::getDefault();
     }
 
     /**
