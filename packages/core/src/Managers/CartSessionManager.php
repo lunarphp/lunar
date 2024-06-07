@@ -28,11 +28,12 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function current($estimateShipping = false): ?Cart
+    public function current(bool $estimateShipping = false, bool $calculate = true): ?Cart
     {
         return $this->fetchOrCreate(
             config('lunar.cart.auto_create', false),
-            estimateShipping: $estimateShipping
+            estimateShipping: $estimateShipping,
+            calculate: $calculate,
         );
     }
 
