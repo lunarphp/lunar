@@ -135,9 +135,7 @@ class CartSessionManager implements CartSessionInterface
             $this->estimateShipping();
         }
 
-        $this->use($this->cart);
-
-        return $this->cart;
+        return $this->use($this->cart);
     }
 
     public function estimateShipping(): void
