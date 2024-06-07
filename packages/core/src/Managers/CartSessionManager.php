@@ -105,7 +105,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Fetches a cart and optionally creates one if it doesn't exist.
      */
-    private function fetchOrCreate(bool $create = false, bool $estimateShipping = false): ?Cart
+    private function fetchOrCreate(bool $create = false, bool $estimateShipping = false, bool $calculate = true): ?Cart
     {
         $cartId = $this->sessionManager->get(
             $this->getSessionKey()
@@ -131,20 +131,33 @@ class CartSessionManager implements CartSessionInterface
             return $this->createNewCart();
         }
 
-        if ($estimateShipping) {
-            // Some shipping drivers might require sub totals to be present
-            // before they can estimate a shipping cost, doing this in the driver
-            // itself can lead to infinite loops, so we calculate before.
+        if ($calculate) {
             $this->cart->calculate();
-            $this->cart->getEstimatedShipping(
-                $this->getShippingEstimateMeta(),
-                setOverride: true
-            );
+        }
+
+        if ($estimateShipping) {
+            $this->estimateShipping();
         }
 
         $this->use($this->cart);
 
-        return $this->cart->calculate();
+        return $this->cart;
+    }
+
+    public function estimateShipping(): void
+    {
+        if (! $this->cart?->exists) {
+            return;
+        }
+
+        // Some shipping drivers might require sub-totals to be present
+        // before they can estimate a shipping cost, doing this in the driver
+        // itself can lead to infinite loops, so we calculate before.
+        $this->cart->calculate();
+        $this->cart->getEstimatedShipping(
+            $this->getShippingEstimateMeta(),
+            setOverride: true
+        );
     }
 
     /**
@@ -245,7 +258,7 @@ class CartSessionManager implements CartSessionInterface
     public function __call($method, $args)
     {
         if (! $this->cart?->exists) {
-            $this->cart = $this->fetchOrCreate(true);
+            $this->fetchOrCreate(create: true, calculate: false);
         }
 
         return $this->cart->{$method}(...$args);
