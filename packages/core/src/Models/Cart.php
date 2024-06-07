@@ -346,8 +346,8 @@ class Cart extends BaseModel
 
     public function isCalculated(): bool
     {
-        return !blank($this->total) && $this->lines->every(
-            fn (CartLine $line) => !blank($line->total)
+        return ! blank($this->total) && $this->lines->every(
+            fn (CartLine $line) => ! blank($line->total)
         );
     }
 
