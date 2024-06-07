@@ -123,7 +123,7 @@ class CartSessionManager implements CartSessionInterface
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
-        if (! $this->cart?->exists) {
+        if (! $this->cart) {
             return $create ? $this->createNewCart() : null;
         }
 
