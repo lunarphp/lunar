@@ -124,11 +124,7 @@ class CartSessionManager implements CartSessionInterface
         )->find($cartId);
 
         if (! $this->cart?->exists) {
-            if (! $create) {
-                return null;
-            }
-
-            return $this->createNewCart();
+            return $create ? $this->createNewCart() : null;
         }
 
         if ($calculate) {
