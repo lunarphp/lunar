@@ -16,11 +16,17 @@ php artisan migrate
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
 ## 1.0.0-alpha.x
 
 ### High Impact
+
+#### Cart calculate function will no longer recalculate
+
+If you have been using the `$cart->calculate()` function it has previously always run the calculations regardless of 
+whether the cart has already been calculated. Now the calculate function will only run if we don't have cart totals. 
+To allow for recalculation we have now introduced `$cart->recalculate()` to force the cart to recalculate.
 
 #### Unique index for Collection Group handle
 
