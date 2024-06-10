@@ -2,12 +2,15 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Awcodes\FilamentBadgeableColumn\Components\Badge;
+use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages;
@@ -112,14 +115,19 @@ class ChannelResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name')
+            BadgeableColumn::make('name')
+                ->separator('')
+                ->suffixBadges([
+                    Badge::make('default')
+                        ->label(__('lunarpanel::channel.table.default.label'))
+                        ->color('gray')
+                        ->visible(fn (Model $record) => $record->default),
+                ])
                 ->label(__('lunarpanel::channel.table.name.label')),
             Tables\Columns\TextColumn::make('handle')
                 ->label(__('lunarpanel::channel.table.handle.label')),
             Tables\Columns\TextColumn::make('url')
                 ->label(__('lunarpanel::channel.table.url.label')),
-            Tables\Columns\BooleanColumn::make('default')
-                ->label(__('lunarpanel::channel.table.default.label')),
         ];
     }
 
@@ -130,7 +138,7 @@ class ChannelResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListChannels::route('/'),

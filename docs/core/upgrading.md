@@ -16,12 +16,47 @@ php artisan migrate
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-alpha.x
+
+### High Impact
+
+#### Cart calculate function will no longer recalculate
+
+If you have been using the `$cart->calculate()` function it has previously always run the calculations regardless of 
+whether the cart has already been calculated. Now the calculate function will only run if we don't have cart totals. 
+To allow for recalculation we have now introduced `$cart->recalculate()` to force the cart to recalculate.
+
+#### Unique index for Collection Group handle
+
+Collection Group now have unique index on the column `handle`.
+If you are creating Collection Group from the admin panel, there is no changes required.
+
+## 1.0.0-alpha.20
+
+### High Impact
+
+#### Stripe addon facade change
+
+If you are using the Stripe addon, you need to update the facade as the name has changed.
+
+```php
+// Old
+\Lunar\Stripe\Facades\StripeFacade;
+
+// New
+\Lunar\Stripe\Facades\Stripe;
+```
 
 ## 1.0
 
 ### High Impact
+
+#### Change to Staff model namespace
+
+The Staff model has changed location from `Lunar\Hub\Models\Staff` to `Lunar\Admin\Models\Staff` so this will need to be updated within
+your codebase and any polymorphic relations.
 
 #### Spatie Media Library
 This package has been upgrade to version 11, which introduces some breaking changes.

@@ -138,7 +138,7 @@ class ShippingRateResolver
         $shippingRates = collect();
 
         foreach ($zones as $zone) {
-            $shippingRates = $zone->rates
+            $zoneShippingRates = $zone->rates
                 ->reject(function ($rate) {
                     $method = $rate->shippingMethod;
 
@@ -161,7 +161,7 @@ class ShippingRateResolver
                     return true;
                 });
 
-            foreach ($shippingRates as $shippingRate) {
+            foreach ($zoneShippingRates as $shippingRate) {
                 $shippingRates->push(
                     $shippingRate
                 );

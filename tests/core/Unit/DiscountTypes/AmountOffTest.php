@@ -1752,7 +1752,7 @@ test('can apply discount dynamically', function () {
     $cart = CartSession::current();
 
     // Calculate method called for the third time
-    $cart = $cart->calculate();
+    $cart = $cart->recalculate();
 
     expect($cart->discountTotal->value)->toEqual(1050);
     expect($cart->total->value)->toEqual(1140);
