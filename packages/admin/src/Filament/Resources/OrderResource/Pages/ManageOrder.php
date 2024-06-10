@@ -852,7 +852,9 @@ class ManageOrder extends BaseViewRecord
                     ->default(fn ($record) => number_format($record->total->decimal, $record->currency->decimal_places, '.', ''))
                     ->live()
                     ->autocomplete(false)
-                    ->minValue(1)
+                    ->minValue(
+                        1 / $this->getRecord()->currency->factor
+                    )
                     ->helperText(function (Forms\Components\TextInput $component, $get, $state) {
                         $transaction = Transaction::findOrFail($get('transaction'));
 
