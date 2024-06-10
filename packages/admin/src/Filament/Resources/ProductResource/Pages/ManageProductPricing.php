@@ -44,7 +44,7 @@ class ManageProductPricing extends BaseEditRecord
             $this->basePrices = $this->getBasePrices();
         }
 
-        return $form->schema([
+        $form->schema([
             Forms\Components\Section::make()
                 ->schema([
                     Forms\Components\Group::make([
@@ -54,6 +54,10 @@ class ManageProductPricing extends BaseEditRecord
                 ]),
             $this->getBasePriceFormSection(),
         ])->statePath('');
+
+        $this->callLunarHook('extendForm', $form);
+
+        return $form;
     }
 
     public function getRelationManagers(): array
