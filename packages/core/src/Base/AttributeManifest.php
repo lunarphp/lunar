@@ -8,6 +8,7 @@ use Lunar\Models\Attribute;
 use Lunar\Models\Brand;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
@@ -26,6 +27,7 @@ class AttributeManifest
         ModelsCollection::class,
         Customer::class,
         Brand::class,
+        CustomerGroup::class,
         // Order::class,
     ];
 

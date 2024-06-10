@@ -4,16 +4,17 @@ namespace Lunar\Stripe;
 
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Base\DataTransferObjects\PaymentCheck;
+use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
-use Lunar\Stripe\Facades\StripeFacade;
+use Lunar\Stripe\Facades\Stripe;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
-use Stripe\Stripe;
 
 class StripePaymentType extends AbstractPayment
 {
@@ -41,7 +42,7 @@ class StripePaymentType extends AbstractPayment
      */
     public function __construct()
     {
-        $this->stripe = StripeFacade::getClient();
+        $this->stripe = Stripe::getClient();
 
         $this->policy = config('lunar.stripe.policy', 'automatic');
     }
@@ -137,9 +138,9 @@ class StripePaymentType extends AbstractPayment
             $payload['amount_to_capture'] = $amount;
         }
 
-        $charge = StripeFacade::getCharge($transaction->reference);
+        $charge = Stripe::getCharge($transaction->reference);
 
-        $paymentIntent = StripeFacade::fetchIntent($charge->payment_intent);
+        $paymentIntent = Stripe::fetchIntent($charge->payment_intent);
 
         try {
             $response = $this->stripe->paymentIntents->capture(
@@ -165,7 +166,7 @@ class StripePaymentType extends AbstractPayment
      */
     public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
-        $charge = StripeFacade::getCharge($transaction->reference);
+        $charge = Stripe::getCharge($transaction->reference);
 
         try {
             $refund = $this->stripe->refunds->create(
@@ -193,5 +194,44 @@ class StripePaymentType extends AbstractPayment
         return new PaymentRefund(
             success: true
         );
+    }
+
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    {
+        $meta = $transaction->meta;
+
+        $checks = new PaymentChecks;
+
+        if (isset($meta['address_line1_check'])) {
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $meta['address_line1_check'] == 'pass',
+                    label: 'Address Line 1',
+                    message: $meta['address_line1_check'],
+                )
+            );
+        }
+
+        if (isset($meta['address_postal_code_check'])) {
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $meta['address_postal_code_check'] == 'pass',
+                    label: 'Postal Code',
+                    message: $meta['address_postal_code_check'],
+                )
+            );
+        }
+
+        if (isset($meta['cvc_check'])) {
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $meta['cvc_check'] == 'pass',
+                    label: 'CVC Check',
+                    message: $meta['cvc_check'],
+                )
+            );
+        }
+
+        return $checks;
     }
 }

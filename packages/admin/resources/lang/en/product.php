@@ -19,6 +19,11 @@ return [
     'table' => [
         'status' => [
             'label' => 'Status',
+            'states' => [
+                'deleted' => 'Deleted',
+                'draft' => 'Draft',
+                'published' => 'Published',
+            ],
         ],
         'name' => [
             'label' => 'Name',

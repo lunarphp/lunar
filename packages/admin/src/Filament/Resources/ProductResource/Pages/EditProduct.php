@@ -6,6 +6,7 @@ use Filament\Actions;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Support\Actions\Products\ForceDeleteProductAction;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
 class EditProduct extends BaseEditRecord
@@ -44,6 +45,8 @@ class EditProduct extends BaseEditRecord
                         ])->live(),
                 ]),
             Actions\DeleteAction::make(),
+            ForceDeleteProductAction::make(),
+            Actions\RestoreAction::make(),
         ];
     }
 

@@ -37,12 +37,13 @@ trait UpdatesOrderStatus
     {
         return Forms\Components\CheckboxList::make('email_addresses')
             ->hidden(function (Forms\Get $get, Order $record = null) {
+
                 if (! $record) {
                     return true;
                 }
 
                 return ! count($get('mailers') ?: [])
-                    || ! ($record?->billingAddress?->contact_email && $record->shippingAddress->contact_email);
+                    || ! ($record?->billingAddress?->contact_email || $record->shippingAddress?->contact_email);
             })->afterStateHydrated(function (Order $record = null, Forms\Components\CheckboxList $component) {
                 $emails = collect([
                     $record?->billingAddress?->contact_email,
@@ -50,6 +51,7 @@ trait UpdatesOrderStatus
                 ])->filter()->unique()->map(
                     fn ($email) => $email
                 )->toArray();
+
                 $component->state($emails);
             })->options(function (Order $record = null) {
                 return collect([

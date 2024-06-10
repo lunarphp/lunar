@@ -18,7 +18,7 @@ abstract class BaseModel extends Model
 
         $this->setTable(config('lunar.database.table_prefix').$this->getTable());
 
-        if ($connection = config('lunar.database.connection', false)) {
+        if ($connection = config('lunar.database.connection')) {
             $this->setConnection($connection);
         }
     }

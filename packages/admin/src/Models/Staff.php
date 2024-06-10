@@ -63,6 +63,13 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     ];
 
     /**
+     * Append attributes to the model.
+     *
+     * @var array
+     */
+    protected $appends = ['fullName'];
+
+    /**
      * Create a new instance of the Model.
      */
     public function __construct(array $attributes = [])
@@ -71,7 +78,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
 
         $this->setTable(config('lunar.database.table_prefix').$this->getTable());
 
-        if ($connection = config('lunar.database.connection', false)) {
+        if ($connection = config('lunar.database.connection')) {
             $this->setConnection($connection);
         }
     }
