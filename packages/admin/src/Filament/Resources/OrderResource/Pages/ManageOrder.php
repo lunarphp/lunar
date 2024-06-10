@@ -757,7 +757,7 @@ class ManageOrder extends BaseViewRecord
                     ->live()
                     ->autocomplete(false)
                     ->minValue(
-                        1 / $this->getRecord()->currency->factor
+                        fn ($record) => 1 / $record->currency->factor
                     )
                     ->numeric(),
 
@@ -853,7 +853,7 @@ class ManageOrder extends BaseViewRecord
                     ->live()
                     ->autocomplete(false)
                     ->minValue(
-                        1 / $this->getRecord()->currency->factor
+                        fn ($record) => 1 / $record->currency->factor
                     )
                     ->helperText(function (Forms\Components\TextInput $component, $get, $state) {
                         $transaction = Transaction::findOrFail($get('transaction'));
