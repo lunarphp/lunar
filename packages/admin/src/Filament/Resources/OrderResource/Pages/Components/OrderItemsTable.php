@@ -129,7 +129,9 @@ class OrderItemsTable extends TableComponent
                     ->suffix(fn () => $this->record->currency->code)
                     ->default(fn () => number_format($this->record->lines()->whereIn('id', $this->selectedTableRecords)->get()->sum('total.value') / $this->record->currency->factor, $this->record->currency->decimal_places, '.', ''))
                     ->live()
-                    ->minValue(1)
+                    ->minValue(
+                        1 / $this->record->currency->factor
+                    )
                     ->numeric(),
 
                 Forms\Components\Textarea::make('notes')
