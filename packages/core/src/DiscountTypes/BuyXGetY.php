@@ -2,6 +2,8 @@
 
 namespace Lunar\DiscountTypes;
 
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Collection;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
@@ -51,6 +53,7 @@ class BuyXGetY extends AbstractDiscountType
         $minQty = $data['min_qty'] ?? null;
         $rewardQty = $data['reward_qty'] ?? 1;
         $maxRewardQty = $data['max_reward_qty'] ?? null;
+        $automaticallyAddRewards = $data['automatically_add_rewards'] ?? false;
 
         // Get all purchasables that are eligible.
         $conditions = $cart->lines->reject(function ($line) {
@@ -161,14 +164,113 @@ class BuyXGetY extends AbstractDiscountType
             }
 
             $cart->freeItems->push($rewardLine->purchasable);
+
+        }
+
+        if ($automaticallyAddRewards) {
+            [$affectedLines, $discountTotal] = $this->processAutomaticRewards($cart, $remainingRewardQty, $affectedLines, $discountTotal);
         }
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
-            discount: $this->discount,
+            price: new Price($discountTotal, $cart->currency, 1),
             lines: $affectedLines,
-            price: new Price($discountTotal, $cart->currency, 1)
+            discount: $this->discount,
         ));
 
         return $cart;
+    }
+
+    private function processAutomaticRewards(Cart $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
+    {
+        // we have lines to add
+        if ($remainingRewardQty > 0) {
+            while ($remainingRewardQty > 0) {
+                $selectedRewardItem = $this->discount->purchasableRewards->random()->purchasable;
+                $purchasable = $selectedRewardItem->variants->first();
+
+                // is it already in cart?
+                $rewardLine = $cart->lines->first(function ($line) use ($purchasable) {
+                    return $line->purchasable->id == $purchasable->id;
+                });
+
+                if (! $rewardLine) {
+                    $rewardLine = $cart->lines()->make([
+                        'purchasable_type' => get_class($purchasable),
+                        'purchasable_id' => $purchasable->id,
+                        'quantity' => 1,
+                    ]);
+
+                    if (! $cart->freeItems) {
+                        $cart->freeItems = collect();
+                    }
+
+                    if (! $cart->freeItems->contains($selectedRewardItem)) {
+                        $cart->freeItems->push($selectedRewardItem);
+                    }
+
+                    $rewardLine = app(Pipeline::class)
+                        ->send($rewardLine)
+                        ->through(
+                            config('lunar.cart.pipelines.cart_lines', [])
+                        )->thenReturn(function ($cartLine) {
+                            $cartLine->cacheProperties();
+                            return $cartLine;
+                        });
+
+                    $unitQuantity = $purchasable->getUnitQuantity();
+
+                    $rewardLine->subTotal = new Price($rewardLine->unitPrice->value, $cart->currency, $unitQuantity);
+                    $rewardLine->taxAmount = new Price(0, $cart->currency, $unitQuantity);
+                    $rewardLine->total = new Price($rewardLine->unitPrice->value, $cart->currency, $unitQuantity);
+                }
+
+                $meta = $rewardLine->meta ?? json_decode('{}');
+                if (! isset($meta->added_by_discount)) {
+                    $meta->added_by_discount = [];
+                }
+
+                if (! isset($meta->added_by_discount[$this->discount->id])) {
+                    $meta->added_by_discount[$this->discount->id] = 1;
+                } else {
+                    $meta->added_by_discount[$this->discount->id]++;
+                }
+
+                $affectedLine = $affectedLines->first(function ($line) use ($rewardLine) {
+                    return $line->line == $rewardLine;
+                });
+
+                if (! $affectedLine) {
+                    $affectedLines->push(new DiscountBreakdownLine(
+                        line: $rewardLine,
+                        quantity: 1
+                    ));
+                } else {
+                    $affectedLine->quantity++;
+                }
+
+                $unitPrice = $rewardLine->unitPrice->value;
+
+                $discountTotal += $unitPrice;
+
+                $rewardLine->discountTotal = new Price(
+                    ($rewardLine->discountTotal?->value ?? 0) + $unitPrice,
+                    $cart->currency,
+                    1
+                );
+
+                $rewardLine->subTotalDiscounted = new Price(
+                    $rewardLine->subTotal->value - $rewardLine->discountTotal->value,
+                    $cart->currency,
+                    1
+                );
+
+                $rewardLine->meta = $meta;
+                $rewardLine->save();
+
+                $remainingRewardQty--;
+            }
+        }
+
+        return [$affectedLines, $discountTotal];
     }
 }
