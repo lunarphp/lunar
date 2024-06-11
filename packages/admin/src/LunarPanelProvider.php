@@ -111,7 +111,6 @@ class LunarPanelProvider extends ServiceProvider
 
         $this->registerAuthGuard();
         $this->registerPermissionManifest();
-        $this->registerPanelAssets();
         $this->registerStateListeners();
         $this->registerLunarSynthesizer();
         // $this->registerUpgradedListener();
@@ -131,15 +130,6 @@ class LunarPanelProvider extends ServiceProvider
             'driver' => 'session',
             'provider' => 'staff',
         ]);
-    }
-
-    protected function registerPanelAssets(): void
-    {
-        Filament::serving(function () {
-            FilamentAsset::register([
-                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
-            ], 'lunarphp/panel');
-        });
     }
 
     /**
