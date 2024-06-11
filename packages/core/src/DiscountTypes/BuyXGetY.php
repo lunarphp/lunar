@@ -214,6 +214,7 @@ class BuyXGetY extends AbstractDiscountType
                             config('lunar.cart.pipelines.cart_lines', [])
                         )->thenReturn(function ($cartLine) {
                             $cartLine->cacheProperties();
+
                             return $cartLine;
                         });
 
