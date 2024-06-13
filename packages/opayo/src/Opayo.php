@@ -85,7 +85,7 @@ class Opayo implements OpayoInterface
             ],
             'vendorTxCode' => $parameters->vendorTxCode,
             'amount' => $parameters->amount,
-            'currency' => $parameters->currency,
+            'currency' => Str::limit($parameters->currency, 3, ''),
             'description' => 'Webstore Transaction',
             'apply3DSecure' => 'UseMSPSetting',
             'customerFirstName' => Str::limit($parameters->customerFirstName, 20, ''),
@@ -96,7 +96,7 @@ class Opayo implements OpayoInterface
                 'address3' => Str::limit($parameters->billingAddressLineThree, 50, ''),
                 'city' => Str::limit($parameters->billingAddressCity, 40, ''),
                 'postalCode' => Str::limit($parameters->billingAddressPostcode, 10, ''),
-                'country' => $parameters->billingAddressCountryIso,
+                'country' => Str::limit($parameters->billingAddressCountryIso, 2, ''),
             ],
             'strongCustomerAuthentication' => [
                 'customerMobilePhone' => Str::limit($parameters->customerMobilePhone, 19, ''),
