@@ -4,6 +4,7 @@ namespace Lunar\Opayo;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 
 class Opayo implements OpayoInterface
@@ -87,18 +88,18 @@ class Opayo implements OpayoInterface
             'currency' => $parameters->currency,
             'description' => 'Webstore Transaction',
             'apply3DSecure' => 'UseMSPSetting',
-            'customerFirstName' => $parameters->customerFirstName,
-            'customerLastName' => $parameters->customerLastName,
+            'customerFirstName' => Str::limit($parameters->customerFirstName, 20, ''),
+            'customerLastName' => Str::limit($parameters->customerLastName, 20, ''),
             'billingAddress' => [
-                'address1' => $parameters->billingAddressLineOne,
-                'address2' => $parameters->billingAddressLineTwo,
-                'address3' => $parameters->billingAddressLineThree,
-                'city' => $parameters->billingAddressCity,
-                'postalCode' => $parameters->billingAddressPostcode,
+                'address1' => Str::limit($parameters->billingAddressLineOne, 50, ''),
+                'address2' => Str::limit($parameters->billingAddressLineTwo, 50, ''),
+                'address3' => Str::limit($parameters->billingAddressLineThree, 50, ''),
+                'city' => Str::limit($parameters->billingAddressCity, 40, ''),
+                'postalCode' => Str::limit($parameters->billingAddressPostcode, 10, ''),
                 'country' => $parameters->billingAddressCountryIso,
             ],
             'strongCustomerAuthentication' => [
-                'customerMobilePhone' => $parameters->customerMobilePhone,
+                'customerMobilePhone' => Str::limit($parameters->customerMobilePhone, 19, ''),
                 'transType' => 'GoodsAndServicePurchase',
                 'browserLanguage' => $parameters->browserLanguage,
                 'challengeWindowSize' => $parameters->challengeWindowSize,
@@ -118,13 +119,13 @@ class Opayo implements OpayoInterface
 
         if ($parameters->shippingAddressLineOne) {
             $payload['shippingDetails'] = [
-                'recipientFirstName' => $parameters->recipientFirstName,
-                'recipientLastName' => $parameters->recipientLastName,
-                'shippingAddress1' => $parameters->shippingAddressLineOne,
-                'shippingAddress2' => $parameters->shippingAddressLineTwo,
-                'shippingAddress3' => $parameters->shippingAddressLineThree,
-                'shippingCity' => $parameters->shippingAddressCity,
-                'shippingPostalCode' => $parameters->shippingAddressPostcode,
+                'recipientFirstName' => Str::limit($parameters->recipientFirstName, 20, ''),
+                'recipientLastName' => Str::limit($parameters->recipientLastName, 20, ''),
+                'shippingAddress1' => Str::limit($parameters->shippingAddressLineOne, 50, ''),
+                'shippingAddress2' => Str::limit($parameters->shippingAddressLineTwo, 50, ''),
+                'shippingAddress3' => Str::limit($parameters->shippingAddressLineThree, 50, ''),
+                'shippingCity' => Str::limit($parameters->shippingAddressCity, 40, ''),
+                'shippingPostalCode' => Str::limit($parameters->shippingAddressPostcode, 10, ''),
                 'shippingCountry' => $parameters->shippingAddressCountryIso,
             ];
         }
