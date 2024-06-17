@@ -4,6 +4,8 @@ namespace Lunar\Opayo;
 
 use Illuminate\Support\Str;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Base\DataTransferObjects\PaymentCheck;
+use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Models\Order;
@@ -373,6 +375,7 @@ class OpayoPaymentType extends AbstractPayment
     protected function getAuthPayload(string $type = 'Payment')
     {
         $billingAddress = $this->order->billingAddress;
+        $shippingAddress = $this->order->shippingAddress;
 
         $payload = new AuthPayloadParameters(
             transactionType: $type,
@@ -384,10 +387,20 @@ class OpayoPaymentType extends AbstractPayment
             customerFirstName: $billingAddress->first_name,
             customerLastName: $billingAddress->last_name,
             billingAddressLineOne: $billingAddress->line_one,
+            billingAddressLineTwo: $billingAddress->line_two,
+            billingAddressLineThree: $billingAddress->line_three,
             billingAddressCity: $billingAddress->city,
             billingAddressPostcode: $billingAddress->postcode,
             billingAddressCountryIso: $billingAddress->country->iso2,
             customerMobilePhone: $billingAddress->contact_phone,
+            recipientFirstName: $shippingAddress?->first_name,
+            recipientLastName: $shippingAddress?->last_name,
+            shippingAddressLineOne: $shippingAddress?->line_one,
+            shippingAddressLineTwo: $shippingAddress?->line_two,
+            shippingAddressLineThree: $shippingAddress?->line_three,
+            shippingAddressCity: $shippingAddress?->city,
+            shippingAddressPostcode: $shippingAddress?->postcode,
+            shippingAddressCountryIso: $shippingAddress?->country->iso2,
             notificationURL: route('opayo.threed.response'),
             browserLanguage: $this->data['browserLanguage'] ?? null,
             challengeWindowSize: $this->data['challengeWindowSize'] ?? null,
@@ -419,6 +432,82 @@ class OpayoPaymentType extends AbstractPayment
     public function setPolicy(mixed $policy): void
     {
         $this->policy = $policy;
+    }
+
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    {
+        $meta = $transaction->meta['threedSecure'] ?? null;
+
+        $checks = new PaymentChecks;
+
+        if (! $meta) {
+            return $checks;
+        }
+
+        if (isset($meta['address'])) {
+            $message = $meta['address'];
+            $successful = $meta['address'] == 'Matched';
+
+            if (is_bool($message) && ! $message) {
+                $message = 'NotMatched';
+                $successful = false;
+            }
+            if (is_bool($message) && $message) {
+                $message = 'Matched';
+                $successful = true;
+            }
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $successful,
+                    label: 'Address',
+                    message: $message,
+                )
+            );
+        }
+
+        if (isset($meta['postalCode'])) {
+            $message = $meta['postalCode'];
+            $successful = $meta['postalCode'] == 'Matched';
+
+            if (is_bool($message) && ! $message) {
+                $message = 'NotMatched';
+                $successful = false;
+            }
+            if (is_bool($message) && $message) {
+                $message = 'Matched';
+                $successful = true;
+            }
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $successful,
+                    label: 'Postal Code',
+                    message: $message,
+                )
+            );
+        }
+
+        if (isset($meta['securityCode'])) {
+            $message = $meta['securityCode'];
+            $successful = $meta['securityCode'] == 'Matched';
+
+            if (is_bool($message) && ! $message) {
+                $message = 'NotMatched';
+                $successful = false;
+            }
+            if (is_bool($message) && $message) {
+                $message = 'Matched';
+                $successful = true;
+            }
+            $checks->addCheck(
+                new PaymentCheck(
+                    successful: $successful,
+                    label: 'Security Code',
+                    message: $message,
+                )
+            );
+        }
+
+        return $checks;
     }
 
     private function saveCard(Order $order, object $details, string $authCode = null)

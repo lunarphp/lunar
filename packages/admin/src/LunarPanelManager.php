@@ -255,18 +255,24 @@ class LunarPanelManager
         return $this;
     }
 
-    public static function getResources()
+    /**
+     * @return array<class-string<\Filament\Resources\Resource>>
+     */
+    public static function getResources(): array
     {
         return static::$resources;
     }
 
-    public static function getPages()
+    /**
+     * @return array<class-string<\Filament\Pages\Page>>
+     */
+    public static function getPages(): array
     {
         return static::$pages;
     }
 
     /**
-     * @return string[]
+     * @return array<class-string<\Filament\Widgets\Widget>>
      */
     public static function getWidgets(): array
     {
