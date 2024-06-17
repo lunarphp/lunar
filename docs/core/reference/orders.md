@@ -22,6 +22,7 @@ Lunar\Models\Order
 | sub_total             | The sub total minus any discounts, excl. tax                                                                       
 | discount_breakdown    | A json field for the discount breakdown e.g. `[{"discount_id": 1, "lines": [{"id": 1, "qty": 1}]], "total": 200}]` 
 | discount_total        | Any discount amount excl. tax                                                                                      
+| shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
 | shipping_total        | The shipping total excl. tax                                                                                       
 | tax_breakdown         | A json field for the tax breakdown e.g. `[{"description": "VAT", "identifier" : "vat", "value": 123, "percentage": 20, "currency_code": "GBP"}]`                        
 | tax_total             | The total amount of tax applied                                                                                    
@@ -96,7 +97,7 @@ $cart->canCreateOrder();
 Under the hood this will use the `ValidateCartForOrderCreation` class which lunar provides and throw any validation
 exceptions with helpful messages if the cart isn't ready to create an order.
 
-You can specific you're own class to handle this in `config/cart.php`.
+You can specify you're own class to handle this in `config/cart.php`.
 
 ```php
 return [
@@ -210,8 +211,7 @@ Lunar\Models\OrderLine
 | quantity         | The amount of this item purchased                                                           
 | sub_total        | The sub total minus any discounts, excl. tax                                                
 | discount_total   | Any discount amount excl. tax                                                               
-| tax_breakdown    | A json field for the tax breakdown e.g. `[{"description": "VAT", "identifier" : "vat", "value": 123, "percentage": 20, "currency_code": "GBP"}]` 
-| shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
+| tax_breakdown    | A json field for the tax breakdown e.g. `[{"description": "VAT", "identifier" : "vat", "value": 123, "percentage": 20, "currency_code": "GBP"}]`
 | tax_total        | The total amount of tax applied                                                             
 | total            | The grand total with tax                                                                    
 | notes            | Any additional order notes                                                                  
@@ -365,8 +365,7 @@ $order->refunds; // Get all transactions that are refunds.
 We will be looking to add support for the most popular payment providers, so keep an eye out here as we will list them
 all out.
 
-In the meantime, you can absolutely still get a storefront working, at the end of the day Lunar doesn't really mind if
-you what payment provider you use or plan to use.
+In the meantime, you can absolutely still get a storefront working, at the end of the day Lunar doesn't really mind what payment provider you use or plan to use.
 
 In terms of an order, all it's worried about is whether or not the `placed_at` column is populated on the orders table,
 the rest is completely up to you how you want to handle that. We have some helper utilities to make such things easier
@@ -449,5 +448,5 @@ download. You can publish the view that powers this to create your own PDF templ
 php artisan vendor:publish --tag=lunar.hub.views
 ```
 
-This will create a view called `resources/vendor/adminhub/pdf/order.blade.php`, where you will be able to freely
+This will create a view called `resources/vendor/lunarpanel/pdf/order.blade.php`, where you will be able to freely
 customise the PDF you want displayed on download.

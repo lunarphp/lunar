@@ -4,18 +4,19 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Lunar\Admin\Events\ProductPricingUpdated;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 
-class CustomerGroupPricingRelationManager extends RelationManager
+class CustomerGroupPricingRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'prices';
 
@@ -148,8 +149,10 @@ class CustomerGroupPricingRelationManager extends RelationManager
                     return $data;
                 })->label(
                     __('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.label')
-                )
-                    ->modalHeading(__('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.modal.heading')),
+                )->modalHeading(__('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.modal.heading'))
+                    ->after(
+                        fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
+                    ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->mutateFormDataUsing(function (array $data): array {
@@ -159,7 +162,9 @@ class CustomerGroupPricingRelationManager extends RelationManager
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
                     return $data;
-                }),
+                })->after(
+                    fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
+                ),
                 Tables\Actions\DeleteAction::make(),
             ]);
     }

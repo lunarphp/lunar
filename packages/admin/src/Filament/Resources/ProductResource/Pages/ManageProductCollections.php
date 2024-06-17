@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
@@ -58,14 +59,26 @@ class ManageProductCollections extends BaseManageRelatedRecords
                                         ->all();
                                 });
                         }
+                    )->after(
+                        fn () => ProductCollectionsUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
                     ),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DetachAction::make()->after(
+                    fn () => ProductCollectionsUpdated::dispatch(
+                        $this->getOwnerRecord()
+                    )
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DetachBulkAction::make(),
+                    Tables\Actions\DetachBulkAction::make()->after(
+                        fn () => ProductCollectionsUpdated::dispatch(
+                            $this->getOwnerRecord()
+                        )
+                    ),
                 ]),
             ]);
     }

@@ -1,7 +1,8 @@
 # Introduction
 
-::: danger Work In Progress
-Version 1.x is very much in-development. It is incomplete and not production ready.
+::: danger Alpha Release
+Although many Lunar sites have been launched using v1.x, you may not consider this version production-ready for your own
+use and should exercise the same amount of caution as you would with any software in an alpha state. 🚀
 :::
 
 Lunar's admin panel is powered by Filament v3. It allows you to easily extend the admin panel to suit your project.

@@ -113,7 +113,7 @@ class Product extends BaseModel implements SpatieHasMedia
      */
     public function images(): MorphMany
     {
-        return $this->media()->where('collection_name', 'images');
+        return $this->media()->where('collection_name', config('lunar.media.collection'));
     }
 
     /**

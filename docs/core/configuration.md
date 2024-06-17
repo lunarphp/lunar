@@ -2,7 +2,9 @@
 
 ## Overview
 
-Configuration for Lunar is separated into individual files under `config/lunar` for core and `config/lunar-hub` for admin hub. You can either override the different config options adhoc or you can publish all the configuration options and tweak as you see fit.
+Configuration for Lunar is separated into individual files under `config/lunar`. 
+You can either override the different config options adhoc or you can publish all the configuration options and tweak 
+as you see fit.
 
 ```bash
 php artisan vendor:publish --tag=lunar

@@ -9,10 +9,12 @@
         }
     ],
     "require": {
+        "awcodes/filament-badgeable-column": "^2.3.2",
         "awcodes/shout": "^2.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
         "cartalyst/converter": "^8.0|^9.0",
         "doctrine/dbal": "^3.6",
+        "dompdf/dompdf": "^2.0.7",
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",

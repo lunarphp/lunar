@@ -195,14 +195,14 @@ class StaffResource extends BaseResource
             ]);
     }
 
-    public static function getRelations(): array
+    public static function getDefaultRelations(): array
     {
         return [
             //
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListStaff::route('/'),
