@@ -852,3 +852,95 @@ test('can count condition qty in discount breakdown', function () {
     expect($cart->discountBreakdown)->toHaveCount(1);
     expect($cart->discountBreakdown->first()->lines)->toHaveCount(3);
 });
+
+test('can add eligible products when not in cart', function () {
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create([
+        'product_id' => $productA->id,
+    ]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasableA),
+        'priceable_id' => $purchasableA->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasableB),
+        'priceable_id' => $purchasableB->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasableA),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Product Discount',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 2,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now()->subHour(),
+        ],
+    ]);
+
+    $discount->purchasableConditions()->create([
+        'purchasable_type' => Product::class,
+        'purchasable_id' => $productA->id,
+    ]);
+
+    $discount->purchasableRewards()->create([
+        'purchasable_type' => Product::class,
+        'purchasable_id' => $productB->id,
+        'type' => 'reward',
+    ]);
+
+    $cart = $cart->calculate();
+
+    $this->assertEquals(1200, $cart->total->value);
+    $this->assertCount(1, $cart->freeItems);
+
+});

@@ -4,14 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateCurrenciesTable extends Migration
+return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'currencies', function (Blueprint $table) {
             $table->id();
@@ -22,19 +17,14 @@ class CreateCurrenciesTable extends Migration
             $table->string('decimal_point');
             $table->string('thousand_point');
             $table->integer('decimal_places')->default(2)->index();
-            $table->boolean('enabled')->default(0)->index();
-            $table->boolean('default')->default(0)->index();
+            $table->boolean('enabled')->default(false)->index();
+            $table->boolean('default')->default(false)->index();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'currencies');
     }
-}
+};

@@ -111,3 +111,101 @@ it('create a pending transaction when status is requires_action', function () {
 
     expect($cart->refresh()->completedOrder)->toBeNull();
 });
+
+it('can return correct payment checks', function () {
+    \Lunar\Models\Currency::factory()->create();
+
+    $cart = buildCart();
+
+    $order = $cart->createOrder();
+
+    $transactionA = \Lunar\Models\Transaction::factory()->create([
+        'order_id' => $order->id,
+        'driver' => 'stripe',
+        'meta' => [
+            'address_line1_check' => 'pass',
+            'address_postal_code_check' => 'pass',
+            'cvc_check' => 'pass',
+        ],
+    ]);
+
+    $transactionB = \Lunar\Models\Transaction::factory()->create([
+        'order_id' => $order->id,
+        'driver' => 'stripe',
+        'meta' => [
+            'address_line1_check' => 'fail',
+            'address_postal_code_check' => 'fail',
+            'cvc_check' => 'fail',
+        ],
+    ]);
+
+    $transactionC = \Lunar\Models\Transaction::factory()->create([
+        'order_id' => $order->id,
+        'driver' => 'stripe',
+        'meta' => [
+            'address_line1_check' => 'unavailable',
+            'address_postal_code_check' => 'unavailable',
+            'cvc_check' => 'unavailable',
+        ],
+    ]);
+
+    $transactionD = \Lunar\Models\Transaction::factory()->create([
+        'order_id' => $order->id,
+        'driver' => 'stripe',
+        'meta' => [
+            'address_line1_check' => 'unchecked',
+            'address_postal_code_check' => 'unchecked',
+            'cvc_check' => 'unchecked',
+        ],
+    ]);
+
+    $paymentAChecks = $transactionA->paymentChecks();
+
+    expect($paymentAChecks)->toHaveCount(3)
+        ->and($paymentAChecks[0]->successful)
+        ->toBe(true)
+        ->and($paymentAChecks[1]->successful)
+        ->toBe(true)
+        ->and($paymentAChecks[2]->successful)
+        ->toBe(true);
+
+    $paymentBChecks = $transactionB->paymentChecks();
+
+    expect($paymentBChecks)->toHaveCount(3)
+        ->and($paymentBChecks[0]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentBChecks[1]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentBChecks[2]->successful)
+        ->not
+        ->toBe(true);
+
+    $paymentCChecks = $transactionC->paymentChecks();
+
+    expect($paymentCChecks)->toHaveCount(3)
+        ->and($paymentCChecks[0]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentCChecks[1]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentCChecks[2]->successful)
+        ->not
+        ->toBe(true);
+
+    $paymentDChecks = $transactionD->paymentChecks();
+
+    expect($paymentDChecks)->toHaveCount(3)
+        ->and($paymentCChecks[0]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentDChecks[1]->successful)
+        ->not
+        ->toBe(true)
+        ->and($paymentDChecks[2]->successful)
+        ->not
+        ->toBe(true);
+
+});

@@ -65,7 +65,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
     }
 
     /**
-     * Return the parent relationship.
+     * Return the target relationship.
      */
     public function target(): BelongsTo
     {

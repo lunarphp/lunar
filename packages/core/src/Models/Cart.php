@@ -274,8 +274,16 @@ class Cart extends BaseModel implements Contracts\Cart
         return (bool) $this->completedOrders()->count();
     }
 
-    public function calculate(): Cart
+    /**
+     * Calculate the cart totals and cache the result.
+     */
+    public function calculate(bool $force = false): Cart
     {
+        if (! $force && $this->isCalculated()) {
+            // Don't recalculate
+            return $this;
+        }
+
         $cart = app(Pipeline::class)
             ->send($this)
             ->through(
@@ -287,6 +295,24 @@ class Cart extends BaseModel implements Contracts\Cart
         return $cart->cacheProperties();
     }
 
+    /**
+     * Force the cart to recalculate.
+     */
+    public function recalculate(): Cart
+    {
+        return $this->calculate(force: true);
+    }
+
+    public function isCalculated(): bool
+    {
+        return ! blank($this->total) && $this->lines->every(
+            fn (CartLine $line) => ! blank($line->total)
+        );
+    }
+
+    /**
+     * Add or update a purchasable item to the cart
+     */
     public function add(Purchasable $purchasable, int $quantity = 1, array $meta = [], bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.add_to_cart', []) as $action) {
@@ -302,7 +328,7 @@ class Cart extends BaseModel implements Contracts\Cart
         return app(
             config('lunar.cart.actions.add_to_cart', AddOrUpdatePurchasable::class)
         )->execute($this, $purchasable, $quantity, $meta)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     public function addLines(iterable $lines): Cart
@@ -318,7 +344,7 @@ class Cart extends BaseModel implements Contracts\Cart
             });
         });
 
-        return $this->refresh()->calculate();
+        return $this->refresh()->recalculate();
     }
 
     public function remove(int $cartLineId, bool $refresh = true): Cart
@@ -333,7 +359,7 @@ class Cart extends BaseModel implements Contracts\Cart
         return app(
             config('lunar.cart.actions.remove_from_cart', RemovePurchasable::class)
         )->execute($this, $cartLineId)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     public function updateLine(int $cartLineId, int $quantity, array $meta = null, bool $refresh = true): Cart
@@ -350,7 +376,7 @@ class Cart extends BaseModel implements Contracts\Cart
         return app(
             config('lunar.cart.actions.update_cart_line', UpdateCartLine::class)
         )->execute($cartLineId, $quantity, $meta)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     public function updateLines(Collection $lines): Cart
@@ -366,14 +392,14 @@ class Cart extends BaseModel implements Contracts\Cart
             });
         });
 
-        return $this->refresh()->calculate();
+        return $this->refresh()->recalculate();
     }
 
     public function clear(): Cart
     {
         $this->lines()->delete();
 
-        return $this->refresh()->calculate();
+        return $this->refresh()->recalculate();
     }
 
     public function associate(Authenticatable $user, string $policy = 'merge', bool $refresh = true): Cart
@@ -389,7 +415,7 @@ class Cart extends BaseModel implements Contracts\Cart
         return app(
             config('lunar.cart.actions.associate_user', AssociateUser::class)
         )->execute($this, $user, $policy)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     public function setCustomer(Customer $customer): Cart
@@ -404,7 +430,7 @@ class Cart extends BaseModel implements Contracts\Cart
 
         $this->customer()->associate($customer)->save();
 
-        return $this->refresh()->calculate();
+        return $this->refresh()->recalculate();
     }
 
     public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
@@ -420,7 +446,7 @@ class Cart extends BaseModel implements Contracts\Cart
         return app(
             config('lunar.cart.actions.add_address', AddAddress::class)
         )->execute($this, $address, $type)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     public function setShippingAddress(array|Addressable $address): Cart
@@ -445,7 +471,7 @@ class Cart extends BaseModel implements Contracts\Cart
         return app(
             config('lunar.cart.actions.set_shipping_option', SetShippingOption::class)
         )->execute($this, $option)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     public function getShippingOption(): ?ShippingOption
@@ -475,7 +501,7 @@ class Cart extends BaseModel implements Contracts\Cart
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute(
-            $this->refresh()->calculate(),
+            $this->refresh()->recalculate(),
             $allowMultipleOrders,
             $orderIdToUpdate
         )->then(fn ($order) => $order->refresh());

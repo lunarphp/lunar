@@ -2,7 +2,7 @@
 
 return [
 
-    'connection' => '',
+    'connection' => null,
 
     'table_prefix' => 'lunar_',
 

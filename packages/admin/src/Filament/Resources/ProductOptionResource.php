@@ -85,7 +85,7 @@ class ProductOptionResource extends BaseResource
             ->label(__('lunarpanel::productoption.form.handle.label'))
             ->required()
             ->maxLength(255)
-            ->disabled(fn ($record) => ! $record->shared);
+            ->disabled(fn ($operation, $record) => $operation == 'edit' && (! $record->shared));
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -123,7 +123,7 @@ class ProductOptionResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListProductOptions::route('/'),

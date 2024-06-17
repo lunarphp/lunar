@@ -38,7 +38,7 @@ test('can run pipeline', function () {
         'cart_id' => $cart->id,
     ]);
 
-    $cart->calculate();
+    $cart->recalculate();
 
     app(CreateOrderLines::class)->handle($order, function ($order) {
         return $order;

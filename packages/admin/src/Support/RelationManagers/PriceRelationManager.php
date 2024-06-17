@@ -5,7 +5,6 @@ namespace Lunar\Admin\Support\RelationManagers;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
@@ -17,7 +16,7 @@ use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 
-class PriceRelationManager extends RelationManager
+class PriceRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'prices';
 

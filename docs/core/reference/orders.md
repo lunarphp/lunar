@@ -448,5 +448,5 @@ download. You can publish the view that powers this to create your own PDF templ
 php artisan vendor:publish --tag=lunar.hub.views
 ```
 
-This will create a view called `resources/vendor/adminhub/pdf/order.blade.php`, where you will be able to freely
+This will create a view called `resources/vendor/lunarpanel/pdf/order.blade.php`, where you will be able to freely
 customise the PDF you want displayed on download.
