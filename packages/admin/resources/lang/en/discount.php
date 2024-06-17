@@ -70,6 +70,10 @@ return [
             'label' => 'Maximum reward quantity',
             'helper_text' => 'The maximum amount of products which can be discounted, regardless of criteria.',
         ],
+        'automatic_rewards' => [
+            'label' => 'Automatically add rewards',
+            'helper_text' => 'Switch on to add reward products when not present in the basket.',
+        ],
     ],
     'table' => [
         'name' => [
