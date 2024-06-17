@@ -5,6 +5,7 @@ namespace Lunar\DiscountTypes;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
+use Lunar\Models\Bundle;
 use Lunar\Models\Cart;
 use Lunar\Models\Collection;
 
@@ -180,6 +181,12 @@ class AmountOff extends AbstractDiscountType
 
         if ($collectionIds->count()) {
             $lines = $lines->filter(function ($line) use ($collectionIds) {
+                if ($line->purchasable instanceof Bundle) {
+                    return $line->purchasable->whereHas('collections', function ($query) use ($collectionIds) {
+                        $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
+                    })->exists();
+                }
+
                 return $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionIds) {
                     $query->whereIn((new Collection)->getTable().'.id', $collectionIds);
                 })->exists();

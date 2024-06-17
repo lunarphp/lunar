@@ -74,7 +74,19 @@ class Bundle extends BaseModel implements Purchasable
         return $this->morphTo();
     }
 
-    public function products(): MorphToMany
+    /**
+     * Return the product collections relation.
+     */
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            \Lunar\Models\Collection::class,
+            config('lunar.database.table_prefix').'collection_bundle'
+        )->withPivot(['position'])->withTimestamps();
+    }
+
+
+    public function items(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
@@ -158,13 +170,15 @@ class Bundle extends BaseModel implements Purchasable
      */
     public function getIdentifier(): string
     {
-        return $this->sku;
+        return $this->items->map(function ($item) {
+            return $item->getIdentifier();
+        })->implode(',');
     }
 
     public function getThumbnail(): ?Media
     {
-        return $this->images->first(function ($media) {
+        return $this->images?->first(function ($media) {
             return (bool) $media->pivot?->primary;
-        }) ?: $this->product->thumbnail;
+        });
     }
 }
