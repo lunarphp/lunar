@@ -126,7 +126,7 @@ class Opayo implements OpayoInterface
                 'shippingAddress3' => Str::limit($parameters->shippingAddressLineThree, 50, ''),
                 'shippingCity' => Str::limit($parameters->shippingAddressCity, 40, ''),
                 'shippingPostalCode' => Str::limit($parameters->shippingAddressPostcode, 10, ''),
-                'shippingCountry' => $parameters->shippingAddressCountryIso,
+                'shippingCountry' => Str::limit($parameters->shippingAddressCountryIso, 2, ''),
             ];
         }
 
