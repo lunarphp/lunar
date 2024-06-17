@@ -33,6 +33,26 @@ class MyProductResourceExtension extends \Lunar\Admin\Support\Extending\Resource
             MyCustomProductRelationManager::class,
         ];
     }
+    
+    public function extendPages(array $pages) : array
+    {
+        return [
+            ...$pages,
+            // This is just a standard Filament page
+            // see https://filamentphp.com/docs/3.x/panels/pages#creating-a-page
+            'my-page-route-name' => MyPage::route('/{record}/my-page'),
+        ];
+    }
+    
+    public function extendSubNavigation(array $nav) : array
+    {
+        return [
+            ...$nav,
+            // This is just a standard Filament page
+            // see https://filamentphp.com/docs/3.x/panels/pages#creating-a-page
+            MyPage::class,
+        ];
+    }
 }
 
 // Typically placed in your AppServiceProvider file...

@@ -354,18 +354,24 @@ class ManageOrder extends BaseViewRecord
                                     ->hiddenLabel()
                                     ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
                             ] : collect($state)
-                                ->map(fn ($value, $key) => Infolists\Components\TextEntry::make('meta_'.$key)
-                                    ->state($value)
-                                    ->label($key)
-                                    ->copyable()
-                                    ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
-                                        $state = $component->getState();
-                                        if (strlen($state) <= $component->getCharacterLimit()) {
-                                            return null;
-                                        }
+                                ->map(function ($value, $key) {
+                                    if (is_array($value)) {
+                                        return Infolists\Components\KeyValueEntry::make('meta_'.$key)->state($value);
+                                    }
 
-                                        return $state;
-                                    }))
+                                    return Infolists\Components\TextEntry::make('meta_'.$key)
+                                        ->state($value)
+                                        ->label($key)
+                                        ->copyable()
+                                        ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
+                                            $state = $component->getState();
+                                            if (strlen($state) <= $component->getCharacterLimit()) {
+                                                return null;
+                                            }
+
+                                            return $state;
+                                        });
+                                })
                                 ->toArray()),
 
                     ])
@@ -751,7 +757,7 @@ class ManageOrder extends BaseViewRecord
                     ->live()
                     ->autocomplete(false)
                     ->minValue(
-                        1 / $this->getRecord()->currency->factor
+                        fn ($record) => 1 / $record->currency->factor
                     )
                     ->numeric(),
 
@@ -846,7 +852,9 @@ class ManageOrder extends BaseViewRecord
                     ->default(fn ($record) => number_format($record->total->decimal, $record->currency->decimal_places, '.', ''))
                     ->live()
                     ->autocomplete(false)
-                    ->minValue(1)
+                    ->minValue(
+                        fn ($record) => 1 / $record->currency->factor
+                    )
                     ->helperText(function (Forms\Components\TextInput $component, $get, $state) {
                         $transaction = Transaction::findOrFail($get('transaction'));
 

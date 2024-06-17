@@ -67,7 +67,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
      *
      * @var array
      */
-    protected $appends = ['fullName', 'gravatar'];
+    protected $appends = ['fullName'];
 
     /**
      * Create a new instance of the Model.
@@ -78,7 +78,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
 
         $this->setTable(config('lunar.database.table_prefix').$this->getTable());
 
-        if ($connection = config('lunar.database.connection', false)) {
+        if ($connection = config('lunar.database.connection')) {
             $this->setConnection($connection);
         }
     }
@@ -122,16 +122,6 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     public function getFullNameAttribute(): string
     {
         return $this->firstname.' '.$this->lastname;
-    }
-
-    /**
-     * Get staff member's Gravatar URLs.
-     */
-    public function getGravatarAttribute(): string
-    {
-        $hash = md5(strtolower(trim($this->attributes['email'])));
-
-        return "https://www.gravatar.com/avatar/{$hash}?d=mp";
     }
 
     public function canAccessPanel(Panel $panel): bool

@@ -4,7 +4,6 @@ namespace Lunar\Admin\Support\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
@@ -14,7 +13,7 @@ use Illuminate\Support\Str;
 use Lunar\Admin\Events\ModelMediaUpdated;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class MediaRelationManager extends RelationManager
+class MediaRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
@@ -41,6 +40,7 @@ class MediaRelationManager extends RelationManager
                     ->hiddenOn('edit')
                     ->storeFiles(false)
                     ->imageEditor()
+                    ->required()
                     ->imageEditorAspectRatios([
                         null,
                         '16:9',
@@ -54,14 +54,10 @@ class MediaRelationManager extends RelationManager
     {
         return $table
             ->heading(function () {
-                $product = $this->getOwnerRecord();
-
-                return $product->getMediaCollectionTitle(config('lunar.media.collection')) ?? Str::ucfirst($this->mediaCollection);
+                return $this->getOwnerRecord()->getMediaCollectionTitle($this->mediaCollection) ?? Str::ucfirst($this->mediaCollection);
             })
             ->description(function () {
-                $product = $this->getOwnerRecord();
-
-                return $product->getMediaCollectionDescription(config('lunar.media.collection')) ?? '';
+                return $this->getOwnerRecord()->getMediaCollectionDescription($this->mediaCollection) ?? '';
             })
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', $this->mediaCollection)->orderBy('order_column'))
@@ -84,13 +80,16 @@ class MediaRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->using(function (array $data, string $model): Model {
-                        $product = $this->getOwnerRecord();
 
-                        return $product->addMedia($data['media'])
+                        return $this->getOwnerRecord()->addMediaFromString($data['media']->get())
+                            ->usingFileName(
+                                $data['media']->getClientOriginalName()
+                            )
                             ->withCustomProperties([
                                 'name' => $data['custom_properties']['name'],
                                 'primary' => $data['custom_properties']['primary'],
                             ])
+                            ->preservingOriginal()
                             ->toMediaCollection($this->mediaCollection);
                     })->after(
                         fn () => ModelMediaUpdated::dispatch(
