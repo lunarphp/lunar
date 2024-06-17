@@ -47,7 +47,16 @@ class AttributeData
         return $fieldType::getFilamentComponent($attribute)->label(
             $attribute->translate('name')
         )
-            ->formatStateUsing(fn ($state) => ($state ?: new $attribute->type))
+            ->formatStateUsing(function ($state) use ($attribute) {
+                if (
+                    ! $state ||
+                    (get_class($state) != $attribute->type)
+                ) {
+                    return new $attribute->type;
+                }
+
+                return $state;
+            })
             ->required($attribute->required)
             ->default($attribute->default_value);
     }
