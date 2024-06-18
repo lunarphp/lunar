@@ -50,7 +50,7 @@ If you are checking the `ProductVariant` `purchasable` attribute in your code, y
 // Old
 $variant->purchasable == 'backorder';
 // New
-$variant->purchasable == 'in_stock_on_backorder';
+$variant->purchasable == 'in_stock_or_on_backorder';
 
 ```
 
