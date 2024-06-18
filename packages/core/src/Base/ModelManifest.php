@@ -150,25 +150,6 @@ class ModelManifest implements ModelManifestInterface
         return $class->getNamespaceName() == 'Lunar\\Models';
     }
 
-    public function getTable(BaseModel $model): string
-    {
-        $formatTableName = fn ($class) => Str::snake(
-            Str::pluralStudly(
-                class_basename($class)
-            )
-        );
-
-        $class = (new \ReflectionClass($model));
-
-        $contract = array_flip($this->models)[$class->getName()] ?? null;
-
-        if ($this->isLunarModel($model) || ! $contract) {
-            return $formatTableName($model);
-        }
-
-        return $formatTableName($this->guessModelClass($contract));
-    }
-
     public function morphMap(): void
     {
         $modelClasses = collect(

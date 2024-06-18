@@ -46,11 +46,6 @@ trait HasModelExtending
         return ModelManifest::get($contractClass) ?? static::class;
     }
 
-    public function getTable(): string
-    {
-        return $this->table ?? ModelManifest::getTable($this);
-    }
-
     public static function isLunarInstance(): bool
     {
         return static::class == static::modelClass();
