@@ -22,11 +22,11 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ### Medium Impact
 
-If you are using your own classes that implement the `Purchasable` interface, you will need to add the following additional method:
+If you are using your own classes that implement the `Purchasable` interface, you will need to add the following additional methods:
 
 ```php
 public function canBeFulfilledAtQuantity(int $quantity): bool;
-public function getTrueStockValue(): int;
+public function getTotalInventory(): int;
 ```
 
 If you are checking the `ProductVariant` `purchasable` attribute in your code, you should update the following check:

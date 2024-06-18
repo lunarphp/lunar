@@ -141,7 +141,7 @@ class ShippingOption implements Purchasable
         return true;
     }
 
-    public function getTrueStockValue(): int
+    public function getTotalInventory(): int
     {
         return 1;
     }

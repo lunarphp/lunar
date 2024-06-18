@@ -213,10 +213,10 @@ class ProductVariant extends BaseModel implements Purchasable
             return true;
         }
 
-        return $quantity <= $this->getTrueStockValue();
+        return $quantity <= $this->getTotalInventory();
     }
 
-    public function getTrueStockValue(): int
+    public function getTotalInventory(): int
     {
         if ($this->purchasable == 'in_stock') {
             return $this->stock;
