@@ -132,7 +132,7 @@ class ProductVariantResource extends BaseResource
             ->options([
                 'always' => __('lunarpanel::productvariant.form.purchasable.options.always'),
                 'in_stock' => __('lunarpanel::productvariant.form.purchasable.options.in_stock'),
-                'in_stock_on_backorder' => __('lunarpanel::productvariant.form.purchasable.options.in_stock_on_backorder'),
+                'in_stock_or_on_backorder' => __('lunarpanel::productvariant.form.purchasable.options.in_stock_or_on_backorder'),
             ])
             ->label(
                 __('lunarpanel::productvariant.form.purchasable.label')

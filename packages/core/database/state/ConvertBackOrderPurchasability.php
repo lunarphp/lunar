@@ -20,7 +20,7 @@ class ConvertBackOrderPurchasability
                 DB::table("{$prefix}product_variants")->where([
                     'purchasable' => 'backorder',
                 ])->update([
-                    'purchasable' => 'in_stock_on_backorder',
+                    'purchasable' => 'in_stock_or_on_backorder',
                 ]);
             }
         });

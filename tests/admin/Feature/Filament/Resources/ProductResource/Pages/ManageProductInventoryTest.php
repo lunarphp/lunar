@@ -99,12 +99,12 @@ it('can update variant stock figures', function () {
         ])->fillForm([
             'stock' => 500,
             'backorder' => 50,
-            'purchasable' => 'in_stock_on_backorder',
+            'purchasable' => 'in_stock_or_on_backorder',
         ])->call('save')->assertHasNoErrors();
 
     $this->assertDatabaseHas((new \Lunar\Models\ProductVariant())->getTable(), [
         'stock' => 500,
         'backorder' => 50,
-        'purchasable' => 'in_stock_on_backorder',
+        'purchasable' => 'in_stock_or_on_backorder',
     ]);
 });
