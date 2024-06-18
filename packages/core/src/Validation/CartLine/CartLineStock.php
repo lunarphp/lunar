@@ -16,10 +16,6 @@ class CartLineStock extends BaseValidator
         $cartLineId = $this->parameters['cartLineId'] ?? null;
         $cart = $this->parameters['cart'] ?? null;
 
-        if (! $purchasable->isShippable()) {
-            return $this->pass();
-        }
-
         if ($cartLineId && ! $purchasable && $cart) {
             $purchasable = $cart->lines->first(
                 fn ($cartLine) => $cartLine->id == $cartLineId
