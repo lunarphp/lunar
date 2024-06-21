@@ -8,8 +8,11 @@ use Stripe\ApiRequestor;
 
 /**
  * @method static getClient(): \Stripe\StripeClient
- * @method static createIntent(\Lunar\Models\Cart $cart): \Stripe\PaymentIntent
+ * @method static createIntent(\Lunar\Models\Cart $cart, array $opts): \Stripe\PaymentIntent
  * @method static syncIntent(\Lunar\Models\Cart $cart): void
+ * @method static updateIntent(\Lunar\Models\Cart $cart, array $values): void
+ * @method static updateShippingAddress(\Lunar\Models\Cart $cart): void
+ * @method static fetchIntent(string $intentId, $options = null): ?PaymentIntent
  * @method static getCharges(string $paymentIntentId): \Illuminate\Support\Collection
  * @method static getCharge(string $chargeId): \Stripe\Charge
  * @method static buildIntent(int $value, string $currencyCode, \Lunar\Models\CartAddress $shipping): \Stripe\PaymentIntent
