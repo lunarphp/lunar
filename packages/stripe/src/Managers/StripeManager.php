@@ -31,7 +31,7 @@ class StripeManager
     /**
      * Create a payment intent from a Cart
      */
-    public function createIntent(Cart $cart): PaymentIntent
+    public function createIntent(Cart $cart, array $opts = []): PaymentIntent
     {
         $shipping = $cart->shippingAddress;
 
@@ -51,6 +51,7 @@ class StripeManager
             $cart->total->value,
             $cart->currency->code,
             $shipping,
+            $opts
         );
 
         if (! $meta) {
@@ -121,24 +122,26 @@ class StripeManager
     /**
      * Build the intent
      */
-    protected function buildIntent(int $value, string $currencyCode, CartAddress $shipping): PaymentIntent
+    protected function buildIntent(int $value, string $currencyCode, CartAddress $shipping, array $opts = []): PaymentIntent
     {
-        return PaymentIntent::create([
-            'amount' => $value,
-            'currency' => $currencyCode,
-            'automatic_payment_methods' => ['enabled' => true],
-            'capture_method' => config('lunar.stripe.policy', 'automatic'),
-            'shipping' => [
-                'name' => "{$shipping->first_name} {$shipping->last_name}",
-                'address' => [
-                    'city' => $shipping->city,
-                    'country' => $shipping->country->iso2,
-                    'line1' => $shipping->line_one,
-                    'line2' => $shipping->line_two,
-                    'postal_code' => $shipping->postcode,
-                    'state' => $shipping->state,
+        return PaymentIntent::create(
+            [
+                'amount' => $value,
+                'currency' => $currencyCode,
+                'automatic_payment_methods' => ['enabled' => true],
+                'capture_method' => config('lunar.stripe.policy', 'automatic'),
+                'shipping' => [
+                    'name' => "{$shipping->first_name} {$shipping->last_name}",
+                    'address' => [
+                        'city' => $shipping->city,
+                        'country' => $shipping->country->iso2,
+                        'line1' => $shipping->line_one,
+                        'line2' => $shipping->line_two,
+                        'postal_code' => $shipping->postcode,
+                        'state' => $shipping->state,
+                    ],
                 ],
-            ],
-        ]);
+                ...$opts,
+            ]);
     }
 }
