@@ -1,6 +1,3 @@
-Hier ist die vollständige und übersetzte Datei `discount.php`:
-
-```php
 <?php
 
 return [
