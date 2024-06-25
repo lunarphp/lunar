@@ -76,9 +76,9 @@ class ShippingZoneResolver
      */
     public function get(): Collection
     {
-        $query = ShippingZone::query();
+        $query = ShippingZone::query()->whereType('unrestricted');
 
-        $query->where(function ($builder) {
+        $query->orWhere(function ($builder) {
             if ($this->country) {
                 $builder->orWhere(function ($qb) {
                     $qb->whereHas('countries', function ($query) {

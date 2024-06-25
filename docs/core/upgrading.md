@@ -81,6 +81,26 @@ By default, this is set as `null` so the mapping for a product would just be `pr
 
 There is a migration which will handle this change over for Lunar tables and some third party tables, however you may need to add your own migrations to other tables or to switch any custom models you may have.
 
+
+### Medium Impact
+
+If you are using your own classes that implement the `Purchasable` interface, you will need to add the following additional methods:
+
+```php
+public function canBeFulfilledAtQuantity(int $quantity): bool;
+public function getTotalInventory(): int;
+```
+
+If you are checking the `ProductVariant` `purchasable` attribute in your code, you should update the following check:
+
+```php
+// Old
+$variant->purchasable == 'backorder';
+// New
+$variant->purchasable == 'in_stock_or_on_backorder';
+
+```
+
 ## 1.0.0-alpha.20
 
 ### High Impact
