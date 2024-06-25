@@ -18,22 +18,10 @@ class MediaObserver
 
     public function deleted(Media $media)
     {
-        if (config('lunar.media.collection') !== $media->collection_name) {
-            return;
-        }
-
-        $owner = $media->model()->sole();
-
-        $collection = $owner->getMedia($media->collection_name);
-
-        if ($collection->filter(fn ($collectionMedia) => $collectionMedia->getCustomProperty('primary') === true)->isEmpty()) {
-            $collection->first()
-                ?->setCustomProperty('primary', true)
-                ->saveQuietly();
-        }
+        $this->ensureOnlyOnePrimary($media, isDelete: true);
     }
 
-    protected function ensureOnlyOnePrimary(Media $media): void
+    protected function ensureOnlyOnePrimary(Media $media, bool $isDelete = false): void
     {
         if (config('lunar.media.collection') !== $media->collection_name) {
             return;
@@ -41,7 +29,7 @@ class MediaObserver
 
         $owner = $media->model()->sole();
 
-        if ($media->getCustomProperty('primary')) {
+        if (! $isDelete && $media->getCustomProperty('primary')) {
             $owner->getMedia($media->collection_name)
                 ->reject(fn ($collectionMedia) => $collectionMedia->id == $media->id || $collectionMedia->getCustomProperty('primary') === false)
                 ->each(fn ($collectionMedia) => $collectionMedia->setCustomProperty('primary', false)->saveQuietly());
@@ -53,6 +41,10 @@ class MediaObserver
 
             $collectionCount = $collection->count();
             $primaryCount = $primaryCollection->count();
+
+            if ($isDelete && $collectionCount == 0) {
+                return;
+            }
 
             if ($collectionCount == 0) {
                 $media->refresh()->setCustomProperty('primary', true)
