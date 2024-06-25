@@ -30,7 +30,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
         return __('lunarpanel::relationmanagers.customer_group_pricing.table.heading');
     }
 
-    public function form(Form $form): Form
+    public function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
@@ -96,7 +96,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
             ])->columns(1);
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
         $priceTable = (new Price)->getTable();
         $cgTable = CustomerGroup::query()->select([DB::raw('id as cg_id'), 'name']);

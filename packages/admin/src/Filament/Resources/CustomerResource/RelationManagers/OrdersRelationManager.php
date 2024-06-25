@@ -2,17 +2,17 @@
 
 namespace Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers;
 
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\OrderResource;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Models\Order;
 
-class OrdersRelationManager extends RelationManager
+class OrdersRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'orders';
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
         return $table->columns(
             OrderResource::getTableColumns()
