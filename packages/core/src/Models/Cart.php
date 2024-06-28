@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
@@ -40,6 +41,7 @@ use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Validation\CartLine\CartLineStock;
 
 /**
  * @property int $id
@@ -610,6 +612,19 @@ class Cart extends BaseModel
         }
 
         return $passes;
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function validateStock(): void
+    {
+        $this->lines->each(
+            fn ($line) => app(CartLineStock::class)->using(
+                purchasable: $line->purchasable,
+                quantity: $line->quantity,
+            )->validate()
+        );
     }
 
     /**
