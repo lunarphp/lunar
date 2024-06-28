@@ -23,7 +23,7 @@ Lunar\Models\Order
 | discount_breakdown    | A json field for the discount breakdown e.g. `[{"discount_id": 1, "lines": [{"id": 1, "qty": 1}]], "total": 200}]` 
 | discount_total        | Any discount amount excl. tax                                                                                      
 | shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
-| shipping_total        | The shipping total excl. tax                                                                                       
+| shipping_total        | The shipping total with tax                                                                                       
 | tax_breakdown         | A json field for the tax breakdown e.g. `[{"description": "VAT", "identifier" : "vat", "value": 123, "percentage": 20, "currency_code": "GBP"}]`                        
 | tax_total             | The total amount of tax applied                                                                                    
 | total                 | The grand total with tax                                                                                           
