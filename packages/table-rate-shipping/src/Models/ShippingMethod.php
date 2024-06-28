@@ -4,9 +4,12 @@ namespace Lunar\Shipping\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\HasCustomerGroups;
+use Lunar\Models\CustomerGroup;
 use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
@@ -14,6 +17,7 @@ use Lunar\Shipping\Interfaces\ShippingRateInterface;
 class ShippingMethod extends BaseModel
 {
     use HasFactory;
+    use HasCustomerGroups;
 
     /**
      * Define which attributes should be
@@ -52,5 +56,23 @@ class ShippingMethod extends BaseModel
     public function driver(): ShippingRateInterface
     {
         return Shipping::driver($this->driver);
+    }
+
+    /**
+     * Return the customer groups relationship.
+     */
+    public function customerGroups(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            CustomerGroup::class,
+            "{$prefix}customer_group_shipping_method"
+        )->withPivot([
+            'visible',
+            'enabled',
+            'starts_at',
+            'ends_at',
+        ])->withTimestamps();
     }
 }

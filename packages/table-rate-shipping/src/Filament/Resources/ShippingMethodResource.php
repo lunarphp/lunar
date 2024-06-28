@@ -5,6 +5,7 @@ namespace Lunar\Shipping\Filament\Resources;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -17,6 +18,8 @@ class ShippingMethodResource extends BaseResource
     protected static ?string $model = ShippingMethod::class;
 
     protected static ?int $navigationSort = 1;
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {
@@ -36,6 +39,14 @@ class ShippingMethodResource extends BaseResource
     public static function getNavigationGroup(): ?string
     {
         return __('lunarpanel.shipping::plugin.navigation.group');
+    }
+
+    public static function getDefaultSubNavigation(): array
+    {
+        return [
+            Pages\EditShippingMethod::class,
+            Pages\ManageShippingMethodAvailability::class
+        ];
     }
 
     public static function getDefaultForm(Form $form): Form
@@ -61,7 +72,6 @@ class ShippingMethodResource extends BaseResource
             ])->columns(2),
             static::getStockAvailableFormComponent(),
             static::getDescriptionFormComponent(),
-
         ];
     }
 
@@ -175,6 +185,7 @@ class ShippingMethodResource extends BaseResource
         return [
             'index' => Pages\ListShippingMethod::route('/'),
             'edit' => Pages\EditShippingMethod::route('/{record}/edit'),
+            'availability' => Pages\ManageShippingMethodAvailability::route('/{record}/availability'),
         ];
     }
 }

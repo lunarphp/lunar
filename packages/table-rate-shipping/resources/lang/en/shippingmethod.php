@@ -49,4 +49,9 @@ return [
             ],
         ],
     ],
+    'pages' => [
+        'availability' => [
+            'label' => 'Availability',
+        ]
+    ],
 ];
