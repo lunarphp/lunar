@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Lunar\Actions\Carts\AddAddress;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Actions\Carts\AssociateUser;
@@ -40,6 +41,7 @@ use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Validation\CartLine\CartLineStock;
 
 /**
  * @property int $id
@@ -318,8 +320,13 @@ class Cart extends BaseModel
     /**
      * Calculate the cart totals and cache the result.
      */
-    public function calculate(): Cart
+    public function calculate(bool $force = false): Cart
     {
+        if (! $force && $this->isCalculated()) {
+            // Don't recalculate
+            return $this;
+        }
+
         $cart = app(Pipeline::class)
             ->send($this)
             ->through(
@@ -329,6 +336,21 @@ class Cart extends BaseModel
             )->thenReturn();
 
         return $cart->cacheProperties();
+    }
+
+    /**
+     * Force the cart to recalculate.
+     */
+    public function recalculate(): Cart
+    {
+        return $this->calculate(force: true);
+    }
+
+    public function isCalculated(): bool
+    {
+        return ! blank($this->total) && $this->lines->every(
+            fn (CartLine $line) => ! blank($line->total)
+        );
     }
 
     /**
@@ -349,7 +371,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.add_to_cart', AddOrUpdatePurchasable::class)
         )->execute($this, $purchasable, $quantity, $meta)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     /**
@@ -368,7 +390,7 @@ class Cart extends BaseModel
             });
         });
 
-        return $this->refresh()->calculate();
+        return $this->refresh()->recalculate();
     }
 
     /**
@@ -386,7 +408,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.remove_from_cart', RemovePurchasable::class)
         )->execute($this, $cartLineId)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     /**
@@ -406,7 +428,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.update_cart_line', UpdateCartLine::class)
         )->execute($cartLineId, $quantity, $meta)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     /**
@@ -425,7 +447,7 @@ class Cart extends BaseModel
             });
         });
 
-        return $this->refresh()->calculate();
+        return $this->refresh()->recalculate();
     }
 
     /**
@@ -435,7 +457,7 @@ class Cart extends BaseModel
     {
         $this->lines()->delete();
 
-        return $this->refresh()->calculate();
+        return $this->refresh()->recalculate();
     }
 
     /**
@@ -454,7 +476,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.associate_user', AssociateUser::class)
         )->execute($this, $user, $policy)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     /**
@@ -472,7 +494,7 @@ class Cart extends BaseModel
 
         $this->customer()->associate($customer)->save();
 
-        return $this->refresh()->calculate();
+        return $this->refresh()->recalculate();
     }
 
     /**
@@ -491,7 +513,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.add_address', AddAddress::class)
         )->execute($this, $address, $type)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     /**
@@ -525,7 +547,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.set_shipping_option', SetShippingOption::class)
         )->execute($this, $option)
-            ->then(fn () => $refresh ? $this->refresh()->calculate() : $this);
+            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
     /**
@@ -564,7 +586,7 @@ class Cart extends BaseModel
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute(
-            $this->refresh()->calculate(),
+            $this->refresh()->recalculate(),
             $allowMultipleOrders,
             $orderIdToUpdate
         )->then(fn ($order) => $order->refresh());
@@ -590,6 +612,19 @@ class Cart extends BaseModel
         }
 
         return $passes;
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function validateStock(): void
+    {
+        $this->lines->each(
+            fn ($line) => app(CartLineStock::class)->using(
+                purchasable: $line->purchasable,
+                quantity: $line->quantity,
+            )->validate()
+        );
     }
 
     /**
