@@ -5,6 +5,7 @@ namespace Lunar\Shipping\Models;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
@@ -25,6 +26,15 @@ class ShippingMethod extends BaseModel
     protected $casts = [
         'data' => AsArrayObject::class,
     ];
+
+    protected static function booted()
+    {
+        static::deleting(function (self $shippingMethod) {
+            DB::beginTransaction();
+            $shippingMethod->shippingRates()->delete();
+            DB::commit();
+        });
+    }
 
     /**
      * Return a new factory instance for the model.
