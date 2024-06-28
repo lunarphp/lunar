@@ -33,6 +33,27 @@ To allow for recalculation we have now introduced `$cart->recalculate()` to forc
 Collection Group now have unique index on the column `handle`.
 If you are creating Collection Group from the admin panel, there is no changes required.
 
+## [Unreleased]
+
+### Medium Impact
+
+If you are using your own classes that implement the `Purchasable` interface, you will need to add the following additional methods:
+
+```php
+public function canBeFulfilledAtQuantity(int $quantity): bool;
+public function getTotalInventory(): int;
+```
+
+If you are checking the `ProductVariant` `purchasable` attribute in your code, you should update the following check:
+
+```php
+// Old
+$variant->purchasable == 'backorder';
+// New
+$variant->purchasable == 'in_stock_or_on_backorder';
+
+```
+
 ## 1.0.0-alpha.20
 
 ### High Impact
