@@ -45,7 +45,7 @@ class ShippingMethodResource extends BaseResource
     {
         return [
             Pages\EditShippingMethod::class,
-            Pages\ManageShippingMethodAvailability::class
+            Pages\ManageShippingMethodAvailability::class,
         ];
     }
 

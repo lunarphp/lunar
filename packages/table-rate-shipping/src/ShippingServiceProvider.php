@@ -58,8 +58,6 @@ class ShippingServiceProvider extends ServiceProvider
             return $product->morphMany(ShippingExclusion::class, 'purchasable');
         });
 
-
-
         $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {
             return $app->make(ShippingManager::class);
         });

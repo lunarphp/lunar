@@ -16,8 +16,8 @@ use Lunar\Shipping\Interfaces\ShippingRateInterface;
 
 class ShippingMethod extends BaseModel
 {
-    use HasFactory;
     use HasCustomerGroups;
+    use HasFactory;
 
     /**
      * Define which attributes should be

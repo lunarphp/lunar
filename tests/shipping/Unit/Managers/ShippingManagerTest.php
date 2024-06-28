@@ -50,7 +50,7 @@ test('can fetch expected shipping rates', function () {
     ]);
 
     $shippingMethod->customerGroups()->sync([
-        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null]
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()

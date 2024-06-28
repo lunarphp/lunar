@@ -47,7 +47,7 @@ test('can fetch shipping rates by country', function () {
     ]);
 
     $shippingMethod->customerGroups()->sync([
-        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null]
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
@@ -128,7 +128,6 @@ test('can fetch shipping rates by state', function () {
 
     $shippingZone->states()->attach($state);
 
-
     $shippingMethod = ShippingMethod::factory()->create([
         'driver' => 'ship-by',
         'data' => [
@@ -143,7 +142,7 @@ test('can fetch shipping rates by state', function () {
     ]);
 
     $shippingMethod->customerGroups()->sync([
-        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null]
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
@@ -220,7 +219,7 @@ test('can fetch shipping rates by postcode', function () {
         'default' => true,
     ]);
     $shippingMethod->customerGroups()->sync([
-        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null]
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
@@ -299,7 +298,7 @@ test('can reject shipping rates when stock is not available', function () {
         'default' => true,
     ]);
     $shippingMethod->customerGroups()->sync([
-        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null]
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([

@@ -25,7 +25,7 @@ class ShippingRateResolver
     /**
      * The customer group to limit to.
      */
-    public Collection|null $customerGroups = null;
+    public ?Collection $customerGroups = null;
 
     /**
      * The state to use when resolving.
@@ -150,12 +150,12 @@ class ShippingRateResolver
                 ->reject(function ($rate) {
                     $method = $rate->shippingMethod()->customerGroup($this->customerGroups)->first();
 
-                    return !$method;
+                    return ! $method;
                 })
                 ->reject(function ($rate) {
                     $method = $rate->shippingMethod;
 
-                    if (!$method) {
+                    if (! $method) {
                         return true;
                     }
 

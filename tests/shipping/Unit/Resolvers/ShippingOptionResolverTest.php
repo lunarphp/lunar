@@ -28,7 +28,6 @@ test('can fetch shipping options', function () {
         'default' => true,
     ]);
 
-
     $shippingZone = ShippingZone::factory()->create([
         'type' => 'countries',
     ]);
@@ -45,7 +44,7 @@ test('can fetch shipping options', function () {
     ]);
 
     $shippingMethod->customerGroups()->sync([
-        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null]
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
