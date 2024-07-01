@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateCollectionGroupsTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'collection_groups', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -16,8 +16,8 @@ class CreateCollectionGroupsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'collection_groups');
     }
-}
+};

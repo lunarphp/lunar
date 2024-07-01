@@ -318,6 +318,12 @@ class DiscountResource extends BaseResource
                         __('lunarpanel::discount.form.max_reward_qty.helper_text')
                     )->numeric(),
             ])->columns(2),
+            Forms\Components\Toggle::make('data.automatically_add_rewards')
+                ->label(
+                    __('lunarpanel::discount.form.automatic_rewards.label')
+                )->helperText(
+                    __('lunarpanel::discount.form.automatic_rewards.helper_text')
+                ),
         ];
     }
 
@@ -392,7 +398,7 @@ class DiscountResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListDiscounts::route('/'),

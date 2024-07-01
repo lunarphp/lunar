@@ -4,19 +4,19 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddAttributesToBrandsTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'brands', function (Blueprint $table) {
             $table->json('attribute_data')->after('name')->nullable();
         });
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::table($this->prefix.'brands', function ($table) {
+        Schema::table($this->prefix.'brands', function (Blueprint $table) {
             $table->dropColumn('attribute_data');
         });
     }
-}
+};

@@ -206,4 +206,22 @@ class ProductVariant extends BaseModel implements Purchasable
             return (bool) $media->pivot?->primary;
         }) ?: $this->product->thumbnail;
     }
+
+    public function canBeFulfilledAtQuantity(int $quantity): bool
+    {
+        if ($this->purchasable == 'always') {
+            return true;
+        }
+
+        return $quantity <= $this->getTotalInventory();
+    }
+
+    public function getTotalInventory(): int
+    {
+        if ($this->purchasable == 'in_stock') {
+            return $this->stock;
+        }
+
+        return $this->stock + $this->backorder;
+    }
 }
