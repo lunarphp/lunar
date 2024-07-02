@@ -1,7 +1,5 @@
 <?php
 
-namespace Lunar\Tests\Admin\Unit\Livewire;
-
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
