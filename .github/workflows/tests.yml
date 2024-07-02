@@ -1,4 +1,4 @@
-name: tests
+name: Tests
 
 on:
   pull_request:
@@ -18,9 +18,10 @@ jobs:
             testbench: 9.*
           - laravel: 10.*
             testbench: 8.*
-    name: ${{ matrix.testsuite }} / P${{ matrix.php }} / L${{ matrix.laravel }} / ${{ matrix.dependency-version }}
+    name: ${{ matrix.testsuite }} - PHP ${{ matrix.php }} - L${{ matrix.laravel }} ${{ matrix.dependency-version == 'prefer-lowest' && '↓' || '↑' }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Get Composer Cache Directory
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
