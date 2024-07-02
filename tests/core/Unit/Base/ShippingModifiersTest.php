@@ -20,7 +20,7 @@ beforeEach(function () {
 
     $this->class = new class extends ShippingModifier
     {
-        public function handle(Cart $cart, \Closure $next)
+        public function handle(Cart $cart, Closure $next)
         {
             return $next($cart);
         }
