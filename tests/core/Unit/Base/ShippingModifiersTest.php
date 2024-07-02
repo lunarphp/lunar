@@ -20,9 +20,9 @@ beforeEach(function () {
 
     $this->class = new class extends ShippingModifier
     {
-        public function handle(Cart $cart)
+        public function handle(Cart $cart, Closure $next)
         {
-            //
+            return $next($cart);
         }
     };
 
@@ -35,9 +35,8 @@ test('can add modifier', function () {
     expect($this->shippingModifiers->getModifiers())->toHaveCount(1);
 });
 
-function can_remove_modifier()
-{
+test('can remove modifier', function () {
     $this->shippingModifiers->remove($this->class::class);
 
     expect($this->shippingModifiers->getModifiers())->toHaveCount(0);
-}
+});
