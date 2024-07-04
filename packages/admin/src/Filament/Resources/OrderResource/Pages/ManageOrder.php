@@ -90,6 +90,18 @@ class ManageOrder extends BaseViewRecord
         ]);
     }
 
+    public static function getInfolistAsideSchema(): array
+    {
+        return self::callLunarHook('extendInfolistAsideSchema', [
+            static::getCustomerEntry(),
+            static::getOrderSummaryInfolist(),
+            static::getShippingAddressInfolist(),
+            static::getBillingAddressInfoList(),
+            static::getTagsSection(),
+            static::getAdditionalInfoSection(),
+        ]);
+    }
+
     public static function getDefaultCustomerEntry(): Infolists\Components\Entry
     {
         return Infolists\Components\TextEntry::make('customer')
@@ -195,14 +207,7 @@ class ManageOrder extends BaseViewRecord
                     ])
                     ->columnSpan(['lg' => 2]),
                 Infolists\Components\Group::make()
-                    ->schema([
-                        static::getCustomerEntry(),
-                        static::getOrderSummaryInfolist(),
-                        static::getShippingAddressInfolist(),
-                        static::getBillingAddressInfoList(),
-                        static::getTagsSection(),
-                        static::getAdditionalInfoSection(),
-                    ])
+                    ->schema(static::getInfolistAsideSchema())
                     ->columnSpan(['lg' => 1]),
             ])
             ->columns(3);
