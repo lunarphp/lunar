@@ -25,8 +25,8 @@ trait HasCustomerGroups
      */
     public function scheduleCustomerGroup(
         $models,
-        DateTime $starts = null,
-        DateTime $ends = null,
+        ?DateTime $starts = null,
+        ?DateTime $ends = null,
         array $pivotData = []
     ) {
         $this->schedule(
@@ -96,7 +96,7 @@ trait HasCustomerGroups
      * @param  CustomerGroup|string  $customerGroup
      * @return Builder
      */
-    public function scopeCustomerGroup($query, CustomerGroup|iterable $customerGroup = null, DateTime $startsAt = null, DateTime $endsAt = null)
+    public function scopeCustomerGroup($query, CustomerGroup|iterable|null $customerGroup = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
     {
         if (blank($customerGroup)) {
             return $query;

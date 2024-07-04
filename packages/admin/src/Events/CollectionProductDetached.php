@@ -16,6 +16,5 @@ class CollectionProductDetached
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }

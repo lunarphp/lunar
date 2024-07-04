@@ -177,7 +177,8 @@ class AccessControl extends Page
                     TextInput::make('name')
                         ->label('lunarpanel::staff.form.role.label')
                         ->translateLabel()
-                        ->unique(table: Role::class),
+                        ->unique(table: Role::class)
+                        ->required(),
                 ])
                 ->action(fn ($data) => $this->syncRolePermissions(Role::create([
                     'name' => $data['name'],

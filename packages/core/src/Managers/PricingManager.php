@@ -27,15 +27,11 @@ class PricingManager implements PricingManagerInterface
 
     /**
      * The instance of the user.
-     *
-     * @var \Illuminate\Contracts\Auth\Authenticatable
      */
     public ?Authenticatable $user = null;
 
     /**
      * The instance of the currency.
-     *
-     * @var \Lunar\Models\Currency
      */
     public ?Currency $currency = null;
 
@@ -46,8 +42,6 @@ class PricingManager implements PricingManagerInterface
 
     /**
      * The customer groups to check against.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public ?Collection $customerGroups = null;
 
@@ -73,7 +67,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the user property.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @return self
      */
     public function user(?Authenticatable $user)
@@ -98,7 +91,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the currency property.
      *
-     * @param  \Lunar\Models\Currency  $currency
      * @return self
      */
     public function currency(?Currency $currency)
@@ -123,7 +115,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the customer groups.
      *
-     * @param  Collection  $customerGroups
      * @return self
      */
     public function customerGroups(?Collection $customerGroups)
@@ -136,7 +127,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the customer group.
      *
-     * @param  CustomerGroup  $customerGroup
      * @return self
      */
     public function customerGroup(?CustomerGroup $customerGroup)
