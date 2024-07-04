@@ -141,6 +141,7 @@ export default defineConfig({
                         {text: 'Access Control', link: '/admin/extending/access-control'},
                         {text: 'Add-ons', link: '/admin/extending/addons'},
                         {text: 'Attributes', link: '/admin/extending/attributes'},
+                        {text: 'Order Management', link: '/admin/extending/order-management'},
                         {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Panel', link: '/admin/extending/panel'},
                         {text: 'Resources', link: '/admin/extending/resources'}
