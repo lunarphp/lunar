@@ -33,69 +33,69 @@ class OrderItemsTable extends TableComponent
             Tables\Columns\Layout\Split::make([
                 Tables\Columns\ImageColumn::make('image')
                     ->defaultImageUrl(fn () => 'data:image/svg+xml;base64, '.base64_encode(
-                            Blade::render('<x-filament::icon icon="heroicon-o-photo" style="color:rgb('.Color::Gray[400].');"/>')
-                        ))
+                        Blade::render('<x-filament::icon icon="heroicon-o-photo" style="color:rgb('.Color::Gray[400].');"/>')
+                    ))
                     ->grow(false)
                     ->getStateUsing(fn ($record) => $record->purchasable?->getThumbnail()?->getUrl('small')),
 
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\Layout\Split::make([
-                        Tables\Columns\Layout\Stack::make([
-                            Tables\Columns\TextColumn::make('description')
-                                ->weight(FontWeight::Bold),
-                            Tables\Columns\TextColumn::make('identifier')
-                                ->color(Color::Gray),
-                            Tables\Columns\TextColumn::make('options')
-                                ->getStateUsing(fn ($record) => $record->purchasable?->getOptions())
-                                ->badge(),
-                        ]),
-                        Tables\Columns\Layout\Stack::make([
-                            Tables\Columns\TextColumn::make('unit')
-                                ->alignEnd()
-                                ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->sub_total->formatted}"),
-                        ]),
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('description')
+                            ->weight(FontWeight::Bold),
+                        Tables\Columns\TextColumn::make('identifier')
+                            ->color(Color::Gray),
+                        Tables\Columns\TextColumn::make('options')
+                            ->getStateUsing(fn ($record) => $record->purchasable?->getOptions())
+                            ->badge(),
+                    ]),
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('unit')
+                            ->alignEnd()
+                            ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->sub_total->formatted}"),
+                    ]),
                     ])
-                        ->extraAttributes(['style' => 'align-items: start;']),
+                    ->extraAttributes(['style' => 'align-items: start;']),
                 ])
                     ->columnSpanFull(),
             ])->extraAttributes(['style' => 'align-items: start;']),
             Tables\Columns\Layout\Panel::make([
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\TextColumn::make('stock')
-                        ->getStateUsing(fn ($record) => $record->purchasable?->stock)
-                        ->formatStateUsing(fn ($state) => __('lunarpanel::order.infolist.current_stock_level.message', [
-                            'count' => $state,
-                        ]))
-                        ->colors(fn () => [
-                            'danger' => fn ($state) => $state < 50,
-                            'success' => fn ($state) => $state >= 50,
-                        ]),
+                    ->getStateUsing(fn ($record) => $record->purchasable?->stock)
+                    ->formatStateUsing(fn ($state) => __('lunarpanel::order.infolist.current_stock_level.message', [
+                        'count' => $state,
+                    ]))
+                    ->colors(fn () => [
+                        'danger' => fn ($state) => $state < 50,
+                        'success' => fn ($state) => $state >= 50,
+                    ]),
                     Tables\Columns\TextColumn::make('meta.stock_level')
-                        ->formatStateUsing(fn ($state) => __('lunarpanel::order.infolist.purchase_stock_level.message', [
-                            'count' => $state,
-                        ]))
-                        ->color(Color::Gray),
+                    ->formatStateUsing(fn ($state) => __('lunarpanel::order.infolist.purchase_stock_level.message', [
+                        'count' => $state,
+                    ]))
+                    ->color(Color::Gray),
                     Tables\Columns\TextColumn::make('notes')
-                        ->description(new HtmlString('<b>'.__('lunarpanel::order.infolist.notes.label').'</b>'), 'above'),
+                    ->description(new HtmlString('<b>'.__('lunarpanel::order.infolist.notes.label').'</b>'), 'above'),
 
                     KeyValue::make('price_breakdowns')
-                        ->getStateUsing(function ($record) {
+                    ->getStateUsing(function ($record) {
 
-                            $states = [];
+                        $states = [];
 
-                            $states['unit_price'] = "{$record->unit_price->unitFormatted(decimalPlaces: 4)}";
-                            $states['quantity'] = $record->quantity;
-                            $states['sub_total'] = $record->sub_total?->formatted;
-                            $states['discount_total'] = $record->discount_total?->formatted;
+                        $states['unit_price'] = "{$record->unit_price->unitFormatted(decimalPlaces: 4)}";
+                        $states['quantity'] = $record->quantity;
+                        $states['sub_total'] = $record->sub_total?->formatted;
+                        $states['discount_total'] = $record->discount_total?->formatted;
 
-                            foreach ($record->tax_breakdown?->amounts ?? [] as $tax) {
-                                $states[$tax->description] = $tax->price->formatted;
-                            }
+                        foreach ($record->tax_breakdown?->amounts ?? [] as $tax) {
+                            $states[$tax->description] = $tax->price->formatted;
+                        }
 
-                            $states['total'] = $record->total?->formatted;
+                        $states['total'] = $record->total?->formatted;
 
-                            return $states;
-                        }),
+                        return $states;
+                    }),
                 ]),
             ])
                 ->collapsed()
