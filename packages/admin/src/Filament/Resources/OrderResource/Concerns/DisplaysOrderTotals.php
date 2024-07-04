@@ -173,7 +173,7 @@ trait DisplaysOrderTotals
 
     public static function getRefundEntry(): Infolists\Components\TextEntry
     {
-        return self::callLunarHook('extendPaidEntry', static::getDefaultRefundEntry());
+        return self::callLunarHook('extendRefundEntry', static::getDefaultRefundEntry());
     }
 
     public static function getOrderTotalsSchema(): array

@@ -37,7 +37,7 @@ trait DisplaysOrderAddresses
 
     public static function getAddressEditSchema(): array
     {
-        return self::callLunarHook('exendAddressEditSchema', [
+        return self::callLunarHook('extendAddressEditSchema', [
             Forms\Components\Grid::make()
                 ->schema([
                     Forms\Components\TextInput::make('first_name')

@@ -89,7 +89,7 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryCreatedAtEntry(): Infolists\Components\Entry
     {
-        return self::callLunarHook('extendOrderSummaryCreatedAtEntry', static::getDefaultOrderSummaryCreatedAtEntry());
+            return self::callLunarHook('extendOrderSummaryCreatedAtEntry', static::getDefaultOrderSummaryCreatedAtEntry());
     }
 
     public static function getDefaultOrderSummaryPlacedAtEntry(): Infolists\Components\TextEntry
