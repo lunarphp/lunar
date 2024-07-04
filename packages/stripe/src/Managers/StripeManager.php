@@ -33,8 +33,6 @@ class StripeManager
      */
     public function createIntent(Cart $cart, array $opts = []): PaymentIntent
     {
-        $shipping = $cart->shippingAddress;
-
         $meta = (array) $cart->meta;
 
         if ($meta && ! empty($meta['payment_intent'])) {
@@ -50,7 +48,7 @@ class StripeManager
         $paymentIntent = $this->buildIntent(
             $cart->total->value,
             $cart->currency->code,
-            $shipping,
+            $cart->shippingAddress,
             $opts
         );
 
@@ -67,6 +65,42 @@ class StripeManager
         }
 
         return $paymentIntent;
+    }
+
+    public function updateShippingAddress(Cart $cart): void
+    {
+        $address = $cart->shippingAddress;
+
+        if (! $address) {
+            $this->updateIntent($cart, [
+                'shipping' => [
+                    'name' => "{$address->first_name} {$address->last_name}",
+                    'phone' => $address->contact_phone,
+                    'address' => [
+                        'city' => $address->city,
+                        'country' => $address->country->iso2,
+                        'line1' => $address->line_one,
+                        'line2' => $address->line_two,
+                        'postal_code' => $address->postcode,
+                        'state' => $address->state,
+                    ],
+                ],
+            ]);
+        }
+    }
+
+    public function updateIntent(Cart $cart, array $values): void
+    {
+        $meta = (array) $cart->meta;
+
+        if (empty($meta['payment_intent'])) {
+            return;
+        }
+
+        $this->getClient()->paymentIntents->update(
+            $meta['payment_intent'],
+            $values
+        );
     }
 
     public function syncIntent(Cart $cart): void
@@ -122,26 +156,33 @@ class StripeManager
     /**
      * Build the intent
      */
-    protected function buildIntent(int $value, string $currencyCode, CartAddress $shipping, array $opts = []): PaymentIntent
+    protected function buildIntent(int $value, string $currencyCode, ?CartAddress $shipping, array $opts = []): PaymentIntent
     {
-        return PaymentIntent::create(
-            [
-                'amount' => $value,
-                'currency' => $currencyCode,
-                'automatic_payment_methods' => ['enabled' => true],
-                'capture_method' => config('lunar.stripe.policy', 'automatic'),
-                'shipping' => [
-                    'name' => "{$shipping->first_name} {$shipping->last_name}",
-                    'address' => [
-                        'city' => $shipping->city,
-                        'country' => $shipping->country->iso2,
-                        'line1' => $shipping->line_one,
-                        'line2' => $shipping->line_two,
-                        'postal_code' => $shipping->postcode,
-                        'state' => $shipping->state,
-                    ],
+        $params = [
+            'amount' => $value,
+            'currency' => $currencyCode,
+            'automatic_payment_methods' => ['enabled' => true],
+            'capture_method' => config('lunar.stripe.policy', 'automatic'),
+        ];
+
+        if ($shipping) {
+            $params['shipping'] = [
+                'name' => "{$shipping->first_name} {$shipping->last_name}",
+                'phone' => $shipping->contact_phone,
+                'address' => [
+                    'city' => $shipping->city,
+                    'country' => $shipping->country->iso2,
+                    'line1' => $shipping->line_one,
+                    'line2' => $shipping->line_two,
+                    'postal_code' => $shipping->postcode,
+                    'state' => $shipping->state,
                 ],
-                ...$opts,
-            ]);
+            ];
+        }
+
+        return PaymentIntent::create([
+            ...$params,
+            ...$opts,
+        ]);
     }
 }
