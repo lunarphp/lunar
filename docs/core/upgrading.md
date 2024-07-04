@@ -69,6 +69,17 @@ $variant->purchasable == 'in_stock_or_on_backorder';
 
 ```
 
+## 1.0.0-alpha.22
+
+### Medium Impact
+
+Carts now use soft deletes and a cart will be deleted when `CartSession::forget()` is called.
+If you don't want to delete the cart when you call `forget` you can pass `delete: false` as a parameter:
+
+```php
+\Lunar\Facades\CartSession::forget(delete: false);
+```
+
 ## 1.0.0-alpha.20
 
 ### High Impact
