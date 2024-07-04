@@ -33,8 +33,8 @@ class OrderItemsTable extends TableComponent
             Tables\Columns\Layout\Split::make([
                 Tables\Columns\ImageColumn::make('image')
                     ->defaultImageUrl(fn () => 'data:image/svg+xml;base64, '.base64_encode(
-                            Blade::render('<x-filament::icon icon="heroicon-o-photo" style="color:rgb('.Color::Gray[400].');"/>')
-                        ))
+                        Blade::render('<x-filament::icon icon="heroicon-o-photo" style="color:rgb('.Color::Gray[400].');"/>')
+                    ))
                     ->grow(false)
                     ->getStateUsing(fn ($record) => $record->purchasable?->getThumbnail()?->getUrl('small')),
 
