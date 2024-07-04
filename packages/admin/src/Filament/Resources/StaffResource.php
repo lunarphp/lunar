@@ -161,7 +161,7 @@ class StaffResource extends BaseResource
         return Forms\Components\Toggle::make('admin')
             ->label(__('lunarpanel::staff.form.admin.label'))
             ->helperText(__('lunarpanel::staff.form.admin.helper'))
-            ->hidden(fn ($record) => $record ? ! $record->admin : false)
+            ->visible(fn ($record) => $record ? $record->admin : false)
             ->disabled();
     }
 

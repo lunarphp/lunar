@@ -16,6 +16,5 @@ class CustomerUserEdited
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }
