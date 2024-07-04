@@ -284,7 +284,7 @@ class Cart extends BaseModel
     /**
      * Return the draft order relationship.
      */
-    public function draftOrder(int $draftOrderId = null): HasOne
+    public function draftOrder(?int $draftOrderId = null): HasOne
     {
         return $this->hasOne(Order::class)
             ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
@@ -295,7 +295,7 @@ class Cart extends BaseModel
     /**
      * Return the completed order relationship.
      */
-    public function completedOrder(int $completedOrderId = null): HasOne
+    public function completedOrder(?int $completedOrderId = null): HasOne
     {
         return $this->hasOne(Order::class)
             ->when($completedOrderId, function (Builder $query, int $completedOrderId) {
@@ -417,7 +417,7 @@ class Cart extends BaseModel
     /**
      * Update cart line
      */
-    public function updateLine(int $cartLineId, int $quantity, array $meta = null, bool $refresh = true): Cart
+    public function updateLine(int $cartLineId, int $quantity, ?array $meta = null, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.update_cart_line', []) as $action) {
             app($action)->using(
@@ -576,7 +576,7 @@ class Cart extends BaseModel
      */
     public function createOrder(
         bool $allowMultipleOrders = false,
-        int $orderIdToUpdate = null
+        ?int $orderIdToUpdate = null
     ): Order {
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,

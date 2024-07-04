@@ -33,15 +33,13 @@ class ShippingRateResolver
 
     /**
      * Whether all cart items are in stock
-     *
-     * @var bool
      */
     protected ?bool $allCartItemsAreInStock = null;
 
     /**
      * Initialise the resolver.
      */
-    public function __construct(Cart $cart = null)
+    public function __construct(?Cart $cart = null)
     {
         $this->cart($cart);
     }
@@ -91,7 +89,7 @@ class ShippingRateResolver
     /**
      * Set the value for country.
      */
-    public function country(Country $country = null): self
+    public function country(?Country $country = null): self
     {
         $this->country = $country;
 

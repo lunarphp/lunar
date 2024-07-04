@@ -172,7 +172,7 @@ trait DisplaysOrderAddresses
             ]);
     }
 
-    private static function addressesMatch(OrderAddress $original = null, OrderAddress $comparison = null): bool
+    private static function addressesMatch(?OrderAddress $original = null, ?OrderAddress $comparison = null): bool
     {
         if (! $original || ! $comparison) {
             return false;

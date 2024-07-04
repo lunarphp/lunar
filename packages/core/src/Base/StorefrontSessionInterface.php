@@ -50,8 +50,6 @@ interface StorefrontSessionInterface
 
     /**
      * Return the current customer groups
-     *
-     * @return Collection
      */
     public function getCustomerGroups(): ?Collection;
 

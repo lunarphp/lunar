@@ -87,7 +87,7 @@ class AttributeData
         return collect($this->fieldTypes)->keys();
     }
 
-    public function getConfigurationFields(string $type = null): array
+    public function getConfigurationFields(?string $type = null): array
     {
         $fieldType = $this->fieldTypes[$type] ?? null;
 

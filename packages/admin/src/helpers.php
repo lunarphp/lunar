@@ -11,7 +11,7 @@ if (! function_exists('price')) {
 }
 
 if (! function_exists('sync_with_search')) {
-    function sync_with_search(Illuminate\Database\Eloquent\Model $model = null): void
+    function sync_with_search(?Illuminate\Database\Eloquent\Model $model = null): void
     {
         if (! $model) {
             return;

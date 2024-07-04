@@ -12,15 +12,11 @@ abstract class AbstractPayment implements PaymentTypeInterface
 {
     /**
      * The instance of the cart.
-     *
-     * @var \Lunar\Models\Cart
      */
     protected ?Cart $cart = null;
 
     /**
      * The instance of the order.
-     *
-     * @var \Lunar\Models\Order
      */
     protected ?Order $order = null;
 
