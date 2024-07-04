@@ -141,10 +141,11 @@ export default defineConfig({
                         {text: 'Access Control', link: '/admin/extending/access-control'},
                         {text: 'Add-ons', link: '/admin/extending/addons'},
                         {text: 'Attributes', link: '/admin/extending/attributes'},
-                        {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Panel', link: '/admin/extending/panel'},
+                        {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Resources', link: '/admin/extending/resources'},
-                        {text: 'Relation Managers', link: '/admin/extending/relation-managers'}
+                        {text: 'Relation Managers', link: '/admin/extending/relation-managers'},
+                        {text: 'Order Management', link: '/admin/extending/order-management'}
                     ]
                 }
             ],

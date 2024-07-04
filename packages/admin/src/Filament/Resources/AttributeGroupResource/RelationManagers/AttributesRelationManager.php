@@ -44,7 +44,7 @@ class AttributesRelationManager extends BaseRelationManager
                         }
                         $set('handle', Str::slug($state[Language::getDefault()->code]));
                     }),
-                Forms\Components\TextInput::make('description.en') // TODO: localise
+                TranslatedText::make('description')
                     ->label(
                         __('lunarpanel::attribute.form.description.label')
                     )
@@ -58,7 +58,9 @@ class AttributesRelationManager extends BaseRelationManager
                     )->dehydrated()
                     ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, RelationManager $livewire) {
                         return $rule->where('attribute_group_id', $livewire->ownerRecord->id);
-                    })
+                    })->disabled(
+                        fn (?Model $record) => (bool) $record
+                    )
                     ->required(),
                 Forms\Components\Grid::make(3)->schema([
                     Forms\Components\Toggle::make('searchable')
@@ -76,6 +78,8 @@ class AttributesRelationManager extends BaseRelationManager
                 ]),
                 Forms\Components\Select::make('type')->label(
                     __('lunarpanel::attribute.form.type.label')
+                )->disabled(
+                    fn (?Model $record) => (bool) $record
                 )->options(
                     AttributeData::getFieldTypes()->mapWithKeys(function ($fieldType) {
                         $langKey = strtolower(
@@ -90,10 +94,16 @@ class AttributesRelationManager extends BaseRelationManager
                     ->getContainer()
                     ->getComponent('configuration')
                     ->getChildComponentContainer()
+
                     ->fill()),
                 Forms\Components\TextInput::make('validation_rules')->label(
                     __('lunarpanel::attribute.form.validation_rules.label')
-                )->string()->nullable(),
+                )
+                    ->string()
+                    ->nullable()
+                    ->helperText(
+                        __('lunarpanel::attribute.form.validation_rules.helper')
+                    ),
                 Forms\Components\Grid::make(1)
                     ->schema(function (Forms\Get $get) {
                         return AttributeData::getConfigurationFields($get('type'));

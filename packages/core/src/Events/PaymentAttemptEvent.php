@@ -16,6 +16,5 @@ class PaymentAttemptEvent
      */
     public function __construct(
         public PaymentAuthorize $paymentAuthorize
-    ) {
-    }
+    ) {}
 }
