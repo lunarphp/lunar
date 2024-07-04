@@ -77,7 +77,7 @@ if (! function_exists('get_search_builder')) {
 
     function get_search_builder($model, $search): Laravel\Scout\Builder|Builder
     {
-        $scoutEnabled = config('lunar.search.scout_enabled', false);
+        $scoutEnabled = config('lunar.panel.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive($model));
 
         if (
