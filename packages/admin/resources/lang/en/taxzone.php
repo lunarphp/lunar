@@ -46,6 +46,24 @@ return [
         'default' => [
             'label' => 'Default',
         ],
+
+        'zone_countries' => [
+            'label' => 'Countries',
+        ],
+
+        'zone_country' => [
+            'label' => 'Country',
+        ],
+
+        'zone_states' => [
+            'label' => 'States',
+        ],
+
+        'zone_postcodes' => [
+            'label' => 'Postcodes',
+            'helper' => 'List each postcode on a new line. Supports wildcards such as NW*',
+        ],
+
     ],
 
 ];

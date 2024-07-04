@@ -252,10 +252,19 @@ created for no good reason. If you want to enable this functionality, you can
 adjust the config in `lunar/cart.php`
 
 ### Forgetting the cart
+Forgetting the cart will remove it from the user session and also soft-delete 
+the cart in the database.
 
 ```php
 CartSession::forget();
 ```
+
+If you don't want to delete the cart, you can pass the following parameter.
+
+```php
+CartSession::forget(delete: false);
+```
+
 
 ### Using a specific cart
 

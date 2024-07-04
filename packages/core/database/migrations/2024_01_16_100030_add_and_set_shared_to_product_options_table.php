@@ -4,11 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class AddAndSetSharedToProductOptionsTable extends Migration
+return new class extends Migration
 {
-    public $withinTransaction = true;
-
-    public function up()
+    public function up(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
             $table->boolean('shared')->after('handle')->default(false)->index();
@@ -19,10 +17,11 @@ class AddAndSetSharedToProductOptionsTable extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table($this->prefix.'product_options', function (Blueprint $table) {
+            $table->dropIndex(['shared']);
             $table->dropColumn('shared');
         });
     }
-}
+};

@@ -4,8 +4,8 @@ namespace Lunar\Stripe\Components;
 
 use Livewire\Component;
 use Lunar\Models\Cart;
-use Lunar\Stripe\Facades\StripeFacade;
-use Stripe\Stripe;
+use Lunar\Stripe\Facades\Stripe;
+use Stripe\Stripe as StripeClient;
 
 class PaymentForm extends Component
 {
@@ -42,7 +42,7 @@ class PaymentForm extends Component
      */
     public function mount()
     {
-        Stripe::setApiKey(config('services.stripe.key'));
+        StripeClient::setApiKey(config('services.stripe.key'));
         $this->policy = config('stripe.policy', 'capture');
     }
 
@@ -53,7 +53,7 @@ class PaymentForm extends Component
      */
     public function getClientSecretProperty()
     {
-        $intent = StripeFacade::createIntent($this->cart);
+        $intent = Stripe::createIntent($this->cart);
 
         return $intent->client_secret;
     }

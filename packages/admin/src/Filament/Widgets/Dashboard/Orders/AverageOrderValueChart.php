@@ -16,12 +16,14 @@ class AverageOrderValueChart extends ApexChartWidget
      */
     protected static ?string $chartId = 'averageOrderValue';
 
+    protected static ?string $pollingInterval = '60s';
+
     protected function getHeading(): ?string
     {
         return __('lunarpanel::widgets.dashboard.orders.average_order_value.heading');
     }
 
-    protected function getOrderQuery(\DateTime $from = null, \DateTime $to = null)
+    protected function getOrderQuery(?\DateTime $from = null, ?\DateTime $to = null)
     {
         return Order::whereNotNull('placed_at')
             ->whereBetween('placed_at', [

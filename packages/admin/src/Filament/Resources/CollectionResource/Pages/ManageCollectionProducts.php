@@ -9,6 +9,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Lunar\Admin\Events\CollectionProductAttached;
+use Lunar\Admin\Events\CollectionProductDetached;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
@@ -58,7 +60,7 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
         return $table->columns([
 
             Tables\Columns\SpatieMediaLibraryImageColumn::make('thumbnail')
-                ->collection('images')
+                ->collection(config('lunar.media.collection'))
                 ->conversion('small')
                 ->limit(1)
                 ->square()
@@ -67,7 +69,9 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                 ->formatStateUsing(fn (Model $record): string => $record->translateAttribute('name'))
                 ->label(__('lunarpanel::product.table.name.label')),
         ])->actions([
-            Tables\Actions\DetachAction::make(),
+            Tables\Actions\DetachAction::make()->after(
+                fn () => CollectionProductDetached::dispatch($this->getOwnerRecord())
+            ),
             Tables\Actions\EditAction::make()->url(
                 fn (Model $record) => ProductResource::getUrl('edit', [
                     'record' => $record,
@@ -98,6 +102,10 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                     $relationship->attach($product, [
                         'position' => $relationship->count() + 1,
                     ]);
+
+                    CollectionProductAttached::dispatch($this->getOwnerRecord());
+
+                    $product->searchable();
                 }),
         ])->reorderable('position');
     }

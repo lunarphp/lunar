@@ -36,7 +36,15 @@ If you installed the Lunar package in an existing project and you would like to 
 php artisan lunar:search:index
 ```
 
-The command will import the records of the models listed in the `lunar/indexer.php` configuration file. Type `--help` to see the available options.
+The command will import the records of the models listed in the `lunar/search.php` configuration file. Type `--help` to see the available options.
+
+## Meilisearch
+
+If you used the Meilisearch package you would like to use the command to create filterable and searchable attributes on Meilisearch indexes. 
+
+```sh
+php artisan lunar:meilisearch:setup
+```
 
 ## Engine Mapping
 

@@ -14,11 +14,14 @@ class Dropdown extends BaseFieldType
 
     public static function getFilamentComponent(Attribute $attribute): Component
     {
-        return Select::make($attribute->handle)->options(
-            collect($attribute->configuration->get('lookups'))->mapWithKeys(
-                fn ($lookup) => [$lookup['value'] => $lookup['label'] ?? $lookup['value']]
+        return Select::make($attribute->handle)
+            ->options(
+                collect($attribute->configuration->get('lookups'))->mapWithKeys(
+                    fn ($lookup) => [$lookup['value'] => $lookup['label'] ?? $lookup['value']]
+                )
             )
-        )
+            ->when(filled($attribute->validation_rules), fn (Select $component) => $component->rules($attribute->validation_rules))
+            ->required((bool) $attribute->configuration->get('required'))
             ->helperText($attribute->translate('description'));
     }
 
@@ -27,18 +30,22 @@ class Dropdown extends BaseFieldType
         return [
             KeyValue::make('lookups')->label(
                 __('lunarpanel::fieldtypes.dropdown.form.lookups.label')
-            )->formatStateUsing(function ($state) {
-                return collect($state)->mapWithKeys(
-                    fn ($lookup) => [$lookup['label'] => $lookup['value'] ?? $lookup['label']]
-                )->toArray();
-            })->mutateDehydratedStateUsing(function ($state) {
-                return collect($state)->map(function ($value, $label) {
-                    return [
-                        'label' => $label ?? $value,
-                        'value' => $value,
-                    ];
-                })->values()->toArray();
-            }),
+            )
+                ->keyLabel(__('lunarpanel::fieldtypes.dropdown.form.lookups.key_label'))
+                ->valueLabel(__('lunarpanel::fieldtypes.dropdown.form.lookups.value_label'))
+                ->formatStateUsing(function ($state) {
+                    return collect($state)->mapWithKeys(
+                        fn ($lookup) => [$lookup['label'] => $lookup['value'] ?? $lookup['label']]
+                    )->toArray();
+                })
+                ->mutateDehydratedStateUsing(function ($state) {
+                    return collect($state)->map(function ($value, $label) {
+                        return [
+                            'label' => $label ?? $value,
+                            'value' => $value,
+                        ];
+                    })->values()->toArray();
+                }),
         ];
     }
 }

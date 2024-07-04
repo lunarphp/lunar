@@ -161,7 +161,7 @@ class StaffResource extends BaseResource
         return Forms\Components\Toggle::make('admin')
             ->label(__('lunarpanel::staff.form.admin.label'))
             ->helperText(__('lunarpanel::staff.form.admin.helper'))
-            ->hidden(fn ($record) => $record ? ! $record->admin : false)
+            ->visible(fn ($record) => $record ? $record->admin : false)
             ->disabled();
     }
 
@@ -195,14 +195,14 @@ class StaffResource extends BaseResource
             ]);
     }
 
-    public static function getRelations(): array
+    public static function getDefaultRelations(): array
     {
         return [
             //
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListStaff::route('/'),

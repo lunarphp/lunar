@@ -19,7 +19,9 @@ class BaseResource extends Resource
 {
     use Concerns\CallsHooks;
     use Concerns\ExtendsForms;
+    use Concerns\ExtendsPages;
     use Concerns\ExtendsRelationManagers;
+    use Concerns\ExtendsSubnavigation;
     use Concerns\ExtendsTables;
 
     protected static ?string $permission = null;
@@ -33,7 +35,7 @@ class BaseResource extends Resource
         parent::registerNavigationItems();
     }
 
-    public static function can(string $action, Model $record = null): bool
+    public static function can(string $action, ?Model $record = null): bool
     {
         return static::hasPermission();
     }
@@ -54,7 +56,7 @@ class BaseResource extends Resource
      */
     protected static function applyGlobalSearchAttributeConstraints(Builder $query, string $search): void
     {
-        $scoutEnabled = config('lunar.search.scout_enabled', false);
+        $scoutEnabled = config('lunar.panel.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive(static::getModel()));
 
         if (

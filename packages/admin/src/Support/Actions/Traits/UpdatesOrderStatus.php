@@ -36,25 +36,27 @@ trait UpdatesOrderStatus
     protected static function getEmailAddressesInput(): Forms\Components\CheckboxList
     {
         return Forms\Components\CheckboxList::make('email_addresses')
-            ->hidden(function (Forms\Get $get, Order $record = null) {
+            ->hidden(function (Forms\Get $get, ?Order $record = null) {
+
                 if (! $record) {
                     return true;
                 }
 
                 return ! count($get('mailers') ?: [])
-                    || ! ($record?->billingAddress?->contact_email && $record->shippingAddress->contact_email);
-            })->afterStateHydrated(function (Order $record = null, Forms\Components\CheckboxList $component) {
+                    || ! ($record?->billingAddress?->contact_email || $record->shippingAddress?->contact_email);
+            })->afterStateHydrated(function (?Order $record, Forms\Components\CheckboxList $component) {
                 $emails = collect([
-                    $record?->billingAddress->contact_email,
-                    $record?->shippingAddress->contact_email,
+                    $record?->billingAddress?->contact_email,
+                    $record?->shippingAddress?->contact_email,
                 ])->filter()->unique()->map(
                     fn ($email) => $email
                 )->toArray();
+
                 $component->state($emails);
-            })->options(function (Order $record = null) {
+            })->options(function (?Order $record = null) {
                 return collect([
-                    $record?->billingAddress->contact_email,
-                    $record?->shippingAddress->contact_email,
+                    $record?->billingAddress?->contact_email,
+                    $record?->shippingAddress?->contact_email,
                 ])->filter()->unique()->mapWithKeys(
                     fn ($email) => [$email => $email]
                 )->toArray();
@@ -166,7 +168,7 @@ trait UpdatesOrderStatus
         )->success()->send();
     }
 
-    protected static function getMailers(string $status = null): array
+    protected static function getMailers(?string $status = null): array
     {
         if (! $status) {
             return [];

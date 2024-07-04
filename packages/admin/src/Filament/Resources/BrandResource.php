@@ -6,7 +6,6 @@ use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
 use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\Page;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -50,13 +49,15 @@ class BrandResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             Pages\EditBrand::class,
             Pages\ManageBrandMedia::class,
             Pages\ManageBrandUrls::class,
-        ]);
+            Pages\ManageBrandProducts::class,
+            Pages\ManageBrandCollections::class,
+        ];
     }
 
     public static function getDefaultForm(Form $form): Form
@@ -114,7 +115,7 @@ class BrandResource extends BaseResource
     {
         return [
             SpatieMediaLibraryImageColumn::make('thumbnail')
-                ->collection('images')
+                ->collection(config('lunar.media.collection'))
                 ->conversion('small')
                 ->limit(1)
                 ->square()
@@ -130,14 +131,14 @@ class BrandResource extends BaseResource
         ];
     }
 
-    public static function getRelations(): array
+    public static function getDefaultRelations(): array
     {
         return [
-            //
+
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListBrands::route('/'),
@@ -145,6 +146,8 @@ class BrandResource extends BaseResource
             'edit' => Pages\EditBrand::route('/{record}/edit'),
             'media' => Pages\ManageBrandMedia::route('/{record}/media'),
             'urls' => Pages\ManageBrandUrls::route('/{record}/urls'),
+            'products' => Pages\ManageBrandProducts::route('/{record}/products'),
+            'collections' => Pages\ManageBrandCollections::route('/{record}/collections'),
         ];
     }
 

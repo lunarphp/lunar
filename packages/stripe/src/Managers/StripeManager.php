@@ -4,6 +4,8 @@ namespace Lunar\Stripe\Managers;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
+use Stripe\Charge;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
@@ -21,20 +23,16 @@ class StripeManager
      */
     public function getClient(): StripeClient
     {
-        return new StripeClient(
-            config('services.stripe.key')
-        );
+        return new StripeClient([
+            'api_key' => config('services.stripe.key'),
+        ]);
     }
 
     /**
      * Create a payment intent from a Cart
-     *
-     * @return \Stripe\PaymentIntent
      */
-    public function createIntent(Cart $cart)
+    public function createIntent(Cart $cart, array $opts = []): PaymentIntent
     {
-        $shipping = $cart->shippingAddress;
-
         $meta = (array) $cart->meta;
 
         if ($meta && ! empty($meta['payment_intent'])) {
@@ -50,7 +48,8 @@ class StripeManager
         $paymentIntent = $this->buildIntent(
             $cart->total->value,
             $cart->currency->code,
-            $shipping,
+            $cart->shippingAddress,
+            $opts
         );
 
         if (! $meta) {
@@ -68,7 +67,43 @@ class StripeManager
         return $paymentIntent;
     }
 
-    public function syncIntent(Cart $cart)
+    public function updateShippingAddress(Cart $cart): void
+    {
+        $address = $cart->shippingAddress;
+
+        if (! $address) {
+            $this->updateIntent($cart, [
+                'shipping' => [
+                    'name' => "{$address->first_name} {$address->last_name}",
+                    'phone' => $address->contact_phone,
+                    'address' => [
+                        'city' => $address->city,
+                        'country' => $address->country->iso2,
+                        'line1' => $address->line_one,
+                        'line2' => $address->line_two,
+                        'postal_code' => $address->postcode,
+                        'state' => $address->state,
+                    ],
+                ],
+            ]);
+        }
+    }
+
+    public function updateIntent(Cart $cart, array $values): void
+    {
+        $meta = (array) $cart->meta;
+
+        if (empty($meta['payment_intent'])) {
+            return;
+        }
+
+        $this->getClient()->paymentIntents->update(
+            $meta['payment_intent'],
+            $values
+        );
+    }
+
+    public function syncIntent(Cart $cart): void
     {
         $meta = (array) $cart->meta;
 
@@ -86,14 +121,11 @@ class StripeManager
 
     /**
      * Fetch an intent from the Stripe API.
-     *
-     * @param  string  $intentId
-     * @return null|\Stripe\PaymentIntent
      */
-    public function fetchIntent($intentId)
+    public function fetchIntent(string $intentId, $options = null): ?PaymentIntent
     {
         try {
-            $intent = PaymentIntent::retrieve($intentId);
+            $intent = PaymentIntent::retrieve($intentId, $options);
         } catch (InvalidRequestException $e) {
             return null;
         }
@@ -116,28 +148,27 @@ class StripeManager
         return collect();
     }
 
-    public function getCharge($chargeId)
+    public function getCharge(string $chargeId): Charge
     {
         return $this->getClient()->charges->retrieve($chargeId);
     }
 
     /**
      * Build the intent
-     *
-     * @param  int  $value
-     * @param  string  $currencyCode
-     * @param  \Lunar\Models\CartAddress  $shipping
-     * @return \Stripe\PaymentIntent
      */
-    protected function buildIntent($value, $currencyCode, $shipping)
+    protected function buildIntent(int $value, string $currencyCode, ?CartAddress $shipping, array $opts = []): PaymentIntent
     {
-        return PaymentIntent::create([
+        $params = [
             'amount' => $value,
             'currency' => $currencyCode,
             'automatic_payment_methods' => ['enabled' => true],
             'capture_method' => config('lunar.stripe.policy', 'automatic'),
-            'shipping' => [
+        ];
+
+        if ($shipping) {
+            $params['shipping'] = [
                 'name' => "{$shipping->first_name} {$shipping->last_name}",
+                'phone' => $shipping->contact_phone,
                 'address' => [
                     'city' => $shipping->city,
                     'country' => $shipping->country->iso2,
@@ -146,7 +177,12 @@ class StripeManager
                     'postal_code' => $shipping->postcode,
                     'state' => $shipping->state,
                 ],
-            ],
+            ];
+        }
+
+        return PaymentIntent::create([
+            ...$params,
+            ...$opts,
         ]);
     }
 }

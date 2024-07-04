@@ -19,6 +19,11 @@ return [
     'table' => [
         'status' => [
             'label' => 'Status',
+            'states' => [
+                'deleted' => 'Deleted',
+                'draft' => 'Draft',
+                'published' => 'Published',
+            ],
         ],
         'name' => [
             'label' => 'Name',
@@ -82,9 +87,6 @@ return [
         'availability' => [
             'label' => 'Availability',
         ],
-        'media' => [
-            'label' => 'Media',
-        ],
         'identifiers' => [
             'label' => 'Product Identifiers',
         ],
@@ -104,6 +106,15 @@ return [
         ],
         'shipping' => [
             'label' => 'Shipping',
+        ],
+        'variants' => [
+            'label' => 'Variants',
+        ],
+        'collections' => [
+            'label' => 'Collections',
+        ],
+        'associations' => [
+            'label' => 'Product Associations',
         ],
     ],
 

@@ -18,38 +18,28 @@ class ShippingRateResolver
 
     /**
      * The country to use when resolving.
-     *
-     * @var Country
      */
     protected ?Country $country = null;
 
     /**
      * The state to use when resolving.
-     *
-     * @var State
      */
     protected ?string $state = null;
 
     /**
      * The postcode to use when resolving.
-     *
-     * @var string
      */
     protected ?string $postcode = null;
 
     /**
      * Whether all cart items are in stock
-     *
-     * @var bool
      */
     protected ?bool $allCartItemsAreInStock = null;
 
     /**
      * Initialise the resolver.
-     *
-     * @param  Cart  $cart
      */
-    public function __construct(Cart $cart = null)
+    public function __construct(?Cart $cart = null)
     {
         $this->cart($cart);
     }
@@ -99,7 +89,7 @@ class ShippingRateResolver
     /**
      * Set the value for country.
      */
-    public function country(Country $country = null): self
+    public function country(?Country $country = null): self
     {
         $this->country = $country;
 
@@ -138,15 +128,15 @@ class ShippingRateResolver
             State::whereName($this->state)->first()
         )->postcode(
             new PostcodeLookup(
-                postcode: $this->postcode,
-                country: $this->country
+                country: $this->country,
+                postcode: $this->postcode
             )
         )->get();
 
         $shippingRates = collect();
 
         foreach ($zones as $zone) {
-            $shippingRates = $zone->rates
+            $zoneShippingRates = $zone->rates
                 ->reject(function ($rate) {
                     $method = $rate->shippingMethod;
 
@@ -169,7 +159,7 @@ class ShippingRateResolver
                     return true;
                 });
 
-            foreach ($shippingRates as $shippingRate) {
+            foreach ($zoneShippingRates as $shippingRate) {
                 $shippingRates->push(
                     $shippingRate
                 );

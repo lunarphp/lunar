@@ -9,6 +9,11 @@ use Lunar\Models\Order;
 
 class LatestOrdersTable extends TableWidget
 {
+    protected function getTablePollingInterval(): ?string
+    {
+        return '60s';
+    }
+
     protected int|string|array $columnSpan = 'full';
 
     public static function getHeading(): ?string
@@ -18,12 +23,10 @@ class LatestOrdersTable extends TableWidget
 
     public function table(Table $table): Table
     {
-        return OrderResource::table(
-            $table->query(function () {
-                return Order::orderBy('placed_at', 'desc')->orderBy('created_at', 'desc')->limit(10);
-            })
-        )->heading(
-            $this->getHeading()
-        )->searchable(false)->paginated(false);
+        return $table->query(function () {
+            return Order::orderBy('placed_at', 'desc')->orderBy('created_at', 'desc')->limit(10);
+        })->columns(
+            OrderResource::getTableColumns()
+        )->paginated(false)->searchable(false);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
-use Closure;
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
@@ -15,68 +14,85 @@ use Lunar\Models\ProductVariant;
 
 class Attributes extends Forms\Components\Group
 {
-    public static function make(Closure|array $schema = []): static
+    protected function setUp(): void
     {
-        return app(
-            static::class,
-            [
-                'schema' => ! blank($schema) ? $schema : function (\Filament\Forms\Get $get, Livewire $livewire, ?Model $record) {
-                    $modelClass = $livewire::getResource()::getModel();
+        parent::setUp();
 
-                    $productTypeId = null;
+        $this->key('attributeData');
 
-                    $attributeQuery = Attribute::where('attribute_type', $modelClass);
+        if (blank($this->childComponents)) {
+            $this->schema(function (\Filament\Forms\Get $get, Livewire $livewire, ?Model $record) {
+                $modelClass = $livewire::getResource()::getModel();
 
-                    // Products are unique in that they use product types to map attributes, so we need
-                    // to try and find the product type ID
-                    if ($modelClass == Product::class) {
-                        $productTypeId = $record?->product_type_id ?: ProductType::first()->id;
+                $productTypeId = null;
 
-                        // If we have a product type, the attributes should be based off that.
-                        if ($productTypeId) {
-                            $attributeQuery = ProductType::find($productTypeId)->productAttributes();
-                        }
+                $attributeQuery = Attribute::where('attribute_type', $modelClass);
+
+                // Products are unique in that they use product types to map attributes, so we need
+                // to try and find the product type ID
+                if ($modelClass == Product::class) {
+                    $productTypeId = $record?->product_type_id ?: ProductType::first()->id;
+
+                    // If we have a product type, the attributes should be based off that.
+                    if ($productTypeId) {
+                        $attributeQuery = ProductType::find($productTypeId)->productAttributes();
+                    }
+                }
+
+                if ($modelClass == ProductVariant::class) {
+                    $productTypeId = $record->product?->product_type_id ?: ProductType::first()->id;
+
+                    // If we have a product type, the attributes should be based off that.
+                    if ($productTypeId) {
+                        $attributeQuery = ProductType::find($productTypeId)->variantAttributes();
+                    }
+                }
+
+                $attributes = $attributeQuery->orderBy('position')->get();
+
+                $groups = AttributeGroup::where(
+                    'attributable_type',
+                    $modelClass
+                )->orderBy('position', 'asc')
+                    ->get()
+                    ->map(function ($group) use ($attributes) {
+                        return [
+                            'model' => $group,
+                            'fields' => $attributes->groupBy('attribute_group_id')->get($group->id, []),
+                        ];
+                    });
+
+                $groupComponents = [];
+
+                foreach ($groups as $group) {
+                    $sectionFields = [];
+
+                    foreach ($group['fields'] as $field) {
+                        $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
 
-                    if ($modelClass == ProductVariant::class) {
-                        $productTypeId = $record->product?->product_type_id ?: ProductType::first()->id;
+                    $groupComponents[] = Forms\Components\Section::make($group['model']->translate('name'))
+                        ->schema($sectionFields);
+                }
 
-                        // If we have a product type, the attributes should be based off that.
-                        if ($productTypeId) {
-                            $attributeQuery = ProductType::find($productTypeId)->variantAttributes();
-                        }
-                    }
+                return $groupComponents;
+            });
+        }
 
-                    $attributes = $attributeQuery->orderBy('position')->get();
+        $this->mutateStateForValidationUsing(function ($state) {
+            if (! is_array($state)) {
+                return $state;
+            }
 
-                    $groups = AttributeGroup::where(
-                        'attributable_type',
-                        $modelClass
-                    )->orderBy('position', 'asc')
-                        ->get()
-                        ->map(function ($group) use ($attributes) {
-                            return [
-                                'model' => $group,
-                                'fields' => $attributes->groupBy('attribute_group_id')->get($group->id, []),
-                            ];
-                        });
+            foreach ($state as $key => $value) {
+                if (! $value instanceof \Lunar\Base\Fieldtype) {
+                    continue;
+                }
 
-                    $groupComponents = [];
+                $state[$key] = $value->getValue();
+            }
 
-                    foreach ($groups as $group) {
-                        $sectionFields = [];
-
-                        foreach ($group['fields'] as $field) {
-                            $sectionFields[] = AttributeData::getFilamentComponent($field);
-                        }
-
-                        $groupComponents[] = Forms\Components\Section::make($group['model']->translate('name'))
-                            ->schema($sectionFields);
-                    }
-
-                    return $groupComponents;
-                },
-            ]
-        )->configure()->key('attributeData');
+            return $state;
+        });
     }
 }

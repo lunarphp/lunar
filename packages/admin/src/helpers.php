@@ -16,6 +16,37 @@ if (! function_exists('price')) {
     }
 }
 
+if (! function_exists('sync_with_search')) {
+    function sync_with_search(?Illuminate\Database\Eloquent\Model $model = null): void
+    {
+        if (! $model) {
+            return;
+        }
+
+        $isSearchable = in_array(Searchable::class, class_uses($model));
+
+        if ($isSearchable) {
+            $model->searchable();
+
+            return;
+        }
+
+        if ($model instanceof \Lunar\Models\ProductVariant) {
+            $model->product()->first()->searchable();
+        }
+
+        if ($model instanceof \Lunar\Models\Address) {
+            $model->customer()->first()->searchable();
+        }
+
+        if (is_lunar_user($model)) {
+            foreach ($model->customers()->get() as $customer) {
+                $customer->searchable();
+            }
+        }
+    }
+}
+
 if (! function_exists('db_date')) {
     function db_date($column, $format, $alias = null)
     {

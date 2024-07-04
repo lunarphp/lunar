@@ -4,6 +4,7 @@ namespace Lunar\Admin\Support\FieldTypes;
 
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
 use Lunar\Admin\Support\Synthesizers\NumberSynth;
 use Lunar\Models\Attribute;
 
@@ -14,9 +15,13 @@ class Number extends BaseFieldType
     public static function getFilamentComponent(Attribute $attribute): Component
     {
         $min = (int) $attribute->configuration->get('min');
-        $max = (int) $attribute->configuration->get('min');
+        $max = (int) $attribute->configuration->get('max');
 
-        $input = TextField::getFilamentComponent($attribute)->numeric();
+        $input = TextInput::make($attribute->handle)
+            ->numeric()
+            ->when(filled($attribute->validation_rules), fn (TextInput $component) => $component->rules($attribute->validation_rules))
+            ->required((bool) $attribute->configuration->get('required'))
+            ->helperText($attribute->translate('description'));
 
         if ($min) {
             $input->minValue($min);

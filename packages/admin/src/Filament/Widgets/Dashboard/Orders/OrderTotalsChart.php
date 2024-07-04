@@ -18,12 +18,14 @@ class OrderTotalsChart extends ApexChartWidget
      */
     protected static ?string $chartId = 'orderTotalsChart';
 
+    protected static ?string $pollingInterval = '60s';
+
     protected function getHeading(): ?string
     {
         return __('lunarpanel::widgets.dashboard.orders.order_totals_chart.heading');
     }
 
-    protected function getOrderQuery(\DateTime $from = null, \DateTime $to = null)
+    protected function getOrderQuery(?\DateTime $from = null, ?\DateTime $to = null)
     {
         return Order::whereNotNull('placed_at')
             ->whereBetween('placed_at', [

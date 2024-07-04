@@ -52,7 +52,8 @@ export default defineConfig({
                 items: [
                     {text: 'Changelog', link: '/core/upgrading'},
                     {text: 'Contributing', link: '/core/contributing'},
-                    {text: 'Roadmap', link: 'https://github.com/orgs/lunarphp/projects/8'}
+                    {text: 'Roadmap', link: 'https://github.com/orgs/lunarphp/projects/8'},
+                    {text: '0.x Docs', link: 'https://v0.lunarphp.io/'},
                 ]
             }
         ],
@@ -136,12 +137,14 @@ export default defineConfig({
                     text: 'Extending',
                     collapsed: false,
                     items: [
+                        {text: 'Overview', link: '/admin/extending/overview'},
                         {text: 'Access Control', link: '/admin/extending/access-control'},
                         {text: 'Add-ons', link: '/admin/extending/addons'},
                         {text: 'Attributes', link: '/admin/extending/attributes'},
-                        {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Panel', link: '/admin/extending/panel'},
-                        {text: 'Resources', link: '/admin/extending/resources'}
+                        {text: 'Pages', link: '/admin/extending/pages'},
+                        {text: 'Resources', link: '/admin/extending/resources'},
+                        {text: 'Order Management', link: '/admin/extending/order-management'}
                     ]
                 }
             ],

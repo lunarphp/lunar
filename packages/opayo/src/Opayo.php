@@ -2,7 +2,9 @@
 
 namespace Lunar\Opayo;
 
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 
 class Opayo implements OpayoInterface
@@ -18,8 +20,8 @@ class Opayo implements OpayoInterface
     {
         $this->http = Http::baseUrl(
             strtolower(config('services.opayo.env', 'test')) == 'test' ?
-             'https://pi-test.sagepay.com/api/v1/' :
-             'https://pi-live.sagepay.com/api/v1/'
+             'https://sandbox.opayo.eu.elavon.com/api/v1/' :
+             'https://live.opayo.eu.elavon.com/api/v1/'
         )->withHeaders([
             'Authorization' => 'Basic '.$this->getCredentials(),
             'Content-Type' => 'application/json',
@@ -29,17 +31,15 @@ class Opayo implements OpayoInterface
 
     /**
      * Return the merchant key for payment.
-     *
-     * @return string
      */
-    public function getMerchantKey()
+    public function getMerchantKey(): ?string
     {
         $response = $this->http->post('merchant-session-keys', [
             'vendorName' => $this->getVendor(),
         ]);
 
         if (! $response->successful()) {
-            return;
+            return null;
         }
 
         return $response->json()['merchantSessionKey'] ?? null;
@@ -48,18 +48,15 @@ class Opayo implements OpayoInterface
     /**
      * Return the Http client.
      */
-    public function api()
+    public function api(): PendingRequest
     {
         return $this->http;
     }
 
     /**
      * Return a transaction from the API
-     *
-     * @param  string  $id
-     * @return mixed
      */
-    public function getTransaction($id, $attempt = 1)
+    public function getTransaction(string $id, $attempt = 1): ?object
     {
         $response = $this->http->get("transactions/{$id}");
 
@@ -88,35 +85,50 @@ class Opayo implements OpayoInterface
             ],
             'vendorTxCode' => $parameters->vendorTxCode,
             'amount' => $parameters->amount,
-            'currency' => $parameters->currency,
+            'currency' => Str::take($parameters->currency, 3),
             'description' => 'Webstore Transaction',
             'apply3DSecure' => 'UseMSPSetting',
-            'customerFirstName' => $parameters->customerFirstName,
-            'customerLastName' => $parameters->customerLastName,
+            'customerFirstName' => Str::take($parameters->customerFirstName, 20),
+            'customerLastName' => Str::take($parameters->customerLastName, 20),
             'billingAddress' => [
-                'address1' => $parameters->billingAddressLineOne,
-                'city' => $parameters->billingAddressCity,
-                'postalCode' => $parameters->billingAddressPostcode,
-                'country' => $parameters->billingAddressCountryIso,
+                'address1' => Str::take($parameters->billingAddressLineOne, 50),
+                'address2' => Str::take($parameters->billingAddressLineTwo, 50),
+                'address3' => Str::take($parameters->billingAddressLineThree, 50),
+                'city' => Str::take($parameters->billingAddressCity, 40),
+                'postalCode' => Str::take($parameters->billingAddressPostcode, 10),
+                'country' => Str::take($parameters->billingAddressCountryIso, 2),
             ],
             'strongCustomerAuthentication' => [
-                'customerMobilePhone' => $parameters->customerMobilePhone,
+                'customerMobilePhone' => Str::take($parameters->customerMobilePhone, 19),
                 'transType' => 'GoodsAndServicePurchase',
-                'browserLanguage' => $parameters->browserLanguage,
+                'browserLanguage' => Str::take($parameters->browserLanguage, 8),
                 'challengeWindowSize' => $parameters->challengeWindowSize,
-                'browserIP' => $parameters->browserIP,
+                'browserIP' => Str::take($parameters->browserIP, 39),
                 'notificationURL' => $parameters->notificationURL,
-                'browserAcceptHeader' => $parameters->browserAcceptHeader,
+                'browserAcceptHeader' => Str::take($parameters->browserAcceptHeader, 2048),
                 'browserJavascriptEnabled' => true,
-                'browserUserAgent' => $parameters->browserUserAgent,
+                'browserUserAgent' => Str::take($parameters->browserUserAgent, 2048),
                 'browserJavaEnabled' => $parameters->browserJavaEnabled,
-                'browserColorDepth' => $parameters->browserColorDepth,
-                'browserScreenHeight' => $parameters->browserScreenHeight,
-                'browserScreenWidth' => $parameters->browserScreenWidth,
-                'browserTZ' => $parameters->browserTZ,
+                'browserColorDepth' => Str::take($parameters->browserColorDepth, 2),
+                'browserScreenHeight' => Str::take($parameters->browserScreenHeight, 6),
+                'browserScreenWidth' => Str::take($parameters->browserScreenWidth, 6),
+                'browserTZ' => Str::take($parameters->browserTZ, 6),
             ],
             'entryMethod' => 'Ecommerce',
         ];
+
+        if ($parameters->shippingAddressLineOne) {
+            $payload['shippingDetails'] = [
+                'recipientFirstName' => Str::take($parameters->recipientFirstName, 20),
+                'recipientLastName' => Str::take($parameters->recipientLastName, 20),
+                'shippingAddress1' => Str::take($parameters->shippingAddressLineOne, 50),
+                'shippingAddress2' => Str::take($parameters->shippingAddressLineTwo, 50),
+                'shippingAddress3' => Str::take($parameters->shippingAddressLineThree, 50),
+                'shippingCity' => Str::take($parameters->shippingAddressCity, 40),
+                'shippingPostalCode' => Str::take($parameters->shippingAddressPostcode, 10),
+                'shippingCountry' => Str::take($parameters->shippingAddressCountryIso, 2),
+            ];
+        }
 
         if ($parameters->saveCard) {
             $payload['credentialType'] = [
@@ -145,20 +157,16 @@ class Opayo implements OpayoInterface
 
     /**
      * Get the service credentials.
-     *
-     * @return string
      */
-    protected function getCredentials()
+    protected function getCredentials(): string
     {
         return base64_encode(config('services.opayo.key').':'.config('services.opayo.password'));
     }
 
     /**
      * Get the vendor name.
-     *
-     * @return string
      */
-    protected function getVendor()
+    protected function getVendor(): string
     {
         return config('services.opayo.vendor');
     }

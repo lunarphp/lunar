@@ -2,23 +2,21 @@
 
 namespace Lunar\PaymentTypes;
 
+use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\PaymentTypeInterface;
 use Lunar\Models\Cart;
 use Lunar\Models\Order;
+use Lunar\Models\Transaction;
 
 abstract class AbstractPayment implements PaymentTypeInterface
 {
     /**
      * The instance of the cart.
-     *
-     * @var \Lunar\Models\Cart
      */
     protected ?Cart $cart = null;
 
     /**
      * The instance of the order.
-     *
-     * @var \Lunar\Models\Order
      */
     protected ?Order $order = null;
 
@@ -70,5 +68,10 @@ abstract class AbstractPayment implements PaymentTypeInterface
         $this->config = $config;
 
         return $this;
+    }
+
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    {
+        return new PaymentChecks;
     }
 }

@@ -7,7 +7,7 @@ it('can store successful charge', function () {
 
     $order = $cart->createOrder();
 
-    $paymentIntent = \Lunar\Stripe\Facades\StripeFacade::getClient()
+    $paymentIntent = \Lunar\Stripe\Facades\Stripe::getClient()
         ->paymentIntents
         ->retrieve('PI_CAPTURE');
 
@@ -30,7 +30,7 @@ it('updates existing transactions', function () {
 
     $order = $cart->createOrder();
 
-    $paymentIntent = \Lunar\Stripe\Facades\StripeFacade::getClient()
+    $paymentIntent = \Lunar\Stripe\Facades\Stripe::getClient()
         ->paymentIntents
         ->retrieve('PI_CAPTURE');
 

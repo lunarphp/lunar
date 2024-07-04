@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Concerns\Products\ManagesProductPricing;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
@@ -43,7 +44,7 @@ class ManageProductPricing extends BaseEditRecord
             $this->basePrices = $this->getBasePrices();
         }
 
-        return $form->schema([
+        $form->schema([
             Forms\Components\Section::make()
                 ->schema([
                     Forms\Components\Group::make([
@@ -53,11 +54,18 @@ class ManageProductPricing extends BaseEditRecord
                 ]),
             $this->getBasePriceFormSection(),
         ])->statePath('');
+
+        $this->callLunarHook('extendForm', $form);
+
+        return $form;
     }
 
     public function getRelationManagers(): array
     {
         return [
+            CustomerGroupPricingRelationManager::make([
+                'ownerRecord' => $this->getOwnerRecord(),
+            ]),
             PriceRelationManager::make([
                 'ownerRecord' => $this->getOwnerRecord(),
             ]),

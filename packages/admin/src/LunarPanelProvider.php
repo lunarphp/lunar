@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin;
 
+use Filament\Facades\Filament;
 use Filament\Support\Assets\Css;
 use Filament\Support\Events\FilamentUpgraded;
 use Filament\Support\Facades\FilamentAsset;
@@ -15,6 +16,18 @@ use Livewire\Livewire;
 use Lunar\Admin\Auth\Manifest;
 use Lunar\Admin\Console\Commands\MakeLunarAdminCommand;
 use Lunar\Admin\Database\State\EnsureBaseRolesAndPermissions;
+use Lunar\Admin\Events\ChildCollectionCreated;
+use Lunar\Admin\Events\CollectionProductDetached;
+use Lunar\Admin\Events\CustomerAddressEdited;
+use Lunar\Admin\Events\CustomerUserEdited;
+use Lunar\Admin\Events\ModelChannelsUpdated;
+use Lunar\Admin\Events\ModelPricesUpdated;
+use Lunar\Admin\Events\ModelUrlsUpdated;
+use Lunar\Admin\Events\ProductAssociationsUpdated;
+use Lunar\Admin\Events\ProductCollectionsUpdated;
+use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
+use Lunar\Admin\Events\ProductPricingUpdated;
+use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Listeners\FilamentUpgradedListener;
 use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
@@ -24,7 +37,6 @@ use Lunar\Admin\Support\Synthesizers\PriceSynth;
 class LunarPanelProvider extends ServiceProvider
 {
     protected $configFiles = [
-        'search',
         'panel',
     ];
 
@@ -78,6 +90,21 @@ class LunarPanelProvider extends ServiceProvider
             ]);
         }
 
+        Event::listen([
+            ChildCollectionCreated::class,
+            CollectionProductDetached::class,
+            CustomerAddressEdited::class,
+            CustomerUserEdited::class,
+            ProductAssociationsUpdated::class,
+            ProductCollectionsUpdated::class,
+            ProductPricingUpdated::class,
+            ProductCustomerGroupsUpdated::class,
+            ProductVariantOptionsUpdated::class,
+            ModelChannelsUpdated::class,
+            ModelPricesUpdated::class,
+            ModelUrlsUpdated::class,
+        ], fn ($event) => sync_with_search($event->model));
+
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunarpanel'),
         ], 'public');
@@ -108,9 +135,11 @@ class LunarPanelProvider extends ServiceProvider
 
     protected function registerPanelAssets(): void
     {
-        FilamentAsset::register([
-            Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
-        ], 'lunarphp/panel');
+        Filament::serving(function () {
+            FilamentAsset::register([
+                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
+            ], 'lunarphp/panel');
+        });
     }
 
     /**

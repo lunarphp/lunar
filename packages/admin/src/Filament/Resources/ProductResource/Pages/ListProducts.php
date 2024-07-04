@@ -6,7 +6,6 @@ use Filament\Actions;
 use Filament\Forms\Components\Grid;
 use Filament\Resources\Components\Tab;
 use Filament\Support\Enums\MaxWidth;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
@@ -79,7 +78,7 @@ class ListProducts extends BaseListRecords
         return $product;
     }
 
-    public function getTabs(): array
+    public function getDefaultTabs(): array
     {
         return [
             'all' => Tab::make('All'),
@@ -89,11 +88,6 @@ class ListProducts extends BaseListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'draft'))
                 ->badge(Product::query()->where('status', 'draft')->count()),
         ];
-    }
-
-    protected function paginateTableQuery(Builder $query): Paginator
-    {
-        return $query->simplePaginate($this->getTableRecordsPerPage());
     }
 
     public function getMaxContentWidth(): MaxWidth
