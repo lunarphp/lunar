@@ -1,5 +1,3 @@
-namespace Lunar\Tests\Admin\Unit\Support\Forms;
-
 <?php
 
 uses(\Lunar\Tests\Admin\Unit\Livewire\TestCase::class)

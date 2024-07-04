@@ -16,7 +16,58 @@ php artisan migrate
 
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
+
+## [Unreleased]
+
+### Medium Impact
+
+The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+
+```php
+public function handle(\Lunar\Models\Cart $cart, \Closure $next)
+{
+    //..
+    
+    return $next($cart);
+}
+```
+
+## 1.0.0-alpha.x
+
+### High Impact
+
+#### Cart calculate function will no longer recalculate
+
+If you have been using the `$cart->calculate()` function it has previously always run the calculations regardless of 
+whether the cart has already been calculated. Now the calculate function will only run if we don't have cart totals. 
+To allow for recalculation we have now introduced `$cart->recalculate()` to force the cart to recalculate.
+
+#### Unique index for Collection Group handle
+
+Collection Group now have unique index on the column `handle`.
+If you are creating Collection Group from the admin panel, there is no changes required.
+
+## [Unreleased]
+
+### Medium Impact
+
+If you are using your own classes that implement the `Purchasable` interface, you will need to add the following additional methods:
+
+```php
+public function canBeFulfilledAtQuantity(int $quantity): bool;
+public function getTotalInventory(): int;
+```
+
+If you are checking the `ProductVariant` `purchasable` attribute in your code, you should update the following check:
+
+```php
+// Old
+$variant->purchasable == 'backorder';
+// New
+$variant->purchasable == 'in_stock_or_on_backorder';
+
+```
 
 ## 1.0.0-alpha.22
 
