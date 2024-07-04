@@ -79,6 +79,92 @@ class ManageOrder extends BaseViewRecord
             ->content(OrderResource\Pages\Components\OrderItemsTable::class);
     }
 
+    public static function getInfolistSchema(): array
+    {
+        return self::callLunarHook('extendInfolistSchema', [
+            static::getShippingInfolist(),
+            static::getOrderLinesTable(),
+            static::getOrderTotalsInfolist(),
+            static::getTransactionsInfolist(),
+            static::getTimelineInfolist(),
+        ]);
+    }
+
+    public static function getDefaultCustomerEntry(): Infolists\Components\Entry
+    {
+        return Infolists\Components\TextEntry::make('customer')
+            ->hidden(fn ($state) => blank($state?->id))
+            ->formatStateUsing(fn ($state) => $state->fullName)
+            ->weight(FontWeight::SemiBold)
+            ->size(TextEntrySize::Large)
+            ->hiddenLabel()
+            ->suffixAction(fn ($state) => Action::make('view customer')
+                ->color('gray')
+                ->button()
+                ->size(ActionSize::ExtraSmall)
+                ->url(CustomerResource::getUrl('edit', ['record' => $state->id])));
+    }
+
+    public static function getCustomerEntry(): Infolists\Components\Component
+    {
+        return self::callLunarHook('extendCustomerEntry', static::getDefaultCustomerEntry());
+    }
+
+    public static function getDefaultTagsSection(): Infolists\Components\Section
+    {
+        return Infolists\Components\Section::make('tags')
+            ->heading(__('lunarpanel::order.infolist.tags.label'))
+            ->headerActions([
+                fn ($record) => static::getEditTagsActions(),
+            ])
+            ->compact()
+            ->schema([
+                Tags::make(''),
+            ]);
+    }
+
+    public static function getTagsSection(): Infolists\Components\Component
+    {
+        return self::callLunarHook('extendTagsSection', static::getDefaultTagsSection());
+    }
+
+    public static function getDefaultAdditionalInfoSection(): Infolists\Components\Section
+    {
+        return Infolists\Components\Section::make('additional_info')
+            ->heading(__('lunarpanel::order.infolist.additional_info.label'))
+            ->compact()
+            ->statePath('meta')
+            ->schema(fn ($state) => blank($state) ? [
+                Infolists\Components\TextEntry::make('no_additional_info')
+                    ->hiddenLabel()
+                    ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
+            ] : collect($state)
+                ->map(function ($value, $key) {
+                    if (is_array($value)) {
+                        return Infolists\Components\KeyValueEntry::make('meta_'.$key)->state($value);
+                    }
+
+                    return Infolists\Components\TextEntry::make('meta_'.$key)
+                        ->state($value)
+                        ->label($key)
+                        ->copyable()
+                        ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
+                            $state = $component->getState();
+                            if (strlen($state) <= $component->getCharacterLimit()) {
+                                return null;
+                            }
+
+                            return $state;
+                        });
+                })
+                ->toArray());
+    }
+
+    public static function getAdditionalInfoSection(): Infolists\Components\Component
+    {
+        return self::callLunarHook('extendAdditionalInfoSection', static::getDefaultAdditionalInfoSection());
+    }
+
     public function getDefaultInfolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -105,72 +191,17 @@ class ManageOrder extends BaseViewRecord
                                 default => null
                             })
                             ->visible(fn ($state) => in_array($state, ['partial-refund', 'refunded'])),
-
-                        static::getShippingInfolist(),
-                        static::getOrderLinesTable(),
-                        static::getOrderTotalsInfolist(),
-                        static::getTransactionsInfolist(),
-                        static::getTimelineInfolist(),
+                        ...static::getInfolistSchema(),
                     ])
                     ->columnSpan(['lg' => 2]),
-
                 Infolists\Components\Group::make()
                     ->schema([
-                        Infolists\Components\TextEntry::make('customer')
-                            ->hidden(fn ($state) => blank($state?->id))
-                            ->formatStateUsing(fn ($state) => $state->fullName)
-                            ->weight(FontWeight::SemiBold)
-                            ->size(TextEntrySize::Large)
-                            ->hiddenLabel()
-                            ->suffixAction(fn ($state) => Action::make('view customer')
-                                ->color('gray')
-                                ->button()
-                                ->size(ActionSize::ExtraSmall)
-                                ->url(CustomerResource::getUrl('edit', ['record' => $state->id]))),
+                        static::getCustomerEntry(),
                         static::getOrderSummaryInfolist(),
                         static::getShippingAddressInfolist(),
                         static::getBillingAddressInfoList(),
-                        //                        $this->getOrderAddressInfolistSchema('shipping'),
-                        //                        $this->getOrderAddressInfolistSchema('billing'),
-                        Infolists\Components\Section::make('tags')
-                            ->heading(__('lunarpanel::order.infolist.tags.label'))
-                            ->headerActions([
-                                fn ($record) => $this->getEditTagsActions(),
-                            ])
-                            ->compact()
-                            ->schema([
-                                Tags::make(''),
-                            ]),
-
-                        Infolists\Components\Section::make('additional_info')
-                            ->heading(__('lunarpanel::order.infolist.additional_info.label'))
-                            ->compact()
-                            ->statePath('meta')
-                            ->schema(fn ($state) => blank($state) ? [
-                                Infolists\Components\TextEntry::make('no_additional_info')
-                                    ->hiddenLabel()
-                                    ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
-                            ] : collect($state)
-                                ->map(function ($value, $key) {
-                                    if (is_array($value)) {
-                                        return Infolists\Components\KeyValueEntry::make('meta_'.$key)->state($value);
-                                    }
-
-                                    return Infolists\Components\TextEntry::make('meta_'.$key)
-                                        ->state($value)
-                                        ->label($key)
-                                        ->copyable()
-                                        ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
-                                            $state = $component->getState();
-                                            if (strlen($state) <= $component->getCharacterLimit()) {
-                                                return null;
-                                            }
-
-                                            return $state;
-                                        });
-                                })
-                                ->toArray()),
-
+                        static::getTagsSection(),
+                        static::getAdditionalInfoSection(),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])
@@ -270,7 +301,7 @@ class ManageOrder extends BaseViewRecord
         })->sum('amount.value');
     }
 
-    public function getEditTagsActions(): Action
+    public static function getEditTagsActions(): Action
     {
         return Action::make('edit_tags')
             ->modalHeading(__('lunarpanel::order.infolist.tags.label'))
@@ -286,7 +317,7 @@ class ManageOrder extends BaseViewRecord
                         ->suggestions(Tag::all()->pluck('value')->all()),
                 ];
             })->action(function (Action $action, $record, $data) {
-                $this->dispatchActivityUpdated();
+                //                $this->dispatchActivityUpdated();
             });
     }
 
