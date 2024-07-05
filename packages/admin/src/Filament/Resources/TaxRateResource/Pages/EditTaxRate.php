@@ -20,7 +20,7 @@ class EditTaxRate extends BaseEditRecord
     public function getRelationManagers(): array
     {
         return [
-            TaxRateResource\RelationManagers\TaxRateAmountRelationManager::make()
+            TaxRateResource\RelationManagers\TaxRateAmountRelationManager::make(),
         ];
     }
 

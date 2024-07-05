@@ -253,7 +253,7 @@ return [
             'description' => '',
             'tax_class' => [
                 'label' => 'Tax Class',
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 ];

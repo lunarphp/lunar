@@ -79,7 +79,6 @@ class TaxRateResource extends BaseResource
             ->required();
     }
 
-
     public static function getDefaultTable(Table $table): Table
     {
         return $table
