@@ -65,7 +65,11 @@ class ShippingRateResolver
             return $line->purchasable->stock < $line->quantity;
         });
 
-        $this->customerGroups = $this->cart->user ? $this->cart->user : collect([CustomerGroup::getDefault()]);
+        $this->customerGroups = collect([CustomerGroup::getDefault()]);
+
+        if ($user = $this->cart->user) {
+            $this->customerGroups = $user->customers->first()?->customerGroups ?: $this->customerGroups;
+        }
 
         if (! empty($shippingMeta)) {
             $this->postcode(
