@@ -248,4 +248,12 @@ return [
             ],
         ],
     ],
+    'tax_rate_amounts' => [
+        'table' => [
+            'description' => '',
+            'tax_class' => [
+                'label' => 'Tax Class',
+            ]
+        ]
+    ]
 ];

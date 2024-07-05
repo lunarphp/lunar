@@ -17,6 +17,13 @@ class EditTaxRate extends BaseEditRecord
         ];
     }
 
+    public function getRelationManagers(): array
+    {
+        return [
+            TaxRateResource\RelationManagers\TaxRateAmountRelationManager::make()
+        ];
+    }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
