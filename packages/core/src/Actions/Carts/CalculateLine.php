@@ -19,8 +19,8 @@ class CalculateLine
     public function execute(
         CartLine $cartLine,
         Collection $customerGroups,
-        Addressable $shippingAddress = null,
-        Addressable $billingAddress = null
+        ?Addressable $shippingAddress = null,
+        ?Addressable $billingAddress = null
     ) {
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;

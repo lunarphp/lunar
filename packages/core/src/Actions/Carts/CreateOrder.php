@@ -18,7 +18,7 @@ final class CreateOrder extends AbstractAction
     public function execute(
         Cart $cart,
         bool $allowMultipleOrders = false,
-        int $orderIdToUpdate = null
+        ?int $orderIdToUpdate = null
     ): self {
         $this->passThrough = DB::transaction(function () use ($cart, $allowMultipleOrders, $orderIdToUpdate) {
             $order = $cart->draftOrder($orderIdToUpdate)->first() ?: new Order;

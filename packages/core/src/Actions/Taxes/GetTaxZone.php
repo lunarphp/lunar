@@ -7,7 +7,7 @@ use Lunar\Models\TaxZone;
 
 class GetTaxZone
 {
-    public function execute(Addressable $address = null)
+    public function execute(?Addressable $address = null)
     {
         if ($address && $address->postcode) {
             $postcodeZone = app(GetTaxZonePostcode::class)->execute($address->postcode);
