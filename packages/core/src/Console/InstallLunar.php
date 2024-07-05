@@ -173,7 +173,9 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -192,7 +194,9 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -211,7 +215,9 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -230,7 +236,9 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
             }
 

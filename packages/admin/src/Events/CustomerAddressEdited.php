@@ -16,6 +16,5 @@ class CustomerAddressEdited
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }

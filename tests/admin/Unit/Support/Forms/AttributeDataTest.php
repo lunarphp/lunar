@@ -39,9 +39,7 @@ describe('attribute data test', function () {
     });
 });
 
-class TestFieldType extends Lunar\FieldTypes\Text
-{
-}
+class TestFieldType extends Lunar\FieldTypes\Text {}
 
 class TestFieldConverter extends \Lunar\Admin\Support\FieldTypes\TextField
 {

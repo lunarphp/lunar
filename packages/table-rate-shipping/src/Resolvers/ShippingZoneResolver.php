@@ -41,7 +41,7 @@ class ShippingZoneResolver
     /**
      * Set the country.
      */
-    public function country(Country $country = null): self
+    public function country(?Country $country = null): self
     {
         $this->country = $country;
         $this->types->push('countries');
@@ -52,7 +52,7 @@ class ShippingZoneResolver
     /**
      * Set the state.
      */
-    public function state(State $state = null): self
+    public function state(?State $state = null): self
     {
         $this->state = $state;
         $this->types->push('states');

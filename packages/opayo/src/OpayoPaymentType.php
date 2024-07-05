@@ -510,7 +510,7 @@ class OpayoPaymentType extends AbstractPayment
         return $checks;
     }
 
-    private function saveCard(Order $order, object $details, string $authCode = null)
+    private function saveCard(Order $order, object $details, ?string $authCode = null)
     {
         if (! $order->user_id) {
             return;

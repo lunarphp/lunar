@@ -39,10 +39,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // for "merge" command
     $parameters->set(Option::DATA_TO_APPEND, [
         ComposerJsonSection::REQUIRE_DEV => [
-            'laravel/pint' => '1.13.1',
-            'mockery/mockery' => '^1.4.4',
-            'pestphp/pest' => '^2.0',
-            'pestphp/pest-plugin-laravel' => '^2.0',
+            'laravel/pint' => '^1.16.1',
+            'mockery/mockery' => '^1.6.9',
+            'pestphp/pest' => '^2.34.7',
+            'pestphp/pest-plugin-laravel' => '^2.4',
             'symplify/monorepo-builder' => '^10.0',
         ],
     ]);
