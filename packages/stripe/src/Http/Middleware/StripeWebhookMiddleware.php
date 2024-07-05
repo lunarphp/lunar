@@ -10,7 +10,7 @@ use Stripe\Exception\UnexpectedValueException;
 
 class StripeWebhookMiddleware
 {
-    public function handle(Request $request, Closure $next = null)
+    public function handle(Request $request, ?Closure $next = null)
     {
         $secret = config('services.stripe.webhooks.payment_intent');
         $stripeSig = $request->header('Stripe-Signature');

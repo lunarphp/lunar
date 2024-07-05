@@ -2,6 +2,4 @@
 
 namespace Lunar\Paypal;
 
-interface PaypalInterface
-{
-}
+interface PaypalInterface {}

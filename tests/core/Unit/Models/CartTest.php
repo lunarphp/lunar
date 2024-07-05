@@ -436,8 +436,11 @@ test('can calculate the cart', function () {
         StubUser::factory()->create()
     );
 
+    expect($cart->isCalculated())->toEqual(false);
+
     $cart->calculate();
 
+    expect($cart->isCalculated())->toEqual(true);
     expect($cart->lines[0]->unitPrice->value)->toEqual(100);
     expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$1.00');
     expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$1.000000');
@@ -729,7 +732,7 @@ test('can calculate shipping', function () {
 
     Config::set('lunar.pricing.stored_inclusive_of_tax', true);
 
-    $cart->calculate();
+    $cart->recalculate();
 
     expect($cart->shippingTotal->value)->toEqual(500);
     expect($cart->total->value)->toEqual(600);
@@ -898,7 +901,7 @@ test('can override shipping calculation', function () {
 
     $cart->shippingOptionOverride = $shippingOption;
 
-    $cart->calculate();
+    $cart->recalculate();
 
     expect($cart->shippingSubTotal->value)->toEqual(500);
 });

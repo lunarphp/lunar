@@ -10,7 +10,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class StandardMediaDefinitions implements MediaDefinitionsInterface
 {
-    public function registerMediaConversions(HasMedia $model, Media $media = null): void
+    public function registerMediaConversions(HasMedia $model, ?Media $media = null): void
     {
         // Add a conversion for the admin panel to use
         $model->addMediaConversion('small')
@@ -29,7 +29,9 @@ class StandardMediaDefinitions implements MediaDefinitionsInterface
         // Reset to avoid duplication
         $model->mediaCollections = [];
 
-        $collection = $model->addMediaCollection('images');
+        $collection = $model->addMediaCollection(
+            config('lunar.media.collection')
+        );
 
         if ($fallbackUrl) {
             $collection = $collection->useFallbackUrl($fallbackUrl);

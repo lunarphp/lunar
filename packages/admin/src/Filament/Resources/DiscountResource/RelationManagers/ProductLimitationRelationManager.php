@@ -44,7 +44,7 @@ class ProductLimitationRelationManager extends RelationManager
                             Forms\Components\MorphToSelect\Type::make(Product::class)
                                 ->titleAttribute('name.en')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                    return Product::search($search)
+                                    return get_search_builder(Product::class, $search)
                                         ->get()
                                         ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->attr('name')])
                                         ->all();
@@ -59,7 +59,7 @@ class ProductLimitationRelationManager extends RelationManager
                 }),
             ])->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('purchasable.thumbnail')
-                    ->collection('images')
+                    ->collection(config('lunar.media.collection'))
                     ->conversion('small')
                     ->limit(1)
                     ->square()

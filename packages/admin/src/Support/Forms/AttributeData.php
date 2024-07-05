@@ -41,13 +41,36 @@ class AttributeData
     public function getFilamentComponent(Attribute $attribute): Component
     {
         $fieldType = $this->fieldTypes[
-            $attribute->type
+        $attribute->type
         ] ?? TextField::class;
 
-        return $fieldType::getFilamentComponent($attribute)->label(
-            $attribute->translate('name')
-        )
-            ->formatStateUsing(fn ($state) => ($state ?: new $attribute->type))
+        /** @var Component $component */
+        $component = $fieldType::getFilamentComponent($attribute);
+
+        return $component
+            ->label(
+                $attribute->translate('name')
+            )
+            ->formatStateUsing(function ($state) use ($attribute) {
+                if (
+                    ! $state ||
+                    (get_class($state) != $attribute->type)
+                ) {
+                    return new $attribute->type;
+                }
+
+                return $state;
+            })
+            ->mutateDehydratedStateUsing(function ($state) use ($attribute) {
+                if (
+                    ! $state ||
+                    (get_class($state) != $attribute->type)
+                ) {
+                    return new $attribute->type;
+                }
+
+                return $state;
+            })
             ->required($attribute->required)
             ->default($attribute->default_value);
     }
@@ -64,7 +87,7 @@ class AttributeData
         return collect($this->fieldTypes)->keys();
     }
 
-    public function getConfigurationFields(string $type = null): array
+    public function getConfigurationFields(?string $type = null): array
     {
         $fieldType = $this->fieldTypes[$type] ?? null;
 

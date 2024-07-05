@@ -54,7 +54,7 @@ class EditCollection extends BaseEditRecord
                     ->model(Collection::class)
                     ->searchable()
                     ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search) use ($record): array {
-                        return Collection::search($search)
+                        return get_search_builder(Collection::class, $search)
                             ->get()
                             ->reject(
                                 fn ($result) => $result->isDescendantOf($record)

@@ -188,7 +188,7 @@ class OrderResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListOrders::route('/'),
@@ -237,11 +237,11 @@ class OrderResource extends BaseResource
         $details = [
             __('lunarpanel::order.table.status.label') => $record->getStatusLabelAttribute(),
             __('lunarpanel::order.table.total.label') => $record->total?->formatted,
-            __('lunarpanel::order.table.customer.label') => $record->shippingAddress->fullName,
+            __('lunarpanel::order.table.customer.label') => $record->billingAddress?->fullName,
         ];
 
-        if ($record->shippingAddress->contact_email) {
-            $details[__('lunarpanel::order.table.email.label')] = $record->shippingAddress->contact_email;
+        if ($record->billingAddress?->contact_email) {
+            $details[__('lunarpanel::order.table.email.label')] = $record->billingAddress->contact_email;
         }
 
         if ($record->placed_at) {

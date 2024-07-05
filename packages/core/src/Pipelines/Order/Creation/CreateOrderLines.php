@@ -19,7 +19,7 @@ class CreateOrderLines
 
         $cart = $order->cart;
 
-        $cart->calculate();
+        $cart->recalculate();
 
         foreach ($cart->lines as $cartLine) {
             $orderLine = $order->lines->first(function ($line) use ($cartLine) {

@@ -4,6 +4,7 @@ namespace Lunar\Opayo;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 
 class Opayo implements OpayoInterface
@@ -84,35 +85,50 @@ class Opayo implements OpayoInterface
             ],
             'vendorTxCode' => $parameters->vendorTxCode,
             'amount' => $parameters->amount,
-            'currency' => $parameters->currency,
+            'currency' => Str::take($parameters->currency, 3),
             'description' => 'Webstore Transaction',
             'apply3DSecure' => 'UseMSPSetting',
-            'customerFirstName' => $parameters->customerFirstName,
-            'customerLastName' => $parameters->customerLastName,
+            'customerFirstName' => Str::take($parameters->customerFirstName, 20),
+            'customerLastName' => Str::take($parameters->customerLastName, 20),
             'billingAddress' => [
-                'address1' => $parameters->billingAddressLineOne,
-                'city' => $parameters->billingAddressCity,
-                'postalCode' => $parameters->billingAddressPostcode,
-                'country' => $parameters->billingAddressCountryIso,
+                'address1' => Str::take($parameters->billingAddressLineOne, 50),
+                'address2' => Str::take($parameters->billingAddressLineTwo, 50),
+                'address3' => Str::take($parameters->billingAddressLineThree, 50),
+                'city' => Str::take($parameters->billingAddressCity, 40),
+                'postalCode' => Str::take($parameters->billingAddressPostcode, 10),
+                'country' => Str::take($parameters->billingAddressCountryIso, 2),
             ],
             'strongCustomerAuthentication' => [
-                'customerMobilePhone' => $parameters->customerMobilePhone,
+                'customerMobilePhone' => Str::take($parameters->customerMobilePhone, 19),
                 'transType' => 'GoodsAndServicePurchase',
-                'browserLanguage' => $parameters->browserLanguage,
+                'browserLanguage' => Str::take($parameters->browserLanguage, 8),
                 'challengeWindowSize' => $parameters->challengeWindowSize,
-                'browserIP' => $parameters->browserIP,
+                'browserIP' => Str::take($parameters->browserIP, 39),
                 'notificationURL' => $parameters->notificationURL,
-                'browserAcceptHeader' => $parameters->browserAcceptHeader,
+                'browserAcceptHeader' => Str::take($parameters->browserAcceptHeader, 2048),
                 'browserJavascriptEnabled' => true,
-                'browserUserAgent' => $parameters->browserUserAgent,
+                'browserUserAgent' => Str::take($parameters->browserUserAgent, 2048),
                 'browserJavaEnabled' => $parameters->browserJavaEnabled,
-                'browserColorDepth' => $parameters->browserColorDepth,
-                'browserScreenHeight' => $parameters->browserScreenHeight,
-                'browserScreenWidth' => $parameters->browserScreenWidth,
-                'browserTZ' => $parameters->browserTZ,
+                'browserColorDepth' => Str::take($parameters->browserColorDepth, 2),
+                'browserScreenHeight' => Str::take($parameters->browserScreenHeight, 6),
+                'browserScreenWidth' => Str::take($parameters->browserScreenWidth, 6),
+                'browserTZ' => Str::take($parameters->browserTZ, 6),
             ],
             'entryMethod' => 'Ecommerce',
         ];
+
+        if ($parameters->shippingAddressLineOne) {
+            $payload['shippingDetails'] = [
+                'recipientFirstName' => Str::take($parameters->recipientFirstName, 20),
+                'recipientLastName' => Str::take($parameters->recipientLastName, 20),
+                'shippingAddress1' => Str::take($parameters->shippingAddressLineOne, 50),
+                'shippingAddress2' => Str::take($parameters->shippingAddressLineTwo, 50),
+                'shippingAddress3' => Str::take($parameters->shippingAddressLineThree, 50),
+                'shippingCity' => Str::take($parameters->shippingAddressCity, 40),
+                'shippingPostalCode' => Str::take($parameters->shippingAddressPostcode, 10),
+                'shippingCountry' => Str::take($parameters->shippingAddressCountryIso, 2),
+            ];
+        }
 
         if ($parameters->saveCard) {
             $payload['credentialType'] = [
