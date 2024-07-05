@@ -70,6 +70,8 @@ class CartSessionManager implements CartSessionInterface
             );
         }
 
+        unset($this->cart);
+
         $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(
             $this->getSessionKey()
@@ -129,13 +131,15 @@ class CartSessionManager implements CartSessionInterface
             return $create ? $this->cart = $this->createNewCart() : null;
         }
 
-        $this->cart = $this->cart?->exists ? $this->cart : Cart::with(
+        $cart = $this->cart?->exists ? $this->cart : Cart::with(
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
-        if (! $this->cart) {
+        if (! $cart) {
             return $create ? $this->createNewCart() : null;
         }
+
+        $this->cart = $cart;
 
         if ($calculate) {
             $this->cart->calculate();
