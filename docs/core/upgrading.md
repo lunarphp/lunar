@@ -36,6 +36,8 @@ If you are creating Collection Group from the admin panel, there is no changes r
 
 ### Medium Impact
 
+#### Update custom shipping modifiers signature
+
 The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
 
 ```php
