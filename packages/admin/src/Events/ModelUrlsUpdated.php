@@ -16,6 +16,5 @@ class ModelUrlsUpdated
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }

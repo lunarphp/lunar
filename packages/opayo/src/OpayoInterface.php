@@ -2,6 +2,4 @@
 
 namespace Lunar\Opayo;
 
-interface OpayoInterface
-{
-}
+interface OpayoInterface {}

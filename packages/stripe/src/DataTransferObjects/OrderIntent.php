@@ -10,6 +10,5 @@ class OrderIntent
     public function __construct(
         public Order $order,
         public PaymentIntent $paymentIntent
-    ) {
-    }
+    ) {}
 }

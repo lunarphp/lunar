@@ -166,6 +166,97 @@ test('can fetch authenticated users cart and set in session', function () {
 
 });
 
+test('can forget a cart and soft delete it', function () {
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    Config::set('lunar.cart.auto_create', true);
+
+    $cart = CartSession::current();
+
+    $shipping = CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'shipping',
+    ]);
+
+    $billing = CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'billing',
+    ]);
+
+    $cart->setShippingAddress($shipping);
+    $cart->setBillingAddress($billing);
+
+    $sessionCart = Session::get(config('lunar.cart.session_key'));
+
+    expect($sessionCart)
+        ->not
+        ->toBeNull()
+        ->and($sessionCart)
+        ->toEqual($cart->id);
+
+    CartSession::forget();
+
+    expect(
+        Session::get(config('lunar.cart.session_key'))
+    )
+        ->toBeNull()
+        ->and($cart->refresh()->deleted_at)
+        ->not
+        ->toBeNull();
+
+});
+
+test('can forget a cart an optionally prevent soft deleting', function () {
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    Config::set('lunar.cart.auto_create', true);
+
+    $cart = CartSession::current();
+
+    $shipping = CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'shipping',
+    ]);
+
+    $billing = CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'billing',
+    ]);
+
+    $cart->setShippingAddress($shipping);
+    $cart->setBillingAddress($billing);
+
+    $sessionCart = Session::get(config('lunar.cart.session_key'));
+
+    expect($sessionCart)
+        ->not
+        ->toBeNull()
+        ->and($sessionCart)
+        ->toEqual($cart->id);
+
+    CartSession::forget(delete: false);
+
+    expect(
+        Session::get(config('lunar.cart.session_key'))
+    )
+        ->toBeNull()
+        ->and($cart->refresh()->deleted_at)
+        ->toBeNull();
+
+});
+
 test('can set shipping estimate meta', function () {
     CartSession::estimateShippingUsing([
         'postcode' => 'NP1 1TX',

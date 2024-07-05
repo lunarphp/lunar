@@ -16,6 +16,5 @@ class ChildCollectionCreated
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }
