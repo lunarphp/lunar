@@ -254,9 +254,6 @@ return [
             'tax_class' => [
                 'label' => 'Tax Class',
             ],
-            'percentage' => [
-                'label' => 'Percentage',
-            ],
         ],
     ],
 ];
