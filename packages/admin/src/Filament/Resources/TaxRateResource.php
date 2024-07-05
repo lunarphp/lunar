@@ -8,6 +8,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\TaxRateResource\Pages;
+use Lunar\Admin\Filament\Resources\TaxRateResource\RelationManagers\TaxRateAmountRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\TaxRate;
 
@@ -79,7 +80,6 @@ class TaxRateResource extends BaseResource
             ->required();
     }
 
-
     public static function getDefaultTable(Table $table): Table
     {
         return $table
@@ -111,7 +111,7 @@ class TaxRateResource extends BaseResource
     public static function getRelations(): array
     {
         return [
-            //
+            TaxRateAmountRelationManager::class,
         ];
     }
 

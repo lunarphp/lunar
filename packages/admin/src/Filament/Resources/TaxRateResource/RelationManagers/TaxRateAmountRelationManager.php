@@ -2,11 +2,12 @@
 
 namespace Lunar\Admin\Filament\Resources\TaxRateResource\RelationManagers;
 
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 
 class TaxRateAmountRelationManager extends RelationManager
 {
@@ -19,13 +20,15 @@ class TaxRateAmountRelationManager extends RelationManager
         return false;
     }
 
-
     public function form(Form $form): Form
     {
-        return $form->schema([]);
+        return $form->schema([
+            Select::make('tax_class_id')
+                ->required()
+                ->relationship(name: 'taxClass', titleAttribute: 'name'),
+            TextInput::make('percentage')->numeric()->required(),
+        ])->columns(2);
     }
-
-
 
     public function table(Table $table): Table
     {
@@ -35,16 +38,16 @@ class TaxRateAmountRelationManager extends RelationManager
             )
             ->paginated(false)
             ->headerActions([
+                Tables\Actions\CreateAction::make('create'),
             ])->columns([
                 Tables\Columns\TextColumn::make('taxClass.name')->label(
                     __('lunarpanel::relationmanagers.tax_rate_amounts.table.tax_class.label')
                 ),
-            ])->actions([
-                Tables\Actions\EditAction::make()->after(
-                    fn () => ProductCustomerGroupsUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
+                Tables\Columns\TextColumn::make('percentage')->label(
+                    __('lunarpanel::relationmanagers.tax_rate_amounts.table.percentage.label')
                 ),
+            ])->actions([
+                Tables\Actions\EditAction::make(),
             ]);
     }
 }
