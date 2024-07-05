@@ -62,6 +62,7 @@ class LunarPanelManager
         Resources\TagResource::class,
         Resources\TaxClassResource::class,
         Resources\TaxZoneResource::class,
+        Resources\TaxRateResource::class,
     ];
 
     protected static $pages = [
