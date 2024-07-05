@@ -25,8 +25,8 @@ trait CanScheduleAvailability
     protected function schedule(
         Relation $relation,
         $models,
-        DateTime $starts = null,
-        DateTime $ends = null,
+        ?DateTime $starts = null,
+        ?DateTime $ends = null,
         array $pivotData = []
     ) {
         // Convert to collection if it's an array
@@ -84,7 +84,7 @@ trait CanScheduleAvailability
     /**
      * Returns the data for the sync update.
      */
-    private function getScheduleMapping(Collection $models, array $pivotData = null): Collection
+    private function getScheduleMapping(Collection $models, ?array $pivotData = null): Collection
     {
         return $models->mapWithKeys(function ($model) use ($pivotData) {
             return [
