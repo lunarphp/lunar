@@ -138,7 +138,7 @@ class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
     /**
      * Dissociate a product to another with a type.
      */
-    public function dissociate(mixed $product, string $type = null): void
+    public function dissociate(mixed $product, ?string $type = null): void
     {
         Dissociate::dispatch($this, $product, $type);
     }

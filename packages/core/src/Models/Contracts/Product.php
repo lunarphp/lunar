@@ -55,7 +55,7 @@ interface Product
     /**
      * Dissociate a product to another with a type.
      */
-    public function dissociate(mixed $product, string $type = null): void;
+    public function dissociate(mixed $product, ?string $type = null): void;
 
     /**
      * Return the customer groups relationship.

@@ -70,12 +70,12 @@ interface Cart
     /**
      * Return the draft order relationship.
      */
-    public function draftOrder(int $draftOrderId = null): HasOne;
+    public function draftOrder(?int $draftOrderId = null): HasOne;
 
     /**
      * Return the completed order relationship.
      */
-    public function completedOrder(int $completedOrderId = null): HasOne;
+    public function completedOrder(?int $completedOrderId = null): HasOne;
 
     /**
      * Return the carts completed order.
@@ -110,7 +110,7 @@ interface Cart
     /**
      * Update cart line
      */
-    public function updateLine(int $cartLineId, int $quantity, array $meta = null, bool $refresh = true): \Lunar\Models\Cart;
+    public function updateLine(int $cartLineId, int $quantity, ?array $meta = null, bool $refresh = true): \Lunar\Models\Cart;
 
     /**
      * Update cart lines.
@@ -165,7 +165,7 @@ interface Cart
     /**
      * Create an order from the Cart.
      */
-    public function createOrder(bool $allowMultipleOrders = false, int $orderIdToUpdate = null): Order;
+    public function createOrder(bool $allowMultipleOrders = false, ?int $orderIdToUpdate = null): Order;
 
     /**
      * Returns whether a cart has enough info to create an order.

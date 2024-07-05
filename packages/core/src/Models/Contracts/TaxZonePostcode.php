@@ -2,6 +2,4 @@
 
 namespace Lunar\Models\Contracts;
 
-interface TaxZonePostcode
-{
-}
+interface TaxZonePostcode {}
