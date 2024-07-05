@@ -11,7 +11,7 @@ interface TaxDriver
     /**
      * Set the shipping address.
      */
-    public function setShippingAddress(Addressable $address = null): self;
+    public function setShippingAddress(?Addressable $address = null): self;
 
     /**
      * Set the currency.
@@ -21,7 +21,7 @@ interface TaxDriver
     /**
      * Set the billing address.
      */
-    public function setBillingAddress(Addressable $address = null): self;
+    public function setBillingAddress(?Addressable $address = null): self;
 
     /**
      * Set the purchasable item.

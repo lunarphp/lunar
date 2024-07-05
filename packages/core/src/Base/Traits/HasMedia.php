@@ -44,7 +44,7 @@ trait HasMedia
         $mediaDefinition->registerMediaCollections($this);
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         app($this->getDefinitionClass())->registerMediaConversions($this, $media);
     }

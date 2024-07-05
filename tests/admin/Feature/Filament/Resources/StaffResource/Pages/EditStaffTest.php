@@ -53,7 +53,9 @@ it('can save staff data', function () {
 });
 
 it('can assign staff role and permissions', function () {
-    $staff = Staff::factory()->create();
+    $staff = Staff::factory()->create([
+        'admin' => false,
+    ]);
 
     $roles = ['staff'];
     $permissions = LunarAccessControl::getGroupedPermissions()->random(4)->mapWithKeys(fn ($perm) => [$perm->handle => true]);

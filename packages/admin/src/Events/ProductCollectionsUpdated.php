@@ -16,6 +16,5 @@ class ProductCollectionsUpdated
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }
