@@ -18,6 +18,21 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## [Unreleased]
+
+### Medium Impact
+
+The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+
+```php
+public function handle(\Lunar\Models\Cart $cart, \Closure $next)
+{
+    //..
+    
+    return $next($cart);
+}
+```
+
 ## 1.0.0-alpha.x
 
 ### High Impact
@@ -99,6 +114,17 @@ $variant->purchasable == 'backorder';
 // New
 $variant->purchasable == 'in_stock_or_on_backorder';
 
+```
+
+## 1.0.0-alpha.22
+
+### Medium Impact
+
+Carts now use soft deletes and a cart will be deleted when `CartSession::forget()` is called.
+If you don't want to delete the cart when you call `forget` you can pass `delete: false` as a parameter:
+
+```php
+\Lunar\Facades\CartSession::forget(delete: false);
 ```
 
 ## 1.0.0-alpha.20

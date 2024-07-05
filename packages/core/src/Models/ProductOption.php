@@ -52,7 +52,7 @@ class ProductOption extends BaseModel implements Contracts\ProductOption, Spatie
         return ProductOptionFactory::new();
     }
 
-    public function getNameAttribute(string $value = null): mixed
+    public function getNameAttribute(?string $value = null): mixed
     {
         return json_decode($value);
     }

@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateStateShippingZoneTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'state_shipping_zone', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -20,8 +20,8 @@ class CreateStateShippingZoneTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'state_shipping_zone');
     }
-}
+};

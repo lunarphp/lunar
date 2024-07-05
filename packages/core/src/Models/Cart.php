@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
@@ -55,6 +56,7 @@ use Lunar\Validation\CartLine\CartLineStock;
  * @property ?\Illuminate\Support\Carbon $completed_at
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
  */
 class Cart extends BaseModel implements Contracts\Cart
 {
@@ -62,6 +64,7 @@ class Cart extends BaseModel implements Contracts\Cart
     use HasFactory;
     use HasMacros;
     use LogsActivity;
+    use SoftDeletes;
 
     /**
      * Array of cachable class properties.
@@ -249,6 +252,9 @@ class Cart extends BaseModel implements Contracts\Cart
         });
     }
 
+    /**
+     * Return the draft order relationship.
+     */
     public function draftOrder(int $draftOrderId = null): HasOne
     {
         return $this->hasOne(Order::modelClass())
@@ -257,6 +263,9 @@ class Cart extends BaseModel implements Contracts\Cart
             })->whereNull('placed_at');
     }
 
+    /**
+     * Return the completed order relationship.
+     */
     public function completedOrder(int $completedOrderId = null): HasOne
     {
         return $this->hasOne(Order::modelClass())
@@ -364,6 +373,9 @@ class Cart extends BaseModel implements Contracts\Cart
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
+    /**
+     * Update cart line
+     */
     public function updateLine(int $cartLineId, int $quantity, array $meta = null, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.update_cart_line', []) as $action) {

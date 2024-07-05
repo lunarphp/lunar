@@ -16,6 +16,5 @@ class ProductCustomerGroupsUpdated
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }

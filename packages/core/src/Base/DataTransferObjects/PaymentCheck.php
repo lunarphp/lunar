@@ -8,6 +8,5 @@ class PaymentCheck
         public bool $successful,
         public string $label,
         public string $message
-    ) {
-    }
+    ) {}
 }

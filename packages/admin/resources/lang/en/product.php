@@ -87,9 +87,6 @@ return [
         'availability' => [
             'label' => 'Availability',
         ],
-        'media' => [
-            'label' => 'Media',
-        ],
         'identifiers' => [
             'label' => 'Product Identifiers',
         ],

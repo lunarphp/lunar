@@ -116,7 +116,7 @@ class DiscountManager implements DiscountManagerInterface
     /**
      * Returns the available discounts.
      */
-    public function getDiscounts(Cart $cart = null): Collection
+    public function getDiscounts(?Cart $cart = null): Collection
     {
         if ($this->channels->isEmpty() && $defaultChannel = Channel::getDefault()) {
             $this->channel($defaultChannel);
