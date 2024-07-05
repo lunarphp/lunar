@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Closure;
 use Lunar\Models\Cart;
 
 abstract class ShippingModifier
@@ -11,7 +12,7 @@ abstract class ShippingModifier
      *
      * @return void
      */
-    public function handle(Cart $cart)
+    public function handle(Cart $cart, Closure $next)
     {
         //
     }

@@ -79,6 +79,7 @@ use Lunar\Observers\CollectionObserver;
 use Lunar\Observers\CurrencyObserver;
 use Lunar\Observers\CustomerGroupObserver;
 use Lunar\Observers\LanguageObserver;
+use Lunar\Observers\MediaObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
 use Lunar\Observers\ProductOptionObserver;
@@ -301,6 +302,10 @@ class LunarServiceProvider extends ServiceProvider
         OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
         Transaction::observe(TransactionObserver::class);
+
+        if ($mediaModel = config('media-library.media_model')) {
+            $mediaModel::observe(MediaObserver::class);
+        }
     }
 
     /**

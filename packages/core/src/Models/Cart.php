@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
@@ -55,6 +56,7 @@ use Lunar\Validation\CartLine\CartLineStock;
  * @property ?\Illuminate\Support\Carbon $completed_at
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
  */
 class Cart extends BaseModel
 {
@@ -62,6 +64,7 @@ class Cart extends BaseModel
     use HasFactory;
     use HasMacros;
     use LogsActivity;
+    use SoftDeletes;
 
     /**
      * Array of cachable class properties.
@@ -281,7 +284,7 @@ class Cart extends BaseModel
     /**
      * Return the draft order relationship.
      */
-    public function draftOrder(int $draftOrderId = null): HasOne
+    public function draftOrder(?int $draftOrderId = null): HasOne
     {
         return $this->hasOne(Order::class)
             ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
@@ -292,7 +295,7 @@ class Cart extends BaseModel
     /**
      * Return the completed order relationship.
      */
-    public function completedOrder(int $completedOrderId = null): HasOne
+    public function completedOrder(?int $completedOrderId = null): HasOne
     {
         return $this->hasOne(Order::class)
             ->when($completedOrderId, function (Builder $query, int $completedOrderId) {
@@ -414,7 +417,7 @@ class Cart extends BaseModel
     /**
      * Update cart line
      */
-    public function updateLine(int $cartLineId, int $quantity, array $meta = null, bool $refresh = true): Cart
+    public function updateLine(int $cartLineId, int $quantity, ?array $meta = null, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.update_cart_line', []) as $action) {
             app($action)->using(
@@ -573,7 +576,7 @@ class Cart extends BaseModel
      */
     public function createOrder(
         bool $allowMultipleOrders = false,
-        int $orderIdToUpdate = null
+        ?int $orderIdToUpdate = null
     ): Order {
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,
