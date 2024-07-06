@@ -81,6 +81,6 @@ php artisan storage:link
 You are now installed!
 
 - You can access the storefront at `http://<yoursite>`
-- You can access the admin hub at `http://<yoursite>/hub`
+- You can access the admin hub at `http://<yoursite>/lunar`
 
 You can review the source code at the GitHub Repository: [https://github.com/lunarphp/livewire-starter-kit](https://github.com/lunarphp/livewire-starter-kit).
