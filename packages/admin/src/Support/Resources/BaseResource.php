@@ -12,6 +12,7 @@ use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Base\Traits\Searchable;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
+
 use function Filament\Support\generate_search_term_expression;
 
 class BaseResource extends Resource
