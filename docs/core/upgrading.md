@@ -18,7 +18,7 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
-## 1.0.0-alpha.x
+## 1.0.0-alpha.31
 
 ### High Impact
 
