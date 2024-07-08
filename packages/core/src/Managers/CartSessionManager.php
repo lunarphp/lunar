@@ -25,6 +25,11 @@ class CartSessionManager implements CartSessionInterface
         //
     }
 
+    public function allowsMultipleOrdersPerCart(): bool
+    {
+        return config('lunar.cart.allow_multiple_per_order', false);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -135,7 +140,7 @@ class CartSessionManager implements CartSessionInterface
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
-        if ($cart->hasCompletedOrders() && ! config('lunar.cart.allow_multiple_per_order', false)) {
+        if ($cart->hasCompletedOrders() && !$this->allowsMultipleOrdersPerCart()) {
             return $this->createNewCart();
         }
 
@@ -236,12 +241,12 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Create an order from a cart instance.
-     *
-     * @param  bool  $forget
      */
-    public function createOrder($forget = true): Order
+    public function createOrder(bool $forget = true): Order
     {
-        $order = $this->manager()->createOrder();
+        $order = $this->manager()->createOrder(
+            allowMultipleOrders: $this->allowsMultipleOrdersPerCart()
+        );
 
         if ($forget) {
             $this->forget();
@@ -252,10 +257,8 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Create a new cart instance.
-     *
-     * @return \Lunar\Models\Cart
      */
-    protected function createNewCart()
+    protected function createNewCart(): Cart
     {
         $user = $this->authManager->user();
 
