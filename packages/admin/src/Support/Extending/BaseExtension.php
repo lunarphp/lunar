@@ -4,9 +4,9 @@ namespace Lunar\Admin\Support\Extending;
 
 abstract class BaseExtension
 {
-    protected object|null $caller;
+    protected ?object $caller;
 
-    public function setCaller(object|null $caller): void
+    public function setCaller(?object $caller): void
     {
         $this->caller = $caller;
     }
