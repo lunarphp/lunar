@@ -135,7 +135,7 @@ class ProductResource extends BaseResource
 
     public static function getSkuValidation(): array
     {
-        return static::callLunarHook('extendSkuValidation', [
+        return static::callStaticLunarHook('extendSkuValidation', [
             'required' => true,
             'unique' => true,
         ]);

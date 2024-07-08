@@ -10,4 +10,9 @@ trait CallsHooks
     {
         return LunarPanel::callHook(static::class, $this, ...$args);
     }
+
+    protected static function callStaticLunarHook(...$args)
+    {
+        return LunarPanel::callHook(static::class, null, ...$args);
+    }
 }

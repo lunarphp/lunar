@@ -18,7 +18,7 @@ trait DisplaysOrderTotals
 
     public static function getDeliveryInstructionsEntry(): Infolists\Components\TextEntry
     {
-        return self::callLunarHook('extendDeliveryInstructionsEntry', static::getDefaultDeliveryInstructionsEntry());
+        return self::callStaticLunarHook('extendDeliveryInstructionsEntry', static::getDefaultDeliveryInstructionsEntry());
     }
 
     public static function getDefaultOrderNotesEntry(): Infolists\Components\TextEntry
@@ -30,12 +30,12 @@ trait DisplaysOrderTotals
 
     public static function getOrderNotesEntry(): Infolists\Components\TextEntry
     {
-        return self::callLunarHook('extendOrderNotesEntry', static::getDefaultOrderNotesEntry());
+        return self::callStaticLunarHook('extendOrderNotesEntry', static::getDefaultOrderNotesEntry());
     }
 
     public static function getOrderTotalsAsideSchema(): array
     {
-        return self::callLunarHook('extendOrderTotalsAsideSchema', [
+        return self::callStaticLunarHook('extendOrderTotalsAsideSchema', [
             static::getDeliveryInstructionsEntry(),
             static::getOrderNotesEntry(),
         ]);
@@ -52,7 +52,7 @@ trait DisplaysOrderTotals
 
     public static function getSubTotalEntry(): Infolists\Components\TextEntry
     {
-        return self::callLunarHook('extendSubTotalEntry', static::getDefaultSubTotalEntry());
+        return self::callStaticLunarHook('extendSubTotalEntry', static::getDefaultSubTotalEntry());
     }
 
     public static function getDefaultDiscountTotalEntry(): Infolists\Components\TextEntry
@@ -66,7 +66,7 @@ trait DisplaysOrderTotals
 
     public static function getDiscountTotalEntry(): Infolists\Components\TextEntry
     {
-        return self::callLunarHook('extendDiscountTotalEntry', static::getDefaultDiscountTotalEntry());
+        return self::callStaticLunarHook('extendDiscountTotalEntry', static::getDefaultDiscountTotalEntry());
     }
 
     public static function getDefaultShippingBreakdownGroup(): Infolists\Components\Group
@@ -89,7 +89,7 @@ trait DisplaysOrderTotals
 
     public static function getShippingBreakdownGroup(): Infolists\Components\Group
     {
-        return self::callLunarHook('extendShippingBreakdownGroup', static::getDefaultShippingBreakdownGroup());
+        return self::callStaticLunarHook('extendShippingBreakdownGroup', static::getDefaultShippingBreakdownGroup());
     }
 
     public static function getDefaultTaxBreakdownGroup(): Infolists\Components\Group
@@ -112,7 +112,7 @@ trait DisplaysOrderTotals
 
     public static function getTaxBreakdownGroup(): Infolists\Components\Group
     {
-        return self::callLunarHook('extendTaxBreakdownGroup', static::getDefaultTaxBreakdownGroup());
+        return self::callStaticLunarHook('extendTaxBreakdownGroup', static::getDefaultTaxBreakdownGroup());
     }
 
     public static function getDefaultTotalEntry(): Infolists\Components\TextEntry
@@ -127,7 +127,7 @@ trait DisplaysOrderTotals
 
     public static function getTotalEntry(): Infolists\Components\TextEntry
     {
-        return self::callLunarHook('extendTotalEntry', static::getDefaultTotalEntry());
+        return self::callStaticLunarHook('extendTotalEntry', static::getDefaultTotalEntry());
     }
 
     public static function getDefaultPaidEntry(): Infolists\Components\TextEntry
@@ -150,7 +150,7 @@ trait DisplaysOrderTotals
 
     public static function getPaidEntry(): Infolists\Components\TextEntry
     {
-        return self::callLunarHook('extendPaidEntry', static::getDefaultPaidEntry());
+        return self::callStaticLunarHook('extendPaidEntry', static::getDefaultPaidEntry());
     }
 
     public static function getDefaultRefundEntry(): Infolists\Components\TextEntry
@@ -173,12 +173,12 @@ trait DisplaysOrderTotals
 
     public static function getRefundEntry(): Infolists\Components\TextEntry
     {
-        return self::callLunarHook('extendRefundEntry', static::getDefaultRefundEntry());
+        return self::callStaticLunarHook('extendRefundEntry', static::getDefaultRefundEntry());
     }
 
     public static function getOrderTotalsSchema(): array
     {
-        return self::callLunarHook('extendOrderTotalsSchema', [
+        return self::callStaticLunarHook('extendOrderTotalsSchema', [
             static::getSubTotalEntry(),
             static::getDiscountTotalEntry(),
             static::getShippingBreakdownGroup(),
@@ -214,6 +214,6 @@ trait DisplaysOrderTotals
 
     public static function getOrderTotalsInfolist(): Infolists\Components\Section
     {
-        return self::callLunarHook('extendOrderTotalsInfolist', static::getDefaultOrderTotalsInfolist());
+        return self::callStaticLunarHook('extendOrderTotalsInfolist', static::getDefaultOrderTotalsInfolist());
     }
 }

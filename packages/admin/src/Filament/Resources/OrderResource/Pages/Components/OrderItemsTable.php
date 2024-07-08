@@ -29,7 +29,7 @@ class OrderItemsTable extends TableComponent
 
     public static function getOrderLinesTableColumns(): array
     {
-        return self::callLunarHook('extendOrderLinesTableColumns', [
+        return self::callStaticLunarHook('extendOrderLinesTableColumns', [
             Tables\Columns\Layout\Split::make([
                 Tables\Columns\ImageColumn::make('image')
                     ->defaultImageUrl(fn () => 'data:image/svg+xml;base64, '.base64_encode(

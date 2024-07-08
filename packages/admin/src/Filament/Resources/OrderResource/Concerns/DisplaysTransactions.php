@@ -21,7 +21,7 @@ trait DisplaysTransactions
 
     public static function getTransactionsRepeatableEntry(): Infolists\Components\RepeatableEntry
     {
-        return self::callLunarHook('extendTransactionsRepeatableEntry', static::getDefaultTransactionsRepeatableEntry());
+        return self::callStaticLunarHook('extendTransactionsRepeatableEntry', static::getDefaultTransactionsRepeatableEntry());
     }
 
     public static function getDefaultTransactionsInfolist(): Infolists\Components\Component
@@ -38,6 +38,6 @@ trait DisplaysTransactions
 
     public static function getTransactionsInfolist(): Infolists\Components\Component
     {
-        return self::callLunarHook('extendTransactionsInfolist', static::getDefaultTransactionsInfolist());
+        return self::callStaticLunarHook('extendTransactionsInfolist', static::getDefaultTransactionsInfolist());
     }
 }

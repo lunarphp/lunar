@@ -8,7 +8,7 @@ trait ExtendsForms
 {
     public static function form(Form $form): Form
     {
-        return self::callLunarHook('extendForm', static::getDefaultForm($form));
+        return self::callStaticLunarHook('extendForm', static::getDefaultForm($form));
     }
 
     public static function getDefaultForm(Form $form): Form
