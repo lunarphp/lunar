@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping\Filament\Resources;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
@@ -9,6 +10,7 @@ use Filament\Pages\SubNavigationPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
 use Lunar\Shipping\Models\ShippingMethod;
@@ -52,10 +54,16 @@ class ShippingMethodResource extends BaseResource
     public static function getDefaultForm(Form $form): Form
     {
         return $form->schema([
+            Shout::make('product-customer-groups')
+                ->content(
+                    __('lunarpanel.shipping::shippingmethod.pages.availability.customer_groups')
+                )->type('warning')->hidden(function (Model $record) {
+                    return $record->customerGroups()->where('enabled', true)->count();
+                }),
             Forms\Components\Section::make()->schema(
                 static::getMainFormComponents(),
             ),
-        ]);
+        ])->columns(1);
     }
 
     protected static function getMainFormComponents(): array
