@@ -30,9 +30,7 @@ for this purpose.
 
 ```bash
 composer create-project --stability dev lunarphp/livewire-starter-kit example-store
-```
 
-```bash
 cd example-store
 ```
 
