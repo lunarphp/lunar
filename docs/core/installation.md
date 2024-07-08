@@ -93,8 +93,6 @@ This will take you through a set of questions to configure your Lunar install. T
 
 You should now be able to access the panel at `https://<yoursite>/lunar`.
 
----
-
 ## Advanced Installation Options
 
 ### Table Prefix
