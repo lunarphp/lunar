@@ -11,7 +11,9 @@ use Lunar\Models\CartAddress;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
-use function Pest\Laravel\{actingAs, assertDatabaseMissing};
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseMissing;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -316,9 +318,9 @@ test('can return new instance when current cart has completed order', function (
     $cart = CartSession::current()->calculate();
 
     expect($order->cart_id)->not->toBe($cart->id)
-    ->and($cart->subTotal->value)->toBe(0)
-    ->and(Session::get(config('lunar.cart_session.session_key')))
-    ->toBe($cart->id);
+        ->and($cart->subTotal->value)->toBe(0)
+        ->and(Session::get(config('lunar.cart_session.session_key')))
+        ->toBe($cart->id);
 
     assertDatabaseMissing(Order::class, [
         'cart_id' => $cart->id,
