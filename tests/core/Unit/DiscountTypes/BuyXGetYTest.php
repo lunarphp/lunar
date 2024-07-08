@@ -885,7 +885,7 @@ test('can add eligible products when not in cart', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -893,12 +893,12 @@ test('can add eligible products when not in cart', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -928,12 +928,12 @@ test('can add eligible products when not in cart', function () {
     ]);
 
     $discount->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
     $discount->purchasableRewards()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productB->getMorphClass(),
         'purchasable_id' => $productB->id,
         'type' => 'reward',
     ]);
