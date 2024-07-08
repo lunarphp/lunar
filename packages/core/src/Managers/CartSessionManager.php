@@ -25,18 +25,13 @@ class CartSessionManager implements CartSessionInterface
         //
     }
 
-    public function allowsMultipleOrdersPerCart(): bool
-    {
-        return config('lunar.cart.allow_multiple_per_order', false);
-    }
-
     /**
      * {@inheritDoc}
      */
     public function current(bool $estimateShipping = false, bool $calculate = true): ?Cart
     {
         return $this->fetchOrCreate(
-            config('lunar.cart_session.auto_create', false),
+            config('lunar.cart.auto_create', false),
             estimateShipping: $estimateShipping,
             calculate: $calculate,
         );
@@ -140,7 +135,7 @@ class CartSessionManager implements CartSessionInterface
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
-        if ($cart->hasCompletedOrders() && !$this->allowsMultipleOrdersPerCart()) {
+        if ($cart->hasCompletedOrders() && ! config('lunar.cart.allow_multiple_per_order', false)) {
             return $this->createNewCart();
         }
 
@@ -182,7 +177,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function getSessionKey(): string
     {
-        return config('lunar.cart_session.session_key');
+        return config('lunar.cart.session_key');
     }
 
     /**
@@ -241,12 +236,12 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Create an order from a cart instance.
+     *
+     * @param  bool  $forget
      */
-    public function createOrder(bool $forget = true): Order
+    public function createOrder($forget = true): Order
     {
-        $order = $this->manager()->createOrder(
-            allowMultipleOrders: $this->allowsMultipleOrdersPerCart()
-        );
+        $order = $this->manager()->createOrder();
 
         if ($forget) {
             $this->forget();
@@ -257,8 +252,10 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Create a new cart instance.
+     *
+     * @return \Lunar\Models\Cart
      */
-    protected function createNewCart(): Cart
+    protected function createNewCart()
     {
         $user = $this->authManager->user();
 
