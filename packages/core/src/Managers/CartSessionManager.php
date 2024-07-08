@@ -177,7 +177,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function getSessionKey(): string
     {
-        return config('lunar.cart.session_key');
+        return config('lunar.cart_session.session_key');
     }
 
     /**
