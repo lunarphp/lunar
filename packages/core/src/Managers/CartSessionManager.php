@@ -140,7 +140,7 @@ class CartSessionManager implements CartSessionInterface
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
-        if ($cart->hasCompletedOrders() && !$this->allowsMultipleOrdersPerCart()) {
+        if ($cart->hasCompletedOrders() && ! $this->allowsMultipleOrdersPerCart()) {
             return $this->createNewCart();
         }
 
