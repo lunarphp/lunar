@@ -36,6 +36,8 @@ return [
     */
     'auto_create' => false,
 
+    'allow_multiple_per_order' => false,
+
     /*
     |--------------------------------------------------------------------------
     | Authentication policy
