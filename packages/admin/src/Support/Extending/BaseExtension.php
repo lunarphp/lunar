@@ -6,7 +6,7 @@ abstract class BaseExtension
 {
     protected object $caller;
 
-    public function setCaller(object $caller): void
+    public function setCaller(object|null $caller): void
     {
         $this->caller = $caller;
     }
