@@ -8,16 +8,15 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Lunar\Admin\Support\Concerns;
+use Lunar\Admin\Support\Concerns\CallsStaticHooks;
 use Lunar\Base\Traits\Searchable;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
-
 use function Filament\Support\generate_search_term_expression;
 
 class BaseResource extends Resource
 {
-    use Concerns\CallsHooks;
+    use CallsStaticHooks;
     use Concerns\ExtendsForms;
     use Concerns\ExtendsPages;
     use Concerns\ExtendsRelationManagers;

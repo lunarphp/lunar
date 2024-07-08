@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Admin\Support\Concerns;
+namespace Lunar\Admin\Support\Resources\Concerns;
 
 trait ExtendsPages
 {

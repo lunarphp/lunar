@@ -6,8 +6,8 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 
 trait CallsHooks
 {
-    protected static function callLunarHook(...$args)
+    protected function callLunarHook(...$args)
     {
-        return LunarPanel::callHook(static::class, ...$args);
+        return LunarPanel::callHook(static::class, $this, ...$args);
     }
 }
