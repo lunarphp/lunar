@@ -466,6 +466,7 @@ class Cart extends BaseModel
 
     /**
      * Associate a user to the cart
+     *
      * @throws Exception
      */
     public function associate(User $user, string $policy = 'merge', bool $refresh = true): Cart
