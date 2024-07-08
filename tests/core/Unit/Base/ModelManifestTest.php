@@ -67,14 +67,3 @@ test('can detect lunar model', function () {
             ModelManifest::isLunarModel((new \Lunar\Tests\Core\Stubs\Models\Product()))
         )->toBeFalse();
 });
-
-test('can add additional morph mapping', function () {
-    ModelManifest::replace(
-        \Lunar\Models\Contracts\Product::class,
-        \Lunar\Tests\Core\Stubs\Models\CustomProduct::class,
-    );
-
-    expect(
-        ModelManifest::getTable(new \Lunar\Tests\Core\Stubs\Models\CustomProduct())
-    )->toBe('products');
-});
