@@ -18,6 +18,19 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-alpha.x
+
+### High Impact
+
+Certain parts of `config/cart.php` which are more specific to when you are interacting with carts via the session have been relocated to a new `config/cart_session.php` file.
+
+```php
+// Move to config/cart_session.php
+'session_key' => 'lunar_cart',
+'auto_create' => false,
+```
+
+You should also check this file for any new config values you may need to add.
 
 ## 1.0.0-alpha.29
 
