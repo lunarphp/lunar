@@ -13,7 +13,6 @@ If you would prefer to install Lunar into your own Laravel application, please f
 ## Requirements
 
 - PHP >= 8.2
-- Laravel 10 / Laravel 11
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - intl PHP extension (on most systems it will be installed by default)
@@ -27,23 +26,12 @@ We assume you have a suitable local development environment in which to run Luna
 for this purpose.
 :::
 
-### Clone the repo
+### Create a New Project
 
 ```bash
-git clone --depth=1 https://github.com/lunarphp/livewire-starter-kit.git
-```
+composer create-project --stability dev lunarphp/livewire-starter-kit example-store
 
-This will create a shallow clone of the repo, from there you would just need to remove the `.git` folder and reinitialise it to make it your own.
-
-```bash
-cd livewire-starter-kit
-rm -rf .git
-```
-
-Then install composer dependencies
-
-```bash
-composer install
+cd example-store
 ```
 
 ### Configure the Laravel app
@@ -56,7 +44,7 @@ cp .env.example .env
 
 All the relevant configuration files should be present in the repo.
 
-### Migrate and seed
+### Migrate and Seed
 
 Install Lunar
 
