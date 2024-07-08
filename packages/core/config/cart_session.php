@@ -17,8 +17,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | Determines whether you want to automatically create a cart for a user if
-    | they do not currently have one in the session. By default this is false
-    | to minimise the amount of cart lines added to the database.
+    | they do not currently have one in the session. By default, this is false
+    | to minimise the amount of carts added to the database.
     |
     */
     'auto_create' => false,
@@ -29,7 +29,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Determines whether the same cart instance will be returned if there is already
-    | a completed orders associated to the cart which is retrieved in the session.
+    | a completed order associated to the cart which is retrieved in the session.
     | When set to false, if a cart has a completed order, then a new instance
     | of a cart will be returned, even if auto_create is set to false
     |
