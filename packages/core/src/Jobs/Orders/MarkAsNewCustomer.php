@@ -70,7 +70,7 @@ class MarkAsNewCustomer implements ShouldQueue
                     "{$ordersTable}.id",
                     '=',
                     'order_id'
-                )->whereDate('placed_at', '<', $order->placed_at ?: $order->created_at)->first();
+                )->where('placed_at', '<', $order->placed_at ?: $order->created_at)->first();
 
             $order->new_customer = ! $previousOrder;
             $order->saveQuietly();

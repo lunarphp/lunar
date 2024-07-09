@@ -43,6 +43,7 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
+use Throwable;
 
 /**
  * @property int $id
@@ -465,6 +466,8 @@ class Cart extends BaseModel
 
     /**
      * Associate a user to the cart
+     *
+     * @throws Exception
      */
     public function associate(User $user, string $policy = 'merge', bool $refresh = true): Cart
     {
@@ -643,7 +646,7 @@ class Cart extends BaseModel
     /**
      * Check whether a given fingerprint matches the one being generated for the cart.
      *
-     * @throws FingerprintMismatchException
+     * @throws FingerprintMismatchException|Throwable
      */
     public function checkFingerprint(string $fingerprint): bool
     {

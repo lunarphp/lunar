@@ -18,22 +18,21 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
-## [Unreleased]
+## 1.0.0-alpha.31
 
-### Medium Impact
+### High Impact
 
-The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+Certain parts of `config/cart.php` which are more specific to when you are interacting with carts via the session have been relocated to a new `config/cart_session.php` file.
 
 ```php
-public function handle(\Lunar\Models\Cart $cart, \Closure $next)
-{
-    //..
-    
-    return $next($cart);
-}
+// Move to config/cart_session.php
+'session_key' => 'lunar_cart',
+'auto_create' => false,
 ```
 
-## 1.0.0-alpha.x
+You should also check this file for any new config values you may need to add.
+
+## 1.0.0-alpha.29
 
 ### High Impact
 
@@ -48,7 +47,22 @@ To allow for recalculation we have now introduced `$cart->recalculate()` to forc
 Collection Group now have unique index on the column `handle`.
 If you are creating Collection Group from the admin panel, there is no changes required.
 
-## [Unreleased]
+### Medium Impact
+
+#### Update custom shipping modifiers signature
+
+The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+
+```php
+public function handle(\Lunar\Models\Cart $cart, \Closure $next)
+{
+    //..
+    
+    return $next($cart);
+}
+```
+
+## 1.0.0-alpha.26
 
 ### Medium Impact
 
