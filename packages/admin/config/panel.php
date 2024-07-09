@@ -46,6 +46,6 @@ return [
     | to include in the count below.
     |
     */
-    'order_count_statuses' => ['in-progress'],
+    'order_count_statuses' => ['payment-received'],
 
 ];
