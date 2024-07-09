@@ -59,7 +59,7 @@ namespace App\DiscountTypes;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\DiscountTypes\AbstractDiscountType;
 
-class MyCustomDiscountType extends AbstractDiscountType implemented LunarPanelDiscountInterface
+class MyCustomDiscountType extends AbstractDiscountType implements LunarPanelDiscountInterface
 {
     /**
      * Return the schema to use in the Lunar admin panel
