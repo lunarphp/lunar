@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
 use Filament\Actions;
+use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\DiscountTypes\BuyXGetY;
@@ -24,7 +25,7 @@ class EditDiscount extends BaseEditRecord
         if (class_exists($data['type'])) {
             $type = new $data['type'];
 
-            if (method_exists($type, 'lunarPanelOnSave')) {
+            if ($type instanceof LunarPanelDiscountInterface) {
                 return $type->lunarPanelOnFill($data);
             }
         }
@@ -37,7 +38,7 @@ class EditDiscount extends BaseEditRecord
         if (class_exists($data['type'])) {
             $type = new $data['type'];
 
-            if (method_exists($type, 'lunarPanelOnSave')) {
+            if ($type instanceof LunarPanelDiscountInterface) {
                 return $type->lunarPanelOnSave($data);
             }
         }

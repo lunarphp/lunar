@@ -11,6 +11,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
@@ -58,7 +59,7 @@ class DiscountResource extends BaseResource
     public static function getDefaultForm(Form $form): Form
     {
         $discountSchemas = Discounts::getTypes()->map(function ($discount) {
-            if (! method_exists($discount, 'lunarPanelSchema')) {
+            if (! $discount instanceof LunarPanelDiscountInterface) {
                 return;
             }
 
