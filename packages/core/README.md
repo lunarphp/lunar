@@ -22,3 +22,31 @@ We put developers first and try to ensure your experience is as smooth as possib
 ## License
 
 Lunar is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+The following models have relationships which might benefit from migration to another group, how should this be handled?
+
+- Attribute Groups
+- Collection Groups
+
+Should the following models have soft deletes due to sensitive information being associated.
+
+- Customers (orders, users)
+- Currencies (carts, prices)
+- Discounts (links to orders, carts) - Should these just be "deactivated"
+
+## Special Considerations
+
+- Languages - These have ties to attribute data, will it cause errors if there are hangovers here?
+- ProductOption/ProductOptionValue - Generally controlled via the product edit page, do we allow individual deletion?
+
+## Models that can't be deleted
+
+- Orders
+- Order Address
+- Transaction
+
+## Models which already have soft deletes
+
+- Product
+- ProductVariant
