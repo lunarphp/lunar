@@ -59,6 +59,6 @@ test('can soft delete a channel', function () {
 
     \Pest\Laravel\assertDatabaseHas(Channel::class, [
         'id' => $channel->id,
-        'deleted_at' => now()
+        'deleted_at' => now(),
     ]);
 });

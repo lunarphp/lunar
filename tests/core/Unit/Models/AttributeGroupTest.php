@@ -4,6 +4,7 @@ uses(\Lunar\Tests\Core\TestCase::class)->group('models');
 
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
+
 use function Pest\Laravel\{assertDatabaseMissing};
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -59,6 +60,6 @@ test('can delete attribute group', function () {
     $attributeGroup->delete();
 
     assertDatabaseMissing(AttributeGroup::class, [
-       'id' => $attributeGroup->id,
+        'id' => $attributeGroup->id,
     ]);
 });
