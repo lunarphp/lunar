@@ -119,6 +119,24 @@ class StripeManager
         );
     }
 
+    public function cancelIntent(Cart $cart, string $reason): void
+    {
+        $meta = (array) $cart->meta;
+
+        if (empty($meta['payment_intent'])) {
+            return;
+        }
+
+        try {
+            $this->getClient()->paymentIntents->cancel(
+                $meta['payment_intent'],
+                ['cancellation_reason' => $reason]
+            );
+        } catch (\Exception $e) {
+
+        }
+    }
+
     /**
      * Fetch an intent from the Stripe API.
      */

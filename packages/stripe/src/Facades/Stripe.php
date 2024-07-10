@@ -11,6 +11,7 @@ use Stripe\ApiRequestor;
  * @method static createIntent(\Lunar\Models\Cart $cart, array $opts): \Stripe\PaymentIntent
  * @method static syncIntent(\Lunar\Models\Cart $cart): void
  * @method static updateIntent(\Lunar\Models\Cart $cart, array $values): void
+ * @method static cancelIntent(\Lunar\Models\Cart $cart, string $reason): void
  * @method static updateShippingAddress(\Lunar\Models\Cart $cart): void
  * @method static getCharges(string $paymentIntentId): \Illuminate\Support\Collection
  * @method static getCharge(string $chargeId): \Stripe\Charge
