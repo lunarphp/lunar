@@ -5,6 +5,7 @@ uses(\Lunar\Tests\Core\TestCase::class)->group('models');
 use Lunar\Models\Address;
 use Lunar\Models\Country;
 use Lunar\Models\Customer;
+
 use function Pest\Laravel\{assertDatabaseMissing};
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -96,4 +97,3 @@ test('can delete address', function () {
         'id' => $address->id,
     ]);
 });
-
