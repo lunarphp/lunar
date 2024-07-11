@@ -30,4 +30,9 @@ abstract class Migration extends BaseMigration
 
         return parent::getConnection();
     }
+
+    public function canDropForeignKeys(): bool
+    {
+        return can_drop_foreign_keys();
+    }
 }
