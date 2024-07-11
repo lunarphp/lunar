@@ -3,7 +3,6 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
-use Lunar\Facades\DB;
 
 return new class extends Migration
 {
@@ -26,9 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table($this->prefix.'transactions', function (Blueprint $table) {
-            if (DB::getDriverName() !== 'sqlite') {
-                $table->dropForeign(['parent_transaction_id']);
-            }
+            $table->dropForeign(['parent_transaction_id']);
             $table->dropIndex(['type']);
             $table->dropColumn(['parent_transaction_id', 'type']);
         });
