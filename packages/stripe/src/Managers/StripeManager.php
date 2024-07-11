@@ -5,6 +5,7 @@ namespace Lunar\Stripe\Managers;
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
+use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
@@ -117,6 +118,24 @@ class StripeManager
             $meta['payment_intent'],
             ['amount' => $cart->total->value]
         );
+    }
+
+    public function cancelIntent(Cart $cart, CancellationReason $reason): void
+    {
+        $meta = (array) $cart->meta;
+
+        if (empty($meta['payment_intent'])) {
+            return;
+        }
+
+        try {
+            $this->getClient()->paymentIntents->cancel(
+                $meta['payment_intent'],
+                ['cancellation_reason' => $reason->value]
+            );
+        } catch (\Exception $e) {
+
+        }
     }
 
     /**

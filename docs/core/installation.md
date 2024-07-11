@@ -42,6 +42,28 @@ class User extends Authenticatable
 }
 ```
 
+### Publish Configuration
+Before you run the Lunar installer command, you may wish to customise some of the set-up.
+
+
+```sh
+php artisan vendor:publish --tag=lunar
+```
+
+## Configure Laravel Scout
+Lunar works best with [Laravel Scout](https://laravel.com/docs/master/scout) and a search engine like Meilisearch, Typesense or Algolia.
+
+### If you do NOT have a search engine configured
+Add the following to your `.env` file.
+```
+SCOUT_DRIVER=null
+```
+And set the config value in `panel.php` as follows.
+```php
+    'scout_enabled' => false,
+```
+
+
 ## Register the admin panel
 
 The admin panel needs registering in your app service provider before you can use it.
@@ -57,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
     }
 ```
 
-### Run the Artisan Installer
+## Run the Artisan Installer
 
 ```sh
 php artisan lunar:install
@@ -72,14 +94,6 @@ This will take you through a set of questions to configure your Lunar install. T
 You should now be able to access the panel at `https://<yoursite>/lunar`.
 
 ## Advanced Installation Options
-
-Before you run the Lunar installer command, you may wish to customise some of the set-up.
-
-### Publish Configuration
-
-```sh
-php artisan vendor:publish --tag=lunar
-```
 
 ### Table Prefix
 
