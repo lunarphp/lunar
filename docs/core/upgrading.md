@@ -18,6 +18,20 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-alpha.32
+
+### High Impact
+
+There is now a new `LunarUser` interface you will need to implement on your `User` model.
+
+```php
+// ...
+class User extends Authenticatable implements \Lunar\Base\LunarUser
+{
+    use \Lunar\Base\Traits\LunarUser;
+}
+```
+
 ## 1.0.0-alpha.31
 
 ### High Impact

@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
@@ -24,6 +23,7 @@ use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
+use Lunar\Base\LunarUser;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
@@ -469,7 +469,7 @@ class Cart extends BaseModel
      *
      * @throws Exception
      */
-    public function associate(User $user, string $policy = 'merge', bool $refresh = true): Cart
+    public function associate(LunarUser $user, string $policy = 'merge', bool $refresh = true): Cart
     {
         if ($this->customer()->exists()) {
             if (! $user->query()
