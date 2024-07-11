@@ -19,8 +19,6 @@ return new class extends Migration
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->dropForeign(['customer_id']);
-        });
-        Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->dropColumn('customer_id');
         });
     }
