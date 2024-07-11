@@ -16,6 +16,5 @@ class CollectionProductAttached
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }

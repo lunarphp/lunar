@@ -16,6 +16,5 @@ class ModelMediaUpdated
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }

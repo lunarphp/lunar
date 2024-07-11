@@ -51,7 +51,7 @@ class OrderResource extends BaseResource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', '=', 'in-process')->count();
+        return static::getModel()::whereIn('status', config('lunar.panel.order_count_statuses', 'payment-received'))->count();
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -237,11 +237,11 @@ class OrderResource extends BaseResource
         $details = [
             __('lunarpanel::order.table.status.label') => $record->getStatusLabelAttribute(),
             __('lunarpanel::order.table.total.label') => $record->total?->formatted,
-            __('lunarpanel::order.table.customer.label') => $record->shippingAddress->fullName,
+            __('lunarpanel::order.table.customer.label') => $record->billingAddress?->fullName,
         ];
 
-        if ($record->shippingAddress->contact_email) {
-            $details[__('lunarpanel::order.table.email.label')] = $record->shippingAddress->contact_email;
+        if ($record->billingAddress?->contact_email) {
+            $details[__('lunarpanel::order.table.email.label')] = $record->billingAddress->contact_email;
         }
 
         if ($record->placed_at) {

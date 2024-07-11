@@ -31,7 +31,7 @@ class PruneCarts extends Command
     {
         $this->info('Beginning prune');
 
-        $query = Cart::query();
+        $query = Cart::withTrashed();
 
         $carts = app(Pipeline::class)
             ->send($query)
@@ -48,7 +48,7 @@ class PruneCarts extends Command
 
     public function pruneCart(Cart $cart)
     {
-        Cart::where('merged_id', $cart->id)->get()->each(fn ($merged) => $this->pruneCart($merged));
+        Cart::withTrashed()->where('merged_id', $cart->id)->get()->each(fn ($merged) => $this->pruneCart($merged));
 
         $cart->lines()->delete();
         $cart->addresses()->delete();

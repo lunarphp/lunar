@@ -18,22 +18,35 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
-## [Unreleased]
+## 1.0.0-alpha.32
 
-### Medium Impact
+### High Impact
 
-The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+There is now a new `LunarUser` interface you will need to implement on your `User` model.
 
 ```php
-public function handle(\Lunar\Models\Cart $cart, \Closure $next)
+// ...
+class User extends Authenticatable implements \Lunar\Base\LunarUser
 {
-    //..
-    
-    return $next($cart);
+    use \Lunar\Base\Traits\LunarUser;
 }
 ```
 
-## 1.0.0-alpha.x
+## 1.0.0-alpha.31
+
+### High Impact
+
+Certain parts of `config/cart.php` which are more specific to when you are interacting with carts via the session have been relocated to a new `config/cart_session.php` file.
+
+```php
+// Move to config/cart_session.php
+'session_key' => 'lunar_cart',
+'auto_create' => false,
+```
+
+You should also check this file for any new config values you may need to add.
+
+## 1.0.0-alpha.29
 
 ### High Impact
 
@@ -48,7 +61,22 @@ To allow for recalculation we have now introduced `$cart->recalculate()` to forc
 Collection Group now have unique index on the column `handle`.
 If you are creating Collection Group from the admin panel, there is no changes required.
 
-## [Unreleased]
+### Medium Impact
+
+#### Update custom shipping modifiers signature
+
+The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+
+```php
+public function handle(\Lunar\Models\Cart $cart, \Closure $next)
+{
+    //..
+    
+    return $next($cart);
+}
+```
+
+## 1.0.0-alpha.26
 
 ### Medium Impact
 
@@ -67,6 +95,17 @@ $variant->purchasable == 'backorder';
 // New
 $variant->purchasable == 'in_stock_or_on_backorder';
 
+```
+
+## 1.0.0-alpha.22
+
+### Medium Impact
+
+Carts now use soft deletes and a cart will be deleted when `CartSession::forget()` is called.
+If you don't want to delete the cart when you call `forget` you can pass `delete: false` as a parameter:
+
+```php
+\Lunar\Facades\CartSession::forget(delete: false);
 ```
 
 ## 1.0.0-alpha.20
