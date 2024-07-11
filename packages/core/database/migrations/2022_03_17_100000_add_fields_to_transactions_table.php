@@ -25,7 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table($this->prefix.'transactions', function (Blueprint $table) {
-            $table->dropForeign(['parent_transaction_id']);
+            if ($this->canDropForeignKeys()) {
+                $table->dropForeign(['parent_transaction_id']);
+            }
             $table->dropIndex(['type']);
             $table->dropColumn(['parent_transaction_id', 'type']);
         });

@@ -18,7 +18,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
-            $table->dropForeign(['customer_id']);
+            if ($this->canDropForeignKeys()) {
+                $table->dropForeign(['customer_id']);
+            }
             $table->dropColumn('customer_id');
         });
     }

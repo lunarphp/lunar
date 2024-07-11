@@ -24,7 +24,9 @@ test('can run', function () {
     Schema::dropIfExists("{$prefix}brands");
 
     Schema::table("{$prefix}products", function ($table) {
-        $table->dropForeign(['brand_id']);
+        if (can_drop_foreign_keys()) {
+            $table->dropForeign(['brand_id']);
+        }
         $table->dropColumn('brand_id');
     });
 
