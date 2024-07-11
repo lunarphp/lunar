@@ -172,6 +172,16 @@ Stripe::updateIntent(\Lunar\Models\Cart $cart, [
 ]);
 ```
 
+### Cancel an existing intent
+
+If you need to cancel a PaymentIntent, you can do so. You will need to provide a valid reason, those of which can be found in the Stripe docs: https://docs.stripe.com/api/payment_intents/cancel.
+
+```php
+use \Lunar\Stripe\Facades\Stripe;
+
+Stripe::cancelIntent(\Lunar\Models\Cart $cart, string $reason);
+```
+
 ### Update the address on Stripe
 
 So you don't have to manually specify all the shipping address fields you can use the helper function to do it for you.
