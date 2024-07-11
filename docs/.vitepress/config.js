@@ -68,6 +68,7 @@ export default defineConfig({
                     items: [
                         {text: 'Overview', link: '/core/overview'},
                         {text: 'Installation', link: '/core/installation'},
+                        {text: 'Starter Kits', link: '/core/starter-kits'},
                         {text: 'Configuration', link: '/core/configuration'},
                         {text: 'Initial Set-Up', link: '/core/set-up'},
                         {text: 'Upgrade Guide', link: '/core/upgrading'},
@@ -141,9 +142,10 @@ export default defineConfig({
                         {text: 'Access Control', link: '/admin/extending/access-control'},
                         {text: 'Add-ons', link: '/admin/extending/addons'},
                         {text: 'Attributes', link: '/admin/extending/attributes'},
-                        {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Panel', link: '/admin/extending/panel'},
-                        {text: 'Resources', link: '/admin/extending/resources'}
+                        {text: 'Pages', link: '/admin/extending/pages'},
+                        {text: 'Resources', link: '/admin/extending/resources'},
+                        {text: 'Order Management', link: '/admin/extending/order-management'}
                     ]
                 }
             ],

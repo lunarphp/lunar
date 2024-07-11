@@ -220,10 +220,16 @@ Configuration for your cart is handled in `lunar/cart.php`
 
 | Field         | Description                                                                            | Default      |
 |:--------------|:---------------------------------------------------------------------------------------|:-------------|
-| `session_key` | What key to use when storing the cart id in the session                                | `lunar_cart` |
-| `auto_create` | If no current basket exists, should we create one in the database?                     | `false`      |
 | `auth_policy` | When a user logs in, how should we handle merging of the basket?                       | `merge`      |
 | `eager_load`  | Which relationships should be eager loaded by default when calculating the cart totals |
+
+There is additional, separate, config specifically for when using the `CartSession` located in `lunar/cart_session.php`.
+
+| Field                            | Description                                                        | Default      |
+|:---------------------------------|:-------------------------------------------------------------------|:-------------|
+| `session_key`                    | What key to use when storing the cart id in the session            | `lunar_cart` |
+| `auto_create`                    | If no current basket exists, should we create one in the database? | `false`      |
+| `allow_multiple_orders_per_cart` | Whether carts can have multiple orders associated to them.         | `false`      |
 
 ### Getting the cart session instance
 
@@ -252,10 +258,19 @@ created for no good reason. If you want to enable this functionality, you can
 adjust the config in `lunar/cart.php`
 
 ### Forgetting the cart
+Forgetting the cart will remove it from the user session and also soft-delete 
+the cart in the database.
 
 ```php
 CartSession::forget();
 ```
+
+If you don't want to delete the cart, you can pass the following parameter.
+
+```php
+CartSession::forget(delete: false);
+```
+
 
 ### Using a specific cart
 

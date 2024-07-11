@@ -25,13 +25,18 @@ class CartSessionManager implements CartSessionInterface
         //
     }
 
+    public function allowsMultipleOrdersPerCart(): bool
+    {
+        return config('lunar.cart_session.allow_multiple_per_order', false);
+    }
+
     /**
      * {@inheritDoc}
      */
     public function current(bool $estimateShipping = false, bool $calculate = true): ?Cart
     {
         return $this->fetchOrCreate(
-            config('lunar.cart.auto_create', false),
+            config('lunar.cart_session.auto_create', false),
             estimateShipping: $estimateShipping,
             calculate: $calculate,
         );
@@ -60,12 +65,23 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function forget(): void
+    public function forget(bool $delete = true): void
     {
+        if ($delete) {
+            Cart::destroy(
+                $this->sessionManager->get(
+                    $this->getSessionKey()
+                )
+            );
+        }
+
+        unset($this->cart);
+
         $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(
             $this->getSessionKey()
         );
+
     }
 
     /**
@@ -120,13 +136,19 @@ class CartSessionManager implements CartSessionInterface
             return $create ? $this->cart = $this->createNewCart() : null;
         }
 
-        $this->cart = $this->cart?->exists ? $this->cart : Cart::with(
+        $cart = $this->cart?->exists ? $this->cart : Cart::with(
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
-        if (! $this->cart) {
+        if ($cart->hasCompletedOrders() && ! $this->allowsMultipleOrdersPerCart()) {
+            return $this->createNewCart();
+        }
+
+        if (! $cart) {
             return $create ? $this->createNewCart() : null;
         }
+
+        $this->cart = $cart;
 
         if ($calculate) {
             $this->cart->calculate();
@@ -160,7 +182,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function getSessionKey(): string
     {
-        return config('lunar.cart.session_key');
+        return config('lunar.cart_session.session_key');
     }
 
     /**
@@ -219,24 +241,24 @@ class CartSessionManager implements CartSessionInterface
 
     /**
      * Create an order from a cart instance.
-     *
-     * @param  bool  $forget
      */
-    public function createOrder($forget = true): Order
+    public function createOrder(bool $forget = true): Order
     {
+        $order = $this->manager()->createOrder(
+            allowMultipleOrders: $this->allowsMultipleOrdersPerCart()
+        );
+
         if ($forget) {
             $this->forget();
         }
 
-        return $this->manager()->createOrder();
+        return $order;
     }
 
     /**
      * Create a new cart instance.
-     *
-     * @return \Lunar\Models\Cart
      */
-    protected function createNewCart()
+    protected function createNewCart(): Cart
     {
         $user = $this->authManager->user();
 
