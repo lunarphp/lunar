@@ -176,10 +176,22 @@ Stripe::updateIntent(\Lunar\Models\Cart $cart, [
 
 If you need to cancel a PaymentIntent, you can do so. You will need to provide a valid reason, those of which can be found in the Stripe docs: https://docs.stripe.com/api/payment_intents/cancel.
 
-```php
-use \Lunar\Stripe\Facades\Stripe;
+Lunar Stripe includes a PHP Enum to make this easier for you:
 
-Stripe::cancelIntent(\Lunar\Models\Cart $cart, string $reason);
+```php
+use Lunar\Stripe\Enums\CancellationReason;
+
+CancellationReason::ABANDONED;
+CancellationReason::DUPLICATE;
+CancellationReason::REQUESTED_BY_CUSTOMER;
+CancellationReason::FRAUDULENT;
+```
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Enums\CancellationReason;
+
+Stripe::cancelIntent(\Lunar\Models\Cart $cart, CancellationReason $reason);
 ```
 
 ### Update the address on Stripe
