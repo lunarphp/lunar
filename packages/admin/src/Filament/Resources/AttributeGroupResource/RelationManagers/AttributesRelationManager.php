@@ -50,6 +50,7 @@ class AttributesRelationManager extends RelationManager
                     ->helperText(
                         __('lunarpanel::attribute.form.description.helper')
                     )
+                    ->afterStateHydrated(fn ($state, $component) => $state ?: $component->state([Language::getDefault()->code => null]))
                     ->maxLength(255),
                 Forms\Components\TextInput::make('handle')
                     ->label(
