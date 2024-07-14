@@ -136,7 +136,7 @@ class AttributesRelationManager extends RelationManager
                     $data['system'] = false;
                     $data['attribute_type'] = $livewire->ownerRecord->attributable_type;
                     $data['position'] = $livewire->ownerRecord->attributes()->count() + 1;
-
+                    $data['configuration'] = $data['configuration'] === null ? [] : $data['configuration'];
                     return $data;
                 }),
             ])
