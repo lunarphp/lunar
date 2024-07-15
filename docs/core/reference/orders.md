@@ -205,7 +205,7 @@ Lunar\Models\OrderLine
 | type             | Whether `digital`,`physical` etc                                                            
 | description      | A description of the line item                                                              
 | option           | If this was a variant, the option info is here                                              
-| identifier       | Something to identify the purchasable item, usually an `sku`                                
+| identifier       | Something to identify the purchasable item, usually a `sku`                                
 | unit_price       | The unit price of the line                                                                  
 | unit_quantity    | The line unit quantity, usually this is 1                                                   
 | quantity         | The amount of this item purchased                                                           
