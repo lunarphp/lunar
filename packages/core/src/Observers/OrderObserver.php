@@ -7,9 +7,9 @@ use Lunar\Models\Order;
 class OrderObserver
 {
     /**
-     * Handle the OrderLine "updated" event.
+     * Handle the Order "updating" event.
      *
-     * @param  \Lunar\Models\OrderLine  $orderLine
+     * @param  \Lunar\Models\Order  $order
      * @return void
      */
     public function updating(Order $order)
