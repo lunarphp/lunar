@@ -54,6 +54,8 @@ return [
         */
         'cart_lines' => [
             Lunar\Pipelines\CartLine\GetUnitPrice::class,
+            \Lunar\Pipelines\CartLine\CalculateSubTotal::class.
+            \Lunar\Pipelines\CartLine\CalculateTax::class
         ],
     ],
 
