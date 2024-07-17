@@ -67,7 +67,6 @@ final class ApplyShipping
 
         $cart->shippingBreakdown = $shippingBreakdown;
 
-
         $cart->shippingTotal = new Price(
             $shippingTotal,
             $cart->currency,

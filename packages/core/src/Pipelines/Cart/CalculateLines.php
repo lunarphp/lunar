@@ -26,7 +26,7 @@ class CalculateLines
                     return $cartLine;
                 });
         }
-        
+
         return $next($cart);
     }
 }
