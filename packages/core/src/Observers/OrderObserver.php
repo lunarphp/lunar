@@ -9,7 +9,6 @@ class OrderObserver
     /**
      * Handle the Order "updating" event.
      *
-     * @param  \Lunar\Models\Order  $order
      * @return void
      */
     public function updating(Order $order)
