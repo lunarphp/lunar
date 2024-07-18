@@ -85,6 +85,43 @@ return [
             ],
         ],
     ],
+    'medias' => [
+        'title' => 'Media',
+        'title_plural' => 'Media',
+        'actions' => [
+            'create' => [
+                'label' => 'Create Media',
+            ],
+            'view' => [
+                'label' => 'View',
+            ],
+        ],
+        'form' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+            'media' => [
+                'label' => 'Image',
+            ],
+            'primary' => [
+                'label' => 'Primary',
+            ],
+        ],
+        'table' => [
+            'image' => [
+                'label' => 'Image',
+            ],
+            'file' => [
+                'label' => 'File',
+            ],
+            'name' => [
+                'label' => 'Name',
+            ],
+            'primary' => [
+                'label' => 'Primary',
+            ],
+        ],
+    ],
     'urls' => [
         'title' => 'URL',
         'title_plural' => 'URLs',

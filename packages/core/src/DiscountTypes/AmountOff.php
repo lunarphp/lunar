@@ -49,7 +49,9 @@ class AmountOff extends AbstractDiscountType
     {
         $currency = $cart->currency;
 
-        $value = (int) bcmul($values[$currency->code] ?? 0, $currency->factor);
+        $decimal = ($values[$currency->code] ?? 0) / $currency->factor;
+
+        $value = (int) bcmul($decimal, $currency->factor);
 
         $lines = $this->getEligibleLines($cart);
         $linesSubtotal = $lines->sum(function ($line) {

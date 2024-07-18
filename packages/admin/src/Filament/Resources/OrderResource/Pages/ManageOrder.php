@@ -6,37 +6,27 @@ use Awcodes\Shout\Components\Shout;
 use Awcodes\Shout\Components\ShoutEntry;
 use Closure;
 use Filament\Actions;
-use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Infolists;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\TextEntry\TextEntrySize;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\FontWeight;
-use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Arr;
-use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Computed;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Actions\Orders\UpdateStatusAction;
 use Lunar\Admin\Support\Actions\PdfDownload;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
+use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\Infolists\Components\Livewire;
 use Lunar\Admin\Support\Infolists\Components\Tags;
-use Lunar\Admin\Support\Infolists\Components\Timeline;
-use Lunar\Admin\Support\Infolists\Components\Transaction as InfolistsTransaction;
-use Lunar\Admin\Support\OrderStatus;
 use Lunar\Admin\Support\Pages\BaseViewRecord;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Country;
-use Lunar\Models\State;
 use Lunar\Models\Tag;
 use Lunar\Models\Transaction;
 
@@ -56,7 +46,14 @@ use Lunar\Models\Transaction;
  */
 class ManageOrder extends BaseViewRecord
 {
+    use CallsHooks;
     use CanDispatchActivityUpdated;
+    use OrderResource\Concerns\DisplaysOrderAddresses;
+    use OrderResource\Concerns\DisplaysOrderSummary;
+    use OrderResource\Concerns\DisplaysOrderTimeline;
+    use OrderResource\Concerns\DisplaysOrderTotals;
+    use OrderResource\Concerns\DisplaysShippingInfo;
+    use OrderResource\Concerns\DisplaysTransactions;
 
     protected static string $resource = OrderResource::class;
 
@@ -82,206 +79,102 @@ class ManageOrder extends BaseViewRecord
             ->content(OrderResource\Pages\Components\OrderItemsTable::class);
     }
 
-    public static function getShippingInfolist(): Infolists\Components\Section
+    public static function getInfolistSchema(): array
     {
-        return Infolists\Components\Section::make()
-            ->schema([
-                Infolists\Components\RepeatableEntry::make('shippingLines')
-                    ->hiddenLabel()
-                    ->contained(false)
-                    ->columns(2)
-                    ->columnSpan(12)
-                    ->schema([
-                        Infolists\Components\TextEntry::make('description')
-                            ->icon('heroicon-s-truck')
-                            ->html()
-                            ->iconPosition(IconPosition::Before)
-                            ->hiddenLabel(),
-                        Infolists\Components\TextEntry::make('sub_total')
-                            ->hiddenLabel()
-                            ->alignEnd()
-                            ->formatStateUsing(fn ($state) => $state->formatted),
-                        Infolists\Components\TextEntry::make('notes')
-                            ->hidden(
-                                fn ($state) => ! $state
-                            )
-                            ->placeholder(
-                                __('lunarpanel::order.infolist.notes.placeholder')
-                            ),
-                    ]),
-            ]);
+        return self::callLunarHook('extendInfolistSchema', [
+            static::getShippingInfolist(),
+            static::getOrderLinesTable(),
+            static::getOrderTotalsInfolist(),
+            static::getTransactionsInfolist(),
+            static::getTimelineInfolist(),
+        ]);
     }
 
-    public static function getOrderTotalsInfolist(): Infolists\Components\Component
+    public static function getInfolistAsideSchema(): array
     {
-        return Infolists\Components\Section::make()
-            ->schema([
-                Infolists\Components\Grid::make()
-                    ->columns(2)
-                    ->schema([
-                        Infolists\Components\Grid::make()
-                            ->columns(1)
-                            ->columnSpan(1)
-                            ->schema([
-                                Infolists\Components\TextEntry::make('shippingAddress.delivery_instructions')
-                                    ->label(__('lunarpanel::order.infolist.delivery_instructions.label'))
-                                    ->hidden(fn ($state) => blank($state)),
-                                Infolists\Components\TextEntry::make('notes')
-                                    ->label(__('lunarpanel::order.infolist.notes.label'))
-                                    ->placeholder(__('lunarpanel::order.infolist.notes.placeholder')),
-                            ]),
-                        Infolists\Components\Grid::make()
-                            ->columns(1)
-                            ->columnSpan(1)
-                            ->schema([
-                                Infolists\Components\TextEntry::make('sub_total')
-                                    ->label(__('lunarpanel::order.infolist.sub_total.label'))
-                                    ->inlineLabel()
-                                    ->alignEnd()
-                                    ->formatStateUsing(fn ($state) => $state->formatted),
-                                Infolists\Components\TextEntry::make('discount_total')
-                                    ->label(__('lunarpanel::order.infolist.discount_total.label'))
-                                    ->inlineLabel()
-                                    ->alignEnd()
-                                    ->formatStateUsing(fn ($state) => $state->formatted),
-                                Infolists\Components\Group::make()
-                                    ->statePath('shipping_breakdown')
-                                    ->schema(function ($state) {
-                                        $shipping = [];
-                                        foreach ($state->items ?? [] as $shippingIndex => $shippingItem) {
-                                            $shipping[] = Infolists\Components\TextEntry::make('shipping_'.$shippingIndex)
-                                                ->label(fn () => $shippingItem->name)
-                                                ->inlineLabel()
-                                                ->alignEnd()
-                                                ->state(fn () => $shippingItem->price->formatted);
-                                        }
-
-                                        return $shipping;
-                                    }),
-
-                                Infolists\Components\Group::make()
-                                    ->statePath('tax_breakdown')
-                                    ->schema(function ($state) {
-                                        $taxes = [];
-                                        foreach ($state->amounts ?? [] as $taxIndex => $tax) {
-                                            $taxes[] = Infolists\Components\TextEntry::make('tax_'.$taxIndex)
-                                                ->label(fn () => $tax->description)
-                                                ->inlineLabel()
-                                                ->alignEnd()
-                                                ->state(fn () => $tax->price->formatted);
-                                        }
-
-                                        return $taxes;
-                                    }),
-                                Infolists\Components\TextEntry::make('total')
-                                    ->label(fn () => new HtmlString('<b>'.__('lunarpanel::order.infolist.total.label').'</b>'))
-                                    ->inlineLabel()
-                                    ->alignEnd()
-                                    ->weight(FontWeight::Bold)
-                                    ->formatStateUsing(fn ($state) => $state->formatted),
-                                Infolists\Components\TextEntry::make('paid')
-                                    ->label(fn () => __('lunarpanel::order.infolist.paid.label'))
-                                    ->inlineLabel()
-                                    ->alignEnd()
-                                    ->weight(FontWeight::SemiBold)
-                                    ->getStateUsing(function ($record) {
-                                        $paid = $record->transactions()
-                                            ->whereType('capture')
-                                            ->whereSuccess(true)
-                                            ->get()
-                                            ->sum('amount.value');
-
-                                        return (new Price($paid, $record->currency))->formatted;
-                                    }),
-                                Infolists\Components\TextEntry::make('refund')
-                                    ->label(fn () => __('lunarpanel::order.infolist.refund.label'))
-                                    ->inlineLabel()
-                                    ->alignEnd()
-                                    ->color('warning')
-                                    ->weight(FontWeight::SemiBold)
-                                    ->getStateUsing(function ($record) {
-                                        $paid = $record->transactions()
-                                            ->whereType('refund')
-                                            ->get()
-                                            ->sum('amount.value');
-
-                                        return (new Price($paid, $record->currency))->formatted;
-                                    }),
-                            ]),
-                    ]),
-            ]);
+        return self::callLunarHook('extendInfolistAsideSchema', [
+            static::getCustomerEntry(),
+            static::getOrderSummaryInfolist(),
+            static::getShippingAddressInfolist(),
+            static::getBillingAddressInfoList(),
+            static::getTagsSection(),
+            static::getAdditionalInfoSection(),
+        ]);
     }
 
-    public static function getTransactionsInfolist(): Infolists\Components\Component
+    public static function getDefaultCustomerEntry(): Infolists\Components\Entry
     {
-        return Infolists\Components\Section::make('transactions')
-            ->heading(__('lunarpanel::order.infolist.transactions.label'))
+        return Infolists\Components\TextEntry::make('customer')
+            ->hidden(fn ($state) => blank($state?->id))
+            ->formatStateUsing(fn ($state) => $state->fullName)
+            ->weight(FontWeight::SemiBold)
+            ->size(TextEntrySize::Large)
+            ->hiddenLabel()
+            ->suffixAction(fn ($state) => Action::make('view customer')
+                ->color('gray')
+                ->button()
+                ->size(ActionSize::ExtraSmall)
+                ->url(CustomerResource::getUrl('edit', ['record' => $state->id])));
+    }
+
+    public static function getCustomerEntry(): Infolists\Components\Component
+    {
+        return self::callLunarHook('extendCustomerEntry', static::getDefaultCustomerEntry());
+    }
+
+    public static function getDefaultTagsSection(): Infolists\Components\Section
+    {
+        return Infolists\Components\Section::make('tags')
+            ->heading(__('lunarpanel::order.infolist.tags.label'))
+            ->headerActions([
+                fn ($record) => static::getEditTagsActions(),
+            ])
             ->compact()
-            ->collapsed(fn ($state) => filled($state))
-            ->collapsible(fn ($state) => filled($state))
             ->schema([
-                Infolists\Components\RepeatableEntry::make('transactions')
-                    ->hiddenLabel()
-                    ->placeholder(__('lunarpanel::order.infolist.transactions.placeholder'))
-                    ->getStateUsing(fn ($record) => $record->transactions)
-                    ->contained(false)
-                    ->schema([
-                        InfolistsTransaction::make('transactions'),
-                    ]),
+                Tags::make(''),
             ]);
     }
 
-    public static function getTimelineInfolist(): Infolists\Components\Component
+    public static function getTagsSection(): Infolists\Components\Component
     {
-        return Infolists\Components\Grid::make()
-            ->schema([
-                Timeline::make('timeline')
-                    ->label(__('lunarpanel::order.infolist.timeline.label')),
-            ]);
+        return self::callLunarHook('extendTagsSection', static::getDefaultTagsSection());
     }
 
-    public static function getOrderSummaryInfolist(): Infolists\Components\Component
+    public static function getDefaultAdditionalInfoSection(): Infolists\Components\Section
     {
-        return Infolists\Components\Section::make()
+        return Infolists\Components\Section::make('additional_info')
+            ->heading(__('lunarpanel::order.infolist.additional_info.label'))
             ->compact()
-            ->inlineLabel()
-            ->schema([
-                Infolists\Components\TextEntry::make('new_customer')
-                    ->label(__('lunarpanel::order.infolist.new_returning.label'))
-                    ->alignEnd()
-                    ->formatStateUsing(fn ($state) => __('lunarpanel::order.infolist.'.($state ? 'new' : 'returning').'_customer.label')),
-                Infolists\Components\TextEntry::make('status')
-                    ->label(__('lunarpanel::order.infolist.status.label'))
-                    ->formatStateUsing(fn ($state) => OrderStatus::getLabel($state))
-                    ->alignEnd()
-                    ->color(fn ($state) => OrderStatus::getColor($state))
-                    ->badge(),
-                Infolists\Components\TextEntry::make('reference')
-                    ->label(__('lunarpanel::order.infolist.reference.label'))
-                    ->alignEnd()
-                    ->icon('heroicon-o-clipboard')
-                    ->iconPosition(IconPosition::After)
-                    ->copyable(),
-                Infolists\Components\TextEntry::make('customer_reference')
-                    ->label(__('lunarpanel::order.infolist.customer_reference.label'))
-                    ->alignEnd()
-                    ->icon('heroicon-o-clipboard')
-                    ->iconPosition(IconPosition::After)
-                    ->copyable(),
-                Infolists\Components\TextEntry::make('channel.name')
-                    ->label(__('lunarpanel::order.infolist.channel.label'))
-                    ->alignEnd(),
-                Infolists\Components\TextEntry::make('created_at')
-                    ->label(__('lunarpanel::order.infolist.date_created.label'))
-                    ->alignEnd()
-                    ->dateTime('Y-m-d h:i a')
-                    ->visible(fn ($record) => ! $record->placed_at),
-                Infolists\Components\TextEntry::make('placed_at')
-                    ->label(__('lunarpanel::order.infolist.date_placed.label'))
-                    ->alignEnd()
-                    ->dateTime('Y-m-d h:i a')
-                    ->placeholder('-'),
-            ]);
+            ->statePath('meta')
+            ->schema(fn ($state) => blank($state) ? [
+                Infolists\Components\TextEntry::make('no_additional_info')
+                    ->hiddenLabel()
+                    ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
+            ] : collect($state)
+                ->map(function ($value, $key) {
+                    if (is_array($value)) {
+                        return Infolists\Components\KeyValueEntry::make('meta_'.$key)->state($value);
+                    }
+
+                    return Infolists\Components\TextEntry::make('meta_'.$key)
+                        ->state($value)
+                        ->label($key)
+                        ->copyable()
+                        ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
+                            $state = $component->getState();
+                            if (strlen($state) <= $component->getCharacterLimit()) {
+                                return null;
+                            }
+
+                            return $state;
+                        });
+                })
+                ->toArray());
+    }
+
+    public static function getAdditionalInfoSection(): Infolists\Components\Component
+    {
+        return self::callLunarHook('extendAdditionalInfoSection', static::getDefaultAdditionalInfoSection());
     }
 
     public function getDefaultInfolist(Infolist $infolist): Infolist
@@ -310,65 +203,11 @@ class ManageOrder extends BaseViewRecord
                                 default => null
                             })
                             ->visible(fn ($state) => in_array($state, ['partial-refund', 'refunded'])),
-
-                        static::getShippingInfolist(),
-                        static::getOrderLinesTable(),
-                        static::getOrderTotalsInfolist(),
-                        static::getTransactionsInfolist(),
-                        static::getTimelineInfolist(),
+                        ...static::getInfolistSchema(),
                     ])
                     ->columnSpan(['lg' => 2]),
-
                 Infolists\Components\Group::make()
-                    ->schema([
-                        Infolists\Components\TextEntry::make('customer')
-                            ->hidden(fn ($state) => blank($state?->id))
-                            ->formatStateUsing(fn ($state) => $state->fullName)
-                            ->weight(FontWeight::SemiBold)
-                            ->size(TextEntrySize::Large)
-                            ->hiddenLabel()
-                            ->suffixAction(fn ($state) => Action::make('view customer')
-                                ->color('gray')
-                                ->button()
-                                ->size(ActionSize::ExtraSmall)
-                                ->url(CustomerResource::getUrl('edit', ['record' => $state->id]))),
-                        static::getOrderSummaryInfolist(),
-                        $this->getOrderAddressInfolistSchema('shipping'),
-                        $this->getOrderAddressInfolistSchema('billing'),
-                        Infolists\Components\Section::make('tags')
-                            ->heading(__('lunarpanel::order.infolist.tags.label'))
-                            ->headerActions([
-                                fn ($record) => $this->getEditTagsActions(),
-                            ])
-                            ->compact()
-                            ->schema([
-                                Tags::make(''),
-                            ]),
-
-                        Infolists\Components\Section::make('additional_info')
-                            ->heading(__('lunarpanel::order.infolist.additional_info.label'))
-                            ->compact()
-                            ->statePath('meta')
-                            ->schema(fn ($state) => blank($state) ? [
-                                Infolists\Components\TextEntry::make('no_additional_info')
-                                    ->hiddenLabel()
-                                    ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
-                            ] : collect($state)
-                                ->map(fn ($value, $key) => Infolists\Components\TextEntry::make('meta_'.$key)
-                                    ->state($value)
-                                    ->label($key)
-                                    ->copyable()
-                                    ->limit(50)->tooltip(function (Infolists\Components\TextEntry $component): ?string {
-                                        $state = $component->getState();
-                                        if (strlen($state) <= $component->getCharacterLimit()) {
-                                            return null;
-                                        }
-
-                                        return $state;
-                                    }))
-                                ->toArray()),
-
-                    ])
+                    ->schema(static::getInfolistAsideSchema())
                     ->columnSpan(['lg' => 1]),
             ])
             ->columns(3);
@@ -467,96 +306,7 @@ class ManageOrder extends BaseViewRecord
         })->sum('amount.value');
     }
 
-    private function isShippingEqualsBilling($shippingAddress, $billingAddress): bool
-    {
-        if (! $shippingAddress || ! $billingAddress) {
-            return false;
-        }
-
-        $fieldsToCheck = Arr::except(
-            $billingAddress->getAttributes(),
-            ['id', 'created_at', 'updated_at', 'order_id', 'type', 'meta']
-        );
-
-        // Is the same until proven otherwise
-        $isSame = true;
-
-        foreach ($fieldsToCheck as $field => $value) {
-            if ($shippingAddress->getAttribute($field) != $value) {
-                $isSame = false;
-            }
-        }
-
-        return $isSame;
-    }
-
-    public function getOrderAddressInfolistSchema(string $type)
-    {
-        $sameAsShipping = fn ($record) => $type == 'billing' && $this->isShippingEqualsBilling($record->shippingAddress, $record->billingAddress);
-
-        $getAddress = fn ($record) => match ($type) {
-            'billing' => $record->billingAddress,
-            'shipping' => $record->shippingAddress,
-            default => null,
-        };
-
-        return Infolists\Components\Section::make(__("lunarpanel::order.infolist.{$type}_address.label"))
-            ->statePath($type.'Address')
-            ->compact()
-            ->headerActions([
-                fn ($record) => $this->getEditAddressAction($type)->hidden($sameAsShipping($record)),
-            ])
-            ->schema(fn ($record) => $sameAsShipping($record) ? [
-                Infolists\Components\TextEntry::make('billing_matches_shipping')
-                    ->hiddenLabel()
-                    ->weight(FontWeight::SemiBold)
-                    ->getStateUsing(fn () => __('lunarpanel::order.infolist.billing_matches_shipping.label')),
-
-            ] : [
-                Infolists\Components\TextEntry::make($type.'_address')
-                    ->hiddenLabel()
-                    ->listWithLineBreaks()
-                    ->getStateUsing(function ($record) use ($getAddress) {
-                        $address = $getAddress($record);
-
-                        if ($address?->id ?? false) {
-                            return collect([
-                                'company_name' => $address->company_name,
-                                'fullName' => $address->fullName,
-                                'line_one' => $address->line_one,
-                                'line_two' => $address->line_two,
-                                'line_three' => $address->line_three,
-                                'city' => $address->city,
-                                'state' => $address->state,
-                                'postcode' => $address->postcode,
-                                'country.name' => $address->country->name,
-                            ])
-                                ->filter(fn ($value, $key) => filled($value) || in_array($key, [
-                                    'fullName', 'line_one', 'postcode', 'country.name',
-                                ]))
-                                ->toArray();
-                        } else {
-                            return __('lunarpanel::order.infolist.address_not_set.label');
-                        }
-                    }),
-                Infolists\Components\TextEntry::make($type.'_phone')
-                    ->hiddenLabel()
-                    ->icon('heroicon-o-phone')
-                    ->getStateUsing(fn ($record) => $getAddress($record)?->contact_phone ?? '-')
-                    ->url(fn ($state) => $state !== '-' ? 'tel:'.$state : false)
-                    ->color(fn ($state) => $state !== '-' ? Color::Sky : null)
-                    ->iconColor(fn ($state) => $state !== '-' ? Color::Green : null),
-                Infolists\Components\TextEntry::make($type.'_email')
-                    ->hiddenLabel()
-                    ->icon('heroicon-o-envelope')
-                    ->getStateUsing(fn ($record) => $getAddress($record)?->contact_email ?? '-')
-                    ->url(fn ($state) => $state !== '-' ? 'mailto:'.$state : false)
-                    ->color(fn ($state) => $state !== '-' ? Color::Sky : null)
-                    ->iconColor(fn ($state) => $state !== '-' ? Color::Amber : null),
-            ]);
-    }
-
-    public function getEditTagsActions(): Action
+    public static function getEditTagsActions(): Action
     {
         return Action::make('edit_tags')
             ->modalHeading(__('lunarpanel::order.infolist.tags.label'))
@@ -572,137 +322,8 @@ class ManageOrder extends BaseViewRecord
                         ->suggestions(Tag::all()->pluck('value')->all()),
                 ];
             })->action(function (Action $action, $record, $data) {
-                $this->dispatchActivityUpdated();
+                //                $this->dispatchActivityUpdated();
             });
-    }
-
-    public function getEditAddressAction(string $type): Action
-    {
-        return Action::make("edit_{$type}_address")
-            ->modalHeading(__("lunarpanel::order.infolist.{$type}_address.label"))
-            ->modalWidth('2xl')
-            ->label(__('lunarpanel::order.action.edit_address.label'))
-            ->button()
-            ->fillForm(fn ($record) => match ($type) {
-                'shipping' => $record->shippingAddress->toArray(),
-                'billing' => $record->billingAddress->toArray(),
-                default => []
-            })
-            ->form(function () {
-                return [
-                    Forms\Components\Grid::make()
-                        ->schema([
-                            Forms\Components\TextInput::make('first_name')
-                                ->label(__('lunarpanel::order.form.address.first_name.label'))
-                                ->autocomplete(false)
-                                ->maxLength(255)
-                                ->required(),
-                            Forms\Components\TextInput::make('last_name')
-                                ->label(__('lunarpanel::order.form.address.last_name.label'))
-                                ->autocomplete(false)
-                                ->maxLength(255),
-                        ]),
-                    Forms\Components\TextInput::make('company_name')
-                        ->label(__('lunarpanel::order.form.address.company_name.label'))
-                        ->autocomplete(false)
-                        ->maxLength(255),
-                    Forms\Components\Grid::make()
-                        ->schema([
-                            Forms\Components\TextInput::make('contact_phone')
-                                ->label(__('lunarpanel::order.form.address.contact_phone.label'))
-                                ->autocomplete(false)
-                                ->maxLength(255),
-                            Forms\Components\TextInput::make('contact_email')
-                                ->label(__('lunarpanel::order.form.address.contact_email.label'))
-                                ->autocomplete(false)
-                                ->maxLength(255),
-                        ]),
-                    Forms\Components\TextInput::make('line_one')
-                        ->label(__('lunarpanel::order.form.address.line_one.label'))
-                        ->autocomplete(false)
-                        ->maxLength(255)
-                        ->required(),
-                    Forms\Components\Grid::make()
-                        ->schema([
-                            Forms\Components\TextInput::make('line_two')
-                                ->label(__('lunarpanel::order.form.address.line_two.label'))
-                                ->autocomplete(false)
-                                ->maxLength(255),
-                            Forms\Components\TextInput::make('line_three')
-                                ->label(__('lunarpanel::order.form.address.line_three.label'))
-                                ->autocomplete(false)
-                                ->maxLength(255),
-                        ]),
-                    Forms\Components\Grid::make(3)
-                        ->schema([
-                            Forms\Components\TextInput::make('city')
-                                ->label(__('lunarpanel::order.form.address.city.label'))
-                                ->maxLength(255)
-                                ->autocomplete(false)
-                                ->required(),
-                            Forms\Components\TextInput::make('state')
-                                ->label(__('lunarpanel::order.form.address.state.label'))
-                                ->autocomplete('state') // to disable browser input history while keeping datalist
-                                ->datalist(fn ($get) => State::whereCountryId($get('country_id'))->pluck('name')->toArray())
-                                ->maxLength(255),
-                            Forms\Components\TextInput::make('postcode')
-                                ->label(__('lunarpanel::order.form.address.postcode.label'))
-                                ->autocomplete(false)
-                                ->maxLength(255),
-                        ]),
-                    Forms\Components\Select::make('country_id')
-                        ->label(__('lunarpanel::order.form.address.country_id.label'))
-                        ->options(fn () => Country::get()->pluck('name', 'id'))
-                        ->live()
-                        ->searchable()
-                        ->required(),
-                ];
-            })
-            ->action(function (Action $action, $record, $data) use ($type) {
-                $addressType = match ($type) {
-                    'shipping' => 'shippingAddress',
-                    'billing' => 'billingAddress',
-                    default => null,
-                };
-
-                if (blank($addressType)) {
-                    $action->failureNotificationTitle(__('lunarpanel::order.action.edit_address.notification.error'));
-                    $action->failure();
-
-                    $action->halt();
-
-                    return;
-                }
-
-                $oldData = $record->$addressType->toArray();
-                $formFields = array_keys($data);
-
-                $record->$addressType->order_id = $record->id;
-                $record->$addressType->update($data);
-                $refreshed = $record->$addressType->refresh();
-
-                // should this be in Core as model observer?
-                $diff = collect($oldData)->only($formFields)->diff(collect($refreshed->toArray())->only($formFields));
-                if ($diff->count()) {
-                    activity()
-                        ->causedBy(Filament::auth()->user())
-                        ->performedOn($record)
-                        ->event('order-address-update')
-                        ->withProperties([
-                            'fields' => $formFields,
-                            'type' => $addressType,
-                            'new' => $record->$addressType->toArray(),
-                            'previous' => $oldData,
-                        ])->log('order-address-update');
-
-                    $this->dispatchActivityUpdated();
-                }
-
-                $action->successNotificationTitle(__("lunarpanel::order.action.edit_address.notification.{$type}_address.saved"));
-
-                $action->success();
-            })
-            ->slideOver();
     }
 
     protected function getDefaultHeaderActions(): array
@@ -751,7 +372,7 @@ class ManageOrder extends BaseViewRecord
                     ->live()
                     ->autocomplete(false)
                     ->minValue(
-                        1 / $this->getRecord()->currency->factor
+                        fn ($record) => 1 / $record->currency->factor
                     )
                     ->numeric(),
 
@@ -846,7 +467,9 @@ class ManageOrder extends BaseViewRecord
                     ->default(fn ($record) => number_format($record->total->decimal, $record->currency->decimal_places, '.', ''))
                     ->live()
                     ->autocomplete(false)
-                    ->minValue(1)
+                    ->minValue(
+                        fn ($record) => 1 / $record->currency->factor
+                    )
                     ->helperText(function (Forms\Components\TextInput $component, $get, $state) {
                         $transaction = Transaction::findOrFail($get('transaction'));
 

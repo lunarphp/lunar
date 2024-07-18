@@ -6,8 +6,5 @@ use Lunar\Stripe\DataTransferObjects\OrderIntent;
 
 class UpdateOrderFromCharges
 {
-    public function handle(OrderIntent $orderIntent, \Closure $next)
-    {
-
-    }
+    public function handle(OrderIntent $orderIntent, \Closure $next) {}
 }

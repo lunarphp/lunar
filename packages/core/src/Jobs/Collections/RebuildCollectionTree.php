@@ -43,7 +43,7 @@ class RebuildCollectionTree implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(array $newTree, array $currentTree, Collection $parent = null)
+    public function __construct(array $newTree, array $currentTree, ?Collection $parent = null)
     {
         $this->newTree = $newTree;
         $this->currentTree = $currentTree;

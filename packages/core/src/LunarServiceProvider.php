@@ -43,6 +43,7 @@ use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Console\Commands\PruneCarts;
 use Lunar\Console\Commands\ScoutIndexerCommand;
 use Lunar\Console\InstallLunar;
+use Lunar\Database\State\ConvertBackOrderPurchasability;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
 use Lunar\Database\State\ConvertTaxbreakdown;
 use Lunar\Database\State\EnsureBrandsAreUpgraded;
@@ -78,6 +79,7 @@ use Lunar\Observers\CollectionObserver;
 use Lunar\Observers\CurrencyObserver;
 use Lunar\Observers\CustomerGroupObserver;
 use Lunar\Observers\LanguageObserver;
+use Lunar\Observers\MediaObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
 use Lunar\Observers\ProductOptionObserver;
@@ -90,6 +92,7 @@ class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
         'cart',
+        'cart_session',
         'database',
         'media',
         'orders',
@@ -263,6 +266,7 @@ class LunarServiceProvider extends ServiceProvider
             PopulateProductOptionLabelWithName::class,
             MigrateCartOrderRelationship::class,
             ConvertTaxbreakdown::class,
+            ConvertBackOrderPurchasability::class,
         ];
 
         foreach ($states as $state) {
@@ -299,6 +303,10 @@ class LunarServiceProvider extends ServiceProvider
         OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
         Transaction::observe(TransactionObserver::class);
+
+        if ($mediaModel = config('media-library.media_model')) {
+            $mediaModel::observe(MediaObserver::class);
+        }
     }
 
     /**

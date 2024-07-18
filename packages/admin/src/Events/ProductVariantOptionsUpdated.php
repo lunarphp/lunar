@@ -16,6 +16,5 @@ class ProductVariantOptionsUpdated
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }

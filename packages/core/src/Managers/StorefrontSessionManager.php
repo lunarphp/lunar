@@ -21,22 +21,16 @@ class StorefrontSessionManager implements StorefrontSessionInterface
 
     /**
      * The collection of customer groups to use.
-     *
-     * @var Collection
      */
     protected ?Collection $customerGroups = null;
 
     /**
      * The current currency
-     *
-     * @var Currency
      */
     protected ?Currency $currency = null;
 
     /**
      * The current customer
-     *
-     * @var Customer
      */
     protected ?Customer $customer = null;
 

@@ -31,10 +31,10 @@ final class WebhookController extends Controller
                 $error = $e->getMessage()
             );
 
-            return response(status: 400)->json([
+            return response()->json([
                 'webhook_successful' => false,
                 'message' => $error,
-            ]);
+            ], 400);
         }
 
         $paymentIntent = $event->data->object->id;
@@ -46,10 +46,10 @@ final class WebhookController extends Controller
                 $error = "Unable to find cart with intent {$paymentIntent}"
             );
 
-            return response(status: 400)->json([
+            return response()->json([
                 'webhook_successful' => false,
                 'message' => $error,
-            ]);
+            ], 400);
         }
 
         $payment = Payments::driver('stripe')->cart($cart->calculate())->withData([

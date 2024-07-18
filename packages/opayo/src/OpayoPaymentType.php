@@ -375,6 +375,7 @@ class OpayoPaymentType extends AbstractPayment
     protected function getAuthPayload(string $type = 'Payment')
     {
         $billingAddress = $this->order->billingAddress;
+        $shippingAddress = $this->order->shippingAddress;
 
         $payload = new AuthPayloadParameters(
             transactionType: $type,
@@ -386,10 +387,20 @@ class OpayoPaymentType extends AbstractPayment
             customerFirstName: $billingAddress->first_name,
             customerLastName: $billingAddress->last_name,
             billingAddressLineOne: $billingAddress->line_one,
+            billingAddressLineTwo: $billingAddress->line_two,
+            billingAddressLineThree: $billingAddress->line_three,
             billingAddressCity: $billingAddress->city,
             billingAddressPostcode: $billingAddress->postcode,
             billingAddressCountryIso: $billingAddress->country->iso2,
             customerMobilePhone: $billingAddress->contact_phone,
+            recipientFirstName: $shippingAddress?->first_name,
+            recipientLastName: $shippingAddress?->last_name,
+            shippingAddressLineOne: $shippingAddress?->line_one,
+            shippingAddressLineTwo: $shippingAddress?->line_two,
+            shippingAddressLineThree: $shippingAddress?->line_three,
+            shippingAddressCity: $shippingAddress?->city,
+            shippingAddressPostcode: $shippingAddress?->postcode,
+            shippingAddressCountryIso: $shippingAddress?->country->iso2,
             notificationURL: route('opayo.threed.response'),
             browserLanguage: $this->data['browserLanguage'] ?? null,
             challengeWindowSize: $this->data['challengeWindowSize'] ?? null,
@@ -499,7 +510,7 @@ class OpayoPaymentType extends AbstractPayment
         return $checks;
     }
 
-    private function saveCard(Order $order, object $details, string $authCode = null)
+    private function saveCard(Order $order, object $details, ?string $authCode = null)
     {
         if (! $order->user_id) {
             return;

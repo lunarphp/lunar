@@ -2,6 +2,4 @@
 
 namespace Lunar\Shipping\Interfaces;
 
-interface ShippingMethodManagerInterface
-{
-}
+interface ShippingMethodManagerInterface {}

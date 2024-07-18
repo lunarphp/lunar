@@ -661,7 +661,7 @@ test('can apply fixed amount discount', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10.5,
+                'GBP' => 1050,
             ],
         ],
     ]);
@@ -754,7 +754,7 @@ test('fixed amount discount distributes across cart lines', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
         ],
     ]);
@@ -975,7 +975,7 @@ test('can apply discount without coupon code', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
         ],
     ]);
@@ -1037,7 +1037,7 @@ test('cannot apply discount coupon without coupon code', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
         ],
     ]);
@@ -1100,7 +1100,7 @@ test('can apply discount with max uses', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
         ],
     ]);
@@ -1163,7 +1163,7 @@ test('cannot apply discount with max uses', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
         ],
     ]);
@@ -1225,10 +1225,10 @@ test('can apply discount with min spend', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
             'min_prices' => [
-                'GBP' => 50,
+                'GBP' => 5000,
             ],
         ],
     ]);
@@ -1293,10 +1293,10 @@ test('cannot apply discount with min spend', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
             'min_prices' => [
-                'GBP' => 50,
+                'GBP' => 5000,
             ],
         ],
     ]);
@@ -1362,10 +1362,10 @@ test('can apply discount with conditions', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
             'min_prices' => [
-                'GBP' => 50,
+                'GBP' => 5000,
             ],
         ],
     ]);
@@ -1441,7 +1441,7 @@ test('can apply discount with max user uses', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
         ],
     ]);
@@ -1519,7 +1519,7 @@ test('cannot apply discount with max user uses', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10,
+                'GBP' => 1000,
             ],
         ],
     ]);
@@ -1645,7 +1645,7 @@ test('fixed amount discount distributes across cart lines with different values'
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 15.00,
+                'GBP' => 1500,
             ],
         ],
     ]);
@@ -1721,7 +1721,7 @@ test('can apply discount dynamically', function () {
         'data' => [
             'fixed_value' => true,
             'fixed_values' => [
-                'GBP' => 10.5,
+                'GBP' => 1050,
             ],
         ],
     ]);
@@ -1752,7 +1752,7 @@ test('can apply discount dynamically', function () {
     $cart = CartSession::current();
 
     // Calculate method called for the third time
-    $cart = $cart->calculate();
+    $cart = $cart->recalculate();
 
     expect($cart->discountTotal->value)->toEqual(1050);
     expect($cart->total->value)->toEqual(1140);
