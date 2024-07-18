@@ -29,13 +29,14 @@ You may need to update your app's `composer.json` to set `"minimum-stability": "
 
 ### Add the LunarUser Trait
 
-Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait which you must add to any models that represent users in your database.
+Some parts of the core rely on the User model having certain relationships set up. We have bundled these into a trait and an interface, which you must add to any models that represent users in your database.
 
 ```php
 use Lunar\Base\Traits\LunarUser;
+use Lunar\Base\LunarUser as BaseLunarUser;
 // ...
 
-class User extends Authenticatable
+class User extends Authenticatable implements BaseLunarUser
 {
     use LunarUser;
     // ...
