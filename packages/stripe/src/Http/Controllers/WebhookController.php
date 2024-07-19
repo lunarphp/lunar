@@ -10,6 +10,7 @@ use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
 use Lunar\Stripe\Concerns\ConstructsWebhookEvent;
+use Lunar\Stripe\Facades\Stripe;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Exception\UnexpectedValueException;
 
@@ -50,6 +51,25 @@ final class WebhookController extends Controller
                 'webhook_successful' => false,
                 'message' => $error,
             ], 400);
+        }
+
+        if ($cart->recalculate()->total->value != $event->data->object->amount) {
+            Stripe::refundCharge($event->data->object->latest_charge);
+
+            Stripe::updateIntent($cart, [
+                'description' => 'Cart value mismatch',
+            ]);
+
+            $meta = $cart->meta;
+            unset($meta['payment_intent']);
+            $cart->updateQuietly([
+                'meta' => $meta,
+            ]);
+
+            return response()->json([
+                'webhook_successful' => false,
+                'message' => 'Charge refunded due to value mismatch',
+            ]);
         }
 
         $payment = Payments::driver('stripe')->cart($cart->calculate())->withData([
