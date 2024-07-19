@@ -9,6 +9,7 @@ use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
+use Stripe\Refund;
 use Stripe\Stripe;
 use Stripe\StripeClient;
 
@@ -135,6 +136,17 @@ class StripeManager
             );
         } catch (\Exception $e) {
 
+        }
+    }
+
+    public function refundCharge(string $chargeId): ?Refund
+    {
+        try {
+            return $this->getClient()->refunds->create(
+                ['charge' => $chargeId]
+            );
+        } catch (\Exception $e) {
+            return null;
         }
     }
 
