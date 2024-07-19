@@ -60,12 +60,6 @@ final class WebhookController extends Controller
                 'description' => 'Cart value mismatch',
             ]);
 
-            $meta = $cart->meta;
-            unset($meta['payment_intent']);
-            $cart->updateQuietly([
-                'meta' => $meta,
-            ]);
-
             return response()->json([
                 'webhook_successful' => false,
                 'message' => 'Charge refunded due to value mismatch',
