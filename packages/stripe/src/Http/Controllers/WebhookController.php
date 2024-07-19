@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
@@ -59,6 +60,15 @@ final class WebhookController extends Controller
             Stripe::updateIntent($cart, [
                 'description' => 'Cart value mismatch',
             ]);
+
+            PaymentAttemptEvent::dispatch(
+                new PaymentAuthorize(
+                    success: false,
+                    message: 'Cart value mismatch',
+                    orderId: null,
+                    paymentType: 'stripe'
+                )
+            );
 
             return response()->json([
                 'webhook_successful' => false,
