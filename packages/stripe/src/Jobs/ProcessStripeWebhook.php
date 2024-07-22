@@ -60,7 +60,7 @@ class ProcessStripeWebhook implements ShouldQueue
             return;
         }
 
-        $payment = Payments::driver('stripe')->cart($cart->calculate())->withData([
+        $payment = Payments::driver('stripe')->withData([
             'payment_intent' => $this->paymentIntentId,
         ]);
 
