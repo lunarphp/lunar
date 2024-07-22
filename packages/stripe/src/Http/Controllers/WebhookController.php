@@ -6,10 +6,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use Lunar\Events\PaymentAttemptEvent;
-use Lunar\Facades\Payments;
-use Lunar\Models\Cart;
 use Lunar\Stripe\Concerns\ConstructsWebhookEvent;
+use Lunar\Stripe\Jobs\ProcessStripeWebhook;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Exception\UnexpectedValueException;
 
@@ -38,25 +36,9 @@ final class WebhookController extends Controller
         }
 
         $paymentIntent = $event->data->object->id;
+        $orderId = $event->data->object->metadata?->order_id;
 
-        $cart = Cart::where('meta->payment_intent', '=', $paymentIntent)->first();
-
-        if (! $cart) {
-            Log::error(
-                $error = "Unable to find cart with intent {$paymentIntent}"
-            );
-
-            return response()->json([
-                'webhook_successful' => false,
-                'message' => $error,
-            ], 400);
-        }
-
-        $payment = Payments::driver('stripe')->cart($cart->calculate())->withData([
-            'payment_intent' => $paymentIntent,
-        ])->authorize();
-
-        PaymentAttemptEvent::dispatch($payment);
+        ProcessStripeWebhook::dispatch($paymentIntent, $orderId)->delay(now()->addMinute());
 
         return response()->json([
             'webhook_successful' => true,
