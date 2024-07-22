@@ -8,7 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
 use Lunar\Models\Order;
@@ -65,13 +64,11 @@ class ProcessStripeWebhook implements ShouldQueue
         ]);
 
         if ($order) {
-            $payment = $payment->order($order)->authorize();
-            PaymentAttemptEvent::dispatch($payment);
+            $payment->order($order)->authorize();
 
             return;
         }
 
-        $payment = $payment->cart($cart->calculate())->authorize();
-        PaymentAttemptEvent::dispatch($payment);
+        $payment->cart($cart->calculate())->authorize();
     }
 }
