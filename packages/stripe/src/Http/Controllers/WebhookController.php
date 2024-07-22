@@ -32,7 +32,7 @@ final class WebhookController extends Controller
             return response()->json([
                 'webhook_successful' => false,
                 'message' => $error,
-            ], 400);
+            ]);
         }
 
         if (! in_array($event->type, ['payment_intent.succeeded', 'payment_intent.payment_failed'])) {
