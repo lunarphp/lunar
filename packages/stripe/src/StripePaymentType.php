@@ -50,17 +50,12 @@ class StripePaymentType extends AbstractPayment
     /**
      * Authorize the payment for processing.
      */
-    final public function authorize(): PaymentAuthorize
+    final public function authorize(): ?PaymentAuthorize
     {
         $this->order = $this->order ?: ($this->cart->draftOrder ?: $this->cart->completedOrder);
 
         if ($this->order && $this->order->placed_at) {
-            return new PaymentAuthorize(
-                success: true,
-                message: null,
-                orderId: $this->order->id,
-                paymentType: 'stripe',
-            );
+            return null;
         }
 
         if (! $this->order) {
