@@ -38,7 +38,7 @@ final class WebhookController extends Controller
         $paymentIntent = $event->data->object->id;
         $orderId = $event->data->object->metadata?->order_id;
 
-        ProcessStripeWebhook::dispatch($paymentIntent, $orderId)->delay(now()->addMinute());
+        ProcessStripeWebhook::dispatch($paymentIntent, $orderId)->delay(now()->addSeconds(20));
 
         return response()->json([
             'webhook_successful' => true,
