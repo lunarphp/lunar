@@ -229,7 +229,7 @@ Stripe::getCharges(string $paymentIntentId);
 
 The add-on provides an optional webhook you may add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
 
-The 3 events you should listen to are `payment_intent.payment_failed`,`payment_intent.processing`,`payment_intent.succeeded`. 
+The events you should listen to are `payment_intent.payment_failed`, `payment_intent.succeeded`. 
 
 The path to the webhook will be `http:://yoursite.com/stripe/webhook`.
 
