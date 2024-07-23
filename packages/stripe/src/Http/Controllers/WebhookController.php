@@ -35,13 +35,6 @@ final class WebhookController extends Controller
             ], 400);
         }
 
-        if (! in_array($event->type, ['payment_intent.succeeded', 'payment_intent.payment_failed'])) {
-            return response()->json([
-                'webhook_successful' => false,
-                'message' => 'Unhandled event type '.$event->type,
-            ]);
-        }
-
         $paymentIntent = $event->data->object->id;
         $orderId = $event->data->object->metadata?->order_id;
 
