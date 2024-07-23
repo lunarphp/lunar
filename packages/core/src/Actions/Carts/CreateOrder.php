@@ -29,6 +29,7 @@ final class CreateOrder extends AbstractAction
 
             $order->fill([
                 'cart_id' => $cart->id,
+                'fingerprint' => $cart->fingerprint(),
             ]);
 
             $order = app(Pipeline::class)
