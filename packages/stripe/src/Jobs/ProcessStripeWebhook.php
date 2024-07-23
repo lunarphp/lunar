@@ -51,7 +51,7 @@ class ProcessStripeWebhook implements ShouldQueue
             $cart = Cart::where('meta->payment_intent', '=', $this->paymentIntentId)->first();
         }
 
-        if (! $cart) {
+        if (! $cart && ! $order) {
             Log::error(
                 "Unable to find cart with intent {$this->paymentIntentId}"
             );
