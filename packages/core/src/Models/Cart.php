@@ -288,11 +288,6 @@ class Cart extends BaseModel
     public function draftOrder(?int $draftOrderId = null): HasOne
     {
         return $this->hasOne(Order::class)
-            ->where('fingerprint', $this->fingerprint())
-            ->when(
-                $this->total,
-                fn (Builder $query, Price $price) => $query->where('total', $price->value)
-            )
             ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
                 $query->where('id', $draftOrderId);
             })->whereNull('placed_at');
@@ -300,7 +295,12 @@ class Cart extends BaseModel
 
     public function currentDraftOrder(?int $draftOrderId = null)
     {
-        return $this->calculate()->draftOrder($draftOrderId)->first();
+        return $this->calculate()
+            ->where('fingerprint', $this->fingerprint())
+            ->when(
+                $this->total,
+                fn (Builder $query, Price $price) => $query->where('total', $price->value)
+            )->draftOrder($draftOrderId)->first();
     }
 
     /**
