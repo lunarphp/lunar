@@ -28,6 +28,7 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
+
 use function Pest\Laravel\{assertDatabaseCount};
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -1134,6 +1135,5 @@ test('can get same draft order when cart does not change', function () {
         ->and(
             $cart->draftOrder()->first()->id
         )->toBe($newOrder->id);
-
 
 });
