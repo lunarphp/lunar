@@ -81,7 +81,7 @@ Make sure you have the Stripe credentials set in `config/services.php`
     'key' => env('STRIPE_SECRET'),
     'public_key' => env('STRIPE_PK'),
     'webhooks' => [
-        'payment_intent' => env('STRIPE_WEBHOOK_PAYMENT_INTENT'),
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
     ],
 ],
 ```
@@ -227,7 +227,7 @@ Stripe::getCharges(string $paymentIntentId);
 
 ## Webhooks
 
-The plugin provides an optional webhook you may add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
+The add-on provides an optional webhook you may add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
 
 The 3 events you should listen to are `payment_intent.payment_failed`,`payment_intent.processing`,`payment_intent.succeeded`. 
 
