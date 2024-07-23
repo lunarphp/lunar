@@ -5,6 +5,7 @@ use Lunar\Models\Transaction;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
+
 use function Pest\Laravel\assertDatabaseHas;
 
 uses(\Lunar\Tests\Stripe\Unit\TestCase::class);
@@ -38,9 +39,9 @@ it('can handle failed payments', function () {
     ])->authorize();
 
     expect($response)->toBeInstanceOf(PaymentAuthorize::class)
-    ->and($response->success)->toBeFalse()
-    ->and($cart->refresh()->completedOrder)->toBeNull()
-    ->and($cart->currentDraftOrder())->not()->toBeNull();
+        ->and($response->success)->toBeFalse()
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->currentDraftOrder())->not()->toBeNull();
 
     assertDatabaseHas((new Transaction)->getTable(), [
         'order_id' => $cart->currentDraftOrder()->id,
