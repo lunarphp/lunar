@@ -296,11 +296,12 @@ class Cart extends BaseModel
     public function currentDraftOrder(?int $draftOrderId = null)
     {
         return $this->calculate()
+            ->draftOrder($draftOrderId)
             ->where('fingerprint', $this->fingerprint())
             ->when(
                 $this->total,
                 fn (Builder $query, Price $price) => $query->where('total', $price->value)
-            )->draftOrder($draftOrderId)->first();
+            )->first();
     }
 
     /**
