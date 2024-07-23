@@ -73,7 +73,7 @@ class StripePaymentType extends AbstractPayment
                 return $failure;
             }
         }
-        
+
         $paymentIntentId = $this->data['payment_intent'];
 
         $this->paymentIntent = $this->stripe->paymentIntents->retrieve(
