@@ -219,13 +219,13 @@ test('can create order', function () {
     $cart = $cart->refresh()->calculate();
 
     expect($cart->draftOrder)->toBeInstanceOf(Order::class)
-    ->and($order->cart_id)->toEqual($cart->id)
-    ->and($cart->lines)->toHaveCount(1)
-    ->and($order->lines)->toHaveCount(2)
-    ->and($cart->addresses)->toHaveCount(2)
-    ->and($order->addresses)->toHaveCount(2)
-    ->and($order->shippingAddress)->toBeInstanceOf(OrderAddress::class)
-    ->and($order->billingAddress)->toBeInstanceOf(OrderAddress::class);
+        ->and($order->cart_id)->toEqual($cart->id)
+        ->and($cart->lines)->toHaveCount(1)
+        ->and($order->lines)->toHaveCount(2)
+        ->and($cart->addresses)->toHaveCount(2)
+        ->and($order->addresses)->toHaveCount(2)
+        ->and($order->shippingAddress)->toBeInstanceOf(OrderAddress::class)
+        ->and($order->billingAddress)->toBeInstanceOf(OrderAddress::class);
 
     $this->assertDatabaseHas((new Order())->getTable(), $datacheck);
     $this->assertDatabaseHas((new OrderLine())->getTable(), [
