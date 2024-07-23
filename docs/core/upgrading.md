@@ -18,6 +18,16 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-alpha.34
+
+### Medium Impact
+
+#### Stripe Addon
+
+The Stripe driver will now check whether an order has a value for `placed_at` against an order and if so, no further processing will take place.
+
+Additionally, the logic in the webhook has been moved to a Job which is dispatched with a delay of 1 minute, this is to allow storefronts to manually process a payment intent, in addition to the webhook, without having to worry about overlap.
+
 ## 1.0.0-alpha.32
 
 ### High Impact
