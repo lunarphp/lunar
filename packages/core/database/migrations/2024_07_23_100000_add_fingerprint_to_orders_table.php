@@ -16,6 +16,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table($this->prefix.'orders', function (Blueprint $table) {
+            $table->dropIndex(['fingerprint']);
+        });
+        Schema::table($this->prefix.'orders', function (Blueprint $table) {
             $table->dropColumn('fingerprint');
         });
     }

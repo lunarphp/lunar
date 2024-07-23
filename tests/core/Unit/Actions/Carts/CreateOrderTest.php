@@ -218,7 +218,7 @@ test('can create order', function () {
 
     $cart = $cart->refresh()->calculate();
 
-    expect($cart->draftOrder)->toBeInstanceOf(Order::class)
+    expect($cart->currentDraftOrder())->toBeInstanceOf(Order::class)
     ->and($order->cart_id)->toEqual($cart->id)
     ->and($cart->lines)->toHaveCount(1)
     ->and($order->lines)->toHaveCount(2)

@@ -28,7 +28,6 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
-
 use function Pest\Laravel\{assertDatabaseCount};
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -282,15 +281,17 @@ test('can get cart draft order', function () {
 
     $draftOrder = Order::factory()->create([
         'cart_id' => $cart->id,
+        'fingerprint' => $cart->calculate()->fingerprint(),
+        'total' => $cart->calculate()->total->value,
         'placed_at' => null,
     ]);
 
-    expect($cart->draftOrder->id)->toEqual($draftOrder->id);
+    expect($cart->currentDraftOrder()->id)->toEqual($draftOrder->id);
 
     $draftOrder->delete();
 
-    expect($cart->draftOrder()->first())->toBeNull();
-});
+    expect($cart->currentDraftOrder())->toBeNull();
+})->group('nooo');
 
 test('can get cart draft order by id', function () {
     $currency = Currency::factory()->create();
@@ -309,15 +310,19 @@ test('can get cart draft order by id', function () {
 
     $draftOrder = Order::factory()->create([
         'cart_id' => $cart->id,
+        'fingerprint' => $cart->calculate()->fingerprint(),
+        'total' => $cart->calculate()->total->value,
         'placed_at' => null,
     ]);
 
     $draftOrderTwo = Order::factory()->create([
         'cart_id' => $cart->id,
+        'fingerprint' => $cart->calculate()->fingerprint(),
+        'total' => $cart->calculate()->total->value,
         'placed_at' => null,
     ]);
 
-    expect($cart->draftOrder->id)->toEqual($draftOrder->id);
+    expect($cart->currentDraftOrder()->id)->toEqual($draftOrder->id);
     expect($cart->draftOrder($draftOrderTwo->id)->first()->id)->toEqual($draftOrderTwo->id);
 });
 
@@ -1035,7 +1040,7 @@ test('can get new draft order when cart changes', function () {
         ->and($order->fingerprint)
         ->toBe($cart->fingerprint())
         ->and(
-            $cart->draftOrder()->first()->id
+            $cart->currentDraftOrder()->id
         )->toBe($order->id);
 
     $cart->lines()->first()->update([
@@ -1051,7 +1056,7 @@ test('can get new draft order when cart changes', function () {
         ->and($orderTwo->fingerprint)
         ->toBe($cart->fingerprint())
         ->and(
-            $cart->draftOrder()->first()->id
+            $cart->currentDraftOrder()->id
         )->toBe($orderTwo->id);
 
 });
@@ -1121,7 +1126,7 @@ test('can get same draft order when cart does not change', function () {
         ->and($order->fingerprint)
         ->toBe($cart->fingerprint())
         ->and(
-            $cart->draftOrder()->first()->id
+            $cart->currentDraftOrder()->first()->id
         )->toBe($order->id);
 
     $newOrder = $cart->createOrder();
@@ -1133,7 +1138,7 @@ test('can get same draft order when cart does not change', function () {
         ->and($newOrder->fingerprint)
         ->toBe($cart->fingerprint())
         ->and(
-            $cart->draftOrder()->first()->id
+            $cart->currentDraftOrder()->id
         )->toBe($newOrder->id);
 
 });

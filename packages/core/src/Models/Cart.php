@@ -298,6 +298,11 @@ class Cart extends BaseModel
             })->whereNull('placed_at');
     }
 
+    public function currentDraftOrder(?int $draftOrderId = null)
+    {
+        return $this->calculate()->draftOrder($draftOrderId)->first();
+    }
+
     /**
      * Return the completed order relationship.
      */
