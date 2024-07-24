@@ -227,8 +227,8 @@ test('can create order', function () {
         ->and($order->shippingAddress)->toBeInstanceOf(OrderAddress::class)
         ->and($order->billingAddress)->toBeInstanceOf(OrderAddress::class);
 
-    $this->assertDatabaseHas((new Order())->getTable(), $datacheck);
-    $this->assertDatabaseHas((new OrderLine())->getTable(), [
+    $this->assertDatabaseHas((new Order)->getTable(), $datacheck);
+    $this->assertDatabaseHas((new OrderLine)->getTable(), [
         'identifier' => $shippingOption->getIdentifier(),
     ]);
 
@@ -351,5 +351,5 @@ test('can create order with customer', function () {
 
     $cart = $cart->refresh()->calculate();
 
-    $this->assertDatabaseHas((new Order())->getTable(), $datacheck);
+    $this->assertDatabaseHas((new Order)->getTable(), $datacheck);
 });
