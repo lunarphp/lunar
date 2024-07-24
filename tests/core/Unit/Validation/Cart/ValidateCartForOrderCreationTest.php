@@ -136,6 +136,13 @@ test('can validate collection with partial shipping address', function () {
         'shippable' => true,
     ]);
 
+    \Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => get_class($purchasable),
+        'price' => 500,
+    ]);
+
     $cart->lines()->create([
         'purchasable_type' => get_class($purchasable),
         'purchasable_id' => $purchasable->id,
@@ -186,6 +193,13 @@ test('can validate delivery with partial shipping address', function () {
 
     $purchasable = ProductVariant::factory()->create([
         'shippable' => true,
+    ]);
+
+    \Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => get_class($purchasable),
+        'price' => 500,
     ]);
 
     $cart->lines()->create([
@@ -249,6 +263,13 @@ test('can validate delivery with populated shipping address', function () {
 
     $purchasable = ProductVariant::factory()->create([
         'shippable' => true,
+    ]);
+
+    \Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => get_class($purchasable),
+        'price' => 500,
     ]);
 
     $cart->lines()->create([
