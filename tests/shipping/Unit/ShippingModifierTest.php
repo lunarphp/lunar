@@ -62,7 +62,7 @@ test('can set correct shipping options', function () {
             'country_id' => $country->id,
             'shipping_option' => 'BASEDEL',
             'state' => null,
-            'type' => 'shipping'
+            'type' => 'shipping',
         ])->toArray()
     );
 

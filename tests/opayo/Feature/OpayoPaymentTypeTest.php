@@ -8,7 +8,7 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 it('can handle a successful payment', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType())->cart($cart)->withData([
+    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
         'merchant_key' => 'SUCCESS',
         'card_identifier' => 'CARDTOKEN',
         'status' => 'payment-received',
@@ -36,7 +36,7 @@ it('can handle a successful payment', function () {
 it('can handle a failed payment', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType())->cart($cart)->withData([
+    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
         'merchant_key' => 'FAILED',
         'card_identifier' => 'CARDTOKEN',
         'status' => 'payment-received',
@@ -63,7 +63,7 @@ it('can handle a failed payment', function () {
 it('can handle a 3DSv2 response', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType())->cart($cart)->withData([
+    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
         'merchant_key' => 'SUCCESS_3DSV2',
         'card_identifier' => 'CARDTOKEN',
         'status' => 'payment-received',
@@ -78,7 +78,7 @@ it('can handle a 3DSv2 response', function () {
 it('can process a failed 3DSv2 response', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType())->cart($cart)->withData([
+    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
         'cres' => '3DSV2_FAILURE',
         'pares' => '3DSV2_FAILURE',
         'transaction_id' => '3DSV2_FAILURE',
@@ -109,7 +109,7 @@ it('can process a failed 3DSv2 response', function () {
 it('can process a successful 3DSv2 response', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType())->cart($cart)->withData([
+    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
         'cres' => '3DSV2_SUCCESS',
         'pares' => '3DSV2_SUCCESS',
         'transaction_id' => '3DSV2_SUCCESS',

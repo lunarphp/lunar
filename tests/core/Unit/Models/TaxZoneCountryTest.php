@@ -15,5 +15,5 @@ test('can make tax zone country', function () {
 
     TaxZoneCountry::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxZoneCountry())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZoneCountry)->getTable(), $data);
 });
