@@ -79,9 +79,9 @@ it('will fail if cart already has an order', function () {
     expect($response)->toBeInstanceOf(PaymentAuthorize::class)
         ->and($response->success)->toBeFalse()
         ->and($response->message)->toBeIn([
-        'Carts can only have one order associated to them.',
-        __('lunar::exceptions.carts.order_exists'),
-    ]);
+            'Carts can only have one order associated to them.',
+            __('lunar::exceptions.carts.order_exists'),
+        ]);
 })->group('foob');
 
 it('will fail if payment intent status is requires_payment_method', function () {
