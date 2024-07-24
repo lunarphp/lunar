@@ -39,7 +39,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // for "merge" command
     $parameters->set(Option::DATA_TO_APPEND, [
         ComposerJsonSection::REQUIRE_DEV => [
-            'laravel/pint' => '^1.16.1',
+            'laravel/pint' => '1.17.0',
             'mockery/mockery' => '^1.6.9',
             'pestphp/pest' => '^2.34.7',
             'pestphp/pest-plugin-laravel' => '^2.4',
