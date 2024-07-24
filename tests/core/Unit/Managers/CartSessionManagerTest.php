@@ -51,6 +51,25 @@ test('can fetch current cart', function () {
     expect($sessionCart)->toEqual($cart->id);
 });
 
+test('can fetch current cart if session exist', function () {
+    $manager = app(CartSessionManager::class);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    Config::set('lunar.cart_session.auto_create', false);
+    Session::put(config('lunar.cart_session.session_key'), 1);
+
+    $cart = $manager->current();
+
+    expect($cart)->toBeNull();
+});
+
 test('can create order from session cart and cleanup', function () {
     Currency::factory()->create([
         'default' => true,
