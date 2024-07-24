@@ -120,7 +120,7 @@ test('can validate missing shipping option', function () {
         'cart_id' => $cart->id,
     ]);
 
-    expect(fn() => $validator->validate())->toThrow(CartException::class);
+    expect(fn () => $validator->validate())->toThrow(CartException::class);
 
 });
 
