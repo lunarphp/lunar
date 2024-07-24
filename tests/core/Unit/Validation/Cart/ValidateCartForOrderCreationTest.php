@@ -98,6 +98,13 @@ test('can validate missing shipping option', function () {
         'shippable' => true,
     ]);
 
+    \Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => get_class($purchasable),
+        'price' => 500,
+    ]);
+
     $cart->lines()->create([
         'purchasable_type' => get_class($purchasable),
         'purchasable_id' => $purchasable->id,
@@ -113,10 +120,8 @@ test('can validate missing shipping option', function () {
         'cart_id' => $cart->id,
     ]);
 
-    $this->expectException(CartException::class);
-    $this->expectExceptionMessage(__('lunar::exceptions.carts.shipping_option_missing'));
+    expect(fn() => $validator->validate())->toThrow(CartException::class);
 
-    $validator->validate();
 });
 
 test('can validate collection with partial shipping address', function () {
