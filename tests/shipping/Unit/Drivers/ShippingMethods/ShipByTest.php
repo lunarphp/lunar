@@ -56,7 +56,7 @@ test('can get shipping option by cart total', function () {
 
     $cart = $this->createCart($currency, 100);
 
-    $driver = new ShipBy();
+    $driver = new ShipBy;
 
     $request = new ShippingOptionRequest(
         shippingRate: $shippingRate,
@@ -71,7 +71,7 @@ test('can get shipping option by cart total', function () {
 
     $cart = $this->createCart($currency, 10000);
 
-    $driver = new ShipBy();
+    $driver = new ShipBy;
 
     $request = new ShippingOptionRequest(
         shippingRate: $shippingRate,
@@ -131,7 +131,7 @@ test('can get shipping option by cart total when prices include tax', function (
 
     $cart = $this->createCart($currency, 700);
 
-    $driver = new ShipBy();
+    $driver = new ShipBy;
 
     $request = new ShippingOptionRequest(
         shippingRate: $shippingRate,
@@ -185,7 +185,7 @@ test('can get shipping option if outside tier without default price', function (
 
     $cart = $this->createCart($currency, 100);
 
-    $driver = new ShipBy();
+    $driver = new ShipBy;
 
     $request = new ShippingOptionRequest(
         shippingRate: $shippingRate,
