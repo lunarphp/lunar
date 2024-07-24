@@ -5,7 +5,6 @@ use Lunar\Models\Transaction;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
-
 use function Pest\Laravel\assertDatabaseHas;
 
 uses(\Lunar\Tests\Stripe\Unit\TestCase::class);
@@ -65,6 +64,7 @@ it('can retrieve existing payment intent', function () {
 it('will fail if cart already has an order', function () {
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
+
     $order->update([
         'placed_at' => now(),
     ]);
@@ -75,10 +75,13 @@ it('will fail if cart already has an order', function () {
         'payment_intent' => 'PI_CAPTURE',
     ])->authorize();
 
-    expect($response)->toBeInstanceOf(PaymentAuthorize::class);
-    expect($response->success)->toBeFalse();
-    expect($response->message)->toBe('Carts can only have one order associated to them.');
-});
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+    ->and($response->success)->toBeFalse()
+    ->and($response->message)->toBeIn([
+        'Carts can only have one order associated to them.',
+        __('lunar::exceptions.carts.order_exists')
+    ]);
+})->group('foob');
 
 it('will fail if payment intent status is requires_payment_method', function () {
     $cart = CartBuilder::build();

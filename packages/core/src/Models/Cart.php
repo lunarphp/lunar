@@ -592,20 +592,20 @@ class Cart extends BaseModel
         bool $allowMultipleOrders = false,
         ?int $orderIdToUpdate = null
     ): Order {
-        $this->refresh()->recalculate();
+        $cart = $this->refresh()->recalculate();
 
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,
         ]) as $action) {
             app($action)->using(
-                cart: $this,
+                cart: $cart,
             )->validate();
         }
 
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute(
-            $this,
+            $cart,
             $allowMultipleOrders,
             $orderIdToUpdate
         )->then(fn ($order) => $order->refresh());
