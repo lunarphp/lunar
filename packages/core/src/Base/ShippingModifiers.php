@@ -32,7 +32,7 @@ class ShippingModifiers
     /**
      * Add a shipping modifier.
      *
-     * @param $modifier Class reference to the modifier.
+     * @param  string  $modifier  Class reference to the modifier.
      * @return void
      */
     public function add($modifier)
@@ -43,11 +43,11 @@ class ShippingModifiers
     /**
      * Remove a shipping modifier.
      *
-     * @param $modifier Class reference to the modifier.
+     * @param  $modifier  Class reference to the modifier.
      * @return void
      */
     public function remove($modifier)
     {
-        $this->modifiers->forget($modifier);
+        $this->modifiers = $this->modifiers->reject(fn ($value) => $value == $modifier);
     }
 }

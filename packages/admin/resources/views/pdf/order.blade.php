@@ -5,9 +5,9 @@
     <title>Order Invoice</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
-        body {
+        * {
             font-size:12px;
-            font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            font-family: 'DejaVu Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         .lines {
@@ -75,8 +75,8 @@
                                     <h1>{{ config('app.name') }}</h1>
                                 </td>
                                 <td align="right" width="50%">
-                                    Invoice: {{ @$order->reference }} <br>
-                                    Created: {{ $order->placed_at }}<br>
+                                    Invoice: {{ @$record->reference }} <br>
+                                    Created: {{ $record->placed_at }}<br>
                                 </td>
                             </tr>
                         </table>
@@ -91,43 +91,43 @@
                             <tr>
                                 <td align="left" width="33%">
                                     <h3>Billing</h3>
-                                    {{ $order->billingAddress->fullName }}<br>
-                                    @if($order->billingAddress->company_name)
-                                      {{ $order->billingAddress->company_name }}<br>
+                                    {{ $record->billingAddress->fullName }}<br>
+                                    @if($record->billingAddress->company_name)
+                                      {{ $record->billingAddress->company_name }}<br>
                                     @endif
-                                    {{ $order->billingAddress->line_one }}
-                                    @if($order->billingAddress->line_two)
-                                      <br>{{ $order->billingAddress->line_two }}<br>
+                                    {{ $record->billingAddress->line_one }}
+                                    @if($record->billingAddress->line_two)
+                                      <br>{{ $record->billingAddress->line_two }}<br>
                                     @endif
-                                    @if($order->billingAddress->line_three)
-                                      <br>{{ $order->billingAddress->line_three }}<br>
+                                    @if($record->billingAddress->line_three)
+                                      <br>{{ $record->billingAddress->line_three }}<br>
                                     @endif
-                                    {{ $order->billingAddress->city }}<br>
-                                    {{ $order->billingAddress->state }}<br>
-                                    {{ $order->billingAddress->postcode }}<br>
-                                    {{ $order->billingAddress->country->name }}<br>
-                                    @if($order->customer?->vat_no)
-                                        <p>VAT No.: {{ $order->customer?->vat_no }}</p>
+                                    {{ $record->billingAddress->city }}<br>
+                                    {{ $record->billingAddress->state }}<br>
+                                    {{ $record->billingAddress->postcode }}<br>
+                                    {{ $record->billingAddress->country->name }}<br>
+                                    @if($record->customer?->vat_no)
+                                        <p>VAT No.: {{ $record->customer?->vat_no }}</p>
                                     @endif
                                 </td>
 
                                 <td align="left" width="33%">
                                     <h3>Shipping</h3>
-                                    {{ $order->shippingAddress->fullName }}<br>
-                                    @if($order->shippingAddress->company_name)
-                                      {{ $order->shippingAddress->company_name }}<br>
+                                    {{ $record->shippingAddress->fullName }}<br>
+                                    @if($record->shippingAddress->company_name)
+                                      {{ $record->shippingAddress->company_name }}<br>
                                     @endif
-                                    {{ $order->shippingAddress->line_one }}
-                                    @if($order->shippingAddress->line_two)
-                                      <br>{{ $order->shippingAddress->line_two }}<br>
+                                    {{ $record->shippingAddress->line_one }}
+                                    @if($record->shippingAddress->line_two)
+                                      <br>{{ $record->shippingAddress->line_two }}<br>
                                     @endif
-                                    @if($order->shippingAddress->line_three)
-                                      <br>{{ $order->shippingAddress->line_three }}<br>
+                                    @if($record->shippingAddress->line_three)
+                                      <br>{{ $record->shippingAddress->line_three }}<br>
                                     @endif
-                                    {{ $order->shippingAddress->city }}<br>
-                                    {{ $order->shippingAddress->state }}<br>
-                                    {{ $order->shippingAddress->postcode }}<br>
-                                    {{ $order->shippingAddress->country->name }}<br>
+                                    {{ $record->shippingAddress->city }}<br>
+                                    {{ $record->shippingAddress->state }}<br>
+                                    {{ $record->shippingAddress->postcode }}<br>
+                                    {{ $record->shippingAddress->country->name }}<br>
                                 </td>
 
                                 <td align="right" width="33%">
@@ -168,7 +168,7 @@
                     </tr>
                 </thead>
                 <tbody class="lines-body">
-                  @foreach($order->physicalLines as $line)
+                  @foreach($record->physicalLines as $line)
                     <tr>
                       <td>
                         {{ $line->description }} <br>
@@ -203,9 +203,9 @@
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>Sub Total</strong></td>
-                        <td>{{ $order->sub_total->formatted }}</td>
+                        <td>{{ $record->sub_total->formatted }}</td>
                     </tr>
-                    @foreach($order->shippingLines as $line)
+                    @foreach($record->shippingLines as $line)
                       <tr>
                         <td colspan="4"></td>
                         <td colspan="3">
@@ -218,19 +218,19 @@
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>Tax</strong></td>
-                        <td>{{ $order->tax_total->formatted }}</td>
+                        <td>{{ $record->tax_total->formatted }}</td>
                     </tr>
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>Total</strong></td>
-                        <td>{{ $order->total->formatted }}</td>
+                        <td>{{ $record->total->formatted }}</td>
                     </tr>
                 </tfoot>
             </table>
 
-            @if($order->notes)
+            @if($record->notes)
             <p><strong>Order Notes</strong><br>
-            {{ $order->notes }}</p>
+            {{ $record->notes }}</p>
             <br>
             @endif
         </div>

@@ -2,45 +2,31 @@
 
 return [
     /**
-     * Collections.
+     * Roles
      */
-    'permissions.catalogue.collections.name' => 'Manage Collections',
-    'permissions.catalogue.collections.description' => 'Allow the staff member to edit collections and their groups',
-    'permissions.settings.name' => 'Settings',
-    'permissions.settings.description' => 'Gives access to the settings area of the hub.',
-    'permissions.settings.core.name' => 'Core Settings',
-    'permissions.settings.core.description' => 'Access fundamental store settings, such as channels, languages, currencies, etc.',
-    'permissions.settings.staff.name' => 'Manage Staff',
-    'permissions.settings.staff.description' => 'Allow the staff member to edit other staff.',
-    'permissions.settings.attributes.name' => 'Manage Attributes',
-    'permissions.settings.attributes.description' => 'Allow the staff member to edit and create additional attributes.',
-    'permissions.catalogue.products.name' => 'Manage Products',
-    'permissions.catalogue.products.description' => 'Allow the staff member to edit products.',
-    'permissions.catalogue.orders.name' => 'Manage Orders',
-    'permissions.catalogue.orders.description' => 'Allow the staff member to manage orders.',
-    'permissions.catalogue.customers.name' => 'Manage Customers',
-    'permissions.catalogue.customers.description' => 'Allow the staff member to manage customers.',
-    'permissions.discounts.name' => 'Manage Discounts',
-    'permissions.discounts.description' => 'Allow the staff member to manage discounts',
+    'roles.admin.label' => 'Admin',
+    'roles.admin.description' => 'Admin with full access',
+    'roles.staff.label' => 'Staff',
+    'roles.staff.description' => 'Staff with fundamental access',
     /**
-     * Reset password.
+     * Permissions.
      */
-    'reset-password.title' => 'Reset Password',
-    'reset-your-password' => 'Reset your password',
-    'reset-password.invalid' => 'This page is no longer valid.',
-    'reset-password.back_link' => 'Back to login',
-    'reset-password.send_btn' => 'Send reset email',
-    'reset-password.update_btn' => 'Update password and login',
-    'forgot-password.message' => 'Forgot your password?',
-    'forgot-password.remember' => 'Remember your password?',
-    'forgot-password.link' => 'Reset password',
-    'follow-link.reset' => 'Please follow this link to reset your password:',
-    'click-here.reset' => 'Click here to reset',
-    'reset-link.not_working' => 'Link not working? Copy this into your browser',
-    /**
-     * Login.
-     */
-    'sign-in.btn' => 'Sign in',
-    'welcome' => 'Welcome to :name',
-    'prompt' => 'Log in to administer your e-commerce store.',
+    'permissions.settings.label' => 'Settings',
+    'permissions.settings.description' => 'Gives access to the settings area of the hub',
+    'permissions.settings:core.label' => 'Core Settings',
+    'permissions.settings:core.description' => 'Access fundamental store settings, such as channels, languages, currencies, etc',
+    'permissions.settings:manage-staff.label' => 'Manage Staff',
+    'permissions.settings:manage-staff.description' => 'Allow the staff member to edit other staff',
+    'permissions.settings:manage-attributes.label' => 'Manage Attributes',
+    'permissions.settings:manage-attributes.description' => 'Allow the staff member to edit and create additional attributes',
+    'permissions.catalog:manage-products.label' => 'Manage Products',
+    'permissions.catalog:manage-products.description' => 'Allow the staff member to edit products, product types and brands',
+    'permissions.catalog:manage-collections.label' => 'Manage Collections',
+    'permissions.catalog:manage-collections.description' => 'Allow the staff member to edit collections and their groups',
+    'permissions.sales:manage-orders.label' => 'Manage Orders',
+    'permissions.sales:manage-orders.description' => 'Allow the staff member to manage orders',
+    'permissions.sales:manage-customers.label' => 'Manage Customers',
+    'permissions.sales:manage-customers.description' => 'Allow the staff member to manage customers',
+    'permissions.sales:manage-discounts.label' => 'Manage Discounts',
+    'permissions.sales:manage-discounts.description' => 'Allow the staff member to manage discounts',
 ];

@@ -38,22 +38,22 @@ export default defineConfig({
 
         nav: [
             {text: 'Core', link: '/core/overview', activeMatch: '/core/'},
-            {text: 'Admin Hub', link: '/admin-hub/overview', activeMatch: '/admin-hub/'},
+            {text: 'Admin Panel', link: '/admin/overview', activeMatch: '/admin/'},
             {
                 text: 'Resources',
                 items: [
-                    {text: 'Livewire Starter Kit', link: 'https://github.com/lunarphp/livewire-starter-kit'},
                     {text: 'Add-ons', link: 'https://github.com/lunarphp/awesome'},
                     {text: 'Discord', link: 'https://discord.gg/v6qVWaf'},
                     {text: 'Discussions', link: 'https://github.com/lunarphp/lunar/discussions'}
                 ]
             },
             {
-                text: '0.7',
+                text: '1.x',
                 items: [
                     {text: 'Changelog', link: '/core/upgrading'},
                     {text: 'Contributing', link: '/core/contributing'},
-                    {text: 'Docs Next', link: 'https://docs-next.lunarphp.io/'}
+                    {text: 'Roadmap', link: 'https://github.com/orgs/lunarphp/projects/8'},
+                    {text: '0.x Docs', link: 'https://v0.lunarphp.io/'},
                 ]
             }
         ],
@@ -91,8 +91,8 @@ export default defineConfig({
                         {text: 'Currencies', link: '/core/reference/currencies'},
                         {text: 'Customers', link: '/core/reference/customers'},
                         {text: 'Discounts', link: '/core/reference/discounts'},
-                        {text: 'Images', link: '/core/reference/images'},
                         {text: 'Languages', link: '/core/reference/languages'},
+                        {text: 'Media', link: '/core/reference/media'},
                         {text: 'Orders', link: '/core/reference/orders'},
                         {text: 'Payments', link: '/core/reference/payments'},
                         {text: 'Pricing', link: '/core/reference/pricing'},
@@ -112,7 +112,7 @@ export default defineConfig({
                 },
                 {
                     text: 'Extending',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         {text: 'Carts', link: '/core/extending/carts'},
                         {text: 'Discounts', link: '/core/extending/discounts'},
@@ -126,23 +126,26 @@ export default defineConfig({
                 }
             ],
 
-            // This sidebar gets displayed when a user
-            // is on `config` directory.
-            '/admin-hub/': [
+            '/admin/': [
                 {
-                    text: 'Developer Reference',
+                    text: 'Getting Started',
+                    collapsed: false,
                     items: [
-                        {text: 'Overview', link: '/admin-hub/overview'},
-                        {text: 'Extending', link: '/admin-hub/extending'},
-                        {text: 'Activity Log', link: '/admin-hub/activity-log'},
-                        {text: 'Assets', link: '/admin-hub/assets'},
-                        {text: 'Branding', link: '/admin-hub/branding'},
-                        {text: 'Discounts', link: '/admin-hub/discounts'},
-                        {text: 'Field Types', link: '/admin-hub/field-types'},
-                        {text: 'Preview URLs', link: '/admin-hub/preview'},
-                        {text: 'Staff', link: '/admin-hub/staff'},
-                        {text: 'Tables', link: '/admin-hub/tables'},
-                        {text: 'Validation', link: '/admin-hub/validation'}
+                        {text: 'Overview', link: '/admin/overview'},
+                    ]
+                },
+                {
+                    text: 'Extending',
+                    collapsed: false,
+                    items: [
+                        {text: 'Overview', link: '/admin/extending/overview'},
+                        {text: 'Access Control', link: '/admin/extending/access-control'},
+                        {text: 'Add-ons', link: '/admin/extending/addons'},
+                        {text: 'Attributes', link: '/admin/extending/attributes'},
+                        {text: 'Panel', link: '/admin/extending/panel'},
+                        {text: 'Pages', link: '/admin/extending/pages'},
+                        {text: 'Resources', link: '/admin/extending/resources'},
+                        {text: 'Order Management', link: '/admin/extending/order-management'}
                     ]
                 }
             ],

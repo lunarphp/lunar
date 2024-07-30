@@ -27,15 +27,11 @@ class PricingManager implements PricingManagerInterface
 
     /**
      * The instance of the user.
-     *
-     * @var \Illuminate\Contracts\Auth\Authenticatable
      */
     public ?Authenticatable $user = null;
 
     /**
      * The instance of the currency.
-     *
-     * @var \Lunar\Models\Currency
      */
     public ?Currency $currency = null;
 
@@ -46,8 +42,6 @@ class PricingManager implements PricingManagerInterface
 
     /**
      * The customer groups to check against.
-     *
-     * @var \Illuminate\Support\Collection
      */
     public ?Collection $customerGroups = null;
 
@@ -73,7 +67,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the user property.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @return self
      */
     public function user(?Authenticatable $user)
@@ -98,7 +91,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the currency property.
      *
-     * @param  \Lunar\Models\Currency  $currency
      * @return self
      */
     public function currency(?Currency $currency)
@@ -123,7 +115,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the customer groups.
      *
-     * @param  Collection  $customerGroups
      * @return self
      */
     public function customerGroups(?Collection $customerGroups)
@@ -136,7 +127,6 @@ class PricingManager implements PricingManagerInterface
     /**
      * Set the customer group.
      *
-     * @param  CustomerGroup  $customerGroup
      * @return self
      */
     public function customerGroup(?CustomerGroup $customerGroup)
@@ -184,7 +174,7 @@ class PricingManager implements PricingManagerInterface
         });
 
         if (! $currencyPrices->count()) {
-            throw new MissingCurrencyPriceException();
+            throw new MissingCurrencyPriceException;
         }
 
         $prices = $currencyPrices->filter(function ($price) {
@@ -195,30 +185,34 @@ class PricingManager implements PricingManagerInterface
         })->sortBy('price');
 
         // Get our base price
-        $basePrice = $prices->first(fn ($price) => $price->tier == 1 && ! $price->customer_group_id);
+        $basePrice = $prices->first(fn ($price) => $price->min_quantity == 1 && ! $price->customer_group_id);
 
         // To start, we'll set the matched price to the base price.
         $matched = $basePrice;
 
         // If we have customer group prices, we should find the cheapest one and send that back.
         $potentialGroupPrice = $prices->filter(function ($price) {
-            return (bool) $price->customer_group_id && $price->tier == 1;
+            return (bool) $price->customer_group_id && ($price->min_quantity == 1);
         })->sortBy('price');
 
         $matched = $potentialGroupPrice->first() ?: $matched;
 
-        // Get all tiers that match for the given quantity. These take priority over the other steps
+        // Get all price breaks that match for the given quantity. These take priority over the other steps
         // as we could be bulk purchasing.
-        $tieredPricing = $prices->filter(function ($price) {
-            return $price->tier > 1 && $this->qty >= $price->tier;
+        $priceBreaks = $prices->filter(function ($price) {
+            return $price->min_quantity > 1 && $this->qty >= $price->min_quantity;
         })->sortBy('price');
 
-        $matched = $tieredPricing->first() ?: $matched;
+        $matched = $priceBreaks->first() ?: $matched;
+
+        if (! $matched) {
+            throw new \ErrorException('No price set.');
+        }
 
         $this->pricing = new PricingResponse(
             matched: $matched,
-            base: $prices->first(fn ($price) => $price->tier == 1),
-            tiered: $prices->filter(fn ($price) => $price->tier > 1),
+            base: $prices->first(fn ($price) => $price->min_quantity == 1),
+            priceBreaks: $prices->filter(fn ($price) => $price->min_quantity > 1),
             customerGroupPrices: $prices->filter(fn ($price) => (bool) $price->customer_group_id)
         );
 

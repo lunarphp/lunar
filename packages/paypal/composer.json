@@ -1,0 +1,34 @@
+{
+  "name": "lunarphp/paypal",
+  "type": "project",
+  "description": "Paypal payment driver for Lunar.",
+  "keywords": ["lunarphp", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart", "paypal"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "lunarphp/core": "self.version"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lunar\\Paypal\\": "src/"
+    }
+  },
+  "extra": {
+    "lunar": {
+      "name": "Paypal Payments"
+    },
+    "laravel": {
+      "providers": [
+        "Lunar\\Paypal\\PaypalServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

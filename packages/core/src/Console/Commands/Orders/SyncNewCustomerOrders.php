@@ -24,10 +24,8 @@ class SyncNewCustomerOrders extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         Order::orderBy('id')->chunk(500, function ($orders) {
             foreach ($orders as $order) {
@@ -35,6 +33,6 @@ class SyncNewCustomerOrders extends Command
             }
         });
 
-        return Command::SUCCESS;
+        exit(self::SUCCESS);
     }
 }

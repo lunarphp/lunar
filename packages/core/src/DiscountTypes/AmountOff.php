@@ -6,7 +6,6 @@ use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
 use Lunar\Models\Collection;
 
 class AmountOff extends AbstractDiscountType
@@ -21,8 +20,6 @@ class AmountOff extends AbstractDiscountType
 
     /**
      * Called just before cart totals are calculated.
-     *
-     * @return CartLine
      */
     public function apply(Cart $cart): Cart
     {
@@ -32,15 +29,15 @@ class AmountOff extends AbstractDiscountType
             return $cart;
         }
 
-        if ($data['fixed_value']) {
+        if ($data['fixed_value'] ?? false) {
             return $this->applyFixedValue(
-                values: $data['fixed_values'],
+                values: $data['fixed_values'] ?? [],
                 cart: $cart,
             );
         }
 
         return $this->applyPercentage(
-            value: $data['percentage'],
+            value: $data['percentage'] ?? 0,
             cart: $cart
         );
     }
@@ -52,7 +49,9 @@ class AmountOff extends AbstractDiscountType
     {
         $currency = $cart->currency;
 
-        $value = (int) bcmul($values[$currency->code] ?? 0, $currency->factor);
+        $decimal = ($values[$currency->code] ?? 0) / $currency->factor;
+
+        $value = (int) bcmul($decimal, $currency->factor);
 
         $lines = $this->getEligibleLines($cart);
         $linesSubtotal = $lines->sum(function ($line) {
@@ -110,28 +109,28 @@ class AmountOff extends AbstractDiscountType
             $lines->filter(function ($line) {
                 return $line->subTotalDiscounted->value > 0;
             })
-                ->each(function($line) use ($affectedLines, $cart, &$remaining) {
+                ->each(function ($line) use ($affectedLines, $cart, &$remaining) {
                     if ($remaining <= 0) {
                         return;
                     }
-                    
+
                     $amountAvailable = min($line->subTotalDiscounted->value, $remaining);
                     $remaining -= $amountAvailable;
 
                     $newDiscountTotal = $line->discountTotal->value + $amountAvailable;
-    
+
                     $line->discountTotal = new Price(
                         $newDiscountTotal,
                         $cart->currency,
                         1
                     );
-    
+
                     $line->subTotalDiscounted = new Price(
                         $line->subTotal->value - $newDiscountTotal,
                         $cart->currency,
                         1
                     );
-    
+
                     if (! $affectedLines->first(function ($breakdownLine) use ($line) {
                         return $breakdownLine->line == $line;
                     })) {
@@ -150,9 +149,9 @@ class AmountOff extends AbstractDiscountType
         $cart->discounts->push($this);
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
-            discount: $this->discount,
+            price: new Price($value - $remaining, $cart->currency, 1),
             lines: $affectedLines,
-            price: new Price($value - $remaining, $cart->currency, 1)
+            discount: $this->discount,
         ));
 
         return $cart;
@@ -165,14 +164,14 @@ class AmountOff extends AbstractDiscountType
     {
         $collectionIds = $this->discount->collections->where('pivot.type', 'limitation')->pluck('id');
         $collectionExclusionIds = $this->discount->collections->where('pivot.type', 'exclusion')->pluck('id');
-        
+
         $brandIds = $this->discount->brands->where('pivot.type', 'limitation')->pluck('id');
         $brandExclusionIds = $this->discount->brands->where('pivot.type', 'exclusion')->pluck('id');
-        
+
         $productIds = $this->discount->purchasableLimitations
             ->reject(fn ($limitation) => ! $limitation->purchasable)
             ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
-            
+
         $productExclusionIds = $this->discount->purchasableExclusions
             ->reject(fn ($limitation) => ! $limitation->purchasable)
             ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
@@ -186,7 +185,7 @@ class AmountOff extends AbstractDiscountType
                 })->exists();
             });
         }
-        
+
         if ($collectionExclusionIds->count()) {
             $lines = $lines->reject(function ($line) use ($collectionExclusionIds) {
                 return $line->purchasable->product()->whereHas('collections', function ($query) use ($collectionExclusionIds) {
@@ -200,7 +199,7 @@ class AmountOff extends AbstractDiscountType
                 return ! $brandIds->contains($line->purchasable->product->brand_id);
             });
         }
-        
+
         if ($brandExclusionIds->count()) {
             $lines = $lines->reject(function ($line) use ($brandExclusionIds) {
                 return $brandExclusionIds->contains($line->purchasable->product->brand_id);
@@ -212,7 +211,7 @@ class AmountOff extends AbstractDiscountType
                 return $productIds->contains(get_class($line->purchasable).'::'.$line->purchasable->id) || $productIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
             });
         }
-        
+
         if ($productExclusionIds->count()) {
             $lines = $lines->reject(function ($line) use ($productExclusionIds) {
                 return $productExclusionIds->contains(get_class($line->purchasable).'::'.$line->purchasable->id) || $productExclusionIds->contains(get_class($line->purchasable->product).'::'.$line->purchasable->product->id);
@@ -224,12 +223,8 @@ class AmountOff extends AbstractDiscountType
 
     /**
      * Apply the percentage to the cart line.
-     *
-     * @param  int  $value
-     * @param  CartLine  $cartLine
-     * @return CartLine
      */
-    private function applyPercentage($value, $cart): Cart
+    private function applyPercentage(int $value, Cart $cart): Cart
     {
         $lines = $this->getEligibleLines($cart);
 
@@ -283,9 +278,9 @@ class AmountOff extends AbstractDiscountType
         $cart->discounts->push($this);
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
-            discount: $this->discount,
+            price: new Price($totalDiscount, $cart->currency, 1),
             lines: $affectedLines,
-            price: new Price($totalDiscount, $cart->currency, 1)
+            discount: $this->discount,
         ));
 
         return $cart;

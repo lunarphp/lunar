@@ -9,7 +9,7 @@ use Lunar\Exceptions\FieldTypeException;
 class Toggle implements FieldType, JsonSerializable
 {
     /**
-     * @var string
+     * @var bool
      */
     protected $value;
 
@@ -24,11 +24,11 @@ class Toggle implements FieldType, JsonSerializable
     }
 
     /**
-     * Create a new instance of Text field type.
+     * Create a new instance of Toggle field type.
      *
      * @param  string  $value
      */
-    public function __construct($value = '')
+    public function __construct($value = false)
     {
         $this->setValue($value);
     }
@@ -40,7 +40,7 @@ class Toggle implements FieldType, JsonSerializable
      */
     public function __toString()
     {
-        return $this->getValue() ?? '';
+        return (int) ($this->getValue() ?? false);
     }
 
     /**
@@ -70,37 +70,8 @@ class Toggle implements FieldType, JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function getLabel(): string
-    {
-        return __('adminhub::fieldtypes.toggle.label');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSettingsView(): string
-    {
-        return 'adminhub::field-types.toggle.settings';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getView(): string
-    {
-        return 'adminhub::field-types.toggle.view';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getConfig(): array
     {
-        return [
-            'options' => [
-                'on_value' => 'nullable|string',
-                'off_value' => 'nullable|string',
-            ],
-        ];
+        return [];
     }
 }

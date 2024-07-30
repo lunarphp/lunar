@@ -2,7 +2,7 @@
 
 namespace Lunar\FieldTypes;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use JsonSerializable;
 use Lunar\Base\FieldType;
 use Lunar\Exceptions\FieldTypeException;
@@ -10,28 +10,28 @@ use Lunar\Exceptions\FieldTypeException;
 class TranslatedText implements FieldType, JsonSerializable
 {
     /**
-     * @var \Illuminate\Database\Eloquent\Collection
+     * @var Collection
      */
     protected $value;
 
     /**
      * Create a new instance of TranslatedText field type.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection  $value
+     * @param  Collection  $value
      */
     public function __construct($value = null)
     {
         if ($value) {
             $this->setValue($value);
         } else {
-            $this->value = new Collection();
+            $this->value = new Collection;
         }
     }
 
     /**
      * Serialize the class.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function jsonSerialize(): mixed
     {
@@ -41,7 +41,7 @@ class TranslatedText implements FieldType, JsonSerializable
     /**
      * Return the value of this field.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getValue()
     {
@@ -51,7 +51,7 @@ class TranslatedText implements FieldType, JsonSerializable
     /**
      * Set the value of this field.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection  $value
+     * @param  Collection  $value
      */
     public function setValue($value)
     {
@@ -59,7 +59,7 @@ class TranslatedText implements FieldType, JsonSerializable
             $value = collect($value);
         }
 
-        if (! $value instanceof \Illuminate\Support\Collection) {
+        if (! $value instanceof Collection) {
             throw new FieldTypeException(self::class.' value must be a collection.');
         }
 
@@ -74,30 +74,6 @@ class TranslatedText implements FieldType, JsonSerializable
         }
 
         $this->value = $value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLabel(): string
-    {
-        return __('adminhub::fieldtypes.translated-text.label');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSettingsView(): string
-    {
-        return 'adminhub::field-types.text.settings';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getView(): string
-    {
-        return 'adminhub::field-types.translated-text.view';
     }
 
     /**

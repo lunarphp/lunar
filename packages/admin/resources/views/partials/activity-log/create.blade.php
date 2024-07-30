@@ -1,3 +1,3 @@
 <div>
-    {{ __('adminhub::partials.activity-log.create.created') }}
+    {{ __('lunarpanel::components.activity-log.partials.create.created', ['model' => $model]) }}
 </div>

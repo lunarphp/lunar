@@ -1,0 +1,42 @@
+{
+  "name": "lunarphp/table-rate-shipping",
+  "description": "Lunar Table Rate Shipping Addon",
+  "keywords": [
+    "lunar",
+    "laravel",
+    "ecommerce",
+    "e-commerce",
+    "headless",
+    "store",
+    "shop",
+    "cart"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Lunar\\Shipping\\": "src",
+      "Lunar\\Shipping\\Database\\Factories\\": "database/factories"
+    }
+  },
+  "extra": {
+    "lunar": {
+      "name": "Table Rate Shipping"
+    },
+    "laravel": {
+      "providers": [
+        "Lunar\\Shipping\\ShippingServiceProvider"
+      ]
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "lunarphp/lunar": "self.version"
+  }
+}

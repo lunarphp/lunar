@@ -1,15 +1,18 @@
 <?php
 
-namespace Lunar\Hub\Models;
+namespace Lunar\Admin\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Lunar\Hub\Database\Factories\StaffFactory;
+use Lunar\Admin\Database\Factories\StaffFactory;
 use Spatie\Permission\Traits\HasRoles;
 
-class Staff extends Authenticatable
+class Staff extends Authenticatable implements FilamentUser, HasName
 {
     use HasFactory;
     use HasRoles;
@@ -56,7 +59,15 @@ class Staff extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
+
+    /**
+     * Append attributes to the model.
+     *
+     * @var array
+     */
+    protected $appends = ['fullName'];
 
     /**
      * Create a new instance of the Model.
@@ -67,7 +78,7 @@ class Staff extends Authenticatable
 
         $this->setTable(config('lunar.database.table_prefix').$this->getTable());
 
-        if ($connection = config('lunar.database.connection', false)) {
+        if ($connection = config('lunar.database.connection')) {
             $this->setConnection($connection);
         }
     }
@@ -100,42 +111,26 @@ class Staff extends Authenticatable
             $parts = explode(' ', $term);
 
             foreach ($parts as $part) {
-                $query->where('email', 'LIKE', "%$part%")
-                    ->orWhere('firstname', 'LIKE', "%$part%")
-                    ->orWhere('lastname', 'LIKE', "%$part%");
+                $query->whereAny(['email', 'firstname', 'lastname'], 'LIKE', "%$part%");
             }
         }
     }
 
     /**
      * Get staff member's full name.
-     *
-     * @return string
      */
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
         return $this->firstname.' '.$this->lastname;
     }
 
-    /**
-     * Get staff member's Gravatar URLs.
-     *
-     * @return string
-     */
-    public function getGravatarAttribute()
+    public function canAccessPanel(Panel $panel): bool
     {
-        $hash = md5(strtolower(trim($this->attributes['email'])));
-
-        return "https://www.gravatar.com/avatar/$hash?d=mp";
+        return true;
     }
 
-    /**
-     * Return the saved searches relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function savedSearches()
+    public function getFilamentName(): string
     {
-        return $this->hasMany(SavedSearch::class);
+        return $this->fullName;
     }
 }

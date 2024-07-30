@@ -1,5 +1,4 @@
 <div>
-    @livewire('hub.components.orders.emil-notification', [
-        'log' => $log,
-    ])
+    Sent <strong>{{ $log->getExtraProperty('mailer') ?: 'Email notification' }} </strong> to {{ $log->getExtraProperty('email') }}
+    {{-- preview is not ported --}}
 </div>

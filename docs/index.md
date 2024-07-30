@@ -21,9 +21,9 @@ features:
   - title: E-Commerce Core
     details: Based around Eloquent models, quickly build your online store in any Laravel stack.
     link: /core/overview
-  - title: Admin Hub
-    details: Livewire powered admin hub to administer your product catalogue, customers, orders and much more.
-    link: /admin-hub/overview
+  - title: Admin Panel
+    details: Filament-powered admin panel to administer your product catalog, customers, orders and much more.
+    link: /admin/overview
   - title: API - Coming Soon
     details: Connect to your store via a JSON:API, ideal for PWA storefronts and mobile apps.
 ---

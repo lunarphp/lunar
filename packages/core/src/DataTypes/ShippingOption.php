@@ -9,15 +9,15 @@ use Lunar\Models\TaxClass;
 class ShippingOption implements Purchasable
 {
     public function __construct(
-        public $name,
-        public $description,
-        public $identifier,
+        public string $name,
+        public ?string $description,
+        public string $identifier,
         public Price $price,
         public TaxClass $taxClass,
-        public $taxReference = null,
-        public $option = null,
+        public ?string $taxReference = null,
+        public ?string $option = null,
         public bool $collect = false,
-        public $meta = null
+        public ?array $meta = null
     ) {
         //  ..
     }
@@ -134,5 +134,15 @@ class ShippingOption implements Purchasable
     public function getThumbnail()
     {
         return null;
+    }
+
+    public function canBeFulfilledAtQuantity(int $quantity): bool
+    {
+        return true;
+    }
+
+    public function getTotalInventory(): int
+    {
+        return 1;
     }
 }

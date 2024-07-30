@@ -1,34 +1,26 @@
 {
-  "name": "admin-hub",
-  "version": "2.0.0",
-  "description": "Lunar Admin Hub",
-  "main": "index.js",
-  "author": "Lunar",
-  "license": "MIT",
-  "private": true,
-  "scripts": {
-    "dev": "npm run development",
-    "development": "mix",
-    "watch": "mix watch",
-    "watch-poll": "mix watch -- --watch-options-poll=1000",
-    "hot": "mix watch --hot",
-    "prod": "npm run production",
-    "production": "mix --production"
-  },
-  "dependencies": {
-    "apexcharts": "^3.35.4",
-    "filepond": "^4.30.4",
-    "filepond-plugin-file-validate-size": "^2.2.7",
-    "filepond-plugin-file-validate-type": "^1.2.8",
-    "filepond-plugin-image-preview": "^4.6.11",
-    "flatpickr": "^4.6.13",
-    "fs": "^0.0.1-security",
-    "laravel-mix": "^6.0.39",
-    "quill": "^1.3.7",
-    "sortablejs": "^1.14.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/forms": "^0.4.0",
-    "tailwindcss": "^3.0.2"
-  }
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev:styles": "npx tailwindcss -i resources/css/index.css -o resources/dist/lunar-panel.css --postcss --watch",
+        "dev:scripts": "node bin/build.js --dev",
+        "build:styles": "npx tailwindcss -i resources/css/index.css -o resources/dist/lunar-panel.css --postcss --minify && npm run purge",
+        "build:scripts": "node bin/build.js",
+        "purge": "filament-purge -i resources/dist/lunar-panel.css -o resources/dist/lunar-panel.css -v 3.x",
+        "dev": "npm-run-all --parallel dev:*",
+        "build": "npm-run-all build:*"
+    },
+    "devDependencies": {
+        "@awcodes/filament-plugin-purge": "^1.1.1",
+        "@tailwindcss/forms": "^0.5.4",
+        "@tailwindcss/typography": "^0.5.9",
+        "autoprefixer": "^10.4.14",
+        "esbuild": "^0.19.2",
+        "npm-run-all": "^4.1.5",
+        "postcss": "^8.4.26",
+        "postcss-import": "^15.1.0",
+        "prettier": "^2.7.1",
+        "prettier-plugin-tailwindcss": "^0.1.13",
+        "tailwindcss": "^3.3.3"
+    }
 }

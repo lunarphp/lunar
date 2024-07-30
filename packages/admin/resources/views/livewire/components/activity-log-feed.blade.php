@@ -1,65 +1,62 @@
-<div>
-    <div class="flex items-center gap-4 mt-4">
+<div class="px-2 pb-4 scroll-mt-32" id="lunar-panel-timeline">
+    <div class="relative flex items-end gap-4 mt-4 z-20">
         <div class="shrink-0">
-            @livewire('hub.components.avatar')
+            <div>
+                <img src="{{ $this->userAvatar }}"
+                     class="inline-block w-8 h-8 rounded-full" />
+            </div>
         </div>
 
-        <form class="relative w-full"
-              wire:submit.prevent="addComment">
-            <textarea class="w-full pl-4 pr-32 pt-5 border border-gray-200 rounded-lg h-[58px] sm:text-sm form-text"
-                      type="text"
-                      placeholder="Add a comment"
-                      wire:model.defer="comment"
-                      required
-                      multiline></textarea>
-
-            <button class="absolute h-[42px] text-xs font-bold leading-[42px] text-gray-700 bg-gray-100 border border-transparent rounded-md hover:border-gray-100 hover:bg-gray-50 w-28 top-2 right-2"
-                    type="submit">
-                <div wire:loading.remove
-                     wire:target="addComment">
-                    Add Comment
-                </div>
-
-                <div wire:loading
-                     wire:target="addComment">
-                    <x-hub::icon ref="refresh"
-                                 style="solid"
-                                 class="inline-block rotate-180 animate-spin" />
-                </div>
-            </button>
+        <form class="w-full"
+            wire:submit.prevent="addComment">
+            
+            {{ $this->form }} 
+            
+            <div class="absolute right-0 mt-2">
+                {{ $this->addCommentAction }}
+            </div>
         </form>
     </div>
 
-    <div class="relative pt-8 -ml-[5px]">
-        <span class="absolute inset-y-0 left-5 w-[2px] bg-gray-200 rounded-full"></span>
+    <div class="relative pt-8 -ml-[5px] z-10">
+        <span class="absolute inset-y-0 left-5 w-[2px] bg-gray-200 dark:bg-gray-600 rounded-full"></span>
 
         <div class="flow-root">
-            <ul class="-my-8 divide-y-2 divide-gray-200"
+            <ul class="-my-8 divide-y-2 divide-gray-200 dark:divide-gray-600"
                 role="list">
                 @foreach ($this->activityLog as $log)
                     <li class="relative py-8 ml-5">
-                        <p class="ml-8 font-bold text-gray-900">
+                        <p class="ml-8 font-bold text-gray-950 dark:text-gray-300">
                             {{ $log['date']->format('F jS, Y') }}
                         </p>
 
                         <ul class="mt-4 space-y-6">
                             @foreach ($log['items'] as $item)
+                                @php
+                                    $logUserName = $item['log']->causer ? ($item['log']->causer->fullName ?: $item['log']->causer->name) : null;
+                                @endphp
+
                                 <li class="relative pl-8">
                                     <div @class([
                                         'absolute top-[2px]',
                                         '-left-[calc(0.75rem_-_1px)]' => $item['log']->causer,
                                         '-left-[calc(0.5rem_-_1px)]' => !$item['log']->causer,
                                     ])>
-                                        @if ($item['log']->causer)
-                                            <x-hub::gravatar :email="$item['log']->causer->email"
-                                                             class="w-6 h-6 rounded-full ring-4 ring-gray-200" />
+                                        @if ($email = $item['log']->causer?->email)
+                                            <img 
+                                                src="{{ $this->getAvatarUrl($email) }}"
+                                                class="w-6 h-6 rounded-full ring-4 ring-gray-200 dark:ring-gray-600"
+                                                alt="{{ $logUserName }}"
+                                            />
                                         @else
                                             <span @class([
-                                                'absolute w-4 h-4 rounded-full ring-4 bg-gray-300 ring-gray-200',
-                                                '!bg-sky-500 !ring-sky-100' => $item['log']->description == 'created',
-                                                '!bg-purple-500 !ring-purple-100' =>
-                                                    $item['log']->description == 'status-update',
-                                                '!bg-teal-500 !ring-teal-100' => $item['log']->description == 'updated',
+                                                'absolute w-4 h-4 rounded-full ring-4',
+                                                match($item['log']->description){
+                                                    'created' => 'bg-sky-500 ring-sky-100 dark:ring-sky-800',
+                                                    'updated' => 'bg-teal-500 ring-teal-100 dark:ring-teal-800',
+                                                    'status-update' => 'bg-purple-500 ring-purple-100 dark:ring-purple-800',
+                                                    default => 'bg-gray-300 ring-gray-200 dark:ring-gray-600',
+                                                },
                                             ])>
                                             </span>
                                         @endif
@@ -71,16 +68,16 @@
                                         'pt-[1px]' => !$item['log']->causer,
                                     ])>
                                         <div>
-                                            <div class="text-xs font-medium text-gray-500">
+                                            <div class="text-xs font-medium text-gray-500 dark:text-gray-400">
                                                 @if (!$item['log']->causer)
-                                                    {{ __('adminhub::components.activity-log.system') }}
+                                                    {{ __('lunarpanel::components.activity-log.system') }}
                                                 @else
-                                                    {{ $item['log']->causer->fullName ?: $item['log']->causer->name }}
+                                                    {{ $logUserName }}
                                                 @endif
                                             </div>
 
                                             @if (count($item['renderers']))
-                                                <div class="mt-2 text-sm font-medium text-gray-700">
+                                                <div class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-200">
                                                     @foreach ($item['renderers'] as $class)
                                                         {{ $class->render($item['log']) }}
                                                     @endforeach
@@ -88,7 +85,7 @@
                                             @endif
                                         </div>
 
-                                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 font-medium">
+                                        <time class="flex-shrink-0 ml-4 text-xs mt-0.5 text-gray-500 dark:text-gray-400 font-medium">
                                             {{ $item['log']->created_at->format('h:ia') }}
                                         </time>
                                     </div>
@@ -99,5 +96,9 @@
                 @endforeach
             </ul>
         </div>
+    </div>
+
+    <div class="pt-4">
+        {{ $this->activityLog->links('lunarpanel::components.activity-log.timeline-paginator.index', data: ['scrollTo' => '#lunar-panel-timeline']) }}
     </div>
 </div>

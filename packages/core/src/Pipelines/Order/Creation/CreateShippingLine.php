@@ -14,7 +14,7 @@ class CreateShippingLine
      */
     public function handle(Order $order, Closure $next)
     {
-        $cart = $order->cart->calculate();
+        $cart = $order->cart->recalculate();
 
         // If we have a shipping address with a shipping option.
         if (($shippingAddress = $cart->shippingAddress) &&
@@ -31,7 +31,7 @@ class CreateShippingLine
                 'purchasable_type' => ShippingOption::class,
                 'purchasable_id' => 1,
                 'type' => 'shipping',
-                'description' => $shippingOption->getDescription(),
+                'description' => $shippingOption->getName(),
                 'option' => $shippingOption->getOption(),
                 'identifier' => $shippingOption->getIdentifier(),
                 'unit_price' => $shippingOption->price->value,
@@ -43,7 +43,7 @@ class CreateShippingLine
                 'tax_total' => $shippingAddress->shippingTaxTotal->value,
                 'total' => $shippingAddress->shippingTotal->value,
                 'notes' => null,
-                'meta' => [],
+                'meta' => $shippingOption->meta,
             ])->save();
         }
 

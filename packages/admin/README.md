@@ -1,20 +1,21 @@
-<p align="center"><a href="https://lunarphp.io/" target="_blank"><img src="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo.svg" width="200" alt="Lunar"></a></p>
-## About the admin hub
+# Lunar Admin Panel
 
-The admin hub is an open source app that allows you to manage all aspects of your Lunar store.
+See the docs at https://lunar-panel.vercel.app/
 
----
+## TODO
 
-## Requirements
-- PHP ^8.1
-- Laravel 9+
-- MySQL 8.0+ / PostgreSQL 9.2+
-- Lunar Core
-
-## Documentation
-
-- [Full documentation](https://docs.lunarphp.io/) - Includes in-depth guides on everything Lunar
-
-## License
-
-Lunar is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- [ ] How to set the Lunar logo?
+- [ ] How will addons add buttons etc to existing screens?
+- [ ] Field types
+- [ ] Model Policies
+- [ ] Some JSON fields (e.g. ProductOption) are cast to Collections, not an ArrayObject
+- [ ] Add Spatie ActivityLog to more (all?) models
+- [ ] Tax Zone types are "country", "states", "postcodes" -> would prefer it to be "countries" so it's consistent
+- [ ] `ListField` FieldType shouldn't really have "Field" in its name -> change to simply "List"
+- [ ] Sometimes we use "Enabled" other times "Active". Do we want to consider consistency here also?
+- [ ] Staff "firstname" "lastname" I think should have underscores, e.g. "first_name"
+- [x] How to allow devs to extend Lunar's forms and tables
+- [x] How to allow devs to overide validation rules
+- [x] Allow devs to extend by adding their own pages/resources
+- [ ] Tests!!
+- [ ] Mention influence from https://filamentphp.com/plugins/spatie-activity-log

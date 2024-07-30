@@ -2,7 +2,7 @@
 
 ## Overview
 
-Search is configured using the [Laravel Scout](https://laravel.com/docs/scout) package.  Out the box we have configured the Lunar hub to use our own database Scout driver (see https://github.com/lunarphp/scout-database-engine).
+Search is configured using the [Laravel Scout](https://laravel.com/docs/scout) package.
 
 Using Scout allows us to provide search out the box but also make it easy for you as the developer to customise and tailor searching to your needs.
 
@@ -36,7 +36,15 @@ If you installed the Lunar package in an existing project and you would like to 
 php artisan lunar:search:index
 ```
 
-The command will import the records of the models listed in the `lunar/indexer.php` configuration file. Type `--help` to see the available options.
+The command will import the records of the models listed in the `lunar/search.php` configuration file. Type `--help` to see the available options.
+
+## Meilisearch
+
+If you used the Meilisearch package you would like to use the command to create filterable and searchable attributes on Meilisearch indexes. 
+
+```sh
+php artisan lunar:meilisearch:setup
+```
 
 ## Engine Mapping
 

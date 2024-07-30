@@ -14,15 +14,201 @@ Run any migrations
 php artisan migrate
 ```
 
-Re-publish the admin hub assets
-
-```sh
-php artisan lunar:hub:install
-```
-
 ## Support Policy
 
-Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.7`.
+Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
+
+## 1.0.0-alpha.34
+
+### Medium Impact
+
+#### Stripe Addon
+
+The Stripe driver will now check whether an order has a value for `placed_at` against an order and if so, no further processing will take place.
+
+Additionally, the logic in the webhook has been moved to the job queue, which is dispatched with a delay of 20 seconds, this is to allow storefronts to manually process a payment intent, in addition to the webhook, without having to worry about overlap.
+
+The Stripe webhook ENV entry has been changed from `STRIPE_WEBHOOK_PAYMENT_INTENT` to `LUNAR_STRIPE_WEBHOOK_SECRET`.
+
+The stripe config Lunar looks for in `config/services.php` has changed and should now look like:
+
+```php
+'stripe' => [
+    'key' => env('STRIPE_SECRET'),
+    'public_key' => env('STRIPE_PK'),
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
+],
+```
+
+## 1.0.0-alpha.32
+
+### High Impact
+
+There is now a new `LunarUser` interface you will need to implement on your `User` model.
+
+```php
+// ...
+class User extends Authenticatable implements \Lunar\Base\LunarUser
+{
+    use \Lunar\Base\Traits\LunarUser;
+}
+```
+
+## 1.0.0-alpha.31
+
+### High Impact
+
+Certain parts of `config/cart.php` which are more specific to when you are interacting with carts via the session have been relocated to a new `config/cart_session.php` file.
+
+```php
+// Move to config/cart_session.php
+'session_key' => 'lunar_cart',
+'auto_create' => false,
+```
+
+You should also check this file for any new config values you may need to add.
+
+## 1.0.0-alpha.29
+
+### High Impact
+
+#### Cart calculate function will no longer recalculate
+
+If you have been using the `$cart->calculate()` function it has previously always run the calculations regardless of 
+whether the cart has already been calculated. Now the calculate function will only run if we don't have cart totals. 
+To allow for recalculation we have now introduced `$cart->recalculate()` to force the cart to recalculate.
+
+#### Unique index for Collection Group handle
+
+Collection Group now have unique index on the column `handle`.
+If you are creating Collection Group from the admin panel, there is no changes required.
+
+### Medium Impact
+
+#### Update custom shipping modifiers signature
+
+The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+
+```php
+public function handle(\Lunar\Models\Cart $cart, \Closure $next)
+{
+    //..
+    
+    return $next($cart);
+}
+```
+
+## 1.0.0-alpha.26
+
+### Medium Impact
+
+If you are using your own classes that implement the `Purchasable` interface, you will need to add the following additional methods:
+
+```php
+public function canBeFulfilledAtQuantity(int $quantity): bool;
+public function getTotalInventory(): int;
+```
+
+If you are checking the `ProductVariant` `purchasable` attribute in your code, you should update the following check:
+
+```php
+// Old
+$variant->purchasable == 'backorder';
+// New
+$variant->purchasable == 'in_stock_or_on_backorder';
+
+```
+
+## 1.0.0-alpha.22
+
+### Medium Impact
+
+Carts now use soft deletes and a cart will be deleted when `CartSession::forget()` is called.
+If you don't want to delete the cart when you call `forget` you can pass `delete: false` as a parameter:
+
+```php
+\Lunar\Facades\CartSession::forget(delete: false);
+```
+
+## 1.0.0-alpha.20
+
+### High Impact
+
+#### Stripe addon facade change
+
+If you are using the Stripe addon, you need to update the facade as the name has changed.
+
+```php
+// Old
+\Lunar\Stripe\Facades\StripeFacade;
+
+// New
+\Lunar\Stripe\Facades\Stripe;
+```
+
+## 1.0
+
+### High Impact
+
+#### Change to Staff model namespace
+
+The Staff model has changed location from `Lunar\Hub\Models\Staff` to `Lunar\Admin\Models\Staff` so this will need to be updated within
+your codebase and any polymorphic relations.
+
+#### Spatie Media Library
+This package has been upgrade to version 11, which introduces some breaking changes.
+See here for more information https://github.com/spatie/laravel-medialibrary/blob/main/UPGRADING.md
+
+#### Media Conversions
+The `lunar.media.conversions` configuration has been removed, in favour of registering custom media definitionss instead.
+Media definition classes allow you to register media collections, conversions and much more. See [Media Collections](/core/reference/media.html#media-collections)
+for further information.
+
+#### Product Options
+The `position` field has been removed from the `product_options` table and is now found on the `product_product_option` 
+pivot table. Any position data will be automatically adjusted when running migrations.
+
+#### Tiers renamed to Price Breaks
+
+The `tier` column on pricing has been renamed to `min_quantity`, any references in code to `tiers` needs to be updated.
+
+##### Price Model
+
+```php
+// Old
+$priceModel->tier
+// New
+$priceModel->min_quantity
+
+// Old
+$priceModel->tiers
+// New
+$priceModel->priceBreaks
+```
+
+##### Lunar\Base\DataTransferObjects\PricingResponse
+
+```php
+// Old
+public Collection $tiered,
+// New
+public Collection $priceBreaks,
+```
+
+##### Lunar\Base\DataTransferObjects\PaymentAuthorize
+
+Two new properties have been added to the constructor for this DTO.
+
+```php
+public ?int $orderId = null,
+public ?string $paymentType = null
+```
+
+## 0.8
+
+No significant changes.
 
 ## 0.7
 

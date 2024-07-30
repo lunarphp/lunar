@@ -5,6 +5,7 @@ namespace Lunar\PaymentTypes;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Models\Transaction;
 
 class OfflinePayment extends AbstractPayment
@@ -12,7 +13,7 @@ class OfflinePayment extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function authorize(): PaymentAuthorize
+    public function authorize(): ?PaymentAuthorize
     {
         if (! $this->order) {
             if (! $this->order = $this->cart->draftOrder()->first()) {
@@ -32,7 +33,15 @@ class OfflinePayment extends AbstractPayment
             'placed_at' => now(),
         ]);
 
-        return new PaymentAuthorize(true);
+        $response = new PaymentAuthorize(
+            success: true,
+            orderId: $this->order->id,
+            paymentType: 'offline',
+        );
+
+        PaymentAttemptEvent::dispatch($response);
+
+        return $response;
     }
 
     /**

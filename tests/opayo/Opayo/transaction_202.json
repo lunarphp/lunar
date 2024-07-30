@@ -1,0 +1,10 @@
+{
+  "statusCode": 2021,
+  "statusDetail": "Please redirect your customer to the ACSURL to complete the 3DS Transaction",
+  "transactionId": "DB79BA2D-05DA-5B85-D188-1293D16BBAC7",
+  "acsTransId": "43b04fd1-692c-4b76-ac20-a75527ad0a25",
+  "dsTransId": "7980e36f-907b-4530-84fd-ccc1f40bf9ae",
+  "acsUrl": "https://url-to-be-confirmed/html_challenge",
+  "cReq": "eyJtZXNzYWdlVHlwZSI6IkNSZXEiLCJtZXNzYWdlVmVyc2lvbiI6IjIuMS4wIiwidGhyZWVEU1NlcnZlclRyYW5zSUQiOiIwZDUzZjA2Ni1jMDc2LTRkOGItYjcyMi04ZThhOWE0ZWE1NTIiLCJhY3NUcmFuc0lEIjoiMjdiNDlkMTgtMmE4Yi00OGIxLWE4ZTYtNzU3MzlkNmMwNDRiIiwiY2hhbGxlbmdlV2luZG93U2l6ZSI6IjAxIn0",
+  "status": "3DAuth"
+}

@@ -72,4 +72,14 @@ interface Purchasable
      * @return string
      */
     public function getThumbnail();
+
+    /**
+     * Return whether the purchasable can be fulfilled at a given quantity
+     */
+    public function canBeFulfilledAtQuantity(int $quantity): bool;
+
+    /**
+     * Returns the total inventory the purchasable has available
+     */
+    public function getTotalInventory(): int;
 }
