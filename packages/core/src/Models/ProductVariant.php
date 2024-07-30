@@ -12,11 +12,13 @@ use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasDimensions;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasPrices;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\ProductVariantFactory;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
+use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
@@ -50,12 +52,13 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Purchasable
+class ProductVariant extends BaseModel implements Purchasable, SpatieHasMedia
 {
     use HasAttributes;
     use HasDimensions;
     use HasFactory;
     use HasMacros;
+    use HasMedia;
     use HasPrices;
     use HasTranslations;
     use LogsActivity;

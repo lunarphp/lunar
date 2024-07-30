@@ -9,6 +9,7 @@ return [
         Lunar\Models\Brand::class => StandardMediaDefinitions::class,
         Lunar\Models\Collection::class => StandardMediaDefinitions::class,
         Lunar\Models\Product::class => StandardMediaDefinitions::class,
+        Lunar\Models\ProductVariant::class => StandardMediaDefinitions::class,
         Lunar\Models\ProductOption::class => StandardMediaDefinitions::class,
         Lunar\Models\ProductOptionValue::class => StandardMediaDefinitions::class,
     ],
