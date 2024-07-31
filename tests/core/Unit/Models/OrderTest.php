@@ -16,6 +16,10 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 use Lunar\Tests\Core\Stubs\User;
 
+use function Pest\Laravel\assertDatabaseCount;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
+
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function () {
@@ -55,7 +59,7 @@ test('can make an order', function () {
 
     $data = $order->getRawOriginal();
 
-    $this->assertDatabaseHas((new Order())->getTable(), $data);
+    $this->assertDatabaseHas((new Order)->getTable(), $data);
 });
 
 test('order has correct casting', function () {
@@ -245,4 +249,48 @@ test('can cast and store shipping breakdown', function () {
     expect($breakdownItem->identifier)->toEqual('BA');
     expect($breakdownItem->price)->toBeInstanceOf(Price::class);
     expect($breakdownItem->price->value)->toEqual(123);
+});
+
+test('can delete an order', function () {
+    Currency::factory()->create([
+        'default' => false,
+    ]);
+    $currency = Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $order = Order::factory()->create([
+        'user_id' => null,
+        'currency_code' => $currency->code,
+    ]);
+
+    OrderLine::factory(4)->create([
+        'order_id' => $order->id,
+        'tax_breakdown' => new TaxBreakdown(collect([
+            new \Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount(
+                price: new Price(10, $currency),
+                identifier: 'VAT',
+                description: 'VAT',
+                percentage: 20
+            ),
+        ])),
+    ]);
+
+    assertDatabaseCount((new OrderLine)->getTable(), 4);
+
+    foreach ($order->refresh()->lines as $line) {
+        $line->delete();
+    }
+
+    assertDatabaseCount(OrderLine::class, 0);
+
+    assertDatabaseHas(Order::class, [
+        'id' => $order->id,
+    ]);
+
+    $order->delete();
+
+    assertDatabaseMissing(Order::class, [
+        'id' => $order->id,
+    ]);
 });

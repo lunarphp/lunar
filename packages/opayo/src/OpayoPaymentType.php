@@ -510,7 +510,7 @@ class OpayoPaymentType extends AbstractPayment
         return $checks;
     }
 
-    private function saveCard(Order $order, object $details, string $authCode = null)
+    private function saveCard(Order $order, object $details, ?string $authCode = null)
     {
         if (! $order->user_id) {
             return;
@@ -518,7 +518,7 @@ class OpayoPaymentType extends AbstractPayment
         OpayoToken::where('last_four', '=', $details->lastFourDigits)
             ->where('user_id', '=', $order->user_id)->delete();
 
-        $payment = new OpayoToken();
+        $payment = new OpayoToken;
         $payment->user_id = $this->order->user_id;
         $payment->card_type = strtolower($details->cardType);
         $payment->last_four = $details->lastFourDigits;

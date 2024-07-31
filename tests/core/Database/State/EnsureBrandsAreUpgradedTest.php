@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Lunar\Facades\DB;
@@ -23,6 +24,9 @@ test('can run', function () {
     Schema::dropIfExists("{$prefix}brands");
 
     Schema::table("{$prefix}products", function ($table) {
+        if (can_drop_foreign_keys()) {
+            $table->dropForeign(['brand_id']);
+        }
         $table->dropColumn('brand_id');
     });
 
@@ -81,6 +85,6 @@ test('can run', function () {
     $brandA = Brand::whereName('Brand A')->first();
     $brandB = Brand::whereName('Brand B')->first();
 
-    expect(Product::whereBrandId($brandA->id)->get())->toHaveCount(2);
-    expect(Product::whereBrandId($brandB->id)->get())->toHaveCount(1);
+    expect(Product::whereBrandId($brandA->id)->get())->toHaveCount(2)
+        ->and(Product::whereBrandId($brandB->id)->get())->toHaveCount(1);
 });

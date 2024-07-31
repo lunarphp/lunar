@@ -16,6 +16,5 @@ class ModelChannelsUpdated
      */
     public function __construct(
         public Model $model
-    ) {
-    }
+    ) {}
 }

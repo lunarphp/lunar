@@ -3,7 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -38,8 +38,8 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      * @var array
      */
     protected $casts = [
-        'name' => AsCollection::class,
-        'label' => AsCollection::class,
+        'name' => AsArrayObject::class,
+        'label' => AsArrayObject::class,
         'shared' => 'boolean',
     ];
 

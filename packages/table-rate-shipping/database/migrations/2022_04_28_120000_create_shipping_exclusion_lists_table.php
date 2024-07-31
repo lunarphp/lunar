@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
 
-class CreateShippingExclusionListsTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create($this->prefix.'shipping_exclusion_lists', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -15,8 +15,8 @@ class CreateShippingExclusionListsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->prefix.'shipping_exclusion_lists');
     }
-}
+};

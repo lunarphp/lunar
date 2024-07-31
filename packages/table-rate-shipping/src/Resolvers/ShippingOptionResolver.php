@@ -17,7 +17,7 @@ class ShippingOptionResolver
     /**
      * Initialise the resolver.
      */
-    public function __construct(Cart $cart = null)
+    public function __construct(?Cart $cart = null)
     {
         $this->cart = $cart;
     }
