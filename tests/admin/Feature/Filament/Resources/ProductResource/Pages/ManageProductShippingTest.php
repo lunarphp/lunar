@@ -108,7 +108,7 @@ it('can update variant shipping', function () {
             'dimensions.weight_unit' => 'g',
         ])->call('save')->assertHasNoErrors();
 
-    $this->assertDatabaseHas((new \Lunar\Models\ProductVariant())->getTable(), [
+    $this->assertDatabaseHas((new \Lunar\Models\ProductVariant)->getTable(), [
         'shippable' => true,
         'length_value' => 100,
         'length_unit' => 'cm',
@@ -154,7 +154,7 @@ it('can set shipping volume automatically', function () {
             'dimensions.weight_unit' => 'g',
         ])->call('save')->assertHasNoErrors();
 
-    $this->assertDatabaseHas((new \Lunar\Models\ProductVariant())->getTable(), [
+    $this->assertDatabaseHas((new \Lunar\Models\ProductVariant)->getTable(), [
         'volume_value' => 1000,
         'volume_unit' => 'l',
     ]);

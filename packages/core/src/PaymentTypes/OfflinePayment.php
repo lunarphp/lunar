@@ -13,7 +13,7 @@ class OfflinePayment extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function authorize(): PaymentAuthorize
+    public function authorize(): ?PaymentAuthorize
     {
         if (! $this->order) {
             if (! $this->order = $this->cart->draftOrder()->first()) {

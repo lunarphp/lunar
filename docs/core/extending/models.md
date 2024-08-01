@@ -123,7 +123,7 @@ $newStaticMethod = \Lunar\Models\ProductOption::getSizesStatic();
 ```php
 namespace App\Models;
 
-use App\Concerns\SearchableTrait
+use App\Concerns\SearchableTrait;
 
 class Product extends \Lunar\Models\Product
 {

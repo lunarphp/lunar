@@ -22,7 +22,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // additional setup
         Config::set('providers.users.model', User::class);
         Config::set('services.stripe.key', 'SK_TESTER');
-        Config::set('services.stripe.webhooks.payment_intent', 'FOOBAR');
+        Config::set('services.stripe.webhooks.lunar', 'FOOBAR');
 
         activity()->disableLogging();
 
