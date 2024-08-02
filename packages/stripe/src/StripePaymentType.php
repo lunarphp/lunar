@@ -55,13 +55,23 @@ class StripePaymentType extends AbstractPayment
     {
         $paymentIntentId = $this->data['payment_intent'];
 
-        $paymentIntentModel = StripePaymentIntent::where('intent_id', $paymentIntentId)->first();
+        $paymentIntentModel = StripePaymentIntent::first([
+            'intent_id' => $paymentIntentId,
+        ]);
 
         $this->order = $this->order ?: ($this->cart->draftOrder ?: $this->cart->completedOrder);
 
-        //        if (($this->order && $this->order->placed_at) || $paymentIntentModel?->processing_at) {
-        //            return null;
-        //        }
+        if (($this->order && $this->order->placed_at) || $paymentIntentModel?->processing_at) {
+            return null;
+        }
+
+        if (!$paymentIntentModel) {
+            $paymentIntentModel = StripePaymentIntent::create([
+                'intent_id' => $paymentIntentId,
+                'cart_id' => $this->cart?->id ?: $this->order->cart_id,
+                'order_id' => $this->order?->id,
+            ]);
+        }
 
         $paymentIntentModel->update([
             'processing_at' => now(),

@@ -4,7 +4,6 @@ namespace Lunar\Stripe\Managers;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;
@@ -46,7 +45,7 @@ class StripeManager
          * If the payment intent is stored in the meta, we don't have a linked payment intent
          * then it's a "legacy" cart, we should make a new record.
          */
-        if (! empty($cartModel->meta['payment_intent']) && ! $cart->paymentIntents->first()) {
+        if (! empty($cart->meta['payment_intent']) && ! $cart->paymentIntents->first()) {
             $cart->paymentIntents()->create([
                 'intent_id' => $intent->id,
                 'status' => $intent->status,
@@ -62,7 +61,7 @@ class StripeManager
             return PaymentMethod::retrieve($paymentMethodId);
         } catch (ApiErrorException $e) {
         }
-
+        return null;
     }
 
     /**
@@ -70,22 +69,20 @@ class StripeManager
      */
     public function createIntent(Cart $cart, array $opts = []): PaymentIntent
     {
-        $meta = (array) $cart->meta;
+        $existingId = $this->getCartIntentId($cart);
 
-        if ($meta && ! empty($meta['payment_intent'])) {
+        if (
+            $existingId &&
             $intent = $this->fetchIntent(
-                $meta['payment_intent']
-            );
-
-            if ($intent) {
-                return $intent;
-            }
+                $existingId
+            )
+        ) {
+            return $intent;
         }
 
         $paymentIntent = $this->buildIntent(
             $cart->total->value,
             $cart->currency->code,
-            $cart->shippingAddress,
             $opts
         );
 
@@ -121,13 +118,13 @@ class StripeManager
 
     public function updateIntent(Cart $cart, array $values): void
     {
-        $meta = (array) $cart->meta;
+        $intentId = $this->getCartIntentId($cart);
 
-        if (empty($meta['payment_intent'])) {
+        if (!$intentId) {
             return;
         }
 
-        $this->updateIntentById($meta['payment_intent'], $values);
+        $this->updateIntentById($intentId, $values);
     }
 
     public function updateIntentById(string $id, array $values): void
@@ -140,31 +137,31 @@ class StripeManager
 
     public function syncIntent(Cart $cart): void
     {
-        $meta = (array) $cart->meta;
+        $intentId = $this->getCartIntentId($cart);
 
-        if (empty($meta['payment_intent'])) {
+        if (!$intentId) {
             return;
         }
 
         $cart = $cart->calculate();
 
         $this->getClient()->paymentIntents->update(
-            $meta['payment_intent'],
+            $intentId,
             ['amount' => $cart->total->value]
         );
     }
 
     public function cancelIntent(Cart $cart, CancellationReason $reason): void
     {
-        $meta = (array) $cart->meta;
+        $intentId = $this->getCartIntentId($cart);
 
-        if (empty($meta['payment_intent'])) {
+        if (!$intentId) {
             return;
         }
 
         try {
             $this->getClient()->paymentIntents->cancel(
-                $meta['payment_intent'],
+                $intentId,
                 ['cancellation_reason' => $reason->value]
             );
         } catch (\Exception $e) {
@@ -209,7 +206,7 @@ class StripeManager
     /**
      * Build the intent
      */
-    protected function buildIntent(int $value, string $currencyCode, ?CartAddress $shipping, array $opts = []): PaymentIntent
+    protected function buildIntent(int $value, string $currencyCode, array $opts = []): PaymentIntent
     {
         $params = [
             'amount' => $value,
@@ -217,21 +214,6 @@ class StripeManager
             'automatic_payment_methods' => ['enabled' => true],
             'capture_method' => config('lunar.stripe.policy', 'automatic'),
         ];
-
-        //        if ($shipping) {
-        //            $params['shipping'] = [
-        //                'name' => "{$shipping->first_name} {$shipping->last_name}",
-        //                'phone' => $shipping->contact_phone,
-        //                'address' => [
-        //                    'city' => $shipping->city,
-        //                    'country' => $shipping->country->iso2,
-        //                    'line1' => $shipping->line_one,
-        //                    'line2' => $shipping->line_two,
-        //                    'postal_code' => $shipping->postcode,
-        //                    'state' => $shipping->state,
-        //                ],
-        //            ];
-        //        }
 
         return PaymentIntent::create([
             ...$params,
