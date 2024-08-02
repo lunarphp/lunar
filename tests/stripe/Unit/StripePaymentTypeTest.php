@@ -5,6 +5,7 @@ use Lunar\Models\Transaction;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
+
 use function Pest\Laravel\assertDatabaseHas;
 
 uses(\Lunar\Tests\Stripe\Unit\TestCase::class);
@@ -18,9 +19,9 @@ it('can capture an order', function () {
     ])->authorize();
 
     expect($response)->toBeInstanceOf(PaymentAuthorize::class)
-    ->and($response->success)->toBeTrue()
-    ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
-    ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+        ->and($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
 
     assertDatabaseHas((new Transaction)->getTable(), [
         'order_id' => $cart->refresh()->completedOrder->id,
