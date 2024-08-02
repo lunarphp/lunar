@@ -13,6 +13,7 @@ use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
 use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 
@@ -52,15 +53,24 @@ class StripePaymentType extends AbstractPayment
      */
     final public function authorize(): ?PaymentAuthorize
     {
+        $paymentIntentId = $this->data['payment_intent'];
+
+        $paymentIntentModel = StripePaymentIntent::where('intent_id', $paymentIntentId)->first();
+
         $this->order = $this->order ?: ($this->cart->draftOrder ?: $this->cart->completedOrder);
 
-        if ($this->order && $this->order->placed_at) {
-            return null;
-        }
+        //        if (($this->order && $this->order->placed_at) || $paymentIntentModel?->processing_at) {
+        //            return null;
+        //        }
+
+        $paymentIntentModel->update([
+            'processing_at' => now(),
+        ]);
 
         if (! $this->order) {
             try {
                 $this->order = $this->cart->createOrder();
+                $paymentIntentModel->order_id = $this->order->id;
             } catch (DisallowMultipleCartOrdersException $e) {
                 $failure = new PaymentAuthorize(
                     success: false,
@@ -73,8 +83,6 @@ class StripePaymentType extends AbstractPayment
                 return $failure;
             }
         }
-
-        $paymentIntentId = $this->data['payment_intent'];
 
         $this->paymentIntent = $this->stripe->paymentIntents->retrieve(
             $paymentIntentId
@@ -99,18 +107,7 @@ class StripePaymentType extends AbstractPayment
             );
         }
 
-        if ($this->cart) {
-            if (! ($this->cart->meta['payment_intent'] ?? null)) {
-                $this->cart->update([
-                    'meta' => [
-                        'payment_intent' => $this->paymentIntent->id,
-                    ],
-                ]);
-            } else {
-                $this->cart->meta['payment_intent'] = $this->paymentIntent->id;
-                $this->cart->save();
-            }
-        }
+        $paymentIntentModel->status = $this->paymentIntent->status;
 
         $order = (new UpdateOrderFromIntent)->execute(
             $this->order,
@@ -125,6 +122,10 @@ class StripePaymentType extends AbstractPayment
         );
 
         PaymentAttemptEvent::dispatch($response);
+
+        $paymentIntentModel->processed_at = now();
+
+        $paymentIntentModel->save();
 
         return $response;
     }

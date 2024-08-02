@@ -7,8 +7,10 @@ use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
+use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
+use Stripe\PaymentMethod;
 use Stripe\Stripe;
 use Stripe\StripeClient;
 
@@ -27,6 +29,40 @@ class StripeManager
         return new StripeClient([
             'api_key' => config('services.stripe.key'),
         ]);
+    }
+
+    public function getCartIntentId(Cart $cart): ?string
+    {
+        return $cartModel->meta['payment_intent'] ?? $cart->paymentIntents->first()?->intent_id;
+    }
+
+    public function fetchOrCreateIntent(Cart $cart, array $createOptions = []): PaymentIntent
+    {
+        $existingIntentId = $this->getCartIntentId($cart);
+
+        $intent = $existingIntentId ? $this->fetchIntent($existingIntentId) : $this->createIntent($cart, $createOptions);
+
+        /**
+         * If the payment intent is stored in the meta, we don't have a linked payment intent
+         * then it's a "legacy" cart, we should make a new record.
+         */
+        if (! empty($cartModel->meta['payment_intent']) && ! $cart->paymentIntents->first()) {
+            $cart->paymentIntents()->create([
+                'intent_id' => $intent->id,
+                'status' => $intent->status,
+            ]);
+        }
+
+        return $intent;
+    }
+
+    public function getPaymentMethod(string $paymentMethodId): ?PaymentMethod
+    {
+        try {
+            return PaymentMethod::retrieve($paymentMethodId);
+        } catch (ApiErrorException $e) {
+        }
+
     }
 
     /**
@@ -53,17 +89,10 @@ class StripeManager
             $opts
         );
 
-        if (! $meta) {
-            $cart->update([
-                'meta' => [
-                    'payment_intent' => $paymentIntent->id,
-                ],
-            ]);
-        } else {
-            $meta['payment_intent'] = $paymentIntent->id;
-            $cart->meta = $meta;
-            $cart->save();
-        }
+        $cart->paymentIntents()->create([
+            'intent_id' => $paymentIntent->id,
+            'status' => $paymentIntent->status,
+        ]);
 
         return $paymentIntent;
     }
@@ -189,20 +218,20 @@ class StripeManager
             'capture_method' => config('lunar.stripe.policy', 'automatic'),
         ];
 
-        if ($shipping) {
-            $params['shipping'] = [
-                'name' => "{$shipping->first_name} {$shipping->last_name}",
-                'phone' => $shipping->contact_phone,
-                'address' => [
-                    'city' => $shipping->city,
-                    'country' => $shipping->country->iso2,
-                    'line1' => $shipping->line_one,
-                    'line2' => $shipping->line_two,
-                    'postal_code' => $shipping->postcode,
-                    'state' => $shipping->state,
-                ],
-            ];
-        }
+        //        if ($shipping) {
+        //            $params['shipping'] = [
+        //                'name' => "{$shipping->first_name} {$shipping->last_name}",
+        //                'phone' => $shipping->contact_phone,
+        //                'address' => [
+        //                    'city' => $shipping->city,
+        //                    'country' => $shipping->country->iso2,
+        //                    'line1' => $shipping->line_one,
+        //                    'line2' => $shipping->line_two,
+        //                    'postal_code' => $shipping->postcode,
+        //                    'state' => $shipping->state,
+        //                ],
+        //            ];
+        //        }
 
         return PaymentIntent::create([
             ...$params,

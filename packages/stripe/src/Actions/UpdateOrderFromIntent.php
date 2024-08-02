@@ -26,6 +26,17 @@ class UpdateOrderFromIntent
 
             $placedAt = null;
 
+            $billingAddress = $order->billingAddress;
+
+            $paymentMethod = Stripe::getPaymentMethod($paymentIntent->payment_method);
+
+            $billingDetails = $paymentMethod->billing_details;
+            $postcode = $billingDetails->address->postal_code;
+
+            if ($postcode != $billingAddress->postcode) {
+                dd($billingDetails);
+            }
+
             if ($paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED) {
                 $placedAt = now();
             }
