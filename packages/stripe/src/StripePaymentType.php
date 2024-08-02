@@ -55,9 +55,7 @@ class StripePaymentType extends AbstractPayment
     {
         $paymentIntentId = $this->data['payment_intent'];
 
-        $paymentIntentModel = StripePaymentIntent::first([
-            'intent_id' => $paymentIntentId,
-        ]);
+        $paymentIntentModel = StripePaymentIntent::where('intent_id', $paymentIntentId)->first();
 
         $this->order = $this->order ?: ($this->cart->draftOrder ?: $this->cart->completedOrder);
 

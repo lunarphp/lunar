@@ -46,7 +46,9 @@ final class WebhookController extends Controller
             $paymentIntentModel?->update([
                 'event_id' => $event->id,
             ]);
-            ProcessStripeWebhook::dispatch($paymentIntent, $orderId);
+            ProcessStripeWebhook::dispatch($paymentIntent, $orderId)->delay(
+                now()->addSeconds(5)
+            );
         }
 
         return response()->json([
