@@ -9,7 +9,7 @@ it('can handle valid event', function () {
             public function constructEvent(string $jsonPayload, string $signature, string $secret)
             {
                 return \Stripe\Event::constructFrom([
-                    'type' => 'payment_intent.succeeded'
+                    'type' => 'payment_intent.succeeded',
                 ]);
             }
         };

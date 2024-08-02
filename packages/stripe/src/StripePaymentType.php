@@ -63,7 +63,7 @@ class StripePaymentType extends AbstractPayment
             return null;
         }
 
-        if (!$paymentIntentModel) {
+        if (! $paymentIntentModel) {
             $paymentIntentModel = StripePaymentIntent::create([
                 'intent_id' => $paymentIntentId,
                 'cart_id' => $this->cart?->id ?: $this->order->cart_id,

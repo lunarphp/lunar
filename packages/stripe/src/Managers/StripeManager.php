@@ -61,6 +61,7 @@ class StripeManager
             return PaymentMethod::retrieve($paymentMethodId);
         } catch (ApiErrorException $e) {
         }
+
         return null;
     }
 
@@ -120,7 +121,7 @@ class StripeManager
     {
         $intentId = $this->getCartIntentId($cart);
 
-        if (!$intentId) {
+        if (! $intentId) {
             return;
         }
 
@@ -139,7 +140,7 @@ class StripeManager
     {
         $intentId = $this->getCartIntentId($cart);
 
-        if (!$intentId) {
+        if (! $intentId) {
             return;
         }
 
@@ -155,7 +156,7 @@ class StripeManager
     {
         $intentId = $this->getCartIntentId($cart);
 
-        if (!$intentId) {
+        if (! $intentId) {
             return;
         }
 
