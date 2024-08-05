@@ -45,7 +45,7 @@ class File implements FieldType, JsonSerializable
     public function __toString()
     {
         if (is_array($this->getValue())) {
-            return implode(",", $this->getValue());
+            return implode(", ", $this->getValue());
         }
 
         return $this->getValue() ?? "";
