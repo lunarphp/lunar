@@ -45,22 +45,25 @@ class File extends BaseFieldType
     public static function getConfigurationFields(): array
     {
         return [
-            \Filament\Forms\Components\TagsInput::make('file_types')->label(
-                __('lunarpanel::fieldtypes.file.form.file_types.label')
-            )->suggestions([
-                'image/jpeg',
-                'image/png',
-                'image/gif',
-                'audio/mpeg',
-                'audio/aac',
-                'audio/wav',
-                'video/mp4',
-                'video/mpeg',
-                'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'application/rtf',
-                'application/pdf'
-            ])->reorderable(),
+            \Filament\Forms\Components\TagsInput::make('file_types')
+                ->label(
+                    __('lunarpanel::fieldtypes.file.form.file_types.label')
+                )->suggestions([
+                    'image/jpeg',
+                    'image/png',
+                    'image/gif',
+                    'audio/mpeg',
+                    'audio/aac',
+                    'audio/wav',
+                    'video/mp4',
+                    'video/mpeg',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/rtf',
+                    'application/pdf'
+                ])
+                ->placeholder(__('lunarpanel::fieldtypes.file.form.file_types.placeholder'))
+                ->reorderable(),
             \Filament\Forms\Components\Toggle::make('multiple')->label(
                 __('lunarpanel::fieldtypes.file.form.multiple.label')
             ),

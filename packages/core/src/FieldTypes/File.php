@@ -8,7 +8,7 @@ use Lunar\Base\FieldType;
 class File implements FieldType, JsonSerializable
 {
     /**
-     * @var array|null
+     * @var string|array|null
      */
     protected $value;
 
@@ -30,7 +30,7 @@ class File implements FieldType, JsonSerializable
     /**
      * Create a new instance of File field type.
      *
-     * @param  array|null  $value
+     * @param  string|array|null  $value
      */
     public function __construct($value = null)
     {
@@ -54,7 +54,7 @@ class File implements FieldType, JsonSerializable
     /**
      * Return the value of this field.
      *
-     * @return array|null
+     * @return string|array|null
      */
     public function getValue()
     {
@@ -64,7 +64,7 @@ class File implements FieldType, JsonSerializable
     /**
      * Set the value of this field.
      *
-     * @param  array|null  $value
+     * @param  string|array|null  $value
      */
     public function setValue($value)
     {
@@ -82,6 +82,7 @@ class File implements FieldType, JsonSerializable
     {
         return [
             'options' => [
+                'file_types' => 'array',
                 'multiple' => 'boolean',
                 'max_files' => 'numeric',
                 'min_files' => 'numeric'

@@ -56,6 +56,7 @@ return [
         'form' => [
             'file_types' => [
                 'label' => 'Allowed File Types',
+                'placeholder' => 'New MIME'
             ],
             'multiple' => [
                 'label' => 'Allow Multiple Files',
