@@ -53,5 +53,19 @@ return [
     ],
     'file' => [
         'label' => 'File',
+        'form' => [
+            'file_types' => [
+                'label' => 'Allowed File Types',
+            ],
+            'multiple' => [
+                'label' => 'Allow Multiple Files',
+            ],
+            'min_files' => [
+                'label' => 'Min. Files',
+            ],
+            'max_files' => [
+                'label' => 'Max. Files',
+            ],
+        ],
     ],
 ];
