@@ -133,6 +133,7 @@ class AttributesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data, RelationManager $livewire) {
+                    $data['configuration'] = $data['configuration'] ?? [];
                     $data['system'] = false;
                     $data['attribute_type'] = $livewire->ownerRecord->attributable_type;
                     $data['position'] = $livewire->ownerRecord->attributes()->count() + 1;
