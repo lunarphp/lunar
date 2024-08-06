@@ -49,12 +49,15 @@ class File extends BaseFieldType
                 ->label(
                     __('lunarpanel::fieldtypes.file.form.file_types.label')
                 )->suggestions([
+                    'image/*',
                     'image/jpeg',
                     'image/png',
                     'image/gif',
+                    'audio/*',
                     'audio/mpeg',
                     'audio/aac',
                     'audio/wav',
+                    'video/*',
                     'video/mp4',
                     'video/mpeg',
                     'application/msword',
