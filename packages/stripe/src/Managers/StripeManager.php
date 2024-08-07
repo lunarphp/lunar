@@ -2,10 +2,12 @@
 
 namespace Lunar\Stripe\Managers;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
+use Stripe\Customer;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
@@ -60,6 +62,71 @@ class StripeManager
         try {
             return PaymentMethod::retrieve($paymentMethodId);
         } catch (ApiErrorException $e) {
+        }
+
+        return null;
+    }
+
+    public function createCustomerFromModel(Authenticatable $authenticatable): ?Customer
+    {
+        if (! is_lunar_user($authenticatable)) {
+            return $this->createCustomer($authenticatable->name, $authenticatable->email);
+        }
+        $customer = $authenticatable->customers->first();
+
+        $params = [
+            'description' => $customer->company_name,
+        ];
+
+        $billingAddress = $customer->addresses()->where('billing_default', true)->first();
+
+        $shippingAddress = $customer->addresses()->where('shipping_default', true)->first() ?: $billingAddress;
+
+        if ($billingAddress) {
+            $params['address'] = [
+                'line1' => $billingAddress->line_one,
+                'line2' => $billingAddress->line_two,
+                'city' => $billingAddress->city,
+                'state' => $billingAddress->state,
+                'postal_code' => $billingAddress->postcode,
+                'country' => $billingAddress->country->iso2,
+            ];
+        }
+
+        if ($shippingAddress) {
+            $params['shipping'] = [
+                'name' => "{$shippingAddress->first_name} {$shippingAddress->last_name}",
+                'address' => [
+                    'line1' => $shippingAddress->line_one,
+                    'line2' => $shippingAddress->line_two,
+                    'city' => $shippingAddress->city,
+                    'state' => $shippingAddress->state,
+                    'postal_code' => $shippingAddress->postcode,
+                    'country' => $shippingAddress->country->iso2,
+                ],
+            ];
+        }
+
+        $customer = $this->createCustomer($authenticatable->name, $authenticatable->email, $params);
+
+        if ($customer) {
+            $authenticatable->stripe_id = $customer->id;
+            $authenticatable->save();
+        }
+
+        return $customer;
+    }
+
+    public function createCustomer(string $fullName, string $email, array $params = []): ?Customer
+    {
+        try {
+            return Customer::create([
+                'name' => $fullName,
+                'email' => $email,
+                ...$params,
+            ]);
+        } catch (ApiErrorException $e) {
+
         }
 
         return null;
