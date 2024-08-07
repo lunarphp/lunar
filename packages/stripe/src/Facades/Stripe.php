@@ -2,6 +2,7 @@
 
 namespace Lunar\Stripe\Facades;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Facade;
 use Lunar\Models\Cart;
 use Lunar\Stripe\Enums\CancellationReason;
@@ -12,6 +13,8 @@ use Stripe\ApiRequestor;
  * @method static getClient(): \Stripe\StripeClient
  * @method static getCartIntentId(Cart $cart): ?string
  * @method static fetchOrCreateIntent(Cart $cart, array $createOptions): ?string
+ * @method static createCustomerFromModel(Authenticatable $user): ?Customer
+ * @method static createCustomer(string $fullName, string $email, array $params = []): ?Customer
  * @method static createIntent(\Lunar\Models\Cart $cart, array $createOptions): \Stripe\PaymentIntent
  * @method static syncIntent(\Lunar\Models\Cart $cart): void
  * @method static updateIntent(\Lunar\Models\Cart $cart, array $values): void

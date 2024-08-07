@@ -67,12 +67,16 @@ class StripeManager
         return null;
     }
 
-    public function createCustomerFromModel(Authenticatable $authenticatable): ?Customer
+    public function createCustomerFromModel(Authenticatable $user): ?Customer
     {
-        if (! is_lunar_user($authenticatable)) {
-            return $this->createCustomer($authenticatable->name, $authenticatable->email);
+        if ($user->stripe_id) {
+            return $this->fetchCustomer($user->stripe_id);
         }
-        $customer = $authenticatable->customers->first();
+
+        if (! is_lunar_user($user)) {
+            return $this->createCustomer($user->name, $user->email);
+        }
+        $customer = $user->customers->first();
 
         $params = [
             'description' => $customer->company_name,
@@ -107,14 +111,24 @@ class StripeManager
             ];
         }
 
-        $customer = $this->createCustomer($authenticatable->name, $authenticatable->email, $params);
+        $customer = $this->createCustomer($user->name, $user->email, $params);
 
         if ($customer) {
-            $authenticatable->stripe_id = $customer->id;
-            $authenticatable->save();
+            $user->stripe_id = $customer->id;
+            $user->save();
         }
 
         return $customer;
+    }
+
+    public function fetchCustomer(string $stripeId): ?Customer
+    {
+        try {
+            return Customer::retrieve($stripeId);
+        } catch (ApiErrorException $e) {
+        }
+
+        return null;
     }
 
     public function createCustomer(string $fullName, string $email, array $params = []): ?Customer
