@@ -2,13 +2,13 @@
 
 namespace Lunar\Models\Contracts;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Lunar\Base\Addressable;
+use Lunar\Base\LunarUser;
 use Lunar\Base\Purchasable;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\FingerprintMismatchException;
@@ -125,7 +125,7 @@ interface Cart
     /**
      * Associate a user to the cart
      */
-    public function associate(Authenticatable $user, string $policy = 'merge', bool $refresh = true): \Lunar\Models\Cart;
+    public function associate(LunarUser $user, string $policy = 'merge', bool $refresh = true): \Lunar\Models\Cart;
 
     /**
      * Associate a customer to the cart
