@@ -3,7 +3,6 @@
 namespace Lunar\Models;
 
 use Exception;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -44,7 +43,6 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
-use Throwable;
 
 /**
  * @property int $id

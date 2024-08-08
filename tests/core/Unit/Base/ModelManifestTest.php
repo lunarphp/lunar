@@ -61,9 +61,9 @@ test('can guess model class', function () {
 
 test('can detect lunar model', function () {
     expect(
-        ModelManifest::isLunarModel((new Product()))
+        ModelManifest::isLunarModel((new Product))
     )->toBeTrue()
         ->and(
-            ModelManifest::isLunarModel((new \Lunar\Tests\Core\Stubs\Models\Product()))
+            ModelManifest::isLunarModel((new \Lunar\Tests\Core\Stubs\Models\Product))
         )->toBeFalse();
 });
