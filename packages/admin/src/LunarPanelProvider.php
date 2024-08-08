@@ -43,19 +43,19 @@ class LunarPanelProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped('lunar-panel', function (): LunarPanelManager {
-            return new LunarPanelManager();
+            return new LunarPanelManager;
         });
 
         $this->app->scoped('lunar-access-control', function (): Manifest {
-            return new Manifest();
+            return new Manifest;
         });
 
         $this->app->scoped('lunar-activity-log', function (): ActivityLogManifest {
-            return new ActivityLogManifest();
+            return new ActivityLogManifest;
         });
 
         $this->app->scoped('lunar-attribute-data', function (): AttributeData {
-            return new AttributeData();
+            return new AttributeData;
         });
     }
 

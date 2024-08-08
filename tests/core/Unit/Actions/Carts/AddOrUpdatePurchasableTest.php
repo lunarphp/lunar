@@ -93,7 +93,7 @@ test('can update existing cart line', function () {
 
     expect($cart->refresh()->lines)->toHaveCount(1);
 
-    $this->assertDatabaseHas((new CartLine())->getTable(), [
+    $this->assertDatabaseHas((new CartLine)->getTable(), [
         'cart_id' => $cart->id,
         'quantity' => 2,
     ]);

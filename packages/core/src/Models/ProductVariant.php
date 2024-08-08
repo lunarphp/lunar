@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -59,6 +60,7 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purc
     use HasPrices;
     use HasTranslations;
     use LogsActivity;
+    use SoftDeletes;
 
     /**
      * Define the guarded attributes.

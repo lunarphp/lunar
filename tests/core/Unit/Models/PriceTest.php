@@ -28,7 +28,7 @@ test('can create a price', function () {
 
     Price::factory()->create($data);
 
-    $this->assertDatabaseHas((new Price())->getTable(), $data);
+    $this->assertDatabaseHas((new Price)->getTable(), $data);
 });
 
 test('price is cast to a datatype', function () {

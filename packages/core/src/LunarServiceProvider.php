@@ -92,6 +92,7 @@ class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
         'cart',
+        'cart_session',
         'database',
         'media',
         'orders',
@@ -119,15 +120,15 @@ class LunarServiceProvider extends ServiceProvider
         $this->registerAddonManifest();
 
         $this->app->singleton(CartModifiers::class, function () {
-            return new CartModifiers();
+            return new CartModifiers;
         });
 
         $this->app->singleton(CartLineModifiers::class, function () {
-            return new CartLineModifiers();
+            return new CartLineModifiers;
         });
 
         $this->app->singleton(OrderModifiers::class, function () {
-            return new OrderModifiers();
+            return new OrderModifiers;
         });
 
         $this->app->singleton(CartSessionInterface::class, function ($app) {
@@ -139,7 +140,7 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(ShippingModifiers::class, function ($app) {
-            return new ShippingModifiers();
+            return new ShippingModifiers;
         });
 
         $this->app->singleton(ShippingManifestInterface::class, function ($app) {
@@ -253,7 +254,7 @@ class LunarServiceProvider extends ServiceProvider
     protected function registerAddonManifest()
     {
         $this->app->instance(Manifest::class, new Manifest(
-            new Filesystem(),
+            new Filesystem,
             $this->app->basePath(),
             $this->app->bootstrapPath().'/cache/lunar_addons.php'
         ));
@@ -343,7 +344,7 @@ class LunarServiceProvider extends ServiceProvider
                 $this->foreignUuId($field_name)
                     ->nullable($nullable)
                     ->constrained(
-                        (new $userModel())->getTable()
+                        (new $userModel)->getTable()
                     );
             } elseif ($type == 'int') {
                 $this->unsignedInteger($field_name)->nullable($nullable);
@@ -352,7 +353,7 @@ class LunarServiceProvider extends ServiceProvider
                 $this->foreignId($field_name)
                     ->nullable($nullable)
                     ->constrained(
-                        (new $userModel())->getTable()
+                        (new $userModel)->getTable()
                     );
             }
         });

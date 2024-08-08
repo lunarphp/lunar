@@ -27,7 +27,7 @@ test('can make a cart line', function () {
 
     CartLine::create($data);
 
-    $this->assertDatabaseHas((new CartLine())->getTable(), $data);
+    $this->assertDatabaseHas((new CartLine)->getTable(), $data);
 });
 
 test('only purchasables can be added to a cart', function () {
@@ -48,5 +48,5 @@ test('only purchasables can be added to a cart', function () {
 
     CartLine::create($data);
 
-    $this->assertDatabaseMissing((new CartLine())->getTable(), $data);
+    $this->assertDatabaseMissing((new CartLine)->getTable(), $data);
 });

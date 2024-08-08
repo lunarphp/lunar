@@ -24,7 +24,7 @@ class OrderFactory extends BaseFactory
             'sub_total' => $total - $taxTotal,
             'discount_total' => 0,
             'shipping_total' => 0,
-            'tax_breakdown' => new TaxBreakdown(),
+            'tax_breakdown' => new TaxBreakdown,
             'tax_total' => $taxTotal,
             'total' => $total,
             'notes' => null,

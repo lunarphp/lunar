@@ -8,7 +8,7 @@ use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 
 test('can set value', function () {
-    $field = new TranslatedText();
+    $field = new TranslatedText;
     $field->setValue(collect([
         'en' => new Text('Blue'),
         'fr' => new Text('Bleu'),

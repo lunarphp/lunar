@@ -24,6 +24,7 @@ use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
+use Lunar\Base\LunarUser;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
@@ -43,6 +44,7 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
+use Throwable;
 
 /**
  * @property int $id
@@ -263,6 +265,17 @@ class Cart extends BaseModel implements Contracts\Cart
             })->whereNull('placed_at');
     }
 
+    public function currentDraftOrder(?int $draftOrderId = null)
+    {
+        return $this->calculate()
+            ->draftOrder($draftOrderId)
+            ->where('fingerprint', $this->fingerprint())
+            ->when(
+                $this->total,
+                fn (Builder $query, Price $price) => $query->where('total', $price->value)
+            )->first();
+    }
+
     /**
      * Return the completed order relationship.
      */
@@ -416,7 +429,12 @@ class Cart extends BaseModel implements Contracts\Cart
         return $this->refresh()->recalculate();
     }
 
-    public function associate(Authenticatable $user, string $policy = 'merge', bool $refresh = true): Cart
+    /**
+     * Associate a user to the cart
+     *
+     * @throws Exception
+     */
+    public function associate(LunarUser $user, string $policy = 'merge', bool $refresh = true): Cart
     {
         if ($this->customer()->exists()) {
             if (! $user->query()
@@ -563,7 +581,7 @@ class Cart extends BaseModel implements Contracts\Cart
     {
         $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
 
-        return (new $generator())->execute($this);
+        return (new $generator)->execute($this);
     }
 
     public function checkFingerprint(string $fingerprint): bool

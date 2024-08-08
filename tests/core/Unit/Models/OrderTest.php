@@ -59,7 +59,7 @@ test('can make an order', function () {
 
     $data = $order->getRawOriginal();
 
-    $this->assertDatabaseHas((new Order())->getTable(), $data);
+    $this->assertDatabaseHas((new Order)->getTable(), $data);
 });
 
 test('order has correct casting', function () {

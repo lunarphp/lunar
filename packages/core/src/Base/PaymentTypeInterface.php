@@ -35,10 +35,8 @@ interface PaymentTypeInterface
 
     /**
      * Authorize the payment.
-     *
-     * @return void
      */
-    public function authorize(): PaymentAuthorize;
+    public function authorize(): ?PaymentAuthorize;
 
     /**
      * Refund a transaction for a given amount.

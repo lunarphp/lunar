@@ -150,7 +150,7 @@ class ManageShippingRates extends ManageRelatedRecords
             )->action(function (Table $table, ?ShippingRate $shippingRate = null, array $data = []) {
                 $relationship = $table->getRelationship();
 
-                $record = new ShippingRate();
+                $record = new ShippingRate;
                 $record->shipping_method_id = $data['shipping_method_id'];
                 $relationship->save($record);
 

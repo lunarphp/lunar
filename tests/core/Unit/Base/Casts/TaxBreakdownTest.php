@@ -14,7 +14,7 @@ test('can set from value object', function () {
     $currency = Currency::factory()->create();
     $order = Order::factory()->create();
 
-    $taxBreakdownValueObject = new TaxBreakdown();
+    $taxBreakdownValueObject = new TaxBreakdown;
 
     $taxBreakdownValueObject->addAmount(
         new TaxBreakdownAmount(
@@ -37,7 +37,7 @@ test('can cast to and from model', function () {
     $currency = Currency::factory()->create();
     $order = Order::factory()->create();
 
-    $taxBreakdownValueObject = new TaxBreakdown();
+    $taxBreakdownValueObject = new TaxBreakdown;
 
     $taxBreakdownValueObject->addAmount(
         new TaxBreakdownAmount(

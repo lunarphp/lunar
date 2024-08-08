@@ -20,6 +20,6 @@ class Toggle extends BaseFieldType
             ->default(false)
             ->when(filled($attribute->validation_rules), fn (Toggle $component) => $component->rules($attribute->validation_rules))
             ->rule('boolean')
-            ->required((bool) $attribute->configuration->get('required'));
+            ->required((bool) $attribute->required);
     }
 }
