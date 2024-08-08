@@ -4,6 +4,7 @@ namespace Lunar\Stripe\Managers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Lunar\Admin\Models\Staff;
 use Lunar\Models\Cart;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
@@ -69,6 +70,10 @@ class StripeManager
 
     public function createCustomerFromModel(Authenticatable $user): ?Customer
     {
+        if ($user instanceof Staff) {
+            return null;
+        }
+
         if ($user->stripe_id) {
             return $this->fetchCustomer($user->stripe_id);
         }
