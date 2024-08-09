@@ -34,6 +34,8 @@ class UpdateOrderFromIntent
                 return $order;
             }
 
+            (new StoreAddressInformation)->store($order, $paymentIntent);
+
             $order->update([
                 'status' => $statuses[$paymentIntent->status] ?? $paymentIntent->status,
                 'placed_at' => $order->placed_at ?: $placedAt,
