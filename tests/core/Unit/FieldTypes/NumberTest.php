@@ -5,7 +5,7 @@ use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Number;
 
 test('can set value', function () {
-    $field = new Number();
+    $field = new Number;
     $field->setValue(12345);
 
     expect($field->getValue())->toEqual(12345);

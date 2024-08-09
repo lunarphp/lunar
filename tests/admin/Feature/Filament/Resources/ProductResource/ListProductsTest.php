@@ -40,7 +40,7 @@ it('can create product', function () {
             'product_type_id' => $productType->id,
         ])->assertHasNoActionErrors();
 
-    $this->assertDatabaseHas((new \Lunar\Models\Product())->getTable(), [
+    $this->assertDatabaseHas((new \Lunar\Models\Product)->getTable(), [
         'product_type_id' => $productType->id,
         'status' => 'draft',
         'attribute_data' => json_encode([
@@ -53,11 +53,11 @@ it('can create product', function () {
         ]),
     ]);
 
-    $this->assertDatabaseHas((new \Lunar\Models\ProductVariant())->getTable(), [
+    $this->assertDatabaseHas((new \Lunar\Models\ProductVariant)->getTable(), [
         'sku' => 'ABCABCAB',
     ]);
 
-    $this->assertDatabaseHas((new \Lunar\Models\Price())->getTable(), [
+    $this->assertDatabaseHas((new \Lunar\Models\Price)->getTable(), [
         'price' => '1099',
     ]);
 });

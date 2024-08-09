@@ -24,7 +24,7 @@ class TranslatedText implements FieldType, JsonSerializable
         if ($value) {
             $this->setValue($value);
         } else {
-            $this->value = new Collection();
+            $this->value = new Collection;
         }
     }
 
