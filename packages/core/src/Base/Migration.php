@@ -21,15 +21,18 @@ abstract class Migration extends BaseMigration
 
     /**
      * Use the connection specified in config.
-     *
-     * @return void
      */
-    public function getConnection()
+    public function getConnection(): ?string
     {
-        if ($connection = config('lunar.database.connection', false)) {
+        if ($connection = config('lunar.database.connection')) {
             return $connection;
         }
 
         return parent::getConnection();
+    }
+
+    public function canDropForeignKeys(): bool
+    {
+        return can_drop_foreign_keys();
     }
 }

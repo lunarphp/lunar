@@ -9,14 +9,14 @@ use Lunar\Exceptions\FieldTypeException;
 class ListField implements FieldType, JsonSerializable
 {
     /**
-     * @var string
+     * @var array
      */
     protected $value;
 
     /**
      * Create a new instance of List field type.
      *
-     * @param  int|float  $value
+     * @param  array  $value
      */
     public function __construct($value = [])
     {
@@ -46,7 +46,7 @@ class ListField implements FieldType, JsonSerializable
     /**
      * Set the value of this field.
      *
-     * @param  int|float  $value
+     * @param  array|string  $value
      */
     public function setValue($value)
     {

@@ -8,6 +8,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
+use Filament\Support\Assets\Css;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentIcon;
@@ -217,6 +218,9 @@ class LunarPanelManager
             ])
             ->font('Poppins')
             ->middleware($panelMiddleware)
+            ->assets([
+                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
+            ], 'lunarphp/panel')
             ->pages(
                 static::getPages()
             )
@@ -255,18 +259,24 @@ class LunarPanelManager
         return $this;
     }
 
-    public static function getResources()
+    /**
+     * @return array<class-string<\Filament\Resources\Resource>>
+     */
+    public static function getResources(): array
     {
         return static::$resources;
     }
 
-    public static function getPages()
+    /**
+     * @return array<class-string<\Filament\Pages\Page>>
+     */
+    public static function getPages(): array
     {
         return static::$pages;
     }
 
     /**
-     * @return string[]
+     * @return array<class-string<\Filament\Widgets\Widget>>
      */
     public static function getWidgets(): array
     {

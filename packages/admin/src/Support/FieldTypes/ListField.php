@@ -13,8 +13,14 @@ class ListField extends BaseFieldType
 
     public static function getFilamentComponent(Attribute $attribute): Component
     {
-        return KeyValue::make($attribute->handle)->dehydrateStateUsing(function ($state) {
-            return $state;
-        })->helperText($attribute->translate('description'));
+        return KeyValue::make($attribute->handle)
+            ->live()
+            ->reorderable()
+            ->dehydrateStateUsing(function ($state) {
+                return $state;
+            })
+            ->when(filled($attribute->validation_rules), fn (KeyValue $component) => $component->rules($attribute->validation_rules))
+            ->required((bool) $attribute->required)
+            ->helperText($attribute->translate('description'));
     }
 }

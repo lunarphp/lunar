@@ -32,9 +32,6 @@ return [
         'edit' => [
             'label' => 'Basic Information',
         ],
-        'media' => [
-            'label' => 'Media',
-        ],
         'products' => [
             'label' => 'Products',
             'actions' => [

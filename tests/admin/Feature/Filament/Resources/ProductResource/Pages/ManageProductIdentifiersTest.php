@@ -103,7 +103,7 @@ it('can update variant identifiers', function () {
             'ean' => 'FOOBAREAN',
         ])->call('save')->assertHasNoErrors();
 
-    $this->assertDatabaseHas((new \Lunar\Models\ProductVariant())->getTable(), [
+    $this->assertDatabaseHas((new \Lunar\Models\ProductVariant)->getTable(), [
         'sku' => 'FOOBARSKU',
         'mpn' => 'FOOBARMPN',
         'gtin' => 'FOOBARGTIN',

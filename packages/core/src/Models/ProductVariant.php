@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -59,6 +60,7 @@ class ProductVariant extends BaseModel implements Purchasable
     use HasPrices;
     use HasTranslations;
     use LogsActivity;
+    use SoftDeletes;
 
     /**
      * Define the guarded attributes.
@@ -205,5 +207,23 @@ class ProductVariant extends BaseModel implements Purchasable
         return $this->images->first(function ($media) {
             return (bool) $media->pivot?->primary;
         }) ?: $this->product->thumbnail;
+    }
+
+    public function canBeFulfilledAtQuantity(int $quantity): bool
+    {
+        if ($this->purchasable == 'always') {
+            return true;
+        }
+
+        return $quantity <= $this->getTotalInventory();
+    }
+
+    public function getTotalInventory(): int
+    {
+        if ($this->purchasable == 'in_stock') {
+            return $this->stock;
+        }
+
+        return $this->stock + $this->backorder;
     }
 }

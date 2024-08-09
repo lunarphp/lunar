@@ -9,19 +9,19 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 test('can validate decimal places using defaults', function () {
     $validator = Validator::make([
         'decimal' => 0.1,
-    ], ['decimal' => new MaxDecimalPlaces()]);
+    ], ['decimal' => new MaxDecimalPlaces]);
 
     expect($validator->passes())->toBeTrue();
 
     $validator = Validator::make([
         'decimal' => 0.12,
-    ], ['decimal' => new MaxDecimalPlaces()]);
+    ], ['decimal' => new MaxDecimalPlaces]);
 
     expect($validator->passes())->toBeTrue();
 
     $validator = Validator::make([
         'decimal' => 0.123,
-    ], ['decimal' => new MaxDecimalPlaces()]);
+    ], ['decimal' => new MaxDecimalPlaces]);
 
     expect($validator->fails())->toBeTrue();
 });
@@ -71,7 +71,7 @@ test('can validate on passed max decimals', function () {
 test('rule works on integers', function () {
     $validator = Validator::make([
         'decimal' => 1,
-    ], ['decimal' => new MaxDecimalPlaces()]);
+    ], ['decimal' => new MaxDecimalPlaces]);
 
     expect($validator->passes())->toBeTrue();
 

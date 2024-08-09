@@ -12,15 +12,11 @@ abstract class AbstractPayment implements PaymentTypeInterface
 {
     /**
      * The instance of the cart.
-     *
-     * @var \Lunar\Models\Cart
      */
     protected ?Cart $cart = null;
 
     /**
      * The instance of the order.
-     *
-     * @var \Lunar\Models\Order
      */
     protected ?Order $order = null;
 
@@ -40,6 +36,7 @@ abstract class AbstractPayment implements PaymentTypeInterface
     public function cart(Cart $cart): self
     {
         $this->cart = $cart;
+        $this->order = null;
 
         return $this;
     }
@@ -50,6 +47,7 @@ abstract class AbstractPayment implements PaymentTypeInterface
     public function order(Order $order): self
     {
         $this->order = $order;
+        $this->cart = null;
 
         return $this;
     }

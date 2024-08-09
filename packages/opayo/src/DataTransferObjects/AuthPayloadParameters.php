@@ -14,10 +14,20 @@ class AuthPayloadParameters
         public string $customerFirstName,
         public string $customerLastName,
         public string $billingAddressLineOne,
+        public ?string $billingAddressLineTwo,
+        public ?string $billingAddressLineThree,
         public string $billingAddressCity,
-        public string $billingAddressPostcode,
+        public ?string $billingAddressPostcode,
         public string $billingAddressCountryIso,
         public ?string $customerMobilePhone,
+        public ?string $recipientFirstName,
+        public ?string $recipientLastName,
+        public ?string $shippingAddressLineOne,
+        public ?string $shippingAddressLineTwo,
+        public ?string $shippingAddressLineThree,
+        public ?string $shippingAddressCity,
+        public ?string $shippingAddressPostcode,
+        public ?string $shippingAddressCountryIso,
         public string $notificationURL,
         public ?string $browserLanguage,
         public ?string $challengeWindowSize,
@@ -33,6 +43,5 @@ class AuthPayloadParameters
         public bool $saveCard = false,
         public bool $reusable = false,
         public ?string $authCode = null
-    ) {
-    }
+    ) {}
 }

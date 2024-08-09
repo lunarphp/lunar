@@ -43,6 +43,8 @@ trait ManagesProductPricing
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        $data = $this->callLunarHook('beforeUpdate', $data, $record);
+
         $variant = $this->getOwnerRecord();
 
         $prices = collect($data['basePrices']);
@@ -70,7 +72,9 @@ trait ManagesProductPricing
 
         $this->basePrices = $this->getBasePrices($variant);
 
-        return $record;
+        $this->dispatch('refresh-relation-manager');
+
+        return $this->callLunarHook('afterUpdate', $record, $data);
     }
 
     public function getBasePriceFormSection(): Section
@@ -84,6 +88,7 @@ trait ManagesProductPricing
                         Forms\Components\TextInput::make('value')
                             ->label('')
                             ->statePath($index.'.value')
+                            ->numeric()
                             ->label(
                                 __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.label')
                             )
@@ -110,6 +115,7 @@ trait ManagesProductPricing
                         Forms\Components\TextInput::make('compare_price')
                             ->label('')
                             ->statePath($index.'.compare_price')
+                            ->numeric()
                             ->label(
                                 __('lunarpanel::relationmanagers.pricing.form.basePrices.form.compare_price.label')
                             )
@@ -144,7 +150,7 @@ trait ManagesProductPricing
             $this->basePrices = $this->getBasePrices();
         }
 
-        return $form->schema([
+        $form->schema([
             Forms\Components\Section::make()->schema([
                 Forms\Components\Group::make([
                     ProductVariantResource::getTaxClassIdFormComponent(),
@@ -153,6 +159,10 @@ trait ManagesProductPricing
             ]),
             $this->getBasePriceFormSection(),
         ])->statePath('');
+
+        $this->callLunarHook('extendForm', $form);
+
+        return $form;
     }
 
     protected function getBasePrices(): array

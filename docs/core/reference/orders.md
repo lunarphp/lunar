@@ -17,13 +17,13 @@ Lunar\Models\Order
 | cart_id               | The related cart                                                                                                   |
 | channel_id            | Which channel this was purchased through                                                                           |
 | status                | A status that makes sense to you as the store owner                                                                |
-| reference             | Your stores own reference                                                                                          
+| reference             | Your store's own reference                                                                                          
 | customer_reference    | If you want customers to add their own reference, it goes here.                                                    
 | sub_total             | The sub total minus any discounts, excl. tax                                                                       
 | discount_breakdown    | A json field for the discount breakdown e.g. `[{"discount_id": 1, "lines": [{"id": 1, "qty": 1}]], "total": 200}]` 
 | discount_total        | Any discount amount excl. tax                                                                                      
 | shipping_breakdown| A json field for the shipping breakdown e.g. `[{"name": "Standard Delivery", "identifier": "STD", "price": 123}]`
-| shipping_total        | The shipping total excl. tax                                                                                       
+| shipping_total        | The shipping total with tax                                                                                       
 | tax_breakdown         | A json field for the tax breakdown e.g. `[{"description": "VAT", "identifier" : "vat", "value": 123, "percentage": 20, "currency_code": "GBP"}]`                        
 | tax_total             | The total amount of tax applied                                                                                    
 | total                 | The grand total with tax                                                                                           
@@ -448,5 +448,5 @@ download. You can publish the view that powers this to create your own PDF templ
 php artisan vendor:publish --tag=lunar.hub.views
 ```
 
-This will create a view called `resources/vendor/adminhub/pdf/order.blade.php`, where you will be able to freely
+This will create a view called `resources/vendor/lunarpanel/pdf/order.blade.php`, where you will be able to freely
 customise the PDF you want displayed on download.

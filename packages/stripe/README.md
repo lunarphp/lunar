@@ -80,6 +80,9 @@ Make sure you have the Stripe credentials set in `config/services.php`
 'stripe' => [
     'key' => env('STRIPE_SECRET'),
     'public_key' => env('STRIPE_PK'),
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
 ],
 ```
 
@@ -102,10 +105,35 @@ Below is a list of the available configuration options this package uses in `con
 ```php
 use \Lunar\Stripe\Facades\Stripe;
 
-Stripe::createIntent(\Lunar\Models\Cart $cart);
+Stripe::createIntent(\Lunar\Models\Cart $cart, $options = []);
 ```
 
 This method will create a Stripe PaymentIntent from a Cart and add the resulting ID to the meta for retrieval later. If a PaymentIntent already exists for a cart this will fetch it from Stripe and return that instead to avoid duplicate PaymentIntents being created.
+
+You can pass any additional parameters you need, by default the following are sent:
+
+```php
+[
+    'amount' => 1099,
+    'currency' => 'GBP',
+    'automatic_payment_methods' => ['enabled' => true],
+    'capture_method' => config('lunar.stripe.policy', 'automatic'),
+    // If a shipping address exists on a cart
+    // $shipping = $cart->shippingAddress
+    'shipping' => [
+        'name' => "{$shipping->first_name} {$shipping->last_name}",
+        'phone' => $shipping->contact_phone,
+        'address' => [
+            'city' => $shipping->city,
+            'country' => $shipping->country->iso2,
+            'line1' => $shipping->line_one,
+            'line2' => $shipping->line_two,
+            'postal_code' => $shipping->postcode,
+            'state' => $shipping->state,
+        ],
+    ]
+]
+```
 
 ```php
 $paymentIntentId = $cart->meta['payment_intent']; // The resulting ID from the method above.
@@ -132,11 +160,76 @@ use \Lunar\Stripe\Facades\Stripe;
 Stripe::syncIntent(\Lunar\Models\Cart $cart);
 ```
 
+
+### Update an existing intent
+
+For when you want to update certain properties on the PaymentIntent, without needing to recalculate the cart.
+
+See https://docs.stripe.com/api/payment_intents/update
+
+```php
+use \Lunar\Stripe\Facades\Stripe;
+
+Stripe::updateIntent(\Lunar\Models\Cart $cart, [
+    'shipping' => [/*..*/]
+]);
+```
+
+### Cancel an existing intent
+
+If you need to cancel a PaymentIntent, you can do so. You will need to provide a valid reason, those of which can be found in the Stripe docs: https://docs.stripe.com/api/payment_intents/cancel.
+
+Lunar Stripe includes a PHP Enum to make this easier for you:
+
+```php
+use Lunar\Stripe\Enums\CancellationReason;
+
+CancellationReason::ABANDONED;
+CancellationReason::DUPLICATE;
+CancellationReason::REQUESTED_BY_CUSTOMER;
+CancellationReason::FRAUDULENT;
+```
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Enums\CancellationReason;
+
+Stripe::cancelIntent(\Lunar\Models\Cart $cart, CancellationReason $reason);
+```
+
+### Update the address on Stripe
+
+So you don't have to manually specify all the shipping address fields you can use the helper function to do it for you.
+
+```php
+use \Lunar\Stripe\Facades\Stripe;
+
+Stripe::updateShippingAddress(\Lunar\Models\Cart $cart);
+```
+
+## Charges
+
+### Retrieve a specific charge
+
+```php
+use \Lunar\Stripe\Facades\Stripe;
+
+Stripe::getCharge(string $chargeId);
+```
+
+### Get all charges for a payment intent
+
+```php
+use \Lunar\Stripe\Facades\Stripe;
+
+Stripe::getCharges(string $paymentIntentId);
+```
+
 ## Webhooks
 
-The plugin provides a webhook you will need to add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
+The add-on provides an optional webhook you may add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
 
-The 3 events you should listen to are `payment_intent.payment_failed`,`payment_intent.processing`,`payment_intent.succeeded`. 
+The events you should listen to are `payment_intent.payment_failed`, `payment_intent.succeeded`. 
 
 The path to the webhook will be `http:://yoursite.com/stripe/webhook`.
 
@@ -157,6 +250,24 @@ return [
     ],
 ];
 ```
+
+If you do not wish to use the webhook, or would like to manually process an order as well, you are able to do so.
+
+```php
+$cart = CartSession::current();
+
+// With a draft order...
+$draftOrder = $cart->createOrder();
+Payments::driver('stripe')->order($draftOrder)->withData([
+    'payment_intent' => $draftOrder->meta['payment_intent'],
+])->authorize();
+
+// Using just the cart...
+Payments::driver('stripe')->cart($cart)->withData([
+    'payment_intent' => $cart->meta['payment_intent'],
+])->authorize();
+```
+
 
 ## Storefront Examples
 

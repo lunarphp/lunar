@@ -43,6 +43,7 @@ use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Console\Commands\PruneCarts;
 use Lunar\Console\Commands\ScoutIndexerCommand;
 use Lunar\Console\InstallLunar;
+use Lunar\Database\State\ConvertBackOrderPurchasability;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
 use Lunar\Database\State\ConvertTaxbreakdown;
 use Lunar\Database\State\EnsureBrandsAreUpgraded;
@@ -78,6 +79,7 @@ use Lunar\Observers\CollectionObserver;
 use Lunar\Observers\CurrencyObserver;
 use Lunar\Observers\CustomerGroupObserver;
 use Lunar\Observers\LanguageObserver;
+use Lunar\Observers\MediaObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
 use Lunar\Observers\ProductOptionObserver;
@@ -90,6 +92,7 @@ class LunarServiceProvider extends ServiceProvider
 {
     protected $configFiles = [
         'cart',
+        'cart_session',
         'database',
         'media',
         'orders',
@@ -117,15 +120,15 @@ class LunarServiceProvider extends ServiceProvider
         $this->registerAddonManifest();
 
         $this->app->singleton(CartModifiers::class, function () {
-            return new CartModifiers();
+            return new CartModifiers;
         });
 
         $this->app->singleton(CartLineModifiers::class, function () {
-            return new CartLineModifiers();
+            return new CartLineModifiers;
         });
 
         $this->app->singleton(OrderModifiers::class, function () {
-            return new OrderModifiers();
+            return new OrderModifiers;
         });
 
         $this->app->singleton(CartSessionInterface::class, function ($app) {
@@ -137,7 +140,7 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(ShippingModifiers::class, function ($app) {
-            return new ShippingModifiers();
+            return new ShippingModifiers;
         });
 
         $this->app->singleton(ShippingManifestInterface::class, function ($app) {
@@ -247,7 +250,7 @@ class LunarServiceProvider extends ServiceProvider
     protected function registerAddonManifest()
     {
         $this->app->instance(Manifest::class, new Manifest(
-            new Filesystem(),
+            new Filesystem,
             $this->app->basePath(),
             $this->app->bootstrapPath().'/cache/lunar_addons.php'
         ));
@@ -263,6 +266,7 @@ class LunarServiceProvider extends ServiceProvider
             PopulateProductOptionLabelWithName::class,
             MigrateCartOrderRelationship::class,
             ConvertTaxbreakdown::class,
+            ConvertBackOrderPurchasability::class,
         ];
 
         foreach ($states as $state) {
@@ -299,6 +303,10 @@ class LunarServiceProvider extends ServiceProvider
         OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
         Transaction::observe(TransactionObserver::class);
+
+        if ($mediaModel = config('media-library.media_model')) {
+            $mediaModel::observe(MediaObserver::class);
+        }
     }
 
     /**
@@ -332,7 +340,7 @@ class LunarServiceProvider extends ServiceProvider
                 $this->foreignUuId($field_name)
                     ->nullable($nullable)
                     ->constrained(
-                        (new $userModel())->getTable()
+                        (new $userModel)->getTable()
                     );
             } elseif ($type == 'int') {
                 $this->unsignedInteger($field_name)->nullable($nullable);
@@ -341,7 +349,7 @@ class LunarServiceProvider extends ServiceProvider
                 $this->foreignId($field_name)
                     ->nullable($nullable)
                     ->constrained(
-                        (new $userModel())->getTable()
+                        (new $userModel)->getTable()
                     );
             }
         });

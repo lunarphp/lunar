@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\File;
 use Lunar\Admin\Models\Staff;
 use Lunar\Facades\DB;
 use Lunar\FieldTypes\TranslatedText;
-use Lunar\Hub\AdminHubServiceProvider;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Channel;
@@ -174,7 +173,9 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -193,7 +194,9 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -212,7 +215,9 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -231,7 +236,9 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
             }
 
@@ -247,11 +254,6 @@ class InstallLunar extends Command
                 );
             }
         });
-
-        if ($this->isHubInstalled()) {
-            $this->components->info('Installing Admin Hub.');
-            $this->call('lunar:hub:install');
-        }
 
         $this->components->info('Publishing Filament assets');
         $this->call('filament:assets');
@@ -307,13 +309,5 @@ class InstallLunar extends Command
         }
 
         $this->call('vendor:publish', $params);
-    }
-
-    /**
-     * Determines if the admin hub is installed.
-     */
-    private function isHubInstalled(): bool
-    {
-        return class_exists(AdminHubServiceProvider::class);
     }
 }

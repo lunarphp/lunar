@@ -7,7 +7,6 @@ use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
-use Filament\Pages\Page;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -41,16 +40,16 @@ class ProductVariantResource extends BaseResource
         return false;
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             Pages\EditProductVariant::class,
             Pages\ManageVariantMedia::class,
             Pages\ManageVariantPricing::class,
             Pages\ManageVariantIdentifiers::class,
             Pages\ManageVariantInventory::class,
             Pages\ManageVariantShipping::class,
-        ]);
+        ];
     }
 
     public static function getBaseBreadcrumbs(ProductVariant $productVariant): array
@@ -133,7 +132,7 @@ class ProductVariantResource extends BaseResource
             ->options([
                 'always' => __('lunarpanel::productvariant.form.purchasable.options.always'),
                 'in_stock' => __('lunarpanel::productvariant.form.purchasable.options.in_stock'),
-                'backorder' => __('lunarpanel::productvariant.form.purchasable.options.backorder'),
+                'in_stock_or_on_backorder' => __('lunarpanel::productvariant.form.purchasable.options.in_stock_or_on_backorder'),
             ])
             ->label(
                 __('lunarpanel::productvariant.form.purchasable.label')
@@ -323,7 +322,7 @@ class ProductVariantResource extends BaseResource
         return [];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListProductVariants::route('/'),

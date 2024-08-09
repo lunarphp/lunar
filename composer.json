@@ -34,17 +34,16 @@
         "spatie/laravel-blink": "^1.7",
         "spatie/laravel-medialibrary": "^11.0.0",
         "spatie/laravel-permission": "^6.4",
-        "stripe/stripe-php": "^7.114",
+        "stripe/stripe-php": "^14.4",
         "technikermathe/blade-lucide-icons": "^v3.0"
     },
     "require-dev": {
         "larastan/larastan": "^2.9",
-        "laravel/pint": "1.13.1",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/larastan": "^2.0",
+        "laravel/pint": "1.17.0",
+        "mockery/mockery": "^1.6.9",
         "orchestra/testbench": "^8.0|^9.0",
-        "pestphp/pest": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0",
+        "pestphp/pest": "^2.34.7",
+        "pestphp/pest-plugin-laravel": "^2.4",
         "symplify/monorepo-builder": "^10.0"
     },
     "autoload": {
@@ -82,22 +81,22 @@
     "extra": {
         "lunar": {
             "name": [
-                "Table Rate Shipping",
-                "Opayo Payments",
                 "Meilisearch",
+                "Opayo Payments",
                 "Paypal Payments",
-                "Stripe Payments"
+                "Stripe Payments",
+                "Table Rate Shipping"
             ]
         },
         "laravel": {
             "providers": [
+                "Lunar\\Shipping\\ShippingServiceProvider",
                 "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
-                "Lunar\\Meilisearch\\MeilisearchServiceProvider",
-                "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
-                "Lunar\\Shipping\\ShippingServiceProvider",
-                "Lunar\\LunarServiceProvider"
+                "Lunar\\Meilisearch\\MeilisearchServiceProvider",
+                "Lunar\\LunarServiceProvider",
+                "Lunar\\Admin\\LunarPanelProvider"
             ]
         }
     },
