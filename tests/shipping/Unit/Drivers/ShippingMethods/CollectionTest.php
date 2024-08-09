@@ -38,7 +38,7 @@ test('can get free shipping', function () {
 
     $cart = $this->createCart($currency, 500);
 
-    $driver = new Collection();
+    $driver = new Collection;
 
     $request = new ShippingOptionRequest(
         cart: $cart,

@@ -36,7 +36,7 @@ test('can update cart line', function () {
 
     $action = new UpdateCartLine;
 
-    $this->assertDatabaseHas((new CartLine())->getTable(), [
+    $this->assertDatabaseHas((new CartLine)->getTable(), [
         'quantity' => 1,
         'id' => $line->id,
     ]);

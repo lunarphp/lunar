@@ -80,6 +80,9 @@ Make sure you have the Stripe credentials set in `config/services.php`
 'stripe' => [
     'key' => env('STRIPE_SECRET'),
     'public_key' => env('STRIPE_PK'),
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
 ],
 ```
 
@@ -224,9 +227,9 @@ Stripe::getCharges(string $paymentIntentId);
 
 ## Webhooks
 
-The plugin provides a webhook you will need to add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
+The add-on provides an optional webhook you may add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
 
-The 3 events you should listen to are `payment_intent.payment_failed`,`payment_intent.processing`,`payment_intent.succeeded`. 
+The events you should listen to are `payment_intent.payment_failed`, `payment_intent.succeeded`. 
 
 The path to the webhook will be `http:://yoursite.com/stripe/webhook`.
 
@@ -247,6 +250,24 @@ return [
     ],
 ];
 ```
+
+If you do not wish to use the webhook, or would like to manually process an order as well, you are able to do so.
+
+```php
+$cart = CartSession::current();
+
+// With a draft order...
+$draftOrder = $cart->createOrder();
+Payments::driver('stripe')->order($draftOrder)->withData([
+    'payment_intent' => $draftOrder->meta['payment_intent'],
+])->authorize();
+
+// Using just the cart...
+Payments::driver('stripe')->cart($cart)->withData([
+    'payment_intent' => $cart->meta['payment_intent'],
+])->authorize();
+```
+
 
 ## Storefront Examples
 
