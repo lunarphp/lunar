@@ -34,7 +34,7 @@ class UpdateOrderFromIntent
                 return $order;
             }
 
-            if (config('lunar.stripe.sync_addresses', true)) {
+            if (config('lunar.stripe.sync_addresses', true) && $paymentIntent->payment_method) {
                 (new StoreAddressInformation)->store($order, $paymentIntent);
             }
 
