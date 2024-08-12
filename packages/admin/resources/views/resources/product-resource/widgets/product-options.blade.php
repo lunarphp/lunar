@@ -122,7 +122,7 @@
                     @endif
                     <x-filament-tables::cell>
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
-                        <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
+                        <span class="fi-ta-text-item-label flex flex-col text-sm leading-6 text-gray-950 dark:text-white">
                           @foreach($permutation['values'] as $option => $value)
                             <small><strong>{{ $option }}:</strong> {{ $value }}</small>
                           @endforeach
