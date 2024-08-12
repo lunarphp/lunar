@@ -15,7 +15,7 @@ class File extends BaseFieldType
     {
         return FileUpload::make($attribute->handle)
             ->when(filled($attribute->validation_rules), fn (FileUpload $component) => $component->rules($attribute->validation_rules))
-            ->required((bool) $attribute->configuration->get('required'))
+            ->required((bool) $attribute->required)
             ->helperText($attribute->translate('description'));
     }
 }
