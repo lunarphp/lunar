@@ -27,7 +27,7 @@ class ShippingPlugin implements Plugin
         if (! config('lunar.shipping-tables.enabled')) {
             return;
         }
-        
+
         $panel->navigationGroups([
             NavigationGroup::make('shipping')
                 ->label(
