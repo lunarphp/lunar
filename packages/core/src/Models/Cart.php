@@ -293,6 +293,17 @@ class Cart extends BaseModel
             })->whereNull('placed_at');
     }
 
+    public function currentDraftOrder(?int $draftOrderId = null)
+    {
+        return $this->calculate()
+            ->draftOrder($draftOrderId)
+            ->where('fingerprint', $this->fingerprint())
+            ->when(
+                $this->total,
+                fn (Builder $query, Price $price) => $query->where('total', $price->value)
+            )->first();
+    }
+
     /**
      * Return the completed order relationship.
      */
@@ -640,7 +651,7 @@ class Cart extends BaseModel
     {
         $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
 
-        return (new $generator())->execute($this);
+        return (new $generator)->execute($this);
     }
 
     /**

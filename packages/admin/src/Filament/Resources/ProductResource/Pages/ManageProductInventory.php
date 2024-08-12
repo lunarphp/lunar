@@ -94,7 +94,7 @@ class ManageProductInventory extends BaseEditRecord
 
     public function form(Form $form): Form
     {
-        return (new ManageVariantInventory())->form($form)->statePath('');
+        return (new ManageVariantInventory)->form($form)->statePath('');
     }
 
     public function getRelationManagers(): array

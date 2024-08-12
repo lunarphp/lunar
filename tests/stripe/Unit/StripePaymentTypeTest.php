@@ -38,19 +38,17 @@ it('can handle failed payments', function () {
         'payment_intent' => 'PI_FAIL',
     ])->authorize();
 
-    $order = $cart->refresh()->draftOrder;
-
-    expect($response)->toBeInstanceOf(PaymentAuthorize::class);
-    expect($response->success)->toBeFalse();
-    expect($cart->refresh()->completedOrder)->toBeNull();
-    expect($cart->refresh()->draftOrder)->not()->toBeNull();
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->currentDraftOrder())->not()->toBeNull();
 
     assertDatabaseHas((new Transaction)->getTable(), [
-        'order_id' => $order->id,
+        'order_id' => $cart->currentDraftOrder()->id,
         'type' => 'capture',
         'success' => false,
     ]);
-});
+})->group('noo');
 
 it('can retrieve existing payment intent', function () {
     $cart = CartBuilder::build([
