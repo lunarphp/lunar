@@ -67,7 +67,7 @@ return [
     | Order Pipelines
     |--------------------------------------------------------------------------
     |
-    | Define which pipelines should be run throughout an orders lifecycle.
+    | Define which pipelines should be run throughout an order's lifecycle.
     | The default ones provided should suit most needs, however you are
     | free to add your own as you see fit.
     |
