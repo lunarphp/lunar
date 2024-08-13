@@ -45,7 +45,7 @@ abstract class BaseListRecords extends ListRecords
 
             $query->when(
                 ! $ids->isEmpty(),
-                fn ($query) => $query->orderBySequence($ids->toArray()) // TODO: Only supports MySQL
+                fn ($query) => $query->orderBySequence($ids->toArray())
             );
         }
 
