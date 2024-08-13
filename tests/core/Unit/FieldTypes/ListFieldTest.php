@@ -5,7 +5,7 @@ use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\ListField;
 
 test('can set value', function () {
-    $field = new ListField();
+    $field = new ListField;
     $field->setValue([
         'Foo',
     ]);

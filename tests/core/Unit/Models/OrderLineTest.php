@@ -28,7 +28,7 @@ test('can make an order line', function () {
     OrderLine::factory()->create($data);
 
     $this->assertDatabaseHas(
-        (new OrderLine())->getTable(),
+        (new OrderLine)->getTable(),
         $data
     );
 });
@@ -52,7 +52,7 @@ test('check unit price casts correctly', function () {
     $orderLine = OrderLine::factory()->create($data);
 
     $this->assertDatabaseHas(
-        (new OrderLine())->getTable(),
+        (new OrderLine)->getTable(),
         $data
     );
 
@@ -75,5 +75,5 @@ test('only purchasables can be added to an order', function () {
 
     OrderLine::factory()->create($data);
 
-    $this->assertDatabaseMissing((new CartLine())->getTable(), $data);
+    $this->assertDatabaseMissing((new CartLine)->getTable(), $data);
 });

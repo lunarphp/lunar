@@ -75,13 +75,10 @@ it('can assign staff role and permissions', function () {
         ->assertHasNoFormErrors();
 
     expect($staff->hasExactRoles($roles))
-        ->toBeTrue();
-
-    // check assigned permissions does not include role's permissions
-    expect($permissions->reject(fn ($val, $handle) => $handle == $rolePermission)->toArray())
-        ->toEqualCanonicalizing($staff->getDirectPermissions()->pluck('name')->toArray());
-
-    // check role's permission
-    expect($rolePermission)
+        ->toBeTrue()
+        ->and(
+            $permissions->reject(fn ($val, $handle) => $handle == $rolePermission)->keys()->toArray()
+        )->toEqualCanonicalizing($staff->getDirectPermissions()->pluck('name')->toArray())
+        ->and($rolePermission)
         ->toEqualCanonicalizing($staff->getPermissionsViaRoles()->pluck('name')->toArray());
 });
