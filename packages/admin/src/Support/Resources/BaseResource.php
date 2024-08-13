@@ -12,7 +12,6 @@ use Lunar\Admin\Support\Concerns;
 use Lunar\Base\Traits\Searchable;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
-
 use function Filament\Support\generate_search_term_expression;
 
 class BaseResource extends Resource
@@ -76,7 +75,7 @@ class BaseResource extends Resource
 
             $query->when(
                 ! $ids->isEmpty(),
-                fn ($query) => $query->orderByRaw("field(id, {$placeholders})", $ids->toArray())
+                fn ($query) => $query->orderBySequence($ids->toArray())
             );
 
         } else {
