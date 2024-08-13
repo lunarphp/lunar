@@ -16,7 +16,7 @@ class Vimeo extends BaseFieldType
         return VimeoInput::make($attribute->handle)
             ->live(debounce: 200)
             ->when(filled($attribute->validation_rules), fn (VimeoInput $component) => $component->rules($attribute->validation_rules))
-            ->required((bool) $attribute->configuration->get('required'))
+            ->required((bool) $attribute->required)
             ->helperText(
                 $attribute->translate('description') ?? __('lunarpanel::components.forms.youtube.helperText')
             );
