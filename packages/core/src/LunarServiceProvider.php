@@ -44,7 +44,6 @@ use Lunar\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Console\Commands\PruneCarts;
 use Lunar\Console\Commands\ScoutIndexerCommand;
 use Lunar\Console\InstallLunar;
-use Lunar\Core\Macro\Builder\OrderBySequence;
 use Lunar\Database\State\ConvertBackOrderPurchasability;
 use Lunar\Database\State\ConvertProductTypeAttributesToProducts;
 use Lunar\Database\State\ConvertTaxbreakdown;
@@ -324,6 +323,7 @@ class LunarServiceProvider extends ServiceProvider
 
             if ($driver === 'mysql') {
                 $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
                 return $this->orderByRaw("FIELD(id, {$placeholders})", $ids);
             }
 
@@ -332,7 +332,8 @@ class LunarServiceProvider extends ServiceProvider
                 foreach ($ids as $index => $id) {
                     $orderCases .= "WHEN id = $id THEN $index ";
                 }
-                return $this->orderByRaw("CASE $orderCases ELSE " . count($ids) . " END");
+
+                return $this->orderByRaw("CASE $orderCases ELSE ".count($ids).' END');
             }
 
             return $this;
