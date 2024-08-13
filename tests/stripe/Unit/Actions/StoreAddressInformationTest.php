@@ -19,17 +19,17 @@ it('can store payment intent address information', function () {
 
     app(\Lunar\Stripe\Actions\StoreAddressInformation::class)->store($order, $paymentIntent);
 
-//    "address": {
-//        "city": "ACME Shipping Land",
-//          "country": "GB",
-//          "line1": "123 ACME Shipping Lane",
-//          "line2": null,
-//          "postal_code": "AC2 2ME",
-//          "state": "ACM3"
-//      },
-//      "email": "sales@acme.com",
-//      "name": "Buggs Bunny"
-//
+    //    "address": {
+    //        "city": "ACME Shipping Land",
+    //          "country": "GB",
+    //          "line1": "123 ACME Shipping Lane",
+    //          "line2": null,
+    //          "postal_code": "AC2 2ME",
+    //          "state": "ACM3"
+    //      },
+    //      "email": "sales@acme.com",
+    //      "name": "Buggs Bunny"
+    //
     assertDatabaseHas(\Lunar\Models\OrderAddress::class, [
         'first_name' => 'Buggs',
         'last_name' => 'Bunny',
@@ -39,7 +39,7 @@ it('can store payment intent address information', function () {
         'line_one' => '123 ACME Shipping Lane',
         'postcode' => 'AC2 2ME',
         'state' => 'ACM3',
-        'contact_phone' => '123456'
+        'contact_phone' => '123456',
     ]);
 
     assertDatabaseHas(\Lunar\Models\OrderAddress::class, [
@@ -52,6 +52,6 @@ it('can store payment intent address information', function () {
         'postcode' => 'AC1 1ME',
         'state' => 'ACME',
         'contact_email' => 'sales@acme.com',
-        'contact_phone' => '1234567'
+        'contact_phone' => '1234567',
     ]);
 })->group('lunar.stripe.actions');
