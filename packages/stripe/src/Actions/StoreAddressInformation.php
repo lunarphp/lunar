@@ -33,7 +33,7 @@ class StoreAddressInformation
             $shippingAddress->city = $stripeShipping->city;
             $shippingAddress->state = $stripeShipping->state;
             $shippingAddress->postcode = $stripeShipping->postal_code;
-            $shippingAddress->country_id = $country->id;
+            $shippingAddress->country_id = $country?->id;
             $shippingAddress->contact_phone = $paymentIntent->shipping->phone;
             $shippingAddress->save();
         }
@@ -47,7 +47,7 @@ class StoreAddressInformation
             $billingAddress->city = $stripeBilling->city;
             $billingAddress->state = $stripeBilling->state;
             $billingAddress->postcode = $stripeBilling->postal_code;
-            $billingAddress->country_id = $country->id;
+            $billingAddress->country_id = $country?->id;
             $billingAddress->contact_phone = $paymentMethod->billing_details->phone;
             $billingAddress->contact_email = $paymentMethod->billing_details->email;
             $billingAddress->save();
