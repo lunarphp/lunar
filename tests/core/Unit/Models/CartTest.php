@@ -28,7 +28,6 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
-
 use function Pest\Laravel\{assertDatabaseCount};
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -538,7 +537,9 @@ test('can add cart lines', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -562,7 +563,9 @@ test('can remove cart lines', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -581,7 +584,7 @@ test('can remove cart lines', function () {
     $cart->remove($cart->lines->first()->id);
 
     expect($cart->lines)->toHaveCount(0);
-});
+})->group('ab');
 
 test('cannot add zero quantity line', function () {
     $currency = Currency::factory()->create();
@@ -614,7 +617,9 @@ test('can update existing cart line', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -691,7 +696,9 @@ test('can calculate shipping', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
