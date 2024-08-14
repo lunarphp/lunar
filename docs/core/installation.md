@@ -33,10 +33,10 @@ Some parts of the core rely on the User model having certain relationships set u
 
 ```php
 use Lunar\Base\Traits\LunarUser;
-use Lunar\Base\LunarUser as BaseLunarUser;
+use Lunar\Base\LunarUser as LunarUserInterface;
 // ...
 
-class User extends Authenticatable implements BaseLunarUser
+class User extends Authenticatable implements LunarUserInterface
 {
     use LunarUser;
     // ...
