@@ -137,7 +137,7 @@ test('can delete a tax zone', function () {
 
     $zone = TaxZone::factory()->create($data);
 
-    \Pest\Laravel\assertDatabaseHas((new TaxZone())->getTable(), $data);
+    \Pest\Laravel\assertDatabaseHas((new TaxZone)->getTable(), $data);
 
     $country = Country::factory()->create();
     $state = State::factory()->create();
