@@ -19,17 +19,6 @@ it('can store payment intent address information', function () {
 
     app(\Lunar\Stripe\Actions\StoreAddressInformation::class)->store($order, $paymentIntent);
 
-    //    "address": {
-    //        "city": "ACME Shipping Land",
-    //          "country": "GB",
-    //          "line1": "123 ACME Shipping Lane",
-    //          "line2": null,
-    //          "postal_code": "AC2 2ME",
-    //          "state": "ACM3"
-    //      },
-    //      "email": "sales@acme.com",
-    //      "name": "Buggs Bunny"
-    //
     assertDatabaseHas(\Lunar\Models\OrderAddress::class, [
         'first_name' => 'Buggs',
         'last_name' => 'Bunny',
