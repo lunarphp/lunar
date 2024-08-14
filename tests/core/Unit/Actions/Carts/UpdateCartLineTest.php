@@ -18,7 +18,9 @@ test('can update cart line', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
