@@ -87,7 +87,7 @@ class BaseResource extends Resource
 
             $query->when(
                 ! $ids->isEmpty(),
-                fn ($query) => $query->orderByRaw("field(id, {$placeholders})", $ids->toArray())
+                fn ($query) => $query->orderBySequence($ids->toArray())
             );
 
         } else {

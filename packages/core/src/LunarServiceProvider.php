@@ -6,6 +6,7 @@ use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
@@ -192,6 +193,7 @@ class LunarServiceProvider extends ServiceProvider
         }
 
         $this->registerObservers();
+        $this->registerBuilderMacros();
         $this->registerBlueprintMacros();
         $this->registerStateListeners();
 
@@ -311,6 +313,35 @@ class LunarServiceProvider extends ServiceProvider
         if ($mediaModel = config('media-library.media_model')) {
             $mediaModel::observe(MediaObserver::class);
         }
+    }
+
+    protected function registerBuilderMacros(): void
+    {
+        Builder::macro('orderBySequence', function (array $ids) {
+            /** @var Builder $this */
+            $driver = $this->getConnection()->getDriverName();
+
+            if (empty($ids)) {
+                return $this;
+            }
+
+            if ($driver === 'mysql') {
+                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+                return $this->orderByRaw("FIELD(id, {$placeholders})", $ids);
+            }
+
+            if ($driver === 'pgsql') {
+                $orderCases = '';
+                foreach ($ids as $index => $id) {
+                    $orderCases .= "WHEN id = $id THEN $index ";
+                }
+
+                return $this->orderByRaw("CASE $orderCases ELSE ".count($ids).' END');
+            }
+
+            return $this;
+        });
     }
 
     /**
