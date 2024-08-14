@@ -21,7 +21,7 @@ class Dropdown extends BaseFieldType
                 )
             )
             ->when(filled($attribute->validation_rules), fn (Select $component) => $component->rules($attribute->validation_rules))
-            ->required((bool) $attribute->configuration->get('required'))
+            ->required((bool) $attribute->required)
             ->helperText($attribute->translate('description'));
     }
 
