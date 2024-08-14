@@ -15,7 +15,7 @@ test('can make a tax rate', function () {
 
     $rate = TaxRate::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxRate())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxRate)->getTable(), $data);
 
     expect($rate->taxZone)->toBeInstanceOf(TaxZone::class);
 });
@@ -28,7 +28,7 @@ test('tax rate can have amounts', function () {
 
     $rate = TaxRate::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxRate())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxRate)->getTable(), $data);
 
     expect($rate->taxRateAmounts)->toHaveCount(0);
 

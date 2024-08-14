@@ -71,7 +71,7 @@ it('can render order manage page', function () {
         $tax = (int) ($subTotal * .2);
         $options = $variant->values->map(fn ($value) => $value->translate('name'));
 
-        $itemTax = (new TaxBreakdown());
+        $itemTax = (new TaxBreakdown);
         $itemTax->addAmount(new TaxBreakdownAmount(
             price: new Price(
                 value: $tax,
