@@ -111,8 +111,7 @@ it('can create child collection', function () {
     ], ['id' => $collection->id])
         ->assertCount('nodes', 1)
         ->assertSet('nodes.0.children.0.id', $child->id)
-        ->mountAction('makeRoot', ['id' => $child->id])
-        ->callAction('makeRoot')
+        ->callAction('makeRoot', arguments: ['id' => $child->id])
         ->assertCount('nodes.0.children', 0)
         ->assertCount('nodes', 2);
 });
