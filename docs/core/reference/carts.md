@@ -285,6 +285,8 @@ The other available methods are as follows:
 
 ### Add a cart line
 
+> When adding purchasables to a cart, Lunar will run validation against the quantity and stock levels to ensure the item can be added. You can view these validators in `config/lunar/cart.php`.
+
 ```php
 CartSession::add($purchasable, $quantity);
 ```
