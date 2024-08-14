@@ -105,7 +105,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         $options = [];
 
         foreach ($productOptions as $productOption) {
-            $values = $productOption->values->map(function ($value) {
+            $values = $productOption->values->count() ? $productOption->values->map(function ($value) {
                 return $this->mapOptionValue($value, true);
             })->merge(
                 $disabledSharedOptionValues->filter(
@@ -113,7 +113,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 )->map(
                     fn ($value) => $this->mapOptionValue($value, false)
                 )
-            )->sortBy('position')->values()->toArray();
+            )->sortBy('position')->values()->toArray() : [];
 
             $options[] = $this->mapOption($productOption, $values);
         }

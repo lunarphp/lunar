@@ -23,7 +23,7 @@ test('can make a tax zone class', function () {
 
     TaxZone::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
 });
 
 test('tax zone can have countries', function () {
@@ -37,7 +37,7 @@ test('tax zone can have countries', function () {
 
     $zone = TaxZone::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
 
     $country = Country::factory()->create();
 
@@ -61,7 +61,7 @@ test('tax zone can have states', function () {
 
     $zone = TaxZone::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
 
     $country = Country::factory()->create();
     $state = State::factory()->create([
@@ -88,7 +88,7 @@ test('tax zone can have postcodes', function () {
 
     $zone = TaxZone::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
 
     $country = Country::factory()->create();
 
@@ -113,7 +113,7 @@ test('tax zone can have customer groups', function () {
 
     $zone = TaxZone::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxZone())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZone)->getTable(), $data);
 
     $country = Country::factory()->create();
 

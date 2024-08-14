@@ -43,7 +43,7 @@ test('can get free shipping', function () {
 
     $cart = $this->createCart($currency, 500);
 
-    $driver = new FreeShipping();
+    $driver = new FreeShipping;
 
     $request = new ShippingOptionRequest(
         cart: $cart,
@@ -85,7 +85,7 @@ test('cant get free shipping if minimum isnt met', function () {
 
     $cart = $this->createCart($currency, 50);
 
-    $driver = new FreeShipping();
+    $driver = new FreeShipping;
 
     $request = new ShippingOptionRequest(
         cart: $cart,
@@ -127,7 +127,7 @@ test('cant get free shipping if currency isnt met', function () {
 
     $cart = $this->createCart($currency, 10000);
 
-    $driver = new FreeShipping();
+    $driver = new FreeShipping;
 
     $request = new ShippingOptionRequest(
         shippingRate: $shippingRate,

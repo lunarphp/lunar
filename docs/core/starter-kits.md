@@ -22,8 +22,7 @@ If you would prefer to install Lunar into your own Laravel application, please f
 ## Installation
 
 ::: tip
-We assume you have a suitable local development environment in which to run Lunar. We would highly suggest Laravel Herd 
-for this purpose.
+We assume you have a suitable local development environment in which to run Lunar. We would highly suggest [Laravel Herd](https://herd.laravel.com) for this purpose.
 :::
 
 ### Create a New Project

@@ -98,8 +98,13 @@ class StripeManager
             return;
         }
 
+        $this->updateIntentById($meta['payment_intent'], $values);
+    }
+
+    public function updateIntentById(string $id, array $values): void
+    {
         $this->getClient()->paymentIntents->update(
-            $meta['payment_intent'],
+            $id,
             $values
         );
     }

@@ -22,7 +22,7 @@ test('can validate available stock', function (int $stock, int $backorder, int $
         'purchasable' => $purchasable,
     ]);
 
-    $validator = (new \Lunar\Validation\CartLine\CartLineStock())->using(
+    $validator = (new \Lunar\Validation\CartLine\CartLineStock)->using(
         cart: $cart,
         purchasable: $purchasable,
         quantity: $quantity,
