@@ -89,10 +89,12 @@ return [
 
         'add_to_cart' => [
             Lunar\Validation\CartLine\CartLineQuantity::class,
+            \Lunar\Validation\CartLine\CartLineStock::class,
         ],
 
         'update_cart_line' => [
             Lunar\Validation\CartLine\CartLineQuantity::class,
+            \Lunar\Validation\CartLine\CartLineStock::class,
         ],
 
         'remove_from_cart' => [],
