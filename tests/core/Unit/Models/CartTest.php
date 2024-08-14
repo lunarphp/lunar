@@ -584,7 +584,7 @@ test('can remove cart lines', function () {
     $cart->remove($cart->lines->first()->id);
 
     expect($cart->lines)->toHaveCount(0);
-})
+});
 
 test('cannot add zero quantity line', function () {
     $currency = Currency::factory()->create();
