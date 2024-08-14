@@ -1,3 +1,4 @@
+
 # Discounts
 
 ## Overview
@@ -58,6 +59,7 @@ namespace App\DiscountTypes;
 
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\DiscountTypes\AbstractDiscountType;
+use Filament\Forms;
 
 class MyCustomDiscountType extends AbstractDiscountType implements LunarPanelDiscountInterface
 {
@@ -67,7 +69,7 @@ class MyCustomDiscountType extends AbstractDiscountType implements LunarPanelDis
     public function lunarPanelSchema(): array
     {
         return [
-            Forms\Components\TextInput::make('my_field')
+            Forms\Components\TextInput::make('data.my_field')
                ->label('My label')
                ->required(),
         ];
