@@ -45,10 +45,10 @@ class File implements FieldType, JsonSerializable
     public function __toString()
     {
         if (is_array($this->getValue())) {
-            return implode(", ", $this->getValue());
+            return implode(', ', $this->getValue());
         }
 
-        return $this->getValue() ?? "";
+        return $this->getValue() ?? '';
     }
 
     /**
@@ -85,7 +85,7 @@ class File implements FieldType, JsonSerializable
                 'file_types' => 'array',
                 'multiple' => 'boolean',
                 'max_files' => 'numeric',
-                'min_files' => 'numeric'
+                'min_files' => 'numeric',
             ],
         ];
     }

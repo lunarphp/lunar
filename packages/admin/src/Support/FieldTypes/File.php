@@ -23,7 +23,7 @@ class File extends BaseFieldType
             ->required((bool) $attribute->required)
             ->helperText($attribute->translate('description'));
 
-        if (!blank($file_types) && is_array($file_types)) {
+        if (! blank($file_types) && is_array($file_types)) {
             $input->acceptedFileTypes($file_types);
         }
 
@@ -63,7 +63,7 @@ class File extends BaseFieldType
                     'application/msword',
                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     'application/rtf',
-                    'application/pdf'
+                    'application/pdf',
                 ])
                 ->placeholder(__('lunarpanel::fieldtypes.file.form.file_types.placeholder'))
                 ->reorderable(),

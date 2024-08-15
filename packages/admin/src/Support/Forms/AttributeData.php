@@ -65,6 +65,7 @@ class AttributeData
                 if ($attribute->type == FileFieldType::class) {
                     $instance = new $attribute->type;
                     $instance->setValue($state);
+
                     return $instance;
                 }
 
