@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Actions\Taxes\GetTaxZone;
 use Lunar\Models\Address;
 use Lunar\Models\Country;
@@ -10,7 +11,8 @@ use Lunar\Models\TaxZoneCountry;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Models\TaxZoneState;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->group('taxes');
 
 test('can prioritize taxzones', function () {
     $postcode = 'SW1A 0AA';
