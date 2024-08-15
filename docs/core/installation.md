@@ -29,18 +29,41 @@ You may need to update your app's `composer.json` to set `"minimum-stability": "
 
 ### Add the LunarUser Trait
 
-Some parts of the core rely on the `User` model having certain relationships set up. We've bundled these into a trait which you must add to any models that represent users in your database.
+Some parts of the core rely on the User model having certain relationships set up. We have bundled these into a trait and an interface, which you must add to any models that represent users in your database.
 
 ```php
 use Lunar\Base\Traits\LunarUser;
+use Lunar\Base\LunarUser as LunarUserInterface;
 // ...
 
-class User extends Authenticatable
+class User extends Authenticatable implements LunarUserInterface
 {
     use LunarUser;
     // ...
 }
 ```
+
+### Publish Configuration
+Before you run the Lunar installer command, you may wish to customise some of the set-up.
+
+
+```sh
+php artisan vendor:publish --tag=lunar
+```
+
+## Configure Laravel Scout
+Lunar works best with [Laravel Scout](https://laravel.com/docs/master/scout) and a search engine like Meilisearch, Typesense or Algolia.
+
+### If you do NOT have a search engine configured
+Add the following to your `.env` file.
+```
+SCOUT_DRIVER=null
+```
+And set the config value in `panel.php` as follows.
+```php
+    'scout_enabled' => false,
+```
+
 
 ## Register the admin panel
 
@@ -57,7 +80,7 @@ class AppServiceProvider extends ServiceProvider
     }
 ```
 
-### Run the Artisan Installer
+## Run the Artisan Installer
 
 ```sh
 php artisan lunar:install
@@ -72,14 +95,6 @@ This will take you through a set of questions to configure your Lunar install. T
 You should now be able to access the panel at `https://<yoursite>/lunar`.
 
 ## Advanced Installation Options
-
-Before you run the Lunar installer command, you may wish to customise some of the set-up.
-
-### Publish Configuration
-
-```sh
-php artisan vendor:publish --tag=lunar
-```
 
 ### Table Prefix
 

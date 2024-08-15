@@ -12,7 +12,7 @@ class StripeWebhookMiddleware
 {
     public function handle(Request $request, ?Closure $next = null)
     {
-        $secret = config('services.stripe.webhooks.payment_intent');
+        $secret = config('services.stripe.webhooks.lunar');
         $stripeSig = $request->header('Stripe-Signature');
 
         try {
@@ -28,10 +28,7 @@ class StripeWebhookMiddleware
         if (! in_array(
             $event->type,
             [
-                'payment_intent.canceled',
-                'payment_intent.created',
                 'payment_intent.payment_failed',
-                'payment_intent.processing',
                 'payment_intent.succeeded',
             ]
         )) {

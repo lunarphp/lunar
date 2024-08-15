@@ -51,7 +51,7 @@ test('can get flat rate shipping', function () {
 
     $cart = $this->createCart($currency, 500);
 
-    $driver = new FlatRate();
+    $driver = new FlatRate;
 
     $request = new ShippingOptionRequest(
         cart: $cart,

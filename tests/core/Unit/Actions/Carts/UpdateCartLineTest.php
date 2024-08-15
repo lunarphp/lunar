@@ -18,7 +18,9 @@ test('can update cart line', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -36,7 +38,7 @@ test('can update cart line', function () {
 
     $action = new UpdateCartLine;
 
-    $this->assertDatabaseHas((new CartLine())->getTable(), [
+    $this->assertDatabaseHas((new CartLine)->getTable(), [
         'quantity' => 1,
         'id' => $line->id,
     ]);

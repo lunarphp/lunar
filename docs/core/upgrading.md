@@ -18,6 +18,44 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-alpha.34
+
+### Medium Impact
+
+#### Stripe Addon
+
+The Stripe driver will now check whether an order has a value for `placed_at` against an order and if so, no further processing will take place.
+
+Additionally, the logic in the webhook has been moved to the job queue, which is dispatched with a delay of 20 seconds, this is to allow storefronts to manually process a payment intent, in addition to the webhook, without having to worry about overlap.
+
+The Stripe webhook ENV entry has been changed from `STRIPE_WEBHOOK_PAYMENT_INTENT` to `LUNAR_STRIPE_WEBHOOK_SECRET`.
+
+The stripe config Lunar looks for in `config/services.php` has changed and should now look like:
+
+```php
+'stripe' => [
+    'key' => env('STRIPE_SECRET'),
+    'public_key' => env('STRIPE_PK'),
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
+],
+```
+
+## 1.0.0-alpha.32
+
+### High Impact
+
+There is now a new `LunarUser` interface you will need to implement on your `User` model.
+
+```php
+// ...
+class User extends Authenticatable implements \Lunar\Base\LunarUser
+{
+    use \Lunar\Base\Traits\LunarUser;
+}
+```
+
 ## 1.0.0-alpha.31
 
 ### High Impact

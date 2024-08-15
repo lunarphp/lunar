@@ -16,5 +16,5 @@ test('can make tax zone postcode', function () {
 
     TaxZonePostcode::factory()->create($data);
 
-    $this->assertDatabaseHas((new TaxZonePostcode())->getTable(), $data);
+    $this->assertDatabaseHas((new TaxZonePostcode)->getTable(), $data);
 });

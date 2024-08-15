@@ -3,6 +3,7 @@
 namespace Lunar\Stripe\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Lunar\Stripe\Enums\CancellationReason;
 use Lunar\Stripe\MockClient;
 use Stripe\ApiRequestor;
 
@@ -11,6 +12,7 @@ use Stripe\ApiRequestor;
  * @method static createIntent(\Lunar\Models\Cart $cart, array $opts): \Stripe\PaymentIntent
  * @method static syncIntent(\Lunar\Models\Cart $cart): void
  * @method static updateIntent(\Lunar\Models\Cart $cart, array $values): void
+ * @method static cancelIntent(\Lunar\Models\Cart $cart, CancellationReason $reason): void
  * @method static updateShippingAddress(\Lunar\Models\Cart $cart): void
  * @method static getCharges(string $paymentIntentId): \Illuminate\Support\Collection
  * @method static getCharge(string $chargeId): \Stripe\Charge
@@ -28,7 +30,7 @@ class Stripe extends Facade
 
     public static function fake(): void
     {
-        $mockClient = new MockClient();
+        $mockClient = new MockClient;
         ApiRequestor::setHttpClient($mockClient);
     }
 }
