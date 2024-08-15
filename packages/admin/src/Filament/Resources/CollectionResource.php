@@ -113,7 +113,7 @@ class CollectionResource extends BaseResource
         ];
     }
 
-    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
     {
         return $record->translateAttribute('name');
     }
