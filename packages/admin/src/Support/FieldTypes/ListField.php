@@ -18,6 +18,9 @@ class ListField extends BaseFieldType
             ->reorderable()
             ->dehydrateStateUsing(function ($state) {
                 return $state;
-            })->helperText($attribute->translate('description'));
+            })
+            ->when(filled($attribute->validation_rules), fn (KeyValue $component) => $component->rules($attribute->validation_rules))
+            ->required((bool) $attribute->required)
+            ->helperText($attribute->translate('description'));
     }
 }

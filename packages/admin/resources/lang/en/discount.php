@@ -33,7 +33,7 @@ return [
                     'label' => 'Low',
                 ],
                 'medium' => [
-                    'label' => 'Low',
+                    'label' => 'Medium',
                 ],
                 'high' => [
                     'label' => 'High',

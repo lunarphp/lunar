@@ -165,7 +165,7 @@ class ProductResource extends BaseResource
         return Forms\Components\TextInput::make('base_price')->numeric()->prefix(
             $currency->code
         )->rules([
-            'min:1',
+            'min:'.(1 / $currency->factor),
             "decimal:0,{$currency->decimal_places}",
         ])->required();
     }

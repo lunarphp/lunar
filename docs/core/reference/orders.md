@@ -17,7 +17,7 @@ Lunar\Models\Order
 | cart_id               | The related cart                                                                                                   |
 | channel_id            | Which channel this was purchased through                                                                           |
 | status                | A status that makes sense to you as the store owner                                                                |
-| reference             | Your stores own reference                                                                                          
+| reference             | Your store's own reference                                                                                          
 | customer_reference    | If you want customers to add their own reference, it goes here.                                                    
 | sub_total             | The sub total minus any discounts, excl. tax                                                                       
 | discount_breakdown    | A json field for the discount breakdown e.g. `[{"discount_id": 1, "lines": [{"id": 1, "qty": 1}]], "total": 200}]` 

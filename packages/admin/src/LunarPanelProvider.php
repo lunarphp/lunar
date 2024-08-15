@@ -2,10 +2,7 @@
 
 namespace Lunar\Admin;
 
-use Filament\Facades\Filament;
-use Filament\Support\Assets\Css;
 use Filament\Support\Events\FilamentUpgraded;
-use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
@@ -45,19 +42,19 @@ class LunarPanelProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped('lunar-panel', function (): LunarPanelManager {
-            return new LunarPanelManager();
+            return new LunarPanelManager;
         });
 
         $this->app->scoped('lunar-access-control', function (): Manifest {
-            return new Manifest();
+            return new Manifest;
         });
 
         $this->app->scoped('lunar-activity-log', function (): ActivityLogManifest {
-            return new ActivityLogManifest();
+            return new ActivityLogManifest;
         });
 
         $this->app->scoped('lunar-attribute-data', function (): AttributeData {
-            return new AttributeData();
+            return new AttributeData;
         });
     }
 
@@ -111,7 +108,6 @@ class LunarPanelProvider extends ServiceProvider
 
         $this->registerAuthGuard();
         $this->registerPermissionManifest();
-        $this->registerPanelAssets();
         $this->registerStateListeners();
         $this->registerLunarSynthesizer();
         // $this->registerUpgradedListener();
@@ -131,15 +127,6 @@ class LunarPanelProvider extends ServiceProvider
             'driver' => 'session',
             'provider' => 'staff',
         ]);
-    }
-
-    protected function registerPanelAssets(): void
-    {
-        Filament::serving(function () {
-            FilamentAsset::register([
-                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
-            ], 'lunarphp/panel');
-        });
     }
 
     /**
