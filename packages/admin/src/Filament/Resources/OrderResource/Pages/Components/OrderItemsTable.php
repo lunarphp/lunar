@@ -116,7 +116,7 @@ class OrderItemsTable extends TableComponent
 
     public function table(Table $table): Table
     {
-        return self::callLunarHook('extendTable', $this->getDefaultTable($table));
+        return self::callStaticLunarHook('extendTable', $this->getDefaultTable($table));
     }
 
     protected function getBulkRefundAction(): BulkAction
