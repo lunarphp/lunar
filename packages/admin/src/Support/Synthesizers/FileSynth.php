@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Support\Synthesizers;
 
 use Lunar\FieldTypes\File;
+use Illuminate\Support\Arr;
 
 class FileSynth extends AbstractFieldSynth
 {
@@ -21,7 +22,7 @@ class FileSynth extends AbstractFieldSynth
 
         $instance->setValue($value);
 
-        return $instance;
+        return Arr::wrap($value);
     }
 
     public function get(&$target, $key)
