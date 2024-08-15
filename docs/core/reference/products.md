@@ -82,7 +82,7 @@ You can associate attributes to a product type like so (it's just a straight
 forward [Polymorphic relationship](https://laravel.com/docs/8.x/eloquent-relationships#many-to-many-polymorphic-relations)).
 
 ```php
-$productType->mappedAttributes()->associate([ /* attribute ids ... */ ]);
+$productType->mappedAttributes()->attach([ /* attribute ids ... */ ]);
 ```
 
 You can associate both `Product` and `ProductVariant` attributes to a product type which will then display on either the
