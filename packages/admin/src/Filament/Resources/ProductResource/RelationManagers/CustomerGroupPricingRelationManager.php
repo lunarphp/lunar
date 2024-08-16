@@ -19,6 +19,7 @@ use Lunar\Models\Price;
 class CustomerGroupPricingRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
+
     protected static string $relationship = 'prices';
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
