@@ -39,7 +39,7 @@
     },
     "require-dev": {
         "larastan/larastan": "^2.9",
-        "laravel/pint": "^1.16.1",
+        "laravel/pint": "1.17.0",
         "mockery/mockery": "^1.6.9",
         "orchestra/testbench": "^8.0|^9.0",
         "pestphp/pest": "^2.34.7",

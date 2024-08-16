@@ -293,6 +293,17 @@ class Cart extends BaseModel
             })->whereNull('placed_at');
     }
 
+    public function currentDraftOrder(?int $draftOrderId = null)
+    {
+        return $this->calculate()
+            ->draftOrder($draftOrderId)
+            ->where('fingerprint', $this->fingerprint())
+            ->when(
+                $this->total,
+                fn (Builder $query, Price $price) => $query->where('total', $price->value)
+            )->first();
+    }
+
     /**
      * Return the completed order relationship.
      */
@@ -561,7 +572,7 @@ class Cart extends BaseModel
      */
     public function getShippingOption(): ?ShippingOption
     {
-        return ShippingManifest::getShippingOption($this);
+        return ShippingManifest::getShippingOption($this->calculate());
     }
 
     /**
@@ -581,18 +592,20 @@ class Cart extends BaseModel
         bool $allowMultipleOrders = false,
         ?int $orderIdToUpdate = null
     ): Order {
+        $cart = $this->refresh()->recalculate();
+
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,
         ]) as $action) {
             app($action)->using(
-                cart: $this,
+                cart: $cart,
             )->validate();
         }
 
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute(
-            $this->refresh()->recalculate(),
+            $cart,
             $allowMultipleOrders,
             $orderIdToUpdate
         )->then(fn ($order) => $order->refresh());
@@ -640,7 +653,7 @@ class Cart extends BaseModel
     {
         $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
 
-        return (new $generator())->execute($this);
+        return (new $generator)->execute($this);
     }
 
     /**
