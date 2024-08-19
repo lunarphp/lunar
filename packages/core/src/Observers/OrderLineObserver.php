@@ -15,7 +15,7 @@ class OrderLineObserver
      */
     public function creating(OrderLine $orderLine)
     {
-        if ($orderLine->type != 'shipping' && ! $orderLine->purchasable instanceof Purchasable) {
+        if (! in_array(Purchasable::class, class_implements($orderLine->purchasable_type, true))) {
             throw new NonPurchasableItemException($orderLine->purchasable_type);
         }
     }
@@ -27,7 +27,7 @@ class OrderLineObserver
      */
     public function updating(OrderLine $orderLine)
     {
-        if ($orderLine->type != 'shipping' && ! $orderLine->purchasable instanceof Purchasable) {
+        if (! in_array(Purchasable::class, class_implements($orderLine->purchasable_type, true))) {
             throw new NonPurchasableItemException($orderLine->purchasable_type);
         }
     }
