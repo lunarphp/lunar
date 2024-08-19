@@ -10,6 +10,7 @@ use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestPurchasable;
+
 use function Pest\Laravel\assertDatabaseHas;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -111,7 +112,7 @@ test('non eloquent models can be added to an order', function () {
     $orderLine = OrderLine::factory()->create($data);
 
     assertDatabaseHas(
-        (new OrderLine())->getTable(),
+        (new OrderLine)->getTable(),
         $data
     );
 
@@ -139,7 +140,7 @@ test('non eloquent models can be added to an order', function () {
     $orderLine = OrderLine::factory()->create($data);
 
     assertDatabaseHas(
-        (new OrderLine())->getTable(),
+        (new OrderLine)->getTable(),
         $data
     );
 
