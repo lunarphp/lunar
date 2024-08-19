@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Tests\Stubs\DataTypes;
+namespace Lunar\Tests\Core\Stubs;
 
 use Illuminate\Support\Collection;
 use Lunar\Base\Purchasable;
@@ -135,5 +135,21 @@ class TestPurchasable implements Purchasable
     public function getThumbnail()
     {
         return null;
+    }
+
+    /**
+     * Return whether the purchasable can be fulfilled at a given quantity
+     */
+    public function canBeFulfilledAtQuantity(int $quantity): bool
+    {
+        return true;
+    }
+
+    /**
+     * Returns the total inventory the purchasable has available
+     */
+    public function getTotalInventory(): int
+    {
+        return 999;
     }
 }
