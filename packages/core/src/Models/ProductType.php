@@ -9,6 +9,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\ProductTypeFactory;
+use Lunar\Base\Traits\HasTranslations;
 
 /**
  * @property int $id
@@ -19,6 +20,7 @@ use Lunar\Database\Factories\ProductTypeFactory;
 class ProductType extends BaseModel
 {
     use HasAttributes;
+    use HasTranslations;
     use HasFactory;
     use HasMacros;
 
