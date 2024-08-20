@@ -70,8 +70,8 @@ class ManageProductShipping extends BaseEditRecord
         $variant = $this->getVariant();
 
         $this->dimensions = [
-            ...$this->dimensions,
             ...$variant->only(array_keys($this->dimensions)),
+            ...$this->dimensions,
         ];
         $this->shippable = $variant->shippable;
     }
