@@ -34,7 +34,7 @@ class PopularProductsTable extends TableWidget
             ->query(function () {
                 return OrderLine::query()->whereHas('order', function ($relation) {
                     $relation->whereBetween('placed_at', [
-                        now()->subDays(30)->startOfDay(),
+                        now()->subYear()->startOfDay(),
                         now()->endOfDay(),
                     ]);
                 })->select(
