@@ -42,7 +42,7 @@ trait HasTranslations
     /**
      * Translate a value from attribute data.
      */
-    public function translateAttribute(string $attribute, string $locale = null): mixed
+    public function translateAttribute(string $attribute, ?string $locale = null): mixed
     {
         $field = Arr::get($this->getAttribute('attribute_data'), $attribute);
 
@@ -71,7 +71,7 @@ trait HasTranslations
             return $field->getValue();
         }
 
-        if (!$value->getValue()) {
+        if (! $value->getValue()) {
             return $translations->first(
                 fn ($value) => $value->getValue()
             )?->getValue();
