@@ -18,10 +18,10 @@ final class CreateOrder extends AbstractAction
     public function execute(
         Cart $cart,
         bool $allowMultipleOrders = false,
-        int $orderIdToUpdate = null
+        ?int $orderIdToUpdate = null
     ): self {
         $this->passThrough = DB::transaction(function () use ($cart, $allowMultipleOrders, $orderIdToUpdate) {
-            $order = $cart->draftOrder($orderIdToUpdate)->first() ?: new Order;
+            $order = $cart->currentDraftOrder($orderIdToUpdate) ?: new Order;
 
             if ($cart->hasCompletedOrders() && ! $allowMultipleOrders) {
                 throw new DisallowMultipleCartOrdersException;
@@ -29,6 +29,7 @@ final class CreateOrder extends AbstractAction
 
             $order->fill([
                 'cart_id' => $cart->id,
+                'fingerprint' => $cart->fingerprint(),
             ]);
 
             $order = app(Pipeline::class)

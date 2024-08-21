@@ -66,7 +66,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 ->numeric()
                 ->required()
                 ->columnSpan(2)
-                ->afterStateHydrated(static function (Forms\Components\TextInput $component, Model $record = null): void {
+                ->afterStateHydrated(static function (Forms\Components\TextInput $component, ?Model $record = null): void {
                     if ($record) {
                         $basePrice = $record->basePrices->first();
 
@@ -110,7 +110,7 @@ class ManageShippingRates extends ManageRelatedRecords
                         ->numeric()
                         ->required(),
                 ])->afterStateHydrated(
-                    static function (Forms\Components\Repeater $component, Model $record = null): void {
+                    static function (Forms\Components\Repeater $component, ?Model $record = null): void {
                         if ($record) {
                             $component->state(
                                 $record->priceBreaks->map(function ($price) {
@@ -147,10 +147,10 @@ class ManageShippingRates extends ManageRelatedRecords
         ])->headerActions([
             Tables\Actions\CreateAction::make()->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.actions.create.label')
-            )->action(function (Table $table, ShippingRate $shippingRate = null, array $data = []) {
+            )->action(function (Table $table, ?ShippingRate $shippingRate = null, array $data = []) {
                 $relationship = $table->getRelationship();
 
-                $record = new ShippingRate();
+                $record = new ShippingRate;
                 $record->shipping_method_id = $data['shipping_method_id'];
                 $relationship->save($record);
 
@@ -165,7 +165,7 @@ class ManageShippingRates extends ManageRelatedRecords
         ]);
     }
 
-    protected static function saveShippingRate(ShippingRate $shippingRate = null, array $data = []): void
+    protected static function saveShippingRate(?ShippingRate $shippingRate = null, array $data = []): void
     {
         $currency = Currency::getDefault();
 

@@ -43,13 +43,14 @@ class AttributesRelationManager extends RelationManager
                         }
                         $set('handle', Str::slug($state[Language::getDefault()->code]));
                     }),
-                Forms\Components\TextInput::make('description.en') // TODO: localise
+                TranslatedText::make('description')
                     ->label(
                         __('lunarpanel::attribute.form.description.label')
                     )
                     ->helperText(
                         __('lunarpanel::attribute.form.description.helper')
                     )
+                    ->afterStateHydrated(fn ($state, $component) => $state ?: $component->state([Language::getDefault()->code => null]))
                     ->maxLength(255),
                 Forms\Components\TextInput::make('handle')
                     ->label(
@@ -57,7 +58,9 @@ class AttributesRelationManager extends RelationManager
                     )->dehydrated()
                     ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, RelationManager $livewire) {
                         return $rule->where('attribute_group_id', $livewire->ownerRecord->id);
-                    })
+                    })->disabled(
+                        fn (?Model $record) => (bool) $record
+                    )
                     ->required(),
                 Forms\Components\Grid::make(3)->schema([
                     Forms\Components\Toggle::make('searchable')
@@ -75,6 +78,8 @@ class AttributesRelationManager extends RelationManager
                 ]),
                 Forms\Components\Select::make('type')->label(
                     __('lunarpanel::attribute.form.type.label')
+                )->disabled(
+                    fn (?Model $record) => (bool) $record
                 )->options(
                     AttributeData::getFieldTypes()->mapWithKeys(function ($fieldType) {
                         $langKey = strtolower(
@@ -89,10 +94,16 @@ class AttributesRelationManager extends RelationManager
                     ->getContainer()
                     ->getComponent('configuration')
                     ->getChildComponentContainer()
+
                     ->fill()),
                 Forms\Components\TextInput::make('validation_rules')->label(
                     __('lunarpanel::attribute.form.validation_rules.label')
-                )->string()->nullable(),
+                )
+                    ->string()
+                    ->nullable()
+                    ->helperText(
+                        __('lunarpanel::attribute.form.validation_rules.helper')
+                    ),
                 Forms\Components\Grid::make(1)
                     ->schema(function (Forms\Get $get) {
                         return AttributeData::getConfigurationFields($get('type'));
@@ -123,6 +134,7 @@ class AttributesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data, RelationManager $livewire) {
+                    $data['configuration'] = $data['configuration'] ?? [];
                     $data['system'] = false;
                     $data['attribute_type'] = $livewire->ownerRecord->attributable_type;
                     $data['position'] = $livewire->ownerRecord->attributes()->count() + 1;

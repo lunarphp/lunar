@@ -173,7 +173,9 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -192,7 +194,9 @@ class InstallLunar extends Command
                         'richtext' => false,
                     ],
                     'system' => true,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -211,7 +215,9 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
 
                 Attribute::create([
@@ -230,7 +236,9 @@ class InstallLunar extends Command
                         'richtext' => true,
                     ],
                     'system' => false,
-                    'description' => '',
+                    'description' => [
+                        'en' => '',
+                    ],
                 ]);
             }
 
@@ -292,7 +300,6 @@ class InstallLunar extends Command
     private function publishConfiguration(bool $forcePublish = false): void
     {
         $params = [
-            '--provider' => "Lunar\LunarServiceProvider",
             '--tag' => 'lunar',
         ];
 

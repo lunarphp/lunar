@@ -16,10 +16,13 @@ use Lunar\Shipping\Observers\OrderObserver;
 
 class ShippingServiceProvider extends ServiceProvider
 {
-    public function boot(ShippingModifiers $shippingModifiers)
+    public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/shipping-tables.php', 'lunar.shipping-tables');
+    }
 
+    public function boot(ShippingModifiers $shippingModifiers)
+    {
         if (! config('lunar.shipping-tables.enabled')) {
             return;
         }

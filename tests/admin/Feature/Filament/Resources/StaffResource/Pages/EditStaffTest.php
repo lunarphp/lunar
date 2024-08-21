@@ -53,7 +53,9 @@ it('can save staff data', function () {
 });
 
 it('can assign staff role and permissions', function () {
-    $staff = Staff::factory()->create();
+    $staff = Staff::factory()->create([
+        'admin' => false,
+    ]);
 
     $roles = ['staff'];
     $permissions = LunarAccessControl::getGroupedPermissions()->random(4)->mapWithKeys(fn ($perm) => [$perm->handle => true]);
@@ -73,13 +75,10 @@ it('can assign staff role and permissions', function () {
         ->assertHasNoFormErrors();
 
     expect($staff->hasExactRoles($roles))
-        ->toBeTrue();
-
-    // check assigned permissions does not include role's permissions
-    expect($permissions->reject(fn ($val, $handle) => $handle == $rolePermission)->toArray())
-        ->toEqualCanonicalizing($staff->getDirectPermissions()->pluck('name')->toArray());
-
-    // check role's permission
-    expect($rolePermission)
+        ->toBeTrue()
+        ->and(
+            $permissions->reject(fn ($val, $handle) => $handle == $rolePermission)->keys()->toArray()
+        )->toEqualCanonicalizing($staff->getDirectPermissions()->pluck('name')->toArray())
+        ->and($rolePermission)
         ->toEqualCanonicalizing($staff->getPermissionsViaRoles()->pluck('name')->toArray());
 });

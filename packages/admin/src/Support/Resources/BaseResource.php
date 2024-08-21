@@ -35,7 +35,7 @@ class BaseResource extends Resource
         parent::registerNavigationItems();
     }
 
-    public static function can(string $action, Model $record = null): bool
+    public static function can(string $action, ?Model $record = null): bool
     {
         return static::hasPermission();
     }
@@ -76,7 +76,7 @@ class BaseResource extends Resource
 
             $query->when(
                 ! $ids->isEmpty(),
-                fn ($query) => $query->orderByRaw("field(id, {$placeholders})", $ids->toArray())
+                fn ($query) => $query->orderBySequence($ids->toArray())
             );
 
         } else {

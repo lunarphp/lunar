@@ -18,7 +18,7 @@ class ShippingOptionLookup
             $this->shippingRates->filter(
                 fn ($method) => get_class($method) != ShippingRate::class
             )->count(),
-            new InvalidArgument()
+            new InvalidArgument
         );
     }
 }

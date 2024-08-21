@@ -6,9 +6,6 @@ use Lunar\Base\Migration;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table($this->prefix.'collection_groups', function (Blueprint $table) {
@@ -20,9 +17,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table($this->prefix.'collection_groups', function (Blueprint $table) {

@@ -21,7 +21,7 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function get($model, $key, $value, $attributes)
     {
-        $breakdown = new \Lunar\Base\ValueObjects\Cart\ShippingBreakdown();
+        $breakdown = new \Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
 
         $breakdown->items = collect(
             json_decode($value, false)

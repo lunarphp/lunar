@@ -34,16 +34,16 @@ These specify a geographic zone for tax rates to be applied. Tax Zones can be ba
 Lunar\Models\TaxZone
 ```
 
-|Field|Description|
-|:-|:-|
-|id||
-|name|e.g. `UK`|
-|zone_type|`country`, `state`, or `postcode`|
-|price_display|`tax_inclusive` or `tax_exclusive`|
-|active|true/false|
-|default|true/false|
-|created_at||
-|updated_at||
+|Field| Description                         |
+|:-|:------------------------------------|
+|id|                                     |
+|name| e.g. `UK`                           |
+|zone_type| `country`, `states`, or `postcodes` |
+|price_display| `tax_inclusive` or `tax_exclusive`  |
+|active| true/false                          |
+|default| true/false                          |
+|created_at|                                     |
+|updated_at|                                     |
 
 ```php
 $taxZone = TaxZone::create([
