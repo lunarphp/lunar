@@ -42,7 +42,7 @@ test('can generate cart fingerprint', function () {
 
     $cart->coupon_code = 'valid-coupon';
 
-    $fingerprint = (new GenerateFingerprint())->execute($cart);
+    $fingerprint = (new GenerateFingerprint)->execute($cart);
     $fingerprintFromCart = $cart->fingerprint();
 
     expect($fingerprintFromCart)->toBe($fingerprint);

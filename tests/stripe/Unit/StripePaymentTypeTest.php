@@ -38,19 +38,17 @@ it('can handle failed payments', function () {
         'payment_intent' => 'PI_FAIL',
     ])->authorize();
 
-    $order = $cart->refresh()->draftOrder;
-
-    expect($response)->toBeInstanceOf(PaymentAuthorize::class);
-    expect($response->success)->toBeFalse();
-    expect($cart->refresh()->completedOrder)->toBeNull();
-    expect($cart->refresh()->draftOrder)->not()->toBeNull();
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->currentDraftOrder())->not()->toBeNull();
 
     assertDatabaseHas((new Transaction)->getTable(), [
-        'order_id' => $order->id,
+        'order_id' => $cart->currentDraftOrder()->id,
         'type' => 'capture',
         'success' => false,
     ]);
-});
+})->group('noo');
 
 it('can retrieve existing payment intent', function () {
     $cart = CartBuilder::build([
@@ -67,6 +65,7 @@ it('can retrieve existing payment intent', function () {
 it('will fail if cart already has an order', function () {
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
+
     $order->update([
         'placed_at' => now(),
     ]);
@@ -77,9 +76,12 @@ it('will fail if cart already has an order', function () {
         'payment_intent' => 'PI_CAPTURE',
     ])->authorize();
 
-    expect($response)->toBeInstanceOf(PaymentAuthorize::class);
-    expect($response->success)->toBeFalse();
-    expect($response->message)->toBe('Carts can only have one order associated to them.');
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($response->message)->toBeIn([
+            'Carts can only have one order associated to them.',
+            __('lunar::exceptions.carts.order_exists'),
+        ]);
 });
 
 it('will fail if payment intent status is requires_payment_method', function () {
