@@ -27,6 +27,7 @@ trait HasTranslations
         }
 
         $locale = $locale ?: app()->getLocale();
+
         $value = Arr::accessible($values) ?
             Arr::get($values, $locale) :
             get_object_vars($values)[$locale] ?? null;
@@ -40,12 +41,8 @@ trait HasTranslations
 
     /**
      * Translate a value from attribute data.
-     *
-     * @param  string  $attribute
-     * @param  string  $locale
-     * @return string|null
      */
-    public function translateAttribute($attribute, $locale = null)
+    public function translateAttribute(string $attribute, string $locale = null): mixed
     {
         $field = Arr::get($this->getAttribute('attribute_data'), $attribute);
 
@@ -74,7 +71,13 @@ trait HasTranslations
             return $field->getValue();
         }
 
-        return $value ? $value->getValue() : null;
+        if (!$value->getValue()) {
+            return $translations->first(
+                fn ($value) => $value->getValue()
+            )?->getValue();
+        }
+
+        return $value->getValue();
     }
 
     /**
@@ -82,7 +85,7 @@ trait HasTranslations
      *
      * @return string|null
      */
-    public function attr(...$params)
+    public function attr(...$params): mixed
     {
         return $this->translateAttribute(...$params);
     }
