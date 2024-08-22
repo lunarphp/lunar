@@ -18,11 +18,11 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
-## 1.0.0-alpha.37
+## [Unreleased]
 
 #### Stripe Addon
 
-The Stripe addon will now attempt to update an orders billing and shipping address based on what has been stored against the Payment Intent. This is due to Stripe not always returning this information during their express checkout flows. This can be disabled by setting the `lunar.stripe.sync_addresses` config value to `false`.
+The Stripe addon will now attempt to update an order's billing and shipping address based on what has been stored against the Payment Intent. This is due to Stripe not always returning this information during their express checkout flows. This can be disabled by setting the `lunar.stripe.sync_addresses` config value to `false`.
 
 ## 1.0.0-alpha.34
 
