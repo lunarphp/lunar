@@ -18,6 +18,14 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## [Unreleased]
+
+## High Impact
+
+### Shipping methods availability
+
+Shipping methods are now associated to Customer Groups. If you are using the shipping addon then you should ensure that all your shipping methods are associated to the correct customer groups.
+
 ## 1.0.0-alpha.34
 
 ### Medium Impact
