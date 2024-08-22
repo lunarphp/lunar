@@ -46,7 +46,7 @@ class TaxClassResource extends BaseResource
             Forms\Components\Section::make()->schema([
                 static::getNameFormComponent(),
                 static::getDefaultFormComponent(),
-            ])
+            ]),
         ];
     }
 
