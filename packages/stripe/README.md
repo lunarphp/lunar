@@ -80,6 +80,9 @@ Make sure you have the Stripe credentials set in `config/services.php`
 'stripe' => [
     'key' => env('STRIPE_SECRET'),
     'public_key' => env('STRIPE_PK'),
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
 ],
 ```
 
@@ -89,10 +92,10 @@ Make sure you have the Stripe credentials set in `config/services.php`
 
 Below is a list of the available configuration options this package uses in `config/lunar/stripe.php`
 
-| Key | Default | Description |
-| --- | --- | --- |
-| `policy` | `automatic` | Determines the policy for taking payments and whether you wish to capture the payment manually later or take payment straight away. Available options `manual` or `automatic` |
-
+| Key              | Default      | Description                                                                                                                                                                   |
+|------------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `policy`         | `automatic`  | Determines the policy for taking payments and whether you wish to capture the payment manually later or take payment straight away. Available options `manual` or `automatic` |
+| `sync_addresses` | `true`       | When enabled, the Stripe addon will attempt to sync the billing and shipping addresses which have been stored against the payment intent on Stripe.                           |
 ---
 
 ## Backend Usage
@@ -172,6 +175,28 @@ Stripe::updateIntent(\Lunar\Models\Cart $cart, [
 ]);
 ```
 
+### Cancel an existing intent
+
+If you need to cancel a PaymentIntent, you can do so. You will need to provide a valid reason, those of which can be found in the Stripe docs: https://docs.stripe.com/api/payment_intents/cancel.
+
+Lunar Stripe includes a PHP Enum to make this easier for you:
+
+```php
+use Lunar\Stripe\Enums\CancellationReason;
+
+CancellationReason::ABANDONED;
+CancellationReason::DUPLICATE;
+CancellationReason::REQUESTED_BY_CUSTOMER;
+CancellationReason::FRAUDULENT;
+```
+
+```php
+use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Enums\CancellationReason;
+
+Stripe::cancelIntent(\Lunar\Models\Cart $cart, CancellationReason $reason);
+```
+
 ### Update the address on Stripe
 
 So you don't have to manually specify all the shipping address fields you can use the helper function to do it for you.
@@ -202,9 +227,9 @@ Stripe::getCharges(string $paymentIntentId);
 
 ## Webhooks
 
-The plugin provides a webhook you will need to add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
+The add-on provides an optional webhook you may add to Stripe. You can read the guide on how to do this on the Stripe website [https://stripe.com/docs/webhooks/quickstart](https://stripe.com/docs/webhooks/quickstart).
 
-The 3 events you should listen to are `payment_intent.payment_failed`,`payment_intent.processing`,`payment_intent.succeeded`. 
+The events you should listen to are `payment_intent.payment_failed`, `payment_intent.succeeded`. 
 
 The path to the webhook will be `http:://yoursite.com/stripe/webhook`.
 
@@ -225,6 +250,24 @@ return [
     ],
 ];
 ```
+
+If you do not wish to use the webhook, or would like to manually process an order as well, you are able to do so.
+
+```php
+$cart = CartSession::current();
+
+// With a draft order...
+$draftOrder = $cart->createOrder();
+Payments::driver('stripe')->order($draftOrder)->withData([
+    'payment_intent' => $draftOrder->meta['payment_intent'],
+])->authorize();
+
+// Using just the cart...
+Payments::driver('stripe')->cart($cart)->withData([
+    'payment_intent' => $cart->meta['payment_intent'],
+])->authorize();
+```
+
 
 ## Storefront Examples
 

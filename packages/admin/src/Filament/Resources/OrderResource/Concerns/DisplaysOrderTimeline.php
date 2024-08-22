@@ -9,7 +9,7 @@ trait DisplaysOrderTimeline
 {
     public static function getTimelineInfolist(): Infolists\Components\Component
     {
-        return self::callLunarHook('extendTimelineInfolist', static::getDefaultTimelineInfolist());
+        return self::callStaticLunarHook('extendTimelineInfolist', static::getDefaultTimelineInfolist());
     }
 
     public static function getDefaultTimelineInfolist(): Infolists\Components\Component

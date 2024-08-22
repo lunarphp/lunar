@@ -8,7 +8,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Lunar\Admin\Support\Concerns;
+use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Base\Traits\Searchable;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
@@ -17,7 +17,7 @@ use function Filament\Support\generate_search_term_expression;
 
 class BaseResource extends Resource
 {
-    use Concerns\CallsHooks;
+    use CallsHooks;
     use Concerns\ExtendsForms;
     use Concerns\ExtendsPages;
     use Concerns\ExtendsRelationManagers;
@@ -76,7 +76,7 @@ class BaseResource extends Resource
 
             $query->when(
                 ! $ids->isEmpty(),
-                fn ($query) => $query->orderByRaw("field(id, {$placeholders})", $ids->toArray())
+                fn ($query) => $query->orderBySequence($ids->toArray())
             );
 
         } else {

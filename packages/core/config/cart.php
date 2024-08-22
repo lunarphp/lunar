@@ -3,17 +3,6 @@
 use Lunar\Actions\Carts\GenerateFingerprint;
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Key
-    |--------------------------------------------------------------------------
-    |
-    | Specify the session key used when fetching the cart.
-    |
-    */
-    'session_key' => 'lunar_cart',
-
     /*
     |--------------------------------------------------------------------------
     | Fingerprint Generator
@@ -23,18 +12,6 @@ return [
     |
     */
     'fingerprint_generator' => GenerateFingerprint::class,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Auto create a cart when none exists for user.
-    |--------------------------------------------------------------------------
-    |
-    | Determines whether you want to automatically create a cart for a user if
-    | they do not currently have one in the session. By default this is false
-    | to minimise the amount of cart lines added to the database.
-    |
-    */
-    'auto_create' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -112,10 +89,12 @@ return [
 
         'add_to_cart' => [
             Lunar\Validation\CartLine\CartLineQuantity::class,
+            Lunar\Validation\CartLine\CartLineStock::class,
         ],
 
         'update_cart_line' => [
             Lunar\Validation\CartLine\CartLineQuantity::class,
+            Lunar\Validation\CartLine\CartLineStock::class,
         ],
 
         'remove_from_cart' => [],

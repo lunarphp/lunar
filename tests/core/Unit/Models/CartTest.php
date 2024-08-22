@@ -29,6 +29,8 @@ use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
 
+use function Pest\Laravel\{assertDatabaseCount};
+
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 //function setAuthUserConfig()
@@ -46,7 +48,7 @@ test('can make a cart', function () {
         'meta' => ['foo' => 'bar'],
     ]);
 
-    $this->assertDatabaseHas((new Cart())->getTable(), [
+    $this->assertDatabaseHas((new Cart)->getTable(), [
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
         'meta' => json_encode(['foo' => 'bar']),
@@ -126,7 +128,7 @@ test('can associate cart with user with no customer attached', function () {
         'user_id' => $user->getKey(),
     ]);
 
-    $this->assertDatabaseHas((new Cart())->getTable(), [
+    $this->assertDatabaseHas((new Cart)->getTable(), [
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
         'user_id' => $user->getKey(),
@@ -280,15 +282,17 @@ test('can get cart draft order', function () {
 
     $draftOrder = Order::factory()->create([
         'cart_id' => $cart->id,
+        'fingerprint' => $cart->calculate()->fingerprint(),
+        'total' => $cart->calculate()->total->value,
         'placed_at' => null,
     ]);
 
-    expect($cart->draftOrder->id)->toEqual($draftOrder->id);
+    expect($cart->currentDraftOrder()->id)->toEqual($draftOrder->id);
 
     $draftOrder->delete();
 
-    expect($cart->draftOrder()->first())->toBeNull();
-});
+    expect($cart->currentDraftOrder())->toBeNull();
+})->group('nooo');
 
 test('can get cart draft order by id', function () {
     $currency = Currency::factory()->create();
@@ -307,15 +311,19 @@ test('can get cart draft order by id', function () {
 
     $draftOrder = Order::factory()->create([
         'cart_id' => $cart->id,
+        'fingerprint' => $cart->calculate()->fingerprint(),
+        'total' => $cart->calculate()->total->value,
         'placed_at' => null,
     ]);
 
     $draftOrderTwo = Order::factory()->create([
         'cart_id' => $cart->id,
+        'fingerprint' => $cart->calculate()->fingerprint(),
+        'total' => $cart->calculate()->total->value,
         'placed_at' => null,
     ]);
 
-    expect($cart->draftOrder->id)->toEqual($draftOrder->id);
+    expect($cart->currentDraftOrder()->id)->toEqual($draftOrder->id);
     expect($cart->draftOrder($draftOrderTwo->id)->first()->id)->toEqual($draftOrderTwo->id);
 });
 
@@ -375,7 +383,7 @@ test('can associate cart with user with customer attached', function () {
         'user_id' => $user->getKey(),
     ]);
 
-    $this->assertDatabaseHas((new Cart())->getTable(), [
+    $this->assertDatabaseHas((new Cart)->getTable(), [
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
         'user_id' => $user->getKey(),
@@ -530,7 +538,9 @@ test('can add cart lines', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -554,7 +564,9 @@ test('can remove cart lines', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -606,7 +618,9 @@ test('can update existing cart line', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -622,14 +636,14 @@ test('can update existing cart line', function () {
 
     $cartLine = $cart->refresh()->lines->first();
 
-    $this->assertDatabaseHas((new CartLine())->getTable(), [
+    $this->assertDatabaseHas((new CartLine)->getTable(), [
         'quantity' => 1,
         'id' => $cartLine->id,
     ]);
 
     $cart->updateLine($cartLine->id, 2);
 
-    $this->assertDatabaseHas((new CartLine())->getTable(), [
+    $this->assertDatabaseHas((new CartLine)->getTable(), [
         'quantity' => 2,
         'id' => $cartLine->id,
     ]);
@@ -683,7 +697,9 @@ test('can calculate shipping', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -971,4 +987,172 @@ test('can get estimated shipping', function () {
 
     expect($cart->shippingOptionOverride)->toBeInstanceOf(ShippingOption::class);
     expect($shippingOption->identifier)->toEqual($cart->shippingOptionOverride->identifier);
-})->group('foofoo');
+});
+
+test('can get new draft order when cart changes', function () {
+    $currency = Currency::factory()
+        ->state([
+            'code' => 'USD',
+        ])
+        ->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $taxClass = TaxClass::factory()->create();
+
+    // Add product with unit qty
+    $purchasable = ProductVariant::factory()
+        ->state([
+            'unit_quantity' => 1,
+        ])
+        ->create();
+
+    Price::factory()->create([
+        'price' => 158,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    CartAddress::factory()->create([
+        'type' => 'billing',
+        'cart_id' => $cart->id,
+    ]);
+
+    CartAddress::factory()->create([
+        'type' => 'shipping',
+        'cart_id' => $cart->id,
+    ]);
+
+    $option = new ShippingOption(
+        name: 'Basic Delivery',
+        description: 'Basic Delivery',
+        identifier: 'BASDEL',
+        price: new \Lunar\DataTypes\Price(500, $cart->currency, 1),
+        taxClass: $taxClass
+    );
+
+    ShippingManifest::addOption($option);
+
+    $cart->setShippingOption($option);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasable),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 2,
+    ]);
+
+    $order = $cart->createOrder();
+
+    assertDatabaseCount(Order::class, 1);
+
+    expect($order->placed_at)
+        ->toBeNull()
+        ->and($order->fingerprint)
+        ->toBe($cart->fingerprint())
+        ->and(
+            $cart->currentDraftOrder()->id
+        )->toBe($order->id);
+
+    $cart->lines()->first()->update([
+        'quantity' => 5,
+    ]);
+
+    $orderTwo = $cart->calculate()->createOrder();
+
+    assertDatabaseCount(Order::class, 2);
+
+    expect($orderTwo->placed_at)
+        ->toBeNull()
+        ->and($orderTwo->fingerprint)
+        ->toBe($cart->fingerprint())
+        ->and(
+            $cart->currentDraftOrder()->id
+        )->toBe($orderTwo->id);
+
+});
+
+test('can get same draft order when cart does not change', function () {
+    $currency = Currency::factory()
+        ->state([
+            'code' => 'USD',
+        ])
+        ->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $taxClass = TaxClass::factory()->create();
+
+    // Add product with unit qty
+    $purchasable = ProductVariant::factory()
+        ->state([
+            'unit_quantity' => 1,
+        ])
+        ->create();
+
+    Price::factory()->create([
+        'price' => 158,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => get_class($purchasable),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    CartAddress::factory()->create([
+        'type' => 'billing',
+        'cart_id' => $cart->id,
+    ]);
+
+    CartAddress::factory()->create([
+        'type' => 'shipping',
+        'cart_id' => $cart->id,
+    ]);
+
+    $option = new ShippingOption(
+        name: 'Basic Delivery',
+        description: 'Basic Delivery',
+        identifier: 'BASDEL',
+        price: new \Lunar\DataTypes\Price(500, $cart->currency, 1),
+        taxClass: $taxClass
+    );
+
+    ShippingManifest::addOption($option);
+
+    $cart->setShippingOption($option);
+
+    $cart->lines()->create([
+        'purchasable_type' => get_class($purchasable),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 2,
+    ]);
+
+    $order = $cart->createOrder();
+
+    assertDatabaseCount(Order::class, 1);
+
+    expect($order->placed_at)
+        ->toBeNull()
+        ->and($order->fingerprint)
+        ->toBe($cart->fingerprint())
+        ->and(
+            $cart->currentDraftOrder()->first()->id
+        )->toBe($order->id);
+
+    $newOrder = $cart->createOrder();
+
+    assertDatabaseCount(Order::class, 1);
+
+    expect($newOrder->placed_at)
+        ->toBeNull()
+        ->and($newOrder->fingerprint)
+        ->toBe($cart->fingerprint())
+        ->and(
+            $cart->currentDraftOrder()->id
+        )->toBe($newOrder->id);
+
+});

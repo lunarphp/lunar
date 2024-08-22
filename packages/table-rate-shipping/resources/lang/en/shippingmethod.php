@@ -49,4 +49,10 @@ return [
             ],
         ],
     ],
+    'pages' => [
+        'availability' => [
+            'label' => 'Availability',
+            'customer_groups' => 'This shipping method is currently unavailable across all customer groups.',
+        ],
+    ],
 ];

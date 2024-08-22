@@ -18,7 +18,7 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryNewCustomerEntry(): Infolists\Components\Entry
     {
-        return self::callLunarHook('extendOrderSummaryNewCustomerEntry', static::getDefaultOrderSummaryNewCustomerEntry());
+        return self::callStaticLunarHook('extendOrderSummaryNewCustomerEntry', static::getDefaultOrderSummaryNewCustomerEntry());
     }
 
     public static function getDefaultOrderSummaryStatusEntry(): Infolists\Components\TextEntry
@@ -33,7 +33,7 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryStatusEntry(): Infolists\Components\Entry
     {
-        return self::callLunarHook('extendOrderSummaryStatusEntry', static::getDefaultOrderSummaryStatusEntry());
+        return self::callStaticLunarHook('extendOrderSummaryStatusEntry', static::getDefaultOrderSummaryStatusEntry());
     }
 
     public static function getDefaultOrderReferenceEntry(): Infolists\Components\TextEntry
@@ -48,7 +48,7 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryReferenceEntry(): Infolists\Components\Entry
     {
-        return self::callLunarHook('extendOrderSummaryReferenceEntry', static::getDefaultOrderReferenceEntry());
+        return self::callStaticLunarHook('extendOrderSummaryReferenceEntry', static::getDefaultOrderReferenceEntry());
     }
 
     public static function getDefaultOrderSummaryCustomerReferenceEntry(): Infolists\Components\TextEntry
@@ -63,7 +63,7 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryCustomerReferenceEntry(): Infolists\Components\Entry
     {
-        return self::callLunarHook('extendOrderSummaryCustomerReferenceEntry', static::getDefaultOrderSummaryCustomerReferenceEntry());
+        return self::callStaticLunarHook('extendOrderSummaryCustomerReferenceEntry', static::getDefaultOrderSummaryCustomerReferenceEntry());
     }
 
     public static function getDefaultOrderSummaryChannelEntry(): Infolists\Components\TextEntry
@@ -75,7 +75,7 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryChannelEntry(): Infolists\Components\Entry
     {
-        return self::callLunarHook('extendOrderSummaryChannelEntry', static::getDefaultOrderSummaryChannelEntry());
+        return self::callStaticLunarHook('extendOrderSummaryChannelEntry', static::getDefaultOrderSummaryChannelEntry());
     }
 
     public static function getDefaultOrderSummaryCreatedAtEntry(): Infolists\Components\TextEntry
@@ -89,7 +89,7 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryCreatedAtEntry(): Infolists\Components\Entry
     {
-        return self::callLunarHook('extendOrderSummaryCreatedAtEntry', static::getDefaultOrderSummaryCreatedAtEntry());
+        return self::callStaticLunarHook('extendOrderSummaryCreatedAtEntry', static::getDefaultOrderSummaryCreatedAtEntry());
     }
 
     public static function getDefaultOrderSummaryPlacedAtEntry(): Infolists\Components\TextEntry
@@ -103,12 +103,12 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryPlacedAtEntry(): Infolists\Components\Entry
     {
-        return self::callLunarHook('extendOrderSummaryPlacedAtEntry', static::getDefaultOrderSummaryPlacedAtEntry());
+        return self::callStaticLunarHook('extendOrderSummaryPlacedAtEntry', static::getDefaultOrderSummaryPlacedAtEntry());
     }
 
     public static function getOrderSummarySchema(): array
     {
-        return self::callLunarHook('extendOrderSummarySchema', [
+        return self::callStaticLunarHook('extendOrderSummarySchema', [
             static::getOrderSummaryNewCustomerEntry(),
             static::getOrderSummaryStatusEntry(),
             static::getOrderSummaryReferenceEntry(),
@@ -131,6 +131,6 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryInfolist(): Infolists\Components\Section
     {
-        return self::callLunarHook('exendOrderSummaryInfolist', static::getDefaultOrderSummaryInfolist());
+        return self::callStaticLunarHook('exendOrderSummaryInfolist', static::getDefaultOrderSummaryInfolist());
     }
 }

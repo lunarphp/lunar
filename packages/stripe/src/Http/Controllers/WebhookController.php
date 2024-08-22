@@ -6,10 +6,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use Lunar\Events\PaymentAttemptEvent;
-use Lunar\Facades\Payments;
-use Lunar\Models\Cart;
 use Lunar\Stripe\Concerns\ConstructsWebhookEvent;
+use Lunar\Stripe\Jobs\ProcessStripeWebhook;
+use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Exception\UnexpectedValueException;
 
@@ -17,7 +16,7 @@ final class WebhookController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
-        $secret = config('services.stripe.webhooks.payment_intent');
+        $secret = config('services.stripe.webhooks.lunar');
         $stripeSig = $request->header('Stripe-Signature');
 
         try {
@@ -31,32 +30,26 @@ final class WebhookController extends Controller
                 $error = $e->getMessage()
             );
 
-            return response(status: 400)->json([
+            return response()->json([
                 'webhook_successful' => false,
                 'message' => $error,
-            ]);
+            ], 400);
         }
 
         $paymentIntent = $event->data->object->id;
+        $orderId = $event->data->object->metadata?->order_id;
 
-        $cart = Cart::where('meta->payment_intent', '=', $paymentIntent)->first();
+        // Is this payment intent already being processed?
+        $paymentIntentModel = StripePaymentIntent::where('intent_id', $paymentIntent)->first();
 
-        if (! $cart) {
-            Log::error(
-                $error = "Unable to find cart with intent {$paymentIntent}"
-            );
-
-            return response(status: 400)->json([
-                'webhook_successful' => false,
-                'message' => $error,
+        if (! $paymentIntentModel?->processing_at) {
+            $paymentIntentModel?->update([
+                'event_id' => $event->id,
             ]);
+            ProcessStripeWebhook::dispatch($paymentIntent, $orderId)->delay(
+                now()->addSeconds(5)
+            );
         }
-
-        $payment = Payments::driver('stripe')->cart($cart->calculate())->withData([
-            'payment_intent' => $paymentIntent,
-        ])->authorize();
-
-        PaymentAttemptEvent::dispatch($payment);
 
         return response()->json([
             'webhook_successful' => true,

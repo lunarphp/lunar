@@ -15,7 +15,7 @@ test('can create model', function () {
         'postcode' => 'AB1 2BA',
     ]);
 
-    $this->assertDatabaseHas((new ShippingZonePostcode())->getTable(), [
+    $this->assertDatabaseHas((new ShippingZonePostcode)->getTable(), [
         'shipping_zone_id' => $shippingZone->id,
         'postcode' => 'AB12BA',
     ]);

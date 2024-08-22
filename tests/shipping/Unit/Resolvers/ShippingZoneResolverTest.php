@@ -27,7 +27,7 @@ test('can fetch shipping zones by country', function () {
 
     expect($shippingZoneA->refresh()->countries)->toHaveCount(1);
 
-    $zones = (new ShippingZoneResolver())->country($countryA)->get();
+    $zones = (new ShippingZoneResolver)->country($countryA)->get();
 
     expect($zones)->toHaveCount(1);
 
@@ -59,7 +59,7 @@ test('can fetch shipping zones by state', function () {
 
     expect($shippingZoneA->refresh()->states)->toHaveCount(1);
 
-    $zones = (new ShippingZoneResolver())->state($stateA)->get();
+    $zones = (new ShippingZoneResolver)->state($stateA)->get();
 
     expect($zones)->toHaveCount(1);
 
@@ -77,7 +77,7 @@ test('doesnt fetch postcode shipping zones by country', function () {
 
     expect($shippingZoneA->refresh()->countries)->toHaveCount(1);
 
-    $zones = (new ShippingZoneResolver())->country($countryA)->get();
+    $zones = (new ShippingZoneResolver)->country($countryA)->get();
 
     expect($zones)->toBeEmpty();
 });
@@ -103,7 +103,7 @@ test('can fetch zone by postcode lookup', function () {
         'ABC 123'
     );
 
-    $zones = (new ShippingZoneResolver())->postcode($postcode)->get();
+    $zones = (new ShippingZoneResolver)->postcode($postcode)->get();
 
     expect($zones)->toHaveCount(1);
 
