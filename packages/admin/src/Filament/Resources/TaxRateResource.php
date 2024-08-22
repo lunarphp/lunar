@@ -53,7 +53,7 @@ class TaxRateResource extends BaseResource
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('lunarpanel::taxrate.form.name.label'))
-            ->unique(column: 'name')
+            ->unique(column: 'name', ignoreRecord: true)
             ->required()
             ->maxLength(255)
             ->autofocus();
