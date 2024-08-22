@@ -14,7 +14,7 @@ test('can set from value object', function () {
     $currency = Currency::factory()->create();
     $order = Order::factory()->create();
 
-    $shippingBreakdownValueObject = new ShippingBreakdown();
+    $shippingBreakdownValueObject = new ShippingBreakdown;
 
     $shippingBreakdownValueObject->items->put('DELIV',
         new ShippingBreakdownItem(
@@ -36,7 +36,7 @@ test('can cast to and from model', function () {
     $currency = Currency::factory()->create();
     $order = Order::factory()->create();
 
-    $shippingBreakdownValueObject = new ShippingBreakdown();
+    $shippingBreakdownValueObject = new ShippingBreakdown;
 
     $shippingBreakdownValueObject->items->put('DELIV',
         new ShippingBreakdownItem(

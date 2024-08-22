@@ -17,7 +17,7 @@ class AsAttributeData implements Castable
      */
     public static function castUsing(array $arguments)
     {
-        return new class() implements CastsAttributes
+        return new class implements CastsAttributes
         {
             public function get($model, $key, $value, $attributes)
             {
@@ -27,7 +27,7 @@ class AsAttributeData implements Castable
 
                 $data = json_decode($attributes[$key], true);
 
-                $returnData = new Collection();
+                $returnData = new Collection;
 
                 foreach ($data as $key => $item) {
                     if (! class_exists($item['field_type'])) {

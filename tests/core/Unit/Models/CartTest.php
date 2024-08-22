@@ -46,7 +46,7 @@ test('can make a cart', function () {
         'meta' => ['foo' => 'bar'],
     ]);
 
-    $this->assertDatabaseHas((new Cart())->getTable(), [
+    $this->assertDatabaseHas((new Cart)->getTable(), [
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
         'meta' => json_encode(['foo' => 'bar']),
@@ -126,7 +126,7 @@ test('can associate cart with user with no customer attached', function () {
         'user_id' => $user->getKey(),
     ]);
 
-    $this->assertDatabaseHas((new Cart())->getTable(), [
+    $this->assertDatabaseHas((new Cart)->getTable(), [
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
         'user_id' => $user->getKey(),
@@ -375,7 +375,7 @@ test('can associate cart with user with customer attached', function () {
         'user_id' => $user->getKey(),
     ]);
 
-    $this->assertDatabaseHas((new Cart())->getTable(), [
+    $this->assertDatabaseHas((new Cart)->getTable(), [
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
         'user_id' => $user->getKey(),
@@ -622,14 +622,14 @@ test('can update existing cart line', function () {
 
     $cartLine = $cart->refresh()->lines->first();
 
-    $this->assertDatabaseHas((new CartLine())->getTable(), [
+    $this->assertDatabaseHas((new CartLine)->getTable(), [
         'quantity' => 1,
         'id' => $cartLine->id,
     ]);
 
     $cart->updateLine($cartLine->id, 2);
 
-    $this->assertDatabaseHas((new CartLine())->getTable(), [
+    $this->assertDatabaseHas((new CartLine)->getTable(), [
         'quantity' => 2,
         'id' => $cartLine->id,
     ]);

@@ -28,7 +28,7 @@ class Stripe extends Facade
 
     public static function fake(): void
     {
-        $mockClient = new MockClient();
+        $mockClient = new MockClient;
         ApiRequestor::setHttpClient($mockClient);
     }
 }

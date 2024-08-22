@@ -10,7 +10,7 @@ test('can make a tax class', function () {
         'name' => 'Clothing',
     ]);
 
-    $this->assertDatabaseHas((new TaxClass())->getTable(), [
+    $this->assertDatabaseHas((new TaxClass)->getTable(), [
         'name' => 'Clothing',
         'default' => false,
     ]);

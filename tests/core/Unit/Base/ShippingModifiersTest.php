@@ -26,7 +26,7 @@ beforeEach(function () {
         }
     };
 
-    $this->shippingModifiers = new ShippingModifiers();
+    $this->shippingModifiers = new ShippingModifiers;
 });
 
 test('can add modifier', function () {
