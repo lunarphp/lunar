@@ -24,6 +24,24 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 The Stripe addon will now attempt to update an order's billing and shipping address based on what has been stored against the Payment Intent. This is due to Stripe not always returning this information during their express checkout flows. This can be disabled by setting the `lunar.stripe.sync_addresses` config value to `false`.
 
+##### PaymentIntent storage and reference to carts/orders
+Currently, PaymentIntent information is stored in the Cart model's meta, which is then transferred to the order when created.
+
+Whilst this works okay it causes for limitations and also means that if the carts meta is ever updated elsewhere, or the intent information is removed, then it will cause unrecoverable loss.
+
+This PR looks to move away from the payment_intent key in the meta to a StripePaymentIntent model, this allows us more flexibility in how payment intents are handled and reacted on. A StripePaymentIntent will be associated to both a cart and an order.
+
+The information we store is now:
+
+- `intent_id` - This is the PaymentIntent ID which is provided by Stripe
+- `status` - The PaymentIntent status
+- `event_id` - If the PaymentIntent was placed via the webhook, this will be populated with the ID of that event
+- `processing_at` - When a request to place the order is made, this is populated
+- `processed_at` - Once the order is placed, this will be populated with the current timestamp
+
+##### Preventing overlap
+Currently, we delay sending the job to place the order to the queue by 20 seconds, this is less than ideal, now the payment type will check whether we are already processing this order and if so, not do anything further. This should prevent overlaps regardless of how they are triggered.
+
 ## 1.0.0-alpha.34
 
 ### Medium Impact
