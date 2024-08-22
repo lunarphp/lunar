@@ -572,7 +572,7 @@ class Cart extends BaseModel
      */
     public function getShippingOption(): ?ShippingOption
     {
-        return ShippingManifest::getShippingOption($this);
+        return ShippingManifest::getShippingOption($this->calculate());
     }
 
     /**
@@ -592,18 +592,20 @@ class Cart extends BaseModel
         bool $allowMultipleOrders = false,
         ?int $orderIdToUpdate = null
     ): Order {
+        $cart = $this->refresh()->recalculate();
+
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,
         ]) as $action) {
             app($action)->using(
-                cart: $this,
+                cart: $cart,
             )->validate();
         }
 
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute(
-            $this->refresh()->recalculate(),
+            $cart,
             $allowMultipleOrders,
             $orderIdToUpdate
         )->then(fn ($order) => $order->refresh());
