@@ -27,6 +27,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Sync addresses
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the Stripe addon will attempt to sync the billing and shipping
+    | addresses which have been stored against the payment intent on Stripe.
+    | This is useful when you don't always get the full address during the
+    | checkout process, which can be the case when using express checkout.
+    |
+    */
+    'sync_addresses' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Status mapping
     |--------------------------------------------------------------------------
     |
