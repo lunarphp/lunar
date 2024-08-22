@@ -7,6 +7,7 @@ use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxRateResource\Pages;
 use Lunar\Admin\Filament\Resources\TaxRateResource\RelationManagers\TaxRateAmountRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -14,6 +15,8 @@ use Lunar\Models\TaxRate;
 
 class TaxRateResource extends BaseResource
 {
+    protected static ?string $cluster = Taxes::class;
+    
     protected static ?string $permission = 'settings:core';
 
     protected static ?string $model = TaxRate::class;
@@ -33,11 +36,6 @@ class TaxRateResource extends BaseResource
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::tax');
-    }
-
-    public static function getNavigationGroup(): ?string
-    {
-        return __('lunarpanel::global.sections.settings');
     }
 
     protected static function getMainFormComponents(): array

@@ -228,6 +228,10 @@ class LunarPanelManager
             ->resources(
                 static::getResources()
             )
+            ->discoverClusters(
+                in: realpath(__DIR__.'/Filament/Clusters'),
+                for: 'Lunar\Admin\Filament\Clusters'
+            )
             ->widgets(
                 static::getWidgets()
             )
