@@ -84,7 +84,7 @@ class TranslatedText extends TextInput
         return $this->prepareTranslatedTextComponent($component);
     }
 
-    public function extraInputAttributes(array | Closure $attributes, bool $merge = false): static
+    public function extraInputAttributes(array|Closure $attributes, bool $merge = false): static
     {
         $this->mergeExtraInputAttributes = $merge;
 
@@ -134,7 +134,7 @@ class TranslatedText extends TextInput
             ->minLength($this->minLength)
             ->maxLength($this->maxLength);
 
-        if (!empty($this->extraInputAttributes)) {
+        if (! empty($this->extraInputAttributes)) {
             $component->extraInputAttributes($this->extraInputAttributes, $this->mergeExtraInputAttributes);
         }
 
@@ -202,7 +202,7 @@ class TranslatedText extends TextInput
         return $this;
     }
 
-    public function richtextFileAttachmentsDirectory(string | Closure | null $name): static
+    public function richtextFileAttachmentsDirectory(string|Closure|null $name): static
     {
         $this->richtextFileAttachmentsDirectory = $name;
 
