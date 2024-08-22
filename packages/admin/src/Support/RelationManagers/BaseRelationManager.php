@@ -18,7 +18,7 @@ class BaseRelationManager extends RelationManager
     {
         $forms = parent::getForms();
 
-        if (App::runningUnitTests() && !in_array('form', $forms)) {
+        if (App::runningUnitTests() && ! in_array('form', $forms)) {
             // initialize the form when running tests, so we can run assertions on it
             $forms[] = 'form';
         }

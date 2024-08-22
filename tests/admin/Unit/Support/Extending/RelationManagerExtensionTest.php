@@ -33,7 +33,7 @@ it('can extend table columns', function ($relationManager, $page) {
 
     \Livewire\Livewire::test($relationManager, [
         'ownerRecord' => $model,
-        'pageClass' => $page
+        'pageClass' => $page,
     ])->assertTableColumnExists('test_column');
 })->with([
     'AttributesRelationManager' => [AttributesRelationManager::class, EditAttributeGroup::class],
@@ -64,7 +64,7 @@ it('can extend form schema', function ($relationManager, $page) {
 
     \Livewire\Livewire::test($relationManager, [
         'ownerRecord' => $model,
-        'pageClass' => $page
+        'pageClass' => $page,
     ])->assertFormFieldExists('test_form_field');
 })->with([
     'AttributesRelationManager' => [AttributesRelationManager::class, EditAttributeGroup::class],
