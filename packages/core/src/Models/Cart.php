@@ -640,7 +640,7 @@ class Cart extends BaseModel
     {
         $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
 
-        return (new $generator())->execute($this);
+        return (new $generator)->execute($this);
     }
 
     /**
