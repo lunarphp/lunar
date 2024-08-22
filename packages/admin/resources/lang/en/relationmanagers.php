@@ -251,6 +251,9 @@ return [
     'tax_rate_amounts' => [
         'table' => [
             'description' => '',
+            'percentage' => [
+                'label' => 'Percentage',
+            ],
             'tax_class' => [
                 'label' => 'Tax Class',
             ],
