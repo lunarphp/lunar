@@ -20,6 +20,12 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ## [Unreleased]
 
+## High Impact
+
+### Shipping methods availability
+
+Shipping methods are now associated to Customer Groups. If you are using the shipping addon then you should ensure that all your shipping methods are associated to the correct customer groups.
+
 #### Stripe Addon
 
 The Stripe addon will now attempt to update an order's billing and shipping address based on what has been stored against the Payment Intent. This is due to Stripe not always returning this information during their express checkout flows. This can be disabled by setting the `lunar.stripe.sync_addresses` config value to `false`.

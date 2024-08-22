@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
@@ -37,6 +38,16 @@ class TaxZone extends BaseModel
         static::created($handleDefaultFunction);
 
         static::updated($handleDefaultFunction);
+
+        static::deleting(function (self $taxZone) {
+            DB::beginTransaction();
+            $taxZone->countries()->delete();
+            $taxZone->states()->delete();
+            $taxZone->postcodes()->delete();
+            $taxZone->customerGroups()->delete();
+            $taxZone->taxRates()->delete();
+            DB::commit();
+        });
     }
 
     /**
