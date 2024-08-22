@@ -9,7 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Collection;
 use Lunar\Models\Language;
 
-class   TranslatedText extends TextInput
+class TranslatedText extends TextInput
 {
     protected string $view = 'lunarpanel::forms.components.translated-text';
 
