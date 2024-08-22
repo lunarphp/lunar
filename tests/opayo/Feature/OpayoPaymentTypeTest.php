@@ -46,7 +46,7 @@ it('can handle a failed payment', function () {
 
     expect($cart->completedOrder()->first())->toBeNull()
         ->and($response->status)->toEqual(\Lunar\Opayo\Facades\Opayo::AUTH_FAILED)
-        ->and($cart->draftOrder()->first())
+        ->and($cart->currentDraftOrder())
         ->toBeInstanceOf(\Lunar\Models\Order::class);
 
     assertDatabaseHas(\Lunar\Models\Transaction::class, [
@@ -71,7 +71,7 @@ it('can handle a 3DSv2 response', function () {
 
     expect($cart->completedOrder()->first())->toBeNull()
         ->and($response->status)->toEqual(\Lunar\Opayo\Facades\Opayo::THREED_AUTH)
-        ->and($cart->draftOrder()->first())
+        ->and($cart->currentDraftOrder())
         ->toBeInstanceOf(\Lunar\Models\Order::class);
 });
 
@@ -90,9 +90,9 @@ it('can process a failed 3DSv2 response', function () {
     expect($cart->completedOrder()->first())->toBeNull()
         ->and($response->status)
         ->toEqual(\Lunar\Opayo\Facades\Opayo::AUTH_FAILED)
-        ->and($cart->draftOrder()->first())
+        ->and($cart->currentDraftOrder())
         ->toBeInstanceOf(\Lunar\Models\Order::class)
-        ->and($cart->draftOrder()->first()->placed_at)
+        ->and($cart->currentDraftOrder()->first()->placed_at)
         ->toBeNull();
 
     assertDatabaseHas(\Lunar\Models\Transaction::class, [

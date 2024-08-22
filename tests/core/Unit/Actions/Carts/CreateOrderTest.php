@@ -216,16 +216,16 @@ test('can create order', function () {
         'tax_breakdown' => json_encode($breakdown),
     ];
 
-    $cart = $cart->refresh();
+    $cart = $cart->refresh()->calculate();
 
-    expect($cart->draftOrder)->toBeInstanceOf(Order::class);
-    expect($order->cart_id)->toEqual($cart->id);
-    expect($cart->lines)->toHaveCount(1);
-    expect($order->lines)->toHaveCount(2);
-    expect($cart->addresses)->toHaveCount(2);
-    expect($order->addresses)->toHaveCount(2);
-    expect($order->shippingAddress)->toBeInstanceOf(OrderAddress::class);
-    expect($order->billingAddress)->toBeInstanceOf(OrderAddress::class);
+    expect($cart->currentDraftOrder())->toBeInstanceOf(Order::class)
+        ->and($order->cart_id)->toEqual($cart->id)
+        ->and($cart->lines)->toHaveCount(1)
+        ->and($order->lines)->toHaveCount(2)
+        ->and($cart->addresses)->toHaveCount(2)
+        ->and($order->addresses)->toHaveCount(2)
+        ->and($order->shippingAddress)->toBeInstanceOf(OrderAddress::class)
+        ->and($order->billingAddress)->toBeInstanceOf(OrderAddress::class);
 
     $this->assertDatabaseHas((new Order)->getTable(), $datacheck);
     $this->assertDatabaseHas((new OrderLine)->getTable(), [
@@ -349,7 +349,7 @@ test('can create order with customer', function () {
         'tax_breakdown' => json_encode($breakdown),
     ];
 
-    $cart = $cart->refresh();
+    $cart = $cart->refresh()->calculate();
 
     $this->assertDatabaseHas((new Order)->getTable(), $datacheck);
 });

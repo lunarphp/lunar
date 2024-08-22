@@ -18,6 +18,74 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## [Unreleased]
+
+## High Impact
+
+### Shipping methods availability
+
+Shipping methods are now associated to Customer Groups. If you are using the shipping addon then you should ensure that all your shipping methods are associated to the correct customer groups.
+
+#### Stripe Addon
+
+The Stripe addon will now attempt to update an order's billing and shipping address based on what has been stored against the Payment Intent. This is due to Stripe not always returning this information during their express checkout flows. This can be disabled by setting the `lunar.stripe.sync_addresses` config value to `false`.
+
+##### PaymentIntent storage and reference to carts/orders
+Currently, PaymentIntent information is stored in the Cart model's meta, which is then transferred to the order when created.
+
+Whilst this works okay it causes for limitations and also means that if the carts meta is ever updated elsewhere, or the intent information is removed, then it will cause unrecoverable loss.
+
+We have now looked to move away from the payment_intent key in the meta to a StripePaymentIntent model, this allows us more flexibility in how payment intents are handled and reacted on. A StripePaymentIntent will be associated to both a cart and an order.
+
+The information we store is now:
+
+- `intent_id` - This is the PaymentIntent ID which is provided by Stripe
+- `status` - The PaymentIntent status
+- `event_id` - If the PaymentIntent was placed via the webhook, this will be populated with the ID of that event
+- `processing_at` - When a request to place the order is made, this is populated
+- `processed_at` - Once the order is placed, this will be populated with the current timestamp
+
+##### Preventing overlap
+Currently, we delay sending the job to place the order to the queue by 20 seconds, this is less than ideal, now the payment type will check whether we are already processing this order and if so, not do anything further. This should prevent overlaps regardless of how they are triggered.
+
+## 1.0.0-alpha.34
+
+### Medium Impact
+
+#### Stripe Addon
+
+The Stripe driver will now check whether an order has a value for `placed_at` against an order and if so, no further processing will take place.
+
+Additionally, the logic in the webhook has been moved to the job queue, which is dispatched with a delay of 20 seconds, this is to allow storefronts to manually process a payment intent, in addition to the webhook, without having to worry about overlap.
+
+The Stripe webhook ENV entry has been changed from `STRIPE_WEBHOOK_PAYMENT_INTENT` to `LUNAR_STRIPE_WEBHOOK_SECRET`.
+
+The stripe config Lunar looks for in `config/services.php` has changed and should now look like:
+
+```php
+'stripe' => [
+    'key' => env('STRIPE_SECRET'),
+    'public_key' => env('STRIPE_PK'),
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
+],
+```
+
+## 1.0.0-alpha.32
+
+### High Impact
+
+There is now a new `LunarUser` interface you will need to implement on your `User` model.
+
+```php
+// ...
+class User extends Authenticatable implements \Lunar\Base\LunarUser
+{
+    use \Lunar\Base\Traits\LunarUser;
+}
+```
+
 ## 1.0.0-alpha.31
 
 ### High Impact

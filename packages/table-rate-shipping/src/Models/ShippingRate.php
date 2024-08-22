@@ -5,6 +5,7 @@ namespace Lunar\Shipping\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasPrices;
@@ -26,6 +27,15 @@ class ShippingRate extends BaseModel implements Purchasable
      * @var array
      */
     protected $guarded = [];
+
+    protected static function booted()
+    {
+        self::deleting(function (self $shippingRate) {
+            DB::beginTransaction();
+            $shippingRate->prices()->delete();
+            DB::commit();
+        });
+    }
 
     /**
      * Return a new factory instance for the model.

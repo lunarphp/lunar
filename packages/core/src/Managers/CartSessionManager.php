@@ -140,16 +140,15 @@ class CartSessionManager implements CartSessionInterface
             config('lunar.cart.eager_load', [])
         )->find($cartId);
 
-        if ($cart->hasCompletedOrders() && ! $this->allowsMultipleOrdersPerCart()) {
-            return $this->createNewCart();
-        }
-
         if (! $cart) {
             return $create ? $this->createNewCart() : null;
         }
 
-        $this->cart = $cart;
+        if ($cart->hasCompletedOrders() && ! $this->allowsMultipleOrdersPerCart()) {
+            return $this->createNewCart();
+        }
 
+        $this->cart = $cart;
         if ($calculate) {
             $this->cart->calculate();
         }
@@ -175,6 +174,7 @@ class CartSessionManager implements CartSessionInterface
             $this->getShippingEstimateMeta(),
             setOverride: true
         );
+        $this->cart->calculate(force: true);
     }
 
     /**

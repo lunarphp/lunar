@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class)->group('models');
 
 use Lunar\Models\Channel;
 
@@ -50,4 +50,15 @@ test('can return associated discounts', function () {
     $discount->channels()->attach($channel->id);
 
     expect($channel->refresh()->discounts)->toHaveCount(1);
+});
+
+test('can soft delete a channel', function () {
+    $channel = Channel::factory()->create();
+
+    $channel->delete();
+
+    \Pest\Laravel\assertDatabaseHas(Channel::class, [
+        'id' => $channel->id,
+        'deleted_at' => now(),
+    ]);
 });

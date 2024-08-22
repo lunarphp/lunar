@@ -24,6 +24,9 @@ test('can fetch shipping options', function () {
     TaxClass::factory()->create([
         'default' => true,
     ]);
+    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $shippingZone = ShippingZone::factory()->create([
         'type' => 'countries',
@@ -38,6 +41,10 @@ test('can fetch shipping options', function () {
                 "{$currency->code}" => 200,
             ],
         ],
+    ]);
+
+    $shippingMethod->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()

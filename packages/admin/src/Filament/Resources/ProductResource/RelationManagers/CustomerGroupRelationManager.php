@@ -15,6 +15,8 @@ class CustomerGroupRelationManager extends RelationManager
 
     protected static string $relationship = 'customerGroups';
 
+    public ?string $description = null;
+
     public function isReadOnly(): bool
     {
         return false;
@@ -83,7 +85,7 @@ class CustomerGroupRelationManager extends RelationManager
 
         return $table
             ->description(
-                __('lunarpanel::relationmanagers.customer_groups.table.description')
+                $this->description ?: __('lunarpanel::relationmanagers.customer_groups.table.description')
             )
             ->paginated(false)
             ->headerActions([
