@@ -9,7 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Collection;
 use Lunar\Models\Language;
 
-class TranslatedText extends TextInput
+class   TranslatedText extends TextInput
 {
     protected string $view = 'lunarpanel::forms.components.translated-text';
 
@@ -209,17 +209,17 @@ class TranslatedText extends TextInput
         return $this;
     }
 
-    public function getExpanded()
+    public function getExpanded(): bool
     {
         return $this->expanded;
     }
 
-    public function getDefaultLanguage()
+    public function getDefaultLanguage(): Language
     {
         return $this->languages->first(fn ($lang) => $lang->default);
     }
 
-    public function getMoreLanguages()
+    public function getMoreLanguages(): Collection
     {
         return $this->languages->filter(fn ($lang) => ! $lang->default);
     }
@@ -229,7 +229,7 @@ class TranslatedText extends TextInput
         return $this->getLanguages()->mapWithKeys(fn ($language) => [$language->code => ''])->toArray();
     }
 
-    public function getLanguages()
+    public function getLanguages(): Collection
     {
         return $this->languages;
     }
