@@ -9,7 +9,7 @@ use Lunar\Models\ProductVariant;
 
 trait TestUtils
 {
-    public function createCart($currency = null, $price = 100, $quantity = 1)
+    public function createCart($currency = null, $price = 100, $quantity = 1, $calculate = true)
     {
         if (! $currency) {
             $currency = Currency::factory()->create([
@@ -38,10 +38,10 @@ trait TestUtils
             'quantity' => $quantity,
         ]);
 
-        $this->assertNull($cart->total);
-        $this->assertNull($cart->taxTotal);
-        $this->assertNull($cart->subTotal);
+        expect($cart->total)->toBeNull()
+            ->and($cart->taxTotal)->toBeNull()
+            ->and($cart->subTotal)->toBeNull();
 
-        return $cart->calculate();
+        return $calculate ? $cart->calculate() : $cart;
     }
 }

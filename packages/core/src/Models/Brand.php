@@ -15,6 +15,7 @@ use Lunar\Base\Traits\HasUrls;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\BrandFactory;
+use Lunar\Facades\DB;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -55,6 +56,19 @@ class Brand extends BaseModel implements Contracts\Brand, SpatieHasMedia
         return BrandFactory::new();
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (self $brand) {
+            DB::beginTransaction();
+            $brand->discounts()->detach();
+            $brand->collections()->detach();
+            DB::commit();
+        });
+    }
+
+    /**
+     * Return the product relationship.
+     */
     public function products(): HasMany
     {
         return $this->hasMany(Product::modelClass());

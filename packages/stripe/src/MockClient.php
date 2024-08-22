@@ -111,6 +111,14 @@ class MockClient implements ClientInterface
             return [$this->rBody, $this->rcode, $this->rheaders];
         }
 
+        if ($method == 'get' && str_contains($absUrl, 'payment_methods')) {
+            $this->rBody = $this->getResponse('payment_method', [
+                'id' => $id,
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
+        }
+
         return [$this->rBody, $this->rcode, $this->rheaders];
     }
 

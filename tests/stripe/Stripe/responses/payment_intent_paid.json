@@ -116,7 +116,7 @@
   "metadata": {},
   "next_action": null,
   "on_behalf_of": null,
-  "payment_method": null,
+  "payment_method": "pm_1234567890",
   "payment_method_options": {},
   "payment_method_types": [
     "card"

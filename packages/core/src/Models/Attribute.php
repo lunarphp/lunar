@@ -5,7 +5,6 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
@@ -39,14 +38,15 @@ class Attribute extends BaseModel implements Contracts\Attribute
     use HasMacros;
     use HasTranslations;
 
-    public static function boot()
+    protected static function booted(): void
     {
-        static::deleting(function (Model $model) {
+        static::deleting(function (self $attribute) {
+            DB::beginTransaction();
             DB::table(
                 config('lunar.database.table_prefix').'attributables'
-            )->where('attribute_id', '=', $model->id)->delete();
+            )->where('attribute_id', '=', $attribute->id)->delete();
+            DB::commit();
         });
-        parent::boot();
     }
 
     /**

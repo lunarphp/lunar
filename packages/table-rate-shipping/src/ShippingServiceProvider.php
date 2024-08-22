@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Facades\ModelManifest;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
@@ -49,6 +50,15 @@ class ShippingServiceProvider extends ServiceProvider
             return $orderModel->belongsToMany(
                 ShippingZone::class,
                 "{$prefix}order_shipping_zone"
+            )->withTimestamps();
+        });
+
+        CustomerGroup::resolveRelationUsing('shippingMethods', function ($customerGroup) {
+            $prefix = config('lunar.database.table_prefix');
+
+            return $customerGroup->belongsToMany(
+                ShippingMethod::class,
+                "{$prefix}customer_group_shipping_method"
             )->withTimestamps();
         });
 

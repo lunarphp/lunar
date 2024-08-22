@@ -42,8 +42,7 @@ class Attributes extends Forms\Components\Group
                 }
 
                 if ($morphMap == (new ProductVariant)->getMorphClass()) {
-                    $productTypeId = $record->product?->product_type_id ?: ProductType::first()->id;
-
+                    $productTypeId = $record?->product?->product_type_id ?: ProductType::first()->id;
                     // If we have a product type, the attributes should be based off that.
                     if ($productTypeId) {
                         $attributeQuery = ProductType::find($productTypeId)->variantAttributes();

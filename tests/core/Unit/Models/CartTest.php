@@ -538,7 +538,9 @@ test('can add cart lines', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -562,7 +564,9 @@ test('can remove cart lines', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -614,7 +618,9 @@ test('can update existing cart line', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
@@ -691,7 +697,9 @@ test('can calculate shipping', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,

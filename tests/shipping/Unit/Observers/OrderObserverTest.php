@@ -36,6 +36,13 @@ test('can store shipping zone against order', function () {
         ],
     ]);
 
+    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+    $shippingMethod->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
+    ]);
+
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
         ->create([
             'shipping_method_id' => $shippingMethod->id,

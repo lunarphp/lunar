@@ -7,6 +7,8 @@ use Lunar\Generators\UrlGenerator;
 use Lunar\Models\Brand;
 use Lunar\Models\Language;
 use Lunar\Models\Url;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -75,4 +77,46 @@ test('can return mapped attributes', function () {
         'name' => 'Test Brand',
     ]);
     expect($brand->mappedAttributes)->toHaveCount(1);
+});
+
+test('can delete a brand', function () {
+    $brand = Brand::factory()->create([
+        'name' => 'Test Brand',
+    ]);
+
+    \Lunar\Models\Product::factory()->create([
+        'brand_id' => $brand->id,
+    ]);
+
+    $discount = \Lunar\Models\Discount::factory()->create();
+    $collection = \Lunar\Models\Collection::factory()->create();
+
+    $brand->discounts()->attach($discount);
+    $brand->collections()->attach($collection);
+
+    assertDatabaseHas($brand->discounts()->getTable(), [
+        'brand_id' => $brand->id,
+        'discount_id' => $discount->id,
+    ]);
+
+    assertDatabaseHas($brand->collections()->getTable(), [
+        'brand_id' => $brand->id,
+        'collection_id' => $collection->id,
+    ]);
+
+    $brand->delete();
+
+    assertDatabaseMissing($brand->discounts()->getTable(), [
+        'brand_id' => $brand->id,
+        'discount_id' => $discount->id,
+    ]);
+
+    assertDatabaseMissing($brand->collections()->getTable(), [
+        'brand_id' => $brand->id,
+        'collection_id' => $collection->id,
+    ]);
+
+    assertDatabaseMissing(Brand::class, [
+        'id' => $brand->id,
+    ]);
 });
