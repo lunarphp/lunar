@@ -157,10 +157,11 @@ class ManageShippingRates extends ManageRelatedRecords
                 static::saveShippingRate($record, $data);
             })->slideOver(),
         ])->actions([
+
             Tables\Actions\EditAction::make()->slideOver()->action(function (ShippingRate $shippingRate, array $data) {
                 static::saveShippingRate($shippingRate, $data);
             }),
-
+            Tables\Actions\DeleteAction::make()->requiresConfirmation(),
         ]);
     }
 

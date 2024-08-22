@@ -8,6 +8,7 @@ use Lunar\Base\DataTransferObjects\PaymentCheck;
 use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Events\PaymentAttemptEvent;
+use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
@@ -79,7 +80,7 @@ class StripePaymentType extends AbstractPayment
             try {
                 $this->order = $this->cart->createOrder();
                 $paymentIntentModel->order_id = $this->order->id;
-            } catch (DisallowMultipleCartOrdersException $e) {
+            } catch (DisallowMultipleCartOrdersException|CartException $e) {
                 $failure = new PaymentAuthorize(
                     success: false,
                     message: $e->getMessage(),

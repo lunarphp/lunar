@@ -1,20 +1,16 @@
 <?php
 
-uses(\Lunar\Tests\Shipping\TestCase::class);
-
-use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
 use Lunar\Models\TaxClass;
-use Lunar\Shipping\DataTransferObjects\ShippingOptionLookup;
-use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingZone;
 
+uses(\Lunar\Tests\Shipping\TestCase::class);
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 uses(\Lunar\Tests\Shipping\TestUtils::class);
 
-test('can fetch shipping options', function () {
+test('can set correct shipping options', function () {
     $currency = Currency::factory()->create([
         'default' => true,
     ]);
@@ -22,9 +18,6 @@ test('can fetch shipping options', function () {
     $country = Country::factory()->create();
 
     TaxClass::factory()->create([
-        'default' => true,
-    ]);
-    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
         'default' => true,
     ]);
 
@@ -36,6 +29,7 @@ test('can fetch shipping options', function () {
 
     $shippingMethod = ShippingMethod::factory()->create([
         'driver' => 'ship-by',
+        'code' => 'BASEDEL',
         'data' => [
             'minimum_spend' => [
                 "{$currency->code}" => 200,
@@ -43,54 +37,43 @@ test('can fetch shipping options', function () {
         ],
     ]);
 
+    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
     $shippingMethod->customerGroups()->sync([
         $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
-        ->create([
-            'shipping_method_id' => $shippingMethod->id,
-            'shipping_zone_id' => $shippingZone->id,
-        ]);
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
+    ]);
 
     $shippingRate->prices()->createMany([
         [
-            'price' => 600,
+            'price' => 1000,
             'min_quantity' => 1,
             'currency_id' => $currency->id,
         ],
         [
-            'price' => 500,
-            'min_quantity' => 700,
-            'currency_id' => $currency->id,
-        ],
-        [
             'price' => 0,
-            'min_quantity' => 800,
+            'min_quantity' => 500,
             'currency_id' => $currency->id,
         ],
     ]);
 
-    $cart = $this->createCart($currency, 500);
+    $cart = $this->createCart($currency, 6000, calculate: false);
 
     $cart->shippingAddress()->create(
-        CartAddress::factory()->make([
+        \Lunar\Models\CartAddress::factory()->make([
             'country_id' => $country->id,
+            'shipping_option' => 'BASEDEL',
             'state' => null,
+            'type' => 'shipping',
         ])->toArray()
     );
 
-    $shippingRates = Shipping::shippingRates(
-        $cart->refresh()->calculate()
-    )->get();
+    $option = $cart->refresh()->getShippingOption();
 
-    $options = Shipping::shippingOptions()->cart(
-        $cart->refresh()->calculate()
-    )->get(
-        new ShippingOptionLookup(
-            shippingRates: $shippingRates
-        )
-    );
-
-    $this->assertcount(1, $options);
-});
+    expect($option->price->value)->toBe(0);
+})->group('shipping-modifier');

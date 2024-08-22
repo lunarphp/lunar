@@ -69,6 +69,20 @@ $cartLine = new \Lunar\Models\CartLine([
 $cart->lines()->create([/* .. */]);
 ```
 
+### Validation
+
+When adding items to a cart there are a series of validation actions which are run, which are defined in the `config/lunar/cart.php` config file.
+
+These actions will throw a `Lunar\Exceptions\Carts\CartException`.
+
+```php
+try {
+    $cart->add($purchasable, 500);
+} catch (\Lunar\Exceptions\Carts\CartException $e) {
+    $error = $e->getMessage();
+}
+```
+
 Now you have a basic Cart up and running, it's time to show you how you would
 use the cart to get all the calculated totals and tax.
 
