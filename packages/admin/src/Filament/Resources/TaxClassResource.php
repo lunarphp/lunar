@@ -43,8 +43,10 @@ class TaxClassResource extends BaseResource
     protected static function getMainFormComponents(): array
     {
         return [
-            static::getNameFormComponent(),
-            static::getDefaultFormComponent(),
+            Forms\Components\Section::make()->schema([
+                static::getNameFormComponent(),
+                static::getDefaultFormComponent(),
+            ])
         ];
     }
 
