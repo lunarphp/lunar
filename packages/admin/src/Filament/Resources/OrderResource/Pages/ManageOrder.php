@@ -81,7 +81,7 @@ class ManageOrder extends BaseViewRecord
 
     public static function getInfolistSchema(): array
     {
-        return self::callLunarHook('extendInfolistSchema', [
+        return self::callStaticLunarHook('extendInfolistSchema', [
             static::getShippingInfolist(),
             static::getOrderLinesTable(),
             static::getOrderTotalsInfolist(),
@@ -92,7 +92,7 @@ class ManageOrder extends BaseViewRecord
 
     public static function getInfolistAsideSchema(): array
     {
-        return self::callLunarHook('extendInfolistAsideSchema', [
+        return self::callStaticLunarHook('extendInfolistAsideSchema', [
             static::getCustomerEntry(),
             static::getOrderSummaryInfolist(),
             static::getShippingAddressInfolist(),
@@ -119,7 +119,7 @@ class ManageOrder extends BaseViewRecord
 
     public static function getCustomerEntry(): Infolists\Components\Component
     {
-        return self::callLunarHook('extendCustomerEntry', static::getDefaultCustomerEntry());
+        return self::callStaticLunarHook('extendCustomerEntry', static::getDefaultCustomerEntry());
     }
 
     public static function getDefaultTagsSection(): Infolists\Components\Section
@@ -137,7 +137,7 @@ class ManageOrder extends BaseViewRecord
 
     public static function getTagsSection(): Infolists\Components\Component
     {
-        return self::callLunarHook('extendTagsSection', static::getDefaultTagsSection());
+        return self::callStaticLunarHook('extendTagsSection', static::getDefaultTagsSection());
     }
 
     public static function getDefaultAdditionalInfoSection(): Infolists\Components\Section
@@ -174,7 +174,7 @@ class ManageOrder extends BaseViewRecord
 
     public static function getAdditionalInfoSection(): Infolists\Components\Component
     {
-        return self::callLunarHook('extendAdditionalInfoSection', static::getDefaultAdditionalInfoSection());
+        return self::callStaticLunarHook('extendAdditionalInfoSection', static::getDefaultAdditionalInfoSection());
     }
 
     public function getDefaultInfolist(Infolist $infolist): Infolist
