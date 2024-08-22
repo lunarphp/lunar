@@ -35,7 +35,7 @@ Currently, PaymentIntent information is stored in the Cart model's meta, which i
 
 Whilst this works okay it causes for limitations and also means that if the carts meta is ever updated elsewhere, or the intent information is removed, then it will cause unrecoverable loss.
 
-This PR looks to move away from the payment_intent key in the meta to a StripePaymentIntent model, this allows us more flexibility in how payment intents are handled and reacted on. A StripePaymentIntent will be associated to both a cart and an order.
+We have now looked to move away from the payment_intent key in the meta to a StripePaymentIntent model, this allows us more flexibility in how payment intents are handled and reacted on. A StripePaymentIntent will be associated to both a cart and an order.
 
 The information we store is now:
 
