@@ -34,7 +34,9 @@ class ManageShippingMethodAvailability extends BaseManageRelatedRecords
     {
         return [
             RelationGroup::make('Availability', [
-                CustomerGroupRelationManager::class,
+                CustomerGroupRelationManager::make([
+                    'description' => __('lunarpanel.shipping::relationmanagers.shipping_methods.customer_groups.description'),
+                ]),
             ]),
         ];
     }
