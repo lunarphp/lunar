@@ -88,6 +88,7 @@ trait ManagesProductPricing
                         Forms\Components\TextInput::make('value')
                             ->label('')
                             ->statePath($index.'.value')
+                            ->numeric()
                             ->label(
                                 __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.label')
                             )
@@ -114,6 +115,7 @@ trait ManagesProductPricing
                         Forms\Components\TextInput::make('compare_price')
                             ->label('')
                             ->statePath($index.'.compare_price')
+                            ->numeric()
                             ->label(
                                 __('lunarpanel::relationmanagers.pricing.form.basePrices.form.compare_price.label')
                             )

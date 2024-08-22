@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
@@ -24,6 +23,7 @@ use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
+use Lunar\Base\LunarUser;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
@@ -43,6 +43,7 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
+use Throwable;
 
 /**
  * @property int $id
@@ -292,6 +293,17 @@ class Cart extends BaseModel
             })->whereNull('placed_at');
     }
 
+    public function currentDraftOrder(?int $draftOrderId = null)
+    {
+        return $this->calculate()
+            ->draftOrder($draftOrderId)
+            ->where('fingerprint', $this->fingerprint())
+            ->when(
+                $this->total,
+                fn (Builder $query, Price $price) => $query->where('total', $price->value)
+            )->first();
+    }
+
     /**
      * Return the completed order relationship.
      */
@@ -465,8 +477,10 @@ class Cart extends BaseModel
 
     /**
      * Associate a user to the cart
+     *
+     * @throws Exception
      */
-    public function associate(User $user, string $policy = 'merge', bool $refresh = true): Cart
+    public function associate(LunarUser $user, string $policy = 'merge', bool $refresh = true): Cart
     {
         if ($this->customer()->exists()) {
             if (! $user->query()
@@ -558,7 +572,7 @@ class Cart extends BaseModel
      */
     public function getShippingOption(): ?ShippingOption
     {
-        return ShippingManifest::getShippingOption($this);
+        return ShippingManifest::getShippingOption($this->calculate());
     }
 
     /**
@@ -578,18 +592,20 @@ class Cart extends BaseModel
         bool $allowMultipleOrders = false,
         ?int $orderIdToUpdate = null
     ): Order {
+        $cart = $this->refresh()->recalculate();
+
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,
         ]) as $action) {
             app($action)->using(
-                cart: $this,
+                cart: $cart,
             )->validate();
         }
 
         return app(
             config('lunar.cart.actions.order_create', CreateOrder::class)
         )->execute(
-            $this->refresh()->recalculate(),
+            $cart,
             $allowMultipleOrders,
             $orderIdToUpdate
         )->then(fn ($order) => $order->refresh());
@@ -637,13 +653,13 @@ class Cart extends BaseModel
     {
         $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
 
-        return (new $generator())->execute($this);
+        return (new $generator)->execute($this);
     }
 
     /**
      * Check whether a given fingerprint matches the one being generated for the cart.
      *
-     * @throws FingerprintMismatchException
+     * @throws FingerprintMismatchException|Throwable
      */
     public function checkFingerprint(string $fingerprint): bool
     {

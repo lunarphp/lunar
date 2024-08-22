@@ -35,4 +35,17 @@ return [
     |
     */
     'scout_enabled' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Navigation counts
+    |--------------------------------------------------------------------------
+    |
+    | The admin panel will show a count of orders in the left navigation.
+    | This is based upon specific order statuses. You can define the statuses
+    | to include in the count below.
+    |
+    */
+    'order_count_statuses' => ['payment-received'],
+
 ];

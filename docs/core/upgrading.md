@@ -20,20 +20,65 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ## [Unreleased]
 
+## High Impact
+
+### Shipping methods availability
+
+Shipping methods are now associated to Customer Groups. If you are using the shipping addon then you should ensure that all your shipping methods are associated to the correct customer groups.
+
+## 1.0.0-alpha.34
+
 ### Medium Impact
 
-The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+#### Stripe Addon
+
+The Stripe driver will now check whether an order has a value for `placed_at` against an order and if so, no further processing will take place.
+
+Additionally, the logic in the webhook has been moved to the job queue, which is dispatched with a delay of 20 seconds, this is to allow storefronts to manually process a payment intent, in addition to the webhook, without having to worry about overlap.
+
+The Stripe webhook ENV entry has been changed from `STRIPE_WEBHOOK_PAYMENT_INTENT` to `LUNAR_STRIPE_WEBHOOK_SECRET`.
+
+The stripe config Lunar looks for in `config/services.php` has changed and should now look like:
 
 ```php
-public function handle(\Lunar\Models\Cart $cart, \Closure $next)
+'stripe' => [
+    'key' => env('STRIPE_SECRET'),
+    'public_key' => env('STRIPE_PK'),
+    'webhooks' => [
+        'lunar' => env('LUNAR_STRIPE_WEBHOOK_SECRET'),
+    ],
+],
+```
+
+## 1.0.0-alpha.32
+
+### High Impact
+
+There is now a new `LunarUser` interface you will need to implement on your `User` model.
+
+```php
+// ...
+class User extends Authenticatable implements \Lunar\Base\LunarUser
 {
-    //..
-    
-    return $next($cart);
+    use \Lunar\Base\Traits\LunarUser;
 }
 ```
 
-## 1.0.0-alpha.x
+## 1.0.0-alpha.31
+
+### High Impact
+
+Certain parts of `config/cart.php` which are more specific to when you are interacting with carts via the session have been relocated to a new `config/cart_session.php` file.
+
+```php
+// Move to config/cart_session.php
+'session_key' => 'lunar_cart',
+'auto_create' => false,
+```
+
+You should also check this file for any new config values you may need to add.
+
+## 1.0.0-alpha.29
 
 ### High Impact
 
@@ -48,7 +93,22 @@ To allow for recalculation we have now introduced `$cart->recalculate()` to forc
 Collection Group now have unique index on the column `handle`.
 If you are creating Collection Group from the admin panel, there is no changes required.
 
-## [Unreleased]
+### Medium Impact
+
+#### Update custom shipping modifiers signature
+
+The `\Lunar\Base\ShippingModifier` `handle` method now correctly passes a closure as the second parameter. You will need to update any custom shipping modifiers that extend this as follows:
+
+```php
+public function handle(\Lunar\Models\Cart $cart, \Closure $next)
+{
+    //..
+    
+    return $next($cart);
+}
+```
+
+## 1.0.0-alpha.26
 
 ### Medium Impact
 

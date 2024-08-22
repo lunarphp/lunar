@@ -5,6 +5,7 @@ namespace Lunar\Shipping\Resolvers;
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
 use Lunar\Models\Country;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Facades\Shipping;
@@ -20,6 +21,11 @@ class ShippingRateResolver
      * The country to use when resolving.
      */
     protected ?Country $country = null;
+
+    /**
+     * The customer group to limit to.
+     */
+    public ?Collection $customerGroups = null;
 
     /**
      * The state to use when resolving.
@@ -56,6 +62,12 @@ class ShippingRateResolver
         $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
             return $line->purchasable->stock < $line->quantity;
         });
+
+        $this->customerGroups = collect([CustomerGroup::getDefault()]);
+
+        if ($user = $this->cart->user) {
+            $this->customerGroups = $user->customers->first()?->customerGroups ?: $this->customerGroups;
+        }
 
         if (! empty($shippingMeta)) {
             $this->postcode(
@@ -138,7 +150,16 @@ class ShippingRateResolver
         foreach ($zones as $zone) {
             $zoneShippingRates = $zone->rates
                 ->reject(function ($rate) {
+                    $method = $rate->shippingMethod()->customerGroup($this->customerGroups)->first();
+
+                    return ! $method;
+                })
+                ->reject(function ($rate) {
                     $method = $rate->shippingMethod;
+
+                    if (! $method) {
+                        return true;
+                    }
 
                     if (! $method->cutoff) {
                         return false;
