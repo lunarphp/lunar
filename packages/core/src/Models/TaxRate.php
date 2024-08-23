@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxRateFactory;
+use Lunar\Facades\DB;
 
 /**
  * @property int $id
@@ -28,6 +29,15 @@ class TaxRate extends BaseModel
     protected static function newFactory(): TaxRateFactory
     {
         return TaxRateFactory::new();
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (self $taxRate) {
+            DB::beginTransaction();
+            $taxRate->taxRateAmounts()->delete();
+            DB::commit();
+        });
     }
 
     /**
