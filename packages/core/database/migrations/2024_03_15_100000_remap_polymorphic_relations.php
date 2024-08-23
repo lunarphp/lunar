@@ -22,6 +22,7 @@ class RemapPolymorphicRelations extends Migration
 
         $tables = [
             'attributables' => ['attributable_type'],
+            'attributes' => ['attribute_type'],
             'attribute_groups' => ['attributable_type'],
             'cart_lines' => ['purchasable_type'],
             'channelables' => ['channelable_type'],

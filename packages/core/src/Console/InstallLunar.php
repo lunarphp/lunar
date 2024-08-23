@@ -19,7 +19,6 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\TaxClass;
-
 use function Laravel\Prompts\confirm;
 
 class InstallLunar extends Command
@@ -158,7 +157,7 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Product::class,
+                    'attribute_type' => 'product',
                     'attribute_group_id' => $group->id,
                     'position' => 1,
                     'name' => [
@@ -179,7 +178,7 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Collection::class,
+                    'attribute_type' => 'collection',
                     'attribute_group_id' => $collectionGroup->id,
                     'position' => 1,
                     'name' => [
@@ -200,7 +199,7 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Product::class,
+                    'attribute_type' => 'product',
                     'attribute_group_id' => $group->id,
                     'position' => 2,
                     'name' => [
@@ -221,7 +220,7 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Collection::class,
+                    'attribute_type' => 'collection',
                     'attribute_group_id' => $collectionGroup->id,
                     'position' => 2,
                     'name' => [

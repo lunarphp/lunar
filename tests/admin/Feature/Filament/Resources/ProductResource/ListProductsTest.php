@@ -1,14 +1,12 @@
 <?php
 
-use Lunar\Admin\Filament\Resources\ProductResource;
-
 uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('resource.product');
 
 it('can create product', function () {
     \Lunar\Models\Attribute::factory()->create([
         'type' => \Lunar\FieldTypes\TranslatedText::class,
-        'attribute_type' => \Lunar\Models\Product::class,
+        'attribute_type' => 'product',
         'handle' => 'name',
         'name' => [
             'en' => 'Name',

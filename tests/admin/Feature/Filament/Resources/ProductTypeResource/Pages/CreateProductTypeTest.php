@@ -33,11 +33,11 @@ it('can associate attributes', function () {
     $productType = ProductType::factory()->make();
 
     $attributeA = \Lunar\Models\Attribute::factory()->create([
-        'attribute_type' => \Lunar\Models\Product::class,
+        'attribute_type' => 'product',
     ]);
 
     $attributeB = \Lunar\Models\Attribute::factory()->create([
-        'attribute_type' => \Lunar\Models\Product::class,
+        'attribute_type' => 'product',
     ]);
 
     $formData = [

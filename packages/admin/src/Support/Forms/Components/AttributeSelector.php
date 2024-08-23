@@ -42,7 +42,7 @@ class AttributeSelector extends CheckboxList
             $actualClass = ModelManifest::guessModelClass($type);
             // Filter out any that match this attribute type but are not in the saved state.
             $attributes = $existing->reject(
-                fn ($attribute) => ! in_array($attribute->id, $state ?? []) && $attribute->attribute_type == $actualClass
+                fn ($attribute) => ! in_array($attribute->id, $state ?? []) && $attribute->attribute_type == $type
             )->pluck('id')->unique()->merge($state)->toArray();
 
             $component->getRelationship()->sync($attributes);

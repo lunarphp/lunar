@@ -7,7 +7,6 @@ use Lunar\Generators\UrlGenerator;
 use Lunar\Models\Brand;
 use Lunar\Models\Language;
 use Lunar\Models\Url;
-
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
@@ -72,7 +71,7 @@ test('generates unique urls', function () {
 
 test('can return mapped attributes', function () {
     \Lunar\Models\Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
     ]);
     $brand = Brand::factory()->create([
         'name' => 'Test Brand',

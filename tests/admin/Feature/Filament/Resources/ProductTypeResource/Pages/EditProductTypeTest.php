@@ -1,7 +1,6 @@
 <?php
 
 use Livewire\Livewire;
-use Lunar\Admin\Filament\Resources\ProductTypeResource;
 use Lunar\Models\ProductType;
 
 uses(\Lunar\Tests\Admin\TestCase::class)
@@ -11,11 +10,11 @@ it('can associate attributes', function () {
     $productType = ProductType::factory()->create();
 
     $attributeA = \Lunar\Models\Attribute::factory()->create([
-        'attribute_type' => \Lunar\Models\Product::class,
+        'attribute_type' => 'product',
     ]);
 
     $attributeB = \Lunar\Models\Attribute::factory()->create([
-        'attribute_type' => \Lunar\Models\Product::class,
+        'attribute_type' => 'product',
     ]);
 
     $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')->test(ProductTypeResource\Pages\EditProductType::class, [

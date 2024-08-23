@@ -23,19 +23,19 @@ test('can return correct searchable data', function () {
     ]);
 
     $attributeA = Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
         'searchable' => true,
     ]);
     $attributeB = Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
         'searchable' => true,
     ]);
     $attributeC = Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
         'searchable' => false,
     ]);
     $attributeD = Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
         'type' => TranslatedText::class,
         'searchable' => true,
     ]);
@@ -63,4 +63,4 @@ test('can return correct searchable data', function () {
         ->and($data)->toHaveKey($attributeD->handle.'_en')
         ->and($data)->toHaveKey($attributeD->handle.'_dk');
 
-});
+})->group('foo');

@@ -56,7 +56,7 @@ class CreateRootCollection extends CreateAction
             $this->success();
         });
 
-        $attribute = Attribute::where('attribute_type', '=', Collection::class)
+        $attribute = Attribute::where('attribute_type', '=', (new Collection)->getMorphClass())
             ->where('handle', '=', 'name')->first();
 
         $formInput = TextInput::class;

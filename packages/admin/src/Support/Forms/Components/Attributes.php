@@ -28,7 +28,8 @@ class Attributes extends Forms\Components\Group
 
                 $morphMap = (new $modelClass)->getMorphClass();
 
-                $attributeQuery = Attribute::where('attribute_type', $modelClass);
+                $attributeQuery = Attribute::where('attribute_type', $morphMap);
+
 
                 // Products are unique in that they use product types to map attributes, so we need
                 // to try and find the product type ID
@@ -53,7 +54,7 @@ class Attributes extends Forms\Components\Group
 
                 $groups = AttributeGroup::where(
                     'attributable_type',
-                    $modelClass
+                    $morphMap
                 )->orderBy('position', 'asc')
                     ->get()
                     ->map(function ($group) use ($attributes) {
@@ -75,6 +76,7 @@ class Attributes extends Forms\Components\Group
                     $groupComponents[] = Forms\Components\Section::make($group['model']->translate('name'))
                         ->schema($sectionFields);
                 }
+
 
                 return $groupComponents;
             });
