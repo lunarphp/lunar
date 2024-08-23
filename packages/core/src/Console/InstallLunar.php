@@ -19,6 +19,7 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\TaxClass;
+
 use function Laravel\Prompts\confirm;
 
 class InstallLunar extends Command
