@@ -249,7 +249,9 @@ class InstallLunar extends Command
                 ]);
 
                 $type->mappedAttributes()->attach(
-                    Attribute::whereAttributeType(Product::class)->get()->pluck('id')
+                    Attribute::whereAttributeType(
+                        (new Product)->getMorphClass()
+                    )->get()->pluck('id')
                 );
             }
         });

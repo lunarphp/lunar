@@ -22,7 +22,9 @@ class ConvertProductTypeAttributesToProducts
         }
 
         DB::table("{$prefix}attributes")
-            ->whereAttributeType(ProductType::class)
+            ->whereAttributeType(
+                (new ProductType)->getMorphClass()
+            )
             ->update([
                 'attribute_type' => 'product',
             ]);

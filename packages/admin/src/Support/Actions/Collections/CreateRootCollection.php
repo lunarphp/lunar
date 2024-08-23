@@ -22,7 +22,9 @@ class CreateRootCollection extends CreateAction
             DB::beginTransaction();
 
             $record = $this->process(function (array $data) {
-                $attribute = Attribute::whereHandle('name')->whereAttributeType(Collection::class)->first()->type;
+                $attribute = Attribute::whereHandle('name')->whereAttributeType(
+                    (new Collection)->getMorphClass()
+                )->first()->type;
 
                 return Collection::create([
                     'collection_group_id' => $data['collection_group_id'],

@@ -176,7 +176,9 @@ class ProductResource extends BaseResource
     public static function getBaseNameFormComponent(): Component
     {
         $nameType = Attribute::whereHandle('name')
-            ->whereAttributeType(static::getModel())
+            ->whereAttributeType(
+                (new (static::getModel()))->getMorphClass()
+            )
             ->first()?->type ?: TranslatedText::class;
 
         $component = TranslatedTextInput::make('name');

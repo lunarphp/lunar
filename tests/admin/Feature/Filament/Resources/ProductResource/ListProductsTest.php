@@ -30,7 +30,7 @@ it('can create product', function () {
 
     $this->asStaff();
 
-    \Livewire\Livewire::test(ProductResource\Pages\ListProducts::class)
+    \Livewire\Livewire::test(\Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class)
         ->callAction('create', data: [
             'name' => [$language->code => 'Foo Bar'],
             'base_price' => 10.99,
@@ -38,7 +38,7 @@ it('can create product', function () {
             'product_type_id' => $productType->id,
         ])->assertHasNoActionErrors();
 
-    $this->assertDatabaseHas((new \Lunar\Models\Product)->getTable(), [
+    \Pest\Laravel\assertDatabaseHas((new \Lunar\Models\Product)->getTable(), [
         'product_type_id' => $productType->id,
         'status' => 'draft',
         'attribute_data' => json_encode([

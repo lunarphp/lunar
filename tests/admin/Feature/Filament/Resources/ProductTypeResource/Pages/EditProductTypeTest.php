@@ -17,7 +17,7 @@ it('can associate attributes', function () {
         'attribute_type' => 'product',
     ]);
 
-    $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')->test(ProductTypeResource\Pages\EditProductType::class, [
+    $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')->test(\Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\EditProductType::class, [
         'record' => $productType->getRouteKey(),
     ])->fillForm([
         'mappedAttributes' => [$attributeA->id, $attributeB->id],
@@ -37,7 +37,7 @@ it('can associate attributes', function () {
         'attribute_id' => $attributeB->id,
     ]);
 
-    $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')->test(ProductTypeResource\Pages\EditProductType::class, [
+    $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')->test(\Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\EditProductType::class, [
         'record' => $productType->getRouteKey(),
     ])->set('data.mappedAttributes', [$attributeA->id])->assertFormSet([
         'mappedAttributes' => [$attributeA->id],
