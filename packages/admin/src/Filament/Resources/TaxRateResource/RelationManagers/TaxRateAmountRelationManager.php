@@ -8,6 +8,8 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Validation\Rules\Unique;
+use Lunar\Models\TaxRateAmount;
 
 class TaxRateAmountRelationManager extends RelationManager
 {
@@ -25,6 +27,15 @@ class TaxRateAmountRelationManager extends RelationManager
         return $form->schema([
             Select::make('tax_class_id')
                 ->required()
+                ->unique(
+                    TaxRateAmount::class,
+                    'tax_class_id',
+                    ignoreRecord: true,
+                    modifyRuleUsing: fn (Unique $rule) => $rule->when(
+                        $this->getOwnerRecord(),
+                        fn ($query, $value) => $query->where('tax_rate_id', $value->id)
+                    )
+                )
                 ->relationship(name: 'taxClass', titleAttribute: 'name'),
             TextInput::make('percentage')->numeric()->required(),
         ])->columns(2);
