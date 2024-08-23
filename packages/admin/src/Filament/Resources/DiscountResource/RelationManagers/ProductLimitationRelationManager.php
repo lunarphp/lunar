@@ -7,6 +7,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 
 class ProductLimitationRelationManager extends RelationManager
@@ -22,7 +23,6 @@ class ProductLimitationRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-
         return $table
             ->heading(
                 __('lunarpanel::discount.relationmanagers.products.title')
@@ -33,7 +33,9 @@ class ProductLimitationRelationManager extends RelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['limitation', 'exclusion'])
-                    ->wherePurchasableType(Product::class)
+                    ->wherePurchasableType(
+                        ModelManifest::getMorphMapKey(Product::class)
+                    )
                     ->whereHas('purchasable')
             )
             ->headerActions([
