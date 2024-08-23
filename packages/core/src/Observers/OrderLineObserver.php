@@ -20,7 +20,7 @@ class OrderLineObserver
             $orderLine->purchasable_type :
             Relation::getMorphedModel($orderLine->purchasable_type);
 
-        if (!$purchasableModel || ! in_array(Purchasable::class, class_implements($purchasableModel, true))) {
+        if (! $purchasableModel || ! in_array(Purchasable::class, class_implements($purchasableModel, true))) {
             throw new NonPurchasableItemException($purchasableModel);
         }
     }
