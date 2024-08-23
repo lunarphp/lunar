@@ -63,6 +63,7 @@ class LunarPanelManager
         Resources\TagResource::class,
         Resources\TaxClassResource::class,
         Resources\TaxZoneResource::class,
+        Resources\TaxRateResource::class,
     ];
 
     protected static $pages = [
@@ -226,6 +227,10 @@ class LunarPanelManager
             )
             ->resources(
                 static::getResources()
+            )
+            ->discoverClusters(
+                in: realpath(__DIR__.'/Filament/Clusters'),
+                for: 'Lunar\Admin\Filament\Clusters'
             )
             ->widgets(
                 static::getWidgets()
