@@ -4,14 +4,14 @@ namespace Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers;
 
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Lunar\Admin\Events\CustomerUserEdited;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 
-class UserRelationManager extends RelationManager
+class UserRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'users';
 
@@ -20,7 +20,7 @@ class UserRelationManager extends RelationManager
         return false;
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('name')

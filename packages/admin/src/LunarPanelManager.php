@@ -295,11 +295,12 @@ class LunarPanelManager
         return $this;
     }
 
-    public function callHook(string $class, string $hookName, ...$args): mixed
+    public function callHook(string $class, ?object $caller, string $hookName, ...$args): mixed
     {
         if (isset($this->extensions[$class])) {
             foreach ($this->extensions[$class] as $extension) {
                 if (method_exists($extension, $hookName)) {
+                    $extension->setCaller($caller);
                     $args[0] = $extension->{$hookName}(...$args);
                 }
             }

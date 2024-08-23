@@ -29,7 +29,7 @@ class OrderItemsTable extends TableComponent
 
     public static function getOrderLinesTableColumns(): array
     {
-        return self::callLunarHook('extendOrderLinesTableColumns', [
+        return self::callStaticLunarHook('extendOrderLinesTableColumns', [
             Tables\Columns\Layout\Split::make([
                 Tables\Columns\ImageColumn::make('image')
                     ->defaultImageUrl(fn () => 'data:image/svg+xml;base64, '.base64_encode(
@@ -116,7 +116,7 @@ class OrderItemsTable extends TableComponent
 
     public function table(Table $table): Table
     {
-        return self::callLunarHook('extendTable', $this->getDefaultTable($table));
+        return self::callStaticLunarHook('extendTable', $this->getDefaultTable($table));
     }
 
     protected function getBulkRefundAction(): BulkAction
