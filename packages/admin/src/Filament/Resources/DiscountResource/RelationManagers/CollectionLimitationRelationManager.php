@@ -3,12 +3,12 @@
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
 use Filament\Forms\Components\Select;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 
-class CollectionLimitationRelationManager extends RelationManager
+class CollectionLimitationRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
@@ -19,7 +19,7 @@ class CollectionLimitationRelationManager extends RelationManager
         return false;
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
 
         return $table

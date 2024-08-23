@@ -3,15 +3,15 @@
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
-class ProductVariantLimitationRelationManager extends RelationManager
+class ProductVariantLimitationRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
@@ -22,7 +22,7 @@ class ProductVariantLimitationRelationManager extends RelationManager
         return false;
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
 
         return $table

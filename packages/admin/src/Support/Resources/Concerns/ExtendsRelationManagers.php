@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Admin\Support\Concerns;
+namespace Lunar\Admin\Support\Resources\Concerns;
 
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -13,7 +13,7 @@ trait ExtendsRelationManagers
      */
     public static function getRelations(): array
     {
-        return static::callLunarHook('getRelations', static::getDefaultRelations());
+        return static::callStaticLunarHook('getRelations', static::getDefaultRelations());
     }
 
     protected static function getDefaultRelations(): array
