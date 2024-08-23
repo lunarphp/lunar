@@ -2,6 +2,7 @@
 
 namespace Lunar\Observers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Lunar\Base\Purchasable;
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\OrderLine;
@@ -15,8 +16,12 @@ class OrderLineObserver
      */
     public function creating(OrderLine $orderLine)
     {
-        if (! in_array(Purchasable::class, class_implements($orderLine->purchasable_type, true))) {
-            throw new NonPurchasableItemException($orderLine->purchasable_type);
+        $purchasableModel = class_exists($orderLine->purchasable_type) ?
+            $orderLine->purchasable_type :
+            Relation::getMorphedModel($orderLine->purchasable_type);
+
+        if (!$purchasableModel || ! in_array(Purchasable::class, class_implements($purchasableModel, true))) {
+            throw new NonPurchasableItemException($purchasableModel);
         }
     }
 
