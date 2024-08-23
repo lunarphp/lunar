@@ -6,6 +6,7 @@ use Lunar\Base\Traits\Searchable;
 use Lunar\DataTypes\Price;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
+
 use function Filament\Support\generate_search_term_expression;
 
 if (! function_exists('price')) {
