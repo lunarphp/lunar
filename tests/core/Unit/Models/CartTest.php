@@ -28,7 +28,6 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
-
 use function Pest\Laravel\{assertDatabaseCount};
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -1035,7 +1034,7 @@ test('can get new draft order when cart changes', function () {
     $cart->setShippingOption($option);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 2,
     ]);
