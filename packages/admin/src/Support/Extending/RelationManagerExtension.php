@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\Extending;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 
-abstract class RelationManagerExtension
+abstract class RelationManagerExtension extends BaseExtension
 {
     public function extendForm(Form $form): Form
     {
