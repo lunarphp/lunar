@@ -22,7 +22,7 @@ trait DisplaysOrderAddresses
 
     public static function getShippingAddressInfolist(): Infolists\Components\Component
     {
-        return self::callLunarHook('extendShippingAddressInfolist', static::getDefaultShippingAddressInfoList());
+        return self::callStaticLunarHook('extendShippingAddressInfolist', static::getDefaultShippingAddressInfoList());
     }
 
     public static function getDefaultBillingAddressInfoList(): Infolists\Components\Component
@@ -32,12 +32,12 @@ trait DisplaysOrderAddresses
 
     public static function getBillingAddressInfoList(): Infolists\Components\Component
     {
-        return self::callLunarHook('extendBillingAddressInfolist', static::getDefaultBillingAddressInfoList());
+        return self::callStaticLunarHook('extendBillingAddressInfolist', static::getDefaultBillingAddressInfoList());
     }
 
     public static function getAddressEditSchema(): array
     {
-        return self::callLunarHook('extendAddressEditSchema', [
+        return self::callStaticLunarHook('extendAddressEditSchema', [
             Forms\Components\Grid::make()
                 ->schema([
                     Forms\Components\TextInput::make('first_name')

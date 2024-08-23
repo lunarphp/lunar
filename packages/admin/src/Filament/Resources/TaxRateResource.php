@@ -2,37 +2,35 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Awcodes\FilamentBadgeableColumn\Components\Badge;
-use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Clusters\Taxes;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Pages;
+use Lunar\Admin\Filament\Resources\TaxRateResource\Pages;
+use Lunar\Admin\Filament\Resources\TaxRateResource\RelationManagers\TaxRateAmountRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\TaxClass;
+use Lunar\Models\TaxRate;
 
-class TaxClassResource extends BaseResource
+class TaxRateResource extends BaseResource
 {
     protected static ?string $cluster = Taxes::class;
 
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = TaxClass::class;
+    protected static ?string $model = TaxRate::class;
 
     protected static ?int $navigationSort = 1;
 
     public static function getLabel(): string
     {
-        return __('lunarpanel::taxclass.label');
+        return __('lunarpanel::taxrate.label');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('lunarpanel::taxclass.plural_label');
+        return __('lunarpanel::taxrate.plural_label');
     }
 
     public static function getNavigationIcon(): ?string
@@ -45,24 +43,39 @@ class TaxClassResource extends BaseResource
         return [
             Forms\Components\Section::make()->schema([
                 static::getNameFormComponent(),
-                static::getDefaultFormComponent(),
+                static::getPriorityFormComponent(),
+                static::getTaxZoneFormComponent(),
             ]),
         ];
     }
 
-    protected static function getNameFormComponent(): Component
+    public static function getNameFormComponent(): Component
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('lunarpanel::taxclass.form.name.label'))
+            ->label(__('lunarpanel::taxrate.form.name.label'))
+            ->unique(column: 'name', ignoreRecord: true)
             ->required()
             ->maxLength(255)
             ->autofocus();
     }
 
-    protected static function getDefaultFormComponent(): Component
+    public static function getPriorityFormComponent(): Component
     {
-        return Forms\Components\Toggle::make('default')
-            ->label(__('lunarpanel::taxzone.form.default.label'));
+        return Forms\Components\TextInput::make('priority')
+            ->label(__('lunarpanel::taxrate.form.priority.label'))
+            ->required()
+            ->numeric()
+            ->maxLength(255)
+            ->autofocus();
+    }
+
+    public static function getTaxZoneFormComponent(): Component
+    {
+        return Forms\Components\Select::make('tax_zone_id')
+            ->relationship(name: 'taxZone', titleAttribute: 'name')
+            ->label(__('lunarpanel::taxrate.form.tax_zone_id.label'))
+            ->live()
+            ->required();
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -85,31 +98,27 @@ class TaxClassResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            BadgeableColumn::make('name')
-                ->separator('')
-                ->suffixBadges([
-                    Badge::make('default')
-                        ->label(__('lunarpanel::taxclass.table.default.label'))
-                        ->color('gray')
-                        ->visible(fn (Model $record) => $record->default),
-                ])
-                ->label(__('lunarpanel::taxclass.table.name.label')),
+            Tables\Columns\TextColumn::make('name'),
+            Tables\Columns\TextColumn::make('taxZone.name')
+                ->label(__('lunarpanel::taxrate.table.tax_zone.label')),
+            Tables\Columns\TextColumn::make('priority')
+                ->label(__('lunarpanel::taxrate.table.priority.label')),
         ];
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            TaxRateAmountRelationManager::class,
         ];
     }
 
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListTaxClasses::route('/'),
-            'create' => Pages\CreateTaxClass::route('/create'),
-            'edit' => Pages\EditTaxClass::route('/{record}/edit'),
+            'index' => Pages\ListTaxRates::route('/'),
+            'edit' => Pages\EditTaxRate::route('/{record}/edit'),
+            'create' => Pages\CreateTaxRate::route('/create'),
         ];
     }
 }

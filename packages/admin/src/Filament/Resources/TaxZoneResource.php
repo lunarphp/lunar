@@ -10,6 +10,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\TaxZone;
@@ -18,6 +19,8 @@ use Lunar\Models\State;
 
 class TaxZoneResource extends BaseResource
 {
+    protected static ?string $cluster = Taxes::class;
+
     protected static ?string $permission = 'settings:core';
 
     protected static ?string $model = TaxZone::class;
@@ -37,11 +40,6 @@ class TaxZoneResource extends BaseResource
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::tax');
-    }
-
-    public static function getNavigationGroup(): ?string
-    {
-        return __('lunarpanel::global.sections.settings');
     }
 
     protected static function getMainFormComponents(): array

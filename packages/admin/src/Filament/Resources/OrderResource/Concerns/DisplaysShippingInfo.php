@@ -9,7 +9,7 @@ trait DisplaysShippingInfo
 {
     public static function getShippingInfolist(): Infolists\Components\Section
     {
-        return self::callLunarHook('extendShippingInfolist', static::getDefaultShippingInfolist());
+        return self::callStaticLunarHook('extendShippingInfolist', static::getDefaultShippingInfolist());
     }
 
     public static function getDefaultShippingInfolist(): Infolists\Components\Section
