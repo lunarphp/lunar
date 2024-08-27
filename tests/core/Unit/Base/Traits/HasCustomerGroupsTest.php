@@ -241,10 +241,7 @@ test('can scope results to a customer group', function () {
 
 test('customer groups are synced on model creation', function () {
     $customerGroup = CustomerGroup::factory()->create();
-    $product = Product::factory()->create();
-
-
-    $product->scheduleCustomerGroup($customerGroup);
+    Product::factory()->create();
 
     \Pest\Laravel\assertDatabaseHas(
         'lunar_customer_group_product',
