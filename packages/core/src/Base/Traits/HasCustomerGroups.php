@@ -34,14 +34,13 @@ trait HasCustomerGroups
                     'starts_at' => now(),
                     'ends_at' => null,
                     'visible' => true,
-                    ...static::getExtraCustomerGroupPivotValues()
+                    ...static::getExtraCustomerGroupPivotValues(),
                 ]]
             );
 
             $model->customerGroups()->sync($customerGroups);
         });
     }
-
 
     /**
      * Schedule models against customer groups.
