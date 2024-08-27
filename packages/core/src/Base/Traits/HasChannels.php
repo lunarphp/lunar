@@ -19,8 +19,8 @@ trait HasChannels
             $channels = Channel::get()->mapWithKeys(function ($channel) {
                 return [
                     $channel->id => [
-                        'enabled' => false,
-                        'starts_at' => null,
+                        'enabled' => $channel->default,
+                        'starts_at' => $channel->default ? now() : null,
                         'ends_at' => null,
                     ],
                 ];
