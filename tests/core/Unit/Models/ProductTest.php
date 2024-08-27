@@ -150,7 +150,9 @@ test('customer groups can be enabled', function () {
 test('customer groups can be scheduled always available', function () {
     $product = Product::factory()->create();
 
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $product->scheduleCustomerGroup($customerGroup);
 
@@ -170,7 +172,9 @@ test('customer groups can be scheduled always available', function () {
 test('customer groups can be scheduled with start and end', function () {
     $product = Product::factory()->create();
 
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $start = now();
     $end = now();
@@ -207,7 +211,9 @@ test('customer groups can be scheduled with start and end', function () {
 test('customer groups can be scheduled with pivot data', function () {
     $product = Product::factory()->create();
 
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $start = now();
     $end = now();
@@ -247,7 +253,9 @@ test('customer groups can be scheduled with pivot data', function () {
 test('customer groups can be unscheduled', function () {
     $product = Product::factory()->create();
 
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $start = now();
     $end = now();
