@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Exceptions\SchedulingException;
 use Lunar\Models\Channel;
 use Lunar\Models\CustomerGroup;
@@ -236,4 +237,22 @@ test('can scope results to a customer group', function () {
     expect(Product::customerGroup($groupA)->get())->toHaveCount(0);
 
     expect(Product::customerGroup($groupA, $startsAt, $endsAt)->get())->toHaveCount(1);
+});
+
+test('customer groups are synced on model creation', function () {
+    $customerGroup = CustomerGroup::factory()->create();
+    $product = Product::factory()->create();
+
+
+    $product->scheduleCustomerGroup($customerGroup);
+
+    \Pest\Laravel\assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroup->id,
+            'enabled' => 1,
+            'visible' => 1,
+            'purchasable' => 1,
+        ],
+    );
 });
