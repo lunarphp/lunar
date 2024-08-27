@@ -186,6 +186,13 @@ class Product extends BaseModel implements SpatieHasMedia
         ])->withTimestamps();
     }
 
+    public static function getExtraCustomerGroupPivotValues(): array
+    {
+        return [
+            'purchasable' => true,
+        ];
+    }
+
     /**
      * Return the brand relationship.
      */

@@ -4,6 +4,7 @@ namespace Lunar\Base\Traits;
 
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Lunar\Models\CustomerGroup;
@@ -16,6 +17,31 @@ trait HasCustomerGroups
      * Get the relationship for the customer groups.
      */
     abstract public function customerGroups(): Relation;
+
+    public static function getExtraCustomerGroupPivotValues(): array
+    {
+        return [
+
+        ];
+    }
+
+    public static function bootHasCustomerGroups(): void
+    {
+        static::created(function (Model $model) {
+            $customerGroups = CustomerGroup::get()->mapWithKeys(
+                fn ($customerGroup): array => [$customerGroup->id, [
+                    'enabled' => true,
+                    'starts_at' => now(),
+                    'ends_at' => null,
+                    'visible' => true,
+                    ...static::getExtraCustomerGroupPivotValues()
+                ]]
+            );
+
+            $model->customerGroups()->sync($customerGroups);
+        });
+    }
+
 
     /**
      * Schedule models against customer groups.
