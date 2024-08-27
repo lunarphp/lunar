@@ -240,16 +240,32 @@ test('can scope results to a customer group', function () {
 });
 
 test('customer groups are synced on model creation', function () {
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroupA = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+    $customerGroupB = CustomerGroup::factory()->create([
+        'default' => false,
+    ]);
+
     Product::factory()->create();
 
     \Pest\Laravel\assertDatabaseHas(
         'lunar_customer_group_product',
         [
-            'customer_group_id' => $customerGroup->id,
+            'customer_group_id' => $customerGroupA->id,
             'enabled' => 1,
             'visible' => 1,
             'purchasable' => 1,
+        ],
+    );
+
+    \Pest\Laravel\assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroupB->id,
+            'enabled' => 0,
+            'visible' => 0,
+            'purchasable' => 0,
         ],
     );
 });

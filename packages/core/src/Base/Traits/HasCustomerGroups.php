@@ -18,27 +18,26 @@ trait HasCustomerGroups
      */
     abstract public function customerGroups(): Relation;
 
-    public static function getExtraCustomerGroupPivotValues(): array
+    public static function getExtraCustomerGroupPivotValues(CustomerGroup $customerGroup): array
     {
         return [
-
         ];
     }
 
     public static function bootHasCustomerGroups(): void
     {
         static::created(function (Model $model) {
-            $customerGroups = CustomerGroup::get()->mapWithKeys(
-                fn ($customerGroup): array => [$customerGroup->id, [
-                    'enabled' => true,
-                    'starts_at' => now(),
-                    'ends_at' => null,
-                    'visible' => true,
-                    ...static::getExtraCustomerGroupPivotValues(),
-                ]]
+            $model->customerGroups()->sync(
+                CustomerGroup::get()->mapWithKeys(
+                    fn ($customerGroup): array => [$customerGroup->id => [
+                        'enabled' => $customerGroup->default,
+                        'starts_at' => now(),
+                        'ends_at' => null,
+                        'visible' => $customerGroup->default,
+                        ...static::getExtraCustomerGroupPivotValues($customerGroup),
+                    ]]
+                )
             );
-
-            $model->customerGroups()->sync($customerGroups);
         });
     }
 

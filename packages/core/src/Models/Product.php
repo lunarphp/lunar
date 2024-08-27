@@ -186,10 +186,10 @@ class Product extends BaseModel implements SpatieHasMedia
         ])->withTimestamps();
     }
 
-    public static function getExtraCustomerGroupPivotValues(): array
+    public static function getExtraCustomerGroupPivotValues(CustomerGroup $customerGroup): array
     {
         return [
-            'purchasable' => true,
+            'purchasable' => $customerGroup->default,
         ];
     }
 
