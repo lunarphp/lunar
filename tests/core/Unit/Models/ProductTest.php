@@ -130,9 +130,9 @@ test('product can be scheduled', function () {
 test('customer groups can be enabled', function () {
     $product = Product::factory()->create();
 
-    expect($product->customerGroups)->toHaveCount(0);
-
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $product->scheduleCustomerGroup($customerGroup);
 
