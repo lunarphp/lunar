@@ -28,7 +28,7 @@ return [
             ],
         ],
         'table' => [
-            'description' => 'Associate customer groups to this product to determine it\'s availability.',
+            'description' => 'Associate customer groups to this :type to determine it\'s availability.',
             'name' => [
                 'label' => 'Name',
             ],

@@ -6,6 +6,7 @@ use Filament;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 
@@ -85,7 +86,9 @@ class CustomerGroupRelationManager extends BaseRelationManager
 
         return $table
             ->description(
-                $this->description ?: __('lunarpanel::relationmanagers.customer_groups.table.description')
+                $this->description ?: __('lunarpanel::relationmanagers.customer_groups.table.description', [
+                    'type' => Str::lower(class_basename(get_class($this->getOwnerRecord()))),
+                ])
             )
             ->paginated(false)
             ->headerActions([
