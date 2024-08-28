@@ -66,7 +66,7 @@ By default, this is set as `null` so the mapping for a product would just be `pr
 
 There is a migration which will handle this change over for Lunar tables and some third party tables, however you may need to add your own migrations to other tables or to switch any custom models you may have.
 
-### Shipping methods availability
+#### Shipping methods availability
 
 Shipping methods are now associated to Customer Groups. If you are using the shipping addon then you should ensure that all your shipping methods are associated to the correct customer groups.
 
