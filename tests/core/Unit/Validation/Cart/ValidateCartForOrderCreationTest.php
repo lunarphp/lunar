@@ -101,12 +101,12 @@ test('can validate missing shipping option', function () {
     \Lunar\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'price' => 500,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -139,12 +139,12 @@ test('can validate collection with partial shipping address', function () {
     \Lunar\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'price' => 500,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -198,12 +198,12 @@ test('can validate delivery with partial shipping address', function () {
     \Lunar\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'price' => 500,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -268,12 +268,12 @@ test('can validate delivery with populated shipping address', function () {
     \Lunar\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'price' => 500,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);

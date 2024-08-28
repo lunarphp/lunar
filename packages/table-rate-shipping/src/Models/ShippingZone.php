@@ -12,7 +12,7 @@ use Lunar\Models\Order;
 use Lunar\Models\State;
 use Lunar\Shipping\Database\Factories\ShippingZoneFactory;
 
-class ShippingZone extends BaseModel
+class ShippingZone extends BaseModel implements Contracts\ShippingZone
 {
     use HasFactory;
 
@@ -27,7 +27,7 @@ class ShippingZone extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingZoneFactory
+    protected static function newFactory()
     {
         return ShippingZoneFactory::new();
     }
@@ -51,7 +51,7 @@ class ShippingZone extends BaseModel
      */
     public function shippingMethods(): HasMany
     {
-        return $this->hasMany(ShippingMethod::class);
+        return $this->hasMany(ShippingMethod::modelClass());
     }
 
     /**
@@ -60,7 +60,7 @@ class ShippingZone extends BaseModel
     public function countries(): BelongsToMany
     {
         return $this->belongsToMany(
-            Country::class,
+            Country::modelClass(),
             config('lunar.database.table_prefix').'country_shipping_zone'
         )->withTimestamps();
     }
@@ -82,7 +82,7 @@ class ShippingZone extends BaseModel
     public function states(): BelongsToMany
     {
         return $this->belongsToMany(
-            State::class,
+            State::modelClass(),
             config('lunar.database.table_prefix').'state_shipping_zone'
         )->withTimestamps();
     }
@@ -92,21 +92,18 @@ class ShippingZone extends BaseModel
      */
     public function postcodes(): HasMany
     {
-        return $this->hasMany(ShippingZonePostcode::class);
+        return $this->hasMany(ShippingZonePostcode::modelClass());
     }
 
     public function rates(): HasMany
     {
-        return $this->hasMany(ShippingRate::class);
+        return $this->hasMany(ShippingRate::modelClass());
     }
 
-    /**
-     * Return the shipping exclusions property.
-     */
     public function shippingExclusions(): BelongsToMany
     {
         return $this->belongsToMany(
-            ShippingExclusionList::class,
+            ShippingExclusionList::modelClass(),
             config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
             'shipping_zone_id',
             'exclusion_id',

@@ -51,6 +51,17 @@ class BaseResource extends Resource
         return $user->can(static::$permission);
     }
 
+    public static function getModel(): string
+    {
+        $class = new \ReflectionClass(static::$model);
+
+        if ($class->isInterface()) {
+            return app()->get(static::$model)::class;
+        }
+
+        return parent::getModel();
+    }
+
     /**
      * Override filament query builder
      */
@@ -113,7 +124,9 @@ class BaseResource extends Resource
      */
     protected static function mapSearchableAttributes(array &$map)
     {
-        $attributes = Attribute::whereAttributeType(static::$model)
+        $attributes = Attribute::whereAttributeType(
+            (new (static::getModel()))->getMorphClass()
+        )
             ->whereSearchable(true)
             ->get();
 

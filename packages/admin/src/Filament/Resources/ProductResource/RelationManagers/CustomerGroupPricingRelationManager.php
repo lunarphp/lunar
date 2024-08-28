@@ -63,7 +63,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                                     fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
                                 ->where('min_quantity', 1)
                                 ->where('currency_id', $get('currency_id'))
-                                ->where('priceable_type', get_class($owner))
+                                ->where('priceable_type', $owner->getMorphClass())
                                 ->where('priceable_id', $owner->id);
                         }),
                 ])->columns(2),
@@ -81,7 +81,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                                     fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
                                 ->where('min_quantity', 1)
                                 ->where('currency_id', $get('currency_id'))
-                                ->where('priceable_type', get_class($owner))
+                                ->where('priceable_type', $owner->getMorphClass())
                                 ->where('priceable_id', $owner->id);
                         }
                     )->helperText(

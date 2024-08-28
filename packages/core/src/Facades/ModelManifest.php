@@ -2,20 +2,24 @@
 
 namespace Lunar\Facades;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Base\BaseModel;
 use Lunar\Base\ModelManifestInterface;
 
 /**
  * Class ModelManifest.
  *
- * @method static \Illuminate\Support\Collection register(Collection $models)
- * @method static \Illuminate\Support\Collection getRegisteredModels()
- * @method static \Illuminate\Database\Eloquent\Model getRegisteredModel(string $baseModelClass)
- * @method static void removeModel(string $baseModelClass)
- * @method static void swapModel(string $currentModelClass, string $newModelClass)
- * @method static string getMorphClassBaseModel(string $morphClass)
- * @method static \Illuminate\Support\Collection getBaseModelClasses()
+ * @method static void register()
+ * @method static void addDirectory(string $dir)
+ * @method static void add(string $interfaceClass, string $modelClass)
+ * @method static void replace(string $interfaceClass, string $modelClass)
+ * @method static string|null get(string $interfaceClass)
+ * @method static string guessContractClass(string $modelClass)
+ * @method static string guessModelClass(string $modelContract)
+ * @method static bool isLunarModel(BaseModel $model)
+ * @method static string getTable(BaseModel $model)
+ * @method static void morphMap()
+ * @method static string getMorphMapKey(string $className)
  *
  * @see \Lunar\Base\ModelManifest
  */

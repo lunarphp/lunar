@@ -3,92 +3,89 @@
 namespace Lunar\Base;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
-use Lunar\Base\Traits\HasModelExtending;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
+use Spatie\StructureDiscoverer\Discover;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 class ModelManifest implements ModelManifestInterface
 {
     /**
      * The collection of models to register to this manifest.
      */
-    protected Collection $models;
+    protected array $models = [];
 
     /**
-     * The model manifest instance.
+     * Bind initial models in container and set explicit model binding.
      */
-    public function __construct()
+    public function register(): void
     {
-        $this->models = collect();
+        // Discover models
+        $modelClasses = Discover::in(__DIR__.'/../Models')
+            ->classes()
+            ->extending(BaseModel::class)
+            ->get();
+
+        foreach ($modelClasses as $modelClass) {
+            $interfaceClass = $this->guessContractClass($modelClass);
+            $this->models[$interfaceClass] = $modelClass;
+            $this->bindModel($interfaceClass, $modelClass);
+        }
+    }
+
+    /**
+     * Add a directory of models.
+     */
+    public function addDirectory(string $dir): void
+    {
+        try {
+            $modelClasses = Discover::in($dir)
+                ->classes()
+                ->extending(BaseModel::class)
+                ->get();
+
+            foreach ($modelClasses as $modelClass) {
+                $interfaceClass = $this->guessContractClass($modelClass);
+                $this->models[$interfaceClass] = $modelClass;
+                $this->bindModel($interfaceClass, $modelClass);
+            }
+        } catch (DirectoryNotFoundException $e) {
+            Log::error($e->getMessage());
+        }
     }
 
     /**
      * Register models.
      */
-    public function register(Collection $models): void
+    public function add(string $interfaceClass, string $modelClass): void
     {
-        foreach ($models as $baseModelClass => $modelClass) {
-            $this->validateInteractsWithEloquent($baseModelClass);
-            $this->validateClassIsEloquentModel($modelClass);
+        $this->validateClassIsEloquentModel($modelClass);
 
-            $this->models->put($baseModelClass, $modelClass);
-        }
+        $this->models[$interfaceClass] = $modelClass;
+
+        $this->bindModel($interfaceClass, $modelClass);
     }
 
     /**
-     * Get the registered model for a base model class.
+     * Replace a model with a different implementation.
      */
-    public function getRegisteredModel(string $baseModelClass): Model
+    public function replace(string $interfaceClass, string $modelClass): void
     {
-        return app($this->models->get($baseModelClass) ?? $baseModelClass);
+        $this->add($interfaceClass, $modelClass);
     }
 
     /**
-     * Removes model from manifest.
+     * Gets the registered class for the interface.
      */
-    public function removeModel(string $baseModelClass): void
+    public function get(string $interfaceClass): ?string
     {
-        $this->models = $this->models->flip()->forget($baseModelClass)->flip();
-    }
-
-    /**
-     * Swap the model implementation.
-     */
-    public function swapModel(string $currentModelClass, string $newModelClass): void
-    {
-        $baseModelClass = $this->models->flip()->get($currentModelClass);
-
-        $this->models->put($baseModelClass, $newModelClass);
-    }
-
-    /**
-     * Get the morph class base model.
-     */
-    public function getMorphClassBaseModel(string $morphClass): ?string
-    {
-        $customModels = $this->models->flip();
-
-        return $customModels->get($morphClass);
-    }
-
-    /**
-     * Get list of registered base model classes.
-     */
-    public function getBaseModelClasses(): Collection
-    {
-        return $this->models->keys();
-    }
-
-    /**
-     * Get list of all registered models.
-     */
-    public function getRegisteredModels(): Collection
-    {
-        return $this->models;
+        return $this->models[$interfaceClass] ?? null;
     }
 
     /**
      * Validate class is an eloquent model.
-     *
      *
      * @throws \InvalidArgumentException
      */
@@ -99,17 +96,81 @@ class ModelManifest implements ModelManifestInterface
         }
     }
 
-    /**
-     * Validate base class interacts with eloquent model trait.
-     *
-     *
-     * @throws \InvalidArgumentException
-     */
-    private function validateInteractsWithEloquent(string $baseClass): void
+    protected function bindModel(string $interfaceClass, string $modelClass): void
     {
-        $uses = class_uses_recursive($baseClass);
-        if (! isset($uses[HasModelExtending::class])) {
-            throw new \InvalidArgumentException(sprintf("Given [%s] doesn't use [%s] trait.", $baseClass, HasModelExtending::class));
+        // Bind in container
+        app()->bind($interfaceClass, $modelClass);
+
+        // Route model binding
+        Route::model($this->bindingName($modelClass), $modelClass);
+    }
+
+    protected function bindingName(string $modelClass): string
+    {
+        $shortName = (new \ReflectionClass($modelClass))->getShortName();
+
+        return Str::camel($shortName);
+    }
+
+    public function guessContractClass(string $modelClass): string
+    {
+        $class = new \ReflectionClass($modelClass);
+
+        $shortName = $class->getShortName();
+        $namespace = $class->getNamespaceName();
+
+        $lunarContract = collect(
+            $class->getInterfaceNames()
+        )->first(
+            fn ($contract) => str_contains("Lunar\\Models\\Contracts\\{$shortName}", $contract)
+        );
+
+        return $lunarContract ?: "{$namespace}\\Contracts\\$shortName";
+    }
+
+    public function guessModelClass(string $modelContract): string
+    {
+        // Are we passing through the morph class name?
+        if (
+            ! class_exists($modelContract) &&
+            $morphedClass = Relation::morphMap()[$modelContract] ?? null
+        ) {
+            return $morphedClass;
         }
+
+        $shortName = (new \ReflectionClass($modelContract))->getShortName();
+
+        return 'Lunar\\Models\\'.$shortName;
+    }
+
+    public function isLunarModel(BaseModel $model): bool
+    {
+        $class = (new \ReflectionClass($model));
+
+        return $class->getNamespaceName() == 'Lunar\\Models';
+    }
+
+    public function morphMap(): void
+    {
+        $modelClasses = collect(
+            Discover::in(__DIR__.'/../Models')
+                ->classes()
+                ->extending(BaseModel::class)
+                ->get()
+        )->mapWithKeys(
+            fn ($class) => [
+                $this->getMorphMapKey($class) => $class::modelClass(),
+            ]
+        );
+
+        Relation::morphMap($modelClasses->toArray());
+    }
+
+    public function getMorphMapKey($className): string
+    {
+        $prefix = config('lunar.database.morph_prefix', null);
+        $key = \Illuminate\Support\Str::snake(class_basename($className));
+
+        return "{$prefix}{$key}";
     }
 }

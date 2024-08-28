@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Exceptions\SchedulingException;
 use Lunar\Models\Channel;
 use Lunar\Models\CustomerGroup;
@@ -96,7 +97,7 @@ test('throws exception if non customer group provided', function () {
     $this->expectException(SchedulingException::class);
 
     $product->scheduleCustomerGroup(Channel::get());
-})->group('testerr');
+});
 
 test('can schedule using array of ids', function () {
     $product = Product::factory()->create();

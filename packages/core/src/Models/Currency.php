@@ -2,6 +2,7 @@
 
 namespace Lunar\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
@@ -21,7 +22,7 @@ use Lunar\Database\Factories\CurrencyFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Currency extends BaseModel
+class Currency extends BaseModel implements Contracts\Currency
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -39,12 +40,12 @@ class Currency extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CurrencyFactory
+    protected static function newFactory()
     {
         return CurrencyFactory::new();
     }
 
-    public function scopeEnabled($query, $enabled = true)
+    public function scopeEnabled(Builder $query, $enabled = true): Builder
     {
         return $query->whereEnabled($enabled);
     }
@@ -54,13 +55,9 @@ class Currency extends BaseModel
      */
     public function prices(): HasMany
     {
-        return $this->hasMany(Price::class);
+        return $this->hasMany(Price::modelClass());
     }
 
-    /**
-     * Returns the amount we need to multiply or divide the price
-     * for the cents/pence.
-     */
     public function getFactorAttribute(): string
     {
         /**

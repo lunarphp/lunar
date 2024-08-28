@@ -15,7 +15,7 @@ use Lunar\Models\TaxClass;
 use Lunar\Shipping\Database\Factories\ShippingRateFactory;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 
-class ShippingRate extends BaseModel implements Purchasable
+class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasable
 {
     use HasFactory;
     use HasPrices;
@@ -40,19 +40,19 @@ class ShippingRate extends BaseModel implements Purchasable
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingRateFactory
+    protected static function newFactory()
     {
         return ShippingRateFactory::new();
     }
 
     public function shippingZone(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::class);
+        return $this->belongsTo(ShippingZone::modelClass());
     }
 
     public function shippingMethod(): BelongsTo
     {
-        return $this->belongsTo(ShippingMethod::class);
+        return $this->belongsTo(ShippingMethod::modelClass());
     }
 
     public function getPrices(): Collection

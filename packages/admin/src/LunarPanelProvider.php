@@ -3,6 +3,7 @@
 namespace Lunar\Admin;
 
 use Filament\Support\Events\FilamentUpgraded;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
@@ -86,6 +87,10 @@ class LunarPanelProvider extends ServiceProvider
                 MakeLunarAdminCommand::class,
             ]);
         }
+
+        Relation::morphMap([
+            'staff' => Staff::class,
+        ]);
 
         Event::listen([
             ChildCollectionCreated::class,

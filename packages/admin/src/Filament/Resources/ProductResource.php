@@ -32,8 +32,8 @@ use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
+use Lunar\Models\Contracts\Product;
 use Lunar\Models\Currency;
-use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Tag;
 
@@ -176,7 +176,9 @@ class ProductResource extends BaseResource
     public static function getBaseNameFormComponent(): Component
     {
         $nameType = Attribute::whereHandle('name')
-            ->whereAttributeType(static::getModel())
+            ->whereAttributeType(
+                (new (static::getModel()))->getMorphClass()
+            )
             ->first()?->type ?: TranslatedText::class;
 
         $component = TranslatedTextInput::make('name');
