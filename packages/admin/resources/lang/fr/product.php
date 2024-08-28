@@ -87,6 +87,9 @@ return [
         'availability' => [
             'label' => 'Disponibilité',
         ],
+        'edit' => [
+            'title' => 'Informations de base',
+        ],
         'identifiers' => [
             'label' => 'Identifiants du produit',
         ],

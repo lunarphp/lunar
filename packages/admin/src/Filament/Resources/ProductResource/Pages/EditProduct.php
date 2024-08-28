@@ -13,9 +13,17 @@ class EditProduct extends BaseEditRecord
 {
     protected static string $resource = ProductResource::class;
 
-    protected static ?string $title = 'Basic Information';
-
     public static bool $formActionsAreSticky = true;
+
+    public function getTitle(): string
+    {
+        return __('lunarpanel::product.pages.edit.title');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('lunarpanel::product.pages.edit.title');
+    }
 
     public static function getNavigationIcon(): ?string
     {
