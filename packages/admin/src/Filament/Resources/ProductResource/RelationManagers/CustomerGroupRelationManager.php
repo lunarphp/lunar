@@ -87,7 +87,7 @@ class CustomerGroupRelationManager extends BaseRelationManager
         return $table
             ->description(
                 $this->description ?: __('lunarpanel::relationmanagers.customer_groups.table.description', [
-                    'type' => Str::lower(class_basename(get_class($this->getOwnerRecord())))
+                    'type' => Str::lower(class_basename(get_class($this->getOwnerRecord()))),
                 ])
             )
             ->paginated(false)
