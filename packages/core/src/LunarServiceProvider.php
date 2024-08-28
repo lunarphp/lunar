@@ -179,6 +179,8 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->singleton(DiscountManagerInterface::class, function ($app) {
             return $app->make(DiscountManager::class);
         });
+
+        \Lunar\Facades\ModelManifest::register();
     }
 
     /**
@@ -194,6 +196,8 @@ class LunarServiceProvider extends ServiceProvider
         $this->registerBuilderMacros();
         $this->registerBlueprintMacros();
         $this->registerStateListeners();
+
+        \Lunar\Facades\ModelManifest::morphMap();
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {

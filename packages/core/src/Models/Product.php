@@ -38,7 +38,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Product extends BaseModel implements SpatieHasMedia
+class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
 {
     use HasChannels;
     use HasCustomerGroups;
@@ -55,7 +55,7 @@ class Product extends BaseModel implements SpatieHasMedia
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductFactory
+    protected static function newFactory()
     {
         return ProductFactory::new();
     }
@@ -92,68 +92,44 @@ class Product extends BaseModel implements SpatieHasMedia
         );
     }
 
-    /**
-     * Returns the attributes to be stored against this model.
-     */
     public function mappedAttributes(): Collection
     {
         return $this->productType->mappedAttributes;
     }
 
-    /**
-     * Return the product type relation.
-     */
     public function productType(): BelongsTo
     {
-        return $this->belongsTo(ProductType::class);
+        return $this->belongsTo(ProductType::modelClass());
     }
 
-    /**
-     * Return the product images relation.
-     */
     public function images(): MorphMany
     {
         return $this->media()->where('collection_name', config('lunar.media.collection'));
     }
 
-    /**
-     * Return the product variants relation.
-     */
     public function variants(): HasMany
     {
-        return $this->hasMany(ProductVariant::class);
+        return $this->hasMany(ProductVariant::modelClass());
     }
 
-    /**
-     * Return the product collections relation.
-     */
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
-            \Lunar\Models\Collection::class,
+            \Lunar\Models\Collection::modelClass(),
             config('lunar.database.table_prefix').'collection_product'
         )->withPivot(['position'])->withTimestamps();
     }
 
-    /**
-     * Return the associations relationship.
-     */
     public function associations(): HasMany
     {
-        return $this->hasMany(ProductAssociation::class, 'product_parent_id');
+        return $this->hasMany(ProductAssociation::modelClass(), 'product_parent_id');
     }
 
-    /**
-     * Return the associations relationship.
-     */
     public function inverseAssociations(): HasMany
     {
-        return $this->hasMany(ProductAssociation::class, 'product_target_id');
+        return $this->hasMany(ProductAssociation::modelClass(), 'product_target_id');
     }
 
-    /**
-     * Associate a product to another with a type.
-     */
     public function associate(mixed $product, string $type): void
     {
         Associate::dispatch($this, $product, $type);
@@ -167,15 +143,12 @@ class Product extends BaseModel implements SpatieHasMedia
         Dissociate::dispatch($this, $product, $type);
     }
 
-    /**
-     * Return the customer groups relationship.
-     */
     public function customerGroups(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::class,
+            CustomerGroup::modelClass(),
             "{$prefix}customer_group_product"
         )->withPivot([
             'purchasable',
@@ -198,28 +171,22 @@ class Product extends BaseModel implements SpatieHasMedia
      */
     public function brand(): BelongsTo
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Brand::modelClass());
     }
 
-    /**
-     * Apply the status scope.
-     */
     public function scopeStatus(Builder $query, string $status): Builder
     {
         return $query->whereStatus($status);
     }
 
-    /**
-     * Return the prices relationship.
-     */
     public function prices(): HasManyThrough
     {
         return $this->hasManyThrough(
-            Price::class,
-            ProductVariant::class,
+            Price::modelClass(),
+            ProductVariant::modelClass(),
             'product_id',
             'priceable_id'
-        )->wherePriceableType(ProductVariant::class);
+        )->wherePriceableType('product_variant');
     }
 
     public function productOptions(): BelongsToMany
@@ -227,7 +194,7 @@ class Product extends BaseModel implements SpatieHasMedia
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            ProductOption::class,
+            ProductOption::modelClass(),
             "{$prefix}product_product_option"
         )->withPivot(['position'])->orderByPivot('position');
     }

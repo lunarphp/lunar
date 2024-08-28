@@ -32,7 +32,7 @@ use Lunar\Facades\DB;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Attribute extends BaseModel
+class Attribute extends BaseModel implements Contracts\Attribute
 {
     use HasFactory;
     use HasMacros;
@@ -52,7 +52,7 @@ class Attribute extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): AttributeFactory
+    protected static function newFactory()
     {
         return AttributeFactory::new();
     }
@@ -76,29 +76,17 @@ class Attribute extends BaseModel
         'configuration' => AsCollection::class,
     ];
 
-    /**
-     * Return the attribuable relation.
-     */
     public function attributable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /**
-     * Returns the attribute group relation.
-     */
     public function attributeGroup(): BelongsTo
     {
-        return $this->belongsTo(AttributeGroup::class);
+        return $this->belongsTo(AttributeGroup::modelClass());
     }
 
-    /**
-     * Apply the system scope to the query builder.
-     *
-     * @param  string  $type
-     * @return void
-     */
-    public function scopeSystem(Builder $query, $type)
+    public function scopeSystem(Builder $query, $type): Builder
     {
         return $query->whereAttributeType($type)->whereSystem(true);
     }

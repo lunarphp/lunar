@@ -89,7 +89,7 @@ Lunar\Models\DiscountPurchasable
 |:-------------------|:------------------------|:------------------------------|
 | `id`               |                         |                               |
 | `discount_id`      |                         |                               |
-| `purchasable_type` |                         | `Lunar\Models\ProductVariant` 
+| `purchasable_type` |                         | `product_variant` 
 | `type`             | `condition` or `reward` |
 | `created_at`       |                         |                               |
 | `updated_at`       |                         |                               |

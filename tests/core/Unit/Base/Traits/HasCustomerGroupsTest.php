@@ -97,7 +97,7 @@ test('throws exception if non customer group provided', function () {
     $this->expectException(SchedulingException::class);
 
     $product->scheduleCustomerGroup(Channel::get());
-})->group('testerr');
+});
 
 test('can schedule using array of ids', function () {
     $product = Product::factory()->create();

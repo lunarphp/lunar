@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class)->group('migrations');
 
 use Illuminate\Support\Facades\File;
 

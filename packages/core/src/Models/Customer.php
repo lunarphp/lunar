@@ -29,7 +29,7 @@ use Lunar\Database\Factories\CustomerFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Customer extends BaseModel
+class Customer extends BaseModel implements Contracts\Customer
 {
     use HasAttributes;
     use HasFactory;
@@ -56,27 +56,21 @@ class Customer extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CustomerFactory
+    protected static function newFactory()
     {
         return CustomerFactory::new();
     }
 
-    /**
-     * Return the customer group relationship.
-     */
     public function customerGroups(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::class,
+            CustomerGroup::modelClass(),
             "{$prefix}customer_customer_group"
         )->withTimestamps();
     }
 
-    /**
-     * Return the customer group relationship.
-     */
     public function users(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
@@ -87,31 +81,22 @@ class Customer extends BaseModel
         )->withTimestamps();
     }
 
-    /**
-     * Return the addresses relationship.
-     */
     public function addresses(): HasMany
     {
-        return $this->hasMany(Address::class);
+        return $this->hasMany(Address::modelClass());
     }
 
-    /**
-     * Return the orders relationship.
-     */
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::modelClass());
     }
 
-    /**
-     * Get the mapped attributes relation.
-     */
     public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
-            Attribute::class,
+            Attribute::modelClass(),
             'attributable',
             "{$prefix}attributables"
         )->withTimestamps();

@@ -14,7 +14,7 @@ use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 
-class ShippingMethod extends BaseModel
+class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
 {
     use HasCustomerGroups;
     use HasFactory;
@@ -44,14 +44,14 @@ class ShippingMethod extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingMethodFactory
+    protected static function newFactory()
     {
         return ShippingMethodFactory::new();
     }
 
     public function shippingRates(): HasMany
     {
-        return $this->hasMany(ShippingRate::class);
+        return $this->hasMany(ShippingRate::modelClass());
     }
 
     public function driver(): ShippingRateInterface

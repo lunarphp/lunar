@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
@@ -23,19 +24,19 @@ test('can return correct searchable data', function () {
     ]);
 
     $attributeA = Attribute::factory()->create([
-        'attribute_type' => Product::class,
+        'attribute_type' => 'product',
         'searchable' => true,
     ]);
     $attributeB = Attribute::factory()->create([
-        'attribute_type' => Product::class,
+        'attribute_type' => 'product',
         'searchable' => true,
     ]);
     $attributeC = Attribute::factory()->create([
-        'attribute_type' => Product::class,
+        'attribute_type' => 'product',
         'searchable' => false,
     ]);
     $attributeD = Attribute::factory()->create([
-        'attribute_type' => Product::class,
+        'attribute_type' => 'product',
         'type' => TranslatedText::class,
         'searchable' => true,
     ]);

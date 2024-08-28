@@ -16,7 +16,7 @@ use Lunar\Database\Factories\TaxRateAmountFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxRateAmount extends BaseModel
+class TaxRateAmount extends BaseModel implements Contracts\TaxRateAmount
 {
     use HasFactory;
     use HasMacros;
@@ -31,7 +31,7 @@ class TaxRateAmount extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TaxRateAmountFactory
+    protected static function newFactory()
     {
         return TaxRateAmountFactory::new();
     }
@@ -49,7 +49,7 @@ class TaxRateAmount extends BaseModel
      */
     public function taxRate(): BelongsTo
     {
-        return $this->belongsTo(TaxRate::class);
+        return $this->belongsTo(TaxRate::modelClass());
     }
 
     /**
@@ -57,6 +57,6 @@ class TaxRateAmount extends BaseModel
      */
     public function taxClass(): BelongsTo
     {
-        return $this->belongsTo(TaxClass::class);
+        return $this->belongsTo(TaxClass::modelClass());
     }
 }

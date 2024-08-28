@@ -17,7 +17,7 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
-use Lunar\Shipping\Models\ShippingZone;
+use Lunar\Shipping\Models\Contracts\ShippingZone;
 
 class ShippingZoneResource extends BaseResource
 {

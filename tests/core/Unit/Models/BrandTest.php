@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('models');
+uses(\Lunar\Tests\Core\TestCase::class);
 
 use Illuminate\Support\Facades\Config;
 use Lunar\Generators\UrlGenerator;
@@ -33,7 +33,7 @@ test('can generate url', function () {
 
     $this->assertDatabaseHas((new Url)->getTable(), [
         'slug' => 'test-brand',
-        'element_type' => Brand::class,
+        'element_type' => $brand->getMorphClass(),
         'element_id' => $brand->id,
     ]);
 });
@@ -72,7 +72,7 @@ test('generates unique urls', function () {
 
 test('can return mapped attributes', function () {
     \Lunar\Models\Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
     ]);
     $brand = Brand::factory()->create([
         'name' => 'Test Brand',

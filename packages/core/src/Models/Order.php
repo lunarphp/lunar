@@ -43,7 +43,7 @@ use Lunar\Database\Factories\OrderFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Order extends BaseModel
+class Order extends BaseModel implements Contracts\Order
 {
     use HasFactory,
         HasMacros,
@@ -73,17 +73,11 @@ class Order extends BaseModel
      */
     protected $guarded = [];
 
-    /**
-     * Return a new factory instance for the model.
-     */
-    protected static function newFactory(): OrderFactory
+    protected static function newFactory()
     {
         return OrderFactory::new();
     }
 
-    /**
-     * Getter for status label.
-     */
     public function getStatusLabelAttribute(): string
     {
         $statuses = config('lunar.orders.statuses');
@@ -91,137 +85,86 @@ class Order extends BaseModel
         return $statuses[$this->status]['label'] ?? $this->status;
     }
 
-    /**
-     * Return the channel relationship.
-     */
     public function channel(): BelongsTo
     {
-        return $this->belongsTo(Channel::class);
+        return $this->belongsTo(Channel::modelClass());
     }
 
-    /**
-     * Return the cart relationship.
-     */
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(Cart::modelClass());
     }
 
-    /**
-     * Return the lines relationship.
-     */
     public function lines(): HasMany
     {
-        return $this->hasMany(OrderLine::class);
+        return $this->hasMany(OrderLine::modelClass());
     }
 
-    /**
-     * Return physical product lines relationship.
-     */
     public function physicalLines(): HasMany
     {
         return $this->lines()->whereType('physical');
     }
 
-    /**
-     * Return digital product lines relationship.
-     */
     public function digitalLines(): HasMany
     {
         return $this->lines()->whereType('digital');
     }
 
-    /**
-     * Return shipping lines relationship.
-     */
     public function shippingLines(): HasMany
     {
         return $this->lines()->whereType('shipping');
     }
 
-    /**
-     * Return product lines relationship.
-     */
     public function productLines(): HasMany
     {
         return $this->lines()->where('type', '!=', 'shipping');
     }
 
-    /**
-     * Return the currency relationship.
-     */
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::class, 'currency_code', 'code');
+        return $this->belongsTo(Currency::modelClass(), 'currency_code', 'code');
     }
 
-    /**
-     * Return the addresses relationship.
-     */
     public function addresses(): HasMany
     {
-        return $this->hasMany(OrderAddress::class, 'order_id');
+        return $this->hasMany(OrderAddress::modelClass(), 'order_id');
     }
 
-    /**
-     * Return the shipping address relationship.
-     */
     public function shippingAddress(): HasOne
     {
-        return $this->hasOne(OrderAddress::class, 'order_id')->whereType('shipping');
+        return $this->hasOne(OrderAddress::modelClass(), 'order_id')->whereType('shipping');
     }
 
-    /**
-     * Return the billing address relationship.
-     */
     public function billingAddress(): HasOne
     {
-        return $this->hasOne(OrderAddress::class, 'order_id')->whereType('billing');
+        return $this->hasOne(OrderAddress::modelClass(), 'order_id')->whereType('billing');
     }
 
-    /**
-     * Return the transactions relationship.
-     */
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(Transaction::modelClass())->orderBy('created_at', 'desc');
     }
 
-    /**
-     * Return the charges relationship.
-     */
     public function captures(): HasMany
     {
         return $this->transactions()->whereType('capture');
     }
 
-    /**
-     * Return the charges relationship.
-     */
     public function intents(): HasMany
     {
         return $this->transactions()->whereType('intent');
     }
 
-    /**
-     * Return the refunds relationship.
-     */
     public function refunds(): HasMany
     {
         return $this->transactions()->whereType('refund');
     }
 
-    /**
-     * Return the customer relationship.
-     */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    /**
-     * Return the user relationship.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(
@@ -229,17 +172,11 @@ class Order extends BaseModel
         );
     }
 
-    /**
-     * Determines if this is a draft order.
-     */
     public function isDraft(): bool
     {
         return ! $this->isPlaced();
     }
 
-    /**
-     * Determines if this is a placed order.
-     */
     public function isPlaced(): bool
     {
         return ! blank($this->placed_at);

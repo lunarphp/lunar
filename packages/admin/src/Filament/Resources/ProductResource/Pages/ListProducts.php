@@ -51,7 +51,9 @@ class ListProducts extends BaseListRecords
     {
         $currency = Currency::getDefault();
 
-        $nameAttribute = Attribute::whereAttributeType($model)
+        $nameAttribute = Attribute::whereAttributeType(
+            (new $model)->getMorphClass()
+        )
             ->whereHandle('name')
             ->first()
             ->type;

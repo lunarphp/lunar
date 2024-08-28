@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
@@ -22,19 +23,19 @@ test('can return correct searchable data', function () {
     ]);
 
     $attributeA = Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
         'searchable' => true,
     ]);
     $attributeB = Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
         'searchable' => true,
     ]);
     $attributeC = Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
         'searchable' => false,
     ]);
     $attributeD = Attribute::factory()->create([
-        'attribute_type' => Brand::class,
+        'attribute_type' => 'brand',
         'type' => TranslatedText::class,
         'searchable' => true,
     ]);
@@ -54,11 +55,12 @@ test('can return correct searchable data', function () {
 
     $data = app(BrandIndexer::class)->toSearchableArray($brand);
 
-    expect($data['name'])->toEqual($brand->name);
-    expect($data)->toHaveKey('id');
-    expect($data)->toHaveKey($attributeA->handle);
-    expect($data)->toHaveKey($attributeB->handle);
-    $this->assertArrayNotHasKey($attributeC->handle, $data);
-    expect($data)->toHaveKey($attributeD->handle.'_en');
-    expect($data)->toHaveKey($attributeD->handle.'_dk');
-});
+    expect($data['name'])->toEqual($brand->name)
+        ->and($data)->toHaveKey('id')
+        ->and($data)->toHaveKey($attributeA->handle)
+        ->and($data)->toHaveKey($attributeB->handle)
+        ->and($data)->not()->toHaveKey($attributeC->handle)
+        ->and($data)->toHaveKey($attributeD->handle.'_en')
+        ->and($data)->toHaveKey($attributeD->handle.'_dk');
+
+})->group('foo');

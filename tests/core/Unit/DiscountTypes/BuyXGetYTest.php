@@ -148,12 +148,12 @@ test('can discount eligible product', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -162,12 +162,12 @@ test('can discount eligible product', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -182,12 +182,12 @@ test('can discount eligible product', function () {
     ]);
 
     $discount->purchasableLimitations()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
     $discount->purchasableRewards()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productB->getMorphClass(),
         'purchasable_id' => $productB->id,
         'type' => 'reward',
     ]);
@@ -247,7 +247,7 @@ test('can discount eligible products', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -255,18 +255,18 @@ test('can discount eligible products', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -295,12 +295,12 @@ test('can discount eligible products', function () {
     ]);
 
     $discount->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
     $discount->purchasableRewards()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productB->getMorphClass(),
         'purchasable_id' => $productB->id,
         'type' => 'reward',
     ]);
@@ -309,7 +309,7 @@ test('can discount eligible products', function () {
 
     expect($cart->total->value)->toEqual(1200);
     expect($cart->freeItems)->toHaveCount(1);
-})->group('thisthis');
+});
 
 test('can discount purchasable with priority', function () {
     $customerGroup = CustomerGroup::factory()->create([
@@ -343,7 +343,7 @@ test('can discount purchasable with priority', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -351,18 +351,18 @@ test('can discount purchasable with priority', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -409,12 +409,12 @@ test('can discount purchasable with priority', function () {
     ]);
 
     $discount->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
     $discount->purchasableRewards()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productB->getMorphClass(),
         'purchasable_id' => $productB->id,
         'type' => 'reward',
     ]);
@@ -455,7 +455,7 @@ test('can apply multiple different discounts', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -463,7 +463,7 @@ test('can apply multiple different discounts', function () {
         'price' => 500, // £5
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
@@ -477,13 +477,13 @@ test('can apply multiple different discounts', function () {
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 2,
     ]);
@@ -530,12 +530,12 @@ test('can apply multiple different discounts', function () {
     }
 
     $discountA->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
     $discountA->purchasableRewards()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productB->getMorphClass(),
         'purchasable_id' => $productB->id,
         'type' => 'reward',
     ]);
@@ -560,7 +560,7 @@ test('can apply multiple different discounts', function () {
 
     expect($cart->discountTotal->value)->toEqual(700);
     expect($cart->discountBreakdown)->toHaveCount(2);
-})->group('flub');
+});
 
 test('can supplement correct quantities', function () {
     $customerGroup = CustomerGroup::factory()->create([
@@ -590,7 +590,7 @@ test('can supplement correct quantities', function () {
         'price' => 1064, // $10.64
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -598,7 +598,7 @@ test('can supplement correct quantities', function () {
         'price' => 2280, // $22.80
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
@@ -628,12 +628,12 @@ test('can supplement correct quantities', function () {
     ]);
 
     $discount->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
     $discount->purchasableRewards()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productB->getMorphClass(),
         'purchasable_id' => $productB->id,
         'type' => 'reward',
     ]);
@@ -672,13 +672,13 @@ test('can supplement correct quantities', function () {
         ]);
 
         $cart->lines()->create([
-            'purchasable_type' => get_class($purchasableA),
+            'purchasable_type' => $purchasableA->getMorphClass(),
             'purchasable_id' => $purchasableA->id,
             'quantity' => $line['condition_quantity'],
         ]);
 
         $cart->lines()->create([
-            'purchasable_type' => get_class($purchasableB),
+            'purchasable_type' => $purchasableB->getMorphClass(),
             'purchasable_id' => $purchasableB->id,
             'quantity' => $line['reward_quantity'],
         ]);
@@ -727,7 +727,7 @@ test('can count condition qty in discount breakdown', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -735,7 +735,7 @@ test('can count condition qty in discount breakdown', function () {
         'price' => 500, // £5
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
@@ -743,7 +743,7 @@ test('can count condition qty in discount breakdown', function () {
         'price' => 200, // £2
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableC),
+        'priceable_type' => $purchasableC->getMorphClass(),
         'priceable_id' => $purchasableC->id,
     ]);
 
@@ -756,19 +756,19 @@ test('can count condition qty in discount breakdown', function () {
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableC),
+        'purchasable_type' => $purchasableC->getMorphClass(),
         'purchasable_id' => $purchasableC->id,
         'quantity' => 1,
     ]);
@@ -802,22 +802,22 @@ test('can count condition qty in discount breakdown', function () {
     }
 
     $discountA->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
     $discountA->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productB->getMorphClass(),
         'purchasable_id' => $productB->id,
     ]);
 
     $discountA->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productC->getMorphClass(),
         'purchasable_id' => $productC->id,
     ]);
 
     $discountA->purchasableRewards()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productC->getMorphClass(),
         'purchasable_id' => $productC->id,
         'type' => 'reward',
     ]);
@@ -885,7 +885,7 @@ test('can add eligible products when not in cart', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -893,12 +893,12 @@ test('can add eligible products when not in cart', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -928,12 +928,12 @@ test('can add eligible products when not in cart', function () {
     ]);
 
     $discount->purchasableConditions()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
     $discount->purchasableRewards()->create([
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productB->getMorphClass(),
         'purchasable_id' => $productB->id,
         'type' => 'reward',
     ]);

@@ -2,12 +2,11 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Models\Channel;
 use Lunar\Models\Order;
 
-class OrderFactory extends Factory
+class OrderFactory extends BaseFactory
 {
     protected $model = Order::class;
 
