@@ -159,6 +159,16 @@ class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
         ])->withTimestamps();
     }
 
+    public static function getExtraCustomerGroupPivotValues(CustomerGroup $customerGroup): array
+    {
+        return [
+            'purchasable' => $customerGroup->default,
+        ];
+    }
+
+    /**
+     * Return the brand relationship.
+     */
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::modelClass());
