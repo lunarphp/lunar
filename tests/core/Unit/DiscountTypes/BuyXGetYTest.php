@@ -429,10 +429,10 @@ test('can discount purchasable with priority', function () {
     $cart = $cart->calculate();
 
     expect($cart->discountTotal->value)->toBe(1010)
-    ->and($cart->subTotalDiscounted->value)->toBe(2000 - 1010)
-    ->and($cart->subTotal->value)->toBe(2000)
-    ->and($cart->total->value)->toBe(1188)
-    ->and($cart->freeItems)->toHaveCount(1);
+        ->and($cart->subTotalDiscounted->value)->toBe(2000 - 1010)
+        ->and($cart->subTotal->value)->toBe(2000)
+        ->and($cart->total->value)->toBe(1188)
+        ->and($cart->freeItems)->toHaveCount(1);
 });
 
 test('can apply multiple different discounts', function () {
