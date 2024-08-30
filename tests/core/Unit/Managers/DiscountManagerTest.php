@@ -88,8 +88,8 @@ test('can restrict discounts to channel', function () {
     $discount->customerGroups()->sync([
         $customerGroup->id => [
             'enabled' => false,
-            'starts_at' => null
-        ]
+            'starts_at' => null,
+        ],
     ]);
 
     $discount->channels()->sync([
