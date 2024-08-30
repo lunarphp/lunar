@@ -55,7 +55,7 @@ class RemapPolymorphicRelations extends Migration
                 $class => \Lunar\Facades\ModelManifest::getMorphMapKey($class),
             ]
         );
-        
+
         $tables = [
             'attributables' => ['attributable_type'],
             'attributes' => ['attribute_type'],
