@@ -2,9 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Tests\Core\Stubs\Models\Cart;
 
 class CartFactory extends BaseFactory
 {

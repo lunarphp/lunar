@@ -4,7 +4,7 @@ namespace Lunar\Database\Factories;
 
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Models\Channel;
-use Lunar\Models\Order;
+use Lunar\Tests\Core\Stubs\Models\Order;
 
 class OrderFactory extends BaseFactory
 {
