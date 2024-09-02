@@ -6,16 +6,19 @@ use Closure;
 use Illuminate\Pipeline\Pipeline;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class CalculateLines
 {
     /**
      * Called just before cart totals are calculated.
      *
-     * @return void
+     * @param  Closure(CartContract): mixed  $next
+     * @return Closure
      */
-    public function handle(Cart $cart, Closure $next)
+    public function handle(CartContract $cart, Closure $next): mixed
     {
+        /** @var Cart $cart */
         foreach ($cart->lines as $line) {
             $cartLine = app(Pipeline::class)
                 ->send($line)

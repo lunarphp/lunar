@@ -8,16 +8,19 @@ use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 final class ApplyShipping
 {
     /**
      * Called just before cart totals are calculated.
      *
-     * @return void
+     * @param  Closure(CartContract): mixed  $next
+     * @return Closure
      */
-    public function handle(Cart $cart, Closure $next)
+    public function handle(CartContract $cart, Closure $next): mixed
     {
+        /** @var Cart $cart */
         $shippingSubTotal = 0;
         $shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
 
