@@ -6,9 +6,12 @@ use Lunar\Actions\Carts\CreateOrder;
 use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\DisallowMultipleCartOrdersException;
+use Lunar\Facades\ModelManifest;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
+use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
@@ -20,8 +23,15 @@ use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
+use Lunar\Tests\Core\Stubs\Models\Cart as CustomCart;
+use Lunar\Tests\Core\Stubs\Models\Order as CustomOrder;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+
+beforeEach(function () {
+    ModelManifest::replace(CartContract::class, CustomCart::class);
+    ModelManifest::replace(OrderContract::class, CustomOrder::class);
+});
 
 it('cant create order if already has complete and multiple disabled', function () {
     TaxClass::factory()->create([
