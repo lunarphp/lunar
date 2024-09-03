@@ -13,6 +13,7 @@ jobs:
         laravel: [11.*, 10.*]
         dependency-version: [prefer-stable]
         testsuite: [core, admin, shipping, stripe]
+        phpunit-config: [phpunit.xml, phpunit.extending.xml]
         include:
           - laravel: 11.*
             testbench: 9.*
@@ -47,4 +48,4 @@ jobs:
           APP_ENV: testing
           DB_CONNECTION: testing
           DB_DATABASE: ":memory:"
-        run: ./vendor/bin/pest --testsuite ${{ matrix.testsuite }}
+        run: ./vendor/bin/pest --testsuite ${{ matrix.testsuite }} -c ${{ matrix.phpunit-config }}
