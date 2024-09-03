@@ -377,7 +377,7 @@ test('can discount purchasable with priority', function () {
         ],
     ]);
 
-    Discount::factory()->create([
+    $discountB = Discount::factory()->create([
         'type' => AmountOff::class,
         'name' => 'Test A amount off',
         'uses' => 0,
@@ -391,6 +391,13 @@ test('can discount purchasable with priority', function () {
             'min_prices' => [
                 'GBP' => 0,
             ],
+        ],
+    ]);
+
+    $discountB->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => false,
+            'starts_at' => now(),
         ],
     ]);
 
@@ -421,8 +428,11 @@ test('can discount purchasable with priority', function () {
 
     $cart = $cart->calculate();
 
-    expect($cart->total->value)->toEqual(1200);
-    expect($cart->freeItems)->toHaveCount(1);
+    expect($cart->discountTotal->value)->toBe(1010)
+        ->and($cart->subTotalDiscounted->value)->toBe(2000 - 1010)
+        ->and($cart->subTotal->value)->toBe(2000)
+        ->and($cart->total->value)->toBe(1188)
+        ->and($cart->freeItems)->toHaveCount(1);
 });
 
 test('can apply multiple different discounts', function () {
