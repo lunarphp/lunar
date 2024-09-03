@@ -33,9 +33,14 @@ test('can replace model', function () {
 });
 
 test('can get registered model', function () {
+
+    $expected = env('LUNAR_TESTING_REPLACE_MODELS', false)
+    ? \Lunar\Tests\Stubs\Models\Product::class
+    : \Lunar\Models\Product::class;
+
     expect(
         ModelManifest::get(\Lunar\Models\Contracts\Product::class)
-    )->toBe(Product::class);
+    )->toBe($expected);
 
     ModelManifest::replace(
         \Lunar\Models\Contracts\Product::class,
