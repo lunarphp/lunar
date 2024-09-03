@@ -3,6 +3,7 @@
 namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Lunar\Facades\ModelManifest;
 
@@ -44,6 +45,20 @@ trait HasModelExtending
         $contractClass = ModelManifest::guessContractClass(static::class);
 
         return ModelManifest::get($contractClass) ?? static::class;
+    }
+
+    /**
+     * Returns the morph class for a model class registered in the model manifest.
+     */
+    public function getMorphClass(): string
+    {
+        $morphMap = Relation::morphMap();
+
+        if (! empty($morphMap) && in_array(static::modelClass(), $morphMap)) {
+            return array_search(static::modelClass(), $morphMap, true);
+        }
+
+        return parent::getMorphClass();
     }
 
     public static function isLunarInstance(): bool
