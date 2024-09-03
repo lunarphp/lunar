@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" backupGlobals="false"
+         colors="true" processIsolation="false" stopOnFailure="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache"
+         backupStaticProperties="false">
+    <coverage/>
+    <testsuites>
+        <testsuite name="admin">
+            <directory suffix="Test.php">tests/admin/Feature</directory>
+            <directory suffix="Test.php">tests/admin/Unit</directory>
+        </testsuite>
+        <testsuite name="core">
+            <directory suffix="Test.php">tests/core/Database</directory>
+            <directory suffix="Test.php">tests/core/Feature</directory>
+            <directory suffix="Test.php">tests/core/Unit</directory>
+        </testsuite>
+        <testsuite name="opayo">
+            <directory suffix="Test.php">tests/opayo/Unit</directory>
+            <directory suffix="Test.php">tests/opayo/Feature</directory>
+        </testsuite>
+        <testsuite name="stripe">
+            <directory suffix="Test.php">tests/stripe/Unit</directory>
+        </testsuite>
+        <testsuite name="shipping">
+            <directory suffix="Test.php">tests/shipping/Feature</directory>
+            <directory suffix="Test.php">tests/shipping/Unit</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="DB_CONNECTION" value="testing"/>
+        <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKZvp6fiiM10="/>
+        <env name="APP_ENV" value="testing"/>
+        <env name="MAIL_MAILER" value="log"/>
+        <env name="MAIL_MAILER" value="log"/>
+        <env name="LUNAR_TESTING_REPLACE_MODELS" value="true"/>
+    </php>
+    <source>
+        <include>
+            <directory suffix=".php">./packages/**/src</directory>
+        </include>
+    </source>
+</phpunit>
