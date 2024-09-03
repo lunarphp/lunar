@@ -70,6 +70,8 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Lunar\\Tests\\": "tests",
+            "Lunar\\Tests\\Stubs\\": "tests/stubs",
             "Lunar\\Tests\\Admin\\": "tests/admin",
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",
