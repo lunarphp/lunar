@@ -8,11 +8,12 @@ use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
+use Lunar\Tests\BaseTestCase;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {

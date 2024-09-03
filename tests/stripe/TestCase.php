@@ -9,12 +9,13 @@ use Livewire\LivewireServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentsServiceProvider;
+use Lunar\Tests\BaseTestCase;
 use Lunar\Tests\Stubs\User;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {

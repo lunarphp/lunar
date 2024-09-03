@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\Facades\Taxes;
 use Lunar\LunarServiceProvider;
+use Lunar\Tests\BaseTestCase;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;
 use Lunar\Tests\Core\Stubs\TestUrlGenerator;
 use Lunar\Tests\Core\Stubs\User;
@@ -14,7 +15,7 @@ use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {

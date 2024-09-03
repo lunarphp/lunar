@@ -10,11 +10,12 @@ use Livewire\LivewireServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Opayo\OpayoServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
+use Lunar\Tests\BaseTestCase;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {
