@@ -85,6 +85,24 @@ test('can restrict discounts to channel', function () {
 
     $discount = Discount::factory()->create();
 
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => false,
+            'starts_at' => null,
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => false,
+            'starts_at' => null,
+        ],
+        $channelTwo->id => [
+            'enabled' => false,
+            'starts_at' => null,
+        ],
+    ]);
+
     $manager = app(DiscountManagerInterface::class);
 
     expect($manager->getDiscounts())->toBeEmpty();
