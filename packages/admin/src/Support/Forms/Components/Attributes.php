@@ -28,7 +28,7 @@ class Attributes extends Forms\Components\Group
 
                 $morphMap = (new $modelClass)->getMorphClass();
 
-                $attributeQuery = Attribute::where('attribute_type', $morphMap);
+                $attributeQuery = Attribute::modelClass()::where('attribute_type', $morphMap);
 
                 // Products are unique in that they use product types to map attributes, so we need
                 // to try and find the product type ID
@@ -37,7 +37,7 @@ class Attributes extends Forms\Components\Group
 
                     // If we have a product type, the attributes should be based off that.
                     if ($productTypeId) {
-                        $attributeQuery = ProductType::find($productTypeId)->productAttributes();
+                        $attributeQuery = ProductType::modelClass()::find($productTypeId)->productAttributes();
                     }
                 }
 
@@ -45,13 +45,13 @@ class Attributes extends Forms\Components\Group
                     $productTypeId = $record?->product?->product_type_id ?: ProductType::first()->id;
                     // If we have a product type, the attributes should be based off that.
                     if ($productTypeId) {
-                        $attributeQuery = ProductType::find($productTypeId)->variantAttributes();
+                        $attributeQuery = ProductType::modelClass()::find($productTypeId)->variantAttributes();
                     }
                 }
 
                 $attributes = $attributeQuery->orderBy('position')->get();
 
-                $groups = AttributeGroup::where(
+                $groups = AttributeGroup::modelClass()::where(
                     'attributable_type',
                     $morphMap
                 )->orderBy('position', 'asc')

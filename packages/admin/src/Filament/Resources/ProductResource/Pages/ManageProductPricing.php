@@ -106,7 +106,7 @@ class ManageProductPricing extends BaseEditRecord
                     ->relationship(name: 'currency', titleAttribute: 'name')
                     ->preload(),
                 Tables\Filters\SelectFilter::make('min_quantity')->options(
-                    Price::where('priceable_id', $this->getOwnerRecord()->id)
+                    Price::modelClass()::where('priceable_id', $this->getOwnerRecord()->id)
                         ->where('priceable_type', $this->getOwnerRecord()->getMorphClass())
                         ->get()
                         ->pluck('min_quantity', 'min_quantity')
@@ -114,7 +114,7 @@ class ManageProductPricing extends BaseEditRecord
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data) {
-                    $currencyModel = Currency::find($data['currency_id']);
+                    $currencyModel = Currency::modelClass()::find($data['currency_id']);
 
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
@@ -123,7 +123,7 @@ class ManageProductPricing extends BaseEditRecord
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->mutateFormDataUsing(function (array $data): array {
-                    $currencyModel = Currency::find($data['currency_id']);
+                    $currencyModel = Currency::modelClass()::find($data['currency_id']);
 
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 

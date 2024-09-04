@@ -17,6 +17,9 @@ use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Facades\DB;
+use Lunar\Models\Contracts\ProductOption as ProductOptionContract;
+use Lunar\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
@@ -50,7 +53,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public function addSharedOptionAction()
     {
         $existing = collect($this->configuredOptions)->pluck('id');
-        $options = ProductOption::whereNotIn('id', $existing)
+        $options = ProductOption::modelClass()::whereNotIn('id', $existing)
             ->shared()
             ->get();
 
@@ -74,7 +77,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         $options->isNotEmpty()
                     ),
             ])->action(function (array $data) {
-                $productOption = ProductOption::with(['values'])->find($data['product_option']);
+                $productOption = ProductOption::modelClass()::with(['values'])->find($data['product_option']);
                 $this->configuredOptions[] = $this->mapOption(
                     $productOption,
                     $productOption->values->map(
@@ -94,7 +97,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             fn ($option) => $option->shared
         )->pluck('id');
 
-        $disabledSharedOptionValues = ProductOptionValue::whereIn(
+        $disabledSharedOptionValues = ProductOptionValue::modelClass()::whereIn(
             'product_option_id',
             $sharedOptionIds
         )->whereNotIn(
@@ -270,7 +273,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
     protected function storeConfiguredOptions(): void
     {
-        $language = Language::getDefault();
+        $language = Language::modelClass()::getDefault();
         /**
          * Go through our configured options and if they don't
          * exist in the database i.e. they are new, create and map them
@@ -282,7 +285,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 new ProductOption([
                     'shared' => false,
                 ]) :
-                ProductOption::find($option['id']);
+                ProductOption::modelClass()::find($option['id']);
 
             $optionValue = $option['value'];
 
@@ -305,7 +308,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     new ProductOptionValue([
                         'product_option_id' => $option['id'],
                     ]) :
-                    ProductOptionValue::find($value['id']);
+                    ProductOptionValue::modelClass()::find($value['id']);
 
                 $optionValueModel->name = [
                     $language->code => $value['value'],
@@ -355,7 +358,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     $variant = $this->record->variants()->first();
                     $variant->values()->detach();
                     $this->record->productOptions()->exclusive()->each(
-                        fn (ProductOption $productOption) => $productOption->delete()
+                        fn (ProductOptionContract $productOption) => $productOption->delete()
                     );
 
                     $this->record->productOptions()->shared()->detach();
@@ -363,7 +366,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         ->where('id', '!=', $variant->id)
                         ->get()
                         ->each(
-                            fn (ProductVariant $variant) => $variant->delete()
+                            fn (ProductVariantContract $variant) => $variant->delete()
                         );
 
                     DB::commit();
@@ -382,12 +385,12 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     $basePrice = null;
 
                     if (! empty($variantData['variant_id'])) {
-                        $variant = ProductVariant::find($variantData['variant_id']);
+                        $variant = ProductVariant::modelClass()::find($variantData['variant_id']);
                         $basePrice = $variant->basePrices->first();
                     }
 
                     if (! empty($variantData['copied_id'])) {
-                        $copiedVariant = ProductVariant::find(
+                        $copiedVariant = ProductVariant::modelClass()::find(
                             $variantData['copied_id']
                         );
 
@@ -448,8 +451,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         ]);
     }
 
-    protected function mapOptionValue(ProductOptionValue $value, bool $enabled = true)
+    protected function mapOptionValue(ProductOptionValueContract $value, bool $enabled = true)
     {
+        /** @var ProductOptionValue $value */
         return [
             'id' => $value->id,
             'enabled' => $enabled,
@@ -458,8 +462,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         ];
     }
 
-    protected function mapOption(ProductOption $option, array $values = []): array
+    protected function mapOption(ProductOptionContract $option, array $values = []): array
     {
+        /** @var ProductOption $option */
         return [
             'id' => $option->id,
             'key' => "option_{$option->id}",
