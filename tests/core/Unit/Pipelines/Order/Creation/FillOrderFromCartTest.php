@@ -2,7 +2,9 @@
 
 uses(\Lunar\Tests\Core\TestCase::class);
 
+use Lunar\Facades\ModelManifest;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\Price;
@@ -34,7 +36,10 @@ test('can run pipeline', function () {
         'quantity' => 1,
     ]);
 
-    $order = new Order([
+    $orderClass = ModelManifest::get(OrderContract::class);
+
+    /** @var Order $order */
+    $order = new $orderClass([
         'cart_id' => $cart->id,
     ]);
 
