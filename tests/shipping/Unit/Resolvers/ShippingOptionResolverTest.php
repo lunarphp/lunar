@@ -114,7 +114,7 @@ test('sets tax rate to the highest basket rate', function () {
 
     $higherRate = TaxClass::factory()->create([
         'default' => false,
-        'name' => 'higher'
+        'name' => 'higher',
     ]);
 
     $taxAmount = TaxRateAmount::factory()->create();

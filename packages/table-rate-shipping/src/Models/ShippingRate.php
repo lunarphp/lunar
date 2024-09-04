@@ -10,7 +10,6 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasPrices;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
 use Lunar\Models\TaxClass;
 use Lunar\Shipping\Database\Factories\ShippingRateFactory;
