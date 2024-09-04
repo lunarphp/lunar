@@ -40,7 +40,7 @@ class ProcessStripeWebhook implements ShouldQueue
         $order = null;
 
         if ($this->orderId) {
-            $order = Order::find($this->orderId);
+            $order = Order::modelClass()::find($this->orderId);
 
             if ($order->placed_at) {
                 return;
@@ -48,7 +48,7 @@ class ProcessStripeWebhook implements ShouldQueue
         }
 
         if (! $order) {
-            $cart = Cart::where('meta->payment_intent', '=', $this->paymentIntentId)->first();
+            $cart = Cart::modelClass()::where('meta->payment_intent', '=', $this->paymentIntentId)->first();
         }
 
         if (! $cart && ! $order) {
