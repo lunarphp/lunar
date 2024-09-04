@@ -19,14 +19,14 @@ class CreateChildCollection extends CreateAction
         parent::setUp();
 
         $this->action(function (?Model $model, array $arguments, array $data): void {
-            $parent = Collection::find($arguments['id']);
+            $parent = Collection::modelClass()::find($arguments['id']);
 
             $this->createChildCollection($parent, $data['name']);
 
             $this->success();
         });
 
-        $attribute = Attribute::where('attribute_type', '=', (new Collection)->getMorphClass())
+        $attribute = Attribute::modelClass()::where('attribute_type', '=', (new Collection)->getMorphClass())
             ->where('handle', '=', 'name')->first();
 
         $formInput = TextInput::class;
