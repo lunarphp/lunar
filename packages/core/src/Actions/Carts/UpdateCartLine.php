@@ -10,10 +10,6 @@ class UpdateCartLine extends AbstractAction
 {
     /**
      * Execute the action.
-     *
-     * @param  \Lunar\Models\CartLine  $cartLine
-     * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return \Lunar\Models\CartLine
      */
     public function execute(
         int $cartLineId,
@@ -32,7 +28,7 @@ class UpdateCartLine extends AbstractAction
                 $data['meta'] = $meta;
             }
 
-            CartLine::whereId($cartLineId)->update($data);
+            CartLine::modelClass()::whereId($cartLineId)->update($data);
         });
 
         return $this;

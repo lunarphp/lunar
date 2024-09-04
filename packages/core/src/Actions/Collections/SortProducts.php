@@ -3,6 +3,7 @@
 namespace Lunar\Actions\Collections;
 
 use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 use Lunar\Models\Currency;
 
 class SortProducts
@@ -12,15 +13,16 @@ class SortProducts
      *
      * @return void
      */
-    public function execute(Collection $collection)
+    public function execute(CollectionContract $collection)
     {
+        /** @var Collection $collection */
         [$sort, $direction] = explode(':', $collection->sort);
 
         switch ($sort) {
             case 'min_price':
                 $products = app(SortProductsByPrice::class)->execute(
                     $collection->products,
-                    Currency::getDefault(),
+                    Currency::modelClass()::getDefault(),
                     $direction
                 );
                 break;

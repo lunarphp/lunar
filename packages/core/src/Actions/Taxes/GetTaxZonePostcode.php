@@ -17,7 +17,9 @@ class GetTaxZonePostcode
     {
         $postcodeZone = $this->getZoneMatches($postcode);
 
-        if ($postcodeZone instanceof TaxZonePostcode) {
+        $taxZonePostcodeClass = TaxZonePostcode::modelClass();
+
+        if ($postcodeZone instanceof $taxZonePostcodeClass) {
             return $postcodeZone;
         }
 
@@ -50,7 +52,7 @@ class GetTaxZonePostcode
     {
         $postcode = (string) $postcode;
 
-        $query = TaxZonePostcode::whereHas(
+        $query = TaxZonePostcode::modelClass()::whereHas(
             'taxZone',
             fn (Builder $query) => $query->where('active', true)
         );

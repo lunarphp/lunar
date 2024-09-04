@@ -30,6 +30,6 @@ class GetTaxZone
             }
         }
 
-        return TaxZone::getDefault();
+        return TaxZone::modelClass()::getDefault();
     }
 }

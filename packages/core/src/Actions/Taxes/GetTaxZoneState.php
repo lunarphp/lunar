@@ -16,7 +16,9 @@ class GetTaxZoneState
     {
         $stateZone = $this->getZoneMatches($state);
 
-        if ($stateZone instanceof TaxZoneState) {
+        $taxZoneStateClass = TaxZoneState::modelClass();
+
+        if ($stateZone instanceof $taxZoneStateClass) {
             return $stateZone;
         }
 
@@ -33,7 +35,7 @@ class GetTaxZoneState
     {
         $state = (string) $state;
 
-        $stateZone = TaxZoneState::whereHas('state', function ($query) use ($state) {
+        $stateZone = TaxZoneState::modelClass()::whereHas('state', function ($query) use ($state) {
             return $query
                 ->where('name', $state)
                 ->orWhere('code', $state);
