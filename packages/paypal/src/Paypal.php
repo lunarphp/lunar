@@ -4,6 +4,7 @@ namespace Lunar\Paypal;
 
 use Illuminate\Support\Facades\Http;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class Paypal implements PaypalInterface
 {
@@ -65,8 +66,9 @@ class Paypal implements PaypalInterface
             ->json();
     }
 
-    public function buildInitialOrder(Cart $cart): array
+    public function buildInitialOrder(CartContract $cart): array
     {
+        /** @var Cart $cart */
         $billingAddress = $cart->billingAddress;
         $shippingAddress = $cart->shippingAddress ?: $billingAddress;
 
