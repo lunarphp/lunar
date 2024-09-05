@@ -3,13 +3,15 @@
 namespace Lunar\Stripe\Actions;
 
 use Illuminate\Support\Collection;
+use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
 
 class StoreCharges
 {
-    public function store(Order $order, Collection $charges)
+    public function store(OrderContract $order, Collection $charges)
     {
+        /** @var Order $order */
         /**
          * If charges are empty, there is nothing to update.
          */

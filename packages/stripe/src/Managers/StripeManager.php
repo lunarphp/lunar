@@ -4,6 +4,7 @@ namespace Lunar\Stripe\Managers;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;
@@ -30,13 +31,14 @@ class StripeManager
         ]);
     }
 
-    public function getCartIntentId(Cart $cart): ?string
+    public function getCartIntentId(CartContract $cart): ?string
     {
         return $cartModel->meta['payment_intent'] ?? $cart->paymentIntents->first()?->intent_id;
     }
 
-    public function fetchOrCreateIntent(Cart $cart, array $createOptions = []): PaymentIntent
+    public function fetchOrCreateIntent(CartContract $cart, array $createOptions = []): PaymentIntent
     {
+        /** @var Cart $cart */
         $existingIntentId = $this->getCartIntentId($cart);
 
         $intent = $existingIntentId ? $this->fetchIntent($existingIntentId) : $this->createIntent($cart, $createOptions);
@@ -68,8 +70,9 @@ class StripeManager
     /**
      * Create a payment intent from a Cart
      */
-    public function createIntent(Cart $cart, array $opts = []): PaymentIntent
+    public function createIntent(CartContract $cart, array $opts = []): PaymentIntent
     {
+        /** @var Cart $cart */
         $existingId = $this->getCartIntentId($cart);
 
         if (
@@ -95,8 +98,9 @@ class StripeManager
         return $paymentIntent;
     }
 
-    public function updateShippingAddress(Cart $cart): void
+    public function updateShippingAddress(CartContract $cart): void
     {
+        /** @var Cart $cart */
         $address = $cart->shippingAddress;
 
         if (! $address) {
@@ -117,8 +121,9 @@ class StripeManager
         }
     }
 
-    public function updateIntent(Cart $cart, array $values): void
+    public function updateIntent(CartContract $cart, array $values): void
     {
+        /** @var Cart $cart */
         $intentId = $this->getCartIntentId($cart);
 
         if (! $intentId) {
@@ -136,8 +141,9 @@ class StripeManager
         );
     }
 
-    public function syncIntent(Cart $cart): void
+    public function syncIntent(CartContract $cart): void
     {
+        /** @var Cart $cart */
         $intentId = $this->getCartIntentId($cart);
 
         if (! $intentId) {
@@ -152,8 +158,9 @@ class StripeManager
         );
     }
 
-    public function cancelIntent(Cart $cart, CancellationReason $reason): void
+    public function cancelIntent(CartContract $cart, CancellationReason $reason): void
     {
+        /** @var Cart $cart */
         $intentId = $this->getCartIntentId($cart);
 
         if (! $intentId) {
