@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\ProductVariant;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\TaxClass;
 use Marvinosswald\FilamentInputSelectAffix\TextInputSelectAffix;
 
@@ -21,7 +21,7 @@ class ProductVariantResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = ProductVariant::class;
+    protected static ?string $model = ProductVariantContract::class;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -52,7 +52,7 @@ class ProductVariantResource extends BaseResource
         ];
     }
 
-    public static function getBaseBreadcrumbs(ProductVariant $productVariant): array
+    public static function getBaseBreadcrumbs(ProductVariantContract $productVariant): array
     {
         return [
             ProductResource::getUrl('edit', [
@@ -176,7 +176,7 @@ class ProductVariantResource extends BaseResource
                 __('lunarpanel::productvariant.form.tax_class_id.label')
             )
             ->options(
-                TaxClass::all()->pluck('name', 'id')
+                TaxClass::modelClass()::all()->pluck('name', 'id')
             )->required();
     }
 

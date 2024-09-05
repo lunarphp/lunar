@@ -29,9 +29,9 @@ class CustomerStatsOverviewWidget extends BaseWidget
             DB::RAW('sub_total * exchange_rate')
         ));
 
-        $totalSpend = new Price($total, Currency::getDefault());
+        $totalSpend = new Price($total, Currency::modelClass()::getDefault());
 
-        $avgSpend = new Price($avg, Currency::getDefault());
+        $avgSpend = new Price($avg, Currency::modelClass()::getDefault());
 
         return [
             Stat::make(__('lunarpanel::widgets.customer.stats_overview.total_orders.label'), $this->record->orders()->count()),

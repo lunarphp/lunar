@@ -23,14 +23,14 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
-use Lunar\Models\Contracts\Discount;
+use Lunar\Models\Contracts\Discount as DiscountContract;
 use Lunar\Models\Currency;
 
 class DiscountResource extends BaseResource
 {
     protected static ?string $permission = 'sales:manage-discounts';
 
-    protected static ?string $model = Discount::class;
+    protected static ?string $model = DiscountContract::class;
 
     protected static ?int $navigationSort = 3;
 
@@ -234,7 +234,7 @@ class DiscountResource extends BaseResource
 
     protected static function getMinimumCartAmountsFormComponents(): array
     {
-        $currencies = Currency::enabled()->get();
+        $currencies = Currency::modelClass()::enabled()->get();
         $inputs = [];
 
         foreach ($currencies as $currency) {
@@ -242,7 +242,7 @@ class DiscountResource extends BaseResource
                 $currency->code
             )->afterStateHydrated(function (Forms\Components\TextInput $component, $state) {
                 $currencyCode = last(explode('.', $component->getStatePath()));
-                $currency = Currency::whereCode($currencyCode)->first();
+                $currency = Currency::modelClass()::whereCode($currencyCode)->first();
 
                 if ($currency) {
                     $component->state($state / $currency->factor);
@@ -264,7 +264,7 @@ class DiscountResource extends BaseResource
 
     protected static function getAmountOffFormComponents(): array
     {
-        $currencies = Currency::get();
+        $currencies = Currency::modelCLass()::get();
 
         $currencyInputs = [];
 
@@ -355,10 +355,10 @@ class DiscountResource extends BaseResource
                 ->label(__('lunarpanel::discount.table.status.label'))
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
-                    \Lunar\Models\Discount::ACTIVE => 'success',
-                    \Lunar\Models\Discount::EXPIRED => 'danger',
-                    \Lunar\Models\Discount::PENDING => 'gray',
-                    \Lunar\Models\Discount::SCHEDULED => 'info',
+                    \Lunar\Models\Discount::modelClass()::ACTIVE => 'success',
+                    \Lunar\Models\Discount::modelClass()::EXPIRED => 'danger',
+                    \Lunar\Models\Discount::modelClass()::PENDING => 'gray',
+                    \Lunar\Models\Discount::modelClass()::SCHEDULED => 'info',
                 }),
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::discount.table.name.label')),

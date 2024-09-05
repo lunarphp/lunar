@@ -14,14 +14,14 @@ use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Facades\AttributeManifest;
-use Lunar\Models\Contracts\AttributeGroup;
+use Lunar\Models\Contracts\AttributeGroup as AttributeGroupContract;
 use Lunar\Models\Language;
 
 class AttributeGroupResource extends BaseResource
 {
     protected static ?string $permission = 'settings:manage-attributes';
 
-    protected static ?string $model = AttributeGroup::class;
+    protected static ?string $model = AttributeGroupContract::class;
 
     protected static ?int $navigationSort = 1;
 
@@ -90,7 +90,7 @@ class AttributeGroupResource extends BaseResource
                 if ($operation !== 'create') {
                     return;
                 }
-                $set('handle', Str::slug($state[Language::getDefault()->code]));
+                $set('handle', Str::slug($state[Language::modelClass()::getDefault()->code]));
             })
             ->live(onBlur: true)
             ->autofocus();

@@ -9,8 +9,8 @@ use Filament\Infolists\Components\Actions\Action;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Arr;
+use Lunar\Models\Contracts\OrderAddress as OrderAddressContract;
 use Lunar\Models\Country;
-use Lunar\Models\OrderAddress;
 use Lunar\Models\State;
 
 trait DisplaysOrderAddresses
@@ -91,7 +91,7 @@ trait DisplaysOrderAddresses
                     Forms\Components\TextInput::make('state')
                         ->label(__('lunarpanel::order.form.address.state.label'))
                         ->autocomplete('state') // to disable browser input history while keeping datalist
-                        ->datalist(fn ($get) => State::whereCountryId($get('country_id'))->pluck('name')->toArray())
+                        ->datalist(fn ($get) => State::modelClass()::whereCountryId($get('country_id'))->pluck('name')->toArray())
                         ->maxLength(255),
                     Forms\Components\TextInput::make('postcode')
                         ->label(__('lunarpanel::order.form.address.postcode.label'))
@@ -100,7 +100,7 @@ trait DisplaysOrderAddresses
                 ]),
             Forms\Components\Select::make('country_id')
                 ->label(__('lunarpanel::order.form.address.country_id.label'))
-                ->options(fn () => Country::get()->pluck('name', 'id'))
+                ->options(fn () => Country::modelClass()::get()->pluck('name', 'id'))
                 ->live()
                 ->searchable()
                 ->required(),
@@ -172,7 +172,7 @@ trait DisplaysOrderAddresses
             ]);
     }
 
-    private static function addressesMatch(?OrderAddress $original = null, ?OrderAddress $comparison = null): bool
+    private static function addressesMatch(?OrderAddressContract $original = null, ?OrderAddressContract $comparison = null): bool
     {
         if (! $original || ! $comparison) {
             return false;

@@ -10,6 +10,7 @@ use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Facades\DB;
 use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class EditCollection extends BaseEditRecord
 {
@@ -51,27 +52,27 @@ class EditCollection extends BaseEditRecord
         return [
             DeleteAction::make('delete')->form([
                 Forms\Components\Select::make('target_collection')
-                    ->model(Collection::class)
+                    ->model(Collection::modelClass())
                     ->searchable()
                     ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search) use ($record): array {
-                        return get_search_builder(Collection::class, $search)
+                        return get_search_builder(Collection::modelClass(), $search)
                             ->get()
                             ->reject(
                                 fn ($result) => $result->isDescendantOf($record)
                             )
-                            ->mapWithKeys(fn (Collection $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                            ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                             ->all();
                     })->helperText(
                         'Choose which collection the children of this collection should be transferred to.'
                     )->hidden(
                         fn () => ! $record->children()->count()
                     ),
-            ])->before(function (Collection $collection, array $data) {
+            ])->before(function (CollectionContract $collection, array $data) {
 
                 $targetId = $data['target_collection'] ?? null;
 
                 if ($targetId) {
-                    $parent = Collection::find($targetId);
+                    $parent = Collection::modelClass()::find($targetId);
 
                     DB::beginTransaction();
                     foreach ($collection->children as $child) {

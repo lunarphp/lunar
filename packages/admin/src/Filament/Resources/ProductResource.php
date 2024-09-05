@@ -32,7 +32,7 @@ use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
-use Lunar\Models\Contracts\Product;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Tag;
@@ -41,7 +41,7 @@ class ProductResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = Product::class;
+    protected static ?string $model = ProductContract::class;
 
     protected static ?string $recordTitleAttribute = 'recordTitle';
 
@@ -153,9 +153,8 @@ class ProductResource extends BaseResource
             ->required($validation['required'] ?? false);
 
         if ($validation['unique'] ?? false) {
-            $input->unique(function () {
-                return (new ProductVariant)->getTable();
-            });
+            $productVariantClass = ProductVariant::modelClass();
+            $input->unique(fn () => (new $productVariantClass)->getTable());
         }
 
         return $input;
@@ -163,7 +162,7 @@ class ProductResource extends BaseResource
 
     public static function getBasePriceFormComponent(): Component
     {
-        $currency = Currency::getDefault();
+        $currency = Currency::modelClass()::getDefault();
 
         return Forms\Components\TextInput::make('base_price')->numeric()->prefix(
             $currency->code
@@ -217,7 +216,7 @@ class ProductResource extends BaseResource
     protected static function getTagsFormComponent(): Component
     {
         return TagsComponent::make('tags')
-            ->suggestions(Tag::all()->pluck('value')->all())
+            ->suggestions(Tag::modelClass()::all()->pluck('value')->all())
             ->label(__('lunarpanel::product.form.tags.label'));
     }
 

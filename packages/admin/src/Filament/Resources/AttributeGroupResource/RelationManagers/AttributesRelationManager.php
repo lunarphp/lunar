@@ -42,7 +42,7 @@ class AttributesRelationManager extends BaseRelationManager
                         if ($operation !== 'create') {
                             return;
                         }
-                        $set('handle', Str::slug($state[Language::getDefault()->code]));
+                        $set('handle', Str::slug($state[Language::modelClass()::getDefault()->code]));
                     }),
                 TranslatedText::make('description')
                     ->label(
@@ -51,7 +51,7 @@ class AttributesRelationManager extends BaseRelationManager
                     ->helperText(
                         __('lunarpanel::attribute.form.description.helper')
                     )
-                    ->afterStateHydrated(fn ($state, $component) => $state ?: $component->state([Language::getDefault()->code => null]))
+                    ->afterStateHydrated(fn ($state, $component) => $state ?: $component->state([Language::modelClass()::getDefault()->code => null]))
                     ->maxLength(255),
                 Forms\Components\TextInput::make('handle')
                     ->label(

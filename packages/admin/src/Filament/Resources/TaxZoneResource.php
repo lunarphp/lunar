@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\TaxZone;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Models\Country;
 use Lunar\Models\State;
 
@@ -23,7 +23,7 @@ class TaxZoneResource extends BaseResource
 
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = TaxZone::class;
+    protected static ?string $model = TaxZoneContract::class;
 
     protected static ?int $navigationSort = 1;
 
@@ -90,7 +90,7 @@ class TaxZoneResource extends BaseResource
             ->label(__('lunarpanel::taxzone.form.zone_countries.label'))
             ->visible(fn ($get) => $get('zone_type') == 'country')
             ->dehydrated(false)
-            ->options(Country::get()->pluck('name', 'iso3'))
+            ->options(Country::modelClass()::get()->pluck('name', 'iso3'))
             ->multiple()
             ->required()
             ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
@@ -113,7 +113,7 @@ class TaxZoneResource extends BaseResource
                     ->toArray();
             })
             ->saveRelationshipsUsing(static function (Model $record, $state) {
-                $selectedCountries = Country::whereIn('iso3', $state)->get()->pluck('id');
+                $selectedCountries = Country::modelClass()::whereIn('iso3', $state)->get()->pluck('id');
 
                 self::syncCountries($record, $selectedCountries);
 
@@ -129,7 +129,7 @@ class TaxZoneResource extends BaseResource
             ->visible(fn ($get) => $get('zone_type') !== 'country')
             ->dehydrated(false)
             ->required()
-            ->options(Country::get()->pluck('name', 'id'))
+            ->options(Country::modelClass()::get()->pluck('name', 'id'))
             ->searchable()
             ->afterStateHydrated(static function (Forms\Components\Select $component, ?Model $record): void {
                 if ($record) {
@@ -176,7 +176,7 @@ class TaxZoneResource extends BaseResource
                     ->toArray();
             })
             ->saveRelationshipsUsing(static function (Model $record, $state, $get) {
-                $selectedStates = State::where('country_id', $get('zone_country'))->whereIn('code', $state)->get()->pluck('id');
+                $selectedStates = State::modelClass()::where('country_id', $get('zone_country'))->whereIn('code', $state)->get()->pluck('id');
 
                 self::syncCountries($record, [$get('zone_country')]);
                 self::syncStates($record, $selectedStates);
@@ -214,7 +214,7 @@ class TaxZoneResource extends BaseResource
             });
     }
 
-    private static function syncCountries(TaxZone $taxZone, $selectedCountries)
+    private static function syncCountries(TaxZoneContract $taxZone, $selectedCountries)
     {
         $existingCountries = $taxZone->countries()->pluck('country_id');
 
@@ -234,7 +234,7 @@ class TaxZoneResource extends BaseResource
             ->delete();
     }
 
-    private static function syncStates(TaxZone $taxZone, $selectedStates)
+    private static function syncStates(TaxZoneContract $taxZone, $selectedStates)
     {
         $existingStates = $taxZone->states()->pluck('state_id');
 
@@ -254,7 +254,7 @@ class TaxZoneResource extends BaseResource
             ->delete();
     }
 
-    private static function syncPostcodes(TaxZone $taxZone, $countryId, $postcodes)
+    private static function syncPostcodes(TaxZoneContract $taxZone, $countryId, $postcodes)
     {
         $postcodes = collect(
             explode(

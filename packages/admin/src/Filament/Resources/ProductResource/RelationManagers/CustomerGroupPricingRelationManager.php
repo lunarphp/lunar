@@ -12,9 +12,10 @@ use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Events\ProductPricingUpdated;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Facades\DB;
+use Lunar\Facades\ModelManifest;
+use Lunar\Models\Contracts\Price as PriceContract;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
 
 class CustomerGroupPricingRelationManager extends BaseRelationManager
 {
@@ -42,7 +43,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                             __('lunarpanel::relationmanagers.pricing.form.currency_id.label')
                         )->relationship(name: 'currency', titleAttribute: 'name')
                         ->default(function () {
-                            return Currency::getDefault()?->id;
+                            return Currency::modelClass()::getDefault()?->id;
                         })
                         ->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.currency_id.helper_text')
@@ -100,8 +101,9 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
     public function getDefaultTable(Table $table): Table
     {
-        $priceTable = (new Price)->getTable();
-        $cgTable = CustomerGroup::query()->select([DB::raw('id as cg_id'), 'name']);
+        $priceClass = ModelManifest::get(PriceContract::class);
+        $priceTable = (new $priceClass)->getTable();
+        $cgTable = CustomerGroup::modelClass()::query()->select([DB::raw('id as cg_id'), 'name']);
 
         return $table
             ->recordTitleAttribute('name')
@@ -143,7 +145,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data) {
-                    $currencyModel = Currency::find($data['currency_id']);
+                    $currencyModel = Currency::modelClass()::find($data['currency_id']);
 
                     $data['min_quantity'] = 1;
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
@@ -158,7 +160,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->mutateFormDataUsing(function (array $data): array {
-                    $currencyModel = Currency::find($data['currency_id']);
+                    $currencyModel = Currency::modelClass()::find($data['currency_id']);
 
                     $data['min_quantity'] = 1;
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);

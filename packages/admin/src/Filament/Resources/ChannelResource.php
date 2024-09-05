@@ -15,13 +15,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Channel;
+use Lunar\Models\Contracts\Channel as ChannelContract;
 
 class ChannelResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = Channel::class;
+    protected static ?string $model = ChannelContract::class;
 
     protected static ?int $navigationSort = 1;
 

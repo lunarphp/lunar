@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Models\ProductVariant;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 
 class ManageProductIdentifiers extends BaseEditRecord
 {
@@ -76,7 +76,7 @@ class ManageProductIdentifiers extends BaseEditRecord
         return $record;
     }
 
-    protected function getVariant(): ProductVariant
+    protected function getVariant(): ProductVariantContract
     {
         return $this->getRecord()->variants()->first();
     }

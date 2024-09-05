@@ -6,7 +6,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Order;
+use Lunar\Models\Contracts\Order as OrderContract;
 
 class OrdersRelationManager extends BaseRelationManager
 {
@@ -18,7 +18,7 @@ class OrdersRelationManager extends BaseRelationManager
             OrderResource::getTableColumns()
         )->actions([
             Tables\Actions\Action::make('viewOrder')
-                ->url(fn (Order $record): string => route('filament.lunar.resources.orders.order', $record)),
+                ->url(fn (OrderContract $record): string => route('filament.lunar.resources.orders.order', $record)),
         ]);
     }
 }
