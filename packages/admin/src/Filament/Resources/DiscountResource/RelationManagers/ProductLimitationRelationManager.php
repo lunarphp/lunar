@@ -8,6 +8,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Facades\ModelManifest;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Product;
 
 class ProductLimitationRelationManager extends BaseRelationManager

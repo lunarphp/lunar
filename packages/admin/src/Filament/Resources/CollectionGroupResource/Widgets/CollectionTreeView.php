@@ -20,6 +20,7 @@ use Lunar\Admin\Support\Actions\Collections\DeleteCollection;
 use Lunar\Admin\Support\Actions\Collections\MoveCollection;
 use Lunar\Facades\DB;
 use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class CollectionTreeView extends Widget implements HasActions, HasForms
 {
