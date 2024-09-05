@@ -4,6 +4,7 @@ namespace Lunar\Base;
 
 use Closure;
 use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\CartLine;
 
 abstract class CartLineModifier
 {

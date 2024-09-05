@@ -9,8 +9,8 @@ use Lunar\Base\TaxDriver;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
-use Lunar\Models\CartLine;
-use Lunar\Models\Currency;
+use Lunar\Models\Contracts\CartLine;
+use Lunar\Models\Contracts\Currency;
 use Lunar\Models\TaxZone;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
@@ -160,6 +160,6 @@ class SystemTaxDriver implements TaxDriver
 
     protected function defaultTaxZone()
     {
-        return TaxZone::where('default', '=', 1)->first();
+        return TaxZone::modelClass()::where('default', '=', 1)->first();
     }
 }

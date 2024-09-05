@@ -2,7 +2,7 @@
 
 namespace Lunar\Base\ValueObjects\Cart;
 
-use Lunar\Models\ProductVariant;
+use Lunar\Models\Contracts\ProductVariant;
 
 class FreeItem
 {

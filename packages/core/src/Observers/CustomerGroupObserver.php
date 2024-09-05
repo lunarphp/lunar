@@ -2,16 +2,17 @@
 
 namespace Lunar\Observers;
 
+use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Models\CustomerGroup;
 
 class CustomerGroupObserver
 {
     /**
-     * Handle the Language "created" event.
+     * Handle the CustomerGroup "created" event.
      *
      * @return void
      */
-    public function created(CustomerGroup $customerGroup)
+    public function created(CustomerGroupContract $customerGroup)
     {
         $this->ensureOnlyOneDefault($customerGroup);
     }
@@ -21,7 +22,7 @@ class CustomerGroupObserver
      *
      * @return void
      */
-    public function updated(CustomerGroup $customerGroup)
+    public function updated(CustomerGroupContract $customerGroup)
     {
         $this->ensureOnlyOneDefault($customerGroup);
     }
@@ -31,7 +32,7 @@ class CustomerGroupObserver
      *
      * @return void
      */
-    public function deleted(CustomerGroup $customerGroup)
+    public function deleted(CustomerGroupContract $customerGroup)
     {
         //
     }
@@ -41,7 +42,7 @@ class CustomerGroupObserver
      *
      * @return void
      */
-    public function forceDeleted(CustomerGroup $customerGroup)
+    public function forceDeleted(CustomerGroupContract $customerGroup)
     {
         //
     }
@@ -49,14 +50,14 @@ class CustomerGroupObserver
     /**
      * Ensures that only one default CustomerGroup exists.
      *
-     * @param  \Lunar\Models\CustomerGroup  $savedCustomerGroup  The customer group that was just saved.
+     * @param  CustomerGroupContract  $savedCustomerGroup  The customer group that was just saved.
      */
-    protected function ensureOnlyOneDefault(CustomerGroup $savedCustomerGroup): void
+    protected function ensureOnlyOneDefault(CustomerGroupContract $savedCustomerGroup): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedCustomerGroup->default) {
-            CustomerGroup::withoutEvents(function () use ($savedCustomerGroup) {
-                CustomerGroup::whereDefault(true)->where('id', '!=', $savedCustomerGroup->id)->update([
+            CustomerGroup::modelClass()::withoutEvents(function () use ($savedCustomerGroup) {
+                CustomerGroup::modelClass()::whereDefault(true)->where('id', '!=', $savedCustomerGroup->id)->update([
                     'default' => false,
                 ]);
             });

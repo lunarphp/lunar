@@ -3,6 +3,7 @@
 namespace Lunar\Observers;
 
 use Lunar\Models\Channel;
+use Lunar\Models\Contracts\Channel as ChannelContract;
 
 class ChannelObserver
 {
@@ -11,7 +12,7 @@ class ChannelObserver
      *
      * @return void
      */
-    public function created(Channel $channel)
+    public function created(ChannelContract $channel)
     {
         $this->ensureOnlyOneDefault($channel);
     }
@@ -21,7 +22,7 @@ class ChannelObserver
      *
      * @return void
      */
-    public function updated(Channel $channel)
+    public function updated(ChannelContract $channel)
     {
         $this->ensureOnlyOneDefault($channel);
     }
@@ -31,7 +32,7 @@ class ChannelObserver
      *
      * @return void
      */
-    public function deleted(Channel $channel)
+    public function deleted(ChannelContract $channel)
     {
         //
     }
@@ -41,7 +42,7 @@ class ChannelObserver
      *
      * @return void
      */
-    public function forceDeleted(Channel $channel)
+    public function forceDeleted(ChannelContract $channel)
     {
         //
     }
@@ -51,11 +52,11 @@ class ChannelObserver
      *
      * @param  Channel  $savedChannel  The channel that was just saved.
      */
-    protected function ensureOnlyOneDefault(Channel $savedChannel): void
+    protected function ensureOnlyOneDefault(ChannelContract $savedChannel): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedChannel->default) {
-            $channel = Channel::whereDefault(true)->where('id', '!=', $savedChannel->id)->first();
+            $channel = Channel::modelClass()::whereDefault(true)->where('id', '!=', $savedChannel->id)->first();
 
             if ($channel) {
                 $channel->default = false;

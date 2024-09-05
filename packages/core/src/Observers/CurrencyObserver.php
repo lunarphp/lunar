@@ -2,6 +2,7 @@
 
 namespace Lunar\Observers;
 
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Models\Currency;
 
 class CurrencyObserver
@@ -11,7 +12,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function created(Currency $currency)
+    public function created(CurrencyContract $currency)
     {
         $this->ensureOnlyOneDefault($currency);
     }
@@ -21,7 +22,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function updated(Currency $currency)
+    public function updated(CurrencyContract $currency)
     {
         $this->ensureOnlyOneDefault($currency);
     }
@@ -31,7 +32,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function deleted(Currency $currency)
+    public function deleted(CurrencyContract $currency)
     {
         //
     }
@@ -41,7 +42,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function forceDeleted(Currency $currency)
+    public function forceDeleted(CurrencyContract $currency)
     {
         //
     }
@@ -49,13 +50,13 @@ class CurrencyObserver
     /**
      * Ensures that only one default currency exists.
      *
-     * @param  \Lunar\Models\Currency  $savedCurrency  The currency that was just saved.
+     * @param  CurrencyContract  $savedCurrency  The currency that was just saved.
      */
-    protected function ensureOnlyOneDefault(Currency $savedCurrency): void
+    protected function ensureOnlyOneDefault(CurrencyContract $savedCurrency): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedCurrency->default) {
-            $currencies = Currency::whereDefault(true)->where('id', '!=', $savedCurrency->id)->get();
+            $currencies = Currency::modelClass()::whereDefault(true)->where('id', '!=', $savedCurrency->id)->get();
 
             foreach ($currencies as $currency) {
                 $currency->default = false;

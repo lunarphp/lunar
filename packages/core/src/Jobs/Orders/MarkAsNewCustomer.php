@@ -47,7 +47,7 @@ class MarkAsNewCustomer implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
-            $order = Order::find($this->orderId);
+            $order = Order::modelClass()::find($this->orderId);
 
             if (! $order) {
                 return;
@@ -61,7 +61,7 @@ class MarkAsNewCustomer implements ShouldQueue
 
             $ordersTable = (new Order)->getTable();
 
-            $previousOrder = OrderAddress::where('order_id', '!=', $order->id)
+            $previousOrder = OrderAddress::modelClass()::where('order_id', '!=', $order->id)
                 ->whereType('billing')
                 ->whereContactEmail($billingAddress->contact_email)
                 ->whereNotNull('contact_email')

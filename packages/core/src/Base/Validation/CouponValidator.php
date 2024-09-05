@@ -10,7 +10,7 @@ class CouponValidator implements CouponValidatorInterface
 {
     public function validate(string $coupon): bool
     {
-        return Discount::whereIn('type', [AmountOff::class, BuyXGetY::class])
+        return Discount::modelClass()::whereIn('type', [AmountOff::class, BuyXGetY::class])
             ->active()
             ->where(function ($query) {
                 $query->whereNull('max_uses')

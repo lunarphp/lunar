@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Models\CustomerGroup;
 
 trait HasCustomerGroups
@@ -18,7 +19,7 @@ trait HasCustomerGroups
      */
     abstract public function customerGroups(): Relation;
 
-    public static function getExtraCustomerGroupPivotValues(CustomerGroup $customerGroup): array
+    public static function getExtraCustomerGroupPivotValues(CustomerGroupContract $customerGroup): array
     {
         return [
         ];
@@ -28,7 +29,7 @@ trait HasCustomerGroups
     {
         static::created(function (Model $model) {
             $model->customerGroups()->sync(
-                CustomerGroup::get()->mapWithKeys(
+                CustomerGroup::modelClass()::get()->mapWithKeys(
                     fn ($customerGroup): array => [$customerGroup->id => [
                         'enabled' => $customerGroup->default,
                         'starts_at' => now(),
@@ -117,10 +118,10 @@ trait HasCustomerGroups
      * Apply the customer group scope
      *
      * @param  Builder  $query
-     * @param  CustomerGroup|string  $customerGroup
+     * @param  CustomerGroupContract|string  $customerGroup
      * @return Builder
      */
-    public function scopeCustomerGroup($query, CustomerGroup|iterable|null $customerGroup = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
+    public function scopeCustomerGroup($query, CustomerGroupContract|iterable|null $customerGroup = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
     {
         if (blank($customerGroup)) {
             return $query;
@@ -128,7 +129,7 @@ trait HasCustomerGroups
 
         $groupIds = collect();
 
-        if (is_a($customerGroup, CustomerGroup::class)) {
+        if (is_a($customerGroup, CustomerGroup::modelClass())) {
             $groupIds = collect([$customerGroup->id]);
         }
 

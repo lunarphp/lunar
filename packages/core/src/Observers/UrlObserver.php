@@ -2,6 +2,7 @@
 
 namespace Lunar\Observers;
 
+use Lunar\Models\Contracts\Url as UrlContract;
 use Lunar\Models\Url;
 
 class UrlObserver
@@ -11,7 +12,7 @@ class UrlObserver
      *
      * @return void
      */
-    public function created(Url $url)
+    public function created(UrlContract $url)
     {
         $this->ensureOnlyOneDefault($url);
     }
@@ -21,7 +22,7 @@ class UrlObserver
      *
      * @return void
      */
-    public function updated(Url $url)
+    public function updated(UrlContract $url)
     {
         $this->ensureOnlyOneDefault($url);
     }
@@ -31,10 +32,11 @@ class UrlObserver
      *
      * @return void
      */
-    public function deleted(Url $url)
+    public function deleted(UrlContract $url)
     {
+        /** @var Url $url */
         if ($url->default) {
-            $url = Url::whereDefault(false)
+            $url = Url::modelClass()::whereDefault(false)
                 ->where('id', '!=', $url->id)
                 ->whereElementType($url->element_type)
                 ->whereElementId($url->element_id)
@@ -53,11 +55,11 @@ class UrlObserver
      *
      * @param  Url  $savedUrl  The url that was just saved.
      */
-    protected function ensureOnlyOneDefault(Url $savedUrl): void
+    protected function ensureOnlyOneDefault(UrlContract $savedUrl): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedUrl->default) {
-            $url = Url::whereDefault(true)
+            $url = Url::modelClass()::whereDefault(true)
                 ->where('id', '!=', $savedUrl->id)
                 ->whereElementType($savedUrl->element_type)
                 ->whereElementId($savedUrl->element_id)

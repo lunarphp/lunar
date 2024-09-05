@@ -2,7 +2,7 @@
 
 namespace Lunar\Base;
 
-use Lunar\Models\Order;
+use Lunar\Models\Contracts\Order;
 
 interface OrderReferenceGeneratorInterface
 {

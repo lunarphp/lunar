@@ -2,6 +2,7 @@
 
 namespace Lunar\Observers;
 
+use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Order;
 
 class OrderObserver
@@ -11,8 +12,9 @@ class OrderObserver
      *
      * @return void
      */
-    public function updating(Order $order)
+    public function updating(OrderContract $order)
     {
+        /** @var Order $order */
         if ($order->getOriginal('status') != $order->status) {
             activity()
                 ->causedBy(auth()->user())

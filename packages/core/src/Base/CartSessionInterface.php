@@ -3,9 +3,9 @@
 namespace Lunar\Base;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Lunar\Models\Cart;
-use Lunar\Models\Channel;
-use Lunar\Models\Currency;
+use Lunar\Models\Contracts\Cart;
+use Lunar\Models\Contracts\Channel;
+use Lunar\Models\Contracts\Currency;
 
 interface CartSessionInterface
 {

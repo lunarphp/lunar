@@ -7,6 +7,8 @@ use Illuminate\Support\Collection;
 use Lunar\Base\DiscountTypeInterface;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Discount as DiscountContract;
 use Lunar\Models\Discount;
 
 abstract class AbstractDiscountType implements DiscountTypeInterface
@@ -14,15 +16,16 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     /**
      * The instance of the discount.
      */
-    public Discount $discount;
+    public DiscountContract $discount;
 
     /**
      * Set the data for the discount to user.
      *
      * @param  array  $data
      */
-    public function with(Discount $discount): self
+    public function with(DiscountContract $discount): self
     {
+        /** @var Discount $discount */
         $this->discount = $discount;
 
         return $this;
@@ -31,8 +34,9 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     /**
      * Mark a discount as used
      */
-    public function markAsUsed(Cart $cart): self
+    public function markAsUsed(CartContract $cart): self
     {
+        /** @var Cart $cart */
         $this->discount->uses = $this->discount->uses + 1;
 
         if ($user = $cart->user) {
@@ -47,16 +51,18 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
      *
      * @return Illuminate\Support\Collection
      */
-    protected function getEligibleLines(Cart $cart): Collection
+    protected function getEligibleLines(CartContract $cart): Collection
     {
+        /** @var Cart $cart */
         return $cart->lines;
     }
 
     /**
      * Check if discount's conditions met.
      */
-    protected function checkDiscountConditions(Cart $cart): bool
+    protected function checkDiscountConditions(CartContract $cart): bool
     {
+        /** @var Cart $cart */
         $data = $this->discount->data;
 
         $cartCoupon = strtoupper($cart->coupon_code ?? '');
@@ -85,8 +91,9 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
      * @param  Lunar\Base\ValueObjects\Cart\DiscountBreakdown  $breakdown
      * @return self
      */
-    protected function addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)
+    protected function addDiscountBreakdown(CartContract $cart, DiscountBreakdown $breakdown)
     {
+        /** @var Cart $cart */
         if (! $cart->discountBreakdown) {
             $cart->discountBreakdown = collect();
         }

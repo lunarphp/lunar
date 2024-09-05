@@ -3,6 +3,7 @@
 namespace Lunar\Observers;
 
 use Lunar\Facades\DB;
+use Lunar\Models\Contracts\Language as LanguageContract;
 use Lunar\Models\Language;
 
 class LanguageObserver
@@ -12,7 +13,7 @@ class LanguageObserver
      *
      * @return void
      */
-    public function created(Language $language)
+    public function created(LanguageContract $language)
     {
         $this->ensureOnlyOneDefault($language);
     }
@@ -22,7 +23,7 @@ class LanguageObserver
      *
      * @return void
      */
-    public function updated(Language $language)
+    public function updated(LanguageContract $language)
     {
         $this->ensureOnlyOneDefault($language);
     }
@@ -32,7 +33,7 @@ class LanguageObserver
      *
      * @return void
      */
-    public function deleting(Language $language)
+    public function deleting(LanguageContract $language)
     {
         DB::transaction(function () use ($language) {
             $language->urls()->delete();
@@ -44,7 +45,7 @@ class LanguageObserver
      *
      * @return void
      */
-    public function forceDeleted(Language $language)
+    public function forceDeleted(LanguageContract $language)
     {
         //
     }
@@ -52,14 +53,14 @@ class LanguageObserver
     /**
      * Ensures that only one default language exists.
      *
-     * @param  \Lunar\Models\Language  $savedLanguage  The language that was just saved.
+     * @param  LanguageContract  $savedLanguage  The language that was just saved.
      */
-    protected function ensureOnlyOneDefault(Language $savedLanguage): void
+    protected function ensureOnlyOneDefault(LanguageContract $savedLanguage): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedLanguage->default) {
-            Language::withoutEvents(function () use ($savedLanguage) {
-                Language::whereDefault(true)->where('id', '!=', $savedLanguage->id)->update([
+            Language::modelClass()::withoutEvents(function () use ($savedLanguage) {
+                Language::modelClass()::whereDefault(true)->where('id', '!=', $savedLanguage->id)->update([
                     'default' => false,
                 ]);
             });

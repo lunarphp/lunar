@@ -3,6 +3,7 @@
 namespace Lunar\Pricing;
 
 use Illuminate\Support\Facades\App;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Models\Currency;
 use NumberFormatter;
 
@@ -10,11 +11,11 @@ class DefaultPriceFormatter implements PriceFormatterInterface
 {
     public function __construct(
         public int $value,
-        public ?Currency $currency = null,
+        public ?CurrencyContract $currency = null,
         public int $unitQty = 1
     ) {
         if (! $this->currency) {
-            $this->currency = Currency::getDefault();
+            $this->currency = Currency::modelClass()::getDefault();
         }
     }
 

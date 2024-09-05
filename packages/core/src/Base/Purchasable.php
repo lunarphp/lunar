@@ -3,7 +3,7 @@
 namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\TaxClass;
+use Lunar\Models\Contracts\TaxClass;
 
 interface Purchasable
 {
