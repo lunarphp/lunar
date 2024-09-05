@@ -4,7 +4,7 @@ namespace Lunar\Shipping\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 interface ShippingRate
 {
@@ -15,5 +15,5 @@ interface ShippingRate
     /**
      * Return the shipping method driver.
      */
-    public function getShippingOption(Cart $cart): ?ShippingOption;
+    public function getShippingOption(CartContract $cart): ?ShippingOption;
 }

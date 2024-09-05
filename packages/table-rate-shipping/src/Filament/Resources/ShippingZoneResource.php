@@ -112,7 +112,7 @@ class ShippingZoneResource extends BaseResource
             ->visible(
                 fn (Forms\Get $get) => ! in_array($get('type'), ['countries', 'unrestricted'])
             )
-            ->options(Country::get()->pluck('name', 'id'))
+            ->options(Country::modelClass()::get()->pluck('name', 'id'))
 
             ->required()
             ->searchable()
@@ -133,7 +133,7 @@ class ShippingZoneResource extends BaseResource
                     ->toArray();
             })
             ->saveRelationshipsUsing(static function (Model $record, $state) {
-                $selectedCountry = Country::where('id', $state)->first();
+                $selectedCountry = Country::modelClass()::where('id', $state)->first();
 
                 $record->countries()->sync($selectedCountry->id);
             });
@@ -145,7 +145,7 @@ class ShippingZoneResource extends BaseResource
             ->label(__('lunarpanel.shipping::shippingzone.form.countries.label'))
             ->visible(fn ($get) => $get('type') == 'countries')
             ->dehydrated(false)
-            ->options(Country::get()->pluck('name', 'id'))
+            ->options(Country::modelClass()::get()->pluck('name', 'id'))
             ->multiple()
             ->required()
             ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {

@@ -53,7 +53,8 @@ class ShipBy implements ShippingRateInterface
 
         $hasExclusions = $shippingZone->shippingExclusions()
             ->whereHas('exclusions', function ($query) use ($productIds) {
-                $query->wherePurchasableType((new Product)->getMorphClass())
+                $productClass = Product::modelClass();
+                $query->wherePurchasableType((new $productClass)->getMorphClass())
                     ->whereIn('purchasable_id', $productIds);
             })->exists();
 
