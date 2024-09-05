@@ -40,14 +40,12 @@ class AddAddress extends AbstractAction
         // Do we already have an address for this type?
         $cart->addresses()->whereType($type)->delete();
 
-        $cartAddressClass = CartAddress::modelClass();
-
         if (is_array($address)) {
-            $cartAddress = new $cartAddressClass($address);
+            $cartAddress = new (CartAddress::modelClass())($address);
         }
 
         if ($address instanceof Addressable) {
-            $cartAddress = new $cartAddressClass(
+            $cartAddress = new (CartAddress::modelClass())(
                 $address->only($this->fillableAttributes)
             );
         }

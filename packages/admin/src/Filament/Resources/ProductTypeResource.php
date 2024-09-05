@@ -45,9 +45,6 @@ class ProductTypeResource extends BaseResource
 
     public static function getDefaultForm(Forms\Form $form): Forms\Form
     {
-        $productClass = Product::modelClass();
-        $variantClass = ProductVariant::modelClass();
-
         return $form
             ->schema([
                 Forms\Components\Section::make()->schema(
@@ -57,7 +54,7 @@ class ProductTypeResource extends BaseResource
                     Forms\Components\Tabs\Tab::make(__('lunarpanel::producttype.tabs.product_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
-                                ->withType((new $productClass)->getMorphClass())
+                                ->withType((new (Product::modelClass()))->getMorphClass())
                                 ->relationship(name: 'mappedAttributes')
                                 ->label('')
                                 ->columnSpan(2),
@@ -65,7 +62,7 @@ class ProductTypeResource extends BaseResource
                     Forms\Components\Tabs\Tab::make(__('lunarpanel::producttype.tabs.variant_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
-                                ->withType((new $variantClass)->getMorphClass())
+                                ->withType((new (ProductVariant::modelClass()))->getMorphClass())
                                 ->relationship(name: 'mappedAttributes')
                                 ->label('')
                                 ->columnSpan(2),

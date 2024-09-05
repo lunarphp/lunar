@@ -29,9 +29,7 @@ trait HasModelExtending
         if (
             ! static::isLunarInstance()
         ) {
-            $extendedClass = static::modelClass();
-
-            return (new $extendedClass)->$method(...$parameters);
+            return (new (static::modelClass()))->$method(...$parameters);
         }
 
         return (new static)->$method(...$parameters);
@@ -73,8 +71,7 @@ trait HasModelExtending
         if (
             ! static::isLunarInstance()
         ) {
-            $extendedClass = static::modelClass();
-            $instance = new $extendedClass;
+            $instance = new (static::modelClass());
         }
 
         foreach (Arr::wrap($classes) as $class) {

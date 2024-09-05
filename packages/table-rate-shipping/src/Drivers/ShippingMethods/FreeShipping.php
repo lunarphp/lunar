@@ -46,8 +46,7 @@ class FreeShipping implements ShippingRateInterface
 
         $hasExclusions = $shippingZone->shippingExclusions()
             ->whereHas('exclusions', function ($query) use ($productIds) {
-                $productClass = Product::modelClass();
-                $query->wherePurchasableType((new $productClass)->getMorphClass())
+                $query->wherePurchasableType((new (Product::modelClass()))->getMorphClass())
                     ->whereIn('purchasable_id', $productIds);
             })->exists();
 

@@ -17,7 +17,6 @@ use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Facades\DB;
-use Lunar\Facades\ModelManifest;
 use Lunar\Models\Contracts\ProductOption as ProductOptionContract;
 use Lunar\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
 use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
@@ -282,9 +281,8 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
          */
         foreach ($this->configuredOptions as $optionIndex => $option) {
 
-            $productOptionClass = ModelManifest::get(ProductOptionContract::class);
             $optionModel = empty($option['id']) ?
-                new $productOptionClass([
+                new (ProductOption::modelClass())([
                     'shared' => false,
                 ]) :
                 ProductOption::modelClass()::find($option['id']);
@@ -305,10 +303,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             $this->configuredOptions[$optionIndex]['id'] = $optionModel->id;
             $option['id'] = $optionModel->id;
 
-            $productOptionValueClass = ModelManifest::get(ProductOptionValueContract::class);
             foreach ($option['option_values'] as $optionValueIndex => $value) {
                 $optionValueModel = empty($value['id']) ?
-                    new $productOptionValueClass([
+                    new (ProductOptionValue::modelClass())([
                         'product_option_id' => $option['id'],
                     ]) :
                     ProductOptionValue::modelClass()::find($value['id']);
@@ -382,8 +379,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 }
 
                 foreach ($this->variants as $variantIndex => $variantData) {
-                    $variantClass = ModelManifest::get(ProductVariantContract::class);
-                    $variant = new $variantClass([
+                    $variant = new (ProductVariant::modelClass())([
                         'product_id' => $this->record->id,
                     ]);
                     $basePrice = null;

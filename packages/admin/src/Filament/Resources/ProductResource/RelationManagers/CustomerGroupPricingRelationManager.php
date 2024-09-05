@@ -12,10 +12,9 @@ use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Events\ProductPricingUpdated;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Facades\DB;
-use Lunar\Facades\ModelManifest;
-use Lunar\Models\Contracts\Price as PriceContract;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
+use Lunar\Models\Price;
 
 class CustomerGroupPricingRelationManager extends BaseRelationManager
 {
@@ -101,8 +100,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
     public function getDefaultTable(Table $table): Table
     {
-        $priceClass = ModelManifest::get(PriceContract::class);
-        $priceTable = (new $priceClass)->getTable();
+        $priceTable = (new (Price::modelClass()))->getTable();
         $cgTable = CustomerGroup::modelClass()::query()->select([DB::raw('id as cg_id'), 'name']);
 
         return $table

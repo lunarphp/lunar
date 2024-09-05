@@ -153,8 +153,7 @@ class ProductResource extends BaseResource
             ->required($validation['required'] ?? false);
 
         if ($validation['unique'] ?? false) {
-            $productVariantClass = ProductVariant::modelClass();
-            $input->unique(fn () => (new $productVariantClass)->getTable());
+            $input->unique(fn () => (new (ProductVariant::modelClass()))->getTable());
         }
 
         return $input;
