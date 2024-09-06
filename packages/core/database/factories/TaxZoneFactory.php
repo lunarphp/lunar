@@ -2,10 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\TaxZone;
 
-class TaxZoneFactory extends Factory
+class TaxZoneFactory extends BaseFactory
 {
     protected $model = TaxZone::class;
 
@@ -15,7 +14,7 @@ class TaxZoneFactory extends Factory
             'name' => $this->faker->name,
             'zone_type' => $this->faker->randomElement(['country', 'postcode', 'state']),
             'price_display' => $this->faker->randomElement(['tax_inclusive', 'tax_exclusive']),
-            'active' => $this->faker->boolean,
+            'active' => true,
             'default' => true,
         ];
     }

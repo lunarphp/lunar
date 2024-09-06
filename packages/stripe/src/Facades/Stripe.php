@@ -3,13 +3,16 @@
 namespace Lunar\Stripe\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Lunar\Models\Cart;
 use Lunar\Stripe\Enums\CancellationReason;
 use Lunar\Stripe\MockClient;
 use Stripe\ApiRequestor;
 
 /**
  * @method static getClient(): \Stripe\StripeClient
- * @method static createIntent(\Lunar\Models\Cart $cart, array $opts): \Stripe\PaymentIntent
+ * @method static getCartIntentId(Cart $cart): ?string
+ * @method static fetchOrCreateIntent(Cart $cart, array $createOptions): ?string
+ * @method static createIntent(\Lunar\Models\Cart $cart, array $createOptions): \Stripe\PaymentIntent
  * @method static syncIntent(\Lunar\Models\Cart $cart): void
  * @method static updateIntent(\Lunar\Models\Cart $cart, array $values): void
  * @method static cancelIntent(\Lunar\Models\Cart $cart, CancellationReason $reason): void

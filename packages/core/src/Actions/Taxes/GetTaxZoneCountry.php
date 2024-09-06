@@ -2,6 +2,7 @@
 
 namespace Lunar\Actions\Taxes;
 
+use Illuminate\Database\Eloquent\Builder;
 use Lunar\Models\TaxZoneCountry;
 
 class GetTaxZoneCountry
@@ -26,6 +27,9 @@ class GetTaxZoneCountry
      */
     protected function getZone(int $countryId)
     {
-        return TaxZoneCountry::whereCountryId($countryId)->first();
+        return TaxZoneCountry::whereHas(
+            'taxZone',
+            fn (Builder $query) => $query->where('active', true)
+        )->whereCountryId($countryId)->first();
     }
 }

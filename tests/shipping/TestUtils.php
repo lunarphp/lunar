@@ -28,12 +28,12 @@ trait TestUtils
             'price' => $price,
             'min_quantity' => 1,
             'currency_id' => $currency->id,
-            'priceable_type' => get_class($purchasable),
+            'priceable_type' => $purchasable->getMorphClass(),
             'priceable_id' => $purchasable->id,
         ]);
 
         $cart->lines()->create([
-            'purchasable_type' => get_class($purchasable),
+            'purchasable_type' => $purchasable->getMorphClass(),
             'purchasable_id' => $purchasable->id,
             'quantity' => $quantity,
         ]);

@@ -13,7 +13,8 @@ use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\Models\AttributeGroup;
+use Lunar\Facades\AttributeManifest;
+use Lunar\Models\Contracts\AttributeGroup;
 use Lunar\Models\Language;
 
 class AttributeGroupResource extends BaseResource
@@ -66,10 +67,16 @@ class AttributeGroupResource extends BaseResource
 
     protected static function getAttributableTypeFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('attributable_type')
+        return Forms\Components\Select::make('attributable_type')
             ->label(__('lunarpanel::attributegroup.form.attributable_type.label'))
+            ->options(function () {
+                return AttributeManifest::getTypes()->mapWithKeys(
+                    fn ($type) => [
+                        \Lunar\Facades\ModelManifest::getMorphMapKey($type) => class_basename($type),
+                    ]
+                );
+            })
             ->required()
-            ->maxLength(255)
             ->autofocus();
     }
 

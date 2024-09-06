@@ -8,7 +8,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Lunar\Admin\Support\Concerns;
+use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Base\Traits\Searchable;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
@@ -17,7 +17,7 @@ use function Filament\Support\generate_search_term_expression;
 
 class BaseResource extends Resource
 {
-    use Concerns\CallsHooks;
+    use CallsHooks;
     use Concerns\ExtendsForms;
     use Concerns\ExtendsPages;
     use Concerns\ExtendsRelationManagers;
@@ -49,6 +49,17 @@ class BaseResource extends Resource
         $user = Filament::auth()->user();
 
         return $user->can(static::$permission);
+    }
+
+    public static function getModel(): string
+    {
+        $class = new \ReflectionClass(static::$model);
+
+        if ($class->isInterface()) {
+            return app()->get(static::$model)::class;
+        }
+
+        return parent::getModel();
     }
 
     /**
@@ -113,7 +124,9 @@ class BaseResource extends Resource
      */
     protected static function mapSearchableAttributes(array &$map)
     {
-        $attributes = Attribute::whereAttributeType(static::$model)
+        $attributes = Attribute::whereAttributeType(
+            (new (static::getModel()))->getMorphClass()
+        )
             ->whereSearchable(true)
             ->get();
 

@@ -4,16 +4,19 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\RelationManagers;
 
 use Filament;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 
-class CustomerGroupRelationManager extends RelationManager
+class CustomerGroupRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
     protected static string $relationship = 'customerGroups';
+
+    public ?string $description = null;
 
     public function isReadOnly(): bool
     {
@@ -28,7 +31,7 @@ class CustomerGroupRelationManager extends RelationManager
             )->toArray();
     }
 
-    public function form(Form $form): Form
+    public function getDefaultForm(Form $form): Form
     {
         return $form->schema(
             static::getFormInputs(
@@ -66,7 +69,7 @@ class CustomerGroupRelationManager extends RelationManager
         ];
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
         $pivotColumns = collect($this->getPivotColumns())->map(function ($column) {
             return Tables\Columns\IconColumn::make($column)->label(
@@ -83,7 +86,9 @@ class CustomerGroupRelationManager extends RelationManager
 
         return $table
             ->description(
-                __('lunarpanel::relationmanagers.customer_groups.table.description')
+                $this->description ?: __('lunarpanel::relationmanagers.customer_groups.table.description', [
+                    'type' => Str::lower(class_basename(get_class($this->getOwnerRecord()))),
+                ])
             )
             ->paginated(false)
             ->headerActions([

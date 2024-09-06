@@ -149,7 +149,6 @@ class CartSessionManager implements CartSessionInterface
         }
 
         $this->cart = $cart;
-
         if ($calculate) {
             $this->cart->calculate();
         }
@@ -175,6 +174,7 @@ class CartSessionManager implements CartSessionInterface
             $this->getShippingEstimateMeta(),
             setOverride: true
         );
+        $this->cart->calculate(force: true);
     }
 
     /**

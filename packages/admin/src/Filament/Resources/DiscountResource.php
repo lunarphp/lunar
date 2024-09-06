@@ -23,8 +23,8 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
+use Lunar\Models\Contracts\Discount;
 use Lunar\Models\Currency;
-use Lunar\Models\Discount;
 
 class DiscountResource extends BaseResource
 {
@@ -355,10 +355,10 @@ class DiscountResource extends BaseResource
                 ->label(__('lunarpanel::discount.table.status.label'))
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
-                    Discount::ACTIVE => 'success',
-                    Discount::EXPIRED => 'danger',
-                    Discount::PENDING => 'gray',
-                    Discount::SCHEDULED => 'info',
+                    \Lunar\Models\Discount::ACTIVE => 'success',
+                    \Lunar\Models\Discount::EXPIRED => 'danger',
+                    \Lunar\Models\Discount::PENDING => 'gray',
+                    \Lunar\Models\Discount::SCHEDULED => 'info',
                 }),
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::discount.table.name.label')),

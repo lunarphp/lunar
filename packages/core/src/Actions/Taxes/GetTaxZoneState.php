@@ -37,6 +37,8 @@ class GetTaxZoneState
             return $query
                 ->where('name', $state)
                 ->orWhere('code', $state);
+        })->whereHas('taxZone', function ($query) {
+            return $query->where('active', true);
         })->first();
 
         if ($stateZone) {

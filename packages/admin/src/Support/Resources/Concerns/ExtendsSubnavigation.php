@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Admin\Support\Concerns;
+namespace Lunar\Admin\Support\Resources\Concerns;
 
 use Filament\Pages\Page;
 
@@ -8,7 +8,7 @@ trait ExtendsSubnavigation
 {
     public static function getRecordSubNavigation(Page $page): array
     {
-        $pages = self::callLunarHook('extendSubNavigation', static::getDefaultSubnavigation());
+        $pages = self::callStaticLunarHook('extendSubNavigation', static::getDefaultSubnavigation());
 
         return $page->generateNavigationItems($pages);
     }

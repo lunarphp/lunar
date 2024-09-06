@@ -20,7 +20,7 @@ use Lunar\Database\Factories\UrlFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Url extends BaseModel
+class Url extends BaseModel implements Contracts\Url
 {
     use HasFactory;
     use HasMacros;
@@ -28,7 +28,7 @@ class Url extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): UrlFactory
+    protected static function newFactory()
     {
         return UrlFactory::new();
     }
@@ -63,7 +63,7 @@ class Url extends BaseModel
      */
     public function language(): BelongsTo
     {
-        return $this->belongsTo(Language::class);
+        return $this->belongsTo(Language::modelClass());
     }
 
     /**

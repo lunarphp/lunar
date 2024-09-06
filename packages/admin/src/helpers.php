@@ -95,7 +95,7 @@ if (! function_exists('get_search_builder')) {
 
             foreach (explode(' ', $search) as $searchWord) {
                 $query->where(function (Builder $query) use ($model, $searchWord) {
-                    $attributes = Attribute::whereAttributeType($model)
+                    $attributes = Attribute::whereAttributeType($model->getMorphClass())
                         ->whereSearchable(true)
                         ->get();
 

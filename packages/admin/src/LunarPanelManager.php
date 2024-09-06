@@ -63,6 +63,7 @@ class LunarPanelManager
         Resources\TagResource::class,
         Resources\TaxClassResource::class,
         Resources\TaxZoneResource::class,
+        Resources\TaxRateResource::class,
     ];
 
     protected static $pages = [
@@ -227,6 +228,10 @@ class LunarPanelManager
             ->resources(
                 static::getResources()
             )
+            ->discoverClusters(
+                in: realpath(__DIR__.'/Filament/Clusters'),
+                for: 'Lunar\Admin\Filament\Clusters'
+            )
             ->widgets(
                 static::getWidgets()
             )
@@ -290,11 +295,12 @@ class LunarPanelManager
         return $this;
     }
 
-    public function callHook(string $class, string $hookName, ...$args): mixed
+    public function callHook(string $class, ?object $caller, string $hookName, ...$args): mixed
     {
         if (isset($this->extensions[$class])) {
             foreach ($this->extensions[$class] as $extension) {
                 if (method_exists($extension, $hookName)) {
+                    $extension->setCaller($caller);
                     $args[0] = $extension->{$hookName}(...$args);
                 }
             }

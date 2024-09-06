@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\FieldTypes\Dropdown;
 use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Text;
@@ -76,6 +77,32 @@ test('can fallback when translation not present', function () {
     ]);
 
     expect($product->translateAttribute('name', 'dk'))->toEqual('English Name');
+});
+
+test('can fallback to existing translation when current is missing', function () {
+    $attributeGroup = AttributeGroup::factory()->create([
+        'name' => [
+            'en' => 'English',
+            'fr' => '',
+        ],
+    ]);
+
+    expect($attributeGroup->translate('name', 'fr'))->toEqual('English');
+
+    $product = Product::factory()->create([
+        'attribute_data' => [
+            'name' => new TranslatedText(collect([
+                'en' => new Text('English Name'),
+                'fr' => new Text(''),
+            ])),
+            'description' => new TranslatedText(collect([
+                'en' => new Text('English Description'),
+                'fr' => new Text(''),
+            ])),
+        ],
+    ]);
+
+    expect($product->attr('name', 'fr'))->toEqual('English Name');
 });
 
 test('can handle null values', function () {

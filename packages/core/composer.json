@@ -40,7 +40,8 @@
         "cartalyst/converter": "^8.0|^9.0",
         "kalnoy/nestedset": "^v6.x-dev",
         "doctrine/dbal": "^3.6",
-        "spatie/laravel-blink": "^1.7",
-        "lukascivil/treewalker": "0.9.1"
+        "lukascivil/treewalker": "0.9.1",
+        "spatie/php-structure-discoverer": "^2.0",
+        "spatie/laravel-blink": "^1.7"
     }
 }

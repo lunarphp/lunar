@@ -28,7 +28,7 @@ return [
             ],
         ],
         'table' => [
-            'description' => 'Associate customer groups to this product to determine it\'s availability.',
+            'description' => 'Associate customer groups to this :type to determine it\'s availability.',
             'name' => [
                 'label' => 'Name',
             ],
@@ -245,6 +245,17 @@ return [
                     ],
                 ],
                 'tooltip' => 'Automatically generated based on currency exchange rates.',
+            ],
+        ],
+    ],
+    'tax_rate_amounts' => [
+        'table' => [
+            'description' => '',
+            'percentage' => [
+                'label' => 'Percentage',
+            ],
+            'tax_class' => [
+                'label' => 'Tax Class',
             ],
         ],
     ],

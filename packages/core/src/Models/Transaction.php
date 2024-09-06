@@ -31,7 +31,7 @@ use Lunar\Facades\Payments;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Transaction extends BaseModel
+class Transaction extends BaseModel implements Contracts\Transaction
 {
     use HasFactory;
     use HasMacros;
@@ -54,7 +54,7 @@ class Transaction extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TransactionFactory
+    protected static function newFactory()
     {
         return TransactionFactory::new();
     }
@@ -64,7 +64,7 @@ class Transaction extends BaseModel
      */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::modelClass());
     }
 
     /**
@@ -73,8 +73,8 @@ class Transaction extends BaseModel
     public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
-            Currency::class,
-            Order::class,
+            Currency::modelClass(),
+            Order::modelClass(),
             'id',
             'code',
             'order_id',

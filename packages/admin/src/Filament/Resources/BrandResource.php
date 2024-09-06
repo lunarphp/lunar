@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Brand;
+use Lunar\Models\Contracts\Brand;
 
 class BrandResource extends BaseResource
 {
