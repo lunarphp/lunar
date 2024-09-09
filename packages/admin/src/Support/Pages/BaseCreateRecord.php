@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseCreateRecord extends CreateRecord
 {
     use Concerns\ExtendsFooterWidgets;
+    use Concerns\ExtendsForms;
     use Concerns\ExtendsFormActions;
     use Concerns\ExtendsHeaderActions;
     use Concerns\ExtendsHeaderWidgets;
