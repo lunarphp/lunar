@@ -13,7 +13,7 @@ class OrderFactory extends BaseFactory
     public function definition(): array
     {
         $total = $this->faker->numberBetween(200, 25000);
-        $taxTotal = ($total - 100) * .2;
+        $taxTotal = intval(($total - 100) * .2);
 
         return [
             'channel_id' => Channel::factory(),
