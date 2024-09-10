@@ -51,15 +51,14 @@ trait HasModelExtending
     {
         $morphMap = Relation::morphMap();
 
-        if (! empty($morphMap)) {
-            if ($customModelMorphMap = array_search(static::modelClass(), $morphMap, true)) {
-                return $customModelMorphMap;
-            }
+        if ($customModelMorphMap = array_search(static::modelClass(), $morphMap, true)) {
+            return $customModelMorphMap;
+        }
 
-            $parentClass = get_parent_class(static::class);
-            if (ModelManifest::isLunarModel($parentClass) && $lunarModelMorphMap = array_search($parentClass, $morphMap, true)) {
-                return $lunarModelMorphMap;
-            }
+        $parentClass = get_parent_class(static::class);
+
+        if (ModelManifest::isLunarModel($parentClass) && $lunarModelMorphMap = array_search($parentClass, $morphMap, true)) {
+            return $lunarModelMorphMap;
         }
 
         return parent::getMorphClass();
