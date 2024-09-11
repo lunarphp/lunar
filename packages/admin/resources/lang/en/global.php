@@ -103,6 +103,7 @@ return [
     'to' => 'to',
     'new_products' => 'New Products',
     'new_product' => 'New Product',
+    'new_discount' => 'New Discount',
     'order_ref' => 'Order Ref',
     'customer' => 'Customer',
     'no_items' => 'No. Items',
@@ -127,5 +128,7 @@ return [
     'not_provided' => 'Not Provided',
     'billing_email' => 'Billing Email',
     'add_new' => 'Add new',
+    'tabs' => 'Tabs',
+    'sidebar' => 'Sidebar',
     'store' => 'Store',
 ];

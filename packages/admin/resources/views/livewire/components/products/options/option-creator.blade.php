@@ -64,7 +64,7 @@
         </x-hub::input.group>
       @empty
         <x-hub::alert>
-          {{ __('adminhub::components.products.option-creator.min_values_notice', [
+          {{ trans_choice('adminhub::components.products.option-creator.min_values_notice', 1, [
             'min' => 1,
           ]) }}
         </x-hub::alert>

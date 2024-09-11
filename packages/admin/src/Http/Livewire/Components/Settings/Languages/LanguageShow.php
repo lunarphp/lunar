@@ -48,7 +48,7 @@ class LanguageShow extends Component
         $this->language->save();
 
         $this->notify(
-            'Language successfully updated.',
+            __('adminhub::notifications.languages.updated'),
             'hub.languages.index'
         );
     }

@@ -12,7 +12,7 @@
                     <x-hub::input.toggle wire:model="showInverseAssociations"/>
                 </div>
             </div>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-3">
                 <x-hub::dropdown>
                     <x-slot name="value">
                         {{ __(

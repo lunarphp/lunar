@@ -8,7 +8,7 @@
               wire:submit.prevent="addComment">
             <textarea class="w-full pl-4 pr-32 pt-5 border border-gray-200 rounded-lg h-[58px] sm:text-sm form-text"
                       type="text"
-                      placeholder="Add a comment"
+                      placeholder="{{ __('adminhub::components.comments.placeholder') }}"
                       wire:model.defer="comment"
                       required
                       multiline></textarea>
@@ -17,7 +17,7 @@
                     type="submit">
                 <div wire:loading.remove
                      wire:target="addComment">
-                    Add Comment
+                    {{ __('adminhub::components.comments.add_btn') }}
                 </div>
 
                 <div wire:loading

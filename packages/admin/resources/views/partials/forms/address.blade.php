@@ -47,7 +47,7 @@
       <div>
         @if($states->count())
           <x-hub::input.select wire:model.defer="{{ $bind }}.state" id="states" wire:key="country_states">
-            <option value>Select a state</option>
+            <option value>{{ __('adminhub::inputs.state_selection.label') }}</option>
             @foreach($states as $state)
               <option value="{{ $state->name }}">{{ $state->name }}</option>
             @endforeach

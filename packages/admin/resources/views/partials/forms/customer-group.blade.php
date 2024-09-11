@@ -23,7 +23,7 @@
                                    :error="$errors->first('customerGroup.handle')" />
             </x-hub::input.group>
 
-            <x-hub::input.group label="Default"
+            <x-hub::input.group :label="__('adminhub::globals.default')"
                                 for="handle"
                                 :instructions="__('adminhub::settings.customer-groups.form.default_instructions')">
                 <x-hub::input.toggle wire:model="customerGroup.default"
