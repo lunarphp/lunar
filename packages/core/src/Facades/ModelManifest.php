@@ -16,7 +16,7 @@ use Lunar\Base\ModelManifestInterface;
  * @method static string|null get(string $interfaceClass)
  * @method static string guessContractClass(string $modelClass)
  * @method static string guessModelClass(string $modelContract)
- * @method static bool isLunarModel(BaseModel $model)
+ * @method static bool isLunarModel(string|BaseModel $model)
  * @method static string getTable(BaseModel $model)
  * @method static void morphMap()
  * @method static string getMorphMapKey(string $className)
