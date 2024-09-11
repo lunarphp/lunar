@@ -22,8 +22,8 @@ use Lunar\Admin\Models\Staff;
 use Lunar\LunarServiceProvider;
 use Lunar\Tests\Admin\Providers\LunarPanelTestServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
+use Lunar\Tests\TestCase as BaseTestCase;
 use Marvinosswald\FilamentInputSelectAffix\FilamentInputSelectAffixServiceProvider;
-use Orchestra\Testbench\TestCase as BaseTestCase;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
@@ -83,6 +83,8 @@ class TestCase extends BaseTestCase
     {
         $app['config']->set('auth.passwords.users.table', 'password_reset_tokens');
         $app['config']->set('auth.providers.users.model', User::class);
+
+        $this->replaceModelsForTesting();
     }
 
     protected function asStaff($admin = true): TestCase

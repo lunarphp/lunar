@@ -53,6 +53,6 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        parent::getEnvironmentSetUp($app);
+        $this->replaceModelsForTesting();
     }
 }
