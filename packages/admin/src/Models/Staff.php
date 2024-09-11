@@ -131,7 +131,12 @@ class Staff extends Authenticatable
      */
     public function getGravatarAttribute()
     {
-        $hash = md5(strtolower(trim($this->attributes['email'])));
+        if (isset($this->attributes['email'])) {
+            $hash = md5(strtolower(trim($this->attributes['email'])));
+        }
+        else {
+            $hash = '';
+        }
 
         return "https://www.gravatar.com/avatar/$hash?d=mp";
     }
