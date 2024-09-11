@@ -143,7 +143,7 @@ class ModelManifest implements ModelManifestInterface
         return 'Lunar\\Models\\'.$shortName;
     }
 
-    public function isLunarModel(BaseModel $model): bool
+    public function isLunarModel(string|BaseModel $model): bool
     {
         $class = (new \ReflectionClass($model));
 
