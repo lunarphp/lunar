@@ -10,7 +10,7 @@ use Lunar\LunarServiceProvider;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;
 use Lunar\Tests\Core\Stubs\TestUrlGenerator;
 use Lunar\Tests\Core\Stubs\User;
-use Orchestra\Testbench\TestCase as BaseTestCase;
+use Lunar\Tests\TestCase as BaseTestCase;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
@@ -23,7 +23,7 @@ class TestCase extends BaseTestCase
 
         $this->loadLaravelMigrations();
 
-        // additional setup
+        // Additional setup
         Config::set('providers.users.model', User::class);
         Config::set('lunar.urls.generator', TestUrlGenerator::class);
         Config::set('lunar.taxes.driver', 'test');
@@ -53,6 +53,6 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        // perform environment setup
+        parent::getEnvironmentSetUp($app);
     }
 }
