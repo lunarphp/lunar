@@ -88,7 +88,6 @@ use Lunar\Observers\ProductOptionValueObserver;
 use Lunar\Observers\ProductVariantObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
-use Lunar\Tests\Core\Stubs\Base\TestModelManifest;
 
 class LunarServiceProvider extends ServiceProvider
 {
@@ -162,10 +161,6 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(ModelManifestInterface::class, function ($app) {
-            if ($app->environment('testing') && env('LUNAR_TESTING_REPLACE_MODELS', false)) {
-                return $app->make(TestModelManifest::class);
-            }
-
             return $app->make(ModelManifest::class);
         });
 
