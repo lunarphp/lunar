@@ -33,10 +33,7 @@ test('can replace model', function () {
 });
 
 test('can get registered model', function () {
-
-    $expected = env('LUNAR_TESTING_REPLACE_MODELS', false)
-    ? \Lunar\Tests\Core\Stubs\Models\Product::class
-    : \Lunar\Models\Product::class;
+    $expected = modelsReplaced() ? \Lunar\Tests\Core\Stubs\Models\Product::class : \Lunar\Models\Product::class;
 
     expect(
         ModelManifest::get(\Lunar\Models\Contracts\Product::class)
@@ -44,12 +41,12 @@ test('can get registered model', function () {
 
     ModelManifest::replace(
         \Lunar\Models\Contracts\Product::class,
-        \Lunar\Tests\Core\Stubs\Models\Product::class,
+        \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::class,
     );
 
     expect(
         ModelManifest::get(\Lunar\Models\Contracts\Product::class)
-    )->toBe(\Lunar\Tests\Core\Stubs\Models\Product::class);
+    )->toBe(\Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::class);
 });
 
 test('can guess contract class', function () {

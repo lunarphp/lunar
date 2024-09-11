@@ -50,6 +50,11 @@ expect()->extend('toBeOne', function () {
 |
 */
 
+function modelsReplaced(): bool
+{
+    return env('LUNAR_TESTING_REPLACE_MODELS', false);
+}
+
 function setAuthUserConfig()
 {
     Config::set('auth.providers.users.model', 'Lunar\Tests\Core\Stubs\User');
