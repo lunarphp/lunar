@@ -49,10 +49,10 @@ test('can forward static method calls to extended model', function () {
 test('morph map is correct when models are extended', function () {
     \Lunar\Facades\ModelManifest::replace(
         \Lunar\Models\Contracts\Product::class,
-        \Lunar\Tests\Core\Stubs\Models\CustomProduct::class
+        \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::class
     );
 
-    expect((new \Lunar\Tests\Core\Stubs\Models\CustomProduct)->getMorphClass())
+    expect((new \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct)->getMorphClass())
         ->toBe('product')
         ->and((new Product)->getMorphClass())
         ->toBe('product');
