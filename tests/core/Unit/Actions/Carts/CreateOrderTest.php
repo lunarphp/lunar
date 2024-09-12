@@ -236,7 +236,7 @@ test('can create order', function () {
     $order->save();
     $containsCurrency = str_contains($order->fresh()->getRawOriginal('tax_breakdown'), '"currency"');
     expect($containsCurrency)->toBeFalse();
-})->group('wah');
+});
 
 test('can create order with customer', function () {
     CustomerGroup::factory()->create([
