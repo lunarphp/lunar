@@ -52,13 +52,9 @@ trait HasModelExtending
     {
         $morphMap = Relation::morphMap();
 
-        if ($customModelMorphMap = array_search(static::modelClass(), $morphMap, true)) {
-            return $customModelMorphMap;
-        }
-
-        foreach (class_parents(static::class) as $ancestorClass) {
-            if (ModelManifest::isLunarModel($ancestorClass) && $ancestorModelMorphMap = array_search($ancestorClass, $morphMap, true)) {
-                return $ancestorModelMorphMap;
+        foreach ([static::modelClass(), ...class_parents(static::class)] as $modelClass) {
+            if ($morphClass = array_search($modelClass, $morphMap, true)) {
+                return $morphClass;
             }
         }
 
