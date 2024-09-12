@@ -5,23 +5,48 @@ namespace Lunar\Base\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Lunar\Base\BaseModel;
 use Lunar\Facades\ModelManifest;
 
 trait HasModelExtending
 {
     public function newModelQuery(): Builder
     {
-        $realClass = static::modelClass();
+        $concreteClass = static::modelClass();
+        $parentClass = get_parent_class($concreteClass);
 
         // If they are both the same class i.e. they haven't changed
         // then just call the parent method.
-        if ($this instanceof $realClass) {
+        if ($parentClass == BaseModel::class || $this instanceof $concreteClass) {
             return parent::newModelQuery();
+        }
+
+        $newModel = new $concreteClass;
+        $newModel->id = $this->id;
+
+        foreach (array_keys($this->getAttributes()) as $key) {
+            $newModel->setAttribute($key, $this->{$key});
         }
 
         return $this->newEloquentBuilder(
             $this->newBaseQueryBuilder()
-        )->setModel(new $realClass($this->toArray()));
+        )->setModel($newModel);
+    }
+
+    public function getForeignKey(): string
+    {
+        $parentClass = get_parent_class($this);
+
+        return $parentClass == BaseModel::class ? parent::getForeignKey() : Str::snake(class_basename($parentClass)).'_'.$this->getKeyName();
+
+    }
+
+    public function getTable()
+    {
+        $parentClass = get_parent_class($this);
+
+        return $parentClass == BaseModel::class ? parent::getTable() : (new $parentClass)->table;
     }
 
     public static function __callStatic($method, $parameters)
