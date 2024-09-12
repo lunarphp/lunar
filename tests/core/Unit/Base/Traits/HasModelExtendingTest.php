@@ -39,9 +39,9 @@ test('can forward calls to extended model', function () {
 });
 
 test('extended model returns correct table name', function () {
-    expect((new \Lunar\Tests\Core\Stubs\Models\CustomOrder())->getTable())
+    expect((new \Lunar\Tests\Core\Stubs\Models\CustomOrder)->getTable())
         ->toBe(
-            (new \Lunar\Models\Order())->getTable()
+            (new \Lunar\Models\Order)->getTable()
         );
 });
 
