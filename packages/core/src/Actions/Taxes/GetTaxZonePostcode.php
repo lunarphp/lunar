@@ -2,6 +2,7 @@
 
 namespace Lunar\Actions\Taxes;
 
+use Illuminate\Database\Eloquent\Builder;
 use Lunar\Models\TaxZonePostcode;
 
 class GetTaxZonePostcode
@@ -49,11 +50,16 @@ class GetTaxZonePostcode
     {
         $postcode = (string) $postcode;
 
-        if ($zone = TaxZonePostcode::wherePostcode($postcode)->first()) {
+        $query = TaxZonePostcode::whereHas(
+            'taxZone',
+            fn (Builder $query) => $query->where('active', true)
+        );
+
+        if ($zone = $query->clone()->wherePostcode($postcode)->first()) {
             return $zone;
         }
 
-        return TaxZonePostcode::where('postcode', 'LIKE', "{$postcode[0]}%")->get();
+        return $query->clone()->where('postcode', 'LIKE', "{$postcode[0]}%")->get();
     }
 
     /**

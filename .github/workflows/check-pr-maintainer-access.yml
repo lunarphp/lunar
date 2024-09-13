@@ -1,0 +1,68 @@
+# Copied from https://raw.githubusercontent.com/filamentphp/filament/3.x/.github/workflows/check-pr-maintainer-access.yml
+name: check-pr-maintainer-access
+
+on:
+  pull_request_target:
+    types:
+      - opened
+
+permissions:
+  pull-requests: write
+
+jobs:
+  notify-when-maintainers-cannot-edit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v3
+        with:
+          script: |
+            const query = `
+                query($number: Int!) {
+                    repository(owner: "lunarphp", name: "lunar") {
+                        pullRequest(number: $number) {
+                            headRepositoryOwner {
+                                login
+                            }
+                            maintainerCanModify
+                        }
+                    }
+                }
+            `
+
+            const pullNumber = context.issue.number
+            const variables = { number: pullNumber }
+
+            try {
+                console.log(`Check #${pullNumber} for maintainer edit access...`)
+                const result = await github.graphql(query, variables)
+
+                console.log(JSON.stringify(result, null, 2))
+
+                const pullRequest = result.repository.pullRequest
+
+                if (pullRequest.headRepositoryOwner.login === 'lunarphp') {
+                    console.log('PR owned by lunarphp')
+
+                    return
+                }
+
+                if (! pullRequest.maintainerCanModify) {
+                    console.log('PR not owned by lunarphp and does not have maintainer edits enabled')
+
+                    await github.issues.createComment({
+                        issue_number: pullNumber,
+                        owner: 'lunarphp',
+                        repo: 'lunar',
+                        body: 'Thanks for submitting a PR!\n\nIn order to review and merge PRs most efficiently, we require that all PRs grant maintainer edit access before we review them. If your fork belongs to a GitHub organization, please move the repository to your personal account and try again. If you\'re already using a personal fork, you can learn how to enable maintainer access [in the GitHub documentation](https://docs.github.com/en/github/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork).'
+                    })
+
+                    await github.issues.update({
+                        issue_number: pullNumber,
+                        owner: 'lunarphp',
+                        repo: context.repo.repo,
+                        state: 'closed'
+                    })
+                }
+            } catch(error) {
+                console.log(error)
+            }

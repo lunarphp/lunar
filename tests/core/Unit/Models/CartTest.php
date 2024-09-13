@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(\Lunar\Tests\Core\TestCase::class)->group('carts');
 
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
@@ -57,7 +57,7 @@ test('can make a cart', function () {
     $variant = ProductVariant::factory()->create();
 
     $cart->lines()->create([
-        'purchasable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'purchasable_id' => $variant->id,
         'quantity' => 1,
     ]);
@@ -408,12 +408,12 @@ test('can calculate the cart', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -429,12 +429,12 @@ test('can calculate the cart', function () {
         'price' => 158,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 2,
     ]);
@@ -481,12 +481,12 @@ test('can calculate the cart inc vat', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -502,12 +502,12 @@ test('can calculate the cart inc vat', function () {
         'price' => 158,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 2,
     ]);
@@ -538,13 +538,15 @@ test('can add cart lines', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -562,13 +564,15 @@ test('can remove cart lines', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -596,7 +600,7 @@ test('cannot add zero quantity line', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -614,13 +618,15 @@ test('can update existing cart line', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -691,13 +697,15 @@ test('can calculate shipping', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -786,12 +794,12 @@ test('can create a discount breakdown', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($variant),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'purchasable_id' => $variant->id,
         'quantity' => 1,
     ]);
@@ -825,12 +833,12 @@ test('can validate fingerprint', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($variant),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'purchasable_id' => $variant->id,
         'quantity' => 1,
     ]);
@@ -884,7 +892,7 @@ test('can override shipping calculation', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -945,7 +953,7 @@ test('can get estimated shipping', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -1000,7 +1008,7 @@ test('can get new draft order when cart changes', function () {
         'price' => 158,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -1027,7 +1035,7 @@ test('can get new draft order when cart changes', function () {
     $cart->setShippingOption($option);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 2,
     ]);
@@ -1086,7 +1094,7 @@ test('can get same draft order when cart does not change', function () {
         'price' => 158,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -1113,7 +1121,7 @@ test('can get same draft order when cart does not change', function () {
     $cart->setShippingOption($option);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 2,
     ]);

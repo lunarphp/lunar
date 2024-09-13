@@ -18,7 +18,7 @@ class AssociateUser extends AbstractAction
         if ($policy == 'merge') {
             $userCart = Cart::whereUserId($user->getKey())->active()->unMerged()->latest()->first();
             if ($userCart) {
-                app(MergeCart::class)->execute($userCart, $cart);
+                app(MergeCart::class)->execute($cart, $userCart);
             }
         }
 

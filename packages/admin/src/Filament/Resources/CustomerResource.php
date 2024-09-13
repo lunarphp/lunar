@@ -16,7 +16,7 @@ use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\OrdersRelat
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\UserRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOverviewWidget;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Customer;
+use Lunar\Models\Contracts\Customer;
 
 class CustomerResource extends BaseResource
 {
@@ -159,7 +159,13 @@ class CustomerResource extends BaseResource
     {
         return Forms\Components\CheckboxList::make('customerGroups')
             ->label(__('lunarpanel::customer.form.customer_groups.label'))
-            ->relationship(name: 'customerGroups', titleAttribute: 'name');
+            ->relationship(
+                name: 'customerGroups',
+                titleAttribute: 'name',
+                modifyQueryUsing: fn (Builder $query) => $query->distinct(
+                    ['id', 'name', 'handle', 'default']
+                )
+            );
     }
 
     protected static function getDefaultTable(Table $table): Table

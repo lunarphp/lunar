@@ -47,7 +47,7 @@ Lunar\Models\CartLine
 |:-----------------|:---------------------------------------------|
 | id               |                                              |
 | cart_id          |                                              |
-| purchasable_type | e.g. `Lunar\Models\ProductVariant`.          |
+| purchasable_type | e.g. `product_variant`                       |
 | purchasable_id   |                                              |
 | quantity         |                                              |
 | created_at       |                                              |
@@ -55,10 +55,11 @@ Lunar\Models\CartLine
 | meta             | JSON data for saving any custom information. |
 
 ```php
+$purchasable = \Lunar\Models\ProductVariant::create([/** ... */]);
 $cartLine = new \Lunar\Models\CartLine([
     'cart_id' => 1,
-    'purchasable_type' => ProductVariant::class,
-    'purchasable_id' => 123,
+    'purchasable_type' => $purchasable->getMorphClass(),
+    'purchasable_id' => $purchasable->id,
     'quantity' => 2,
     'meta' => [
         'personalization' => 'Love you mum xxx',
@@ -67,6 +68,20 @@ $cartLine = new \Lunar\Models\CartLine([
 
 // Or you can use the relationship on the cart.
 $cart->lines()->create([/* .. */]);
+```
+
+### Validation
+
+When adding items to a cart there are a series of validation actions which are run, which are defined in the `config/lunar/cart.php` config file.
+
+These actions will throw a `Lunar\Exceptions\Carts\CartException`.
+
+```php
+try {
+    $cart->add($purchasable, 500);
+} catch (\Lunar\Exceptions\Carts\CartException $e) {
+    $error = $e->getMessage();
+}
 ```
 
 Now you have a basic Cart up and running, it's time to show you how you would

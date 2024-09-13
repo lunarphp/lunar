@@ -3,8 +3,7 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,7 +24,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductOption extends BaseModel implements SpatieHasMedia
+class ProductOption extends BaseModel implements Contracts\ProductOption, SpatieHasMedia
 {
     use HasFactory;
     use HasMacros;
@@ -39,35 +38,17 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      * @var array
      */
     protected $casts = [
-        'name' => AsCollection::class,
-        'label' => AsCollection::class,
+        'name' => AsArrayObject::class,
+        'label' => AsArrayObject::class,
         'shared' => 'boolean',
     ];
 
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductOptionFactory
+    protected static function newFactory()
     {
         return ProductOptionFactory::new();
-    }
-
-    public function getNameAttribute(?string $value = null): mixed
-    {
-        return json_decode($value);
-    }
-
-    protected function setNameAttribute(mixed $value): void
-    {
-        $this->attributes['name'] = json_encode($value);
-    }
-
-    protected function label(): Attribute
-    {
-        return Attribute::make(
-            get: fn (string $value) => json_decode($value),
-            set: fn ($value) => json_encode($value),
-        );
     }
 
     /**
@@ -78,24 +59,19 @@ class ProductOption extends BaseModel implements SpatieHasMedia
      */
     protected $guarded = [];
 
-    public function scopeShared(Builder $builder)
+    public function scopeShared(Builder $builder): Builder
     {
         return $builder->where('shared', '=', true);
     }
 
-    public function scopeExclusive(Builder $builder)
+    public function scopeExclusive(Builder $builder): Builder
     {
         return $builder->where('shared', '=', false);
     }
 
-    /**
-     * Get the values.
-     *
-     * @return HasMany<ProductOptionValue>
-     */
     public function values(): HasMany
     {
-        return $this->hasMany(ProductOptionValue::class)->orderBy('position');
+        return $this->hasMany(ProductOptionValue::modelClass())->orderBy('position');
     }
 
     public function products(): BelongsToMany
@@ -103,7 +79,7 @@ class ProductOption extends BaseModel implements SpatieHasMedia
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::class,
+            Product::modelClass(),
             "{$prefix}product_product_option"
         )->withPivot(['position'])->orderByPivot('position');
     }

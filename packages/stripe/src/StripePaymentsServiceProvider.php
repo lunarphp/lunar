@@ -6,10 +6,12 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Facades\Payments;
+use Lunar\Models\Cart;
 use Lunar\Stripe\Actions\ConstructWebhookEvent;
 use Lunar\Stripe\Components\PaymentForm;
 use Lunar\Stripe\Concerns\ConstructsWebhookEvent;
 use Lunar\Stripe\Managers\StripeManager;
+use Lunar\Stripe\Models\StripePaymentIntent;
 
 class StripePaymentsServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,10 @@ class StripePaymentsServiceProvider extends ServiceProvider
         // Register our payment type.
         Payments::extend('stripe', function ($app) {
             return $app->make(StripePaymentType::class);
+        });
+
+        Cart::resolveRelationUsing('paymentIntents', function (Cart $cart) {
+            return $cart->hasMany(StripePaymentIntent::class);
         });
 
         $this->app->bind(ConstructsWebhookEvent::class, function ($app) {
@@ -41,6 +47,7 @@ class StripePaymentsServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar');
         $this->loadRoutesFrom(__DIR__.'/../routes/webhooks.php');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->mergeConfigFrom(__DIR__.'/../config/stripe.php', 'lunar.stripe');
 
         $this->publishes([

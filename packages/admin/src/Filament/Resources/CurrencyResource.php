@@ -11,7 +11,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Currency;
+use Lunar\Models\Contracts\Currency;
 
 class CurrencyResource extends BaseResource
 {

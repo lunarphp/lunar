@@ -2,12 +2,11 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRate;
 use Lunar\Models\TaxRateAmount;
 
-class TaxRateAmountFactory extends Factory
+class TaxRateAmountFactory extends BaseFactory
 {
     protected $model = TaxRateAmount::class;
 

@@ -145,6 +145,7 @@ export default defineConfig({
                         {text: 'Panel', link: '/admin/extending/panel'},
                         {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Resources', link: '/admin/extending/resources'},
+                        {text: 'Relation Managers', link: '/admin/extending/relation-managers'},
                         {text: 'Order Management', link: '/admin/extending/order-management'}
                     ]
                 }

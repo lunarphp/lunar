@@ -30,12 +30,12 @@ test('can generate cart fingerprint', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($variant),
+        'priceable_type' => $variant->getMorphClass(),
         'priceable_id' => $variant->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => ProductVariant::class,
+        'purchasable_type' => $variant->getMorphClass(),
         'purchasable_id' => $variant->id,
         'quantity' => 1,
     ]);

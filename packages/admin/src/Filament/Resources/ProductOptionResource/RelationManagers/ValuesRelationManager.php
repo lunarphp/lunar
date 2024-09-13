@@ -3,14 +3,14 @@
 namespace Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
 
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 
-class ValuesRelationManager extends RelationManager
+class ValuesRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'values';
 
@@ -19,7 +19,7 @@ class ValuesRelationManager extends RelationManager
         return $record->translate('name');
     }
 
-    public function form(Form $form): Form
+    public function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
@@ -29,7 +29,7 @@ class ValuesRelationManager extends RelationManager
             ]);
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
         return $table
 

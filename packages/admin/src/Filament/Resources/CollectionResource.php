@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
-use Filament\Pages\Page;
 use Filament\Pages\SubNavigationPosition;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection;
 
 class CollectionResource extends BaseResource
 {
@@ -89,16 +88,16 @@ class CollectionResource extends BaseResource
         return [];
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             Pages\EditCollection::class,
             Pages\ManageCollectionChildren::class,
             Pages\ManageCollectionProducts::class,
             Pages\ManageCollectionAvailability::class,
             Pages\ManageCollectionMedia::class,
             Pages\ManageCollectionUrls::class,
-        ]);
+        ];
     }
 
     public static function getDefaultPages(): array

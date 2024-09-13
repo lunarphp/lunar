@@ -17,7 +17,7 @@ use Lunar\Database\Factories\ProductAssociationFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductAssociation extends BaseModel
+class ProductAssociation extends BaseModel implements Contracts\ProductAssociation
 {
     use HasFactory;
     use HasMacros;
@@ -51,7 +51,7 @@ class ProductAssociation extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductAssociationFactory
+    protected static function newFactory()
     {
         return ProductAssociationFactory::new();
     }
@@ -61,7 +61,7 @@ class ProductAssociation extends BaseModel
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'product_parent_id');
+        return $this->belongsTo(Product::modelClass(), 'product_parent_id');
     }
 
     /**
@@ -69,31 +69,31 @@ class ProductAssociation extends BaseModel
      */
     public function target(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'product_target_id');
+        return $this->belongsTo(Product::modelClass(), 'product_target_id');
     }
 
     /**
      * Apply the cross-sell scope.
      */
-    public function scopeCrossSell(Builder $query): void
+    public function scopeCrossSell(Builder $query): Builder
     {
-        $query->type(self::CROSS_SELL);
+        return $query->type(self::CROSS_SELL);
     }
 
     /**
      * Apply the upsell scope.
      */
-    public function scopeUpSell(Builder $query): void
+    public function scopeUpSell(Builder $query): Builder
     {
-        $query->type(self::UP_SELL);
+        return $query->type(self::UP_SELL);
     }
 
     /**
      * Apply the up alternate scope.
      */
-    public function scopeAlternate(Builder $query): void
+    public function scopeAlternate(Builder $query): Builder
     {
-        $query->type(self::ALTERNATE);
+        return $query->type(self::ALTERNATE);
     }
 
     /**

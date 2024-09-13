@@ -2,19 +2,18 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Models\Channel;
 use Lunar\Models\Order;
 
-class OrderFactory extends Factory
+class OrderFactory extends BaseFactory
 {
     protected $model = Order::class;
 
     public function definition(): array
     {
         $total = $this->faker->numberBetween(200, 25000);
-        $taxTotal = ($total - 100) * .2;
+        $taxTotal = intval(($total - 100) * .2);
 
         return [
             'channel_id' => Channel::factory(),

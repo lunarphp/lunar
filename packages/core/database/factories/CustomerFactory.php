@@ -2,11 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Lunar\Models\Customer;
 
-class CustomerFactory extends Factory
+class CustomerFactory extends BaseFactory
 {
     protected $model = Customer::class;
 

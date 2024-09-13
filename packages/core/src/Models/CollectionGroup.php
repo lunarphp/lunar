@@ -15,7 +15,7 @@ use Lunar\Database\Factories\CollectionGroupFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CollectionGroup extends BaseModel
+class CollectionGroup extends BaseModel implements Contracts\CollectionGroup
 {
     use HasFactory;
     use HasMacros;
@@ -25,16 +25,13 @@ class CollectionGroup extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CollectionGroupFactory
+    protected static function newFactory()
     {
         return CollectionGroupFactory::new();
     }
 
-    /**
-     * Return the collections relationship.
-     */
     public function collections(): HasMany
     {
-        return $this->hasMany(Collection::class);
+        return $this->hasMany(Collection::modelClass());
     }
 }

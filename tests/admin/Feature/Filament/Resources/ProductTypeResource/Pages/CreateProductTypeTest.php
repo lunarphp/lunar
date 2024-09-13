@@ -33,11 +33,11 @@ it('can associate attributes', function () {
     $productType = ProductType::factory()->make();
 
     $attributeA = \Lunar\Models\Attribute::factory()->create([
-        'attribute_type' => \Lunar\Models\Product::class,
+        'attribute_type' => 'product',
     ]);
 
     $attributeB = \Lunar\Models\Attribute::factory()->create([
-        'attribute_type' => \Lunar\Models\Product::class,
+        'attribute_type' => 'product',
     ]);
 
     $formData = [
@@ -54,7 +54,7 @@ it('can associate attributes', function () {
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::class,
+        'attributable_type' => (new ProductType)->getMorphClass(),
         'attributable_id' => $component->get('record')->id,
     ]);
 });

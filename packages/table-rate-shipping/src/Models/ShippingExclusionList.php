@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Factories\ShippingExclusionListFactory;
 
-class ShippingExclusionList extends BaseModel
+class ShippingExclusionList extends BaseModel implements Contracts\ShippingExclusionList
 {
     use HasFactory;
 
@@ -25,7 +25,7 @@ class ShippingExclusionList extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingExclusionListFactory
+    protected static function newFactory()
     {
         return ShippingExclusionListFactory::new();
     }
@@ -38,21 +38,15 @@ class ShippingExclusionList extends BaseModel
         });
     }
 
-    /**
-     * Return the shipping zone relationship.
-     */
     public function exclusions(): HasMany
     {
-        return $this->hasMany(ShippingExclusion::class);
+        return $this->hasMany(ShippingExclusion::modelClass());
     }
 
-    /**
-     * Return the shipping methods relationship.
-     */
     public function shippingZones(): BelongsToMany
     {
         return $this->belongsToMany(
-            ShippingZone::class,
+            ShippingZone::modelClass(),
             config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
             'exclusion_id',
             'shipping_zone_id',

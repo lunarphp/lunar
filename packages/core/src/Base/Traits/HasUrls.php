@@ -37,7 +37,7 @@ trait HasUrls
     public function urls(): MorphMany
     {
         return $this->morphMany(
-            Url::class,
+            Url::modelClass(),
             'element'
         );
     }
@@ -45,7 +45,7 @@ trait HasUrls
     public function defaultUrl(): MorphOne
     {
         return $this->morphOne(
-            Url::class,
+            Url::modelClass(),
             'element'
         )->whereDefault(true);
     }

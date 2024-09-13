@@ -5,7 +5,6 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
@@ -33,26 +32,27 @@ use Lunar\Facades\DB;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class Attribute extends BaseModel
+class Attribute extends BaseModel implements Contracts\Attribute
 {
     use HasFactory;
     use HasMacros;
     use HasTranslations;
 
-    public static function boot()
+    protected static function booted(): void
     {
-        static::deleting(function (Model $model) {
+        static::deleting(function (self $attribute) {
+            DB::beginTransaction();
             DB::table(
                 config('lunar.database.table_prefix').'attributables'
-            )->where('attribute_id', '=', $model->id)->delete();
+            )->where('attribute_id', '=', $attribute->id)->delete();
+            DB::commit();
         });
-        parent::boot();
     }
 
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): AttributeFactory
+    protected static function newFactory()
     {
         return AttributeFactory::new();
     }
@@ -76,29 +76,17 @@ class Attribute extends BaseModel
         'configuration' => AsCollection::class,
     ];
 
-    /**
-     * Return the attribuable relation.
-     */
     public function attributable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /**
-     * Returns the attribute group relation.
-     */
     public function attributeGroup(): BelongsTo
     {
-        return $this->belongsTo(AttributeGroup::class);
+        return $this->belongsTo(AttributeGroup::modelClass());
     }
 
-    /**
-     * Apply the system scope to the query builder.
-     *
-     * @param  string  $type
-     * @return void
-     */
-    public function scopeSystem(Builder $query, $type)
+    public function scopeSystem(Builder $query, $type): Builder
     {
         return $query->whereAttributeType($type)->whereSystem(true);
     }

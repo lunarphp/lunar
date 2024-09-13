@@ -17,13 +17,15 @@ test('can remove cart line', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
 
     Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 

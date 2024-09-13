@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kalnoy\Nestedset\NodeTrait;
+use Kalnoy\Nestedset\QueryBuilder;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasChannels;
@@ -32,7 +33,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Collection extends BaseModel implements SpatieHasMedia
+class Collection extends BaseModel implements Contracts\Collection, SpatieHasMedia
 {
     use HasChannels,
         HasCustomerGroups,
@@ -60,7 +61,7 @@ class Collection extends BaseModel implements SpatieHasMedia
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CollectionFactory
+    protected static function newFactory()
     {
         return CollectionFactory::new();
     }
@@ -75,7 +76,7 @@ class Collection extends BaseModel implements SpatieHasMedia
      */
     public function group(): BelongsTo
     {
-        return $this->belongsTo(CollectionGroup::class, 'collection_group_id');
+        return $this->belongsTo(CollectionGroup::modelClass(), 'collection_group_id');
     }
 
     public function scopeInGroup(Builder $builder, int $id): Builder
@@ -91,7 +92,7 @@ class Collection extends BaseModel implements SpatieHasMedia
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::class,
+            Product::modelClass(),
             "{$prefix}collection_product"
         )->withPivot([
             'position',
@@ -108,15 +109,12 @@ class Collection extends BaseModel implements SpatieHasMedia
         });
     }
 
-    /**
-     * Return the customer groups relationship.
-     */
     public function customerGroups(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::class,
+            CustomerGroup::modelClass(),
             "{$prefix}collection_customer_group"
         )->withPivot([
             'visible',
@@ -126,12 +124,12 @@ class Collection extends BaseModel implements SpatieHasMedia
         ])->withTimestamps();
     }
 
-    public function discounts()
+    public function discounts(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::class,
+            Discount::modelClass(),
             "{$prefix}collection_discount"
         )->withPivot(['type'])->withTimestamps();
     }
@@ -141,8 +139,13 @@ class Collection extends BaseModel implements SpatieHasMedia
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Brand::class,
+            Brand::modelClass(),
             "{$prefix}brand_collection"
         )->withTimestamps();
+    }
+
+    public function newEloquentBuilder($query): QueryBuilder
+    {
+        return new QueryBuilder($query);
     }
 }

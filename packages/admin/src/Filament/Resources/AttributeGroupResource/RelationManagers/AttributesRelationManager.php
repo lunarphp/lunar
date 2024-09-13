@@ -12,10 +12,11 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Support\Facades\AttributeData;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Language;
 
-class AttributesRelationManager extends RelationManager
+class AttributesRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'attributes';
 
@@ -26,7 +27,7 @@ class AttributesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name.en';  // TODO: localise somehow
 
-    public function form(Form $form): Form
+    public function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
@@ -50,6 +51,7 @@ class AttributesRelationManager extends RelationManager
                     ->helperText(
                         __('lunarpanel::attribute.form.description.helper')
                     )
+                    ->afterStateHydrated(fn ($state, $component) => $state ?: $component->state([Language::getDefault()->code => null]))
                     ->maxLength(255),
                 Forms\Components\TextInput::make('handle')
                     ->label(
@@ -110,7 +112,7 @@ class AttributesRelationManager extends RelationManager
             ]);
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
         return $table
             ->columns([
@@ -133,6 +135,7 @@ class AttributesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data, RelationManager $livewire) {
+                    $data['configuration'] = $data['configuration'] ?? [];
                     $data['system'] = false;
                     $data['attribute_type'] = $livewire->ownerRecord->attributable_type;
                     $data['position'] = $livewire->ownerRecord->attributes()->count() + 1;

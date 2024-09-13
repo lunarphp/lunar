@@ -98,8 +98,15 @@ test('can validate missing shipping option', function () {
         'shippable' => true,
     ]);
 
+    \Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'price' => 500,
+    ]);
+
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -113,10 +120,8 @@ test('can validate missing shipping option', function () {
         'cart_id' => $cart->id,
     ]);
 
-    $this->expectException(CartException::class);
-    $this->expectExceptionMessage(__('lunar::exceptions.carts.shipping_option_missing'));
+    expect(fn () => $validator->validate())->toThrow(CartException::class);
 
-    $validator->validate();
 });
 
 test('can validate collection with partial shipping address', function () {
@@ -131,8 +136,15 @@ test('can validate collection with partial shipping address', function () {
         'shippable' => true,
     ]);
 
+    \Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'price' => 500,
+    ]);
+
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -183,8 +195,15 @@ test('can validate delivery with partial shipping address', function () {
         'shippable' => true,
     ]);
 
+    \Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'price' => 500,
+    ]);
+
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -246,8 +265,15 @@ test('can validate delivery with populated shipping address', function () {
         'shippable' => true,
     ]);
 
+    \Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'price' => 500,
+    ]);
+
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);

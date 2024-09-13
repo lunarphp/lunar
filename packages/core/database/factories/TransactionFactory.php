@@ -2,11 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
 
-class TransactionFactory extends Factory
+class TransactionFactory extends BaseFactory
 {
     protected $model = Transaction::class;
 

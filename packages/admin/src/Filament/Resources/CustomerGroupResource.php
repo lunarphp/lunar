@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\CustomerGroup;
+use Lunar\Models\Contracts\CustomerGroup;
 
 class CustomerGroupResource extends BaseResource
 {

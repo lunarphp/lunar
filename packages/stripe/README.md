@@ -92,10 +92,10 @@ Make sure you have the Stripe credentials set in `config/services.php`
 
 Below is a list of the available configuration options this package uses in `config/lunar/stripe.php`
 
-| Key | Default | Description |
-| --- | --- | --- |
-| `policy` | `automatic` | Determines the policy for taking payments and whether you wish to capture the payment manually later or take payment straight away. Available options `manual` or `automatic` |
-
+| Key              | Default      | Description                                                                                                                                                                   |
+|------------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `policy`         | `automatic`  | Determines the policy for taking payments and whether you wish to capture the payment manually later or take payment straight away. Available options `manual` or `automatic` |
+| `sync_addresses` | `true`       | When enabled, the Stripe addon will attempt to sync the billing and shipping addresses which have been stored against the payment intent on Stripe.                           |
 ---
 
 ## Backend Usage

@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
@@ -50,7 +51,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Purchasable
+class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purchasable
 {
     use HasAttributes;
     use HasDimensions;
@@ -59,6 +60,7 @@ class ProductVariant extends BaseModel implements Purchasable
     use HasPrices;
     use HasTranslations;
     use LogsActivity;
+    use SoftDeletes;
 
     /**
      * Define the guarded attributes.
@@ -78,36 +80,27 @@ class ProductVariant extends BaseModel implements Purchasable
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductVariantFactory
+    protected static function newFactory()
     {
         return ProductVariantFactory::new();
     }
 
-    /**
-     * The related product.
-     */
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class)->withTrashed();
+        return $this->belongsTo(Product::modelClass())->withTrashed();
     }
 
-    /**
-     * Return the tax class relationship.
-     */
     public function taxClass(): BelongsTo
     {
-        return $this->belongsTo(TaxClass::class);
+        return $this->belongsTo(TaxClass::modelClass());
     }
 
-    /**
-     * Return the related product option values.
-     */
     public function values(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            ProductOptionValue::class,
+            ProductOptionValue::modelClass(),
             "{$prefix}product_option_value_product_variant",
             'variant_id',
             'value_id'
