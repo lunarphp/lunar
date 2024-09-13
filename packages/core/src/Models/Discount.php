@@ -179,7 +179,7 @@ class Discount extends BaseModel implements Contracts\Discount
             fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
-                        ->wherePurchasableType((new Product)->getMorphClass())
+                        ->wherePurchasableType(Product::morphName())
                         ->when(
                             $types,
                             fn ($query) => $query->whereIn('type', $types)
@@ -200,7 +200,7 @@ class Discount extends BaseModel implements Contracts\Discount
             fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('purchasables',
                     fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
-                        ->wherePurchasableType((new ProductVariant)->getMorphClass())
+                        ->wherePurchasableType(ProductVariant::morphName())
                         ->when(
                             $types,
                             fn ($query) => $query->whereIn('type', $types)

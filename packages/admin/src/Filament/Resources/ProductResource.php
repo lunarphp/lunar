@@ -177,7 +177,7 @@ class ProductResource extends BaseResource
     {
         $nameType = Attribute::whereHandle('name')
             ->whereAttributeType(
-                (new (static::getModel()))->getMorphClass()
+                static::getModel()::morphName()
             )
             ->first()?->type ?: TranslatedText::class;
 
