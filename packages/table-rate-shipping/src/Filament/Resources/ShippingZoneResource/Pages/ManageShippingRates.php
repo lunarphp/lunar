@@ -24,7 +24,7 @@ class ManageShippingRates extends ManageRelatedRecords
 
     protected static string $relationship = 'rates';
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('lunarpanel.shipping::relationmanagers.shipping_rates.title_plural');
     }
@@ -183,7 +183,7 @@ class ManageShippingRates extends ManageRelatedRecords
 
         $tiers = collect($data['prices'] ?? [])->map(
             function ($price) use ($currency) {
-                $price['min_quantity'] = $price['min_quantity'] * 100;
+                $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
 
                 $price['price'] = (int) ($price['price'] * $currency->factor);
 
