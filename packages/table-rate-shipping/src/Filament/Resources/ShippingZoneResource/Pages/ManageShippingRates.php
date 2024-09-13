@@ -181,8 +181,11 @@ class ManageShippingRates extends ManageRelatedRecords
 
         $shippingRate->priceBreaks()->delete();
 
+        $currencies = Currency::all();
         $tiers = collect($data['prices'] ?? [])->map(
-            function ($price) use ($currency) {
+            function ($price) use ($currencies) {
+                $currency = $currencies->first(fn ($currency) => $currency->id == $price['currency_id']);
+
                 $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
 
                 $price['price'] = (int) ($price['price'] * $currency->factor);
