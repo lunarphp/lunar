@@ -3,6 +3,7 @@
 namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -22,16 +23,36 @@ trait HasModelExtending
             return parent::newModelQuery();
         }
 
-        $newModel = new $concreteClass;
-        $newModel->id = $this->id;
-
-        foreach (array_keys($this->getAttributes()) as $key) {
-            $newModel->setAttribute($key, $this->{$key});
-        }
-
         return $this->newEloquentBuilder(
             $this->newBaseQueryBuilder()
-        )->setModel($newModel);
+        )->setModel(
+            static::withoutEvents(
+                fn () => $this->replicateInto($concreteClass)
+            )
+        );
+    }
+
+    public function replicateInto($newClass)
+    {
+        $defaults = array_values(array_filter([
+            $this->getKeyName(),
+            $this->getCreatedAtColumn(),
+            $this->getUpdatedAtColumn(),
+            ...$this->uniqueIds(),
+            'laravel_through_key',
+        ]));
+
+        $attributes = Arr::except(
+            $this->getAttributes(), $defaults
+        );
+
+        return tap(new $newClass, function ($instance) use ($attributes) : Model {
+            $instance->setRawAttributes($attributes);
+
+            $instance->setRelations($this->relations);
+
+            return $instance;
+        });
     }
 
     public function getForeignKey(): string
