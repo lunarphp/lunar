@@ -46,7 +46,7 @@ trait HasModelExtending
             $this->getAttributes(), $defaults
         );
 
-        return tap(new $newClass, function ($instance) use ($attributes) : Model {
+        return tap(new $newClass, function ($instance) use ($attributes): Model {
             $instance->setRawAttributes($attributes);
 
             $instance->setRelations($this->relations);
