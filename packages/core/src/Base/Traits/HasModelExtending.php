@@ -96,10 +96,11 @@ trait HasModelExtending
     /**
      * Returns the model alias registered in the model relation morph map.
      */
-    public static function morphName():string{
+    public static function morphName(): string
+    {
         return (new (static::modelClass()))->getMorphClass();
     }
-    
+
     public function getMorphClass(): string
     {
         $morphMap = Relation::morphMap();
