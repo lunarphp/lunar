@@ -61,6 +61,10 @@ test('morph map is correct when models are extended', function () {
 
     expect((new \Lunar\Tests\Core\Stubs\Models\CustomProduct)->getMorphClass())
         ->toBe('product')
+        ->and(\Lunar\Tests\Core\Stubs\Models\CustomProduct::morphName())
+        ->toBe('product')
         ->and((new Product)->getMorphClass())
+        ->toBe('product')
+        ->and(Product::morphName())
         ->toBe('product');
 });
