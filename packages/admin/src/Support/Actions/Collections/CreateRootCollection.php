@@ -23,7 +23,7 @@ class CreateRootCollection extends CreateAction
 
             $record = $this->process(function (array $data) {
                 $attribute = Attribute::whereHandle('name')->whereAttributeType(
-                    (new Collection)->getMorphClass()
+                    Collection::morphName()
                 )->first()->type;
 
                 return Collection::create([
@@ -58,7 +58,7 @@ class CreateRootCollection extends CreateAction
             $this->success();
         });
 
-        $attribute = Attribute::where('attribute_type', '=', (new Collection)->getMorphClass())
+        $attribute = Attribute::where('attribute_type', '=', Collection::morphName())
             ->where('handle', '=', 'name')->first();
 
         $formInput = TextInput::class;

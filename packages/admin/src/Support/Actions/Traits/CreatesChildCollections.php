@@ -13,7 +13,7 @@ trait CreatesChildCollections
         DB::beginTransaction();
 
         $attribute = Attribute::whereHandle('name')->whereAttributeType(
-            (new Collection)->getMorphClass()
+            Collection::morphName()
         )->first()->type;
 
         $parent->appendNode(Collection::create([
