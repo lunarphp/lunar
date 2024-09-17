@@ -38,6 +38,13 @@ test('can forward calls to extended model', function () {
     expect($sizeOption->sizes)->toHaveCount(1);
 });
 
+test('extended model returns correct table name', function () {
+    expect((new \Lunar\Tests\Core\Stubs\Models\CustomOrder)->getTable())
+        ->toBe(
+            (new \Lunar\Models\Order)->getTable()
+        );
+});
+
 test('can forward static method calls to extended model', function () {
     /** @see \Lunar\Tests\Core\Stubs\Models\ProductOption::getSizesStatic() */
     $newStaticMethod = ProductOption::getSizesStatic();
