@@ -5,6 +5,7 @@ namespace Lunar\Pipelines\Order\Creation;
 use Closure;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
+use Lunar\Utils\Arr;
 
 class CreateOrderLines
 {
@@ -23,8 +24,13 @@ class CreateOrderLines
 
         foreach ($cart->lines as $cartLine) {
             $orderLine = $order->lines->first(function ($line) use ($cartLine) {
-                return $line->purchasable_id == $cartLine->purchasable_id &&
-                    $line->purchasable_type == $cartLine->purchasable_type;
+                $diff = Arr::diff($line->meta, $cartLine->meta);
+
+                return empty($diff->new) &&
+                    empty($diff->edited) &&
+                    empty($diff->removed) &&
+                    $line->purchasable_type == $cartLine->purchasable_type &&
+                    $line->purchasable_id == $cartLine->purchasable_id;
             }) ?: new OrderLine;
 
             $orderLine->fill([
