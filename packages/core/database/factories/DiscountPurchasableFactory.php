@@ -13,7 +13,7 @@ class DiscountPurchasableFactory extends BaseFactory
     {
         return [
             'purchasable_id' => ProductVariant::factory(),
-            'purchasable_type' => (new ProductVariant)->getMorphClass(),
+            'purchasable_type' => ProductVariant::morphName(),
         ];
     }
 }

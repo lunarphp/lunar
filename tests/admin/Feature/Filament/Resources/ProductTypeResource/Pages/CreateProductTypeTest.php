@@ -54,7 +54,7 @@ it('can associate attributes', function () {
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => (new ProductType)->getMorphClass(),
+        'attributable_type' => ProductType::morphName(),
         'attributable_id' => $component->get('record')->id,
     ]);
 });
