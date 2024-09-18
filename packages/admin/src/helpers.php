@@ -6,7 +6,6 @@ use Lunar\Base\Traits\Searchable;
 use Lunar\DataTypes\Price;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
-
 use function Filament\Support\generate_search_term_expression;
 
 if (! function_exists('price')) {
@@ -95,7 +94,7 @@ if (! function_exists('get_search_builder')) {
 
             foreach (explode(' ', $search) as $searchWord) {
                 $query->where(function (Builder $query) use ($model, $searchWord) {
-                    $attributes = Attribute::whereAttributeType($model->getMorphClass())
+                    $attributes = Attribute::whereAttributeType($model::morphName())
                         ->whereSearchable(true)
                         ->get();
 
