@@ -84,7 +84,7 @@ test('can map discount with same purchasable with different meta', function () {
         'quantity' => 1,
         'meta' => [
             'personalization' => 'Love you mum xxx',
-        ]
+        ],
     ]);
 
     $cart->lines()->create([
@@ -93,7 +93,7 @@ test('can map discount with same purchasable with different meta', function () {
         'quantity' => 1,
         'meta' => [
             'personalization' => 'Get well soon',
-        ]
+        ],
     ]);
 
     $order = Order::factory()->create([
@@ -111,8 +111,8 @@ test('can map discount with same purchasable with different meta', function () {
     });
 
     $appliedDiscount = $order->discount_breakdown->first();
-    
-    $appliedDiscountLines = $appliedDiscount->lines->map(function($line) {
+
+    $appliedDiscountLines = $appliedDiscount->lines->map(function ($line) {
         return $line->line->only('purchasable_type', 'purchasable_id', 'meta');
     });
 
