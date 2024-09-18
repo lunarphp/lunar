@@ -29,5 +29,6 @@ jobs:
           commit_user_name: "GitHub Action"
           commit_user_email: "action@github.com"
           commit_author: "Author <actions@github.com>"
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit_message: >
             chore: fix code style
