@@ -18,6 +18,8 @@ use Lunar\Models\Price;
 
 class CustomerGroupPricingRelationManager extends BaseRelationManager
 {
+    protected static bool $isLazy = false;
+
     protected static string $relationship = 'prices';
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
@@ -30,7 +32,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
         return __('lunarpanel::relationmanagers.customer_group_pricing.table.heading');
     }
 
-    public function form(Form $form): Form
+    public function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
@@ -61,7 +63,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                                     fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
                                 ->where('min_quantity', 1)
                                 ->where('currency_id', $get('currency_id'))
-                                ->where('priceable_type', get_class($owner))
+                                ->where('priceable_type', $owner->getMorphClass())
                                 ->where('priceable_id', $owner->id);
                         }),
                 ])->columns(2),
@@ -79,7 +81,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                                     fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
                                 ->where('min_quantity', 1)
                                 ->where('currency_id', $get('currency_id'))
-                                ->where('priceable_type', get_class($owner))
+                                ->where('priceable_type', $owner->getMorphClass())
                                 ->where('priceable_id', $owner->id);
                         }
                     )->helperText(
@@ -96,7 +98,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
             ])->columns(1);
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
         $priceTable = (new Price)->getTable();
         $cgTable = CustomerGroup::query()->select([DB::raw('id as cg_id'), 'name']);

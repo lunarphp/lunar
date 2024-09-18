@@ -15,7 +15,7 @@ use Lunar\Database\Factories\TaxZoneCustomerGroupFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxZoneCustomerGroup extends BaseModel
+class TaxZoneCustomerGroup extends BaseModel implements Contracts\TaxZoneCustomerGroup
 {
     use HasFactory;
     use HasMacros;
@@ -23,7 +23,7 @@ class TaxZoneCustomerGroup extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TaxZoneCustomerGroupFactory
+    protected static function newFactory()
     {
         return TaxZoneCustomerGroupFactory::new();
     }
@@ -41,7 +41,7 @@ class TaxZoneCustomerGroup extends BaseModel
      */
     public function customerGroup(): BelongsTo
     {
-        return $this->belongsTo(CustomerGroup::class);
+        return $this->belongsTo(CustomerGroup::modelClass());
     }
 
     /**
@@ -49,6 +49,6 @@ class TaxZoneCustomerGroup extends BaseModel
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::class);
+        return $this->belongsTo(TaxZone::modelClass());
     }
 }

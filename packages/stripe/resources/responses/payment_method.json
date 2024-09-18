@@ -1,0 +1,47 @@
+{
+    "id": "pm_1MqLiJLkdIwHu7ixUEgbFdYF",
+    "object": "payment_method",
+    "billing_details": {
+        "address": {
+            "city": "ACME Land",
+            "country": "GB",
+            "line1": "123 ACME Lane",
+            "line2": null,
+            "postal_code": "AC1 1ME",
+            "state": "ACME"
+        },
+        "email": "sales@acme.com",
+        "name": "Elma Thudd",
+        "phone": "1234567"
+    },
+    "card": {
+        "brand": "visa",
+        "checks": {
+            "address_line1_check": null,
+            "address_postal_code_check": null,
+            "cvc_check": "unchecked"
+        },
+        "country": "US",
+        "exp_month": 8,
+        "exp_year": 2026,
+        "fingerprint": "mToisGZ01V71BCos",
+        "funding": "credit",
+        "generated_from": null,
+        "last4": "4242",
+        "networks": {
+            "available": [
+                "visa"
+            ],
+            "preferred": null
+        },
+        "three_d_secure_usage": {
+            "supported": true
+        },
+        "wallet": null
+    },
+    "created": 1679945299,
+    "customer": null,
+    "livemode": false,
+    "metadata": {},
+    "type": "card"
+}

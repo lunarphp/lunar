@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array<class-string<\Filament\Pages\Page>> getPages()
  * @method static array<class-string<\Filament\Widgets\Widget>> getWidgets()
  * @method static \Lunar\Admin\LunarPanelManager useRoleAsAdmin(string|array $roleHandle)
- * @method static mixed callHook(string $class, string $hookName, ...$args)
+ * @method static mixed callHook(string $class, object|null $caller, string $hookName, ...$args)
  *
  * @see \Lunar\Admin\LunarPanelManager
  */

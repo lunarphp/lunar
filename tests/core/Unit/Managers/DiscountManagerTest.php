@@ -85,6 +85,24 @@ test('can restrict discounts to channel', function () {
 
     $discount = Discount::factory()->create();
 
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => false,
+            'starts_at' => null,
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => false,
+            'starts_at' => null,
+        ],
+        $channelTwo->id => [
+            'enabled' => false,
+            'starts_at' => null,
+        ],
+    ]);
+
     $manager = app(DiscountManagerInterface::class);
 
     expect($manager->getDiscounts())->toBeEmpty();
@@ -300,12 +318,12 @@ test('can get discount with coupon', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -379,4 +397,4 @@ test('can get discount with coupon', function () {
     ]);
 
     expect(Discounts::getDiscounts($cart->refresh()))->toHaveCount(1);
-})->group('moomoo');
+});

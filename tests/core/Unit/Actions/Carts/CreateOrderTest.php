@@ -21,11 +21,11 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
 
+use function Pest\Laravel\{assertDatabaseHas};
+
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-/** @test  */
-function cant_create_order_if_already_has_complete_and_multiple_disabled()
-{
+it('cant create order if already has complete and multiple disabled', function () {
     TaxClass::factory()->create([
         'default' => true,
     ]);
@@ -43,10 +43,8 @@ function cant_create_order_if_already_has_complete_and_multiple_disabled()
         'placed_at' => now(),
     ]);
 
-    $this->expectException(DisallowMultipleCartOrdersException::class);
-
     (new CreateOrder)->execute($cart);
-}
+})->throws(DisallowMultipleCartOrdersException::class);
 
 test('can create order if multiple enabled', function () {
     TaxClass::factory()->create([
@@ -111,6 +109,10 @@ function can_update_draft_order()
 }
 
 test('can create order', function () {
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\Order::class,
+        \Lunar\Tests\Core\Stubs\Models\CustomOrder::class
+    );
     CustomerGroup::factory()->create([
         'default' => true,
     ]);
@@ -161,12 +163,12 @@ test('can create order', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -227,8 +229,8 @@ test('can create order', function () {
         ->and($order->shippingAddress)->toBeInstanceOf(OrderAddress::class)
         ->and($order->billingAddress)->toBeInstanceOf(OrderAddress::class);
 
-    $this->assertDatabaseHas((new Order)->getTable(), $datacheck);
-    $this->assertDatabaseHas((new OrderLine)->getTable(), [
+    assertDatabaseHas((new Order)->getTable(), $datacheck);
+    assertDatabaseHas((new OrderLine)->getTable(), [
         'identifier' => $shippingOption->getIdentifier(),
     ]);
 
@@ -293,12 +295,12 @@ test('can create order with customer', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);

@@ -17,11 +17,16 @@ trait HasAttributes
         return self::class;
     }
 
+    public function getAttributableMorphMapAttribute()
+    {
+        return self::morphName();
+    }
+
     /**
      * Get the attributes relation.
      */
     public function mappedAttributes(): HasMany
     {
-        return $this->hasMany(Attribute::class, 'attribute_type', 'attributable_classname');
+        return $this->hasMany(Attribute::class, 'attribute_type', 'attributable_morph_map');
     }
 }

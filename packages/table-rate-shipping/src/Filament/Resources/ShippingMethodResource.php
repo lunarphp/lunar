@@ -2,21 +2,26 @@
 
 namespace Lunar\Shipping\Filament\Resources;
 
+use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
-use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\Contracts\ShippingMethod;
 
 class ShippingMethodResource extends BaseResource
 {
     protected static ?string $model = ShippingMethod::class;
 
     protected static ?int $navigationSort = 1;
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {
@@ -38,13 +43,27 @@ class ShippingMethodResource extends BaseResource
         return __('lunarpanel.shipping::plugin.navigation.group');
     }
 
+    public static function getDefaultSubNavigation(): array
+    {
+        return [
+            Pages\EditShippingMethod::class,
+            Pages\ManageShippingMethodAvailability::class,
+        ];
+    }
+
     public static function getDefaultForm(Form $form): Form
     {
         return $form->schema([
+            Shout::make('product-customer-groups')
+                ->content(
+                    __('lunarpanel.shipping::shippingmethod.pages.availability.customer_groups')
+                )->type('warning')->hidden(function (Model $record) {
+                    return $record->customerGroups()->where('enabled', true)->count();
+                }),
             Forms\Components\Section::make()->schema(
                 static::getMainFormComponents(),
             ),
-        ]);
+        ])->columns(1);
     }
 
     protected static function getMainFormComponents(): array
@@ -61,7 +80,6 @@ class ShippingMethodResource extends BaseResource
             ])->columns(2),
             static::getStockAvailableFormComponent(),
             static::getDescriptionFormComponent(),
-
         ];
     }
 
@@ -175,6 +193,7 @@ class ShippingMethodResource extends BaseResource
         return [
             'index' => Pages\ListShippingMethod::route('/'),
             'edit' => Pages\EditShippingMethod::route('/{record}/edit'),
+            'availability' => Pages\ManageShippingMethodAvailability::route('/{record}/availability'),
         ];
     }
 }

@@ -11,7 +11,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Language;
+use Lunar\Models\Contracts\Language;
 
 class LanguageResource extends BaseResource
 {

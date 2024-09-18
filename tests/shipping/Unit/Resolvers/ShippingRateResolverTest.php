@@ -27,6 +27,10 @@ test('can fetch shipping rates by country', function () {
         'default' => true,
     ]);
 
+    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
     $shippingZone = ShippingZone::factory()->create([
         'type' => 'countries',
     ]);
@@ -40,6 +44,10 @@ test('can fetch shipping rates by country', function () {
                 "{$currency->code}" => 200,
             ],
         ],
+    ]);
+
+    $shippingMethod->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
@@ -129,6 +137,14 @@ test('can fetch shipping rates by state', function () {
         ],
     ]);
 
+    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $shippingMethod->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
+    ]);
+
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
         'shipping_method_id' => $shippingMethod->id,
         'shipping_zone_id' => $shippingZone->id,
@@ -197,6 +213,13 @@ test('can fetch shipping rates by postcode', function () {
                 "{$currency->code}" => 200,
             ],
         ],
+    ]);
+
+    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+    $shippingMethod->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
@@ -271,6 +294,13 @@ test('can reject shipping rates when stock is not available', function () {
         'stock_available' => 1,
     ]);
 
+    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+    $shippingMethod->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
+    ]);
+
     $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
         'shipping_method_id' => $shippingMethod->id,
         'shipping_zone_id' => $shippingZone->id,
@@ -303,12 +333,12 @@ test('can reject shipping rates when stock is not available', function () {
         'price' => 200,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);

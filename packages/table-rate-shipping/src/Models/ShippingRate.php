@@ -5,6 +5,7 @@ namespace Lunar\Shipping\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasPrices;
@@ -14,7 +15,7 @@ use Lunar\Models\TaxClass;
 use Lunar\Shipping\Database\Factories\ShippingRateFactory;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 
-class ShippingRate extends BaseModel implements Purchasable
+class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasable
 {
     use HasFactory;
     use HasPrices;
@@ -27,22 +28,31 @@ class ShippingRate extends BaseModel implements Purchasable
      */
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        self::deleting(function (self $shippingRate) {
+            DB::beginTransaction();
+            $shippingRate->prices()->delete();
+            DB::commit();
+        });
+    }
+
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingRateFactory
+    protected static function newFactory()
     {
         return ShippingRateFactory::new();
     }
 
     public function shippingZone(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::class);
+        return $this->belongsTo(ShippingZone::modelClass());
     }
 
     public function shippingMethod(): BelongsTo
     {
-        return $this->belongsTo(ShippingMethod::class);
+        return $this->belongsTo(ShippingMethod::modelClass());
     }
 
     public function getPrices(): Collection

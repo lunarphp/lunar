@@ -196,11 +196,11 @@ You can find out more in the Extending Lunar section for [Order Modifiers](/core
 Lunar\Models\OrderLine
 ```
 
-| Field            | Description                                                                                 |
-|:-----------------|:--------------------------------------------------------------------------------------------|
-| id               |                                                                                             |
-| order_id         |                                                                                             |
-| purchasable_type | Class reference for the purchasable item e.g. `Lunar\Models\ProductVariant`                 |
+| Field            | Description                                                                                                                                      |
+|:-----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
+| id               |                                                                                                                                                  |
+| order_id         |                                                                                                                                                  |
+| purchasable_type | Morph reference for the purchasable item e.g. `product_variant`                                                                                  |
 | purchasable_id   |
 | type             | Whether `digital`,`physical` etc                                                            
 | description      | A description of the line item                                                              

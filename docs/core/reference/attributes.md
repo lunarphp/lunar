@@ -17,19 +17,19 @@ For example, a television might have the following attributes assigned...
 Lunar\Models\Attribute
 ```
 
-|Field|Description|
-|:-|:-|
-|`attribute_type`|Model type that can use attribute, e.g. `Lunar\Models\ProductType`|
-|`attribute_group_id`|The associated group|
-|`position`|An integer used to define the sorting order of attributes within attribute groups|
-|`name`|Laravel Collection of translations `{'en': 'Screen Size'}`|
-|`handle`|Kebab-cased reference, e.g. `screen-size`|
-|`section`|An optional name to define where an attribute should be used.|
-|`type`|The field type to be used, e.g. `Lunar\FieldTypes\Number`|
-|`required`|Boolean|
-|`default_value`||
-|`configuration`|Meta data stored as a Laravel Collection|
-|`system`|If set to true, indicates it should not be deleted|
+|Field| Description                                                                       |
+|:-|:----------------------------------------------------------------------------------|
+|`attribute_type`| Morph map of the model type that can use attribute, e.g. `product`                |
+|`attribute_group_id`| The associated group                                                              |
+|`position`| An integer used to define the sorting order of attributes within attribute groups |
+|`name`| Laravel Collection of translations `{'en': 'Screen Size'}`                        |
+|`handle`| Kebab-cased reference, e.g. `screen-size`                                         |
+|`section`| An optional name to define where an attribute should be used.                     |
+|`type`| The field type to be used, e.g. `Lunar\FieldTypes\Number`                         |
+|`required`| Boolean                                                                           |
+|`default_value`|                                                                                   |
+|`configuration`| Meta data stored as a Laravel Collection                                          |
+|`system`| If set to true, indicates it should not be deleted                                |
 
 ### Field Types
 

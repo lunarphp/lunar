@@ -14,7 +14,7 @@ class ShippingExclusionFactory extends Factory
     {
         return [
             'purchasable_id' => 1,
-            'purchasable_type' => Product::class,
+            'purchasable_type' => Product::morphName(),
         ];
     }
 }

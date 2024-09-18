@@ -8,7 +8,9 @@ it('can handle valid event', function () {
         {
             public function constructEvent(string $jsonPayload, string $signature, string $secret)
             {
-                return \Stripe\Event::constructFrom([]);
+                return \Stripe\Event::constructFrom([
+                    'type' => 'payment_intent.succeeded',
+                ]);
             }
         };
     });
@@ -19,5 +21,5 @@ it('can handle valid event', function () {
 
     $request = $middleware->handle($request, fn ($request) => $request);
 
-    expect($request->status())->toBe(200);
+    expect($request)->toBeInstanceOf(\Illuminate\Http\Request::class);
 });

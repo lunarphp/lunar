@@ -16,7 +16,7 @@ use Lunar\Database\Factories\StateFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class State extends BaseModel
+class State extends BaseModel implements Contracts\State
 {
     use HasFactory;
     use HasMacros;
@@ -24,7 +24,7 @@ class State extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): StateFactory
+    protected static function newFactory()
     {
         return StateFactory::new();
     }
@@ -37,11 +37,8 @@ class State extends BaseModel
      */
     protected $guarded = [];
 
-    /**
-     * Return the country relationship.
-     */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::modelClass());
     }
 }

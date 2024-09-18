@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Shipping\Factories\ShippingZonePostcodeFactory;
 
-class ShippingZonePostcode extends BaseModel
+class ShippingZonePostcode extends BaseModel implements Contracts\ShippingZonePostcode
 {
     use HasFactory;
 
@@ -24,7 +24,7 @@ class ShippingZonePostcode extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ShippingZonePostcodeFactory
+    protected static function newFactory()
     {
         return ShippingZonePostcodeFactory::new();
     }
@@ -34,13 +34,13 @@ class ShippingZonePostcode extends BaseModel
      */
     public function shippingZone(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::class);
+        return $this->belongsTo(ShippingZone::modelClass());
     }
 
     /**
      * Setter for postcode attribute.
      */
-    public function setPostcodeAttribute(string $value): void
+    public function setPostcodeAttribute(?string $value): void
     {
         $this->attributes['postcode'] = str_replace(' ', '', $value);
     }

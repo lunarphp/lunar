@@ -245,7 +245,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     )]
             )->toArray();
 
-        $variants = $this->record->variants->load('values.option')->map(function ($variant) {
+        $variants = $this->record->variants->load(['basePrices.currency', 'basePrices.priceable', 'values.option'])->map(function ($variant) {
             return [
                 'id' => $variant->id,
                 'sku' => $variant->sku,

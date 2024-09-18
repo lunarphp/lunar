@@ -2,10 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Language;
 
-class LanguageFactory extends Factory
+class LanguageFactory extends BaseFactory
 {
     protected $model = Language::class;
 

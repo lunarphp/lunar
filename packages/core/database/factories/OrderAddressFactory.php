@@ -2,10 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\OrderAddress;
 
-class OrderAddressFactory extends Factory
+class OrderAddressFactory extends BaseFactory
 {
     protected $model = OrderAddress::class;
 

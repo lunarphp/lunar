@@ -15,7 +15,7 @@ use Lunar\Database\Factories\TaxZoneStateFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxZoneState extends BaseModel
+class TaxZoneState extends BaseModel implements Contracts\TaxZoneState
 {
     use HasFactory;
     use HasMacros;
@@ -23,7 +23,7 @@ class TaxZoneState extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TaxZoneStateFactory
+    protected static function newFactory()
     {
         return TaxZoneStateFactory::new();
     }
@@ -41,7 +41,7 @@ class TaxZoneState extends BaseModel
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::class);
+        return $this->belongsTo(TaxZone::modelClass());
     }
 
     /**
@@ -49,6 +49,6 @@ class TaxZoneState extends BaseModel
      */
     public function state(): BelongsTo
     {
-        return $this->belongsTo(State::class);
+        return $this->belongsTo(State::modelClass());
     }
 }

@@ -16,7 +16,7 @@ use Lunar\Database\Factories\ProductTypeFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductType extends BaseModel
+class ProductType extends BaseModel implements Contracts\ProductType
 {
     use HasAttributes;
     use HasFactory;
@@ -25,7 +25,7 @@ class ProductType extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductTypeFactory
+    protected static function newFactory()
     {
         return ProductTypeFactory::new();
     }
@@ -38,41 +38,33 @@ class ProductType extends BaseModel
      */
     protected $guarded = [];
 
-    /**
-     * Get the mapped attributes relation.
-     */
     public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
-            Attribute::class,
+            Attribute::modelClass(),
             'attributable',
             "{$prefix}attributables"
         )->withTimestamps();
     }
 
-    /**
-     * Return the product attributes relationship.
-     */
     public function productAttributes(): MorphToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(Product::class);
+        return $this->mappedAttributes()->whereAttributeType(
+            Product::morphName()
+        );
     }
 
-    /**
-     * Return the variant attributes relationship.
-     */
     public function variantAttributes(): MorphToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(ProductVariant::class);
+        return $this->mappedAttributes()->whereAttributeType(
+            ProductVariant::morphName()
+        );
     }
 
-    /**
-     * Get the products relation.
-     */
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::modelClass());
     }
 }
