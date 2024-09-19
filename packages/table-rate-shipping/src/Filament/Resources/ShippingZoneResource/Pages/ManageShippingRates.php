@@ -5,6 +5,7 @@ namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
@@ -16,6 +17,8 @@ use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
+use Lunar\Shipping\Models\Contracts\ShippingMethod as ShippingMethodContract;
+use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 
 class ManageShippingRates extends ManageRelatedRecords
@@ -58,6 +61,7 @@ class ManageShippingRates extends ManageRelatedRecords
                     __('lunarpanel.shipping::relationmanagers.shipping_rates.form.shipping_method_id.label')
                 )
                 ->required()
+                ->live()
                 ->relationship(name: 'shippingMethod', titleAttribute: 'name')
                 ->columnSpan(2),
             Forms\Components\TextInput::make('price')
@@ -100,7 +104,13 @@ class ManageShippingRates extends ManageRelatedRecords
                         )->required()->preload(),
                     Forms\Components\TextInput::make('min_quantity')
                         ->label(
-                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_quantity.label')
+                            function (Get $get) {
+                                if (static::getShippingChargeBy($get('../../shipping_method_id')) == 'weight') {
+                                    return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.label');
+                                }
+
+                                return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label');
+                            }
                         )
                         ->numeric()
                         ->required(),
@@ -113,13 +123,18 @@ class ManageShippingRates extends ManageRelatedRecords
                 ])->afterStateHydrated(
                     static function (Forms\Components\Repeater $component, ?Model $record = null): void {
                         if ($record) {
+                            $chargeBy = static::getShippingChargeBy($record->shippingMethod);
+                            $currencies = Currency::all();
+
                             $component->state(
-                                $record->priceBreaks->map(function ($price) {
+                                $record->priceBreaks->map(function ($price) use ($chargeBy, $currencies) {
+                                    $currency = $currencies->first(fn ($currency) => $currency->id == $price->currency_id);
+
                                     return [
                                         'customer_group_id' => $price->customer_group_id,
                                         'price' => $price->price->decimal,
                                         'currency_id' => $price->currency_id,
-                                        'min_quantity' => $price->min_quantity / 100,
+                                        'min_quantity' => $chargeBy == 'cart_total' ? $price->min_quantity / $currency->factor : $price->min_quantity / 1000,
                                     ];
                                 })->toArray()
                             );
@@ -166,6 +181,19 @@ class ManageShippingRates extends ManageRelatedRecords
         ]);
     }
 
+    private static function getShippingChargeBy(ShippingMethodContract|int|null $method): string
+    {
+        if (blank($method)) {
+            return 'cart_total';
+        }
+
+        if (! $method instanceof ShippingMethodContract) {
+            $method = ShippingMethod::find($method);
+        }
+
+        return ($method?->data['charge_by'] ?? null) ?? 'cart_total';
+    }
+
     protected static function saveShippingRate(?ShippingRate $shippingRate = null, array $data = []): void
     {
         $currency = Currency::getDefault();
@@ -182,11 +210,17 @@ class ManageShippingRates extends ManageRelatedRecords
         $shippingRate->priceBreaks()->delete();
 
         $currencies = Currency::all();
+        $chargeBy = static::getShippingChargeBy($shippingRate->shippingMethod);
+
         $tiers = collect($data['prices'] ?? [])->map(
-            function ($price) use ($currencies) {
+            function ($price) use ($chargeBy, $currencies) {
                 $currency = $currencies->first(fn ($currency) => $currency->id == $price['currency_id']);
 
-                $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
+                if ($chargeBy == 'cart_total') {
+                    $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
+                } else {
+                    $price['min_quantity'] = (int) ($price['min_quantity'] * 1000);
+                }
 
                 $price['price'] = (int) ($price['price'] * $currency->factor);
 
