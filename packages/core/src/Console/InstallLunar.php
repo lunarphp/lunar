@@ -140,7 +140,7 @@ class InstallLunar extends Command
                 $this->components->info('Setting up initial attributes');
 
                 $group = AttributeGroup::create([
-                    'attributable_type' => (new Product)->getMorphClass(),
+                    'attributable_type' => Product::morphName(),
                     'name' => collect([
                         'en' => 'Details',
                     ]),
@@ -149,7 +149,7 @@ class InstallLunar extends Command
                 ]);
 
                 $collectionGroup = AttributeGroup::create([
-                    'attributable_type' => (new Collection)->getMorphClass(),
+                    'attributable_type' => Collection::morphName(),
                     'name' => collect([
                         'en' => 'Details',
                     ]),
@@ -251,7 +251,7 @@ class InstallLunar extends Command
 
                 $type->mappedAttributes()->attach(
                     Attribute::whereAttributeType(
-                        (new Product)->getMorphClass()
+                        Product::morphName()
                     )->get()->pluck('id')
                 );
             }
