@@ -102,6 +102,12 @@ class ManageShippingRates extends ManageRelatedRecords
                         )->default(
                             Currency::getDefault()->id
                         )->required()->preload(),
+                    Forms\Components\TextInput::make('price')
+                        ->label(
+                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.price.label')
+                        )
+                        ->numeric()
+                        ->required(),
                     Forms\Components\TextInput::make('min_quantity')
                         ->label(
                             function (Get $get) {
@@ -111,12 +117,6 @@ class ManageShippingRates extends ManageRelatedRecords
 
                                 return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label');
                             }
-                        )
-                        ->numeric()
-                        ->required(),
-                    Forms\Components\TextInput::make('price')
-                        ->label(
-                            __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.price.label')
                         )
                         ->numeric()
                         ->required(),
