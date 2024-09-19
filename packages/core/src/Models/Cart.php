@@ -506,7 +506,7 @@ class Cart extends BaseModel implements Contracts\Cart
 
     public function getShippingOption(): ?ShippingOption
     {
-        return ShippingManifest::getShippingOption($this->calculate());
+        return ShippingManifest::getShippingOption($this->refresh());
     }
 
     public function isShippable(): bool
