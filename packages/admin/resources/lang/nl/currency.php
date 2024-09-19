@@ -2,49 +2,49 @@
 
 return [
 
-    'label' => 'Currency',
+    'label' => 'Valuta',
 
-    'plural_label' => 'Currencies',
+    'plural_label' => 'Valuta\'s',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'code' => [
             'label' => 'Code',
         ],
         'exchange_rate' => [
-            'label' => 'Exchange Rate',
+            'label' => 'Wisselkoers',
         ],
         'decimal_places' => [
-            'label' => 'Decimal Places',
+            'label' => 'Decimalen',
         ],
         'enabled' => [
-            'label' => 'Enabled',
+            'label' => 'Ingeschakeld',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'code' => [
             'label' => 'Code',
         ],
         'exchange_rate' => [
-            'label' => 'Exchange Rate',
+            'label' => 'Wisselkoers',
         ],
         'decimal_places' => [
-            'label' => 'Decimal Places',
+            'label' => 'Decimalen',
         ],
         'enabled' => [
-            'label' => 'Enabled',
+            'label' => 'Ingeschakeld',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 

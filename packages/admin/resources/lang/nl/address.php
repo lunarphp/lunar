@@ -2,91 +2,91 @@
 
 return [
 
-    'label' => 'Address',
+    'label' => 'Adres',
 
-    'plural_label' => 'Addresses',
+    'plural_label' => 'Adressen',
 
     'table' => [
         'title' => [
-            'label' => 'Title',
+            'label' => 'Titel',
         ],
         'first_name' => [
-            'label' => 'First Name',
+            'label' => 'Voornaam',
         ],
         'last_name' => [
-            'label' => 'Last Name',
+            'label' => 'Achternaam',
         ],
         'company_name' => [
-            'label' => 'Company Name',
+            'label' => 'Bedrijfsnaam',
         ],
         'line_one' => [
-            'label' => 'Address',
+            'label' => 'Adres',
         ],
         'line_two' => [
-            'label' => 'Line Two',
+            'label' => 'Adresregel Twee',
         ],
         'line_three' => [
-            'label' => 'Line Three',
+            'label' => 'Adresregel Drie',
         ],
         'city' => [
-            'label' => 'City',
+            'label' => 'Stad',
         ],
         'country_id' => [
-            'label' => 'Country',
+            'label' => 'Land',
         ],
         'state' => [
-            'label' => 'State',
+            'label' => 'Provincie',
         ],
         'postcode' => [
             'label' => 'Postcode',
         ],
         'contact_email' => [
-            'label' => 'Contact Email',
+            'label' => 'Contact E-mail',
         ],
         'contact_phone' => [
-            'label' => 'Contact Phone',
+            'label' => 'Contact Telefoon',
         ],
     ],
 
     'form' => [
         'title' => [
-            'label' => 'Title',
+            'label' => 'Titel',
         ],
         'first_name' => [
-            'label' => 'First Name',
+            'label' => 'Voornaam',
         ],
         'last_name' => [
-            'label' => 'Last Name',
+            'label' => 'Achternaam',
         ],
         'company_name' => [
-            'label' => 'Company Name',
+            'label' => 'Bedrijfsnaam',
         ],
         'line_one' => [
-            'label' => 'Line One',
+            'label' => 'Adresregel Een',
         ],
         'line_two' => [
-            'label' => 'Line Two',
+            'label' => 'Adresregel Twee',
         ],
         'line_three' => [
-            'label' => 'Line Three',
+            'label' => 'Adresregel Drie',
         ],
         'city' => [
-            'label' => 'City',
+            'label' => 'Stad',
         ],
         'country_id' => [
-            'label' => 'Country',
+            'label' => 'Land',
         ],
         'state' => [
-            'label' => 'State',
+            'label' => 'Provincie',
         ],
         'postcode' => [
             'label' => 'Postcode',
         ],
         'contact_email' => [
-            'label' => 'Contact Email',
+            'label' => 'Contact E-mail',
         ],
         'contact_phone' => [
-            'label' => 'Contact Phone',
+            'label' => 'Contact Telefoon',
         ],
     ],
 

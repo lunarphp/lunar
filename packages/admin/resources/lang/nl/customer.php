@@ -2,61 +2,61 @@
 
 return [
 
-    'label' => 'Customer',
+    'label' => 'Klant',
 
-    'plural_label' => 'Customers',
+    'plural_label' => 'Klanten',
 
     'table' => [
         'full_name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'first_name' => [
-            'label' => 'First Name',
+            'label' => 'Voornaam',
         ],
         'last_name' => [
-            'label' => 'Last Name',
+            'label' => 'Achternaam',
         ],
         'title' => [
-            'label' => 'Title',
+            'label' => 'Titel',
         ],
         'company_name' => [
-            'label' => 'Company Name',
+            'label' => 'Bedrijfsnaam',
         ],
         'vat_no' => [
-            'label' => 'VAT No.',
+            'label' => 'BTW Nr.',
         ],
         'account_reference' => [
-            'label' => 'Account Reference',
+            'label' => 'Account Referentie',
         ],
         'new' => [
-            'label' => 'New',
+            'label' => 'Nieuw',
         ],
         'returning' => [
-            'label' => 'Returning',
+            'label' => 'Terugkerend',
         ],
     ],
 
     'form' => [
         'title' => [
-            'label' => 'Title',
+            'label' => 'Titel',
         ],
         'first_name' => [
-            'label' => 'First Name',
+            'label' => 'Voornaam',
         ],
         'last_name' => [
-            'label' => 'Last Name',
+            'label' => 'Achternaam',
         ],
         'company_name' => [
-            'label' => 'Company Name',
+            'label' => 'Bedrijfsnaam',
         ],
         'account_ref' => [
-            'label' => 'Account Reference',
+            'label' => 'Account Referentie',
         ],
         'vat_no' => [
-            'label' => 'VAT No.',
+            'label' => 'BTW Nr.',
         ],
         'customer_groups' => [
-            'label' => 'Customer Groups',
+            'label' => 'Klantengroepen',
         ],
     ],
 

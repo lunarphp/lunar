@@ -4,15 +4,15 @@ return [
 
     'label' => 'Product',
 
-    'plural_label' => 'Products',
+    'plural_label' => 'Producten',
 
     'status' => [
         'unpublished' => [
-            'content' => 'Currently in draft status, this product is hidden across all channels and customer groups.',
+            'content' => 'Momenteel in conceptstatus, dit product is verborgen op alle kanalen en klantgroepen.',
         ],
         'availability' => [
-            'customer_groups' => 'This product is currently unavailable for all customer groups.',
-            'channels' => 'This product is currently unavailable for all channels.',
+            'customer_groups' => 'Dit product is momenteel niet beschikbaar voor alle klantgroepen.',
+            'channels' => 'Dit product is momenteel niet beschikbaar voor alle kanalen.',
         ],
     ],
 
@@ -20,58 +20,58 @@ return [
         'status' => [
             'label' => 'Status',
             'states' => [
-                'deleted' => 'Deleted',
-                'draft' => 'Draft',
-                'published' => 'Published',
+                'deleted' => 'Verwijderd',
+                'draft' => 'Concept',
+                'published' => 'Gepubliceerd',
             ],
         ],
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'brand' => [
-            'label' => 'Brand',
+            'label' => 'Merk',
         ],
         'sku' => [
             'label' => 'SKU',
         ],
         'stock' => [
-            'label' => 'Stock',
+            'label' => 'Voorraad',
         ],
         'producttype' => [
-            'label' => 'Product Type',
+            'label' => 'Producttype',
         ],
     ],
 
     'actions' => [
         'edit_status' => [
-            'label' => 'Update Status',
-            'heading' => 'Update Status',
+            'label' => 'Status Bijwerken',
+            'heading' => 'Status Bijwerken',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'brand' => [
-            'label' => 'Brand',
+            'label' => 'Merk',
         ],
         'sku' => [
             'label' => 'SKU',
         ],
         'producttype' => [
-            'label' => 'Product Type',
+            'label' => 'Producttype',
         ],
         'status' => [
             'label' => 'Status',
             'options' => [
                 'published' => [
-                    'label' => 'Published',
-                    'description' => 'This product will be available across all enabled customer groups and channels',
+                    'label' => 'Gepubliceerd',
+                    'description' => 'Dit product zal beschikbaar zijn voor alle ingeschakelde klantgroepen en kanalen',
                 ],
                 'draft' => [
-                    'label' => 'Draft',
-                    'description' => 'This product will be hidden across all channels and customer groups',
+                    'label' => 'Concept',
+                    'description' => 'Dit product zal verborgen zijn op alle kanalen en klantgroepen',
                 ],
             ],
         ],
@@ -79,42 +79,42 @@ return [
             'label' => 'Tags',
         ],
         'collections' => [
-            'label' => 'Collections',
+            'label' => 'Collecties',
         ],
     ],
 
     'pages' => [
         'availability' => [
-            'label' => 'Availability',
+            'label' => 'Beschikbaarheid',
         ],
         'identifiers' => [
-            'label' => 'Product Identifiers',
+            'label' => 'Product Identificatoren',
         ],
         'inventory' => [
-            'label' => 'Inventory',
+            'label' => 'Voorraad',
         ],
         'pricing' => [
             'form' => [
                 'tax_class_id' => [
-                    'label' => 'Tax Class',
+                    'label' => 'Belastingklasse',
                 ],
                 'tax_ref' => [
-                    'label' => 'Tax Reference',
-                    'helper_text' => 'Optional, for integration with 3rd party systems.',
+                    'label' => 'Belastingreferentie',
+                    'helper_text' => 'Optioneel, voor integratie met systemen van derden.',
                 ],
             ],
         ],
         'shipping' => [
-            'label' => 'Shipping',
+            'label' => 'Verzending',
         ],
         'variants' => [
-            'label' => 'Variants',
+            'label' => 'Varianten',
         ],
         'collections' => [
-            'label' => 'Collections',
+            'label' => 'Collecties',
         ],
         'associations' => [
-            'label' => 'Product Associations',
+            'label' => 'Productassociaties',
         ],
     ],
 

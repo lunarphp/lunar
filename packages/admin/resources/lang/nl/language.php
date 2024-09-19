@@ -2,31 +2,31 @@
 
 return [
 
-    'label' => 'Language',
+    'label' => 'Taal',
 
-    'plural_label' => 'Languages',
+    'plural_label' => 'Talen',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'code' => [
             'label' => 'Code',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'code' => [
             'label' => 'Code',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 

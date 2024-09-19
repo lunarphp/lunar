@@ -2,19 +2,19 @@
 
 return [
 
-    'label' => 'Tag',
+    'label' => 'Label',
 
-    'plural_label' => 'Tags',
+    'plural_label' => 'Labels',
 
     'table' => [
         'value' => [
-            'label' => 'Value',
+            'label' => 'Waarde',
         ],
     ],
 
     'form' => [
         'value' => [
-            'label' => 'Value',
+            'label' => 'Waarde',
         ],
     ],
 

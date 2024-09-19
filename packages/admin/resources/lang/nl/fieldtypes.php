@@ -2,20 +2,20 @@
 
 return [
     'dropdown' => [
-        'label' => 'Dropdown',
+        'label' => 'Keuzelijst',
         'form' => [
             'lookups' => [
-                'label' => 'Lookups',
+                'label' => 'Opzoekingen',
                 'key_label' => 'Label',
-                'value_label' => 'Value',
+                'value_label' => 'Waarde',
             ],
         ],
     ],
     'listfield' => [
-        'label' => 'List Field',
+        'label' => 'Lijstveld',
     ],
     'text' => [
-        'label' => 'Text',
+        'label' => 'Tekst',
         'form' => [
             'richtext' => [
                 'label' => 'Rich Text',
@@ -23,16 +23,16 @@ return [
         ],
     ],
     'translatedtext' => [
-        'label' => 'Translated Text',
+        'label' => 'Vertaald Tekst',
         'form' => [
             'richtext' => [
                 'label' => 'Rich Text',
             ],
-            'locales' => 'Locales',
+            'locales' => 'Talen',
         ],
     ],
     'toggle' => [
-        'label' => 'Toggle',
+        'label' => 'Schakelaar',
     ],
     'youtube' => [
         'label' => 'YouTube',
@@ -41,7 +41,7 @@ return [
         'label' => 'Vimeo',
     ],
     'number' => [
-        'label' => 'Number',
+        'label' => 'Nummer',
         'form' => [
             'min' => [
                 'label' => 'Min.',
@@ -52,20 +52,20 @@ return [
         ],
     ],
     'file' => [
-        'label' => 'File',
+        'label' => 'Bestand',
         'form' => [
             'file_types' => [
-                'label' => 'Allowed File Types',
-                'placeholder' => 'New MIME',
+                'label' => 'Toegestane Bestandstypen',
+                'placeholder' => 'Nieuwe MIME',
             ],
             'multiple' => [
-                'label' => 'Allow Multiple Files',
+                'label' => 'Meerdere Bestanden Toestaan',
             ],
             'min_files' => [
-                'label' => 'Min. Files',
+                'label' => 'Min. Bestanden',
             ],
             'max_files' => [
-                'label' => 'Max. Files',
+                'label' => 'Max. Bestanden',
             ],
         ],
     ],

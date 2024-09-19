@@ -2,31 +2,31 @@
 
 return [
 
-    'label' => 'Tax Rate',
+    'label' => 'Belastingtarief',
 
-    'plural_label' => 'Tax Rates',
+    'plural_label' => 'Belastingtarieven',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'tax_zone' => [
-            'label' => 'Tax Zone',
+            'label' => 'Belastingzone',
         ],
         'priority' => [
-            'label' => 'Priority',
+            'label' => 'Prioriteit',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'priority' => [
-            'label' => 'Priority',
+            'label' => 'Prioriteit',
         ],
         'tax_zone_id' => [
-            'label' => 'Tax Zone',
+            'label' => 'Belastingzone',
         ],
     ],
 

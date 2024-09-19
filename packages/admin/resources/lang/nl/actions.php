@@ -3,42 +3,42 @@
 return [
     'collections' => [
         'create_root' => [
-            'label' => 'Create Root Collection',
+            'label' => 'Maak Hoofdcategorie',
         ],
         'create_child' => [
-            'label' => 'Create Child Collection',
+            'label' => 'Maak Subcategorie',
         ],
         'move' => [
-            'label' => 'Move Collection',
+            'label' => 'Verplaats Categorie',
         ],
         'delete' => [
-            'label' => 'Delete',
+            'label' => 'Verwijderen',
         ],
     ],
     'orders' => [
         'update_status' => [
-            'label' => 'Update Status',
+            'label' => 'Status Bijwerken',
             'wizard' => [
                 'step_one' => [
                     'label' => 'Status',
                 ],
                 'step_two' => [
-                    'label' => 'Mailers & Notifications',
-                    'no_mailers' => 'There are no mailers available for this status.',
+                    'label' => 'Mailers & Meldingen',
+                    'no_mailers' => 'Er zijn geen mailers beschikbaar voor deze status.',
                 ],
                 'step_three' => [
-                    'label' => 'Preview & Save',
-                    'no_mailers' => 'No mailers have been chosen for preview.',
+                    'label' => 'Voorbeeld & Opslaan',
+                    'no_mailers' => 'Er zijn geen mailers gekozen voor voorbeeld.',
                 ],
             ],
             'notification' => [
-                'label' => 'Order status updated',
+                'label' => 'Orderstatus bijgewerkt',
             ],
             'billing_email' => [
-                'label' => 'Billing Email',
+                'label' => 'Facturatie E-mail',
             ],
             'shipping_email' => [
-                'label' => 'Shipping Email',
+                'label' => 'Verzend E-mail',
             ],
         ],
 

@@ -2,37 +2,37 @@
 
 return [
 
-    'label' => 'Channel',
+    'label' => 'Kanaal',
 
-    'plural_label' => 'Channels',
+    'plural_label' => 'Kanalen',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'url' => [
             'label' => 'URL',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'url' => [
             'label' => 'URL',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 

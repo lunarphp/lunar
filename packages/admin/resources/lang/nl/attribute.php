@@ -2,19 +2,19 @@
 
 return [
 
-    'label' => 'Attribute',
+    'label' => 'Attribuut',
 
-    'plural_label' => 'Attributes',
+    'plural_label' => 'Attributen',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'description' => [
-            'label' => 'Description',
+            'label' => 'Beschrijving',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'type' => [
             'label' => 'Type',
@@ -26,30 +26,30 @@ return [
             'label' => 'Type',
         ],
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'description' => [
-            'label' => 'Description',
-            'helper' => 'Use to display the helper text below the entry',
+            'label' => 'Beschrijving',
+            'helper' => 'Gebruik om de helptekst onder de invoer weer te geven',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'searchable' => [
-            'label' => 'Searchable',
+            'label' => 'Doorzoekbaar',
         ],
         'filterable' => [
-            'label' => 'Filterable',
+            'label' => 'Filterbaar',
         ],
         'required' => [
-            'label' => 'Required',
+            'label' => 'Verplicht',
         ],
         'type' => [
             'label' => 'Type',
         ],
         'validation_rules' => [
-            'label' => 'Validation Rules',
-            'helper' => 'Rules for attribute field, example: min:1|max:10|...',
+            'label' => 'Validatieregels',
+            'helper' => 'Regels voor attribuutveld, voorbeeld: min:1|max:10|...',
         ],
     ],
 ];

@@ -2,34 +2,34 @@
 
 return [
 
-    'label' => 'Product Option',
+    'label' => 'Productoptie',
 
-    'plural_label' => 'Product Options',
+    'plural_label' => 'Productopties',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'label' => [
             'label' => 'Label',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'shared' => [
-            'label' => 'Shared',
+            'label' => 'Gedeeld',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'label' => [
             'label' => 'Label',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
     ],
 
@@ -38,83 +38,83 @@ return [
             'notifications' => [
                 'save-variants' => [
                     'success' => [
-                        'title' => 'Product Variants Saved',
+                        'title' => 'Productvarianten opgeslagen',
                     ],
                 ],
             ],
             'actions' => [
                 'cancel' => [
-                    'label' => 'Cancel',
+                    'label' => 'Annuleren',
                 ],
                 'save-options' => [
-                    'label' => 'Save Options',
+                    'label' => 'Opties opslaan',
                 ],
                 'add-shared-option' => [
-                    'label' => 'Add Shared Option',
+                    'label' => 'Gedeelde optie toevoegen',
                     'form' => [
                         'product_option' => [
-                            'label' => 'Product Option',
+                            'label' => 'Productoptie',
                         ],
                         'no_shared_components' => [
-                            'label' => 'No shared options are available.',
+                            'label' => 'Er zijn geen gedeelde opties beschikbaar.',
                         ],
                     ],
                 ],
                 'add-restricted-option' => [
-                    'label' => 'Add Option',
+                    'label' => 'Optie toevoegen',
                 ],
             ],
             'options-list' => [
                 'empty' => [
-                    'heading' => 'There are no product options configured',
-                    'description' => 'Add a shared or restricted product option to start generating some variants.',
+                    'heading' => 'Er zijn geen productopties geconfigureerd',
+                    'description' => 'Voeg een gedeelde of beperkte productoptie toe om enkele varianten te genereren.',
                 ],
             ],
             'options-table' => [
-                'title' => 'Product Options',
+                'title' => 'Productopties',
                 'configure-options' => [
-                    'label' => 'Configure Options',
+                    'label' => 'Opties configureren',
                 ],
                 'table' => [
                     'option' => [
-                        'label' => 'Option',
+                        'label' => 'Optie',
                     ],
                     'values' => [
-                        'label' => 'Values',
+                        'label' => 'Waarden',
                     ],
                 ],
             ],
             'variants-table' => [
-                'title' => 'Product Variants',
+                'title' => 'Productvarianten',
                 'actions' => [
                     'create' => [
-                        'label' => 'Create Variant',
+                        'label' => 'Variant maken',
                     ],
                     'edit' => [
-                        'label' => 'Edit',
+                        'label' => 'Bewerken',
                     ],
                     'delete' => [
-                        'label' => 'Delete',
+                        'label' => 'Verwijderen',
                     ],
                 ],
                 'empty' => [
-                    'heading' => 'No Variants Configured',
+                    'heading' => 'Geen varianten geconfigureerd',
                 ],
                 'table' => [
                     'new' => [
-                        'label' => 'NEW',
+                        'label' => 'NIEUW',
                     ],
                     'option' => [
-                        'label' => 'Option',
+                        'label' => 'Optie',
                     ],
                     'sku' => [
                         'label' => 'SKU',
                     ],
                     'price' => [
-                        'label' => 'Price',
+                        'label' => 'Prijs',
                     ],
                     'stock' => [
-                        'label' => 'Stock',
+                        'label' => 'Voorraad',
                     ],
                 ],
             ],

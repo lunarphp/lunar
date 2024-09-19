@@ -2,68 +2,68 @@
 
 return [
 
-    'label' => 'Brand',
+    'label' => 'Merk',
 
-    'plural_label' => 'Brands',
+    'plural_label' => 'Merken',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'products_count' => [
-            'label' => 'No. Products',
+            'label' => 'Aantal Producten',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
     ],
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This brand can not be deleted as there are products associated.',
+                'error_protected' => 'Dit merk kan niet worden verwijderd omdat er producten aan zijn gekoppeld.',
             ],
         ],
     ],
     'pages' => [
         'products' => [
-            'label' => 'Products',
+            'label' => 'Producten',
             'actions' => [
                 'attach' => [
-                    'label' => 'Associate a product',
+                    'label' => 'Koppel een product',
                     'form' => [
                         'record_id' => [
                             'label' => 'Product',
                         ],
                     ],
                     'notification' => [
-                        'success' => 'Product attached to brand',
+                        'success' => 'Product gekoppeld aan merk',
                     ],
                 ],
                 'detach' => [
                     'notification' => [
-                        'success' => 'Product detached.',
+                        'success' => 'Product ontkoppeld.',
                     ],
                 ],
             ],
         ],
         'collections' => [
-            'label' => 'Collections',
+            'label' => 'Collecties',
             'table' => [
                 'header_actions' => [
                     'attach' => [
                         'record_select' => [
-                            'placeholder' => 'Select a collection',
+                            'placeholder' => 'Selecteer een collectie',
                         ],
                     ],
                 ],
             ],
             'actions' => [
                 'attach' => [
-                    'label' => 'Associate a collection',
+                    'label' => 'Koppel een collectie',
                 ],
             ],
         ],

@@ -4,84 +4,84 @@ return [
     'customer_groups' => [
         'actions' => [
             'attach' => [
-                'label' => 'Attach Customer Group',
+                'label' => 'Klantengroep Koppelen',
             ],
         ],
         'form' => [
             'name' => [
-                'label' => 'Name',
+                'label' => 'Naam',
             ],
             'enabled' => [
-                'label' => 'Enabled',
+                'label' => 'Ingeschakeld',
             ],
             'starts_at' => [
-                'label' => 'Start Date',
+                'label' => 'Startdatum',
             ],
             'ends_at' => [
-                'label' => 'End Date',
+                'label' => 'Einddatum',
             ],
             'visible' => [
-                'label' => 'Visible',
+                'label' => 'Zichtbaar',
             ],
             'purchasable' => [
-                'label' => 'Purchasable',
+                'label' => 'Koopbaar',
             ],
         ],
         'table' => [
-            'description' => 'Associate customer groups to this :type to determine it\'s availability.',
+            'description' => 'Koppel klantengroepen aan dit :type om de beschikbaarheid te bepalen.',
             'name' => [
-                'label' => 'Name',
+                'label' => 'Naam',
             ],
             'enabled' => [
-                'label' => 'Enabled',
+                'label' => 'Ingeschakeld',
             ],
             'starts_at' => [
-                'label' => 'Start Date',
+                'label' => 'Startdatum',
             ],
             'ends_at' => [
-                'label' => 'End Date',
+                'label' => 'Einddatum',
             ],
             'visible' => [
-                'label' => 'Visible',
+                'label' => 'Zichtbaar',
             ],
             'purchasable' => [
-                'label' => 'Purchasable',
+                'label' => 'Koopbaar',
             ],
         ],
     ],
     'channels' => [
         'actions' => [
             'attach' => [
-                'label' => 'Schedule another Channel',
+                'label' => 'Nog een Kanaal Inplannen',
             ],
         ],
         'form' => [
             'enabled' => [
-                'label' => 'Enabled',
-                'helper_text_false' => 'This channel will not be enabled even if a start date is present.',
+                'label' => 'Ingeschakeld',
+                'helper_text_false' => 'Dit kanaal wordt niet ingeschakeld, zelfs als er een startdatum aanwezig is.',
             ],
             'starts_at' => [
-                'label' => 'Start Date',
-                'helper_text' => 'Leave blank to be available from any date.',
+                'label' => 'Startdatum',
+                'helper_text' => 'Laat leeg om beschikbaar te zijn vanaf elke datum.',
             ],
             'ends_at' => [
-                'label' => 'End Date',
-                'helper_text' => 'Leave blank to be available indefinitely.',
+                'label' => 'Einddatum',
+                'helper_text' => 'Laat leeg om onbeperkt beschikbaar te zijn.',
             ],
         ],
         'table' => [
-            'description' => 'Determine which channels are enabled and schedule the availability.',
+            'description' => 'Bepaal welke kanalen zijn ingeschakeld en plan de beschikbaarheid.',
             'name' => [
-                'label' => 'Name',
+                'label' => 'Naam',
             ],
             'enabled' => [
-                'label' => 'Enabled',
+                'label' => 'Ingeschakeld',
             ],
             'starts_at' => [
-                'label' => 'Start Date',
+                'label' => 'Startdatum',
             ],
             'ends_at' => [
-                'label' => 'End Date',
+                'label' => 'Einddatum',
             ],
         ],
     ],
@@ -90,35 +90,35 @@ return [
         'title_plural' => 'Media',
         'actions' => [
             'create' => [
-                'label' => 'Create Media',
+                'label' => 'Media Aanmaken',
             ],
             'view' => [
-                'label' => 'View',
+                'label' => 'Bekijken',
             ],
         ],
         'form' => [
             'name' => [
-                'label' => 'Name',
+                'label' => 'Naam',
             ],
             'media' => [
-                'label' => 'Image',
+                'label' => 'Afbeelding',
             ],
             'primary' => [
-                'label' => 'Primary',
+                'label' => 'Primair',
             ],
         ],
         'table' => [
             'image' => [
-                'label' => 'Image',
+                'label' => 'Afbeelding',
             ],
             'file' => [
-                'label' => 'File',
+                'label' => 'Bestand',
             ],
             'name' => [
-                'label' => 'Name',
+                'label' => 'Naam',
             ],
             'primary' => [
-                'label' => 'Primary',
+                'label' => 'Primair',
             ],
         ],
     ],
@@ -127,12 +127,12 @@ return [
         'title_plural' => 'URLs',
         'actions' => [
             'create' => [
-                'label' => 'Create URL',
+                'label' => 'URL Aanmaken',
             ],
         ],
         'filters' => [
             'language_id' => [
-                'label' => 'Language',
+                'label' => 'Taal',
             ],
         ],
         'form' => [
@@ -140,10 +140,10 @@ return [
                 'label' => 'Slug',
             ],
             'default' => [
-                'label' => 'Default',
+                'label' => 'Standaard',
             ],
             'language' => [
-                'label' => 'Language',
+                'label' => 'Taal',
             ],
         ],
         'table' => [
@@ -151,100 +151,100 @@ return [
                 'label' => 'Slug',
             ],
             'default' => [
-                'label' => 'Default',
+                'label' => 'Standaard',
             ],
             'language' => [
-                'label' => 'Language',
+                'label' => 'Taal',
             ],
         ],
     ],
     'customer_group_pricing' => [
-        'title' => 'Customer Group Pricing',
-        'title_plural' => 'Customer Group Pricing',
+        'title' => 'Klantengroep Prijzen',
+        'title_plural' => 'Klantengroep Prijzen',
         'table' => [
-            'heading' => 'Customer Group Pricing',
-            'description' => 'Associate price to customer groups to determine product price.',
+            'heading' => 'Klantengroep Prijzen',
+            'description' => 'Koppel prijs aan klantengroepen om de productprijs te bepalen.',
             'empty_state' => [
-                'label' => 'No customer group pricing exist.',
-                'description' => 'Create a customer group price to get started.',
+                'label' => 'Er bestaan geen klantengroep prijzen.',
+                'description' => 'Maak een klantengroep prijs om te beginnen.',
             ],
             'actions' => [
                 'create' => [
-                    'label' => 'Add Customer Group Price',
+                    'label' => 'Klantengroep Prijs Toevoegen',
                     'modal' => [
-                        'heading' => 'Create Customer Group Price',
+                        'heading' => 'Klantengroep Prijs Aanmaken',
                     ],
                 ],
             ],
         ],
     ],
     'pricing' => [
-        'title' => 'Pricing',
-        'title_plural' => 'Pricing',
-        'tab_name' => 'Price Breaks',
+        'title' => 'Prijzen',
+        'title_plural' => 'Prijzen',
+        'tab_name' => 'Prijsbreuken',
         'table' => [
-            'heading' => 'Price Breaks',
-            'description' => 'Reduce the price when a customer purchases in larger quantities.',
+            'heading' => 'Prijsbreuken',
+            'description' => 'Verlaag de prijs wanneer een klant in grotere hoeveelheden koopt.',
             'empty_state' => [
-                'label' => 'No price breaks exist.',
+                'label' => 'Er bestaan geen prijsbreuken.',
             ],
             'actions' => [
                 'create' => [
-                    'label' => 'Add Price Break',
+                    'label' => 'Prijsbreuk Toevoegen',
                 ],
             ],
             'price' => [
-                'label' => 'Price',
+                'label' => 'Prijs',
             ],
             'customer_group' => [
-                'label' => 'Customer Group',
-                'placeholder' => 'All Customer Groups',
+                'label' => 'Klantengroep',
+                'placeholder' => 'Alle Klantengroepen',
             ],
             'min_quantity' => [
-                'label' => 'Minimum Quantity',
+                'label' => 'Minimale Hoeveelheid',
             ],
             'currency' => [
-                'label' => 'Currency',
+                'label' => 'Valuta',
             ],
         ],
         'form' => [
             'price' => [
-                'label' => 'Price',
-                'helper_text' => 'The purchase price, before discounts.',
+                'label' => 'Prijs',
+                'helper_text' => 'De aankoopprijs, voor kortingen.',
             ],
             'customer_group_id' => [
-                'label' => 'Customer Group',
-                'placeholder' => 'All Customer Groups',
-                'helper_text' => 'Select which customer group to apply this price to.',
+                'label' => 'Klantengroep',
+                'placeholder' => 'Alle Klantengroepen',
+                'helper_text' => 'Selecteer welke klantengroep deze prijs van toepassing is.',
             ],
             'min_quantity' => [
-                'label' => 'Minimum Quantity',
-                'helper_text' => 'Select the minimum quantity this price will be available for.',
+                'label' => 'Minimale Hoeveelheid',
+                'helper_text' => 'Selecteer de minimale hoeveelheid waarvoor deze prijs beschikbaar is.',
                 'validation' => [
-                    'unique' => 'Customer Group and Minimum Quantity must be unique.',
+                    'unique' => 'Klantengroep en Minimale Hoeveelheid moeten uniek zijn.',
                 ],
             ],
             'currency_id' => [
-                'label' => 'Currency',
-                'helper_text' => 'Select the currency for this price.',
+                'label' => 'Valuta',
+                'helper_text' => 'Selecteer de valuta voor deze prijs.',
             ],
             'compare_price' => [
-                'label' => 'Comparison Price',
-                'helper_text' => 'The original price or RRP, for comparison with its purchase price.',
+                'label' => 'Vergelijkingsprijs',
+                'helper_text' => 'De oorspronkelijke prijs of adviesprijs, ter vergelijking met de aankoopprijs.',
             ],
             'basePrices' => [
-                'title' => 'Prices',
+                'title' => 'Prijzen',
                 'form' => [
                     'price' => [
-                        'label' => 'Price',
-                        'helper_text' => 'The purchase price, before discounts.',
+                        'label' => 'Prijs',
+                        'helper_text' => 'De aankoopprijs, voor kortingen.',
                     ],
                     'compare_price' => [
-                        'label' => 'Comparison Price',
-                        'helper_text' => 'The original price or RRP, for comparison with its purchase price.',
+                        'label' => 'Vergelijkingsprijs',
+                        'helper_text' => 'De oorspronkelijke prijs of adviesprijs, ter vergelijking met de aankoopprijs.',
                     ],
                 ],
-                'tooltip' => 'Automatically generated based on currency exchange rates.',
+                'tooltip' => 'Automatisch gegenereerd op basis van wisselkoersen.',
             ],
         ],
     ],
@@ -255,7 +255,7 @@ return [
                 'label' => 'Percentage',
             ],
             'tax_class' => [
-                'label' => 'Tax Class',
+                'label' => 'Belastingklasse',
             ],
         ],
     ],

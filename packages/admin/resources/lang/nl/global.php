@@ -3,10 +3,10 @@
 return [
 
     'sections' => [
-        'catalog' => 'Catalog',
-        'sales' => 'Sales',
-        'reports' => 'Reports',
-        'settings' => 'Settings',
+        'catalog' => 'Catalogus',
+        'sales' => 'Verkoop',
+        'reports' => 'Rapporten',
+        'settings' => 'Instellingen',
     ],
 
 ];

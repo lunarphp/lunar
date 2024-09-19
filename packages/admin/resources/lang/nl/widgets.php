@@ -5,114 +5,115 @@ return [
         'orders' => [
             'order_stats_overview' => [
                 'stat_one' => [
-                    'label' => 'Orders today',
-                    'increase' => ':percentage% increase from :count yesterday',
-                    'decrease' => ':percentage% decrease from :count yesterday',
-                    'neutral' => 'No change compared to yesterday',
+                    'label' => 'Bestellingen vandaag',
+                    'increase' => ':percentage% toename ten opzichte van :count gisteren',
+                    'decrease' => ':percentage% afname ten opzichte van :count gisteren',
+                    'neutral' => 'Geen verandering ten opzichte van gisteren',
                 ],
                 'stat_two' => [
-                    'label' => 'Orders past 7 days',
-                    'increase' => ':percentage% increase from :count last period',
-                    'decrease' => ':percentage% decrease from :count last period',
-                    'neutral' => 'No change compared to last period',
+                    'label' => 'Bestellingen afgelopen 7 dagen',
+                    'increase' => ':percentage% toename ten opzichte van :count vorige periode',
+                    'decrease' => ':percentage% afname ten opzichte van :count vorige periode',
+                    'neutral' => 'Geen verandering ten opzichte van vorige periode',
                 ],
                 'stat_three' => [
-                    'label' => 'Orders past 30 days',
-                    'increase' => ':percentage% increase from :count last period',
-                    'decrease' => ':percentage% decrease from :count last period',
-                    'neutral' => 'No change compared to last period',
+                    'label' => 'Bestellingen afgelopen 30 dagen',
+                    'increase' => ':percentage% toename ten opzichte van :count vorige periode',
+                    'decrease' => ':percentage% afname ten opzichte van :count vorige periode',
+                    'neutral' => 'Geen verandering ten opzichte van vorige periode',
                 ],
                 'stat_four' => [
-                    'label' => 'Sales today',
-                    'increase' => ':percentage% increase from :total yesterday',
-                    'decrease' => ':percentage% decrease from :total yesterday',
-                    'neutral' => 'No change compared to yesterday',
+                    'label' => 'Verkopen vandaag',
+                    'increase' => ':percentage% toename ten opzichte van :total gisteren',
+                    'decrease' => ':percentage% afname ten opzichte van :total gisteren',
+                    'neutral' => 'Geen verandering ten opzichte van gisteren',
                 ],
                 'stat_five' => [
-                    'label' => 'Sales past 7 days',
-                    'increase' => ':percentage% increase from :total last period',
-                    'decrease' => ':percentage% decrease from :total last period',
-                    'neutral' => 'No change compared to last period',
+                    'label' => 'Verkopen afgelopen 7 dagen',
+                    'increase' => ':percentage% toename ten opzichte van :total vorige periode',
+                    'decrease' => ':percentage% afname ten opzichte van :total vorige periode',
+                    'neutral' => 'Geen verandering ten opzichte van vorige periode',
                 ],
                 'stat_six' => [
-                    'label' => 'Sales past 30 days',
-                    'increase' => ':percentage% increase from :total last period',
-                    'decrease' => ':percentage% decrease from :total last period',
-                    'neutral' => 'No change compared to last period',
+                    'label' => 'Verkopen afgelopen 30 dagen',
+                    'increase' => ':percentage% toename ten opzichte van :total vorige periode',
+                    'decrease' => ':percentage% afname ten opzichte van :total vorige periode',
+                    'neutral' => 'Geen verandering ten opzichte van vorige periode',
                 ],
             ],
             'order_totals_chart' => [
-                'heading' => 'Order totals for the past year',
+                'heading' => 'Bestellingstotalen van het afgelopen jaar',
                 'series_one' => [
-                    'label' => 'This Period',
+                    'label' => 'Deze Periode',
                 ],
                 'series_two' => [
-                    'label' => 'Previous Period',
+                    'label' => 'Vorige Periode',
                 ],
                 'yaxis' => [
-                    'label' => 'Turnover :currency',
+                    'label' => 'Omzet :currency',
                 ],
             ],
             'order_sales_chart' => [
-                'heading' => 'Orders / Sales Report',
+                'heading' => 'Bestellingen / Verkooprapport',
                 'series_one' => [
-                    'label' => 'Orders',
+                    'label' => 'Bestellingen',
                 ],
                 'series_two' => [
-                    'label' => 'Revenue',
+                    'label' => 'Omzet',
                 ],
                 'yaxis' => [
                     'series_one' => [
-                        'label' => '# Orders',
+                        'label' => '# Bestellingen',
                     ],
                     'series_two' => [
-                        'label' => 'Total Value',
+                        'label' => 'Totale Waarde',
                     ],
                 ],
             ],
             'average_order_value' => [
-                'heading' => 'Average Order Value',
+                'heading' => 'Gemiddelde Bestelwaarde',
             ],
             'new_returning_customers' => [
-                'heading' => 'New vs Returning Customers',
+                'heading' => 'Nieuwe vs Terugkerende Klanten',
                 'series_one' => [
-                    'label' => 'New Customers',
+                    'label' => 'Nieuwe Klanten',
                 ],
                 'series_two' => [
-                    'label' => 'Returning Customers',
+                    'label' => 'Terugkerende Klanten',
                 ],
             ],
             'popular_products' => [
-                'heading' => 'Best sellers (last 12 months)',
-                'description' => 'These figures are based on the number of times a product appears on an order, not the quantity ordered.',
+                'heading' => 'Bestverkochte producten (laatste 12 maanden)',
+                'description' => 'Deze cijfers zijn gebaseerd op het aantal keren dat een product in een bestelling voorkomt, niet op de bestelde hoeveelheid.',
             ],
             'latest_orders' => [
-                'heading' => 'Latest orders',
+                'heading' => 'Laatste bestellingen',
             ],
         ],
     ],
     'customer' => [
         'stats_overview' => [
             'total_orders' => [
-                'label' => 'Total orders',
+                'label' => 'Totaal aantal bestellingen',
             ],
             'avg_spend' => [
-                'label' => 'Avg. Spend',
+                'label' => 'Gem. Uitgave',
             ],
             'total_spend' => [
-                'label' => 'Total Spend',
+                'label' => 'Totale Uitgave',
             ],
         ],
     ],
     'variant_switcher' => [
-        'label' => 'Switch Variant',
+        'label' => 'Variant Wisselen',
         'table' => [
             'sku' => [
                 'label' => 'SKU',
             ],
             'values' => [
-                'label' => 'Values',
+                'label' => 'Waarden',
             ],
         ],
     ],
 ];
+

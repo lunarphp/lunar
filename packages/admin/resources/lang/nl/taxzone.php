@@ -2,66 +2,66 @@
 
 return [
 
-    'label' => 'Tax Zone',
+    'label' => 'Belastingzone',
 
-    'plural_label' => 'Tax Zones',
+    'plural_label' => 'Belastingzones',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'zone_type' => [
-            'label' => 'Zone Type',
+            'label' => 'Zonetype',
         ],
         'active' => [
-            'label' => 'Active',
+            'label' => 'Actief',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'zone_type' => [
-            'label' => 'Zone Type',
+            'label' => 'Zonetype',
             'options' => [
-                'country' => 'Limit to Countries',
-                'states' => 'Limit to States',
-                'postcodes' => 'Limit to Postcodes',
+                'country' => 'Beperk tot Landen',
+                'states' => 'Beperk tot Staten',
+                'postcodes' => 'Beperk tot Postcodes',
             ],
         ],
         'price_display' => [
-            'label' => 'Price Display',
+            'label' => 'Prijsweergave',
             'options' => [
-                'include_tax' => 'Include Tax',
-                'exclude_tax' => 'Exclude Tax',
+                'include_tax' => 'Inclusief Belasting',
+                'exclude_tax' => 'Exclusief Belasting',
             ],
         ],
         'active' => [
-            'label' => 'Active',
+            'label' => 'Actief',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
 
         'zone_countries' => [
-            'label' => 'Countries',
+            'label' => 'Landen',
         ],
 
         'zone_country' => [
-            'label' => 'Country',
+            'label' => 'Land',
         ],
 
         'zone_states' => [
-            'label' => 'States',
+            'label' => 'Staten',
         ],
 
         'zone_postcodes' => [
             'label' => 'Postcodes',
-            'helper' => 'List each postcode on a new line. Supports wildcards such as NW*',
+            'helper' => 'Plaats elke postcode op een nieuwe regel. Ondersteunt wildcards zoals NW*',
         ],
 
     ],

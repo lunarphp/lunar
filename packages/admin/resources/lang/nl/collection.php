@@ -2,41 +2,41 @@
 
 return [
 
-    'label' => 'Collection',
+    'label' => 'Collectie',
 
-    'plural_label' => 'Collections',
+    'plural_label' => 'Collecties',
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
     ],
 
     'pages' => [
         'children' => [
-            'label' => 'Child Collections',
+            'label' => 'Subcollecties',
             'actions' => [
                 'create_child' => [
-                    'label' => 'Create Child Collection',
+                    'label' => 'Maak Subcollectie',
                 ],
             ],
             'table' => [
                 'children_count' => [
-                    'label' => 'No. Children',
+                    'label' => 'Aantal Kinderen',
                 ],
                 'name' => [
-                    'label' => 'Name',
+                    'label' => 'Naam',
                 ],
             ],
         ],
         'edit' => [
-            'label' => 'Basic Information',
+            'label' => 'Basisinformatie',
         ],
         'products' => [
-            'label' => 'Products',
+            'label' => 'Producten',
             'actions' => [
                 'attach' => [
-                    'label' => 'Attach Product',
+                    'label' => 'Product Toevoegen',
                 ],
             ],
         ],

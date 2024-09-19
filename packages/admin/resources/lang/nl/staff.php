@@ -2,19 +2,19 @@
 
 return [
 
-    'label' => 'Staff',
+    'label' => 'Personeel',
 
-    'plural_label' => 'Staff',
+    'plural_label' => 'Personeel',
 
     'table' => [
         'firstname' => [
-            'label' => 'First Name',
+            'label' => 'Voornaam',
         ],
         'lastname' => [
-            'label' => 'Last Name',
+            'label' => 'Achternaam',
         ],
         'email' => [
-            'label' => 'Email',
+            'label' => 'E-mail',
         ],
         'admin' => [
             'badge' => 'Super Admin',
@@ -23,58 +23,58 @@ return [
 
     'form' => [
         'firstname' => [
-            'label' => 'First Name',
+            'label' => 'Voornaam',
         ],
         'lastname' => [
-            'label' => 'Last Name',
+            'label' => 'Achternaam',
         ],
         'email' => [
-            'label' => 'Email',
+            'label' => 'E-mail',
         ],
         'password' => [
-            'label' => 'Password',
-            'hint' => 'Reset password',
+            'label' => 'Wachtwoord',
+            'hint' => 'Wachtwoord resetten',
         ],
         'admin' => [
             'label' => 'Super Admin',
-            'helper' => 'Super admin roles cannot be changed in the hub.',
+            'helper' => 'Super admin rollen kunnen niet worden gewijzigd in de hub.',
         ],
         'roles' => [
-            'label' => 'Roles',
-            'helper' => ':roles have full access',
+            'label' => 'Rollen',
+            'helper' => ':roles hebben volledige toegang',
         ],
         'permissions' => [
-            'label' => 'Permissions',
+            'label' => 'Machtigingen',
         ],
         'role' => [
-            'label' => 'Role Name',
+            'label' => 'Rolnaam',
         ],
     ],
 
     'action' => [
         'acl' => [
-            'label' => 'Access Control',
+            'label' => 'Toegangscontrole',
         ],
         'add-role' => [
-            'label' => 'Add Role',
+            'label' => 'Rol toevoegen',
         ],
         'delete-role' => [
-            'label' => 'Delete Role',
-            'heading' => 'Delete role: :role',
+            'label' => 'Rol verwijderen',
+            'heading' => 'Rol verwijderen: :role',
         ],
     ],
 
     'acl' => [
-        'title' => 'Access Control',
+        'title' => 'Toegangscontrole',
         'tooltip' => [
-            'roles-included' => 'Permission is included in following roles',
+            'roles-included' => 'Machtiging is inbegrepen in de volgende rollen',
         ],
         'notification' => [
-            'updated' => 'Updated',
-            'error' => 'Error',
-            'no-role' => 'Role not registered in Lunar',
-            'no-permission' => 'Permission not registered in Lunar',
-            'no-role-permission' => 'Role and Permission not registered in Lunar',
+            'updated' => 'Bijgewerkt',
+            'error' => 'Fout',
+            'no-role' => 'Rol niet geregistreerd in Lunar',
+            'no-permission' => 'Machtiging niet geregistreerd in Lunar',
+            'no-role-permission' => 'Rol en Machtiging niet geregistreerd in Lunar',
         ],
     ],
 

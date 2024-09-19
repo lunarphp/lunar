@@ -3,71 +3,63 @@
 return [
     'tags' => [
         'notification' => [
-
-            'updated' => 'Tags updated',
-
+            'updated' => 'Tags bijgewerkt',
         ],
     ],
 
     'activity-log' => [
-
         'input' => [
-
-            'placeholder' => 'Add a comment',
-
+            'placeholder' => 'Voeg een opmerking toe',
         ],
 
         'action' => [
-
-            'add-comment' => 'Add Comment',
-
+            'add-comment' => 'Voeg opmerking toe',
         ],
 
-        'system' => 'System',
+        'system' => 'Systeem',
 
         'partials' => [
             'orders' => [
-                'order_created' => 'Order Created',
+                'order_created' => 'Bestelling aangemaakt',
 
-                'status_change' => 'Status updated',
+                'status_change' => 'Status bijgewerkt',
 
-                'capture' => 'Payment of :amount on card ending :last_four',
+                'capture' => 'Betaling van :amount op kaart eindigend op :last_four',
 
-                'authorized' => 'Authorized of :amount on card ending :last_four',
+                'authorized' => 'Geautoriseerd bedrag van :amount op kaart eindigend op :last_four',
 
-                'refund' => 'Refund of :amount on card ending :last_four',
+                'refund' => 'Terugbetaling van :amount op kaart eindigend op :last_four',
 
-                'address' => ':type updated',
+                'address' => ':type bijgewerkt',
 
-                'billingAddress' => 'Billing address',
+                'billingAddress' => 'Factuuradres',
 
-                'shippingAddress' => 'Shipping address',
+                'shippingAddress' => 'Verzendadres',
             ],
 
             'update' => [
-                'updated' => ':model updated',
+                'updated' => ':model bijgewerkt',
             ],
 
             'create' => [
-                'created' => ':model created',
+                'created' => ':model aangemaakt',
             ],
 
             'tags' => [
-                'updated' => 'Tags updated',
-                'added' => 'Added',
-                'removed' => 'Removed',
+                'updated' => 'Tags bijgewerkt',
+                'added' => 'Toegevoegd',
+                'removed' => 'Verwijderd',
             ],
         ],
 
         'notification' => [
-            'comment_added' => 'Comment added',
+            'comment_added' => 'Opmerking toegevoegd',
         ],
-
     ],
 
     'forms' => [
         'youtube' => [
-            'helperText' => 'Enter the ID of the YouTube video. e.g. dQw4w9WgXcQ',
+            'helperText' => 'Voer de ID van de YouTube-video in. bijv. dQw4w9WgXcQ',
         ],
     ],
 
@@ -76,42 +68,42 @@ return [
             'move' => [
                 'form' => [
                     'target_id' => [
-                        'label' => 'Parent Collection',
+                        'label' => 'Bovenliggende collectie',
                     ],
                 ],
             ],
         ],
         'notifications' => [
             'collections-reordered' => [
-                'success' => 'Collections Reordered',
+                'success' => 'Collecties opnieuw gerangschikt',
             ],
             'node-expanded' => [
-                'danger' => 'Unable to load collections',
+                'danger' => 'Kan collecties niet laden',
             ],
             'delete' => [
-                'danger' => 'Unable to delete collection',
+                'danger' => 'Kan collectie niet verwijderen',
             ],
         ],
     ],
 
     'product-options-list' => [
         'add-option' => [
-            'label' => 'Add Option',
+            'label' => 'Optie toevoegen',
         ],
         'delete-option' => [
-            'label' => 'Delete Option',
+            'label' => 'Optie verwijderen',
         ],
         'remove-shared-option' => [
-            'label' => 'Remove Shared Option',
+            'label' => 'Gedeelde optie verwijderen',
         ],
         'add-value' => [
-            'label' => 'Add Another Value',
+            'label' => 'Nog een waarde toevoegen',
         ],
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'values' => [
-            'label' => 'Values',
+            'label' => 'Waarden',
         ],
     ],
 ];

@@ -2,38 +2,38 @@
 
 return [
 
-    'label' => 'Customer Group',
+    'label' => 'Klantengroep',
 
-    'plural_label' => 'Customer Groups',
+    'plural_label' => 'Klantengroepen',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This customer group can not be deleted as there are customers associated.',
+                'error_protected' => 'Deze klantengroep kan niet worden verwijderd omdat er klanten aan zijn gekoppeld.',
             ],
         ],
     ],

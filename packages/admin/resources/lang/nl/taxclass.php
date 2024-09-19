@@ -2,25 +2,25 @@
 
 return [
 
-    'label' => 'Tax Class',
+    'label' => 'Belastingklasse',
 
-    'plural_label' => 'Tax Classes',
+    'plural_label' => 'Belastingklassen',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 

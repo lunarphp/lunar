@@ -2,19 +2,19 @@
 
 return [
 
-    'label' => 'Order',
+    'label' => 'Bestelling',
 
-    'plural_label' => 'Orders',
+    'plural_label' => 'Bestellingen',
 
     'breadcrumb' => [
-        'manage' => 'Manage',
+        'manage' => 'Beheren',
     ],
 
     'transactions' => [
-        'capture' => 'Captured',
-        'intent' => 'Intent',
-        'refund' => 'Refunded',
-        'failed' => 'Failed',
+        'capture' => 'Geïncasseerd',
+        'intent' => 'Voorgenomen',
+        'refund' => 'Terugbetaald',
+        'failed' => 'Mislukt',
     ],
 
     'table' => [
@@ -22,13 +22,13 @@ return [
             'label' => 'Status',
         ],
         'reference' => [
-            'label' => 'Reference',
+            'label' => 'Referentie',
         ],
         'customer_reference' => [
-            'label' => 'Customer Reference',
+            'label' => 'Klantreferentie',
         ],
         'customer' => [
-            'label' => 'Customer',
+            'label' => 'Klant',
         ],
         'tags' => [
             'label' => 'Tags',
@@ -37,256 +37,257 @@ return [
             'label' => 'Postcode',
         ],
         'email' => [
-            'label' => 'Email',
-            'copy_message' => 'Email address copied',
+            'label' => 'E-mail',
+            'copy_message' => 'E-mailadres gekopieerd',
         ],
         'phone' => [
-            'label' => 'Phone',
+            'label' => 'Telefoon',
         ],
         'total' => [
-            'label' => 'Total',
+            'label' => 'Totaal',
         ],
         'date' => [
-            'label' => 'Date',
+            'label' => 'Datum',
         ],
         'new_customer' => [
-            'label' => 'Customer Type',
+            'label' => 'Klanttype',
         ],
         'placed_after' => [
-            'label' => 'Placed after',
+            'label' => 'Geplaatst na',
         ],
         'placed_before' => [
-            'label' => 'Placed before',
+            'label' => 'Geplaatst voor',
         ],
     ],
 
     'form' => [
         'address' => [
             'first_name' => [
-                'label' => 'First Name',
+                'label' => 'Voornaam',
             ],
             'last_name' => [
-                'label' => 'Last Name',
+                'label' => 'Achternaam',
             ],
             'line_one' => [
-                'label' => 'Address Line 1',
+                'label' => 'Adresregel 1',
             ],
             'line_two' => [
-                'label' => 'Address Line 2',
+                'label' => 'Adresregel 2',
             ],
             'line_three' => [
-                'label' => 'Address Line 3',
+                'label' => 'Adresregel 3',
             ],
             'company_name' => [
-                'label' => 'Company Name',
+                'label' => 'Bedrijfsnaam',
             ],
             'contact_phone' => [
-                'label' => 'Phone',
+                'label' => 'Telefoon',
             ],
             'contact_email' => [
-                'label' => 'Email Address',
+                'label' => 'E-mailadres',
             ],
             'city' => [
-                'label' => 'City',
+                'label' => 'Stad',
             ],
             'state' => [
-                'label' => 'State / Province',
+                'label' => 'Staat / Provincie',
             ],
             'postcode' => [
-                'label' => 'Postal Code',
+                'label' => 'Postcode',
             ],
             'country_id' => [
-                'label' => 'Country',
+                'label' => 'Land',
             ],
         ],
 
         'reference' => [
-            'label' => 'Reference',
+            'label' => 'Referentie',
         ],
         'status' => [
             'label' => 'Status',
         ],
         'transaction' => [
-            'label' => 'Transaction',
+            'label' => 'Transactie',
         ],
         'amount' => [
-            'label' => 'Amount',
+            'label' => 'Bedrag',
 
             'hint' => [
-                'less_than_total' => "You're about to capture an amount less than the total transaction value",
+                'less_than_total' => "Je staat op het punt een bedrag te incasseren dat minder is dan de totale transactiewaarde",
             ],
         ],
 
         'notes' => [
-            'label' => 'Notes',
+            'label' => 'Notities',
         ],
         'confirm' => [
-            'label' => 'Confirm',
+            'label' => 'Bevestigen',
 
-            'alert' => 'Confirmation required',
+            'alert' => 'Bevestiging vereist',
 
             'hint' => [
-                'capture' => 'Please confirm you want to capture this payment',
-                'refund' => 'Please confirm you wish to refund this amount.',
+                'capture' => 'Bevestig alstublieft dat u deze betaling wilt incasseren',
+                'refund' => 'Bevestig alstublieft dat u dit bedrag wilt terugbetalen.',
             ],
         ],
     ],
 
     'infolist' => [
         'notes' => [
-            'label' => 'Notes',
-            'placeholder' => 'No notes on this order',
+            'label' => 'Notities',
+            'placeholder' => 'Geen notities bij deze bestelling',
         ],
         'delivery_instructions' => [
-            'label' => 'Delivery Instructions',
+            'label' => 'Leveringsinstructies',
         ],
         'shipping_total' => [
-            'label' => 'Shipping Total',
+            'label' => 'Verzendkosten Totaal',
         ],
         'paid' => [
-            'label' => 'Paid',
+            'label' => 'Betaald',
         ],
         'refund' => [
-            'label' => 'Refund',
+            'label' => 'Terugbetaling',
         ],
         'unit_price' => [
-            'label' => 'Unit Price',
+            'label' => 'Eenheidsprijs',
         ],
         'quantity' => [
-            'label' => 'Quantity',
+            'label' => 'Aantal',
         ],
         'sub_total' => [
-            'label' => 'Sub Total',
+            'label' => 'Subtotaal',
         ],
         'discount_total' => [
-            'label' => 'Discount Total',
+            'label' => 'Korting Totaal',
         ],
         'total' => [
-            'label' => 'Total',
+            'label' => 'Totaal',
         ],
         'current_stock_level' => [
-            'message' => 'Current Stock Level: :count',
+            'message' => 'Huidig Voorraadniveau: :count',
         ],
         'purchase_stock_level' => [
-            'message' => 'at time of ordering: :count',
+            'message' => 'op het moment van bestelling: :count',
         ],
         'status' => [
             'label' => 'Status',
         ],
         'reference' => [
-            'label' => 'Reference',
+            'label' => 'Referentie',
         ],
         'customer_reference' => [
-            'label' => 'Customer Reference',
+            'label' => 'Klantreferentie',
         ],
         'channel' => [
-            'label' => 'Channel',
+            'label' => 'Kanaal',
         ],
         'date_created' => [
-            'label' => 'Date Created',
+            'label' => 'Aanmaakdatum',
         ],
         'date_placed' => [
-            'label' => 'Date Placed',
+            'label' => 'Plaatsingsdatum',
         ],
         'new_returning' => [
-            'label' => 'New / Returning',
+            'label' => 'Nieuw / Terugkerend',
         ],
         'new_customer' => [
-            'label' => 'New Customer',
+            'label' => 'Nieuwe Klant',
         ],
         'returning_customer' => [
-            'label' => 'Returning Customer',
+            'label' => 'Terugkerende Klant',
         ],
         'shipping_address' => [
-            'label' => 'Shipping Address',
+            'label' => 'Verzendadres',
         ],
         'billing_address' => [
-            'label' => 'Billing Address',
+            'label' => 'Factuuradres',
         ],
         'address_not_set' => [
-            'label' => 'No address set',
+            'label' => 'Geen adres ingesteld',
         ],
         'billing_matches_shipping' => [
-            'label' => 'Same as shipping address',
+            'label' => 'Zelfde als verzendadres',
         ],
         'additional_info' => [
-            'label' => 'Additional Information',
+            'label' => 'Aanvullende informatie',
         ],
         'no_additional_info' => [
-            'label' => 'No Additional Information',
+            'label' => 'Geen aanvullende informatie',
         ],
         'tags' => [
             'label' => 'Tags',
         ],
         'timeline' => [
-            'label' => 'Timeline',
+            'label' => 'Tijdlijn',
         ],
         'transactions' => [
-            'label' => 'Transactions',
-            'placeholder' => 'No transactions',
+            'label' => 'Transacties',
+            'placeholder' => 'Geen transacties',
         ],
         'alert' => [
-            'requires_capture' => 'This order still requires payment to be captured.',
-            'partially_refunded' => 'This order has been partially refunded.',
-            'refunded' => 'This order has been refunded.',
+            'requires_capture' => 'Deze bestelling moet nog worden geïncasseerd.',
+            'partially_refunded' => 'Deze bestelling is gedeeltelijk terugbetaald.',
+            'refunded' => 'Deze bestelling is terugbetaald.',
         ],
     ],
 
     'action' => [
         'bulk_update_status' => [
-            'label' => 'Update Status',
-            'notification' => 'Orders status updated',
+            'label' => 'Status Bijwerken',
+            'notification' => 'Bestellingsstatus bijgewerkt',
         ],
         'update_status' => [
             'new_status' => [
-                'label' => 'New status',
+                'label' => 'Nieuwe status',
             ],
             'additional_content' => [
-                'label' => 'Additional content',
+                'label' => 'Aanvullende inhoud',
             ],
             'additional_email_recipient' => [
-                'label' => 'Additional email recipient',
-                'placeholder' => 'optional',
+                'label' => 'Aanvullende e-mailontvanger',
+                'placeholder' => 'optioneel',
             ],
         ],
         'download_order_pdf' => [
-            'label' => 'Download PDF',
-            'notification' => 'Order PDF downloading',
+            'label' => 'PDF Downloaden',
+            'notification' => 'Bestelling PDF downloaden',
         ],
         'edit_address' => [
-            'label' => 'Edit',
+            'label' => 'Bewerken',
 
             'notification' => [
-                'error' => 'Error',
+                'error' => 'Fout',
 
                 'billing_address' => [
-                    'saved' => 'Billing address saved',
+                    'saved' => 'Factuuradres opgeslagen',
                 ],
 
                 'shipping_address' => [
-                    'saved' => 'Shipping address saved',
+                    'saved' => 'Verzendadres opgeslagen',
                 ],
             ],
         ],
         'edit_tags' => [
-            'label' => 'Edit',
+            'label' => 'Bewerken',
         ],
         'capture_payment' => [
-            'label' => 'Capture Payment',
+            'label' => 'Betaling Incasseren',
 
             'notification' => [
-                'error' => 'There was a problem with the capture',
-                'success' => 'Capture successful',
+                'error' => 'Er was een probleem met het incasseren',
+                'success' => 'Incasseren succesvol',
             ],
         ],
         'refund_payment' => [
-            'label' => 'Refund',
+            'label' => 'Terugbetaling',
 
             'notification' => [
-                'error' => 'There was a problem with the refund',
-                'success' => 'Refund successful',
+                'error' => 'Er was een probleem met de terugbetaling',
+                'success' => 'Terugbetaling succesvol',
             ],
         ],
     ],
 
 ];
+

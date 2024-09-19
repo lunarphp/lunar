@@ -2,35 +2,35 @@
 
 return [
 
-    'label' => 'Collection Group',
+    'label' => 'Collectiegroep',
 
-    'plural_label' => 'Collection Groups',
+    'plural_label' => 'Collectiegroepen',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'collections_count' => [
-            'label' => 'No. Collections',
+            'label' => 'Aantal Collecties',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
     ],
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This collection group can not be deleted as there are collections associated.',
+                'error_protected' => 'Deze collectiegroep kan niet worden verwijderd omdat er collecties aan zijn gekoppeld.',
             ],
         ],
     ],

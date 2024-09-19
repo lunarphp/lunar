@@ -1,105 +1,105 @@
 <?php
 
 return [
-    'label' => 'Product Variant',
-    'plural_label' => 'Product Variants',
+    'label' => 'Productvariant',
+    'plural_label' => 'Productvarianten',
     'pages' => [
         'edit' => [
-            'title' => 'Basic Information',
+            'title' => 'Basisinformatie',
         ],
         'media' => [
             'title' => 'Media',
             'form' => [
                 'no_selection' => [
-                    'label' => 'You do not currently have an image selected for this variant.',
+                    'label' => 'U heeft momenteel geen afbeelding geselecteerd voor deze variant.',
                 ],
                 'no_media_available' => [
-                    'label' => 'There is currently no media available on this product.',
+                    'label' => 'Er is momenteel geen media beschikbaar voor dit product.',
                 ],
                 'images' => [
-                    'label' => 'Primary Image',
-                    'helper_text' => 'Select the product image which represents this variant.',
+                    'label' => 'Primaire Afbeelding',
+                    'helper_text' => 'Selecteer de productafbeelding die deze variant vertegenwoordigt.',
                 ],
             ],
         ],
         'identifiers' => [
-            'title' => 'Identifiers',
+            'title' => 'Identificatoren',
         ],
         'inventory' => [
-            'title' => 'Inventory',
+            'title' => 'Voorraad',
         ],
         'shipping' => [
-            'title' => 'Shipping',
+            'title' => 'Verzending',
         ],
     ],
     'form' => [
         'sku' => [
-            'label' => 'SKU',
+            'label' => 'Artikelnummer (SKU)',
         ],
         'gtin' => [
-            'label' => 'Global Trade Item Number (GTIN)',
+            'label' => 'Globaal Handelsartikelnummer (GTIN)',
         ],
         'mpn' => [
-            'label' => 'Manufacturer Part Number (MPN)',
+            'label' => 'Fabrikant Onderdeelnummer (MPN)',
         ],
         'ean' => [
             'label' => 'UPC/EAN',
         ],
         'stock' => [
-            'label' => 'In Stock',
+            'label' => 'Op Voorraad',
         ],
         'backorder' => [
-            'label' => 'On Backorder',
+            'label' => 'In Nabestelling',
         ],
         'purchasable' => [
-            'label' => 'Purchasability',
+            'label' => 'Koopbaarheid',
             'options' => [
-                'always' => 'Always',
-                'in_stock' => 'In Stock',
-                'in_stock_or_on_backorder' => 'In Stock or On Backorder',
+                'always' => 'Altijd',
+                'in_stock' => 'Op Voorraad',
+                'in_stock_or_on_backorder' => 'Op Voorraad of In Nabestelling',
             ],
         ],
         'unit_quantity' => [
-            'label' => 'Unit Quantity',
-            'helper_text' => 'How many individual items make up 1 unit.',
+            'label' => 'Eenheidsaantal',
+            'helper_text' => 'Hoeveel individuele items vormen 1 eenheid.',
         ],
         'min_quantity' => [
-            'label' => 'Minimum Quantity',
-            'helper_text' => 'The minimum quantity of a product variant that can be bought in a single purchase.',
+            'label' => 'Minimale Hoeveelheid',
+            'helper_text' => 'De minimale hoeveelheid van een productvariant die in één aankoop kan worden gekocht.',
         ],
         'quantity_increment' => [
-            'label' => 'Quantity Increment',
-            'helper_text' => 'The product variant must be purchased in multiples of this quantity.',
+            'label' => 'Hoeveelheidsverhoging',
+            'helper_text' => 'De productvariant moet in veelvouden van deze hoeveelheid worden gekocht.',
         ],
         'tax_class_id' => [
-            'label' => 'Tax Class',
+            'label' => 'Belastingklasse',
         ],
         'shippable' => [
-            'label' => 'Shippable',
+            'label' => 'Verzendbaar',
         ],
         'length_value' => [
-            'label' => 'Length',
+            'label' => 'Lengte',
         ],
         'length_unit' => [
-            'label' => 'Length Unit',
+            'label' => 'Lengte-eenheid',
         ],
         'width_value' => [
-            'label' => 'Width',
+            'label' => 'Breedte',
         ],
         'width_unit' => [
-            'label' => 'Width Unit',
+            'label' => 'Breedte-eenheid',
         ],
         'height_value' => [
-            'label' => 'Height',
+            'label' => 'Hoogte',
         ],
         'height_unit' => [
-            'label' => 'Height Unit',
+            'label' => 'Hoogte-eenheid',
         ],
         'weight_value' => [
-            'label' => 'Weight',
+            'label' => 'Gewicht',
         ],
         'weight_unit' => [
-            'label' => 'Weight Unit',
+            'label' => 'Gewichtseenheid',
         ],
     ],
 ];

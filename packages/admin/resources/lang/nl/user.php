@@ -2,28 +2,28 @@
 
 return [
 
-    'label' => 'User',
+    'label' => 'Gebruiker',
 
-    'plural_label' => 'Users',
+    'plural_label' => 'Gebruikers',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'email' => [
-            'label' => 'Email',
+            'label' => 'E-mail',
         ],
     ],
 
     'form' => [
         'email' => [
-            'label' => 'Email',
+            'label' => 'E-mail',
         ],
         'password' => [
-            'label' => 'New Password',
+            'label' => 'Nieuw Wachtwoord',
         ],
         'password_confirmation' => [
-            'label' => 'Confirm New Password',
+            'label' => 'Bevestig Nieuw Wachtwoord',
         ],
     ],
 ];

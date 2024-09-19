@@ -1,137 +1,137 @@
 <?php
 
 return [
-    'plural_label' => 'Discounts',
-    'label' => 'Discount',
+    'plural_label' => 'Kortingen',
+    'label' => 'Korting',
     'form' => [
         'conditions' => [
-            'heading' => 'Conditions',
+            'heading' => 'Voorwaarden',
         ],
         'buy_x_get_y' => [
-            'heading' => 'Buy X Get Y',
+            'heading' => 'Koop X Krijg Y',
         ],
         'amount_off' => [
-            'heading' => 'Amount Off',
+            'heading' => 'Bedrag Korting',
         ],
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
             'label' => 'Handle',
         ],
         'starts_at' => [
-            'label' => 'Start Date',
+            'label' => 'Startdatum',
         ],
         'ends_at' => [
-            'label' => 'End Date',
+            'label' => 'Einddatum',
         ],
         'priority' => [
-            'label' => 'Priority',
-            'helper_text' => 'Discounts with higher priority will be applied first.',
+            'label' => 'Prioriteit',
+            'helper_text' => 'Kortingen met een hogere prioriteit worden eerst toegepast.',
             'options' => [
                 'low' => [
-                    'label' => 'Low',
+                    'label' => 'Laag',
                 ],
                 'medium' => [
-                    'label' => 'Medium',
+                    'label' => 'Middel',
                 ],
                 'high' => [
-                    'label' => 'High',
+                    'label' => 'Hoog',
                 ],
             ],
         ],
         'stop' => [
-            'label' => 'Stop other discounts applying after this one',
+            'label' => 'Stop andere kortingen na deze toe te passen',
         ],
         'coupon' => [
             'label' => 'Coupon',
-            'helper_text' => 'Enter the coupon required for the discount to apply, if left blank it will apply automatically.',
+            'helper_text' => 'Voer de vereiste coupon in voor de korting, als deze leeg is, wordt deze automatisch toegepast.',
         ],
         'max_uses' => [
-            'label' => 'Max uses',
-            'helper_text' => 'Leave blank for unlimited uses.',
+            'label' => 'Maximaal gebruik',
+            'helper_text' => 'Laat leeg voor onbeperkt gebruik.',
         ],
         'max_uses_per_user' => [
-            'label' => 'Max uses per user',
-            'helper_text' => 'Leave blank for unlimited uses.',
+            'label' => 'Maximaal gebruik per gebruiker',
+            'helper_text' => 'Laat leeg voor onbeperkt gebruik.',
         ],
         'minimum_cart_amount' => [
-            'label' => 'Minimum Cart Amount',
+            'label' => 'Minimale Winkelwagenbedrag',
         ],
         'min_qty' => [
-            'label' => 'Product Quantity',
-            'helper_text' => 'Set how many qualifying products are required for the discount to apply.',
+            'label' => 'Producthoeveelheid',
+            'helper_text' => 'Stel in hoeveel kwalificerende producten nodig zijn voor de korting.',
         ],
         'reward_qty' => [
-            'label' => 'No. of free items',
-            'helper_text' => 'How many of each item are discounted.',
+            'label' => 'Aantal gratis items',
+            'helper_text' => 'Hoeveel van elk item worden afgeprijsd.',
         ],
         'max_reward_qty' => [
-            'label' => 'Maximum reward quantity',
-            'helper_text' => 'The maximum amount of products which can be discounted, regardless of criteria.',
+            'label' => 'Maximale beloningshoeveelheid',
+            'helper_text' => 'Het maximale aantal producten dat kan worden afgeprijsd, ongeacht de criteria.',
         ],
         'automatic_rewards' => [
-            'label' => 'Automatically add rewards',
-            'helper_text' => 'Switch on to add reward products when not present in the basket.',
+            'label' => 'Automatisch beloningen toevoegen',
+            'helper_text' => 'Schakel in om beloningsproducten toe te voegen wanneer deze niet in de winkelwagen aanwezig zijn.',
         ],
     ],
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'status' => [
             'label' => 'Status',
             \Lunar\Models\Discount::ACTIVE => [
-                'label' => 'Active',
+                'label' => 'Actief',
             ],
             \Lunar\Models\Discount::PENDING => [
-                'label' => 'Pending',
+                'label' => 'In afwachting',
             ],
             \Lunar\Models\Discount::EXPIRED => [
-                'label' => 'Expired',
+                'label' => 'Verlopen',
             ],
             \Lunar\Models\Discount::SCHEDULED => [
-                'label' => 'Scheduled',
+                'label' => 'Gepland',
             ],
         ],
         'type' => [
             'label' => 'Type',
         ],
         'starts_at' => [
-            'label' => 'Start Date',
+            'label' => 'Startdatum',
         ],
         'ends_at' => [
-            'label' => 'End Date',
+            'label' => 'Einddatum',
         ],
     ],
     'pages' => [
         'availability' => [
-            'label' => 'Availability',
+            'label' => 'Beschikbaarheid',
         ],
         'limitations' => [
-            'label' => 'Limitations',
+            'label' => 'Beperkingen',
         ],
     ],
     'relationmanagers' => [
         'collections' => [
-            'title' => 'Collections',
-            'description' => 'Select which collections this discount should be limited to.',
+            'title' => 'Collecties',
+            'description' => 'Selecteer welke collecties beperkt moeten worden tot deze korting.',
             'actions' => [
                 'attach' => [
-                    'label' => 'Attach Collection',
+                    'label' => 'Collectie Toevoegen',
                 ],
             ],
             'table' => [
                 'name' => [
-                    'label' => 'Name',
+                    'label' => 'Naam',
                 ],
                 'type' => [
                     'label' => 'Type',
                     'limitation' => [
-                        'label' => 'Limitation',
+                        'label' => 'Beperking',
                     ],
                     'exclusion' => [
-                        'label' => 'Exclusion',
+                        'label' => 'Uitsluiting',
                     ],
                 ],
             ],
@@ -139,34 +139,34 @@ return [
                 'type' => [
                     'options' => [
                         'limitation' => [
-                            'label' => 'Limitation',
+                            'label' => 'Beperking',
                         ],
                         'exclusion' => [
-                            'label' => 'Exclusion',
+                            'label' => 'Uitsluiting',
                         ],
                     ],
                 ],
             ],
         ],
         'brands' => [
-            'title' => 'Brands',
-            'description' => 'Select which brands this discount should be limited to.',
+            'title' => 'Merken',
+            'description' => 'Selecteer welke merken beperkt moeten worden tot deze korting.',
             'actions' => [
                 'attach' => [
-                    'label' => 'Attach Brand',
+                    'label' => 'Merk Toevoegen',
                 ],
             ],
             'table' => [
                 'name' => [
-                    'label' => 'Name',
+                    'label' => 'Naam',
                 ],
                 'type' => [
                     'label' => 'Type',
                     'limitation' => [
-                        'label' => 'Limitation',
+                        'label' => 'Beperking',
                     ],
                     'exclusion' => [
-                        'label' => 'Exclusion',
+                        'label' => 'Uitsluiting',
                     ],
                 ],
             ],
@@ -174,34 +174,34 @@ return [
                 'type' => [
                     'options' => [
                         'limitation' => [
-                            'label' => 'Limitation',
+                            'label' => 'Beperking',
                         ],
                         'exclusion' => [
-                            'label' => 'Exclusion',
+                            'label' => 'Uitsluiting',
                         ],
                     ],
                 ],
             ],
         ],
         'products' => [
-            'title' => 'Products',
-            'description' => 'Select which products this discount should be limited to.',
+            'title' => 'Producten',
+            'description' => 'Selecteer welke producten beperkt moeten worden tot deze korting.',
             'actions' => [
                 'attach' => [
-                    'label' => 'Add Product',
+                    'label' => 'Product Toevoegen',
                 ],
             ],
             'table' => [
                 'name' => [
-                    'label' => 'Name',
+                    'label' => 'Naam',
                 ],
                 'type' => [
                     'label' => 'Type',
                     'limitation' => [
-                        'label' => 'Limitation',
+                        'label' => 'Beperking',
                     ],
                     'exclusion' => [
-                        'label' => 'Exclusion',
+                        'label' => 'Uitsluiting',
                     ],
                 ],
             ],
@@ -209,34 +209,34 @@ return [
                 'type' => [
                     'options' => [
                         'limitation' => [
-                            'label' => 'Limitation',
+                            'label' => 'Beperking',
                         ],
                         'exclusion' => [
-                            'label' => 'Exclusion',
+                            'label' => 'Uitsluiting',
                         ],
                     ],
                 ],
             ],
         ],
         'rewards' => [
-            'title' => 'Product Rewards',
-            'description' => 'Select which products will be discounted if they exist in the cart and the above conditions are met.',
+            'title' => 'Productbeloningen',
+            'description' => 'Selecteer welke producten worden afgeprijsd als ze in de winkelwagen zitten en aan de bovenstaande voorwaarden voldoen.',
             'actions' => [
                 'attach' => [
-                    'label' => 'Add Product',
+                    'label' => 'Product Toevoegen',
                 ],
             ],
             'table' => [
                 'name' => [
-                    'label' => 'Name',
+                    'label' => 'Naam',
                 ],
                 'type' => [
                     'label' => 'Type',
                     'limitation' => [
-                        'label' => 'Limitation',
+                        'label' => 'Beperking',
                     ],
                     'exclusion' => [
-                        'label' => 'Exclusion',
+                        'label' => 'Uitsluiting',
                     ],
                 ],
             ],
@@ -244,34 +244,34 @@ return [
                 'type' => [
                     'options' => [
                         'limitation' => [
-                            'label' => 'Limitation',
+                            'label' => 'Beperking',
                         ],
                         'exclusion' => [
-                            'label' => 'Exclusion',
+                            'label' => 'Uitsluiting',
                         ],
                     ],
                 ],
             ],
         ],
         'conditions' => [
-            'title' => 'Product Conditions',
-            'description' => 'Select the products required for the discount to apply.',
+            'title' => 'Productvoorwaarden',
+            'description' => 'Selecteer de producten die nodig zijn voor de korting.',
             'actions' => [
                 'attach' => [
-                    'label' => 'Add Product',
+                    'label' => 'Product Toevoegen',
                 ],
             ],
             'table' => [
                 'name' => [
-                    'label' => 'Name',
+                    'label' => 'Naam',
                 ],
                 'type' => [
                     'label' => 'Type',
                     'limitation' => [
-                        'label' => 'Limitation',
+                        'label' => 'Beperking',
                     ],
                     'exclusion' => [
-                        'label' => 'Exclusion',
+                        'label' => 'Uitsluiting',
                     ],
                 ],
             ],
@@ -279,42 +279,42 @@ return [
                 'type' => [
                     'options' => [
                         'limitation' => [
-                            'label' => 'Limitation',
+                            'label' => 'Beperking',
                         ],
                         'exclusion' => [
-                            'label' => 'Exclusion',
+                            'label' => 'Uitsluiting',
                         ],
                     ],
                 ],
             ],
         ],
         'productvariants' => [
-            'title' => 'Product Variants',
-            'description' => 'Select which product variants this discount should be limited to.',
+            'title' => 'Productvarianten',
+            'description' => 'Selecteer welke productvarianten beperkt moeten worden tot deze korting.',
             'actions' => [
                 'attach' => [
-                    'label' => 'Add Product Variant',
+                    'label' => 'Productvariant Toevoegen',
                 ],
             ],
             'table' => [
                 'name' => [
-                    'label' => 'Name',
+                    'label' => 'Naam',
                 ],
                 'sku' => [
                     'label' => 'SKU',
                 ],
                 'values' => [
-                    'label' => 'Option(s)',
+                    'label' => 'Optie(s)',
                 ],
             ],
             'form' => [
                 'type' => [
                     'options' => [
                         'limitation' => [
-                            'label' => 'Limitation',
+                            'label' => 'Beperking',
                         ],
                         'exclusion' => [
-                            'label' => 'Exclusion',
+                            'label' => 'Uitsluiting',
                         ],
                     ],
                 ],

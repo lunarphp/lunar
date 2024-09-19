@@ -2,22 +2,22 @@
 
 return [
 
-    'label' => 'Attribute Group',
+    'label' => 'Attribuutgroep',
 
-    'plural_label' => 'Attribute Groups',
+    'plural_label' => 'Attribuutgroepen',
 
     'table' => [
         'attributable_type' => [
             'label' => 'Type',
         ],
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'position' => [
-            'label' => 'Position',
+            'label' => 'Positie',
         ],
     ],
 
@@ -26,20 +26,20 @@ return [
             'label' => 'Type',
         ],
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Handvat',
         ],
         'position' => [
-            'label' => 'Position',
+            'label' => 'Positie',
         ],
     ],
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This attribute group can not be deleted as there are attributes associated.',
+                'error_protected' => 'Deze attribuutgroep kan niet worden verwijderd omdat er attributen aan zijn gekoppeld.',
             ],
         ],
     ],

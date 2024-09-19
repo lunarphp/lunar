@@ -2,49 +2,49 @@
 
 return [
 
-    'label' => 'Product Type',
+    'label' => 'Producttype',
 
-    'plural_label' => 'Product Types',
+    'plural_label' => 'Producttypen',
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'products_count' => [
-            'label' => 'Product count',
+            'label' => 'Aantal producten',
         ],
         'product_attributes_count' => [
-            'label' => 'Product Attributes',
+            'label' => 'Productattributen',
         ],
         'variant_attributes_count' => [
-            'label' => 'Variant Attributes',
+            'label' => 'Variantattributen',
         ],
     ],
 
     'tabs' => [
         'product_attributes' => [
-            'label' => 'Product Attributes',
+            'label' => 'Productattributen',
         ],
         'variant_attributes' => [
-            'label' => 'Variant Attributes',
+            'label' => 'Variantattributen',
         ],
     ],
 
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
     ],
 
     'attributes' => [
-        'no_groups' => 'There are no attribute groups available.',
-        'no_attributes' => 'There are no attributes available.',
+        'no_groups' => 'Er zijn geen attributengroepen beschikbaar.',
+        'no_attributes' => 'Er zijn geen attributen beschikbaar.',
     ],
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This product type can not be deleted as there are products associated.',
+                'error_protected' => 'Dit producttype kan niet worden verwijderd omdat er producten aan zijn gekoppeld.',
             ],
         ],
     ],
