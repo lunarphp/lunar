@@ -270,7 +270,7 @@ When you call current, you have two options, you either return `null` if they
 don't have a cart, or you want to create one straight away. By default, we do
 not create them initially as this could lead to a ton of cart models being
 created for no good reason. If you want to enable this functionality, you can
-adjust the config in `lunar/cart.php`
+adjust the config in `lunar/cart_session.php`
 
 ### Forgetting the cart
 Forgetting the cart will remove it from the user session and also soft-delete 
