@@ -134,7 +134,7 @@ class ManageShippingRates extends ManageRelatedRecords
                                         'customer_group_id' => $price->customer_group_id,
                                         'price' => $price->price->decimal,
                                         'currency_id' => $price->currency_id,
-                                        'min_quantity' => $chargeBy == 'cart_total' ? $price->min_quantity / $currency->factor : $price->min_quantity / 1000,
+                                        'min_quantity' => $chargeBy == 'cart_total' ? $price->min_quantity / $currency->factor : $price->min_quantity / 100,
                                     ];
                                 })->toArray()
                             );
@@ -219,7 +219,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 if ($chargeBy == 'cart_total') {
                     $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
                 } else {
-                    $price['min_quantity'] = (int) ($price['min_quantity'] * 1000);
+                    $price['min_quantity'] = (int) ($price['min_quantity'] * 100);
                 }
 
                 $price['price'] = (int) ($price['price'] * $currency->factor);
