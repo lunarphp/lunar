@@ -4,6 +4,19 @@ use Lunar\Base\StandardMediaDefinitions;
 
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Media Definition
+    |--------------------------------------------------------------------------
+    |
+    | Specify which media definition should be used when generating media.
+    |
+    | note: if extended Lunar's model, you should update the key,
+    |       or default definition will be used
+    |
+    | example: App\Models\Product::class => CustomMediaDefinitions::class,
+    |
+    */
     'definitions' => [
         Lunar\Models\Asset::class => StandardMediaDefinitions::class,
         Lunar\Models\Brand::class => StandardMediaDefinitions::class,
