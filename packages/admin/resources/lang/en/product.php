@@ -87,6 +87,9 @@ return [
         'availability' => [
             'label' => 'Availability',
         ],
+        'edit' => [
+            'title' => 'Basic Information',
+        ],
         'identifiers' => [
             'label' => 'Product Identifiers',
         ],
