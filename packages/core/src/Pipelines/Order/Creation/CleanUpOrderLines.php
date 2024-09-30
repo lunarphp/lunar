@@ -8,7 +8,7 @@ use Lunar\Models\Order;
 class CleanUpOrderLines
 {
     /**
-     * @return Closure
+     * @return mixed
      */
     public function handle(Order $order, Closure $next)
     {
