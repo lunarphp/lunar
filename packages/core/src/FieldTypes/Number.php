@@ -54,13 +54,7 @@ class Number implements FieldType, JsonSerializable
             throw new FieldTypeException(self::class.' value must be numeric.');
         }
 
-        if (strpos($value, '.') !== false) {
-            $value = floatval($value);
-        } else {
-            $value = intval($value);
-        }
-
-        $this->value = $value;
+        $this->value = $value + 0;
     }
 
     /**
