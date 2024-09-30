@@ -11,9 +11,7 @@ class GetTaxZoneCountry
     {
         $taxZone = $this->getZone($countryId);
 
-        $taxZoneCountryClass = TaxZoneCountry::modelClass();
-
-        if ($taxZone instanceof $taxZoneCountryClass) {
+        if ($taxZone instanceof TaxZoneCountry) {
             return $taxZone;
         }
 
@@ -29,7 +27,7 @@ class GetTaxZoneCountry
      */
     protected function getZone(int $countryId)
     {
-        return TaxZoneCountry::modelClass()::whereHas(
+        return TaxZoneCountry::whereHas(
             'taxZone',
             fn (Builder $query) => $query->where('active', true)
         )->whereCountryId($countryId)->first();

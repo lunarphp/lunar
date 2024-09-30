@@ -28,7 +28,7 @@ class UrlGenerator
      */
     public function __construct()
     {
-        $this->defaultLanguage = Language::modelClass()::getDefault();
+        $this->defaultLanguage = Language::getDefault();
     }
 
     /**
@@ -110,7 +110,7 @@ class UrlGenerator
      */
     private function getExistingSlugs($slug, $separator)
     {
-        return Url::modelClass()::where(function ($query) use ($slug, $separator) {
+        return Url::where(function ($query) use ($slug, $separator) {
             $query->where('slug', $slug)
                 ->orWhere('slug', 'like', $slug.$separator.'%');
         })->whereLanguageId($this->defaultLanguage->id)

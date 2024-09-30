@@ -176,7 +176,7 @@ class ProductVariantResource extends BaseResource
                 __('lunarpanel::productvariant.form.tax_class_id.label')
             )
             ->options(
-                TaxClass::modelClass()::all()->pluck('name', 'id')
+                TaxClass::all()->pluck('name', 'id')
             )->required();
     }
 

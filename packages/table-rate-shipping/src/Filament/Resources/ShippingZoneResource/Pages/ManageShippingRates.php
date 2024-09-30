@@ -85,7 +85,7 @@ class ManageShippingRates extends ManageRelatedRecords
                             __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.customer_group_id.label')
                         )
                         ->options(
-                            fn () => CustomerGroup::modelClass()::all()->pluck('name', 'id')
+                            fn () => CustomerGroup::all()->pluck('name', 'id')
                         )->placeholder(
                             __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.customer_group_id.placeholder')
                         )->preload(),
@@ -94,9 +94,9 @@ class ManageShippingRates extends ManageRelatedRecords
                             __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.currency_id.label')
                         )
                         ->options(
-                            fn () => Currency::modelClass()::all()->pluck('name', 'id')
+                            fn () => Currency::all()->pluck('name', 'id')
                         )->default(
-                            Currency::modelClass()::getDefault()->id
+                            Currency::getDefault()->id
                         )->required()->preload(),
                     Forms\Components\TextInput::make('min_quantity')
                         ->label(
@@ -168,7 +168,7 @@ class ManageShippingRates extends ManageRelatedRecords
 
     protected static function saveShippingRate(?ShippingRate $shippingRate = null, array $data = []): void
     {
-        $currency = Currency::modelClass()::getDefault();
+        $currency = Currency::getDefault();
 
         $basePrice = $shippingRate->basePrices->first() ?: new Price;
 

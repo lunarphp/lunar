@@ -65,16 +65,16 @@ class AttributeSelector extends CheckboxList
             $type = $this->attributableType;
         }
 
-        return AttributeGroup::modelClass()::whereAttributableType($type)->get();
+        return AttributeGroup::whereAttributableType($type)->get();
     }
 
     public function getSelectedAttributes($groupId)
     {
-        return Attribute::modelClass()::where('attribute_group_id', $groupId)->whereIn('id', $this->getState())->get();
+        return Attribute::where('attribute_group_id', $groupId)->whereIn('id', $this->getState())->get();
     }
 
     public function getAttributes($groupId)
     {
-        return Attribute::modelClass()::where('attribute_group_id', $groupId)->get();
+        return Attribute::where('attribute_group_id', $groupId)->get();
     }
 }

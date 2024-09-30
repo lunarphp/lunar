@@ -168,7 +168,7 @@ trait ManagesProductPricing
     protected function getBasePrices(): array
     {
         // Get enabled currencies
-        $currencies = Currency::modelClass()::whereEnabled(true)->get();
+        $currencies = Currency::whereEnabled(true)->get();
 
         $prices = collect([]);
 

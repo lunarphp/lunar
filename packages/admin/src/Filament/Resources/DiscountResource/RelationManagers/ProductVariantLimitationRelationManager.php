@@ -52,7 +52,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                                     $products = get_search_builder(Product::modelClass(), $search)
                                         ->get();
 
-                                    return ProductVariant::modelCLass()::whereIn('product_id', $products->pluck('id'))
+                                    return ProductVariant::whereIn('product_id', $products->pluck('id'))
                                         ->get()
                                         ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();

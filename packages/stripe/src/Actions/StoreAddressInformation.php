@@ -27,7 +27,7 @@ class StoreAddressInformation
         $paymentMethod = Stripe::getPaymentMethod($paymentIntent->payment_method);
 
         if ($paymentIntent->shipping && $stripeShipping = $paymentIntent->shipping->address) {
-            $country = Country::modelClass()::where('iso2', $stripeShipping->country)->first();
+            $country = Country::where('iso2', $stripeShipping->country)->first();
             $shippingAddress->first_name = explode(' ', $paymentIntent->shipping->name)[0];
             $shippingAddress->last_name = explode(' ', $paymentIntent->shipping->name)[1] ?? '';
             $shippingAddress->line_one = $stripeShipping->line1;
@@ -41,7 +41,7 @@ class StoreAddressInformation
         }
 
         if ($paymentMethod && $stripeBilling = $paymentMethod->billing_details?->address) {
-            $country = Country::modelClass()::where('iso2', $stripeBilling->country)->first();
+            $country = Country::where('iso2', $stripeBilling->country)->first();
             $billingAddress->first_name = explode(' ', $paymentMethod->billing_details->name)[0];
             $billingAddress->last_name = explode(' ', $paymentMethod->billing_details->name)[1] ?? '';
             $billingAddress->line_one = $stripeBilling->line1;

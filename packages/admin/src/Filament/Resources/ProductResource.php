@@ -153,7 +153,7 @@ class ProductResource extends BaseResource
             ->required($validation['required'] ?? false);
 
         if ($validation['unique'] ?? false) {
-            $input->unique(fn () => (new (ProductVariant::modelClass()))->getTable());
+            $input->unique(fn () => (new ProductVariant)->getTable());
         }
 
         return $input;
@@ -161,7 +161,7 @@ class ProductResource extends BaseResource
 
     public static function getBasePriceFormComponent(): Component
     {
-        $currency = Currency::modelClass()::getDefault();
+        $currency = Currency::getDefault();
 
         return Forms\Components\TextInput::make('base_price')->numeric()->prefix(
             $currency->code
@@ -215,7 +215,7 @@ class ProductResource extends BaseResource
     protected static function getTagsFormComponent(): Component
     {
         return TagsComponent::make('tags')
-            ->suggestions(Tag::modelClass()::all()->pluck('value')->all())
+            ->suggestions(Tag::all()->pluck('value')->all())
             ->label(__('lunarpanel::product.form.tags.label'));
     }
 

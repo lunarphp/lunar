@@ -72,7 +72,7 @@ class EditCollection extends BaseEditRecord
                 $targetId = $data['target_collection'] ?? null;
 
                 if ($targetId) {
-                    $parent = Collection::modelClass()::find($targetId);
+                    $parent = Collection::find($targetId);
 
                     DB::beginTransaction();
                     foreach ($collection->children as $child) {

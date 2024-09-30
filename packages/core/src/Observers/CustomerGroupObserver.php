@@ -56,8 +56,8 @@ class CustomerGroupObserver
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedCustomerGroup->default) {
-            CustomerGroup::modelClass()::withoutEvents(function () use ($savedCustomerGroup) {
-                CustomerGroup::modelClass()::whereDefault(true)->where('id', '!=', $savedCustomerGroup->id)->update([
+            CustomerGroup::withoutEvents(function () use ($savedCustomerGroup) {
+                CustomerGroup::whereDefault(true)->where('id', '!=', $savedCustomerGroup->id)->update([
                     'default' => false,
                 ]);
             });

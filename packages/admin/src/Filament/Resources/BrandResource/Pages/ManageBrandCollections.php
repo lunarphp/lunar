@@ -53,7 +53,7 @@ class ManageBrandCollections extends BaseManageRelatedRecords
                             __('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder')
                         )
                             ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                return Collection::modelClass()::search($search)
+                                return Collection::search($search)
                                     ->get()
                                     ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
                                     ->all();

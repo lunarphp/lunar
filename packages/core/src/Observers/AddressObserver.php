@@ -60,7 +60,7 @@ class AddressObserver
     {
         /** @var Address $address */
         if ($address->billing_default) {
-            $address = Address::modelClass()::query()
+            $address = Address::query()
                 ->whereCustomerId($address->customer_id)
                 ->where('id', '!=', $address->id)
                 ->whereBillingDefault(true)

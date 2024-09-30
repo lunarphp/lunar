@@ -59,8 +59,8 @@ class LanguageObserver
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedLanguage->default) {
-            Language::modelClass()::withoutEvents(function () use ($savedLanguage) {
-                Language::modelClass()::whereDefault(true)->where('id', '!=', $savedLanguage->id)->update([
+            Language::withoutEvents(function () use ($savedLanguage) {
+                Language::whereDefault(true)->where('id', '!=', $savedLanguage->id)->update([
                     'default' => false,
                 ]);
             });

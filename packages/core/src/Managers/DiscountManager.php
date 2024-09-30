@@ -72,10 +72,10 @@ class DiscountManager implements DiscountManagerInterface
             ! is_iterable($channel) ? [$channel] : $channel
         );
 
-        if ($nonChannel = $channels->filter(fn ($channel) => ! $channel instanceof Channel)->first()) {
+        if ($nonChannel = $channels->filter(fn ($channel) => ! $channel instanceof ChannelContract)->first()) {
             throw new InvalidArgumentException(
                 __('lunar::exceptions.discounts.invalid_type', [
-                    'expected' => Channel::modelClass(),
+                    'expected' => ChannelContract::class,
                     'actual' => $nonChannel->getMorphClass(),
                 ])
             );
@@ -95,10 +95,10 @@ class DiscountManager implements DiscountManagerInterface
             ! is_iterable($customerGroups) ? [$customerGroups] : $customerGroups
         );
 
-        if ($nonGroup = $customerGroups->filter(fn ($channel) => ! $channel instanceof CustomerGroup)->first()) {
+        if ($nonGroup = $customerGroups->filter(fn ($channel) => ! $channel instanceof CustomerGroupContract)->first()) {
             throw new InvalidArgumentException(
                 __('lunar::exceptions.discounts.invalid_type', [
-                    'expected' => CustomerGroup::modelClass(),
+                    'expected' => CustomerGroupContract::class,
                     'actual' => $nonGroup->getMorphClass(),
                 ])
             );
@@ -121,15 +121,15 @@ class DiscountManager implements DiscountManagerInterface
      */
     public function getDiscounts(?Cart $cart = null): Collection
     {
-        if ($this->channels->isEmpty() && $defaultChannel = Channel::modelClass()::getDefault()) {
+        if ($this->channels->isEmpty() && $defaultChannel = Channel::getDefault()) {
             $this->channel($defaultChannel);
         }
 
-        if ($this->customerGroups->isEmpty() && $defaultGroup = CustomerGroup::modelClass()::getDefault()) {
+        if ($this->customerGroups->isEmpty() && $defaultGroup = CustomerGroup::getDefault()) {
             $this->customerGroup($defaultGroup);
         }
 
-        return Discount::modelClass()::active()
+        return Discount::active()
             ->usable()
             ->channel($this->channels)
             ->customerGroup($this->customerGroups)

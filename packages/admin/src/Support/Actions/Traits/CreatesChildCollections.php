@@ -17,7 +17,7 @@ trait CreatesChildCollections
             Collection::morphName()
         )->first()->type;
 
-        $parent->appendNode(Collection::modelClass()::create([
+        $parent->appendNode(Collection::create([
             'collection_group_id' => $parent->collection_group_id,
             'attribute_data' => [
                 'name' => new $attribute($name),

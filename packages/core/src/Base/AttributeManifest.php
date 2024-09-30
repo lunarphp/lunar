@@ -72,7 +72,7 @@ class AttributeManifest
             return $attributes;
         }
 
-        $attributes = Attribute::modelClass()::whereAttributeType($attributeType)
+        $attributes = Attribute::whereAttributeType($attributeType)
             ->whereSearchable(true)
             ->get();
 

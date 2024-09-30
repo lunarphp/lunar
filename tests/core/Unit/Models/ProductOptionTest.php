@@ -58,7 +58,7 @@ test('can delete product option by handle', function () {
     $productOption = ProductOption::factory()->create();
     $this->assertDatabaseCount((new ProductOption)->getTable(), 1);
 
-    ProductOption::modelClass()::where('handle', $productOption->handle)->delete();
+    ProductOption::where('handle', $productOption->handle)->delete();
     $this->assertDatabaseCount((new ProductOption)->getTable(), 0);
 });
 
@@ -74,7 +74,7 @@ test('can create option value', function () {
     ]);
 
     $this->assertDatabaseCount((new ProductOptionValue)->getTable(), 1);
-    expect(ProductOptionValue::modelClass()::whereRelation(
+    expect(ProductOptionValue::whereRelation(
         'option',
         'product_option_id',
         $productOption->id)->get())->toHaveCount(1);

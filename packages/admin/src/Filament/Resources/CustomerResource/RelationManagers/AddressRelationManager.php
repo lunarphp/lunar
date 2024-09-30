@@ -124,7 +124,7 @@ class AddressRelationManager extends BaseRelationManager
                             Forms\Components\TextInput::make('state')->label(
                                 __('lunarpanel::address.form.state.label')
                             )->datalist(function ($record) {
-                                return State::modelClass()::whereCountryId($record->country_id)
+                                return State::whereCountryId($record->country_id)
                                     ->where('name', 'LIKE', "%{$record->state}%")
                                     ->get()->map(
                                         fn ($state) => $state->name

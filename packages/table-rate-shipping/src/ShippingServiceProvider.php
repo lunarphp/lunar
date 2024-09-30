@@ -42,7 +42,7 @@ class ShippingServiceProvider extends ServiceProvider
             ShippingModifier::class,
         );
 
-        Order::modelClass()::observe(OrderObserver::class);
+        Order::observe(OrderObserver::class);
 
         Order::resolveRelationUsing('shippingZone', function ($orderModel) {
             $prefix = config('lunar.database.table_prefix');
@@ -53,7 +53,7 @@ class ShippingServiceProvider extends ServiceProvider
             )->withTimestamps();
         });
 
-        CustomerGroup::modelClass()::resolveRelationUsing('shippingMethods', function ($customerGroup) {
+        CustomerGroup::resolveRelationUsing('shippingMethods', function ($customerGroup) {
             $prefix = config('lunar.database.table_prefix');
 
             return $customerGroup->belongsToMany(
@@ -62,7 +62,7 @@ class ShippingServiceProvider extends ServiceProvider
             )->withTimestamps();
         });
 
-        Product::modelClass()::resolveRelationUsing('shippingExclusions', function ($product) {
+        Product::resolveRelationUsing('shippingExclusions', function ($product) {
             return $product->morphMany(ShippingExclusion::class, 'purchasable');
         });
 

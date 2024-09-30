@@ -36,7 +36,7 @@ class OrderObserver
             $shippingZones = Shipping::zones()->postcode($postcodeLookup)->get();
 
             if ($shippingZone = $shippingZones->first()) {
-                Order::modelClass()::withoutSyncingToSearch(function () use ($order, $shippingZone) {
+                Order::withoutSyncingToSearch(function () use ($order, $shippingZone) {
                     $order->shippingZone()->sync([$shippingZone->id]);
                 });
                 $meta = (array) $order->meta;

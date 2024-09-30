@@ -29,7 +29,7 @@ trait HasCustomerGroups
     {
         static::created(function (Model $model) {
             $model->customerGroups()->sync(
-                CustomerGroup::modelClass()::get()->mapWithKeys(
+                CustomerGroup::get()->mapWithKeys(
                     fn ($customerGroup): array => [$customerGroup->id => [
                         'enabled' => $customerGroup->default,
                         'starts_at' => now(),

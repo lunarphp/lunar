@@ -11,6 +11,7 @@ use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasPrices;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\TaxClass as TaxClassContract;
 use Lunar\Models\TaxClass;
 use Lunar\Shipping\Database\Factories\ShippingRateFactory;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
@@ -71,9 +72,9 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
     /**
      * Return the tax class.
      */
-    public function getTaxClass(): TaxClass
+    public function getTaxClass(): TaxClassContract
     {
-        return TaxClass::modelClass()::getDefault();
+        return TaxClass::getDefault();
     }
 
     public function getTaxReference(): ?string

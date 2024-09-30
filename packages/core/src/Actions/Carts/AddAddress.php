@@ -41,11 +41,11 @@ class AddAddress extends AbstractAction
         $cart->addresses()->whereType($type)->delete();
 
         if (is_array($address)) {
-            $cartAddress = new (CartAddress::modelClass())($address);
+            $cartAddress = new CartAddress($address);
         }
 
         if ($address instanceof Addressable) {
-            $cartAddress = new (CartAddress::modelClass())(
+            $cartAddress = new CartAddress(
                 $address->only($this->fillableAttributes)
             );
         }

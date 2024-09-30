@@ -19,7 +19,7 @@ class CreateChildCollection extends CreateAction
         parent::setUp();
 
         $this->action(function (?Model $model, array $arguments, array $data): void {
-            $parent = Collection::modelClass()::find($arguments['id']);
+            $parent = Collection::find($arguments['id']);
 
             $this->createChildCollection($parent, $data['name']);
 

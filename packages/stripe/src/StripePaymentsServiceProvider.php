@@ -28,7 +28,7 @@ class StripePaymentsServiceProvider extends ServiceProvider
             return $app->make(StripePaymentType::class);
         });
 
-        Cart::modelClass()::resolveRelationUsing('paymentIntents', function (CartContract $cart) {
+        Cart::resolveRelationUsing('paymentIntents', function (CartContract $cart) {
             return $cart->hasMany(StripePaymentIntent::class);
         });
 

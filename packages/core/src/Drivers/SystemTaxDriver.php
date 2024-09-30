@@ -160,6 +160,6 @@ class SystemTaxDriver implements TaxDriver
 
     protected function defaultTaxZone()
     {
-        return TaxZone::modelClass()::where('default', '=', 1)->first();
+        return TaxZone::where('default', '=', 1)->first();
     }
 }

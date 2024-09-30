@@ -26,7 +26,7 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
         $breakdown->items = collect(
             json_decode($value, false)
         )->mapWithKeys(function ($shipping, $key) {
-            $currency = Currency::modelClass()::whereCode($shipping->currency->code)->first();
+            $currency = Currency::whereCode($shipping->currency->code)->first();
 
             return [
                 $key => new ShippingBreakdownItem(

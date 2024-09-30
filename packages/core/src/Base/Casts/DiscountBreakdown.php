@@ -20,7 +20,7 @@ class DiscountBreakdown implements CastsAttributes
      */
     public function get($model, $key, $value, $attributes)
     {
-        $currency = $model->currency ?: Currency::modelClass()::getDefault();
+        $currency = $model->currency ?: Currency::getDefault();
 
         return collect(
             json_decode($value, false)
@@ -29,7 +29,7 @@ class DiscountBreakdown implements CastsAttributes
             $breakdown->lines = collect($breakdown->lines)->map(function ($line) {
                 return (object) [
                     'quantity' => $line->qty,
-                    'line' => OrderLine::modelClass()::find($line->id),
+                    'line' => OrderLine::find($line->id),
                 ];
             });
 

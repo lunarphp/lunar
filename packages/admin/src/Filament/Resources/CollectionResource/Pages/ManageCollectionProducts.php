@@ -98,7 +98,7 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                 ])->action(function (array $arguments, array $data, Form $form, Table $table) {
                     $relationship = Relation::noConstraints(fn () => $table->getRelationship());
 
-                    $product = Product::modelClass()::find($data['recordId']);
+                    $product = Product::find($data['recordId']);
 
                     $relationship->attach($product, [
                         'position' => $relationship->count() + 1,

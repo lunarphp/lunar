@@ -55,7 +55,7 @@ class SyncTags implements ShouldQueue
             // Make sure the tags are uppercase
             $this->tags->map(fn ($tag) => Str::upper($tag))
                 ->each(function ($tag) use (&$tagIds) {
-                    $model = Tag::modelClass()::firstOrCreate([
+                    $model = Tag::firstOrCreate([
                         'value' => $tag,
                     ]);
                     $tagIds[] = $model->id;

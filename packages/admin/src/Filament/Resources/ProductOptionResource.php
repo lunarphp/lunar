@@ -64,7 +64,7 @@ class ProductOptionResource extends BaseResource
                 if ($operation !== 'create') {
                     return;
                 }
-                $set('handle', Str::slug($state[Language::modelClass()::getDefault()->code]));
+                $set('handle', Str::slug($state[Language::getDefault()->code]));
             })
             ->live(onBlur: true)
             ->autofocus();

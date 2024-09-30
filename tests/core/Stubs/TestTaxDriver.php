@@ -105,7 +105,7 @@ class TestTaxDriver implements TaxDriver
             $taxAmounts = TaxRateAmount::factory(2)->create();
         }
 
-        $currency = Currency::modelClass()::first() ?: Currency::factory()->create();
+        $currency = Currency::first() ?: Currency::factory()->create();
 
         $variant = $this->purchasable ?: ProductVariant::factory()->create();
 

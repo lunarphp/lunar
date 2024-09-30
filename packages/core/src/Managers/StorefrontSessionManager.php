@@ -88,12 +88,12 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         }
 
         if (! $groupHandles->isEmpty()) {
-            return $this->customerGroups = CustomerGroup::modelClass()::whereIn('handle', $groupHandles)->get();
+            return $this->customerGroups = CustomerGroup::whereIn('handle', $groupHandles)->get();
         }
 
         return $this->setCustomerGroups(
             collect([
-                CustomerGroup::modelClass()::getDefault(),
+                CustomerGroup::getDefault(),
             ])
         );
     }
@@ -113,11 +113,11 @@ class StorefrontSessionManager implements StorefrontSessionInterface
 
         if (! $channelHandle) {
             return $this->setChannel(
-                Channel::modelClass()::getDefault()
+                Channel::getDefault()
             );
         }
 
-        $channel = Channel::modelClass()::whereHandle($channelHandle)->first();
+        $channel = Channel::whereHandle($channelHandle)->first();
 
         if (! $channel) {
             throw new \Exception(
@@ -155,7 +155,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             return null;
         }
 
-        $customer = Customer::modelClass()::find($customer_id);
+        $customer = Customer::find($customer_id);
 
         if (! $customer) {
             return null;
@@ -275,7 +275,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
      */
     public function getChannel(): ChannelContract
     {
-        return $this->channel ?: Channel::modelClass()::getDefault();
+        return $this->channel ?: Channel::getDefault();
     }
 
     /**
@@ -301,6 +301,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
      */
     public function getCurrency(): CurrencyContract
     {
-        return $this->currency ?: Currency::modelClass()::getDefault();
+        return $this->currency ?: Currency::getDefault();
     }
 }

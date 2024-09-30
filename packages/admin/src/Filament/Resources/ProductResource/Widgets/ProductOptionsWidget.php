@@ -53,7 +53,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     public function addSharedOptionAction()
     {
         $existing = collect($this->configuredOptions)->pluck('id');
-        $options = ProductOption::modelClass()::whereNotIn('id', $existing)
+        $options = ProductOption::whereNotIn('id', $existing)
             ->shared()
             ->get();
 
@@ -77,7 +77,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         $options->isNotEmpty()
                     ),
             ])->action(function (array $data) {
-                $productOption = ProductOption::modelClass()::with(['values'])->find($data['product_option']);
+                $productOption = ProductOption::with(['values'])->find($data['product_option']);
                 $this->configuredOptions[] = $this->mapOption(
                     $productOption,
                     $productOption->values->map(
@@ -97,7 +97,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             fn ($option) => $option->shared
         )->pluck('id');
 
-        $disabledSharedOptionValues = ProductOptionValue::modelClass()::whereIn(
+        $disabledSharedOptionValues = ProductOptionValue::whereIn(
             'product_option_id',
             $sharedOptionIds
         )->whereNotIn(
@@ -273,7 +273,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
     protected function storeConfiguredOptions(): void
     {
-        $language = Language::modelClass()::getDefault();
+        $language = Language::getDefault();
         /**
          * Go through our configured options and if they don't
          * exist in the database i.e. they are new, create and map them
@@ -282,10 +282,10 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         foreach ($this->configuredOptions as $optionIndex => $option) {
 
             $optionModel = empty($option['id']) ?
-                new (ProductOption::modelClass())([
+                new ProductOption([
                     'shared' => false,
                 ]) :
-                ProductOption::modelClass()::find($option['id']);
+                ProductOption::find($option['id']);
 
             $optionValue = $option['value'];
 
@@ -305,10 +305,10 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
             foreach ($option['option_values'] as $optionValueIndex => $value) {
                 $optionValueModel = empty($value['id']) ?
-                    new (ProductOptionValue::modelClass())([
+                    new ProductOptionValue([
                         'product_option_id' => $option['id'],
                     ]) :
-                    ProductOptionValue::modelClass()::find($value['id']);
+                    ProductOptionValue::find($value['id']);
 
                 $optionValueModel->name = [
                     $language->code => $value['value'],
@@ -379,18 +379,18 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 }
 
                 foreach ($this->variants as $variantIndex => $variantData) {
-                    $variant = new (ProductVariant::modelClass())([
+                    $variant = new ProductVariant([
                         'product_id' => $this->record->id,
                     ]);
                     $basePrice = null;
 
                     if (! empty($variantData['variant_id'])) {
-                        $variant = ProductVariant::modelClass()::find($variantData['variant_id']);
+                        $variant = ProductVariant::find($variantData['variant_id']);
                         $basePrice = $variant->basePrices->first();
                     }
 
                     if (! empty($variantData['copied_id'])) {
-                        $copiedVariant = ProductVariant::modelClass()::find(
+                        $copiedVariant = ProductVariant::find(
                             $variantData['copied_id']
                         );
 

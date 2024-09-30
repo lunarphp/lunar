@@ -24,7 +24,7 @@ class ListShippingMethod extends BaseListRecords
                 ])->columns(2),
                 ShippingMethodResource::getDescriptionFormComponent(),
             ])->after(function (ShippingMethod $shippingMethod) {
-                $customerGroups = CustomerGroup::modelClass()::pluck('id')->mapWithKeys(
+                $customerGroups = CustomerGroup::pluck('id')->mapWithKeys(
                     fn ($id) => [$id => ['visible' => true, 'enabled' => true, 'starts_at' => now()]]
                 );
                 $shippingMethod->customerGroups()->sync($customerGroups);

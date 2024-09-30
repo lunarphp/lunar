@@ -152,12 +152,12 @@ class PricingManager implements PricingManagerInterface
         }
 
         if (! $this->currency) {
-            $this->currency = Currency::modelCLass()::getDefault();
+            $this->currency = Currency::getDefault();
         }
 
         if (! $this->customerGroups || ! $this->customerGroups->count()) {
             $this->customerGroups = collect([
-                CustomerGroup::modelClass()::getDefault(),
+                CustomerGroup::getDefault(),
             ]);
         }
 

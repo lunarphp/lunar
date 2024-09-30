@@ -15,7 +15,7 @@ class DefaultPriceFormatter implements PriceFormatterInterface
         public int $unitQty = 1
     ) {
         if (! $this->currency) {
-            $this->currency = Currency::modelClass()::getDefault();
+            $this->currency = Currency::getDefault();
         }
     }
 

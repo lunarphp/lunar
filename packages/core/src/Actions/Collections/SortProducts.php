@@ -22,7 +22,7 @@ class SortProducts
             case 'min_price':
                 $products = app(SortProductsByPrice::class)->execute(
                     $collection->products,
-                    Currency::modelClass()::getDefault(),
+                    Currency::getDefault(),
                     $direction
                 );
                 break;

@@ -234,7 +234,7 @@ class DiscountResource extends BaseResource
 
     protected static function getMinimumCartAmountsFormComponents(): array
     {
-        $currencies = Currency::modelClass()::enabled()->get();
+        $currencies = Currency::enabled()->get();
         $inputs = [];
 
         foreach ($currencies as $currency) {
@@ -242,7 +242,7 @@ class DiscountResource extends BaseResource
                 $currency->code
             )->afterStateHydrated(function (Forms\Components\TextInput $component, $state) {
                 $currencyCode = last(explode('.', $component->getStatePath()));
-                $currency = Currency::modelClass()::whereCode($currencyCode)->first();
+                $currency = Currency::whereCode($currencyCode)->first();
 
                 if ($currency) {
                     $component->state($state / $currency->factor);
@@ -264,7 +264,7 @@ class DiscountResource extends BaseResource
 
     protected static function getAmountOffFormComponents(): array
     {
-        $currencies = Currency::modelCLass()::get();
+        $currencies = Currency::get();
 
         $currencyInputs = [];
 
@@ -355,10 +355,10 @@ class DiscountResource extends BaseResource
                 ->label(__('lunarpanel::discount.table.status.label'))
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
-                    \Lunar\Models\Discount::modelClass()::ACTIVE => 'success',
-                    \Lunar\Models\Discount::modelClass()::EXPIRED => 'danger',
-                    \Lunar\Models\Discount::modelClass()::PENDING => 'gray',
-                    \Lunar\Models\Discount::modelClass()::SCHEDULED => 'info',
+                    \Lunar\Models\Discount::ACTIVE => 'success',
+                    \Lunar\Models\Discount::EXPIRED => 'danger',
+                    \Lunar\Models\Discount::PENDING => 'gray',
+                    \Lunar\Models\Discount::SCHEDULED => 'info',
                 }),
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::discount.table.name.label')),

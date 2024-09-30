@@ -28,7 +28,7 @@ class UpdateCartLine extends AbstractAction
                 $data['meta'] = $meta;
             }
 
-            CartLine::modelClass()::whereId($cartLineId)->update($data);
+            CartLine::whereId($cartLineId)->update($data);
         });
 
         return $this;

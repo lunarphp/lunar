@@ -49,7 +49,7 @@ class ListProducts extends BaseListRecords
 
     public static function createRecord(array $data, string $model): Model
     {
-        $currency = Currency::modelClass()::getDefault();
+        $currency = Currency::getDefault();
 
         $nameAttribute = Attribute::whereAttributeType(
             $model::morphName()
@@ -67,7 +67,7 @@ class ListProducts extends BaseListRecords
             ],
         ]);
         $variant = $product->variants()->create([
-            'tax_class_id' => TaxClass::modelClass()::getDefault()->id,
+            'tax_class_id' => TaxClass::getDefault()->id,
             'sku' => $data['sku'],
         ]);
         $variant->prices()->create([
@@ -88,7 +88,7 @@ class ListProducts extends BaseListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'published')),
             'draft' => Tab::make('Draft')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'draft'))
-                ->badge(Product::modelClass()::query()->where('status', 'draft')->count()),
+                ->badge(Product::query()->where('status', 'draft')->count()),
         ];
     }
 

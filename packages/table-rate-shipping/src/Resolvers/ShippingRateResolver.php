@@ -65,7 +65,7 @@ class ShippingRateResolver
             return $line->purchasable->stock < $line->quantity;
         });
 
-        $this->customerGroups = collect([CustomerGroup::modelClass()::getDefault()]);
+        $this->customerGroups = collect([CustomerGroup::getDefault()]);
 
         if ($user = $this->cart->user) {
             $this->customerGroups = $user->customers->first()?->customerGroups ?: $this->customerGroups;
@@ -139,7 +139,7 @@ class ShippingRateResolver
         $zones = Shipping::zones()->country(
             $this->country
         )->state(
-            State::modelClass()::whereName($this->state)->first()
+            State::whereName($this->state)->first()
         )->postcode(
             new PostcodeLookup(
                 country: $this->country,

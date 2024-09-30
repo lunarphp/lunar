@@ -91,7 +91,7 @@ trait DisplaysOrderAddresses
                     Forms\Components\TextInput::make('state')
                         ->label(__('lunarpanel::order.form.address.state.label'))
                         ->autocomplete('state') // to disable browser input history while keeping datalist
-                        ->datalist(fn ($get) => State::modelClass()::whereCountryId($get('country_id'))->pluck('name')->toArray())
+                        ->datalist(fn ($get) => State::whereCountryId($get('country_id'))->pluck('name')->toArray())
                         ->maxLength(255),
                     Forms\Components\TextInput::make('postcode')
                         ->label(__('lunarpanel::order.form.address.postcode.label'))
@@ -100,7 +100,7 @@ trait DisplaysOrderAddresses
                 ]),
             Forms\Components\Select::make('country_id')
                 ->label(__('lunarpanel::order.form.address.country_id.label'))
-                ->options(fn () => Country::modelClass()::get()->pluck('name', 'id'))
+                ->options(fn () => Country::get()->pluck('name', 'id'))
                 ->live()
                 ->searchable()
                 ->required(),

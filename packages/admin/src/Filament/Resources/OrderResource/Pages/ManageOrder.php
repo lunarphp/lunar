@@ -319,7 +319,7 @@ class ManageOrder extends BaseViewRecord
             ->form(function () {
                 return [
                     TagsComponent::make('')
-                        ->suggestions(Tag::modelClass()::all()->pluck('value')->all()),
+                        ->suggestions(Tag::all()->pluck('value')->all()),
                 ];
             })->action(function (Action $action, $record, $data) {
                 //                $this->dispatchActivityUpdated();
@@ -395,7 +395,7 @@ class ManageOrder extends BaseViewRecord
                     ]),
             ])
             ->action(function ($data, $record, Actions\Action $action) {
-                $transaction = Transaction::modelClass()::findOrFail($data['transaction']);
+                $transaction = Transaction::findOrFail($data['transaction']);
 
                 $response = $transaction->refund(bcmul($data['amount'], $record->currency->factor), $data['notes']);
 
@@ -471,7 +471,7 @@ class ManageOrder extends BaseViewRecord
                         fn ($record) => 1 / $record->currency->factor
                     )
                     ->helperText(function (Forms\Components\TextInput $component, $get, $state) {
-                        $transaction = Transaction::modelClass()::findOrFail($get('transaction'));
+                        $transaction = Transaction::findOrFail($get('transaction'));
 
                         $message = $transaction->amount->decimal > $state ? __('lunarpanel::order.form.amount.hint.less_than_total') : null;
 
@@ -500,7 +500,7 @@ class ManageOrder extends BaseViewRecord
                     ]),
             ])
             ->action(function ($data, $record, Actions\Action $action) {
-                $transaction = Transaction::modelClass()::findOrFail($data['transaction']);
+                $transaction = Transaction::findOrFail($data['transaction']);
 
                 $response = $transaction->capture(bcmul($data['amount'], $record->currency->factor));
 

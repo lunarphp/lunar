@@ -55,7 +55,7 @@ class RebuildCollectionTree implements ShouldQueue
     {
         DB::transaction(function () {
             if ($this->parent) {
-                Collection::modelCLass()::rebuildSubtree($this->parent, collect($this->newTree)->map(fn ($value) => [
+                Collection::rebuildSubtree($this->parent, collect($this->newTree)->map(fn ($value) => [
                     'id' => $value['id'],
                 ])->toArray());
 
@@ -71,7 +71,7 @@ class RebuildCollectionTree implements ShouldQueue
                 array_splice($this->currentTree, $row['order'] - 1, 0, $out);
             }
 
-            Collection::modelClass()::rebuildTree($this->currentTree);
+            Collection::rebuildTree($this->currentTree);
         });
     }
 }

@@ -56,7 +56,7 @@ class CurrencyObserver
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedCurrency->default) {
-            $currencies = Currency::modelClass()::whereDefault(true)->where('id', '!=', $savedCurrency->id)->get();
+            $currencies = Currency::whereDefault(true)->where('id', '!=', $savedCurrency->id)->get();
 
             foreach ($currencies as $currency) {
                 $currency->default = false;

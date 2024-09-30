@@ -20,7 +20,7 @@ class Price implements CastsAttributes
      */
     public function get($model, $key, $value, $attributes)
     {
-        $currency = $model->currency ?: Currency::modelClass()::getDefault();
+        $currency = $model->currency ?: Currency::getDefault();
 
         if (! is_null($value)) {
             /**

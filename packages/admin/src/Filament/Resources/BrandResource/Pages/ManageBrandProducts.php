@@ -72,14 +72,14 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                         ->required()
                         ->searchable()
                         ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                            return Product::modelClass()::search($search)
+                            return Product::search($search)
                                 ->get()
                                 ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();
                         }),
                 ])
                 ->action(function (array $arguments, array $data) {
-                    Product::modelClass()::where('id', '=', $data['recordId'])
+                    Product::where('id', '=', $data['recordId'])
                         ->update([
                             'brand_id' => $this->getRecord()->id,
                         ]);

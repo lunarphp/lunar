@@ -90,7 +90,7 @@ class TaxZoneResource extends BaseResource
             ->label(__('lunarpanel::taxzone.form.zone_countries.label'))
             ->visible(fn ($get) => $get('zone_type') == 'country')
             ->dehydrated(false)
-            ->options(Country::modelClass()::get()->pluck('name', 'iso3'))
+            ->options(Country::get()->pluck('name', 'iso3'))
             ->multiple()
             ->required()
             ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
@@ -113,7 +113,7 @@ class TaxZoneResource extends BaseResource
                     ->toArray();
             })
             ->saveRelationshipsUsing(static function (Model $record, $state) {
-                $selectedCountries = Country::modelClass()::whereIn('iso3', $state)->get()->pluck('id');
+                $selectedCountries = Country::whereIn('iso3', $state)->get()->pluck('id');
 
                 self::syncCountries($record, $selectedCountries);
 
@@ -129,7 +129,7 @@ class TaxZoneResource extends BaseResource
             ->visible(fn ($get) => $get('zone_type') !== 'country')
             ->dehydrated(false)
             ->required()
-            ->options(Country::modelClass()::get()->pluck('name', 'id'))
+            ->options(Country::get()->pluck('name', 'id'))
             ->searchable()
             ->afterStateHydrated(static function (Forms\Components\Select $component, ?Model $record): void {
                 if ($record) {
@@ -176,7 +176,7 @@ class TaxZoneResource extends BaseResource
                     ->toArray();
             })
             ->saveRelationshipsUsing(static function (Model $record, $state, $get) {
-                $selectedStates = State::modelClass()::where('country_id', $get('zone_country'))->whereIn('code', $state)->get()->pluck('id');
+                $selectedStates = State::where('country_id', $get('zone_country'))->whereIn('code', $state)->get()->pluck('id');
 
                 self::syncCountries($record, [$get('zone_country')]);
                 self::syncStates($record, $selectedStates);

@@ -36,7 +36,7 @@ class UrlObserver
     {
         /** @var Url $url */
         if ($url->default) {
-            $url = Url::modelClass()::whereDefault(false)
+            $url = Url::whereDefault(false)
                 ->where('id', '!=', $url->id)
                 ->whereElementType($url->element_type)
                 ->whereElementId($url->element_id)
@@ -59,7 +59,7 @@ class UrlObserver
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedUrl->default) {
-            $url = Url::modelClass()::whereDefault(true)
+            $url = Url::whereDefault(true)
                 ->where('id', '!=', $savedUrl->id)
                 ->whereElementType($savedUrl->element_type)
                 ->whereElementId($savedUrl->element_id)

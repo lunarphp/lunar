@@ -74,8 +74,8 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
     {
         // Look to use `afterNode`
         DB::transaction(function () use ($movedId, $siblingId, $direction) {
-            $moved = Collection::modelClass()::find($movedId);
-            $sibling = Collection::modelClass()::find($siblingId);
+            $moved = Collection::find($movedId);
+            $sibling = Collection::find($siblingId);
             $parent = $moved->parent;
 
             if ($direction == 'after') {
@@ -122,7 +122,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
         if (! count($nodes) || $keepOpen) {
             $childNodes = static::mapCollections(
-                Collection::modelClass()::whereParentId($nodeId)->withCount('children')->defaultOrder()->get()
+                Collection::whereParentId($nodeId)->withCount('children')->defaultOrder()->get()
             );
         }
 
@@ -162,11 +162,11 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
         return Action::make('makeRoot')->requiresConfirmation()->icon(
             fn () => FilamentIcon::resolve('actions::make-collection-root-action')
         )->action(function (array $arguments) {
-            $collection = Collection::modelClass()::find($arguments['id']);
+            $collection = Collection::find($arguments['id']);
             $collection->makeRoot()->save();
             $this->loadRootNodes();
         })->hidden(function (array $arguments) {
-            return Collection::modelClass()::find($arguments['id'])->isRoot();
+            return Collection::find($arguments['id'])->isRoot();
         });
     }
 
@@ -217,7 +217,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     public function getTreeNodesProperty()
     {
-        return Collection::modelClass()::query()
+        return Collection::query()
             ->when($this->record?->id,
                 fn ($query, $groupId) => $query->whereCollectionGroupId($groupId)
             )->when($this->parentId,
