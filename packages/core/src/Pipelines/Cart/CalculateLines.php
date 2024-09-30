@@ -14,7 +14,6 @@ class CalculateLines
      * Called just before cart totals are calculated.
      *
      * @param  Closure(CartContract): mixed  $next
-     * @return mixed
      */
     public function handle(CartContract $cart, Closure $next): mixed
     {
