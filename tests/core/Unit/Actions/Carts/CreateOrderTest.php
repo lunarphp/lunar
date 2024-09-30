@@ -21,6 +21,8 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
 
+use function Pest\Laravel\{assertDatabaseHas};
+
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 it('cant create order if already has complete and multiple disabled', function () {
@@ -107,6 +109,10 @@ function can_update_draft_order()
 }
 
 test('can create order', function () {
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\Order::class,
+        \Lunar\Tests\Core\Stubs\Models\CustomOrder::class
+    );
     CustomerGroup::factory()->create([
         'default' => true,
     ]);
@@ -223,8 +229,8 @@ test('can create order', function () {
         ->and($order->shippingAddress)->toBeInstanceOf(OrderAddress::class)
         ->and($order->billingAddress)->toBeInstanceOf(OrderAddress::class);
 
-    $this->assertDatabaseHas((new Order)->getTable(), $datacheck);
-    $this->assertDatabaseHas((new OrderLine)->getTable(), [
+    assertDatabaseHas((new Order)->getTable(), $datacheck);
+    assertDatabaseHas((new OrderLine)->getTable(), [
         'identifier' => $shippingOption->getIdentifier(),
     ]);
 

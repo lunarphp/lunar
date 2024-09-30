@@ -125,7 +125,7 @@ class BaseResource extends Resource
     protected static function mapSearchableAttributes(array &$map)
     {
         $attributes = Attribute::whereAttributeType(
-            (new (static::getModel()))->getMorphClass()
+            static::getModel()::morphName()
         )
             ->whereSearchable(true)
             ->get();

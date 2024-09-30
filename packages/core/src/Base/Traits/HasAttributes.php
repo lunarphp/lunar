@@ -19,7 +19,7 @@ trait HasAttributes
 
     public function getAttributableMorphMapAttribute()
     {
-        return (new self)->getMorphClass();
+        return self::morphName();
     }
 
     /**

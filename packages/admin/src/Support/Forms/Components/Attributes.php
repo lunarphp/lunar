@@ -26,13 +26,13 @@ class Attributes extends Forms\Components\Group
 
                 $productTypeId = null;
 
-                $morphMap = (new $modelClass)->getMorphClass();
+                $morphMap = $modelClass::morphName();
 
                 $attributeQuery = Attribute::modelClass()::where('attribute_type', $morphMap);
 
                 // Products are unique in that they use product types to map attributes, so we need
                 // to try and find the product type ID
-                if ($morphMap == (new Product)->getMorphClass()) {
+                if ($morphMap == Product::morphName()) {
                     $productTypeId = $record?->product_type_id ?: ProductType::first()->id;
 
                     // If we have a product type, the attributes should be based off that.
@@ -41,7 +41,7 @@ class Attributes extends Forms\Components\Group
                     }
                 }
 
-                if ($morphMap == (new ProductVariant)->getMorphClass()) {
+                if ($morphMap == ProductVariant::morphName()) {
                     $productTypeId = $record?->product?->product_type_id ?: ProductType::first()->id;
                     // If we have a product type, the attributes should be based off that.
                     if ($productTypeId) {
