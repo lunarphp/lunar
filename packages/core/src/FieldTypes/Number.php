@@ -54,7 +54,7 @@ class Number implements FieldType, JsonSerializable
             throw new FieldTypeException(self::class.' value must be numeric.');
         }
 
-        $this->value = $value + 0;
+        $this->value = $value ? $value + 0 : '';
     }
 
     /**
