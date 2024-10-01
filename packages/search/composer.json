@@ -12,7 +12,9 @@
   ],
   "require": {
       "php": "^8.2",
-      "lunarphp/core": "self.version"
+      "lunarphp/core": "self.version",
+      "spatie/laravel-data": "^4.9.0",
+    "typesense/typesense-php": "^4.9"
   },
   "autoload": {
       "psr-4": {
@@ -33,7 +35,8 @@
   "prefer-stable": true,
   "config": {
     "allow-plugins": {
-      "pestphp/pest-plugin": true
+      "pestphp/pest-plugin": true,
+      "php-http/discovery": true
     }
   }
 }
