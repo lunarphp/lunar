@@ -27,6 +27,7 @@
         "leandrocfe/filament-apex-charts": "^3.1.3",
         "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
+        "lunarphp/lunar": "self.version",
         "marvinosswald/filament-input-select-affix": "^0.2.0",
         "meilisearch/meilisearch-php": "^v1.6.0",
         "php": "^8.2",
@@ -63,6 +64,7 @@
             "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",
             "Lunar\\Paypal\\": "packages/paypal/src/",
+            "Lunar\\Search\\": "packages/search/src/",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
             "Lunar\\Stripe\\": "packages/stripe/src/"
@@ -82,22 +84,24 @@
     "extra": {
         "lunar": {
             "name": [
-                "Meilisearch",
+                "Table Rate Shipping",
                 "Opayo Payments",
+                "Search",
+                "Meilisearch",
                 "Paypal Payments",
-                "Stripe Payments",
-                "Table Rate Shipping"
+                "Stripe Payments"
             ]
         },
         "laravel": {
             "providers": [
-                "Lunar\\Shipping\\ShippingServiceProvider",
                 "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
-                "Lunar\\Opayo\\OpayoServiceProvider",
                 "Lunar\\Meilisearch\\MeilisearchServiceProvider",
-                "Lunar\\LunarServiceProvider",
-                "Lunar\\Admin\\LunarPanelProvider"
+                "Lunar\\Search\\SearchProvider",
+                "Lunar\\Admin\\LunarPanelProvider",
+                "Lunar\\Opayo\\OpayoServiceProvider",
+                "Lunar\\Shipping\\ShippingServiceProvider",
+                "Lunar\\LunarServiceProvider"
             ]
         }
     },
@@ -107,6 +111,7 @@
         "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
+        "lunarphp/search": "self.version",
         "lunarphp/stripe": "self.version",
         "lunarphp/table-rate-shipping": "self.version"
     },

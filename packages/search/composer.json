@@ -1,0 +1,39 @@
+{
+  "name": "lunarphp/search",
+  "type": "project",
+  "description": "Ecommerce search for LunarPHP",
+  "keywords": ["lunarphp", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "search"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "require": {
+      "php": "^8.2",
+      "lunarphp/core": "self.version"
+  },
+  "autoload": {
+      "psr-4": {
+          "Lunar\\Search\\": "src/"
+      }
+  },
+  "extra": {
+    "lunar": {
+        "name": "Search"
+    },
+    "laravel": {
+        "providers": [
+            "Lunar\\Search\\SearchProvider"
+        ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
