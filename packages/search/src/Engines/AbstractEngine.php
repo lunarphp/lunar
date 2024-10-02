@@ -24,6 +24,11 @@ abstract class AbstractEngine
         return $this->modelType::search($this->query, $this->searchBuilder)->raw();
     }
 
+    protected function getFacetConfig(string $field): ?array
+    {
+        return config('lunar.search.facets.'.$this->modelType.'.'.$field, []);
+    }
+
     public function get(): mixed
     {
         return collect();

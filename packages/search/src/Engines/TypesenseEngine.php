@@ -25,8 +25,7 @@ class TypesenseEngine extends AbstractEngine
     public function get(): mixed
     {
         $results = $this->getRawResults();
-        //
-        //        dd($results);
+
         $documents = collect($results['hits'])->map(fn ($hit) => SearchHit::from([
             'highlights' => collect($hit['highlights'])->map(
                 fn ($highlight) => SearchHit\Highlight::from([
@@ -38,7 +37,11 @@ class TypesenseEngine extends AbstractEngine
             'document' => $hit['document'],
         ]));
 
-        $totalPages = (int) round($results['found'] / count($results['hits']));
+        $totalPages = 0;
+
+        if (count($results['hits'])) {
+            $totalPages = (int) round($results['found'] / count($results['hits']));
+        }
 
         $facets = collect($results['facet_counts'])->map(
             fn ($facet) => SearchFacet::from([
@@ -51,6 +54,16 @@ class TypesenseEngine extends AbstractEngine
                 ),
             ])
         );
+
+        foreach ($facets as $facet) {
+            $facetConfig = $this->getFacetConfig($facet->field);
+            foreach ($facet->values as $faceValue) {
+                if (empty($facetConfig[$faceValue->value])) {
+                    continue;
+                }
+                $faceValue->additional($facetConfig[$faceValue->value]);
+            }
+        }
 
         return SearchResults::from([
             'query' => $results['request_params']['q'],

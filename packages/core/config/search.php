@@ -39,7 +39,7 @@ return [
     |
     */
     'engine_map' => [
-        // Lunar\Models\Product::class => 'algolia',
+        Lunar\Models\Product::class => 'database',
         // Lunar\Models\Order::class => 'meilisearch',
         // Lunar\Models\Collection::class => 'meilisearch',
     ],

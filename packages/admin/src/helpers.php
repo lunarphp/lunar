@@ -75,14 +75,13 @@ if (! function_exists('db_date')) {
 
 if (! function_exists('get_search_builder')) {
 
-    function get_search_builder($model, $search): Laravel\Scout\Builder|Builder
+    function get_search_builder($model, $search, $forceQuery = false): Laravel\Scout\Builder|Builder
     {
         $scoutEnabled = config('lunar.panel.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive($model));
-
         if (
-            $scoutEnabled &&
-            $isScoutSearchable
+            ($scoutEnabled &&
+            $isScoutSearchable) && ! $forceQuery
         ) {
             return $model::search($search);
         } else {
@@ -90,7 +89,6 @@ if (! function_exists('get_search_builder')) {
 
             /** @var Connection $databaseConnection */
             $databaseConnection = $query->getConnection();
-
             $search = generate_search_term_expression($search, true, $databaseConnection);
 
             foreach (explode(' ', $search) as $searchWord) {
