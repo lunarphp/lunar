@@ -32,7 +32,7 @@ class OrderLineObserver
      */
     public function updating(OrderLine $orderLine)
     {
-        if (! in_array(Purchasable::class, class_implements($orderLine->purchasable_type, true))) {
+        if (! in_array(Purchasable::class, class_implements(Relation::getMorphedModel($orderLine->purchasable_type), true))) {
             throw new NonPurchasableItemException($orderLine->purchasable_type);
         }
     }
