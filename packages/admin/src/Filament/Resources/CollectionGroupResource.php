@@ -21,8 +21,6 @@ class CollectionGroupResource extends BaseResource
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationLabel = 'Collections';
-
     public static function getLabel(): string
     {
         return __('lunarpanel::collectiongroup.label');
