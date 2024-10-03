@@ -14,9 +14,12 @@
       "php": "^8.2",
       "lunarphp/core": "self.version",
       "spatie/laravel-data": "^4.9.0",
-    "typesense/typesense-php": "^4.9"
+      "typesense/typesense-php": "^4.9"
   },
   "autoload": {
+      "files": [
+          "src/helpers.php"
+      ],
       "psr-4": {
           "Lunar\\Search\\": "src/"
       }

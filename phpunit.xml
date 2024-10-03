@@ -21,6 +21,9 @@
         <testsuite name="stripe">
             <directory suffix="Test.php">tests/stripe/Unit</directory>
         </testsuite>
+        <testsuite name="search">
+            <directory suffix="Test.php">tests/search/Unit</directory>
+        </testsuite>
         <testsuite name="shipping">
             <directory suffix="Test.php">tests/shipping/Feature</directory>
             <directory suffix="Test.php">tests/shipping/Unit</directory>

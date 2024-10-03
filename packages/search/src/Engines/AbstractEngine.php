@@ -2,15 +2,74 @@
 
 namespace Lunar\Search\Engines;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Lunar\Models\Product;
 
 abstract class AbstractEngine
 {
     protected string $modelType = Product::class;
 
-    protected ?string $query;
+    protected ?string $query = null;
 
-    protected \Closure $searchBuilder;
+    protected array $filters = [];
+
+    protected array $facets = [];
+
+    protected int $perPage = 50;
+
+    public function filter(array $filters): self
+    {
+        foreach ($filters as $key => $value) {
+            $this->addFilter($key, $value);
+        }
+
+        return $this;
+    }
+
+    public function perPage(int $perPage): self
+    {
+        $this->perPage = $perPage;
+
+        return $this;
+    }
+
+    public function getFacets(): array
+    {
+        return $this->facets;
+    }
+
+    public function setFacets(array $facets): self
+    {
+        $this->facets = $facets;
+
+        return $this;
+    }
+
+    public function removeFacet(string $field, mixed $value = null): self
+    {
+        if (empty($this->facets[$field])) {
+            return $this;
+        }
+
+        if (! $value) {
+            unset($this->facets[$field]);
+
+            return $this;
+        }
+
+        $this->facets[$field] = collect($this->facets[$field])->reject(
+            fn ($faceValue) => $faceValue == $value
+        )->toArray();
+
+        return $this;
+    }
+
+    public function addFilter($key, $value): self
+    {
+        $this->filters[$key] = $value;
+
+        return $this;
+    }
 
     public function query(string $query): AbstractEngine
     {
@@ -19,9 +78,14 @@ abstract class AbstractEngine
         return $this;
     }
 
-    protected function getRawResults(): array
+    public function getQuery(): ?string
     {
-        return $this->modelType::search($this->query, $this->searchBuilder)->raw();
+        return $this->query;
+    }
+
+    protected function getRawResults(\Closure $builder): LengthAwarePaginator
+    {
+        return $this->modelType::search($this->query, $builder)->paginateRaw(perPage: $this->perPage);
     }
 
     protected function getFacetConfig(string $field): ?array
@@ -29,8 +93,5 @@ abstract class AbstractEngine
         return config('lunar.search.facets.'.$this->modelType.'.'.$field, []);
     }
 
-    public function get(): mixed
-    {
-        return collect();
-    }
+    abstract public function get(): mixed;
 }

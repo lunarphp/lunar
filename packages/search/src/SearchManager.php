@@ -4,11 +4,12 @@ namespace Lunar\Search;
 
 use Illuminate\Support\Manager;
 use Lunar\Models\Product;
+use Lunar\Search\Contracts\SearchManagerContract;
 use Lunar\Search\Engines\AbstractEngine;
 use Lunar\Search\Engines\DatabaseEngine;
 use Lunar\Search\Engines\TypesenseEngine;
 
-class SearchManager extends Manager
+class SearchManager extends Manager implements SearchManagerContract
 {
     protected string $model = Product::class;
 

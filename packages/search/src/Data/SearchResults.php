@@ -20,5 +20,6 @@ class SearchResults extends Data
         public array $hits,
         #[DataCollectionOf(SearchFacet::class)]
         public array $facets = [],
+        public array $links = [],
     ) {}
 }
