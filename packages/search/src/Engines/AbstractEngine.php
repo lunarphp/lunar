@@ -26,6 +26,18 @@ abstract class AbstractEngine
         return $this;
     }
 
+    public function addFilter($key, $value): self
+    {
+        $this->filters[$key] = $value;
+
+        return $this;
+    }
+
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
     public function perPage(int $perPage): self
     {
         $this->perPage = $perPage;
@@ -60,13 +72,6 @@ abstract class AbstractEngine
         $this->facets[$field] = collect($this->facets[$field])->reject(
             fn ($faceValue) => $faceValue == $value
         )->toArray();
-
-        return $this;
-    }
-
-    public function addFilter($key, $value): self
-    {
-        $this->filters[$key] = $value;
 
         return $this;
     }
