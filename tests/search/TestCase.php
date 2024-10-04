@@ -4,9 +4,12 @@ namespace Lunar\Tests\Search;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
+use Laravel\Scout\ScoutServiceProvider;
 use Lunar\LunarServiceProvider;
+use Lunar\Search\SearchServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
+use Spatie\LaravelData\LaravelDataServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
@@ -27,6 +30,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
             BlinkServiceProvider::class,
+            ScoutServiceProvider::class,
+            LaravelDataServiceProvider::class,
+            SearchServiceProvider::class
         ];
     }
 

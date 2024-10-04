@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Lunar\Search\Contracts\InstantSearchContract;
 use Lunar\Search\Contracts\SearchManagerContract;
 
-class SearchProvider extends ServiceProvider
+class SearchServiceProvider extends ServiceProvider
 {
     public function register()
     {

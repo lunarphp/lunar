@@ -23,6 +23,7 @@
         </testsuite>
         <testsuite name="search">
             <directory suffix="Test.php">tests/search/Unit</directory>
+            <directory suffix="Test.php">tests/search/Feature</directory>
         </testsuite>
         <testsuite name="shipping">
             <directory suffix="Test.php">tests/shipping/Feature</directory>
