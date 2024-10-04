@@ -17,6 +17,8 @@ abstract class AbstractEngine
 
     protected int $perPage = 50;
 
+    protected string $sort = '';
+
     public function filter(array $filters): self
     {
         foreach ($filters as $key => $value) {
@@ -72,6 +74,13 @@ abstract class AbstractEngine
         $this->facets[$field] = collect($this->facets[$field])->reject(
             fn ($faceValue) => $faceValue == $value
         )->toArray();
+
+        return $this;
+    }
+
+    public function sort(string $sort): self
+    {
+        $this->sort = $sort;
 
         return $this;
     }

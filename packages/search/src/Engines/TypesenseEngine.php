@@ -34,8 +34,9 @@ class TypesenseEngine extends AbstractEngine
             }
 
             $options['q'] = $query;
-            $options['facet_by'] = 'colour,size';
+            $options['facet_by'] = 'brand,colour,size';
             $options['per_page'] = $this->perPage;
+            $options['sort_by'] = $this->sort;
 
             if ($filters->count()) {
                 $options['filter_by'] = $filters->join(' && ');
