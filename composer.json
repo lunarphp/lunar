@@ -101,7 +101,7 @@
                 "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\Meilisearch\\MeilisearchServiceProvider",
-              "SearchServiceProvider",
+                "Lunar\\Search\\SearchServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",

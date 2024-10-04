@@ -30,7 +30,7 @@
     },
     "laravel": {
         "providers": [
-          "SearchServiceProvider"
+          "Lunar\\Search\\SearchServiceProvider"
         ]
     }
   },
