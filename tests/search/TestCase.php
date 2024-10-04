@@ -32,7 +32,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             BlinkServiceProvider::class,
             ScoutServiceProvider::class,
             LaravelDataServiceProvider::class,
-            SearchServiceProvider::class
+            SearchServiceProvider::class,
         ];
     }
 
