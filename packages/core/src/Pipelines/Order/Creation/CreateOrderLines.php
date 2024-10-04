@@ -9,7 +9,7 @@ use Lunar\Models\OrderLine;
 class CreateOrderLines
 {
     /**
-     * @return Closure
+     * @return mixed
      */
     public function handle(Order $order, Closure $next)
     {
