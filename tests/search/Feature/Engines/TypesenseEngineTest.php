@@ -61,8 +61,8 @@ test('can map search results to spatie data objects', function () {
                                 'document' => [
                                     'id' => 123,
                                     'name' => 'Foobar',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'facet_counts' => [],
                         'request_params' => [
