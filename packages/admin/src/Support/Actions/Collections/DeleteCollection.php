@@ -15,6 +15,21 @@ class DeleteCollection extends DeleteAction
             return Collection::find($arguments['id']);
         });
 
+        $this->action(function (): void {
+            $result = $this->process(function (Collection $record) {
+                $record->customerGroups()->detach();
+                return $record->delete();
+            });
+
+            if (! $result) {
+                $this->failure();
+
+                return;
+            }
+
+            $this->success();
+        });
+
         $this->label(
             __('lunarpanel::actions.collections.delete.label')
         );
