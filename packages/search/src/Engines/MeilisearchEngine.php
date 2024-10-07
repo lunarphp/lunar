@@ -23,8 +23,9 @@ class MeilisearchEngine extends AbstractEngine
                         fn ($value) => "{$key} = {$value}"
                     );
                     $filters->push(
-                        '(' . $values->join(' OR ') . ')'
+                        '('.$values->join(' OR ').')'
                     );
+
                     continue;
                 }
                 $filters->push($key.' = '.$value);
@@ -38,14 +39,14 @@ class MeilisearchEngine extends AbstractEngine
                         fn ($value) => "{$field} = `{$value}`"
                     );
                     $filters->push(
-                        '(' . $values->join(' OR ') . ')'
+                        '('.$values->join(' OR ').')'
                     );
+
                     continue;
                 }
 
                 $filters->push('('.$field.' = "'.$values->first().'")');
             }
-
 
             $options['limit'] = $this->perPage;
             $options['sort'] = blank($this->sort) ? null : [$this->sort];
@@ -53,7 +54,6 @@ class MeilisearchEngine extends AbstractEngine
             if ($filters->count()) {
                 $options['filter'] = $filters->join('AND');
             }
-
 
             $options['facets'] = ['colour', 'brand', 'size'];
 
@@ -78,7 +78,6 @@ class MeilisearchEngine extends AbstractEngine
                 )->values(),
             ])
         )->values();
-
 
         foreach ($facets as $facet) {
             $facetConfig = $this->getFacetConfig($facet->field);
