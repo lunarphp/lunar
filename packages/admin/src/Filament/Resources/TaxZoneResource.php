@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\TaxZone;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Models\Country;
 use Lunar\Models\State;
 
@@ -23,7 +23,7 @@ class TaxZoneResource extends BaseResource
 
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = TaxZone::class;
+    protected static ?string $model = TaxZoneContract::class;
 
     protected static ?int $navigationSort = 1;
 
@@ -214,7 +214,7 @@ class TaxZoneResource extends BaseResource
             });
     }
 
-    private static function syncCountries(TaxZone $taxZone, $selectedCountries)
+    private static function syncCountries(TaxZoneContract $taxZone, $selectedCountries)
     {
         $existingCountries = $taxZone->countries()->pluck('country_id');
 
@@ -234,7 +234,7 @@ class TaxZoneResource extends BaseResource
             ->delete();
     }
 
-    private static function syncStates(TaxZone $taxZone, $selectedStates)
+    private static function syncStates(TaxZoneContract $taxZone, $selectedStates)
     {
         $existingStates = $taxZone->states()->pluck('state_id');
 
@@ -254,7 +254,7 @@ class TaxZoneResource extends BaseResource
             ->delete();
     }
 
-    private static function syncPostcodes(TaxZone $taxZone, $countryId, $postcodes)
+    private static function syncPostcodes(TaxZoneContract $taxZone, $countryId, $postcodes)
     {
         $postcodes = collect(
             explode(

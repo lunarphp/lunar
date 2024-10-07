@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class CollectionResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-collections';
 
-    protected static ?string $model = Collection::class;
+    protected static ?string $model = CollectionContract::class;
 
     protected static int $globalSearchResultsLimit = 5;
 
@@ -38,7 +38,7 @@ class CollectionResource extends BaseResource
         return [];
     }
 
-    public static function getCollectionBreadcrumbs(Collection $collection): array
+    public static function getCollectionBreadcrumbs(CollectionContract $collection): array
     {
         $crumbs = [
             CollectionGroupResource::getUrl('index') => CollectionGroupResource::getPluralLabel(),

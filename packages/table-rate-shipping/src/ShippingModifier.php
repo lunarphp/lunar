@@ -3,7 +3,7 @@
 namespace Lunar\Shipping;
 
 use Lunar\Facades\ShippingManifest;
-use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionLookup;
 use Lunar\Shipping\Facades\Shipping;
 

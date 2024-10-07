@@ -3,6 +3,8 @@
 namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
+use Lunar\Models\Contracts\Country as CountryContract;
+use Lunar\Models\Contracts\State as StateContract;
 use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
@@ -13,7 +15,7 @@ class ShippingZoneResolver
     /**
      * The country to use when resolving zones.
      */
-    protected ?Country $country = null;
+    protected ?CountryContract $country = null;
 
     /**
      * The state to use when resolving zones.
@@ -41,7 +43,7 @@ class ShippingZoneResolver
     /**
      * Set the country.
      */
-    public function country(?Country $country = null): self
+    public function country(?CountryContract $country = null): self
     {
         $this->country = $country;
         $this->types->push('countries');
@@ -52,7 +54,7 @@ class ShippingZoneResolver
     /**
      * Set the state.
      */
-    public function state(?State $state = null): self
+    public function state(?StateContract $state = null): self
     {
         $this->state = $state;
         $this->types->push('states');

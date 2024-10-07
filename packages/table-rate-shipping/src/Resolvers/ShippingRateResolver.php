@@ -4,6 +4,8 @@ namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Country as CountryContract;
 use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\State;
@@ -15,12 +17,12 @@ class ShippingRateResolver
     /**
      * The cart to use when resolving.
      */
-    protected Cart $cart;
+    protected CartContract $cart;
 
     /**
      * The country to use when resolving.
      */
-    protected ?Country $country = null;
+    protected ?CountryContract $country = null;
 
     /**
      * The customer group to limit to.
@@ -45,7 +47,7 @@ class ShippingRateResolver
     /**
      * Initialise the resolver.
      */
-    public function __construct(?Cart $cart = null)
+    public function __construct(?CartContract $cart = null)
     {
         $this->cart($cart);
     }
@@ -53,7 +55,7 @@ class ShippingRateResolver
     /**
      * Set the cart.
      */
-    public function cart(Cart $cart): self
+    public function cart(CartContract $cart): self
     {
         $this->cart = $cart;
 
@@ -101,7 +103,7 @@ class ShippingRateResolver
     /**
      * Set the value for country.
      */
-    public function country(?Country $country = null): self
+    public function country(?CountryContract $country = null): self
     {
         $this->country = $country;
 

@@ -8,6 +8,10 @@ use Illuminate\Support\Collection;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Models\Channel;
+use Lunar\Models\Contracts\Channel as ChannelContract;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Models\Contracts\Customer as CustomerContract;
+use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
@@ -17,7 +21,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * The current channel
      */
-    protected ?Channel $channel = null;
+    protected ?ChannelContract $channel = null;
 
     /**
      * The collection of customer groups to use.
@@ -27,12 +31,12 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * The current currency
      */
-    protected ?Currency $currency = null;
+    protected ?CurrencyContract $currency = null;
 
     /**
      * The current customer
      */
-    protected ?Customer $customer = null;
+    protected ?CustomerContract $customer = null;
 
     /**
      * Initialise the manager
@@ -127,7 +131,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function initCustomer(): ?Customer
+    public function initCustomer(): ?CustomerContract
     {
         if ($this->customer) {
             return $this->customer;
@@ -173,7 +177,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setChannel(Channel|string $channel): self
+    public function setChannel(ChannelContract|string $channel): self
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_channel',
@@ -184,8 +188,9 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this;
     }
 
-    private function customerBelongsToUser(Customer $customer): bool
+    private function customerBelongsToUser(CustomerContract $customer): bool
     {
+        /** @var Customer $customer */
         $user = $this->authManager->user();
 
         return $customer->query()
@@ -196,8 +201,9 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setCustomer(Customer $customer): self
+    public function setCustomer(CustomerContract $customer): self
     {
+        /** @var Customer $customer */
         $this->sessionManager->put(
             $this->getSessionKey().'_customer',
             $customer->id
@@ -219,7 +225,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getCustomer(): ?Customer
+    public function getCustomer(): ?CustomerContract
     {
         return $this->customer ?: $this->initCustomer();
     }
@@ -242,7 +248,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setCustomerGroup(CustomerGroup $customerGroup): self
+    public function setCustomerGroup(CustomerGroupContract $customerGroup): self
     {
         return $this->setCustomerGroups(
             collect([$customerGroup])
@@ -267,7 +273,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getChannel(): Channel
+    public function getChannel(): ChannelContract
     {
         return $this->channel ?: Channel::getDefault();
     }
@@ -283,7 +289,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setCurrency(Currency $currency): self
+    public function setCurrency(CurrencyContract $currency): self
     {
         $this->currency = $currency;
 
@@ -293,7 +299,7 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getCurrency(): Currency
+    public function getCurrency(): CurrencyContract
     {
         return $this->currency ?: Currency::getDefault();
     }

@@ -5,10 +5,11 @@ namespace Lunar\Admin\Support\Actions\Traits;
 use Lunar\Facades\DB;
 use Lunar\Models\Attribute;
 use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 trait CreatesChildCollections
 {
-    public function createChildCollection(Collection $parent, array|string $name)
+    public function createChildCollection(CollectionContract $parent, array|string $name)
     {
         DB::beginTransaction();
 

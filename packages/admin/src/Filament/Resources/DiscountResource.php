@@ -23,14 +23,14 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
-use Lunar\Models\Contracts\Discount;
+use Lunar\Models\Contracts\Discount as DiscountContract;
 use Lunar\Models\Currency;
 
 class DiscountResource extends BaseResource
 {
     protected static ?string $permission = 'sales:manage-discounts';
 
-    protected static ?string $model = Discount::class;
+    protected static ?string $model = DiscountContract::class;
 
     protected static ?int $navigationSort = 3;
 

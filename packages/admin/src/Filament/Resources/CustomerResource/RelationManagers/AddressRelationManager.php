@@ -8,7 +8,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\CustomerAddressEdited;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Address;
+use Lunar\Models\Contracts\Address as AddressContract;
 use Lunar\Models\State;
 
 class AddressRelationManager extends BaseRelationManager
@@ -71,7 +71,7 @@ class AddressRelationManager extends BaseRelationManager
                     ->after(
                         fn (Model $record) => CustomerAddressEdited::dispatch($record)
                     )
-                    ->fillForm(fn (Address $record): array => [
+                    ->fillForm(fn (AddressContract $record): array => [
                         'title' => $record->title,
                         'first_name' => $record->first_name,
                         'last_name' => $record->last_name,

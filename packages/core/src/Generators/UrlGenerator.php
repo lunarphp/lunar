@@ -5,6 +5,7 @@ namespace Lunar\Generators;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Models\Contracts\Language as LanguageContract;
 use Lunar\Models\Language;
 use Lunar\Models\Url;
 
@@ -20,7 +21,7 @@ class UrlGenerator
     /**
      * The default language.
      */
-    protected Language $defaultLanguage;
+    protected LanguageContract $defaultLanguage;
 
     /**
      * Construct the class.

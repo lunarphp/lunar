@@ -4,7 +4,7 @@ namespace Lunar\Base\ValueObjects\Cart;
 
 use Illuminate\Support\Collection;
 use Lunar\DataTypes\Price;
-use Lunar\Models\Discount;
+use Lunar\Models\Contracts\Discount;
 
 class DiscountBreakdown
 {

@@ -5,6 +5,7 @@ namespace Lunar\Observers;
 use Lunar\Base\Purchasable;
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\CartLine as CartLineContract;
 
 class CartLineObserver
 {
@@ -13,8 +14,9 @@ class CartLineObserver
      *
      * @return void
      */
-    public function creating(CartLine $cartLine)
+    public function creating(CartLineContract $cartLine)
     {
+        /** @var CartLine $cartLine */
         if (! $cartLine->purchasable instanceof Purchasable) {
             throw new NonPurchasableItemException($cartLine->purchasable_type);
         }
@@ -25,8 +27,9 @@ class CartLineObserver
      *
      * @return void
      */
-    public function updating(CartLine $cartLine)
+    public function updating(CartLineContract $cartLine)
     {
+        /** @var CartLine $cartLine */
         if (! $cartLine->purchasable instanceof Purchasable) {
             throw new NonPurchasableItemException($cartLine->purchasable_type);
         }

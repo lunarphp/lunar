@@ -67,7 +67,7 @@ class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::class,
+            CustomerGroup::modelClass(),
             "{$prefix}customer_group_shipping_method"
         )->withPivot([
             'visible',

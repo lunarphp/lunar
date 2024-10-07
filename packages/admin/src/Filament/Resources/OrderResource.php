@@ -17,13 +17,14 @@ use Lunar\Admin\Support\Actions\Orders\UpdateStatusBulkAction;
 use Lunar\Admin\Support\CustomerStatus;
 use Lunar\Admin\Support\OrderStatus;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Order;
 
 class OrderResource extends BaseResource
 {
     protected static ?string $permission = 'sales:manage-orders';
 
-    protected static ?string $model = Order::class;
+    protected static ?string $model = OrderContract::class;
 
     protected static ?int $navigationSort = 1;
 

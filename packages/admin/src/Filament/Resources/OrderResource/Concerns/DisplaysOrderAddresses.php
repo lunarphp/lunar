@@ -9,8 +9,8 @@ use Filament\Infolists\Components\Actions\Action;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Arr;
+use Lunar\Models\Contracts\OrderAddress as OrderAddressContract;
 use Lunar\Models\Country;
-use Lunar\Models\OrderAddress;
 use Lunar\Models\State;
 
 trait DisplaysOrderAddresses
@@ -172,7 +172,7 @@ trait DisplaysOrderAddresses
             ]);
     }
 
-    private static function addressesMatch(?OrderAddress $original = null, ?OrderAddress $comparison = null): bool
+    private static function addressesMatch(?OrderAddressContract $original = null, ?OrderAddressContract $comparison = null): bool
     {
         if (! $original || ! $comparison) {
             return false;

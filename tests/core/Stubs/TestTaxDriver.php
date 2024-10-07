@@ -8,7 +8,8 @@ use Lunar\Base\TaxDriver;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
-use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxRateAmount;
@@ -28,7 +29,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * The currency model.
      */
-    protected Currency $currency;
+    protected CurrencyContract $currency;
 
     /**
      * The purchasable item.
@@ -38,7 +39,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * The cart line.
      */
-    protected CartLine $cartLine;
+    protected CartLineContract $cartLine;
 
     /**
      * {@inheritDoc}
@@ -53,7 +54,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setCurrency(Currency $currency): self
+    public function setCurrency(CurrencyContract $currency): self
     {
         $this->currency = $currency;
 
@@ -83,7 +84,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * Set the cart line.
      */
-    public function setCartLine(CartLine $cartLine): self
+    public function setCartLine(CartLineContract $cartLine): self
     {
         $this->cartLine = $cartLine;
 

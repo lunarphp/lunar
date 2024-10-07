@@ -6,6 +6,8 @@ use Lunar\Actions\AbstractAction;
 use Lunar\Exceptions\CartLineIdMismatchException;
 use Lunar\Facades\DB;
 use Lunar\Models\Cart;
+use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class RemovePurchasable extends AbstractAction
 {
@@ -17,10 +19,12 @@ class RemovePurchasable extends AbstractAction
      * @throws CartLineIdMismatchException
      */
     public function execute(
-        Cart $cart,
+        CartContract $cart,
         int $cartLineId
     ): self {
+        /** @var Cart $cart */
         DB::transaction(function () use ($cart, $cartLineId) {
+            /** @var CartLine $line */
             $line = $cart->lines()->whereId($cartLineId)->first();
 
             if (! $line) {

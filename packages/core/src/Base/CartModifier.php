@@ -3,7 +3,7 @@
 namespace Lunar\Base;
 
 use Closure;
-use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart;
 
 abstract class CartModifier
 {

@@ -1,0 +1,4 @@
+{
+    "$schema": "/Users/theimer/.local/share/nvim/mason/packages/phpactor/source/phpactor.schema.json",
+    "language_server_phpstan.enabled": true
+}

@@ -14,7 +14,7 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Forms\Components\MediaSelect;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Models\ProductVariant;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 
 class ManageVariantMedia extends BaseEditRecord
 {
@@ -98,7 +98,7 @@ class ManageVariantMedia extends BaseEditRecord
                     ->helperText(
                         __('lunarpanel::productvariant.pages.media.form.images.helper_text')
                     )
-                    ->afterStateHydrated(function (ProductVariant $record, MediaSelect $component) {
+                    ->afterStateHydrated(function (ProductVariantContract $record, MediaSelect $component) {
                         $image = $record->images->first(function ($media) {
                             return (bool) $media->pivot?->primary;
                         });

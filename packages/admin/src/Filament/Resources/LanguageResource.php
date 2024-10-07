@@ -11,13 +11,13 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Language;
+use Lunar\Models\Contracts\Language as LanguageContract;
 
 class LanguageResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = Language::class;
+    protected static ?string $model = LanguageContract::class;
 
     protected static ?int $navigationSort = 1;
 

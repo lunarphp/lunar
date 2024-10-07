@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\Managers;
 
 use Illuminate\Support\Manager;
-use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Shipping\Drivers\ShippingMethods\Collection;
 use Lunar\Shipping\Drivers\ShippingMethods\FlatRate;
 use Lunar\Shipping\Drivers\ShippingMethods\FreeShipping;
@@ -59,12 +59,12 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
         return app(ShippingZoneResolver::class);
     }
 
-    public function shippingRates(?Cart $cart = null): ShippingRateResolver
+    public function shippingRates(?CartContract $cart = null): ShippingRateResolver
     {
         return new ShippingRateResolver($cart);
     }
 
-    public function shippingOptions(?Cart $cart = null): ShippingOptionResolver
+    public function shippingOptions(?CartContract $cart = null): ShippingOptionResolver
     {
         return new ShippingOptionResolver($cart);
     }
