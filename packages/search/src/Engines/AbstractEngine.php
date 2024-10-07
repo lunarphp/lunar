@@ -102,8 +102,12 @@ abstract class AbstractEngine
         return $this->modelType::search($this->query, $builder)->paginateRaw(perPage: $this->perPage);
     }
 
-    protected function getFacetConfig(string $field): ?array
+    protected function getFacetConfig(string $field = null): ?array
     {
+        if (!$field) {
+            return config('lunar.search.facets.'.$this->modelType);
+        }
+        
         return config('lunar.search.facets.'.$this->modelType.'.'.$field, []);
     }
 

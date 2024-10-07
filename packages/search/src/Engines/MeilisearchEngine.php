@@ -16,36 +16,16 @@ class MeilisearchEngine extends AbstractEngine
             $filters = collect();
 
             foreach ($this->filters as $key => $value) {
-                $values = collect($value);
-
-                if ($values->count() > 1) {
-                    $values = $values->map(
-                        fn ($value) => "{$key} = {$value}"
-                    );
-                    $filters->push(
-                        '(' . $values->join(' OR ') . ')'
-                    );
-                    continue;
-                }
-                $filters->push($key.' = '.$value);
+                $filters->push(
+                    $this->mapFilter($key, $value)
+                );
             }
 
             foreach ($this->facets as $field => $values) {
-                $values = collect($values);
-
-                if ($values->count() > 1) {
-                    $values = $values->map(
-                        fn ($value) => "{$field} = `{$value}`"
-                    );
-                    $filters->push(
-                        '(' . $values->join(' OR ') . ')'
-                    );
-                    continue;
-                }
-
-                $filters->push('('.$field.' = "'.$values->first().'")');
+                $filters->push(
+                    $this->mapFilter($field, $values)
+                );
             }
-
 
             $options['limit'] = $this->perPage;
             $options['sort'] = blank($this->sort) ? null : [$this->sort];
@@ -54,8 +34,9 @@ class MeilisearchEngine extends AbstractEngine
                 $options['filter'] = $filters->join('AND');
             }
 
+            $facets = $this->getFacetConfig();
 
-            $options['facets'] = ['colour', 'brand', 'size'];
+            $options['facets'] = array_keys($facets);
 
             return $indexes->search($query, $options);
         });
@@ -105,5 +86,19 @@ class MeilisearchEngine extends AbstractEngine
         ];
 
         return SearchResults::from($data);
+    }
+
+    protected function mapFilter(string $field, mixed $value): string
+    {
+        $values = collect($value);
+
+        if ($values->count() > 1) {
+            $values = $values->map(
+                fn ($value) => "{$field} = \"{$value}\""
+            );
+            return '(' . $values->join(' OR ') . ')';
+        }
+
+        return '('.$field.' = "'.$values->first().'")';
     }
 }
