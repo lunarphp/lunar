@@ -60,7 +60,6 @@ class MeilisearchEngine extends AbstractEngine
             ])
         )->values();
 
-
         foreach ($facets as $facet) {
             $facetConfig = $this->getFacetConfig($facet->field);
             foreach ($facet->values as $faceValue) {
