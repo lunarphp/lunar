@@ -95,7 +95,8 @@ class MeilisearchEngine extends AbstractEngine
             $values = $values->map(
                 fn ($value) => "{$field} = \"{$value}\""
             );
-            return '(' . $values->join(' OR ') . ')';
+
+            return '('.$values->join(' OR ').')';
         }
 
         return '('.$field.' = "'.$values->first().'")';
