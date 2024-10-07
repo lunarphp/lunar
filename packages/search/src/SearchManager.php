@@ -7,6 +7,7 @@ use Lunar\Models\Product;
 use Lunar\Search\Contracts\SearchManagerContract;
 use Lunar\Search\Engines\AbstractEngine;
 use Lunar\Search\Engines\DatabaseEngine;
+use Lunar\Search\Engines\MeilisearchEngine;
 use Lunar\Search\Engines\TypesenseEngine;
 
 class SearchManager extends Manager implements SearchManagerContract
@@ -16,6 +17,11 @@ class SearchManager extends Manager implements SearchManagerContract
     public function createDatabaseDriver()
     {
         return $this->buildProvider(DatabaseEngine::class);
+    }
+
+    public function createMeilisearchDriver()
+    {
+        return $this->buildProvider(MeilisearchEngine::class);
     }
 
     public function createTypesenseDriver()

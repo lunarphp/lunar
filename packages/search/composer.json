@@ -14,7 +14,9 @@
       "php": "^8.2",
       "lunarphp/core": "self.version",
       "spatie/laravel-data": "^4.9.0",
-      "typesense/typesense-php": "^4.9"
+      "typesense/typesense-php": "^4.9",
+    "meilisearch/meilisearch-php": "^1.10",
+    "http-interop/http-factory-guzzle": "^1.2"
   },
   "autoload": {
       "files": [
