@@ -2,6 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -47,5 +48,15 @@ trait HasUrls
             Url::modelClass(),
             'element'
         )->whereDefault(true);
+    }
+
+    public function localeUrl(string $locale = null): MorphOne
+    {
+        return $this->morphOne(
+            Url::class,
+            'element'
+        )->whereHas('language', function (Builder $query) use ($locale) {
+            $query->where('code', $locale ?: app()->getLocale());
+        });
     }
 }
