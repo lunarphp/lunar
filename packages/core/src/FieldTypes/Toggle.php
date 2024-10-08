@@ -26,7 +26,7 @@ class Toggle implements FieldType, JsonSerializable
     /**
      * Create a new instance of Toggle field type.
      *
-     * @param  boolean|string  $value
+     * @param  bool|string  $value
      */
     public function __construct($value = false)
     {
