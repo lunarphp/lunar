@@ -55,7 +55,7 @@ class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
                             ignoreRecord: true,
                             modifyRuleUsing: function (Unique $rule, callable $get) {
                                 return $rule
-                                    ->where('element_type', static::$model)
+                                    ->where('element_type', (new static::$model)->getMorphClass())
                                     ->where('language_id', $get('language_id'));
                             }
                         )
