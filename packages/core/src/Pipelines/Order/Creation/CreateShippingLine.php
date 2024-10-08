@@ -10,7 +10,7 @@ use Lunar\Models\OrderLine;
 class CreateShippingLine
 {
     /**
-     * @return Closure
+     * @return mixed
      */
     public function handle(Order $order, Closure $next)
     {

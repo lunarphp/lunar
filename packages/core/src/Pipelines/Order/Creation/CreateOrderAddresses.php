@@ -9,7 +9,7 @@ use Lunar\Models\OrderAddress;
 class CreateOrderAddresses
 {
     /**
-     * @return Closure
+     * @return mixed
      */
     public function handle(Order $order, Closure $next)
     {
