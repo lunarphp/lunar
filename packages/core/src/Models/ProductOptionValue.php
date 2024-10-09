@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasTranslations;
@@ -18,11 +21,13 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property int $product_option_id
  * @property string $name
  * @property int $position
+ * @property ?array $attribute_data
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
 class ProductOptionValue extends BaseModel implements Contracts\ProductOptionValue, SpatieHasMedia
 {
+    use HasAttributes;
     use HasFactory;
     use HasMacros;
     use HasMedia;
@@ -35,6 +40,7 @@ class ProductOptionValue extends BaseModel implements Contracts\ProductOptionVal
      */
     protected $casts = [
         'name' => AsCollection::class,
+        'attribute_data' => AsAttributeData::class,
     ];
 
     /**
@@ -68,5 +74,19 @@ class ProductOptionValue extends BaseModel implements Contracts\ProductOptionVal
             'value_id',
             'variant_id',
         );
+    }
+
+    /**
+     * Get the mapped attributes relation.
+     */
+    public function mappedAttributes(): MorphToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->morphToMany(
+            Attribute::class,
+            'attributable',
+            "{$prefix}attributables"
+        )->withTimestamps();
     }
 }
