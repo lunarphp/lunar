@@ -36,6 +36,8 @@ export default defineConfig({
             dark: '/icon-dark.svg',
         },
 
+        'outline': [2, 3],
+
         nav: [
             {text: 'Core', link: '/core/overview', activeMatch: '/core/'},
             {text: 'Admin Panel', link: '/admin/overview', activeMatch: '/admin/'},
@@ -70,7 +72,6 @@ export default defineConfig({
                         {text: 'Installation', link: '/core/installation'},
                         {text: 'Starter Kits', link: '/core/starter-kits'},
                         {text: 'Configuration', link: '/core/configuration'},
-                        {text: 'Initial Set-Up', link: '/core/set-up'},
                         {text: 'Upgrade Guide', link: '/core/upgrading'},
                         {text: 'Release Schedule', link: '/core/release-schedule'},
                         {text: 'Security', link: '/core/securing-your-site'},

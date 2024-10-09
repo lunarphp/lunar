@@ -6,9 +6,17 @@ If you want to get up and running quickly to review Lunar, this section is for y
 
 ## Livewire Starter Kit
 
-Lunar provides a starter kit as a reference to help you build your own custom e-commerce app. The starter kit is built using Laravel Livewire (as is our admin hub). You can quickly see how to load products, collections, use the cart and checkout.
+Lunar provides a starter kit as a reference to help you build your own custom e-commerce app. The starter kit is built 
+using Laravel Livewire (as is our admin hub). You can quickly see how to load products, collections, use the cart and 
+checkout.
 
-If you would prefer to install Lunar into your own Laravel application, please follow the [installation instructions](/core/installation).
+If you would prefer to install Lunar into your own Laravel application, please follow the 
+[installation instructions](/core/installation).
+
+::: info
+The starter kit is just that, a starting point for your project. It is **not** a comprehensive storefront and does not
+implement all functionality. It is up to you to develop the functionality you require for your project.
+:::
 
 ## Requirements
 
@@ -33,7 +41,7 @@ composer create-project --stability dev lunarphp/livewire-starter-kit example-st
 cd example-store
 ```
 
-### Configure the Laravel app
+### Configure The Laravel App
 
 Copy the `.env.example` file to `.env` and make sure the details match to your install.
 
