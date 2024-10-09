@@ -28,6 +28,8 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
      */
     protected $guarded = [];
 
+    private ?TaxClass $resolvedTaxClass;
+
     protected static function booted()
     {
         self::deleting(function (self $shippingRate) {
@@ -73,7 +75,7 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
      */
     public function getTaxClass(): TaxClass
     {
-        return TaxClass::getDefault();
+        return $this->resolvedTaxClass ?? TaxClass::getDefault();
     }
 
     public function getTaxReference(): ?string
@@ -139,6 +141,10 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
      */
     public function getShippingOption(Cart $cart): ?ShippingOption
     {
+        if (config('lunar.shipping-tables.shipping_rate_tax_calculation') == 'highest') {
+            $this->resolvedTaxClass = $this->resolveHighestTaxRateInCart($cart);
+        }
+
         return $this->shippingMethod->driver()->resolve(
             new ShippingOptionRequest(
                 shippingRate: $this,
@@ -155,5 +161,24 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
     public function getTotalInventory(): int
     {
         return 1;
+    }
+
+    private function resolveHighestTaxRateInCart(Cart $cart): ?TaxClass
+    {
+        $highestRate = false;
+        $highestTaxClass = null;
+
+        foreach ($cart->lines as $cartLine) {
+            if ($cartLine->purchasable->taxClass) {
+                foreach ($cartLine->purchasable->taxClass->taxRateAmounts as $amount) {
+                    if ($highestRate === false || $amount->percentage > $highestRate) {
+                        $highestRate = $amount->percentage;
+                        $highestTaxClass = $cartLine->purchasable->taxClass;
+                    }
+                }
+            }
+        }
+
+        return $highestTaxClass;
     }
 }
