@@ -300,7 +300,8 @@ class ProductResource extends BaseResource
             ->attributeData()
             ->limitedTooltip()
             ->limit(50)
-            ->label(__('lunarpanel::product.table.name.label'));
+            ->label(__('lunarpanel::product.table.name.label'))
+            ->searchable();
     }
 
     public static function getSkuTableColumn(): Tables\Columns\Column
@@ -323,7 +324,8 @@ class ProductResource extends BaseResource
             })
             ->listWithLineBreaks()
             ->limitList(1)
-            ->toggleable();
+            ->toggleable()
+            ->searchable();
     }
 
     public static function getDefaultRelations(): array
