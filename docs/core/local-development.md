@@ -45,6 +45,11 @@ Update your `composer.json` file similar to the following.
     }
 ````
 
+Ensure minimum stability is set for development
+```json
+    "minimum-stability": "dev",
+````
+
 Run `composer update` from your Laravel application's root directory and fingers crossed you're all up and running,. 
 
 ```sh
