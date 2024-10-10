@@ -1,8 +1,8 @@
 # Installation
 
-::: danger Alpha Release
+::: danger Beta Release
 Although many Lunar sites have been launched using v1.x, you may not consider this version production-ready for your own
-use and should exercise the same amount of caution as you would with any software in an alpha state. 🚀
+use and should exercise the same amount of caution as you would with any software in an beta state. 🚀
 :::
 
 ## Requirements
@@ -20,7 +20,7 @@ use and should exercise the same amount of caution as you would with any softwar
 ### Composer Require Package
 
 ```sh
-composer require lunarphp/lunar:"^1.0.0-alpha" -W
+composer require lunarphp/lunar:"^1.0.0-beta" -W
 ```
 
 ::: tip

@@ -15,7 +15,7 @@ class CalculateTax
     /**
      * Called just before cart totals are calculated.
      *
-     * @return void
+     * @return mixed
      */
     public function handle(Cart $cart, Closure $next)
     {
