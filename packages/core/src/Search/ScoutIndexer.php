@@ -12,7 +12,8 @@ class ScoutIndexer implements ScoutIndexerInterface
 {
     public function searchableAs(Model $model): string
     {
-        $name = str_replace('lunar_', '', $model->getTable());
+        $tablePrefix = config('lunar.database.table_prefix');
+        $name = str_replace($tablePrefix, '', $model->getTable());
 
         return config('scout.prefix').$name;
     }
