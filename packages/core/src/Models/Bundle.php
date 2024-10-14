@@ -5,28 +5,24 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasAttributes;
-use Lunar\Base\Traits\HasBundles;
-use Lunar\Base\Traits\HasDimensions;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasPrices;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Base\Traits\LogsActivity;
-use Lunar\Database\Factories\ProductVariantFactory;
+use Lunar\Database\Factories\BundleFactory;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property int $id
- * @property int $product_id
  * @property int $tax_class_id
  * @property array $attribute_data
- * @property ?string $tax_ref
  * @property int $unit_quantity
  * @property int $min_quantity
  * @property int $quantity_increment
@@ -34,16 +30,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?string $gtin
  * @property ?string $mpn
  * @property ?string $ean
- * @property ?float $length_value
- * @property ?string $length_unit
- * @property ?float $width_value
- * @property ?string $width_unit
- * @property ?float $height_value
- * @property ?string $height_unit
- * @property ?float $weight_value
- * @property ?string $weight_unit
- * @property ?float $volume_value
- * @property ?string $volume_unit
  * @property bool $shippable
  * @property int $stock
  * @property int $backorder
@@ -52,17 +38,14 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purchasable
+class Bundle extends BaseModel implements Purchasable
 {
     use HasAttributes;
-    use HasBundles;
-    use HasDimensions;
     use HasFactory;
     use HasMacros;
     use HasPrices;
     use HasTranslations;
     use LogsActivity;
-    use SoftDeletes;
 
     /**
      * Define the guarded attributes.
@@ -76,37 +59,50 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purc
      */
     protected $casts = [
         'requires_shipping' => 'bool',
-        'attribute_data' => AsAttributeData::class,
     ];
 
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory()
+    protected static function newFactory(): BundleFactory
     {
-        return ProductVariantFactory::new();
+        return BundleFactory::new();
     }
 
-    public function product(): BelongsTo
+    public function bundleable(): MorphTo
     {
-        return $this->belongsTo(Product::modelClass())->withTrashed();
+        return $this->morphTo();
     }
 
-    public function taxClass(): BelongsTo
+    /**
+     * Return the product collections relation.
+     */
+    public function collections(): BelongsToMany
     {
-        return $this->belongsTo(TaxClass::modelClass());
+        return $this->belongsToMany(
+            \Lunar\Models\Collection::class,
+            config('lunar.database.table_prefix').'collection_bundle'
+        )->withPivot(['position'])->withTimestamps();
     }
 
-    public function values(): BelongsToMany
+
+    public function items(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return $this->belongsToMany(
-            ProductOptionValue::modelClass(),
-            "{$prefix}product_option_value_product_variant",
-            'variant_id',
-            'value_id'
-        )->withTimestamps();
+        return $this->morphedByMany(
+            ProductVariant::class,
+            'bundleable',
+            "{$prefix}bundleables"
+        );
+    }
+
+    /**
+     * Return the tax class relationship.
+     */
+    public function taxClass(): BelongsTo
+    {
+        return $this->belongsTo(TaxClass::class);
     }
 
     public function getPrices(): Collection
@@ -164,17 +160,9 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purc
     /**
      * {@inheritDoc}
      */
-    public function getOption(): string
+    public function getOption(): void
     {
-        return $this->values->map(fn ($value) => $value->translate('name'))->join(', ');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getOptions(): Collection
-    {
-        return $this->values->map(fn ($value) => $value->translate('name'));
+        return;
     }
 
     /**
@@ -182,41 +170,15 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purc
      */
     public function getIdentifier(): string
     {
-        return $this->sku;
-    }
-
-    public function images(): BelongsToMany
-    {
-        $prefix = config('lunar.database.table_prefix');
-
-        return $this->belongsToMany(Media::class, "{$prefix}media_product_variant")
-            ->withPivot(['primary', 'position'])
-            ->orderBy('position')
-            ->withTimestamps();
+        return $this->items->map(function ($item) {
+            return $item->getIdentifier();
+        })->implode(',');
     }
 
     public function getThumbnail(): ?Media
     {
-        return $this->images->first(function ($media) {
+        return $this->images?->first(function ($media) {
             return (bool) $media->pivot?->primary;
-        }) ?: $this->product->thumbnail;
-    }
-
-    public function canBeFulfilledAtQuantity(int $quantity): bool
-    {
-        if ($this->purchasable == 'always') {
-            return true;
-        }
-
-        return $quantity <= $this->getTotalInventory();
-    }
-
-    public function getTotalInventory(): int
-    {
-        if ($this->purchasable == 'in_stock') {
-            return $this->stock;
-        }
-
-        return $this->stock + $this->backorder;
+        });
     }
 }
