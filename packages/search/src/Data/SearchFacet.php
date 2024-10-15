@@ -9,6 +9,7 @@ use Spatie\LaravelData\Data;
 class SearchFacet extends Data
 {
     public function __construct(
+        public string $label,
         public string $field,
         #[DataCollectionOf(FacetValue::class)]
         public array $values,

@@ -9,7 +9,7 @@ use Typesense\Documents;
 
 class TypesenseEngine extends AbstractEngine
 {
-    public function get(): mixed
+    public function get(): SearchResults
     {
         $paginator = $this->getRawResults(function (Documents $documents, string $query, array $options) {
 
@@ -34,7 +34,10 @@ class TypesenseEngine extends AbstractEngine
             }
 
             $options['q'] = $query;
-            $options['facet_by'] = 'brand,colour,size';
+            $facets = $this->getFacetConfig();
+
+            $options['facet_by'] = implode(',', array_keys($facets));
+            $options['max_facet_values'] = 50;
             $options['per_page'] = $this->perPage;
             $options['sort_by'] = $this->sort;
 
@@ -60,6 +63,7 @@ class TypesenseEngine extends AbstractEngine
 
         $facets = collect($results['facet_counts'])->map(
             fn ($facet) => SearchFacet::from([
+                'label' => $this->getFacetConfig($facet['field_name'])['label'] ?? '',
                 'field' => $facet['field_name'],
                 'values' => collect($facet['counts'])->map(
                     fn ($value) => SearchFacet\FacetValue::from([
@@ -72,6 +76,7 @@ class TypesenseEngine extends AbstractEngine
 
         foreach ($facets as $facet) {
             $facetConfig = $this->getFacetConfig($facet->field);
+
             foreach ($facet->values as $faceValue) {
                 if (empty($facetConfig[$faceValue->value])) {
                     continue;

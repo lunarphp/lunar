@@ -9,7 +9,7 @@ use Meilisearch\Endpoints\Indexes;
 
 class MeilisearchEngine extends AbstractEngine
 {
-    public function get(): mixed
+    public function get(): SearchResults
     {
         $paginator = $this->getRawResults(function (Indexes $indexes, string $query, array $options) {
 
