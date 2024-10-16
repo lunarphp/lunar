@@ -2,6 +2,7 @@
 
 namespace Lunar\Search\Data;
 
+use Illuminate\Contracts\Pagination\Paginator;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
@@ -19,7 +20,7 @@ class SearchResults extends Data
         #[DataCollectionOf(SearchHit::class)]
         public array $hits,
         #[DataCollectionOf(SearchFacet::class)]
-        public array $facets = [],
-        public array $links = [],
+        public array $facets,
+        public Paginator $paginator,
     ) {}
 }

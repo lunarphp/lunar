@@ -13,7 +13,7 @@ class TypesenseEngine extends AbstractEngine
     {
         $paginator = $this->getRawResults(function (Documents $documents, string $query, array $options) {
 
-            $filters = collect();
+            $filters = collect($options['filter_by']);
 
             foreach ($this->filters as $key => $value) {
                 $filters->push($key.':'.collect($value)->join(','));
@@ -39,7 +39,8 @@ class TypesenseEngine extends AbstractEngine
             $options['facet_by'] = implode(',', array_keys($facets));
             $options['max_facet_values'] = 50;
             $options['per_page'] = $this->perPage;
-            $options['sort_by'] = $this->sort;
+
+            $options['sort_by'] = $this->sortByIsValid() ? $this->sort : '';
 
             if ($filters->count()) {
                 $options['filter_by'] = $filters->join(' && ');
@@ -77,11 +78,17 @@ class TypesenseEngine extends AbstractEngine
         foreach ($facets as $facet) {
             $facetConfig = $this->getFacetConfig($facet->field);
 
-            foreach ($facet->values as $faceValue) {
-                if (empty($facetConfig[$faceValue->value])) {
+            foreach ($facet->values as $facetValue) {
+                $valueConfig = $facetConfig['values'][$facetValue->value] ?? null;
+
+                if (! $valueConfig) {
                     continue;
                 }
-                $faceValue->additional($facetConfig[$faceValue->value]);
+
+                $facetValue->value = $valueConfig['label'] ?? $facetValue->value;
+                unset($valueConfig['label']);
+
+                $facetValue->additional($valueConfig);
             }
         }
 
@@ -93,12 +100,47 @@ class TypesenseEngine extends AbstractEngine
             'per_page' => $paginator->perPage(),
             'hits' => $documents,
             'facets' => $facets,
-            'links' => $paginator->appends([
-                'perPage' => $this->perPage,
+            'paginator' => $paginator->appends([
                 'facets' => http_build_query($this->facets),
-            ])->linkCollection()->toArray(),
+            ]),
         ];
 
         return SearchResults::from($data);
+    }
+
+    protected function sortByIsValid(): bool
+    {
+        $sort = $this->sort;
+
+        if (! $sort) {
+            return true;
+        }
+
+        $parts = explode(':', $sort);
+
+        if (! isset($parts[1])) {
+            return false;
+        }
+
+        if (! in_array($parts[1], ['asc', 'desc'])) {
+            return false;
+        }
+
+        $config = $this->getFieldConfig();
+
+        if (empty($config)) {
+            return false;
+        }
+
+        $field = collect($config)->first(
+            fn ($field) => $field['name'] == $parts[0]
+        );
+
+        return $field && ($field['sort'] ?? false);
+    }
+
+    protected function getFieldConfig(): array
+    {
+        return config('scout.typesense.model-settings.'.$this->modelType.'.collection-schema.fields', []);
     }
 }
