@@ -35,7 +35,7 @@ class EnsureMediaCollectionsAreRenamed
     protected function getOutdatedMediaQuery()
     {
         return DB::table(app(config('media-library.media_model'))->getTable())
-            ->whereIn('model_type', [Product::class, Collection::class, Brand::class])
+            ->whereIn('model_type', [Product::morphName(), Collection::morphName(), Brand::morphName()])
             ->where('collection_name', 'products');
     }
 }
