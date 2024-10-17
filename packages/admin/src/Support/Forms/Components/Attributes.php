@@ -86,7 +86,7 @@ class Attributes extends Forms\Components\Group
             }
 
             foreach ($state as $key => $value) {
-                if (! $value instanceof \Lunar\Base\Fieldtype) {
+                if (! $value instanceof \Lunar\Base\FieldType) {
                     continue;
                 }
 
