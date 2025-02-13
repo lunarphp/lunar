@@ -33,10 +33,8 @@ trait CanScheduleAvailability
             $models = collect([$models]);
         }
 
-        $error = $this->validateScheduling($models);
-
-        if (! is_null($error)) {
-            throw new SchedulingException($error);
+        if (! $this->validateScheduling($models)) {
+            throw new SchedulingException;
         }
 
         $relation->syncWithoutDetaching(
@@ -60,10 +58,8 @@ trait CanScheduleAvailability
             $models = collect([$models]);
         }
 
-        $error = $this->validateScheduling($models);
-
-        if (! is_null($error)) {
-            throw new SchedulingException($error);
+        if (! $this->validateScheduling($models)) {
+            throw new SchedulingException;
         }
 
         $relation->syncWithoutDetaching(
