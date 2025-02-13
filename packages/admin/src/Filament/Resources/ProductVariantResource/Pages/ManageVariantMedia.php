@@ -100,7 +100,7 @@ class ManageVariantMedia extends BaseManageRelatedRecords
                         Shout::make('no_media_available')->content(
                             __('lunarpanel::relationmanagers.medias.all_media_attached')
                         )->visible(
-                            fn (Get $get) => ! $this->getRecord()->product->media()->count() >= $this->getRecord()->images()->count()
+                            fn (Get $get) => $this->getRecord()->product->media()->count() <= $this->getRecord()->images()->count()
                         ),
                         Forms\Components\Select::make('media_id')
                             ->label(__('lunarpanel::relationmanagers.medias.table.file.label'))
@@ -113,8 +113,8 @@ class ManageVariantMedia extends BaseManageRelatedRecords
                                         $media->getKey() => Arr::get($media->data, 'custom_properties.name', $media->name),
                                     ]);
                             })
-                            ->visible(
-                                fn () => $this->getRecord()->product->media()->count() > $this->getRecord()->images()->count()
+                            ->disabled(
+                                fn () => $this->getRecord()->product->media()->count() <= $this->getRecord()->images()->count()
                             )
                             ->required(),
 
