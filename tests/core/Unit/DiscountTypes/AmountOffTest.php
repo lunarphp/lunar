@@ -786,13 +786,13 @@ test('fixed amount discount distributes across cart lines', function () {
 
 test('can apply percentage discount', function (
     string $coupon,
-    float  $percentage,
-    int    $discountTotalForOne,
-    int    $taxTotalForOne,
-    int    $totalForOne,
-    int    $discountTotalForTwo,
-    int    $taxTotalForTwo,
-    int    $totalForTwo
+    float $percentage,
+    int $discountTotalForOne,
+    int $taxTotalForOne,
+    int $totalForOne,
+    int $discountTotalForTwo,
+    int $taxTotalForTwo,
+    int $totalForTwo
 ) {
     $customerGroup = CustomerGroup::getDefault();
 
