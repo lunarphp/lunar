@@ -89,8 +89,14 @@ return [
         'title' => 'Media',
         'title_plural' => 'Media',
         'actions' => [
+            'attach' => [
+                'label' => 'Attach Media',
+            ],
             'create' => [
                 'label' => 'Create Media',
+            ],
+            'detach' => [
+                'label' => 'Detach',
             ],
             'view' => [
                 'label' => 'View',
@@ -121,6 +127,8 @@ return [
                 'label' => 'Primary',
             ],
         ],
+        'all_media_attached' => 'There are no product images available to attach',
+        'variant_description' => 'Attach product images to this variant',
     ],
     'urls' => [
         'title' => 'URL',

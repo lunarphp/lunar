@@ -3,21 +3,25 @@
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
 use Awcodes\Shout\Components\Shout;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
+use Filament\Forms;
 use Filament\Forms\Get;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\ProductResource;
+use Illuminate\Support\Arr;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
-use Lunar\Admin\Support\Forms\Components\MediaSelect;
-use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Models\ProductVariant;
+use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class ManageVariantMedia extends BaseEditRecord
+class ManageVariantMedia extends BaseManageRelatedRecords
 {
+    protected static string $relationship = 'images';
+
     protected static string $resource = ProductVariantResource::class;
 
     public function getTitle(): string|Htmlable
@@ -44,15 +48,6 @@ class ManageVariantMedia extends BaseEditRecord
         ];
     }
 
-    protected function getCancelFormAction(): Action
-    {
-        return parent::getCancelFormAction()->url(function (Model $record) {
-            return ProductResource::getUrl('variants', [
-                'record' => $record->product,
-            ]);
-        });
-    }
-
     public function getBreadcrumbs(): array
     {
         return [
@@ -65,58 +60,109 @@ class ManageVariantMedia extends BaseEditRecord
         ];
     }
 
-    protected function handleRecordUpdate(Model $record, array $data): Model
+    public function table(Table $table): Table
     {
-        $record->images()->sync([
-            $data['images'] => ['primary' => true],
-        ]);
-
-        return $record;
-    }
-
-    public function form(Form $form): Form
-    {
-        return $form->schema([
-            Section::make()->schema([
-                Shout::make('no_selection')->content(
-                    __('lunarpanel::productvariant.pages.media.form.no_selection.label')
-                )->visible(
-                    fn (Get $get) => ! $get('images') && $this->getRecord()->product->media()->count()
-                ),
-                Shout::make('no_media_available')->content(
-                    __('lunarpanel::productvariant.pages.media.form.no_media_available.label')
-                )->visible(
-                    fn (Get $get) => ! $this->getRecord()->product->media()->count()
-                ),
-                MediaSelect::make('images')
-                    ->visible(
-                        fn () => $this->getRecord()->product->media()->count()
-                    )
-                    ->label(
-                        __('lunarpanel::productvariant.pages.media.form.images.label')
-                    )
-                    ->helperText(
-                        __('lunarpanel::productvariant.pages.media.form.images.helper_text')
-                    )
-                    ->afterStateHydrated(function (ProductVariant $record, MediaSelect $component) {
-                        $image = $record->images->first(function ($media) {
-                            return (bool) $media->pivot?->primary;
-                        });
-                        $component->state($image?->id);
+        return $table
+            ->heading(function () {
+                return __('lunarpanel::relationmanagers.medias.title');
+            })
+            ->description(function () {
+                return __('lunarpanel::relationmanagers.medias.variant_description');
+            })
+            ->recordTitleAttribute('name')
+            ->modifyQueryUsing(fn (Builder $query) => $query->orderBy('position'))
+            ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->state(function (Media $record): string {
+                        return $record->hasGeneratedConversion('small') ? $record->getUrl('small') : $record->getUrl();
                     })
-                    ->options(
-                        $this->getRecord()->product->media->mapWithKeys(
-                            fn ($media) => [
-                                $media->id => $media->getUrl('small'),
-                            ]
-                        )
-                    ),
-            ]),
-        ]);
-    }
+                    ->label(__('lunarpanel::relationmanagers.medias.table.image.label')),
+                Tables\Columns\TextColumn::make('file_name')
+                    ->limit(30)
+                    ->label(__('lunarpanel::relationmanagers.medias.table.file.label')),
+                Tables\Columns\TextColumn::make('custom_properties.name')
+                    ->label(__('lunarpanel::relationmanagers.medias.table.name.label')),
+                Tables\Columns\ToggleColumn::make('primary')
+                    ->label(__('lunarpanel::relationmanagers.medias.table.primary.label'))
+                    ->beforeStateUpdated(function ($record, $state) {
+                        if ($state === true) {
+                            $record = $this->getOwnerRecord();
 
-    public function getRelationManagers(): array
-    {
-        return [];
+                            $record->images->each(fn ($media) => $record->images()->updateExistingPivot($media->id, ['primary' => false]));
+                        }
+                    }),
+            ])
+            ->headerActions([
+                CreateAction::make('attach')
+                    ->label(__('lunarpanel::relationmanagers.medias.actions.attach.label'))
+                    ->modalHeading(__('lunarpanel::relationmanagers.medias.actions.attach.label'))
+                    ->form([
+                        Shout::make('no_media_available')->content(
+                            __('lunarpanel::relationmanagers.medias.all_media_attached')
+                        )->visible(
+                            fn (Get $get) => $this->getRecord()->product->media()->count() <= $this->getRecord()->images()->count()
+                        ),
+                        Forms\Components\Select::make('media_id')
+                            ->label(__('lunarpanel::relationmanagers.medias.table.file.label'))
+                            ->options(function () {
+                                return $this->getRecord()
+                                    ->product
+                                    ->media
+                                    ->filter(fn ($media) => ! $this->getRecord()->images->pluck('id')->contains($media->id))
+                                    ->mapWithKeys(fn ($media) => [
+                                        $media->getKey() => Arr::get($media->data, 'custom_properties.name', $media->name),
+                                    ]);
+                            })
+                            ->disabled(
+                                fn () => $this->getRecord()->product->media()->count() <= $this->getRecord()->images()->count()
+                            )
+                            ->required(),
+
+                        Forms\Components\Toggle::make('primary')
+                            ->label(__('lunarpanel::relationmanagers.medias.table.primary.label'))
+                            ->visible(
+                                fn () => $this->getRecord()->product->media()->count() > $this->getRecord()->images()->count()
+                            ),
+                    ])
+                    ->using(function (array $data): Model {
+                        $record = $this->getOwnerRecord();
+
+                        $isPrimary = $data['primary'] ?? false;
+                        $position = 0;
+
+                        if (! $isPrimary && $record->images->isEmpty()) {
+                            $isPrimary = true;
+                        }
+
+                        if ($record->images->isNotEmpty()) {
+                            $position = $record->images->pluck('pivot.position')->sort()->last() + 1;
+
+                            if ($isPrimary) {
+                                $record->images->each(fn ($media) => $record->images()->updateExistingPivot($media->id, ['primary' => false]));
+                            }
+                        }
+
+                        $record->images()->attach([
+                            $data['media_id'] => [
+                                'position' => $position,
+                                'primary' => $isPrimary,
+                            ],
+                        ]);
+
+                        return $record;
+                    }),
+            ])
+            ->actions([
+                Action::make('detach')
+                    ->label(__('lunarpanel::relationmanagers.medias.actions.detach.label'))
+                    ->action(function ($record) {
+                        $this->getOwnerRecord()->images()->detach($record);
+                    }),
+            ])
+            ->reorderRecordsTriggerAction(
+                fn (Action $action, bool $isReordering) => $action
+                    ->button(),
+            )
+            ->reorderable('position', true);
     }
 }
