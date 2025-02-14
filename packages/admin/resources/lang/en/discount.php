@@ -148,6 +148,20 @@ return [
                 ],
             ],
         ],
+        'customers' => [
+            'title' => 'Customers',
+            'description' => 'Select which customers this discount should be limited to.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Attach Customer',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
+                ],
+            ],
+        ],
         'brands' => [
             'title' => 'Brands',
             'description' => 'Select which brands this discount should be limited to.',

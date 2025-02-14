@@ -319,6 +319,9 @@ class ManageOrder extends BaseViewRecord
             ->form(function () {
                 return [
                     TagsComponent::make('')
+                        ->splitKeys(['Tab', ','])
+                        ->label(__('lunarpanel::order.action.edit_tags.form.tags.label'))
+                        ->helperText(__('lunarpanel::order.action.edit_tags.form.tags.helper_text'))
                         ->suggestions(Tag::all()->pluck('value')->all()),
                 ];
             })->action(function (Action $action, $record, $data) {
