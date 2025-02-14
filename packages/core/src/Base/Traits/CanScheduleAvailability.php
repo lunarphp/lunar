@@ -18,17 +18,14 @@ trait CanScheduleAvailability
 
     /**
      * Schedule models for a given relation.
-     *
-     * @param  mixed  $models
-     * @return void
      */
     protected function schedule(
         Relation $relation,
-        $models,
+        mixed $models,
         ?DateTime $starts = null,
         ?DateTime $ends = null,
         array $pivotData = []
-    ) {
+    ): void {
         // Convert to collection if it's an array
         $models = is_array($models) ? collect($models) : $models;
 
@@ -36,10 +33,8 @@ trait CanScheduleAvailability
             $models = collect([$models]);
         }
 
-        $error = $this->validateScheduling($models);
-
-        if (! is_null($error)) {
-            throw new SchedulingException($error);
+        if (! $this->validateScheduling($models)) {
+            throw new SchedulingException;
         }
 
         $relation->syncWithoutDetaching(
@@ -53,11 +48,8 @@ trait CanScheduleAvailability
 
     /**
      * Unschedule models for a relation.
-     *
-     * @param  mixed  $models
-     * @return void
      */
-    protected function unschedule(Relation $relation, $models, array $pivotData = [])
+    protected function unschedule(Relation $relation, mixed $models, array $pivotData = []): void
     {
         // Convert to collection if it's an array
         $models = is_array($models) ? collect($models) : $models;
@@ -66,10 +58,8 @@ trait CanScheduleAvailability
             $models = collect([$models]);
         }
 
-        $error = $this->validateScheduling($models);
-
-        if (! is_null($error)) {
-            throw new SchedulingException($error);
+        if (! $this->validateScheduling($models)) {
+            throw new SchedulingException;
         }
 
         $relation->syncWithoutDetaching(

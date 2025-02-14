@@ -132,6 +132,16 @@ class Discount extends BaseModel implements Contracts\Discount
         )->withPivot(['type'])->withTimestamps();
     }
 
+    public function customers(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Customer::modelClass(),
+            "{$prefix}customer_discount"
+        )->withTimestamps();
+    }
+
     public function customerGroups(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');

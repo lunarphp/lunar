@@ -38,7 +38,7 @@ class ProductConditionRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['condition'])
-                    ->wherePurchasableType(Product::class)
+                    ->wherePurchasableType(Product::morphName())
                     ->whereHas('purchasable')
             )
             ->headerActions([

@@ -81,28 +81,22 @@ trait HasCustomerGroups
         );
     }
 
-    protected function validateScheduling(Collection $models)
+    protected function validateScheduling(Collection $models): bool
     {
         foreach ($models as $model) {
             if (is_object($model) && ! ($model instanceof CustomerGroup)) {
                 return false;
             }
         }
+
+        return true;
     }
 
     /**
      * Apply customer group scope.
-     *
-     * @param  Collection  $customerGroups
-     * @return Builder
      */
-    public function applyCustomerGroupScope(
-        Builder $query,
-        Collection $groupIds,
-        DateTime $startsAt,
-        DateTime $endsAt,
-        bool $onlyVisible
-    ) {
+    public function applyCustomerGroupScope(Builder $query, Collection $groupIds, DateTime $startsAt, DateTime $endsAt, $onlyVisible): Builder
+    {
         return $query->whereHas('customerGroups', function ($relation) use ($groupIds, $startsAt, $endsAt, $onlyVisible) {
             $relation->whereIn(
                 $this->customerGroups()->getTable().'.customer_group_id',
