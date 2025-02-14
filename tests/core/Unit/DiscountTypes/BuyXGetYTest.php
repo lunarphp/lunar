@@ -24,96 +24,92 @@ test('can determine correct reward qty', function ($linesQuantity, $minQty, $rew
         $rewardQty,
         $maxRewardQty ?? null
     ))->toEqual($expected);
-})->with('provideRewardChecks');
-
-dataset('provideRewardChecks', function () {
-    return [
-        [
-            'linesQuantity' => 1,
-            'minQty' => 1,
-            'rewardQty' => 1,
-            'maxRewardQty' => null,
-            'expected' => 1,
-        ],
-        [
-            'linesQuantity' => 2,
-            'minQty' => 1,
-            'rewardQty' => 1,
-            'maxRewardQty' => null,
-            'expected' => 2,
-        ],
-        [
-            'linesQuantity' => 2,
-            'minQty' => 2,
-            'rewardQty' => 1,
-            'maxRewardQty' => null,
-            'expected' => 1,
-        ],
-        [
-            'linesQuantity' => 10,
-            'minQty' => 10,
-            'rewardQty' => 1,
-            'maxRewardQty' => null,
-            'expected' => 1,
-        ],
-        [
-            'linesQuantity' => 10,
-            'minQty' => 1,
-            'rewardQty' => 1,
-            'maxRewardQty' => null,
-            'expected' => 10,
-        ],
-        [
-            'linesQuantity' => 10,
-            'minQty' => 1,
-            'rewardQty' => 1,
-            'maxRewardQty' => 5,
-            'expected' => 5,
-        ],
-        [
-            'linesQuantity' => 3,
-            'minQty' => 2,
-            'rewardQty' => 1,
-            'maxRewardQty' => 10,
-            'expected' => 1,
-        ],
-        [
-            'linesQuantity' => 0,
-            'minQty' => 1,
-            'rewardQty' => 1,
-            'maxRewardQty' => null,
-            'expected' => 0,
-        ],
-        [
-            'linesQuantity' => 4,
-            'minQty' => 5,
-            'rewardQty' => 3,
-            'maxRewardQty' => null,
-            'expected' => 0,
-        ],
-        [
-            'linesQuantity' => 5,
-            'minQty' => 5,
-            'rewardQty' => 3,
-            'maxRewardQty' => null,
-            'expected' => 3,
-        ],
-        [
-            'linesQuantity' => 10,
-            'minQty' => 5,
-            'rewardQty' => 3,
-            'maxRewardQty' => null,
-            'expected' => 6,
-        ],
-        [
-            'linesQuantity' => 10,
-            'minQty' => 5,
-            'rewardQty' => 3,
-            'maxRewardQty' => 5,
-            'expected' => 5,
-        ],
-    ];
-});
+})->with([
+    [
+        1,
+        1,
+        1,
+        null,
+        1,
+    ],
+    [
+        2,
+        1,
+        1,
+        null,
+        2,
+    ],
+    [
+        2,
+        2,
+        1,
+        null,
+        1,
+    ],
+    [
+        10,
+        10,
+        1,
+        null,
+        1,
+    ],
+    [
+        10,
+        1,
+        1,
+        null,
+        10,
+    ],
+    [
+        10,
+        1,
+        1,
+        5,
+        5,
+    ],
+    [
+        3,
+        2,
+        1,
+        10,
+        1,
+    ],
+    [
+        0,
+        1,
+        1,
+        null,
+        0,
+    ],
+    [
+        4,
+        5,
+        3,
+        null,
+        0,
+    ],
+    [
+        5,
+        5,
+        3,
+        null,
+        3,
+    ],
+    [
+        10,
+        5,
+        3,
+        null,
+        6,
+    ],
+    [
+        10,
+        5,
+        3,
+        5,
+        5,
+    ],
+]);
 
 test('can discount eligible product', function () {
     $customerGroup = CustomerGroup::factory()->create([

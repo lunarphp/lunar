@@ -38,7 +38,7 @@ class ProductRewardRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['reward'])
-                    ->wherePurchasableType(Product::class)
+                    ->wherePurchasableType(Product::morphName())
                     ->whereHas('purchasable')
             )
             ->headerActions([
