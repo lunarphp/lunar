@@ -88,9 +88,9 @@ class VariantSwitcherTable extends TableWidget
 
     protected function getTableRecordUrlUsing(): ?Closure
     {
-        return function (ProductVariant $variant) {
+        return function (Model $record) {
             return ProductVariantResource::getUrl('edit', [
-                'record' => $variant,
+                'record' => $record,
             ]);
         };
     }

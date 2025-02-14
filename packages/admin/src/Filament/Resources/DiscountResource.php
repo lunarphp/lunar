@@ -5,7 +5,6 @@ namespace Lunar\Admin\Filament\Resources;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
-use Filament\Pages\Page;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
@@ -15,6 +14,7 @@ use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CustomerLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
@@ -377,13 +377,13 @@ class DiscountResource extends BaseResource
         ];
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             Pages\EditDiscount::class,
             Pages\ManageDiscountAvailability::class,
             Pages\ManageDiscountLimitations::class,
-        ]);
+        ];
     }
 
     protected static function getDefaultRelations(): array
@@ -393,6 +393,7 @@ class DiscountResource extends BaseResource
             BrandLimitationRelationManager::class,
             ProductLimitationRelationManager::class,
             ProductVariantLimitationRelationManager::class,
+            CustomerLimitationRelationManager::class,
             ProductRewardRelationManager::class,
             ProductConditionRelationManager::class,
             ProductRewardRelationManager::class,
