@@ -147,6 +147,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
                     $data['min_quantity'] = 1;
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
+                    $data['compare_price'] = (int) ($data['compare_price'] * $currencyModel->factor);
 
                     return $data;
                 })->label(
@@ -162,6 +163,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
                     $data['min_quantity'] = 1;
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
+                    $data['compare_price'] = (int) ($data['compare_price'] * $currencyModel->factor);
 
                     return $data;
                 })->after(

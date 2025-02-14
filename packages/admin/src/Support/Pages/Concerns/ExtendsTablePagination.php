@@ -10,7 +10,7 @@ trait ExtendsTablePagination
 {
     protected function getDefaultPaginationQuery(Builder $query): Paginator|CursorPaginator
     {
-        return $query->paginate($this->getTableRecordsPerPage());
+        return parent::paginateTableQuery($query);
     }
 
     protected function paginateTableQuery(Builder $query): Paginator|CursorPaginator

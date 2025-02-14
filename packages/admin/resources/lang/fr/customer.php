@@ -2,61 +2,61 @@
 
 return [
 
-    'label' => 'Customer',
+    'label' => 'Client',
 
-    'plural_label' => 'Customers',
+    'plural_label' => 'Clients',
 
     'table' => [
         'full_name' => [
-            'label' => 'Name',
+            'label' => 'Nom',
         ],
         'first_name' => [
-            'label' => 'First Name',
+            'label' => 'Prénom',
         ],
         'last_name' => [
-            'label' => 'Last Name',
+            'label' => 'Nom',
         ],
         'title' => [
-            'label' => 'Title',
+            'label' => 'Titre',
         ],
         'company_name' => [
-            'label' => 'Company Name',
+            'label' => 'Nom de la société',
         ],
         'vat_no' => [
-            'label' => 'VAT No.',
+            'label' => 'Numéro de TVA',
         ],
         'account_reference' => [
-            'label' => 'Account Reference',
+            'label' => 'Référence de compte',
         ],
         'new' => [
-            'label' => 'New',
+            'label' => 'Nouveau',
         ],
         'returning' => [
-            'label' => 'Returning',
+            'label' => 'Retour',
         ],
     ],
 
     'form' => [
         'title' => [
-            'label' => 'Title',
+            'label' => 'Titre',
         ],
         'first_name' => [
-            'label' => 'First Name',
+            'label' => 'Prénom',
         ],
         'last_name' => [
-            'label' => 'Last Name',
+            'label' => 'Nom',
         ],
         'company_name' => [
-            'label' => 'Company Name',
+            'label' => 'Nom de la société',
         ],
         'account_ref' => [
-            'label' => 'Account Reference',
+            'label' => 'Référence de compte',
         ],
         'vat_no' => [
-            'label' => 'VAT No.',
+            'label' => 'Numéro de TVA',
         ],
         'customer_groups' => [
-            'label' => 'Customer Groups',
+            'label' => 'Groupes de clients',
         ],
     ],
 
