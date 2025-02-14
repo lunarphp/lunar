@@ -22,7 +22,7 @@ return [
         'company_name' => [
             'label' => 'Bedrijfsnaam',
         ],
-        'vat_no' => [
+        'vat_number' => [
             'label' => 'BTW Nr.',
         ],
         'account_reference' => [
@@ -52,7 +52,7 @@ return [
         'account_ref' => [
             'label' => 'Account Referentie',
         ],
-        'vat_no' => [
+        'vat_number' => [
             'label' => 'BTW Nr.',
         ],
         'customer_groups' => [

@@ -22,7 +22,7 @@ return [
         'company_name' => [
             'label' => 'Nom de la société',
         ],
-        'vat_no' => [
+        'vat_number' => [
             'label' => 'Numéro de TVA',
         ],
         'account_reference' => [
@@ -52,7 +52,7 @@ return [
         'account_ref' => [
             'label' => 'Référence de compte',
         ],
-        'vat_no' => [
+        'vat_number' => [
             'label' => 'Numéro de TVA',
         ],
         'customer_groups' => [

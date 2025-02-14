@@ -109,8 +109,8 @@
                                     {{ $record->billingAddress->state }}<br>
                                     {{ $record->billingAddress->postcode }}<br>
                                     {{ $record->billingAddress->country->name }}<br>
-                                    @if($record->customer?->vat_no)
-                                        <p>VAT No.: {{ $record->customer?->vat_no }}</p>
+                                    @if($record->customer?->vat_number)
+                                        <p>VAT Number: {{ $record->customer?->vat_number }}</p>
                                     @endif
                                 </td>
 

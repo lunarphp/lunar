@@ -16,7 +16,7 @@ test('can make a customer with minimum attributes', function () {
         'first_name' => 'Tony',
         'last_name' => 'Stark',
         'company_name' => null,
-        'vat_no' => null,
+        'vat_number' => null,
         'meta' => null,
     ];
 
@@ -36,7 +36,7 @@ test('can make a customer', function () {
         'first_name' => 'Tony',
         'last_name' => 'Stark',
         'company_name' => 'Stark Enterprises',
-        'vat_no' => null,
+        'vat_number' => null,
         'meta' => null,
     ];
 
@@ -56,7 +56,7 @@ test('can make a customer with meta attribute', function () {
         'first_name' => 'Tony',
         'last_name' => 'Stark',
         'company_name' => null,
-        'vat_no' => null,
+        'vat_number' => null,
         'meta' => [
             'account' => 123456,
         ],

@@ -64,7 +64,7 @@ test('can return correct searchable data', function () {
 
     expect($data['name'])->toEqual($customer->fullName);
     expect($data['company_name'])->toEqual($customer->company_name);
-    expect($data['vat_no'])->toEqual($customer->vat_no);
+    expect($data['vat_number'])->toEqual($customer->vat_number);
     expect($data)->toHaveKey('meta_field');
     expect($data['meta_field'])->toEqual('meta_value');
     expect($data['account_ref'])->toEqual($customer->account_ref);

@@ -149,8 +149,8 @@ class CustomerResource extends BaseResource
 
     protected static function getVatNoFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('vat_no')
-            ->label(__('lunarpanel::customer.form.vat_no.label'))
+        return Forms\Components\TextInput::make('vat_number')
+            ->label(__('lunarpanel::customer.form.vat_number.label'))
             ->nullable()
             ->maxLength(255);
     }
@@ -184,8 +184,8 @@ class CustomerResource extends BaseResource
                     ->label(__('lunarpanel::customer.table.company_name.label'))
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('vat_no')
-                    ->label(__('lunarpanel::customer.table.vat_no.label'))
+                Tables\Columns\TextColumn::make('vat_number')
+                    ->label(__('lunarpanel::customer.table.vat_number.label'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('account_ref')
                     ->label(__('lunarpanel::customer.table.account_reference.label'))
@@ -236,7 +236,7 @@ class CustomerResource extends BaseResource
             'last_name',
             'company_name',
             'account_ref',
-            'vat_no',
+            'vat_number',
             'users.name',
             'users.email',
         ];
