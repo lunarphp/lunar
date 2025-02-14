@@ -42,6 +42,7 @@ class ManageDiscountLimitations extends BaseEditRecord
     {
         return [
             RelationGroup::make('Limitations', [
+                DiscountResource\RelationManagers\CustomerLimitationRelationManager::class,
                 DiscountResource\RelationManagers\CollectionLimitationRelationManager::class,
                 DiscountResource\RelationManagers\BrandLimitationRelationManager::class,
                 DiscountResource\RelationManagers\ProductLimitationRelationManager::class,
