@@ -80,6 +80,9 @@ return [
             'company_name' => [
                 'label' => 'Nom de l\'entreprise',
             ],
+            'vat_number' => [
+                'label' => 'Numéro de TVA',
+            ],
             'contact_phone' => [
                 'label' => 'Téléphone',
             ],

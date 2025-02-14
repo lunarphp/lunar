@@ -95,6 +95,9 @@
                                     @if($record->billingAddress->company_name)
                                       {{ $record->billingAddress->company_name }}<br>
                                     @endif
+                                    @if($record->billingAddress->vat_number)
+                                      {{ $record->billingAddress->vat_number }}<br>
+                                    @endif
                                     {{ $record->billingAddress->line_one }}
                                     @if($record->billingAddress->line_two)
                                       <br>{{ $record->billingAddress->line_two }}<br>
@@ -116,6 +119,9 @@
                                     {{ $record->shippingAddress->fullName }}<br>
                                     @if($record->shippingAddress->company_name)
                                       {{ $record->shippingAddress->company_name }}<br>
+                                    @endif
+                                    @if($record->shippingAddress->vat_number)
+                                      {{ $record->shippingAddress->vat_number }}<br>
                                     @endif
                                     {{ $record->shippingAddress->line_one }}
                                     @if($record->shippingAddress->line_two)

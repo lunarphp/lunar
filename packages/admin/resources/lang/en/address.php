@@ -19,6 +19,9 @@ return [
         'company_name' => [
             'label' => 'Company Name',
         ],
+        'vat_number' => [
+            'label' => 'VAT Number',
+        ],
         'line_one' => [
             'label' => 'Address',
         ],
@@ -60,6 +63,9 @@ return [
         ],
         'company_name' => [
             'label' => 'Company Name',
+        ],
+        'vat_number' => [
+            'label' => 'VAT Number',
         ],
         'line_one' => [
             'label' => 'Line One',

@@ -19,6 +19,9 @@ return [
         'company_name' => [
             'label' => 'Nombre de la empresa',
         ],
+        'vat_number' => [
+            'label' => 'Número de IVA',
+        ],
         'line_one' => [
             'label' => 'Dirección',
         ],
@@ -60,6 +63,9 @@ return [
         ],
         'company_name' => [
             'label' => 'Nombre de la empresa',
+        ],
+        'vat_number' => [
+            'label' => 'Número de IVA',
         ],
         'line_one' => [
             'label' => 'Línea Uno',

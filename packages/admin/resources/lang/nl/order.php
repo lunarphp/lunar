@@ -80,6 +80,9 @@ return [
             'company_name' => [
                 'label' => 'Bedrijfsnaam',
             ],
+            'vat_number' => [
+                'label' => 'BTW-nummer',
+            ],
             'contact_phone' => [
                 'label' => 'Telefoon',
             ],
