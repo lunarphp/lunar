@@ -5,7 +5,6 @@ namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Get;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
@@ -116,7 +115,8 @@ class ManageVariantMedia extends BaseManageRelatedRecords
                                         $imageTag = '<img src="'.$imageUrl.'" alt="" style="width: 75px; display: inline; margin-right: 10px">';
                                         $customName = Arr::get($media->custom_properties, 'name');
                                         $name = empty($customName) ? $media->name : $customName;
-                                        return [$media->getKey() =>  $imageTag . $name];
+
+                                        return [$media->getKey() => $imageTag.$name];
                                     });
                             })
                             ->disabled(
