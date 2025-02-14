@@ -15,6 +15,6 @@ class StripePaymentIntent extends BaseModel
 
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(Cart::class, 'cart_id');
     }
 }

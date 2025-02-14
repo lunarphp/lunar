@@ -14,7 +14,6 @@ class ListField extends BaseFieldType
     public static function getFilamentComponent(Attribute $attribute): Component
     {
         return KeyValue::make($attribute->handle)
-            ->live()
             ->reorderable()
             ->dehydrateStateUsing(function ($state) {
                 return $state;

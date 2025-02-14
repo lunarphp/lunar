@@ -65,9 +65,11 @@ use Lunar\Models\Channel;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
+use Lunar\Models\Discount;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
+use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
@@ -79,10 +81,12 @@ use Lunar\Observers\ChannelObserver;
 use Lunar\Observers\CollectionObserver;
 use Lunar\Observers\CurrencyObserver;
 use Lunar\Observers\CustomerGroupObserver;
+use Lunar\Observers\DiscountObserver;
 use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\MediaObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
+use Lunar\Observers\ProductObserver;
 use Lunar\Observers\ProductOptionObserver;
 use Lunar\Observers\ProductOptionValueObserver;
 use Lunar\Observers\ProductVariantObserver;
@@ -296,8 +300,11 @@ class LunarServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
+        Product::observe(ProductObserver::class);
+
         Channel::observe(ChannelObserver::class);
         CustomerGroup::observe(CustomerGroupObserver::class);
+        Discount::observe(DiscountObserver::class);
         Language::observe(LanguageObserver::class);
         Currency::observe(CurrencyObserver::class);
         Url::observe(UrlObserver::class);
