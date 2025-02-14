@@ -113,7 +113,7 @@ class ManageVariantMedia extends BaseManageRelatedRecords
                                     ->filter(fn ($media) => ! $this->getRecord()->images->pluck('id')->contains($media->id))
                                     ->mapWithKeys(function ($media) {
                                         $imageUrl = $media->hasGeneratedConversion('small') ? $media->getUrl('small') : $media->getUrl();
-                                        $imageTag = '<img src="'.$imageUrl.'" alt="" style="width: 100px; display: inline; margin-right: 10px">';
+                                        $imageTag = '<img src="'.$imageUrl.'" alt="" style="width: 75px; display: inline; margin-right: 10px">';
                                         $customName = Arr::get($media->custom_properties, 'name');
                                         $name = empty($customName) ? $media->name : $customName;
                                         return [$media->getKey() =>  $imageTag . $name];
