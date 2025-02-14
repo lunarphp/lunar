@@ -150,7 +150,7 @@ return [
         ],
         'customers' => [
             'title' => 'Customers',
-            'description' => 'Select which customers who use this discount should be limited to.',
+            'description' => 'Select which customers this discount should be limited to.',
             'actions' => [
                 'attach' => [
                     'label' => 'Attach Customer',
