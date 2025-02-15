@@ -420,4 +420,69 @@ class PricingManagerTest extends TestCase
         $this->assertNotEquals($price->price->value, $pricing->matched->price->value);
         $this->assertEquals(200, $pricing->matched->price->value);
     }
+
+
+    /** @test  */
+    public function can_fetch_correct_base_price()
+    {
+        $manager = new PricingManager();
+
+        $user = User::factory()->create();
+
+        $customer = Customer::factory()->create();
+
+        $group = CustomerGroup::factory()->create();
+
+        $defaultCurrency = Currency::factory()->create([
+            'default' => true,
+            'exchange_rate' => 1,
+        ]);
+
+        $product = Product::factory()->create([
+            'status' => 'published',
+        ]);
+
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $product->id,
+        ]);
+
+        $base = Price::factory()->create([
+            'price' => 100,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id' => $variant->id,
+            'currency_id' => $defaultCurrency->id,
+            'tier' => 1,
+        ]);
+
+        $groupPrice = Price::factory()->create([
+            'price' => 90,
+            'priceable_type' => ProductVariant::class,
+            'priceable_id' => $variant->id,
+            'currency_id' => $defaultCurrency->id,
+            'tier' => 1,
+            'customer_group_id' => $group->id,
+        ]);
+
+        $user->customers()->attach($customer);
+        $customer->customerGroups()->attach($group);
+
+        $pricing = $manager->qty(1)->user($user->refresh())->for($variant)->get();
+
+        // Verify that the base price ($base) matches the base price provided by PricingManager.
+        $this->assertEquals($base->id, $pricing->base->id);
+
+        // Gets prices as PricingManager would
+        $currencyPrices = $variant->getPrices()
+            ->filter(fn ($price) => $price->currency_id == $defaultCurrency->id);
+        $prices = $currencyPrices->filter(
+            // Only fetch prices which have no customer group (available to all) or belong to the customer groups
+            // that we are trying to check against.
+            fn ($price) => ! $price->customer_group_id || $group->pluck('id')->contains($price->customer_group_id)
+        )->sortBy('price');
+
+        $firstTierPrice = $prices->first(fn ($price) => $price->tier == 1);
+
+        // Verify that $firstTierPrice is not the actual base price.
+        $this->assertNotEquals($base->id, $firstTierPrice->id, 'First tier price is different from base price.');
+    }
 }
