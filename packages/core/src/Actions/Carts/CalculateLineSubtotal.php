@@ -61,7 +61,6 @@ class CalculateLineSubtotal
             $cart->currency->decimal_places
         );
 
-
         $cartLine->subTotal = new Price($unitPrice * $cartLine->quantity, $cart->currency, $unitQuantity);
         $cartLine->unitPrice = new Price($unitPrice, $cart->currency, $unitQuantity);
         $cartLine->unitPriceInclTax = new Price($unitPriceInclTax, $cart->currency, $unitQuantity);
