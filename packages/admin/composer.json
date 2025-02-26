@@ -15,7 +15,7 @@
     "minimum-stability": "dev",
     "require": {
         "lunarphp/core": "self.version",
-        "filament/filament": "^3.2|^3.3",
+        "filament/filament": "^3.2.25|^3.3",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "spatie/laravel-permission": "^6.4",
         "barryvdh/laravel-dompdf": "^2.0",
