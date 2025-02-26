@@ -170,7 +170,9 @@ class OrderItemsTable extends TableComponent
                 $response = $transaction->refund(bcmul($data['amount'], $this->record->currency->factor), $data['notes']);
 
                 if (! $response->success) {
-                    $action->failureNotification(fn () => $response->message);
+                    $action->failureNotification(
+                        fn () => Notification::make('refund_failure')->color('danger')->title($response->message)
+                    );
 
                     $action->failure();
 
