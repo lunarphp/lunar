@@ -21,6 +21,7 @@
         "filament/filament": "^3.2.25",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.3",
+        "http-interop/http-factory-guzzle": "^1.2",
         "kalnoy/nestedset": "^v6.x-dev",
         "laravel/framework": "^10.0|^11.0",
         "laravel/scout": "^10.0",
@@ -28,15 +29,17 @@
         "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
         "marvinosswald/filament-input-select-affix": "^0.2.0",
-        "meilisearch/meilisearch-php": "^v1.6.0",
+        "meilisearch/meilisearch-php": "^1.10",
         "php": "^8.2",
         "spatie/laravel-activitylog": "^4.4",
         "spatie/laravel-blink": "^1.7",
+        "spatie/laravel-data": "^4.9.0",
         "spatie/laravel-medialibrary": "^11.0.0",
         "spatie/laravel-permission": "^6.4",
         "spatie/php-structure-discoverer": "^2.0",
         "stripe/stripe-php": "^14.4",
-        "technikermathe/blade-lucide-icons": "^v3.0"
+        "technikermathe/blade-lucide-icons": "^v3.0",
+        "typesense/typesense-php": "^4.9"
     },
     "require-dev": {
         "larastan/larastan": "^2.9",
@@ -50,7 +53,8 @@
     "autoload": {
         "files": [
             "packages/admin/src/helpers.php",
-            "packages/core/src/helpers.php"
+            "packages/core/src/helpers.php",
+            "packages/search/src/helpers.php"
         ],
         "psr-4": {
             "Lunar\\": "packages/core/src",
@@ -63,6 +67,7 @@
             "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",
             "Lunar\\Paypal\\": "packages/paypal/src/",
+            "Lunar\\Search\\": "packages/search/src/",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
             "Lunar\\Stripe\\": "packages/stripe/src/"
@@ -76,28 +81,31 @@
             "Lunar\\Tests\\Paypal\\": "tests/paypal",
             "Lunar\\Tests\\Shipping\\": "tests/shipping",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
-            "Lunar\\Tests\\Stripe\\": "tests/stripe"
+            "Lunar\\Tests\\Stripe\\": "tests/stripe",
+            "Lunar\\Tests\\Search\\": "tests/search"
         }
     },
     "extra": {
         "lunar": {
             "name": [
-                "Meilisearch",
+                "Table Rate Shipping",
                 "Opayo Payments",
+                "Search",
+                "Meilisearch",
                 "Paypal Payments",
-                "Stripe Payments",
-                "Table Rate Shipping"
+                "Stripe Payments"
             ]
         },
         "laravel": {
             "providers": [
-                "Lunar\\Shipping\\ShippingServiceProvider",
                 "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
-                "Lunar\\Opayo\\OpayoServiceProvider",
                 "Lunar\\Meilisearch\\MeilisearchServiceProvider",
-                "Lunar\\LunarServiceProvider",
-                "Lunar\\Admin\\LunarPanelProvider"
+                "Lunar\\Search\\SearchServiceProvider",
+                "Lunar\\Admin\\LunarPanelProvider",
+                "Lunar\\Opayo\\OpayoServiceProvider",
+                "Lunar\\Shipping\\ShippingServiceProvider",
+                "Lunar\\LunarServiceProvider"
             ]
         }
     },
@@ -107,6 +115,7 @@
         "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
+        "lunarphp/search": "self.version",
         "lunarphp/stripe": "self.version",
         "lunarphp/table-rate-shipping": "self.version"
     },

@@ -117,7 +117,7 @@ class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
         return $this->belongsToMany(
             \Lunar\Models\Collection::modelClass(),
             config('lunar.database.table_prefix').'collection_product'
-        )->withPivot(['position'])->withTimestamps();
+        )->withPivot(['position'])->orderByPivot('position')->withTimestamps();
     }
 
     public function associations(): HasMany
