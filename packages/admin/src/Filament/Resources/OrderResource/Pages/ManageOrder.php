@@ -508,7 +508,9 @@ class ManageOrder extends BaseViewRecord
                 $response = $transaction->capture(bcmul($data['amount'], $record->currency->factor));
 
                 if (! $response->success) {
-                    $action->failureNotification(fn () => $response->message);
+                    $action->failureNotification(
+                        fn () => Notification::make('capture_failure')->color('danger')->title($response->message)
+                    );
 
                     $action->failure();
 

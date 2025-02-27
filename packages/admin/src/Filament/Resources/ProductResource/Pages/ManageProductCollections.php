@@ -37,6 +37,7 @@ class ManageProductCollections extends BaseManageRelatedRecords
     {
         return $table
             ->recordTitleAttribute('name')
+            ->reorderable('position')
             ->columns([
                 TranslatedTextColumn::make('attribute_data.name')
                     ->attributeData()

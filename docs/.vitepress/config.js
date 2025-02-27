@@ -23,6 +23,22 @@ export default defineConfig({
                 rel: 'stylesheet',
                 href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap'
             }
+        ],
+        [
+            'script',
+            {
+                src: 'https://cdn.usefathom.com/script.js',
+                'data-spa': 'auto',
+                'data-site': 'KMZGQTYE',
+                defer: ''
+            }
+        ],
+        [
+            'script',
+            {
+                async: '',
+                src: 'https://tally.so/widgets/embed.js'
+            }
         ]
         // would render: <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     ],
@@ -37,8 +53,21 @@ export default defineConfig({
         },
 
         nav: [
-            {text: 'Core', link: '/core/overview', activeMatch: '/core/'},
-            {text: 'Admin Panel', link: '/admin/overview', activeMatch: '/admin/'},
+            {
+                text: 'Core',
+                link: '/core/overview',
+                activeMatch: '/core/'
+            },
+            {
+                text: 'Admin Panel',
+                link: '/admin/overview',
+                activeMatch: '/admin/'
+            },
+            {
+                text: 'Support',
+                link: '/support',
+                activeMatch: '/support'
+            },
             {
                 text: 'Resources',
                 items: [

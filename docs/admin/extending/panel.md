@@ -15,3 +15,43 @@ LunarPanel::panel(fn($panel) => $panel->path('admin'))
     ])
     ->register();
 ```
+
+## Adding to the panel
+
+The [Filament](https://filamentphp.com/) panel allows you to add further screens in the form of Pages or Resources, and 
+indeed customise any available panel option.
+
+Below is an example of how you can use the panel object.
+
+```php
+LunarPanel::panel(function ($panel) {
+    return $panel
+        ->pages([
+            // Register standalone Filament Pages
+            SalesReport::class,
+            RevenueReport::class,
+        ])
+        ->resources([
+            // Register new Filament Resources
+            OpeningTimeResource::class,
+            BannerResource::class,
+        ])
+        ->livewireComponents([
+            // Register Livewire components
+            OrdersSalesChart::class,
+        ])->plugin(
+            // Register a Filament plugin
+            new ShippingPlugin(),
+        )
+        ->navigationGroups([
+            // Set the navigation groups
+            'Catalog',
+            'Sales',
+            'CMS',
+            'Reports',
+            'Shipping',
+            'Settings',
+        ]);
+})->register();
+```
+For further information please consult the [Filament documentation](https://filamentphp.com/docs).
