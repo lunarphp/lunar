@@ -190,6 +190,9 @@ class CustomerResource extends BaseResource
                 Tables\Columns\TextColumn::make('account_ref')
                     ->label(__('lunarpanel::customer.table.account_reference.label'))
                     ->sortable(),
+                Tables\Columns\TextColumn::make('customerGroups.name')
+                    ->label(__('lunarpanel::customergroup.label'))
+                    ->badge(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('customer_group')
