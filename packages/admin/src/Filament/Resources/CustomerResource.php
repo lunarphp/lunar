@@ -192,7 +192,11 @@ class CustomerResource extends BaseResource
                     ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('customer_group')
+                    ->label(__('lunarpanel::customergroup.label'))
+                    ->relationship('customerGroups', 'name')
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
