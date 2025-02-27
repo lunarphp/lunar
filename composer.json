@@ -110,8 +110,8 @@
         }
     },
     "replace": {
-        "lunarphp/admin": "self.version",
         "lunarphp/core": "self.version",
+        "lunarphp/lunar": "self.version",
         "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
