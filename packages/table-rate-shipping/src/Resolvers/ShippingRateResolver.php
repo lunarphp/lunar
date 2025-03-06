@@ -167,9 +167,9 @@ class ShippingRateResolver
 
                     [$h, $m, $s] = explode(':', $method->cutoff);
 
-                    return now()->set('hour', $h)
-                        ->set('minute', $m)
-                        ->set('second', $s)
+                    return now()->set('hour', (int) $h)
+                        ->set('minute', (int) $m)
+                        ->set('second', (int) $s)
                         ->isPast();
                 })
                 ->reject(function ($rate) {
