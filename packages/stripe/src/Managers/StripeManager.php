@@ -32,7 +32,7 @@ class StripeManager
 
     public function getCartIntentId(Cart $cart): ?string
     {
-        return $cartModel->meta['payment_intent'] ?? $cart->paymentIntents->first()?->intent_id;
+        return $cartModel->meta['payment_intent'] ?? $cart->paymentIntents()->active()->first()?->intent_id;
     }
 
     public function fetchOrCreateIntent(Cart $cart, array $createOptions = []): PaymentIntent
@@ -165,6 +165,11 @@ class StripeManager
                 $intentId,
                 ['cancellation_reason' => $reason->value]
             );
+            $cart->paymentIntents()->where('intent_id', $intentId)->update([
+                'status' => PaymentIntent::STATUS_CANCELED,
+                'processing_at' => now(),
+                'processed_at' => now(),
+            ]);
         } catch (\Exception $e) {
 
         }
