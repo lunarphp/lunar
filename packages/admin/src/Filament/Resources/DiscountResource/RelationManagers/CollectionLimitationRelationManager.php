@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Models\Collection;
 
 class CollectionLimitationRelationManager extends BaseRelationManager
 {
@@ -48,6 +49,7 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.table.name.label')
                     )
+                    ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
                     ->formatStateUsing(
                         fn (Model $record) => $record->attr('name')
                     ),
