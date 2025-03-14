@@ -16,8 +16,8 @@ jobs:
         laravel: ["^11.0", "^12.0"]
         dependencies: ["highest"]
         exclude:
-          - php: 8.2
-            laravel: 12.*
+          - php: "8.2"
+            laravel: "^12.0"
     name: "PHP ${{ matrix.php }} - L${{ matrix.laravel }} ${{ matrix.dependencies == 'highest' && '↑' || '↓' }}"
 
     runs-on: "ubuntu-latest"
