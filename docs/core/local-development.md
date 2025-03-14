@@ -41,7 +41,7 @@ Update your `composer.json` file similar to the following.
     }],
 
     "require": {
-        "lunarphp/lunar": "*",
+        "lunarphp/lunarmono": "*",
     }
 ````
 
