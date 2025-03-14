@@ -3,7 +3,7 @@ includes:
 parameters:
     level: 0
     paths:
-        - packages
+        - packages/*/src
     excludePaths:
         - packages/*/tests/*
         - packages/vendor/*
