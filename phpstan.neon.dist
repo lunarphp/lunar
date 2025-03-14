@@ -13,5 +13,3 @@ parameters:
         -
             message: '#Unsafe usage of new static\(\).#'
             path: packages/core/src/Base/Traits/HasModelExtending.php
-        -
-            message: "#Called 'env' outside of the config directory.*#"
