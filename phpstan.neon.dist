@@ -3,8 +3,9 @@ includes:
 parameters:
     level: 0
     paths:
-        - packages/*/src
+        - packages
     excludePaths:
+        - packages/*/config/*
         - packages/*/tests/*
         - packages/vendor/*
         - packages/*/vendor/*
