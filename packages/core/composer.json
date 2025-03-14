@@ -33,7 +33,7 @@
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",
-        "laravel/framework": "^10.0|^11.0|^12.0",
+        "laravel/framework": "^11.0|^12.0",
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-activitylog": "^4.10.1",
         "laravel/scout": "^10.13.1",
