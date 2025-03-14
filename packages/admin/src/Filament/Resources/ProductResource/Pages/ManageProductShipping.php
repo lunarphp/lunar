@@ -14,7 +14,7 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Models\ProductVariant;
-use Marvinosswald\FilamentInputSelectAffix\TextInputSelectAffix;
+use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 
 class ManageProductShipping extends BaseEditRecord
 {

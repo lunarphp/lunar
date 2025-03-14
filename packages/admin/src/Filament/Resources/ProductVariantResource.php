@@ -15,7 +15,7 @@ use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\ProductVariant;
 use Lunar\Models\TaxClass;
-use Marvinosswald\FilamentInputSelectAffix\TextInputSelectAffix;
+use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 
 class ProductVariantResource extends BaseResource
 {

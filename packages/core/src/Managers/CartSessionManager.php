@@ -75,7 +75,7 @@ class CartSessionManager implements CartSessionInterface
             );
         }
 
-        unset($this->cart);
+        $this->cart = $this->createNewCart();
 
         $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(
