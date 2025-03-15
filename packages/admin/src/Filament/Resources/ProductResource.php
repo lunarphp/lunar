@@ -32,8 +32,8 @@ use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
-use Lunar\Models\Contracts\Product;
 use Lunar\Models\Currency;
+use Lunar\Models\ProductFilamentProxy;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Tag;
 
@@ -41,7 +41,7 @@ class ProductResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = Product::class;
+    protected static ?string $model = ProductFilamentProxy::class;
 
     protected static ?string $recordTitleAttribute = 'recordTitle';
 
@@ -125,14 +125,10 @@ class ProductResource extends BaseResource
                 static::getAttributeDataFormComponent(),
                 Attributes::make()->using(
                     ProductVariant::class
-                )->afterStateHydrated(function ($state, ?Model $record, $component) {
-                    $variant = $record->variants->first();
-                    if ($variant) {
-                        $component->state($variant->attribute_data);
-                    }
-                })->visible(
+                )->visible(
                     fn (?Model $record) => $record && $record->variants()->count() == 1
-                )->statePath('variant_attributes'),
+                )
+                ->statePath('variant_attributes'),
             ])
             ->columns(1);
     }

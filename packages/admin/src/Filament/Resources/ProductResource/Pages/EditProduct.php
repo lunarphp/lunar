@@ -2,13 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Actions;
 use Filament\Forms;
-use Filament\Support\Facades\FilamentIcon;
+use Filament\Actions;
+use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Support\Facades\FilamentIcon;
+use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Actions\Products\ForceDeleteProductAction;
-use Lunar\Admin\Support\Pages\BaseEditRecord;
 
 class EditProduct extends BaseEditRecord
 {
@@ -68,7 +69,7 @@ class EditProduct extends BaseEditRecord
     {
         $data = $this->callLunarHook('beforeUpdate', $data, $record);
 
-        $variantData = $data['variant_attributes'] ?? null;
+        $variantData = Arr::pull($data, 'variant_attributes', null);
 
         if ($variantData) {
             $variant = $record->variants()->first();
