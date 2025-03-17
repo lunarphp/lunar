@@ -258,10 +258,28 @@ class LunarPanelManager
     public function extensions(array $extensions): self
     {
         foreach ($extensions as $class => $extension) {
-            $this->extensions[$class][] = new $extension;
+            if (! is_array($extension)) {
+                $extension = [$extension];
+            }
+
+            $extensions = collect($extension)->reject(
+                fn ($extension) => ! class_exists($extension)
+            )->map(
+                fn ($extension) => app($extension)
+            );
+
+            $this->extensions[$class] = [
+                ...$this->extensions[$class] ?? [],
+                ...$extensions->values()->toArray(),
+            ];
         }
 
         return $this;
+    }
+
+    public function getExtensions(): array
+    {
+        return $this->extensions;
     }
 
     /**
