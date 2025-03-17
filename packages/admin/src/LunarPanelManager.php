@@ -262,15 +262,13 @@ class LunarPanelManager
                 $extension = [$extension];
             }
 
-            $extensions = collect($extension)->reject(
-                fn ($extension) => ! class_exists($extension)
-            )->map(
-                fn ($extension) => app($extension)
-            );
-
             $this->extensions[$class] = [
                 ...$this->extensions[$class] ?? [],
-                ...$extensions->values()->toArray(),
+                ...collect($extension)->reject(
+                    fn ($extension) => ! class_exists($extension)
+                )->map(
+                    fn ($extension) => app($extension)
+                )->values()->toArray(),
             ];
         }
 
