@@ -4,18 +4,18 @@ namespace Lunar\Admin\Support\Pages;
 
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Base\Traits\Searchable;
 use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Base\Traits\Searchable;
 
 abstract class BaseListRecords extends ListRecords
 {
+    use CallsHooks;
     use Concerns\ExtendsFooterWidgets;
     use Concerns\ExtendsHeaderActions;
     use Concerns\ExtendsHeaderWidgets;
     use Concerns\ExtendsHeadings;
     use Concerns\ExtendsTablePagination;
     use Concerns\ExtendsTabs;
-    use CallsHooks;
 
     protected function applySearchToTableQuery(Builder $query): Builder
     {
