@@ -44,8 +44,8 @@ it('can edit variant attributes', function () {
 
     \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
         'attribute_id' => $attribute->id,
-        'attributable_type' => 'product_variant',
-        'attributable_id' => $variant->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
     ]);
 
     $this->asStaff(admin: true);
@@ -57,7 +57,7 @@ it('can edit variant attributes', function () {
 
     expect($variant->attr($attribute->handle))->toBeNull();
 
-    $component->set('data.variant_attributes.'.$attribute->handle, new \Lunar\FieldTypes\Text('Hello'));
+    $component->set('data.variant.attribute_data.'.$attribute->handle, 'Hello');
     $component->call('save');
 
     expect($variant->refresh()->attr($attribute->handle))->toBe('Hello');
