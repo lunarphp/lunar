@@ -188,7 +188,7 @@ class LunarPanelProvider extends ServiceProvider
             string $boolean = 'and'
         ) {
             $driver = DB::getDriverName();
-            $searchTerm = '%' . strtolower($value) . '%';
+            $searchTerm = '%'.strtolower($value).'%';
 
             // Build the expression depending on DB
             if ($driver === 'pgsql') {
@@ -205,7 +205,7 @@ class LunarPanelProvider extends ServiceProvider
 
             } else {
                 // MySQL
-                $jsonPath = '$.' . implode('.', array_map(fn($p) => "\"$p\"", $path));
+                $jsonPath = '$.'.implode('.', array_map(fn ($p) => "\"$p\"", $path));
 
                 return $boolean === 'or'
                     ? $this->orWhereRaw("LOWER(json_unquote(json_extract($column, ?))) LIKE ?", [$jsonPath, $searchTerm])
