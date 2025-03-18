@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Lunar\Base\Traits\Searchable;
@@ -8,8 +7,6 @@ use Lunar\DataTypes\Price;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
-
-use function Filament\Support\generate_search_term_expression;
 
 if (! function_exists('price')) {
     function price($value, $currency, $unitQty = 1)
