@@ -76,7 +76,6 @@ if (! function_exists('db_date')) {
 }
 
 if (! function_exists('get_search_builder')) {
-
     function get_search_builder($model, $search): Laravel\Scout\Builder|Builder
     {
         $scoutEnabled = config('lunar.panel.scout_enabled', false);
@@ -124,7 +123,6 @@ if (! function_exists('get_search_builder')) {
 }
 
 if (! function_exists('search_lunar_attributes')) {
-
     function search_lunar_attributes(Builder &$query, string $search, string $modelMorphName): void
     {
         $attributes = Attribute::whereAttributeType(
@@ -153,5 +151,4 @@ if (! function_exists('search_lunar_attributes')) {
             }
         }
     }
-
 }
