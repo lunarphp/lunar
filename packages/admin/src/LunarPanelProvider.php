@@ -120,7 +120,6 @@ class LunarPanelProvider extends ServiceProvider
         $this->registerStateListeners();
         $this->registerLunarSynthesizer();
         $this->registerBuilderMacros();
-        // $this->registerUpgradedListener();
     }
 
     /**
@@ -151,11 +150,6 @@ class LunarPanelProvider extends ServiceProvider
                 return $user->admin || $user->hasPermissionTo($ability);
             }
         });
-    }
-
-    protected function registerUpgradedListener(): void
-    {
-        Event::listen(FilamentUpgraded::class, FilamentUpgradedListener::class);
     }
 
     protected function registerStateListeners()
