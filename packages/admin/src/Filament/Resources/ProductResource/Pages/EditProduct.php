@@ -63,21 +63,4 @@ class EditProduct extends BaseEditRecord
     {
         return [];
     }
-
-    protected function handleRecordUpdate(Model $record, array $data): Model
-    {
-        $data = $this->callLunarHook('beforeUpdate', $data, $record);
-
-        $variantData = $data['variant_attributes'] ?? null;
-
-        if ($variantData) {
-            $variant = $record->variants()->first();
-            $variant->attribute_data = collect($variantData);
-            $variant->save();
-        }
-
-        $record = parent::handleRecordUpdate($record, $data);
-
-        return $this->callLunarHook('afterUpdate', $record, $data);
-    }
 }
