@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Base\Traits\Searchable;
+use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 
@@ -100,9 +101,8 @@ class BaseResource extends Resource
                 $query->where(function (Builder $query) use ($searchWord) {
                     $isFirst = true;
 
+                    // These are normal database fields, not "attribute_data" fields.
                     $searchableAttributes = static::getGloballySearchableAttributes();
-
-                    static::mapSearchableAttributes($searchableAttributes);
 
                     foreach ($searchableAttributes as $attributes) {
                         static::applyGlobalSearchAttributeConstraint(
@@ -112,6 +112,9 @@ class BaseResource extends Resource
                             isFirst: $isFirst,
                         );
                     }
+
+                    // Add additional logic here to search custom attribute data
+                    static::mapSearchableAttributes($query, $searchWord);
                 });
             }
         }
@@ -122,7 +125,7 @@ class BaseResource extends Resource
      *
      * @return array
      */
-    protected static function mapSearchableAttributes(array &$map)
+    protected static function mapSearchableAttributes(Builder &$query, string $searchWord): void
     {
         $attributes = Attribute::whereAttributeType(
             static::getModel()::morphName()
@@ -130,12 +133,22 @@ class BaseResource extends Resource
             ->whereSearchable(true)
             ->get();
 
+        $searchableAttributes = [];
+
         foreach ($attributes as $attribute) {
-            if ($attribute->type == TranslatedText::class) {
-                array_push($map, 'attribute_data->'.$attribute->handle.'->value');
+            if ($attribute->type == TranslatedText::class || $attribute->type == Text::class) {
+                array_push($searchableAttributes, $attribute->handle);
             }
         }
 
-        return $map;
+        $isFirst = true;
+
+        foreach ($searchableAttributes as $searchAttribute) {
+            $whereClause = $isFirst ? 'whereJsonContainsInsensitive' : 'orWhereJsonContainsInsensitive';
+
+            $query->{$whereClause}('attribute_data', [$searchAttribute, 'value'], $searchWord);
+
+            $isFirst = false;
+        }
     }
 }
