@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lunar\Base\BaseModel;
@@ -112,12 +113,17 @@ class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
         return $this->hasMany(ProductVariant::modelClass());
     }
 
+    public function variant(): HasOne
+    {
+        return $this->hasOne(ProductVariant::modelClass());
+    }
+
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
             \Lunar\Models\Collection::modelClass(),
             config('lunar.database.table_prefix').'collection_product'
-        )->withPivot(['position'])->withTimestamps();
+        )->withPivot(['position'])->orderByPivot('position')->withTimestamps();
     }
 
     public function associations(): HasMany

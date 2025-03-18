@@ -55,6 +55,8 @@ class BrandLimitationRelationManager extends BaseRelationManager
                     ),
             ])->actions([
                 Tables\Actions\DetachAction::make(),
+            ])->bulkActions([
+                Tables\Actions\DetachBulkAction::make(),
             ]);
     }
 }
