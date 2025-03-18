@@ -27,7 +27,7 @@ class Attributes extends Forms\Components\Group
     {
         parent::setUp();
 
-        $this->key('attributeData');
+        $this->key('attributeData'.$this->modelClassOverride);
 
         if (blank($this->childComponents)) {
             $this->schema(function (\Filament\Forms\Get $get, Livewire $livewire, ?Model $record) {
@@ -87,7 +87,8 @@ class Attributes extends Forms\Components\Group
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
                     $groupComponents[] = Forms\Components\Section::make($group['model']->translate('name'))
-                        ->schema($sectionFields);
+                        ->schema($sectionFields)
+                        ->statePath('attribute_data');
                 }
 
                 return $groupComponents;
