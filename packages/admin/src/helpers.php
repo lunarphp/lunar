@@ -4,6 +4,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Base\Traits\Searchable;
 use Lunar\DataTypes\Price;
+use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 
@@ -102,21 +103,17 @@ if (! function_exists('get_search_builder')) {
                     $searchableAttributes = [];
 
                     foreach ($attributes as $attribute) {
-                        if ($attribute->type == TranslatedText::class) {
-                            array_push($searchableAttributes, 'attribute_data->'.$attribute->handle.'->value');
+                        if ($attribute->type == TranslatedText::class || $attribute->type == Text::class) {
+                            array_push($searchableAttributes, $attribute->handle);
                         }
                     }
 
                     $isFirst = true;
 
                     foreach ($searchableAttributes as $searchAttribute) {
-                        $whereClause = $isFirst ? 'where' : 'orWhere';
+                        $whereClause = $isFirst ? 'whereJsonContainsInsensitive' : 'orWhereJsonContainsInsensitive';
 
-                        $query->{$whereClause}(
-                            $searchAttribute,
-                            'like',
-                            "%{$searchWord}%",
-                        );
+                        $query->{$whereClause}('attribute_data', [$searchAttribute, 'value'], $searchWord);
 
                         $isFirst = false;
                     }

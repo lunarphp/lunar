@@ -3,10 +3,12 @@
 namespace Lunar\Admin;
 
 use Filament\Support\Events\FilamentUpgraded;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -117,6 +119,7 @@ class LunarPanelProvider extends ServiceProvider
         $this->registerPermissionManifest();
         $this->registerStateListeners();
         $this->registerLunarSynthesizer();
+        $this->registerBuilderMacros();
         // $this->registerUpgradedListener();
     }
 
@@ -180,5 +183,44 @@ class LunarPanelProvider extends ServiceProvider
     {
         \Lunar\Admin\Support\Facades\AttributeData::synthesizeLivewireProperties();
         Livewire::propertySynthesizer(PriceSynth::class);
+    }
+
+    protected function registerBuilderMacros(): void
+    {
+        Builder::macro('whereJsonContainsInsensitive', function (
+            string $column,
+            array $path,
+            string $value,
+            string $boolean = 'and'
+        ) {
+            $driver = DB::getDriverName();
+            $searchTerm = '%' . strtolower($value) . '%';
+
+            // Build the expression depending on DB
+            if ($driver === 'pgsql') {
+                $jsonExpr = $column;
+                $last = array_pop($path);
+                foreach ($path as $part) {
+                    $jsonExpr .= "->'$part'";
+                }
+                $jsonExpr .= "->>'$last'";
+
+                return $boolean === 'or'
+                    ? $this->orWhereRaw("LOWER($jsonExpr) LIKE ?", [$searchTerm])
+                    : $this->whereRaw("LOWER($jsonExpr) LIKE ?", [$searchTerm]);
+
+            } else {
+                // MySQL
+                $jsonPath = '$.' . implode('.', array_map(fn($p) => "\"$p\"", $path));
+
+                return $boolean === 'or'
+                    ? $this->orWhereRaw("LOWER(json_unquote(json_extract($column, ?))) LIKE ?", [$jsonPath, $searchTerm])
+                    : $this->whereRaw("LOWER(json_unquote(json_extract($column, ?))) LIKE ?", [$jsonPath, $searchTerm]);
+            }
+        });
+
+        Builder::macro('orWhereJsonContainsInsensitive', function (string $column, array $path, string $value) {
+            return $this->whereJsonContainsInsensitive($column, $path, $value, 'or');
+        });
     }
 }
