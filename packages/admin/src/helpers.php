@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Lunar\Base\Traits\Searchable;
 use Lunar\DataTypes\Price;
 use Lunar\FieldTypes\Text;
@@ -89,10 +90,7 @@ if (! function_exists('get_search_builder')) {
         } else {
             $query = $model::query();
 
-            /** @var Connection $databaseConnection */
-            $databaseConnection = $query->getConnection();
-
-            $search = generate_search_term_expression($search, false, $databaseConnection);
+            $search = Str::lower($search);
 
             foreach (explode(' ', $search) as $searchWord) {
                 $query->where(function (Builder $query) use ($model, $searchWord) {
@@ -127,7 +125,7 @@ if (! function_exists('get_search_builder')) {
 
 if (! function_exists('search_lunar_attributes')) {
 
-    function search_lunar_attributes(Builder &$query, string $searchWord, string $modelMorphName): void
+    function search_lunar_attributes(Builder &$query, string $search, string $modelMorphName): void
     {
         $attributes = Attribute::whereAttributeType(
             $modelMorphName
@@ -143,14 +141,16 @@ if (! function_exists('search_lunar_attributes')) {
             }
         }
 
-        $isFirst = true;
+        foreach (explode(' ', $search) as $searchWord) {
+            $isFirst = true;
 
-        foreach ($searchableAttributes as $searchAttribute) {
-            $whereClause = $isFirst ? 'whereJsonContainsInsensitive' : 'orWhereJsonContainsInsensitive';
+            foreach ($searchableAttributes as $searchAttribute) {
+                $whereClause = $isFirst ? 'whereJsonContainsInsensitive' : 'orWhereJsonContainsInsensitive';
 
-            $query->{$whereClause}('attribute_data', [$searchAttribute, 'value'], $searchWord);
+                $query->{$whereClause}('attribute_data', [$searchAttribute, 'value'], $searchWord);
 
-            $isFirst = false;
+                $isFirst = false;
+            }
         }
     }
 
