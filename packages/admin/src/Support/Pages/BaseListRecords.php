@@ -5,6 +5,7 @@ namespace Lunar\Admin\Support\Pages;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Base\Traits\Searchable;
+use Lunar\Admin\Support\Concerns\CallsHooks;
 
 abstract class BaseListRecords extends ListRecords
 {
@@ -14,7 +15,7 @@ abstract class BaseListRecords extends ListRecords
     use Concerns\ExtendsHeadings;
     use Concerns\ExtendsTablePagination;
     use Concerns\ExtendsTabs;
-    use \Lunar\Admin\Support\Concerns\CallsHooks;
+    use CallsHooks;
 
     protected function applySearchToTableQuery(Builder $query): Builder
     {
@@ -25,6 +26,10 @@ abstract class BaseListRecords extends ListRecords
 
         if (! $scoutEnabled || ! $isScoutSearchable) {
             $this->applyGlobalSearchToTableQuery($query);
+
+            if (filled($search = $this->getTableSearch())) {
+                search_lunar_attributes($query, $search, static::getModel()::morphName());
+            }
         }
 
         if (

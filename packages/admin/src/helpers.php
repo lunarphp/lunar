@@ -124,3 +124,34 @@ if (! function_exists('get_search_builder')) {
         }
     }
 }
+
+if (! function_exists('search_lunar_attributes')) {
+
+    function search_lunar_attributes(Builder &$query, string $searchWord, string $modelMorphName): void
+    {
+        $attributes = Attribute::whereAttributeType(
+            $modelMorphName
+        )
+            ->whereSearchable(true)
+            ->get();
+
+        $searchableAttributes = [];
+
+        foreach ($attributes as $attribute) {
+            if ($attribute->type == TranslatedText::class || $attribute->type == Text::class) {
+                array_push($searchableAttributes, $attribute->handle);
+            }
+        }
+
+        $isFirst = true;
+
+        foreach ($searchableAttributes as $searchAttribute) {
+            $whereClause = $isFirst ? 'whereJsonContainsInsensitive' : 'orWhereJsonContainsInsensitive';
+
+            $query->{$whereClause}('attribute_data', [$searchAttribute, 'value'], $searchWord);
+
+            $isFirst = false;
+        }
+    }
+
+}

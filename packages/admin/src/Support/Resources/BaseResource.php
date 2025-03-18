@@ -10,9 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Base\Traits\Searchable;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
 
 use function Filament\Support\generate_search_term_expression;
 
@@ -114,41 +111,9 @@ class BaseResource extends Resource
                     }
 
                     // Add additional logic here to search custom attribute data
-                    static::mapSearchableAttributes($query, $searchWord);
+                    search_lunar_attributes($query, $searchWord, static::getModel()::morphName());
                 });
             }
-        }
-    }
-
-    /**
-     * Return map hydrated with attributes
-     *
-     * @return array
-     */
-    protected static function mapSearchableAttributes(Builder &$query, string $searchWord): void
-    {
-        $attributes = Attribute::whereAttributeType(
-            static::getModel()::morphName()
-        )
-            ->whereSearchable(true)
-            ->get();
-
-        $searchableAttributes = [];
-
-        foreach ($attributes as $attribute) {
-            if ($attribute->type == TranslatedText::class || $attribute->type == Text::class) {
-                array_push($searchableAttributes, $attribute->handle);
-            }
-        }
-
-        $isFirst = true;
-
-        foreach ($searchableAttributes as $searchAttribute) {
-            $whereClause = $isFirst ? 'whereJsonContainsInsensitive' : 'orWhereJsonContainsInsensitive';
-
-            $query->{$whereClause}('attribute_data', [$searchAttribute, 'value'], $searchWord);
-
-            $isFirst = false;
         }
     }
 }
