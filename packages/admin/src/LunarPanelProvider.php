@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin;
 
-use Filament\Support\Events\FilamentUpgraded;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\MigrationsEnded;
@@ -28,7 +27,6 @@ use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 use Lunar\Admin\Events\ProductPricingUpdated;
 use Lunar\Admin\Events\ProductVariantOptionsUpdated;
-use Lunar\Admin\Listeners\FilamentUpgradedListener;
 use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
 use Lunar\Admin\Support\Forms\AttributeData;
