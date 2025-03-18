@@ -200,7 +200,6 @@ class LunarPanelProvider extends ServiceProvider
                 return $boolean === 'or'
                     ? $this->orWhereRaw("LOWER($jsonExpr) LIKE ?", [$searchTerm])
                     : $this->whereRaw("LOWER($jsonExpr) LIKE ?", [$searchTerm]);
-
             } else {
                 // MySQL
                 $jsonPath = '$.'.implode('.', array_map(fn ($p) => "\"$p\"", $path));
