@@ -60,7 +60,7 @@ class ShippingRateResolver
         $shippingMeta = $cart->shippingEstimateMeta;
 
         $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
-            return $line->purchasable->stock < $line->quantity;
+            return $line->purchasable->shippable && ($line->purchasable->stock < $line->quantity);
         });
 
         $this->customerGroups = collect([CustomerGroup::getDefault()]);
