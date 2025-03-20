@@ -28,6 +28,6 @@ class LatestOrdersTable extends TableWidget
         })->columns(
             OrderResource::getTableColumns()
         )->paginated(false)->searchable(false)
-        ->heading($this->getHeading());
+            ->heading($this->getHeading());
     }
 }
