@@ -76,6 +76,7 @@ class CollectionResource extends BaseResource
     {
         return Attributes::make();
     }
+
     protected static function getMainFormComponents(): array
     {
         return [
