@@ -109,7 +109,7 @@ class CustomerResource extends BaseResource
 
     protected static function getAttributeDataFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\Attributes::make()->statePath('attribute_data');
+        return \Lunar\Admin\Support\Forms\Components\Attributes::make();
     }
 
     protected static function getFirstNameFormComponent(): Component
