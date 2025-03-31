@@ -68,7 +68,14 @@ it('can save attributes', function () {
         'default' => true,
     ]);
 
+    \Lunar\Models\TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
     $record = \Lunar\Models\Product::factory()->create();
+    \Lunar\Models\ProductVariant::factory()->create([
+        'product_id' => $record->id,
+    ]);
 
     $group = \Lunar\Models\AttributeGroup::factory()->create([
         'attributable_type' => 'product',
@@ -95,8 +102,8 @@ it('can save attributes', function () {
 
     \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
         'attribute_id' => $attribute->id,
-        'attributable_type' => 'brand',
-        'attributable_id' => $record->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $record->productType->id,
     ]);
 
     $this->asStaff(admin: true);
@@ -108,7 +115,7 @@ it('can save attributes', function () {
         'attribute_data' => [
             'name' => new \Lunar\FieldTypes\Text('New Product Name'),
         ],
-    ])->call('save');
+    ])->call('save')->assertHasNoFormErrors();
 
     expect($record->refresh()->attr('name'))->toBe('New Product Name');
 });
