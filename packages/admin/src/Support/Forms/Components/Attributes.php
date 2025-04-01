@@ -20,6 +20,8 @@ class Attributes extends Forms\Components\Group
     {
         $this->modelClassOverride = $modelClass;
 
+        $this->key('attributeData'.$this->modelClassOverride);
+
         return $this;
     }
 
@@ -27,7 +29,7 @@ class Attributes extends Forms\Components\Group
     {
         parent::setUp();
 
-        $this->key('attributeData'.$this->modelClassOverride);
+        $this->key('attributeData');
 
         if (blank($this->childComponents)) {
             $this->schema(function (\Filament\Forms\Get $get, Livewire $livewire, ?Model $record) {
@@ -87,7 +89,8 @@ class Attributes extends Forms\Components\Group
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
                     $groupComponents[] = Forms\Components\Section::make($group['model']->translate('name'))
-                        ->schema($sectionFields);
+                        ->schema($sectionFields)
+                        ->statePath($modelClass === ProductVariant::class ? 'attribute_data' : null);
                 }
 
                 return $groupComponents;
@@ -97,6 +100,12 @@ class Attributes extends Forms\Components\Group
         $this->mutateStateForValidationUsing(function ($state) {
             if (! is_array($state)) {
                 return $state;
+            }
+
+            if ($this->modelClassOverride === ProductVariant::class) {
+                $state = [
+                    'attribute_data' => array_map(fn ($item) => $item->getValue(), $state['attribute_data']),
+                ];
             }
 
             foreach ($state as $key => $value) {

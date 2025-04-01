@@ -63,13 +63,4 @@ class EditProduct extends BaseEditRecord
     {
         return [];
     }
-
-    public function mutateFormDataBeforeSave(array $data): array
-    {
-        $this->record->variant->update(
-            Arr::pull($data, 'variant')
-        );
-
-        return $data;
-    }
 }

@@ -234,7 +234,7 @@ class ProductResource extends BaseResource
     {
         return Attributes::make()
             ->using(ProductVariant::class)
-            ->statePath('variant.attribute_data');
+            ->relationship('variant');
     }
 
     public static function getDefaultTable(Table $table): Table
