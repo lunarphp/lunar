@@ -5,6 +5,7 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Support\Arr;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Actions\Products\ForceDeleteProductAction;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
@@ -61,5 +62,14 @@ class EditProduct extends BaseEditRecord
     public function getRelationManagers(): array
     {
         return [];
+    }
+
+    public function mutateFormDataBeforeSave(array $data): array
+    {
+        $this->record->variant->update(
+            Arr::pull($data, 'variant')
+        );
+
+        return $data;
     }
 }

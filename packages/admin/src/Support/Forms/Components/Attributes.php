@@ -87,8 +87,7 @@ class Attributes extends Forms\Components\Group
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
                     $groupComponents[] = Forms\Components\Section::make($group['model']->translate('name'))
-                        ->schema($sectionFields)
-                        ->statePath('attribute_data');
+                        ->schema($sectionFields);
                 }
 
                 return $groupComponents;
@@ -101,12 +100,6 @@ class Attributes extends Forms\Components\Group
             }
 
             foreach ($state as $key => $value) {
-                if ($key === 'attribute_data') {
-                    $state[$key] = array_map(fn ($item) => $item->getValue(), $value);
-
-                    continue;
-                }
-
                 if (! $value instanceof \Lunar\Base\FieldType) {
                     continue;
                 }
