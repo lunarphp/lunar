@@ -226,8 +226,7 @@ class ProductResource extends BaseResource
 
     protected static function getAttributeDataFormComponent(): Component
     {
-        return Attributes::make()
-            ->statePath('attribute_data');
+        return Attributes::make();
     }
 
     protected static function getVariantAttributeDataFormComponent(): Component
