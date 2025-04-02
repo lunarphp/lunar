@@ -28,6 +28,8 @@ class Attributes extends Forms\Components\Group
     protected function setUp(): void
     {
         parent::setUp();
+        
+        $this->statePath('attribute_data');
 
         $this->key('attributeData');
 
