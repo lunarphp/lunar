@@ -17,14 +17,14 @@ class Attributes extends Forms\Components\Group
 {
     public ?string $modelClassOverride = null;
 
-    protected string|Closure $field = 'attribute_data';
+    protected string|Closure $attributeDataField = 'attribute_data';
 
-    public function attributeDataField(string|Closure $field): static
+    public function attributeDataField(string|Closure $attributeDataField): static
     {
-        $this->attributeDataField = $field;
+        $this->attributeDataField = $attributeDataField;
 
         if (blank($this->relationship)) {
-            $this->statePath($field);
+            $this->statePath($attributeDataField);
         }
 
         return $this;
