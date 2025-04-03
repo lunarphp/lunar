@@ -26,8 +26,8 @@ class StoreAddressInformation
 
         if ($paymentIntent->shipping && $stripeShipping = $paymentIntent->shipping->address) {
             $country = Country::where('iso2', $stripeShipping->country)->first();
-            $shippingAddress->first_name = explode(' ', $paymentIntent->shipping->name)[0];
-            $shippingAddress->last_name = explode(' ', $paymentIntent->shipping->name)[1] ?? '';
+            $shippingAddress->first_name = $paymentIntent->shipping->name;
+            $shippingAddress->last_name = null;
             $shippingAddress->line_one = $stripeShipping->line1;
             $shippingAddress->line_two = $stripeShipping->line2;
             $shippingAddress->city = $stripeShipping->city;
@@ -40,8 +40,8 @@ class StoreAddressInformation
 
         if ($paymentMethod && $stripeBilling = $paymentMethod->billing_details?->address) {
             $country = Country::where('iso2', $stripeBilling->country)->first();
-            $billingAddress->first_name = explode(' ', $paymentMethod->billing_details->name)[0];
-            $billingAddress->last_name = explode(' ', $paymentMethod->billing_details->name)[1] ?? '';
+            $billingAddress->first_name = $paymentMethod->billing_details->name;
+            $billingAddress->last_name = null;
             $billingAddress->line_one = $stripeBilling->line1;
             $billingAddress->line_two = $stripeBilling->line2;
             $billingAddress->city = $stripeBilling->city;

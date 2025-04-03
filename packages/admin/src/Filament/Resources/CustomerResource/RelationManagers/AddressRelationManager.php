@@ -20,6 +20,11 @@ class AddressRelationManager extends BaseRelationManager
         return false;
     }
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::address.plural_label');
+    }
+
     public function getDefaultTable(Table $table): Table
     {
         return $table
