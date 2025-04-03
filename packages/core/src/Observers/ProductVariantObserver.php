@@ -13,8 +13,10 @@ class ProductVariantObserver
      */
     public function deleting(ProductVariant $productVariant)
     {
-        $productVariant->prices()->delete();
-        $productVariant->values()->detach();
-        $productVariant->images()->detach();
+        if ($productVariant->isForceDeleting()) {
+            $productVariant->prices()->delete();
+            $productVariant->values()->detach();
+            $productVariant->images()->detach();
+        }
     }
 }
