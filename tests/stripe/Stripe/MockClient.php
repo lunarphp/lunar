@@ -22,7 +22,7 @@ class MockClient implements ClientInterface
         $this->url = 'https://checkout.stripe.com/pay/cs_test_'.Str::random(32);
     }
 
-    public function request($method, $absUrl, $headers, $params, $hasFile)
+    public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1')
     {
         $id = array_slice(explode('/', $absUrl), -1)[0];
 
