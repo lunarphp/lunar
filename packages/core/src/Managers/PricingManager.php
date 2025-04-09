@@ -217,7 +217,7 @@ class PricingManager implements PricingManagerInterface
 
         $this->pricing = new PricingResponse(
             matched: $matched,
-            base: $prices->first(fn ($price) => $price->tier == 1),
+            base: $basePrice,
             tiered: $prices->filter(fn ($price) => $price->tier > 1),
             customerGroupPrices: $prices->filter(fn ($price) => (bool) $price->customer_group_id)
         );
