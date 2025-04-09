@@ -1,5 +1,8 @@
 <p align="center"><a href="https://lunarphp.io/" target="_blank"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo-dark.svg"><img alt="Lunar" width="200" src="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo.svg"></picture></a></p>
 
+> [!CAUTION]
+> Lunar 0.8 has reached end of life. With the transition to a new admin panel framework and significant architecture changes, we are no longer accepting PRs or providing support for the 0.8 branch. We recommend migrating to the latest 1.x release.
+
 [Lunar](https://lunarphp.io) is a set of Laravel packages that bring functionality akin to Shopify and other e-commerce platforms to Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in the backend.
 
 This repository serves as a monorepo for the main packages that make up Lunar.
