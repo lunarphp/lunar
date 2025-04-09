@@ -27,6 +27,7 @@ class LatestOrdersTable extends TableWidget
             return Order::orderBy('placed_at', 'desc')->orderBy('created_at', 'desc')->limit(10);
         })->columns(
             OrderResource::getTableColumns()
-        )->paginated(false)->searchable(false);
+        )->paginated(false)->searchable(false)
+            ->heading($this->getHeading());
     }
 }
