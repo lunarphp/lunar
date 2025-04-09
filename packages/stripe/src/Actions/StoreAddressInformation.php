@@ -59,7 +59,7 @@ class StoreAddressInformation
             $billingAddress->city = $stripeBilling->city;
             $billingAddress->state = $stripeBilling->state;
             $billingAddress->postcode = $stripeBilling->postal_code;
-            // Stripe will sometimes give
+            // As a last resort, fallback to the shipping country.
             $billingAddress->country_id = $country ? $country->id : $shippingAddress->country_id;
             $billingAddress->contact_phone = $paymentMethod->billing_details?->phone;
             $billingAddress->contact_email = $paymentMethod->billing_details->email;
