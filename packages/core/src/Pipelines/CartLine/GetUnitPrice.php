@@ -43,6 +43,12 @@ class GetUnitPrice
             $purchasable->getUnitQuantity()
         );
 
+        $cartLine->unitPriceInclTax = new Price(
+            $priceResponse->matched->priceIncTax()->value,
+            $cart->currency,
+            $purchasable->getUnitQuantity()
+        );
+
         return $next($cartLine);
     }
 }

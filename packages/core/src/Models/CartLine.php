@@ -54,6 +54,11 @@ class CartLine extends BaseModel implements Contracts\CartLine
     public ?Price $unitPrice = null;
 
     /**
+     * The cart line unit price.
+     */
+    public ?Price $unitPriceInclTax = null;
+
+    /**
      * The cart line sub total.
      */
     public ?Price $subTotal = null;

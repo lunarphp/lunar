@@ -77,6 +77,7 @@ return [
         ],
         'tags' => [
             'label' => 'Tags',
+            'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
         ],
         'collections' => [
             'label' => 'Collections',
@@ -86,6 +87,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Availability',
+        ],
+        'edit' => [
+            'title' => 'Basic Information',
         ],
         'identifiers' => [
             'label' => 'Product Identifiers',

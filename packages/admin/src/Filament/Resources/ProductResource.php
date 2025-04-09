@@ -123,6 +123,7 @@ class ProductResource extends BaseResource
                         static::getMainFormComponents(),
                     ),
                 static::getAttributeDataFormComponent(),
+                static::getVariantAttributeDataFormComponent(),
             ])
             ->columns(1);
     }
@@ -218,12 +219,21 @@ class ProductResource extends BaseResource
     {
         return TagsComponent::make('tags')
             ->suggestions(Tag::all()->pluck('value')->all())
-            ->label(__('lunarpanel::product.form.tags.label'));
+            ->splitKeys(['Tab', ','])
+            ->label(__('lunarpanel::product.form.tags.label'))
+            ->helperText(__('lunarpanel::product.form.tags.helper_text'));
     }
 
     protected static function getAttributeDataFormComponent(): Component
     {
-        return Attributes::make()->statePath('attribute_data');
+        return Attributes::make();
+    }
+
+    protected static function getVariantAttributeDataFormComponent(): Component
+    {
+        return Attributes::make()
+            ->using(ProductVariant::class)
+            ->relationship('variant');
     }
 
     public static function getDefaultTable(Table $table): Table

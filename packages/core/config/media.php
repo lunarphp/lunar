@@ -5,12 +5,12 @@ use Lunar\Base\StandardMediaDefinitions;
 return [
 
     'definitions' => [
-        Lunar\Models\Asset::class => StandardMediaDefinitions::class,
-        Lunar\Models\Brand::class => StandardMediaDefinitions::class,
-        Lunar\Models\Collection::class => StandardMediaDefinitions::class,
-        Lunar\Models\Product::class => StandardMediaDefinitions::class,
-        Lunar\Models\ProductOption::class => StandardMediaDefinitions::class,
-        Lunar\Models\ProductOptionValue::class => StandardMediaDefinitions::class,
+        'asset' => StandardMediaDefinitions::class,
+        'brand' => StandardMediaDefinitions::class,
+        'collection' => StandardMediaDefinitions::class,
+        'product' => StandardMediaDefinitions::class,
+        'product-option' => StandardMediaDefinitions::class,
+        'product-option-value' => StandardMediaDefinitions::class,
     ],
 
     'collection' => 'images',

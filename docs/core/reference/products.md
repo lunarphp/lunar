@@ -35,13 +35,13 @@ group, or you can state which dates they should be active for (as long as the cu
 ```php
 
 // Will schedule for this product to be enabled in 14 days for this customer group.
-$product->schedule($customerGroup, now()->addDays(14));
+$product->scheduleCustomerGroup($customerGroup, now()->addDays(14));
 
 // Schedule the product to be enabled straight away
-$product->schedule($customerGroup);
+$product->scheduleCustomerGroup($customerGroup);
 
 // The schedule method will accept an array or collection of customer groups.
-$product->schedule(CustomerGroup::get());
+$product->scheduleCustomerGroup(CustomerGroup::get());
 ```
 
 ### Retrieving products for a customer group
