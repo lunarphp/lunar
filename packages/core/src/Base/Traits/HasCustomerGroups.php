@@ -55,13 +55,14 @@ trait HasCustomerGroups
         );
     }
 
-    protected function validateScheduling(Collection $models)
+    protected function validateScheduling(Collection $models): bool
     {
         foreach ($models as $model) {
             if (is_object($model) && ! ($model instanceof CustomerGroup)) {
                 return false;
             }
         }
+        return true;
     }
 
     /**
