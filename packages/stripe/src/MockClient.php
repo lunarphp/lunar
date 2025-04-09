@@ -87,7 +87,6 @@ class MockClient implements ClientInterface
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }
 
-
             if (str_contains($absUrl, 'PI_FAIL')) {
                 $this->rBody = $this->getResponse('payment_intent_paid', [
                     'id' => $id,
