@@ -55,6 +55,15 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
         ]);
     }
 
+    public function reorderTable(array $order): void
+    {
+        parent::reorderTable($order);
+
+        foreach (Product::whereIn('id', $order)->get() as $product) {
+            $product->searchable();
+        }
+    }
+
     public function table(Table $table): Table
     {
         return $table->columns([
