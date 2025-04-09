@@ -20,8 +20,8 @@ it('can store payment intent address information', function () {
     app(\Lunar\Stripe\Actions\StoreAddressInformation::class)->store($order, $paymentIntent);
 
     assertDatabaseHas(\Lunar\Models\OrderAddress::class, [
-        'first_name' => 'Buggs',
-        'last_name' => 'Bunny',
+        'first_name' => 'Buggs Bunny',
+        'last_name' => null,
         'city' => 'ACME Shipping Land',
         'type' => 'shipping',
         'country_id' => $country->id,
@@ -32,8 +32,8 @@ it('can store payment intent address information', function () {
     ]);
 
     assertDatabaseHas(\Lunar\Models\OrderAddress::class, [
-        'first_name' => 'Elma',
-        'last_name' => 'Thudd',
+        'first_name' => 'Elma Thudd',
+        'last_name' => null,
         'city' => 'ACME Land',
         'type' => 'billing',
         'country_id' => $country->id,

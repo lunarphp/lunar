@@ -96,6 +96,7 @@ class ManageVariantMedia extends BaseManageRelatedRecords
                 CreateAction::make('attach')
                     ->label(__('lunarpanel::relationmanagers.medias.actions.attach.label'))
                     ->modalHeading(__('lunarpanel::relationmanagers.medias.actions.attach.label'))
+                    ->modalWidth(\Filament\Support\Enums\MaxWidth::Medium)
                     ->form([
                         Shout::make('no_media_available')->content(
                             __('lunarpanel::relationmanagers.medias.all_media_attached')
@@ -109,13 +110,20 @@ class ManageVariantMedia extends BaseManageRelatedRecords
                                     ->product
                                     ->media
                                     ->filter(fn ($media) => ! $this->getRecord()->images->pluck('id')->contains($media->id))
-                                    ->mapWithKeys(fn ($media) => [
-                                        $media->getKey() => Arr::get($media->data, 'custom_properties.name', $media->name),
-                                    ]);
+                                    ->mapWithKeys(function ($media) {
+                                        $imageUrl = $media->hasGeneratedConversion('small') ? $media->getUrl('small') : $media->getUrl();
+                                        $imageTag = '<img src="'.$imageUrl.'" alt="" style="width: 75px; display: inline; margin-right: 10px">';
+                                        $customName = Arr::get($media->custom_properties, 'name');
+                                        $name = empty($customName) ? $media->name : $customName;
+
+                                        return [$media->getKey() => $imageTag.$name];
+                                    });
                             })
                             ->disabled(
                                 fn () => $this->getRecord()->product->media()->count() <= $this->getRecord()->images()->count()
                             )
+                            ->native(false)
+                            ->allowHtml()
                             ->required(),
 
                         Forms\Components\Toggle::make('primary')

@@ -128,6 +128,9 @@ test('can calculate multi unit quantity line', function () {
     expect($line->unitPrice)->toBeInstanceOf(DataTypesPrice::class);
     expect($line->unitPrice->value)->toEqual(50);
 
+    expect($line->unitPriceInclTax)->toBeInstanceOf(DataTypesPrice::class);
+    expect($line->unitPriceInclTax->value)->toEqual(60);
+
     expect($line->subTotal)->toBeInstanceOf(DataTypesPrice::class);
     expect($line->subTotal->value)->toEqual(50);
 
@@ -193,6 +196,9 @@ test('can calculate large unit quantity line', function () {
     expect($line->unitPrice)->toBeInstanceOf(DataTypesPrice::class);
     expect($line->unitPrice->value)->toEqual(10);
 
+    expect($line->unitPriceInclTax)->toBeInstanceOf(DataTypesPrice::class);
+    expect($line->unitPriceInclTax->value)->toEqual(12);
+
     expect($line->subTotal)->toBeInstanceOf(DataTypesPrice::class);
     expect($line->subTotal->value)->toEqual(10);
 
@@ -257,6 +263,9 @@ test('can calculate multiple quantities', function () {
 
     expect($line->unitPrice)->toBeInstanceOf(DataTypesPrice::class);
     expect($line->unitPrice->value)->toEqual(100);
+
+    expect($line->unitPriceInclTax)->toBeInstanceOf(DataTypesPrice::class);
+    expect($line->unitPriceInclTax->value)->toEqual(120);
 
     expect($line->subTotal)->toBeInstanceOf(DataTypesPrice::class);
     expect($line->subTotal->value)->toEqual(1000);

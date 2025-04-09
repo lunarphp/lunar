@@ -20,6 +20,11 @@ class UserRelationManager extends BaseRelationManager
         return false;
     }
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::user.plural_label');
+    }
+
     public function getDefaultTable(Table $table): Table
     {
         return $table->columns([
