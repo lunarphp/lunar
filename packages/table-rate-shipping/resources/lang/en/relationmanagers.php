@@ -38,7 +38,7 @@ return [
                         'label' => 'Min. Spend',
                     ],
                     'min_weight' => [
-                        'label' => 'Min. Weight (KG)',
+                        'label' => 'Min. Weight',
                     ],
                     'price' => [
                         'label' => 'Price',
