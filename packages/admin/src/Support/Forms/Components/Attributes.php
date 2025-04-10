@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
+use Closure;
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
@@ -16,6 +17,24 @@ class Attributes extends Forms\Components\Group
 {
     public ?string $modelClassOverride = null;
 
+    protected string|Closure $attributeDataField = 'attribute_data';
+
+    public function attributeDataField(string|Closure $attributeDataField): static
+    {
+        $this->attributeDataField = $attributeDataField;
+
+        if (blank($this->relationship)) {
+            $this->statePath($attributeDataField);
+        }
+
+        return $this;
+    }
+
+    public function getAttributeDataField(): string
+    {
+        return $this->evaluate($this->attributeDataField);
+    }
+
     public function using(string $modelClass): self
     {
         $this->modelClassOverride = $modelClass;
@@ -23,11 +42,16 @@ class Attributes extends Forms\Components\Group
         return $this;
     }
 
+    public function getKey(): ?string
+    {
+        return 'attributeData'.$this->modelClassOverride;
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->key('attributeData'.$this->modelClassOverride);
+        $this->statePath('attribute_data');
 
         if (blank($this->childComponents)) {
             $this->schema(function (\Filament\Forms\Get $get, Livewire $livewire, ?Model $record) {
@@ -86,9 +110,9 @@ class Attributes extends Forms\Components\Group
                     foreach ($group['fields'] as $field) {
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
-                    $groupComponents[] = Forms\Components\Section::make($group['model']->translate('name'))
-                        ->schema($sectionFields)
-                        ->statePath('attribute_data');
+                    $groupComponents[] = Forms\Components\Section::make($group['model']
+                        ->translate('name'))
+                        ->schema($sectionFields);
                 }
 
                 return $groupComponents;
@@ -109,6 +133,16 @@ class Attributes extends Forms\Components\Group
             }
 
             return $state;
+        });
+
+        $this->mutateRelationshipDataBeforeSaveUsing(static function (Attributes $component, array $data): array {
+            return [
+                $component->getAttributeDataField() => $data,
+            ];
+        });
+
+        $this->mutateRelationshipDataBeforeFillUsing(static function (Attributes $component, array $data): array {
+            return $data[$component->getAttributeDataField()] ?? [];
         });
     }
 }
