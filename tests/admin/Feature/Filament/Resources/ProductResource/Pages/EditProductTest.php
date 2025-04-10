@@ -57,8 +57,12 @@ it('can edit variant attributes', function () {
 
     expect($variant->attr($attribute->handle))->toBeNull();
 
-    $component->set('data.variant.attribute_data.'.$attribute->handle, 'Hello');
-    $component->call('save');
+    $component->fillForm([
+        'variant' => [
+            $attribute->handle => new \Lunar\FieldTypes\Text('Hello'),
+        ],
+    ])->call('save')
+        ->assertHasNoFormErrors();
 
     expect($variant->refresh()->attr($attribute->handle))->toBe('Hello');
 });
