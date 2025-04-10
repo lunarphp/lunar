@@ -14,6 +14,10 @@
             <directory suffix="Test.php">tests/core/Feature</directory>
             <directory suffix="Test.php">tests/core/Unit</directory>
         </testsuite>
+        <testsuite name="search">
+            <directory suffix="Test.php">tests/search/Feature</directory>
+            <directory suffix="Test.php">tests/search/Unit</directory>
+        </testsuite>
         <testsuite name="stripe">
             <directory suffix="Test.php">tests/stripe/Unit</directory>
         </testsuite>

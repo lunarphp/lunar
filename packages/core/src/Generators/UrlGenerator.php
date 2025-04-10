@@ -39,18 +39,12 @@ class UrlGenerator
     {
         $this->model = $model;
 
-        if (! $model->urls->count()) {
-            if ($model->attribute_data) {
-                $this->createUrl(
-                    $model->attr('name')
-                );
-
-                return;
-            }
-
-            if ($name = $model->name) {
-                $this->createUrl($name);
-            }
+        if (! $model->urls->count() &&
+            $name = $model->name ?: $model->attr('name')
+        ) {
+            $this->createUrl(
+                $name
+            );
         }
     }
 

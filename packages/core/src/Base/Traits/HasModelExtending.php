@@ -138,4 +138,23 @@ trait HasModelExtending
             $instance->registerObserver($class);
         }
     }
+
+    /**
+     * Fire the given event for the model.
+     */
+    protected function fireModelEvent($event, $halt = true): mixed
+    {
+        // Fire the actual models events
+        $result = parent::fireModelEvent($event, $halt);
+
+        $lunarClass = str_replace('Contracts\\', '', ModelManifest::guessContractClass(static::class));
+
+        if ($lunarClass == static::class) {
+            return $result;
+        }
+
+        return static::$dispatcher->{($halt ? 'until' : 'dispatch')}(
+            "eloquent.{$event}: ".$lunarClass, $this
+        );
+    }
 }

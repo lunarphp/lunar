@@ -5,6 +5,7 @@ parameters:
     paths:
         - packages
     excludePaths:
+        - packages/*/config/*
         - packages/*/tests/*
         - packages/vendor/*
         - packages/*/vendor/*
