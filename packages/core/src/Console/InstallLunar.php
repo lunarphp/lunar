@@ -19,6 +19,7 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\TaxClass;
+use Lunar\Models\TaxZone;
 
 use function Laravel\Prompts\confirm;
 
@@ -134,6 +135,23 @@ class InstallLunar extends Command
                     'name' => 'Default Tax Class',
                     'default' => true,
                 ]);
+            }
+
+            if (! TaxZone::count()) {
+                $this->components->info('Adding a default tax zone.');
+
+                $taxZone = TaxZone::create([
+                    'name' => 'Default Tax Zone',
+                    'zone_type' => 'country',
+                    'price_display' => 'tax_exclusive',
+                    'default' => true,
+                    'active' => true,
+                ]);
+                $taxZone->countries()->createMany(
+                    Country::get()->map(fn ($country) => [
+                        'country_id' => $country->id,
+                    ])
+                );
             }
 
             if (! Attribute::count()) {

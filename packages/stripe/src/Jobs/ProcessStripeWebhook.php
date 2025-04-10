@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
 use Lunar\Models\Order;
+use Lunar\Stripe\Models\StripePaymentIntent;
 
 class ProcessStripeWebhook implements ShouldQueue
 {
@@ -48,7 +49,8 @@ class ProcessStripeWebhook implements ShouldQueue
         }
 
         if (! $order) {
-            $cart = Cart::where('meta->payment_intent', '=', $this->paymentIntentId)->first();
+            $cart = StripePaymentIntent::where('intent_id', $this->paymentIntentId)->first()?->cart ?:
+                Cart::where('meta->payment_intent', '=', $this->paymentIntentId)->first();
         }
 
         if (! $cart && ! $order) {

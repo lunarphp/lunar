@@ -140,6 +140,7 @@ foreach ($cart->discountBreakdown as $discountBreakdown) {
 
 foreach ($cart->lines as $cartLine) {
     $cartLine->unitPrice; // The monetary value for a single item.
+    $cartLine->unitPriceInclTax; // The monetary value for a single item, including tax amount.
     $cartLine->total; // The total price value for the cart
     $cartLine->subTotal; // The sub total, excluding tax
     $cartLine->subTotalDiscounted; // The sub total, minus the discount amount.

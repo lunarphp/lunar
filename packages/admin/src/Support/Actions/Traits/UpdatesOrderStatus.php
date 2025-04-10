@@ -50,7 +50,7 @@ trait UpdatesOrderStatus
                     $record?->shippingAddress?->contact_email,
                 ])->filter()->unique()->map(
                     fn ($email) => $email
-                )->toArray();
+                )->values()->toArray();
 
                 $component->state($emails);
             })->options(function (?Order $record = null) {

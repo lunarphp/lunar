@@ -19,8 +19,5 @@ it('can render relation manager', function ($model, $page) {
         'pageClass' => $page,
     ])->assertSuccessful();
 })->with([
-    'product' => [
-        'model' => \Lunar\Models\Product::class,
-        'page' => \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing::class,
-    ],
+    [\Lunar\Models\Product::class, \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing::class],
 ]);

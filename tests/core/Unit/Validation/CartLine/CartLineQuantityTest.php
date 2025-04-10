@@ -112,8 +112,8 @@ test('can validate quantity increment quantity', function (array $quantities, in
         expect($validator->validate())->toBeTrue();
     }
 })->with([
-    '1 increment' => [
-        'quantities' => [
+    [
+        [
             1 => 'pass',
             2 => 'pass',
             3 => 'pass',
@@ -130,10 +130,10 @@ test('can validate quantity increment quantity', function (array $quantities, in
             50 => 'pass',
             100 => 'pass',
         ],
-        'increment' => 1,
+        1,
     ],
-    '10 increment' => [
-        'quantities' => [
+    [
+        [
             1 => 'fail',
             2 => 'fail',
             3 => 'fail',
@@ -147,10 +147,10 @@ test('can validate quantity increment quantity', function (array $quantities, in
             30 => 'pass',
             40 => 'pass',
         ],
-        'increment' => 10,
+        10,
     ],
-    '14 increment' => [
-        'quantities' => [
+    [
+        [
             1 => 'fail',
             2 => 'fail',
             3 => 'fail',
@@ -161,7 +161,7 @@ test('can validate quantity increment quantity', function (array $quantities, in
             36 => 'fail',
             56 => 'pass',
         ],
-        'increment' => 14,
+        14,
     ],
 ]);
 

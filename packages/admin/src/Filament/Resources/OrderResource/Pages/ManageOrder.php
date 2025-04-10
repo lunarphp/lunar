@@ -319,6 +319,9 @@ class ManageOrder extends BaseViewRecord
             ->form(function () {
                 return [
                     TagsComponent::make('')
+                        ->splitKeys(['Tab', ','])
+                        ->label(__('lunarpanel::order.action.edit_tags.form.tags.label'))
+                        ->helperText(__('lunarpanel::order.action.edit_tags.form.tags.helper_text'))
                         ->suggestions(Tag::all()->pluck('value')->all()),
                 ];
             })->action(function (Action $action, $record, $data) {
@@ -505,7 +508,9 @@ class ManageOrder extends BaseViewRecord
                 $response = $transaction->capture(bcmul($data['amount'], $record->currency->factor));
 
                 if (! $response->success) {
-                    $action->failureNotification(fn () => $response->message);
+                    $action->failureNotification(
+                        fn () => Notification::make('capture_failure')->color('danger')->title($response->message)
+                    );
 
                     $action->failure();
 

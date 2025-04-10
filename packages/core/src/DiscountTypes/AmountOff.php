@@ -54,6 +54,7 @@ class AmountOff extends AbstractDiscountType
         $value = (int) bcmul($decimal, $currency->factor);
 
         $lines = $this->getEligibleLines($cart);
+
         $linesSubtotal = $lines->sum(function ($line) {
             return ($line->subTotalDiscounted ?? $line->subTotal)->value;
         });
@@ -234,6 +235,7 @@ class AmountOff extends AbstractDiscountType
         foreach ($lines as $line) {
             $subTotal = $line->subTotal->value;
             $subTotalDiscounted = $line->subTotalDiscounted?->value ?: 0;
+            $lineDiscount = $line->discountTotal?->value ?: 0;
 
             if ($subTotalDiscounted) {
                 $subTotal = $subTotalDiscounted;
@@ -243,14 +245,14 @@ class AmountOff extends AbstractDiscountType
 
             // If this line already has a greater discount value
             // don't add this one as they already have a better deal.
-            if ($line->discountTotal->value > $amount) {
+            if ($lineDiscount > $amount) {
                 continue;
             }
 
             $totalDiscount += $amount;
 
             $line->discountTotal = new Price(
-                $amount,
+                $lineDiscount + $amount,
                 $cart->currency,
                 1
             );

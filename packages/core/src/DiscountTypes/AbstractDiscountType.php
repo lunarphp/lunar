@@ -59,6 +59,12 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     {
         $data = $this->discount->data;
 
+        $customerIds = $this->discount->customers->pluck('id');
+
+        if ((! $customerIds->isEmpty() && ! $cart->customer) || (! $customerIds->isEmpty() && ! $customerIds->contains($cart->customer_id))) {
+            return false;
+        }
+
         $cartCoupon = strtoupper($cart->coupon_code ?? '');
         $conditionCoupon = strtoupper($this->discount->coupon ?? '');
 

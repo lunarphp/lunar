@@ -22,7 +22,6 @@ use Lunar\Admin\Models\Staff;
 use Lunar\LunarServiceProvider;
 use Lunar\Tests\Admin\Providers\LunarPanelTestServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
-use Marvinosswald\FilamentInputSelectAffix\FilamentInputSelectAffixServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
@@ -63,7 +62,6 @@ class TestCase extends BaseTestCase
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
             BladeLucideIconsServiceProvider::class,
-            FilamentInputSelectAffixServiceProvider::class,
             ShoutServiceProvider::class,
 
             LunarPanelTestServiceProvider::class,
