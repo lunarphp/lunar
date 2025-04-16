@@ -109,4 +109,4 @@ it('can set product base prices correctly', function () {
         'price' => '232',
     ]);
 
-})->group('ting');
+});
