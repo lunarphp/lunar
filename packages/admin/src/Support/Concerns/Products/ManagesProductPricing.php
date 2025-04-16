@@ -51,7 +51,6 @@ trait ManagesProductPricing
         unset($data['basePrices']);
         $variant->update($data);
 
-
         $prices->filter(
             fn ($price) => ! $price['id']
         )->each(fn ($price) => $variant->prices()->create([

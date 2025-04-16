@@ -105,7 +105,7 @@ it('can set product base prices correctly', function () {
         ],
     ])->call('save')->assertHasNoErrors();
 
-    \Pest\Laravel\assertDatabaseHas((new \Lunar\Models\Price())->getTable(), [
+    \Pest\Laravel\assertDatabaseHas((new \Lunar\Models\Price)->getTable(), [
         'price' => '232',
     ]);
 
