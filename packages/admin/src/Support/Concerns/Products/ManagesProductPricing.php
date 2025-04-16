@@ -51,11 +51,12 @@ trait ManagesProductPricing
         unset($data['basePrices']);
         $variant->update($data);
 
+
         $prices->filter(
             fn ($price) => ! $price['id']
         )->each(fn ($price) => $variant->prices()->create([
             'currency_id' => $price['currency_id'],
-            'price' => (int) ($price['value'] * $price['factor']),
+            'price' => (int) round((float) ($price['value'] * $price['factor'])),
             'compare_price' => (int) ($price['compare_price'] * $price['factor']),
             'min_quantity' => 1,
             'customer_group_id' => null,
@@ -65,7 +66,7 @@ trait ManagesProductPricing
         $prices->filter(
             fn ($price) => $price['id']
         )->each(fn ($price) => Price::find($price['id'])->update([
-            'price' => (int) ($price['value'] * $price['factor']),
+            'price' => (int) round((float) ($price['value'] * $price['factor'])),
             'compare_price' => (int) ($price['compare_price'] * $price['factor']),
         ])
         );
