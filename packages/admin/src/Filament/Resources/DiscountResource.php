@@ -284,10 +284,14 @@ class DiscountResource extends BaseResource
         }
 
         return [
-            Forms\Components\Toggle::make('data.fixed_value')->live(),
-            Forms\Components\TextInput::make('data.percentage')->visible(
-                fn (Forms\Get $get) => ! $get('data.fixed_value')
-            )->numeric(),
+            Forms\Components\Toggle::make('data.fixed_value')
+                ->label(__('lunarpanel::discount.form.fixed_value.label'))
+                ->live(),
+            Forms\Components\TextInput::make('data.percentage')
+                ->label(__('lunarpanel::discount.form.percentage.label'))
+                ->visible(
+                    fn (Forms\Get $get) => ! $get('data.fixed_value')
+                )->numeric(),
             Forms\Components\Group::make(
                 $currencyInputs
             )->visible(

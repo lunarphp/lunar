@@ -259,4 +259,15 @@ return [
             ],
         ],
     ],
+    'values' => [
+        'title' => 'Giá trị',
+        'table' => [
+            'name' => [
+                'label' => 'Tên',
+            ],
+            'position' => [
+                'label' => 'Vị trí',
+            ],
+        ],
+    ],
 ];
