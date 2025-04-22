@@ -16,25 +16,18 @@ class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
 
         $month = $order->created_at->format('m');
 
+        $connection = DB::connection()->getDriverName();
+
+        $rawSelect = $connection != 'sqlite' ?
+            'MAX(CAST(SUBSTRING(reference from 9) as UNSIGNED))' :
+            'MAX(CAST(substr(reference, 9) as UNSIGNED))';
+
         $latest = Order::select(
-            DB::RAW('MAX(reference) as reference')
-        )->whereYear('created_at', '=', $year)
-            ->whereMonth('created_at', '=', $month)
-            ->where('id', '!=', $order->id)
-            ->first();
+            DB::RAW($rawSelect.' as reference')
+        )->whereYear('placed_at', '=', $year)
+            ->where('reference', 'LIKE', $year.'-'.$month.'-%')
+            ->where('id', '!=', $order->id)->first();
 
-        if (! $latest || ! $latest->reference) {
-            $increment = 1;
-        } else {
-            $segments = explode('-', $latest->reference);
-
-            if (count($segments) == 1) {
-                $increment = 1;
-            } else {
-                $increment = end($segments) + 1;
-            }
-        }
-
-        return $year.'-'.$month.'-'.str_pad($increment, 4, 0, STR_PAD_LEFT);
+        return $year.'-'.$month.'-'.str_pad($latest?->reference + 1, 4, 0, STR_PAD_LEFT);
     }
 }

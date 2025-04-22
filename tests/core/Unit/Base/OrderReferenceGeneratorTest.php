@@ -56,3 +56,31 @@ function can_increment_order_reference_by_default()
 
     expect($result)->toEqual($order->created_at->format('Y-m').'-0002');
 }
+
+test('can generate high reference numbers', function () {
+    Order::factory()->create([
+        'reference' => '2024-04-5000000',
+        'placed_at' => now(),
+    ]);
+
+    Order::factory()->create([
+        'reference' => '2025-04-9999',
+        'placed_at' => now(),
+    ]);
+
+    Order::factory()->create([
+        'reference' => '2025-04-10000',
+        'placed_at' => now(),
+    ]);
+
+    $order = Order::factory()->create([
+        'reference' => null,
+        'placed_at' => now(),
+    ]);
+
+    expect($order->reference)->toBeNull();
+
+    $result = app(OrderReferenceGenerator::class)->generate($order);
+
+    expect($result)->toEqual($order->created_at->format('Y-m').'-10001');
+});
