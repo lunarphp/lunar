@@ -63,13 +63,15 @@ test('can generate high reference numbers', function () {
         'placed_at' => now(),
     ]);
 
+    $year = now()->year;
+
     Order::factory()->create([
-        'reference' => '2025-04-9999',
+        'reference' => $year.'-04-9999',
         'placed_at' => now(),
     ]);
 
     Order::factory()->create([
-        'reference' => '2025-04-10000',
+        'reference' => $year.'-04-10000',
         'placed_at' => now(),
     ]);
 

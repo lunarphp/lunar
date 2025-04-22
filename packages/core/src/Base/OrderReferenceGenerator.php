@@ -24,7 +24,7 @@ class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
 
         $latest = Order::select(
             DB::RAW($rawSelect.' as reference')
-        )->whereYear('placed_at', '=', $year)
+        )->whereYear('created_at', '=', $year)
             ->where('reference', 'LIKE', $year.'-'.$month.'-%')
             ->where('id', '!=', $order->id)->first();
 
