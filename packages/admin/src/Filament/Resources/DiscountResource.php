@@ -384,7 +384,7 @@ class DiscountResource extends BaseResource
                 ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('coupon')
-                ->label(__('lunarpanel::discount.table.name.coupon.label'))
+                ->label(__('lunarpanel::discount.table.coupon.label'))
                 ->searchable()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
