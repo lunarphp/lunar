@@ -365,6 +365,7 @@ class DiscountResource extends BaseResource
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::discount.table.name.label'))
                 ->searchable()
+                ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('type')
                 ->formatStateUsing(function ($state) {
@@ -383,10 +384,12 @@ class DiscountResource extends BaseResource
             Tables\Columns\TextColumn::make('coupon')
                 ->label(__('lunarpanel::discount.table.name.coupon.label'))
                 ->searchable()
+                ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\TextColumn::make('created_at')
                 ->label(__('lunarpanel::discount.table.created_at.label'))
                 ->date()
+                ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
         ];
     }
