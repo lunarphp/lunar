@@ -1,6 +1,5 @@
 <?php
 
-use Lunar\Stripe\Actions\ProcessEventParameters;
 use Lunar\Stripe\Concerns\ProcessesEventParameters;
 
 uses(\Lunar\Tests\Stripe\Unit\TestCase::class);
