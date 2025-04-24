@@ -376,10 +376,12 @@ class DiscountResource extends BaseResource
             Tables\Columns\TextColumn::make('starts_at')
                 ->label(__('lunarpanel::discount.table.starts_at.label'))
                 ->date()
+                ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('ends_at')
                 ->label(__('lunarpanel::discount.table.ends_at.label'))
                 ->date()
+                ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('coupon')
                 ->label(__('lunarpanel::discount.table.name.coupon.label'))
