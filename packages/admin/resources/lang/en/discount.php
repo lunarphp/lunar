@@ -103,6 +103,12 @@ return [
         'ends_at' => [
             'label' => 'End Date',
         ],
+        'created_at' => [
+            'label' => 'Created At',
+        ],
+        'coupon' => [
+            'label' => 'Coupon',
+        ],
     ],
     'pages' => [
         'availability' => [

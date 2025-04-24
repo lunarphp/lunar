@@ -209,7 +209,8 @@ class DiscountResource extends BaseResource
                 __('lunarpanel::discount.form.coupon.label')
             )->helperText(
                 __('lunarpanel::discount.form.coupon.helper_text')
-            );
+            )
+            ->unique(ignoreRecord: true);
     }
 
     protected static function getMaxUsesFormComponent(): Component
@@ -359,21 +360,34 @@ class DiscountResource extends BaseResource
                     \Lunar\Models\Discount::EXPIRED => 'danger',
                     \Lunar\Models\Discount::PENDING => 'gray',
                     \Lunar\Models\Discount::SCHEDULED => 'info',
-                }),
+                })
+                ->toggleable(),
             Tables\Columns\TextColumn::make('name')
                 ->label(__('lunarpanel::discount.table.name.label'))
-                ->searchable(),
+                ->searchable()
+                ->toggleable(),
             Tables\Columns\TextColumn::make('type')
                 ->formatStateUsing(function ($state) {
                     return (new $state)->getName();
                 })
-                ->label(__('lunarpanel::discount.table.type.label')),
+                ->label(__('lunarpanel::discount.table.type.label'))
+                ->toggleable(),
             Tables\Columns\TextColumn::make('starts_at')
                 ->label(__('lunarpanel::discount.table.starts_at.label'))
-                ->date(),
+                ->date()
+                ->toggleable(),
             Tables\Columns\TextColumn::make('ends_at')
                 ->label(__('lunarpanel::discount.table.ends_at.label'))
-                ->date(),
+                ->date()
+                ->toggleable(),
+            Tables\Columns\TextColumn::make('coupon')
+                ->label(__('lunarpanel::discount.table.name.coupon.label'))
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('created_at')
+                ->label(__('lunarpanel::discount.table.created_at.label'))
+                ->date()
+                ->toggleable(isToggledHiddenByDefault: true),
         ];
     }
 
