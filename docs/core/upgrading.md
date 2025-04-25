@@ -18,6 +18,55 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-beta.21
+
+### High Impact
+
+#### Order reference generation changes
+
+The current order reference generator uses the format `YYYY-MM-{X}` which has been implemented since the early days of when Lunar was called GetCandy.
+
+This approach to formatting is not great for order references and can lead to anomalies when attempting to determine the next reference in the sequence.
+
+The new format uses the Order ID and adds leading zeros and an optional prefix i.e.
+
+Assuming order ID is 19560
+```
+// Old
+2025-04-00250
+// New
+00019560
+```
+The length of the reference, plus the prefix can now be defined in the `lunar/orders.php` config file:
+
+```php
+    'reference_format' => [
+        /**
+         * Optional prefix for the order reference
+         */
+        'prefix' => null,
+        /**
+         * STR_PAD_LEFT: 00001965
+         * STR_PAD_RIGHT: 19650000
+         * STR_PAD_BOTH: 00196500
+         */
+        'padding_direction' => STR_PAD_LEFT,
+        /**
+         * 00001965
+         * AAAA1965
+         */
+        'padding_character' => '0',
+        /**
+         * If the length specified below is smaller than the length
+         * of the Order ID, then no padding will take place.
+         */
+        'length' => 8,
+    ],
+```
+
+If you wish to keep using the current action used to generate references, you can [copy the existing class](https://github.com/lunarphp/lunar/blob/1.0.0-beta20/packages/core/src/Base/OrderReferenceGenerator.php) into your app and update the `reference_generator` path in config.
+
+
 ## 1.0.0-beta.1
 
 ### High Impact
