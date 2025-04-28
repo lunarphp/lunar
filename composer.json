@@ -37,6 +37,7 @@
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-permission": "^6.12",
         "spatie/php-structure-discoverer": "^2.3.1",
+        "stephenjude/filament-two-factor-authentication": "dev-main",
         "stripe/stripe-php": "^16.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
         "typesense/typesense-php": "^4.9"
