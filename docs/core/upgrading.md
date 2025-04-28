@@ -18,6 +18,28 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-beta.21
+
+### Two-Factor Authentication has been added
+
+To continue improving security for the Lunar panel, Staff members now have the ability to set up Two-Factor Authentication. Currently this is opt-in, however you can enforce all Staff members to set up 2FA:
+
+```php
+public function register()
+{
+    \Lunar\Admin\Support\Facades\LunarPanel::enforceTwoFactorAuth()->register();
+}
+```
+
+If you do not wish to use Two-Factor Authentication at all, you can disable it and the option to set it up won't show.
+
+```php
+public function register()
+{
+    \Lunar\Admin\Support\Facades\LunarPanel::disableTwoFactorAuth()->register();
+}
+```
+
 ## 1.0.0-beta.1
 
 ### High Impact
