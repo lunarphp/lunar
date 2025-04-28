@@ -224,11 +224,10 @@ class LunarPanelManager
             \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
         ];
 
-        if (!$this->twoFactorAuthDisabled) {
+        if (! $this->twoFactorAuthDisabled) {
             $plugins[] = TwoFactorAuthenticationPlugin::make()->addTwoFactorMenuItem(label: '2FA Settings')
                 ->enforceTwoFactorSetup(condition: $this->twoFactorAuthEnforced);
         }
-
 
         return Panel::make()
             ->spa()
