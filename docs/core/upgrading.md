@@ -30,12 +30,12 @@ This approach to formatting is not great for order references and can lead to an
 
 The new format uses the Order ID and adds leading zeros and an optional prefix i.e.
 
-Assuming order ID is 19560
+Assuming order ID is 1965
 ```
 // Old
 2025-04-00250
 // New
-00019560
+00001965
 ```
 The length of the reference, plus the prefix can now be defined in the `lunar/orders.php` config file:
 
