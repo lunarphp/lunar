@@ -50,6 +50,7 @@ class OrderItemsTable extends TableComponent
                                     if ($line->purchasable_type == ProductVariant::morphName()) {
                                         return EditProduct::getUrl(['record' => $line->purchasable->product_id]);
                                     }
+
                                     return null;
                                 })
                                 ->weight(FontWeight::Bold),
