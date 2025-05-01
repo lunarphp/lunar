@@ -40,7 +40,7 @@ class ManageProductCollections extends BaseManageRelatedRecords
             ->reorderable('position')
             ->columns([
                 TranslatedTextColumn::make('attribute_data.name')
-                    ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
+                    ->description(fn (CollectionContract $record): string => $record->breadcrumb->implode(' > '))
                     ->attributeData()
                     ->limitedTooltip()
                     ->limit(50)
