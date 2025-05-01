@@ -164,7 +164,7 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
         return 1;
     }
 
-    private function resolveHighestTaxRateInCart(Cart $cart): ?TaxClass
+    private function resolveHighestTaxRateInCart(CartContract $cart): ?TaxClass
     {
         $highestRate = false;
         $highestTaxClass = null;

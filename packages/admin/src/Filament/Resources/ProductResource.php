@@ -232,7 +232,7 @@ class ProductResource extends BaseResource
         return Attributes::make()
             ->using(ProductVariant::class)
             ->relationship('variant')
-            ->hidden(fn (Product $record) => $record->hasVariants);
+            ->hidden(fn (ProductContract $record) => $record->hasVariants);
     }
 
     public static function getDefaultTable(Table $table): Table
