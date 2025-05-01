@@ -65,7 +65,7 @@ class LanguageResource extends BaseResource
             ->label(__('lunarpanel::language.form.code.label'))
             ->required()
             ->minLength(2)
-            ->maxLength(2);
+            ->maxLength(5);
     }
 
     protected static function getDefaultFormComponent(): Component

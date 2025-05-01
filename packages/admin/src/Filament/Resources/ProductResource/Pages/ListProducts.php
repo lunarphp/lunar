@@ -27,7 +27,7 @@ class ListProducts extends BaseListRecords
                 static::createActionFormInputs()
             )->using(
                 fn (array $data, string $model) => static::createRecord($data, $model)
-            )->successRedirectUrl(fn (Model $record): string => route('filament.lunar.resources.products.edit', [
+            )->successRedirectUrl(fn (Model $record): string => ProductResource::getUrl('edit', [
                 'record' => $record,
             ])),
         ];

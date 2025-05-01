@@ -125,6 +125,10 @@ class DiscountManager implements DiscountManagerInterface
             $this->channel($defaultChannel);
         }
 
+        if ($cart && $customerGroups = $cart->customer?->customerGroups) {
+            $this->customerGroup($customerGroups);
+        }
+
         if ($this->customerGroups->isEmpty() && $defaultGroup = CustomerGroup::getDefault()) {
             $this->customerGroup($defaultGroup);
         }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 interface Product
@@ -31,6 +32,11 @@ interface Product
      * Return the product variants relation.
      */
     public function variants(): HasMany;
+
+    /**
+     * Return the product variant relation.
+     */
+    public function variant(): HasOne;
 
     /**
      * Return the product collections relation.

@@ -68,3 +68,28 @@ test('morph map is correct when models are extended', function () {
         ->and(Product::morphName())
         ->toBe('product');
 });
+
+test('core model events are triggered with extended models', function () {
+    \Illuminate\Support\Facades\Event::fake();
+
+    $product = \Lunar\Tests\Core\Stubs\Models\Product::factory()->create();
+
+    $product->delete();
+
+    \Illuminate\Support\Facades\Event::assertDispatched(
+        'eloquent.deleted: '.Product::class
+    );
+
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\Product::class,
+        \Lunar\Tests\Core\Stubs\Models\CustomProduct::class
+    );
+
+    $product = \Lunar\Tests\Core\Stubs\Models\CustomProduct::factory()->create();
+
+    $product->delete();
+
+    \Illuminate\Support\Facades\Event::assertDispatched(
+        'eloquent.deleted: '.Product::class
+    );
+});

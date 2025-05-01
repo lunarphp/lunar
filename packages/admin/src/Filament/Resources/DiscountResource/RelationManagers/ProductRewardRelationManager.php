@@ -39,7 +39,7 @@ class ProductRewardRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['reward'])
-                    ->wherePurchasableType(Product::modelClass())
+                    ->wherePurchasableType(Product::morphName())
                     ->whereHas('purchasable')
             )
             ->headerActions([
@@ -79,6 +79,8 @@ class ProductRewardRelationManager extends BaseRelationManager
                     ),
             ])->actions([
                 Tables\Actions\DeleteAction::make(),
+            ])->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }

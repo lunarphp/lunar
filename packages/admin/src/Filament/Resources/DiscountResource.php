@@ -5,7 +5,6 @@ namespace Lunar\Admin\Filament\Resources;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
-use Filament\Pages\Page;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
@@ -15,6 +14,7 @@ use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CustomerLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
@@ -209,7 +209,8 @@ class DiscountResource extends BaseResource
                 __('lunarpanel::discount.form.coupon.label')
             )->helperText(
                 __('lunarpanel::discount.form.coupon.helper_text')
-            );
+            )
+            ->unique(ignoreRecord: true);
     }
 
     protected static function getMaxUsesFormComponent(): Component
@@ -359,30 +360,49 @@ class DiscountResource extends BaseResource
                     \Lunar\Models\Discount::EXPIRED => 'danger',
                     \Lunar\Models\Discount::PENDING => 'gray',
                     \Lunar\Models\Discount::SCHEDULED => 'info',
-                }),
+                })
+                ->toggleable(),
             Tables\Columns\TextColumn::make('name')
-                ->label(__('lunarpanel::discount.table.name.label')),
+                ->label(__('lunarpanel::discount.table.name.label'))
+                ->searchable()
+                ->sortable()
+                ->toggleable(),
             Tables\Columns\TextColumn::make('type')
                 ->formatStateUsing(function ($state) {
                     return (new $state)->getName();
                 })
-                ->label(__('lunarpanel::discount.table.type.label')),
+                ->label(__('lunarpanel::discount.table.type.label'))
+                ->toggleable(),
             Tables\Columns\TextColumn::make('starts_at')
                 ->label(__('lunarpanel::discount.table.starts_at.label'))
-                ->date(),
+                ->date()
+                ->sortable()
+                ->toggleable(),
             Tables\Columns\TextColumn::make('ends_at')
                 ->label(__('lunarpanel::discount.table.ends_at.label'))
-                ->date(),
+                ->date()
+                ->sortable()
+                ->toggleable(),
+            Tables\Columns\TextColumn::make('coupon')
+                ->label(__('lunarpanel::discount.table.coupon.label'))
+                ->searchable()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('created_at')
+                ->label(__('lunarpanel::discount.table.created_at.label'))
+                ->date()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
         ];
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             Pages\EditDiscount::class,
             Pages\ManageDiscountAvailability::class,
             Pages\ManageDiscountLimitations::class,
-        ]);
+        ];
     }
 
     protected static function getDefaultRelations(): array
@@ -392,6 +412,7 @@ class DiscountResource extends BaseResource
             BrandLimitationRelationManager::class,
             ProductLimitationRelationManager::class,
             ProductVariantLimitationRelationManager::class,
+            CustomerLimitationRelationManager::class,
             ProductRewardRelationManager::class,
             ProductConditionRelationManager::class,
             ProductRewardRelationManager::class,

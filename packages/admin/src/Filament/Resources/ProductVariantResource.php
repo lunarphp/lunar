@@ -12,10 +12,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
+use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\TaxClass;
-use Marvinosswald\FilamentInputSelectAffix\TextInputSelectAffix;
 
 class ProductVariantResource extends BaseResource
 {
@@ -296,7 +296,7 @@ class ProductVariantResource extends BaseResource
 
     protected static function getAttributeDataFormComponent(): Component
     {
-        return Attributes::make()->statePath('attribute_data');
+        return Attributes::make();
     }
 
     public static function getDefaultTable(Table $table): Table

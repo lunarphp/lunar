@@ -454,6 +454,7 @@ test('can calculate the cart', function () {
     expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$1.000000');
     expect($cart->lines[1]->unitPrice->value)->toEqual(158);
     expect($cart->lines[1]->unitPrice->unitDecimal(false))->toEqual(0.0158);
+    expect($cart->lines[1]->unitPriceInclTax->value)->toEqual(190);
     expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$0.0158');
     expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$0.015800');
     expect($cart->subTotal->value)->toEqual(103);

@@ -5,6 +5,8 @@ namespace Lunar\Admin\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,6 +14,22 @@ use Illuminate\Notifications\Notifiable;
 use Lunar\Admin\Database\Factories\StaffFactory;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @property int $id
+ * @property bool $admin
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $full_name
+ * @property string $email
+ * @property string $password
+ * @property string $remember_token
+ * @property ?\Illuminate\Support\Carbon $email_verified_at
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?\Illuminate\Support\Carbon $deleted_at
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder search(?string $terms)
+ */
 class Staff extends Authenticatable implements FilamentUser, HasName
 {
     use HasFactory;
@@ -19,59 +37,54 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     use Notifiable;
     use SoftDeletes;
 
-    /**
-     * Return a new factory instance for the model.
-     */
-    protected static function newFactory()
-    {
-        return StaffFactory::new();
-    }
+    protected $guard_name = 'staff';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'firstname',
-        'lastname',
+        'first_name',
+        'last_name',
         'admin',
         'email',
         'password',
     ];
 
-    protected $guard_name = 'staff';
+    protected $casts = [
+        'admin' => 'bool',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+    protected $appends = [
+        'full_name',
     ];
 
-    /**
-     * Append attributes to the model.
-     *
-     * @var array
-     */
-    protected $appends = ['fullName'];
+    protected function firstname(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $attributes['first_name'],
+            set: fn (string $value) => ['first_name' => $value],
+        );
+    }
 
-    /**
-     * Create a new instance of the Model.
-     */
+    protected function lastname(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $attributes['last_name'],
+            set: fn (string $value) => ['last_name' => $value],
+        );
+    }
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::get(
+            fn (): string => "{$this->first_name} {$this->last_name}",
+        );
+    }
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -83,45 +96,20 @@ class Staff extends Authenticatable implements FilamentUser, HasName
         }
     }
 
-    /**
-     * Retrieve the model for a bound value.
-     *
-     * Currently Livewire doesn't support route bindings for
-     * soft deleted models so we need to rewire it here.
-     *
-     * @param  mixed  $value
-     * @param  string|null  $field
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
-    public function resolveRouteBinding($value, $field = null)
+    protected static function newFactory(): StaffFactory
     {
-        return $this->resolveSoftDeletableRouteBinding($value, $field);
+        return StaffFactory::new();
     }
 
-    /**
-     * Apply the basic search scope to a given Eloquent query builder.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $term
-     * @return void
-     */
-    public function scopeSearch($query, $term)
+    public function scopeSearch(Builder $query, ?string $terms): void
     {
-        if ($term) {
-            $parts = explode(' ', $term);
-
-            foreach ($parts as $part) {
-                $query->whereAny(['email', 'firstname', 'lastname'], 'LIKE', "%$part%");
-            }
+        if (! $terms) {
+            return;
         }
-    }
 
-    /**
-     * Get staff member's full name.
-     */
-    public function getFullNameAttribute(): string
-    {
-        return $this->firstname.' '.$this->lastname;
+        foreach (explode(' ', $terms) as $term) {
+            $query->whereAny(['email', 'first_name', 'last_name'], 'LIKE', "%{$term}%");
+        }
     }
 
     public function canAccessPanel(Panel $panel): bool
@@ -131,6 +119,6 @@ class Staff extends Authenticatable implements FilamentUser, HasName
 
     public function getFilamentName(): string
     {
-        return $this->fullName;
+        return $this->full_name;
     }
 }

@@ -103,6 +103,12 @@ return [
         'ends_at' => [
             'label' => 'End Date',
         ],
+        'created_at' => [
+            'label' => 'Created At',
+        ],
+        'coupon' => [
+            'label' => 'Coupon',
+        ],
     ],
     'pages' => [
         'availability' => [
@@ -145,6 +151,20 @@ return [
                             'label' => 'Exclusion',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'customers' => [
+            'title' => 'Customers',
+            'description' => 'Select which customers this discount should be limited to.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Attach Customer',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],

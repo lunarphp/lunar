@@ -36,9 +36,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['limitation', 'exclusion'])
-                    ->wherePurchasableType(
-                        ModelManifest::getMorphMapKey(ProductVariant::modelClass())
-                    )
+                    ->wherePurchasableType(ProductVariant::morphName())
                     ->whereHas('purchasable')
             )
             ->headerActions([
@@ -87,6 +85,8 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                     ),
             ])->actions([
                 Tables\Actions\DeleteAction::make(),
+            ])->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }

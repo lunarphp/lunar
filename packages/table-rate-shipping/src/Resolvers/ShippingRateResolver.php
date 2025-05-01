@@ -62,7 +62,7 @@ class ShippingRateResolver
         $shippingMeta = $cart->shippingEstimateMeta;
 
         $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
-            return $line->purchasable->stock < $line->quantity;
+            return $line->purchasable->shippable && ($line->purchasable->stock < $line->quantity);
         });
 
         $this->customerGroups = collect([CustomerGroup::getDefault()]);
@@ -120,7 +120,7 @@ class ShippingRateResolver
     /**
      * Set the value for the postcode.
      */
-    public function postcode(string $postcode): self
+    public function postcode(?string $postcode): self
     {
         $this->postcode = $postcode;
 
@@ -169,9 +169,9 @@ class ShippingRateResolver
 
                     [$h, $m, $s] = explode(':', $method->cutoff);
 
-                    return now()->set('hour', $h)
-                        ->set('minute', $m)
-                        ->set('second', $s)
+                    return now()->set('hour', (int) $h)
+                        ->set('minute', (int) $m)
+                        ->set('second', (int) $s)
                         ->isPast();
                 })
                 ->reject(function ($rate) {

@@ -39,6 +39,7 @@ class ManageBrandCollections extends BaseManageRelatedRecords
     {
         return $table->columns([
             TranslatedTextColumn::make('attribute_data.name')
+                ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
                 ->attributeData()
                 ->limitedTooltip()
                 ->limit(50)

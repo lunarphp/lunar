@@ -23,7 +23,7 @@ class CartSessionManager implements CartSessionInterface
         protected AuthManager $authManager,
         protected ChannelContract $channel,
         protected CurrencyContract $currency,
-        public CartContract $cart,
+        public ?CartContract $cart = null,
     ) {
         //
     }
@@ -78,7 +78,7 @@ class CartSessionManager implements CartSessionInterface
             );
         }
 
-        unset($this->cart);
+        $this->cart = null;
 
         $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(

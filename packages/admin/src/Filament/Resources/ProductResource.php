@@ -123,6 +123,7 @@ class ProductResource extends BaseResource
                         static::getMainFormComponents(),
                     ),
                 static::getAttributeDataFormComponent(),
+                static::getVariantAttributeDataFormComponent(),
             ])
             ->columns(1);
     }
@@ -216,12 +217,22 @@ class ProductResource extends BaseResource
     {
         return TagsComponent::make('tags')
             ->suggestions(Tag::all()->pluck('value')->all())
-            ->label(__('lunarpanel::product.form.tags.label'));
+            ->splitKeys(['Tab', ','])
+            ->label(__('lunarpanel::product.form.tags.label'))
+            ->helperText(__('lunarpanel::product.form.tags.helper_text'));
     }
 
     protected static function getAttributeDataFormComponent(): Component
     {
-        return Attributes::make()->statePath('attribute_data');
+        return Attributes::make();
+    }
+
+    protected static function getVariantAttributeDataFormComponent(): Component
+    {
+        return Attributes::make()
+            ->using(ProductVariant::class)
+            ->relationship('variant')
+            ->hidden(fn (Product $record) => $record->hasVariants);
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -263,6 +274,7 @@ class ProductResource extends BaseResource
             SpatieMediaLibraryImageColumn::make('thumbnail')
                 ->collection(config('lunar.media.collection'))
                 ->conversion('small')
+                ->filterMediaUsing(fn ($media) => $media->where('custom_properties.primary', true)->count() ? $media->where('custom_properties.primary', true) : $media)
                 ->limit(1)
                 ->square()
                 ->label(''),
@@ -298,7 +310,8 @@ class ProductResource extends BaseResource
             ->attributeData()
             ->limitedTooltip()
             ->limit(50)
-            ->label(__('lunarpanel::product.table.name.label'));
+            ->label(__('lunarpanel::product.table.name.label'))
+            ->searchable();
     }
 
     public static function getSkuTableColumn(): Tables\Columns\Column
@@ -321,7 +334,8 @@ class ProductResource extends BaseResource
             })
             ->listWithLineBreaks()
             ->limitList(1)
-            ->toggleable();
+            ->toggleable()
+            ->searchable();
     }
 
     public static function getDefaultRelations(): array
