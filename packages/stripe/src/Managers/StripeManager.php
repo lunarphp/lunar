@@ -99,7 +99,7 @@ class StripeManager
     {
         $address = $cart->shippingAddress;
 
-        if (! $address) {
+        if ($address) {
             $this->updateIntent($cart, [
                 'shipping' => [
                     'name' => "{$address->first_name} {$address->last_name}",
