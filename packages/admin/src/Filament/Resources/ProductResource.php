@@ -276,6 +276,7 @@ class ProductResource extends BaseResource
             SpatieMediaLibraryImageColumn::make('thumbnail')
                 ->collection(config('lunar.media.collection'))
                 ->conversion('small')
+                ->filterMediaUsing(fn ($media) => $media->where('custom_properties.primary', true)->count() ? $media->where('custom_properties.primary', true) : $media)
                 ->limit(1)
                 ->square()
                 ->label(''),
