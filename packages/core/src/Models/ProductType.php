@@ -52,14 +52,14 @@ class ProductType extends BaseModel implements Contracts\ProductType
     public function productAttributes(): MorphToMany
     {
         return $this->mappedAttributes()->whereAttributeType(
-            (new Product)->getMorphClass()
+            Product::morphName()
         );
     }
 
     public function variantAttributes(): MorphToMany
     {
         return $this->mappedAttributes()->whereAttributeType(
-            (new ProductVariant)->getMorphClass()
+            ProductVariant::morphName()
         );
     }
 

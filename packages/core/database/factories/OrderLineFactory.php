@@ -16,7 +16,7 @@ class OrderLineFactory extends BaseFactory
     {
         return [
             'order_id' => Order::factory(),
-            'purchasable_type' => (new ProductVariant)->getMorphClass(),
+            'purchasable_type' => ProductVariant::morphName(),
             'purchasable_id' => ProductVariant::factory(),
             'type' => 'physical',
             'description' => $this->faker->sentence,

@@ -183,26 +183,29 @@ class ManageOrder extends BaseViewRecord
             ->schema([
                 Infolists\Components\Group::make()
                     ->schema([
-                        ShoutEntry::make('requires_capture')
-                            ->type('danger')
-                            ->content(__('lunarpanel::order.infolist.alert.requires_capture'))
-                            ->visible(fn () => $this->requiresCapture),
-                        ShoutEntry::make('requires_capture')
-                            ->state(fn () => $this->paymentStatus)
-                            ->icon(fn ($state) => match ($state) {
-                                'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
-                                default => null
-                            })
-                            ->color(fn (ShoutEntry $component, $state) => match ($state) {
-                                'partial-refund' => 'info',
-                                'refunded' => 'danger',
-                                default => null
-                            })->content(fn ($state) => match ($state) {
-                                'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
-                                'refunded' => __('lunarpanel::order.infolist.alert.refunded') ,
-                                default => null
-                            })
-                            ->visible(fn ($state) => in_array($state, ['partial-refund', 'refunded'])),
+                        Infolists\Components\Group::make()->key('shouts')->schema([
+                            ShoutEntry::make('requires_capture')
+                                ->type('danger')
+                                ->content(__('lunarpanel::order.infolist.alert.requires_capture'))
+                                ->visible(fn () => $this->requiresCapture),
+                            ShoutEntry::make('partially_refunded')
+                                ->state(fn () => $this->paymentStatus)
+                                ->key('partially_refunded_notice')
+                                ->icon(fn ($state) => match ($state) {
+                                    'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
+                                    default => null
+                                })
+                                ->color(fn (ShoutEntry $component, $state) => match ($state) {
+                                    'partial-refund' => 'info',
+                                    'refunded' => 'danger',
+                                    default => null
+                                })->content(fn ($state) => match ($state) {
+                                    'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
+                                    'refunded' => __('lunarpanel::order.infolist.alert.refunded') ,
+                                    default => null
+                                })
+                                ->visible(fn ($state) => in_array($state, ['partial-refund', 'refunded'])),
+                        ]),
                         ...static::getInfolistSchema(),
                     ])
                     ->columnSpan(['lg' => 2]),
@@ -319,6 +322,9 @@ class ManageOrder extends BaseViewRecord
             ->form(function () {
                 return [
                     TagsComponent::make('')
+                        ->splitKeys(['Tab', ','])
+                        ->label(__('lunarpanel::order.action.edit_tags.form.tags.label'))
+                        ->helperText(__('lunarpanel::order.action.edit_tags.form.tags.helper_text'))
                         ->suggestions(Tag::all()->pluck('value')->all()),
                 ];
             })->action(function (Action $action, $record, $data) {
@@ -505,7 +511,9 @@ class ManageOrder extends BaseViewRecord
                 $response = $transaction->capture(bcmul($data['amount'], $record->currency->factor));
 
                 if (! $response->success) {
-                    $action->failureNotification(fn () => $response->message);
+                    $action->failureNotification(
+                        fn () => Notification::make('capture_failure')->color('danger')->title($response->message)
+                    );
 
                     $action->failure();
 

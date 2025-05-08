@@ -7,10 +7,10 @@ return [
     'plural_label' => 'Staff',
 
     'table' => [
-        'firstname' => [
+        'first_name' => [
             'label' => 'First Name',
         ],
-        'lastname' => [
+        'last_name' => [
             'label' => 'Last Name',
         ],
         'email' => [
@@ -22,10 +22,10 @@ return [
     ],
 
     'form' => [
-        'firstname' => [
+        'first_name' => [
             'label' => 'First Name',
         ],
-        'lastname' => [
+        'last_name' => [
             'label' => 'Last Name',
         ],
         'email' => [

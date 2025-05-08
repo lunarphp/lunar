@@ -57,6 +57,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 ->label(
                     __('lunarpanel.shipping::relationmanagers.shipping_rates.form.shipping_method_id.label')
                 )
+                ->required()
                 ->relationship(name: 'shippingMethod', titleAttribute: 'name')
                 ->columnSpan(2),
             Forms\Components\TextInput::make('price')
@@ -180,9 +181,14 @@ class ManageShippingRates extends ManageRelatedRecords
 
         $shippingRate->priceBreaks()->delete();
 
+        $currencies = Currency::all();
         $tiers = collect($data['prices'] ?? [])->map(
-            function ($price) {
-                $price['min_quantity'] = $price['min_quantity'] * 100;
+            function ($price) use ($currencies) {
+                $currency = $currencies->first(fn ($currency) => $currency->id == $price['currency_id']);
+
+                $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
+
+                $price['price'] = (int) ($price['price'] * $currency->factor);
 
                 return $price;
             }

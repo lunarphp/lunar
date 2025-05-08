@@ -15,7 +15,7 @@ class CartLineFactory extends BaseFactory
         return [
             'cart_id' => Cart::factory(),
             'quantity' => $this->faker->numberBetween(0, 1000),
-            'purchasable_type' => (new ProductVariant)->getMorphClass(),
+            'purchasable_type' => ProductVariant::morphName(),
             'purchasable_id' => ProductVariant::factory(),
             'meta' => null,
         ];

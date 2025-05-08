@@ -37,53 +37,53 @@ test('can validate available stock', function (int $stock, int $backorder, int $
 
     $expectation->toThrow(CartException::class);
 })->with([
-    'Purchasability: "always" with sufficient stock' => [
-        'stock' => 100,
-        'backorder' => 0,
-        'quantity' => 150,
-        'purchasable' => 'always',
-        'shouldValidate' => true,
+    [
+        100,
+        0,
+        150,
+        'always',
+        true,
     ],
-    'Purchasability: "always" without stock' => [
-        'stock' => 0,
-        'backorder' => 0,
-        'quantity' => 150,
-        'purchasable' => 'always',
-        'shouldValidate' => true,
+    [
+        0,
+        0,
+        150,
+        'always',
+        true,
     ],
-    'Purchasability: "in_stock" with sufficient stock level' => [
-        'stock' => 500,
-        'backorder' => 0,
-        'quantity' => 150,
-        'purchasable' => 'in_stock',
-        'shouldValidate' => true,
+    [
+        500,
+        0,
+        150,
+        'in_stock',
+        true,
     ],
-    'Purchasability: "in_stock" with exact stock level' => [
-        'stock' => 150,
-        'backorder' => 0,
-        'quantity' => 150,
-        'purchasable' => 'in_stock',
-        'shouldValidate' => true,
+    [
+        150,
+        0,
+        150,
+        'in_stock',
+        true,
     ],
-    'Purchasability: "in_stock" with insufficient stock level' => [
-        'stock' => 0,
-        'backorder' => 0,
-        'quantity' => 150,
-        'purchasable' => 'in_stock',
-        'shouldValidate' => false,
+    [
+        0,
+        0,
+        150,
+        'in_stock',
+        false,
     ],
-    'Purchasability: "in_stock" with insufficient stock level and backorder' => [
-        'stock' => 0,
-        'backorder' => 150,
-        'quantity' => 150,
-        'purchasable' => 'in_stock',
-        'shouldValidate' => false,
+    [
+        0,
+        150,
+        150,
+        'in_stock',
+        false,
     ],
-    'Purchasability: "in_stock_or_backorder" with insufficient stock level and backorder' => [
-        'stock' => 0,
-        'backorder' => 150,
-        'quantity' => 150,
-        'purchasable' => 'in_stock_or_backorder',
-        'shouldValidate' => true,
+    [
+        0,
+        150,
+        150,
+        'in_stock_or_backorder',
+        true,
     ],
-])->group('blueberry');
+]);

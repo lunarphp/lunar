@@ -30,7 +30,9 @@ class OpayoServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        if (! config('lunar.database.disable_migrations', false)) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
 
         Blade::directive('opayoScripts', function ($incVendor = true) {
             $url = 'https://sandbox.opayo.eu.elavon.com/api/v1/js/sagepay.js';

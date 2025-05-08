@@ -23,7 +23,7 @@ class ConvertProductTypeAttributesToProducts
 
         DB::table("{$prefix}attributes")
             ->whereAttributeType(
-                (new ProductType)->getMorphClass()
+                ProductType::morphName()
             )
             ->update([
                 'attribute_type' => 'product',
@@ -31,7 +31,7 @@ class ConvertProductTypeAttributesToProducts
 
         DB::table("{$prefix}attribute_groups")
             ->whereAttributableType(
-                (new ProductType)->getMorphClass()
+                ProductType::morphName()
             )
             ->update([
                 'attributable_type' => 'product',

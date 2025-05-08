@@ -1,8 +1,8 @@
 # Welcome to Lunar!
 
-::: danger Alpha Release
-Although many Lunar sites have been launched using v1.x, you may not consider this version production-ready for your own 
-use and should exercise the same amount of caution as you would with any software in an alpha state. 🚀
+::: danger Beta Release
+Although many Lunar sites have been launched using v1.x, you may not consider this version production-ready for your own
+use and should exercise the same amount of caution as you would with any software in an beta state. 🚀
 :::
 
 We are delighted you are considering Lunar for your project. We've spent a lot of time developing this package to bring headless e-commerce functionality to Laravel.
@@ -13,7 +13,7 @@ Lunar is a [Laravel e-commerce package](https://lunarphp.io/) which brings funct
 
 ## Tech Stack
 
-Lunar is comprised of two packages; `lunarphp/core` which provides the e-commerce functionality and `lunarphp/admin` which provides an admin hub built upon Laravel Livewire.
+Lunar is comprised of two packages; `lunarphp/core` which provides the e-commerce functionality and `lunarphp/lunar` which provides an admin hub built upon Laravel Livewire.
 
 Although the admin hub uses Laravel Livewire, there is no requirement for your app to use Livewire itself.
 

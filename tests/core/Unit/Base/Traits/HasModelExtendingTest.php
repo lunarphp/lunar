@@ -38,6 +38,13 @@ test('can forward calls to extended model', function () {
     expect($sizeOption->sizes)->toHaveCount(1);
 });
 
+test('extended model returns correct table name', function () {
+    expect((new \Lunar\Tests\Core\Stubs\Models\CustomOrder)->getTable())
+        ->toBe(
+            (new \Lunar\Models\Order)->getTable()
+        );
+});
+
 test('can forward static method calls to extended model', function () {
     /** @see \Lunar\Tests\Core\Stubs\Models\ProductOption::getSizesStatic() */
     $newStaticMethod = ProductOption::getSizesStatic();
@@ -49,11 +56,40 @@ test('can forward static method calls to extended model', function () {
 test('morph map is correct when models are extended', function () {
     \Lunar\Facades\ModelManifest::replace(
         \Lunar\Models\Contracts\Product::class,
-        \Lunar\Tests\Core\Stubs\Models\CustomProduct::class
+        \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::class
     );
 
-    expect((new \Lunar\Tests\Core\Stubs\Models\CustomProduct)->getMorphClass())
+    expect((new \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct)->getMorphClass())
+        ->toBe('product')
+        ->and(\Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::morphName())
         ->toBe('product')
         ->and((new Product)->getMorphClass())
+        ->toBe('product')
+        ->and(Product::morphName())
         ->toBe('product');
+});
+
+test('core model events are triggered with extended models', function () {
+    \Illuminate\Support\Facades\Event::fake();
+
+    $product = \Lunar\Tests\Core\Stubs\Models\Product::factory()->create();
+
+    $product->delete();
+
+    \Illuminate\Support\Facades\Event::assertDispatched(
+        'eloquent.deleted: '.Product::class
+    );
+
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\Product::class,
+        \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::class
+    );
+
+    $product = \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::factory()->create();
+
+    $product->delete();
+
+    \Illuminate\Support\Facades\Event::assertDispatched(
+        'eloquent.deleted: '.Product::class
+    );
 });

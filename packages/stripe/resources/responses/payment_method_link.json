@@ -1,0 +1,20 @@
+{
+    "id": "PM_LINK_ID",
+    "object": "payment_method",
+    "billing_details": {
+        "address": {
+            "city": "",
+            "country": "",
+            "line1": "",
+            "line2": null,
+            "postal_code": "",
+            "state": ""
+        },
+        "email": "sales@acme.com"
+    },
+    "created": 1679945299,
+    "customer": null,
+    "livemode": false,
+    "metadata": {},
+    "type": "link"
+}

@@ -23,7 +23,7 @@ if (! function_exists('sync_with_search')) {
             return;
         }
 
-        $isSearchable = in_array(Searchable::class, class_uses($model));
+        $isSearchable = in_array(Searchable::class, class_uses_recursive($model));
 
         if ($isSearchable) {
             $model->searchable();
@@ -95,7 +95,7 @@ if (! function_exists('get_search_builder')) {
 
             foreach (explode(' ', $search) as $searchWord) {
                 $query->where(function (Builder $query) use ($model, $searchWord) {
-                    $attributes = Attribute::whereAttributeType($model->getMorphClass())
+                    $attributes = Attribute::whereAttributeType($model::morphName())
                         ->whereSearchable(true)
                         ->get();
 

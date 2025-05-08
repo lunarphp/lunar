@@ -57,8 +57,8 @@ class AttributeSelector extends CheckboxList
             $this->getRelationship()->getParent()
         );
 
-        if ($type === (new ProductType)->getMorphClass()) {
-            $type = (new Product)->getMorphClass();
+        if ($type === ProductType::morphName()) {
+            $type = Product::morphName();
         }
 
         if ($this->attributableType) {

@@ -63,6 +63,11 @@ trait HasMedia
     {
         $conversionClasses = config('lunar.media.definitions', []);
 
-        return $conversionClasses[static::class] ?? StandardMediaDefinitions::class;
+        $alias = \Illuminate\Support\Str::snake(class_basename(static::class));
+
+        return $conversionClasses[$alias]
+            ?? $conversionClasses[static::class] // fallback for published config
+            ?? $conversionClasses[get_parent_class(static::class)] // fallback use parent class
+            ?? StandardMediaDefinitions::class;
     }
 }

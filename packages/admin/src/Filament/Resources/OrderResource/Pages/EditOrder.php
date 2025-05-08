@@ -44,7 +44,7 @@ class EditOrder extends BaseEditRecord
 
                     return response()->streamDownload(function () {
                         echo Pdf::loadView('lunarpanel::pdf.order', [
-                            'order' => $this->record,
+                            'record' => $this->record,
                         ])->stream();
                     }, name: "Order-{$this->record->reference}.pdf");
                 }),
