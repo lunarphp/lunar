@@ -3,14 +3,14 @@
 namespace Lunar\Base;
 
 use Closure;
-use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\CartLine as CartLineContract;
 
 abstract class CartLineModifier
 {
     /**
      * Called just before cart totals are calculated.
      */
-    public function calculating(CartLine $cartLine, Closure $next): CartLine
+    public function calculating(CartLineContract $cartLine, Closure $next): CartLineContract
     {
         return $next($cartLine);
     }
@@ -18,7 +18,7 @@ abstract class CartLineModifier
     /**
      * Called just after cart totals are calculated.
      */
-    public function calculated(CartLine $cartLine, Closure $next): CartLine
+    public function calculated(CartLineContract $cartLine, Closure $next): CartLineContract
     {
         return $next($cartLine);
     }
@@ -26,7 +26,7 @@ abstract class CartLineModifier
     /**
      * Called just after cart sub total is calculated.
      */
-    public function subtotalled(CartLine $cartLine, Closure $next): CartLine
+    public function subtotalled(CartLineContract $cartLine, Closure $next): CartLineContract
     {
         return $next($cartLine);
     }

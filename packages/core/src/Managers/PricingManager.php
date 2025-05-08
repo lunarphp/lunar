@@ -10,6 +10,8 @@ use Lunar\Base\DataTransferObjects\PricingResponse;
 use Lunar\Base\PricingManagerInterface;
 use Lunar\Base\Purchasable;
 use Lunar\Exceptions\MissingCurrencyPriceException;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 
@@ -33,7 +35,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * The instance of the currency.
      */
-    public ?Currency $currency = null;
+    public ?CurrencyContract $currency = null;
 
     /**
      * The quantity value.
@@ -93,7 +95,7 @@ class PricingManager implements PricingManagerInterface
      *
      * @return self
      */
-    public function currency(?Currency $currency)
+    public function currency(?CurrencyContract $currency)
     {
         $this->currency = $currency;
 
@@ -129,7 +131,7 @@ class PricingManager implements PricingManagerInterface
      *
      * @return self
      */
-    public function customerGroup(?CustomerGroup $customerGroup)
+    public function customerGroup(?CustomerGroupContract $customerGroup)
     {
         $this->customerGroups(
             collect([$customerGroup])

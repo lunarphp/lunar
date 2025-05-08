@@ -33,9 +33,14 @@ use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Http\Controllers\DownloadPdfController;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
+use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticationPlugin;
 
 class LunarPanelManager
 {
+    protected bool $twoFactorAuthEnforced = false;
+
+    protected bool $twoFactorAuthDisabled = false;
+
     protected ?\Closure $closure = null;
 
     protected array $extensions = [];
@@ -169,6 +174,20 @@ class LunarPanelManager
         return Filament::getPanel($this->panelId);
     }
 
+    public function enforceTwoFactorAuth(bool $state = true): self
+    {
+        $this->twoFactorAuthEnforced = $state;
+
+        return $this;
+    }
+
+    public function disableTwoFactorAuth(): self
+    {
+        $this->twoFactorAuthDisabled = true;
+
+        return $this;
+    }
+
     protected function defaultPanel(): Panel
     {
         $brandAsset = function ($asset) {
@@ -199,6 +218,15 @@ class LunarPanelManager
         if (config('lunar.panel.pdf_rendering', 'download') == 'stream') {
             Route::get('lunar/pdf/download', DownloadPdfController::class)
                 ->name('lunar.pdf.download')->middleware($panelMiddleware);
+        }
+
+        $plugins = [
+            \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
+        ];
+
+        if (! $this->twoFactorAuthDisabled) {
+            $plugins[] = TwoFactorAuthenticationPlugin::make()->addTwoFactorMenuItem(label: '2FA Settings')
+                ->enforceTwoFactorSetup(condition: $this->twoFactorAuthEnforced);
         }
 
         return Panel::make()
@@ -238,9 +266,7 @@ class LunarPanelManager
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugins([
-                \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
-            ])
+            ->plugins($plugins)
             ->discoverLivewireComponents(__DIR__.'/Livewire', 'Lunar\\Admin\\Livewire')
             ->livewireComponents([
                 Resources\OrderResource\Pages\Components\OrderItemsTable::class,

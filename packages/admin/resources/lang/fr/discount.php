@@ -8,7 +8,7 @@ return [
             'heading' => 'Conditions',
         ],
         'buy_x_get_y' => [
-            'heading' => 'Achetez X obtenez Y',
+            'heading' => 'Y pour le prix de X',
         ],
         'amount_off' => [
             'heading' => 'Montant de réduction',
@@ -74,6 +74,12 @@ return [
             'label' => 'Ajouter automatiquement les récompenses',
             'helper_text' => 'Activez pour ajouter des produits de récompense lorsqu\'ils ne sont pas présents dans le panier.',
         ],
+        'fixed_value' => [
+            'label' => 'Valeur fixe',
+        ],
+        'percentage' => [
+            'label' => 'Pourcentage',
+        ],
     ],
     'table' => [
         'name' => [
@@ -107,6 +113,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Disponibilité',
+        ],
+        'edit' => [
+            'title' => 'Informations de base',
         ],
         'limitations' => [
             'label' => 'Limitations',

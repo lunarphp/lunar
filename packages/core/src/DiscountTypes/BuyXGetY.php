@@ -9,6 +9,7 @@ use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Product;
 
 class BuyXGetY extends AbstractDiscountType
@@ -18,7 +19,7 @@ class BuyXGetY extends AbstractDiscountType
      */
     public function getName(): string
     {
-        return 'Buy X Get Y';
+        return __('lunarpanel::discount.form.buy_x_get_y.heading');
     }
 
     /**
@@ -46,7 +47,7 @@ class BuyXGetY extends AbstractDiscountType
      *
      * @return CartLine
      */
-    public function apply(Cart $cart): Cart
+    public function apply(CartContract $cart): CartContract
     {
         $data = $this->discount->data;
 
@@ -164,7 +165,6 @@ class BuyXGetY extends AbstractDiscountType
             }
 
             $cart->freeItems->push($rewardLine->purchasable);
-
         }
 
         if ($automaticallyAddRewards) {
@@ -180,7 +180,7 @@ class BuyXGetY extends AbstractDiscountType
         return $cart;
     }
 
-    private function processAutomaticRewards(Cart $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
+    private function processAutomaticRewards(CartContract $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
     {
         // we have lines to add
         if ($remainingRewardQty > 0) {
