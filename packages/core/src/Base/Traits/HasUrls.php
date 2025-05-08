@@ -53,7 +53,7 @@ trait HasUrls
     public function localeUrl(string $locale = null): MorphOne
     {
         return $this->morphOne(
-            Url::class,
+            Url::modelClass(),
             'element'
         )->whereHas('language', function (Builder $query) use ($locale) {
             $query->where('code', $locale ?: app()->getLocale());
