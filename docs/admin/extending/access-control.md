@@ -40,3 +40,16 @@ Example:
 `middleware` 'can:permission-handle'
 `in-code` Auth::user()->can('permission-handle')
 :::
+
+### Two-Factor Authentication
+
+You can choose whether to enforce Two-Factor Authentication or disable it entirely.
+
+```php
+
+public function register()
+{
+    \Lunar\Admin\Support\Facades\LunarPanel::enforceTwoFactorAuth()->register();
+    \Lunar\Admin\Support\Facades\LunarPanel::disableTwoFactorAuth()->register();
+}
+```

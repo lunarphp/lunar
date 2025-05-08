@@ -30,3 +30,40 @@
 .vp-doc .header-anchor {
   margin-left: -1.1em;
 }
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #22baf7;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.btn:hover {
+    background: #08a1dd;
+}
+
+.banner {
+    background-color: var(--vp-c-bg-soft);
+    padding: 15px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.banner .banner-title {
+    font-weight: bold;
+}
+
+.banner .banner-btn {
+    background-color: var(--vp-c-bg);
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.banner .banner-btn:hover {
+    background-color: var(--vp-c-mute);
+}

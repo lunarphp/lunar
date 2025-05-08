@@ -2,6 +2,7 @@
 
 namespace Lunar\Observers;
 
+use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Transaction;
 
 class TransactionObserver
@@ -9,11 +10,11 @@ class TransactionObserver
     /**
      * Handle the Transaction "created" event.
      *
-     * @param  \Lunar\Models\Transaction  $orderLine
      * @return void
      */
-    public function created(Transaction $transaction)
+    public function created(TransactionContract $transaction)
     {
+        /** @var Transaction $transaction */
         activity()
             ->causedBy(auth()->user())
             ->performedOn($transaction->order)

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Product;
 
 class ManageBrandProducts extends BaseManageRelatedRecords
@@ -73,7 +74,7 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                         ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                             return Product::search($search)
                                 ->get()
-                                ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                                ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();
                         }),
                 ])

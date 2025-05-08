@@ -209,6 +209,20 @@ class TranslatedText extends TextInput
         return $this;
     }
 
+    public function richtextFileAttachmentsDisk(string|Closure|null $name): static
+    {
+        $this->richtextFileAttachmentsDisk = $name;
+
+        return $this;
+    }
+
+    public function richtextFileAttachmentsVisibility(string|Closure $visibility): static
+    {
+        $this->richtextFileAttachmentsVisibility = $visibility;
+
+        return $this;
+    }
+
     public function getExpanded(): bool
     {
         return $this->expanded;

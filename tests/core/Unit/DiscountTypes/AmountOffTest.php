@@ -1824,3 +1824,84 @@ test('can handle malformed discount', function () {
 
     expect($cart->discountTotal->value)->toEqual(0);
 });
+
+test('can apply multiple discounts to the same line', function () {
+    $customerGroup = CustomerGroup::getDefault();
+
+    $channel = Channel::getDefault();
+
+    $currency = Currency::getDefault();
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $discounts = Discount::factory()->createMany([
+        [
+            'type' => AmountOff::class,
+            'name' => '10% discount',
+            'data' => [
+                'percentage' => 10,
+                'fixed_value' => false,
+            ],
+        ],
+        [
+            'type' => AmountOff::class,
+            'name' => '20% discount',
+            'data' => [
+                'percentage' => 20,
+                'fixed_value' => false,
+            ],
+        ],
+    ]);
+
+    foreach ($discounts as $discount) {
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+    }
+
+    $cart = $cart->calculate();
+
+    /**
+     * Cart has two discounts.
+     * 1 x $10 / 10% off $9
+     * 1 x $9 / 20% off $7.20
+     * Cart total = $7.20 / 20% tax = $1.44 / Total = $8.64
+     */
+    expect($cart->discountBreakdown)->toHaveCount(2);
+    expect($cart->discountBreakdown->get(0)->price->value)->toEqual(100);
+    expect($cart->discountBreakdown->get(1)->price->value)->toEqual(180);
+    expect($cart->lines->first()->discountTotal->value)->toEqual(280);
+    expect($cart->subTotal->value)->toEqual(1000);
+    expect($cart->subTotalDiscounted->value)->toEqual(720);
+    expect($cart->discountTotal->value)->toEqual(280);
+    expect($cart->total->value)->toEqual(864);
+});

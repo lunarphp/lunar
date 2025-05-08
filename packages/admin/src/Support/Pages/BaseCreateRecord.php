@@ -9,6 +9,7 @@ abstract class BaseCreateRecord extends CreateRecord
 {
     use Concerns\ExtendsFooterWidgets;
     use Concerns\ExtendsFormActions;
+    use Concerns\ExtendsForms;
     use Concerns\ExtendsHeaderActions;
     use Concerns\ExtendsHeaderWidgets;
     use Concerns\ExtendsHeadings;

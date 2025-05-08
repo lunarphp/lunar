@@ -24,6 +24,7 @@ features:
   - title: Admin Panel
     details: Filament-powered admin panel to administer your product catalog, customers, orders and much more.
     link: /admin/overview
-  - title: API - Coming Soon
-    details: Connect to your store via a JSON:API, ideal for PWA storefronts and mobile apps.
+  - title: Support
+    details: Get community help or expert support—whatever you need for your Lunar-powered project.
+    link: /support
 ---

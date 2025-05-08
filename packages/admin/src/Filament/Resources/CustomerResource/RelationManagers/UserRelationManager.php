@@ -20,6 +20,11 @@ class UserRelationManager extends BaseRelationManager
         return false;
     }
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::user.plural_label');
+    }
+
     public function getDefaultTable(Table $table): Table
     {
         return $table->columns([
@@ -57,7 +62,8 @@ class UserRelationManager extends BaseRelationManager
                                 __('lunarpanel::user.form.password_confirmation.label')
                             )
                             ->password()
-                            ->minLength(8),
+                            ->minLength(8)
+                            ->dehydrated(false),
                     ])->columns(2),
 
                 ]),

@@ -6,6 +6,10 @@ return [
 
     'plural_label' => 'Productos',
 
+    'tabs' => [
+        'all' => 'Todo',
+    ],
+
     'status' => [
         'unpublished' => [
             'content' => 'Actualmente en estado de borrador, este producto está oculto en todos los canales y grupos de clientes.',

@@ -14,9 +14,9 @@
             <directory suffix="Test.php">tests/core/Feature</directory>
             <directory suffix="Test.php">tests/core/Unit</directory>
         </testsuite>
-        <testsuite name="opayo">
-            <directory suffix="Test.php">tests/opayo/Unit</directory>
-            <directory suffix="Test.php">tests/opayo/Feature</directory>
+        <testsuite name="search">
+            <directory suffix="Test.php">tests/search/Feature</directory>
+            <directory suffix="Test.php">tests/search/Unit</directory>
         </testsuite>
         <testsuite name="stripe">
             <directory suffix="Test.php">tests/stripe/Unit</directory>
@@ -31,6 +31,7 @@
         <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKZvp6fiiM10="/>
         <env name="APP_ENV" value="testing"/>
         <env name="MAIL_MAILER" value="log"/>
+        <env name="LUNAR_TESTING_REPLACE_MODELS" value="false"/>
     </php>
     <source>
         <include>
