@@ -20,6 +20,7 @@ use Lunar\Admin\Support\Actions\Collections\DeleteCollection;
 use Lunar\Admin\Support\Actions\Collections\MoveCollection;
 use Lunar\Facades\DB;
 use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class CollectionTreeView extends Widget implements HasActions, HasForms
 {
@@ -191,12 +192,12 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
                     ->label(
                         __('lunarpanel::components.collection-tree-view.actions.move.form.target_id.label')
                     )
-                    ->model(Collection::class)
+                    ->model(Collection::modelClass())
                     ->searchable()
                     ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                        return get_search_builder(Collection::class, $search)
+                        return get_search_builder(Collection::modelClass(), $search)
                             ->get()
-                            ->mapWithKeys(fn (Collection $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
+                            ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
                             ->all();
                     }),
             ])->after(

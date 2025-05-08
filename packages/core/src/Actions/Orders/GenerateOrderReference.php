@@ -2,20 +2,17 @@
 
 namespace Lunar\Actions\Orders;
 
-use Lunar\Models\Order;
+use Lunar\Models\Contracts\Order as OrderContract;
 
 class GenerateOrderReference
 {
     /**
      * Execute the action.
      *
-     * @param  \Lunar\Models\CartLine  $cartLine
-     * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return \Lunar\Models\CartLine
+     * @return string
      */
-    public function execute(
-        Order $order
-    ) {
+    public function execute(OrderContract $order)
+    {
         $generator = config('lunar.orders.reference_generator');
 
         if (! $generator) {

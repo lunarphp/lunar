@@ -118,6 +118,13 @@ class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
         return $this->hasOne(ProductVariant::modelClass());
     }
 
+    protected function hasVariants(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->variants()->count() > 1,
+        );
+    }
+
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(

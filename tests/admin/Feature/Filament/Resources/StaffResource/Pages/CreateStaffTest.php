@@ -22,8 +22,8 @@ it('can create staff', function () {
     $staff->assignRole('staff');
 
     $formData = [
-        'firstname' => $staff->firstname,
-        'lastname' => $staff->lastname,
+        'first_name' => $staff->first_name,
+        'last_name' => $staff->last_name,
         'email' => 'test@example.com',
         'password' => 'password',
     ];

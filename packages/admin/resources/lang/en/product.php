@@ -6,6 +6,10 @@ return [
 
     'plural_label' => 'Products',
 
+    'tabs' => [
+        'all' => 'All',
+    ],
+
     'status' => [
         'unpublished' => [
             'content' => 'Currently in draft status, this product is hidden across all channels and customer groups.',

@@ -22,7 +22,8 @@
         "technikermathe/blade-lucide-icons": "^v3.0",
         "leandrocfe/filament-apex-charts": "^3.2.0",
         "awcodes/shout": "^2.0.4",
-        "awcodes/filament-badgeable-column": "^2.3.2"
+        "awcodes/filament-badgeable-column": "^2.3.2",
+        "stephenjude/filament-two-factor-authentication": "0.*"
     },
     "extra": {
         "laravel": {

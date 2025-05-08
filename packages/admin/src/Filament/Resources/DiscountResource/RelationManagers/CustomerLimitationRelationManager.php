@@ -4,6 +4,7 @@ namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 
 class CustomerLimitationRelationManager extends BaseRelationManager
@@ -11,6 +12,11 @@ class CustomerLimitationRelationManager extends BaseRelationManager
     protected static bool $isLazy = false;
 
     protected static string $relationship = 'customers';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::customer.plural_label');
+    }
 
     public function isReadOnly(): bool
     {

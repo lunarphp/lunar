@@ -7,10 +7,10 @@ return [
     'plural_label' => 'Personal',
 
     'table' => [
-        'firstname' => [
+        'first_name' => [
             'label' => 'Nombre',
         ],
-        'lastname' => [
+        'last_name' => [
             'label' => 'Apellido',
         ],
         'email' => [
@@ -22,10 +22,10 @@ return [
     ],
 
     'form' => [
-        'firstname' => [
+        'first_name' => [
             'label' => 'Nombre',
         ],
-        'lastname' => [
+        'last_name' => [
             'label' => 'Apellido',
         ],
         'email' => [

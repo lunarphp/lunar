@@ -6,6 +6,10 @@ return [
 
     'plural_label' => 'Produits',
 
+    'tabs' => [
+        'all' => 'Tous',
+    ],
+
     'status' => [
         'unpublished' => [
             'content' => 'Actuellement en statut de brouillon, ce produit est masqué sur tous les canaux et groupes de clients.',

@@ -27,6 +27,6 @@ trait HasAttributes
      */
     public function mappedAttributes(): HasMany
     {
-        return $this->hasMany(Attribute::class, 'attribute_type', 'attributable_morph_map');
+        return $this->hasMany(Attribute::modelClass(), 'attribute_type', 'attributable_morph_map');
     }
 }
