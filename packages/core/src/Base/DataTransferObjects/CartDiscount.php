@@ -2,9 +2,9 @@
 
 namespace Lunar\Base\DataTransferObjects;
 
-use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
-use Lunar\Models\Discount;
+use Lunar\Models\Contracts\Cart;
+use Lunar\Models\Contracts\CartLine;
+use Lunar\Models\Contracts\Discount;
 
 class CartDiscount
 {

@@ -6,6 +6,7 @@ use Closure;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\Pricing;
 use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\CartLine as CartLineContract;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class GetUnitPrice
@@ -13,10 +14,12 @@ class GetUnitPrice
     /**
      * Called just before cart totals are calculated.
      *
-     * @return mixed
+     * @param  Closure(CartLineContract): mixed  $next
+     * @return Closure
      */
-    public function handle(CartLine $cartLine, Closure $next)
+    public function handle(CartLineContract $cartLine, Closure $next)
     {
+        /** @var CartLine $cart */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
 

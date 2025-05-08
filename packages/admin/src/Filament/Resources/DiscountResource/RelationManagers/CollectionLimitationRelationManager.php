@@ -15,6 +15,11 @@ class CollectionLimitationRelationManager extends BaseRelationManager
 
     protected static string $relationship = 'collections';
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::collection.plural_label');
+    }
+
     public function isReadOnly(): bool
     {
         return false;

@@ -15,13 +15,13 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Brand;
+use Lunar\Models\Contracts\Brand as BrandContract;
 
 class BrandResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = Brand::class;
+    protected static ?string $model = BrandContract::class;
 
     protected static ?int $navigationSort = 3;
 
