@@ -33,15 +33,15 @@
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",
-        "laravel/framework": "^10.0|^11.0",
-        "spatie/laravel-medialibrary": "^11.0.0",
-        "spatie/laravel-activitylog": "^4.4",
-        "laravel/scout": "^10.0",
-        "cartalyst/converter": "^8.0|^9.0",
-        "kalnoy/nestedset": "^v6.x-dev",
+        "laravel/framework": "^10.0|^11.0|^12.0",
+        "spatie/laravel-medialibrary": "^11.12.7",
+        "spatie/laravel-activitylog": "^4.10.1",
+        "laravel/scout": "^10.13.1",
+        "cartalyst/converter": "^8.0|^9.0|^10",
+        "kalnoy/nestedset": "^v6.0.5",
         "doctrine/dbal": "^3.6",
         "lukascivil/treewalker": "0.9.1",
-        "spatie/php-structure-discoverer": "^2.0",
-        "spatie/laravel-blink": "^1.7"
+        "spatie/php-structure-discoverer": "^2.3.1",
+        "spatie/laravel-blink": "^1.7.1"
     }
 }

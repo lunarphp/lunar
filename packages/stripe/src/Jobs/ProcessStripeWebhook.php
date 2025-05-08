@@ -7,10 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
 use Lunar\Models\Order;
+use Lunar\Stripe\Events\Webhook\CartMissingForIntent;
 use Lunar\Stripe\Models\StripePaymentIntent;
 
 class ProcessStripeWebhook implements ShouldQueue
@@ -54,9 +54,7 @@ class ProcessStripeWebhook implements ShouldQueue
         }
 
         if (! $cart && ! $order) {
-            Log::error(
-                "Unable to find cart with intent {$this->paymentIntentId}"
-            );
+            CartMissingForIntent::dispatch($this->paymentIntentId);
 
             return;
         }

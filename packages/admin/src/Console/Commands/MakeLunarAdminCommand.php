@@ -32,12 +32,12 @@ class MakeLunarAdminCommand extends Command
     protected function getUserData(): array
     {
         return [
-            'firstname' => $this->options['firstname'] ?? text(
+            'first_name' => $this->options['firstname'] ?? text(
                 label: 'First Name',
                 required: true,
             ),
 
-            'lastname' => $this->options['lastname'] ?? text(
+            'last_name' => $this->options['lastname'] ?? text(
                 label: 'Last Name',
                 required: true,
             ),

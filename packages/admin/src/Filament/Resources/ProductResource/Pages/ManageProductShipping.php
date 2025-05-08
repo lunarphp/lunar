@@ -12,9 +12,9 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
+use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Models\ProductVariant;
-use Marvinosswald\FilamentInputSelectAffix\TextInputSelectAffix;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 
 class ManageProductShipping extends BaseEditRecord
 {
@@ -105,7 +105,7 @@ class ManageProductShipping extends BaseEditRecord
         return $record;
     }
 
-    protected function getVariant(): ProductVariant
+    protected function getVariant(): ProductVariantContract
     {
         return $this->getRecord()->variants()->first();
     }

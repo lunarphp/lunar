@@ -12,6 +12,9 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
+use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Channel as ChannelContract;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\ProductVariant;
@@ -21,9 +24,9 @@ class CartSessionManager implements CartSessionInterface
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
-        protected Channel $channel,
-        protected Currency $currency,
-        public Cart $cart,
+        protected ChannelContract $channel,
+        protected CurrencyContract $currency,
+        public ?CartContract $cart = null,
     ) {
         //
     }
@@ -78,7 +81,7 @@ class CartSessionManager implements CartSessionInterface
             );
         }
 
-        unset($this->cart);
+        $this->cart = null;
 
         $this->sessionManager->forget('shipping_estimate_meta');
         $this->sessionManager->forget(
@@ -101,8 +104,9 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function associate(Cart $cart, Authenticatable $user, $policy): void
+    public function associate(CartContract $cart, Authenticatable $user, $policy): void
     {
+        /** @var Cart $cart */
         $this->use(
             $cart->associate($user, $policy)
         );
@@ -111,8 +115,9 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Set the cart to be used for the session.
      */
-    public function use(Cart $cart): Cart
+    public function use(CartContract $cart): CartContract
     {
+        /** @var Cart $cart */
         $this->sessionManager->put(
             $this->getSessionKey(),
             $cart->id
@@ -216,8 +221,9 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Set the current channel.
      */
-    public function setChannel(Channel $channel): void
+    public function setChannel(ChannelContract $channel): void
     {
+        /** @var Channel $channel */
         $this->channel = $channel;
 
         if ($this->current() && $this->current()->channel_id != $channel->id) {
@@ -230,8 +236,9 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Set the current currency.
      */
-    public function setCurrency(Currency $currency): void
+    public function setCurrency(CurrencyContract $currency): void
     {
+        /** @var Currency $currency */
         $this->currency = $currency;
 
         if ($this->current() && $this->current()->currency_id != $currency->id) {
@@ -244,17 +251,17 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Return the current currency.
      */
-    public function getCurrency(): Currency
+    public function getCurrency(): CurrencyContract
     {
-        return $this->currency?->exists ? $this->currency : Currency::getDefault();
+        return $this->currency?->exists ? $this->currency : Currency::modelClass()::getDefault();
     }
 
     /**
      * Return the current channel.
      */
-    public function getChannel(): Channel
+    public function getChannel(): ChannelContract
     {
-        return $this->channel?->exists ? $this->channel : Channel::getDefault();
+        return $this->channel?->exists ? $this->channel : Channel::modelClass()::getDefault();
     }
 
     /**
@@ -286,7 +293,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Create a new cart instance.
      */
-    protected function createNewCart(): Cart
+    protected function createNewCart(): CartContract
     {
         $user = $this->authManager->user();
 

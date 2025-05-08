@@ -13,7 +13,7 @@ Lunar is a [Laravel e-commerce package](https://lunarphp.io/) which brings funct
 
 ## Tech Stack
 
-Lunar is comprised of two packages; `lunarphp/core` which provides the e-commerce functionality and `lunarphp/admin` which provides an admin hub built upon Laravel Livewire.
+Lunar is comprised of two packages; `lunarphp/core` which provides the e-commerce functionality and `lunarphp/lunar` which provides an admin hub built upon Laravel Livewire.
 
 Although the admin hub uses Laravel Livewire, there is no requirement for your app to use Livewire itself.
 

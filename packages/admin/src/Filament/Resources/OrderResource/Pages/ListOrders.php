@@ -28,7 +28,7 @@ class ListOrders extends BaseListRecords
         );
 
         return [
-            'all' => Tab::make('All'),
+            'all' => Tab::make(__('lunarpanel::order.tabs.all')),
             ...collect($statuses)->mapWithKeys(
                 fn ($config, $status) => [
                     $status => Tab::make($config['label'])

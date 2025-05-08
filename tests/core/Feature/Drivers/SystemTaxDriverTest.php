@@ -71,8 +71,6 @@ test('can set purchasable', function () {
 });
 
 test('can set cart line', function () {
-    CartLine::unsetEventDispatcher();
-
     $line = CartLine::factory()->create();
 
     $driver = (new SystemTaxDriver)

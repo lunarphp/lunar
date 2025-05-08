@@ -5,6 +5,7 @@ namespace Lunar\Tests\Core\Stubs;
 use Closure;
 use Lunar\Base\CartModifier;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class TestCartModifier extends CartModifier
 {
@@ -13,7 +14,7 @@ class TestCartModifier extends CartModifier
      *
      * @return void
      */
-    public function calculated(Cart $cart, Closure $next): Cart
+    public function calculated(CartContract $cart, Closure $next): CartContract
     {
         $cart->total->value = 5000;
 

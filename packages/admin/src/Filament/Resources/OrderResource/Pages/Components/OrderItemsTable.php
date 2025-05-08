@@ -4,6 +4,7 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages\Components;
 
 use Closure;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -12,9 +13,12 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Computed;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
 use Lunar\Admin\Livewire\Components\TableComponent;
 use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Tables\Components\KeyValue;
+use Lunar\Models\OrderLine;
+use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 
 /**
@@ -42,6 +46,13 @@ class OrderItemsTable extends TableComponent
                     Tables\Columns\Layout\Split::make([
                         Tables\Columns\Layout\Stack::make([
                             Tables\Columns\TextColumn::make('description')
+                                ->url(function (OrderLine $line) {
+                                    if ($line->purchasable_type == ProductVariant::morphName()) {
+                                        return EditProduct::getUrl(['record' => $line->purchasable->product_id]);
+                                    }
+
+                                    return null;
+                                })
                                 ->weight(FontWeight::Bold),
                             Tables\Columns\TextColumn::make('identifier')
                                 ->color(Color::Gray),
@@ -107,6 +118,7 @@ class OrderItemsTable extends TableComponent
     {
         return $table
             ->query($this->record->lines()->getQuery()
+                ->with(['purchasable'])
                 ->wherein('type', ['physical', 'digital']))
             ->columns(static::getOrderLinesTableColumns())
             ->bulkActions([
@@ -170,7 +182,9 @@ class OrderItemsTable extends TableComponent
                 $response = $transaction->refund(bcmul($data['amount'], $this->record->currency->factor), $data['notes']);
 
                 if (! $response->success) {
-                    $action->failureNotification(fn () => $response->message);
+                    $action->failureNotification(
+                        fn () => Notification::make('refund_failure')->color('danger')->title($response->message)
+                    );
 
                     $action->failure();
 

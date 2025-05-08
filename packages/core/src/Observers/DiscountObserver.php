@@ -16,7 +16,7 @@ class DiscountObserver
         $discount->brands()->detach();
         $discount->collections()->detach();
         $discount->customerGroups()->detach();
-        $discount->purchasables()->detach();
+        $discount->purchasables()->delete();
         $discount->users()->detach();
     }
 }

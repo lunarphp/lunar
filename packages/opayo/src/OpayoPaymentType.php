@@ -8,6 +8,8 @@ use Lunar\Base\DataTransferObjects\PaymentCheck;
 use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Events\PaymentAttemptEvent;
+use Lunar\Models\Contracts\Order as OrderContract;
+use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
 use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
@@ -146,8 +148,9 @@ class OpayoPaymentType extends AbstractPayment
      *
      * @param  int  $amount
      */
-    public function capture(Transaction $transaction, $amount = 0): PaymentCapture
+    public function capture(TransactionContract $transaction, $amount = 0): PaymentCapture
     {
+        /** @var Transaction $transaction */
         $response = Opayo::api()->post("transactions/{$transaction->reference}/instructions", [
             'instructionType' => 'release',
             'amount' => $amount,
@@ -184,8 +187,9 @@ class OpayoPaymentType extends AbstractPayment
      *
      * @param  string|null  $notes
      */
-    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
+    public function refund(TransactionContract $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
+        /** @var Transaction $transaction */
         $response = Opayo::api()->post('transactions', [
             'transactionType' => 'Refund',
             'vendorTxCode' => Str::random(40),
@@ -434,8 +438,9 @@ class OpayoPaymentType extends AbstractPayment
         $this->policy = $policy;
     }
 
-    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    public function getPaymentChecks(TransactionContract $transaction): PaymentChecks
     {
+        /** @var Transaction $transaction */
         $meta = $transaction->meta['threedSecure'] ?? null;
 
         $checks = new PaymentChecks;
@@ -510,8 +515,9 @@ class OpayoPaymentType extends AbstractPayment
         return $checks;
     }
 
-    private function saveCard(Order $order, object $details, ?string $authCode = null)
+    private function saveCard(OrderContract $order, object $details, ?string $authCode = null)
     {
+        /** @var Order $order */
         if (! $order->user_id) {
             return;
         }
