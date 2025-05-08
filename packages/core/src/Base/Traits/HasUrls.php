@@ -50,7 +50,7 @@ trait HasUrls
         )->whereDefault(true);
     }
 
-    public function localeUrl(string $locale = null): MorphOne
+    public function localeUrl(?string $locale = null): MorphOne
     {
         return $this->morphOne(
             Url::modelClass(),
