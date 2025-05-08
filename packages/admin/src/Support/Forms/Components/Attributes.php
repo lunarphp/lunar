@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
+use Closure;
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
@@ -14,15 +15,47 @@ use Lunar\Models\ProductVariant;
 
 class Attributes extends Forms\Components\Group
 {
+    public ?string $modelClassOverride = null;
+
+    protected string|Closure $attributeDataField = 'attribute_data';
+
+    public function attributeDataField(string|Closure $attributeDataField): static
+    {
+        $this->attributeDataField = $attributeDataField;
+
+        if (blank($this->relationship)) {
+            $this->statePath($attributeDataField);
+        }
+
+        return $this;
+    }
+
+    public function getAttributeDataField(): string
+    {
+        return $this->evaluate($this->attributeDataField);
+    }
+
+    public function using(string $modelClass): self
+    {
+        $this->modelClassOverride = $modelClass;
+
+        return $this;
+    }
+
+    public function getKey(): ?string
+    {
+        return 'attributeData'.$this->modelClassOverride;
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->key('attributeData');
+        $this->statePath('attribute_data');
 
         if (blank($this->childComponents)) {
             $this->schema(function (\Filament\Forms\Get $get, Livewire $livewire, ?Model $record) {
-                $modelClass = $livewire::getResource()::getModel();
+                $modelClass = $this->modelClassOverride ?: $livewire::getResource()::getModel();
 
                 $productTypeId = null;
 
@@ -42,7 +75,12 @@ class Attributes extends Forms\Components\Group
                 }
 
                 if ($morphMap == ProductVariant::morphName()) {
-                    $productTypeId = $record?->product?->product_type_id ?: ProductType::first()->id;
+                    if ($record::class === Product::modelClass()) {
+                        $productTypeId = $record?->product_type_id ?: ProductType::first()->id;
+                    } else {
+                        $productTypeId = $record?->product?->product_type_id ?: ProductType::first()->id;
+                    }
+
                     // If we have a product type, the attributes should be based off that.
                     if ($productTypeId) {
                         $attributeQuery = ProductType::find($productTypeId)->variantAttributes();
@@ -72,8 +110,8 @@ class Attributes extends Forms\Components\Group
                     foreach ($group['fields'] as $field) {
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
-
-                    $groupComponents[] = Forms\Components\Section::make($group['model']->translate('name'))
+                    $groupComponents[] = Forms\Components\Section::make($group['model']
+                        ->translate('name'))
                         ->schema($sectionFields);
                 }
 
@@ -95,6 +133,16 @@ class Attributes extends Forms\Components\Group
             }
 
             return $state;
+        });
+
+        $this->mutateRelationshipDataBeforeSaveUsing(static function (Attributes $component, array $data): array {
+            return [
+                $component->getAttributeDataField() => $data,
+            ];
+        });
+
+        $this->mutateRelationshipDataBeforeFillUsing(static function (Attributes $component, array $data): array {
+            return $data[$component->getAttributeDataField()] ?? [];
         });
     }
 }

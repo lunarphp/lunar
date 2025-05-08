@@ -2,39 +2,26 @@
 
 namespace Lunar\Base;
 
-use Lunar\Facades\DB;
-use Lunar\Models\Order;
+use Lunar\Models\Contracts\Order as OrderContract;
 
 class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function generate(Order $order): string
+    public function generate(OrderContract $order): string
     {
-        $year = $order->created_at->year;
+        $config = config('lunar.orders.reference_format', []);
 
-        $month = $order->created_at->format('m');
+        $reference = str_pad(
+            $order->id,
+            $config['length'] ?? 8,
+            $config['padding_character'] ?? 0,
+            $config['padding_direction'] ?? STR_PAD_LEFT
+        );
 
-        $latest = Order::select(
-            DB::RAW('MAX(reference) as reference')
-        )->whereYear('created_at', '=', $year)
-            ->whereMonth('created_at', '=', $month)
-            ->where('id', '!=', $order->id)
-            ->first();
+        $prefix = $config['prefix'] ?? '';
 
-        if (! $latest || ! $latest->reference) {
-            $increment = 1;
-        } else {
-            $segments = explode('-', $latest->reference);
-
-            if (count($segments) == 1) {
-                $increment = 1;
-            } else {
-                $increment = end($segments) + 1;
-            }
-        }
-
-        return $year.'-'.$month.'-'.str_pad($increment, 4, 0, STR_PAD_LEFT);
+        return "{$prefix}{$reference}";
     }
 }

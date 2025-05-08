@@ -63,8 +63,8 @@ class StaffResource extends BaseResource
 
     protected static function getFirstNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('firstname')
-            ->label(__('lunarpanel::staff.form.firstname.label'))
+        return Forms\Components\TextInput::make('first_name')
+            ->label(__('lunarpanel::staff.form.first_name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -72,8 +72,8 @@ class StaffResource extends BaseResource
 
     protected static function getLastNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('lastname')
-            ->label(__('lunarpanel::staff.form.lastname.label'))
+        return Forms\Components\TextInput::make('last_name')
+            ->label(__('lunarpanel::staff.form.last_name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -169,10 +169,10 @@ class StaffResource extends BaseResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('firstname')
-                    ->label(__('lunarpanel::staff.table.firstname.label')),
-                Tables\Columns\TextColumn::make('lastname')
-                    ->label(__('lunarpanel::staff.table.lastname.label')),
+                Tables\Columns\TextColumn::make('first_name')
+                    ->label(__('lunarpanel::staff.table.first_name.label')),
+                Tables\Columns\TextColumn::make('last_name')
+                    ->label(__('lunarpanel::staff.table.last_name.label')),
                 Tables\Columns\TextColumn::make('email')
                     ->label(__('lunarpanel::staff.table.email.label')),
                 Tables\Columns\TextColumn::make('admin')

@@ -71,7 +71,7 @@ class ShippingZone extends BaseModel implements Contracts\ShippingZone
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(
-            Order::class,
+            Order::modelClass(),
             config('lunar.database.table_prefix').'order_shipping_zone'
         )->withTimestamps();
     }

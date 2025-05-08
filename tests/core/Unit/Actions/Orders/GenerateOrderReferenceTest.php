@@ -33,7 +33,7 @@ test('can generate reference', function () {
 
     $result = app(GenerateOrderReference::class)->execute($order);
 
-    expect($result)->toEqual($order->created_at->format('Y-m').'-0001');
+    expect($result)->toEqual('00000001');
 });
 
 test('can override generator via config', function () {

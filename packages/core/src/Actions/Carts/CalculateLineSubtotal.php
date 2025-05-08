@@ -8,6 +8,7 @@ use Lunar\Base\CartLineModifiers;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\Pricing;
 use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\CartLine as CartLineContract;
 
 class CalculateLineSubtotal
 {
@@ -18,9 +19,10 @@ class CalculateLineSubtotal
      * @return \Lunar\Models\CartLine
      */
     public function execute(
-        CartLine $cartLine,
+        CartLineContract $cartLine,
         Collection $customerGroups
     ) {
+        /** @var CartLine $cartLine */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
         $unitQuantity = $purchasable->getUnitQuantity();

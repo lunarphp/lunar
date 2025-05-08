@@ -4,6 +4,8 @@ namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Country as CountryContract;
 use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\State;
@@ -15,12 +17,12 @@ class ShippingRateResolver
     /**
      * The cart to use when resolving.
      */
-    protected Cart $cart;
+    protected CartContract $cart;
 
     /**
      * The country to use when resolving.
      */
-    protected ?Country $country = null;
+    protected ?CountryContract $country = null;
 
     /**
      * The customer group to limit to.
@@ -45,7 +47,7 @@ class ShippingRateResolver
     /**
      * Initialise the resolver.
      */
-    public function __construct(?Cart $cart = null)
+    public function __construct(?CartContract $cart = null)
     {
         $this->cart($cart);
     }
@@ -53,14 +55,14 @@ class ShippingRateResolver
     /**
      * Set the cart.
      */
-    public function cart(Cart $cart): self
+    public function cart(CartContract $cart): self
     {
         $this->cart = $cart;
 
         $shippingMeta = $cart->shippingEstimateMeta;
 
         $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
-            return $line->purchasable->stock < $line->quantity;
+            return $line->purchasable->shippable && ($line->purchasable->stock < $line->quantity);
         });
 
         $this->customerGroups = collect([CustomerGroup::getDefault()]);
@@ -101,7 +103,7 @@ class ShippingRateResolver
     /**
      * Set the value for country.
      */
-    public function country(?Country $country = null): self
+    public function country(?CountryContract $country = null): self
     {
         $this->country = $country;
 
@@ -167,9 +169,9 @@ class ShippingRateResolver
 
                     [$h, $m, $s] = explode(':', $method->cutoff);
 
-                    return now()->set('hour', $h)
-                        ->set('minute', $m)
-                        ->set('second', $s)
+                    return now()->set('hour', (int) $h)
+                        ->set('minute', (int) $m)
+                        ->set('second', (int) $s)
                         ->isPast();
                 })
                 ->reject(function ($rate) {

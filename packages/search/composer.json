@@ -13,7 +13,7 @@
   "require": {
     "php": "^8.2",
     "lunarphp/core": "self.version",
-    "spatie/laravel-data": "^4.9.0",
+    "spatie/laravel-data": "^4.13.1",
     "typesense/typesense-php": "^4.9",
     "meilisearch/meilisearch-php": "^1.10",
     "http-interop/http-factory-guzzle": "^1.2"

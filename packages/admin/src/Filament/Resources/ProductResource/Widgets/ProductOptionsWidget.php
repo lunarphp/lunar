@@ -17,6 +17,9 @@ use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Facades\DB;
+use Lunar\Models\Contracts\ProductOption as ProductOptionContract;
+use Lunar\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
@@ -355,7 +358,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     $variant = $this->record->variants()->first();
                     $variant->values()->detach();
                     $this->record->productOptions()->exclusive()->each(
-                        fn (ProductOption $productOption) => $productOption->delete()
+                        fn (ProductOptionContract $productOption) => $productOption->delete()
                     );
 
                     $this->record->productOptions()->shared()->detach();
@@ -363,7 +366,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         ->where('id', '!=', $variant->id)
                         ->get()
                         ->each(
-                            fn (ProductVariant $variant) => $variant->delete()
+                            fn (ProductVariantContract $variant) => $variant->delete()
                         );
 
                     DB::commit();
@@ -448,8 +451,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         ]);
     }
 
-    protected function mapOptionValue(ProductOptionValue $value, bool $enabled = true)
+    protected function mapOptionValue(ProductOptionValueContract $value, bool $enabled = true)
     {
+        /** @var ProductOptionValue $value */
         return [
             'id' => $value->id,
             'enabled' => $enabled,
@@ -458,8 +462,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         ];
     }
 
-    protected function mapOption(ProductOption $option, array $values = []): array
+    protected function mapOption(ProductOptionContract $option, array $values = []): array
     {
+        /** @var ProductOption $option */
         return [
             'id' => $option->id,
             'key' => "option_{$option->id}",

@@ -10,7 +10,7 @@ use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class ManageProductCollections extends BaseManageRelatedRecords
 {
@@ -40,6 +40,7 @@ class ManageProductCollections extends BaseManageRelatedRecords
             ->reorderable('position')
             ->columns([
                 TranslatedTextColumn::make('attribute_data.name')
+                    ->description(fn (CollectionContract $record): string => $record->breadcrumb->implode(' > '))
                     ->attributeData()
                     ->limitedTooltip()
                     ->limit(50)
@@ -58,7 +59,7 @@ class ManageProductCollections extends BaseManageRelatedRecords
 
                                     return get_search_builder($relationModel, $search)
                                         ->get()
-                                        ->mapWithKeys(fn (Collection $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
+                                        ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
                                         ->all();
                                 });
                         }
