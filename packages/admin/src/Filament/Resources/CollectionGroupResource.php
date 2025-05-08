@@ -11,13 +11,13 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\CollectionGroup;
+use Lunar\Models\Contracts\CollectionGroup as CollectionGroupContract;
 
 class CollectionGroupResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = CollectionGroup::class;
+    protected static ?string $model = CollectionGroupContract::class;
 
     protected static ?int $navigationSort = 3;
 

@@ -2,6 +2,7 @@
 
 namespace Lunar\Stripe\Actions;
 
+use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Country;
 use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
@@ -10,8 +11,9 @@ use Stripe\PaymentIntent;
 
 class StoreAddressInformation
 {
-    public function store(Order $order, PaymentIntent $paymentIntent)
+    public function store(OrderContract $order, PaymentIntent $paymentIntent)
     {
+        /** @var Order $order */
         $billingAddress = $order->billingAddress ?: new OrderAddress([
             'order_id' => $order->id,
             'type' => 'billing',

@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
@@ -42,15 +43,15 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                     Forms\Components\MorphToSelect::make('purchasable')
                         ->searchable(true)
                         ->types([
-                            Forms\Components\MorphToSelect\Type::make(ProductVariant::class)
+                            Forms\Components\MorphToSelect\Type::make(ProductVariant::modelClass())
                                 ->titleAttribute('sku')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                    $products = get_search_builder(Product::class, $search)
+                                    $products = get_search_builder(Product::modelClass(), $search)
                                         ->get();
 
                                     return ProductVariant::whereIn('product_id', $products->pluck('id'))
                                         ->get()
-                                        ->mapWithKeys(fn (ProductVariant $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
+                                        ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();
                                 }),
                         ]),

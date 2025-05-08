@@ -409,6 +409,19 @@ public function boot()
             return new EventParameters($paymentIntentId, $orderId);
         }
     });
+
+## Events
+
+Below are the events which are dispatched under specific situations within the addon.
+
+### `Lunar\Stripe\Events\Webhook\CartMissingForIntent`
+
+Dispatched when attempting to process a payment intent, but no matching Order or Cart model can be found.
+
+```php
+public function handle(\Lunar\Stripe\Events\Webhook\CartMissingForIntent $event)
+{
+    echo $event->paymentIntentId;
 }
 ```
 

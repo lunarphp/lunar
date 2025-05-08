@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lunar\Admin\Database\Factories\StaffFactory;
 use Spatie\Permission\Traits\HasRoles;
+use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
 
 /**
  * @property int $id
@@ -36,6 +37,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     use HasRoles;
     use Notifiable;
     use SoftDeletes;
+    use TwoFactorAuthenticatable;
 
     protected $guard_name = 'staff';
 

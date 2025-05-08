@@ -5,20 +5,18 @@ namespace Lunar\Actions\Carts;
 use Lunar\Actions\AbstractAction;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class SetShippingOption extends AbstractAction
 {
     /**
      * Execute the action.
-     *
-     * @param  CartLine  $cartLine
-     * @param  ShippingOption  $customerGroups
      */
     public function execute(
-        Cart $cart,
+        CartContract $cart,
         ShippingOption $shippingOption
     ): self {
+        /** @var Cart $cart */
         $cart->shippingAddress->shippingOption = $shippingOption;
         $cart->shippingAddress->update([
             'shipping_option' => $shippingOption->getIdentifier(),

@@ -34,6 +34,7 @@ test('can run pipeline', function () {
         'quantity' => 1,
     ]);
 
+    /** @var Order $order */
     $order = new Order([
         'cart_id' => $cart->id,
     ]);
