@@ -3,6 +3,7 @@
 namespace Lunar\Base;
 
 use Lunar\Facades\DB;
+use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Order;
 
 class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
@@ -10,8 +11,9 @@ class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
     /**
      * {@inheritDoc}
      */
-    public function generate(Order $order): string
+    public function generate(OrderContract $order): string
     {
+        /** @var Order $order */
         $year = $order->created_at->year;
 
         $month = $order->created_at->format('m');

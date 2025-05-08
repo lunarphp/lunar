@@ -23,14 +23,14 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
-use Lunar\Models\Contracts\Discount;
+use Lunar\Models\Contracts\Discount as DiscountContract;
 use Lunar\Models\Currency;
 
 class DiscountResource extends BaseResource
 {
     protected static ?string $permission = 'sales:manage-discounts';
 
-    protected static ?string $model = Discount::class;
+    protected static ?string $model = DiscountContract::class;
 
     protected static ?int $navigationSort = 3;
 
@@ -285,10 +285,14 @@ class DiscountResource extends BaseResource
         }
 
         return [
-            Forms\Components\Toggle::make('data.fixed_value')->live(),
-            Forms\Components\TextInput::make('data.percentage')->visible(
-                fn (Forms\Get $get) => ! $get('data.fixed_value')
-            )->numeric(),
+            Forms\Components\Toggle::make('data.fixed_value')
+                ->label(__('lunarpanel::discount.form.fixed_value.label'))
+                ->live(),
+            Forms\Components\TextInput::make('data.percentage')
+                ->label(__('lunarpanel::discount.form.percentage.label'))
+                ->visible(
+                    fn (Forms\Get $get) => ! $get('data.fixed_value')
+                )->numeric(),
             Forms\Components\Group::make(
                 $currencyInputs
             )->visible(

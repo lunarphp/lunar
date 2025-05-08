@@ -74,6 +74,12 @@ return [
             'label' => 'Automatically add rewards',
             'helper_text' => 'Switch on to add reward products when not present in the basket.',
         ],
+        'fixed_value' => [
+            'label' => 'Fixed value',
+        ],
+        'percentage' => [
+            'label' => 'Percentage',
+        ],
     ],
     'table' => [
         'name' => [
@@ -113,6 +119,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Availability',
+        ],
+        'edit' => [
+            'title' => 'Basic Information',
         ],
         'limitations' => [
             'label' => 'Limitations',

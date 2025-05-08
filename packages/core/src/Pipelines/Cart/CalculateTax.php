@@ -9,16 +9,18 @@ use Lunar\DataTypes\Price;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class CalculateTax
 {
     /**
      * Called just before cart totals are calculated.
      *
-     * @return mixed
+     * @param  Closure(CartContract): mixed  $next
      */
-    public function handle(Cart $cart, Closure $next)
+    public function handle(CartContract $cart, Closure $next): mixed
     {
+        /** @var Cart $cart */
         $taxBreakDownAmounts = collect();
 
         foreach ($cart->lines as $cartLine) {

@@ -6,24 +6,22 @@ use Lunar\Actions\AbstractAction;
 use Lunar\Base\Purchasable;
 use Lunar\Exceptions\InvalidCartLineQuantityException;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class AddOrUpdatePurchasable extends AbstractAction
 {
     /**
      * Execute the action.
-     *
-     * @param  \Lunar\Models\CartLine  $cartLine
-     * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return \Lunar\Models\CartLine
      */
     public function execute(
-        Cart $cart,
+        CartContract $cart,
         Purchasable $purchasable,
         int $quantity = 1,
         array $meta = []
     ): self {
         throw_if(! $quantity, InvalidCartLineQuantityException::class);
 
+        /** @var Cart $cart */
         $existing = app(
             config('lunar.cart.actions.get_existing_cart_line', GetExistingCartLine::class)
         )->execute(

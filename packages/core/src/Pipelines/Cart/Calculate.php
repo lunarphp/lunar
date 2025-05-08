@@ -5,16 +5,18 @@ namespace Lunar\Pipelines\Cart;
 use Closure;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class Calculate
 {
     /**
      * Called just before cart totals are calculated.
      *
-     * @return mixed
+     * @param  Closure(CartContract): mixed  $next
      */
-    public function handle(Cart $cart, Closure $next)
+    public function handle(CartContract $cart, Closure $next): mixed
     {
+        /** @var Cart $cart */
         $discountTotal = $cart->lines->sum('discountTotal.value');
 
         $subTotal = $cart->lines->sum('subTotal.value');

@@ -14,14 +14,14 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\ProductVariant;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\TaxClass;
 
 class ProductVariantResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = ProductVariant::class;
+    protected static ?string $model = ProductVariantContract::class;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -52,7 +52,7 @@ class ProductVariantResource extends BaseResource
         ];
     }
 
-    public static function getBaseBreadcrumbs(ProductVariant $productVariant): array
+    public static function getBaseBreadcrumbs(ProductVariantContract $productVariant): array
     {
         return [
             ProductResource::getUrl('edit', [

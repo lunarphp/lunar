@@ -13,13 +13,13 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\CustomerGroup;
+use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
 
 class CustomerGroupResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = CustomerGroup::class;
+    protected static ?string $model = CustomerGroupContract::class;
 
     protected static ?int $navigationSort = 1;
 

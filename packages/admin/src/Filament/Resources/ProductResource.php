@@ -32,7 +32,7 @@ use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
-use Lunar\Models\Contracts\Product;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Tag;
@@ -41,7 +41,7 @@ class ProductResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = Product::class;
+    protected static ?string $model = ProductContract::class;
 
     protected static ?string $recordTitleAttribute = 'recordTitle';
 
@@ -154,9 +154,7 @@ class ProductResource extends BaseResource
             ->required($validation['required'] ?? false);
 
         if ($validation['unique'] ?? false) {
-            $input->unique(function () {
-                return (new ProductVariant)->getTable();
-            });
+            $input->unique(fn () => (new ProductVariant)->getTable());
         }
 
         return $input;
@@ -234,7 +232,7 @@ class ProductResource extends BaseResource
         return Attributes::make()
             ->using(ProductVariant::class)
             ->relationship('variant')
-            ->hidden(fn (Product $record) => $record->hasVariants);
+            ->hidden(fn (ProductContract $record) => $record->hasVariants);
     }
 
     public static function getDefaultTable(Table $table): Table
