@@ -7,6 +7,7 @@ use Lunar\Base\Addressable;
 use Lunar\DataTypes\Price;
 use Lunar\Facades\Taxes;
 use Lunar\Models\CartLine;
+use Lunar\Models\Contracts\CartLine as CartLineContract;
 
 class CalculateLine
 {
@@ -17,11 +18,12 @@ class CalculateLine
      * @return \Lunar\Models\CartLine
      */
     public function execute(
-        CartLine $cartLine,
+        CartLineContract $cartLine,
         Collection $customerGroups,
         ?Addressable $shippingAddress = null,
         ?Addressable $billingAddress = null
     ) {
+        /** @var CartLine $cartLine */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
         $unitQuantity = $purchasable->getUnitQuantity();

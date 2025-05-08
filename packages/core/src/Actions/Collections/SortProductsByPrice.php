@@ -3,6 +3,8 @@
 namespace Lunar\Actions\Collections;
 
 use Illuminate\Support\Collection;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Currency;
 use Lunar\Models\Product;
 
@@ -10,12 +12,10 @@ class SortProductsByPrice
 {
     /**
      * Execute the action.
-     *
-     * @param  string  $direction
-     * @return void
      */
     public function execute(Collection $products, Currency $currency, $direction = 'asc')
     {
+        /** @var Collection $products */
         // Load up our products and prices.
         $products = $products->load('variants.basePrices');
 
@@ -27,8 +27,10 @@ class SortProductsByPrice
         });
     }
 
-    protected function getMinPrice(Product $product, Currency $currency)
+    protected function getMinPrice(ProductContract $product, CurrencyContract $currency)
     {
+        /** @var Product $product */
+        /** @var Currency $currency */
         return $product->variants->map(function ($variant) use ($currency) {
             // Get the prices for the currency
             return $variant->basePrices->filter(function ($price) use ($currency) {

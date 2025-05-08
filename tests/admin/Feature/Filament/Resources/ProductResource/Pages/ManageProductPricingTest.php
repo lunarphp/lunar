@@ -74,3 +74,39 @@ it('will not show in navigation when multiple variants exist', function () {
             __('lunarpanel::relationmanagers.pricing.title')
         );
 });
+
+it('can set product base prices correctly', function () {
+    \Lunar\Models\Language::factory()->create([
+        'default' => true,
+    ]);
+
+    \Lunar\Models\Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $record = \Lunar\Models\Product::factory()->create();
+
+    $variant = \Lunar\Models\ProductVariant::factory()->create([
+        'product_id' => $record->id,
+    ]);
+
+    $this->asStaff(admin: true);
+
+    \Livewire\Livewire::test(\Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing::class, [
+        'record' => $record->id,
+        'pageClass' => 'productPriceRelationManager',
+    ])->set('basePrices', [
+        [
+            'id' => null,
+            'currency_id' => \Lunar\Models\Currency::getDefault()->id,
+            'label' => 'GBP',
+            'value' => '2.32',
+            'factor' => '100',
+        ],
+    ])->call('save')->assertHasNoErrors();
+
+    \Pest\Laravel\assertDatabaseHas((new \Lunar\Models\Price)->getTable(), [
+        'price' => '232',
+    ]);
+
+});

@@ -7,6 +7,7 @@ use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Events\PaymentAttemptEvent;
+use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Paypal\Facades\Paypal;
@@ -135,7 +136,7 @@ class PaypalPaymentType extends AbstractPayment
      *
      * @param  int  $amount
      */
-    public function capture(Transaction $transaction, $amount = 0): PaymentCapture
+    public function capture(TransactionContract $transaction, $amount = 0): PaymentCapture
     {
         return new PaymentCapture(success: true);
     }
@@ -145,7 +146,7 @@ class PaypalPaymentType extends AbstractPayment
      *
      * @param  string|null  $notes
      */
-    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
+    public function refund(TransactionContract $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
 
         $currencyCode = $transaction->order->currency_code;

@@ -10,6 +10,10 @@ return [
         'manage' => 'Manage',
     ],
 
+    'tabs' => [
+        'all' => 'All',
+    ],
+
     'transactions' => [
         'capture' => 'Captured',
         'intent' => 'Intent',
@@ -273,6 +277,12 @@ return [
         ],
         'edit_tags' => [
             'label' => 'Edit',
+            'form' => [
+                'tags' => [
+                    'label' => 'Tags',
+                    'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
+                ],
+            ],
         ],
         'capture_payment' => [
             'label' => 'Capture Payment',

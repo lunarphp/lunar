@@ -13,6 +13,16 @@ class EditDiscount extends BaseEditRecord
 {
     protected static string $resource = DiscountResource::class;
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::discount.pages.edit.title');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('lunarpanel::discount.pages.edit.title');
+    }
+
     protected function getDefaultHeaderActions(): array
     {
         return [

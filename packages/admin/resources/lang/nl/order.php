@@ -10,6 +10,10 @@ return [
         'manage' => 'Beheren',
     ],
 
+    'tabs' => [
+        'all' => 'Alle',
+    ],
+
     'transactions' => [
         'capture' => 'Geïncasseerd',
         'intent' => 'Voorgenomen',

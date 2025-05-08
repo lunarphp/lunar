@@ -10,6 +10,10 @@ return [
         'manage' => 'Gérer',
     ],
 
+    'tabs' => [
+        'all' => 'Toutes',
+    ],
+
     'transactions' => [
         'capture' => 'Capturé',
         'intent' => 'Intention',

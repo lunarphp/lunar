@@ -136,17 +136,11 @@ By default Lunar will generate a new order reference for you when you create an 
 is:
 
 ```
-{year}-{month}-{0..0}{orderId}
+{prefix?}{0..0}{orderId}
 ```
 
-`{0..0}` indicates the order id will be padded with up to four `0`'s for example:
-
-```
-2022-01-0001
-2022-01-0011
-2022-01-0111
-2022-01-1111
-```
+`{0..0}` indicates the order id will be padded until the length is 8 digits (not including the prefix)
+The prefix is optional and defined in the `lunar/orders.php` config file, which gives access to a number of settings you can change.
 
 ### Custom Generators
 

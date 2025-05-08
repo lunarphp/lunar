@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Lunar\Actions\Collections\SortProducts;
 use Lunar\Facades\DB;
 use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class UpdateProductPositions implements ShouldQueue
 {
@@ -23,12 +24,12 @@ class UpdateProductPositions implements ShouldQueue
     /**
      * The target collection.
      */
-    public Collection $collection;
+    public CollectionContract $collection;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(Collection $collection)
+    public function __construct(CollectionContract $collection)
     {
         $this->collection = $collection;
     }
