@@ -7,6 +7,7 @@ use Lunar\DataTypes\Price;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
+use Spatie\LaravelBlink\BlinkFacade;
 
 if (! function_exists('price')) {
     function price($value, $currency, $unitQty = 1)
@@ -122,11 +123,8 @@ if (! function_exists('get_search_builder')) {
 if (! function_exists('apply_attribute_search')) {
     function apply_attribute_search(Builder $query, string $search, string $modelMorphName): void
     {
-        $attributes = Attribute::whereAttributeType(
-            $modelMorphName
-        )
-            ->whereSearchable(true)
-            ->get();
+        $attributes = fn ($modelMorphName) => BlinkFacade::once('lunar_searchable_attributes_'.$modelMorphName,
+            fn () => Attribute::whereAttributeType($modelMorphName)->whereSearchable(true)->get());
 
         $searchableAttributes = [];
 
