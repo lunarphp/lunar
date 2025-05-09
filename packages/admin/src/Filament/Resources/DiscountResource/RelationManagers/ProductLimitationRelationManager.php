@@ -42,11 +42,15 @@ class ProductLimitationRelationManager extends BaseRelationManager
                         ->searchable(true)
                         ->types([
                             Forms\Components\MorphToSelect\Type::make(Product::modelClass())
-                                ->titleAttribute('name.en')
+                                ->getOptionsUsing(function () {
+                                    return Product::limit(50)->get()
+                                        ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                                        ->all();
+                                })
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                     return get_search_builder(Product::modelClass(), $search)
                                         ->get()
-                                        ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
+                                        ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                         ->all();
                                 }),
                         ]),
