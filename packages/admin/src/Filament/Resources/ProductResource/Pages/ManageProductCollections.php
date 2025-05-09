@@ -54,6 +54,15 @@ class ManageProductCollections extends BaseManageRelatedRecords
                     ->recordSelect(
                         function (Forms\Components\Select $select) {
                             return $select->placeholder('Select a collection') // TODO: needs translation
+                                ->relationship(name: 'collections')
+                                ->options(function () {
+                                    return Collection::limit(50)->get()
+                                        ->mapWithKeys(fn (Collection $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
+                                        ->all();
+                                })
+                                ->required()
+                                ->searchable(true)
+                                ->preload()
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search, ManageProductCollections $livewire): array {
                                     $relationModel = $livewire->getRelationship()->getRelated()::class;
 
