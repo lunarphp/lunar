@@ -77,6 +77,7 @@ class AverageOrderValueChart extends ApexChartWidget
                     fn ($subRelation) => $subRelation->where("{$group->getTable()}.id", '=', $group->id)
                 )
             )->select(
+                DB::RAW('MAX(currency_code) as currency_code'),
                 DB::RAW('ROUND(AVG(total), 0) as total'),
                 DB::RAW('ROUND(AVG(shipping_total), 0) as shipping_total'),
                 DB::RAW('ROUND(AVG(discount_total), 0) as discount_total'),
