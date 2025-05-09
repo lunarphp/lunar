@@ -25,18 +25,21 @@ class CustomerLimitationRelationManager extends BaseRelationManager
 
     public function getDefaultTable(Table $table): Table
     {
-
         return $table
             ->description(
                 __('lunarpanel::discount.relationmanagers.customers.description')
             )
             ->paginated(false)
             ->headerActions([
-                Tables\Actions\AttachAction::make()->form(fn (Tables\Actions\AttachAction $action): array => [
-                    $action->getRecordSelect(),
-                ])->recordTitle(function ($record) {
-                    return $record->full_name;
-                })->preloadRecordSelect()
+                Tables\Actions\AttachAction::make()
+                    ->form(fn (Tables\Actions\AttachAction $action): array => [
+                        $action->getRecordSelect(),
+                    ])
+                    ->recordTitle(function ($record) {
+                        return $record->full_name;
+                    })
+                    ->recordSelectSearchColumns(['title', 'first_name', 'last_name'])
+                    ->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::discount.relationmanagers.customers.actions.attach.label')
                     ),
