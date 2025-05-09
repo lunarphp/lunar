@@ -60,6 +60,9 @@ class OrderResource extends BaseResource
         return $table
             ->columns(static::getTableColumns())
             ->filters(static::getTableFilters())
+            ->modifyQueryUsing(
+                fn (Builder $query): Builder => $query->with(['currency'])
+            )
             ->persistFiltersInSession()
             ->actions([
                 Tables\Actions\EditAction::make()

@@ -50,6 +50,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                                         ->get();
 
                                     return ProductVariant::whereIn('product_id', $products->pluck('id'))
+                                        ->with(['product'])
                                         ->get()
                                         ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();

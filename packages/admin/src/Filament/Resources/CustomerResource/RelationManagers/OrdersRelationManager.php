@@ -4,6 +4,7 @@ namespace Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers;
 
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
@@ -23,6 +24,8 @@ class OrdersRelationManager extends BaseRelationManager
     {
         return $table->columns(
             OrderResource::getTableColumns()
+        )->modifyQueryUsing(
+            fn (Builder $query): Builder => $query->with(['currency'])
         )->actions([
             Tables\Actions\Action::make('viewOrder')
                 ->url(fn (OrderContract $record): string => ManageOrder::getUrl(['record' => $record])),
