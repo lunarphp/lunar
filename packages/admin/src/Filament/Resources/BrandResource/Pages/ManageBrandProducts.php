@@ -69,10 +69,17 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                         ->label(
                             __('lunarpanel::brand.pages.products.actions.attach.form.record_id.label')
                         )
+                        ->relationship(name: 'target')
+                        ->options(function () {
+                            return Product::limit(50)->get()
+                                ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                                ->all();
+                        })
                         ->required()
-                        ->searchable()
+                        ->searchable(true)
+                        ->preload()
                         ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                            return Product::search($search)
+                            return get_search_builder(Product::modelClass(), $search)
                                 ->get()
                                 ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();
