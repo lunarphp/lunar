@@ -300,6 +300,10 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 $optionModel->save();
             }
 
+            if ($optionModel->shared) {
+                return;
+            }
+
             $this->configuredOptions[$optionIndex]['id'] = $optionModel->id;
             $option['id'] = $optionModel->id;
 
