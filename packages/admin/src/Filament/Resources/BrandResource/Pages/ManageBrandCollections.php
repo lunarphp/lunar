@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DetachAction;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\BrandResource;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductCollections;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Collection;
@@ -51,10 +52,21 @@ class ManageBrandCollections extends BaseManageRelatedRecords
                 ->recordSelect(
                     function (Forms\Components\Select $select) {
                         return $select->placeholder(
-                            __('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder')
-                        )
-                            ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                return Collection::search($search)
+                                __('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder')
+                            )
+                            ->relationship(name: 'collections')
+                            ->options(function () {
+                                return Collection::limit(50)->get()
+                                    ->mapWithKeys(fn (Collection $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
+                                    ->all();
+                            })
+                            ->required()
+                            ->searchable(true)
+                            ->preload()
+                            ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search, ManageProductCollections $livewire): array {
+                                $relationModel = $livewire->getRelationship()->getRelated()::class;
+
+                                return get_search_builder($relationModel, $search)
                                     ->get()
                                     ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
                                     ->all();
