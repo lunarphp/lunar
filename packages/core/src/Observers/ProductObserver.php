@@ -2,14 +2,14 @@
 
 namespace Lunar\Observers;
 
-use Lunar\Models\Product;
+use Lunar\Models\Contracts\Product as ProductContract;
 
 class ProductObserver
 {
     /**
      * Handle the ProductVariant "deleted" event.
      */
-    public function deleting(Product $product): void
+    public function deleting(ProductContract $product): void
     {
         if ($product->isForceDeleting()) {
             $product->variants()->withTrashed()->get()->each->forceDelete();
@@ -32,7 +32,7 @@ class ProductObserver
         }
     }
 
-    public function restored(Product $product): void
+    public function restored(ProductContract $product): void
     {
         $product->variants()->withTrashed()->get()->each->restore();
     }
