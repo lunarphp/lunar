@@ -94,12 +94,17 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                 )->form([
                     Forms\Components\Select::make('recordId')
                         ->label('Product')
+                        ->relationship(name: 'target')
+                        ->options(function () {
+                            return Product::limit(50)->get()
+                                ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                                ->all();
+                        })
                         ->required()
                         ->searchable(true)
-                        ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search, ManageCollectionProducts $livewire): array {
-                            $relationModel = $livewire->getRelationship()->getRelated()::class;
-
-                            return get_search_builder($relationModel, $search)
+                        ->preload()
+                        ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                            return get_search_builder(Product::modelClass(), $search)
                                 ->get()
                                 ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();
