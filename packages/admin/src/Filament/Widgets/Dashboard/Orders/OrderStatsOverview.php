@@ -69,11 +69,13 @@ class OrderStatsOverview extends BaseWidget
 
     protected function getStatTotal($currentDate, $previousDate, $reference): Stat
     {
-        $currentSubTotal = $currentDate->select(
-            DB::RAW('sum(sub_total) as sub_total')
+        $currentSubTotal = $currentDate->with(['currency'])->select(
+            DB::RAW('MAX(currency_code) as currency_code'),
+            DB::RAW('sum(sub_total) as sub_total'),
         )->first()->sub_total;
 
-        $previousSubTotal = $previousDate->select(
+        $previousSubTotal = $previousDate->with(['currency'])->select(
+            DB::RAW('MAX(currency_code) as currency_code'),
             DB::RAW('sum(sub_total) as sub_total')
         )->first()->sub_total;
 
