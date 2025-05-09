@@ -2,12 +2,15 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
+use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductCollections;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class CollectionLimitationRelationManager extends BaseRelationManager
 {
@@ -34,18 +37,42 @@ class CollectionLimitationRelationManager extends BaseRelationManager
             )
             ->paginated(false)
             ->headerActions([
-                Tables\Actions\AttachAction::make()->form(fn (Tables\Actions\AttachAction $action): array => [
-                    $action->getRecordSelect(),
-                    Select::make('type')
-                        ->options(
-                            fn () => [
-                                'limitation' => __('lunarpanel::discount.relationmanagers.collections.form.type.options.limitation.label'),
-                                'exclusion' => __('lunarpanel::discount.relationmanagers.collections.form.type.options.exclusion.label'),
-                            ]
-                        )->default('limitation'),
-                ])->recordTitle(function ($record) {
-                    return $record->attr('name');
-                })->preloadRecordSelect()
+                Tables\Actions\AttachAction::make()
+                    ->form(fn (Tables\Actions\AttachAction $action): array => [
+                        $action->getRecordSelect(),
+                        Select::make('type')
+                            ->options(
+                                fn () => [
+                                    'limitation' => __('lunarpanel::discount.relationmanagers.collections.form.type.options.limitation.label'),
+                                    'exclusion' => __('lunarpanel::discount.relationmanagers.collections.form.type.options.exclusion.label'),
+                                ]
+                            )->default('limitation'),
+                    ])
+                    ->recordSelect(
+                        function (Forms\Components\Select $select) {
+                            return $select->relationship(name: 'collections')
+                                ->options(function () {
+                                    return Collection::limit(50)->get()
+                                        ->mapWithKeys(fn (Collection $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
+                                        ->all();
+                                })
+                                ->required()
+                                ->searchable(true)
+                                ->preload()
+                                ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search, ManageProductCollections $livewire): array {
+                                    $relationModel = $livewire->getRelationship()->getRelated()::class;
+
+                                    return get_search_builder($relationModel, $search)
+                                        ->get()
+                                        ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
+                                        ->all();
+                                });
+                        }
+                    )
+                    ->recordTitle(function ($record) {
+                        return $record->attr('name');
+                    })
+                    ->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.actions.attach.label')
                     ),
