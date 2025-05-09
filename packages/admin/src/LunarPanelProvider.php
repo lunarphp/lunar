@@ -200,14 +200,14 @@ class LunarPanelProvider extends ServiceProvider
                 return $boolean === 'or'
                     ? $this->orWhereRaw("LOWER($jsonExpr) LIKE ?", [$searchTerm])
                     : $this->whereRaw("LOWER($jsonExpr) LIKE ?", [$searchTerm]);
-            } else {
-                // MySQL
-                $jsonPath = '$.'.implode('.', array_map(fn ($p) => "\"$p\"", $path));
-
-                return $boolean === 'or'
-                    ? $this->orWhereRaw("LOWER(json_unquote(json_extract($column, ?))) LIKE ?", [$jsonPath, $searchTerm])
-                    : $this->whereRaw("LOWER(json_unquote(json_extract($column, ?))) LIKE ?", [$jsonPath, $searchTerm]);
             }
+
+            // MySQL
+            $jsonPath = '$.'.implode('.', array_map(fn ($p) => "\"$p\"", $path));
+
+            return $boolean === 'or'
+                ? $this->orWhereRaw("LOWER(json_unquote(json_extract($column, ?))) LIKE ?", [$jsonPath, $searchTerm])
+                : $this->whereRaw("LOWER(json_unquote(json_extract($column, ?))) LIKE ?", [$jsonPath, $searchTerm]);
         });
 
         Builder::macro('orWhereJsonContainsInsensitive', function (string $column, array $path, string $value) {
