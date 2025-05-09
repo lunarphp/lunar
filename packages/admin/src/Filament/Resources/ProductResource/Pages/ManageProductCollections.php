@@ -10,6 +10,7 @@ use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
+use Lunar\Models\Collection;
 use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class ManageProductCollections extends BaseManageRelatedRecords
@@ -53,7 +54,7 @@ class ManageProductCollections extends BaseManageRelatedRecords
                 Tables\Actions\AttachAction::make()
                     ->recordSelect(
                         function (Forms\Components\Select $select) {
-                            return $select->placeholder('Select a collection') // TODO: needs translation
+                            return $select->placeholder(__('lunarpanel::product.pages.collections.table.header_actions.attach.record_select.placeholder'))
                                 ->relationship(name: 'collections')
                                 ->options(function () {
                                     return Collection::limit(50)->get()

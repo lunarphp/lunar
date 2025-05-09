@@ -120,6 +120,20 @@ return [
         ],
         'collections' => [
             'label' => 'Collections',
+            'table' => [
+                'header_actions' => [
+                    'attach' => [
+                        'record_select' => [
+                            'placeholder' => 'Select a collection',
+                        ],
+                    ],
+                ],
+            ],
+            'actions' => [
+                'attach' => [
+                    'label' => 'Associate a collection',
+                ],
+            ],
         ],
         'associations' => [
             'label' => 'Product Associations',
