@@ -119,8 +119,8 @@ if (! function_exists('get_search_builder')) {
     }
 }
 
-if (! function_exists('search_lunar_attributes')) {
-    function search_lunar_attributes(Builder &$query, string $search, string $modelMorphName): void
+if (! function_exists('apply_attribute_search')) {
+    function apply_attribute_search(Builder $query, string $search, string $modelMorphName): void
     {
         $attributes = Attribute::whereAttributeType(
             $modelMorphName

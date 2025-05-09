@@ -111,7 +111,7 @@ class BaseResource extends Resource
                     }
 
                     // Add additional logic here to search custom attribute data
-                    search_lunar_attributes($query, $searchWord, static::getModel()::morphName());
+                    apply_attribute_search($query, $searchWord, static::getModel()::morphName());
                 });
             }
         }

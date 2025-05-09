@@ -28,7 +28,7 @@ abstract class BaseListRecords extends ListRecords
             $this->applyGlobalSearchToTableQuery($query);
 
             if (filled($search = $this->getTableSearch())) {
-                search_lunar_attributes($query, $search, static::getModel()::morphName());
+                apply_attribute_search($query, $search, static::getModel()::morphName());
             }
         }
 
