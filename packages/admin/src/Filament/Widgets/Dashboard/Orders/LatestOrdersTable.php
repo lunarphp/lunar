@@ -24,9 +24,10 @@ class LatestOrdersTable extends TableWidget
     public function table(Table $table): Table
     {
         return $table->query(function () {
-            return Order::orderBy('placed_at', 'desc')->orderBy('created_at', 'desc')->limit(10);
+            return Order::with(['currency'])->orderBy('placed_at', 'desc')->orderBy('created_at', 'desc')->limit(10);
         })->columns(
             OrderResource::getTableColumns()
-        )->paginated(false)->searchable(false);
+        )->paginated(false)->searchable(false)
+            ->heading($this->getHeading());
     }
 }

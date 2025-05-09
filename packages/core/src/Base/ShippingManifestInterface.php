@@ -5,7 +5,7 @@ namespace Lunar\Base;
 use Closure;
 use Illuminate\Support\Collection;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart;
 
 interface ShippingManifestInterface
 {

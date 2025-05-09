@@ -267,4 +267,16 @@ return [
             ],
         ],
     ],
+    'values' => [
+        'title' => 'Values',
+        'table' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+            'position' => [
+                'label' => 'Position',
+            ],
+        ],
+    ],
+
 ];

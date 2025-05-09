@@ -70,6 +70,12 @@ return [
             'label' => 'Maksymalna ilość zrabatowanych produktów',
             'helper_text' => 'Maksymalna ilość sztuk każdego produktu, która może być objęta zniżką.',
         ],
+        'fixed_value' => [
+            'label' => 'Stała wartość',
+        ],
+        'percentage' => [
+            'label' => 'Procent',
+        ],
     ],
     'table' => [
         'name' => [
@@ -103,6 +109,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Dostępność',
+        ],
+        'edit' => [
+            'title' => 'Informacje podstawowe',
         ],
         'limitations' => [
             'label' => 'Ograniczenia',

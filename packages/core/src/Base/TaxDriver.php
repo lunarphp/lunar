@@ -3,8 +3,8 @@
 namespace Lunar\Base;
 
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Models\CartLine;
-use Lunar\Models\Currency;
+use Lunar\Models\Contracts\CartLine;
+use Lunar\Models\Contracts\Currency;
 
 interface TaxDriver
 {

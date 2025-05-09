@@ -2,7 +2,7 @@
 
 namespace Lunar\Observers;
 
-use Lunar\Models\Customer;
+use Lunar\Models\Contracts\Customer as CustomerContract;
 
 class CustomerObserver
 {
@@ -11,7 +11,7 @@ class CustomerObserver
      *
      * @return void
      */
-    public function deleting(Customer $customer)
+    public function deleting(CustomerContract $customer)
     {
         $customer->customerGroups()->detach();
         $customer->discounts()->detach();

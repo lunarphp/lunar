@@ -222,4 +222,15 @@ return [
             ],
         ],
     ],
+    'values' => [
+        'title' => 'Wartości',
+        'table' => [
+            'name' => [
+                'label' => 'Nazwa',
+            ],
+            'position' => [
+                'label' => 'Pozycja',
+            ],
+        ],
+    ],
 ];

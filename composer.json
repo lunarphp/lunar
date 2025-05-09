@@ -37,7 +37,8 @@
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-permission": "^6.12",
         "spatie/php-structure-discoverer": "^2.3.1",
-        "stripe/stripe-php": "^14.4",
+        "stephenjude/filament-two-factor-authentication": "dev-main",
+        "stripe/stripe-php": "^16.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
         "typesense/typesense-php": "^4.9"
     },
@@ -75,6 +76,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Lunar\\Tests\\": "tests",
             "Lunar\\Tests\\Admin\\": "tests/admin",
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",
