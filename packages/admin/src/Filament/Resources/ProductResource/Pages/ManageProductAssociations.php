@@ -41,7 +41,7 @@ class ManageProductAssociations extends BaseManageRelatedRecords
         return $form
             ->schema([
                 Forms\Components\Select::make('product_target_id')
-                    ->label('Product')
+                    ->label(__('lunarpanel::product.pages.associations.label'))
                     ->relationship(name: 'target')
                     ->options(function () {
                         return Product::limit(50)->get()

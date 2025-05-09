@@ -129,11 +129,6 @@ return [
                     ],
                 ],
             ],
-            'actions' => [
-                'attach' => [
-                    'label' => 'Associate a collection',
-                ],
-            ],
         ],
         'associations' => [
             'label' => 'Product Associations',
