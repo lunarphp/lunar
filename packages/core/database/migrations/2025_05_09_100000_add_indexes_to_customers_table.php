@@ -18,9 +18,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table($this->prefix.'customers', function (Blueprint $table) {
-            $table->dropIndex($this->prefix . 'customers_title_index');
-            $table->dropIndex($this->prefix . 'customers_first_name_index');
-            $table->dropIndex($this->prefix . 'customers_last_name_index');
+            $table->dropIndex($this->prefix.'customers_title_index');
+            $table->dropIndex($this->prefix.'customers_first_name_index');
+            $table->dropIndex($this->prefix.'customers_last_name_index');
         });
     }
 };

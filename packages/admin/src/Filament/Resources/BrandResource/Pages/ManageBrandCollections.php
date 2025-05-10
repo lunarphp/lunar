@@ -52,8 +52,8 @@ class ManageBrandCollections extends BaseManageRelatedRecords
                 ->recordSelect(
                     function (Forms\Components\Select $select) {
                         return $select->placeholder(
-                                __('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder')
-                            )
+                            __('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder')
+                        )
                             ->relationship(name: 'collections')
                             ->options(function () {
                                 return Collection::limit(50)->get()
