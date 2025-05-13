@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\TaxClass;
+use Lunar\Models\Contracts\TaxClass as TaxClassContract;
 
 class TaxClassResource extends BaseResource
 {
@@ -21,7 +21,7 @@ class TaxClassResource extends BaseResource
 
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = TaxClass::class;
+    protected static ?string $model = TaxClassContract::class;
 
     protected static ?int $navigationSort = 1;
 

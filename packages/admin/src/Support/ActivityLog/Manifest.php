@@ -9,43 +9,46 @@ use Lunar\Admin\Support\ActivityLog\Orders\EmailNotification;
 use Lunar\Admin\Support\ActivityLog\Orders\Intent;
 use Lunar\Admin\Support\ActivityLog\Orders\Refund;
 use Lunar\Admin\Support\ActivityLog\Orders\StatusUpdate;
+use Lunar\Base\BaseModel;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
 class Manifest
 {
-    /**
-     * The events to watch and render.
-     *
-     * @var array
-     */
-    public $events = [
-        Order::class => [
-            Comment::class,
-            StatusUpdate::class,
-            Capture::class,
-            Intent::class,
-            Refund::class,
-            EmailNotification::class,
-            Address::class,
-            TagsUpdate::class,
-        ],
-        Product::class => [
-            Comment::class,
-        ],
-        ProductVariant::class => [
-            Comment::class,
-        ],
-    ];
+    public array $events = [];
+
+    public function __construct()
+    {
+        $this->events = [
+            Order::morphName() => [
+                Comment::class,
+                StatusUpdate::class,
+                Capture::class,
+                Intent::class,
+                Refund::class,
+                EmailNotification::class,
+                Address::class,
+                TagsUpdate::class,
+            ],
+            Product::morphName() => [
+                Comment::class,
+            ],
+            ProductVariant::morphName() => [
+                Comment::class,
+            ],
+        ];
+    }
 
     /**
      * Add an activity log render.
-     *
-     * @return self
      */
-    public function addRender(string $subject, string $renderer)
+    public function addRender(string $subject, string $renderer): self
     {
+        if (class_exists($subject) && new $subject instanceof BaseModel) {
+            $subject = $subject::morphName();
+        }
+
         if (empty($this->events[$subject])) {
             $this->events[$subject] = [];
         }
@@ -57,12 +60,13 @@ class Manifest
 
     /**
      * Return the items from a given subject.
-     *
-     * @param  string  $classname
-     * @return Collection
      */
-    public function getItems($subject)
+    public function getItems(string $subject): Collection
     {
+        if (class_exists($subject) && new $subject instanceof BaseModel) {
+            $subject = $subject::morphName();
+        }
+
         return collect($this->events[$subject] ?? [])
             ->merge([
                 Update::class,

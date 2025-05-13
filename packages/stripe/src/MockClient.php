@@ -22,11 +22,19 @@ class MockClient implements ClientInterface
         $this->url = 'https://checkout.stripe.com/pay/cs_test_'.Str::random(32);
     }
 
-    public function request($method, $absUrl, $headers, $params, $hasFile)
+    public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1')
     {
         $id = array_slice(explode('/', $absUrl), -1)[0];
 
         $policy = config('lunar.stripe.policy');
+
+        if ($method == 'get' && str_contains($absUrl, 'charges/CH_LINK')) {
+            $this->rBody = $this->getResponse('charge_link', [
+                'status' => 'succeeded',
+            ]);
+
+            return [$this->rBody, $this->rcode, $this->rheaders];
+        }
 
         if ($method == 'get' && str_contains($absUrl, 'charges')) {
 
@@ -47,12 +55,30 @@ class MockClient implements ClientInterface
         }
 
         if ($method == 'get' && str_contains($absUrl, 'payment_intents')) {
+            if (str_contains($absUrl, 'PI_CAPTURE_LINK')) {
+                $this->rBody = $this->getResponse('payment_intent_paid', [
+                    'id' => $id,
+                    'status' => 'succeeded',
+                    'capture_method' => 'automatic',
+                    'latest_charge_id' => 'CH_LINK',
+                    'payment_status' => 'succeeded',
+                    'payment_method_id' => 'PM_LINK',
+                    'payment_error' => null,
+                    'failure_code' => null,
+                    'captured' => true,
+                ]);
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
+
             if (str_contains($absUrl, 'PI_CAPTURE')) {
                 $this->rBody = $this->getResponse('payment_intent_paid', [
                     'id' => $id,
                     'status' => 'succeeded',
                     'capture_method' => 'automatic',
+                    'latest_charge_id' => 'CH_CARD',
                     'payment_status' => 'succeeded',
+                    'payment_method_id' => 'PM_CARD',
                     'payment_error' => null,
                     'failure_code' => null,
                     'captured' => true,
@@ -112,7 +138,9 @@ class MockClient implements ClientInterface
         }
 
         if ($method == 'get' && str_contains($absUrl, 'payment_methods')) {
-            $this->rBody = $this->getResponse('payment_method', [
+            $paymentMethod = str_contains($absUrl, 'PM_LINK') ? 'payment_method_link' : 'payment_method';
+
+            $this->rBody = $this->getResponse($paymentMethod, [
                 'id' => $id,
             ]);
 
