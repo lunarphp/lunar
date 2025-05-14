@@ -86,6 +86,10 @@ test('can set channel', function () {
     $manager->setChannel($channelB);
 
     expect($manager->getChannel()->id)->toEqual($channelB->id);
+
+    expect(Session::get(
+        $manager->getSessionKey().'_channel'
+    ))->toEqual($channelB->handle);
 });
 
 test('can set currency', function () {
@@ -102,6 +106,10 @@ test('can set currency', function () {
     $manager->setCurrency($currencyB);
 
     expect($manager->getCurrency()->id)->toEqual($currencyB->id);
+
+    expect(Session::get(
+        $manager->getSessionKey().'_currency'
+    ))->toEqual($currencyB->code);
 });
 
 test('can set customer groups', function () {
@@ -143,6 +151,10 @@ test('can set customer', function () {
     $manager->setCustomer($customer);
 
     expect($manager->getCustomer()->id)->toEqual($customer->id);
+
+    expect(Session::get(
+        $manager->getSessionKey().'_customer'
+    ))->toEqual($customer->id);
 });
 
 test('ensure customer belongs to user', function () {
