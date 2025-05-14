@@ -1,7 +1,5 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
 use Illuminate\Support\Facades\Session;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Exceptions\CustomerNotBelongsToUserException;
@@ -12,18 +10,16 @@ use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Tests\Core\Stubs\User as StubUser;
 
+uses(\Lunar\Tests\Core\TestCase::class);
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-//function setAuthUserConfig()
-//{
-//    Config::set('auth.providers.users.model', 'User');
-//}
-
-test('can instantiate manager', function () {
+beforeEach(function () {
     Channel::factory()->create([
         'default' => true,
     ]);
+});
 
+test('can instantiate manager', function () {
     CustomerGroup::factory()->create([
         'default' => true,
     ]);
@@ -33,10 +29,6 @@ test('can instantiate manager', function () {
 });
 
 test('can initialise customer groups', function () {
-    Channel::factory()->create([
-        'default' => true,
-    ]);
-
     CustomerGroup::factory()->create([
         'default' => true,
     ]);
@@ -47,9 +39,7 @@ test('can initialise customer groups', function () {
 });
 
 test('can initialise the channel', function () {
-    $channel = Channel::factory()->create([
-        'default' => true,
-    ]);
+    $channel = Channel::query()->first();
 
     $manager = app(StorefrontSessionInterface::class);
 
@@ -57,10 +47,6 @@ test('can initialise the channel', function () {
 });
 
 test('can initialise the currency', function () {
-    Channel::factory()->create([
-        'default' => true,
-    ]);
-
     $currency = Currency::factory()->create();
 
     $manager = app(StorefrontSessionInterface::class);
@@ -69,10 +55,6 @@ test('can initialise the currency', function () {
 });
 
 test('can initialise the customer', function () {
-    Channel::factory()->create([
-        'default' => true,
-    ]);
-
     setAuthUserConfig();
 
     $user = StubUser::factory()->create();
@@ -95,10 +77,6 @@ test('can initialise the customer', function () {
 });
 
 test('can set channel', function () {
-    Channel::factory()->create([
-        'default' => true,
-    ]);
-
     $channelB = Channel::factory()->create([
         'default' => false,
     ]);
@@ -111,10 +89,6 @@ test('can set channel', function () {
 });
 
 test('can set currency', function () {
-    Channel::factory()->create([
-        'default' => true,
-    ]);
-
     Currency::factory()->create([
         'default' => true,
     ]);
@@ -131,10 +105,6 @@ test('can set currency', function () {
 });
 
 test('can set customer groups', function () {
-    Channel::factory()->create([
-        'default' => true,
-    ]);
-
     CustomerGroup::factory()->create([
         'default' => true,
     ]);
@@ -157,10 +127,6 @@ test('can set customer groups', function () {
 });
 
 test('can set customer', function () {
-    Channel::factory()->create([
-        'default' => true,
-    ]);
-
     setAuthUserConfig();
 
     $user = StubUser::factory()->create();
@@ -180,10 +146,6 @@ test('can set customer', function () {
 });
 
 test('ensure customer belongs to user', function () {
-    Channel::factory()->create([
-        'default' => true,
-    ]);
-
     setAuthUserConfig();
 
     $user = StubUser::factory()->create();
