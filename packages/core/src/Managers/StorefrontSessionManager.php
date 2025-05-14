@@ -177,12 +177,13 @@ class StorefrontSessionManager implements StorefrontSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setChannel(ChannelContract|string $channel): self
+    public function setChannel(ChannelContract $channel): self
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_channel',
             $channel->handle
         );
+
         $this->channel = $channel;
 
         return $this;
