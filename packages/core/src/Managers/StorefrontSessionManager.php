@@ -291,6 +291,11 @@ class StorefrontSessionManager implements StorefrontSessionInterface
      */
     public function setCurrency(CurrencyContract $currency): self
     {
+        $this->sessionManager->put(
+            $this->getSessionKey().'_currency',
+            $currency->code
+        );
+
         $this->currency = $currency;
 
         return $this;
