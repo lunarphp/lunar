@@ -39,11 +39,135 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         $this->initCustomer();
     }
 
-    public function forget()
+    public function getChannel(): ChannelContract
+    {
+        return $this->channel ?: Channel::getDefault();
+    }
+
+    public function setChannel(ChannelContract $channel): static
+    {
+        $this->sessionManager->put(
+            $this->getSessionKey().'_channel',
+            $channel->handle
+        );
+
+        $this->channel = $channel;
+
+        return $this;
+    }
+
+    public function getCustomerGroups(): ?Collection
+    {
+        return $this->customerGroups ?: $this->initCustomerGroups();
+    }
+
+    public function setCustomerGroups(Collection $customerGroups): static
+    {
+        $this->sessionManager->put(
+            $this->getSessionKey().'_customer_groups',
+            $customerGroups->pluck('handle')->toArray()
+        );
+
+        $this->customerGroups = $customerGroups;
+
+        return $this;
+    }
+
+    public function setCustomerGroup(CustomerGroupContract $customerGroup): static
+    {
+        return $this->setCustomerGroups(
+            collect([$customerGroup])
+        );
+    }
+
+    public function resetCustomerGroups()
     {
         $this->sessionManager->forget(
-            $this->getSessionKey()
+            $this->getSessionKey().'_customer_groups'
         );
+        $this->customerGroups = collect();
+
+        return $this;
+    }
+
+    public function getCurrency(): CurrencyContract
+    {
+        return $this->currency ?: Currency::getDefault();
+    }
+
+    public function setCurrency(CurrencyContract $currency): static
+    {
+        $this->sessionManager->put(
+            $this->getSessionKey().'_currency',
+            $currency->code
+        );
+
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function getCustomer(): ?CustomerContract
+    {
+        return $this->customer ?: $this->initCustomer();
+    }
+
+    public function setCustomer(CustomerContract $customer): static
+    {
+        /** @var Customer $customer */
+        $this->sessionManager->put(
+            $this->getSessionKey().'_customer',
+            $customer->id
+        );
+
+        if (
+            $this->authManager->check()
+            && is_lunar_user($this->authManager->user())
+            && ! $this->customerBelongsToUser($customer)
+        ) {
+            throw new CustomerNotBelongsToUserException;
+        }
+
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    protected function customerBelongsToUser(CustomerContract $customer): bool
+    {
+        /** @var Customer $customer */
+        $user = $this->authManager->user();
+
+        return $customer->query()
+            ->whereHas('users', fn ($query) => $query->where('user_id', $user->id))
+            ->exists();
+    }
+
+    public function initChannel()
+    {
+        if ($this->channel) {
+            return $this->channel;
+        }
+
+        $channelHandle = $this->sessionManager->get(
+            $this->getSessionKey().'_channel'
+        );
+
+        if (! $channelHandle) {
+            return $this->setChannel(
+                Channel::getDefault()
+            );
+        }
+
+        $channel = Channel::whereHandle($channelHandle)->first();
+
+        if (! $channel) {
+            throw new \Exception(
+                "Unable to find channel with handle {$channelHandle}"
+            );
+        }
+
+        return $this->setChannel($channel);
     }
 
     public function initCustomerGroups()
@@ -73,33 +197,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
                 CustomerGroup::getDefault(),
             ])
         );
-    }
-
-    public function initChannel()
-    {
-        if ($this->channel) {
-            return $this->channel;
-        }
-
-        $channelHandle = $this->sessionManager->get(
-            $this->getSessionKey().'_channel'
-        );
-
-        if (! $channelHandle) {
-            return $this->setChannel(
-                Channel::getDefault()
-            );
-        }
-
-        $channel = Channel::whereHandle($channelHandle)->first();
-
-        if (! $channel) {
-            throw new \Exception(
-                "Unable to find channel with handle {$channelHandle}"
-            );
-        }
-
-        return $this->setChannel($channel);
     }
 
     public function initCustomer(): ?CustomerContract
@@ -137,112 +234,15 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this->customer;
     }
 
+    public function forget()
+    {
+        $this->sessionManager->forget(
+            $this->getSessionKey()
+        );
+    }
+
     public function getSessionKey(): string
     {
         return 'lunar_storefront';
-    }
-
-    public function setChannel(ChannelContract $channel): self
-    {
-        $this->sessionManager->put(
-            $this->getSessionKey().'_channel',
-            $channel->handle
-        );
-
-        $this->channel = $channel;
-
-        return $this;
-    }
-
-    private function customerBelongsToUser(CustomerContract $customer): bool
-    {
-        /** @var Customer $customer */
-        $user = $this->authManager->user();
-
-        return $customer->query()
-            ->whereHas('users', fn ($query) => $query->where('user_id', $user->id))
-            ->exists();
-    }
-
-    public function setCustomer(CustomerContract $customer): self
-    {
-        /** @var Customer $customer */
-        $this->sessionManager->put(
-            $this->getSessionKey().'_customer',
-            $customer->id
-        );
-
-        if (
-            $this->authManager->check()
-            && is_lunar_user($this->authManager->user())
-            && ! $this->customerBelongsToUser($customer)
-        ) {
-            throw new CustomerNotBelongsToUserException;
-        }
-
-        $this->customer = $customer;
-
-        return $this;
-    }
-
-    public function getCustomer(): ?CustomerContract
-    {
-        return $this->customer ?: $this->initCustomer();
-    }
-
-    public function setCustomerGroups(Collection $customerGroups): self
-    {
-        $this->sessionManager->put(
-            $this->getSessionKey().'_customer_groups',
-            $customerGroups->pluck('handle')->toArray()
-        );
-
-        $this->customerGroups = $customerGroups;
-
-        return $this;
-    }
-
-    public function setCustomerGroup(CustomerGroupContract $customerGroup): self
-    {
-        return $this->setCustomerGroups(
-            collect([$customerGroup])
-        );
-    }
-
-    public function resetCustomerGroups()
-    {
-        $this->sessionManager->forget(
-            $this->getSessionKey().'_customer_groups'
-        );
-        $this->customerGroups = collect();
-
-        return $this;
-    }
-
-    public function getChannel(): ChannelContract
-    {
-        return $this->channel ?: Channel::getDefault();
-    }
-
-    public function getCustomerGroups(): ?Collection
-    {
-        return $this->customerGroups ?: $this->initCustomerGroups();
-    }
-
-    public function setCurrency(CurrencyContract $currency): self
-    {
-        $this->sessionManager->put(
-            $this->getSessionKey().'_currency',
-            $currency->code
-        );
-
-        $this->currency = $currency;
-
-        return $this;
-    }
-
-    public function getCurrency(): CurrencyContract
-    {
-        return $this->currency ?: Currency::getDefault();
     }
 }
