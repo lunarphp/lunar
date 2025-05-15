@@ -18,31 +18,14 @@ use Lunar\Models\CustomerGroup;
 
 class StorefrontSessionManager implements StorefrontSessionInterface
 {
-    /**
-     * The current channel
-     */
     protected ?ChannelContract $channel = null;
 
-    /**
-     * The collection of customer groups to use.
-     */
     protected ?Collection $customerGroups = null;
 
-    /**
-     * The current currency
-     */
     protected ?CurrencyContract $currency = null;
 
-    /**
-     * The current customer
-     */
     protected ?CustomerContract $customer = null;
 
-    /**
-     * Initialise the manager
-     *
-     * @param protected SessionManager
-     */
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager
@@ -56,9 +39,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         $this->initCustomer();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function forget()
     {
         $this->sessionManager->forget(
@@ -66,9 +46,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function initCustomerGroups()
     {
         $groupHandles = collect(
@@ -98,9 +75,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function initChannel()
     {
         if ($this->channel) {
@@ -128,9 +102,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this->setChannel($channel);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function initCustomer(): ?CustomerContract
     {
         if ($this->customer) {
@@ -166,17 +137,11 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this->customer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getSessionKey(): string
     {
         return 'lunar_storefront';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setChannel(ChannelContract $channel): self
     {
         $this->sessionManager->put(
@@ -199,9 +164,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
             ->exists();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setCustomer(CustomerContract $customer): self
     {
         /** @var Customer $customer */
@@ -223,17 +185,11 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCustomer(): ?CustomerContract
     {
         return $this->customer ?: $this->initCustomer();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setCustomerGroups(Collection $customerGroups): self
     {
         $this->sessionManager->put(
@@ -246,9 +202,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setCustomerGroup(CustomerGroupContract $customerGroup): self
     {
         return $this->setCustomerGroups(
@@ -256,11 +209,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         );
     }
 
-    /**
-     * Reset the customer groups
-     *
-     * @return self
-     */
     public function resetCustomerGroups()
     {
         $this->sessionManager->forget(
@@ -271,25 +219,16 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getChannel(): ChannelContract
     {
         return $this->channel ?: Channel::getDefault();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCustomerGroups(): ?Collection
     {
         return $this->customerGroups ?: $this->initCustomerGroups();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setCurrency(CurrencyContract $currency): self
     {
         $this->sessionManager->put(
@@ -302,9 +241,6 @@ class StorefrontSessionManager implements StorefrontSessionInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCurrency(): CurrencyContract
     {
         return $this->currency ?: Currency::getDefault();
