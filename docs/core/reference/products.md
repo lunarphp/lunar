@@ -254,7 +254,7 @@ by default:
 - ft
 - in
 
-**Width**
+**Weight**
 
 - kg
 - g
