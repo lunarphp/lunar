@@ -19,7 +19,7 @@ class DownloadPdfController extends Controller
             'view' => 'required',
         ]);
 
-        $recordType = $request->get('record_type');
+        $recordType = Relation::getMorphedModel($request->get('record_type'));
         $view = $request->get('view');
         $record = $request->get('record');
 
