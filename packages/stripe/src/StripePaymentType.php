@@ -98,6 +98,19 @@ class StripePaymentType extends AbstractPayment
             $paymentIntentId
         );
 
+        if ($this->order->total->value != $this->paymentIntent->amount) {
+            $failure = new PaymentAuthorize(
+                success: false,
+                message: 'Captured amount mismatch',
+                orderId: $this->order->id,
+                paymentType: 'stripe',
+            );
+
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
+        }
+
         if (! $this->paymentIntent) {
             $failure = new PaymentAuthorize(
                 success: false,

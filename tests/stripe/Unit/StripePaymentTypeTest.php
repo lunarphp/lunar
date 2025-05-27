@@ -14,6 +14,10 @@ it('can capture an order', function () {
     $cart = CartBuilder::build();
     $payment = new StripePaymentType;
 
+    Stripe::fake()->next([
+        'amount' => $cart->calculate()->total->value,
+    ]);
+
     $response = $payment->cart($cart)->withData([
         'payment_intent' => 'PI_CAPTURE',
     ])->authorize();
@@ -27,7 +31,31 @@ it('can capture an order', function () {
         'order_id' => $cart->refresh()->completedOrder->id,
         'type' => 'capture',
     ]);
-})->group('this');
+});
+
+it('wont capture an order with lesser intent amount', function () {
+    $cart = CartBuilder::build();
+    $payment = new StripePaymentType;
+
+    Stripe::fake()->next([
+        'amount' => 100,
+    ]);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->refresh()->draftOrder)->not()->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+
+    \Pest\Laravel\assertDatabaseMissing((new Transaction)->getTable(), [
+        'order_id' => $cart->refresh()->draftOrder->id,
+        'type' => 'capture',
+    ]);
+});
 
 it('can handle failed payments', function () {
     $cart = CartBuilder::build();

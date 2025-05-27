@@ -11,6 +11,8 @@ class MockClient implements ClientInterface
 {
     public string $rBody = '{}';
 
+    public array $nextData = [];
+
     public int $rcode = 200;
 
     public array $rheaders = [];
@@ -20,6 +22,13 @@ class MockClient implements ClientInterface
     public function __construct()
     {
         $this->url = 'https://checkout.stripe.com/pay/cs_test_'.Str::random(32);
+    }
+
+    public function next(array $data): self
+    {
+        $this->nextData = $data;
+
+        return $this;
     }
 
     public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1')
@@ -82,6 +91,8 @@ class MockClient implements ClientInterface
                     'payment_error' => null,
                     'failure_code' => null,
                     'captured' => true,
+                    'amount' => 2000,
+                    ...$this->nextData,
                 ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];

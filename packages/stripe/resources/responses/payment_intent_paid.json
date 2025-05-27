@@ -1,9 +1,9 @@
 {
   "id": "{id}",
   "object": "payment_intent",
-  "amount": 1099,
-  "amount_capturable": 0,
-  "amount_received": 0,
+  "amount": "{amount}",
+  "amount_capturable": "{amount}",
+  "amount_received": "{amount}",
   "application": null,
   "application_fee_amount": null,
   "automatic_payment_methods": null,
