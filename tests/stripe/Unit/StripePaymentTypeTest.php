@@ -8,7 +8,7 @@ use Lunar\Tests\Stripe\Utils\CartBuilder;
 
 use function Pest\Laravel\assertDatabaseHas;
 
-uses(\Lunar\Tests\Stripe\Unit\TestCase::class);
+uses(\Lunar\Tests\Stripe\Unit\TestCase::class)->group('stripe');
 
 it('can capture an order', function () {
     $cart = CartBuilder::build();
@@ -60,6 +60,10 @@ it('wont capture an order with lesser intent amount', function () {
 it('can handle failed payments', function () {
     $cart = CartBuilder::build();
 
+    Stripe::fake()->next([
+        'amount' => $cart->calculate()->total->value,
+    ]);
+
     $payment = new StripePaymentType;
 
     $response = $payment->cart($cart)->withData([
@@ -76,7 +80,7 @@ it('can handle failed payments', function () {
         'type' => 'capture',
         'success' => false,
     ]);
-})->group('noo');
+});
 
 it('can retrieve existing payment intent', function () {
     $cart = CartBuilder::build([
@@ -85,7 +89,7 @@ it('can retrieve existing payment intent', function () {
         ],
     ]);
 
-    Stripe::createIntent($cart->calculate());
+    Stripe::createIntent($cart->calculate(), []);
 
     expect($cart->refresh()->meta['payment_intent'])->toBe('PI_FOOBAR');
 });
@@ -96,6 +100,10 @@ it('will fail if cart already has an order', function () {
 
     $order->update([
         'placed_at' => now(),
+    ]);
+
+    Stripe::fake()->next([
+        'amount' => $cart->calculate()->total->value,
     ]);
 
     $payment = new StripePaymentType;

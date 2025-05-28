@@ -40,6 +40,7 @@ class MockClient implements ClientInterface
         if ($method == 'get' && str_contains($absUrl, 'charges/CH_LINK')) {
             $this->rBody = $this->getResponse('charge_link', [
                 'status' => 'succeeded',
+                ...$this->nextData,
             ]);
 
             return [$this->rBody, $this->rcode, $this->rheaders];
@@ -58,6 +59,7 @@ class MockClient implements ClientInterface
             $this->rBody = $this->getResponse('charges', [
                 'status' => $status,
                 'failure_code' => $failureCode,
+                ...$this->nextData,
             ]);
 
             return [$this->rBody, $this->rcode, $this->rheaders];
@@ -75,6 +77,7 @@ class MockClient implements ClientInterface
                     'payment_error' => null,
                     'failure_code' => null,
                     'captured' => true,
+                    ...$this->nextData,
                 ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
@@ -107,13 +110,16 @@ class MockClient implements ClientInterface
                     'payment_error' => 'foo',
                     'failure_code' => 1234,
                     'captured' => false,
+                    ...$this->nextData,
                 ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }
 
             if (str_contains($absUrl, 'PI_REQUIRES_PAYMENT_METHOD')) {
-                $this->rBody = $this->getResponse('payment_intent_requires_payment_method');
+                $this->rBody = $this->getResponse('payment_intent_requires_payment_method', [
+                    ...$this->nextData,
+                ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }
@@ -127,6 +133,7 @@ class MockClient implements ClientInterface
                     'payment_error' => 'foo',
                     'failure_code' => 1234,
                     'captured' => false,
+                    ...$this->nextData,
                 ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
