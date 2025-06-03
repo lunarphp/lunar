@@ -4,11 +4,6 @@ namespace Lunar\Search\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Lunar\Search\Contracts\SearchManagerContract;
-use Lunar\Search\Engines\AbstractEngine;
-use Lunar\Search\Engines\DatabaseEngine;
-use Lunar\Search\Engines\MeilisearchEngine;
-use Lunar\Search\Engines\TypesenseEngine;
-use Lunar\Search\SearchManager;
 
 /**
  * @method static void createDatabaseDriver()

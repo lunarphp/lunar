@@ -3,9 +3,6 @@
 namespace Lunar\Stripe\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\CartAddress as CartAddressContract;
-use Lunar\Stripe\Enums\CancellationReason;
 use Lunar\Stripe\MockClient;
 use Stripe\ApiRequestor;
 

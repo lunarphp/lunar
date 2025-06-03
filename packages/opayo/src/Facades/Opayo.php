@@ -3,7 +3,6 @@
 namespace Lunar\Opayo\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 use Lunar\Opayo\OpayoInterface;
 
 /**

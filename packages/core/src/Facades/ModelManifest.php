@@ -3,7 +3,6 @@
 namespace Lunar\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Base\BaseModel;
 use Lunar\Base\ModelManifestInterface;
 
 /**
