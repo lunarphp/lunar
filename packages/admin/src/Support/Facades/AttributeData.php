@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static void registerFieldType(string $coreFieldType, string $panelFieldType)
  * @method static \Illuminate\Support\Collection getFieldTypes(): Collection
  * @method static array getConfigurationFields(string $type = null): array
+ *
+ * @see \Lunar\Admin\Support\Forms\AttributeData
  */
 class AttributeData extends Facade
 {

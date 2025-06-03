@@ -21,6 +21,8 @@ use Stripe\ApiRequestor;
  * @method static getCharges(string $paymentIntentId): \Illuminate\Support\Collection
  * @method static getCharge(string $chargeId): \Stripe\Charge
  * @method static buildIntent(int $value, string $currencyCode, CartAddressContract $shipping): \Stripe\PaymentIntent
+ *
+ * @see \Lunar\Stripe\Managers\StripeManager
  */
 class Stripe extends Facade
 {

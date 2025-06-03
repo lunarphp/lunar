@@ -5,6 +5,9 @@ namespace Lunar\Paypal\Facades;
 use Illuminate\Support\Facades\Facade;
 use Lunar\Paypal\PaypalInterface;
 
+/**
+ * @see \Lunar\Paypal\Paypal
+ */
 class Paypal extends Facade
 {
     /**

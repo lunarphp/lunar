@@ -5,6 +5,9 @@ namespace Lunar\Facades;
 use Illuminate\Support\Facades\Facade;
 use Lunar\Base\AttributeManifestInterface;
 
+/**
+ * @see \Lunar\Base\AttributeManifest
+ */
 class AttributeManifest extends Facade
 {
     /**

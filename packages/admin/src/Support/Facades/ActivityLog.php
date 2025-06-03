@@ -4,6 +4,9 @@ namespace Lunar\Admin\Support\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @see \Lunar\Admin\Support\ActivityLog\Manifest
+ */
 class ActivityLog extends Facade
 {
     /**

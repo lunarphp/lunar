@@ -18,6 +18,8 @@ use Lunar\Search\SearchManager;
  * @method static SearchManager model()
  * @method static AbstractEngine driver()
  * @method static string getDefaultDriver()
+ *
+ * @see \Lunar\Search\SearchManager
  */
 class Search extends Facade
 {

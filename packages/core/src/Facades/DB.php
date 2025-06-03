@@ -4,6 +4,9 @@ namespace Lunar\Facades;
 
 use Illuminate\Support\Facades\DB as DBFacade;
 
+/**
+ * @see \Illuminate\Database\DatabaseManager
+ */
 class DB extends DBFacade
 {
     /**
