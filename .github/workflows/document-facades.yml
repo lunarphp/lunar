@@ -3,8 +3,8 @@ name: document-facades
 
 on:
   push:
-    # branches:
-    #   - "*.x"
+    branches:
+      - "*.x"
   workflow_dispatch:
 
 permissions:
