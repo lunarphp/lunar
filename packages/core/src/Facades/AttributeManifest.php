@@ -9,7 +9,7 @@ use Lunar\Base\AttributeManifestInterface;
  * @method static void addType(void $type, void $key = null)
  * @method static \Illuminate\Support\Collection getTypes()
  * @method static void getType(void $key)
- * @method static void getSearchableAttributes(string $attributeType)
+ * @method static \Illuminate\Support\Collection getSearchableAttributes(string $attributeType)
  *
  * @see \Lunar\Base\AttributeManifest
  */
