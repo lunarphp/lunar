@@ -333,7 +333,7 @@ CartSession::updateLines(collect([
 ### Remove a line
 
 ```php
-CartSession::removeLine($cartLineId);
+CartSession::remove($cartLineId);
 ```
 
 ### Clear a cart
