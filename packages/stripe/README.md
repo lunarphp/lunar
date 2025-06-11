@@ -245,7 +245,7 @@ return [
     'stripe' => [
         // ...
         'webhooks' => [
-            'payment_intent' => '...'
+            'lunar' => '...'
         ],
     ],
 ];
