@@ -76,12 +76,19 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     )->visible(
                         $options->isNotEmpty()
                     ),
+                Toggle::make('preselect')
+                    ->default(true)
+                    ->label(
+                        __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.form.preselect.label')
+                    )->visible(
+                        $options->isNotEmpty()
+                    ),
             ])->action(function (array $data) {
                 $productOption = ProductOption::with(['values'])->find($data['product_option']);
                 $this->configuredOptions[] = $this->mapOption(
                     $productOption,
                     $productOption->values->map(
-                        fn ($value) => $this->mapOptionValue($value, true)
+                        fn ($value) => $this->mapOptionValue($value, $data['preselect'] ?? false)
                     )->toArray()
                 );
             })->after(
