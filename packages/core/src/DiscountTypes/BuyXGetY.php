@@ -9,6 +9,7 @@ use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
+use Lunar\Models\Collection as LunarCollection;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Product;
 
@@ -59,8 +60,19 @@ class BuyXGetY extends AbstractDiscountType
         // Get all purchasables that are eligible.
         $conditions = $cart->lines->reject(function ($line) {
             return ! $this->discount->purchasableConditions->first(function ($item) use ($line) {
-                return $item->purchasable_type == Product::morphName() &&
-                    $item->purchasable_id == $line->purchasable->product->id;
+                if ($item->purchasable_type == Product::morphName() &&
+                    $item->purchasable_id == $line->purchasable->product->id
+                ) {
+                    return true;
+                }
+
+                if ($item->purchasable_type == LunarCollection::morphName() &&
+                    $line->purchasable->product->collections->pluck('id')->contains($item->purchasable_id)
+                ) {
+                    return true;
+                }
+
+                return false;
             });
         });
 

@@ -177,6 +177,27 @@ class Discount extends BaseModel implements Contracts\Discount
             });
     }
 
+    public function scopeCollections(Builder $query, iterable $collectionIds = [], array|string $types = []): Builder
+    {
+        if (is_array($collectionIds)) {
+            $collectionIds = collect($collectionIds);
+        }
+
+        $types = Arr::wrap($types);
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+                ->orWhereHas('purchasables',
+                    fn ($relation) => $relation->whereIn('purchasable_id', $collectionIds)
+                        ->wherePurchasableType(Collection::morphName())
+                        ->when(
+                            $types,
+                            fn ($query) => $query->whereIn('type', $types)
+                        )
+                )
+        );
+    }
+
     public function scopeProducts(Builder $query, iterable $productIds = [], array|string $types = []): Builder
     {
         if (is_array($productIds)) {
