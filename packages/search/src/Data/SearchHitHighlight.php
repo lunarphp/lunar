@@ -1,10 +1,11 @@
 <?php
 
-namespace Lunar\Search\Data\SearchHit;
+namespace Lunar\Search\Data;
 
 use Spatie\LaravelData\Data;
 
-class Highlight extends Data
+/** @typescript */
+class SearchHitHighlight extends Data
 {
     public function __construct(
         public string $field,
