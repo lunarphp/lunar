@@ -11,7 +11,8 @@ class Price
     /**
      * Initialise the Price datatype.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     * @throws InvalidDataTypeValueException
      */
     public function __construct(
         public $value,
