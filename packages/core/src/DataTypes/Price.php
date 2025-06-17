@@ -3,7 +3,7 @@
 namespace Lunar\DataTypes;
 
 use Lunar\Exceptions\InvalidDataTypeValueException;
-use Lunar\Models\Currency;
+use Lunar\Models\Contracts\Currency;
 use Lunar\Pricing\DefaultPriceFormatter;
 
 class Price
