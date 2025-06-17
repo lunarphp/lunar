@@ -3,10 +3,10 @@
 namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Channel;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\CustomerGroup;
+use Lunar\Models\Contracts\Channel;
+use Lunar\Models\Contracts\Currency;
+use Lunar\Models\Contracts\Customer;
+use Lunar\Models\Contracts\CustomerGroup;
 
 interface StorefrontSessionInterface
 {

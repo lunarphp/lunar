@@ -10,6 +10,8 @@ use Filament\Tables\Table;
 use Lunar\Admin\Events\ProductAssociationsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Lunar\Models\Contracts\Product as ProductContract;
+use Lunar\Models\Contracts\ProductAssociation as ProductAssociationContract;
 use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
 
@@ -43,9 +45,9 @@ class ManageProductAssociations extends BaseManageRelatedRecords
                     ->required()
                     ->searchable(true)
                     ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                        return get_search_builder(Product::class, $search)
+                        return get_search_builder(Product::modelClass(), $search)
                             ->get()
-                            ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                            ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                             ->all();
                     }),
                 Forms\Components\Select::make('type')
@@ -65,9 +67,9 @@ class ManageProductAssociations extends BaseManageRelatedRecords
             ->inverseRelationship('parent')
             ->columns([
                 Tables\Columns\TextColumn::make('target')
-                    ->formatStateUsing(fn (ProductAssociation $record): string => $record->target->translateAttribute('name'))
+                    ->formatStateUsing(fn (ProductAssociationContract $record): string => $record->target->translateAttribute('name'))
                     ->limit(50)
-                    ->tooltip(function (Tables\Columns\TextColumn $column, ProductAssociation $record): ?string {
+                    ->tooltip(function (Tables\Columns\TextColumn $column, ProductAssociationContract $record): ?string {
                         $state = $column->getState();
 
                         if (strlen($record->target->translateAttribute('name')) <= $column->getCharacterLimit()) {

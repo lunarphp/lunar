@@ -138,17 +138,9 @@ foreach ($cart->discountBreakdown as $discountBreakdown) {
     $discountBreakdown->total->value
 }
 
-foreach ($cart->discountBreakdown as $discountBreakdown) {
-    $discountBreakdown->discount_id
-    foreach ($discountBreakdown->lines as $discountLine) {
-        $discountLine->quantity
-        $discountLine->line
-    }
-    $discountBreakdown->total->value
-}
-
 foreach ($cart->lines as $cartLine) {
     $cartLine->unitPrice; // The monetary value for a single item.
+    $cartLine->unitPriceInclTax; // The monetary value for a single item, including tax amount.
     $cartLine->total; // The total price value for the cart
     $cartLine->subTotal; // The sub total, excluding tax
     $cartLine->subTotalDiscounted; // The sub total, minus the discount amount.
@@ -341,7 +333,7 @@ CartSession::updateLines(collect([
 ### Remove a line
 
 ```php
-CartSession::removeLine($cartLineId);
+CartSession::remove($cartLineId);
 ```
 
 ### Clear a cart

@@ -24,7 +24,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property int $id
  * @property int $product_id
  * @property int $tax_class_id
- * @property array $attribute_data
+ * @property ?\Illuminate\Support\Collection $attribute_data
  * @property ?string $tax_ref
  * @property int $unit_quantity
  * @property int $min_quantity
