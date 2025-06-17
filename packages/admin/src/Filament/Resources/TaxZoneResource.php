@@ -78,6 +78,7 @@ class TaxZoneResource extends BaseResource
                 'states' => __('lunarpanel::taxzone.form.zone_type.options.states'),
                 'postcodes' => __('lunarpanel::taxzone.form.zone_type.options.postcodes'),
             ])
+            ->default('country')
             ->label(__('lunarpanel::taxzone.form.zone_type.label'))
             ->live()
             ->required()
