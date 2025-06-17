@@ -2,6 +2,7 @@
 
 return [
     'customer_groups' => [
+        'title' => 'Klantengroepen',
         'actions' => [
             'attach' => [
                 'label' => 'Klantengroep Koppelen',
@@ -50,6 +51,7 @@ return [
         ],
     ],
     'channels' => [
+        'title' => 'Kanalen',
         'actions' => [
             'attach' => [
                 'label' => 'Nog een Kanaal Inplannen',
