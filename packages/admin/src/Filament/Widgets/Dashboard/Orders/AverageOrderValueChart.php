@@ -26,6 +26,7 @@ class AverageOrderValueChart extends ApexChartWidget
     protected function getOrderQuery(?\DateTime $from = null, ?\DateTime $to = null)
     {
         return Order::whereNotNull('placed_at')
+            ->with(['currency'])
             ->whereBetween('placed_at', [
                 $from,
                 $to,
@@ -55,8 +56,9 @@ class AverageOrderValueChart extends ApexChartWidget
             $guestOrders = collect();
 
             if ($group->default) {
-                $guestOrders = $query->clone()->whereNull('user_id')->whereNull('customer_id')
+                $guestOrders = $query->clone()->with(['currency'])->whereNull('user_id')->whereNull('customer_id')
                     ->select(
+                        DB::RAW('MAX(currency_code) as currency_code'),
                         DB::RAW('ROUND(AVG(total), 0) as total'),
                         DB::RAW('ROUND(AVG(shipping_total), 0) as shipping_total'),
                         DB::RAW('ROUND(AVG(discount_total), 0) as discount_total'),
@@ -75,6 +77,7 @@ class AverageOrderValueChart extends ApexChartWidget
                     fn ($subRelation) => $subRelation->where("{$group->getTable()}.id", '=', $group->id)
                 )
             )->select(
+                DB::RAW('MAX(currency_code) as currency_code'),
                 DB::RAW('ROUND(AVG(total), 0) as total'),
                 DB::RAW('ROUND(AVG(shipping_total), 0) as shipping_total'),
                 DB::RAW('ROUND(AVG(discount_total), 0) as discount_total'),

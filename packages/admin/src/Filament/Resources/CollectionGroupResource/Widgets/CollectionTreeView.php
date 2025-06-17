@@ -47,6 +47,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
         $this->nodes = static::mapCollections(
             $this->record->collections()
                 ->withCount('children')
+                ->with(['thumbnail'])
                 ->whereIsRoot()
                 ->defaultOrder()
                 ->get()

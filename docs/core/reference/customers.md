@@ -162,7 +162,7 @@ class MyModel extends Model
 You will need to define the relationship for customer groups so that Lunar knows how to handle it.
 
 ```php
-public function customerGroup()
+public function customerGroups()
 {
     return $this->hasMany(\Lunar\Models\CustomerGroup::class)->withTimestamps()->withPivot([/* .. */]);
 }
