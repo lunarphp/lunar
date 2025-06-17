@@ -15,7 +15,7 @@ class Price
      * @throws InvalidDataTypeValueException
      */
     public function __construct(
-        public $value,
+        public mixed $value,
         public Currency $currency,
         public int $unitQty = 1
     ) {
