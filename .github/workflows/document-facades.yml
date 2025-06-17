@@ -43,26 +43,26 @@ jobs:
       - name: Update facade docblocks
         run: |
           php -f vendor/bin/facade.php -- \
-            Lunar\\Facades\\DB \
-            Lunar\\Facades\\Taxes \
-            Lunar\\Opayo\\Facades\\Opayo \
-            Lunar\\Facades\\Pricing \
-            Lunar\\Stripe\\Facades\\Stripe \
-            Lunar\\Search\\Facades\\Search \
-            Lunar\\Paypal\\Facades\\Paypal \
-            Lunar\\Facades\\Payments \
-            Lunar\\Facades\\Discounts \
-            Lunar\\Facades\\CartSession \
-            Lunar\\Facades\\ModelManifest \
-            Lunar\\Facades\\ShippingManifest \
-            Lunar\\Facades\\AttributeManifest \
-            Lunar\\Facades\\FieldTypeManifest \
-            Lunar\\Facades\\StorefrontSession \
-            Lunar\\Admin\\Support\\Facades\\LunarPanel \
             Lunar\\Admin\\Support\\Facades\\ActivityLog \
             Lunar\\Admin\\Support\\Facades\\AttributeData \
+            Lunar\\Admin\\Support\\Facades\\LunarAccessControl \
+            Lunar\\Admin\\Support\\Facades\\LunarPanel \
+            Lunar\\Facades\\AttributeManifest \
+            Lunar\\Facades\\CartSession \
+            Lunar\\Facades\\DB \
+            Lunar\\Facades\\Discounts \
+            Lunar\\Facades\\FieldTypeManifest \
+            Lunar\\Facades\\ModelManifest \
+            Lunar\\Facades\\Payments \
+            Lunar\\Facades\\Pricing \
+            Lunar\\Facades\\ShippingManifest \
+            Lunar\\Facades\\StorefrontSession \
+            Lunar\\Facades\\Taxes \
+            Lunar\\Opayo\\Facades\\Opayo \
+            Lunar\\Paypal\\Facades\\Paypal \
+            Lunar\\Search\\Facades\\Search \
             Lunar\\Shipping\\Facades\\Shipping \
-            Lunar\\Admin\\Support\\Facades\\LunarAccessControl
+            Lunar\\Stripe\\Facades\\Stripe
 
       - name: Commit facade docblocks
         uses: stefanzweifel/git-auto-commit-action@v5
