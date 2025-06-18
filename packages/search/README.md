@@ -68,6 +68,27 @@ This packages makes use of Spatie Data to transform search results from the prov
 
 You can view all available Data classes in the `src/Data` directory.
 
+### Transforming Data classes to Typescript
+
+If you use Spatie Typescript Transformer, you can add the following to your `typescript-transformer.php` config:
+
+```php
+return [
+    //...
+    'auto_discover_types' => [
+        // ...
+        \Lunar\Search\data_path(),
+    ],
+];
+```
+Then in your Javascript the data classes will be available under the `Lunar.Search` namespace.
+
+```js
+defineProps<{
+    results: Lunar.Search.SearchResults
+}>()
+```
+
 ### Handling the response
 
 Searching returns a `Lunar\Data\SearchResult` DTO which you can use in your templates:
