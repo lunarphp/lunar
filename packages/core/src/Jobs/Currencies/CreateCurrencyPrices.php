@@ -39,7 +39,7 @@ class CreateCurrencyPrices implements ShouldQueue
             )->whereDefault(false)->first();
         }
 
-        if (! $default->id == $this->currency->id) {
+        if (! $default || ! $default->id == $this->currency->id) {
             return;
         }
 
