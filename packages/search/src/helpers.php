@@ -8,4 +8,3 @@ if (! function_exists('data_path')) {
         return __DIR__.'/Data';
     }
 }
-
