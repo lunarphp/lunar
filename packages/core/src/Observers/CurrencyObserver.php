@@ -2,6 +2,7 @@
 
 namespace Lunar\Observers;
 
+use Lunar\Jobs\Currencies\CreateCurrencyPrices;
 use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Models\Currency;
 
@@ -15,6 +16,7 @@ class CurrencyObserver
     public function created(CurrencyContract $currency)
     {
         $this->ensureOnlyOneDefault($currency);
+        CreateCurrencyPrices::dispatchSync($currency);
     }
 
     /**
@@ -35,6 +37,16 @@ class CurrencyObserver
     public function deleted(CurrencyContract $currency)
     {
         //
+    }
+
+    /**
+     * Handle the Currency "deleted" event.
+     *
+     * @return void
+     */
+    public function deleting(CurrencyContract $currency)
+    {
+        $currency->prices()->delete();
     }
 
     /**
