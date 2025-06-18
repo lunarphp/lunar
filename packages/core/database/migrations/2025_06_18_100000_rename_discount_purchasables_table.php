@@ -12,6 +12,9 @@ return new class extends Migration
 
         Schema::table($this->prefix.'discountables', function (Blueprint $table) {
             $table->renameColumn('purchasable_id', 'discountable_id');
+        });
+
+        Schema::table($this->prefix.'discountables', function (Blueprint $table) {
             $table->renameColumn('purchasable_type', 'discountable_type');
         });
     }
@@ -22,6 +25,9 @@ return new class extends Migration
 
         Schema::table($this->prefix.'discount_purchasables', function (Blueprint $table) {
             $table->renameColumn('discountable_id', 'purchasable_id');
+        });
+
+        Schema::table($this->prefix.'discount_purchasables', function (Blueprint $table) {
             $table->renameColumn('discountable_type', 'purchasable_type');
         });
     }
