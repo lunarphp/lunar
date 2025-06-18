@@ -70,6 +70,7 @@ use Lunar\Models\Discount;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
+use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
@@ -88,6 +89,7 @@ use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\MediaObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
+use Lunar\Observers\PriceObserver;
 use Lunar\Observers\ProductObserver;
 use Lunar\Observers\ProductOptionObserver;
 use Lunar\Observers\ProductOptionValueObserver;
@@ -320,6 +322,7 @@ class LunarServiceProvider extends ServiceProvider
         OrderLine::observe(OrderLineObserver::class);
         Address::observe(AddressObserver::class);
         Transaction::observe(TransactionObserver::class);
+        Price::observe(PriceObserver::class);
 
         if ($mediaModel = config('media-library.media_model')) {
             $mediaModel::observe(MediaObserver::class);
