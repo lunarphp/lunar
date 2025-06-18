@@ -15,8 +15,8 @@ use Lunar\Search\SearchManager;
  * @method static MeilisearchEngine createMeilisearchDriver()
  * @method static TypesenseEngine createTypesenseDriver()
  * @method static mixed buildProvider()
- * @method static SearchManager model()
- * @method static AbstractEngine driver()
+ * @method static SearchManager model(string $model)
+ * @method static AbstractEngine driver($driver = null)
  * @method static string getDefaultDriver()
  */
 class Search extends Facade

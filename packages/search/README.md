@@ -62,6 +62,11 @@ Under the hood this will detect what Scout driver is mapped under `lunar.search.
 then perform a search using that given driver. To increase performance the results will not be 
 hydrated from the database, but instead will be the raw results from the search provider.
 
+### Response format
+
+This packages makes use of Spatie Data to transform search results from the provider into consistent responses you can use on your frontend.
+
+You can view all available Data classes in the `src/Data` directory.
 
 ### Handling the response
 
