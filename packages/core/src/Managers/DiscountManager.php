@@ -138,7 +138,7 @@ class DiscountManager implements DiscountManagerInterface
             ->channel($this->channels)
             ->customerGroup($this->customerGroups)
             ->with([
-                'purchasables',
+                'discountables',
             ])
             ->when(
                 $cart,

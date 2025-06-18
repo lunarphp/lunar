@@ -15,29 +15,29 @@ interface Discount
     public function users(): BelongsToMany;
 
     /**
-     * Return the discount's purchasables relationship.
+     * Return the discount's discountables relationship.
      */
-    public function purchasables(): HasMany;
+    public function discountables(): HasMany;
 
     /**
-     * Return the discount's purchasable conditions relationship.
+     * Return the discount's discountable conditions relationship.
      */
-    public function purchasableConditions(): HasMany;
+    public function discountableConditions(): HasMany;
 
     /**
-     * Return the discount's purchasable exclusions relationship.
+     * Return the discount's discountable exclusions relationship.
      */
-    public function purchasableExclusions(): HasMany;
+    public function discountableExclusions(): HasMany;
 
     /**
-     * Return the discount's purchasable limitations relationship.
+     * Return the discount's discountable limitations relationship.
      */
-    public function purchasableLimitations(): HasMany;
+    public function discountableLimitations(): HasMany;
 
     /**
-     * Return the discount's purchasable rewards relationship.
+     * Return the discount's discountable rewards relationship.
      */
-    public function purchasableRewards(): HasMany;
+    public function discountableRewards(): HasMany;
 
     /**
      * Return the discount's type class.

@@ -177,14 +177,14 @@ test('can discount eligible product', function () {
         ],
     ]);
 
-    $discount->purchasableLimitations()->create([
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+    $discount->discountableLimitations()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
-    $discount->purchasableRewards()->create([
-        'purchasable_type' => $productB->getMorphClass(),
-        'purchasable_id' => $productB->id,
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
         'type' => 'reward',
     ]);
 
@@ -290,14 +290,14 @@ test('can discount eligible products', function () {
         ],
     ]);
 
-    $discount->purchasableConditions()->create([
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
-    $discount->purchasableRewards()->create([
-        'purchasable_type' => $productB->getMorphClass(),
-        'purchasable_id' => $productB->id,
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
         'type' => 'reward',
     ]);
 
@@ -390,14 +390,14 @@ test('can discount eligible products using collection condition', function () {
         ],
     ]);
 
-    $discount->purchasableConditions()->create([
-        'purchasable_type' => $collection->getMorphClass(),
-        'purchasable_id' => $collection->id,
+    $discount->discountableConditions()->create([
+        'discountable_type' => $collection->getMorphClass(),
+        'discountable_id' => $collection->id,
     ]);
 
-    $discount->purchasableRewards()->create([
-        'purchasable_type' => $productB->getMorphClass(),
-        'purchasable_id' => $productB->id,
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
         'type' => 'reward',
     ]);
 
@@ -511,14 +511,14 @@ test('can discount purchasable with priority', function () {
         ],
     ]);
 
-    $discount->purchasableConditions()->create([
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
-    $discount->purchasableRewards()->create([
-        'purchasable_type' => $productB->getMorphClass(),
-        'purchasable_id' => $productB->id,
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
         'type' => 'reward',
     ]);
 
@@ -635,14 +635,14 @@ test('can apply multiple different discounts', function () {
         ]);
     }
 
-    $discountA->purchasableConditions()->create([
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+    $discountA->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
-    $discountA->purchasableRewards()->create([
-        'purchasable_type' => $productB->getMorphClass(),
-        'purchasable_id' => $productB->id,
+    $discountA->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
         'type' => 'reward',
     ]);
 
@@ -733,14 +733,14 @@ test('can supplement correct quantities', function () {
         ],
     ]);
 
-    $discount->purchasableConditions()->create([
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
-    $discount->purchasableRewards()->create([
-        'purchasable_type' => $productB->getMorphClass(),
-        'purchasable_id' => $productB->id,
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
         'type' => 'reward',
     ]);
 
@@ -907,24 +907,24 @@ test('can count condition qty in discount breakdown', function () {
         ]);
     }
 
-    $discountA->purchasableConditions()->create([
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+    $discountA->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
-    $discountA->purchasableConditions()->create([
-        'purchasable_type' => $productB->getMorphClass(),
-        'purchasable_id' => $productB->id,
+    $discountA->discountableConditions()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
     ]);
 
-    $discountA->purchasableConditions()->create([
-        'purchasable_type' => $productC->getMorphClass(),
-        'purchasable_id' => $productC->id,
+    $discountA->discountableConditions()->create([
+        'discountable_type' => $productC->getMorphClass(),
+        'discountable_id' => $productC->id,
     ]);
 
-    $discountA->purchasableRewards()->create([
-        'purchasable_type' => $productC->getMorphClass(),
-        'purchasable_id' => $productC->id,
+    $discountA->discountableRewards()->create([
+        'discountable_type' => $productC->getMorphClass(),
+        'discountable_id' => $productC->id,
         'type' => 'reward',
     ]);
 
@@ -1033,14 +1033,14 @@ test('can add eligible products when not in cart', function () {
         ],
     ]);
 
-    $discount->purchasableConditions()->create([
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
-    $discount->purchasableRewards()->create([
-        'purchasable_type' => $productB->getMorphClass(),
-        'purchasable_id' => $productB->id,
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
         'type' => 'reward',
     ]);
 
