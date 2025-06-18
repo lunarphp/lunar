@@ -81,6 +81,7 @@ return [
         ],
         'tags' => [
             'label' => 'Etiquetas',
+            'helper_text' => 'Separa las etiquetas presionando Enter, Tab o coma (,)',
         ],
         'collections' => [
             'label' => 'Colecciones',
@@ -90,6 +91,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Disponibilidad',
+        ],
+        'edit' => [
+            'title' => 'Información Básica',
         ],
         'identifiers' => [
             'label' => 'Identificadores del Producto',
