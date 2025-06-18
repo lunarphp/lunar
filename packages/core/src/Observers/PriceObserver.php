@@ -7,10 +7,17 @@ use Lunar\Models\Contracts\Price;
 
 class PriceObserver
 {
+    public function created(Price $price): void
+    {
+        if ($price->currency->default) {
+            SyncPriceCurrencies::dispatch($price);
+        }
+    }
+
     public function updated(Price $price): void
     {
         if ($price->currency->default) {
-            SyncPriceCurrencies::dispatchSync($price);
+            SyncPriceCurrencies::dispatch($price);
         }
     }
 }

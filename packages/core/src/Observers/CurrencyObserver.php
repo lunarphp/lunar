@@ -16,7 +16,7 @@ class CurrencyObserver
     public function created(CurrencyContract $currency)
     {
         $this->ensureOnlyOneDefault($currency);
-        CreateCurrencyPrices::dispatchSync($currency);
+        CreateCurrencyPrices::dispatch($currency);
     }
 
     /**
