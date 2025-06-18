@@ -28,7 +28,9 @@ class SyncPriceCurrencies implements ShouldQueue
      */
     public function handle()
     {
-        $currencies = Currency::where('id', '!=', $this->price->currency_id)->get();
+        $currencies = Currency::where('id', '!=', $this->price->currency_id)
+            ->where('sync_prices', true)
+            ->get();
 
         foreach ($currencies as $currency) {
             $priceCounterpart = \Lunar\Models\Price::where('priceable_id', $this->price->priceable_id)
