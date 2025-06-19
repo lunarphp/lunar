@@ -2,15 +2,16 @@
 
 namespace Lunar\Admin\Support\Facades;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static void synthesizeLivewireProperties
- * @method static \Filament\Forms\Components\Component getFilamentComponent($field)
- * @method static void registerFieldType(string $coreFieldType, string $panelFieldType)
- * @method static \Illuminate\Support\Collection getFieldTypes(): Collection
- * @method static array getConfigurationFields(string $type = null): array
+ * @method static \Filament\Forms\Components\Component getFilamentComponent(\Lunar\Models\Attribute $attribute)
+ * @method static \Lunar\Admin\Support\Forms\AttributeData registerFieldType(string $coreFieldType, string $panelFieldType)
+ * @method static \Illuminate\Support\Collection getFieldTypes()
+ * @method static array getConfigurationFields(string|null $type = null)
+ * @method static void synthesizeLivewireProperties()
+ *
+ * @see \Lunar\Admin\Support\Forms\AttributeData
  */
 class AttributeData extends Facade
 {
