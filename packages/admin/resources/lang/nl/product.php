@@ -116,6 +116,7 @@ return [
         ],
         'collections' => [
             'label' => 'Collecties',
+            'select_collection' => 'Selecteer een collectie',
         ],
         'associations' => [
             'label' => 'Productassociaties',
