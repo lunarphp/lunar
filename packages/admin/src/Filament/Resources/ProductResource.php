@@ -241,6 +241,7 @@ class ProductResource extends BaseResource
             ->columns(static::getTableColumns())
             ->filters([
                 Tables\Filters\SelectFilter::make('brand')
+                    ->label(__('lunarpanel::product.table.brand.label'))
                     ->relationship('brand', 'name'),
                 Tables\Filters\TrashedFilter::make(),
             ])

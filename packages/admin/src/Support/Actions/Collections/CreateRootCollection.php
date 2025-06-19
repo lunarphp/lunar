@@ -68,7 +68,9 @@ class CreateRootCollection extends CreateAction
         }
 
         $this->form([
-            $formInput::make('name')->required(),
+            $formInput::make('name')
+                ->label(__('lunarpanel::collection.form.name.label'))
+                ->required(),
         ]);
 
         $this->label(
