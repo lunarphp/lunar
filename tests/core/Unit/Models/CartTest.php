@@ -2,6 +2,7 @@
 
 uses(\Lunar\Tests\Core\TestCase::class)->group('carts');
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\DataTypes\ShippingOption;
@@ -1152,3 +1153,39 @@ test('can get same draft order when cart does not change', function () {
         )->toBe($newOrder->id);
 
 });
+
+test('can add multiple cart lines without lazy loading exceptions', function () {
+    Model::preventLazyLoading(true);
+    $currency = Currency::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasableA = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
+
+    $purchasableB = ProductVariant::factory()->create([
+        'stock' => 1,
+    ]);
+
+    Price::factory()->create([
+        'price' => 100,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasableA->getMorphClass(),
+        'priceable_id' => $purchasableA->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 100,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasableB->getMorphClass(),
+        'priceable_id' => $purchasableB->id,
+    ]);
+
+    $cart->add($purchasableA, 1);
+    $cart->add($purchasableB, 1);
+})->throwsNoExceptions();
