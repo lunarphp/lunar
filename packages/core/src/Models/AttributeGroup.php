@@ -19,7 +19,7 @@ use Lunar\Database\Factories\AttributeGroupFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class AttributeGroup extends BaseModel
+class AttributeGroup extends BaseModel implements Contracts\AttributeGroup
 {
     use HasFactory;
     use HasMacros;
@@ -28,7 +28,7 @@ class AttributeGroup extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): AttributeGroupFactory
+    protected static function newFactory()
     {
         return AttributeGroupFactory::new();
     }
@@ -50,11 +50,8 @@ class AttributeGroup extends BaseModel
         'name' => AsCollection::class,
     ];
 
-    /**
-     * Return the attributes relationship.
-     */
     public function attributes(): HasMany
     {
-        return $this->hasMany(Attribute::class)->orderBy('position');
+        return $this->hasMany(Attribute::modelClass())->orderBy('position');
     }
 }

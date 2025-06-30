@@ -29,7 +29,7 @@ class ProductOptionIndexer extends ScoutIndexer
 
     public function toSearchableArray(Model $model): array
     {
-        $data['id'] = $model->id;
+        $data['id'] = (string) $model->id;
 
         // Loop for add option name
         foreach ($model->name as $locale => $name) {

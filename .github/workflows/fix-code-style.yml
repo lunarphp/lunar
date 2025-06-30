@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -26,5 +26,8 @@ jobs:
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
+          commit_user_name: "GitHub Action"
+          commit_user_email: "action@github.com"
+          commit_author: "Author <actions@github.com>"
           commit_message: >
             chore: fix code style

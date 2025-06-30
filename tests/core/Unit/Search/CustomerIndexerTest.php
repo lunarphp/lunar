@@ -24,19 +24,19 @@ test('can return correct searchable data', function () {
     ]);
 
     $attributeA = Attribute::factory()->create([
-        'attribute_type' => Customer::class,
+        'attribute_type' => 'customer',
         'searchable' => true,
     ]);
     $attributeB = Attribute::factory()->create([
-        'attribute_type' => Customer::class,
+        'attribute_type' => 'customer',
         'searchable' => true,
     ]);
     $attributeC = Attribute::factory()->create([
-        'attribute_type' => Customer::class,
+        'attribute_type' => 'customer',
         'searchable' => false,
     ]);
     $attributeD = Attribute::factory()->create([
-        'attribute_type' => Customer::class,
+        'attribute_type' => 'customer',
         'type' => TranslatedText::class,
         'searchable' => true,
     ]);

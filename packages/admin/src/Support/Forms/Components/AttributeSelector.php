@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Support\Forms\Components;
 
 use Filament\Forms\Components\CheckboxList;
+use Lunar\Facades\ModelManifest;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Product;
@@ -38,6 +39,7 @@ class AttributeSelector extends CheckboxList
             // Get all current mapped attributes
             $existing = $component->getRelationship()->get();
 
+            $actualClass = ModelManifest::guessModelClass($type);
             // Filter out any that match this attribute type but are not in the saved state.
             $attributes = $existing->reject(
                 fn ($attribute) => ! in_array($attribute->id, $state ?? []) && $attribute->attribute_type == $type
@@ -55,8 +57,8 @@ class AttributeSelector extends CheckboxList
             $this->getRelationship()->getParent()
         );
 
-        if ($type === ProductType::class) {
-            $type = Product::class;
+        if ($type === ProductType::morphName()) {
+            $type = Product::morphName();
         }
 
         if ($this->attributableType) {

@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Support\Str;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
@@ -15,7 +16,7 @@ test('can create a url', function () {
     $data = [
         'language_id' => $language->id,
         'element_id' => $product->id,
-        'element_type' => Product::class,
+        'element_type' => $product->getMorphClass(),
         'slug' => Str::slug($product->translateAttribute('name')),
         'default' => true,
     ];
@@ -32,7 +33,7 @@ test('can fetch element from url relationship', function () {
     $data = [
         'language_id' => $language->id,
         'element_id' => $product->id,
-        'element_type' => Product::class,
+        'element_type' => $product->getMorphClass(),
         'slug' => Str::slug($product->translateAttribute('name')),
         'default' => true,
     ];

@@ -32,8 +32,8 @@ use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Currency;
-use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Tag;
 
@@ -41,7 +41,7 @@ class ProductResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = Product::class;
+    protected static ?string $model = ProductContract::class;
 
     protected static ?string $recordTitleAttribute = 'recordTitle';
 
@@ -123,6 +123,7 @@ class ProductResource extends BaseResource
                         static::getMainFormComponents(),
                     ),
                 static::getAttributeDataFormComponent(),
+                static::getVariantAttributeDataFormComponent(),
             ])
             ->columns(1);
     }
@@ -153,9 +154,7 @@ class ProductResource extends BaseResource
             ->required($validation['required'] ?? false);
 
         if ($validation['unique'] ?? false) {
-            $input->unique(function () {
-                return (new ProductVariant)->getTable();
-            });
+            $input->unique(fn () => (new ProductVariant)->getTable());
         }
 
         return $input;
@@ -176,7 +175,9 @@ class ProductResource extends BaseResource
     public static function getBaseNameFormComponent(): Component
     {
         $nameType = Attribute::whereHandle('name')
-            ->whereAttributeType(static::getModel())
+            ->whereAttributeType(
+                static::getModel()::morphName()
+            )
             ->first()?->type ?: TranslatedText::class;
 
         $component = TranslatedTextInput::make('name');
@@ -216,12 +217,22 @@ class ProductResource extends BaseResource
     {
         return TagsComponent::make('tags')
             ->suggestions(Tag::all()->pluck('value')->all())
-            ->label(__('lunarpanel::product.form.tags.label'));
+            ->splitKeys(['Tab', ','])
+            ->label(__('lunarpanel::product.form.tags.label'))
+            ->helperText(__('lunarpanel::product.form.tags.helper_text'));
     }
 
     protected static function getAttributeDataFormComponent(): Component
     {
-        return Attributes::make()->statePath('attribute_data');
+        return Attributes::make();
+    }
+
+    protected static function getVariantAttributeDataFormComponent(): Component
+    {
+        return Attributes::make()
+            ->using(ProductVariant::class)
+            ->relationship('variant')
+            ->hidden(fn (ProductContract $record) => $record->hasVariants);
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -230,6 +241,7 @@ class ProductResource extends BaseResource
             ->columns(static::getTableColumns())
             ->filters([
                 Tables\Filters\SelectFilter::make('brand')
+                    ->label(__('lunarpanel::product.table.brand.label'))
                     ->relationship('brand', 'name'),
                 Tables\Filters\TrashedFilter::make(),
             ])
@@ -263,6 +275,7 @@ class ProductResource extends BaseResource
             SpatieMediaLibraryImageColumn::make('thumbnail')
                 ->collection(config('lunar.media.collection'))
                 ->conversion('small')
+                ->filterMediaUsing(fn ($media) => $media->where('custom_properties.primary', true)->count() ? $media->where('custom_properties.primary', true) : $media)
                 ->limit(1)
                 ->square()
                 ->label(''),
@@ -298,7 +311,8 @@ class ProductResource extends BaseResource
             ->attributeData()
             ->limitedTooltip()
             ->limit(50)
-            ->label(__('lunarpanel::product.table.name.label'));
+            ->label(__('lunarpanel::product.table.name.label'))
+            ->searchable();
     }
 
     public static function getSkuTableColumn(): Tables\Columns\Column
@@ -321,7 +335,8 @@ class ProductResource extends BaseResource
             })
             ->listWithLineBreaks()
             ->limitList(1)
-            ->toggleable();
+            ->toggleable()
+            ->searchable();
     }
 
     public static function getDefaultRelations(): array

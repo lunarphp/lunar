@@ -9,15 +9,15 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages;
 use Lunar\Admin\Support\Forms\Components\AttributeSelector;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Models\Contracts\ProductType as ProductTypeContract;
 use Lunar\Models\Product;
-use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
 
 class ProductTypeResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = ProductType::class;
+    protected static ?string $model = ProductTypeContract::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-swatch';  // TODO: remove me in Filament 3.1
 
@@ -54,7 +54,7 @@ class ProductTypeResource extends BaseResource
                     Forms\Components\Tabs\Tab::make(__('lunarpanel::producttype.tabs.product_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
-                                ->withType(Product::class)
+                                ->withType(Product::morphName())
                                 ->relationship(name: 'mappedAttributes')
                                 ->label('')
                                 ->columnSpan(2),
@@ -62,7 +62,7 @@ class ProductTypeResource extends BaseResource
                     Forms\Components\Tabs\Tab::make(__('lunarpanel::producttype.tabs.variant_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
-                                ->withType(ProductVariant::class)
+                                ->withType(ProductVariant::morphName())
                                 ->relationship(name: 'mappedAttributes')
                                 ->label('')
                                 ->columnSpan(2),

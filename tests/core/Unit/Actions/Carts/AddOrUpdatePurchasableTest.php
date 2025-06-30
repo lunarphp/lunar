@@ -25,7 +25,7 @@ test('can add cart lines', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -51,7 +51,7 @@ test('cannot add zero quantity line', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -77,7 +77,7 @@ test('can update existing cart line', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 

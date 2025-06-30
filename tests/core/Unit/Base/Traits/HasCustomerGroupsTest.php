@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Exceptions\SchedulingException;
 use Lunar\Models\Channel;
 use Lunar\Models\CustomerGroup;
@@ -96,7 +97,7 @@ test('throws exception if non customer group provided', function () {
     $this->expectException(SchedulingException::class);
 
     $product->scheduleCustomerGroup(Channel::get());
-})->group('testerr');
+});
 
 test('can schedule using array of ids', function () {
     $product = Product::factory()->create();
@@ -236,4 +237,35 @@ test('can scope results to a customer group', function () {
     expect(Product::customerGroup($groupA)->get())->toHaveCount(0);
 
     expect(Product::customerGroup($groupA, $startsAt, $endsAt)->get())->toHaveCount(1);
+});
+
+test('customer groups are synced on model creation', function () {
+    $customerGroupA = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+    $customerGroupB = CustomerGroup::factory()->create([
+        'default' => false,
+    ]);
+
+    Product::factory()->create();
+
+    \Pest\Laravel\assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroupA->id,
+            'enabled' => 1,
+            'visible' => 1,
+            'purchasable' => 1,
+        ],
+    );
+
+    \Pest\Laravel\assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $customerGroupB->id,
+            'enabled' => 0,
+            'visible' => 0,
+            'purchasable' => 0,
+        ],
+    );
 });

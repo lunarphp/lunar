@@ -3,15 +3,15 @@
 namespace Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\CustomerAddressEdited;
-use Lunar\Models\Address;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Models\Contracts\Address as AddressContract;
 use Lunar\Models\State;
 
-class AddressRelationManager extends RelationManager
+class AddressRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'addresses';
 
@@ -20,7 +20,12 @@ class AddressRelationManager extends RelationManager
         return false;
     }
 
-    public function table(Table $table): Table
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::address.plural_label');
+    }
+
+    public function getDefaultTable(Table $table): Table
     {
         return $table
             ->heading(
@@ -71,7 +76,7 @@ class AddressRelationManager extends RelationManager
                     ->after(
                         fn (Model $record) => CustomerAddressEdited::dispatch($record)
                     )
-                    ->fillForm(fn (Address $record): array => [
+                    ->fillForm(fn (AddressContract $record): array => [
                         'title' => $record->title,
                         'first_name' => $record->first_name,
                         'last_name' => $record->last_name,

@@ -76,4 +76,4 @@ it('can map variants given three sets of option values', function () {
     $result = MapVariantsToProductOptions::map($optionValues, $variants);
 
     expect($result)->toHaveCount(4);
-})->group('momo');
+});

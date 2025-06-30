@@ -37,7 +37,7 @@ it('can create root collection', function () {
     \Lunar\Models\Attribute::factory()->create([
         'handle' => 'name',
         'type' => \Lunar\FieldTypes\TranslatedText::class,
-        'attribute_type' => \Lunar\Models\Collection::class,
+        'attribute_type' => 'collection',
     ]);
 
     $language = \Lunar\Models\Language::factory()->create([
@@ -87,7 +87,7 @@ it('can create child collection', function () {
     \Lunar\Models\Attribute::factory()->create([
         'handle' => 'name',
         'type' => \Lunar\FieldTypes\TranslatedText::class,
-        'attribute_type' => \Lunar\Models\Collection::class,
+        'attribute_type' => 'collection',
     ]);
 
     $language = \Lunar\Models\Language::factory()->create([
@@ -122,7 +122,7 @@ it('can set child collection as root', function () {
     \Lunar\Models\Attribute::factory()->create([
         'handle' => 'name',
         'type' => \Lunar\FieldTypes\TranslatedText::class,
-        'attribute_type' => \Lunar\Models\Collection::class,
+        'attribute_type' => 'collection',
     ]);
 
     $language = \Lunar\Models\Language::factory()->create([

@@ -3,13 +3,14 @@
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Product;
 
-class ProductRewardRelationManager extends RelationManager
+class ProductRewardRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
@@ -25,7 +26,7 @@ class ProductRewardRelationManager extends RelationManager
         return false;
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
 
         return $table
@@ -38,7 +39,7 @@ class ProductRewardRelationManager extends RelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['reward'])
-                    ->wherePurchasableType(Product::class)
+                    ->wherePurchasableType(Product::morphName())
                     ->whereHas('purchasable')
             )
             ->headerActions([
@@ -46,12 +47,12 @@ class ProductRewardRelationManager extends RelationManager
                     Forms\Components\MorphToSelect::make('purchasable')
                         ->searchable(true)
                         ->types([
-                            Forms\Components\MorphToSelect\Type::make(Product::class)
+                            Forms\Components\MorphToSelect\Type::make(Product::modelClass())
                                 ->titleAttribute('name.en')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                    return get_search_builder(Product::class, $search)
+                                    return get_search_builder(Product::modelClass(), $search)
                                         ->get()
-                                        ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->attr('name')])
+                                        ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
                                         ->all();
                                 }),
                         ]),
@@ -78,6 +79,8 @@ class ProductRewardRelationManager extends RelationManager
                     ),
             ])->actions([
                 Tables\Actions\DeleteAction::make(),
+            ])->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }

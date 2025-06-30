@@ -2,156 +2,152 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Lunar\Base\BaseModel;
 use Lunar\Facades\ModelManifest;
-use ReflectionClass;
 
 trait HasModelExtending
 {
-    /**
-     * Get new instance of the registered model.
-     *
-     * @param  array  $attributes
-     * @param  bool  $exists
-     * @return static|\Illuminate\Database\Eloquent\Model
-     */
-    public function newInstance($attributes = [], $exists = false): Model
+    public function newModelQuery(): Builder
     {
-        $model = parent::newInstance($attributes, $exists);
-        if (! ModelManifest::getBaseModelClasses()->contains(get_called_class())) {
-            return $model;
+        $concreteClass = static::modelClass();
+        $parentClass = get_parent_class($concreteClass);
+
+        // If they are both the same class i.e. they haven't changed
+        // then just call the parent method.
+        if ($parentClass == BaseModel::class || $this instanceof $concreteClass) {
+            return parent::newModelQuery();
         }
 
-        $model = ModelManifest::getRegisteredModel(get_class($model));
-
-        return $model->newInstance($attributes, $exists);
+        return $this->newEloquentBuilder(
+            $this->newBaseQueryBuilder()
+        )->setModel(
+            static::withoutEvents(
+                fn () => $this->replicateInto($concreteClass)
+            )
+        );
     }
 
-    /**
-     * Handle dynamic and static method calls into the model.
-     *
-     * @param  string  $method
-     * @param  array  $parameters
-     * @return mixed
-     */
-    public function __call($method, $parameters)
+    public function replicateInto($newClass)
     {
-        $model = ModelManifest::getRegisteredModel(get_called_class());
+        $defaults = array_values(array_filter([
+            $this->getKeyName(),
+            $this->getCreatedAtColumn(),
+            $this->getUpdatedAtColumn(),
+            ...$this->uniqueIds(),
+            'laravel_through_key',
+        ]));
 
-        if (! ModelManifest::getBaseModelClasses()->contains(get_called_class()) || ! $this->forwardCallsWhen($method, $model)) {
-            return parent::__call($method, $parameters);
+        $attributes = Arr::except(
+            $this->getAttributes(), $defaults
+        );
+
+        return tap(new $newClass, function ($instance) use ($attributes): Model {
+            $instance->setRawAttributes($attributes);
+
+            $instance->setRelations($this->relations);
+
+            return $instance;
+        });
+    }
+
+    public function getForeignKey(): string
+    {
+        $parentClass = get_parent_class($this);
+
+        return $parentClass == BaseModel::class ? parent::getForeignKey() : Str::snake(class_basename($parentClass)).'_'.$this->getKeyName();
+
+    }
+
+    public function getTable()
+    {
+        $parentClass = get_parent_class($this);
+
+        return $parentClass == BaseModel::class ? parent::getTable() : (new $parentClass)->table;
+    }
+
+    public static function __callStatic($method, $parameters)
+    {
+        if (
+            ! static::isLunarInstance()
+        ) {
+            return (new (static::modelClass()))->$method(...$parameters);
         }
 
-        return $this->forwardCallTo($model, $method, $parameters);
+        return (new static)->$method(...$parameters);
     }
 
     /**
-     * Swap the model implementation.
-     *
-     * @param  string  $model
+     * Returns the model class registered in the model manifest.
      */
-    public function swap(string $newModelClass): Model
+    public static function modelClass(): string
     {
-        ModelManifest::swapModel(get_class($this), $newModelClass);
+        $contractClass = ModelManifest::guessContractClass(static::class);
 
-        /** @var Model $newModelClass */
-        $newModelClass = resolve($newModelClass);
-
-        return $newModelClass->newInstance($this->attributesToArray(), $this->exists);
+        return ModelManifest::get($contractClass) ?? static::class;
     }
 
     /**
-     * Get the class name of the base model.
+     * Returns the model alias registered in the model relation morph map.
      */
+    public static function morphName(): string
+    {
+        return (new (static::modelClass()))->getMorphClass();
+    }
+
     public function getMorphClass(): string
     {
-        $morphClass = ModelManifest::getMorphClassBaseModel(get_class($this));
+        $morphMap = Relation::morphMap();
 
-        return $this->morphClass ?: ($morphClass ?? parent::getMorphClass());
+        foreach ([static::modelClass(), ...class_parents(static::class)] as $modelClass) {
+            if ($morphClass = array_search($modelClass, $morphMap, true)) {
+                return $morphClass;
+            }
+        }
+
+        return parent::getMorphClass();
     }
 
-    /**
-     * Forward a method call to the model only when calling a method on the model.
-     */
-    protected function forwardCallsWhen(string $method, Model $model): bool
+    public static function isLunarInstance(): bool
     {
-        $reflect = new ReflectionClass($model);
-        $methods = collect($reflect->getMethods())
-            ->filter(fn ($method) => $method->class == get_class($model))
-            ->map(fn ($method) => $method->name);
-
-        return $methods->contains($method);
+        return static::class == static::modelClass();
     }
 
-    /**
-     * Register a model event with the dispatcher.
-     *
-     * @param  string  $event
-     * @param  \Illuminate\Events\QueuedClosure|\Closure|string  $callback
-     * @return void
-     */
-    protected static function registerModelEvent($event, $callback)
+    public static function observe($classes): void
     {
-        if (isset(static::$dispatcher)) {
-            $name = ModelManifest::getMorphClassBaseModel(static::class) ?? static::class;
+        $instance = new static;
 
-            static::$dispatcher->listen("eloquent.{$event}: {$name}", $callback);
+        if (
+            ! static::isLunarInstance()
+        ) {
+            $instance = new (static::modelClass());
+        }
+
+        foreach (Arr::wrap($classes) as $class) {
+            $instance->registerObserver($class);
         }
     }
 
     /**
      * Fire the given event for the model.
-     *
-     * @param  string  $event
-     * @param  bool  $halt
-     * @return mixed
      */
-    protected function fireModelEvent($event, $halt = true)
+    protected function fireModelEvent($event, $halt = true): mixed
     {
-        if (! isset(static::$dispatcher)) {
-            return true;
+        // Fire the actual models events
+        $result = parent::fireModelEvent($event, $halt);
+
+        $lunarClass = str_replace('Contracts\\', '', ModelManifest::guessContractClass(static::class));
+
+        if ($lunarClass == static::class) {
+            return $result;
         }
 
-        // First, we will get the proper method to call on the event dispatcher, and then we
-        // will attempt to fire a custom, object based event for the given event. If that
-        // returns a result we can return that result, or we'll call the string events.
-        $method = $halt ? 'until' : 'dispatch';
-
-        $result = $this->filterModelEventResults(
-            $this->fireCustomModelEvent($event, $method)
+        return static::$dispatcher->{($halt ? 'until' : 'dispatch')}(
+            "eloquent.{$event}: ".$lunarClass, $this
         );
-
-        if ($result === false) {
-            return false;
-        }
-
-        $name = ModelManifest::getMorphClassBaseModel(static::class) ?? static::class;
-
-        return ! empty($result) ? $result : static::$dispatcher->{$method}(
-            "eloquent.{$event}: {$name}", $this
-        );
-    }
-
-    /**
-     * Remove all the event listeners for the model.
-     *
-     * @return void
-     */
-    public static function flushEventListeners()
-    {
-        if (! isset(static::$dispatcher)) {
-            return;
-        }
-
-        $instance = new static;
-
-        $name = ModelManifest::getMorphClassBaseModel(static::class) ?? static::class;
-        foreach ($instance->getObservableEvents() as $event) {
-            static::$dispatcher->forget("eloquent.{$event}: {$name}");
-        }
-
-        foreach (array_values($instance->dispatchesEvents) as $event) {
-            static::$dispatcher->forget($event);
-        }
     }
 }

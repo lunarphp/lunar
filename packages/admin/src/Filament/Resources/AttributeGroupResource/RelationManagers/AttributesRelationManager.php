@@ -12,10 +12,11 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Support\Facades\AttributeData;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Models\Language;
 
-class AttributesRelationManager extends RelationManager
+class AttributesRelationManager extends BaseRelationManager
 {
     protected static string $relationship = 'attributes';
 
@@ -26,7 +27,7 @@ class AttributesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name.en';  // TODO: localise somehow
 
-    public function form(Form $form): Form
+    public function getDefaultForm(Form $form): Form
     {
         return $form
             ->schema([
@@ -111,7 +112,7 @@ class AttributesRelationManager extends RelationManager
             ]);
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
         return $table
             ->columns([

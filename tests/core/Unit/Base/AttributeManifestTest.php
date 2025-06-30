@@ -1,13 +1,13 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Support\Collection;
 use Lunar\Base\AttributeManifest;
 use Lunar\Base\AttributeManifestInterface;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 use Lunar\Models\Channel;
-use Lunar\Models\Product;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -41,27 +41,27 @@ test('can add type', function () {
 
 test('can get searchable attributes', function () {
     $attributeA = Attribute::factory()->create([
-        'attribute_type' => Product::class,
+        'attribute_type' => 'product',
         'searchable' => true,
     ]);
     $attributeB = Attribute::factory()->create([
-        'attribute_type' => Product::class,
+        'attribute_type' => 'product',
         'searchable' => true,
     ]);
     Attribute::factory()->create([
-        'attribute_type' => \Lunar\Models\Collection::class,
+        'attribute_type' => 'collection',
         'searchable' => false,
     ]);
     $attributeD = Attribute::factory()->create([
-        'attribute_type' => \Lunar\Models\Collection::class,
+        'attribute_type' => 'collection',
         'type' => TranslatedText::class,
         'searchable' => true,
     ]);
 
     $manifest = app(AttributeManifestInterface::class);
 
-    $productAttributes = $manifest->getSearchableAttributes(Product::class);
-    $collectionAttributes = $manifest->getSearchableAttributes(\Lunar\Models\Collection::class);
+    $productAttributes = $manifest->getSearchableAttributes('product');
+    $collectionAttributes = $manifest->getSearchableAttributes('collection');
 
     expect($productAttributes)->toHaveCount(2);
     expect($productAttributes->pluck('handle')->toArray())->toBe([$attributeA->handle, $attributeB->handle]);

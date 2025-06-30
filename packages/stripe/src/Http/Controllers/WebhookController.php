@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Lunar\Stripe\Concerns\ConstructsWebhookEvent;
+use Lunar\Stripe\Concerns\ProcessesEventParameters;
 use Lunar\Stripe\Jobs\ProcessStripeWebhook;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\SignatureVerificationException;
@@ -36,17 +37,16 @@ final class WebhookController extends Controller
             ], 400);
         }
 
-        $paymentIntent = $event->data->object->id;
-        $orderId = $event->data->object->metadata?->order_id;
+        $params = app(ProcessesEventParameters::class)->handle($event);
 
         // Is this payment intent already being processed?
-        $paymentIntentModel = StripePaymentIntent::where('intent_id', $paymentIntent)->first();
+        $paymentIntentModel = StripePaymentIntent::where('intent_id', $params->paymentIntentId)->first();
 
         if (! $paymentIntentModel?->processing_at) {
             $paymentIntentModel?->update([
                 'event_id' => $event->id,
             ]);
-            ProcessStripeWebhook::dispatch($paymentIntent, $orderId)->delay(
+            ProcessStripeWebhook::dispatch($params->paymentIntentId, $params->orderId)->delay(
                 now()->addSeconds(5)
             );
         }

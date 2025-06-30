@@ -144,7 +144,7 @@ test('can get shipping option by cart total when prices include tax', function (
 
     expect($shippingOption->price->value)->toEqual(500);
 
-})->group('thisone');
+});
 
 test('can get shipping option if outside tier without default price', function () {
     // Boom.

@@ -22,11 +22,13 @@ test('can make an order line', function () {
         'default' => true,
     ]);
 
+    $variant = ProductVariant::factory()->create();
+
     $data = [
         'order_id' => $order->id,
         'quantity' => 1,
-        'purchasable_type' => ProductVariant::class,
-        'purchasable_id' => ProductVariant::factory()->create()->id,
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
     ];
 
     OrderLine::factory()->create($data);
@@ -44,11 +46,13 @@ test('check unit price casts correctly', function () {
         'default' => true,
     ]);
 
+    $variant = ProductVariant::factory()->create();
+
     $data = [
         'order_id' => $order->id,
         'quantity' => 1,
-        'purchasable_type' => ProductVariant::class,
-        'purchasable_id' => ProductVariant::factory()->create()->id,
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
         'unit_price' => 507,
         'unit_quantity' => 100,
     ];
@@ -70,11 +74,13 @@ test('only purchasables can be added to an order', function () {
 
     $this->expectException(NonPurchasableItemException::class);
 
+    $channel = Channel::factory()->create();
+
     $data = [
         'order_id' => $order->id,
         'quantity' => 1,
-        'purchasable_type' => Channel::class,
-        'purchasable_id' => Channel::factory()->create()->id,
+        'purchasable_type' => $channel->getMorphClass(),
+        'purchasable_id' => $channel->id,
     ];
 
     OrderLine::factory()->create($data);

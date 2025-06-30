@@ -211,21 +211,21 @@ test('can get correct price inc tax based on tax class', function () {
         'price' => 10000,
         'currency_id' => $currency->id,
         'min_quantity' => 1,
-        'priceable_type' => ProductVariant::class,
+        'priceable_type' => $genericProductVariant->getMorphClass(),
         'priceable_id' => $genericProductVariant->id,
     ]);
     Price::factory()->create([
         'price' => 8000,
         'currency_id' => $currency->id,
         'min_quantity' => 10,
-        'priceable_type' => ProductVariant::class,
+        'priceable_type' => $genericProductVariant->getMorphClass(),
         'priceable_id' => $genericProductVariant->id,
     ]);
     Price::factory()->create([
         'price' => 400,
         'currency_id' => $currency->id,
         'min_quantity' => 1,
-        'priceable_type' => ProductVariant::class,
+        'priceable_type' => $foodProductVariant->getMorphClass(),
         'priceable_id' => $foodProductVariant->id,
     ]);
 

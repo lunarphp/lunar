@@ -4,7 +4,7 @@ namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
 use Lunar\Base\DataTransferObjects\CartDiscount;
-use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart;
 
 interface DiscountManagerInterface
 {

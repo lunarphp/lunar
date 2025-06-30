@@ -30,7 +30,7 @@ test('can sort products', function () {
 
         foreach (Currency::get() as $currency) {
             Price::factory()->create([
-                'priceable_type' => ProductVariant::class,
+                'priceable_type' => $variant->getMorphClass(),
                 'priceable_id' => $variant->id,
                 'currency_id' => $currency->id,
                 'min_quantity' => 1,

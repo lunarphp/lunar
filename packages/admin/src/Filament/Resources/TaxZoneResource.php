@@ -10,17 +10,20 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Models\Country;
 use Lunar\Models\State;
-use Lunar\Models\TaxZone;
 
 class TaxZoneResource extends BaseResource
 {
+    protected static ?string $cluster = Taxes::class;
+
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = TaxZone::class;
+    protected static ?string $model = TaxZoneContract::class;
 
     protected static ?int $navigationSort = 1;
 
@@ -37,11 +40,6 @@ class TaxZoneResource extends BaseResource
     public static function getNavigationIcon(): ?string
     {
         return FilamentIcon::resolve('lunar::tax');
-    }
-
-    public static function getNavigationGroup(): ?string
-    {
-        return __('lunarpanel::global.sections.settings');
     }
 
     protected static function getMainFormComponents(): array
@@ -216,7 +214,7 @@ class TaxZoneResource extends BaseResource
             });
     }
 
-    private static function syncCountries(TaxZone $taxZone, $selectedCountries)
+    private static function syncCountries(TaxZoneContract $taxZone, $selectedCountries)
     {
         $existingCountries = $taxZone->countries()->pluck('country_id');
 
@@ -236,7 +234,7 @@ class TaxZoneResource extends BaseResource
             ->delete();
     }
 
-    private static function syncStates(TaxZone $taxZone, $selectedStates)
+    private static function syncStates(TaxZoneContract $taxZone, $selectedStates)
     {
         $existingStates = $taxZone->states()->pluck('state_id');
 
@@ -256,7 +254,7 @@ class TaxZoneResource extends BaseResource
             ->delete();
     }
 
-    private static function syncPostcodes(TaxZone $taxZone, $countryId, $postcodes)
+    private static function syncPostcodes(TaxZoneContract $taxZone, $countryId, $postcodes)
     {
         $postcodes = collect(
             explode(
@@ -330,7 +328,10 @@ class TaxZoneResource extends BaseResource
                 ])
                 ->label(__('lunarpanel::taxzone.table.name.label')),
             Tables\Columns\TextColumn::make('zone_type')
-                ->label(__('lunarpanel::taxzone.table.zone_type.label')),
+                ->label(__('lunarpanel::taxzone.table.zone_type.label'))
+                ->formatStateUsing(
+                    fn ($state) => __("lunarpanel::taxzone.form.zone_type.options.{$state}")
+                ),
             Tables\Columns\IconColumn::make('active')
                 ->boolean()
                 ->label(__('lunarpanel::taxzone.table.active.label')),

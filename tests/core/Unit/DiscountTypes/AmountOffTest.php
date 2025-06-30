@@ -73,12 +73,12 @@ test('will only apply to lines with correct brand', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -87,12 +87,12 @@ test('will only apply to lines with correct brand', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -175,12 +175,12 @@ test('will not apply to lines with excluded brand', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -189,12 +189,12 @@ test('will not apply to lines with excluded brand', function () {
         'price' => 2000, // £20
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -273,12 +273,12 @@ test('will only apply to lines with correct product', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -287,12 +287,12 @@ test('will only apply to lines with correct product', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -324,7 +324,7 @@ test('will only apply to lines with correct product', function () {
     $discount->purchasableLimitations()->create([
         'discount_id' => $discount->id,
         'type' => 'limitation',
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
@@ -332,7 +332,7 @@ test('will only apply to lines with correct product', function () {
 
     expect($cart->discountTotal->value)->toEqual(100);
     expect($cart->total->value)->toEqual(2280);
-});
+})->group('thisone');
 
 test('will only apply to lines with correct product variant', function () {
     $customerGroup = CustomerGroup::getDefault();
@@ -370,12 +370,12 @@ test('will only apply to lines with correct product variant', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -384,12 +384,12 @@ test('will only apply to lines with correct product variant', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -421,7 +421,7 @@ test('will only apply to lines with correct product variant', function () {
     $discount->purchasableLimitations()->create([
         'discount_id' => $discount->id,
         'type' => 'limitation',
-        'purchasable_type' => ProductVariant::class,
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
     ]);
 
@@ -467,12 +467,12 @@ test('will not apply to lines with excluded product', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -481,12 +481,12 @@ test('will not apply to lines with excluded product', function () {
         'price' => 2000, // £20
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -518,7 +518,7 @@ test('will not apply to lines with excluded product', function () {
     $discount->purchasableExclusions()->create([
         'discount_id' => $discount->id,
         'type' => 'exclusion',
-        'purchasable_type' => Product::class,
+        'purchasable_type' => $productA->getMorphClass(),
         'purchasable_id' => $productA->id,
     ]);
 
@@ -564,12 +564,12 @@ test('will not apply to lines with excluded product variant', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
@@ -578,12 +578,12 @@ test('will not apply to lines with excluded product variant', function () {
         'price' => 2000, // £20
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
@@ -615,7 +615,7 @@ test('will not apply to lines with excluded product variant', function () {
     $discount->purchasableExclusions()->create([
         'discount_id' => $discount->id,
         'type' => 'exclusion',
-        'purchasable_type' => ProductVariant::class,
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
     ]);
 
@@ -644,12 +644,12 @@ test('can apply fixed amount discount', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -709,7 +709,7 @@ test('fixed amount discount distributes across cart lines', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -717,7 +717,7 @@ test('fixed amount discount distributes across cart lines', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
@@ -725,24 +725,24 @@ test('fixed amount discount distributes across cart lines', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableC),
+        'priceable_type' => $purchasableC->getMorphClass(),
         'priceable_id' => $purchasableC->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableC->id,
         'quantity' => 1,
     ]);
@@ -784,7 +784,16 @@ test('fixed amount discount distributes across cart lines', function () {
     expect($lastLine->discountTotal->value)->toEqual(333);
 });
 
-test('can apply percentage discount', function () {
+test('can apply percentage discount', function (
+    string $coupon,
+    float $percentage,
+    int $discountTotalForOne,
+    int $taxTotalForOne,
+    int $totalForOne,
+    int $discountTotalForTwo,
+    int $taxTotalForTwo,
+    int $totalForTwo
+) {
     $customerGroup = CustomerGroup::getDefault();
 
     $channel = Channel::getDefault();
@@ -794,7 +803,7 @@ test('can apply percentage discount', function () {
     $cart = Cart::factory()->create([
         'channel_id' => $channel->id,
         'currency_id' => $currency->id,
-        'coupon_code' => '10PERCENTOFF',
+        'coupon_code' => $coupon,
     ]);
 
     $purchasable = ProductVariant::factory()->create();
@@ -803,12 +812,12 @@ test('can apply percentage discount', function () {
         'price' => 1000,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -816,9 +825,9 @@ test('can apply percentage discount', function () {
     $discount = Discount::factory()->create([
         'type' => AmountOff::class,
         'name' => 'Test Coupon',
-        'coupon' => '10PERCENTOFF',
+        'coupon' => $coupon,
         'data' => [
-            'percentage' => 10,
+            'percentage' => $percentage,
             'fixed_value' => false,
         ],
     ]);
@@ -843,24 +852,28 @@ test('can apply percentage discount', function () {
 
     $cart = $cart->calculate();
 
-    expect($cart->discountTotal->value)->toEqual(100);
-    expect($cart->taxTotal->value)->toEqual(180);
-    expect($cart->total->value)->toEqual(1080);
+    expect($cart->discountTotal->value)->toEqual($discountTotalForOne);
+    expect($cart->taxTotal->value)->toEqual($taxTotalForOne);
+    expect($cart->total->value)->toEqual($totalForOne);
 
     $cart->lines()->delete();
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 2,
     ]);
 
     $cart = $cart->refresh()->calculate();
 
-    expect($cart->discountTotal->value)->toEqual(200);
-    expect($cart->taxTotal->value)->toEqual(360);
-    expect($cart->total->value)->toEqual(2160);
-});
+    expect($cart->discountTotal->value)->toEqual($discountTotalForTwo);
+    expect($cart->taxTotal->value)->toEqual($taxTotalForTwo);
+    expect($cart->total->value)->toEqual($totalForTwo);
+})->with([
+    '10% Discount' => ['10PERCENTOFF', 10, 100, 180, 1080, 200, 360, 2160],
+    '10.25% Discount' => ['10PT25PERCENTOFF', 10.25, 103, 179, 1076, 205, 359, 2154],
+    '10.5% Discount' => ['10PT5PERCENTOFF', 10.5, 105, 179, 1074, 210, 358, 2148],
+]);
 
 test('can only same discount to line once', function () {
     $customerGroup = CustomerGroup::getDefault();
@@ -881,12 +894,12 @@ test('can only same discount to line once', function () {
         'price' => 1000,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -928,7 +941,7 @@ test('can only same discount to line once', function () {
     $cart->lines()->delete();
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 2,
     ]);
@@ -958,12 +971,12 @@ test('can apply discount without coupon code', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1020,12 +1033,12 @@ test('cannot apply discount coupon without coupon code', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1082,12 +1095,12 @@ test('can apply discount with max uses', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1145,12 +1158,12 @@ test('cannot apply discount with max uses', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1207,12 +1220,12 @@ test('can apply discount with min spend', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 10,
     ]);
@@ -1275,12 +1288,12 @@ test('cannot apply discount with min spend', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1337,7 +1350,7 @@ test('can apply discount with conditions', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -1348,7 +1361,7 @@ test('can apply discount with conditions', function () {
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 10,
     ]);
@@ -1422,12 +1435,12 @@ test('can apply discount with max user uses', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1500,12 +1513,12 @@ test('cannot apply discount with max user uses', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1572,7 +1585,7 @@ test('fixed amount discount distributes across cart lines with different values'
         'price' => 15, // £0.15
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
@@ -1580,7 +1593,7 @@ test('fixed amount discount distributes across cart lines with different values'
         'price' => 20, // £0.20
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
@@ -1588,7 +1601,7 @@ test('fixed amount discount distributes across cart lines with different values'
         'price' => 40, // £0.40
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableC),
+        'priceable_type' => $purchasableC->getMorphClass(),
         'priceable_id' => $purchasableC->id,
     ]);
 
@@ -1596,7 +1609,7 @@ test('fixed amount discount distributes across cart lines with different values'
         'price' => 40, // £0.40
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableD),
+        'priceable_type' => $purchasableD->getMorphClass(),
         'priceable_id' => $purchasableD->id,
     ]);
 
@@ -1604,36 +1617,36 @@ test('fixed amount discount distributes across cart lines with different values'
         'price' => 40, // £0.40
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableE),
+        'priceable_type' => $purchasableE->getMorphClass(),
         'priceable_id' => $purchasableE->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 10,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
         'purchasable_id' => $purchasableB->id,
         'quantity' => 10,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableC),
+        'purchasable_type' => $purchasableC->getMorphClass(),
         'purchasable_id' => $purchasableC->id,
         'quantity' => 10,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableD),
+        'purchasable_type' => $purchasableD->getMorphClass(),
         'purchasable_id' => $purchasableD->id,
         'quantity' => 10,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableE),
+        'purchasable_type' => $purchasableE->getMorphClass(),
         'purchasable_id' => $purchasableE->id,
         'quantity' => 9,
     ]);
@@ -1704,12 +1717,12 @@ test('can apply discount dynamically', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1778,12 +1791,12 @@ test('can handle malformed discount', function () {
         'price' => 1000, // £10
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 2,
     ]);
@@ -1810,4 +1823,85 @@ test('can handle malformed discount', function () {
     $cart = $cart->calculate();
 
     expect($cart->discountTotal->value)->toEqual(0);
-})->group('this');
+});
+
+test('can apply multiple discounts to the same line', function () {
+    $customerGroup = CustomerGroup::getDefault();
+
+    $channel = Channel::getDefault();
+
+    $currency = Currency::getDefault();
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $discounts = Discount::factory()->createMany([
+        [
+            'type' => AmountOff::class,
+            'name' => '10% discount',
+            'data' => [
+                'percentage' => 10,
+                'fixed_value' => false,
+            ],
+        ],
+        [
+            'type' => AmountOff::class,
+            'name' => '20% discount',
+            'data' => [
+                'percentage' => 20,
+                'fixed_value' => false,
+            ],
+        ],
+    ]);
+
+    foreach ($discounts as $discount) {
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now()->subHour(),
+            ],
+        ]);
+    }
+
+    $cart = $cart->calculate();
+
+    /**
+     * Cart has two discounts.
+     * 1 x $10 / 10% off $9
+     * 1 x $9 / 20% off $7.20
+     * Cart total = $7.20 / 20% tax = $1.44 / Total = $8.64
+     */
+    expect($cart->discountBreakdown)->toHaveCount(2);
+    expect($cart->discountBreakdown->get(0)->price->value)->toEqual(100);
+    expect($cart->discountBreakdown->get(1)->price->value)->toEqual(180);
+    expect($cart->lines->first()->discountTotal->value)->toEqual(280);
+    expect($cart->subTotal->value)->toEqual(1000);
+    expect($cart->subTotalDiscounted->value)->toEqual(720);
+    expect($cart->discountTotal->value)->toEqual(280);
+    expect($cart->total->value)->toEqual(864);
+});

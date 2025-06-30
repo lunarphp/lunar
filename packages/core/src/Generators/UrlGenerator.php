@@ -5,6 +5,7 @@ namespace Lunar\Generators;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Models\Contracts\Language as LanguageContract;
 use Lunar\Models\Language;
 use Lunar\Models\Url;
 
@@ -20,7 +21,7 @@ class UrlGenerator
     /**
      * The default language.
      */
-    protected Language $defaultLanguage;
+    protected LanguageContract $defaultLanguage;
 
     /**
      * Construct the class.
@@ -39,18 +40,12 @@ class UrlGenerator
     {
         $this->model = $model;
 
-        if (! $model->urls->count()) {
-            if ($model->attribute_data) {
-                $this->createUrl(
-                    $model->attr('name')
-                );
-
-                return;
-            }
-
-            if ($name = $model->name) {
-                $this->createUrl($name);
-            }
+        if (! $model->urls->count() &&
+            $name = $model->name ?: $model->attr('name')
+        ) {
+            $this->createUrl(
+                $name
+            );
         }
     }
 

@@ -2,11 +2,10 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Lunar\Models\AttributeGroup;
 
-class AttributeGroupFactory extends Factory
+class AttributeGroupFactory extends BaseFactory
 {
     private static $position = 1;
 

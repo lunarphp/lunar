@@ -1,10 +1,12 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunar\FieldTypes\Text;
 use Lunar\Generators\UrlGenerator;
+use Lunar\Models\Brand;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
@@ -17,7 +19,7 @@ test('urls dont generate by default', function () {
     expect($product->refresh()->urls)->toHaveCount(0);
 
     $this->assertDatabaseMissing((new Url)->getTable(), [
-        'element_type' => Product::class,
+        'element_type' => $product->getMorphClass(),
         'element_id' => $product->id,
     ]);
 });
@@ -33,8 +35,8 @@ function can_generate_urls()
 
     expect($product->refresh()->urls)->toHaveCount(1);
 
-    $this->assertDatabaseHas((new Url)->getTable(), [
-        'element_type' => Product::class,
+    \Pest\Laravel\assertDatabaseHas((new Url)->getTable(), [
+        'element_type' => $product->getMorphClass(),
         'element_id' => $product->id,
         'slug' => Str::slug($product->translateAttribute('name')),
     ]);
@@ -61,4 +63,39 @@ test('generates unique urls', function () {
         $product1->urls->first()->slug,
         $product2->urls->first()->slug
     );
+});
+
+test('prefers column name over attribute name', function () {
+
+    Language::factory()->create(['default' => true]);
+
+    Config::set('lunar.urls.generator', UrlGenerator::class);
+
+    $brand = Brand::create([
+        'name' => 'Column Brand Name',
+        'attribute_data' => [
+            'name' => new Text('Attribute Brand Name'),
+            'type' => new Text('Some Type'),
+        ],
+    ]);
+
+    expect($brand->defaultUrl)
+        ->first()->slug->toBe('column-brand-name');
+});
+
+test('column_will_be_used_if_not_set_in_attributes', function () {
+
+    Language::factory()->create(['default' => true]);
+
+    Config::set('lunar.urls.generator', UrlGenerator::class);
+
+    $brand = Brand::create([
+        'name' => 'Column Brand Name',
+        'attribute_data' => [
+            'type' => new Text('Some Type'),
+        ],
+    ]);
+
+    expect($brand->defaultUrl)
+        ->first()->slug->toBe('column-brand-name');
 });

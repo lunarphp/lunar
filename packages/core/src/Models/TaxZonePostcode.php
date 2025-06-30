@@ -16,7 +16,7 @@ use Lunar\Database\Factories\TaxZonePostcodeFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxZonePostcode extends BaseModel
+class TaxZonePostcode extends BaseModel implements Contracts\TaxZonePostcode
 {
     use HasFactory;
     use HasMacros;
@@ -24,7 +24,7 @@ class TaxZonePostcode extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TaxZonePostcodeFactory
+    protected static function newFactory()
     {
         return TaxZonePostcodeFactory::new();
     }
@@ -42,7 +42,7 @@ class TaxZonePostcode extends BaseModel
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::class);
+        return $this->belongsTo(TaxZone::modelClass());
     }
 
     /**
@@ -50,6 +50,6 @@ class TaxZonePostcode extends BaseModel
      */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::modelClass());
     }
 }

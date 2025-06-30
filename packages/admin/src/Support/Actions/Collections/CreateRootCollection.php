@@ -22,7 +22,9 @@ class CreateRootCollection extends CreateAction
             DB::beginTransaction();
 
             $record = $this->process(function (array $data) {
-                $attribute = Attribute::whereHandle('name')->whereAttributeType(Collection::class)->first()->type;
+                $attribute = Attribute::whereHandle('name')->whereAttributeType(
+                    Collection::morphName()
+                )->first()->type;
 
                 return Collection::create([
                     'collection_group_id' => $data['collection_group_id'],
@@ -56,7 +58,7 @@ class CreateRootCollection extends CreateAction
             $this->success();
         });
 
-        $attribute = Attribute::where('attribute_type', '=', Collection::class)
+        $attribute = Attribute::where('attribute_type', '=', Collection::morphName())
             ->where('handle', '=', 'name')->first();
 
         $formInput = TextInput::class;
@@ -66,7 +68,9 @@ class CreateRootCollection extends CreateAction
         }
 
         $this->form([
-            $formInput::make('name')->required(),
+            $formInput::make('name')
+                ->label(__('lunarpanel::collection.form.name.label'))
+                ->required(),
         ]);
 
         $this->label(

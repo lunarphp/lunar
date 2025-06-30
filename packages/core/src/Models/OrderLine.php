@@ -36,7 +36,7 @@ use Lunar\Database\Factories\OrderLineFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class OrderLine extends BaseModel
+class OrderLine extends BaseModel implements Contracts\OrderLine
 {
     use HasFactory;
     use HasMacros;
@@ -45,7 +45,7 @@ class OrderLine extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): OrderLineFactory
+    protected static function newFactory()
     {
         return OrderLineFactory::new();
     }
@@ -75,30 +75,21 @@ class OrderLine extends BaseModel
         'total' => Price::class,
     ];
 
-    /**
-     * Return the order relationship.
-     */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::modelClass());
     }
 
-    /**
-     * Return the polymorphic relation.
-     */
     public function purchasable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /**
-     * Return the currency relationship.
-     */
     public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
-            Currency::class,
-            Order::class,
+            Currency::modelClass(),
+            Order::modelClass(),
             'id',
             'code',
             'order_id',

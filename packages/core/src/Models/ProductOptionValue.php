@@ -21,7 +21,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class ProductOptionValue extends BaseModel implements SpatieHasMedia
+class ProductOptionValue extends BaseModel implements Contracts\ProductOptionValue, SpatieHasMedia
 {
     use HasFactory;
     use HasMacros;
@@ -48,14 +48,14 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): ProductOptionValueFactory
+    protected static function newFactory()
     {
         return ProductOptionValueFactory::new();
     }
 
     public function option(): BelongsTo
     {
-        return $this->belongsTo(ProductOption::class, 'product_option_id');
+        return $this->belongsTo(ProductOption::modelClass(), 'product_option_id');
     }
 
     public function variants(): BelongsToMany
@@ -63,7 +63,7 @@ class ProductOptionValue extends BaseModel implements SpatieHasMedia
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            ProductVariant::class,
+            ProductVariant::modelClass(),
             "{$prefix}product_option_value_product_variant",
             'value_id',
             'variant_id',

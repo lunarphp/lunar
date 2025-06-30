@@ -2,10 +2,9 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\ProductOptionValue;
 
-class ProductOptionValueFactory extends Factory
+class ProductOptionValueFactory extends BaseFactory
 {
     protected $model = ProductOptionValue::class;
 

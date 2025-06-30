@@ -43,7 +43,6 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
-use Throwable;
 
 /**
  * @property int $id
@@ -59,7 +58,7 @@ use Throwable;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Cart extends BaseModel
+class Cart extends BaseModel implements Contracts\Cart
 {
     use CachesProperties;
     use HasFactory;
@@ -185,7 +184,7 @@ class Cart extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CartFactory
+    protected static function newFactory()
     {
         return CartFactory::new();
     }
@@ -208,81 +207,52 @@ class Cart extends BaseModel
         'meta' => AsArrayObject::class,
     ];
 
-    /**
-     * Return the cart lines relationship.
-     */
     public function lines(): HasMany
     {
-        return $this->hasMany(CartLine::class, 'cart_id', 'id');
+        return $this->hasMany(CartLine::modelClass(), 'cart_id', 'id');
     }
 
-    /**
-     * Return the currency relationship.
-     */
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::class);
+        return $this->belongsTo(Currency::modelClass());
     }
 
-    /**
-     * Return the user relationship.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(config('auth.providers.users.model'));
     }
 
-    /**
-     * Return the customer relationship.
-     */
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::modelClass());
     }
 
-    public function scopeUnmerged($query)
+    public function scopeUnmerged(Builder $query): Builder
     {
         return $query->whereNull('merged_id');
     }
 
-    /**
-     * Return the addresses relationship.
-     */
     public function addresses(): HasMany
     {
-        return $this->hasMany(CartAddress::class, 'cart_id');
+        return $this->hasMany(CartAddress::modelClass(), 'cart_id');
     }
 
-    /**
-     * Return the shipping address relationship.
-     */
     public function shippingAddress(): HasOne
     {
-        return $this->hasOne(CartAddress::class, 'cart_id')->whereType('shipping');
+        return $this->hasOne(CartAddress::modelClass(), 'cart_id')->whereType('shipping');
     }
 
-    /**
-     * Return the billing address relationship.
-     */
     public function billingAddress(): HasOne
     {
-        return $this->hasOne(CartAddress::class, 'cart_id')->whereType('billing');
+        return $this->hasOne(CartAddress::modelClass(), 'cart_id')->whereType('billing');
     }
 
-    /**
-     * Return the order relationship.
-     */
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::modelClass());
     }
 
-    /**
-     * Apply scope to get active cart.
-     *
-     * @return Builder
-     */
-    public function scopeActive(Builder $query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->whereDoesntHave('orders')->orWhereHas('orders', function ($query) {
             return $query->whereNull('placed_at');
@@ -294,7 +264,7 @@ class Cart extends BaseModel
      */
     public function draftOrder(?int $draftOrderId = null): HasOne
     {
-        return $this->hasOne(Order::class)
+        return $this->hasOne(Order::modelClass())
             ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
                 $query->where('id', $draftOrderId);
             })->whereNull('placed_at');
@@ -316,24 +286,18 @@ class Cart extends BaseModel
      */
     public function completedOrder(?int $completedOrderId = null): HasOne
     {
-        return $this->hasOne(Order::class)
+        return $this->hasOne(Order::modelClass())
             ->when($completedOrderId, function (Builder $query, int $completedOrderId) {
                 $query->where('id', $completedOrderId);
             })->whereNotNull('placed_at');
     }
 
-    /**
-     * Return the carts completed order.
-     */
     public function completedOrders(): HasMany
     {
-        return $this->hasMany(Order::class)
+        return $this->hasMany(Order::modelClass())
             ->whereNotNull('placed_at');
     }
 
-    /**
-     * Return whether the cart has any completed order.
-     */
     public function hasCompletedOrders(): bool
     {
         return (bool) $this->completedOrders()->count();
@@ -396,9 +360,6 @@ class Cart extends BaseModel
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
-    /**
-     * Add cart lines.
-     */
     public function addLines(iterable $lines): Cart
     {
         DB::transaction(function () use ($lines) {
@@ -415,9 +376,6 @@ class Cart extends BaseModel
         return $this->refresh()->recalculate();
     }
 
-    /**
-     * Remove a cart line
-     */
     public function remove(int $cartLineId, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.remove_from_cart', []) as $action) {
@@ -453,9 +411,6 @@ class Cart extends BaseModel
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
-    /**
-     * Update cart lines.
-     */
     public function updateLines(Collection $lines): Cart
     {
         DB::transaction(function () use ($lines) {
@@ -472,9 +427,6 @@ class Cart extends BaseModel
         return $this->refresh()->recalculate();
     }
 
-    /**
-     * Deletes all cart lines.
-     */
     public function clear(): Cart
     {
         $this->lines()->delete();
@@ -503,9 +455,6 @@ class Cart extends BaseModel
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
-    /**
-     * Associate a customer to the cart
-     */
     public function setCustomer(Customer $customer): Cart
     {
         if ($this->user()->exists()) {
@@ -521,9 +470,6 @@ class Cart extends BaseModel
         return $this->refresh()->recalculate();
     }
 
-    /**
-     * Add an address to the Cart.
-     */
     public function addAddress(array|Addressable $address, string $type, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.add_address', []) as $action) {
@@ -540,25 +486,16 @@ class Cart extends BaseModel
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
-    /**
-     * Set the shipping address.
-     */
     public function setShippingAddress(array|Addressable $address): Cart
     {
         return $this->addAddress($address, 'shipping');
     }
 
-    /**
-     * Set the billing address.
-     */
     public function setBillingAddress(array|Addressable $address): Cart
     {
         return $this->addAddress($address, 'billing');
     }
 
-    /**
-     * Set the shipping option to the shipping address.
-     */
     public function setShippingOption(ShippingOption $option, bool $refresh = true): Cart
     {
         foreach (config('lunar.cart.validators.set_shipping_option', []) as $action) {
@@ -574,17 +511,11 @@ class Cart extends BaseModel
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
-    /**
-     * Get the shipping option for the cart
-     */
     public function getShippingOption(): ?ShippingOption
     {
         return ShippingManifest::getShippingOption($this->calculate());
     }
 
-    /**
-     * Returns whether the cart has shippable items.
-     */
     public function isShippable(): bool
     {
         return (bool) $this->lines->filter(function ($line) {
@@ -592,9 +523,6 @@ class Cart extends BaseModel
         })->count();
     }
 
-    /**
-     * Create an order from the Cart.
-     */
     public function createOrder(
         bool $allowMultipleOrders = false,
         ?int $orderIdToUpdate = null
@@ -663,11 +591,6 @@ class Cart extends BaseModel
         return (new $generator)->execute($this);
     }
 
-    /**
-     * Check whether a given fingerprint matches the one being generated for the cart.
-     *
-     * @throws FingerprintMismatchException|Throwable
-     */
     public function checkFingerprint(string $fingerprint): bool
     {
         return tap($fingerprint == $this->fingerprint(), function ($result) {
@@ -678,9 +601,6 @@ class Cart extends BaseModel
         });
     }
 
-    /**
-     * Return the estimated shipping cost for a cart.
-     */
     public function getEstimatedShipping(array $params, bool $setOverride = false): ?ShippingOption
     {
         $this->shippingEstimateMeta = $params;

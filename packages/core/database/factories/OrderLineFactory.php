@@ -2,14 +2,13 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
 
-class OrderLineFactory extends Factory
+class OrderLineFactory extends BaseFactory
 {
     protected $model = OrderLine::class;
 
@@ -17,7 +16,7 @@ class OrderLineFactory extends Factory
     {
         return [
             'order_id' => Order::factory(),
-            'purchasable_type' => ProductVariant::class,
+            'purchasable_type' => ProductVariant::morphName(),
             'purchasable_id' => ProductVariant::factory(),
             'type' => 'physical',
             'description' => $this->faker->sentence,

@@ -2,6 +2,7 @@
 
 return [
     'customer_groups' => [
+        'title' => 'Customer Groups',
         'actions' => [
             'attach' => [
                 'label' => 'Attach Customer Group',
@@ -28,7 +29,7 @@ return [
             ],
         ],
         'table' => [
-            'description' => 'Associate customer groups to this product to determine it\'s availability.',
+            'description' => 'Associate customer groups to this :type to determine it\'s availability.',
             'name' => [
                 'label' => 'Name',
             ],
@@ -50,6 +51,7 @@ return [
         ],
     ],
     'channels' => [
+        'title' => 'Channels',
         'actions' => [
             'attach' => [
                 'label' => 'Schedule another Channel',
@@ -89,8 +91,14 @@ return [
         'title' => 'Media',
         'title_plural' => 'Media',
         'actions' => [
+            'attach' => [
+                'label' => 'Attach Media',
+            ],
             'create' => [
                 'label' => 'Create Media',
+            ],
+            'detach' => [
+                'label' => 'Detach',
             ],
             'view' => [
                 'label' => 'View',
@@ -121,6 +129,8 @@ return [
                 'label' => 'Primary',
             ],
         ],
+        'all_media_attached' => 'There are no product images available to attach',
+        'variant_description' => 'Attach product images to this variant',
     ],
     'urls' => [
         'title' => 'URL',
@@ -248,4 +258,27 @@ return [
             ],
         ],
     ],
+    'tax_rate_amounts' => [
+        'table' => [
+            'description' => '',
+            'percentage' => [
+                'label' => 'Percentage',
+            ],
+            'tax_class' => [
+                'label' => 'Tax Class',
+            ],
+        ],
+    ],
+    'values' => [
+        'title' => 'Values',
+        'table' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+            'position' => [
+                'label' => 'Position',
+            ],
+        ],
+    ],
+
 ];

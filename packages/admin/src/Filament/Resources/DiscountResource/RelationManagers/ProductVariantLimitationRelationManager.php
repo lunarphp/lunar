@@ -3,14 +3,15 @@
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
-class ProductVariantLimitationRelationManager extends RelationManager
+class ProductVariantLimitationRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
@@ -21,7 +22,7 @@ class ProductVariantLimitationRelationManager extends RelationManager
         return false;
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
 
         return $table
@@ -34,7 +35,7 @@ class ProductVariantLimitationRelationManager extends RelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['limitation', 'exclusion'])
-                    ->wherePurchasableType(ProductVariant::class)
+                    ->wherePurchasableType(ProductVariant::morphName())
                     ->whereHas('purchasable')
             )
             ->headerActions([
@@ -42,15 +43,16 @@ class ProductVariantLimitationRelationManager extends RelationManager
                     Forms\Components\MorphToSelect::make('purchasable')
                         ->searchable(true)
                         ->types([
-                            Forms\Components\MorphToSelect\Type::make(ProductVariant::class)
+                            Forms\Components\MorphToSelect\Type::make(ProductVariant::modelClass())
                                 ->titleAttribute('sku')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                    $products = get_search_builder(Product::class, $search)
+                                    $products = get_search_builder(Product::modelClass(), $search)
                                         ->get();
 
                                     return ProductVariant::whereIn('product_id', $products->pluck('id'))
+                                        ->with(['product'])
                                         ->get()
-                                        ->mapWithKeys(fn (ProductVariant $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
+                                        ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();
                                 }),
                         ]),
@@ -83,6 +85,8 @@ class ProductVariantLimitationRelationManager extends RelationManager
                     ),
             ])->actions([
                 Tables\Actions\DeleteAction::make(),
+            ])->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }

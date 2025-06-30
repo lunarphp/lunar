@@ -27,7 +27,11 @@ class MediaObserver
             return;
         }
 
-        $owner = $media->model()->sole();
+        $owner = $media->model()->first();
+
+        if (blank($owner)) {
+            return;
+        }
 
         if (! $isDelete && $media->getCustomProperty('primary')) {
             $owner->getMedia($media->collection_name)

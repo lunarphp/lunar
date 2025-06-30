@@ -2,28 +2,17 @@
 
 namespace Lunar\Base;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
-
 interface ModelManifestInterface
 {
-    /**
-     * Register models.
-     */
-    public function register(Collection $models): void;
+    public function register(): void;
 
-    /**
-     * Get the registered model for a base model class.
-     */
-    public function getRegisteredModel(string $baseModelClass): Model;
+    public function addDirectory(string $dir): void;
 
-    /**
-     * Get the morph class base model.
-     */
-    public function getMorphClassBaseModel(string $morphClass): ?string;
+    public function add(string $interfaceClass, string $modelClass): void;
 
-    /**
-     * Get list of registered base model classes.
-     */
-    public function getBaseModelClasses(): Collection;
+    public function replace(string $interfaceClass, string $modelClass): void;
+
+    public function get(string $interfaceClass): ?string;
+
+    public function guessContractClass(string $modelClass): string;
 }

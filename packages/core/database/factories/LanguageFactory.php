@@ -2,17 +2,16 @@
 
 namespace Lunar\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Lunar\Models\Language;
 
-class LanguageFactory extends Factory
+class LanguageFactory extends BaseFactory
 {
     protected $model = Language::class;
 
     public function definition(): array
     {
         return [
-            'code' => $this->faker->unique()->languageCode,
+            'code' => $this->faker->slug(),
             'name' => $this->faker->name(),
             'default' => true,
         ];

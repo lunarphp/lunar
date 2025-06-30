@@ -26,7 +26,7 @@ use Lunar\DataTypes\Price;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CartLine extends BaseModel
+class CartLine extends BaseModel implements Contracts\CartLine
 {
     use CachesProperties;
     use HasFactory;
@@ -52,6 +52,11 @@ class CartLine extends BaseModel
      * The cart line unit price.
      */
     public ?Price $unitPrice = null;
+
+    /**
+     * The cart line unit price.
+     */
+    public ?Price $unitPriceInclTax = null;
 
     /**
      * The cart line sub total.
@@ -91,7 +96,7 @@ class CartLine extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CartLineFactory
+    protected static function newFactory()
     {
         return CartLineFactory::new();
     }
@@ -114,43 +119,31 @@ class CartLine extends BaseModel
         'meta' => AsArrayObject::class,
     ];
 
-    /**
-     * Return the cart relationship.
-     */
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(Cart::modelClass());
     }
 
-    /**
-     * Return the tax class relationship.
-     */
     public function taxClass(): HasOneThrough
     {
         return $this->hasOneThrough(
-            TaxClass::class,
+            TaxClass::modelClass(),
             $this->purchasable_type,
             'tax_class_id',
             'id'
         );
     }
 
-    /**
-     * Return the cart line discount.
-     */
     public function discounts(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::class,
+            Discount::modelClass(),
             "{$prefix}cart_line_discount"
         );
     }
 
-    /**
-     * Return the polymorphic relation.
-     */
     public function purchasable(): MorphTo
     {
         return $this->morphTo();

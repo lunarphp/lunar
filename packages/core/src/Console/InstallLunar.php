@@ -19,6 +19,7 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\TaxClass;
+use Lunar\Models\TaxZone;
 
 use function Laravel\Prompts\confirm;
 
@@ -136,11 +137,28 @@ class InstallLunar extends Command
                 ]);
             }
 
+            if (! TaxZone::count()) {
+                $this->components->info('Adding a default tax zone.');
+
+                $taxZone = TaxZone::create([
+                    'name' => 'Default Tax Zone',
+                    'zone_type' => 'country',
+                    'price_display' => 'tax_exclusive',
+                    'default' => true,
+                    'active' => true,
+                ]);
+                $taxZone->countries()->createMany(
+                    Country::get()->map(fn ($country) => [
+                        'country_id' => $country->id,
+                    ])
+                );
+            }
+
             if (! Attribute::count()) {
                 $this->components->info('Setting up initial attributes');
 
                 $group = AttributeGroup::create([
-                    'attributable_type' => Product::class,
+                    'attributable_type' => Product::morphName(),
                     'name' => collect([
                         'en' => 'Details',
                     ]),
@@ -149,7 +167,7 @@ class InstallLunar extends Command
                 ]);
 
                 $collectionGroup = AttributeGroup::create([
-                    'attributable_type' => Collection::class,
+                    'attributable_type' => Collection::morphName(),
                     'name' => collect([
                         'en' => 'Details',
                     ]),
@@ -158,7 +176,7 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Product::class,
+                    'attribute_type' => 'product',
                     'attribute_group_id' => $group->id,
                     'position' => 1,
                     'name' => [
@@ -179,7 +197,7 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Collection::class,
+                    'attribute_type' => 'collection',
                     'attribute_group_id' => $collectionGroup->id,
                     'position' => 1,
                     'name' => [
@@ -200,7 +218,7 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Product::class,
+                    'attribute_type' => 'product',
                     'attribute_group_id' => $group->id,
                     'position' => 2,
                     'name' => [
@@ -221,7 +239,7 @@ class InstallLunar extends Command
                 ]);
 
                 Attribute::create([
-                    'attribute_type' => Collection::class,
+                    'attribute_type' => 'collection',
                     'attribute_group_id' => $collectionGroup->id,
                     'position' => 2,
                     'name' => [
@@ -250,7 +268,9 @@ class InstallLunar extends Command
                 ]);
 
                 $type->mappedAttributes()->attach(
-                    Attribute::whereAttributeType(Product::class)->get()->pluck('id')
+                    Attribute::whereAttributeType(
+                        Product::morphName()
+                    )->get()->pluck('id')
                 );
             }
         });

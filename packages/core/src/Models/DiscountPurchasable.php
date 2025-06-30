@@ -18,7 +18,7 @@ use Lunar\Database\Factories\DiscountPurchasableFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class DiscountPurchasable extends BaseModel
+class DiscountPurchasable extends BaseModel implements Contracts\DiscountPurchasable
 {
     use HasFactory;
 
@@ -38,7 +38,7 @@ class DiscountPurchasable extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): DiscountPurchasableFactory
+    protected static function newFactory()
     {
         return DiscountPurchasableFactory::new();
     }
@@ -48,7 +48,7 @@ class DiscountPurchasable extends BaseModel
      */
     public function discount(): BelongsTo
     {
-        return $this->belongsTo(Discount::class);
+        return $this->belongsTo(Discount::modelClass());
     }
 
     /**
@@ -62,8 +62,8 @@ class DiscountPurchasable extends BaseModel
     /**
      * Scope a query where type is condition.
      */
-    public function scopeCondition(Builder $query): void
+    public function scopeCondition(Builder $query): Builder
     {
-        $query->whereType('condition');
+        return $query->whereType('condition');
     }
 }

@@ -27,7 +27,7 @@ class ListProducts extends BaseListRecords
                 static::createActionFormInputs()
             )->using(
                 fn (array $data, string $model) => static::createRecord($data, $model)
-            )->successRedirectUrl(fn (Model $record): string => route('filament.lunar.resources.products.edit', [
+            )->successRedirectUrl(fn (Model $record): string => ProductResource::getUrl('edit', [
                 'record' => $record,
             ])),
         ];
@@ -51,7 +51,9 @@ class ListProducts extends BaseListRecords
     {
         $currency = Currency::getDefault();
 
-        $nameAttribute = Attribute::whereAttributeType($model)
+        $nameAttribute = Attribute::whereAttributeType(
+            $model::morphName()
+        )
             ->whereHandle('name')
             ->first()
             ->type;
@@ -81,7 +83,7 @@ class ListProducts extends BaseListRecords
     public function getDefaultTabs(): array
     {
         return [
-            'all' => Tab::make('All'),
+            'all' => Tab::make(__('lunarpanel::product.tabs.all')),
             'published' => Tab::make('Published')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'published')),
             'draft' => Tab::make('Draft')

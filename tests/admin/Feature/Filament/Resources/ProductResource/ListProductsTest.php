@@ -1,14 +1,12 @@
 <?php
 
-use Lunar\Admin\Filament\Resources\ProductResource;
-
 uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
     ->group('resource.product');
 
 it('can create product', function () {
     \Lunar\Models\Attribute::factory()->create([
         'type' => \Lunar\FieldTypes\TranslatedText::class,
-        'attribute_type' => \Lunar\Models\Product::class,
+        'attribute_type' => 'product',
         'handle' => 'name',
         'name' => [
             'en' => 'Name',
@@ -32,7 +30,7 @@ it('can create product', function () {
 
     $this->asStaff();
 
-    \Livewire\Livewire::test(ProductResource\Pages\ListProducts::class)
+    \Livewire\Livewire::test(\Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class)
         ->callAction('create', data: [
             'name' => [$language->code => 'Foo Bar'],
             'base_price' => 10.99,
@@ -40,7 +38,7 @@ it('can create product', function () {
             'product_type_id' => $productType->id,
         ])->assertHasNoActionErrors();
 
-    $this->assertDatabaseHas((new \Lunar\Models\Product)->getTable(), [
+    \Pest\Laravel\assertDatabaseHas((new \Lunar\Models\Product)->getTable(), [
         'product_type_id' => $productType->id,
         'status' => 'draft',
         'attribute_data' => json_encode([

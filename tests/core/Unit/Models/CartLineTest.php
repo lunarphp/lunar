@@ -16,11 +16,13 @@ test('can make a cart line', function () {
         'user_id' => User::factory(),
     ]);
 
+    $variant = ProductVariant::factory()->create();
+
     $data = [
         'cart_id' => $cart->id,
         'quantity' => 1,
-        'purchasable_type' => ProductVariant::class,
-        'purchasable_id' => ProductVariant::factory()->create()->id,
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
     ];
 
     CartLine::create($data);
@@ -33,11 +35,13 @@ test('only purchasables can be added to a cart', function () {
         'user_id' => User::factory(),
     ]);
 
+    $channel = Channel::factory()->create();
+
     $data = [
         'cart_id' => $cart->id,
         'quantity' => 1,
-        'purchasable_type' => Channel::class,
-        'purchasable_id' => Channel::factory()->create()->id,
+        'purchasable_type' => $channel->getMorphClass(),
+        'purchasable_id' => $channel->id,
     ];
 
     $this->expectException(NonPurchasableItemException::class);

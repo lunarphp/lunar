@@ -16,7 +16,7 @@ use Lunar\Database\Factories\TaxClassFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class TaxClass extends BaseModel
+class TaxClass extends BaseModel implements Contracts\TaxClass
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -44,7 +44,7 @@ class TaxClass extends BaseModel
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): TaxClassFactory
+    protected static function newFactory()
     {
         return TaxClassFactory::new();
     }
@@ -57,19 +57,13 @@ class TaxClass extends BaseModel
      */
     protected $guarded = [];
 
-    /**
-     * Return the tax rate amounts relationship.
-     */
     public function taxRateAmounts(): HasMany
     {
-        return $this->hasMany(TaxRateAmount::class);
+        return $this->hasMany(TaxRateAmount::modelClass());
     }
 
-    /**
-     * Return the ProductVariants relationship.
-     */
     public function productVariants(): HasMany
     {
-        return $this->hasMany(ProductVariant::class);
+        return $this->hasMany(ProductVariant::modelClass());
     }
 }

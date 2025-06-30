@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Lunar\Facades\DB;
 use Lunar\Models\Channel;
+use Lunar\Models\Contracts\Channel as ChannelContract;
 
 trait HasChannels
 {
@@ -19,8 +20,8 @@ trait HasChannels
             $channels = Channel::get()->mapWithKeys(function ($channel) {
                 return [
                     $channel->id => [
-                        'enabled' => false,
-                        'starts_at' => null,
+                        'enabled' => $channel->default,
+                        'starts_at' => $channel->default ? now() : null,
                         'ends_at' => null,
                     ],
                 ];
@@ -93,7 +94,7 @@ trait HasChannels
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeChannel($query, Channel|iterable|null $channel = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
+    public function scopeChannel($query, ChannelContract|iterable|null $channel = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
     {
         if (blank($channel)) {
             return $query;
@@ -109,7 +110,7 @@ trait HasChannels
 
         $channelIds = collect();
 
-        if (is_a($channel, Channel::class)) {
+        if (is_a($channel, Channel::modelClass())) {
             $channelIds = collect([$channel->id]);
         }
 

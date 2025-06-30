@@ -50,7 +50,7 @@ test('can run pipeline', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -58,12 +58,12 @@ test('can run pipeline', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasableB),
+        'priceable_type' => $purchasableB->getMorphClass(),
         'priceable_id' => $purchasableB->id,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
         'purchasable_id' => $purchasable->id,
         'quantity' => 1,
     ]);
@@ -71,13 +71,13 @@ test('can run pipeline', function () {
     OrderLine::factory()->create([
         'order_id' => $order->id,
         'purchasable_id' => $purchasable->id,
-        'purchasable_type' => get_class($purchasable),
+        'purchasable_type' => $purchasable->getMorphClass(),
     ]);
 
     OrderLine::factory()->create([
         'order_id' => $order->id,
         'purchasable_id' => $purchasableB->id,
-        'purchasable_type' => get_class($purchasableB),
+        'purchasable_type' => $purchasableB->getMorphClass(),
     ]);
 
     OrderLine::factory()->create([

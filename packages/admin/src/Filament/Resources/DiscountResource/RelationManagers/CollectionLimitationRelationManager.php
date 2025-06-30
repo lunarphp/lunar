@@ -3,23 +3,29 @@
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
 use Filament\Forms\Components\Select;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Models\Collection;
 
-class CollectionLimitationRelationManager extends RelationManager
+class CollectionLimitationRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
     protected static string $relationship = 'collections';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::collection.plural_label');
+    }
 
     public function isReadOnly(): bool
     {
         return false;
     }
 
-    public function table(Table $table): Table
+    public function getDefaultTable(Table $table): Table
     {
 
         return $table
@@ -48,6 +54,7 @@ class CollectionLimitationRelationManager extends RelationManager
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.table.name.label')
                     )
+                    ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
                     ->formatStateUsing(
                         fn (Model $record) => $record->attr('name')
                     ),
@@ -59,6 +66,8 @@ class CollectionLimitationRelationManager extends RelationManager
                     ),
             ])->actions([
                 Tables\Actions\DetachAction::make(),
+            ])->bulkActions([
+                Tables\Actions\DetachBulkAction::make(),
             ]);
     }
 }

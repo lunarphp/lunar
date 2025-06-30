@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
-use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\Contracts\ShippingMethod;
 
 class ShippingMethodResource extends BaseResource
 {

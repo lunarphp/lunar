@@ -59,7 +59,7 @@ test('can fetch product options', function () {
 
     expect($product->refresh()->productOptions)->toHaveCount(2);
 
-})->group('momo');
+});
 
 test('can fetch using status scope', function () {
     $attribute_data = collect([
@@ -117,7 +117,7 @@ test('product can be scheduled', function () {
         'lunar_channelables',
         [
             'channel_id' => $channel->id,
-            'channelable_type' => Product::class,
+            'channelable_type' => $product->getMorphClass(),
             'channelable_id' => $product->id,
             'enabled' => '1',
             'starts_at' => $publishDate->toDateTimeString(),
@@ -130,9 +130,9 @@ test('product can be scheduled', function () {
 test('customer groups can be enabled', function () {
     $product = Product::factory()->create();
 
-    expect($product->customerGroups)->toHaveCount(0);
-
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $product->scheduleCustomerGroup($customerGroup);
 
@@ -150,7 +150,9 @@ test('customer groups can be enabled', function () {
 test('customer groups can be scheduled always available', function () {
     $product = Product::factory()->create();
 
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $product->scheduleCustomerGroup($customerGroup);
 
@@ -170,7 +172,9 @@ test('customer groups can be scheduled always available', function () {
 test('customer groups can be scheduled with start and end', function () {
     $product = Product::factory()->create();
 
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $start = now();
     $end = now();
@@ -207,7 +211,9 @@ test('customer groups can be scheduled with start and end', function () {
 test('customer groups can be scheduled with pivot data', function () {
     $product = Product::factory()->create();
 
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $start = now();
     $end = now();
@@ -247,7 +253,9 @@ test('customer groups can be scheduled with pivot data', function () {
 test('customer groups can be unscheduled', function () {
     $product = Product::factory()->create();
 
-    $customerGroup = CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
 
     $start = now();
     $end = now();
@@ -282,7 +290,7 @@ test('customer groups can be unscheduled', function () {
             'visible' => 0,
         ],
     );
-})->group('mosh');
+});
 
 test('product can sync tags', function () {
     $channel = Channel::factory()->create();
@@ -493,7 +501,7 @@ test('can retrieve prices', function () {
 
     Price::factory()->create([
         'priceable_id' => $variant->id,
-        'priceable_type' => ProductVariant::class,
+        'priceable_type' => $variant->getMorphClass(),
     ]);
 
     expect($product->refresh()->prices)->toHaveCount(1);

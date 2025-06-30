@@ -30,12 +30,12 @@ class ManageProductPricing extends BaseEditRecord
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
-        return $parameters['record']->variants()->count() == 1;
+        return $parameters['record']->variants()->withTrashed()->count() == 1;
     }
 
     public function getOwnerRecord(): Model
     {
-        return $this->getRecord()->variants()->first();
+        return $this->getRecord()->variants()->withTrashed()->first();
     }
 
     public function form(Form $form): Form
@@ -107,7 +107,7 @@ class ManageProductPricing extends BaseEditRecord
                     ->preload(),
                 Tables\Filters\SelectFilter::make('min_quantity')->options(
                     Price::where('priceable_id', $this->getOwnerRecord()->id)
-                        ->where('priceable_type', get_class($this->getOwnerRecord()))
+                        ->where('priceable_type', $this->getOwnerRecord()->getMorphClass())
                         ->get()
                         ->pluck('min_quantity', 'min_quantity')
                 ),

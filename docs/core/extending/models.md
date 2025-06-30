@@ -8,28 +8,17 @@ Lunar provides a number of Eloquent Models and quite often in custom application
 We highly suggest using your own Eloquent Models to add additional data, rather than trying to change fields on the core Lunar models.
 :::
 
-## Extendable Models
-All Lunar models are now extendable.
-This means you can now add your own functionality or change out existing core model behaviour using your own model implementations.
+## Replaceable Models
+All Lunar models are replaceable, this means you can instruct Lunar to use your own custom model, throughout the ecosystem, using dependency injection.
 
-### Registration:
+
+### Registration
 We recommend registering your own models for your application within the boot method of your Service Provider.
-When registering your models, you will need to set the Lunar core model as the key and then your own model implementation as the value.
 
-Here is an example below where we are extending 10 core models from your main AppServiceProvider:
+When registering your models, you will need to set the Lunar model's contract as the first argument then your own model implementation for the second.
+
 
 ```php
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\ProductOption;
-use Lunar\Models\ProductOptionValue;
-use Lunar\Models\Collection;
-use Lunar\Models\Customer;
-use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
-use Lunar\Models\Order;
-use Lunar\Models\OrderLine;
-
 /**
  * Bootstrap any application services.
  *
@@ -37,209 +26,112 @@ use Lunar\Models\OrderLine;
  */
 public function boot()
 {
-    $models = collect([
-        Product::class => \App\Models\Product::class,
-        ProductVariant::class => \App\Models\ProductVariant::class,
-        ProductOption::class => \App\Models\ProductOption::class,
-        ProductOptionValue::class => \App\Models\ProductOptionValue::class,
-        Collection::class => \App\Models\Collection::class,
-        Customer::class => \App\Models\Customer::class,
-        Cart::class => \App\Models\Cart::class,
-        CartLine::class => \App\Models\CartLine::class,
-        Order::class => \App\Models\Order::class,
-        OrderLine::class => \App\Models\OrderLine::class,
-    ]);
-
-    ModelManifest::register($models);
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\Product::class,
+        \App\Model\Product::class,
+    );
 }
 ```
 
-### Swap Implementation
-You can override the model implementation at any time by calling the swap method on the core model.
-When you call the swap method this will update the key value pair for the registered model. If you need to go back to the previous implementation then simply call the swap method again passing through your registered implementation.
+#### Registering multiple Lunar models.
+
+If you have multiple models you want to replace, instead of manually replacing them one by one, you can specify a directory for Lunar to look in for Lunar models to use.
+This assumes that each model extends its counterpart model i.e. `App\Models\Product` extends `Lunar\Models\Product`.
 
 ```php
-namespace App\Models;
-
-use Lunar\Models\ProductVariant;
-
-class ProductSwapModel extends \Lunar\Models\Product
-{
-    /**
-     * This will return the default variant for the product.
-     *
-     * @return bool
-     */
-    public function defaultVariant(): ProductVariant
-    {
-        return $this->variants->first();
-    }
-}
-```
-
-```php
-$product = \Lunar\Models\Product::find(1);
-
-// This will swap out the registered implementation.
-$product->swap(\App\Models\ProductSwapModel::class);
-
-// You can now call this new method
-$default = $product->defaultVariant();
-
-// Swap again to go back to your original implementation or perhaps define a new one.
-$product->swap(\App\Models\Product::class);
-```
-
-### Examples
-Here are some example simple use cases of extending the core models.
-You are required to extend the core model `Lunar\Models\[Model]` in order for the relationships to function correctly.
-
-#### Example 1 - Adding static method (ProductOption Model)
-
-```php
-namespace App\Models;
-
-use Illuminate\Support\Collection;
-
-class ProductOption extends \Lunar\Models\ProductOption
-{
-    public static function getSizes(): Collection
-    {
-        return static::whereHandle('size')->first()->values;
-    }
-}
-```
-In this example you can access the static method via `\Lunar\Models\ProductOption::getSizes()`
-Note: Static methods will not allow you to jump to the function declaration.
-As a workaround simply add @see inline docblock:
-
-```php
-`/** @see \App\Models\ProductOption::getSizesStatic() */`
-$newStaticMethod = \Lunar\Models\ProductOption::getSizesStatic();
-```
-
-#### Example 2 - Overriding trait method (Product Model)
-
-```php
-namespace App\Models;
-
-use App\Concerns\SearchableTrait;
-
-class Product extends \Lunar\Models\Product
-{
-    use SearchableTrait;
-}
-```
-Note: shouldBeSearchable could also be overridden by adding directly to the Product class above.
-In this example we are showing you how the core model can be made aware of your own model and trait methods.
-
-What this also means now the core model can forward call to your extended methods. 
-Scout in this case will also be made aware that shouldBeSearchable will return false.
-
-```php
-namespace App\Concerns;
-
-trait SearchableTrait
-{
-    /**
-     * Determine if the model should be searchable.
-     * @see \Laravel\Scout\Searchable::shouldBeSearchable()
-     *
-     * @return bool
-     */
-    public function shouldBeSearchable()
-    {
-        return false;
-    }
-}
-```
-#### Example 3 - Overriding cart address functionality (Cart Model)
-
-```php
-namespace App\Models;
-
-use App\Concerns\HasAddresses;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
-
 /**
- * Class Cart
+ * Bootstrap any application services.
  *
- * @property \Illuminate\Support\Collection $billingAddress
- * @property \Illuminate\Support\Collection $shippingAddress
- *
+ * @return void
  */
-class Cart extends \Lunar\Models\Cart
+public function boot()
 {
-    use HasAddresses;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $casts = [
-        'completed_at' => 'datetime',
-        'meta' => AsArrayObject::class,
-        'shipping_data' => AsCollection::class,
-    ];
+    \Lunar\Facades\ModelManifest::addDirectory(
+        __DIR__.'/../Models'
+    );
 }
 ```
-Note: You can override the casts in a model for example useful when adding new json fields. 
-In this example we are setting shipping_data cast to store as json. (You will of course need to create your migration)
 
-The trait below demonstrates how to fully extend the cart model functionality.
+### Route binding
+
+Route binding is supported for your own routes and simply requires the relevant contract class to be injected.
 
 ```php
-namespace App\Concerns;
+Route::get('products/{id}', function (\Lunar\Models\Contracts\Product $product) {
+    $product; // App\Models\Product
+});
+```
 
-trait HasAddresses
+### Relationship support
+
+If you replace a model which is used in a relationship, you can easily get your own model back via relationship methods. Assuming we want to use our own instance of `App\Models\ProductVariant`.
+
+```php
+// In our service provider.
+public function boot()
 {
-    /**
-     * Return the address relationships.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function addresses(): Collection
-    {
-        return ! $this->isSameAddress()
-            ? $this->billingAddress->merge($this->shippingAddress)
-            : $this->billingAddress;
-    }
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\ProductVariant::class,
+        \App\Model\ProductVariant::class,
+    );
+}
 
-    /**
-     * Return the shipping address relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function shippingAddress()
-    {
-        return $this->belongsTo(Address::class, 'shipping_address_id');
-    }
+// Somewhere else in your code...
 
-    /**
-     * Return the billing address relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function billingAddress()
-    {
-        return $this->belongsTo(Address::class, 'billing_address_id');
-    }
+$product = \Lunar\Models\Product::first();
+$product->variants->first(); // App\Models\ProductVariant
+```
 
-    /**
-     * Compare the shipping and billing address to see if they are the same.
-     *
-     * @return bool
-     */
-    protected function isSameAddress(): bool
+### Static call forwarding
+
+If you have custom methods in your own model, you can call those functions directly from the Lunar model instance.
+
+Assuming we want to provide a new function to a product variant model.
+
+```php
+<?php
+
+namespace App\Models;
+
+class ProductVariant extends \Lunar\Models\ProductVariant
+{
+    public function someCustomMethod()
     {
-        return $this->billingAddress->first()->id === $this->shippingAddress->first()->id;
+        return 'Hello!';
     }
 }
+```
+
+```php
+// In your service provider.
+public function boot()
+{
+    \Lunar\Facades\ModelManifest::replace(
+        \Lunar\Models\Contracts\ProductVariant::class,
+        \App\Model\ProductVariant::class,
+    );
+}
+```
+
+Somewhere else in your app...
+
+```php
+\Lunar\Models\ProductVariant::someCustomMethod(); // Hello!
+\App\Models\ProductVariant::someCustomMethod(); // Hello!
+```
+
+### Observers
+
+If you have observers in your app which call `observe` on the Lunar model, these will still work as intended when you replace any of the models, this means if you 
+want to add your own custom observers, you can just reference the Lunar model and everything will be forwarded to the appropriate class.
+
+```php
+\Lunar\Models\Product::observe(/** .. */);
 ```
 
 ## Dynamic Eloquent Relationships
 
-Eloquent relationships can be dynamically specified in code, allowing you to add additional relationships to the Lunar Models.
+If you don't need to completely override or extend the Lunar models using the techniques above, you are still free to resolve relationships dynamically as Laravel provides out the box.
 
 e.g. 
 
@@ -253,18 +145,3 @@ Order::resolveRelationUsing('ticket', function ($orderModel) {
 ```
 
 See [https://laravel.com/docs/eloquent-relationships#dynamic-relationships](https://laravel.com/docs/eloquent-relationships#dynamic-relationships) for more information.
-
-
-## Macroable
-
-All Lunar models have been made macroable. This is a Laravel technique to allow a developer to dynamically add methods to an existing class. This is ideal for adding helpful functions for your application.
-
-Here is an example...
-
-```php
-use Lunar\Models\Product;
-
-Product::macro('isDraft', function () {
-    return $this->status === 'draft';
-});
-```

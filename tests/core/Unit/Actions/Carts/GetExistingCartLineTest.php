@@ -24,13 +24,13 @@ test('can get basic cart line', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
     $cartLine = $cart->lines()->create([
         'purchasable_id' => $purchasable->id,
-        'purchasable_type' => ProductVariant::class,
+        'purchasable_type' => $purchasable->getMorphClass(),
         'quantity' => 1,
         'meta' => null,
     ]);
@@ -56,7 +56,7 @@ test('can get cart line with different meta', function () {
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
-        'priceable_type' => get_class($purchasable),
+        'priceable_type' => $purchasable->getMorphClass(),
         'priceable_id' => $purchasable->id,
     ]);
 
@@ -88,19 +88,19 @@ test('can get cart line with different meta', function () {
     $cart->lines()->createMany([
         [
             'purchasable_id' => $purchasable->id,
-            'purchasable_type' => ProductVariant::class,
+            'purchasable_type' => $purchasable->getMorphClass(),
             'quantity' => 1,
             'meta' => $cartLineAMeta,
         ],
         [
             'purchasable_id' => $purchasable->id,
-            'purchasable_type' => ProductVariant::class,
+            'purchasable_type' => $purchasable->getMorphClass(),
             'quantity' => 1,
             'meta' => $cartLineBMeta,
         ],
         [
             'purchasable_id' => $purchasable->id,
-            'purchasable_type' => ProductVariant::class,
+            'purchasable_type' => $purchasable->getMorphClass(),
             'quantity' => 1,
             'meta' => $cartLineCMeta,
         ],

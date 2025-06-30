@@ -38,7 +38,7 @@ use Lunar\DataTypes\ShippingOption;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class CartAddress extends BaseModel implements Addressable
+class CartAddress extends BaseModel implements Addressable, Contracts\CartAddress
 {
     use CachesProperties;
     use HasFactory;
@@ -86,7 +86,7 @@ class CartAddress extends BaseModel implements Addressable
     /**
      * Return a new factory instance for the model.
      */
-    protected static function newFactory(): CartAddressFactory
+    protected static function newFactory()
     {
         return CartAddressFactory::new();
     }
@@ -126,19 +126,13 @@ class CartAddress extends BaseModel implements Addressable
         'meta' => AsArrayObject::class,
     ];
 
-    /**
-     * Return the cart relationship.
-     */
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(Cart::modelClass());
     }
 
-    /**
-     * Return the country relationship.
-     */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::modelClass());
     }
 }

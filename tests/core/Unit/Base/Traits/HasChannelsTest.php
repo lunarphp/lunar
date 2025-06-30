@@ -1,6 +1,7 @@
 <?php
 
 uses(\Lunar\Tests\Core\TestCase::class);
+
 use Lunar\Models\Channel;
 use Lunar\Models\Product;
 
@@ -32,7 +33,7 @@ test('can scope results to a channel', function () {
 
     $this->assertDatabaseHas($productA->channels()->getTable(), [
         'channel_id' => $channelA->id,
-        'channelable_type' => Product::class,
+        'channelable_type' => $productA->getMorphClass(),
         'channelable_id' => $productA->id,
         'starts_at' => now(),
         'ends_at' => now()->addDay(),

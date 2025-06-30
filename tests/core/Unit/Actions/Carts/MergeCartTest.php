@@ -52,24 +52,24 @@ test('can merge cart', function () {
     Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cartA->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
     ]);
 
     $cartB->lines()->createMany([
         [
-            'purchasable_type' => get_class($purchasableA),
+            'purchasable_type' => $purchasableA->getMorphClass(),
             'purchasable_id' => $purchasableA->id,
             'quantity' => 1,
         ],
         [
-            'purchasable_type' => get_class($purchasableB),
+            'purchasable_type' => $purchasableB->getMorphClass(),
             'purchasable_id' => $purchasableB->id,
             'quantity' => 1,
         ],
@@ -123,12 +123,12 @@ test('can handle merging of lines with different metas', function () {
     Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
-        'priceable_type' => get_class($purchasableA),
+        'priceable_type' => $purchasableA->getMorphClass(),
         'priceable_id' => $purchasableA->id,
     ]);
 
     $cartA->lines()->create([
-        'purchasable_type' => get_class($purchasableA),
+        'purchasable_type' => $purchasableA->getMorphClass(),
         'purchasable_id' => $purchasableA->id,
         'quantity' => 1,
         'meta' => [
@@ -138,7 +138,7 @@ test('can handle merging of lines with different metas', function () {
 
     $cartB->lines()->createMany([
         [
-            'purchasable_type' => get_class($purchasableA),
+            'purchasable_type' => $purchasableA->getMorphClass(),
             'purchasable_id' => $purchasableA->id,
             'quantity' => 1,
             'meta' => [
@@ -146,7 +146,7 @@ test('can handle merging of lines with different metas', function () {
             ],
         ],
         [
-            'purchasable_type' => get_class($purchasableB),
+            'purchasable_type' => $purchasableB->getMorphClass(),
             'purchasable_id' => $purchasableB->id,
             'quantity' => 1,
         ],

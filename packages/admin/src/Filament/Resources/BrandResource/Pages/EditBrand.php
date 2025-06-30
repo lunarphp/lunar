@@ -11,6 +11,16 @@ class EditBrand extends BaseEditRecord
 {
     protected static string $resource = BrandResource::class;
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::brand.pages.edit.title');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('lunarpanel::product.pages.edit.title');
+    }
+
     protected function getDefaultHeaderActions(): array
     {
         return [

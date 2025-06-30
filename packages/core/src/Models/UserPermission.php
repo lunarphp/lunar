@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 
-class UserPermission extends BaseModel
+class UserPermission extends BaseModel implements Contracts\UserPermission
 {
     use HasMacros;
 

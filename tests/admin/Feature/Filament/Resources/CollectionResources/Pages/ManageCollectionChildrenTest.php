@@ -35,7 +35,7 @@ it('can create child categories', function () {
         ],
         'handle' => 'name',
         'type' => \Lunar\FieldTypes\TranslatedText::class,
-        'attribute_type' => \Lunar\Models\Collection::class,
+        'attribute_type' => 'collection',
     ]);
 
     $this->asStaff();
@@ -49,4 +49,4 @@ it('can create child categories', function () {
     ])->assertHasNoErrors();
 
     expect($record->children()->count())->toBe(1);
-});
+})->group('thisone');
