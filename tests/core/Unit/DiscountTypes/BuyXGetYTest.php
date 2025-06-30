@@ -599,7 +599,6 @@ test('can discount eligible products using variant condition', function () {
     expect($cart->freeItems)->toHaveCount(1);
 });
 
-
 test('can discount purchasable with priority', function () {
     $customerGroup = CustomerGroup::factory()->create([
         'default' => true,
