@@ -93,23 +93,13 @@ class ProductConditionRelationManager extends BaseRelationManager
                     ->square()
                     ->label(''),
 
-                Tables\Columns\TextColumn::make('discountable.attribute_data.name')
+                Tables\Columns\TextColumn::make('discountable.id')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.conditions.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->discountable->attr('name')
-                    )
-                    ->visible(fn (?Model $record) => ! $record?->discountable instanceof ProductVariantContract),
-
-                Tables\Columns\TextColumn::make('discountable.sku')
-                    ->label(
-                        __('lunarpanel::discount.relationmanagers.conditions.table.name.label')
-                    )
-                    ->formatStateUsing(
-                        fn (Model $record) => $record->discountable->sku
-                    )
-                    ->visible(fn (?Model $record) => $record?->discountable instanceof ProductVariantContract),
+                        fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->sku : $record->discountable->attr('name')
+                    ),
 
                 Tables\Columns\TextColumn::make('discountable_type')
                     ->label(
