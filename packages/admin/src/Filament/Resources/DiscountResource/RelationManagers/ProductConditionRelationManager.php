@@ -10,7 +10,9 @@ use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Models\Collection;
 use Lunar\Models\Contracts\Collection as CollectionContract;
 use Lunar\Models\Contracts\Product as ProductContract;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
 
 class ProductConditionRelationManager extends BaseRelationManager
 {
@@ -41,7 +43,7 @@ class ProductConditionRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['condition'])
-                    ->whereIn('discountable_type', [Collection::morphName(), Product::morphName()])
+                    ->whereIn('discountable_type', [Collection::morphName(), Product::morphName(), ProductVariant::morphName()])
                     ->whereHas('discountable')
             )
             ->headerActions([
@@ -49,6 +51,15 @@ class ProductConditionRelationManager extends BaseRelationManager
                     Forms\Components\MorphToSelect::make('discountable')
                         ->searchable(true)
                         ->types([
+                            Forms\Components\MorphToSelect\Type::make(Collection::modelClass())
+                                ->titleAttribute('name.en')
+                                ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                                    return get_search_builder(Collection::modelClass(), $search)
+                                        ->get()
+                                        ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->attr('name')])
+                                        ->all();
+                                }),
+
                             Forms\Components\MorphToSelect\Type::make(Product::modelClass())
                                 ->titleAttribute('name.en')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
@@ -58,12 +69,12 @@ class ProductConditionRelationManager extends BaseRelationManager
                                         ->all();
                                 }),
 
-                            Forms\Components\MorphToSelect\Type::make(Collection::modelClass())
-                                ->titleAttribute('name.en')
+                            Forms\Components\MorphToSelect\Type::make(ProductVariant::modelClass())
+                                ->titleAttribute('sku')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                    return get_search_builder(Collection::modelClass(), $search)
+                                    return get_search_builder(ProductVariant::modelClass(), $search)
                                         ->get()
-                                        ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->attr('name')])
+                                        ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->sku])
                                         ->all();
                                 }),
                         ]),
@@ -88,7 +99,17 @@ class ProductConditionRelationManager extends BaseRelationManager
                     )
                     ->formatStateUsing(
                         fn (Model $record) => $record->discountable->attr('name')
-                    ),
+                    )
+                    ->visible(fn (?Model $record) => ! $record?->discountable instanceof ProductVariantContract),
+
+                Tables\Columns\TextColumn::make('discountable.sku')
+                    ->label(
+                        __('lunarpanel::discount.relationmanagers.conditions.table.name.label')
+                    )
+                    ->formatStateUsing(
+                        fn (Model $record) => $record->discountable->sku
+                    )
+                    ->visible(fn (?Model $record) => $record?->discountable instanceof ProductVariantContract),
 
                 Tables\Columns\TextColumn::make('discountable_type')
                     ->label(

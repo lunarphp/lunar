@@ -252,7 +252,7 @@ return [
             'description' => 'Select which products will be discounted if they exist in the cart and the above conditions are met.',
             'actions' => [
                 'attach' => [
-                    'label' => 'Add Product',
+                    'label' => 'Add Reward',
                 ],
             ],
             'table' => [

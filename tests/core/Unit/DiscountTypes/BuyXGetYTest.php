@@ -307,6 +307,102 @@ test('can discount eligible products', function () {
     expect($cart->freeItems)->toHaveCount(1);
 });
 
+test('can discount eligible variants', function () {
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create([
+        'product_id' => $productA->id,
+    ]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasableA->getMorphClass(),
+        'priceable_id' => $purchasableA->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasableB->getMorphClass(),
+        'priceable_id' => $purchasableB->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableB->getMorphClass(),
+        'purchasable_id' => $purchasableB->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Product Discount',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 2,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now()->subHour(),
+        ],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $purchasableB->getMorphClass(),
+        'discountable_id' => $purchasableB->id,
+        'type' => 'reward',
+    ]);
+
+    $cart = $cart->calculate();
+
+    expect($cart->total->value)->toEqual(1200);
+    expect($cart->freeItems)->toHaveCount(1);
+});
+
 test('can discount eligible products using collection condition', function () {
     $customerGroup = CustomerGroup::factory()->create([
         'default' => true,
@@ -406,6 +502,103 @@ test('can discount eligible products using collection condition', function () {
     expect($cart->total->value)->toEqual(1200);
     expect($cart->freeItems)->toHaveCount(1);
 });
+
+test('can discount eligible products using variant condition', function () {
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create([
+        'product_id' => $productA->id,
+    ]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasableA->getMorphClass(),
+        'priceable_id' => $purchasableA->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000, // £10
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasableB->getMorphClass(),
+        'priceable_id' => $purchasableB->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableB->getMorphClass(),
+        'purchasable_id' => $purchasableB->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Product Discount',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 2,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => [
+            'enabled' => true,
+            'starts_at' => now(),
+        ],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => [
+            'enabled' => true,
+            'starts_at' => now()->subHour(),
+        ],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $purchasableA->getMorphClass(),
+        'discountable_id' => $purchasableA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
+        'type' => 'reward',
+    ]);
+
+    $cart = $cart->calculate();
+
+    expect($cart->total->value)->toEqual(1200);
+    expect($cart->freeItems)->toHaveCount(1);
+});
+
 
 test('can discount purchasable with priority', function () {
     $customerGroup = CustomerGroup::factory()->create([

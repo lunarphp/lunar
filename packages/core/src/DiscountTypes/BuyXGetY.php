@@ -12,6 +12,7 @@ use Lunar\Models\CartLine;
 use Lunar\Models\Collection as LunarCollection;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
 
 class BuyXGetY extends AbstractDiscountType
 {
@@ -66,6 +67,12 @@ class BuyXGetY extends AbstractDiscountType
                     return true;
                 }
 
+                if ($item->discountable_type == ProductVariant::morphName() &&
+                    $item->discountable_id == $line->purchasable->id
+                ) {
+                    return true;
+                }
+
                 if ($item->discountable_type == LunarCollection::morphName() &&
                     $line->purchasable->product->collections->pluck('id')->contains($item->discountable_id)
                 ) {
@@ -102,8 +109,19 @@ class BuyXGetY extends AbstractDiscountType
         // Get the reward lines and sort by cheapest first.
         $rewardLines = $cart->lines->filter(function ($line) {
             return $this->discount->discountableRewards->first(function ($item) use ($line) {
-                return $item->discountable_type == Product::morphName() &&
-                    $item->discountable_id == $line->purchasable->product->id;
+                if ($item->discountable_type == Product::morphName() &&
+                    $item->discountable_id == $line->purchasable->product->id
+                ) {
+                    return true;
+                }
+
+                if ($item->discountable_type == ProductVariant::morphName() &&
+                    $item->discountable_id == $line->purchasable->id
+                ) {
+                    return true;
+                }
+
+                return false;
             });
         })->sortBy('subTotal.value');
 
