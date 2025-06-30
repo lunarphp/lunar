@@ -99,11 +99,6 @@ class CalculateTax
                 $cart->shippingAddress->taxBreakdown = $shippingTax;
                 $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
                 $cart->shippingAddress->shippingTotal = $shippingTotal;
-                $cart->shippingAddress->shippingTotal = new Price(
-                    $shippingTotal,
-                    $cart->currency,
-                    1
-                );
             }
         }
 
