@@ -19,6 +19,8 @@ class GetUnitPrice
      */
     public function handle(CartLineContract $cartLine, Closure $next)
     {
+        $cartLine->load(['cart', 'purchasable']);
+
         /** @var CartLine $cart */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
