@@ -85,6 +85,7 @@ return [
         ],
         'collections' => [
             'label' => 'Collections',
+            'select_collection' => 'Select a collection',
         ],
     ],
 

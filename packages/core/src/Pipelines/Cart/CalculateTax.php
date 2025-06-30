@@ -77,11 +77,6 @@ class CalculateTax
 
             $taxTotal += $shippingTaxTotal?->value;
 
-            if ($cart->shippingAddress && ! $cart->shippingOptionOverride) {
-                $cart->shippingAddress->taxBreakdown = $shippingTax;
-                $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
-            }
-
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $shippingTax->amounts
             );
@@ -95,6 +90,16 @@ class CalculateTax
                 $cart->currency,
                 1
             );
+
+            if ($cart->shippingAddress && ! $cart->shippingOptionOverride) {
+                $cart->shippingAddress->taxBreakdown = $shippingTax;
+                $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
+                $cart->shippingAddress->shippingTotal = new Price(
+                    $shippingTotal,
+                    $cart->currency,
+                    1
+                );
+            }
         }
 
         $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);

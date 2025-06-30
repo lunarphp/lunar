@@ -20,7 +20,6 @@ use App\Admin\Filament\Resources\Pages\MyEditExtension;
 LunarPanel::extensions([
     EditProduct::class => MyEditExtension::class,
 ]);
-
 ```
 
 ### Extending list resource
