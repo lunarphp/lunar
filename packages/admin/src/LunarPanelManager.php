@@ -227,8 +227,8 @@ class LunarPanelManager
         if (! $this->twoFactorAuthDisabled) {
             $plugins[] = TwoFactorAuthenticationPlugin::make()
                 ->enableTwoFactorAuthentication()
-                    ->addTwoFactorMenuItem(label: '2FA Settings')
-                    ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
+                ->addTwoFactorMenuItem(label: '2FA Settings')
+                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
         }
 
         return Panel::make()
