@@ -18,6 +18,15 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-beta.xxx
+
+### High Impact
+
+#### Removed Laravel 10 Support
+
+Laravel 10 support has been removed as it was becoming harder to support. You will want to upgrade your projects to 
+Laravel 11+ for this release. You may consider [Laravel Shift](https://laravelshift.com/) to assist you.
+
 ## 1.0.0-beta.21
 
 ### High Impact

@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -76,12 +77,19 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     )->visible(
                         $options->isNotEmpty()
                     ),
+                Toggle::make('preselect')
+                    ->default(true)
+                    ->label(
+                        __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.form.preselect.label')
+                    )->visible(
+                        $options->isNotEmpty()
+                    ),
             ])->action(function (array $data) {
                 $productOption = ProductOption::with(['values'])->find($data['product_option']);
                 $this->configuredOptions[] = $this->mapOption(
                     $productOption,
                     $productOption->values->map(
-                        fn ($value) => $this->mapOptionValue($value, true)
+                        fn ($value) => $this->mapOptionValue($value, $data['preselect'] ?? false)
                     )->toArray()
                 );
             })->after(

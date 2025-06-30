@@ -53,7 +53,7 @@ class ManageProductCollections extends BaseManageRelatedRecords
                 Tables\Actions\AttachAction::make()
                     ->recordSelect(
                         function (Forms\Components\Select $select) {
-                            return $select->placeholder('Select a collection') // TODO: needs translation
+                            return $select->placeholder(__('lunarpanel::product.pages.collections.select_collection'))
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search, ManageProductCollections $livewire): array {
                                     $relationModel = $livewire->getRelationship()->getRelated()::class;
 

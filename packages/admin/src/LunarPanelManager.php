@@ -37,7 +37,7 @@ use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticationPlugin;
 
 class LunarPanelManager
 {
-    protected bool $twoFactorAuthEnforced = false;
+    protected bool $twoFactorAuthForced = false;
 
     protected bool $twoFactorAuthDisabled = false;
 
@@ -174,9 +174,9 @@ class LunarPanelManager
         return Filament::getPanel($this->panelId);
     }
 
-    public function enforceTwoFactorAuth(bool $state = true): self
+    public function forceTwoFactorAuth(bool $state = true): self
     {
-        $this->twoFactorAuthEnforced = $state;
+        $this->twoFactorAuthForced = $state;
 
         return $this;
     }
@@ -225,8 +225,10 @@ class LunarPanelManager
         ];
 
         if (! $this->twoFactorAuthDisabled) {
-            $plugins[] = TwoFactorAuthenticationPlugin::make()->addTwoFactorMenuItem(label: '2FA Settings')
-                ->enforceTwoFactorSetup(condition: $this->twoFactorAuthEnforced);
+            $plugins[] = TwoFactorAuthenticationPlugin::make()
+                ->enableTwoFactorAuthentication()
+                ->addTwoFactorMenuItem(label: '2FA Settings')
+                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
         }
 
         return Panel::make()
