@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Lunar\Admin\LunarPanelManager register()
  * @method static \Lunar\Admin\LunarPanelManager panel(\Closure $closure)
  * @method static \Filament\Panel getPanel()
- * @method static \Lunar\Admin\LunarPanelManager enforceTwoFactorAuth(bool $state = true)
+ * @method static \Lunar\Admin\LunarPanelManager forceTwoFactorAuth(bool $state = true)
  * @method static \Lunar\Admin\LunarPanelManager disableTwoFactorAuth()
  * @method static \Lunar\Admin\LunarPanelManager extensions(array $extensions)
  * @method static array getExtensions()

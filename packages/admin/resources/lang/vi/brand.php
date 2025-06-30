@@ -29,6 +29,9 @@ return [
         ],
     ],
     'pages' => [
+        'edit' => [
+            'title' => 'Thông tin cơ bản',
+        ],
         'products' => [
             'label' => 'Sản phẩm',
             'actions' => [

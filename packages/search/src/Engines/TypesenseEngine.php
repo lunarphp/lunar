@@ -69,7 +69,7 @@ class TypesenseEngine extends AbstractEngine
 
         $documents = collect($results['hits'])->map(fn ($hit) => SearchHit::from([
             'highlights' => collect($hit['highlights'] ?? [])->map(
-                fn ($highlight) => SearchHit\Highlight::from([
+                fn ($highlight) => \Lunar\Search\Data\SearchHitHighlight::from([
                     'field' => $highlight['field'],
                     'matches' => $highlight['matched_tokens'],
                     'snippet' => $highlight['snippet'],
@@ -83,7 +83,7 @@ class TypesenseEngine extends AbstractEngine
                 'label' => $this->getFacetConfig($facet['field_name'])['label'] ?? '',
                 'field' => $facet['field_name'],
                 'values' => collect($facet['counts'])->map(
-                    fn ($value) => SearchFacet\FacetValue::from([
+                    fn ($value) => \Lunar\Search\Data\SearchFacetValue::from([
                         'label' => $value['value'],
                         'value' => $value['value'],
                         'count' => $value['count'],
