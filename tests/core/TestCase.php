@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Core;
 
 use Cartalyst\Converter\Laravel\ConverterServiceProvider;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\Facades\Taxes;
@@ -34,6 +35,8 @@ class TestCase extends BaseTestCase
         });
 
         activity()->disableLogging();
+
+        Model::preventLazyLoading(true);
 
         // Freeze time to avoid timestamp errors
         $this->freezeTime();
