@@ -6,6 +6,7 @@ use Filament;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\ModelChannelsUpdated;
 
 class ChannelRelationManager extends BaseRelationManager
@@ -13,6 +14,11 @@ class ChannelRelationManager extends BaseRelationManager
     protected static bool $isLazy = false;
 
     protected static string $relationship = 'channels';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::relationmanagers.channels.title');
+    }
 
     public function isReadOnly(): bool
     {

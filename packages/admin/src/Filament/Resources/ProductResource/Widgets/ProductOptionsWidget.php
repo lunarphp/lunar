@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -17,6 +18,9 @@ use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Facades\DB;
+use Lunar\Models\Contracts\ProductOption as ProductOptionContract;
+use Lunar\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
@@ -73,12 +77,19 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     )->visible(
                         $options->isNotEmpty()
                     ),
+                Toggle::make('preselect')
+                    ->default(true)
+                    ->label(
+                        __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.form.preselect.label')
+                    )->visible(
+                        $options->isNotEmpty()
+                    ),
             ])->action(function (array $data) {
                 $productOption = ProductOption::with(['values'])->find($data['product_option']);
                 $this->configuredOptions[] = $this->mapOption(
                     $productOption,
                     $productOption->values->map(
-                        fn ($value) => $this->mapOptionValue($value, true)
+                        fn ($value) => $this->mapOptionValue($value, $data['preselect'] ?? false)
                     )->toArray()
                 );
             })->after(
@@ -297,6 +308,10 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 $optionModel->save();
             }
 
+            if ($optionModel->shared) {
+                return;
+            }
+
             $this->configuredOptions[$optionIndex]['id'] = $optionModel->id;
             $option['id'] = $optionModel->id;
 
@@ -355,7 +370,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     $variant = $this->record->variants()->first();
                     $variant->values()->detach();
                     $this->record->productOptions()->exclusive()->each(
-                        fn (ProductOption $productOption) => $productOption->delete()
+                        fn (ProductOptionContract $productOption) => $productOption->delete()
                     );
 
                     $this->record->productOptions()->shared()->detach();
@@ -363,7 +378,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         ->where('id', '!=', $variant->id)
                         ->get()
                         ->each(
-                            fn (ProductVariant $variant) => $variant->delete()
+                            fn (ProductVariantContract $variant) => $variant->delete()
                         );
 
                     DB::commit();
@@ -448,8 +463,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         ]);
     }
 
-    protected function mapOptionValue(ProductOptionValue $value, bool $enabled = true)
+    protected function mapOptionValue(ProductOptionValueContract $value, bool $enabled = true)
     {
+        /** @var ProductOptionValue $value */
         return [
             'id' => $value->id,
             'enabled' => $enabled,
@@ -458,8 +474,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         ];
     }
 
-    protected function mapOption(ProductOption $option, array $values = []): array
+    protected function mapOption(ProductOptionContract $option, array $values = []): array
     {
+        /** @var ProductOption $option */
         return [
             'id' => $option->id,
             'key' => "option_{$option->id}",

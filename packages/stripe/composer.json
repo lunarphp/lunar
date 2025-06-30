@@ -13,7 +13,7 @@
   "require": {
       "php": "^8.2",
       "lunarphp/core": "self.version",
-      "stripe/stripe-php": "^14.4"
+      "stripe/stripe-php": "^16.0"
   },
   "autoload": {
       "psr-4": {

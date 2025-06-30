@@ -74,6 +74,12 @@ return [
             'label' => 'Automatisch beloningen toevoegen',
             'helper_text' => 'Schakel in om beloningsproducten toe te voegen wanneer deze niet in de winkelwagen aanwezig zijn.',
         ],
+        'fixed_value' => [
+            'label' => 'Vaste waarde',
+        ],
+        'percentage' => [
+            'label' => 'Percentage',
+        ],
     ],
     'table' => [
         'name' => [
@@ -107,6 +113,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Beschikbaarheid',
+        ],
+        'edit' => [
+            'title' => 'Basisinformatie',
         ],
         'limitations' => [
             'label' => 'Beperkingen',

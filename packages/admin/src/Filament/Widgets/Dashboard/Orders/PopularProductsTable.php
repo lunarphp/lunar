@@ -32,13 +32,14 @@ class PopularProductsTable extends TableWidget
                 fn () => __('lunarpanel::widgets.dashboard.orders.popular_products.description')
             )
             ->query(function () {
-                return OrderLine::query()->whereHas('order', function ($relation) {
+                return OrderLine::query()->with(['currency'])->whereHas('order', function ($relation) {
                     $relation->whereBetween('placed_at', [
                         now()->subYear()->startOfDay(),
                         now()->endOfDay(),
                     ]);
                 })->select(
                     DB::RAW('MAX(id) as id'),
+                    DB::RAW('MAX(order_id) as order_id'),
                     DB::RAW('COUNT(id) as quantity'),
                     DB::RAW('SUM(sub_total) as sub_total'),
                     DB::RAW('MAX(description) as description'),

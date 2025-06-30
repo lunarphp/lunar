@@ -81,6 +81,16 @@ class Customer extends BaseModel implements Contracts\Customer
         )->withTimestamps();
     }
 
+    public function discounts(): BelongsToMany
+    {
+        $prefix = config('lunar.database.table_prefix');
+
+        return $this->belongsToMany(
+            Discount::modelClass(),
+            "{$prefix}customer_discount"
+        )->withTimestamps();
+    }
+
     public function addresses(): HasMany
     {
         return $this->hasMany(Address::modelClass());

@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Events\ModelUrlsUpdated;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Lunar\Facades\ModelManifest;
 
 class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
 {
@@ -55,7 +56,7 @@ class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
                             ignoreRecord: true,
                             modifyRuleUsing: function (Unique $rule, callable $get) {
                                 return $rule
-                                    ->where('element_type', (new static::$model)->getMorphClass())
+                                    ->where('element_type', ModelManifest::get(static::$model))
                                     ->where('language_id', $get('language_id'));
                             }
                         )

@@ -6,6 +6,10 @@ return [
 
     'plural_label' => 'Products',
 
+    'tabs' => [
+        'all' => 'All',
+    ],
+
     'status' => [
         'unpublished' => [
             'content' => 'Currently in draft status, this product is hidden across all channels and customer groups.',
@@ -77,9 +81,11 @@ return [
         ],
         'tags' => [
             'label' => 'Tags',
+            'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
         ],
         'collections' => [
             'label' => 'Collections',
+            'select_collection' => 'Select a collection',
         ],
     ],
 

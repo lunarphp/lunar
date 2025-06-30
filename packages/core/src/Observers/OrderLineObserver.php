@@ -5,17 +5,17 @@ namespace Lunar\Observers;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Lunar\Base\Purchasable;
 use Lunar\Exceptions\NonPurchasableItemException;
-use Lunar\Models\OrderLine;
+use Lunar\Models\Contracts\OrderLine as OrderLineContract;
+use Lunar\Models\OrderLine as OrderLine;
 
 class OrderLineObserver
 {
     /**
      * Handle the OrderLine "creating" event.
-     *
-     * @return void
      */
-    public function creating(OrderLine $orderLine)
+    public function creating(OrderLineContract $orderLine): void
     {
+        /** @var OrderLine $orderLine */
         $purchasableModel = class_exists($orderLine->purchasable_type) ?
             $orderLine->purchasable_type :
             Relation::getMorphedModel($orderLine->purchasable_type);
@@ -27,10 +27,8 @@ class OrderLineObserver
 
     /**
      * Handle the OrderLine "updated" event.
-     *
-     * @return void
      */
-    public function updating(OrderLine $orderLine)
+    public function updating(OrderLineContract $orderLine): void
     {
         $purchasableModel = class_exists($orderLine->purchasable_type) ?
             $orderLine->purchasable_type :

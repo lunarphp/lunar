@@ -6,6 +6,10 @@ return [
 
     'plural_label' => 'Produits',
 
+    'tabs' => [
+        'all' => 'Tous',
+    ],
+
     'status' => [
         'unpublished' => [
             'content' => 'Actuellement en statut de brouillon, ce produit est masqué sur tous les canaux et groupes de clients.',
@@ -115,6 +119,7 @@ return [
         ],
         'collections' => [
             'label' => 'Collections',
+            'select_collection' => 'Sélectionner une collection',
         ],
         'associations' => [
             'label' => 'Associations de produits',

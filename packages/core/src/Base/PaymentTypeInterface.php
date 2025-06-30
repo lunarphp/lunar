@@ -5,9 +5,9 @@ namespace Lunar\Base;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
-use Lunar\Models\Cart;
-use Lunar\Models\Order;
-use Lunar\Models\Transaction;
+use Lunar\Models\Contracts\Cart;
+use Lunar\Models\Contracts\Order;
+use Lunar\Models\Contracts\Transaction;
 
 interface PaymentTypeInterface
 {

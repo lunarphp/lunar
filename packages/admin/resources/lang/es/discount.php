@@ -74,6 +74,12 @@ return [
             'label' => 'Agregar recompensas automáticamente',
             'helper_text' => 'Activa para agregar productos de recompensa cuando no estén presentes en el carrito.',
         ],
+        'fixed_value' => [
+            'label' => 'Valor fijo',
+        ],
+        'percentage' => [
+            'label' => 'Porcentaje',
+        ],
     ],
     'table' => [
         'name' => [
@@ -107,6 +113,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Disponibilidad',
+        ],
+        'edit' => [
+            'title' => 'Información básica',
         ],
         'limitations' => [
             'label' => 'Limitaciones',

@@ -11,13 +11,13 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Currency;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 
 class CurrencyResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = Currency::class;
+    protected static ?string $model = CurrencyContract::class;
 
     protected static ?int $navigationSort = 1;
 

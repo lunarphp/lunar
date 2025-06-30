@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Lunar\Facades\DB;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Product;
 
 class Dissociate implements ShouldQueue
@@ -30,7 +31,7 @@ class Dissociate implements ShouldQueue
     /**
      * The parent product instance.
      */
-    protected Product $product;
+    protected ProductContract $product;
 
     /**
      * The SKU for the generated variant.
@@ -45,7 +46,7 @@ class Dissociate implements ShouldQueue
      * @param  mixed  $targets
      * @param  string  $type
      */
-    public function __construct(Product $product, $targets, $type = null)
+    public function __construct(ProductContract $product, $targets, $type = null)
     {
         if (is_array($targets)) {
             $targets = collect($targets);

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lunar\Base\BaseModel;
@@ -33,7 +34,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?int $brand_id
  * @property int $product_type_id
  * @property string $status
- * @property array $attribute_data
+ * @property ?\Illuminate\Support\Collection $attribute_data
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
@@ -112,12 +113,24 @@ class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
         return $this->hasMany(ProductVariant::modelClass());
     }
 
+    public function variant(): HasOne
+    {
+        return $this->hasOne(ProductVariant::modelClass());
+    }
+
+    protected function hasVariants(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->variants()->count() > 1,
+        );
+    }
+
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
             \Lunar\Models\Collection::modelClass(),
             config('lunar.database.table_prefix').'collection_product'
-        )->withPivot(['position'])->withTimestamps();
+        )->withPivot(['position'])->orderByPivot('position')->withTimestamps();
     }
 
     public function associations(): HasMany
