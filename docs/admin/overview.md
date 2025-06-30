@@ -9,6 +9,38 @@ Lunar's admin panel is powered by Filament v3. It allows you to easily extend th
 
 With the panel you can administer your products, collections, orders, customers, discounts, settings and much more.
 
+## Registering
+
+If you followed the core installation instructions or have installed a starter kit, you will likely already have this in place.
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        LunarPanel::register();
+    }
+```
+
+## Two-Factor Authentication
+
+Two-factory authentication is enabled by default. You can either disable this, or force it, depending on your preference.
+
+### Disabling Two-Factor Authentication
+
+```php
+LunarPanel::disableTwoFactorAuth()->register();
+```
+
+### Forcing Two-Factor Authentication
+
+```php
+LunarPanel::forceTwoFactorAuth()->register();
+```
+
+
 ## Contributing
 
 If you wish to contribute to the project, please review the roadmap at https://github.com/orgs/lunarphp/projects/8/views/8
