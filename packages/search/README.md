@@ -62,6 +62,32 @@ Under the hood this will detect what Scout driver is mapped under `lunar.search.
 then perform a search using that given driver. To increase performance the results will not be 
 hydrated from the database, but instead will be the raw results from the search provider.
 
+### Response format
+
+This packages makes use of Spatie Data to transform search results from the provider into consistent responses you can use on your frontend.
+
+You can view all available Data classes in the `src/Data` directory.
+
+### Transforming Data classes to Typescript
+
+If you use Spatie Typescript Transformer, you can add the following to your `typescript-transformer.php` config:
+
+```php
+return [
+    //...
+    'auto_discover_types' => [
+        // ...
+        \Lunar\Search\data_path(),
+    ],
+];
+```
+Then in your Javascript the data classes will be available under the `Lunar.Search` namespace.
+
+```js
+defineProps<{
+    results: Lunar.Search.SearchResults
+}>()
+```
 
 ### Handling the response
 

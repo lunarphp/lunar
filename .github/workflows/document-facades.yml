@@ -1,0 +1,71 @@
+# Credits to Laravel facades workflow: https://github.com/laravel/framework/blob/12.x/.github/workflows/facades.yml
+name: document-facades
+
+on:
+  push:
+    branches:
+      - '*.x'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: true
+
+    name: Facade DocBlocks
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: :php-psr
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: |
+            composer config repositories.facade-documenter vcs git@github.com:laravel/facade-documenter.git
+            composer require --dev laravel/facade-documenter:dev-main --prefer-stable --prefer-dist --no-interaction --no-progress
+
+      - name: Update facade docblocks
+        run: |
+          php -f vendor/bin/facade.php -- \
+            Lunar\\Admin\\Support\\Facades\\ActivityLog \
+            Lunar\\Admin\\Support\\Facades\\AttributeData \
+            Lunar\\Admin\\Support\\Facades\\LunarAccessControl \
+            Lunar\\Admin\\Support\\Facades\\LunarPanel \
+            Lunar\\Facades\\AttributeManifest \
+            Lunar\\Facades\\CartSession \
+            Lunar\\Facades\\DB \
+            Lunar\\Facades\\Discounts \
+            Lunar\\Facades\\FieldTypeManifest \
+            Lunar\\Facades\\ModelManifest \
+            Lunar\\Facades\\Payments \
+            Lunar\\Facades\\Pricing \
+            Lunar\\Facades\\ShippingManifest \
+            Lunar\\Facades\\StorefrontSession \
+            Lunar\\Facades\\Taxes \
+            Lunar\\Opayo\\Facades\\Opayo \
+            Lunar\\Paypal\\Facades\\Paypal \
+            Lunar\\Search\\Facades\\Search \
+            Lunar\\Shipping\\Facades\\Shipping \
+            Lunar\\Stripe\\Facades\\Stripe
+
+      - name: Commit facade docblocks
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update facade docblocks
+          file_pattern: packages/

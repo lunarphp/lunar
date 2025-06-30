@@ -10,6 +10,8 @@ use Stripe\PaymentIntent;
 
 class StripePaymentIntent extends BaseModel
 {
+    const FINAL_STATES = [PaymentIntent::STATUS_CANCELED, PaymentIntent::STATUS_SUCCEEDED];
+
     /**
      * {@inheritDoc}
      */
@@ -22,6 +24,11 @@ class StripePaymentIntent extends BaseModel
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->whereNotIn('status', [PaymentIntent::STATUS_CANCELED, PaymentIntent::STATUS_SUCCEEDED]);
+        return $query->whereNotIn('status', self::FINAL_STATES);
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status && ! in_array($this->status, self::FINAL_STATES);
     }
 }
