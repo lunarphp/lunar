@@ -8,7 +8,7 @@ use and should exercise the same amount of caution as you would with any softwar
 ## Requirements
 
 - PHP >= 8.2
-- Laravel 10, 11, 12
+- Laravel 11, 12
 - MySQL 8.0+ / PostgreSQL 9.2+
 - exif PHP extension (on most systems it will be installed by default)
 - intl PHP extension (on most systems it will be installed by default)
