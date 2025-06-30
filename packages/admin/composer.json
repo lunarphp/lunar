@@ -15,15 +15,15 @@
     "minimum-stability": "dev",
     "require": {
         "lunarphp/core": "self.version",
-        "filament/filament": "3.3.11",
+        "filament/filament": "^3.3.4",
         "filament/spatie-laravel-media-library-plugin": "^3.3.4",
         "spatie/laravel-permission": "^6.12",
         "barryvdh/laravel-dompdf": "^3.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
-        "leandrocfe/filament-apex-charts": "3.2.0",
-        "awcodes/shout": "2.0.4",
-        "awcodes/filament-badgeable-column": "2.3.2",
-        "stephenjude/filament-two-factor-authentication": "1.0.0"
+        "leandrocfe/filament-apex-charts": "^3.2.0",
+        "awcodes/shout": "^2.0.4",
+        "awcodes/filament-badgeable-column": "^2.3.2",
+        "stephenjude/filament-two-factor-authentication": "^2.0"
     },
     "extra": {
         "laravel": {
