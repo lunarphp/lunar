@@ -18,6 +18,14 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-beta.22
+
+### High Impact
+
+#### Lunar Panel Discount Interface
+
+The `LunarPanelDiscountInterface` now requires a `lunarPanelRelationManagers` method that returns an array of relation managers you want to show in the admin panel when the discount type is used. You will need to update any custom discount types you have created to include this method.
+
 ## 1.0.0-beta.21
 
 ### High Impact
