@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Admin\Support\Tables\Columns\ThumbnailImageColumn;
 use Lunar\Models\Collection;
 use Lunar\Models\Contracts\Collection as CollectionContract;
 use Lunar\Models\Contracts\Product as ProductContract;
@@ -86,11 +87,8 @@ class ProductConditionRelationManager extends BaseRelationManager
                     return $data;
                 }),
             ])->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('discountable.thumbnail')
-                    ->collection(config('lunar.media.collection'))
-                    ->conversion('small')
-                    ->limit(1)
-                    ->square()
+                ThumbnailImageColumn::make('discountable_id')
+                    ->resolveThumbnailUrlUsing(fn (?Model $record) => $record?->discountable?->getThumbnailImage())
                     ->label(''),
 
                 Tables\Columns\TextColumn::make('discountable.id')

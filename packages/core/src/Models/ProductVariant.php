@@ -217,4 +217,9 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purc
 
         return $this->stock + $this->backorder;
     }
+
+    public function getThumbnailImage(): string
+    {
+        return $this->getThumbnail()?->getUrl('small') ?? '';
+    }
 }
