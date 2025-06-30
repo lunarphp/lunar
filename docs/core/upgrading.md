@@ -22,6 +22,11 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ### High Impact
 
+#### Removed Laravel 10 Support
+
+Laravel 10 support has been removed as it was becoming harder to support. You will want to upgrade your projects to 
+Laravel 11+ for this release. You may consider [Laravel Shift](https://laravelshift.com/) to assist you.
+
 #### Lunar Panel Discount Interface
 
 The `LunarPanelDiscountInterface` now requires a `lunarPanelRelationManagers` method that returns an array of relation managers you want to show in the admin panel when the discount type is used. You will need to update any custom discount types you have created to include this method.

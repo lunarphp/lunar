@@ -109,6 +109,12 @@ class TestTaxDriver implements TaxDriver
 
         $variant = $this->purchasable ?: ProductVariant::factory()->create();
 
+        if (prices_inc_tax()) {
+            // Remove tax from price
+            $totalTaxPercentage = $taxAmounts->sum('percentage') / 100; // E.g. 0.2 for 20%
+            $subTotal = round($subTotal / (1 + $totalTaxPercentage));
+        }
+
         foreach ($taxAmounts as $amount) {
             $result = round($subTotal * ($amount->percentage / 100));
 
