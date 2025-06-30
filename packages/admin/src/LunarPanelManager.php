@@ -228,7 +228,8 @@ class LunarPanelManager
             $plugins[] = TwoFactorAuthenticationPlugin::make()
                 ->enableTwoFactorAuthentication()
                 ->addTwoFactorMenuItem(label: '2FA Settings')
-                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
+                // Using instead of "forceTwoFactorSetup" for L10 support
+                ->enforceTwoFactorSetup(condition: $this->twoFactorAuthForced);
         }
 
         return Panel::make()
