@@ -10,6 +10,10 @@ return [
         'manage' => 'Zarządzanie zamówieniami',
     ],
 
+    'tabs' => [
+        'all' => 'Wszelkie',
+    ],
+
     'transactions' => [
         'capture' => 'Przechwycona',
         'intent' => 'Rozpoczęta',

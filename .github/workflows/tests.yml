@@ -10,26 +10,21 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.2, 8.3, 8.4]
-        laravel: [10.*, 11.*, 12.*]
+        laravel: [11.*, 12.*]
         dependency-version: [prefer-stable]
         testsuite: [core, admin, shipping, stripe, search]
+        extend-models: ["true", "false"]
         include:
           - laravel: 12.*
             testbench: 10.*
           - laravel: 11.*
             testbench: 9.*
-          - laravel: 10.*
-            testbench: 8.*
         exclude:
-          - php: 8.3
-            laravel: 10.*
-          - php: 8.4
-            laravel: 10.*
           - php: 8.2
             laravel: 11.*
           - php: 8.2
             laravel: 12.*
-    name: ${{ matrix.testsuite }} - PHP ${{ matrix.php }} - L${{ matrix.laravel }} ${{ matrix.dependency-version == 'prefer-lowest' && '↓' || '↑' }}
+    name: ${{ matrix.testsuite }} - PHP ${{ matrix.php }} - L${{ matrix.laravel }} ${{ matrix.dependency-version == 'prefer-lowest' && '↓' || '↑' }} ${{ matrix.extend-models == 'true' && 'E' || '' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -58,4 +53,5 @@ jobs:
           APP_ENV: testing
           DB_CONNECTION: testing
           DB_DATABASE: ":memory:"
+          LUNAR_TESTING_REPLACE_MODELS: ${{ matrix.extend-models }}
         run: ./vendor/bin/pest --testsuite ${{ matrix.testsuite }}

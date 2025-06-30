@@ -162,7 +162,7 @@ class Order extends BaseModel implements Contracts\Order
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::modelClass());
     }
 
     public function user(): BelongsTo

@@ -3,22 +3,30 @@
 namespace Lunar\Pipelines\Order\Creation;
 
 use Closure;
+use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Order;
+use Lunar\Utils\Arr;
 
 class MapDiscountBreakdown
 {
     /**
-     * @return mixed
+     * @param  Closure(OrderContract): mixed  $next
      */
-    public function handle(Order $order, Closure $next)
+    public function handle(OrderContract $order, Closure $next): mixed
     {
+        /** @var Order $order */
         $cart = $order->cart;
 
         $cartLinesMappedToOrderLines = [];
 
         foreach ($order->lines as $orderLine) {
             $cartLine = $cart->lines->first(function ($cartLine) use ($orderLine) {
-                return $cartLine->purchasable_type == $orderLine->purchasable_type &&
+                $diff = Arr::diff($cartLine->meta, $orderLine->meta);
+
+                return empty($diff->new) &&
+                    empty($diff->edited) &&
+                    empty($diff->removed) &&
+                    $cartLine->purchasable_type == $orderLine->purchasable_type &&
                     $cartLine->purchasable_id == $orderLine->purchasable_id;
             });
 

@@ -6,6 +6,10 @@ return [
 
     'plural_label' => 'Produkty',
 
+    'tabs' => [
+        'all' => 'Wszystkie',
+    ],
+
     'status' => [
         'unpublished' => [
             'content' => 'Produkt jest obecnie w trybie szkicu i jest ukryty we wszystkich kanałach i grupach klientów.',
@@ -115,6 +119,7 @@ return [
         ],
         'collections' => [
             'label' => 'Kolekcje',
+            'select_collection' => 'Wybierz kolekcję',
         ],
         'associations' => [
             'label' => 'Powiązania',

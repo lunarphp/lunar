@@ -12,7 +12,7 @@
         "awcodes/filament-badgeable-column": "^2.3.2",
         "awcodes/shout": "^2.0.4",
         "barryvdh/laravel-dompdf": "^3.0",
-        "cartalyst/converter": "^8.0|^9.0|^10",
+        "cartalyst/converter": "^9.0|^10",
         "doctrine/dbal": "^3.6",
         "dompdf/dompdf": "^3.1",
         "ext-bcmath": "*",
@@ -23,7 +23,7 @@
         "guzzlehttp/guzzle": "^7.3",
         "http-interop/http-factory-guzzle": "^1.2",
         "kalnoy/nestedset": "^v6.0.5",
-        "laravel/framework": "^10.0|^11.0|^12.0",
+        "laravel/framework": "^11.0|^12.0",
         "laravel/scout": "^10.13.1",
         "leandrocfe/filament-apex-charts": "^3.2.0",
         "livewire/livewire": "^3.0",
@@ -37,6 +37,7 @@
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-permission": "^6.12",
         "spatie/php-structure-discoverer": "^2.3.1",
+        "stephenjude/filament-two-factor-authentication": "^2.0",
         "stripe/stripe-php": "^16.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
         "typesense/typesense-php": "^4.9"
@@ -75,6 +76,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Lunar\\Tests\\": "tests",
             "Lunar\\Tests\\Admin\\": "tests/admin",
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",

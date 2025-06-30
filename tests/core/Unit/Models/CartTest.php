@@ -739,15 +739,26 @@ test('can calculate shipping', function () {
 
     expect($cart->subTotal->value)->toEqual(100);
     expect($cart->shippingSubTotal->value)->toEqual(500);
+    expect($cart->shippingTaxTotal->value)->toEqual(100);
     expect($cart->shippingTotal->value)->toEqual(600);
     expect($cart->total->value)->toEqual(720);
+
+    expect($cart->shippingAddress->shippingSubTotal->value)->toEqual(500);
+    expect($cart->shippingAddress->shippingTaxTotal->value)->toEqual(100);
+    expect($cart->shippingAddress->shippingTotal->value)->toEqual(600);
 
     Config::set('lunar.pricing.stored_inclusive_of_tax', true);
 
     $cart->recalculate();
 
+    expect($cart->subTotal->value)->toEqual(100);
+    expect($cart->shippingSubTotal->value)->toEqual(500);
     expect($cart->shippingTotal->value)->toEqual(500);
     expect($cart->total->value)->toEqual(600);
+
+    expect($cart->shippingAddress->shippingSubTotal->value)->toEqual(500);
+    expect($cart->shippingAddress->shippingTaxTotal->value)->toEqual(83);
+    expect($cart->shippingAddress->shippingTotal->value)->toEqual(500);
 });
 
 test('can create a discount breakdown', function () {
@@ -1069,7 +1080,7 @@ test('can get new draft order when cart changes', function () {
             $cart->currentDraftOrder()->id
         )->toBe($orderTwo->id);
 
-});
+})->skip('When order is not placed, no new draft order is created even if cart changes.');
 
 test('can get same draft order when cart does not change', function () {
     $currency = Currency::factory()

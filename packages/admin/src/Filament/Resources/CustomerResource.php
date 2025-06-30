@@ -16,13 +16,13 @@ use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\OrdersRelat
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\UserRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOverviewWidget;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Customer;
+use Lunar\Models\Contracts\Customer as CustomerContract;
 
 class CustomerResource extends BaseResource
 {
     protected static ?string $permission = 'sales:manage-customers';
 
-    protected static ?string $model = Customer::class;
+    protected static ?string $model = CustomerContract::class;
 
     protected static ?int $navigationSort = 2;
 

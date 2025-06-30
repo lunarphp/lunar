@@ -9,6 +9,10 @@ return [
         'manage' => 'Quản lý',
     ],
 
+    'tabs' => [
+        'all' => 'Tất cả',
+    ],
+
     'transactions' => [
         'capture' => 'Đã thu tiền',
         'intent' => 'Chờ thanh toán',

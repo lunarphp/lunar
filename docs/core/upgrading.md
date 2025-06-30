@@ -18,6 +18,92 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-beta.22
+
+### High Impact
+
+#### Removed Laravel 10 Support
+
+Laravel 10 support has been removed as it was becoming harder to support. You will want to upgrade your projects to 
+Laravel 11+ for this release. You may consider [Laravel Shift](https://laravelshift.com/) to assist you.
+
+#### Lunar Panel Discount Interface
+
+The `LunarPanelDiscountInterface` now requires a `lunarPanelRelationManagers` method that returns an array of relation managers you want to show in the admin panel when the discount type is used. You will need to update any custom discount types you have created to include this method.
+
+## 1.0.0-beta.21
+
+### High Impact
+
+#### Order reference generation changes
+
+The current order reference generator uses the format `YYYY-MM-{X}` which has been implemented since the early days of when Lunar was called GetCandy.
+
+This approach to formatting is not great for order references and can lead to anomalies when attempting to determine the next reference in the sequence.
+
+The new format uses the Order ID and adds leading zeros and an optional prefix i.e.
+
+Assuming order ID is 1965
+```
+// Old
+2025-04-00250
+// New
+00001965
+```
+The length of the reference, plus the prefix can now be defined in the `lunar/orders.php` config file:
+
+```php
+    'reference_format' => [
+        /**
+         * Optional prefix for the order reference
+         */
+        'prefix' => null,
+        
+        /**
+         * STR_PAD_LEFT: 00001965
+         * STR_PAD_RIGHT: 19650000
+         * STR_PAD_BOTH: 00196500
+         */
+        'padding_direction' => STR_PAD_LEFT,
+        
+        /**
+         * 00001965
+         * AAAA1965
+         */
+        'padding_character' => '0',
+        
+        /**
+         * If the length specified below is smaller than the length
+         * of the Order ID, then no padding will take place.
+         */
+        'length' => 8,
+    ],
+```
+
+If you wish to keep using the current action used to generate references, you can [copy the existing class](https://github.com/lunarphp/lunar/blob/1.0.0-beta20/packages/core/src/Base/OrderReferenceGenerator.php) into your app and update the `reference_generator` path in config.
+
+### Medium Impact
+
+#### Two-Factor Authentication has been added
+
+To continue improving security for the Lunar panel, Staff members now have the ability to set up Two-Factor Authentication. Currently this is opt-in, however you can enforce all Staff members to set up 2FA:
+
+```php
+public function register()
+{
+    \Lunar\Admin\Support\Facades\LunarPanel::enforceTwoFactorAuth()->register();
+}
+```
+
+If you do not wish to use Two-Factor Authentication at all, you can disable it and the option to set it up won't show.
+
+```php
+public function register()
+{
+    \Lunar\Admin\Support\Facades\LunarPanel::disableTwoFactorAuth()->register();
+}
+```
+
 ## 1.0.0-beta.1
 
 ### High Impact

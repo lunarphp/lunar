@@ -8,6 +8,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Product;
 
 class ShippingExclusionRelationManager extends RelationManager
@@ -27,15 +28,15 @@ class ShippingExclusionRelationManager extends RelationManager
             ->schema([
                 Forms\Components\MorphToSelect::make('purchasable')
                     ->types([
-                        Forms\Components\MorphToSelect\Type::make(Product::class)
+                        Forms\Components\MorphToSelect\Type::make(Product::modelClass())
                             ->titleAttribute('name')
                             ->getOptionLabelUsing(
                                 fn (Model $record) => $record->purchasable->attr('name')
                             )
                             ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                return get_search_builder(Product::class, $search)
+                                return get_search_builder(Product::modelClass(), $search)
                                     ->get()
-                                    ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                                    ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                     ->all();
                             }),
                     ])
