@@ -9,7 +9,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Events\ModelPricesUpdated;
 use Lunar\Facades\DB;
 use Lunar\Models\Currency;
