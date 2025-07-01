@@ -93,7 +93,6 @@ use Lunar\Observers\ProductObserver;
 use Lunar\Observers\ProductOptionObserver;
 use Lunar\Observers\ProductOptionValueObserver;
 use Lunar\Observers\ProductVariantObserver;
-use Lunar\Observers\TaxZoneObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
 
@@ -319,7 +318,6 @@ class LunarServiceProvider extends ServiceProvider
         ProductOption::observe(ProductOptionObserver::class);
         ProductOptionValue::observe(ProductOptionValueObserver::class);
         ProductVariant::observe(ProductVariantObserver::class);
-        TaxZone::observe(TaxZoneObserver::class);
         Transaction::observe(TransactionObserver::class);
         Url::observe(UrlObserver::class);
 
