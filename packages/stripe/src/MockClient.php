@@ -17,6 +17,8 @@ class MockClient implements ClientInterface
 
     public string $url;
 
+    private bool $failThenCaptureCalled = false;
+
     public function __construct()
     {
         $this->url = 'https://checkout.stripe.com/pay/cs_test_'.Str::random(32);
@@ -121,6 +123,22 @@ class MockClient implements ClientInterface
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }
 
+            if (str_contains($absUrl, 'PI_FIRST_FAIL_THEN_CAPTURE')) {
+                $succeeded = $this->failThenCaptureCalled;
+                $this->rBody = $this->getResponse('payment_intent_paid', [
+                    'id' => $id,
+                    'status' => $succeeded ? 'succeeded' : 'requires_payment_method',
+                    'capture_method' => 'automatic',
+                    'payment_status' => $succeeded ? 'succeeded' : 'failed',
+                    'payment_error' => $succeeded ? null : 'failed',
+                    'failure_code' => $succeeded ? null : 1234,
+                    'captured' => $succeeded,
+                ]);
+
+                $this->failThenCaptureCalled = true;
+
+                return [$this->rBody, $this->rcode, $this->rheaders];
+            }
         }
 
         if ($method == 'post' && str_contains($absUrl, 'payment_intents')) {

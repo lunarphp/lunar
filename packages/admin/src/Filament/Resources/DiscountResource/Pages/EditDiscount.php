@@ -91,6 +91,11 @@ class EditDiscount extends BaseEditRecord
             $managers[] = DiscountResource\RelationManagers\ProductRewardRelationManager::class;
         }
 
+        $type = $this->record->getType();
+        if ($type instanceof LunarPanelDiscountInterface) {
+            $managers = array_merge($managers, $type->lunarPanelRelationManagers());
+        }
+
         return $managers;
     }
 }

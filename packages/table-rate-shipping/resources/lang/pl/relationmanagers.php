@@ -34,8 +34,11 @@ return [
                     'currency_id' => [
                         'label' => 'Waluta',
                     ],
-                    'min_quantity' => [
-                        'label' => 'Minimalna kwota',
+                    'min_spend' => [
+                        'label' => 'Min. Kwota',
+                    ],
+                    'min_weight' => [
+                        'label' => 'Min. Waga',
                     ],
                     'price' => [
                         'label' => 'Cena',
