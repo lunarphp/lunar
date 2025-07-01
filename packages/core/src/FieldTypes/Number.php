@@ -50,17 +50,12 @@ class Number implements FieldType, JsonSerializable
      */
     public function setValue($value)
     {
-        if (blank($value)) {
-            $this->value = 0;
-            return;
-        }
-
-        if (!is_numeric($value)) {
+        if (! blank($value) && ! is_numeric($value)) {
             throw new FieldTypeException(self::class.' value must be numeric.');
         }
 
         // Cast to int if the value is a whole number, otherwise use float
-        $this->value = floor($value) == $value ? (int) $value : (float) $value;
+        $this->value = blank($value) ? 0 : (floor($value) == $value ? (int) $value : (float) $value);
     }
 
     /**
