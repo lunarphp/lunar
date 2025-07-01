@@ -43,10 +43,10 @@ class SyncPriceCurrencies implements ShouldQueue
 
             if (! $priceCounterpart) {
                 $priceCounterpart = (new \Lunar\Models\Price)->forceFill([
-                    ...$this->price->toArray(),
+                    ...$this->price->getAttributes(),
                     'id' => null,
                     'currency_id' => $currency->id,
-                    'price' => $this->price->price->value * $currency->currency->exchange_rate,
+                    'price' => $this->price->price->value * $currency->exchange_rate,
                 ]);
 
                 $priceCounterpart->saveQuietly();
@@ -54,9 +54,8 @@ class SyncPriceCurrencies implements ShouldQueue
                 return;
             }
 
-            $priceCounterpart->updateQuietly([
-                'price' => $this->price->price->value * $currency->exchange_rate,
-            ]);
+            $priceCounterpart->price = $this->price->price->value * $currency->exchange_rate;
+            $priceCounterpart->saveQuietly();
         }
     }
 }

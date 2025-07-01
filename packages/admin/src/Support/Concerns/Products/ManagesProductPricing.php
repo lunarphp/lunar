@@ -63,14 +63,14 @@ trait ManagesProductPricing
         );
 
         $prices->filter(
-            fn ($price) => $price['id']
+            fn ($price) => $price['id'] && ($price['value'] != $price['original_value'])
         )->each(fn ($price) => Price::find($price['id'])->update([
             'price' => (int) round((float) ($price['value'] * $price['factor'])),
             'compare_price' => (int) ($price['compare_price'] * $price['factor']),
         ])
         );
 
-        $this->basePrices = $this->getBasePrices($variant);
+        $this->basePrices = $this->getBasePrices();
 
         $this->dispatch('refresh-relation-manager');
 
@@ -177,6 +177,7 @@ trait ManagesProductPricing
                 $price->currency->code,
                 [
                     'id' => $price->id,
+                    'original_value' => $price->price->decimal(rounding: false),
                     'value' => $price->price->decimal(rounding: false),
                     'compare_price' => $price->compare_price->decimal(rounding: false),
                     'factor' => $price->currency->factor,
@@ -194,9 +195,11 @@ trait ManagesProductPricing
 
         foreach ($currencies as $currency) {
             if (! $prices->get($currency->code)) {
+                $value = round(($defaultCurrencyPrice['value'] ?? 0) * $currency->exchange_rate, $currency->decimal_places);
                 $prices->put($currency->code, [
                     'id' => null,
-                    'value' => round(($defaultCurrencyPrice['value'] ?? 0) * $currency->exchange_rate, $currency->decimal_places),
+                    'original_value' => $value,
+                    'value' => $value,
                     'compare_price' => round(($defaultCurrencyPrice['compare_price'] ?? 0) * $currency->exchange_rate, $currency->decimal_places),
                     'factor' => $currency->factor,
                     'label' => $currency->name,
