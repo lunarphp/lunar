@@ -17,8 +17,8 @@ return [
                 'cannot_delete' => [
                     'title' => 'Löschen nicht möglich',
                     'body' => 'Diese Sammlung enthält untergeordnete Sammlungen und kann nicht gelöscht werden.',
-                ]
-            ]
+                ],
+            ],
         ],
     ],
     'orders' => [

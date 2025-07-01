@@ -17,8 +17,8 @@ return [
                 'cannot_delete' => [
                     'title' => 'No se puede eliminar',
                     'body' => 'Esta colección tiene colecciones secundarias y no se puede eliminar.',
-                ]
-            ]
+                ],
+            ],
         ],
     ],
     'orders' => [

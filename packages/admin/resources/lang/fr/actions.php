@@ -17,8 +17,8 @@ return [
                 'cannot_delete' => [
                     'title' => 'Suppression impossible',
                     'body' => 'Cette collection contient des sous-collections et ne peut pas être supprimée.',
-                ]
-            ]
+                ],
+            ],
         ],
     ],
     'orders' => [

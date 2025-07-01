@@ -17,8 +17,8 @@ return [
                 'cannot_delete' => [
                     'title' => 'Kan niet verwijderen',
                     'body' => 'Deze collectie heeft onderliggende collecties en kan niet worden verwijderd.',
-                ]
-            ]
+                ],
+            ],
         ],
     ],
     'orders' => [

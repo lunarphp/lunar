@@ -17,8 +17,8 @@ return [
                 'cannot_delete' => [
                     'title' => 'Không thể xóa',
                     'body' => 'Bộ sưu tập này có chứa các bộ sưu tập con và không thể xóa được.',
-                ]
-            ]
+                ],
+            ],
         ],
     ],
     'orders' => [

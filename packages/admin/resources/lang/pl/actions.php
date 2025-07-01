@@ -17,8 +17,8 @@ return [
                 'cannot_delete' => [
                     'title' => 'Nie można usunąć',
                     'body' => 'Ta kolekcja zawiera kolekcje podrzędne i nie może zostać usunięta.',
-                ]
-            ]
+                ],
+            ],
         ],
     ],
     'orders' => [
