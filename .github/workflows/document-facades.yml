@@ -2,7 +2,10 @@
 name: document-facades
 
 on:
-  pull_request:
+  push:
+    branches:
+      - '*.x'
+  workflow_dispatch:
 
 permissions:
   contents: write

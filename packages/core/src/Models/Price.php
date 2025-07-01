@@ -105,6 +105,21 @@ class Price extends BaseModel implements Contracts\Price
     }
 
     /**
+     * Return the compare price inclusive of tax.
+     */
+    public function comparePriceIncTax(): int|\Lunar\DataTypes\Price
+    {
+        if (prices_inc_tax()) {
+            return $this->compare_price;
+        }
+
+        $comparePriceIncTax = clone $this->compare_price;
+        $comparePriceIncTax->value = (int) round($comparePriceIncTax->value * (1 + $this->getPriceableTaxRate()));
+
+        return $comparePriceIncTax;
+    }
+
+    /**
      * Return the total tax rate amount within the predefined tax zone for the related priceable
      */
     protected function getPriceableTaxRate(): int|float

@@ -2,6 +2,7 @@
 
 return [
     'customer_groups' => [
+        'title' => 'Kundengruppen',
         'actions' => [
             'attach' => [
                 'label' => 'Kundengruppe hinzufügen',

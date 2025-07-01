@@ -20,21 +20,21 @@ test('can set value in constructor', function () {
 test('can set as empty string', function () {
     $field = new Number('');
 
-    expect($field->getValue())->toEqual('');
+    expect($field->getValue())->toEqual(0);
 
     $field->setValue('');
 
-    expect($field->getValue())->toEqual('');
+    expect($field->getValue())->toEqual(0);
 });
 
 test('can set as null value', function () {
     $field = new Number(null);
 
-    expect($field->getValue())->toEqual(null);
+    expect($field->getValue())->toEqual(0);
 
     $field->setValue(null);
 
-    expect($field->getValue())->toEqual(null);
+    expect($field->getValue())->toEqual(0);
 });
 
 test('check does not allow non numerics', function () {

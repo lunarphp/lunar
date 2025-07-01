@@ -62,6 +62,62 @@ it('can retrieve existing payment intent', function () {
     expect($cart->refresh()->meta['payment_intent'])->toBe('PI_FOOBAR');
 });
 
+it('can handle multiple payment events', function () {
+    $cart = CartBuilder::build();
+    $order = $cart->createOrder();
+
+    $payment = new StripePaymentType;
+
+    $response = $payment->order($order)->withData([
+        'payment_intent' => 'PI_FIRST_FAIL_THEN_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->currentDraftOrder())->not()->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_FIRST_FAIL_THEN_CAPTURE');
+
+    // $cart->refresh();
+    // $cart->paymentIntents->first()->refresh();
+
+    $response = $payment->order($order)->withData([
+        'payment_intent' => 'PI_FIRST_FAIL_THEN_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
+        ->and($cart->paymentIntents->count())->toEqual(1)
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_FIRST_FAIL_THEN_CAPTURE');
+});
+
+it('will fail if intent is in final status', function () {
+    $cart = CartBuilder::build();
+    $order = $cart->createOrder();
+
+    $payment = new StripePaymentType;
+
+    $response = $payment->order($order)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+
+    $response = $payment->order($order)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent already processed')
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+});
+
 it('will fail if cart already has an order', function () {
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
@@ -209,5 +265,4 @@ it('can return correct payment checks', function () {
         ->and($paymentDChecks[2]->successful)
         ->not
         ->toBe(true);
-
 });
