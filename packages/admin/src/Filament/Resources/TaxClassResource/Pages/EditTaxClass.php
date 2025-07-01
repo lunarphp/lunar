@@ -3,9 +3,9 @@
 namespace Lunar\Admin\Filament\Resources\TaxClassResource\Pages;
 
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\TaxClassResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Filament\Notifications\Notification;
 
 class EditTaxClass extends BaseEditRecord
 {
