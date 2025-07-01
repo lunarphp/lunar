@@ -6,6 +6,10 @@ return [
 
     'plural_label' => 'Producten',
 
+    'tabs' => [
+        'all' => 'Allemaal',
+    ],
+
     'status' => [
         'unpublished' => [
             'content' => 'Momenteel in conceptstatus, dit product is verborgen op alle kanalen en klantgroepen.',
@@ -112,6 +116,7 @@ return [
         ],
         'collections' => [
             'label' => 'Collecties',
+            'select_collection' => 'Selecteer een collectie',
         ],
         'associations' => [
             'label' => 'Productassociaties',

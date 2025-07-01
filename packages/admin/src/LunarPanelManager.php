@@ -33,9 +33,14 @@ use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Http\Controllers\DownloadPdfController;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
+use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticationPlugin;
 
 class LunarPanelManager
 {
+    protected bool $twoFactorAuthForced = false;
+
+    protected bool $twoFactorAuthDisabled = false;
+
     protected ?\Closure $closure = null;
 
     protected array $extensions = [];
@@ -169,6 +174,20 @@ class LunarPanelManager
         return Filament::getPanel($this->panelId);
     }
 
+    public function forceTwoFactorAuth(bool $state = true): self
+    {
+        $this->twoFactorAuthForced = $state;
+
+        return $this;
+    }
+
+    public function disableTwoFactorAuth(): self
+    {
+        $this->twoFactorAuthDisabled = true;
+
+        return $this;
+    }
+
     protected function defaultPanel(): Panel
     {
         $brandAsset = function ($asset) {
@@ -199,6 +218,17 @@ class LunarPanelManager
         if (config('lunar.panel.pdf_rendering', 'download') == 'stream') {
             Route::get('lunar/pdf/download', DownloadPdfController::class)
                 ->name('lunar.pdf.download')->middleware($panelMiddleware);
+        }
+
+        $plugins = [
+            \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
+        ];
+
+        if (! $this->twoFactorAuthDisabled) {
+            $plugins[] = TwoFactorAuthenticationPlugin::make()
+                ->enableTwoFactorAuthentication()
+                ->addTwoFactorMenuItem(label: '2FA Settings')
+                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
         }
 
         return Panel::make()
@@ -238,9 +268,7 @@ class LunarPanelManager
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugins([
-                \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
-            ])
+            ->plugins($plugins)
             ->discoverLivewireComponents(__DIR__.'/Livewire', 'Lunar\\Admin\\Livewire')
             ->livewireComponents([
                 Resources\OrderResource\Pages\Components\OrderItemsTable::class,
@@ -258,10 +286,26 @@ class LunarPanelManager
     public function extensions(array $extensions): self
     {
         foreach ($extensions as $class => $extension) {
-            $this->extensions[$class][] = new $extension;
+            if (! is_array($extension)) {
+                $extension = [$extension];
+            }
+
+            $this->extensions[$class] = [
+                ...$this->extensions[$class] ?? [],
+                ...collect($extension)->reject(
+                    fn ($extension) => ! class_exists($extension)
+                )->map(
+                    fn ($extension) => app($extension)
+                )->values()->toArray(),
+            ];
         }
 
         return $this;
+    }
+
+    public function getExtensions(): array
+    {
+        return $this->extensions;
     }
 
     /**

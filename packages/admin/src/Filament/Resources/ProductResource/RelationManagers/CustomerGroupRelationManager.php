@@ -6,6 +6,7 @@ use Filament;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
@@ -17,6 +18,11 @@ class CustomerGroupRelationManager extends BaseRelationManager
     protected static string $relationship = 'customerGroups';
 
     public ?string $description = null;
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::relationmanagers.customer_groups.title');
+    }
 
     public function isReadOnly(): bool
     {

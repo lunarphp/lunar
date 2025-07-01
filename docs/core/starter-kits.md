@@ -28,10 +28,19 @@ We assume you have a suitable local development environment in which to run Luna
 ### Create a New Project
 
 ```bash
-composer create-project --stability dev lunarphp/livewire-starter-kit example-store
+composer create-project --stability dev lunarphp/livewire-starter-kit my-store
 
-cd example-store
+cd my-store
 ```
+
+or using the latest Laravel Installer you can do...
+
+```bash
+laravel new my-store --using=lunarphp/livewire-starter-kit
+
+cd my-store
+```
+
 
 ### Configure the Laravel app
 

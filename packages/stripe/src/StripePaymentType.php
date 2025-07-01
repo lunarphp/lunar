@@ -10,6 +10,7 @@ use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Events\PaymentAttemptEvent;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\DisallowMultipleCartOrdersException;
+use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
@@ -58,10 +59,29 @@ class StripePaymentType extends AbstractPayment
 
         $paymentIntentModel = StripePaymentIntent::where('intent_id', $paymentIntentId)->first();
 
+        if ($paymentIntentModel && ! $paymentIntentModel->isActive()) {
+            $failure = new PaymentAuthorize(
+                success: false,
+                message: 'Payment intent already processed',
+                paymentType: 'stripe'
+            );
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
+        }
+
         $this->order = $this->order ?: ($this->cart->draftOrder ?: $this->cart->completedOrder);
 
-        if (($this->order && $this->order->placed_at) || $paymentIntentModel?->processing_at) {
-            return null;
+        if (($this->order && $this->order->isPlaced())) {
+            $failure = new PaymentAuthorize(
+                success: false,
+                message: 'Order already placed',
+                orderId: $this->order->id,
+                paymentType: 'stripe'
+            );
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
         }
 
         if (! $paymentIntentModel) {
@@ -144,8 +164,9 @@ class StripePaymentType extends AbstractPayment
      *
      * @param  int  $amount
      */
-    public function capture(Transaction $transaction, $amount = 0): PaymentCapture
+    public function capture(TransactionContract $transaction, $amount = 0): PaymentCapture
     {
+        /** @var Transaction $transaction */
         $payload = [];
 
         if ($amount > 0) {
@@ -178,8 +199,9 @@ class StripePaymentType extends AbstractPayment
      *
      * @param  string|null  $notes
      */
-    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
+    public function refund(TransactionContract $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
+        /** @var Transaction $transaction */
         $charge = Stripe::getCharge($transaction->reference);
 
         try {
@@ -210,8 +232,9 @@ class StripePaymentType extends AbstractPayment
         );
     }
 
-    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    public function getPaymentChecks(TransactionContract $transaction): PaymentChecks
     {
+        /** @var Transaction $transaction */
         $meta = $transaction->meta;
 
         $checks = new PaymentChecks;

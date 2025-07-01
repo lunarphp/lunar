@@ -64,6 +64,7 @@ use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
+use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 use Lunar\Models\Language;
@@ -81,6 +82,7 @@ use Lunar\Observers\ChannelObserver;
 use Lunar\Observers\CollectionObserver;
 use Lunar\Observers\CurrencyObserver;
 use Lunar\Observers\CustomerGroupObserver;
+use Lunar\Observers\CustomerObserver;
 use Lunar\Observers\DiscountObserver;
 use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\MediaObserver;
@@ -304,6 +306,7 @@ class LunarServiceProvider extends ServiceProvider
 
         Channel::observe(ChannelObserver::class);
         CustomerGroup::observe(CustomerGroupObserver::class);
+        Customer::observe(CustomerObserver::class);
         Discount::observe(DiscountObserver::class);
         Language::observe(LanguageObserver::class);
         Currency::observe(CurrencyObserver::class);
@@ -333,7 +336,7 @@ class LunarServiceProvider extends ServiceProvider
                 return $this;
             }
 
-            if ($driver === 'mysql') {
+            if ($driver === 'mysql' || $driver === 'mariadb') {
                 $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
                 return $this->orderByRaw("FIELD(id, {$placeholders})", $ids);

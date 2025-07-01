@@ -24,8 +24,8 @@ it('can retrieve staff data', function () {
         'record' => $staff->getRouteKey(),
     ])
         ->assertFormSet([
-            'firstname' => $staff->firstname,
-            'lastname' => $staff->lastname,
+            'first_name' => $staff->first_name,
+            'last_name' => $staff->last_name,
             'email' => $staff->email,
         ]);
 });
@@ -39,16 +39,16 @@ it('can save staff data', function () {
         'record' => $staff->getRouteKey(),
     ])
         ->fillForm([
-            'firstname' => $newData->firstname,
-            'lastname' => $newData->lastname,
+            'first_name' => $newData->first_name,
+            'last_name' => $newData->last_name,
             'email' => $newData->email,
         ])
         ->call('save')
         ->assertHasNoFormErrors();
 
     expect($staff->refresh())
-        ->firstname->toBe($newData->firstname)
-        ->lastname->toBe($newData->lastname)
+        ->first_name->toBe($newData->first_name)
+        ->last_name->toBe($newData->last_name)
         ->email->toBe($newData->email);
 });
 

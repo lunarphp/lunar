@@ -4,8 +4,8 @@ namespace Lunar\Base;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
+use Lunar\Models\Contracts\Currency;
+use Lunar\Models\Contracts\CustomerGroup;
 
 interface PricingManagerInterface
 {

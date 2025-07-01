@@ -7,9 +7,12 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Stripe\Actions\ConstructWebhookEvent;
+use Lunar\Stripe\Actions\ProcessEventParameters;
 use Lunar\Stripe\Components\PaymentForm;
 use Lunar\Stripe\Concerns\ConstructsWebhookEvent;
+use Lunar\Stripe\Concerns\ProcessesEventParameters;
 use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\Models\StripePaymentIntent;
 
@@ -27,8 +30,12 @@ class StripePaymentsServiceProvider extends ServiceProvider
             return $app->make(StripePaymentType::class);
         });
 
-        Cart::resolveRelationUsing('paymentIntents', function (Cart $cart) {
+        Cart::resolveRelationUsing('paymentIntents', function (CartContract $cart) {
             return $cart->hasMany(StripePaymentIntent::class);
+        });
+
+        $this->app->bind(ProcessesEventParameters::class, function ($app) {
+            return $app->make(ProcessEventParameters::class);
         });
 
         $this->app->bind(ConstructsWebhookEvent::class, function ($app) {

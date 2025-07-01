@@ -13,6 +13,16 @@ class EditDiscount extends BaseEditRecord
 {
     protected static string $resource = DiscountResource::class;
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::discount.pages.edit.title');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('lunarpanel::discount.pages.edit.title');
+    }
+
     protected function getDefaultHeaderActions(): array
     {
         return [
@@ -79,6 +89,11 @@ class EditDiscount extends BaseEditRecord
         if ($this->record->type == BuyXGetY::class) {
             $managers[] = DiscountResource\RelationManagers\ProductConditionRelationManager::class;
             $managers[] = DiscountResource\RelationManagers\ProductRewardRelationManager::class;
+        }
+
+        $type = $this->record->getType();
+        if ($type instanceof LunarPanelDiscountInterface) {
+            $managers = array_merge($managers, $type->lunarPanelRelationManagers());
         }
 
         return $managers;

@@ -9,16 +9,18 @@ use Lunar\DataTypes\Price;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class CalculateTax
 {
     /**
      * Called just before cart totals are calculated.
      *
-     * @return mixed
+     * @param  Closure(CartContract): mixed  $next
      */
-    public function handle(Cart $cart, Closure $next)
+    public function handle(CartContract $cart, Closure $next): mixed
     {
+        /** @var Cart $cart */
         $taxBreakDownAmounts = collect();
 
         foreach ($cart->lines as $cartLine) {
@@ -73,12 +75,8 @@ class CalculateTax
             $shippingTaxTotal = $shippingTax->amounts->sum('price.value');
             $shippingTaxTotal = new Price($shippingTaxTotal, $cart->currency, 1);
 
+            $cart->shippingTaxTotal = $shippingTaxTotal;
             $taxTotal += $shippingTaxTotal?->value;
-
-            if ($cart->shippingAddress && ! $cart->shippingOptionOverride) {
-                $cart->shippingAddress->taxBreakdown = $shippingTax;
-                $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
-            }
 
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $shippingTax->amounts
@@ -88,11 +86,20 @@ class CalculateTax
             if (! prices_inc_tax()) {
                 $shippingTotal += $shippingTaxTotal?->value;
             }
-            $cart->shippingTotal = new Price(
+
+            $shippingTotal = new Price(
                 $shippingTotal,
                 $cart->currency,
                 1
             );
+
+            $cart->shippingTotal = $shippingTotal;
+
+            if ($cart->shippingAddress && ! $cart->shippingOptionOverride) {
+                $cart->shippingAddress->taxBreakdown = $shippingTax;
+                $cart->shippingAddress->shippingTaxTotal = $shippingTaxTotal;
+                $cart->shippingAddress->shippingTotal = $shippingTotal;
+            }
         }
 
         $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);

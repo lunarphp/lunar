@@ -74,6 +74,12 @@ return [
             'label' => 'Tự động thêm quà tặng',
             'helper_text' => 'Bật để tự động thêm sản phẩm quà tặng khi không có trong giỏ hàng.',
         ],
+        'fixed_value' => [
+            'label' => 'Giá trị cố định',
+        ],
+        'percentage' => [
+            'label' => 'Phần trăm',
+        ],
     ],
     'table' => [
         'name' => [
@@ -107,6 +113,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Khả dụng',
+        ],
+        'edit' => [
+            'title' => 'Thông tin cơ bản',
         ],
         'limitations' => [
             'label' => 'Giới hạn',
