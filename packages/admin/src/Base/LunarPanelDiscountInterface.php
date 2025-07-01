@@ -18,4 +18,9 @@ interface LunarPanelDiscountInterface
      * Mutate the form data before saving it to the discount model.
      */
     public function lunarPanelOnSave(array $data): array;
+
+    /**
+     * Define any relation managers you want to add to the admin form.
+     */
+    public function lunarPanelRelationManagers(): array;
 }

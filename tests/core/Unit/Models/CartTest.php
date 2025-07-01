@@ -739,6 +739,7 @@ test('can calculate shipping', function () {
 
     expect($cart->subTotal->value)->toEqual(100);
     expect($cart->shippingSubTotal->value)->toEqual(500);
+    expect($cart->shippingTaxTotal->value)->toEqual(100);
     expect($cart->shippingTotal->value)->toEqual(600);
     expect($cart->total->value)->toEqual(720);
 
