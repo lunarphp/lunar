@@ -45,7 +45,7 @@ class TaxZone extends BaseModel implements Contracts\TaxZone
             $taxZone->states()->delete();
             $taxZone->postcodes()->delete();
             $taxZone->customerGroups()->delete();
-            $taxZone->taxRates()->delete();
+            $taxZone->taxRates->each->delete();
             DB::commit();
         });
     }

@@ -24,4 +24,11 @@ return [
         ],
     ],
 
+    'delete' => [
+        'error' => [
+            'title' => 'No se puede eliminar la clase de impuesto',
+            'body' => 'Esta clase de impuesto tiene variantes de producto asociadas y no se puede eliminar.',
+        ],
+    ],
+
 ];
