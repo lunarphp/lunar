@@ -30,8 +30,6 @@ class PriceRelationManager extends BaseRelationManager
         return __('lunarpanel::relationmanagers.pricing.table.heading');
     }
 
-
-
     public function form(Form $form): Form
     {
         return $form
