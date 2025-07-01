@@ -4,20 +4,22 @@ namespace Lunar\Search\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Lunar\Search\Contracts\SearchManagerContract;
-use Lunar\Search\Engines\AbstractEngine;
-use Lunar\Search\Engines\DatabaseEngine;
-use Lunar\Search\Engines\MeilisearchEngine;
-use Lunar\Search\Engines\TypesenseEngine;
-use Lunar\Search\SearchManager;
 
 /**
- * @method static DatabaseEngine createDatabaseDriver()
- * @method static MeilisearchEngine createMeilisearchDriver()
- * @method static TypesenseEngine createTypesenseDriver()
- * @method static mixed buildProvider()
- * @method static SearchManager model()
- * @method static AbstractEngine driver()
- * @method static string getDefaultDriver()
+ * @method static void createDatabaseDriver()
+ * @method static void createMeilisearchDriver()
+ * @method static void createTypesenseDriver()
+ * @method static void buildProvider(void $provider)
+ * @method static \Lunar\Search\SearchManager model(string $model)
+ * @method static \Lunar\Search\Engines\AbstractEngine driver(string|null $driver = null)
+ * @method static void getDefaultDriver()
+ * @method static \Lunar\Search\SearchManager extend(string $driver, \Closure $callback)
+ * @method static array getDrivers()
+ * @method static \Illuminate\Contracts\Container\Container getContainer()
+ * @method static \Lunar\Search\SearchManager setContainer(\Illuminate\Contracts\Container\Container $container)
+ * @method static \Lunar\Search\SearchManager forgetDrivers()
+ *
+ * @see \Lunar\Search\SearchManager
  */
 class Search extends Facade
 {

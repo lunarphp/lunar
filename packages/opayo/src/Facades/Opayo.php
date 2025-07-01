@@ -3,13 +3,15 @@
 namespace Lunar\Opayo\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
 use Lunar\Opayo\OpayoInterface;
 
 /**
- * @method static getAuthPayload(AuthPayloadParameters $parameters): array
- * @method static getMerchantKey(): ?string
- * @method static api(): PendingRequest
+ * @method static string|null getMerchantKey()
+ * @method static \Illuminate\Http\Client\PendingRequest api()
+ * @method static object|null getTransaction(string $id, void $attempt = 1)
+ * @method static array getAuthPayload(\Lunar\Opayo\DataTransferObjects\AuthPayloadParameters $parameters)
+ *
+ * @see \Lunar\Opayo\Opayo
  */
 class Opayo extends Facade
 {

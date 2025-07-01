@@ -5,6 +5,7 @@ namespace Lunar\Pipelines\Order\Creation;
 use Closure;
 use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Order;
+use Lunar\Utils\Arr;
 
 class MapDiscountBreakdown
 {
@@ -20,7 +21,12 @@ class MapDiscountBreakdown
 
         foreach ($order->lines as $orderLine) {
             $cartLine = $cart->lines->first(function ($cartLine) use ($orderLine) {
-                return $cartLine->purchasable_type == $orderLine->purchasable_type &&
+                $diff = Arr::diff($cartLine->meta, $orderLine->meta);
+
+                return empty($diff->new) &&
+                    empty($diff->edited) &&
+                    empty($diff->removed) &&
+                    $cartLine->purchasable_type == $orderLine->purchasable_type &&
                     $cartLine->purchasable_id == $orderLine->purchasable_id;
             });
 
