@@ -336,7 +336,7 @@ class LunarServiceProvider extends ServiceProvider
                 return $this;
             }
 
-            if ($driver === 'mysql') {
+            if ($driver === 'mysql' || $driver === 'mariadb') {
                 $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
                 return $this->orderByRaw("FIELD(id, {$placeholders})", $ids);

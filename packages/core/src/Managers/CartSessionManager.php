@@ -127,7 +127,7 @@ class CartSessionManager implements CartSessionInterface
     /**
      * Fetches a cart and optionally creates one if it doesn't exist.
      */
-    private function fetchOrCreate(bool $create = false, bool $estimateShipping = false, bool $calculate = true): ?Cart
+    protected function fetchOrCreate(bool $create = false, bool $estimateShipping = false, bool $calculate = true): ?Cart
     {
         $cartId = $this->sessionManager->get(
             $this->getSessionKey()

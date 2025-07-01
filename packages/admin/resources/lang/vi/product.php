@@ -119,6 +119,7 @@ return [
         ],
         'collections' => [
             'label' => 'Bộ sưu tập',
+            'select_collection' => 'Chọn bộ sưu tập',
         ],
         'associations' => [
             'label' => 'Liên kết sản phẩm',

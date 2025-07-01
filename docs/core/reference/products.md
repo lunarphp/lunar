@@ -641,6 +641,7 @@ available on the `Lunar\Models\Price` model.
 ```php
 $price->priceIncTax();
 $price->priceExTax();
+$price->comparePriceIncTax(); // to retrieve the tax inclusive compare price 
 ```
 
 ### Customising Prices with Pipelines

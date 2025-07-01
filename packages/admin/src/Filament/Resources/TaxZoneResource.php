@@ -328,7 +328,10 @@ class TaxZoneResource extends BaseResource
                 ])
                 ->label(__('lunarpanel::taxzone.table.name.label')),
             Tables\Columns\TextColumn::make('zone_type')
-                ->label(__('lunarpanel::taxzone.table.zone_type.label')),
+                ->label(__('lunarpanel::taxzone.table.zone_type.label'))
+                ->formatStateUsing(
+                    fn ($state) => __("lunarpanel::taxzone.form.zone_type.options.{$state}")
+                ),
             Tables\Columns\IconColumn::make('active')
                 ->boolean()
                 ->label(__('lunarpanel::taxzone.table.active.label')),

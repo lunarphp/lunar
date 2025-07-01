@@ -34,8 +34,11 @@ return [
                     'currency_id' => [
                         'label' => 'Tiền tệ',
                     ],
-                    'min_quantity' => [
-                        'label' => 'Chi tiêu tối thiểu',
+                    'min_spend' => [
+                        'label' => 'Chi tiêu T.thiểu',
+                    ],
+                    'min_weight' => [
+                        'label' => 'K.lượng T.thiểu',
                     ],
                     'price' => [
                         'label' => 'Giá',

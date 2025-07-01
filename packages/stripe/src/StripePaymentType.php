@@ -59,10 +59,29 @@ class StripePaymentType extends AbstractPayment
 
         $paymentIntentModel = StripePaymentIntent::where('intent_id', $paymentIntentId)->first();
 
+        if ($paymentIntentModel && ! $paymentIntentModel->isActive()) {
+            $failure = new PaymentAuthorize(
+                success: false,
+                message: 'Payment intent already processed',
+                paymentType: 'stripe'
+            );
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
+        }
+
         $this->order = $this->order ?: ($this->cart->draftOrder ?: $this->cart->completedOrder);
 
-        if (($this->order && $this->order->placed_at) || $paymentIntentModel?->processing_at) {
-            return null;
+        if (($this->order && $this->order->isPlaced())) {
+            $failure = new PaymentAuthorize(
+                success: false,
+                message: 'Order already placed',
+                orderId: $this->order->id,
+                paymentType: 'stripe'
+            );
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
         }
 
         if (! $paymentIntentModel) {
