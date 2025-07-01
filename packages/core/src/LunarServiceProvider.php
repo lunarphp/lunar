@@ -74,7 +74,6 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxZone;
 use Lunar\Models\Transaction;
 use Lunar\Models\Url;
 use Lunar\Observers\AddressObserver;
