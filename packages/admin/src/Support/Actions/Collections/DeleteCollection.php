@@ -15,8 +15,8 @@ class DeleteCollection extends DeleteAction
         $this->before(function ($record, $action) {
             if ($record->children()->exists()) {
                 Notification::make()
-                    ->title('Cannot Delete')
-                    ->body('This collection has child collections and cannot be deleted.')
+                    ->title(__('lunarpanel::actions.collections.delete.notifications.cannot_delete.title'))
+                    ->body(__('lunarpanel::actions.collections.delete.notifications.cannot_delete.body'))
                     ->danger()
                     ->send();
 
