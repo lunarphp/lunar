@@ -61,7 +61,7 @@ class AttributeData
 
                 return $state;
             })
-            ->mutateStateForValidationUsing(function ($state) use ($attribute) {
+            ->mutateStateForValidationUsing(function ($state) {
                 // Convert FieldType objects to their actual values for validation
                 if ($state instanceof \Lunar\Base\FieldType) {
                     return $state->getValue();
