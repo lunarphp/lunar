@@ -302,24 +302,23 @@ class LunarServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
-        Product::observe(ProductObserver::class);
-
+        Address::observe(AddressObserver::class);
+        CartLine::observe(CartLineObserver::class);
         Channel::observe(ChannelObserver::class);
-        CustomerGroup::observe(CustomerGroupObserver::class);
+        Collection::observe(CollectionObserver::class);
+        Currency::observe(CurrencyObserver::class);
         Customer::observe(CustomerObserver::class);
+        CustomerGroup::observe(CustomerGroupObserver::class);
         Discount::observe(DiscountObserver::class);
         Language::observe(LanguageObserver::class);
-        Currency::observe(CurrencyObserver::class);
-        Url::observe(UrlObserver::class);
-        Collection::observe(CollectionObserver::class);
-        CartLine::observe(CartLineObserver::class);
+        Order::observe(OrderObserver::class);
+        OrderLine::observe(OrderLineObserver::class);
+        Product::observe(ProductObserver::class);
         ProductOption::observe(ProductOptionObserver::class);
         ProductOptionValue::observe(ProductOptionValueObserver::class);
         ProductVariant::observe(ProductVariantObserver::class);
-        Order::observe(OrderObserver::class);
-        OrderLine::observe(OrderLineObserver::class);
-        Address::observe(AddressObserver::class);
         Transaction::observe(TransactionObserver::class);
+        Url::observe(UrlObserver::class);
 
         if ($mediaModel = config('media-library.media_model')) {
             $mediaModel::observe(MediaObserver::class);

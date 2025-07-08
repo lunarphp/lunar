@@ -24,4 +24,11 @@ return [
         ],
     ],
 
+    'delete' => [
+        'error' => [
+            'title' => 'Steuerklasse kann nicht gelöscht werden',
+            'body' => 'Diese Steuerklasse hat zugeordnete Produktvarianten und kann nicht gelöscht werden.',
+        ],
+    ],
+
 ];
