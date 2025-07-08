@@ -37,6 +37,7 @@ it('can edit variant attributes', function () {
         ],
         'handle' => 'test-attribute',
         'section' => 'main',
+        'type' => \Lunar\FieldTypes\Toggle::class,
         'required' => false,
         'system' => false,
         'searchable' => false,
@@ -59,12 +60,12 @@ it('can edit variant attributes', function () {
 
     $component->fillForm([
         'variant' => [
-            $attribute->handle => new \Lunar\FieldTypes\Text('Hello'),
+            $attribute->handle => new \Lunar\FieldTypes\Toggle(true),
         ],
     ])->call('save')
         ->assertHasNoFormErrors();
 
-    expect($variant->refresh()->attr($attribute->handle))->toBe('Hello');
+    expect($variant->refresh()->attr($attribute->handle))->toBe(true);
 });
 
 it('can save attributes', function () {
