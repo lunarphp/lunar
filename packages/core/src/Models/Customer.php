@@ -22,7 +22,7 @@ use Lunar\Database\Factories\CustomerFactory;
  * @property string $first_name
  * @property string $last_name
  * @property ?string $company_name
- * @property ?string $vat_number
+ * @property ?string $tax_identifier
  * @property ?string $account_ref
  * @property ?array $attribute_data
  * @property ?array $meta

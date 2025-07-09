@@ -22,8 +22,8 @@ return [
         'company_name' => [
             'label' => 'Nombre de la Empresa',
         ],
-        'vat_number' => [
-            'label' => 'NIF',
+        'tax_identifier' => [
+            'label' => 'Identificador Fiscal',
         ],
         'account_reference' => [
             'label' => 'Referencia de Cuenta',
@@ -52,8 +52,8 @@ return [
         'account_ref' => [
             'label' => 'Referencia de Cuenta',
         ],
-        'vat_number' => [
-            'label' => 'NIF',
+        'tax_identifier' => [
+            'label' => 'Identificador Fiscal',
         ],
         'customer_groups' => [
             'label' => 'Grupos de Clientes',

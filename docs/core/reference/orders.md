@@ -250,7 +250,7 @@ If you are using the `createOrder` method on a cart, this is all handled for you
     'first_name' => 'Jacob',
     'last_name' => null,
     'company_name' => null,
-    'vat_number' => null,
+    'tax_identifier' => null,
     'line_one' => '123 Foo Street',
     'line_two' => null,
     'line_three' => null,

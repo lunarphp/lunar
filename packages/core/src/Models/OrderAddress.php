@@ -20,7 +20,7 @@ use Lunar\Database\Factories\OrderAddressFactory;
  * @property ?string $first_name
  * @property ?string $last_name
  * @property ?string $company_name
- * @property ?string $vat_number
+ * @property ?string $tax_identifier
  * @property ?string $line_one
  * @property ?string $line_two
  * @property ?string $line_three
@@ -64,7 +64,7 @@ class OrderAddress extends BaseModel implements Addressable, Contracts\OrderAddr
         'first_name',
         'last_name',
         'company_name',
-        'vat_number',
+        'tax_identifier',
         'line_one',
         'line_two',
         'line_three',

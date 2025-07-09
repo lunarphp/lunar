@@ -84,7 +84,7 @@ return [
             'company_name' => [
                 'label' => 'Bedrijfsnaam',
             ],
-            'vat_number' => [
+            'tax_identifier' => [
                 'label' => 'BTW-nummer',
             ],
             'contact_phone' => [

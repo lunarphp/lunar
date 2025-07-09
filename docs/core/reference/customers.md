@@ -17,7 +17,7 @@ Lunar\Models\Customer
 |`first_name`||
 |`last_name`||
 |`company_name`|nullable|
-|`vat_number`|nullable|
+|`tax_identifier`|nullable|
 |`account_ref`|nullable|
 |`attribute_data`|JSON|
 |`meta`|JSON|
@@ -32,7 +32,7 @@ Lunar\Models\Customer::create([
     'first_name' => 'Tony',
     'last_name' => 'Stark',
     'company_name' => 'Stark Enterprises',
-    'vat_number' => null,
+    'tax_identifier' => null,
     'meta' => [
         'account_no' => 'TNYSTRK1234'
     ],

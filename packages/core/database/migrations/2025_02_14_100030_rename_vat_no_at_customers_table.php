@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table($this->prefix.'customers', function (Blueprint $table) {
-            $table->renameColumn('vat_no', 'vat_number');
+            $table->renameColumn('vat_no', 'tax_identifier');
         });
     }
 
     public function down(): void
     {
         Schema::table($this->prefix.'customers', function (Blueprint $table) {
-            $table->renameColumn('vat_number', 'vat_no');
+            $table->renameColumn('tax_identifier', 'vat_no');
         });
     }
 };

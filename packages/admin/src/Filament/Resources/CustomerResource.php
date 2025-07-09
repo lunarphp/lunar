@@ -86,7 +86,7 @@ class CustomerResource extends BaseResource
             static::getCompanyNameFormComponent(),
             Forms\Components\Group::make()->schema([
                 static::getAccountRefFormComponent(),
-                static::getVatNoFormComponent(),
+                static::getTaxIdFormComponent(),
             ])->columns(2),
         ];
     }
@@ -147,10 +147,10 @@ class CustomerResource extends BaseResource
             ->maxLength(255);
     }
 
-    protected static function getVatNoFormComponent(): Component
+    protected static function getTaxIdFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('vat_number')
-            ->label(__('lunarpanel::customer.form.vat_number.label'))
+        return Forms\Components\TextInput::make('tax_identifier')
+            ->label(__('lunarpanel::customer.form.tax_identifier.label'))
             ->nullable()
             ->maxLength(255);
     }
@@ -184,8 +184,8 @@ class CustomerResource extends BaseResource
                     ->label(__('lunarpanel::customer.table.company_name.label'))
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('vat_number')
-                    ->label(__('lunarpanel::customer.table.vat_number.label'))
+                Tables\Columns\TextColumn::make('tax_identifier')
+                    ->label(__('lunarpanel::customer.table.tax_identifier.label'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('account_ref')
                     ->label(__('lunarpanel::customer.table.account_reference.label'))
@@ -260,7 +260,7 @@ class CustomerResource extends BaseResource
             'last_name',
             'company_name',
             'account_ref',
-            'vat_number',
+            'tax_identifier',
             'users.name',
             'users.email',
         ];

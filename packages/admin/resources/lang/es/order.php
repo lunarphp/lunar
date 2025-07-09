@@ -84,8 +84,8 @@ return [
             'company_name' => [
                 'label' => 'Nombre de la Empresa',
             ],
-            'vat_number' => [
-                'label' => 'Número de IVA',
+            'tax_identifier' => [
+                'label' => 'Identificador Fiscal',
             ],
             'contact_phone' => [
                 'label' => 'Teléfono',

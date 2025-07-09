@@ -22,8 +22,8 @@ return [
         'company_name' => [
             'label' => 'Bedrijfsnaam',
         ],
-        'vat_number' => [
-            'label' => 'BTW Nr.',
+        'tax_identifier' => [
+            'label' => 'BTW Identificatie',
         ],
         'account_reference' => [
             'label' => 'Account Referentie',
@@ -52,8 +52,8 @@ return [
         'account_ref' => [
             'label' => 'Account Referentie',
         ],
-        'vat_number' => [
-            'label' => 'BTW Nr.',
+        'tax_identifier' => [
+            'label' => 'BTW Identificatie',
         ],
         'customer_groups' => [
             'label' => 'Klantengroepen',

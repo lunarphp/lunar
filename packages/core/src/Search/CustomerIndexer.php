@@ -41,7 +41,7 @@ class CustomerIndexer extends ScoutIndexer
             'id' => (string) $model->id,
             'name' => $model->fullName,
             'company_name' => $model->company_name,
-            'vat_number' => $model->vat_number,
+            'tax_identifier' => $model->tax_identifier,
             'account_ref' => $model->account_ref,
             'created_at' => (int) $model->created_at->timestamp,
         ], $this->mapSearchableAttributes($model));

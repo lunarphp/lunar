@@ -16,7 +16,7 @@ class CustomerFactory extends BaseFactory
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'company_name' => $this->faker->boolean ? $this->faker->company : null,
-            'vat_number' => $this->faker->boolean ? Str::random() : null,
+            'tax_identifier' => $this->faker->boolean ? Str::random() : null,
             'meta' => $this->faker->boolean ? ['account_no' => Str::random()] : null,
         ];
     }

@@ -95,8 +95,8 @@
                                     @if($record->billingAddress->company_name)
                                       {{ $record->billingAddress->company_name }}<br>
                                     @endif
-                                    @if($record->billingAddress->vat_number)
-                                      {{ $record->billingAddress->vat_number }}<br>
+                                    @if($record->billingAddress->tax_identifier)
+                                      {{ $record->billingAddress->tax_identifier }}<br>
                                     @endif
                                     {{ $record->billingAddress->line_one }}
                                     @if($record->billingAddress->line_two)
@@ -109,8 +109,8 @@
                                     {{ $record->billingAddress->state }}<br>
                                     {{ $record->billingAddress->postcode }}<br>
                                     {{ $record->billingAddress->country->name }}<br>
-                                    @if($record->customer?->vat_number)
-                                        <p>VAT Number: {{ $record->customer?->vat_number }}</p>
+                                    @if($record->customer?->tax_identifier)
+                                        <p>Tax Identifier: {{ $record->customer?->tax_identifier }}</p>
                                     @endif
                                 </td>
 
@@ -120,8 +120,8 @@
                                     @if($record->shippingAddress->company_name)
                                       {{ $record->shippingAddress->company_name }}<br>
                                     @endif
-                                    @if($record->shippingAddress->vat_number)
-                                      {{ $record->shippingAddress->vat_number }}<br>
+                                    @if($record->shippingAddress->tax_identifier)
+                                      {{ $record->shippingAddress->tax_identifier }}<br>
                                     @endif
                                     {{ $record->shippingAddress->line_one }}
                                     @if($record->shippingAddress->line_two)

@@ -17,7 +17,7 @@ use Lunar\Database\Factories\AddressFactory;
  * @property string $first_name
  * @property string $last_name
  * @property ?string $company_name
- * @property ?string $vat_number
+ * @property ?string $tax_identifier
  * @property string $line_one
  * @property ?string $line_two
  * @property ?string $line_three

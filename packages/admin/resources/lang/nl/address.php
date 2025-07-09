@@ -19,7 +19,7 @@ return [
         'company_name' => [
             'label' => 'Bedrijfsnaam',
         ],
-        'vat_number' => [
+        'tax_identifier' => [
             'label' => 'BTW-nummer',
         ],
         'line_one' => [
@@ -64,7 +64,7 @@ return [
         'company_name' => [
             'label' => 'Bedrijfsnaam',
         ],
-        'vat_number' => [
+        'tax_identifier' => [
             'label' => 'BTW-nummer',
         ],
         'line_one' => [

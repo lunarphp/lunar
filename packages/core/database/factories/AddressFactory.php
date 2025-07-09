@@ -17,7 +17,7 @@ class AddressFactory extends BaseFactory
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'company_name' => $this->faker->boolean ? $this->faker->company : null,
-            'vat_number' => $this->faker->boolean ? $this->faker->regexify('[A-Z]{2}[0-9]{8}') : null,
+            'tax_identifier' => $this->faker->boolean ? $this->faker->regexify('[A-Z]{2}[0-9]{8}') : null,
             'line_one' => $this->faker->streetName,
             'line_two' => $this->faker->boolean ? $this->faker->secondaryAddress : null,
             'line_three' => $this->faker->boolean ? $this->faker->buildingNumber : null,

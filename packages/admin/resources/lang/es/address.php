@@ -19,8 +19,8 @@ return [
         'company_name' => [
             'label' => 'Nombre de la empresa',
         ],
-        'vat_number' => [
-            'label' => 'Número de IVA',
+        'tax_identifier' => [
+            'label' => 'Identificador fiscal',
         ],
         'line_one' => [
             'label' => 'Dirección',
@@ -64,8 +64,8 @@ return [
         'company_name' => [
             'label' => 'Nombre de la empresa',
         ],
-        'vat_number' => [
-            'label' => 'Número de IVA',
+        'tax_identifier' => [
+            'label' => 'Identificador fiscal',
         ],
         'line_one' => [
             'label' => 'Línea Uno',

@@ -19,8 +19,8 @@ return [
         'company_name' => [
             'label' => 'Nom de l\'entreprise',
         ],
-        'vat_number' => [
-            'label' => 'Numéro de TVA',
+        'tax_identifier' => [
+            'label' => 'Identifiant fiscal',
         ],
         'line_one' => [
             'label' => 'Adresse',
@@ -64,8 +64,8 @@ return [
         'company_name' => [
             'label' => 'Nom de l\'entreprise',
         ],
-        'vat_number' => [
-            'label' => 'Numéro de TVA',
+        'tax_identifier' => [
+            'label' => 'Identifiant fiscal',
         ],
         'line_one' => [
             'label' => 'Adresse ligne 1',
