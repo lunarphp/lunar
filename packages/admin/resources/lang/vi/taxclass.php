@@ -24,4 +24,11 @@ return [
         ],
     ],
 
+    'delete' => [
+        'error' => [
+            'title' => 'Không thể xóa loại thuế',
+            'body' => 'Loại thuế này có các biến thể sản phẩm liên kết và không thể xóa.',
+        ],
+    ],
+
 ];
