@@ -20,6 +20,12 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ## 1.0.0-beta.24
 
+### Medium Impact
+
+#### Customer `vat_no` field renamed
+The field on the `customers` table has been renamed to `tax_identifier`. This is to align with the new field of the same
+name on `addresses`, `cart_addresses` and `order_addresses`.
+
 ### Low Impact
 
 #### Buy X Get Y Discount conditions and rewards
