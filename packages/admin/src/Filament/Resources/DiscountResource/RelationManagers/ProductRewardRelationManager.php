@@ -94,7 +94,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                         __('lunarpanel::discount.relationmanagers.conditions.table.type.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => ucfirst($record->discountable->morphName()),
+                        fn (Model $record) => str($record->discountable->morphName())->replace('_', ' ')->title(),
                     ),
 
             ])->actions([
