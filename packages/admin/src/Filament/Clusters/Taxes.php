@@ -6,7 +6,7 @@ use Filament\Clusters\Cluster;
 use Filament\Support\Facades\FilamentIcon;
 
 class Taxes extends Cluster
-{
+{x
     protected static ?int $navigationSort = 5;
 
     public static function getNavigationGroup(): ?string
