@@ -12,7 +12,7 @@ use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Support\Pages\BaseDashboard;
 
-class Dashboard extends BaseDashboard
+class Dashboard extends BaseDashboard 
 {
     protected static ?int $navigationSort = 1;
 
