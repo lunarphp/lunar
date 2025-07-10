@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-interface DiscountPurchasable
+interface Discountable
 {
     /**
      * Return the discount relationship.
@@ -14,9 +14,9 @@ interface DiscountPurchasable
     public function discount(): BelongsTo;
 
     /**
-     * Return the priceable relationship.
+     * Return the discountable relationship.
      */
-    public function purchasable(): MorphTo;
+    public function discountable(): MorphTo;
 
     /**
      * Scope a query where type is condition.

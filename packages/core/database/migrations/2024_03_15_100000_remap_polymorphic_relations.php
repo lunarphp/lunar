@@ -26,7 +26,7 @@ class RemapPolymorphicRelations extends Migration
             \Lunar\Models\Discount::class,
             \Lunar\Models\TaxRate::class,
             \Lunar\Models\Price::class,
-            \Lunar\Models\DiscountPurchasable::class,
+            \Lunar\Models\Discountable::class,
             \Lunar\Models\State::class,
             \Lunar\Models\UserPermission::class,
             \Lunar\Models\OrderAddress::class,

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
-use Lunar\Database\Factories\DiscountPurchasableFactory;
+use Lunar\Database\Factories\DiscountableFactory;
 
 /**
  * @property int $id
@@ -18,7 +18,7 @@ use Lunar\Database\Factories\DiscountPurchasableFactory;
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
-class DiscountPurchasable extends BaseModel implements Contracts\DiscountPurchasable
+class Discountable extends BaseModel implements Contracts\Discountable
 {
     use HasFactory;
 
@@ -30,8 +30,8 @@ class DiscountPurchasable extends BaseModel implements Contracts\DiscountPurchas
     protected $casts = [];
 
     protected $fillable = [
-        'purchasable_type',
-        'purchasable_id',
+        'discountable_type',
+        'discountable_id',
         'type',
     ];
 
@@ -40,7 +40,7 @@ class DiscountPurchasable extends BaseModel implements Contracts\DiscountPurchas
      */
     protected static function newFactory()
     {
-        return DiscountPurchasableFactory::new();
+        return DiscountableFactory::new();
     }
 
     /**
@@ -54,7 +54,7 @@ class DiscountPurchasable extends BaseModel implements Contracts\DiscountPurchas
     /**
      * Return the priceable relationship.
      */
-    public function purchasable(): MorphTo
+    public function discountable(): MorphTo
     {
         return $this->morphTo();
     }
