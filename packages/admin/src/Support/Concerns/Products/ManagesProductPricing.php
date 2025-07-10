@@ -56,17 +56,17 @@ trait ManagesProductPricing
         )->each(fn ($price) => $variant->prices()->create([
             'currency_id' => $price['currency_id'],
             'price' => (int) round((float) ($price['value'] * $price['factor'])),
-            'compare_price' => (int) ($price['compare_price'] * $price['factor']),
+            'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
             'min_quantity' => 1,
             'customer_group_id' => null,
         ])
         );
 
         $prices->filter(
-            fn ($price) => $price['id'] && ($price['value'] != $price['original_value'])
+            fn ($price) => $price['id'] && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
         )->each(fn ($price) => Price::find($price['id'])->update([
             'price' => (int) round((float) ($price['value'] * $price['factor'])),
-            'compare_price' => (int) ($price['compare_price'] * $price['factor']),
+            'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
         ])
         );
 
@@ -179,6 +179,7 @@ trait ManagesProductPricing
                     'id' => $price->id,
                     'original_value' => $price->price->decimal(rounding: false),
                     'value' => $price->price->decimal(rounding: false),
+                    'original_compare_price' => $price->compare_price->decimal(rounding: false),
                     'compare_price' => $price->compare_price->decimal(rounding: false),
                     'factor' => $price->currency->factor,
                     'label' => $price->currency->name,
