@@ -13,8 +13,8 @@ class CreateCurrencyPrices
 
         $basePrices = DB::table($tablePrefix.'prices')
             ->select(
-                DB::raw('price * '.$incomingCurrency->exchange_rate.' as price'),
-                DB::raw('compare_price * '.$incomingCurrency->exchange_rate.' as compare_price'),
+                DB::raw('ROUND(price * '.$incomingCurrency->exchange_rate.') as price'),
+                DB::raw('ROUND(compare_price * '.$incomingCurrency->exchange_rate.') as compare_price'),
                 'priceable_type',
                 'customer_group_id',
                 'min_quantity',
