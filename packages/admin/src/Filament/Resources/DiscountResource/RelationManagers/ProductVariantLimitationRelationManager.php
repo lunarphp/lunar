@@ -49,8 +49,6 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                                     $products = get_search_builder(Product::modelClass(), $search)
                                         ->get();
 
-                                    dd($products);
-
                                     return ProductVariant::whereIn('product_id', $products->pluck('id'))
                                         ->with(['product'])
                                         ->get()
