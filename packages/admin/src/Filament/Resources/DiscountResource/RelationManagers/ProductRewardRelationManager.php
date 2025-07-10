@@ -60,11 +60,12 @@ class ProductRewardRelationManager extends BaseRelationManager
                                 }),
 
                             Forms\Components\MorphToSelect\Type::make(ProductVariant::modelClass())
-                                ->titleAttribute('name.en')
+                                ->titleAttribute('sku')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                     return get_search_builder(ProductVariant::modelClass(), $search)
+                                        ->orWhere('sku', 'like', $search.'%')
                                         ->get()
-                                        ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->sku])
+                                        ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();
                                 }),
                         ]),
@@ -85,7 +86,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                         __('lunarpanel::discount.relationmanagers.conditions.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->sku : $record->discountable->attr('name')
+                        fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->product->attr('name').' - '.$record->discountable->sku : $record->discountable->attr('name')
                     ),
 
                 Tables\Columns\TextColumn::make('discountable_type')
