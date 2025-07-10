@@ -23,5 +23,10 @@ return [
             'label' => 'Default',
         ],
     ],
-
+    'delete' => [
+        'error' => [
+            'title' => 'Cannot delete tax class',
+            'body' => 'This tax class has associated product variants and cannot be deleted.',
+        ],
+    ],
 ];

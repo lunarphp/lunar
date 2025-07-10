@@ -71,20 +71,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                 Forms\Components\Group::make([
                     Forms\Components\TextInput::make('price')->formatStateUsing(
                         fn ($state) => $state?->decimal(rounding: false)
-                    )->numeric()->unique(
-                        modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
-                            $owner = $this->getOwnerRecord();
-
-                            return $rule
-                                ->when(blank($get('customer_group_id')),
-                                    fn (Unique $rule) => $rule->whereNull('customer_group_id'),
-                                    fn (Unique $rule) => $rule->where('customer_group_id', $get('customer_group_id')))
-                                ->where('min_quantity', 1)
-                                ->where('currency_id', $get('currency_id'))
-                                ->where('priceable_type', $owner->getMorphClass())
-                                ->where('priceable_id', $owner->id);
-                        }
-                    )->helperText(
+                    )->numeric()->helperText(
                         __('lunarpanel::relationmanagers.pricing.form.price.helper_text')
                     )->required(),
                     Forms\Components\TextInput::make('compare_price')->formatStateUsing(

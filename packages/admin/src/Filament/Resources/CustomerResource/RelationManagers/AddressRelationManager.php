@@ -44,6 +44,9 @@ class AddressRelationManager extends BaseRelationManager
                 Tables\Columns\TextColumn::make('company_name')->label(
                     __('lunarpanel::address.table.company_name.label')
                 ),
+                Tables\Columns\TextColumn::make('tax_identifier')->label(
+                    __('lunarpanel::address.table.tax_identifier.label')
+                ),
                 Tables\Columns\TextColumn::make('line_one')->label(
                     __('lunarpanel::address.table.line_one.label')
                 )->description(function (Model $record) {
@@ -81,6 +84,7 @@ class AddressRelationManager extends BaseRelationManager
                         'first_name' => $record->first_name,
                         'last_name' => $record->last_name,
                         'company_name' => $record->company_name,
+                        'tax_identifier' => $record->tax_identifier,
                         'line_one' => $record->line_one,
                         'line_two' => $record->line_two,
                         'line_three' => $record->line_three,
@@ -104,6 +108,9 @@ class AddressRelationManager extends BaseRelationManager
                         ])->columns(5),
                         Forms\Components\TextInput::make('company_name')->label(
                             __('lunarpanel::address.form.company_name.label')
+                        ),
+                        Forms\Components\TextInput::make('tax_identifier')->label(
+                            __('lunarpanel::address.form.tax_identifier.label')
                         ),
                         Forms\Components\Group::make()->schema([
                             Forms\Components\TextInput::make('line_one')->label(

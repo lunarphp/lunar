@@ -24,4 +24,11 @@ return [
         ],
     ],
 
+    'delete' => [
+        'error' => [
+            'title' => 'Nie można usunąć klasy podatkowej',
+            'body' => 'Ta klasa podatkowa ma powiązane warianty produktów i nie może zostać usunięta.',
+        ],
+    ],
+
 ];

@@ -24,4 +24,11 @@ return [
         ],
     ],
 
+    'delete' => [
+        'error' => [
+            'title' => 'Impossible de supprimer la classe de taxe',
+            'body' => 'Cette classe de taxe a des variantes de produits associées et ne peut pas être supprimée.',
+        ],
+    ],
+
 ];

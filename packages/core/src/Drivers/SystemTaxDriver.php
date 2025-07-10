@@ -127,8 +127,8 @@ class SystemTaxDriver implements TaxDriver
 
                     $amount = new TaxBreakdownAmount(
                         price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
-                        description: $amount->taxRate->name,
                         identifier: "tax_rate_{$amount->taxRate->id}",
+                        description: $amount->taxRate->name,
                         percentage: $amount->percentage
                     );
                     $breakdown->addAmount($amount);
@@ -148,8 +148,8 @@ class SystemTaxDriver implements TaxDriver
 
             $amount = new TaxBreakdownAmount(
                 price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
-                description: $amount->taxRate->name,
                 identifier: "tax_rate_{$amount->taxRate->id}",
+                description: $amount->taxRate->name,
                 percentage: $amount->percentage
             );
             $breakdown->addAmount($amount);

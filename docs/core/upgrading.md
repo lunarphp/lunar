@@ -18,6 +18,20 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## 1.0.0-beta.24
+
+### Medium Impact
+
+#### Customer `vat_no` field renamed
+The field on the `customers` table has been renamed to `tax_identifier`. This is to align with the new field of the same
+name on `addresses`, `cart_addresses` and `order_addresses`.
+
+### Low Impact
+
+#### Buy X Get Y Discount conditions and rewards
+
+Buy X Get Y discounts can now use collections and variants as conditions, and variants as rewards. As part of this change the `discount_purchasables` table has been renamed `discountables` and has its own `Discountable` model. If you have been using `discount_purchasables` directly, or the `purchasables` relation on the discount model, you will need to update your code.
+
 ## 1.0.0-beta.22
 
 ### High Impact

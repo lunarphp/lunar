@@ -14,7 +14,7 @@ class ProductLimitationRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
-    protected static string $relationship = 'purchasables';
+    protected static string $relationship = 'discountables';
 
     public function isReadOnly(): bool
     {
@@ -33,12 +33,12 @@ class ProductLimitationRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['limitation', 'exclusion'])
-                    ->wherePurchasableType(Product::morphName())
-                    ->whereHas('purchasable')
+                    ->whereDiscountableType(Product::morphName())
+                    ->whereHas('discountable')
             )
             ->headerActions([
                 Tables\Actions\CreateAction::make()->form([
-                    Forms\Components\MorphToSelect::make('purchasable')
+                    Forms\Components\MorphToSelect::make('discountable')
                         ->searchable(true)
                         ->types([
                             Forms\Components\MorphToSelect\Type::make(Product::modelClass())
@@ -58,18 +58,18 @@ class ProductLimitationRelationManager extends BaseRelationManager
                     return $data;
                 }),
             ])->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('purchasable.thumbnail')
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('discountable.thumbnail')
                     ->collection(config('lunar.media.collection'))
                     ->conversion('small')
                     ->limit(1)
                     ->square()
                     ->label(''),
-                Tables\Columns\TextColumn::make('purchasable.attribute_data.name')
+                Tables\Columns\TextColumn::make('discountable.attribute_data.name')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.products.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->purchasable->attr('name')
+                        fn (Model $record) => $record->discountable->attr('name')
                     ),
             ])->actions([
                 Tables\Actions\DeleteAction::make(),
