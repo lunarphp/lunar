@@ -15,14 +15,14 @@ Lunar\Models\Discount
 | `id`         |                                                              |                                       |
 | `name`       | The given name for the discount                              |                                       |
 | `handle`     | The unique handle for the discount                           |                                       |
-| `type`       | The type of discount                                         | `Lunar\DiscountTypes\BuyXGetY`          |
-| `data`       | JSON                                                         | Any data to be used by the type class 
-| `starts_at`  | The datetime the discount starts (required)                  |
-| `ends_at`    | The datetime the discount expires, if `NULL` it won't expire |
-| `uses`       | How many uses the discount has had                           |
-| `max_uses`   | The maximum times this discount can be applied storewide     |
-| `priority`   | The order of priority                                        |
-| `stop`       | Whether this discount will stop others after propagating     |
+| `type`       | The type of discount                                         | `Lunar\DiscountTypes\BuyXGetY`        |
+| `data`       | JSON                                                         | Any data to be used by the type class |
+| `starts_at`  | The datetime the discount starts (required)                  |                                       |
+| `ends_at`    | The datetime the discount expires, if `NULL` it won't expire |                                       |
+| `uses`       | How many uses the discount has had                           |                                       |
+| `max_uses`   | The maximum times this discount can be applied storewide     |                                       |
+| `priority`   | The order of priority                                        |                                       |
+| `stop`       | Whether this discount will stop others after propagating     |                                       |
 | `created_at` |                                                              |                                       |
 | `updated_at` |                                                              |                                       |
 
@@ -89,9 +89,9 @@ Lunar\Models\Discountable
 |:--------------------|:------------------------|:------------------------------|
 | `id`                |                         |                               |
 | `discount_id`       |                         |                               |
-| `discountable_type` |                         | `product_variant` 
-| `discountable_id`   |                         |
-| `type`              | `condition` or `reward` |
+| `discountable_type` |                         | `product_variant`             |
+| `discountable_id`   |                         |                               |
+| `type`              | `condition` or `reward` |                               |
 | `created_at`        |                         |                               |
 | `updated_at`        |                         |                               |
 
