@@ -76,7 +76,7 @@ if (! function_exists('db_date')) {
 
 if (! function_exists('get_search_builder')) {
 
-    function get_search_builder($model, $search): Laravel\Scout\Builder|Builder
+    function get_search_builder(string $model, string $search): Laravel\Scout\Builder|Builder
     {
         $scoutEnabled = config('lunar.panel.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive($model));

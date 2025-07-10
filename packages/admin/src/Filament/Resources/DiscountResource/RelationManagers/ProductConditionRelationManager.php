@@ -74,6 +74,7 @@ class ProductConditionRelationManager extends BaseRelationManager
                                 ->titleAttribute('sku')
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                     return get_search_builder(ProductVariant::modelClass(), $search)
+                                        ->orWhere('sku', 'like', $search.'%')
                                         ->get()
                                         ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();
