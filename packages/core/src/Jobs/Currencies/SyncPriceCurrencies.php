@@ -51,7 +51,7 @@ class SyncPriceCurrencies implements ShouldQueue
 
                 $priceCounterpart->saveQuietly();
 
-                return;
+                continue;
             }
 
             $priceCounterpart->price = $this->price->price->value * $currency->exchange_rate;
