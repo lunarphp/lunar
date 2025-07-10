@@ -7,6 +7,7 @@ use Lunar\DataTypes\Price;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 
+use function Filament\Support\generate_search_column_expression;
 use function Filament\Support\generate_search_term_expression;
 
 if (! function_exists('price')) {
@@ -75,7 +76,7 @@ if (! function_exists('db_date')) {
 
 if (! function_exists('get_search_builder')) {
 
-    function get_search_builder($model, $search): Laravel\Scout\Builder|Builder
+    function get_search_builder(string $model, string $search): Laravel\Scout\Builder|Builder
     {
         $scoutEnabled = config('lunar.panel.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive($model));
@@ -93,8 +94,10 @@ if (! function_exists('get_search_builder')) {
 
             $search = generate_search_term_expression($search, true, $databaseConnection);
 
+            $isForcedCaseInsensitive = true;
+
             foreach (explode(' ', $search) as $searchWord) {
-                $query->where(function (Builder $query) use ($model, $searchWord) {
+                $query->where(function (Builder $query) use ($model, $searchWord, $isForcedCaseInsensitive, $databaseConnection) {
                     $attributes = Attribute::whereAttributeType($model::morphName())
                         ->whereSearchable(true)
                         ->get();
@@ -113,7 +116,7 @@ if (! function_exists('get_search_builder')) {
                         $whereClause = $isFirst ? 'where' : 'orWhere';
 
                         $query->{$whereClause}(
-                            $searchAttribute,
+                            generate_search_column_expression($query->qualifyColumn($searchAttribute), $isForcedCaseInsensitive, $databaseConnection),
                             'like',
                             "%{$searchWord}%",
                         );

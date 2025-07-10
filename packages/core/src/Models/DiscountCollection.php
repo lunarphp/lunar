@@ -5,7 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
-use Lunar\Database\Factories\DiscountPurchasableFactory;
+use Lunar\Database\Factories\DiscountableFactory;
 
 class DiscountCollection extends BaseModel implements Contracts\DiscountCollection
 {
@@ -28,7 +28,7 @@ class DiscountCollection extends BaseModel implements Contracts\DiscountCollecti
      */
     protected static function newFactory()
     {
-        return DiscountPurchasableFactory::new();
+        return DiscountableFactory::new();
     }
 
     public function discount(): BelongsTo

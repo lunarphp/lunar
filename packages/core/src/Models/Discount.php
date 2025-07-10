@@ -92,29 +92,29 @@ class Discount extends BaseModel implements Contracts\Discount
         )->withTimestamps();
     }
 
-    public function purchasables(): HasMany
+    public function discountables(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass());
+        return $this->hasMany(Discountable::modelClass());
     }
 
-    public function purchasableConditions(): HasMany
+    public function discountableConditions(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('condition');
+        return $this->hasMany(Discountable::modelClass())->whereType('condition');
     }
 
-    public function purchasableExclusions(): HasMany
+    public function discountableExclusions(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('exclusion');
+        return $this->hasMany(Discountable::modelClass())->whereType('exclusion');
     }
 
-    public function purchasableLimitations(): HasMany
+    public function discountableLimitations(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('limitation');
+        return $this->hasMany(Discountable::modelClass())->whereType('limitation');
     }
 
-    public function purchasableRewards(): HasMany
+    public function discountableRewards(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('reward');
+        return $this->hasMany(Discountable::modelClass())->whereType('reward');
     }
 
     public function getType(): AbstractDiscountType
@@ -177,6 +177,27 @@ class Discount extends BaseModel implements Contracts\Discount
             });
     }
 
+    public function scopeCollections(Builder $query, iterable $collectionIds = [], array|string $types = []): Builder
+    {
+        if (is_array($collectionIds)) {
+            $collectionIds = collect($collectionIds);
+        }
+
+        $types = Arr::wrap($types);
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+                ->orWhereHas('discountables',
+                    fn ($relation) => $relation->whereIn('discountable_id', $collectionIds)
+                        ->whereDiscountableType(Collection::morphName())
+                        ->when(
+                            $types,
+                            fn ($query) => $query->whereIn('type', $types)
+                        )
+                )
+        );
+    }
+
     public function scopeProducts(Builder $query, iterable $productIds = [], array|string $types = []): Builder
     {
         if (is_array($productIds)) {
@@ -186,10 +207,10 @@ class Discount extends BaseModel implements Contracts\Discount
         $types = Arr::wrap($types);
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
-                ->orWhereHas('purchasables',
-                    fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
-                        ->wherePurchasableType(Product::morphName())
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+                ->orWhereHas('discountables',
+                    fn ($relation) => $relation->whereIn('discountable_id', $productIds)
+                        ->whereDiscountableType(Product::morphName())
                         ->when(
                             $types,
                             fn ($query) => $query->whereIn('type', $types)
@@ -207,10 +228,10 @@ class Discount extends BaseModel implements Contracts\Discount
         $types = Arr::wrap($types);
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
-                ->orWhereHas('purchasables',
-                    fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
-                        ->wherePurchasableType(ProductVariant::morphName())
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+                ->orWhereHas('discountables',
+                    fn ($relation) => $relation->whereIn('discountable_id', $variantIds)
+                        ->whereDiscountableType(ProductVariant::morphName())
                         ->when(
                             $types,
                             fn ($query) => $query->whereIn('type', $types)

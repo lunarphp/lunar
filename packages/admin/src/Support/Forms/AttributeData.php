@@ -61,6 +61,13 @@ class AttributeData
 
                 return $state;
             })
+            ->mutateStateForValidationUsing(function ($state) {
+                if ($state instanceof \Lunar\Base\FieldType) {
+                    return $state->getValue();
+                }
+
+                return $state;
+            })
             ->mutateDehydratedStateUsing(function ($state) use ($attribute) {
                 if ($attribute->type == FileFieldType::class) {
                     $instance = new $attribute->type;
