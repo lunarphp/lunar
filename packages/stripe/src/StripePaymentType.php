@@ -117,7 +117,7 @@ class StripePaymentType extends AbstractPayment
             $paymentIntentId
         );
 
-        if ($this->order->total->value != $this->paymentIntent->amount) {
+        if (! $this->allowPartialPayments && $this->order->total->value != $this->paymentIntent->amount) {
             $failure = new PaymentAuthorize(
                 success: false,
                 message: 'Captured amount mismatch',

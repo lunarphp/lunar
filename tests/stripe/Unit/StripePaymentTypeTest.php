@@ -57,6 +57,30 @@ it('wont capture an order with lesser intent amount', function () {
     ]);
 });
 
+it('will capture an order with lesser intent amount if allowed', function () {
+    $cart = CartBuilder::build();
+    $payment = new StripePaymentType;
+
+    Stripe::fake()->next([
+        'amount' => 100,
+    ]);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->allowPartialPayment()->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder)->not()->toBeNull()
+        ->and($cart->refresh()->draftOrder)->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+
+    \Pest\Laravel\assertDatabaseHas((new Transaction)->getTable(), [
+        'order_id' => $cart->refresh()->completedOrder->id,
+        'type' => 'capture',
+    ]);
+});
+
 it('can handle failed payments', function () {
     $cart = CartBuilder::build();
 
@@ -95,8 +119,13 @@ it('can retrieve existing payment intent', function () {
 });
 
 it('can handle multiple payment events', function () {
+
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
+
+    Stripe::fake()->next([
+        'amount' => $order->total->value,
+    ]);
 
     $payment = new StripePaymentType;
 
@@ -109,9 +138,6 @@ it('can handle multiple payment events', function () {
         ->and($cart->refresh()->completedOrder)->toBeNull()
         ->and($cart->currentDraftOrder())->not()->toBeNull()
         ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_FIRST_FAIL_THEN_CAPTURE');
-
-    // $cart->refresh();
-    // $cart->paymentIntents->first()->refresh();
 
     $response = $payment->order($order)->withData([
         'payment_intent' => 'PI_FIRST_FAIL_THEN_CAPTURE',
@@ -127,6 +153,10 @@ it('can handle multiple payment events', function () {
 it('will fail if intent is in final status', function () {
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
+
+    Stripe::fake()->next([
+        'amount' => $cart->calculate()->total->value,
+    ]);
 
     $payment = new StripePaymentType;
 

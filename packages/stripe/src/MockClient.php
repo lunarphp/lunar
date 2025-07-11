@@ -151,6 +151,7 @@ class MockClient implements ClientInterface
                     'payment_error' => $succeeded ? null : 'failed',
                     'failure_code' => $succeeded ? null : 1234,
                     'captured' => $succeeded,
+                    ...$this->nextData
                 ]);
 
                 $this->failThenCaptureCalled = true;
