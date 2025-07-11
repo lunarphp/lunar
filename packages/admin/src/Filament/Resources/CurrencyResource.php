@@ -12,6 +12,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Models\Contracts\Currency;
 use Lunar\Models\Contracts\Currency as CurrencyContract;
 
 class CurrencyResource extends BaseResource
@@ -116,6 +117,9 @@ class CurrencyResource extends BaseResource
         return Forms\Components\Toggle::make('sync_prices')
             ->label(__('lunarpanel::currency.form.sync_prices.label'))
             ->helperText(__('lunarpanel::currency.form.sync_prices.helper_text'))
+            ->hidden(
+                fn (Model $record) => (bool) $record->default
+            )
             ->default(true);
     }
 
