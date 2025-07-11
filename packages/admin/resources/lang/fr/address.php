@@ -19,6 +19,9 @@ return [
         'company_name' => [
             'label' => 'Nom de l\'entreprise',
         ],
+        'tax_identifier' => [
+            'label' => 'Identifiant fiscal',
+        ],
         'line_one' => [
             'label' => 'Adresse',
         ],
@@ -60,6 +63,9 @@ return [
         ],
         'company_name' => [
             'label' => 'Nom de l\'entreprise',
+        ],
+        'tax_identifier' => [
+            'label' => 'Identifiant fiscal',
         ],
         'line_one' => [
             'label' => 'Adresse ligne 1',

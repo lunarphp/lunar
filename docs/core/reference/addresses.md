@@ -18,6 +18,7 @@ Lunar\Models\Address
 |`first_name`||
 |`last_name`||
 |`company_name`|nullable|
+|`tax_identifier`|nullable|
 |`line_one`||
 |`line_two`|nullable|
 |`line_three`|nullable|
