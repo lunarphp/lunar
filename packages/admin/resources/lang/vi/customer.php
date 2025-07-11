@@ -22,7 +22,7 @@ return [
         'company_name' => [
             'label' => 'Tên công ty',
         ],
-        'vat_no' => [
+        'tax_identifier' => [
             'label' => 'Mã số thuế',
         ],
         'account_reference' => [
@@ -52,7 +52,7 @@ return [
         'account_ref' => [
             'label' => 'Mã tham chiếu',
         ],
-        'vat_no' => [
+        'tax_identifier' => [
             'label' => 'Mã số thuế',
         ],
         'customer_groups' => [

@@ -22,7 +22,7 @@ return [
         'company_name' => [
             'label' => 'Nazwa firmy',
         ],
-        'vat_no' => [
+        'tax_identifier' => [
             'label' => 'NIP',
         ],
         'account_reference' => [
@@ -49,7 +49,7 @@ return [
         'company_name' => [
             'label' => 'Nazwa firmy',
         ],
-        'vat_no' => [
+        'tax_identifier' => [
             'label' => 'NIP',
         ],
         'account_ref' => [
