@@ -27,6 +27,11 @@ class CurrencyObserver
     public function updated(CurrencyContract $currency)
     {
         $this->ensureOnlyOneDefault($currency);
+        if ($currency->default && $currency->sync_prices) {
+            $currency->updateQuietly([
+                'sync_prices' => false,
+            ]);
+        }
     }
 
     /**
