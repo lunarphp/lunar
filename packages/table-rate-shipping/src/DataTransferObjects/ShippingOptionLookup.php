@@ -2,8 +2,8 @@
 
 namespace Lunar\Shipping\DataTransferObjects;
 
-use InvalidArgumentException;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Lunar\Shipping\Models\ShippingRate;
 
 class ShippingOptionLookup
