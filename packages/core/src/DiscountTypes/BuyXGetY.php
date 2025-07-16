@@ -123,7 +123,7 @@ class BuyXGetY extends AbstractDiscountType
 
                 return false;
             });
-        })->sortBy('subTotal.value');
+        })->sortBy(fn ($line) => $line->subTotal->value / $line->quantity);
 
         foreach ($rewardLines as $rewardLine) {
             if (! $remainingRewardQty) {
