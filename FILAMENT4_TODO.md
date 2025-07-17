@@ -29,11 +29,23 @@ class UserForm
         );
     }
 }
-
 ```
 
 ```php
 LunarSchema::modify(UserForm::class, 'email', function($component) {
     return $component->unique(ignorable: fn ($record) => $record);
 });
+```
+
+```php
+LunarSchema::add(UserForm::class, TextInput::make('nickname'), fn ($position) => $position->after('email'));
+```
+
+No "delete" as that's pretty dangerous, you can always modify and hide a component.
+
+```php
+$position->first();
+$position->last(); // default
+$position->before('xxx');
+$position->after('yyy');
 ```
