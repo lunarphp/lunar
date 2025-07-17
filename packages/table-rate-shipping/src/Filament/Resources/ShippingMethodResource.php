@@ -21,7 +21,7 @@ class ShippingMethodResource extends BaseResource
 
     protected static ?int $navigationSort = 1;
 
-    protected static SubNavigationPosition|null $subNavigationPosition = SubNavigationPosition::End;
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {

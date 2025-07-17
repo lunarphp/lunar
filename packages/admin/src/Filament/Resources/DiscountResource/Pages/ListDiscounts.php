@@ -4,8 +4,6 @@ namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
 use Filament\Actions\CreateAction;
 use Filament\Schemas\Components\Group;
-use Filament\Actions;
-use Filament\Forms;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 

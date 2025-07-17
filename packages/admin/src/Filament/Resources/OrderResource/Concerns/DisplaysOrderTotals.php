@@ -3,11 +3,10 @@
 namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
-use Filament\Infolists;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\HtmlString;
 use Lunar\DataTypes\Price;

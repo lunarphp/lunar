@@ -2,10 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 
-use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\IconPosition;
 
 trait DisplaysShippingInfo

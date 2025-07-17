@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 
 use Filament\Actions\CreateAction;
-use Filament\Actions;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 

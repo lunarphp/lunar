@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources\CurrencyResource\Pages;
 
 use Filament\Actions\DeleteAction;
-use Filament\Actions;
 use Lunar\Admin\Filament\Resources\CurrencyResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 

@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers;
 
 use Filament\Actions\Action;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

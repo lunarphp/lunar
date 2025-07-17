@@ -2,21 +2,18 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Lunar\Admin\Filament\Resources\LanguageResource\Pages\ListLanguages;
-use Lunar\Admin\Filament\Resources\LanguageResource\Pages\CreateLanguage;
-use Lunar\Admin\Filament\Resources\LanguageResource\Pages\EditLanguage;
 use Awcodes\BadgeableColumn\Components\Badge;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\LanguageResource\Pages;
+use Lunar\Admin\Filament\Resources\LanguageResource\Pages\CreateLanguage;
+use Lunar\Admin\Filament\Resources\LanguageResource\Pages\EditLanguage;
+use Lunar\Admin\Filament\Resources\LanguageResource\Pages\ListLanguages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\Language as LanguageContract;
 

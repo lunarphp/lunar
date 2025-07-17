@@ -2,25 +2,22 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\ListTaxClasses;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\CreateTaxClass;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\EditTaxClass;
 use Awcodes\BadgeableColumn\Components\Badge;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Clusters\Taxes;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Pages;
+use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\CreateTaxClass;
+use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\EditTaxClass;
+use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\ListTaxClasses;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\TaxClass as TaxClassContract;
 

@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
-use Filament\Infolists;
 use Lunar\Admin\Support\Infolists\Components\Timeline;
 
 trait DisplaysOrderTimeline

@@ -3,35 +3,10 @@
 namespace Lunar\Admin;
 
 use Closure;
-use Lunar\Admin\Filament\Resources\ActivityResource;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource;
-use Lunar\Admin\Filament\Resources\BrandResource;
-use Lunar\Admin\Filament\Resources\ChannelResource;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource;
-use Lunar\Admin\Filament\Resources\CollectionResource;
-use Lunar\Admin\Filament\Resources\CurrencyResource;
-use Lunar\Admin\Filament\Resources\CustomerGroupResource;
-use Lunar\Admin\Filament\Resources\CustomerResource;
-use Lunar\Admin\Filament\Resources\DiscountResource;
-use Lunar\Admin\Filament\Resources\LanguageResource;
-use Lunar\Admin\Filament\Resources\OrderResource;
-use Lunar\Admin\Filament\Resources\ProductOptionResource;
-use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Filament\Resources\ProductTypeResource;
-use Lunar\Admin\Filament\Resources\ProductVariantResource;
-use Lunar\Admin\Filament\Resources\StaffResource;
-use Lunar\Admin\Filament\Resources\TagResource;
-use Lunar\Admin\Filament\Resources\TaxClassResource;
-use Lunar\Admin\Filament\Resources\TaxZoneResource;
-use Lunar\Admin\Filament\Resources\TaxRateResource;
-use Lunar\Admin\Filament\Pages\Dashboard;
-use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
-use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView;
-use Filament\Facades\Filament\Resources\Resource;
-use Filament\Facades\Filament\Pages\Page;
-use Filament\Facades\Filament\Widgets\Widget;
 use Filament\Facades\Filament;
+use Filament\Facades\Filament\Pages\Page;
+use Filament\Facades\Filament\Resources\Resource;
+use Filament\Facades\Filament\Widgets\Widget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -50,9 +25,33 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
-use Lunar\Admin\Filament\Pages;
+use Lunar\Admin\Filament\Pages\Dashboard;
 use Lunar\Admin\Filament\Resources;
+use Lunar\Admin\Filament\Resources\ActivityResource;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource;
+use Lunar\Admin\Filament\Resources\BrandResource;
+use Lunar\Admin\Filament\Resources\ChannelResource;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView;
+use Lunar\Admin\Filament\Resources\CollectionResource;
+use Lunar\Admin\Filament\Resources\CurrencyResource;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource;
+use Lunar\Admin\Filament\Resources\CustomerResource;
+use Lunar\Admin\Filament\Resources\DiscountResource;
+use Lunar\Admin\Filament\Resources\LanguageResource;
+use Lunar\Admin\Filament\Resources\OrderResource;
+use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
+use Lunar\Admin\Filament\Resources\ProductOptionResource;
+use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductTypeResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Filament\Resources\StaffResource;
+use Lunar\Admin\Filament\Resources\TagResource;
+use Lunar\Admin\Filament\Resources\TaxClassResource;
+use Lunar\Admin\Filament\Resources\TaxRateResource;
+use Lunar\Admin\Filament\Resources\TaxZoneResource;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
@@ -252,13 +251,13 @@ class LunarPanelManager
         $plugins = [
             FilamentApexChartsPlugin::make(),
         ];
-//
-//        if (! $this->twoFactorAuthDisabled) {
-//            $plugins[] = TwoFactorAuthenticationPlugin::make()
-//                ->enableTwoFactorAuthentication()
-//                ->addTwoFactorMenuItem(label: '2FA Settings')
-//                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
-//        }
+        //
+        //        if (! $this->twoFactorAuthDisabled) {
+        //            $plugins[] = TwoFactorAuthenticationPlugin::make()
+        //                ->enableTwoFactorAuthentication()
+        //                ->addTwoFactorMenuItem(label: '2FA Settings')
+        //                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
+        //        }
 
         return Panel::make()
             ->spa()
@@ -338,7 +337,7 @@ class LunarPanelManager
     }
 
     /**
-     * @return array<class-string<Resource>>
+     * @return array<class-string<resource>>
      */
     public static function getResources(): array
     {

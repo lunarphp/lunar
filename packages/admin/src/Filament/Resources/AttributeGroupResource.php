@@ -2,32 +2,28 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\Select;
-use Lunar\Facades\ModelManifest;
-use Lunar\Admin\Support\Forms\Components\TranslatedText;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\ListAttributeGroups;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\CreateAttributeGroup;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
-use Filament\Forms;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\CreateAttributeGroup;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\ListAttributeGroups;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Facades\AttributeManifest;
+use Lunar\Facades\ModelManifest;
 use Lunar\Models\Contracts\AttributeGroup as AttributeGroupContract;
 use Lunar\Models\Language;
 

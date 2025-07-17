@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages;
 
 use Filament\Actions\CreateAction;
-use Filament\Actions;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 

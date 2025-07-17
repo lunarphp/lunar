@@ -2,9 +2,9 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
 use Lunar\Admin\Support\Synthesizers\NumberSynth;
 use Lunar\Models\Attribute;
 
