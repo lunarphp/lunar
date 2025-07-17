@@ -2,8 +2,8 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -88,11 +88,11 @@ class ManageProductIdentifiers extends BaseEditRecord
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $variant = $this->getVariant();
 
-        return $form->schema([
+        return $schema->components([
             Section::make()->schema([
                 ProductVariantResource::getSkuFormComponent()
                     ->live()->unique(

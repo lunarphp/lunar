@@ -9,8 +9,8 @@
         }
     ],
     "require": {
-        "awcodes/filament-badgeable-column": "^2.3.2",
-        "awcodes/shout": "^2.0.4",
+        "awcodes/filament-badgeable-column": "^v3.0.0-beta.1",
+        "awcodes/shout": "^v3.0.0-beta.2",
         "barryvdh/laravel-dompdf": "^3.0",
         "cartalyst/converter": "^9.0|^10",
         "doctrine/dbal": "^3.6",
@@ -18,14 +18,14 @@
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",
-        "filament/filament": "^3.3.31",
-        "filament/spatie-laravel-media-library-plugin": "^3.3.4",
+        "filament/filament": "^4.0",
+        "filament/spatie-laravel-media-library-plugin": "^4.0",
         "guzzlehttp/guzzle": "^7.3",
         "http-interop/http-factory-guzzle": "^1.2",
         "kalnoy/nestedset": "^v6.0.5",
         "laravel/framework": "^11.0|^12.0",
         "laravel/scout": "^10.13.1",
-        "leandrocfe/filament-apex-charts": "^3.2.0",
+        "leandrocfe/filament-apex-charts": "dev-rjs/v4-upgrade",
         "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
         "lunarphp/lunar": "self.version",
@@ -37,19 +37,20 @@
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-permission": "^6.12",
         "spatie/php-structure-discoverer": "^2.3.1",
-        "stephenjude/filament-two-factor-authentication": "^2.0",
         "stripe/stripe-php": "^16.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
         "typesense/typesense-php": "^4.9"
     },
     "require-dev": {
+        "filament/upgrade": "^4.0",
         "larastan/larastan": "^2.9|^3.0",
         "laravel/pint": "1.17.0",
         "mockery/mockery": "^1.6.9",
         "orchestra/testbench": "^8.0|^9.0|^10.0",
         "pestphp/pest": "^2.0|^3.0",
         "pestphp/pest-plugin-laravel": "^2.0|^3.0",
-        "symplify/monorepo-builder": "^10.0"
+        "phpstan/phpstan": "2.1.17",
+        "symplify/monorepo-builder": "^11.0"
     },
     "autoload": {
         "files": [
@@ -87,6 +88,12 @@
             "Lunar\\Tests\\Search\\": "tests/search"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ralphjsmit/filament-apex-charts"
+        }
+    ],
     "extra": {
         "lunar": {
             "name": [

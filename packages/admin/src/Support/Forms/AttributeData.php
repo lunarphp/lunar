@@ -2,7 +2,8 @@
 
 namespace Lunar\Admin\Support\Forms;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
+use Lunar\Base\FieldType;
 use Illuminate\Support\Collection;
 use Lunar\Admin\Support\FieldTypes\Dropdown;
 use Lunar\Admin\Support\FieldTypes\File;
@@ -44,7 +45,7 @@ class AttributeData
         $attribute->type
         ] ?? TextField::class;
 
-        /** @var Component $component */
+        /** @var \Filament\Schemas\Components\Component $component */
         $component = $fieldType::getFilamentComponent($attribute);
 
         return $component
@@ -62,7 +63,7 @@ class AttributeData
                 return $state;
             })
             ->mutateStateForValidationUsing(function ($state) {
-                if ($state instanceof \Lunar\Base\FieldType) {
+                if ($state instanceof FieldType) {
                     return $state->getValue();
                 }
 

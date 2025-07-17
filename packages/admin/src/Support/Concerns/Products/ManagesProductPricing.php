@@ -2,8 +2,13 @@
 
 namespace Lunar\Admin\Support\Concerns\Products;
 
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Group;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -79,13 +84,13 @@ trait ManagesProductPricing
 
     public function getBasePriceFormSection(): Section
     {
-        return Forms\Components\Section::make(
+        return Section::make(
             __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
         )
             ->schema(
-                collect($this->basePrices)->map(function ($price, $index): Forms\Components\Fieldset {
-                    return Forms\Components\Fieldset::make($price['label'])->schema([
-                        Forms\Components\TextInput::make('value')
+                collect($this->basePrices)->map(function ($price, $index): Fieldset {
+                    return Fieldset::make($price['label'])->schema([
+                        TextInput::make('value')
                             ->label('')
                             ->statePath($index.'.value')
                             ->numeric()
@@ -99,20 +104,20 @@ trait ManagesProductPricing
                             ->extraInputAttributes([
                                 'class' => '',
                             ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                            ->hintIcon(function (Get $get, TextInput $component) use ($index) {
                                 if ($get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                            })->hintIconTooltip(function (Get $get, TextInput $component) use ($index) {
                                 if ($get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
                             })->live(),
-                        Forms\Components\TextInput::make('compare_price')
+                        TextInput::make('compare_price')
                             ->label('')
                             ->statePath($index.'.compare_price')
                             ->numeric()
@@ -126,13 +131,13 @@ trait ManagesProductPricing
                             ->extraInputAttributes([
                                 'class' => '',
                             ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                            ->hintIcon(function (Get $get, TextInput $component) use ($index) {
                                 if ($get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                            })->hintIconTooltip(function (Get $get, TextInput $component) use ($index) {
                                 if ($get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
@@ -144,15 +149,15 @@ trait ManagesProductPricing
             )->statePath('basePrices')->columns(1);
     }
 
-    public function form(Forms\Form $form): Forms\Form
+    public function form(Schema $schema): Schema
     {
         if (! count($this->basePrices)) {
             $this->basePrices = $this->getBasePrices();
         }
 
-        $form->schema([
-            Forms\Components\Section::make()->schema([
-                Forms\Components\Group::make([
+        $schema->components([
+            Section::make()->schema([
+                Group::make([
                     ProductVariantResource::getTaxClassIdFormComponent(),
                     ProductVariantResource::getTaxRefFormComponent(),
                 ])->columns(2),
@@ -160,9 +165,9 @@ trait ManagesProductPricing
             $this->getBasePriceFormSection(),
         ])->statePath('');
 
-        $this->callLunarHook('extendForm', $form);
+        $this->callLunarHook('extendForm', $schema);
 
-        return $form;
+        return $schema;
     }
 
     protected function getBasePrices(): array

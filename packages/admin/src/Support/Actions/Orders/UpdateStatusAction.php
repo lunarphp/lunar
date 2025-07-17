@@ -2,8 +2,8 @@
 
 namespace Lunar\Admin\Support\Actions\Orders;
 
+use Filament\Support\Enums\Width;
 use Filament\Actions\Action;
-use Filament\Support\Enums\MaxWidth;
 use Lunar\Admin\Support\Actions\Traits\UpdatesOrderStatus;
 use Lunar\Models\Order;
 
@@ -19,9 +19,9 @@ class UpdateStatusAction extends Action
             __('lunarpanel::actions.orders.update_status.label')
         );
 
-        $this->modalWidth(MaxWidth::TwoExtraLarge);
+        $this->modalWidth(Width::TwoExtraLarge);
 
-        $this->form(
+        $this->schema(
             $this->getFormSteps()
         );
 

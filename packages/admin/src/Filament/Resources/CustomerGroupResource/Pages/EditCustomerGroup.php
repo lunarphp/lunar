@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource;
@@ -14,8 +15,8 @@ class EditCustomerGroup extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()
-                ->before(function ($record, Actions\DeleteAction $action) {
+            DeleteAction::make()
+                ->before(function ($record, DeleteAction $action) {
                     if ($record->customers->count() > 0) {
                         Notification::make()
                             ->warning()

@@ -2,6 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
+use Filament\Actions\DeleteAction;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Filament\Actions;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource;
@@ -26,7 +29,7 @@ class EditDiscount extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 
@@ -87,8 +90,8 @@ class EditDiscount extends BaseEditRecord
         $managers = [];
 
         if ($this->record->type == BuyXGetY::class) {
-            $managers[] = DiscountResource\RelationManagers\ProductConditionRelationManager::class;
-            $managers[] = DiscountResource\RelationManagers\ProductRewardRelationManager::class;
+            $managers[] = ProductConditionRelationManager::class;
+            $managers[] = ProductRewardRelationManager::class;
         }
 
         $type = $this->record->getType();

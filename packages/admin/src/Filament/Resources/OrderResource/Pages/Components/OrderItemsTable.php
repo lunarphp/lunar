@@ -2,13 +2,23 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages\Components;
 
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\Layout\Panel;
+use Filament\Actions\BulkAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
+use Illuminate\Support\Collection;
 use Closure;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
@@ -22,8 +32,8 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 
 /**
- * @property \Illuminate\Support\Collection $charges
- * @property \Illuminate\Support\Collection $refunds
+ * @property Collection $charges
+ * @property Collection $refunds
  * @property float $availableToRefund
  * @property bool $canBeRefunded
  */
@@ -34,18 +44,18 @@ class OrderItemsTable extends TableComponent
     public static function getOrderLinesTableColumns(): array
     {
         return self::callStaticLunarHook('extendOrderLinesTableColumns', [
-            Tables\Columns\Layout\Split::make([
-                Tables\Columns\ImageColumn::make('image')
+            Split::make([
+                ImageColumn::make('image')
                     ->defaultImageUrl(fn () => 'data:image/svg+xml;base64, '.base64_encode(
                         Blade::render('<x-filament::icon icon="heroicon-o-photo" style="color:rgb('.Color::Gray[400].');"/>')
                     ))
                     ->grow(false)
                     ->getStateUsing(fn ($record) => $record->purchasable?->getThumbnail()?->getUrl('small')),
 
-                Tables\Columns\Layout\Stack::make([
-                    Tables\Columns\Layout\Split::make([
-                        Tables\Columns\Layout\Stack::make([
-                            Tables\Columns\TextColumn::make('description')
+                Stack::make([
+                    Split::make([
+                        Stack::make([
+                            TextColumn::make('description')
                                 ->url(function (OrderLine $line) {
                                     if ($line->purchasable_type == ProductVariant::morphName()) {
                                         return EditProduct::getUrl(['record' => $line->purchasable->product_id]);
@@ -54,14 +64,14 @@ class OrderItemsTable extends TableComponent
                                     return null;
                                 })
                                 ->weight(FontWeight::Bold),
-                            Tables\Columns\TextColumn::make('identifier')
+                            TextColumn::make('identifier')
                                 ->color(Color::Gray),
-                            Tables\Columns\TextColumn::make('options')
+                            TextColumn::make('options')
                                 ->getStateUsing(fn ($record) => $record->purchasable?->getOptions())
                                 ->badge(),
                         ]),
-                        Tables\Columns\Layout\Stack::make([
-                            Tables\Columns\TextColumn::make('unit')
+                        Stack::make([
+                            TextColumn::make('unit')
                                 ->alignEnd()
                                 ->getStateUsing(fn ($record) => "{$record->quantity} @ {$record->sub_total->formatted}"),
                         ]),
@@ -70,9 +80,9 @@ class OrderItemsTable extends TableComponent
                 ])
                     ->columnSpanFull(),
             ])->extraAttributes(['style' => 'align-items: start;']),
-            Tables\Columns\Layout\Panel::make([
-                Tables\Columns\Layout\Stack::make([
-                    Tables\Columns\TextColumn::make('stock')
+            Panel::make([
+                Stack::make([
+                    TextColumn::make('stock')
                         ->getStateUsing(fn ($record) => $record->purchasable?->stock)
                         ->formatStateUsing(fn ($state) => __('lunarpanel::order.infolist.current_stock_level.message', [
                             'count' => $state,
@@ -81,12 +91,12 @@ class OrderItemsTable extends TableComponent
                             'danger' => fn ($state) => $state < 50,
                             'success' => fn ($state) => $state >= 50,
                         ]),
-                    Tables\Columns\TextColumn::make('meta.stock_level')
+                    TextColumn::make('meta.stock_level')
                         ->formatStateUsing(fn ($state) => __('lunarpanel::order.infolist.purchase_stock_level.message', [
                             'count' => $state,
                         ]))
                         ->color(Color::Gray),
-                    Tables\Columns\TextColumn::make('notes')
+                    TextColumn::make('notes')
                         ->description(new HtmlString('<b>'.__('lunarpanel::order.infolist.notes.label').'</b>'), 'above'),
 
                     KeyValue::make('price_breakdowns')
@@ -121,7 +131,7 @@ class OrderItemsTable extends TableComponent
                 ->with(['purchasable'])
                 ->wherein('type', ['physical', 'digital']))
             ->columns(static::getOrderLinesTableColumns())
-            ->bulkActions([
+            ->toolbarActions([
                 $this->getBulkRefundAction(),
             ]);
     }
@@ -138,7 +148,7 @@ class OrderItemsTable extends TableComponent
             ->modalSubmitActionLabel(__('lunarpanel::order.action.refund_payment.label'))
             ->icon('heroicon-o-backward')
             ->form(fn () => [
-                Forms\Components\Select::make('transaction')
+                Select::make('transaction')
                     ->label(__('lunarpanel::order.form.transaction.label'))
                     ->required()
                     ->default(fn () => $this->charges->first()->id)
@@ -148,7 +158,7 @@ class OrderItemsTable extends TableComponent
                         ]))
                     ->live(),
 
-                Forms\Components\TextInput::make('amount')
+                TextInput::make('amount')
                     ->required()
                     ->label(__('lunarpanel::order.form.amount.label'))
                     ->suffix(fn () => $this->record->currency->code)
@@ -159,11 +169,11 @@ class OrderItemsTable extends TableComponent
                     )
                     ->numeric(),
 
-                Forms\Components\Textarea::make('notes')
+                Textarea::make('notes')
                     ->label(__('lunarpanel::order.form.notes.label'))
                     ->maxLength(255),
 
-                Forms\Components\Toggle::make('confirm')
+                Toggle::make('confirm')
                     ->label(__('lunarpanel::order.form.confirm.label'))
                     ->helperText(__('lunarpanel::order.form.confirm.hint.refund'))
                     ->rules([
@@ -203,13 +213,13 @@ class OrderItemsTable extends TableComponent
     }
 
     #[Computed]
-    public function charges(): \Illuminate\Support\Collection
+    public function charges(): Collection
     {
         return $this->record->transactions()->whereType('capture')->whereSuccess(true)->get();
     }
 
     #[Computed]
-    public function refunds(): \Illuminate\Support\Collection
+    public function refunds(): Collection
     {
         return $this->record->transactions()->whereType('refund')->whereSuccess(true)->get();
     }

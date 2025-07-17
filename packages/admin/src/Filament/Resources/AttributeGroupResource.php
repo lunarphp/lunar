@@ -2,9 +2,23 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Component;
+use Filament\Forms\Components\Select;
+use Lunar\Facades\ModelManifest;
+use Lunar\Admin\Support\Forms\Components\TranslatedText;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\ListAttributeGroups;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\CreateAttributeGroup;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
 use Filament\Forms;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -45,11 +59,11 @@ class AttributeGroupResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
-    public static function getDefaultForm(Form $form): Form
+    public static function getDefaultForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make()->schema(
+        return $schema
+            ->components([
+                Section::make()->schema(
                     static::getMainFormComponents()
                 ),
             ]);
@@ -67,12 +81,12 @@ class AttributeGroupResource extends BaseResource
 
     protected static function getAttributableTypeFormComponent(): Component
     {
-        return Forms\Components\Select::make('attributable_type')
+        return Select::make('attributable_type')
             ->label(__('lunarpanel::attributegroup.form.attributable_type.label'))
             ->options(function () {
                 return AttributeManifest::getTypes()->mapWithKeys(
                     fn ($type) => [
-                        \Lunar\Facades\ModelManifest::getMorphMapKey($type) => class_basename($type),
+                        ModelManifest::getMorphMapKey($type) => class_basename($type),
                     ]
                 );
             })
@@ -82,11 +96,11 @@ class AttributeGroupResource extends BaseResource
 
     protected static function getNameFormComponent(): Component
     {
-        return \Lunar\Admin\Support\Forms\Components\TranslatedText::make('name')
+        return TranslatedText::make('name')
             ->label(__('lunarpanel::attributegroup.form.name.label'))
             ->required()
             ->maxLength(255)
-            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
                 if ($operation !== 'create') {
                     return;
                 }
@@ -98,7 +112,7 @@ class AttributeGroupResource extends BaseResource
 
     protected static function getHandleFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('handle')
+        return TextInput::make('handle')
             ->label(__('lunarpanel::attributegroup.form.handle.label'))
             ->required()
             ->maxLength(255);
@@ -106,7 +120,7 @@ class AttributeGroupResource extends BaseResource
 
     protected static function getPositionFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('position')
+        return TextInput::make('position')
             ->label(__('lunarpanel::attributegroup.form.position.label'))
             ->numeric()
             ->minValue(1)
@@ -118,25 +132,25 @@ class AttributeGroupResource extends BaseResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('attributable_type')
+                TextColumn::make('attributable_type')
                     ->label(__('lunarpanel::attributegroup.table.attributable_type.label')),
                 TranslatedTextColumn::make('name')
                     ->label(__('lunarpanel::attributegroup.table.name.label')),
-                Tables\Columns\TextColumn::make('handle')
+                TextColumn::make('handle')
                     ->label(__('lunarpanel::attributegroup.table.handle.label')),
-                Tables\Columns\TextColumn::make('position')
+                TextColumn::make('position')
                     ->label(__('lunarpanel::attributegroup.table.position.label'))
                     ->sortable(),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('position', 'asc')
@@ -146,16 +160,16 @@ class AttributeGroupResource extends BaseResource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\AttributesRelationManager::class,
+            AttributesRelationManager::class,
         ];
     }
 
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListAttributeGroups::route('/'),
-            'create' => Pages\CreateAttributeGroup::route('/create'),
-            'edit' => Pages\EditAttributeGroup::route('/{record}/edit'),
+            'index' => ListAttributeGroups::route('/'),
+            'create' => CreateAttributeGroup::route('/create'),
+            'edit' => EditAttributeGroup::route('/{record}/edit'),
         ];
     }
 }

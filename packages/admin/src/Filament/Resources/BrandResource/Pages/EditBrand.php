@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\BrandResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\BrandResource;
@@ -24,8 +25,8 @@ class EditBrand extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()
-                ->before(function ($record, Actions\DeleteAction $action) {
+            DeleteAction::make()
+                ->before(function ($record, DeleteAction $action) {
                     if ($record->products->count() > 0) {
                         Notification::make()
                             ->warning()

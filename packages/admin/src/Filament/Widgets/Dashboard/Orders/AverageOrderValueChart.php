@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 
+use DateTime;
 use Carbon\CarbonPeriod;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Lunar\Facades\DB;
@@ -16,14 +17,14 @@ class AverageOrderValueChart extends ApexChartWidget
      */
     protected static ?string $chartId = 'averageOrderValue';
 
-    protected static ?string $pollingInterval = '60s';
+    protected ?string $pollingInterval = '60s';
 
     protected function getHeading(): ?string
     {
         return __('lunarpanel::widgets.dashboard.orders.average_order_value.heading');
     }
 
-    protected function getOrderQuery(?\DateTime $from = null, ?\DateTime $to = null)
+    protected function getOrderQuery(?DateTime $from = null, ?DateTime $to = null)
     {
         return Order::whereNotNull('placed_at')
             ->with(['currency'])

@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Lunar\Admin\Support\Synthesizers\DropdownSynth;

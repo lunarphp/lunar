@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
+use Spatie\Permission\Traits\HasRoles;
 use Closure;
 use Exception;
 use Filament\Forms\Components\Field;
@@ -198,7 +199,7 @@ class PermissionSelector extends Field
 
         $traits = trait_uses_recursive($record);
 
-        if (! in_array(\Spatie\Permission\Traits\HasRoles::class, $traits)) {
+        if (! in_array(HasRoles::class, $traits)) {
             throw new Exception('Not implemented \Spatie\Permission\Traits\HasRoles');
         }
 

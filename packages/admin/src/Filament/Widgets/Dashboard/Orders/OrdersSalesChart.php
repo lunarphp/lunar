@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 
+use DateTime;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Lunar\Facades\DB;
@@ -17,14 +18,14 @@ class OrdersSalesChart extends ApexChartWidget
      */
     protected static ?string $chartId = 'ordersSalesChart';
 
-    protected static ?string $pollingInterval = '60s';
+    protected ?string $pollingInterval = '60s';
 
     protected function getHeading(): ?string
     {
         return __('lunarpanel::widgets.dashboard.orders.order_sales_chart.heading');
     }
 
-    protected function getOrderQuery(?\DateTime $from = null, ?\DateTime $to = null)
+    protected function getOrderQuery(?DateTime $from = null, ?DateTime $to = null)
     {
         return Order::whereNotNull('placed_at')
             ->with(['currency'])

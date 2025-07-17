@@ -2,12 +2,12 @@
 
 namespace Lunar\Admin\Filament\Resources\StaffResource\Pages;
 
+use Filament\Support\Enums\Size;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
-use Filament\Support\Enums\ActionSize;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -27,7 +27,7 @@ class AccessControl extends Page
 {
     protected static string $resource = StaffResource::class;
 
-    protected static string $view = 'lunarpanel::resources.staff-resource.pages.access-control';
+    protected string $view = 'lunarpanel::resources.staff-resource.pages.access-control';
 
     public array $state = [];
 
@@ -173,7 +173,7 @@ class AccessControl extends Page
             Action::make('add_role')
                 ->label('lunarpanel::staff.action.add-role.label')
                 ->translateLabel()
-                ->form([
+                ->schema([
                     TextInput::make('name')
                         ->label('lunarpanel::staff.form.role.label')
                         ->translateLabel()
@@ -193,7 +193,7 @@ class AccessControl extends Page
         return Action::make('deleteRole')
             ->icon('heroicon-m-trash')
             ->color('danger')
-            ->size(ActionSize::Small)
+            ->size(Size::Small)
             ->tooltip(__('lunarpanel::staff.action.delete-role.label'))
             ->iconButton()
             ->requiresConfirmation()

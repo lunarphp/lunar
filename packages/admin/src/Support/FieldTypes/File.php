@@ -2,7 +2,10 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Lunar\Admin\Support\Synthesizers\FileSynth;
 use Lunar\Models\Attribute;
@@ -45,7 +48,7 @@ class File extends BaseFieldType
     public static function getConfigurationFields(): array
     {
         return [
-            \Filament\Forms\Components\TagsInput::make('file_types')
+            TagsInput::make('file_types')
                 ->label(
                     __('lunarpanel::fieldtypes.file.form.file_types.label')
                 )->suggestions([
@@ -67,14 +70,14 @@ class File extends BaseFieldType
                 ])
                 ->placeholder(__('lunarpanel::fieldtypes.file.form.file_types.placeholder'))
                 ->reorderable(),
-            \Filament\Forms\Components\Toggle::make('multiple')->label(
+            Toggle::make('multiple')->label(
                 __('lunarpanel::fieldtypes.file.form.multiple.label')
             ),
-            \Filament\Forms\Components\TextInput::make('min_files')
+            TextInput::make('min_files')
                 ->label(
                     __('lunarpanel::fieldtypes.file.form.min_files.label')
                 )->nullable()->numeric(),
-            \Filament\Forms\Components\TextInput::make('max_files')->label(
+            TextInput::make('max_files')->label(
                 __('lunarpanel::fieldtypes.file.form.max_files.label')
             )->nullable()->numeric(),
         ];

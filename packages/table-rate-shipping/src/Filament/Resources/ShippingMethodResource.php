@@ -6,7 +6,7 @@ use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
-use Filament\Pages\SubNavigationPosition;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,7 +21,7 @@ class ShippingMethodResource extends BaseResource
 
     protected static ?int $navigationSort = 1;
 
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+    protected static SubNavigationPosition|null $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {

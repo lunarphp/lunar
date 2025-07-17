@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets;
 
+use Filament\Forms\Components\Select;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -35,7 +36,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     protected static bool $isLazy = false;
 
-    protected static string $view = 'lunarpanel::resources.collectiongroup-resource.widgets.collection-treeview';
+    protected string $view = 'lunarpanel::resources.collectiongroup-resource.widgets.collection-treeview';
 
     public function mount()
     {
@@ -174,7 +175,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
     public function createRootCollectionAction()
     {
         return CreateRootCollection::make('createRootCollection')
-            ->mutateFormDataUsing(function (array $data) {
+            ->mutateDataUsing(function (array $data) {
                 $data['collection_group_id'] = $this->record->id;
 
                 return $data;
@@ -188,14 +189,14 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
         return MoveCollection::make('move')
             ->icon(
                 fn () => FilamentIcon::resolve('lunar::move-collection')
-            )->form([
-                Forms\Components\Select::make('target_id')
+            )->schema([
+                Select::make('target_id')
                     ->label(
                         __('lunarpanel::components.collection-tree-view.actions.move.form.target_id.label')
                     )
                     ->model(Collection::modelClass())
                     ->searchable()
-                    ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                    ->getSearchResultsUsing(static function (Select $component, string $search): array {
                         return get_search_builder(Collection::modelClass(), $search)
                             ->get()
                             ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])

@@ -2,7 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ViewAction;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -50,9 +52,9 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
         return __('lunarpanel::collection.pages.children.label');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form;
+        return $schema;
     }
 
     public function table(Table $table): Table
@@ -60,17 +62,17 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
         $record = $this->getOwnerRecord();
 
         return $table->columns([
-            Tables\Columns\TextColumn::make('attribute_data.name')
+            TextColumn::make('attribute_data.name')
                 ->label(
                     __('lunarpanel::collection.pages.children.table.name.label')
                 )
                 ->formatStateUsing(fn (Model $record): string => $record->attr('name')),
-            Tables\Columns\TextColumn::make('children_count')->counts('children')
+            TextColumn::make('children_count')->counts('children')
                 ->label(
                     __('lunarpanel::collection.pages.children.table.children_count.label')
                 ),
-        ])->actions([
-            Tables\Actions\ViewAction::make()->url(function (Model $record) {
+        ])->recordActions([
+            ViewAction::make()->url(function (Model $record) {
                 return CollectionResource::getUrl('edit', ['record' => $record]);
             }),
         ])->headerActions([

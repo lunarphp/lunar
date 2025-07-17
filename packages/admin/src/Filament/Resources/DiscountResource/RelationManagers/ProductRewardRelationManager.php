@@ -2,6 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
+use Filament\Actions\CreateAction;
+use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\MorphToSelect\Type;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -46,22 +53,22 @@ class ProductRewardRelationManager extends BaseRelationManager
                     ->whereHas('discountable')
             )
             ->headerActions([
-                Tables\Actions\CreateAction::make()->form([
-                    Forms\Components\MorphToSelect::make('discountable')
+                CreateAction::make()->schema([
+                    MorphToSelect::make('discountable')
                         ->searchable(true)
                         ->types([
-                            Forms\Components\MorphToSelect\Type::make(Product::modelClass())
+                            Type::make(Product::modelClass())
                                 ->titleAttribute('name.en')
-                                ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
                                     return get_search_builder(Product::modelClass(), $search)
                                         ->get()
                                         ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
                                         ->all();
                                 }),
 
-                            Forms\Components\MorphToSelect\Type::make(ProductVariant::modelClass())
+                            Type::make(ProductVariant::modelClass())
                                 ->titleAttribute('sku')
-                                ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
                                     return get_search_builder(ProductVariant::modelClass(), $search)
                                         ->orWhere('sku', 'like', $search.'%')
                                         ->get()
@@ -71,7 +78,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                         ]),
                 ])->label(
                     __('lunarpanel::discount.relationmanagers.rewards.actions.attach.label')
-                )->mutateFormDataUsing(function (array $data) {
+                )->mutateDataUsing(function (array $data) {
                     $data['type'] = 'reward';
 
                     return $data;
@@ -81,7 +88,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                     ->resolveThumbnailUrlUsing(fn (?Model $record) => $record?->discountable?->getThumbnailImage())
                     ->label(''),
 
-                Tables\Columns\TextColumn::make('discountable.id')
+                TextColumn::make('discountable.id')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.conditions.table.name.label')
                     )
@@ -89,7 +96,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                         fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->product->attr('name').' - '.$record->discountable->sku : $record->discountable->attr('name')
                     ),
 
-                Tables\Columns\TextColumn::make('discountable_type')
+                TextColumn::make('discountable_type')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.conditions.table.type.label')
                     )
@@ -97,10 +104,10 @@ class ProductRewardRelationManager extends BaseRelationManager
                         fn (Model $record) => str($record->discountable->morphName())->replace('_', ' ')->title(),
                     ),
 
-            ])->actions([
-                Tables\Actions\DeleteAction::make(),
-            ])->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+            ])->recordActions([
+                DeleteAction::make(),
+            ])->toolbarActions([
+                DeleteBulkAction::make(),
             ]);
     }
 }

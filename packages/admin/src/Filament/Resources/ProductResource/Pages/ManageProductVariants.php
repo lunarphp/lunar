@@ -2,8 +2,17 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
+use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,7 +28,7 @@ class ManageProductVariants extends BaseManageRelatedRecords
     protected function getDefaultHeaderWidgets(): array
     {
         return [
-            ProductResource\Widgets\ProductOptionsWidget::class,
+            ProductOptionsWidget::class,
         ];
     }
 
@@ -52,11 +61,11 @@ class ManageProductVariants extends BaseManageRelatedRecords
         return __('lunarpanel::product.pages.variants.label');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
+        return $schema
+            ->components([
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -69,25 +78,25 @@ class ManageProductVariants extends BaseManageRelatedRecords
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('sku'),
+                TextColumn::make('sku'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
                 //                Tables\Actions\AssociateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
                 //                Tables\Actions\DissociateAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     //                    Tables\Actions\DissociateBulkAction::make(),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

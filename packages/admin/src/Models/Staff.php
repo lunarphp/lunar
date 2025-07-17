@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Models;
 
+use Illuminate\Support\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
@@ -24,12 +25,12 @@ use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
  * @property string $email
  * @property string $password
  * @property string $remember_token
- * @property ?\Illuminate\Support\Carbon $email_verified_at
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property ?Carbon $email_verified_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
  *
- * @method static \Illuminate\Database\Eloquent\Builder search(?string $terms)
+ * @method static Builder search(?string $terms)
  */
 class Staff extends Authenticatable implements FilamentUser, HasName
 {
@@ -37,7 +38,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     use HasRoles;
     use Notifiable;
     use SoftDeletes;
-    use TwoFactorAuthenticatable;
+//    use TwoFactorAuthenticatable;
 
     protected $guard_name = 'staff';
 

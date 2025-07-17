@@ -2,8 +2,16 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Filament\Schemas\Components\Component;
+use Filament\Forms\Components\TextInput;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Lunar\Admin\Filament\Resources\TagResource\Pages\ListTags;
+use Lunar\Admin\Filament\Resources\TagResource\Pages\CreateTag;
+use Lunar\Admin\Filament\Resources\TagResource\Pages\EditTag;
 use Filament\Forms;
-use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -48,7 +56,7 @@ class TagResource extends BaseResource
 
     protected static function getValueFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('value')
+        return TextInput::make('value')
             ->label(__('lunarpanel::tag.form.value.label'))
             ->required()
             ->maxLength(255)
@@ -62,12 +70,12 @@ class TagResource extends BaseResource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -75,7 +83,7 @@ class TagResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('value')
+            TextColumn::make('value')
                 ->label(__('lunarpanel::tag.table.value.label')),
         ];
     }
@@ -90,9 +98,9 @@ class TagResource extends BaseResource
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListTags::route('/'),
-            'create' => Pages\CreateTag::route('/create'),
-            'edit' => Pages\EditTag::route('/{record}/edit'),
+            'index' => ListTags::route('/'),
+            'create' => CreateTag::route('/create'),
+            'edit' => EditTag::route('/{record}/edit'),
         ];
     }
 }

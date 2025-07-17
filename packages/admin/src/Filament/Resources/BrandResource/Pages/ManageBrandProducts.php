@@ -2,11 +2,12 @@
 
 namespace Lunar\Admin\Filament\Resources\BrandResource\Pages;
 
+use Filament\Actions\DetachAction;
+use Filament\Actions\AttachAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables\Actions\AttachAction;
-use Filament\Tables\Actions\DetachAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource;
@@ -47,7 +48,7 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                     ]);
                 }),
             ProductResource::getSkuTableColumn(),
-        ])->actions([
+        ])->recordActions([
             DetachAction::make()
                 ->action(function (Model $record) {
                     $record->update([
@@ -65,13 +66,13 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                     __('lunarpanel::brand.pages.products.actions.attach.label')
                 )
                 ->form([
-                    Forms\Components\Select::make('recordId')
+                    Select::make('recordId')
                         ->label(
                             __('lunarpanel::brand.pages.products.actions.attach.form.record_id.label')
                         )
                         ->required()
                         ->searchable()
-                        ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                        ->getSearchResultsUsing(static function (Select $component, string $search): array {
                             return Product::search($search)
                                 ->get()
                                 ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])

@@ -2,10 +2,18 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Awcodes\FilamentBadgeableColumn\Components\Badge;
-use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
+use Filament\Schemas\Components\Component;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
+use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
+use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\EditCurrency;
+use Awcodes\BadgeableColumn\Components\Badge;
+use Awcodes\BadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms;
-use Filament\Forms\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
@@ -55,7 +63,7 @@ class CurrencyResource extends BaseResource
 
     protected static function getNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TextInput::make('name')
             ->label(__('lunarpanel::currency.form.name.label'))
             ->required()
             ->maxLength(255)
@@ -64,7 +72,7 @@ class CurrencyResource extends BaseResource
 
     protected static function getCodeFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('code')
+        return TextInput::make('code')
             ->label(__('lunarpanel::currency.form.code.label'))
             ->required()
             ->unique(ignoreRecord: true)
@@ -74,7 +82,7 @@ class CurrencyResource extends BaseResource
 
     protected static function getExchangeRateFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('exchange_rate')
+        return TextInput::make('exchange_rate')
             ->label(__('lunarpanel::currency.form.exchange_rate.label'))
             ->numeric()
             ->required();
@@ -82,7 +90,7 @@ class CurrencyResource extends BaseResource
 
     protected static function getDecimalPlacesFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('decimal_places')
+        return TextInput::make('decimal_places')
             ->label(__('lunarpanel::currency.form.decimal_places.label'))
             ->numeric()
             ->required();
@@ -90,17 +98,17 @@ class CurrencyResource extends BaseResource
 
     protected static function getEnabledFormComponent(): Component
     {
-        return Forms\Components\Toggle::make('enabled')
+        return Toggle::make('enabled')
             ->label(__('lunarpanel::currency.form.enabled.label'));
     }
 
     protected static function getDefaultFormComponent(): Component
     {
-        return Forms\Components\Toggle::make('default')
+        return Toggle::make('default')
             ->label(__('lunarpanel::currency.form.default.label'));
     }
 
-    protected static function getDefaultTable(Tables\Table $table): Tables\Table
+    protected static function getDefaultTable(Table $table): Table
     {
         return $table->columns([
             BadgeableColumn::make('name')
@@ -112,13 +120,13 @@ class CurrencyResource extends BaseResource
                         ->visible(fn (Model $record) => $record->default),
                 ])
                 ->label(__('lunarpanel::currency.table.name.label')),
-            Tables\Columns\TextColumn::make('code')
+            TextColumn::make('code')
                 ->label(__('lunarpanel::currency.table.code.label')),
-            Tables\Columns\TextColumn::make('exchange_rate')
+            TextColumn::make('exchange_rate')
                 ->label(__('lunarpanel::currency.table.exchange_rate.label')),
-            Tables\Columns\TextColumn::make('decimal_places')
+            TextColumn::make('decimal_places')
                 ->label(__('lunarpanel::currency.table.decimal_places.label')),
-            Tables\Columns\IconColumn::make('enabled')
+            IconColumn::make('enabled')
                 ->boolean()
                 ->label(__('lunarpanel::currency.table.enabled.label')),
         ]);
@@ -127,9 +135,9 @@ class CurrencyResource extends BaseResource
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListCurrencies::route('/'),
-            'create' => Pages\CreateCurrency::route('/create'),
-            'edit' => Pages\EditCurrency::route('/{record}/edit'),
+            'index' => ListCurrencies::route('/'),
+            'create' => CreateCurrency::route('/create'),
+            'edit' => EditCurrency::route('/{record}/edit'),
         ];
     }
 }

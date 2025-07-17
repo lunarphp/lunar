@@ -2,6 +2,35 @@
 
 namespace Lunar\Admin;
 
+use Closure;
+use Lunar\Admin\Filament\Resources\ActivityResource;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource;
+use Lunar\Admin\Filament\Resources\BrandResource;
+use Lunar\Admin\Filament\Resources\ChannelResource;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource;
+use Lunar\Admin\Filament\Resources\CollectionResource;
+use Lunar\Admin\Filament\Resources\CurrencyResource;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource;
+use Lunar\Admin\Filament\Resources\CustomerResource;
+use Lunar\Admin\Filament\Resources\DiscountResource;
+use Lunar\Admin\Filament\Resources\LanguageResource;
+use Lunar\Admin\Filament\Resources\OrderResource;
+use Lunar\Admin\Filament\Resources\ProductOptionResource;
+use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductTypeResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Filament\Resources\StaffResource;
+use Lunar\Admin\Filament\Resources\TagResource;
+use Lunar\Admin\Filament\Resources\TaxClassResource;
+use Lunar\Admin\Filament\Resources\TaxZoneResource;
+use Lunar\Admin\Filament\Resources\TaxRateResource;
+use Lunar\Admin\Filament\Pages\Dashboard;
+use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView;
+use Filament\Facades\Filament\Resources\Resource;
+use Filament\Facades\Filament\Pages\Page;
+use Filament\Facades\Filament\Widgets\Widget;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -41,38 +70,38 @@ class LunarPanelManager
 
     protected bool $twoFactorAuthDisabled = false;
 
-    protected ?\Closure $closure = null;
+    protected ?Closure $closure = null;
 
     protected array $extensions = [];
 
     protected string $panelId = 'lunar';
 
     protected static $resources = [
-        Resources\ActivityResource::class,
-        Resources\AttributeGroupResource::class,
-        Resources\BrandResource::class,
-        Resources\ChannelResource::class,
-        Resources\CollectionGroupResource::class,
-        Resources\CollectionResource::class,
-        Resources\CurrencyResource::class,
-        Resources\CustomerGroupResource::class,
-        Resources\CustomerResource::class,
-        Resources\DiscountResource::class,
-        Resources\LanguageResource::class,
-        Resources\OrderResource::class,
-        Resources\ProductOptionResource::class,
-        Resources\ProductResource::class,
-        Resources\ProductTypeResource::class,
-        Resources\ProductVariantResource::class,
-        Resources\StaffResource::class,
-        Resources\TagResource::class,
-        Resources\TaxClassResource::class,
-        Resources\TaxZoneResource::class,
-        Resources\TaxRateResource::class,
+        ActivityResource::class,
+        AttributeGroupResource::class,
+        BrandResource::class,
+        ChannelResource::class,
+        CollectionGroupResource::class,
+        CollectionResource::class,
+        CurrencyResource::class,
+        CustomerGroupResource::class,
+        CustomerResource::class,
+        DiscountResource::class,
+        LanguageResource::class,
+        OrderResource::class,
+        ProductOptionResource::class,
+        ProductResource::class,
+        ProductTypeResource::class,
+        ProductVariantResource::class,
+        StaffResource::class,
+        TagResource::class,
+        TaxClassResource::class,
+        TaxZoneResource::class,
+        TaxRateResource::class,
     ];
 
     protected static $pages = [
-        Pages\Dashboard::class,
+        Dashboard::class,
     ];
 
     protected static $widgets = [
@@ -89,7 +118,7 @@ class LunarPanelManager
     {
         $panel = $this->defaultPanel();
 
-        if ($this->closure instanceof \Closure) {
+        if ($this->closure instanceof Closure) {
             $fn = $this->closure;
             $panel = $fn($panel);
         }
@@ -162,7 +191,7 @@ class LunarPanelManager
         return $this;
     }
 
-    public function panel(\Closure $closure): self
+    public function panel(Closure $closure): self
     {
         $this->closure = $closure;
 
@@ -221,15 +250,15 @@ class LunarPanelManager
         }
 
         $plugins = [
-            \Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin::make(),
+            FilamentApexChartsPlugin::make(),
         ];
-
-        if (! $this->twoFactorAuthDisabled) {
-            $plugins[] = TwoFactorAuthenticationPlugin::make()
-                ->enableTwoFactorAuthentication()
-                ->addTwoFactorMenuItem(label: '2FA Settings')
-                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
-        }
+//
+//        if (! $this->twoFactorAuthDisabled) {
+//            $plugins[] = TwoFactorAuthenticationPlugin::make()
+//                ->enableTwoFactorAuthentication()
+//                ->addTwoFactorMenuItem(label: '2FA Settings')
+//                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
+//        }
 
         return Panel::make()
             ->spa()
@@ -249,9 +278,9 @@ class LunarPanelManager
             ])
             ->font('Poppins')
             ->middleware($panelMiddleware)
-            ->assets([
-                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
-            ], 'lunarphp/panel')
+//            ->assets([
+//                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
+//            ], 'lunarphp/panel')
             ->pages(
                 static::getPages()
             )
@@ -271,8 +300,8 @@ class LunarPanelManager
             ->plugins($plugins)
             ->discoverLivewireComponents(__DIR__.'/Livewire', 'Lunar\\Admin\\Livewire')
             ->livewireComponents([
-                Resources\OrderResource\Pages\Components\OrderItemsTable::class,
-                \Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView::class,
+                OrderItemsTable::class,
+                CollectionTreeView::class,
             ])
             ->navigationGroups([
                 'Catalog',
@@ -309,7 +338,7 @@ class LunarPanelManager
     }
 
     /**
-     * @return array<class-string<\Filament\Resources\Resource>>
+     * @return array<class-string<Resource>>
      */
     public static function getResources(): array
     {
@@ -317,7 +346,7 @@ class LunarPanelManager
     }
 
     /**
-     * @return array<class-string<\Filament\Pages\Page>>
+     * @return array<class-string<Page>>
      */
     public static function getPages(): array
     {
@@ -325,7 +354,7 @@ class LunarPanelManager
     }
 
     /**
-     * @return array<class-string<\Filament\Widgets\Widget>>
+     * @return array<class-string<Widget>>
      */
     public static function getWidgets(): array
     {

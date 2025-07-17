@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -112,9 +112,9 @@ class ManageVariantShipping extends BaseEditRecord
         return Converter::from('volume.ml')->to('volume.l')->value($length * $width * $height)->convert()->getValue();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             Section::make()->schema([
                 ProductVariantResource::getShippableFormComponent(),
                 ProductVariantResource::getLengthFormComponent(),

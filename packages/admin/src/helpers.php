@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\Address;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Base\Traits\Searchable;
@@ -18,7 +21,7 @@ if (! function_exists('price')) {
 }
 
 if (! function_exists('sync_with_search')) {
-    function sync_with_search(?Illuminate\Database\Eloquent\Model $model = null): void
+    function sync_with_search(?Model $model = null): void
     {
         if (! $model) {
             return;
@@ -32,11 +35,11 @@ if (! function_exists('sync_with_search')) {
             return;
         }
 
-        if ($model instanceof \Lunar\Models\ProductVariant) {
+        if ($model instanceof ProductVariant) {
             $model->product()->first()->searchable();
         }
 
-        if ($model instanceof \Lunar\Models\Address) {
+        if ($model instanceof Address) {
             $model->customer()->first()->searchable();
         }
 

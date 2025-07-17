@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\TaxClassResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\TaxClassResource;
@@ -14,7 +15,7 @@ class EditTaxClass extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()
+            DeleteAction::make()
                 ->before(function ($record, $action) {
                     if ($record->productVariants()->exists()) {
                         Notification::make()

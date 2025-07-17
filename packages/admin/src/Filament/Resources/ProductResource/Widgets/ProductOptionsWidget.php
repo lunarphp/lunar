@@ -31,7 +31,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     use InteractsWithActions;
     use InteractsWithForms;
 
-    protected static string $view = 'lunarpanel::resources.product-resource.widgets.product-options';
+    protected string $view = 'lunarpanel::resources.product-resource.widgets.product-options';
 
     public ?Model $record;
 
@@ -59,7 +59,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             ->get();
 
         return Action::make('addSharedOption')
-            ->form([
+            ->schema([
                 Shout::make('no_shared_components')
                     ->content(
                         __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.form.no_shared_components.label')

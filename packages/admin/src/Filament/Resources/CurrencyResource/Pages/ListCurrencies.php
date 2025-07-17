@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\CurrencyResource\Pages;
 
+use Filament\Actions\CreateAction;
 use Filament\Actions;
 use Lunar\Admin\Filament\Resources\CurrencyResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
@@ -13,7 +14,7 @@ class ListCurrencies extends BaseListRecords
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 }

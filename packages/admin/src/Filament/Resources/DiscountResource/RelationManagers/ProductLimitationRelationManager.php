@@ -2,6 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
+use Filament\Actions\CreateAction;
+use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\MorphToSelect\Type;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -37,13 +45,13 @@ class ProductLimitationRelationManager extends BaseRelationManager
                     ->whereHas('discountable')
             )
             ->headerActions([
-                Tables\Actions\CreateAction::make()->form([
-                    Forms\Components\MorphToSelect::make('discountable')
+                CreateAction::make()->schema([
+                    MorphToSelect::make('discountable')
                         ->searchable(true)
                         ->types([
-                            Forms\Components\MorphToSelect\Type::make(Product::modelClass())
+                            Type::make(Product::modelClass())
                                 ->titleAttribute('name.en')
-                                ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
                                     return get_search_builder(Product::modelClass(), $search)
                                         ->get()
                                         ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
@@ -52,29 +60,29 @@ class ProductLimitationRelationManager extends BaseRelationManager
                         ]),
                 ])->label(
                     __('lunarpanel::discount.relationmanagers.products.actions.attach.label')
-                )->mutateFormDataUsing(function (array $data) {
+                )->mutateDataUsing(function (array $data) {
                     $data['type'] = 'limitation';
 
                     return $data;
                 }),
             ])->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('discountable.thumbnail')
+                SpatieMediaLibraryImageColumn::make('discountable.thumbnail')
                     ->collection(config('lunar.media.collection'))
                     ->conversion('small')
                     ->limit(1)
                     ->square()
                     ->label(''),
-                Tables\Columns\TextColumn::make('discountable.attribute_data.name')
+                TextColumn::make('discountable.attribute_data.name')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.products.table.name.label')
                     )
                     ->formatStateUsing(
                         fn (Model $record) => $record->discountable->attr('name')
                     ),
-            ])->actions([
-                Tables\Actions\DeleteAction::make(),
-            ])->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+            ])->recordActions([
+                DeleteAction::make(),
+            ])->toolbarActions([
+                DeleteBulkAction::make(),
             ]);
     }
 }

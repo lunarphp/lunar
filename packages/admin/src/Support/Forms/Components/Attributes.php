@@ -2,6 +2,10 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Section;
+use Lunar\Base\FieldType;
 use Closure;
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +17,7 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
 
-class Attributes extends Forms\Components\Group
+class Attributes extends Group
 {
     public ?string $modelClassOverride = null;
 
@@ -42,7 +46,7 @@ class Attributes extends Forms\Components\Group
         return $this;
     }
 
-    public function getKey(): ?string
+    public function getKey(bool $isAbsolute = true): ?string
     {
         return 'attributeData'.$this->modelClassOverride;
     }
@@ -54,7 +58,7 @@ class Attributes extends Forms\Components\Group
         $this->statePath('attribute_data');
 
         if (blank($this->childComponents)) {
-            $this->schema(function (\Filament\Forms\Get $get, Livewire $livewire, ?Model $record) {
+            $this->schema(function (Get $get, Livewire $livewire, ?Model $record) {
                 $modelClass = $this->modelClassOverride ?: $livewire::getResource()::getModel();
 
                 $productTypeId = null;
@@ -110,7 +114,7 @@ class Attributes extends Forms\Components\Group
                     foreach ($group['fields'] as $field) {
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
-                    $groupComponents[] = Forms\Components\Section::make($group['model']
+                    $groupComponents[] = Section::make($group['model']
                         ->translate('name'))
                         ->schema($sectionFields);
                 }
@@ -125,7 +129,7 @@ class Attributes extends Forms\Components\Group
             }
 
             foreach ($state as $key => $value) {
-                if (! $value instanceof \Lunar\Base\FieldType) {
+                if (! $value instanceof FieldType) {
                     continue;
                 }
 

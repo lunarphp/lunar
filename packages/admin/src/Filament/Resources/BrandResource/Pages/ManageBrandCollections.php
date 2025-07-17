@@ -2,10 +2,12 @@
 
 namespace Lunar\Admin\Filament\Resources\BrandResource\Pages;
 
+use Filament\Actions\DetachAction;
+use Filament\Actions\AttachAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
-use Filament\Tables\Actions\DetachAction;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
@@ -44,16 +46,16 @@ class ManageBrandCollections extends BaseManageRelatedRecords
                 ->limitedTooltip()
                 ->limit(50)
                 ->label(__('lunarpanel::product.table.name.label')),
-        ])->actions([
+        ])->recordActions([
             DetachAction::make(),
         ])->headerActions([
-            Tables\Actions\AttachAction::make()
+            AttachAction::make()
                 ->recordSelect(
-                    function (Forms\Components\Select $select) {
+                    function (Select $select) {
                         return $select->placeholder(
                             __('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder')
                         )
-                            ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                            ->getSearchResultsUsing(static function (Select $component, string $search): array {
                                 return Collection::search($search)
                                     ->get()
                                     ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])

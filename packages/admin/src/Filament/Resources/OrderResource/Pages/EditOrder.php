@@ -2,6 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Placeholder;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions;
 use Filament\Forms;
@@ -16,19 +19,19 @@ class EditOrder extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\Action::make('payment related actions')
+            Action::make('payment related actions')
                 ->color('gray')
                 ->url('#'),
-            Actions\Action::make('update_status')
+            Action::make('update_status')
                 ->label(__('lunarpanel::order.action.update_status.label'))
-                ->form([
-                    Forms\Components\Select::make('status')
+                ->schema([
+                    Select::make('status')
                         ->label(__('lunarpanel::order.form.status.label'))
                         ->default($this->record->status)
                         ->options(fn () => collect(config('lunar.orders.statuses', []))
                             ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
                         ->required(),
-                    Forms\Components\Placeholder::make('additional content and mailer'),
+                    Placeholder::make('additional content and mailer'),
                 ])
                 ->modalWidth('md')
                 ->slideOver()
@@ -37,7 +40,7 @@ class EditOrder extends BaseEditRecord
                         'status' => $data['status'],
                     ]))
                 ->after(fn () => Notification::make()->title(__('lunarpanel::order.action.update_status.notification'))->success()->send()),
-            Actions\Action::make('download_pdf')
+            Action::make('download_pdf')
                 ->label(__('lunarpanel::order.action.download_order_pdf.label'))
                 ->action(function () {
                     Notification::make()->title(__('lunarpanel::order.action.download_order_pdf.notification'))->success()->send();

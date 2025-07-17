@@ -2,6 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
+use Filament\Actions\AttachAction;
+use Filament\Forms\Components\Select;
+use Filament\Actions\DetachAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DetachBulkAction;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
@@ -50,11 +55,11 @@ class ManageProductCollections extends BaseManageRelatedRecords
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()
+                AttachAction::make()
                     ->recordSelect(
-                        function (Forms\Components\Select $select) {
+                        function (Select $select) {
                             return $select->placeholder(__('lunarpanel::product.pages.collections.select_collection'))
-                                ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search, ManageProductCollections $livewire): array {
+                                ->getSearchResultsUsing(static function (Select $component, string $search, ManageProductCollections $livewire): array {
                                     $relationModel = $livewire->getRelationship()->getRelated()::class;
 
                                     return get_search_builder($relationModel, $search)
@@ -69,16 +74,16 @@ class ManageProductCollections extends BaseManageRelatedRecords
                         )
                     ),
             ])
-            ->actions([
-                Tables\Actions\DetachAction::make()->after(
+            ->recordActions([
+                DetachAction::make()->after(
                     fn () => ProductCollectionsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DetachBulkAction::make()->after(
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DetachBulkAction::make()->after(
                         fn () => ProductCollectionsUpdated::dispatch(
                             $this->getOwnerRecord()
                         )
