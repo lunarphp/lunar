@@ -2,11 +2,11 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Synthesizers\FileSynth;
 use Lunar\Models\Attribute;
 

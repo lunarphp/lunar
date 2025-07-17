@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Component;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Synthesizers\TextSynth;
 use Lunar\Models\Attribute;
 

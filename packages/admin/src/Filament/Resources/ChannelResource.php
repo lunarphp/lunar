@@ -2,29 +2,26 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Forms\Components\Toggle;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Lunar\Admin\Filament\Resources\ChannelResource\Pages\ListChannels;
-use Lunar\Admin\Filament\Resources\ChannelResource\Pages\CreateChannel;
-use Lunar\Admin\Filament\Resources\ChannelResource\Pages\EditChannel;
 use Awcodes\BadgeableColumn\Components\Badge;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Lunar\Admin\Filament\Resources\ChannelResource\Pages;
+use Lunar\Admin\Filament\Resources\ChannelResource\Pages\CreateChannel;
+use Lunar\Admin\Filament\Resources\ChannelResource\Pages\EditChannel;
+use Lunar\Admin\Filament\Resources\ChannelResource\Pages\ListChannels;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\Channel as ChannelContract;
 

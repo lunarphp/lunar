@@ -3,11 +3,10 @@
 namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
 use Filament\Actions\DeleteAction;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
-use Filament\Actions;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Models\Currency;

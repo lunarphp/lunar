@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin\Support\Forms\Components;
 
-use Spatie\Permission\Traits\HasRoles;
 use Closure;
 use Exception;
 use Filament\Forms\Components\Field;
@@ -12,6 +11,7 @@ use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 
 class PermissionSelector extends Field
 {

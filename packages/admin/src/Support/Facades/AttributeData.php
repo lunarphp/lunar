@@ -3,9 +3,9 @@
 namespace Lunar\Admin\Support\Facades;
 
 use Filament\Forms\Components\Component;
-use Lunar\Models\Attribute;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Models\Attribute;
 
 /**
  * @method static Component getFilamentComponent(Attribute $attribute)

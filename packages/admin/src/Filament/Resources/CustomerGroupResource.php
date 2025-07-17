@@ -2,24 +2,21 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\ListCustomerGroups;
-use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup;
-use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\EditCustomerGroup;
 use Awcodes\BadgeableColumn\Components\Badge;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\EditCustomerGroup;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\ListCustomerGroups;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;

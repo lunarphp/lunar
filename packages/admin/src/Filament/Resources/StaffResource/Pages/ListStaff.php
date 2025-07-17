@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources\StaffResource\Pages;
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
-use Filament\Actions;
 use Filament\Support\Colors\Color;
 use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;

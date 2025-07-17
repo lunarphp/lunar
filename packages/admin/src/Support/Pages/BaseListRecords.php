@@ -2,26 +2,26 @@
 
 namespace Lunar\Admin\Support\Pages;
 
+use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
+use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsFooterWidgets;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderActions;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderWidgets;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsHeadings;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsTablePagination;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsTabs;
-use Lunar\Admin\Support\Concerns\CallsHooks;
-use Filament\Resources\Pages\ListRecords;
-use Illuminate\Database\Eloquent\Builder;
 use Lunar\Base\Traits\Searchable;
 
 abstract class BaseListRecords extends ListRecords
 {
+    use CallsHooks;
     use ExtendsFooterWidgets;
     use ExtendsHeaderActions;
     use ExtendsHeaderWidgets;
     use ExtendsHeadings;
     use ExtendsTablePagination;
     use ExtendsTabs;
-    use CallsHooks;
 
     protected function applySearchToTableQuery(Builder $query): Builder
     {

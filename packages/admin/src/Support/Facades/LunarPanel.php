@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Support\Facades;
 
-use Lunar\Admin\LunarPanelManager;
 use Closure;
 use Filament\Panel;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Admin\LunarPanelManager;
 
 /**
  * @method static LunarPanelManager register()

@@ -2,10 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 
-use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Entry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
-use Filament\Infolists;
 use Filament\Support\Enums\IconPosition;
 use Lunar\Admin\Support\OrderStatus;
 

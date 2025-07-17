@@ -2,25 +2,25 @@
 
 namespace Lunar\Admin\Support\Pages;
 
+use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsFooterWidgets;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsFormActions;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsForms;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderActions;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderWidgets;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsHeadings;
-use Lunar\Admin\Support\Concerns\CallsHooks;
-use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseCreateRecord extends CreateRecord
 {
+    use CallsHooks;
     use ExtendsFooterWidgets;
     use ExtendsFormActions;
     use ExtendsForms;
     use ExtendsHeaderActions;
     use ExtendsHeaderWidgets;
     use ExtendsHeadings;
-    use CallsHooks;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

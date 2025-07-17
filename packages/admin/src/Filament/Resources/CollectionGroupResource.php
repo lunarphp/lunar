@@ -2,23 +2,20 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Tables\Columns\TextColumn;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\ListCollectionGroups;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\EditCollectionGroup;
-use Filament\Forms;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\EditCollectionGroup;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\ListCollectionGroups;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\CollectionGroup as CollectionGroupContract;
 

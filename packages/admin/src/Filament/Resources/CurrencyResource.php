@@ -2,22 +2,19 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
-use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
-use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\EditCurrency;
 use Awcodes\BadgeableColumn\Components\Badge;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\CurrencyResource\Pages;
+use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
+use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\EditCurrency;
+use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\Currency as CurrencyContract;
 

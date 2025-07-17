@@ -2,34 +2,31 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Component;
-use Filament\Forms\Components\TextInput;
-use Lunar\Admin\Support\Forms\Components\Attributes;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\ViewAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ListCustomers;
-use Lunar\Admin\Filament\Resources\CustomerResource\Pages\CreateCustomer;
-use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
-use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ViewCustomer;
-use Filament\Forms;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\CustomerResource\Pages;
+use Lunar\Admin\Filament\Resources\CustomerResource\Pages\CreateCustomer;
+use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
+use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ListCustomers;
+use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\AddressRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\UserRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOverviewWidget;
+use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\Customer as CustomerContract;
 

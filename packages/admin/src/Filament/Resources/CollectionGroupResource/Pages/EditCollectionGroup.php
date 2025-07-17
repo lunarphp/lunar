@@ -3,11 +3,9 @@
 namespace Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages;
 
 use Filament\Actions\DeleteAction;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView;
-use Filament\Actions;
 use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
 class EditCollectionGroup extends BaseEditRecord

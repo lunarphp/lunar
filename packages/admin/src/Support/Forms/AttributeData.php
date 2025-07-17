@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Support\Forms;
 
 use Filament\Schemas\Components\Component;
-use Lunar\Base\FieldType;
 use Illuminate\Support\Collection;
 use Lunar\Admin\Support\FieldTypes\Dropdown;
 use Lunar\Admin\Support\FieldTypes\File;
@@ -14,6 +13,7 @@ use Lunar\Admin\Support\FieldTypes\Toggle;
 use Lunar\Admin\Support\FieldTypes\TranslatedText;
 use Lunar\Admin\Support\FieldTypes\Vimeo;
 use Lunar\Admin\Support\FieldTypes\YouTube;
+use Lunar\Base\FieldType;
 use Lunar\FieldTypes\Dropdown as DrodownFieldType;
 use Lunar\FieldTypes\File as FileFieldType;
 use Lunar\FieldTypes\ListField as ListFieldFieldType;

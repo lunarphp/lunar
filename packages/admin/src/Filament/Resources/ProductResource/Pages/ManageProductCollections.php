@@ -3,13 +3,11 @@
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Filament\Actions\AttachAction;
-use Filament\Forms\Components\Select;
-use Filament\Actions\DetachAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
-use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;

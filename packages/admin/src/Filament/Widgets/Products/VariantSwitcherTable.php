@@ -2,10 +2,9 @@
 
 namespace Lunar\Admin\Filament\Widgets\Products;
 
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Columns\TextColumn;
 use Closure;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Widgets\TableWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;

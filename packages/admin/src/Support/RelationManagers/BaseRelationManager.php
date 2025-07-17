@@ -2,13 +2,12 @@
 
 namespace Lunar\Admin\Support\RelationManagers;
 
-use Lunar\Admin\Support\Concerns\CallsHooks;
-use Lunar\Admin\Support\Concerns\RelationManagers\ExtendsForms;
-use Lunar\Admin\Support\Concerns\RelationManagers\ExtendsTables;
 use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Support\Facades\App;
 use Livewire\Attributes\On;
-use Lunar\Admin\Support\Concerns;
+use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Admin\Support\Concerns\RelationManagers\ExtendsForms;
+use Lunar\Admin\Support\Concerns\RelationManagers\ExtendsTables;
 
 #[On('refresh-relation-manager')]
 class BaseRelationManager extends RelationManager
