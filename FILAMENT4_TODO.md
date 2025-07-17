@@ -41,6 +41,10 @@ LunarSchema::modify(UserForm::class, 'email', function($component) {
 LunarSchema::add(UserForm::class, TextInput::make('nickname'), fn ($position) => $position->after('email'));
 ```
 
+```php
+LunarSchema::move(UserForm::class, 'email', fn ($position) => $position->after('password'));
+```
+
 No "delete" as that's pretty dangerous, you can always modify and hide a component.
 
 ```php
