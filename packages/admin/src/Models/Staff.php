@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lunar\Admin\Database\Factories\StaffFactory;
+use Lunar\Base\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
 
@@ -38,6 +39,7 @@ class Staff extends Authenticatable implements FilamentUser, HasName
     use Notifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
+    use LogsActivity;
 
     protected $guard_name = 'staff';
 

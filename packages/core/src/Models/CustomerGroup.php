@@ -9,6 +9,7 @@ use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CustomerGroupFactory;
 
 /**
@@ -26,6 +27,7 @@ class CustomerGroup extends BaseModel implements Contracts\CustomerGroup
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     /**
      * {@inheritDoc}
