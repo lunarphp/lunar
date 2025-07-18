@@ -36,10 +36,10 @@ class Staff extends Authenticatable implements FilamentUser, HasName
 {
     use HasFactory;
     use HasRoles;
+    use LogsActivity;
     use Notifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
-    use LogsActivity;
 
     protected $guard_name = 'staff';
 
