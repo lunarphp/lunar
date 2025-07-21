@@ -186,7 +186,7 @@ class Discount extends BaseModel implements Contracts\Discount
         $types = Arr::wrap($types);
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->whereDiscountableType(Collection::morphName())->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('discountables',
                     fn ($relation) => $relation->whereIn('discountable_id', $collectionIds)
                         ->whereDiscountableType(Collection::morphName())
@@ -207,7 +207,7 @@ class Discount extends BaseModel implements Contracts\Discount
         $types = Arr::wrap($types);
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->whereDiscountableType(Product::morphName())->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('discountables',
                     fn ($relation) => $relation->whereIn('discountable_id', $productIds)
                         ->whereDiscountableType(Product::morphName())
@@ -228,7 +228,7 @@ class Discount extends BaseModel implements Contracts\Discount
         $types = Arr::wrap($types);
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->whereDiscountableType(ProductVariant::morphName())->when($types, fn ($query) => $query->whereIn('type', $types)))
                 ->orWhereHas('discountables',
                     fn ($relation) => $relation->whereIn('discountable_id', $variantIds)
                         ->whereDiscountableType(ProductVariant::morphName())
