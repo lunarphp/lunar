@@ -2,8 +2,8 @@
 
 uses(\Lunar\Tests\Core\TestCase::class);
 
-use Lunar\Models\Discount;
 use Lunar\Models\Collection;
+use Lunar\Models\Discount;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
