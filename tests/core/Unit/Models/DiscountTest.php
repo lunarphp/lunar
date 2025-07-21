@@ -2,11 +2,11 @@
 
 uses(\Lunar\Tests\Core\TestCase::class);
 
+use Lunar\Models\Brand;
 use Lunar\Models\Collection;
 use Lunar\Models\Discount;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
-use Lunar\Models\Brand;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
