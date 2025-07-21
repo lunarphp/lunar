@@ -42,7 +42,7 @@ test('can apply collections scope', function () {
     $discountWithCollections->discountables()->create([
         'discountable_type' => Collection::morphName(),
         'discountable_id' => $collectionA->id,
-        'type' => 'condition',
+        'type' => 'limitation',
     ]);
 
     // Discount with product discountables (different type)
@@ -50,7 +50,7 @@ test('can apply collections scope', function () {
     $discountWithProducts->discountables()->create([
         'discountable_type' => Product::morphName(),
         'discountable_id' => $product->id,
-        'type' => 'condition',
+        'type' => 'limitation',
     ]);
 
     // Discount with no discountables
@@ -88,7 +88,7 @@ test('can apply products scope', function () {
     $discountWithProducts->discountables()->create([
         'discountable_type' => Product::morphName(),
         'discountable_id' => $productA->id,
-        'type' => 'condition',
+        'type' => 'limitation',
     ]);
 
     // Discount with collection discountables (different type)
@@ -96,7 +96,7 @@ test('can apply products scope', function () {
     $discountWithCollections->discountables()->create([
         'discountable_type' => Collection::morphName(),
         'discountable_id' => $collection->id,
-        'type' => 'condition',
+        'type' => 'limitation',
     ]);
 
     // Discount with no discountables
@@ -135,7 +135,7 @@ test('can apply product variants scope', function () {
     $discountWithVariants->discountables()->create([
         'discountable_type' => ProductVariant::morphName(),
         'discountable_id' => $variantA->id,
-        'type' => 'condition',
+        'type' => 'limitation',
     ]);
 
     // Discount with collection discountables (different type)
@@ -143,7 +143,7 @@ test('can apply product variants scope', function () {
     $discountWithCollections->discountables()->create([
         'discountable_type' => Collection::morphName(),
         'discountable_id' => $collection->id,
-        'type' => 'condition',
+        'type' => 'limitation',
     ]);
 
     // Discount with no discountables
