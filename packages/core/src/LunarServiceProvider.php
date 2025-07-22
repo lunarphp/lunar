@@ -14,6 +14,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Addons\Manifest;
@@ -94,6 +95,7 @@ use Lunar\Observers\ProductOptionValueObserver;
 use Lunar\Observers\ProductVariantObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
+use Lunar\Services\Telemetry;
 
 class LunarServiceProvider extends ServiceProvider
 {
@@ -185,6 +187,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(DiscountManagerInterface::class, function ($app) {
             return $app->make(DiscountManager::class);
+        });
+
+        $this->app->terminating(function () {
+            Telemetry::run();
         });
 
         \Lunar\Facades\ModelManifest::register();
