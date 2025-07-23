@@ -47,6 +47,7 @@ class TelemetryService implements TelemetryServiceInterface
     {
         if (! $this->shouldRun()) {
             \Log::debug('Do not run');
+
             return;
         }
 
@@ -72,6 +73,7 @@ class TelemetryService implements TelemetryServiceInterface
                 ]);
 
             \Log::debug($response->getBody()->getContents());
+
             return now();
         });
     }
