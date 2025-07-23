@@ -94,6 +94,15 @@ This will take you through a set of questions to configure your Lunar install. T
 
 You should now be able to access the panel at `https://<yoursite>/lunar`.
 
+## Telemetry insights
+
+Lunar will phone home to send anonymous usage insights, the data we capture does not identify your store in any way, it exists to
+help us gain an understanding of how Lunar is used. You can easily opt out of this by adding the following to your service provider's boot method:
+
+```php
+\Lunar\Facades\Telemetry::optOut();.
+```
+
 ## Advanced Installation Options
 
 ### Table Prefix

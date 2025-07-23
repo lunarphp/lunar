@@ -14,7 +14,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Addons\Manifest;
@@ -33,11 +32,15 @@ use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Base\OrderReferenceGeneratorInterface;
 use Lunar\Base\PaymentManagerInterface;
 use Lunar\Base\PricingManagerInterface;
+use Lunar\Base\ProvidesTelemetryInsights;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Base\TaxManagerInterface;
+use Lunar\Base\TelemetryInsights;
+use Lunar\Base\TelemetryService;
+use Lunar\Base\TelemetryServiceInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MigrateGetCandy;
@@ -53,6 +56,7 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Database\State\MigrateCartOrderRelationship;
 use Lunar\Database\State\PopulateProductOptionLabelWithName;
+use Lunar\Facades\Telemetry;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
 use Lunar\Managers\DiscountManager;
@@ -95,7 +99,6 @@ use Lunar\Observers\ProductOptionValueObserver;
 use Lunar\Observers\ProductVariantObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
-use Lunar\Services\Telemetry;
 
 class LunarServiceProvider extends ServiceProvider
 {
@@ -187,6 +190,14 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(DiscountManagerInterface::class, function ($app) {
             return $app->make(DiscountManager::class);
+        });
+
+        $this->app->singleton(ProvidesTelemetryInsights::class, function ($app) {
+            return $app->make(TelemetryInsights::class);
+        });
+
+        $this->app->singleton(TelemetryServiceInterface::class, function ($app) {
+            return $app->make(TelemetryService::class);
         });
 
         $this->app->terminating(function () {
