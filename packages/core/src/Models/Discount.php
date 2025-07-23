@@ -13,6 +13,7 @@ use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasTranslations;
 use Lunar\Database\Factories\DiscountFactory;
 use Lunar\DiscountTypes\AbstractDiscountType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @property int $id
@@ -63,6 +64,14 @@ class Discount extends BaseModel implements Contracts\Discount
     protected static function newFactory()
     {
         return DiscountFactory::new();
+    }
+
+    protected function coupon(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => strtoupper($value),
+            set: fn ($value) => strtoupper($value),
+        );
     }
 
     public function getStatusAttribute(): string

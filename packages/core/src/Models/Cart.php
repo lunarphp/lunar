@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
@@ -206,6 +207,14 @@ class Cart extends BaseModel implements Contracts\Cart
         'completed_at' => 'datetime',
         'meta' => AsArrayObject::class,
     ];
+
+    public function couponCode(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => strtoupper($value),
+            set: fn ($value) => strtoupper($value),
+        );
+    }
 
     public function lines(): HasMany
     {
