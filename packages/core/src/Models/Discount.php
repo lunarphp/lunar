@@ -69,8 +69,8 @@ class Discount extends BaseModel implements Contracts\Discount
     protected function coupon(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => strtoupper($value),
-            set: fn ($value) => strtoupper($value),
+            get: fn ($value) => $value ? strtoupper($value) : $value,
+            set: fn ($value) => $value ? strtoupper($value) : $value,
         );
     }
 

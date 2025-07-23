@@ -211,8 +211,8 @@ class Cart extends BaseModel implements Contracts\Cart
     public function couponCode(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => strtoupper($value),
-            set: fn ($value) => strtoupper($value),
+            get: fn ($value) => $value ? strtoupper($value) : $value,
+            set: fn ($value) => $value ? strtoupper($value) : $value,
         );
     }
 
