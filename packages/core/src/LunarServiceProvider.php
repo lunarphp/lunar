@@ -201,7 +201,9 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         $this->app->terminating(function () {
-            Telemetry::run();
+            if (! app()->runningInConsole()) {
+                Telemetry::run();
+            }
         });
 
         \Lunar\Facades\ModelManifest::register();
