@@ -40,41 +40,40 @@ class TelemetryService implements TelemetryServiceInterface
 
         $lastAttempt = Cache::get($this->getCacheKey());
 
-        return ! $lastAttempt || now()->parse($lastAttempt)->isYesterday();
+        return ! $lastAttempt || ! now()->parse($lastAttempt)->isToday();
+    }
+
+    public function getInsightsPayload(): array
+    {
+        return [
+            'domain_hash' => $this->insights->domainHash(),
+            'environment' => $this->insights->environment(),
+            'laravel_version' => $this->insights->laravelVersion(),
+            'lunar_version' => $this->insights->lunarVersion(),
+            'db_driver' => $this->insights->dbDriver(),
+            'php_version' => $this->insights->phpVersion(),
+            'product_count' => $this->insights->productCount(),
+            'variant_count' => $this->insights->productVariantCount(),
+            'order_count' => $this->insights->orderCount(),
+            'order_total' => $this->insights->orderTotal(),
+            'currencies' => $this->insights->currencies()->join(','),
+            'languages' => $this->insights->languages()->join(','),
+        ];
     }
 
     public function run(): void
     {
         if (! $this->shouldRun()) {
-            \Log::debug('Do not run');
-
             return;
         }
 
         Cache::forget($this->getCacheKey());
 
-        \Log::debug('Run');
-
-        Cache::remember($this->getCacheKey(), 86400, function (): Carbon {
+        Cache::remember($this->getCacheKey(), 86400, function (): ?Carbon {
             $response = Http::withHeader('Accept', 'application/json')
-                ->post($this->getInsightsUrl(), [
-                    'domain_hash' => $this->insights->domainHash(),
-                    'environment' => $this->insights->environment(),
-                    'laravel_version' => $this->insights->laravelVersion(),
-                    'lunar_version' => $this->insights->lunarVersion(),
-                    'db_driver' => $this->insights->dbDriver(),
-                    'php_version' => $this->insights->phpVersion(),
-                    'product_count' => $this->insights->productCount(),
-                    'variant_count' => $this->insights->productVariantCount(),
-                    'order_count' => $this->insights->orderCount(),
-                    'order_total' => $this->insights->orderTotal(),
-                    'currencies' => $this->insights->currencies()->join(','),
-                    'languages' => $this->insights->languages()->join(','),
-                ]);
+                ->post($this->getInsightsUrl(), $this->getInsightsPayload());
 
-            \Log::debug($response->getBody()->getContents());
-
-            return now();
+            return $response->successful() ? now() : null;
         });
     }
 }
