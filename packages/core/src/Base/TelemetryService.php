@@ -24,7 +24,7 @@ class TelemetryService implements TelemetryServiceInterface
 
     public function getInsightsUrl(): string
     {
-        return 'https://lunarstats.test/api/insights';
+        return 'https://stats.lunarphp.io/api/insights';
     }
 
     public function getCacheKey(): string
