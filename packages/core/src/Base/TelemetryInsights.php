@@ -14,7 +14,9 @@ class TelemetryInsights implements ProvidesTelemetryInsights
 {
     public function domainHash(): string
     {
-        return md5(request()->getHost());
+        return md5(
+            config('app.url')
+        );
     }
 
     public function environment(): string
@@ -64,7 +66,7 @@ class TelemetryInsights implements ProvidesTelemetryInsights
 
     public function currencies(): Collection
     {
-        return Currency::all()->map(
+        return Currency::where('enabled', true)->get()->map(
             fn (Currency $currency) => $currency->code
         );
     }
