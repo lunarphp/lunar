@@ -18,6 +18,17 @@ php artisan migrate
 
 Lunar currently provides bug fixes and security updates for only the latest minor release, e.g. `0.8`.
 
+## [Unreleased]
+
+This release introduces anonymous usage insights, which are sent via a deferred API call to Lunar. The reason for this addition
+is to allow us to have an idea of how Lunar is being used and at what capacity. We do not send or use any identifying information whatsoever.
+
+This is completely optional, however it turned on by default. To opt out add the following to your service provider:
+
+```php
+\Lunar\Facades\Telemetry::optOut();
+```
+
 ## 1.0.0-beta.24
 
 ### Medium Impact
