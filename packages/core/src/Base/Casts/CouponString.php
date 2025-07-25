@@ -5,7 +5,7 @@ namespace Lunar\Base\Casts;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Str;
 
-class UppercaseAscii implements CastsAttributes
+class CouponString implements CastsAttributes
 {
     public function get($model, $key, $value, $attributes): ?string
     {
@@ -19,8 +19,6 @@ class UppercaseAscii implements CastsAttributes
 
     protected function makeValue(string $value): string
     {
-        $value = transliterator_transliterate('Any-Latin; Latin-ASCII; [\u0080-\uffff] Remove', $value);
-        $value = str_replace(["'", '’', '‘', '`'], '', $value);
         return Str::upper($value);
     }
 }
