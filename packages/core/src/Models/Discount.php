@@ -3,12 +3,12 @@
 namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\UppercaseAscii;
 use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasTranslations;
@@ -56,6 +56,7 @@ class Discount extends BaseModel implements Contracts\Discount
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'data' => 'array',
+        'coupon_code' => UppercaseAscii::class,
     ];
 
     /**
@@ -64,14 +65,6 @@ class Discount extends BaseModel implements Contracts\Discount
     protected static function newFactory()
     {
         return DiscountFactory::new();
-    }
-
-    protected function coupon(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $value ? strtoupper($value) : $value,
-            set: fn ($value) => $value ? strtoupper($value) : $value,
-        );
     }
 
     public function getStatusAttribute(): string

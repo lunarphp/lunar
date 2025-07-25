@@ -24,6 +24,7 @@ use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\UppercaseAscii;
 use Lunar\Base\LunarUser;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
@@ -206,15 +207,8 @@ class Cart extends BaseModel implements Contracts\Cart
     protected $casts = [
         'completed_at' => 'datetime',
         'meta' => AsArrayObject::class,
+        'coupon_code' => UppercaseAscii::class,
     ];
-
-    public function couponCode(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $value ? strtoupper($value) : $value,
-            set: fn ($value) => $value ? strtoupper($value) : $value,
-        );
-    }
 
     public function lines(): HasMany
     {
