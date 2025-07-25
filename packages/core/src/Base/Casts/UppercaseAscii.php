@@ -22,6 +22,7 @@ class UppercaseAscii implements CastsAttributes
         $value = transliterator_transliterate('Any-Latin; Latin-ASCII; [\u0080-\uffff] Remove', $value);
         $value = str_replace(["'", '’', '‘', '`'], '', $value);
         $value = str_replace(['-', ' '], '_', $value);
+
         return Str::upper($value);
     }
 }
