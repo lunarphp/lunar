@@ -8,6 +8,8 @@ test('can currently cast value', function (string $input, string $expected) {
     $cast = new UppercaseAscii;
     expect(
         $cast->get(new \Lunar\Models\Discount, 'coupon', $input, [])
+    )->toBe($expected)->and(
+        $cast->set(new \Lunar\Models\Discount, 'coupon', $input, [])
     )->toBe($expected);
 })->with([
     ['10off', '10OFF'],
