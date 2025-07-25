@@ -56,7 +56,7 @@ class Discount extends BaseModel implements Contracts\Discount
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'data' => 'array',
-        'coupon_code' => UppercaseAscii::class,
+        'coupon' => UppercaseAscii::class,
     ];
 
     /**

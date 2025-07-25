@@ -85,4 +85,4 @@ test('will handle customer limitation', function () {
     $cart->refresh()->calculate();
 
     expect($cart->subTotalDiscounted->value)->toBe(900);
-})->group('waaaa');
+});
