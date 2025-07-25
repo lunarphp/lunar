@@ -7,14 +7,14 @@ use Illuminate\Support\Str;
 
 class UppercaseAscii implements CastsAttributes
 {
-    public function get($model, $key, $value, $attributes): string
+    public function get($model, $key, $value, $attributes): ?string
     {
-        return $this->makeValue($value);
+        return $value ? $this->makeValue($value) : null;
     }
 
-    public function set($model, $key, $value, $attributes): string
+    public function set($model, $key, $value, $attributes): ?string
     {
-        return $this->makeValue($value);
+        return $value ? $this->makeValue($value) : null;
     }
 
     protected function makeValue(string $value): string
