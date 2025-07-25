@@ -23,6 +23,7 @@ class UppercaseAscii implements CastsAttributes
         $value = str_replace(["'", '’', '‘', '`'], '', $value);
         $value = str_replace(['-'], '_', $value);
         $value = Str::snake($value);
+
         return Str::upper($value);
     }
 }
