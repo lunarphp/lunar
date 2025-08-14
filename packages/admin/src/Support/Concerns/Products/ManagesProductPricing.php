@@ -102,7 +102,7 @@ trait ManagesProductPricing
                                 'class' => '',
                             ])
                             ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
-                                if (! $price['sync_prices'] ?? false && $get('basePrices.'.$index.'.id', true)) {
+                                if (! ($price['sync_prices'] ?? false) && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
@@ -135,7 +135,7 @@ trait ManagesProductPricing
                                 'class' => '',
                             ])
                             ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
-                                if (! $price['sync_prices'] ?? false && $get('basePrices.'.$index.'.id', true)) {
+                                if (! ($price['sync_prices'] ?? false) && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
