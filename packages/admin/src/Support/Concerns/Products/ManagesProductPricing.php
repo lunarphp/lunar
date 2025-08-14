@@ -225,6 +225,7 @@ trait ManagesProductPricing
                     'label' => $currency->name,
                     'currency_code' => $currency->code,
                     'default_currency' => $currency->default,
+                    'sync_prices' => $currency->sync_prices,
                     'currency_id' => $currency->id,
                 ]);
             }
