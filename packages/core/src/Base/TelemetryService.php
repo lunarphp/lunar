@@ -71,6 +71,8 @@ class TelemetryService implements TelemetryServiceInterface
 
         Cache::remember($this->getCacheKey(), 86400, function (): ?Carbon {
             $response = Http::withHeader('Accept', 'application/json')
+                ->timeout(3)
+                ->retry(3, 100)
                 ->post($this->getInsightsUrl(), $this->getInsightsPayload());
 
             return $response->successful() ? now() : null;
