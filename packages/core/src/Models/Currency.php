@@ -44,9 +44,9 @@ class Currency extends BaseModel implements Contracts\Currency
             'enabled' => 'boolean',
             'default' => 'boolean',
             'sync_prices' => 'boolean',
+            'decimal_places' => 'integer',
         ];
     }
-
     /**
      * Return a new factory instance for the model.
      */
