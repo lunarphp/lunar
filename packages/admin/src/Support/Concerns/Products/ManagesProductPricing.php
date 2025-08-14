@@ -52,7 +52,7 @@ trait ManagesProductPricing
         $variant->update($data);
 
         $prices->filter(
-            fn ($price) => ! $price['id']
+            fn ($price) => ! $price['id'] && isset($price['value'])
         )->each(fn ($price) => $variant->prices()->create([
             'currency_id' => $price['currency_id'],
             'price' => (int) round((float) ($price['value'] * $price['factor'])),

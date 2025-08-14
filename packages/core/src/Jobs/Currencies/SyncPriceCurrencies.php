@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Lunar\Models\Contracts\Price;
 use Lunar\Models\Currency;
 
@@ -43,8 +44,7 @@ class SyncPriceCurrencies implements ShouldQueue
 
             if (! $priceCounterpart) {
                 $priceCounterpart = (new \Lunar\Models\Price)->forceFill([
-                    ...$this->price->getAttributes(),
-                    'id' => null,
+                    ...Arr::except($this->price->getAttributes(), ['id']),
                     'currency_id' => $currency->id,
                     'price' => $this->price->price->value * $currency->exchange_rate,
                     'compare_price' => $this->price->compare_price->value * $currency->exchange_rate,
