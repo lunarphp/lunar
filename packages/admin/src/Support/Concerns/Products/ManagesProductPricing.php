@@ -79,7 +79,7 @@ trait ManagesProductPricing
 
     public function getBasePriceFormSection(): Section
     {
-//        dd($this->basePrices);
+        //        dd($this->basePrices);
 
         return Forms\Components\Section::make(
             __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
