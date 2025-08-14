@@ -1,39 +1,117 @@
+
 <?php
 
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Lunar\Base\Migration;
 
 return new class extends Migration
 {
+    /**
+     * The list of tables and JSON columns to update.
+     */
+    private $columnsToUpdate = [
+        'activity_log' => [
+            ['name' => 'properties', 'nullable' => true],
+        ],
+        'addresses' => [
+            ['name' => 'meta', 'nullable' => true],
+        ],
+        'attribute_groups' => [
+            ['name' => 'name', 'nullable' => false],
+        ],
+        'attributes' => [
+            ['name' => 'configuration', 'nullable' => false],
+            ['name' => 'description', 'nullable' => true],
+            ['name' => 'name', 'nullable' => false],
+        ],
+        'brands' => [
+            ['name' => 'attribute_data', 'nullable' => true],
+        ],
+        'cart_addresses' => [
+            ['name' => 'meta', 'nullable' => true],
+        ],
+        'cart_lines' => [
+            ['name' => 'meta', 'nullable' => true],
+        ],
+        'carts' => [
+            ['name' => 'meta', 'nullable' => true],
+        ],
+        'collections' => [
+            ['name' => 'attribute_data', 'nullable' => true],
+        ],
+        'customer_groups' => [
+            ['name' => 'attribute_data', 'nullable' => true],
+        ],
+        'customers' => [
+            ['name' => 'attribute_data', 'nullable' => true],
+            ['name' => 'meta', 'nullable' => true],
+        ],
+        'discounts' => [
+            ['name' => 'data', 'nullable' => true],
+        ],
+        'order_addresses' => [
+            ['name' => 'meta', 'nullable' => true],
+        ],
+        'order_lines' => [
+            ['name' => 'meta', 'nullable' => true],
+            ['name' => 'tax_breakdown', 'nullable' => false],
+        ],
+        'orders' => [
+            ['name' => 'discount_breakdown', 'nullable' => true],
+            ['name' => 'meta', 'nullable' => true],
+            ['name' => 'shipping_breakdown', 'nullable' => true],
+            ['name' => 'tax_breakdown', 'nullable' => false],
+        ],
+        'product_option_values' => [
+            ['name' => 'name', 'nullable' => false],
+        ],
+        'product_options' => [
+            ['name' => 'label', 'nullable' => true],
+            ['name' => 'name', 'nullable' => false],
+        ],
+        'product_variants' => [
+            ['name' => 'attribute_data', 'nullable' => true],
+        ],
+        'products' => [
+            ['name' => 'attribute_data', 'nullable' => true],
+        ],
+        'shipping_methods' => [
+            ['name' => 'data', 'nullable' => true],
+        ],
+        'transactions' => [
+            ['name' => 'meta', 'nullable' => true],
+        ],
+        'media' => [
+            ['name' => 'custom_properties', 'nullable' => false],
+            ['name' => 'generated_conversions', 'nullable' => false],
+            ['name' => 'manipulations', 'nullable' => false],
+            ['name' => 'responsive_images', 'nullable' => false],
+        ],
+    ];
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::table($this->prefix.'brands', function (Blueprint $table) {
-            $table->jsonb('attribute_data')->nullable()->change();
-        });
+        foreach ($this->columnsToUpdate as $table => $columns) {
+            $fullTableName = $this->getTableName($table);
 
-        Schema::table($this->prefix.'collections', function (Blueprint $table) {
-            $table->jsonb('attribute_data')->nullable()->change();
-        });
+            Schema::table($fullTableName, function (Blueprint $tableBlueprint) use ($columns) {
+                foreach ($columns as $column) {
+                    $columnBuilder = $tableBlueprint->jsonb($column['name']);
 
-        Schema::table($this->prefix.'customers', function (Blueprint $table) {
-            $table->jsonb('attribute_data')->nullable()->change();
-        });
+                    if ($column['nullable']) {
+                        $columnBuilder->nullable();
+                    } else {
+                        $columnBuilder->nullable(false);
+                    }
 
-        Schema::table($this->prefix.'customer_groups', function (Blueprint $table) {
-            $table->jsonb('attribute_data')->nullable()->change();
-        });
-
-        Schema::table($this->prefix.'products', function (Blueprint $table) {
-            $table->jsonb('attribute_data')->nullable()->change();
-        });
-
-        Schema::table($this->prefix.'product_variants', function (Blueprint $table) {
-            $table->jsonb('attribute_data')->nullable()->change();
-        });
+                    $columnBuilder->change();
+                }
+            });
+        }
     }
 
     /**
@@ -41,28 +119,39 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table($this->prefix.'brands', function (Blueprint $table) {
-            $table->json('attribute_data')->nullable()->change();
-        });
+        foreach ($this->columnsToUpdate as $table => $columns) {
+            $fullTableName = $this->getTableName($table);
 
-        Schema::table($this->prefix.'collections', function (Blueprint $table) {
-            $table->json('attribute_data')->nullable()->change();
-        });
+            Schema::table($fullTableName, function (Blueprint $tableBlueprint) use ($columns) {
+                foreach ($columns as $column) {
+                    $columnBuilder = $tableBlueprint->json($column['name']);
 
-        Schema::table($this->prefix.'customers', function (Blueprint $table) {
-            $table->json('attribute_data')->nullable()->change();
-        });
+                    if ($column['nullable']) {
+                        $columnBuilder->nullable();
+                    } else {
+                        $columnBuilder->nullable(false);
+                    }
 
-        Schema::table($this->prefix.'customer_groups', function (Blueprint $table) {
-            $table->json('attribute_data')->nullable()->change();
-        });
+                    $columnBuilder->change();
+                }
+            });
+        }
+    }
 
-        Schema::table($this->prefix.'products', function (Blueprint $table) {
-            $table->json('attribute_data')->nullable()->change();
-        });
+    /**
+     * Get the full table name with appropriate prefix.
+     */
+    private function getTableName(string $table): string
+    {
+        // Tables that don't use the lunar_ prefix
+        $nonLunarTables = ['activity_log', 'media'];
 
-        Schema::table($this->prefix.'product_variants', function (Blueprint $table) {
-            $table->json('attribute_data')->nullable()->change();
-        });
+        if (in_array($table, $nonLunarTables)) {
+            return $table;
+        }
+
+        // Get the Lunar table prefix from config
+        $prefix = config('lunar.database.table_prefix', 'lunar_');
+        return $prefix . $table;
     }
 };
