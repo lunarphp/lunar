@@ -102,13 +102,13 @@ trait ManagesProductPricing
                                 'class' => '',
                             ])
                             ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
-                                if (! $price['sync_prices'] && $get('basePrices.'.$index.'.id', true)) {
+                                if (! $price['sync_prices'] ?? false && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
                             })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
-                                if ($price['sync_prices']) {
+                                if ($price['sync_prices'] ?? false) {
                                     return __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price');
                                 }
 
@@ -135,13 +135,13 @@ trait ManagesProductPricing
                                 'class' => '',
                             ])
                             ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
-                                if (! $price['sync_prices'] && $get('basePrices.'.$index.'.id', true)) {
+                                if (! $price['sync_prices'] ?? false && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
                             })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
-                                if ($price['sync_prices']) {
+                                if ($price['sync_prices'] ?? false) {
                                     return __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price');
                                 }
 
