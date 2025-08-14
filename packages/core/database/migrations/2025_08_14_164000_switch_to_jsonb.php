@@ -1,9 +1,9 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -95,6 +95,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Only run for PostgreSQL - SQLite doesn't need jsonb conversion
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
         foreach ($this->columnsToUpdate as $table => $columns) {
             $fullTableName = $this->getTableName($table);
 
@@ -119,6 +124,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Only run for PostgreSQL
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
         foreach ($this->columnsToUpdate as $table => $columns) {
             $fullTableName = $this->getTableName($table);
 
