@@ -9,7 +9,7 @@ use and should exercise the same amount of caution as you would with any softwar
 
 - PHP >= 8.2
 - Laravel 11, 12
-- MySQL 8.0+ / PostgreSQL 9.2+
+- MySQL 8.0+ / PostgreSQL 9.4+
 - exif PHP extension (on most systems it will be installed by default)
 - intl PHP extension (on most systems it will be installed by default)
 - bcmath PHP extension (on most systems it will be installed by default)
