@@ -55,8 +55,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                                         ->get()
                                         ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();
-                                })
-                            ,
+                                }),
                         ]),
                 ])->label(
                     __('lunarpanel::discount.relationmanagers.productvariants.actions.attach.label')
