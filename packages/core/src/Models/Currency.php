@@ -47,6 +47,7 @@ class Currency extends BaseModel implements Contracts\Currency
             'decimal_places' => 'integer',
         ];
     }
+
     /**
      * Return a new factory instance for the model.
      */
