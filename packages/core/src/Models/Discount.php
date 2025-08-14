@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\CouponString;
 use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasTranslations;
@@ -55,6 +56,7 @@ class Discount extends BaseModel implements Contracts\Discount
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'data' => 'array',
+        'coupon' => CouponString::class,
     ];
 
     /**
