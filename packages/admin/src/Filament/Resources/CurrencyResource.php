@@ -117,7 +117,7 @@ class CurrencyResource extends BaseResource
             ->label(__('lunarpanel::currency.form.sync_prices.label'))
             ->helperText(__('lunarpanel::currency.form.sync_prices.helper_text'))
             ->hidden(
-                fn (Model $record) => (bool) $record->default
+                fn (?Model $record) => (bool) $record?->default
             )
             ->default(true);
     }
