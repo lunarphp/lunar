@@ -16,12 +16,12 @@ class Taxes extends Cluster
 
     public static function getNavigationLabel(): string
     {
-        return  __('lunarpanel::tax.plural_label');
+        return __('lunarpanel::tax.plural_label');
     }
 
     public static function getClusterBreadcrumb(): ?string
     {
-        return  __('lunarpanel::tax.plural_label');
+        return __('lunarpanel::tax.plural_label');
     }
 
     public static function getNavigationIcon(): ?string
