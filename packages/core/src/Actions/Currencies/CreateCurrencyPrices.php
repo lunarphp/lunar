@@ -19,9 +19,9 @@ class CreateCurrencyPrices
                 'customer_group_id',
                 'min_quantity',
                 'priceable_id',
-                DB::raw('"'.$incomingCurrency->id.'" as currency_id'),
-                DB::raw('"'.now().'" as created_at'),
-                DB::raw('"'.now().'" as updated_at'),
+                DB::raw("'".$incomingCurrency->id."' as currency_id"),
+                DB::raw("'".now()."' as created_at"),
+                DB::raw("'".now()."' as updated_at")
             )
             ->where('currency_id', $baseCurrency->id);
 
