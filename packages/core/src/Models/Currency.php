@@ -19,6 +19,7 @@ use Lunar\Database\Factories\CurrencyFactory;
  * @property int $decimal_places
  * @property bool $enabled
  * @property bool $default
+ * @property bool $sync_prices
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
