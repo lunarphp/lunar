@@ -45,6 +45,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                         ->types([
                             Forms\Components\MorphToSelect\Type::make(ProductVariant::modelClass())
                                 ->titleAttribute('sku')
+                                ->searchColumns(['sku'])
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                     $products = get_search_builder(Product::modelClass(), $search)
                                         ->get();
@@ -54,7 +55,8 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                                         ->get()
                                         ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();
-                                }),
+                                })
+                            ,
                         ]),
                 ])->label(
                     __('lunarpanel::discount.relationmanagers.productvariants.actions.attach.label')
