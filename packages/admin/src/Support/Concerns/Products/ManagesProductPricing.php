@@ -85,7 +85,7 @@ trait ManagesProductPricing
             __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
         )
             ->schema(
-                collect($this->basePrices)->map(function ($price, $index): Forms\Components\Fieldset {
+                collect($this->basePrices)->map(callback: function ($price, $index): Forms\Components\Fieldset {
                     return Forms\Components\Fieldset::make($price['label'])->schema([
                         Forms\Components\TextInput::make('value')
                             ->label('')
@@ -101,13 +101,17 @@ trait ManagesProductPricing
                             ->extraInputAttributes([
                                 'class' => '',
                             ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
-                                if ($get('basePrices.'.$index.'.id', true)) {
+                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                                if (! $price['sync_prices'] && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                                if ($price['sync_prices']) {
+                                    return __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price');
+                                }
+
                                 if ($get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
@@ -115,7 +119,6 @@ trait ManagesProductPricing
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
                             })
                             ->disabled(fn () => $price['sync_prices'])
-                            ->hintIcon(fn () => $price['sync_prices'] ? 'lucide-circle-question-mark' : false, tooltip: __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price'))
                             ->live(),
                         Forms\Components\TextInput::make('compare_price')
                             ->label('')
@@ -131,13 +134,17 @@ trait ManagesProductPricing
                             ->extraInputAttributes([
                                 'class' => '',
                             ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
-                                if ($get('basePrices.'.$index.'.id', true)) {
+                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                                if (! $price['sync_prices'] && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                                if ($price['sync_prices']) {
+                                    return __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price');
+                                }
+
                                 if ($get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
@@ -145,7 +152,6 @@ trait ManagesProductPricing
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
                             })
                             ->disabled(fn () => $price['sync_prices'])
-                            ->hintIcon(fn () => $price['sync_prices'] ? 'lucide-circle-question-mark' : false, tooltip: __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price'))
                             ->live(),
                     ])->columns(2);
                 })->toArray()
