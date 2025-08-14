@@ -12,6 +12,7 @@ use Lunar\Base\Casts\CouponString;
 use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\DiscountFactory;
 use Lunar\DiscountTypes\AbstractDiscountType;
 
@@ -35,7 +36,8 @@ class Discount extends BaseModel implements Contracts\Discount
     use HasChannels,
         HasCustomerGroups,
         HasFactory,
-        HasTranslations;
+        HasTranslations,
+        LogsActivity;
 
     protected $guarded = [];
 

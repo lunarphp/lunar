@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasPrices;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Contracts\TaxClass as TaxClassContract;
@@ -20,6 +21,7 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
 {
     use HasFactory;
     use HasPrices;
+    use LogsActivity;
 
     /**
      * Define which attributes should be

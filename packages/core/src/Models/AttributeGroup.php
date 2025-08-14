@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\AttributeGroupFactory;
 
 /**
@@ -24,6 +25,7 @@ class AttributeGroup extends BaseModel implements Contracts\AttributeGroup
     use HasFactory;
     use HasMacros;
     use HasTranslations;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.
