@@ -31,7 +31,7 @@ class TelemetryInsights implements ProvidesTelemetryInsights
 
     public function lunarVersion(): string
     {
-        return InstalledVersions::getPrettyVersion('lunarphp/core');
+        return InstalledVersions::getPrettyVersion('lunarphp/core') ?? 'dev';
     }
 
     public function dbDriver(): string
