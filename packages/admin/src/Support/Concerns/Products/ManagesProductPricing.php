@@ -118,7 +118,7 @@ trait ManagesProductPricing
 
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
                             })
-                            ->disabled(fn () => $price['sync_prices'])
+                            ->disabled(fn () => $price['sync_prices'] ?? false)
                             ->live(),
                         Forms\Components\TextInput::make('compare_price')
                             ->label('')
@@ -151,7 +151,7 @@ trait ManagesProductPricing
 
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
                             })
-                            ->disabled(fn () => $price['sync_prices'])
+                            ->disabled(fn () => $price['sync_prices'] ?? false)
                             ->live(),
                     ])->columns(2);
                 })->toArray()
