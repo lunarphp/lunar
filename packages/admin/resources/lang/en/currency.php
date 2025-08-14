@@ -51,7 +51,7 @@ return [
         ],
         'sync_prices' => [
             'label' => 'Sync Prices',
-            'helper_text' => 'Keep prices in this currency in sync with the base currency.',
+            'helper_text' => 'Keep prices in this currency in sync with the default currency.',
         ],
     ],
 
