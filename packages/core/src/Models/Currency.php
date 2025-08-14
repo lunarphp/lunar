@@ -37,6 +37,15 @@ class Currency extends BaseModel implements Contracts\Currency
      */
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'enabled' => 'boolean',
+            'default' => 'boolean',
+            'sync_prices' => 'boolean',
+        ];
+    }
+
     /**
      * Return a new factory instance for the model.
      */

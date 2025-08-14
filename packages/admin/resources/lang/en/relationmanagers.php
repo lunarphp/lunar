@@ -248,6 +248,7 @@ return [
                     'price' => [
                         'label' => 'Price',
                         'helper_text' => 'The purchase price, before discounts.',
+                        'sync_price' => 'Price is synced with the default currency.',
                     ],
                     'compare_price' => [
                         'label' => 'Comparison Price',

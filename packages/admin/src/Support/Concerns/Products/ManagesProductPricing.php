@@ -63,7 +63,7 @@ trait ManagesProductPricing
         );
 
         $prices->filter(
-            fn ($price) => $price['id'] && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
+            fn ($price) => $price['id'] && isset($price['value']) && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
         )->each(fn ($price) => Price::find($price['id'])->update([
             'price' => (int) round((float) ($price['value'] * $price['factor'])),
             'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
@@ -79,6 +79,8 @@ trait ManagesProductPricing
 
     public function getBasePriceFormSection(): Section
     {
+//        dd($this->basePrices);
+
         return Forms\Components\Section::make(
             __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
         )
@@ -111,7 +113,10 @@ trait ManagesProductPricing
                                 }
 
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
-                            })->live(),
+                            })
+                            ->disabled(fn () => $price['sync_prices'])
+                            ->hintIcon(fn () => $price['sync_prices'] ? 'lucide-circle-question-mark' : false, tooltip: __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price'))
+                            ->live(),
                         Forms\Components\TextInput::make('compare_price')
                             ->label('')
                             ->statePath($index.'.compare_price')
@@ -138,7 +143,10 @@ trait ManagesProductPricing
                                 }
 
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
-                            })->live(),
+                            })
+                            ->disabled(fn () => $price['sync_prices'])
+                            ->hintIcon(fn () => $price['sync_prices'] ? 'lucide-circle-question-mark' : false, tooltip: __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price'))
+                            ->live(),
                     ])->columns(2);
                 })->toArray()
             )->statePath('basePrices')->columns(1);
@@ -168,11 +176,21 @@ trait ManagesProductPricing
     protected function getBasePrices(): array
     {
         // Get enabled currencies
-        $currencies = Currency::whereEnabled(true)->get();
+        $currencies = Currency::whereEnabled(true)
+            ->orderBy('default', 'desc')
+            ->orderBy('name')
+            ->get();
 
         $prices = collect([]);
 
-        foreach ($this->getOwnerRecord()->basePrices()->get() as $price) {
+        $basePrices = $this->getOwnerRecord()
+            ->basePrices()
+            ->with('currency')
+            ->get()
+            ->sortByDesc(fn ($p) => (int) $p->currency->default)
+            ->values();
+
+        foreach ($basePrices as $price) {
             $prices->put(
                 $price->currency->code,
                 [
@@ -185,6 +203,7 @@ trait ManagesProductPricing
                     'label' => $price->currency->name,
                     'currency_code' => $price->currency->code,
                     'default_currency' => $price->currency->default,
+                    'sync_prices' => $price->currency->sync_prices,
                     'currency_id' => $price->currency_id,
                 ]
             );
