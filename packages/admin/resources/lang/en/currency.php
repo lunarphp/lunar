@@ -22,6 +22,9 @@ return [
         'enabled' => [
             'label' => 'Enabled',
         ],
+        'sync_prices' => [
+            'label' => 'Sync Prices',
+        ],
         'default' => [
             'label' => 'Default',
         ],

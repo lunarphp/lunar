@@ -143,6 +143,9 @@ class CurrencyResource extends BaseResource
             Tables\Columns\IconColumn::make('enabled')
                 ->boolean()
                 ->label(__('lunarpanel::currency.table.enabled.label')),
+            Tables\Columns\IconColumn::make('sync_prices')
+                ->boolean()
+                ->label(__('lunarpanel::currency.table.sync_prices.label')),
         ]);
     }
 
