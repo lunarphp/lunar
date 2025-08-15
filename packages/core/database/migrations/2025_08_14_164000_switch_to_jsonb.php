@@ -160,9 +160,7 @@ return new class extends Migration
             return $table;
         }
 
-        // Get the Lunar table prefix from config
-        $prefix = config('lunar.database.table_prefix', 'lunar_');
-
-        return $prefix.$table;
+        
+        return $this->prefix.$table;
     }
 };
