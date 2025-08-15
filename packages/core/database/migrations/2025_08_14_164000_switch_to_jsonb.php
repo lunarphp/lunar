@@ -160,7 +160,6 @@ return new class extends Migration
             return $table;
         }
 
-        
         return $this->prefix.$table;
     }
 };
