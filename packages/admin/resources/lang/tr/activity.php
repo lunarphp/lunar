@@ -17,8 +17,8 @@ return [
     ],
 
     'form' => [
-        'causer_type' => 'Neden Türü',
-        'causer_id' => 'Neden ID',
+        'causer_type' => 'Oluşturan Türü',
+        'causer_id' => 'Oluşturan ID',
         'subject_type' => 'Konu türü',
         'subject_id' => 'Konu ID',
         'description' => 'Açıklama',

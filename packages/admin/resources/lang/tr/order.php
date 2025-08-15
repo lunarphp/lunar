@@ -67,10 +67,10 @@ return [
     'form' => [
         'address' => [
             'first_name' => [
-                'label' => 'İsim',
+                'label' => 'Ad',
             ],
             'last_name' => [
-                'label' => 'Soyisim',
+                'label' => 'Soyad',
             ],
             'line_one' => [
                 'label' => 'Adres Satırı 1',
@@ -196,13 +196,13 @@ return [
             'label' => 'Sipariş Tarihi',
         ],
         'new_returning' => [
-            'label' => 'Yeni / Tekrar Gelen',
+            'label' => 'Yeni / Geri Dönen',
         ],
         'new_customer' => [
             'label' => 'Yeni Müşteri',
         ],
         'returning_customer' => [
-            'label' => 'Tekrar Gelen Müşteri',
+            'label' => 'Geri Dönen Müşteri',
         ],
         'shipping_address' => [
             'label' => 'Kargo Adresi',

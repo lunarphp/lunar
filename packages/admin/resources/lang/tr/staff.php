@@ -8,10 +8,10 @@ return [
 
     'table' => [
         'first_name' => [
-            'label' => 'İsim',
+            'label' => 'Ad',
         ],
         'last_name' => [
-            'label' => 'Soyisim',
+            'label' => 'Soyad',
         ],
         'email' => [
             'label' => 'E-posta',
@@ -23,10 +23,10 @@ return [
 
     'form' => [
         'first_name' => [
-            'label' => 'İsim',
+            'label' => 'Ad',
         ],
         'last_name' => [
-            'label' => 'Soyisim',
+            'label' => 'Soyad',
         ],
         'email' => [
             'label' => 'E-posta',

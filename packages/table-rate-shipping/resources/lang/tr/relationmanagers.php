@@ -7,7 +7,7 @@ return [
         ],
     ],
     'shipping_rates' => [
-        'title_plural' => 'Kargo Tarifesi',
+        'title_plural' => 'Kargo Tarifeleri',
         'actions' => [
             'create' => [
                 'label' => 'Kargo Tarifesi Oluştur'

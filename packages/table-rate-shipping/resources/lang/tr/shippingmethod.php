@@ -27,7 +27,7 @@ return [
             'label' => 'Tür',
             'options' => [
                 'ship-by' => 'Standart',
-                'collection' => 'Koleksiyon',
+                'collection' => 'Mağazadan Teslim Alma',
             ],
         ],
         'stock_available' => [
@@ -45,7 +45,7 @@ return [
             'label' => 'Tür',
             'options' => [
                 'ship-by' => 'Standart',
-                'collection' => 'Koleksiyon',
+                'collection' => 'Mağazadan Teslim Alma',
             ],
         ],
     ],

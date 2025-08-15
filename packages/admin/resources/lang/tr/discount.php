@@ -14,7 +14,7 @@ return [
             'heading' => 'Sabit Tutar İndirimi'
         ],
         'name' => [
-            'label' => 'Ad',
+            'label' => 'İndirim Adı',
         ],
         'handle' => [
             'label' => 'Tanımlayıcı',

@@ -6,39 +6,39 @@ return [
             'order_stats_overview' => [
                 'stat_one' => [
                     'label' => 'Bugünkü siparişler',
-                    'increase' => 'Dünkü :count\'dan %:percentage artış',
-                    'decrease' => 'Dünkü :count\'dan %:percentage azalış',
-                    'neutral' => 'Dünle karşılaştırıldığında değişiklik yok',
+                    'increase' => 'Düne göre %:percentage artış (Dün: :count)',
+                    'decrease' => 'Düne göre %:percentage azalış (Dün: :count)',
+                    'neutral' => 'Düne göre değişiklik yok',
                 ],
                 'stat_two' => [
                     'label' => 'Son 7 günün siparişleri',
-                    'increase' => 'Geçen dönemki :count\'dan %:percentage artış',
-                    'decrease' => 'Geçen dönemki :count\'dan %:percentage azalış',
-                    'neutral' => 'Geçen dönemle karşılaştırıldığında değişiklik yok',
+                    'increase' => 'Önceki döneme göre %:percentage artış (Önceki: :count)',
+                    'decrease' => 'Önceki döneme göre %:percentage azalış (Önceki: :count)',
+                    'neutral' => 'Önceki döneme göre değişiklik yok',
                 ],
                 'stat_three' => [
                     'label' => 'Son 30 günün siparişleri',
-                    'increase' => 'Geçen dönemki :count\'dan %:percentage artış',
-                    'decrease' => 'Geçen dönemki :count\'dan %:percentage azalış',
-                    'neutral' => 'Geçen dönemle karşılaştırıldığında değişiklik yok',
+                    'increase' => 'Önceki döneme göre %:percentage artış (Önceki: :count)',
+                    'decrease' => 'Önceki döneme göre %:percentage azalış (Önceki: :count)',
+                    'neutral' => 'Önceki döneme göre değişiklik yok',
                 ],
                 'stat_four' => [
                     'label' => 'Bugünkü satışlar',
-                    'increase' => 'Dünkü :total\'dan %:percentage artış',
-                    'decrease' => 'Dünkü :total\'dan %:percentage azalış',
-                    'neutral' => 'Dünle karşılaştırıldığında değişiklik yok',
+                    'increase' => 'Düne göre %:percentage artış (Dün: :total)',
+                    'decrease' => 'Düne göre %:percentage azalış (Dün: :total)',
+                    'neutral' => 'Düne göre değişiklik yok',
                 ],
                 'stat_five' => [
                     'label' => 'Son 7 günün satışları',
-                    'increase' => 'Geçen dönemki :total\'dan %:percentage artış',
-                    'decrease' => 'Geçen dönemki :total\'dan %:percentage azalış',
-                    'neutral' => 'Geçen dönemle karşılaştırıldığında değişiklik yok',
+                    'increase' => 'Önceki döneme göre %:percentage artış (Önceki: :total)',
+                    'decrease' => 'Önceki döneme göre %:percentage azalış (Önceki: :total)',
+                    'neutral' => 'Önceki döneme göre değişiklik yok',
                 ],
                 'stat_six' => [
                     'label' => 'Son 30 günün satışları',
-                    'increase' => 'Geçen dönemki :total\'dan %:percentage artış',
-                    'decrease' => 'Geçen dönemki :total\'dan %:percentage azalış',
-                    'neutral' => 'Geçen dönemle karşılaştırıldığında değişiklik yok',
+                    'increase' => 'Önceki döneme göre %:percentage artış (Önceki: :total)',
+                    'decrease' => 'Önceki döneme göre %:percentage azalış (Önceki: :total)',
+                    'neutral' => 'Önceki döneme göre değişiklik yok',
                 ],
             ],
             'order_totals_chart' => [
@@ -74,12 +74,12 @@ return [
                 'heading' => 'Ortalama Sipariş Değeri',
             ],
             'new_returning_customers' => [
-                'heading' => 'Yeni vs Tekrar Gelen Müşteriler',
+                'heading' => 'Yeni vs Geri Dönen Müşteriler',
                 'series_one' => [
                     'label' => 'Yeni Müşteriler',
                 ],
                 'series_two' => [
-                    'label' => 'Tekrar Gelen Müşteriler',
+                    'label' => 'Geri Dönen Müşteriler',
                 ],
             ],
             'popular_products' => [

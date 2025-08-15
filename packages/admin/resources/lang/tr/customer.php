@@ -8,13 +8,13 @@ return [
 
     'table' => [
         'full_name' => [
-            'label' => 'Ad',
+            'label' => 'Ad Soyad',
         ],
         'first_name' => [
-            'label' => 'İsim',
+            'label' => 'Ad',
         ],
         'last_name' => [
-            'label' => 'Soyisim',
+            'label' => 'Soyad',
         ],
         'title' => [
             'label' => 'Ünvan',
@@ -32,7 +32,7 @@ return [
             'label' => 'Yeni',
         ],
         'returning' => [
-            'label' => 'Tekrar Gelen',
+            'label' => 'Geri Dönen',
         ],
     ],
 
@@ -41,10 +41,10 @@ return [
             'label' => 'Ünvan',
         ],
         'first_name' => [
-            'label' => 'İsim',
+            'label' => 'Ad',
         ],
         'last_name' => [
-            'label' => 'Soyisim',
+            'label' => 'Soyad',
         ],
         'company_name' => [
             'label' => 'Şirket Adı',

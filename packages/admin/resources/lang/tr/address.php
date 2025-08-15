@@ -8,13 +8,13 @@ return [
 
     'table' => [
         'title' => [
-            'label' => 'Hitap'
+            'label' => 'Başlık',
         ],
         'first_name' => [
-            'label' => 'İsim',
+            'label' => 'Ad',
         ],
         'last_name' => [
-            'label' => 'Soyisim',
+            'label' => 'Soyad',
         ],
         'company_name' => [
             'label' => 'Şirket Adı',
@@ -53,13 +53,13 @@ return [
 
     'form' => [
         'title' => [
-            'label' => 'Hitap'
+            'label' => 'Başlık',
         ],
         'first_name' => [
-            'label' => 'İsim',
+            'label' => 'Ad',
         ],
         'last_name' => [
-            'label' => 'Soyisim',
+            'label' => 'Soyad',
         ],
         'company_name' => [
             'label' => 'Şirket Adı',
