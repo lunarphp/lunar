@@ -105,15 +105,9 @@ return new class extends Migration
 
             Schema::table($fullTableName, function (Blueprint $tableBlueprint) use ($columns) {
                 foreach ($columns as $column) {
-                    $columnBuilder = $tableBlueprint->jsonb($column['name']);
-
-                    if ($column['nullable']) {
-                        $columnBuilder->nullable();
-                    } else {
-                        $columnBuilder->nullable(false);
-                    }
-
-                    $columnBuilder->change();
+                    $tableBlueprint->jsonb($column['name'])
+                        ->nullable($column['nullable'])
+                        ->change();
                 }
             });
         }
@@ -134,15 +128,9 @@ return new class extends Migration
 
             Schema::table($fullTableName, function (Blueprint $tableBlueprint) use ($columns) {
                 foreach ($columns as $column) {
-                    $columnBuilder = $tableBlueprint->json($column['name']);
-
-                    if ($column['nullable']) {
-                        $columnBuilder->nullable();
-                    } else {
-                        $columnBuilder->nullable(false);
-                    }
-
-                    $columnBuilder->change();
+                    $tableBlueprint->json($column['name'])
+                        ->nullable($column['nullable'])
+                        ->change();
                 }
             });
         }
@@ -160,9 +148,6 @@ return new class extends Migration
             return $table;
         }
 
-        // Get the Lunar table prefix from config
-        $prefix = config('lunar.database.table_prefix', 'lunar_');
-
-        return $prefix.$table;
+        return $this->prefix.$table;
     }
 };
