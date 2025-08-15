@@ -20,6 +20,22 @@ Lunar currently provides bug fixes and security updates for only the latest mino
 
 ## [Unreleased]
 
+### Medium Impact
+
+#### Scout no longer enabled by default for admin panel
+With the recent panel search improvements and the fact most users initially will not be using Scout, the default 
+configuration for the panel is now to *not* enable Scout for search.
+
+If you are using Scout, you may need to update your `panel.php` config.
+
+```php
+'scout_enabled' => true,
+```
+
+
+### Low Impact
+
+#### Telemetry
 This release introduces anonymous usage insights, which are sent via a deferred API call to Lunar. The reason for this addition
 is to allow us to have an idea of how Lunar is being used and at what capacity. We do not send or use any identifying information whatsoever.
 
