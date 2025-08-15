@@ -141,13 +141,6 @@ return new class extends Migration
      */
     private function getTableName(string $table): string
     {
-        // Tables that don't use the lunar_ prefix
-        $nonLunarTables = ['activity_log', 'media'];
-
-        if (in_array($table, $nonLunarTables)) {
-            return $table;
-        }
-
-        return $this->prefix.$table;
+        return in_array($table, ['activity_log', 'media']) ? $table : $this->prefix.$table;
     }
 };
