@@ -67,9 +67,8 @@ However, you're more than welcome to code away on your idea if you think it will
 
 When making a [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), 
 there should be a suitable template for you to follow to ensure the bug or feature can be reviewed in a timely manner.
-If the pull request is missing information or unclear as to what it offers or solves, it could any delay movement or be 
+If the pull request is missing information or is unclear about what it offers or solves, it could delay progress or be
 closed.
-
 A PR should be able to include the following:
 
 - The title should be relevant and quickly explain what to expect inside
