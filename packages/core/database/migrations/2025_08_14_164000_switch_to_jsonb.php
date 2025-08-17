@@ -76,9 +76,6 @@ return new class extends Migration
         'products' => [
             ['name' => 'attribute_data', 'nullable' => true],
         ],
-        'shipping_methods' => [
-            ['name' => 'data', 'nullable' => true],
-        ],
         'transactions' => [
             ['name' => 'meta', 'nullable' => true],
         ],
