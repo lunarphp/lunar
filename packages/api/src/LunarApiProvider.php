@@ -2,8 +2,8 @@
 
 namespace Lunar\Api;
 
-use Illuminate\Support\ServiceProvider;
 use ApiPlatform\Metadata\Resource\Factory\ResourceNameCollectionFactoryInterface;
+use Illuminate\Support\ServiceProvider;
 
 class LunarApiProvider extends ServiceProvider
 {

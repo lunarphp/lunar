@@ -4,8 +4,8 @@ namespace Lunar\Api\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use Lunar\Models\Brand;
 use Lunar\Api\Resources\BrandResource;
+use Lunar\Models\Brand;
 
 final class BrandCollectionProvider implements ProviderInterface
 {
@@ -23,9 +23,10 @@ final class BrandCollectionProvider implements ProviderInterface
 
     private function toResource(Brand $b): BrandResource
     {
-        $r = new BrandResource();
-        $r->id   = (string) $b->getKey();
+        $r = new BrandResource;
+        $r->id = (string) $b->getKey();
         $r->name = $b->name;
+
         return $r;
     }
 }
