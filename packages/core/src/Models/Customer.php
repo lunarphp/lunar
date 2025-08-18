@@ -13,6 +13,7 @@ use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasPersonalDetails;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CustomerFactory;
 
@@ -22,7 +23,7 @@ use Lunar\Database\Factories\CustomerFactory;
  * @property string $first_name
  * @property string $last_name
  * @property ?string $company_name
- * @property ?string $vat_no
+ * @property ?string $tax_identifier
  * @property ?string $account_ref
  * @property ?array $attribute_data
  * @property ?array $meta
@@ -36,6 +37,7 @@ class Customer extends BaseModel implements Contracts\Customer
     use HasMacros;
     use HasPersonalDetails;
     use HasTranslations;
+    use LogsActivity;
     use Searchable;
 
     /**

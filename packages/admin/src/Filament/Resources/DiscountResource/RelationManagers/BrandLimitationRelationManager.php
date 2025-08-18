@@ -47,7 +47,8 @@ class BrandLimitationRelationManager extends BaseRelationManager
                 })->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::discount.relationmanagers.brands.actions.attach.label')
-                    ),
+                    )
+                    ->recordSelectSearchColumns(['name']),
             ])->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(

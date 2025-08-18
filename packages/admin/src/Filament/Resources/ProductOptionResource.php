@@ -93,7 +93,8 @@ class ProductOptionResource extends BaseResource
         return $table
             ->columns([
                 TranslatedTextColumn::make('name')
-                    ->label(__('lunarpanel::productoption.table.name.label')),
+                    ->label(__('lunarpanel::productoption.table.name.label'))
+                    ->searchable(),
                 TranslatedTextColumn::make('label')
                     ->label(__('lunarpanel::productoption.table.label.label')),
                 Tables\Columns\TextColumn::make('handle')

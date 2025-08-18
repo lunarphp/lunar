@@ -19,6 +19,7 @@ use Lunar\Database\Factories\CurrencyFactory;
  * @property int $decimal_places
  * @property bool $enabled
  * @property bool $default
+ * @property bool $sync_prices
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
@@ -36,6 +37,16 @@ class Currency extends BaseModel implements Contracts\Currency
      * @var array
      */
     protected $guarded = [];
+
+    protected function casts(): array
+    {
+        return [
+            'enabled' => 'boolean',
+            'default' => 'boolean',
+            'sync_prices' => 'boolean',
+            'decimal_places' => 'integer',
+        ];
+    }
 
     /**
      * Return a new factory instance for the model.

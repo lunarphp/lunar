@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CollectionGroupFactory;
 
 /**
@@ -19,6 +20,7 @@ class CollectionGroup extends BaseModel implements Contracts\CollectionGroup
 {
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     protected $guarded = [];
 

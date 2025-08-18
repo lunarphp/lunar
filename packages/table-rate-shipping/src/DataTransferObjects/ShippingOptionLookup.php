@@ -2,8 +2,8 @@
 
 namespace Lunar\Shipping\DataTransferObjects;
 
-use Doctrine\Common\Cache\Psr6\InvalidArgument;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Lunar\Shipping\Models\ShippingRate;
 
 class ShippingOptionLookup
@@ -18,7 +18,7 @@ class ShippingOptionLookup
             $this->shippingRates->filter(
                 fn ($method) => get_class($method) != ShippingRate::class
             )->count(),
-            new InvalidArgument
+            InvalidArgumentException::class
         );
     }
 }

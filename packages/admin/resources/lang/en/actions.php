@@ -13,6 +13,12 @@ return [
         ],
         'delete' => [
             'label' => 'Delete',
+            'notifications' => [
+                'cannot_delete' => [
+                    'title' => 'Cannot Delete',
+                    'body' => 'This collection has child collections and cannot be deleted.',
+                ],
+            ],
         ],
     ],
     'orders' => [

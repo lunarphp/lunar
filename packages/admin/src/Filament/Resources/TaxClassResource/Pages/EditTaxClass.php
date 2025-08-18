@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Filament\Resources\TaxClassResource\Pages;
 
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\TaxClassResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
@@ -13,7 +14,18 @@ class EditTaxClass extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->before(function ($record, $action) {
+                    if ($record->productVariants()->exists()) {
+                        Notification::make()
+                            ->title(__('lunarpanel::taxclass.delete.error.title'))
+                            ->body(__('lunarpanel::taxclass.delete.error.body'))
+                            ->danger()
+                            ->send();
+
+                        $action->halt();
+                    }
+                }),
         ];
     }
 

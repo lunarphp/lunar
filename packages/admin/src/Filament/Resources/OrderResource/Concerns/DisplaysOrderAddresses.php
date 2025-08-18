@@ -54,6 +54,10 @@ trait DisplaysOrderAddresses
                 ->label(__('lunarpanel::order.form.address.company_name.label'))
                 ->autocomplete(false)
                 ->maxLength(255),
+            Forms\Components\TextInput::make('tax_identifier')
+                ->label(__('lunarpanel::order.form.address.tax_identifier.label'))
+                ->autocomplete(false)
+                ->maxLength(255),
             Forms\Components\Grid::make()
                 ->schema([
                     Forms\Components\TextInput::make('contact_phone')
@@ -138,6 +142,7 @@ trait DisplaysOrderAddresses
                         if ($address?->id ?? false) {
                             return collect([
                                 'company_name' => $address->company_name,
+                                'tax_identifier' => $address->tax_identifier,
                                 'fullName' => $address->fullName,
                                 'line_one' => $address->line_one,
                                 'line_two' => $address->line_two,

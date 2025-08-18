@@ -11,6 +11,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\ProductOptionFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
@@ -30,6 +31,7 @@ class ProductOption extends BaseModel implements Contracts\ProductOption, Spatie
     use HasMacros;
     use HasMedia;
     use HasTranslations;
+    use LogsActivity;
     use Searchable;
 
     /**

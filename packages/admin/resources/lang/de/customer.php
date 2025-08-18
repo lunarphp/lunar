@@ -22,8 +22,8 @@ return [
         'company_name' => [
             'label' => 'Firmenname',
         ],
-        'vat_no' => [
-            'label' => 'USt-IdNr.',
+        'tax_identifier' => [
+            'label' => 'Steueridentifikator',
         ],
         'account_reference' => [
             'label' => 'Konto Referenz',
@@ -52,8 +52,8 @@ return [
         'account_ref' => [
             'label' => 'Konto Referenz',
         ],
-        'vat_no' => [
-            'label' => 'USt-IdNr.',
+        'tax_identifier' => [
+            'label' => 'Steueridentifikator',
         ],
         'customer_groups' => [
             'label' => 'Kundengruppen',

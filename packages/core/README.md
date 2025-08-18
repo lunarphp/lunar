@@ -2,18 +2,10 @@
 
 ## About Lunar
 
-Lunar is an open source E-commerce platform which embraces Laravel as it's foundation and uses it to build a highly extensible, robust and feature rich application you can build any store on.
+Lunar is an open source E-commerce platform which embraces Laravel as it's foundation and uses it to build a highly 
+extensible, robust and feature rich application you can build any store on.
 
 We put developers first and try to ensure your experience is as smooth as possible.
-
----
-
-## Requirements
-- PHP >= 8.2
-- Laravel 10, 11, 12
-- MySQL 8.0+ / PostgreSQL 9.2+
-- exif PHP extension (on most systems it will be installed by default)
-- GD PHP extension (used for image manipulation)
 
 ## Documentation
 
