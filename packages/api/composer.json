@@ -1,0 +1,22 @@
+{
+    "name": "lunarphp/api",
+    "description": "API for LunarPHP",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lunar\\Api\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "lunarphp/core": "self.version",
+        "api-platform/laravel": "^4.2@dev"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lunar\\Api\\LunarApiProvider"
+            ]
+        }
+    }
+}
