@@ -11,7 +11,7 @@ final class ResourceNameDecorator implements ResourceNameCollectionFactoryInterf
 
     public function create(): ResourceNameCollection
     {
-        $base  = $this->decorated->create();
+        $base = $this->decorated->create();
         $names = iterator_to_array($base->getIterator());
 
         // Add your DTOs explicitly

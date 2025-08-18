@@ -19,5 +19,6 @@ use Lunar\Api\State\BrandCollectionProvider;
 final class BrandResource
 {
     public string $id;
+
     public string $name;
 }
