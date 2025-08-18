@@ -49,14 +49,18 @@ class AttributeData
         return $component
             ->label($attribute->translate('name'))
             ->formatStateUsing(function ($state) use ($attribute) {
-                if (
-                    ! $state instanceof FieldTypeContract ||
-                    (get_class($state) !== $attribute->type)
-                ) {
+                if (! $state instanceof FieldTypeContract || (get_class($state) !== $attribute->type)) {
                     $state = new $attribute->type;
                 }
 
-                return $state->getValue();
+                $value = $state->getValue();
+
+                // Ensure arrays are normalized for components expecting array items only
+                if (is_array($value)) {
+                    $value = array_values(array_filter($value, 'is_array'));
+                }
+
+                return $value;
             })
             ->mutateStateForValidationUsing(function ($state) {
                 if ($state instanceof \Lunar\Base\FieldType) {
@@ -66,10 +70,13 @@ class AttributeData
                 return $state;
             })
             ->mutateDehydratedStateUsing(function ($state) use ($attribute) {
-                if (
-                    ! $state instanceof FieldTypeContract ||
-                    (get_class($state) !== $attribute->type)
-                ) {
+
+                // Normalize arrays before wrapping into FieldType instance
+                if (is_array($state)) {
+                    $state = array_values(array_filter($state, 'is_array'));
+                }
+
+                if (! $state instanceof FieldTypeContract || (get_class($state) !== $attribute->type)) {
                     $field = (new $attribute->type);
                     $field->setValue($state);
 
