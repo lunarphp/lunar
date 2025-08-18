@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\TaxZoneFactory;
 
 /**
@@ -26,6 +27,7 @@ class TaxZone extends BaseModel implements Contracts\TaxZone
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     protected static function booted(): void
     {
@@ -45,7 +47,7 @@ class TaxZone extends BaseModel implements Contracts\TaxZone
             $taxZone->states()->delete();
             $taxZone->postcodes()->delete();
             $taxZone->customerGroups()->delete();
-            $taxZone->taxRates()->delete();
+            $taxZone->taxRates->each->delete();
             DB::commit();
         });
     }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\HasThumbnailImage;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasDimensions;
@@ -51,7 +52,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purchasable
+class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
 {
     use HasAttributes;
     use HasDimensions;
@@ -216,5 +217,10 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purc
         }
 
         return $this->stock + $this->backorder;
+    }
+
+    public function getThumbnailImage(): string
+    {
+        return $this->getThumbnail()?->getUrl('small') ?? '';
     }
 }

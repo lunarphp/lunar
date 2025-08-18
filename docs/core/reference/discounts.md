@@ -15,14 +15,14 @@ Lunar\Models\Discount
 | `id`         |                                                              |                                       |
 | `name`       | The given name for the discount                              |                                       |
 | `handle`     | The unique handle for the discount                           |                                       |
-| `type`       | The type of discount                                         | `Lunar\DiscountTypes\BuyXGetY`          |
-| `data`       | JSON                                                         | Any data to be used by the type class 
-| `starts_at`  | The datetime the discount starts (required)                  |
-| `ends_at`    | The datetime the discount expires, if `NULL` it won't expire |
-| `uses`       | How many uses the discount has had                           |
-| `max_uses`   | The maximum times this discount can be applied storewide     |
-| `priority`   | The order of priority                                        |
-| `stop`       | Whether this discount will stop others after propagating     |
+| `type`       | The type of discount                                         | `Lunar\DiscountTypes\BuyXGetY`        |
+| `data`       | JSON                                                         | Any data to be used by the type class |
+| `starts_at`  | The datetime the discount starts (required)                  |                                       |
+| `ends_at`    | The datetime the discount expires, if `NULL` it won't expire |                                       |
+| `uses`       | How many uses the discount has had                           |                                       |
+| `max_uses`   | The maximum times this discount can be applied storewide     |                                       |
+| `priority`   | The order of priority                                        |                                       |
+| `stop`       | Whether this discount will stop others after propagating     |                                       |
 | `created_at` |                                                              |                                       |
 | `updated_at` |                                                              |                                       |
 
@@ -74,29 +74,30 @@ For performance reasons the applicable discounts are cached per request. If you 
 Discount::resetDiscounts();
 ```
 
-## Discount Purchasable
+## Discountables
 
-You can relate a purchasable to a discount via this model. Each has a type for whether it's a `condition` or `reward`.
+You can relate a purchasable, collection or variant to a discount via this model. Each has a type for whether it's a `condition` or `reward`.
 
-- `condition` - If your discount requires these purchasable models to be in the cart to activate
-- `reward` - Once the conditions are met, discount one of more of these purchasable models.
+- `condition` - If your discount requires these models to be in the cart to activate
+- `reward` - Once the conditions are met, discount one of more of these models.
 
 ```php
-Lunar\Models\DiscountPurchasable
+Lunar\Models\Discountable
 ```
 
-| Field              | Description             | Example                       |
-|:-------------------|:------------------------|:------------------------------|
-| `id`               |                         |                               |
-| `discount_id`      |                         |                               |
-| `purchasable_type` |                         | `product_variant` 
-| `type`             | `condition` or `reward` |
-| `created_at`       |                         |                               |
-| `updated_at`       |                         |                               |
+| Field               | Description             | Example                       |
+|:--------------------|:------------------------|:------------------------------|
+| `id`                |                         |                               |
+| `discount_id`       |                         |                               |
+| `discountable_type` |                         | `product_variant`             |
+| `discountable_id`   |                         |                               |
+| `type`              | `condition` or `reward` |                               |
+| `created_at`        |                         |                               |
+| `updated_at`        |                         |                               |
 
 ### Relationships
 
-- Purchasables `discount_purchasables`
+- Discountable `discountables`
 - Users - `customer_user`
 
 ### Adding your own Discount type

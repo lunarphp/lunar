@@ -1,13 +1,23 @@
 # Introduction
 
-::: danger Beta Release
-Although many Lunar sites have been launched using v1.x, you may not consider this version production-ready for your own
-use and should exercise the same amount of caution as you would with any software in an beta state. 🚀
-:::
-
-Lunar's admin panel is powered by Filament v3. It allows you to easily extend the admin panel to suit your project.
+Lunar's admin panel is powered by **Filament v3**. It allows you to easily extend the admin panel to suit your project.
 
 With the panel you can administer your products, collections, orders, customers, discounts, settings and much more.
+
+## Registering
+
+If you followed the core installation instructions or have installed a starter kit, you will likely already have this in place.
+
+```php
+use Lunar\Admin\Support\Facades\LunarPanel;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        LunarPanel::register();
+    }
+```
 
 ## Contributing
 

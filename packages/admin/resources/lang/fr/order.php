@@ -84,6 +84,9 @@ return [
             'company_name' => [
                 'label' => 'Nom de l\'entreprise',
             ],
+            'tax_identifier' => [
+                'label' => 'Identifiant fiscal',
+            ],
             'contact_phone' => [
                 'label' => 'Téléphone',
             ],

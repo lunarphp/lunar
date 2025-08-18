@@ -19,6 +19,9 @@ return [
         'company_name' => [
             'label' => 'Company Name',
         ],
+        'tax_identifier' => [
+            'label' => 'Tax Identifier',
+        ],
         'line_one' => [
             'label' => 'Address',
         ],
@@ -60,6 +63,9 @@ return [
         ],
         'company_name' => [
             'label' => 'Company Name',
+        ],
+        'tax_identifier' => [
+            'label' => 'Tax Identifier',
         ],
         'line_one' => [
             'label' => 'Line One',

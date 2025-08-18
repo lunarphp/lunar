@@ -85,6 +85,7 @@ return [
         ],
         'collections' => [
             'label' => 'Collections',
+            'select_collection' => 'Select a collection',
         ],
     ],
 
@@ -120,6 +121,7 @@ return [
         ],
         'collections' => [
             'label' => 'Collections',
+            'select_collection' => 'Select a collection',
         ],
         'associations' => [
             'label' => 'Product Associations',

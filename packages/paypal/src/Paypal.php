@@ -10,6 +10,9 @@ class Paypal implements PaypalInterface
 {
     private $accessToken;
 
+    /**
+     * @return Illuminate\Http\Client\PendingRequest
+     */
     public function baseHttpClient()
     {
         return Http::baseUrl(
@@ -17,6 +20,9 @@ class Paypal implements PaypalInterface
         );
     }
 
+    /**
+     * @return string
+     */
     public function getApiUrl()
     {
         return config('services.paypal.env', 'sandbox') == 'sandbox' ?
@@ -24,6 +30,9 @@ class Paypal implements PaypalInterface
             'https://api-m.paypal.com';
     }
 
+    /**
+     * @return string|null
+     */
     public function getAccessToken()
     {
         return $this->accessToken ?: $this->accessToken = $this->baseHttpClient()->withBasicAuth(
@@ -37,6 +46,9 @@ class Paypal implements PaypalInterface
         )->json()['access_token'] ?? null;
     }
 
+    /**
+     * @return array
+     */
     public function getOrder(string $orderId)
     {
         return $this->baseHttpClient()->withToken($this->getAccessToken())
@@ -44,6 +56,9 @@ class Paypal implements PaypalInterface
             ->json();
     }
 
+    /**
+     * @return array
+     */
     public function capture(string $orderId)
     {
         return $this->baseHttpClient()->withToken($this->getAccessToken())
@@ -52,6 +67,9 @@ class Paypal implements PaypalInterface
             ->json();
     }
 
+    /**
+     * @return array
+     */
     public function refund($transactionId, string $amount, string $currencyCode)
     {
         return $this->baseHttpClient()->withToken($this->getAccessToken())

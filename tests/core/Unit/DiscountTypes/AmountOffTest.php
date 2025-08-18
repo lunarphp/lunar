@@ -321,11 +321,11 @@ test('will only apply to lines with correct product', function () {
         ],
     ]);
 
-    $discount->purchasableLimitations()->create([
+    $discount->discountableLimitations()->create([
         'discount_id' => $discount->id,
         'type' => 'limitation',
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
     $cart = $cart->calculate();
@@ -418,11 +418,11 @@ test('will only apply to lines with correct product variant', function () {
         ],
     ]);
 
-    $discount->purchasableLimitations()->create([
+    $discount->discountableLimitations()->create([
         'discount_id' => $discount->id,
         'type' => 'limitation',
-        'purchasable_type' => $purchasableA->getMorphClass(),
-        'purchasable_id' => $purchasableA->id,
+        'discountable_type' => $purchasableA->getMorphClass(),
+        'discountable_id' => $purchasableA->id,
     ]);
 
     $cart = $cart->calculate();
@@ -515,11 +515,11 @@ test('will not apply to lines with excluded product', function () {
         ],
     ]);
 
-    $discount->purchasableExclusions()->create([
+    $discount->discountableExclusions()->create([
         'discount_id' => $discount->id,
         'type' => 'exclusion',
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
     $cart = $cart->calculate();
@@ -612,11 +612,11 @@ test('will not apply to lines with excluded product variant', function () {
         ],
     ]);
 
-    $discount->purchasableExclusions()->create([
+    $discount->discountableExclusions()->create([
         'discount_id' => $discount->id,
         'type' => 'exclusion',
-        'purchasable_type' => $purchasableA->getMorphClass(),
-        'purchasable_id' => $purchasableA->id,
+        'discountable_type' => $purchasableA->getMorphClass(),
+        'discountable_id' => $purchasableA->id,
     ]);
 
     $cart = $cart->calculate();

@@ -2,6 +2,7 @@
 
 return [
     'customer_groups' => [
+        'title' => 'Grupos de Clientes',
         'actions' => [
             'attach' => [
                 'label' => 'Adjuntar Grupo de Clientes',
@@ -50,6 +51,7 @@ return [
         ],
     ],
     'channels' => [
+        'title' => 'Canales',
         'actions' => [
             'attach' => [
                 'label' => 'Programar otro Canal',

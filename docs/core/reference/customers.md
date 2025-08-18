@@ -17,7 +17,7 @@ Lunar\Models\Customer
 |`first_name`||
 |`last_name`||
 |`company_name`|nullable|
-|`vat_no`|nullable|
+|`tax_identifier`|nullable|
 |`account_ref`|nullable|
 |`attribute_data`|JSON|
 |`meta`|JSON|
@@ -32,7 +32,7 @@ Lunar\Models\Customer::create([
     'first_name' => 'Tony',
     'last_name' => 'Stark',
     'company_name' => 'Stark Enterprises',
-    'vat_no' => null,
+    'tax_identifier' => null,
     'meta' => [
         'account_no' => 'TNYSTRK1234'
     ],
@@ -162,7 +162,7 @@ class MyModel extends Model
 You will need to define the relationship for customer groups so that Lunar knows how to handle it.
 
 ```php
-public function customerGroup()
+public function customerGroups()
 {
     return $this->hasMany(\Lunar\Models\CustomerGroup::class)->withTimestamps()->withPivot([/* .. */]);
 }

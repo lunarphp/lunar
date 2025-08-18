@@ -52,25 +52,25 @@ trait ManagesProductPricing
         $variant->update($data);
 
         $prices->filter(
-            fn ($price) => ! $price['id']
+            fn ($price) => ! $price['id'] && isset($price['value'])
         )->each(fn ($price) => $variant->prices()->create([
             'currency_id' => $price['currency_id'],
             'price' => (int) round((float) ($price['value'] * $price['factor'])),
-            'compare_price' => (int) ($price['compare_price'] * $price['factor']),
+            'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
             'min_quantity' => 1,
             'customer_group_id' => null,
         ])
         );
 
         $prices->filter(
-            fn ($price) => $price['id']
+            fn ($price) => $price['id'] && isset($price['value']) && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
         )->each(fn ($price) => Price::find($price['id'])->update([
             'price' => (int) round((float) ($price['value'] * $price['factor'])),
-            'compare_price' => (int) ($price['compare_price'] * $price['factor']),
+            'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
         ])
         );
 
-        $this->basePrices = $this->getBasePrices($variant);
+        $this->basePrices = $this->getBasePrices();
 
         $this->dispatch('refresh-relation-manager');
 
@@ -79,11 +79,13 @@ trait ManagesProductPricing
 
     public function getBasePriceFormSection(): Section
     {
+        //        dd($this->basePrices);
+
         return Forms\Components\Section::make(
             __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
         )
             ->schema(
-                collect($this->basePrices)->map(function ($price, $index): Forms\Components\Fieldset {
+                collect($this->basePrices)->map(callback: function ($price, $index): Forms\Components\Fieldset {
                     return Forms\Components\Fieldset::make($price['label'])->schema([
                         Forms\Components\TextInput::make('value')
                             ->label('')
@@ -99,19 +101,25 @@ trait ManagesProductPricing
                             ->extraInputAttributes([
                                 'class' => '',
                             ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
-                                if ($get('basePrices.'.$index.'.id', true)) {
+                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                                if (! ($price['sync_prices'] ?? false) && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                                if ($price['sync_prices'] ?? false) {
+                                    return __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price');
+                                }
+
                                 if ($get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
-                            })->live(),
+                            })
+                            ->disabled(fn () => $price['sync_prices'] ?? false)
+                            ->live(),
                         Forms\Components\TextInput::make('compare_price')
                             ->label('')
                             ->statePath($index.'.compare_price')
@@ -126,19 +134,25 @@ trait ManagesProductPricing
                             ->extraInputAttributes([
                                 'class' => '',
                             ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
-                                if ($get('basePrices.'.$index.'.id', true)) {
+                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                                if (! ($price['sync_prices'] ?? false) && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index) {
+                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                                if ($price['sync_prices'] ?? false) {
+                                    return __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price');
+                                }
+
                                 if ($get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return __('lunarpanel::relationmanagers.pricing.form.basePrices.tooltip');
-                            })->live(),
+                            })
+                            ->disabled(fn () => $price['sync_prices'] ?? false)
+                            ->live(),
                     ])->columns(2);
                 })->toArray()
             )->statePath('basePrices')->columns(1);
@@ -168,21 +182,34 @@ trait ManagesProductPricing
     protected function getBasePrices(): array
     {
         // Get enabled currencies
-        $currencies = Currency::whereEnabled(true)->get();
+        $currencies = Currency::whereEnabled(true)
+            ->orderBy('default', 'desc')
+            ->orderBy('name')
+            ->get();
 
         $prices = collect([]);
 
-        foreach ($this->getOwnerRecord()->basePrices()->get() as $price) {
+        $basePrices = $this->getOwnerRecord()
+            ->basePrices()
+            ->with('currency')
+            ->get()
+            ->sortByDesc(fn ($p) => (int) $p->currency->default)
+            ->values();
+
+        foreach ($basePrices as $price) {
             $prices->put(
                 $price->currency->code,
                 [
                     'id' => $price->id,
+                    'original_value' => $price->price->decimal(rounding: false),
                     'value' => $price->price->decimal(rounding: false),
+                    'original_compare_price' => $price->compare_price->decimal(rounding: false),
                     'compare_price' => $price->compare_price->decimal(rounding: false),
                     'factor' => $price->currency->factor,
                     'label' => $price->currency->name,
                     'currency_code' => $price->currency->code,
                     'default_currency' => $price->currency->default,
+                    'sync_prices' => $price->currency->sync_prices,
                     'currency_id' => $price->currency_id,
                 ]
             );
@@ -194,14 +221,17 @@ trait ManagesProductPricing
 
         foreach ($currencies as $currency) {
             if (! $prices->get($currency->code)) {
+                $value = round(($defaultCurrencyPrice['value'] ?? 0) * $currency->exchange_rate, $currency->decimal_places);
                 $prices->put($currency->code, [
                     'id' => null,
-                    'value' => round(($defaultCurrencyPrice['value'] ?? 0) * $currency->exchange_rate, $currency->decimal_places),
+                    'original_value' => $value,
+                    'value' => $value,
                     'compare_price' => round(($defaultCurrencyPrice['compare_price'] ?? 0) * $currency->exchange_rate, $currency->decimal_places),
                     'factor' => $currency->factor,
                     'label' => $currency->name,
                     'currency_code' => $currency->code,
                     'default_currency' => $currency->default,
+                    'sync_prices' => $currency->sync_prices,
                     'currency_id' => $currency->id,
                 ]);
             }

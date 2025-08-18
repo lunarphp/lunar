@@ -2,6 +2,7 @@
 
 return [
     'customer_groups' => [
+        'title' => 'Customer Groups',
         'actions' => [
             'attach' => [
                 'label' => 'Attach Customer Group',
@@ -50,6 +51,7 @@ return [
         ],
     ],
     'channels' => [
+        'title' => 'Channels',
         'actions' => [
             'attach' => [
                 'label' => 'Schedule another Channel',
@@ -246,6 +248,7 @@ return [
                     'price' => [
                         'label' => 'Price',
                         'helper_text' => 'The purchase price, before discounts.',
+                        'sync_price' => 'Price is synced with the default currency.',
                     ],
                     'compare_price' => [
                         'label' => 'Comparison Price',

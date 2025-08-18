@@ -58,6 +58,13 @@ class AttributeData
 
                 return $state->getValue();
             })
+            ->mutateStateForValidationUsing(function ($state) {
+                if ($state instanceof \Lunar\Base\FieldType) {
+                    return $state->getValue();
+                }
+
+                return $state;
+            })
             ->mutateDehydratedStateUsing(function ($state) use ($attribute) {
                 if (
                     ! $state instanceof FieldTypeContract ||

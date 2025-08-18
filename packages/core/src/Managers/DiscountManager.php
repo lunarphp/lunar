@@ -138,7 +138,7 @@ class DiscountManager implements DiscountManagerInterface
             ->channel($this->channels)
             ->customerGroup($this->customerGroups)
             ->with([
-                'purchasables',
+                'discountables',
             ])
             ->when(
                 $cart,
@@ -153,6 +153,11 @@ class DiscountManager implements DiscountManagerInterface
                             ->orWhere(fn ($query) => $query->productVariants(
                                 $value->lines->pluck('purchasable.id')->filter()->values(),
                                 ['condition', 'limitation']
+                            )
+                            )
+                            ->orWhere(fn ($query) => $query->collections(
+                                $value->lines->map(fn ($line) => $line->purchasable->product->collections->pluck('id'))->flatten()->filter()->values(),
+                                ['condition']
                             )
                             );
                     });

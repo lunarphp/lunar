@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -19,7 +20,7 @@ class DownloadPdfController extends Controller
             'view' => 'required',
         ]);
 
-        $recordType = $request->get('record_type');
+        $recordType = Relation::getMorphedModel($request->get('record_type'));
         $view = $request->get('view');
         $record = $request->get('record');
 

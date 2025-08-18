@@ -32,11 +32,15 @@ use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Base\OrderReferenceGeneratorInterface;
 use Lunar\Base\PaymentManagerInterface;
 use Lunar\Base\PricingManagerInterface;
+use Lunar\Base\ProvidesTelemetryInsights;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Base\TaxManagerInterface;
+use Lunar\Base\TelemetryInsights;
+use Lunar\Base\TelemetryService;
+use Lunar\Base\TelemetryServiceInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MigrateGetCandy;
@@ -52,6 +56,7 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Database\State\MigrateCartOrderRelationship;
 use Lunar\Database\State\PopulateProductOptionLabelWithName;
+use Lunar\Facades\Telemetry;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
 use Lunar\Managers\DiscountManager;
@@ -70,6 +75,7 @@ use Lunar\Models\Discount;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
+use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
@@ -88,6 +94,7 @@ use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\MediaObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
+use Lunar\Observers\PriceObserver;
 use Lunar\Observers\ProductObserver;
 use Lunar\Observers\ProductOptionObserver;
 use Lunar\Observers\ProductOptionValueObserver;
@@ -185,6 +192,20 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(DiscountManagerInterface::class, function ($app) {
             return $app->make(DiscountManager::class);
+        });
+
+        $this->app->singleton(ProvidesTelemetryInsights::class, function ($app) {
+            return $app->make(TelemetryInsights::class);
+        });
+
+        $this->app->singleton(TelemetryServiceInterface::class, function ($app) {
+            return $app->make(TelemetryService::class);
+        });
+
+        $this->app->terminating(function () {
+            if (! app()->runningInConsole()) {
+                Telemetry::run();
+            }
         });
 
         \Lunar\Facades\ModelManifest::register();
@@ -302,24 +323,24 @@ class LunarServiceProvider extends ServiceProvider
      */
     protected function registerObservers(): void
     {
-        Product::observe(ProductObserver::class);
-
+        Address::observe(AddressObserver::class);
+        CartLine::observe(CartLineObserver::class);
         Channel::observe(ChannelObserver::class);
-        CustomerGroup::observe(CustomerGroupObserver::class);
+        Collection::observe(CollectionObserver::class);
+        Currency::observe(CurrencyObserver::class);
         Customer::observe(CustomerObserver::class);
+        CustomerGroup::observe(CustomerGroupObserver::class);
         Discount::observe(DiscountObserver::class);
         Language::observe(LanguageObserver::class);
-        Currency::observe(CurrencyObserver::class);
-        Url::observe(UrlObserver::class);
-        Collection::observe(CollectionObserver::class);
-        CartLine::observe(CartLineObserver::class);
+        Order::observe(OrderObserver::class);
+        OrderLine::observe(OrderLineObserver::class);
+        Price::observe(PriceObserver::class);
+        Product::observe(ProductObserver::class);
         ProductOption::observe(ProductOptionObserver::class);
         ProductOptionValue::observe(ProductOptionValueObserver::class);
         ProductVariant::observe(ProductVariantObserver::class);
-        Order::observe(OrderObserver::class);
-        OrderLine::observe(OrderLineObserver::class);
-        Address::observe(AddressObserver::class);
         Transaction::observe(TransactionObserver::class);
+        Url::observe(UrlObserver::class);
 
         if ($mediaModel = config('media-library.media_model')) {
             $mediaModel::observe(MediaObserver::class);
@@ -336,7 +357,7 @@ class LunarServiceProvider extends ServiceProvider
                 return $this;
             }
 
-            if ($driver === 'mysql') {
+            if ($driver === 'mysql' || $driver === 'mariadb') {
                 $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
                 return $this->orderByRaw("FIELD(id, {$placeholders})", $ids);
