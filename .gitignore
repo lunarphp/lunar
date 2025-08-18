@@ -3,6 +3,7 @@
 /.idea
 /.nova
 /.phpunit.cache
+/.phpactor.json
 /.vscode
 /node_modules
 /vendor
