@@ -73,6 +73,10 @@ it('can edit variant attributes', function ($attributeType, $attributeValue) {
 ]);
 
 it('can render all attribute data fields', function () {
+    \Lunar\Admin\Support\Facades\AttributeData::registerFieldType(
+        \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
+        \Lunar\Tests\Admin\Stubs\Support\FieldTypes\RepeaterField::class,
+    );
     \Lunar\Models\Language::factory()->create([
         'default' => true,
     ]);
@@ -125,6 +129,7 @@ it('can render all attribute data fields', function () {
         ['handle' => 'youtube', 'type' => \Lunar\FieldTypes\YouTube::class, 'configuration' => []],
         ['handle' => 'vimeo', 'type' => \Lunar\FieldTypes\Vimeo::class, 'configuration' => []],
         ['handle' => 'file', 'type' => \Lunar\FieldTypes\File::class, 'configuration' => []],
+        ['handle' => 'custom', 'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class, 'configuration' => []],
     ];
 
     // Create attributes for the product and map them via product type
@@ -250,4 +255,119 @@ it('can save attributes', function () {
     ])->call('save')->assertHasNoFormErrors();
 
     expect($record->refresh()->attr('name'))->toBe('New Product Name');
+});
+
+it('renders and saves the custom repeater attribute field', function () {
+    \Lunar\Admin\Support\Facades\AttributeData::registerFieldType(
+        \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
+        \Lunar\Tests\Admin\Stubs\Support\FieldTypes\RepeaterField::class,
+    );
+    \Lunar\Models\Language::factory()->create([
+        'default' => true,
+    ]);
+
+    \Lunar\Models\TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
+    $product = \Lunar\Models\Product::factory()->create();
+    $variant = \Lunar\Models\ProductVariant::factory()->create([
+        'product_id' => $product->id,
+    ]);
+
+    $productGroup = \Lunar\Models\AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+        'name' => [
+            'en' => 'Product Details',
+        ],
+        'handle' => 'product_details',
+        'position' => 1,
+    ]);
+
+    $variantGroup = \Lunar\Models\AttributeGroup::factory()->create([
+        'attributable_type' => 'product_variant',
+        'name' => [
+            'en' => 'Variant Details',
+        ],
+        'handle' => 'variant_details',
+        'position' => 1,
+    ]);
+
+    $productAttribute = \Lunar\Models\Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $productGroup->id,
+        'position' => 1,
+        'name' => [
+            'en' => 'Custom',
+        ],
+        'handle' => 'custom',
+        'section' => 'main',
+        'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    $variantAttribute = \Lunar\Models\Attribute::factory()->create([
+        'attribute_type' => 'product_variant',
+        'attribute_group_id' => $variantGroup->id,
+        'position' => 1,
+        'name' => [
+            'en' => 'Custom',
+        ],
+        'handle' => 'custom',
+        'section' => 'main',
+        'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+        'attribute_id' => $productAttribute->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
+    ]);
+
+    \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+        'attribute_id' => $variantAttribute->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
+    ]);
+
+    $this->asStaff(admin: true);
+
+    $component = Livewire::test(\Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class, [
+        'record' => $product->id,
+        'pageClass' => 'productEdit',
+    ])->assertSuccessful();
+
+    $component->assertFormFieldExists('attribute_data.custom');
+    $component->assertFormFieldExists('variant.custom');
+
+    $component->fillForm([
+        'attribute_data' => [
+            'custom' => [
+                ['label' => 'A', 'value' => '1'],
+                ['label' => 'B', 'value' => '2'],
+            ],
+        ],
+        'variant' => [
+            'custom' => [
+                ['label' => 'X', 'value' => '9'],
+            ],
+        ],
+    ])->call('save')->assertHasNoFormErrors();
+
+    $product = $product->refresh();
+    $variant = $variant->refresh();
+
+    expect($product->attr('custom'))->toBe([
+        ['label' => 'A', 'value' => '1'],
+        ['label' => 'B', 'value' => '2'],
+    ]);
+
+    expect($variant->attr('custom'))->toBe([
+        ['label' => 'X', 'value' => '9'],
+    ]);
 });
