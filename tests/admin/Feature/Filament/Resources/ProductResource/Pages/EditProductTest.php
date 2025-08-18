@@ -72,6 +72,129 @@ it('can edit variant attributes', function ($attributeType, $attributeValue) {
     [\Lunar\FieldTypes\Number::class, 100],
 ]);
 
+it('can render all attribute data fields', function () {
+    \Lunar\Models\Language::factory()->create([
+        'default' => true,
+    ]);
+
+    \Lunar\Models\TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
+    // Ensure pricing-related defaults exist for variant rendering consistency
+    \Lunar\Models\Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $product = \Lunar\Models\Product::factory()->create();
+
+    // Single variant so variant attribute form is visible
+    \Lunar\Models\ProductVariant::factory()->create([
+        'product_id' => $product->id,
+    ]);
+
+    $productGroup = \Lunar\Models\AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+        'name' => [
+            'en' => 'Product Details',
+        ],
+        'handle' => 'product_details',
+        'position' => 1,
+    ]);
+
+    $variantGroup = \Lunar\Models\AttributeGroup::factory()->create([
+        'attributable_type' => 'product_variant',
+        'name' => [
+            'en' => 'Variant Details',
+        ],
+        'handle' => 'variant_details',
+        'position' => 1,
+    ]);
+
+    $definitions = [
+        ['handle' => 'text', 'type' => \Lunar\FieldTypes\Text::class, 'configuration' => []],
+        ['handle' => 'richtext', 'type' => \Lunar\FieldTypes\Text::class, 'configuration' => ['richtext' => true]],
+        ['handle' => 'dropdown', 'type' => \Lunar\FieldTypes\Dropdown::class, 'configuration' => ['lookups' => [
+            ['label' => 'Red', 'value' => 'red'],
+            ['label' => 'Blue', 'value' => 'blue'],
+        ]]],
+        ['handle' => 'list', 'type' => \Lunar\FieldTypes\ListField::class, 'configuration' => []],
+        ['handle' => 'toggle', 'type' => \Lunar\FieldTypes\Toggle::class, 'configuration' => []],
+        ['handle' => 'number', 'type' => \Lunar\FieldTypes\Number::class, 'configuration' => []],
+        ['handle' => 'translated', 'type' => \Lunar\FieldTypes\TranslatedText::class, 'configuration' => []],
+        ['handle' => 'youtube', 'type' => \Lunar\FieldTypes\YouTube::class, 'configuration' => []],
+        ['handle' => 'vimeo', 'type' => \Lunar\FieldTypes\Vimeo::class, 'configuration' => []],
+        ['handle' => 'file', 'type' => \Lunar\FieldTypes\File::class, 'configuration' => []],
+    ];
+
+    // Create attributes for the product and map them via product type
+    foreach ($definitions as $idx => $def) {
+        $attribute = \Lunar\Models\Attribute::factory()->create([
+            'attribute_type' => 'product',
+            'attribute_group_id' => $productGroup->id,
+            'position' => $idx + 1,
+            'name' => [
+                'en' => ucfirst($def['handle']),
+            ],
+            'handle' => $def['handle'],
+            'section' => 'main',
+            'type' => $def['type'],
+            'required' => false,
+            'system' => false,
+            'searchable' => false,
+            'configuration' => $def['configuration'],
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+            'attribute_id' => $attribute->id,
+            'attributable_type' => 'product_type',
+            'attributable_id' => $product->productType->id,
+        ]);
+    }
+
+    // Create attributes for the variant and map them via product type
+    foreach ($definitions as $idx => $def) {
+        $attribute = \Lunar\Models\Attribute::factory()->create([
+            'attribute_type' => 'product_variant',
+            'attribute_group_id' => $variantGroup->id,
+            'position' => $idx + 1,
+            'name' => [
+                'en' => ucfirst($def['handle']),
+            ],
+            'handle' => $def['handle'],
+            'section' => 'main',
+            'type' => $def['type'],
+            'required' => false,
+            'system' => false,
+            'searchable' => false,
+            'configuration' => $def['configuration'],
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+            'attribute_id' => $attribute->id,
+            'attributable_type' => 'product_type',
+            'attributable_id' => $product->productType->id,
+        ]);
+    }
+
+    $this->asStaff(admin: true);
+
+    $component = Livewire::test(\Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class, [
+        'record' => $product->id,
+        'pageClass' => 'productEdit',
+    ])->assertSuccessful();
+
+    // Assert product attribute_data fields render
+    foreach ($definitions as $def) {
+        $component->assertFormFieldExists('attribute_data.'.$def['handle']);
+    }
+
+    // Assert variant attribute fields render under the relationship
+    foreach ($definitions as $def) {
+        $component->assertFormFieldExists('variant.'.$def['handle']);
+    }
+});
+
 it('can save attributes', function () {
     \Lunar\Models\Language::factory()->create([
         'default' => true,
