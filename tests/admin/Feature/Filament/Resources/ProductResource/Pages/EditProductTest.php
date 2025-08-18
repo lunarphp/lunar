@@ -51,6 +51,9 @@ it('can edit variant attributes', function ($attributeType, $attributeValue) {
 
     $this->asStaff(admin: true);
 
+    // Ensure synthesizers are loaded before mounting the component
+    \Lunar\Admin\Support\Facades\AttributeData::synthesizeLivewireProperties();
+
     $component = Livewire::test(\Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class, [
         'record' => $product->id,
         'pageClass' => 'productEdit',
@@ -129,7 +132,8 @@ it('can render all attribute data fields', function () {
         ['handle' => 'youtube', 'type' => \Lunar\FieldTypes\YouTube::class, 'configuration' => []],
         ['handle' => 'vimeo', 'type' => \Lunar\FieldTypes\Vimeo::class, 'configuration' => []],
         ['handle' => 'file', 'type' => \Lunar\FieldTypes\File::class, 'configuration' => []],
-        ['handle' => 'custom', 'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class, 'configuration' => []],
+        ['handle' => 'repeater', 'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class, 'configuration' => []],
+        ['handle' => 'builder', 'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\BuilderField::class, 'configuration' => []],
     ];
 
     // Create attributes for the product and map them via product type
@@ -257,7 +261,112 @@ it('can save attributes', function () {
     expect($record->refresh()->attr('name'))->toBe('New Product Name');
 });
 
-it('renders and saves the custom repeater attribute field', function () {
+it('renders and saves the builder attribute field', function () {
+    \Lunar\Admin\Support\Facades\AttributeData::registerFieldType(
+        \Lunar\Tests\Admin\Stubs\FieldTypes\BuilderField::class,
+        \Lunar\Tests\Admin\Stubs\Support\FieldTypes\BuilderField::class,
+    );
+
+    \Lunar\Models\Language::factory()->create(['default' => true]);
+    \Lunar\Models\TaxClass::factory()->create(['default' => true]);
+
+    $product = \Lunar\Models\Product::factory()->create();
+    $variant = \Lunar\Models\ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    $productGroup = \Lunar\Models\AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+        'name' => ['en' => 'Product Details'],
+        'handle' => 'product_details',
+        'position' => 1,
+    ]);
+
+    $variantGroup = \Lunar\Models\AttributeGroup::factory()->create([
+        'attributable_type' => 'product_variant',
+        'name' => ['en' => 'Variant Details'],
+        'handle' => 'variant_details',
+        'position' => 1,
+    ]);
+
+    $productBuilderAttribute = \Lunar\Models\Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $productGroup->id,
+        'position' => 1,
+        'name' => ['en' => 'Builder'],
+        'handle' => 'builder',
+        'section' => 'main',
+        'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\BuilderField::class,
+        'default_value' => null,
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    $variantBuilderAttribute = \Lunar\Models\Attribute::factory()->create([
+        'attribute_type' => 'product_variant',
+        'attribute_group_id' => $variantGroup->id,
+        'position' => 1,
+        'name' => ['en' => 'Builder'],
+        'handle' => 'builder',
+        'section' => 'main',
+        'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\BuilderField::class,
+        'default_value' => null,
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+        'attribute_id' => $productBuilderAttribute->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
+    ]);
+
+    \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+        'attribute_id' => $variantBuilderAttribute->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
+    ]);
+
+    $this->asStaff(admin: true);
+
+    \Lunar\Admin\Support\Facades\AttributeData::synthesizeLivewireProperties();
+
+    $component = Livewire::test(\Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct::class, [
+        'record' => $product->id,
+        'pageClass' => 'productEdit',
+    ])->assertSuccessful();
+
+    $component->assertFormFieldExists('attribute_data.builder');
+    $component->assertFormFieldExists('variant.builder');
+
+    $component->fillForm([
+        'attribute_data' => [
+            'builder' => [
+                ['type' => 'text', 'data' => ['content' => 'Hello']],
+                ['type' => 'quote', 'data' => ['content' => 'Be water', 'author' => 'Bruce']],
+            ],
+        ],
+        'variant' => [
+            'builder' => [
+                ['type' => 'text', 'data' => ['content' => 'World']],
+            ],
+        ],
+    ])->call('save')->assertHasNoFormErrors();
+
+    $product = $product->refresh();
+    $variant = $variant->refresh();
+
+    expect($product->attr('builder'))->toBe([
+        ['type' => 'text', 'data' => ['content' => 'Hello']],
+        ['type' => 'quote', 'data' => ['content' => 'Be water', 'author' => 'Bruce']],
+    ]);
+
+    expect($variant->attr('builder'))->toBe([
+        ['type' => 'text', 'data' => ['content' => 'World']],
+    ]);
+});
+
+it('renders and saves the repeater attribute field', function () {
     \Lunar\Admin\Support\Facades\AttributeData::registerFieldType(
         \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
         \Lunar\Tests\Admin\Stubs\Support\FieldTypes\RepeaterField::class,
@@ -298,9 +407,9 @@ it('renders and saves the custom repeater attribute field', function () {
         'attribute_group_id' => $productGroup->id,
         'position' => 1,
         'name' => [
-            'en' => 'Custom',
+            'en' => 'Repeater',
         ],
-        'handle' => 'custom',
+        'handle' => 'repeater',
         'section' => 'main',
         'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
         'required' => false,
@@ -313,9 +422,9 @@ it('renders and saves the custom repeater attribute field', function () {
         'attribute_group_id' => $variantGroup->id,
         'position' => 1,
         'name' => [
-            'en' => 'Custom',
+            'en' => 'Repeater',
         ],
-        'handle' => 'custom',
+        'handle' => 'repeater',
         'section' => 'main',
         'type' => \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
         'required' => false,
@@ -342,18 +451,19 @@ it('renders and saves the custom repeater attribute field', function () {
         'pageClass' => 'productEdit',
     ])->assertSuccessful();
 
-    $component->assertFormFieldExists('attribute_data.custom');
-    $component->assertFormFieldExists('variant.custom');
+    $component->assertFormFieldExists('attribute_data.repeater');
+    $component->assertFormFieldExists('variant.repeater');
 
     $component->fillForm([
         'attribute_data' => [
-            'custom' => [
+            'repeater' => [
                 ['label' => 'A', 'value' => '1'],
                 ['label' => 'B', 'value' => '2'],
             ],
+            // only repeater here
         ],
         'variant' => [
-            'custom' => [
+            'repeater' => [
                 ['label' => 'X', 'value' => '9'],
             ],
         ],
@@ -362,12 +472,14 @@ it('renders and saves the custom repeater attribute field', function () {
     $product = $product->refresh();
     $variant = $variant->refresh();
 
-    expect($product->attr('custom'))->toBe([
+    expect($product->attr('repeater'))->toBe([
         ['label' => 'A', 'value' => '1'],
         ['label' => 'B', 'value' => '2'],
     ]);
 
-    expect($variant->attr('custom'))->toBe([
+    expect($variant->attr('repeater'))->toBe([
         ['label' => 'X', 'value' => '9'],
     ]);
+
+    // no builder assertions in this test
 });
