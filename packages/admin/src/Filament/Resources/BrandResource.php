@@ -121,7 +121,8 @@ class BrandResource extends BaseResource
                 ->square()
                 ->label(''),
             Tables\Columns\TextColumn::make('name')
-                ->label(__('lunarpanel::brand.table.name.label')),
+                ->label(__('lunarpanel::brand.table.name.label'))
+                ->searchable(),
             Tables\Columns\TextColumn::make('products_count')
                 ->counts('products')
                 ->formatStateUsing(

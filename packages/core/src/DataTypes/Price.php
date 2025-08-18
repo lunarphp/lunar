@@ -3,7 +3,7 @@
 namespace Lunar\DataTypes;
 
 use Lunar\Exceptions\InvalidDataTypeValueException;
-use Lunar\Models\Currency;
+use Lunar\Models\Contracts\Currency;
 use Lunar\Pricing\DefaultPriceFormatter;
 
 class Price
@@ -11,10 +11,10 @@ class Price
     /**
      * Initialise the Price datatype.
      *
-     * @param  mixed  $value
+     * @throws InvalidDataTypeValueException
      */
     public function __construct(
-        public $value,
+        public mixed $value,
         public Currency $currency,
         public int $unitQty = 1
     ) {

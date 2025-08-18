@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\HasThumbnailImage;
 use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasMacros;
@@ -39,7 +40,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Carbon $updated_at
  * @property ?\Illuminate\Support\Carbon $deleted_at
  */
-class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
+class Product extends BaseModel implements Contracts\Product, HasThumbnailImage, SpatieHasMedia
 {
     use HasChannels;
     use HasCustomerGroups;
@@ -210,5 +211,10 @@ class Product extends BaseModel implements Contracts\Product, SpatieHasMedia
             ProductOption::modelClass(),
             "{$prefix}product_product_option"
         )->withPivot(['position'])->orderByPivot('position');
+    }
+
+    public function getThumbnailImage(): string
+    {
+        return $this->thumbnail?->getUrl('small') ?? '';
     }
 }

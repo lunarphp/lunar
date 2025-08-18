@@ -170,13 +170,13 @@ class AmountOff extends AbstractDiscountType
         $brandIds = $this->discount->brands->where('pivot.type', 'limitation')->pluck('id');
         $brandExclusionIds = $this->discount->brands->where('pivot.type', 'exclusion')->pluck('id');
 
-        $productIds = $this->discount->purchasableLimitations
-            ->reject(fn ($limitation) => ! $limitation->purchasable)
-            ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
+        $productIds = $this->discount->discountableLimitations
+            ->reject(fn ($limitation) => ! $limitation->discountable)
+            ->map(fn ($limitation) => get_class($limitation->discountable).'::'.$limitation->discountable->id);
 
-        $productExclusionIds = $this->discount->purchasableExclusions
-            ->reject(fn ($limitation) => ! $limitation->purchasable)
-            ->map(fn ($limitation) => get_class($limitation->purchasable).'::'.$limitation->purchasable->id);
+        $productExclusionIds = $this->discount->discountableExclusions
+            ->reject(fn ($limitation) => ! $limitation->discountable)
+            ->map(fn ($limitation) => get_class($limitation->discountable).'::'.$limitation->discountable->id);
 
         $lines = $cart->lines;
 

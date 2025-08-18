@@ -178,6 +178,7 @@ $shippingAddress = [
     'first_name' => null,
     'last_name' => null,
     'company_name' => null,
+    'tax_identifier' => null,
     'line_one' => null,
     'line_two' => null,
     'line_three' => null,

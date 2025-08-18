@@ -5,7 +5,7 @@ use Livewire\Livewire;
 uses(\Lunar\Tests\Admin\Unit\Filament\TestCase::class)
     ->group('resource.product');
 
-it('can edit variant attributes', function () {
+it('can edit variant attributes', function ($attributeType, $attributeValue) {
     \Lunar\Models\CustomerGroup::factory()->create([
         'default' => true,
     ]);
@@ -37,6 +37,7 @@ it('can edit variant attributes', function () {
         ],
         'handle' => 'test-attribute',
         'section' => 'main',
+        'type' => $attributeType,
         'required' => false,
         'system' => false,
         'searchable' => false,
@@ -59,13 +60,17 @@ it('can edit variant attributes', function () {
 
     $component->fillForm([
         'variant' => [
-            $attribute->handle => new \Lunar\FieldTypes\Text('Hello'),
+            $attribute->handle => new $attributeType($attributeValue),
         ],
     ])->call('save')
         ->assertHasNoFormErrors();
 
-    expect($variant->refresh()->attr($attribute->handle))->toBe('Hello');
-});
+    expect($variant->refresh()->attr($attribute->handle))->toBe($attributeValue);
+})->with([
+    [\Lunar\FieldTypes\Text::class, 'Hello'],
+    [\Lunar\FieldTypes\Toggle::class, true],
+    [\Lunar\FieldTypes\Number::class, 100],
+]);
 
 it('can save attributes', function () {
     \Lunar\Models\Language::factory()->create([

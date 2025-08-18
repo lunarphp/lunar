@@ -1,15 +1,10 @@
 # Installation
 
-::: danger Beta Release
-Although many Lunar sites have been launched using v1.x, you may not consider this version production-ready for your own
-use and should exercise the same amount of caution as you would with any software in an beta state. 🚀
-:::
-
 ## Requirements
 
 - PHP >= 8.2
 - Laravel 11, 12
-- MySQL 8.0+ / PostgreSQL 9.2+
+- MySQL 8.0+ / PostgreSQL 9.4+
 - exif PHP extension (on most systems it will be installed by default)
 - intl PHP extension (on most systems it will be installed by default)
 - bcmath PHP extension (on most systems it will be installed by default)
@@ -20,16 +15,13 @@ use and should exercise the same amount of caution as you would with any softwar
 ### Composer Require Package
 
 ```sh
-composer require lunarphp/lunar:"^1.0.0-beta" -W
+composer require lunarphp/lunar:"^1.0" -W
 ```
-
-::: tip
-You may need to update your app's `composer.json` to set `"minimum-stability": "dev",`
-:::
 
 ### Add the LunarUser Trait
 
-Some parts of the core rely on the User model having certain relationships set up. We have bundled these into a trait and an interface, which you must add to any models that represent users in your database.
+Some parts of the core rely on the User model having certain relationships set up. We have bundled these into a trait 
+and an interface, which you must add to any models that represent users in your database.
 
 ```php
 use Lunar\Base\Traits\LunarUser;
@@ -50,20 +42,6 @@ Before you run the Lunar installer command, you may wish to customise some of th
 ```sh
 php artisan vendor:publish --tag=lunar
 ```
-
-## Configure Laravel Scout
-Lunar works best with [Laravel Scout](https://laravel.com/docs/master/scout) and a search engine like Meilisearch, Typesense or Algolia.
-
-### If you do NOT have a search engine configured
-Add the following to your `.env` file.
-```
-SCOUT_DRIVER=null
-```
-And set the config value in `panel.php` as follows.
-```php
-    'scout_enabled' => false,
-```
-
 
 ## Register the admin panel
 
@@ -95,6 +73,16 @@ This will take you through a set of questions to configure your Lunar install. T
 You should now be able to access the panel at `https://<yoursite>/lunar`.
 
 ## Advanced Installation Options
+
+### Telemetry insights
+
+Lunar will phone home to send anonymous usage insights, the data we capture does not identify your store in any way, it
+exists to help us gain an understanding of how Lunar is used. You can easily opt out of this by adding the following to
+your service provider's boot method:
+
+```php
+\Lunar\Facades\Telemetry::optOut();
+```
 
 ### Table Prefix
 

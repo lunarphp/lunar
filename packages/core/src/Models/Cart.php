@@ -23,6 +23,7 @@ use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\CouponString;
 use Lunar\Base\LunarUser;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
@@ -205,6 +206,7 @@ class Cart extends BaseModel implements Contracts\Cart
     protected $casts = [
         'completed_at' => 'datetime',
         'meta' => AsArrayObject::class,
+        'coupon_code' => CouponString::class,
     ];
 
     public function lines(): HasMany
