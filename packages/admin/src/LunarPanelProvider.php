@@ -75,7 +75,7 @@ class LunarPanelProvider extends ServiceProvider
         ]);
 
         $this->publishes([
-            __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/lunar/pdf'),
+            __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/lunarpanel/pdf'),
         ], 'lunar.pdf');
 
         collect($this->configFiles)->each(function ($config) {
