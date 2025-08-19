@@ -440,7 +440,7 @@ By default when you click "Download PDF" in the hub when viewing an order, you w
 download. You can publish the view that powers this to create your own PDF template.
 
 ```bash
-php artisan vendor:publish --tag=lunar.hub.views
+php artisan vendor:publish --tag=lunar.pdf
 ```
 
 This will create a view called `resources/vendor/lunarpanel/pdf/order.blade.php`, where you will be able to freely
