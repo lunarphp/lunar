@@ -40,6 +40,10 @@ class CustomerLimitationRelationManager extends BaseRelationManager
                     return $record->full_name;
                 })->preloadRecordSelect()
                     ->recordSelectOptionsQuery(function ($query, $search) {
+                        if (! filled($search)) {
+                            return $query;
+                        }
+
                         foreach (explode(' ', $search) as $word) {
                             $query->where(function ($query) use ($word) {
                                 foreach (['first_name', 'last_name', 'company_name'] as $index => $column) {
