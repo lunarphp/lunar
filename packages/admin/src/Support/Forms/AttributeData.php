@@ -14,7 +14,7 @@ use Lunar\Admin\Support\FieldTypes\TranslatedText;
 use Lunar\Admin\Support\FieldTypes\Vimeo;
 use Lunar\Admin\Support\FieldTypes\YouTube;
 use Lunar\Base\FieldType as FieldTypeContract;
-use Lunar\FieldTypes\Dropdown as DrodownFieldType;
+use Lunar\FieldTypes\Dropdown as DropdownFieldType;
 use Lunar\FieldTypes\File as FileFieldType;
 use Lunar\FieldTypes\ListField as ListFieldFieldType;
 use Lunar\FieldTypes\Number as NumberFieldType;
@@ -28,7 +28,7 @@ use Lunar\Models\Attribute;
 class AttributeData
 {
     protected array $fieldTypes = [
-        DrodownFieldType::class => Dropdown::class,
+        DropdownFieldType::class => Dropdown::class,
         ListFieldFieldType::class => ListField::class,
         TextFieldType::class => TextField::class,
         TranslatedTextFieldType::class => TranslatedText::class,
