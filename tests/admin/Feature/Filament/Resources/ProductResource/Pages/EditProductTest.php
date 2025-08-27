@@ -80,11 +80,16 @@ it('can render all attribute data fields', function () {
         \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
         \Lunar\Tests\Admin\Stubs\Support\FieldTypes\RepeaterField::class,
     );
+    // Preload property synthesizers for dynamic field types
+    \Lunar\Admin\Support\Facades\AttributeData::synthesizeLivewireProperties();
     \Lunar\Models\Language::factory()->create([
         'default' => true,
     ]);
 
     \Lunar\Models\TaxClass::factory()->create([
+        'default' => true,
+    ]);
+    \Lunar\Models\Currency::factory()->create([
         'default' => true,
     ]);
 
@@ -269,6 +274,7 @@ it('renders and saves the builder attribute field', function () {
 
     \Lunar\Models\Language::factory()->create(['default' => true]);
     \Lunar\Models\TaxClass::factory()->create(['default' => true]);
+    \Lunar\Models\Currency::factory()->create(['default' => true]);
 
     $product = \Lunar\Models\Product::factory()->create();
     $variant = \Lunar\Models\ProductVariant::factory()->create(['product_id' => $product->id]);
@@ -371,6 +377,7 @@ it('renders and saves the repeater attribute field', function () {
         \Lunar\Tests\Admin\Stubs\FieldTypes\RepeaterField::class,
         \Lunar\Tests\Admin\Stubs\Support\FieldTypes\RepeaterField::class,
     );
+    \Lunar\Admin\Support\Facades\AttributeData::synthesizeLivewireProperties();
     \Lunar\Models\Language::factory()->create([
         'default' => true,
     ]);
