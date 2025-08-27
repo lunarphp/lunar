@@ -26,6 +26,7 @@ class BuilderSynth extends AbstractFieldSynth
     public function set(&$target, $key, $value)
     {
         if ($key === '' || $key === null) {
+            // Let the FieldType perform full normalization.
             $target->setValue(is_array($value) ? $value : []);
 
             return;
@@ -34,7 +35,8 @@ class BuilderSynth extends AbstractFieldSynth
         $fieldValue = (array) $target->getValue();
         Arr::set($fieldValue, $key, $value);
 
-        $target->setValue($this->normalize($fieldValue));
+        // Delegate normalization to the FieldType implementation.
+        $target->setValue($fieldValue);
     }
 
     public function unset(&$target, $index)
@@ -43,7 +45,8 @@ class BuilderSynth extends AbstractFieldSynth
 
         Arr::forget($fieldValue, $index);
 
-        $target->setValue($this->normalize($fieldValue));
+        // Delegate normalization to the FieldType implementation.
+        $target->setValue($fieldValue);
     }
 
     protected function normalize(array $items): array
