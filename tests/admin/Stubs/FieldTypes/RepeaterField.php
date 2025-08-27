@@ -27,6 +27,9 @@ class RepeaterField implements FieldType, JsonSerializable
 
     public function setValue($value)
     {
+        if ($value === null) {
+            $value = [];
+        }
         if (! is_array($value)) {
             throw new FieldTypeException(self::class.' value must be an array.');
         }
