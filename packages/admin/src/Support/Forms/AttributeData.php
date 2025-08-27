@@ -55,9 +55,9 @@ class AttributeData
 
                 $value = $state->getValue();
 
-                // Ensure arrays are normalized for components expecting array items only
-                if (is_array($value)) {
-                    $value = array_values(array_filter($value, 'is_array'));
+                // Only normalize nested-array states (e.g. repeater/builder), preserve scalar lists
+                if (is_array($state) && $state !== [] && is_array(reset($state))) {
+                    $state = array_values(array_filter($state, 'is_array'));
                 }
 
                 return $value;
@@ -76,7 +76,7 @@ class AttributeData
                     $state = array_values(array_filter($state, 'is_array'));
                 }
 
-                if (! $state instanceof FieldTypeContract || (get_class($state) !== $attribute->type)) {
+                if (! $state instanceof FieldTypeContract || ! ($state instanceof $attribute->type)) {
                     $field = (new $attribute->type);
                     $field->setValue($state);
 
