@@ -82,7 +82,7 @@ class OrderLine extends BaseModel implements Contracts\OrderLine
 
     public function purchasable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function currency(): HasOneThrough
