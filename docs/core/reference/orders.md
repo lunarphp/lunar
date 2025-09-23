@@ -130,7 +130,7 @@ class MyCustomValidator extends \Lunar\Validation\BaseValidator
 }
 ```
 
-## Order Reference Generating
+## Order Reference Generation
 
 By default Lunar will generate a new order reference for you when you create an order from a cart. The format for this
 is:
