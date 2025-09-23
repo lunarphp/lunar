@@ -13,7 +13,9 @@ use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Pipelines\Order\Creation\CleanUpOrderLines;
-use function Pest\Laravel\{assertDatabaseHas, assertDatabaseMissing};
+
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -168,7 +170,6 @@ test('will remove lines with same purchasable ids when different', function () {
         'purchasable_type' => $purchasable->getMorphClass(),
     ]);
 
-
     OrderLine::factory()->create([
         'order_id' => $order->id,
         'quantity' => 15,
@@ -184,7 +185,6 @@ test('will remove lines with same purchasable ids when different', function () {
         'purchasable_type' => $purchasableB->getMorphClass(),
         'meta' => ['foo' => 'bar'],
     ]);
-
 
     OrderLine::factory()->create([
         'identifier' => 'BASDEL',
