@@ -95,10 +95,12 @@ test('can run pipeline', function () {
     });
 
     assertDatabaseHas((new OrderLine)->getTable(), [
+        'order_id' => $order->id,
         'purchasable_id' => $purchasable->id,
     ]);
 
     assertDatabaseMissing((new OrderLine)->getTable(), [
+        'order_id' => $order->id,
         'purchasable_id' => $purchasableB->id,
     ]);
 
@@ -198,16 +200,19 @@ test('will remove lines with same purchasable ids when different', function () {
     });
 
     assertDatabaseHas((new OrderLine)->getTable(), [
+        'order_id' => $order->id,
         'purchasable_id' => $purchasable->id,
     ]);
 
     assertDatabaseHas((new OrderLine)->getTable(), [
+        'order_id' => $order->id,
         'purchasable_id' => $purchasableB->id,
         'quantity' => 5,
         'meta' => json_encode(['foo' => 'bar']),
     ]);
 
     assertDatabaseMissing((new OrderLine)->getTable(), [
+        'order_id' => $order->id,
         'purchasable_id' => $purchasableB->id,
         'quantity' => 15,
         'meta' => json_encode(['bar' => 'baz']),
