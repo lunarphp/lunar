@@ -97,7 +97,7 @@ $cart->canCreateOrder();
 Under the hood this will use the `ValidateCartForOrderCreation` class which lunar provides and throw any validation
 exceptions with helpful messages if the cart isn't ready to create an order.
 
-You can specify you're own class to handle this in `config/cart.php`.
+You can specify your own class to handle this in `config/cart.php`.
 
 ```php
 return [
