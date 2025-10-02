@@ -32,7 +32,16 @@ abstract class BaseListRecords extends ListRecords
             $scoutEnabled &&
             $isScoutSearchable
         ) {
-            $ids = collect(static::getModel()::search($search)->withTrashed()->take(100)->keys())->map(
+            $trashedFilter = collect($this->getTable()->getFilters())
+                ->firstWhere(fn ($filter) => $filter instanceof \Filament\Tables\Filters\TrashedFilter);
+
+            $scoutQuery = static::getModel()::search($search);
+
+            if (filled($state = $trashedFilter?->getState()['value'] ?? null)) {
+                $state ? $scoutQuery->withTrashed() : $scoutQuery->onlyTrashed();
+            }
+
+            $ids = collect($scoutQuery->take(100)->keys())->map(
                 fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
 
