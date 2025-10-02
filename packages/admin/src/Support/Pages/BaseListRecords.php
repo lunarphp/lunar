@@ -32,7 +32,7 @@ abstract class BaseListRecords extends ListRecords
             $scoutEnabled &&
             $isScoutSearchable
         ) {
-            $ids = collect(static::getModel()::search($search)->take(100)->keys())->map(
+            $ids = collect(static::getModel()::search($search)->withTrashed()->take(100)->keys())->map(
                 fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
 

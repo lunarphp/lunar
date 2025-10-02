@@ -394,8 +394,8 @@ class ProductResource extends BaseResource
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with([
-            'variants',
-            'brand',
+            'variants' => fn ($query) => $query->withTrashed(),
+            'brand' => fn ($query) => $query->withTrashed(),
             'tags',
         ]);
     }
