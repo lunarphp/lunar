@@ -45,15 +45,9 @@ abstract class BaseListRecords extends ListRecords
                 fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
 
-            $query->whereIn(
-                'id',
-                $ids
-            );
-
-            $query->when(
-                ! $ids->isEmpty(),
-                fn ($query) => $query->orderBySequence($ids->toArray())
-            );
+            $query
+                ->whereIn('id', $ids)
+                ->orderBySequence($ids);
         }
 
         return $query;

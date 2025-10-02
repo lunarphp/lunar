@@ -78,16 +78,9 @@ class BaseResource extends Resource
                 fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
 
-            $query->whereIn(
-                'id',
-                $ids
-            );
-
-            $query->when(
-                ! $ids->isEmpty(),
-                fn ($query) => $query->orderBySequence($ids->toArray())
-            );
-
+            $query
+                ->whereIn('id', $ids)
+                ->orderBySequence($ids);
         } else {
             /** @var Connection $databaseConnection */
             $databaseConnection = $query->getConnection();
