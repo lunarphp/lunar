@@ -40,6 +40,7 @@ Our support plan is designed to help your team navigate the complexities of e-co
 ### What’s Not Included?
 
 - 🚫 Custom Development – We’ll guide you, but we won’t write custom code.
+- 🚫 Full codebase reviews – We can review snippets of code, but not an entire application.
 - 🚫 Bug Fixes Outside Core Lunar – We’ll help identify issues, but fixing bugs in your custom implementation is your responsibility.
 - 🚫 General Laravel Support – Our focus is Lunar. For Laravel-specific questions, we recommend the official Laravel support channels.
 

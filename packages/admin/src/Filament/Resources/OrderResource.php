@@ -96,10 +96,12 @@ class OrderResource extends BaseResource
                 ->searchable(),
             Tables\Columns\TextColumn::make('customer_reference')
                 ->label(__('lunarpanel::order.table.customer_reference.label'))
-                ->toggleable(),
+                ->toggleable()
+                ->searchable(),
             Tables\Columns\TextColumn::make('billingAddress.fullName')
                 ->label(__('lunarpanel::order.table.customer.label'))
-                ->toggleable(),
+                ->toggleable()
+                ->searchable(['first_name', 'last_name']),
             Tables\Columns\TextColumn::make('new_customer')
                 ->label(__('lunarpanel::order.table.new_customer.label'))
                 ->toggleable()
@@ -114,13 +116,15 @@ class OrderResource extends BaseResource
                 ->separator(','),
             Tables\Columns\TextColumn::make('billingAddress.postcode')
                 ->label(__('lunarpanel::order.table.postcode.label'))
-                ->toggleable(),
+                ->toggleable()
+                ->searchable(),
             Tables\Columns\TextColumn::make('billingAddress.contact_email')
                 ->label(__('lunarpanel::order.table.email.label'))
                 ->toggleable()
                 ->copyable()
                 ->copyMessage(__('lunarpanel::order.table.email.copy_message'))
-                ->copyMessageDuration(1500),
+                ->copyMessageDuration(1500)
+                ->searchable(),
             Tables\Columns\TextColumn::make('billingAddress.contact_phone')
                 ->label(__('lunarpanel::order.table.phone.label'))
                 ->toggleable(),

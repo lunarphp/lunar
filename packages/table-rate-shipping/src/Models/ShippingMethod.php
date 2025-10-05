@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasCustomerGroups;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Models\CustomerGroup;
 use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
@@ -18,6 +19,7 @@ class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
 {
     use HasCustomerGroups;
     use HasFactory;
+    use LogsActivity;
 
     /**
      * Define which attributes should be

@@ -2,13 +2,13 @@
 
 ## Overview
 
-Collections, although not strictly the same, are akin to Categories. They serve to allow you to add products ,either explicitly or via certain criteria, for use on your store.
+Collections, although not strictly the same, are akin to Categories. They serve to allow you to add products, either explicitly or via certain criteria, for use on your store.
 
 For example, you may have a Collection called "Red T-Shirts" and within that collection specify that any product which has the tag "Red" and "T-Shirt" to be included.
 
 A collection can also have other collections underneath it, forming a nested set hierarchy.
 
-A collection must also belong to a collection group, this allows you to have greater flexibility when building out things like Menu's and Landing pages.
+A collection must also belong to a collection group, this allows you to have greater flexibility when building out things like Menus and Landing pages.
 
 
 ## Collection Groups

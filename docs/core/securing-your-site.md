@@ -43,12 +43,6 @@ In a production environment, you must set an API key to allow access to the sear
 
 [Run Meilisearch in production](https://docs.meilisearch.com/learn/cookbooks/running_production.html)
 
-### Using a service like Ploi
-
-If you are using Ploi, which is a fantastic service for managing servers and deploying code, they offer the ability to spin up Meilisearch servers from their UI and they give you the ability to set different API keys with various restrictions. Perfect if you are not confident in doing the nitty-gritty server stuff yourself.
-
-[Read more about it here](https://ploi.io/features/meilisearch-server)
-
 ## Securing Algolia
 
 Algolia has a lot of security features out-of-the-box. They also have some extra steps you should take to lock things down even further. There is an article dedicated to the topic which you should read.

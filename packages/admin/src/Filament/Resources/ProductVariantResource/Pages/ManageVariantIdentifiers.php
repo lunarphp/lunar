@@ -41,7 +41,7 @@ class ManageVariantIdentifiers extends BaseEditRecord
             ...ProductVariantResource::getBaseBreadcrumbs(
                 $this->getRecord()
             ),
-            ProductVariantResource::getUrl('inventory', [
+            ProductVariantResource::getUrl('identifiers', [
                 'record' => $this->getRecord(),
             ]) => $this->getTitle(),
         ];

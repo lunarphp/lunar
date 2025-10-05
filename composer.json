@@ -18,7 +18,7 @@
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",
-        "filament/filament": "^3.3.31",
+        "filament/filament": "^3.3.36",
         "filament/spatie-laravel-media-library-plugin": "^3.3.4",
         "guzzlehttp/guzzle": "^7.3",
         "http-interop/http-factory-guzzle": "^1.2",

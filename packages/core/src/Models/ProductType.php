@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\ProductTypeFactory;
 
 /**
@@ -21,6 +22,7 @@ class ProductType extends BaseModel implements Contracts\ProductType
     use HasAttributes;
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.

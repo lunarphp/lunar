@@ -45,6 +45,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                         ->types([
                             Forms\Components\MorphToSelect\Type::make(ProductVariant::modelClass())
                                 ->titleAttribute('sku')
+                                ->searchColumns(['sku'])
                                 ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                     $products = get_search_builder(Product::modelClass(), $search)
                                         ->get();
