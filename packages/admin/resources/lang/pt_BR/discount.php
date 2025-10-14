@@ -83,7 +83,7 @@ return [
     ],
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Nome',
         ],
         'status' => [
             'label' => 'Status',
@@ -238,10 +238,10 @@ return [
                 'type' => [
                     'options' => [
                         'limitation' => [
-                            'label' => 'Limitation',
+                            'label' => 'Limitação',
                         ],
                         'exclusion' => [
-                            'label' => 'Exclusion',
+                            'label' => 'Exclusão',
                         ],
                     ],
                 ],
