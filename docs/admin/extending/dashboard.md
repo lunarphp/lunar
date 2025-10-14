@@ -13,7 +13,7 @@ class DashboardExtension extends BaseExtension
 {
     /**
     * Override or add to all widgets on the dashboard
-     */
+    */
     public function getWidgets(array $widgets): array
     {
         return [
@@ -23,7 +23,7 @@ class DashboardExtension extends BaseExtension
     
     /**
     * Override or add to the overview widgets at the top of the dashboard
-     */
+    */
     public function getOverviewWidgets(array $widgets): array
     {
         return [
@@ -33,7 +33,7 @@ class DashboardExtension extends BaseExtension
     
     /**
     * Override or add to the chart widgets
-     */
+    */
     public function getChartWidgets(array $widgets): array
     {
         return [
@@ -43,7 +43,7 @@ class DashboardExtension extends BaseExtension
     
     /**
     * Override or add to the table widgets
-     */
+    */
     public function getTableWidgets(array $widgets): array
     {
         return [
