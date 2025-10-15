@@ -3,7 +3,7 @@
 return [
     'shipping_methods' => [
         'customer_groups' => [
-            'description' => 'Rendeld hozzá a vásárlói csoportokat ehhez a szállítási módhoz a elérhetőség meghatározásához.',
+            'description' => 'Rendeld hozzá a vásárlói csoportokat ehhez a szállítási módhoz az elérhetőség meghatározásához.',
         ],
     ],
     'shipping_rates' => [
