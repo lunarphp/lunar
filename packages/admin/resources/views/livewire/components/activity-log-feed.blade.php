@@ -1,5 +1,5 @@
 <div class="px-2 pb-4 scroll-mt-32" id="lunar-panel-timeline">
-    <div class="relative flex items-end gap-4 mt-4 z-20">
+    <div class="relative flex items-end gap-4 mt-4 z-10">
         <div class="shrink-0">
             <div>
                 <img src="{{ $this->userAvatar }}"
