@@ -3,7 +3,7 @@
 return [
     'non_purchasable_item' => 'Modelul ":class" nu implementează interfața de achiziționare.',
     'cart_line_id_mismatch' => 'Această linie din coș nu aparține acestui coș',
-    'invalid_cart_line_quantity' => 'Cantitatea așteptată trebuie să fie cel puțin „1”, s-a găsit: ":quantity".',
+    'invalid_cart_line_quantity' => 'Cantitatea așteptată trebuie să fie cel puțin 1, s-a găsit: :quantity.',
     'maximum_cart_line_quantity' => 'Cantitatea nu poate depăși :quantity.',
     'carts.invalid_action' => 'Acțiunea pentru coș este invalidă',
     'carts.shipping_missing' => 'Este necesară o adresă de livrare',

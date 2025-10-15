@@ -59,7 +59,7 @@ return [
                             'label' => 'Nu există opțiuni partajate disponibile.',
                         ],
                         'preselect' => [
-                            'label' => 'Preselectează toate valorile implicit.',
+                            'label' => 'Preselectează implicit toate valorile.',
                         ],
                     ],
                 ],

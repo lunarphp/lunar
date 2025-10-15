@@ -23,7 +23,7 @@ return [
             'label' => 'Țară',
         ],
         'states' => [
-            'label' => 'State',
+            'label' => 'Județe',
         ],
         'countries' => [
             'label' => 'Țări',
