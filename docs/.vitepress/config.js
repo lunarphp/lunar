@@ -170,6 +170,7 @@ export default defineConfig({
                         {text: 'Add-ons', link: '/admin/extending/addons'},
                         {text: 'Attributes', link: '/admin/extending/attributes'},
                         {text: 'Panel', link: '/admin/extending/panel'},
+                        {text: 'Dashboard', link: '/admin/extending/dashboard'},
                         {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Resources', link: '/admin/extending/resources'},
                         {text: 'Relation Managers', link: '/admin/extending/relation-managers'},
