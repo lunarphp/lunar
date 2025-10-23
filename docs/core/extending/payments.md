@@ -71,7 +71,7 @@ class CustomPayment extends AbstractPayment
             paymentType: 'custom-type'
         );
         
-        PaymentAttemptEvent::dispatch($response)
+        PaymentAttemptEvent::dispatch($response);
 
         return $response;
     }
