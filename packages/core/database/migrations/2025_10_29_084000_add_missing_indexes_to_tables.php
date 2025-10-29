@@ -8,7 +8,7 @@ use Lunar\Base\Migration;
 return new class extends Migration
 {
     /**
-     * The list of tables and JSON columns to update.
+     * The list of tables and columns to index.
      */
     private $columnsToUpdate = [
         'channelables' => [
@@ -31,11 +31,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Only run for PostgreSQL - MySQL has no change and SQLite will error when trying to change
-        if (DB::getDriverName() !== 'pgsql') {
-            return;
-        }
-
         foreach ($this->columnsToUpdate as $table => $columns) {
             $fullTableName = $this->getTableName($table);
 
