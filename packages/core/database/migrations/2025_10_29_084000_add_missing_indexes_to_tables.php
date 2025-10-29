@@ -13,10 +13,7 @@ return new class extends Migration
     private $columnsToUpdate = [
         'channelables' => [
             'enabled',
-            'channelable_type',
-            'channelable_id',
             'starts_at',
-            'ends_at',
         ],
         'products' => [
             'deleted_at',
