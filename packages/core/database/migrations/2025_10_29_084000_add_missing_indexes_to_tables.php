@@ -47,6 +47,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Only run for PostgreSQL - MySQL has no change and SQLite will error when trying to change
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
         foreach ($this->columnsToUpdate as $table => $columns) {
             $fullTableName = $this->getTableName($table);
 
