@@ -14,6 +14,11 @@ Run any migrations
 php artisan migrate
 ```
 
+## [Unreleased]
+
+#### Rename Order resource OrderSummaryInfolist Extension hook
+rename `exendOrderSummaryInfolist` to `extendOrderSummaryInfolist`
+
 ## 1.0.0 (stable)
 
 ### Medium Impact
