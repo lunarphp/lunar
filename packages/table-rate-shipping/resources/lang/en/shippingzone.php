@@ -28,6 +28,11 @@ return [
         'countries' => [
             'label' => 'States',
         ],
+        'pages' => [
+            'edit' => [
+                'label' => 'Edit shipping zone',
+            ],
+        ],
         'postcodes' => [
             'label' => 'Postcodes',
             'helper' => 'List each postcode on a new line. Supports wildcards such as NW*',
