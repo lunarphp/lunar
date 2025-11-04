@@ -81,15 +81,8 @@ class CustomerGroupRelationManager extends BaseRelationManager
             return Tables\Columns\IconColumn::make($column)->label(
                 __("lunarpanel::relationmanagers.customer_groups.table.{$column}.label")
             )
-                ->color(fn (string $state): string => match ($state) {
-                    '1' => 'success',
-                    '0' => 'warning',
-                    default => 'warning',
-                })->icon(fn (string $state): string => match ($state) {
-                    '0' => 'heroicon-o-x-circle',
-                    '1' => 'heroicon-o-check-circle',
-                    default => 'heroicon-o-x-circle',
-                });
+                ->color(fn ($state): string => $state ? 'success' : 'warning')
+                ->icon(fn ($state): string => $state) ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle');
         })->toArray();
 
         return $table
