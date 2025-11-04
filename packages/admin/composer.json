@@ -21,7 +21,7 @@
     ],
     "require": {
         "lunarphp/core": "self.version",
-        "filament/filament": "^4.0",
+        "filament/filament": "^4.1",
         "filament/spatie-laravel-media-library-plugin": "^4.0",
         "spatie/laravel-permission": "^6.12",
         "barryvdh/laravel-dompdf": "^3.0",

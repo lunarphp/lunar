@@ -183,7 +183,7 @@ class LunarPanelManager
 
         Table::configureUsing(function (Table $table): void {
             $table
-                ->paginationPageOptions([10, 25, 50, 100])
+                ->paginationPageOptions([10, 25, 50, 100, 250])
                 ->defaultPaginationPageOption(25);
         });
 
@@ -268,6 +268,7 @@ class LunarPanelManager
             ->darkModeBrandLogo($brandAsset('lunar-logo-dark.svg'))
             ->favicon($brandAsset('lunar-icon.png'))
             ->brandLogoHeight('2rem')
+            ->topbar(false)
             ->path('lunar')
             ->authGuard('staff')
             ->defaultAvatarProvider(GravatarProvider::class)
