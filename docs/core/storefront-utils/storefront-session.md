@@ -102,6 +102,17 @@ StorefrontSession::getCustomer();
 
 ## Currencies
 
+### Initialise the Currency
+
+This will set the Currency based on what's been previously set (from the session), otherwise it will use the default record.
+
+```php
+StorefrontSession::initCurrency();
+```
+
+:::tip This is automatically called when using the facade.
+:::
+
 ### Set the Currency
 
 ```php
