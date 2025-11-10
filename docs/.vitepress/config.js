@@ -99,9 +99,7 @@ export default defineConfig({
                         {text: 'Installation', link: '/core/installation'},
                         {text: 'Starter Kits', link: '/core/starter-kits'},
                         {text: 'Configuration', link: '/core/configuration'},
-                        {text: 'Initial Set-Up', link: '/core/set-up'},
                         {text: 'Upgrade Guide', link: '/core/upgrading'},
-                        {text: 'Release Schedule', link: '/core/release-schedule'},
                         {text: 'Security', link: '/core/securing-your-site'},
                         {text: 'Contributing', link: '/core/contributing'}
                     ]
@@ -172,6 +170,7 @@ export default defineConfig({
                         {text: 'Add-ons', link: '/admin/extending/addons'},
                         {text: 'Attributes', link: '/admin/extending/attributes'},
                         {text: 'Panel', link: '/admin/extending/panel'},
+                        {text: 'Dashboard', link: '/admin/extending/dashboard'},
                         {text: 'Pages', link: '/admin/extending/pages'},
                         {text: 'Resources', link: '/admin/extending/resources'},
                         {text: 'Relation Managers', link: '/admin/extending/relation-managers'},

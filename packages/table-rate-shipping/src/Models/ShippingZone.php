@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Models\Country;
 use Lunar\Models\Order;
 use Lunar\Models\State;
@@ -15,6 +16,7 @@ use Lunar\Shipping\Database\Factories\ShippingZoneFactory;
 class ShippingZone extends BaseModel implements Contracts\ShippingZone
 {
     use HasFactory;
+    use LogsActivity;
 
     /**
      * Define which attributes should be

@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Shipping\Factories\ShippingExclusionListFactory;
 
 class ShippingExclusionList extends BaseModel implements Contracts\ShippingExclusionList
 {
     use HasFactory;
+    use LogsActivity;
 
     /**
      * Define which attributes should be

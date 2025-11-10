@@ -112,7 +112,7 @@ test('can save coupon code', function () {
 
     $cart->saveQuietly();
 
-    expect($cart->refresh()->coupon_code)->toEqual('valid-coupon');
+    expect($cart->refresh()->coupon_code)->toEqual('VALID-COUPON');
 });
 
 test('can associate cart with user with no customer attached', function () {

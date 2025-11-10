@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\TagFactory;
 use Lunar\Facades\DB;
 
@@ -19,6 +20,7 @@ class Tag extends BaseModel implements Contracts\Tag
 {
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     public static function booted(): void
     {
