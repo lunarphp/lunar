@@ -2,7 +2,8 @@
 name: "\U0001F41B Bug report"
 about: Report something that's broken.
 title: ''
-labels: bug,unconfirmed
+type: bug
+projects: ['lunarphp/9']
 assignees: ''
 
 ---
