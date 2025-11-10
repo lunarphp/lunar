@@ -31,7 +31,7 @@ class GetExistingCartLine extends AbstractAction
         return $lines->first(function ($line) use ($meta) {
             $diff = Arr::diff($line->meta, $meta);
 
-            return empty($diff->new) && empty($diff->edited) & empty($diff->removed);
+            return empty($diff->new) && empty($diff->edited) && empty($diff->removed);
         });
     }
 }
