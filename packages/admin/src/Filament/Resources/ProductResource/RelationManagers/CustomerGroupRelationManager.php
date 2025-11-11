@@ -82,7 +82,7 @@ class CustomerGroupRelationManager extends BaseRelationManager
                 __("lunarpanel::relationmanagers.customer_groups.table.{$column}.label")
             )
                 ->color(fn ($state): string => $state ? 'success' : 'warning')
-                ->icon(fn ($state): string => $state) ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle');
+                ->icon(fn ($state): string => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle');
         })->toArray();
 
         return $table
