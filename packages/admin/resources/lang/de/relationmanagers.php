@@ -212,4 +212,20 @@ return [
             ],
         ],
     ],
+    'values' => [
+        'title' => 'Werte',
+        'form' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+        ],
+        'table' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+            'position' => [
+                'label' => 'Position',
+            ],
+        ],
+    ],
 ];

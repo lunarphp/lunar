@@ -263,6 +263,11 @@ return [
     ],
     'values' => [
         'title' => 'Waarden',
+        'form' => [
+            'name' => [
+                'label' => 'Naam',
+            ],
+        ],
         'table' => [
             'name' => [
                 'label' => 'Naam',
