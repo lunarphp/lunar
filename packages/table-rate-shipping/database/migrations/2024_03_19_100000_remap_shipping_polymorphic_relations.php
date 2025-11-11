@@ -2,7 +2,7 @@
 
 use Lunar\Base\Migration;
 
-class RemapShippingPolymorphicRelations extends Migration
+return new class extends Migration
 {
     public function up()
     {
