@@ -54,8 +54,6 @@ interface Purchasable
 
     /**
      * Return the options for this purchasable.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getOptions(): Collection;
 

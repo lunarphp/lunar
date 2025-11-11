@@ -110,8 +110,6 @@ class ShippingOption implements Purchasable
 
     /**
      * Return the options for this purchasable
-     *
-     * @return Collection
      */
     public function getOptions(): Collection
     {
