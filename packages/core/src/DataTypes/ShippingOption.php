@@ -17,7 +17,7 @@ class ShippingOption implements Purchasable
         public ?string $taxReference = null,
         public ?string $option = null,
         public bool $collect = false,
-        public ?array $meta = null
+        public ?array $meta = null,
     ) {
         //  ..
     }
@@ -106,6 +106,18 @@ class ShippingOption implements Purchasable
     public function getOption()
     {
         return $this->option;
+    }
+
+    /**
+     * Return the options for this purchasable
+     *
+     * @return Collection
+     */
+    public function getOptions(): Collection
+    {
+        return collect([
+            $this->option,
+        ]);
     }
 
     /**
