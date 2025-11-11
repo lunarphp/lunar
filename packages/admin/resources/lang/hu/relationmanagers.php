@@ -88,8 +88,8 @@ return [
         ],
     ],
     'medias' => [
-    'title' => 'Média',
-    'title_plural' => 'Médiák',
+        'title' => 'Média',
+        'title_plural' => 'Médiák',
         'actions' => [
             'attach' => [
                 'label' => 'Média csatolása',
@@ -133,8 +133,8 @@ return [
         'variant_description' => 'Csatoljon termékképeket ehhez a változathoz',
     ],
     'urls' => [
-    'title' => 'URL',
-    'title_plural' => 'URL-ek',
+        'title' => 'URL',
+        'title_plural' => 'URL-ek',
         'actions' => [
             'create' => [
                 'label' => 'URL létrehozása',
@@ -169,8 +169,8 @@ return [
         ],
     ],
     'customer_group_pricing' => [
-    'title' => 'Vásárlói csoport árképzés',
-    'title_plural' => 'Vásárlói csoport árképzés',
+        'title' => 'Vásárlói csoport árképzés',
+        'title_plural' => 'Vásárlói csoport árképzés',
         'table' => [
             'heading' => 'Vásárlói csoport árképzés',
             'description' => 'Ár társítása vásárlói csoportokhoz a termék árának meghatározásához.',
@@ -180,8 +180,8 @@ return [
             ],
             'actions' => [
                 'create' => [
-                        'label' => 'Vásárlói csoport ár hozzáadása',
-                        'modal' => [
+                    'label' => 'Vásárlói csoport ár hozzáadása',
+                    'modal' => [
                         'heading' => 'Vásárlói csoport ár létrehozása',
                     ],
                 ],
@@ -189,9 +189,9 @@ return [
         ],
     ],
     'pricing' => [
-    'title' => 'Árképzés',
-    'title_plural' => 'Árképzés',
-    'tab_name' => 'Ár lépcsők',
+        'title' => 'Árképzés',
+        'title_plural' => 'Árképzés',
+        'tab_name' => 'Ár lépcsők',
         'table' => [
             'heading' => 'Ár lépcsők',
             'description' => 'Csökkentsd az árat, ha a vásárló nagyobb mennyiséget vásárol.',

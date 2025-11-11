@@ -26,8 +26,8 @@ return [
         'driver' => [
             'label' => 'Típus',
             'options' => [
-                'ship-by'   => 'Házhozszállítás',
-                'collection'=> 'Személyes átvétel',
+                'ship-by' => 'Házhozszállítás',
+                'collection' => 'Személyes átvétel',
             ],
         ],
         'stock_available' => [

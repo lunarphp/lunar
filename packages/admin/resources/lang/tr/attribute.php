@@ -30,7 +30,7 @@ return [
         ],
         'description' => [
             'label' => 'Açıklama',
-            'helper' => 'Alan altındaki yardım metnini görüntülemek için kullanın'
+            'helper' => 'Alan altındaki yardım metnini görüntülemek için kullanın',
         ],
         'handle' => [
             'label' => 'Tanımlayıcı',

@@ -340,10 +340,10 @@ return [
                 'type' => [
                     'options' => [
                         'limitation' => [
-                        'label' => 'Limitação',
+                            'label' => 'Limitação',
                         ],
                         'exclusion' => [
-                        'label' => 'Exclusão',
+                            'label' => 'Exclusão',
                         ],
                     ],
                 ],

@@ -14,7 +14,7 @@ return [
             'heading' => 'Összeg alapú kedvezmény',
         ],
         'name' => [
-                'label' => 'Név',
+            'label' => 'Név',
         ],
         'handle' => [
             'label' => 'Azonosító',
@@ -86,7 +86,7 @@ return [
             'label' => 'Név',
         ],
         'status' => [
-                'label' => 'Státusz',
+            'label' => 'Státusz',
             \Lunar\Models\Discount::ACTIVE => [
                 'label' => 'Aktív',
             ],

@@ -4,7 +4,7 @@ return [
     'dropdown' => [
         'label' => 'Açılır Menü',
         'form' => [
-                'lookups' => [
+            'lookups' => [
                 'label' => 'Arama Tablosu',
                 'key_label' => 'Etiket',
                 'value_label' => 'Değer',
@@ -32,7 +32,7 @@ return [
         ],
     ],
     'toggle' => [
-        'label' => 'Aç/Kapat'
+        'label' => 'Aç/Kapat',
     ],
     'youtube' => [
         'label' => 'YouTube',

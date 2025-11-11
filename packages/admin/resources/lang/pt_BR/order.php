@@ -272,8 +272,8 @@ return [
 
                 'shipping_address' => [
                     'saved' => 'Endereço de entrega salvo',
+                ],
             ],
-        ],
         ],
         'edit_tags' => [
             'label' => 'Editar',

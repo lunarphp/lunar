@@ -11,7 +11,7 @@ return [
             'heading' => 'X Al Y Kazan',
         ],
         'amount_off' => [
-            'heading' => 'Sabit Tutar İndirimi'
+            'heading' => 'Sabit Tutar İndirimi',
         ],
         'name' => [
             'label' => 'İndirim Adı',
@@ -60,7 +60,7 @@ return [
         ],
         'min_qty' => [
             'label' => 'Ürün Miktarı',
-            'helper_text' => 'İndirimin uygulanması için gerekli ürün adedini belirleyin.'
+            'helper_text' => 'İndirimin uygulanması için gerekli ürün adedini belirleyin.',
         ],
         'reward_qty' => [
             'label' => 'Ücretsiz ürün sayısı',
@@ -118,7 +118,7 @@ return [
     ],
     'pages' => [
         'availability' => [
-            'label' => 'Erişilebilirlik'
+            'label' => 'Erişilebilirlik',
         ],
         'edit' => [
             'title' => 'Temel Bilgiler',

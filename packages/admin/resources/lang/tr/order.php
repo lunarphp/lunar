@@ -57,10 +57,10 @@ return [
             'label' => 'Müşteri Türü',
         ],
         'placed_after' => [
-            'label' => 'Bu Tarihten Sonra'
+            'label' => 'Bu Tarihten Sonra',
         ],
         'placed_before' => [
-            'label' => 'Bu Tarihten Önce'
+            'label' => 'Bu Tarihten Önce',
         ],
     ],
 
@@ -120,7 +120,7 @@ return [
             'label' => 'Miktar',
 
             'hint' => [
-                'less_than_total' => "Toplam işlem tutarından daha az bir miktar tahsil etmek üzeresiniz"
+                'less_than_total' => 'Toplam işlem tutarından daha az bir miktar tahsil etmek üzeresiniz',
             ],
         ],
 

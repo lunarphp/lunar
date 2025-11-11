@@ -56,7 +56,7 @@ return [
                             'label' => 'Ürün Seçeneği',
                         ],
                         'no_shared_components' => [
-                            'label' => 'Mevcut paylaşılan seçenek yok.'
+                            'label' => 'Mevcut paylaşılan seçenek yok.',
                         ],
                         'preselect' => [
                             'label' => 'Varsayılan olarak tüm değerleri önceden seç.',
