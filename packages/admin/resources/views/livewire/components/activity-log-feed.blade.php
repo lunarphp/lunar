@@ -1,5 +1,5 @@
 <div class="px-2 pb-4 scroll-mt-32" id="lunar-panel-timeline">
-    <div class="relative flex items-end gap-4 mt-4 z-20">
+    <div class="relative flex items-end gap-4 mt-4">
         <div class="shrink-0">
             <div>
                 <img src="{{ $this->userAvatar }}"
@@ -9,9 +9,9 @@
 
         <form class="w-full"
             wire:submit.prevent="addComment">
-            
-            {{ $this->form }} 
-            
+
+            {{ $this->form }}
+
             <div class="absolute right-0 mt-2">
                 {{ $this->addCommentAction }}
             </div>
@@ -43,7 +43,7 @@
                                         '-left-[calc(0.5rem_-_1px)]' => !$item['log']->causer,
                                     ])>
                                         @if ($email = $item['log']->causer?->email)
-                                            <img 
+                                            <img
                                                 src="{{ $this->getAvatarUrl($email) }}"
                                                 class="w-6 h-6 rounded-full ring-4 ring-gray-200 dark:ring-gray-600"
                                                 alt="{{ $logUserName }}"
