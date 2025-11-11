@@ -24,6 +24,8 @@ class ProductObserver
 
             $product->associations()->delete();
 
+            $product->inverseAssociations()->delete();
+
             $product->channels()->detach();
 
             $product->tags()->detach();

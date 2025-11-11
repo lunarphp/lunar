@@ -53,6 +53,13 @@ interface Purchasable
     public function getOption();
 
     /**
+     * Return the options for this purchasable.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getOptions(): Collection;
+
+    /**
      * Return a unique string which identifies the purchasable item.
      *
      * @return string
