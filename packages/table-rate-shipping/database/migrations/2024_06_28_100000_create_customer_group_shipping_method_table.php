@@ -26,4 +26,4 @@ return new class extends Migration
     {
         Schema::dropIfExists($this->prefix.'customer_group_shipping_method');
     }
-}
+};

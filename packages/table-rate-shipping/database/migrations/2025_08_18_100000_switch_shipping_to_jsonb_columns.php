@@ -30,4 +30,4 @@ return new class extends Migration
             $table->json('data')->nullable()->change();
         });
     }
-}
+};

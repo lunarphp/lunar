@@ -33,4 +33,4 @@ return new class extends Migration
                 'purchasable_type' => \Lunar\Models\Product::class,
             ]);
     }
-}
+};
