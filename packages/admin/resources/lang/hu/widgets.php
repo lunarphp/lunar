@@ -8,7 +8,7 @@ return [
                     'label' => 'Rendelések ma',
                     'increase' => ':percentage% növekedés a tegnapi (:count) értékhez képest',
                     'decrease' => ':percentage% csökkenés a tegnapi (:count) értékhez képest',
-                    'neutral'  => 'Nincs változás tegnaphoz képest',
+                    'neutral' => 'Nincs változás tegnaphoz képest',
                 ],
                 'stat_two' => [
                     'label' => 'Rendelések az elmúlt 7 napban',

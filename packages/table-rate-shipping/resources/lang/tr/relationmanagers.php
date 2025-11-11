@@ -3,14 +3,14 @@
 return [
     'shipping_methods' => [
         'customer_groups' => [
-            'description' => "Müşteri gruplarını bu kargo yöntemiyle ilişkilendirerek kullanılabilirliğini belirleyin.",
+            'description' => 'Müşteri gruplarını bu kargo yöntemiyle ilişkilendirerek kullanılabilirliğini belirleyin.',
         ],
     ],
     'shipping_rates' => [
         'title_plural' => 'Kargo Tarifeleri',
         'actions' => [
             'create' => [
-                'label' => 'Kargo Tarifesi Oluştur'
+                'label' => 'Kargo Tarifesi Oluştur',
             ],
         ],
         'notices' => [
@@ -54,7 +54,7 @@ return [
                 'label' => 'Fiyat',
             ],
             'price_breaks_count' => [
-                'label' => 'Fiyat Aralıkları'
+                'label' => 'Fiyat Aralıkları',
             ],
         ],
     ],
@@ -67,10 +67,10 @@ return [
         ],
         'actions' => [
             'create' => [
-                'label' => 'Kargo istisna listesi ekle'
+                'label' => 'Kargo istisna listesi ekle',
             ],
             'attach' => [
-                'label' => 'İstisna listesi ekle'
+                'label' => 'İstisna listesi ekle',
             ],
             'detach' => [
                 'label' => 'Kaldır',

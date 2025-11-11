@@ -240,7 +240,7 @@ return [
             ],
             'compare_price' => [
                 'label' => 'Karşılaştırma Fiyatı',
-                'helper_text' => 'Satın alma fiyatıyla karşılaştırma için orijinal fiyat veya tavsiye edilen satış fiyat (RRP).'
+                'helper_text' => 'Satın alma fiyatıyla karşılaştırma için orijinal fiyat veya tavsiye edilen satış fiyat (RRP).',
             ],
             'basePrices' => [
                 'title' => 'Fiyatlar',
@@ -252,7 +252,7 @@ return [
                     ],
                     'compare_price' => [
                         'label' => 'Karşılaştırma Fiyatı',
-                        'helper_text' => 'Satın alma fiyatıyla karşılaştırma için orijinal fiyat veya tavsiye edilen satış fiyat (RRP).'
+                        'helper_text' => 'Satın alma fiyatıyla karşılaştırma için orijinal fiyat veya tavsiye edilen satış fiyat (RRP).',
                     ],
                 ],
                 'tooltip' => 'Döviz kurlarına göre otomatik olarak oluşturuldu.',

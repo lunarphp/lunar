@@ -91,7 +91,7 @@ return [
 
     'pages' => [
         'availability' => [
-            'label' => 'Erişilebilirlik'
+            'label' => 'Erişilebilirlik',
         ],
         'edit' => [
             'title' => 'Temel Bilgiler',

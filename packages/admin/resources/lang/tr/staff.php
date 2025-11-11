@@ -37,7 +37,7 @@ return [
         ],
         'admin' => [
             'label' => 'Süper Yönetici',
-            'helper' => 'Süper yönetici rolleri yönetim panelinde değiştirilemez.'
+            'helper' => 'Süper yönetici rolleri yönetim panelinde değiştirilemez.',
         ],
         'roles' => [
             'label' => 'Roller',

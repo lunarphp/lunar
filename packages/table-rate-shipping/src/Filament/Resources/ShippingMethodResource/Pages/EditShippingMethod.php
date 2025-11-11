@@ -23,6 +23,7 @@ class EditShippingMethod extends BaseEditRecord
             'label' => __('lunarpanel.shipping::shippingmethod.label'),
         ]);
     }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');

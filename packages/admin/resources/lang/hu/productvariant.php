@@ -7,14 +7,14 @@ return [
         'edit' => [
             'title' => 'Alapinformációk',
         ],
-            'media' => [
-                'title' => 'Média',
-                'form' => [
+        'media' => [
+            'title' => 'Média',
+            'form' => [
                 'no_selection' => [
                     'label' => 'Ehhez a termékváltozathoz jelenleg nincs kép kiválasztva.',
                 ],
-                    'no_media_available' => [
-                        'label' => 'Jelenleg nincs elérhető média ehhez a termékhez.',
+                'no_media_available' => [
+                    'label' => 'Jelenleg nincs elérhető média ehhez a termékhez.',
                 ],
                 'images' => [
                     'label' => 'Elsődleges kép',
@@ -34,7 +34,7 @@ return [
     ],
     'form' => [
         'sku' => [
-                'label' => 'Cikkszám (SKU)',
+            'label' => 'Cikkszám (SKU)',
         ],
         'gtin' => [
             'label' => 'Globális kereskedelmi cikkszám (GTIN)',

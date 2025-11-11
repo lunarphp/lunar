@@ -49,14 +49,14 @@ return [
             'label' => 'Stokta',
         ],
         'backorder' => [
-            'label' => 'Sipariş Üzerine'
+            'label' => 'Sipariş Üzerine',
         ],
         'purchasable' => [
             'label' => 'Satın Alınabilirlik',
             'options' => [
                 'always' => 'Her Zaman',
                 'in_stock' => 'Stokta',
-                'in_stock_or_on_backorder' => 'Stokta veya Sipariş Üzerine'
+                'in_stock_or_on_backorder' => 'Stokta veya Sipariş Üzerine',
             ],
         ],
         'unit_quantity' => [
