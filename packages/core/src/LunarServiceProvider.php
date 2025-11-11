@@ -404,7 +404,7 @@ class LunarServiceProvider extends ServiceProvider
             $type = config('lunar.database.users_id_type', 'bigint');
 
             if ($type == 'uuid') {
-                $this->foreignUuId($field_name)
+                $this->foreignUuid($field_name)
                     ->nullable($nullable)
                     ->constrained(
                         (new $userModel)->getTable()
