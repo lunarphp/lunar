@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 
+use Carbon\CarbonInterface;
 use Carbon\CarbonPeriod;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 use Lunar\Facades\DB;
@@ -22,7 +23,7 @@ class NewVsReturningCustomersChart extends ApexChartWidget
         return __('lunarpanel::widgets.dashboard.orders.new_returning_customers.heading');
     }
 
-    protected function getOrderQuery(?\DateTime $from = null, ?\DateTime $to = null)
+    protected function getOrderQuery(\DateTime|CarbonInterface|null $from = null, \DateTime|CarbonInterface|null $to = null)
     {
         return Order::whereNotNull('placed_at')
             ->whereBetween('placed_at', [
