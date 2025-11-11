@@ -26,7 +26,7 @@
                 role="list">
                 @foreach ($this->activityLog as $log)
                     <li class="relative py-8 ml-5">
-                        <p class="ml-8 font-bold text-gray-950 dark:text-gray-400">
+                        <p class="ml-8 font-bold text-gray-950 dark:text-gray-300">
                             {{ $log['date']->format('F jS, Y') }}
                         </p>
 
