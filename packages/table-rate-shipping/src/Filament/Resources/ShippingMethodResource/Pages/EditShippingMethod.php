@@ -17,6 +17,12 @@ class EditShippingMethod extends BaseEditRecord
         ];
     }
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament-panels::resources/pages/edit-record.title', [
+            'label' => __('lunarpanel.shipping::shippingmethod.label'),
+        ]);
+    }
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
