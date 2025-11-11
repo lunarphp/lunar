@@ -28,11 +28,6 @@ return [
         'countries' => [
             'label' => 'Países',
         ],
-        'pages' => [
-            'edit' => [
-                'label' => 'Editar zona de envío',
-            ],
-        ],
         'postcodes' => [
             'label' => 'Códigos Postales',
             'helper' => 'Lista cada código postal en una nueva línea. Soporta comodines como NW*',
