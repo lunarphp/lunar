@@ -8,6 +8,8 @@ return [
 
     'tabs' => [
         'all' => 'All',
+        'published' => 'Published',
+        'draft' => 'Draft',
     ],
 
     'status' => [
