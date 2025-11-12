@@ -317,7 +317,7 @@ return [
                 ],
             ],
         ],
-        'collections' => [
+        'collection_conditions' => [
             'title' => 'Collection Conditions',
             'description' => 'Select the collection conditions required for the discount to apply.',
             'actions' => [

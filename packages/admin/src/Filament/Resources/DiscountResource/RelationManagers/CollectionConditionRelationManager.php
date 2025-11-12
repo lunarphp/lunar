@@ -16,7 +16,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::discount.relationmanagers.conditions.title');
+        return __('lunarpanel::discount.relationmanagers.collection_conditions.title');
     }
 
     public function isReadOnly(): bool
@@ -33,7 +33,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
                 __('lunarpanel::discount.relationmanagers.conditions.title')
             )
             ->description(
-                __('lunarpanel::discount.relationmanagers.collections.description')
+                __('lunarpanel::discount.relationmanagers.collection_conditions.description')
             )
             ->paginated(false)
             ->modifyQueryUsing(
@@ -48,12 +48,12 @@ class CollectionConditionRelationManager extends BaseRelationManager
                 })->recordSelectSearchColumns(['attribute_data->name'])
                     ->preloadRecordSelect()
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.collections.actions.attach.label')
+                        __('lunarpanel::discount.relationmanagers.collection_conditions.actions.attach.label')
                     ),
             ])->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.collections.table.name.label')
+                        __('lunarpanel::discount.relationmanagers.collection_conditions.table.name.label')
                     )
                     ->formatStateUsing(
                         fn (Model $record) => $record->attr('name')
