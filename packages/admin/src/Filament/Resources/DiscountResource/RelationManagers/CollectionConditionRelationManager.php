@@ -30,7 +30,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
 
         return $table
             ->heading(
-                __('lunarpanel::discount.relationmanagers.conditions.title')
+                __('lunarpanel::discount.relationmanagers.collection_conditions.title')
             )
             ->description(
                 __('lunarpanel::discount.relationmanagers.collection_conditions.description')
