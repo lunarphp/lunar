@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionConditionRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CustomerLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
@@ -419,8 +420,7 @@ class DiscountResource extends BaseResource
             CustomerLimitationRelationManager::class,
             ProductRewardRelationManager::class,
             ProductConditionRelationManager::class,
-            ProductRewardRelationManager::class,
-            ProductConditionRelationManager::class,
+            CollectionConditionRelationManager::class,
         ];
     }
 

@@ -2,14 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
-use Filament\Forms\Components\Select;
+use Filament\Forms;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Collection;
 
-class CollectionLimitationRelationManager extends BaseRelationManager
+class CollectionConditionRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
@@ -17,7 +16,7 @@ class CollectionLimitationRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::collection.plural_label');
+        return __('lunarpanel::discount.relationmanagers.conditions.title');
     }
 
     public function isReadOnly(): bool
@@ -30,23 +29,20 @@ class CollectionLimitationRelationManager extends BaseRelationManager
         $prefix = config('lunar.database.table_prefix');
 
         return $table
+            ->heading(
+                __('lunarpanel::discount.relationmanagers.conditions.title')
+            )
             ->description(
                 __('lunarpanel::discount.relationmanagers.collections.description')
             )
-            ->modifyQueryUsing(
-                fn ($query) => $query->whereIn($prefix.'collection_discount.type', ['limitation', 'exclusion'])
-            )
             ->paginated(false)
+            ->modifyQueryUsing(
+                fn ($query) => $query->whereIn($prefix.'collection_discount.type', ['condition'])
+            )
             ->headerActions([
                 Tables\Actions\AttachAction::make()->form(fn (Tables\Actions\AttachAction $action): array => [
                     $action->getRecordSelect(),
-                    Select::make('type')
-                        ->options(
-                            fn () => [
-                                'limitation' => __('lunarpanel::discount.relationmanagers.collections.form.type.options.limitation.label'),
-                                'exclusion' => __('lunarpanel::discount.relationmanagers.collections.form.type.options.exclusion.label'),
-                            ]
-                        )->default('limitation'),
+                    Forms\Components\Hidden::make('type')->default('condition'),
                 ])->recordTitle(function ($record) {
                     return $record->attr('name');
                 })->recordSelectSearchColumns(['attribute_data->name'])
@@ -55,24 +51,17 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                         __('lunarpanel::discount.relationmanagers.collections.actions.attach.label')
                     ),
             ])->columns([
-                Tables\Columns\TextColumn::make('attribute_data.name')
+                Tables\Columns\TextColumn::make('id')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.table.name.label')
                     )
-                    ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
                     ->formatStateUsing(
                         fn (Model $record) => $record->attr('name')
                     ),
-                Tables\Columns\TextColumn::make('pivot.type')
-                    ->label(
-                        __('lunarpanel::discount.relationmanagers.collections.table.type.label')
-                    )->formatStateUsing(
-                        fn (string $state) => __("lunarpanel::discount.relationmanagers.collections.table.type.{$state}.label")
-                    ),
             ])->actions([
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])->bulkActions([
-                Tables\Actions\DetachBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }
