@@ -74,7 +74,7 @@ class BaseResource extends Resource
             $scoutEnabled &&
             $isScoutSearchable
         ) {
-            $ids = collect(static::getModel()::search($search)->withTrashed()->keys())->map(
+            $ids = collect(static::getModel()::search($search)->keys())->map(
                 fn ($result) => str_replace(static::getModel().'::', '', $result)
             );
 
