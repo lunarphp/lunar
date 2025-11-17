@@ -179,7 +179,6 @@ class BuyXGetY extends AbstractDiscountType
             $lineDiscountTotal = $unitPrice * $qtyToAllocate;
             $discountTotal += $lineDiscountTotal;
 
-
             $rewardLine->discountTotal = new Price(
                 $lineDiscountTotal,
                 $cart->currency,
@@ -290,7 +289,6 @@ class BuyXGetY extends AbstractDiscountType
                     $cart->currency,
                     1
                 );
-
 
                 $rewardLine->subTotalDiscounted = new Price(
                     max(0, $rewardLine->subTotal->value - $rewardLine->discountTotal->value),
