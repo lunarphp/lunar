@@ -1285,7 +1285,6 @@ test('discounted sub total will not fall below zero', function () {
         'priceable_id' => $purchasableB->id,
     ]);
 
-
     /**
      * Cart set up.
      */
@@ -1305,7 +1304,6 @@ test('discounted sub total will not fall below zero', function () {
         'purchasable_id' => $purchasableB->id,
         'quantity' => 1,
     ]);
-
 
     /**
      * Discount set up.
