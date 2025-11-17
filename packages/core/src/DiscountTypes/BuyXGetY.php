@@ -284,6 +284,10 @@ class BuyXGetY extends AbstractDiscountType
 
                 $discountTotal += $unitPrice;
 
+                if ($discountTotal > $rewardLine->subTotal->value) {
+                    $discountTotal = $rewardLine->subTotal->value;
+                }
+
                 $rewardLine->discountTotal = new Price(
                     ($rewardLine->discountTotal?->value ?? 0) + $unitPrice,
                     $cart->currency,
