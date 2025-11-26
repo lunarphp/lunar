@@ -35,7 +35,7 @@ class Associate implements ShouldQueue
     protected ProductContract $product;
 
     /**
-     * The product association type
+     * The product association type.
      */
     protected ?ProvidesProductAssociationType $type = null;
 
