@@ -2,7 +2,6 @@
 
 namespace Lunar\Base\Enums;
 
-
 use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
 
 enum ProductAssociation: string implements ProvidesProductAssociationType

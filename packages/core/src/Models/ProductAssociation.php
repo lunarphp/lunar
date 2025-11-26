@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Base\Enums\ProductAssociation as ProductAssociationEnum;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\ProductAssociationFactory;
-use Lunar\Base\Enums\ProductAssociation as ProductAssociationEnum;
 
 /**
  * @property int $id
