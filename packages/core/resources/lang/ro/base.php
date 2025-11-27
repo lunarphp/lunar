@@ -6,4 +6,9 @@ return [
             'images' => 'Imagini',
         ],
     ],
+    'product-association-types' => [
+        'cross-sell' => 'Vânzare încrucișată',
+        'up-sell' => 'Vânzare superioară',
+        'alternate' => 'Alternativă',
+    ],
 ];
