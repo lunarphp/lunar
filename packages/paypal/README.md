@@ -1,3 +1,0 @@
-# Lunar PayPal Payments
-
-WIP
