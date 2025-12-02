@@ -37,12 +37,12 @@ class Associate implements ShouldQueue
     /**
      * The product association type.
      */
-    protected ProvidesProductAssociationType $type;
+    protected ProvidesProductAssociationType|string $type;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(ProductContract $product, mixed $targets, ProvidesProductAssociationType $type)
+    public function __construct(ProductContract $product, mixed $targets, ProvidesProductAssociationType|string $type)
     {
         if (is_array($targets)) {
             $targets = collect($targets);
@@ -69,7 +69,7 @@ class Associate implements ShouldQueue
                 $this->targets->map(function ($model) {
                     return [
                         'product_target_id' => $model->id,
-                        'type' => $this->type->value,
+                        'type' => is_string($this->type) ? $this->type : $this->type->value,
                     ];
                 })
             );

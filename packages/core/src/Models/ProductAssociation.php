@@ -112,11 +112,11 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      */
     public function scopeType(Builder $query, ProvidesProductAssociationType|string $type): Builder
     {
-        if ($type instanceof ProvidesProductAssociationType) {
-            $type = $type->value;
-        }
-
-        return $query->where('type', '=', $type);
+        return $query->where(
+            'type',
+            '=',
+            is_string($type) ? $type : $type->value
+        );
     }
 
     public static function getTypes(): array

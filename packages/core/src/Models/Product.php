@@ -145,7 +145,7 @@ class Product extends BaseModel implements Contracts\Product, HasThumbnailImage,
         return $this->hasMany(ProductAssociation::modelClass(), 'product_target_id');
     }
 
-    public function associate(mixed $product, ProvidesProductAssociationType $type): void
+    public function associate(mixed $product, ProvidesProductAssociationType|string $type): void
     {
         Associate::dispatch($this, $product, $type);
     }
@@ -153,7 +153,7 @@ class Product extends BaseModel implements Contracts\Product, HasThumbnailImage,
     /**
      * Dissociate a product to another with a type.
      */
-    public function dissociate(mixed $product, ?ProvidesProductAssociationType $type = null): void
+    public function dissociate(mixed $product, ProvidesProductAssociationType|string|null $type = null): void
     {
         Dissociate::dispatch($this, $product, $type);
     }
