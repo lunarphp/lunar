@@ -88,7 +88,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      */
     public function scopeCrossSell(Builder $query): Builder
     {
-        return $query->type(ProductAssociationEnum::CROSS_SELL->value);
+        return $query->type(ProductAssociationEnum::CROSS_SELL);
     }
 
     /**
@@ -96,7 +96,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      */
     public function scopeUpSell(Builder $query): Builder
     {
-        return $query->type(ProductAssociationEnum::UP_SELL->value);
+        return $query->type(ProductAssociationEnum::UP_SELL);
     }
 
     /**
@@ -104,7 +104,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      */
     public function scopeAlternate(Builder $query): Builder
     {
-        return $query->type(ProductAssociationEnum::ALTERNATE->value);
+        return $query->type(ProductAssociationEnum::ALTERNATE);
     }
 
     /**
