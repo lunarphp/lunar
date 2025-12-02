@@ -8,7 +8,7 @@ return [
     ],
     'product-association-types' => [
         'cross-sell' => 'Cross-sell',
-        'up-sell'    => 'Up-sell',
-        'alternate'  => 'Alternatief',
+        'up-sell' => 'Up-sell',
+        'alternate' => 'Alternatief',
     ],
 ];
