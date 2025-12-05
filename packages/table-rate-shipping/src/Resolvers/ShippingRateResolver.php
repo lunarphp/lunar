@@ -152,7 +152,7 @@ class ShippingRateResolver
         foreach ($zones as $zone) {
             $zoneShippingRates = $zone->rates
                 ->reject(function ($state) {
-                    return !$state->enabled;
+                    return ! $state->enabled;
                 })
                 ->reject(function ($rate) {
                     $method = $rate->shippingMethod()->customerGroup($this->customerGroups)->first();
