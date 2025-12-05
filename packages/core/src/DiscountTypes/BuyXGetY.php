@@ -289,7 +289,7 @@ class BuyXGetY extends AbstractDiscountType
                 }
 
                 $rewardLine->discountTotal = new Price(
-                    ($rewardLine->discountTotal?->value ?? 0) + $unitPrice,
+                    $discountTotal,
                     $cart->currency,
                     1
                 );
