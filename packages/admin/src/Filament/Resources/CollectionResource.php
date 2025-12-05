@@ -47,7 +47,7 @@ class CollectionResource extends BaseResource
             ]) => $collection->group->name,
         ];
 
-        foreach ($collection->children as $childCollection) {
+        foreach ($collection->ancestors as $childCollection) {
             $crumbs[
             CollectionResource::getUrl('edit', [
                 'record' => $childCollection,
