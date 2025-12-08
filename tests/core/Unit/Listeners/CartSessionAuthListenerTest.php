@@ -32,7 +32,7 @@ test('cart is soft deleted on logout when delete_on_logout is true', function ()
     expect(Session::get(config('lunar.cart_session.session_key')))->toEqual($cart->id);
 
     // Config dictates cart should be soft deleted on logout
-    Config::set('lunar.cart_session.delete_on_logout', true);
+    Config::set('lunar.cart_session.delete_on_forget', true);
 
     // Fire the logout event (this triggers CartSessionAuthListener@logout)
     event(new Logout('web', $user));
@@ -61,7 +61,7 @@ test('cart is not soft deleted on logout when delete_on_logout is false', functi
     expect(Session::get(config('lunar.cart_session.session_key')))->toEqual($cart->id);
 
     // Config dictates cart should NOT be soft deleted on logout
-    Config::set('lunar.cart_session.delete_on_logout', false);
+    Config::set('lunar.cart_session.delete_on_forget', false);
 
     // Fire the logout event (this triggers CartSessionAuthListener@logout)
     event(new Logout('web', $user));
