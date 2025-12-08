@@ -70,7 +70,7 @@ class CartSessionManager implements CartSessionInterface
      */
     public function forget(?bool $delete = null): void
     {
-        $delete = is_null($delete) ? config('lunar.cart_session.delete', true) : $delete;
+        $delete = is_null($delete) ? config('lunar.cart_session.delete_on_forget', true) : $delete;
 
         if ($delete) {
             Cart::destroy(
