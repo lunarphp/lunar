@@ -407,9 +407,9 @@ test('can associate multiple products', function () {
     $targetA = Product::factory()->create();
     $targetB = Product::factory()->create();
 
-    $parent->associate([$targetA, $targetB], ProductAssociation::UP_SELL);
+    $parent->associate([$targetA, $targetB], \Lunar\Base\Enums\ProductAssociation::UP_SELL);
 
-    $assoc = $parent->associations()->type(ProductAssociation::UP_SELL)->get();
+    $assoc = $parent->associations()->type(\Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
 
     expect($assoc)->toHaveCount(2);
 });
@@ -418,12 +418,12 @@ test('can associate products via helper', function () {
     $parent = Product::factory()->create();
     $target = Product::factory()->create();
 
-    $parent->associate($target, 'custom-type');
+    $parent->associate($target, \Lunar\Base\Enums\ProductAssociation::UP_SELL);
 
-    $assoc = $parent->associations()->type('custom-type')->get();
+    $assoc = $parent->associations()->type(\Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
 
-    expect($assoc)->toHaveCount(1);
-    expect($assoc->first()->type)->toEqual('custom-type');
+    expect($assoc)->toHaveCount(1)
+        ->and($assoc->first()->type)->toEqual(\Lunar\Base\Enums\ProductAssociation::UP_SELL->value);
 });
 
 test('can remove all associations', function () {
@@ -450,21 +450,23 @@ test('can only remove associations of a certain type', function () {
     ProductAssociation::factory()->create([
         'product_parent_id' => $parent,
         'product_target_id' => $target,
-        'type' => 'cross-sell',
+        'type' => \Lunar\Base\Enums\ProductAssociation::CROSS_SELL->value,
     ]);
 
     ProductAssociation::factory()->create([
         'product_parent_id' => $parent,
         'product_target_id' => $target,
-        'type' => 'up-sell',
+        'type' => \Lunar\Base\Enums\ProductAssociation::UP_SELL->value,
     ]);
 
     expect($parent->refresh()->associations)->toHaveCount(2);
 
-    $parent->dissociate($target, 'cross-sell');
+    $parent->dissociate($target, \Lunar\Base\Enums\ProductAssociation::CROSS_SELL);
 
-    expect($parent->refresh()->associations)->toHaveCount(1);
-    expect($parent->refresh()->associations->first()->type)->toEqual('up-sell');
+    expect($parent->refresh()->associations)->toHaveCount(1)
+        ->and($parent->refresh()->associations->first()->type)->toEqual(
+            \Lunar\Base\Enums\ProductAssociation::UP_SELL->value
+        );
 });
 
 test('can have collections relationship', function () {
@@ -472,11 +474,11 @@ test('can have collections relationship', function () {
     $product = Product::factory()->create();
     $product->collections()->sync($collection);
 
-    expect($product->collections)->toBeInstanceOf(EloquentCollection::class);
-    expect($product->collections)->toHaveCount(1);
-    expect($product->collections->first())->toBeInstanceOf(Collection::class);
-    expect($product->collections->first()->pivot)->not->toBeNull();
-    expect($product->collections->first()->pivot->position)->not->toBeNull();
+    expect($product->collections)->toBeInstanceOf(EloquentCollection::class)
+        ->and($product->collections)->toHaveCount(1)
+        ->and($product->collections->first())->toBeInstanceOf(Collection::class)
+        ->and($product->collections->first()->pivot)->not->toBeNull()
+        ->and($product->collections->first()->pivot->position)->not->toBeNull();
 });
 
 test('can retrieve prices', function () {

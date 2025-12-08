@@ -454,3 +454,97 @@ test('doesnt_include_unshippable_items_in_calculations', function () {
 
     expect($shippingRates)->toHaveCount(0);
 });
+
+test('will not resolve rates which are not enabled.', function () {
+    $currency = Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $country = Country::factory()->create();
+
+    TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
+    $shippingZone = ShippingZone::factory()->create([
+        'type' => 'postcodes',
+    ]);
+
+    $shippingZone->postcodes()->create([
+        'postcode' => 'AB1',
+    ]);
+
+    $shippingZone->countries()->attach($country);
+
+    $shippingMethod = ShippingMethod::factory()->create([
+        'driver' => 'ship-by',
+        'data' => [],
+        'stock_available' => 0,
+    ]);
+
+    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+    $shippingMethod->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
+    ]);
+
+    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+        'shipping_method_id' => $shippingMethod->id,
+        'shipping_zone_id' => $shippingZone->id,
+        'enabled' => false,
+    ]);
+
+    $shippingRate->prices()->createMany([
+        [
+            'price' => 600,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+        ],
+        [
+            'price' => 500,
+            'min_quantity' => 700,
+            'currency_id' => $currency->id,
+        ],
+        [
+            'price' => 0,
+            'min_quantity' => 800,
+            'currency_id' => $currency->id,
+        ],
+    ]);
+
+    $cart = $this->createCart($currency, 500);
+
+    $cart->lines()->delete();
+
+    $purchasable = ProductVariant::factory()->create();
+    $purchasable->shippable = true;
+
+    Price::factory()->create([
+        'price' => 200,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $cart->shippingAddress()->create(
+        CartAddress::factory()->make([
+            'country_id' => $country->id,
+            'state' => null,
+            'postcode' => 'AB1 1CD',
+        ])->toArray()
+    );
+
+    $shippingRates = Shipping::shippingRates(
+        $cart->refresh()->calculate()
+    )->get();
+
+    expect($shippingRates)->toHaveCount(0);
+});

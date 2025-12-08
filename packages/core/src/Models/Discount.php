@@ -188,15 +188,36 @@ class Discount extends BaseModel implements Contracts\Discount
         }
 
         $types = Arr::wrap($types);
+        $prefix = config('lunar.database.table_prefix');
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
-                ->orWhereHas('discountables',
-                    fn ($relation) => $relation->whereIn('discountable_id', $collectionIds)
-                        ->whereDiscountableType(Collection::morphName())
+            fn ($subQuery) => $subQuery->whereDoesntHave('collections', fn ($query) => $query->when($types, fn ($query) => $query->whereIn("{$prefix}collection_discount.type", $types)))
+                ->orWhereHas('collections',
+                    fn ($relation) => $relation->whereIn('collection_id', $collectionIds)
                         ->when(
                             $types,
-                            fn ($query) => $query->whereIn('type', $types)
+                            fn ($query) => $query->whereIn("{$prefix}collection_discount.type", $types)
+                        )
+                )
+        );
+    }
+
+    public function scopeBrands(Builder $query, iterable $brandIds = [], array|string $types = []): Builder
+    {
+        if (is_array($brandIds)) {
+            $brandIds = collect($brandIds);
+        }
+
+        $types = Arr::wrap($types);
+        $prefix = config('lunar.database.table_prefix');
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('brands', fn ($query) => $query->when($types, fn ($query) => $query->whereIn("{$prefix}brand_discount.type", $types)))
+                ->orWhereHas('brands',
+                    fn ($relation) => $relation->whereIn('brand_id', $brandIds)
+                        ->when(
+                            $types,
+                            fn ($query) => $query->whereIn("{$prefix}brand_discount.type", $types)
                         )
                 )
         );
@@ -209,15 +230,16 @@ class Discount extends BaseModel implements Contracts\Discount
         }
 
         $types = Arr::wrap($types);
+        $prefix = config('lunar.database.table_prefix');
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->whereDiscountableType(Product::morphName())->when($types, fn ($query) => $query->whereIn("{$prefix}discountables.type", $types)))
                 ->orWhereHas('discountables',
                     fn ($relation) => $relation->whereIn('discountable_id', $productIds)
                         ->whereDiscountableType(Product::morphName())
                         ->when(
                             $types,
-                            fn ($query) => $query->whereIn('type', $types)
+                            fn ($query) => $query->whereIn("{$prefix}discountables.type", $types)
                         )
                 )
         );
@@ -230,15 +252,16 @@ class Discount extends BaseModel implements Contracts\Discount
         }
 
         $types = Arr::wrap($types);
+        $prefix = config('lunar.database.table_prefix');
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->whereDiscountableType(ProductVariant::morphName())->when($types, fn ($query) => $query->whereIn("{$prefix}discountables.type", $types)))
                 ->orWhereHas('discountables',
                     fn ($relation) => $relation->whereIn('discountable_id', $variantIds)
                         ->whereDiscountableType(ProductVariant::morphName())
                         ->when(
                             $types,
-                            fn ($query) => $query->whereIn('type', $types)
+                            fn ($query) => $query->whereIn("{$prefix}discountables.type", $types)
                         )
                 )
         );
