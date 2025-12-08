@@ -6,4 +6,9 @@ return [
             'images' => 'Képek',
         ],
     ],
+    'product-association-types' => [
+        'cross-sell' => 'Keresztértékesítés',
+        'up-sell' => 'Felülértékesítés',
+        'alternate' => 'Alternatíva',
+    ],
 ];

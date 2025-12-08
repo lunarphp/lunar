@@ -963,6 +963,7 @@ test('can apply discount without coupon code', function () {
     $cart = Cart::factory()->create([
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
+        'coupon_code' => 'NOTAPPLICABLE',
     ]);
 
     $purchasableA = ProductVariant::factory()->create();
