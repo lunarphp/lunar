@@ -44,5 +44,5 @@ return [
     | Determines whether the cart sholud be soft deleted when the user logs out.
     |
     */
-    'delete_on_logout' => true,
+    'delete_on_forget' => true,
 ];

@@ -61,6 +61,6 @@ class CartSessionAuthListener
             return;
         }
 
-        CartSession::forget(config('lunar.cart_session.delete_on_logout', true));
+        CartSession::forget();
     }
 }
