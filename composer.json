@@ -65,6 +65,7 @@
             "Lunar\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Database\\State\\": "packages/core/database/state",
+            "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",
             "Lunar\\Paypal\\": "packages/paypal/src/",
             "Lunar\\Search\\": "packages/search/src/",
@@ -92,6 +93,7 @@
                 "Table Rate Shipping",
                 "Opayo Payments",
                 "Search",
+                "Meilisearch",
                 "Paypal Payments",
                 "Stripe Payments"
             ]
@@ -100,6 +102,7 @@
             "providers": [
                 "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
+                "Lunar\\Meilisearch\\MeilisearchServiceProvider",
                 "Lunar\\Search\\SearchServiceProvider",
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
@@ -111,6 +114,7 @@
     "replace": {
         "lunarphp/core": "self.version",
         "lunarphp/lunar": "self.version",
+        "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/paypal": "self.version",
         "lunarphp/search": "self.version",
