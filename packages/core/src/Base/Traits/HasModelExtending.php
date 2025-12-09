@@ -175,6 +175,10 @@ trait HasModelExtending
      */
     protected function fireModelEvent($event, $halt = true): mixed
     {
+        if (in_array($event, $this->skipLunarEventForwarding ?? [], true)) {
+            return $this->fireModelEventWithoutLunarForwarding($event, $halt);
+        }
+
         // Fire the actual models events
         $result = parent::fireModelEvent($event, $halt);
 
@@ -186,6 +190,24 @@ trait HasModelExtending
 
         return static::$dispatcher->{($halt ? 'until' : 'dispatch')}(
             "eloquent.{$event}: ".$lunarClass, $this
+        );
+    }
+
+    /**
+     * Fire model event without Lunar's parent class forwarding.
+     * This allows extended models to prevent double event firing for specific events.
+     */
+    protected function fireModelEventWithoutLunarForwarding(string $event, bool $halt): mixed
+    {
+        if (! isset(static::$dispatcher)) {
+            return true;
+        }
+
+        $method = $halt ? 'until' : 'dispatch';
+
+        return static::$dispatcher->{$method}(
+            "eloquent.{$event}: ".static::class,
+            $this
         );
     }
 }
