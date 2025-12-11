@@ -159,6 +159,10 @@ class DiscountResource extends BaseResource
             ->label(__('lunarpanel::discount.form.handle.label'))
             ->required()
             ->unique(ignoreRecord: true)
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                $set('handle', Str::snake(Str::lower($state)));
+            })
             ->maxLength(255)
             ->autofocus();
     }

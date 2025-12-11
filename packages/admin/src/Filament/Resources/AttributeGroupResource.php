@@ -100,6 +100,10 @@ class AttributeGroupResource extends BaseResource
     {
         return Forms\Components\TextInput::make('handle')
             ->label(__('lunarpanel::attributegroup.form.handle.label'))
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                $set('handle', Str::snake(Str::lower($state)));
+            })
             ->required()
             ->maxLength(255);
     }

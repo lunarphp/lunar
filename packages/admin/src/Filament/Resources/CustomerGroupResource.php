@@ -10,6 +10,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -68,6 +69,10 @@ class CustomerGroupResource extends BaseResource
             ->label(__('lunarpanel::customergroup.form.handle.label'))
             ->required()
             ->unique(ignoreRecord: true)
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                $set('handle', Str::snake(Str::lower($state)));
+            })
             ->minLength(3)
             ->maxLength(255);
     }

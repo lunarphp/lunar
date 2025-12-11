@@ -57,6 +57,10 @@ class AttributesRelationManager extends BaseRelationManager
                     ->label(
                         __('lunarpanel::attribute.form.handle.label')
                     )->dehydrated()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                        $set('handle', Str::snake(Str::lower($state)));
+                    })
                     ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, RelationManager $livewire) {
                         return $rule->where('attribute_group_id', $livewire->ownerRecord->id);
                     })->disabled(
