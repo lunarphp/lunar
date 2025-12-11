@@ -72,7 +72,7 @@ trait HasModelExtending
             return parent::getTable();
         }
 
-        if (!empty($this->table)) {
+        if (! empty($this->table)) {
             return $this->table;
         }
 
@@ -98,7 +98,7 @@ trait HasModelExtending
         $reflection = new ReflectionClass($modelClass);
         $defaultProperties = $reflection->getDefaultProperties();
 
-        if (!empty($defaultProperties['table'])) {
+        if (! empty($defaultProperties['table'])) {
             return $defaultProperties['table'];
         }
 
