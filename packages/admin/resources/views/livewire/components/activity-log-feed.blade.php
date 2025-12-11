@@ -18,7 +18,7 @@
         </form>
     </div>
 
-    <div class="relative pt-8 -ml-[5px] z-10">
+    <div class="relative pt-8 -ml-[5px] z-10 pointer-events-none">
         <span class="absolute inset-y-0 left-5 w-[2px] bg-gray-200 dark:bg-gray-600 rounded-full"></span>
 
         <div class="flow-root">
@@ -30,7 +30,7 @@
                             {{ $log['date']->format('F jS, Y') }}
                         </p>
 
-                        <ul class="mt-4 space-y-6">
+                        <ul class="mt-4 space-y-6 pointer-events-auto">
                             @foreach ($log['items'] as $item)
                                 @php
                                     $logUserName = $item['log']->causer ? ($item['log']->causer->fullName ?: $item['log']->causer->name) : null;
