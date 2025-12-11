@@ -74,7 +74,7 @@ return [
         'table' => [
             'description' => 'Определете кои канали са активирани и планирайте наличността.',
             'name' => [
-                'label' => 'Name',
+                'label' => 'Име',
             ],
             'enabled' => [
                 'label' => 'Активирана',
@@ -172,7 +172,7 @@ return [
         'title' => 'Ценообразуване по клиентски групи',
         'title_plural' => 'Ценообразуване по клиентски групи',
         'table' => [
-            'heading' => 'Customer Group Pricing',
+            'heading' => 'Ценообразуване по клиентски групи',
             'description' => 'Свържете цена към клиентски групи, за да определите цената на продукта.',
             'empty_state' => [
                 'label' => 'Няма ценообразуване по клиентски групи.',
@@ -236,7 +236,7 @@ return [
             ],
             'currency_id' => [
                 'label' => 'Валута',
-                'helper_text' => 'Select the currency for this price.',
+                'helper_text' => 'Изберете валутата за тази цена.',
             ],
             'compare_price' => [
                 'label' => 'Сравнителна цена',
