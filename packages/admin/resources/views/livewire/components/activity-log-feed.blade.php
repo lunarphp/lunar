@@ -1,5 +1,5 @@
 <div class="px-2 pb-4 scroll-mt-32" id="lunar-panel-timeline">
-    <div class="relative flex items-end gap-4 mt-4 z-20">
+    <div class="relative flex items-end gap-4 mt-4">
         <div class="shrink-0">
             <div>
                 <img src="{{ $this->userAvatar }}"
@@ -9,16 +9,16 @@
 
         <form class="w-full"
             wire:submit.prevent="addComment">
-            
-            {{ $this->form }} 
-            
+
+            {{ $this->form }}
+
             <div class="absolute right-0 mt-2">
                 {{ $this->addCommentAction }}
             </div>
         </form>
     </div>
 
-    <div class="relative pt-8 -ml-[5px] z-10">
+    <div class="relative pt-8 -ml-[5px] z-10 pointer-events-none">
         <span class="absolute inset-y-0 left-5 w-[2px] bg-gray-200 dark:bg-gray-600 rounded-full"></span>
 
         <div class="flow-root">
@@ -30,7 +30,7 @@
                             {{ $log['date']->format('F jS, Y') }}
                         </p>
 
-                        <ul class="mt-4 space-y-6">
+                        <ul class="mt-4 space-y-6 pointer-events-auto">
                             @foreach ($log['items'] as $item)
                                 @php
                                     $logUserName = $item['log']->causer ? ($item['log']->causer->fullName ?: $item['log']->causer->name) : null;
@@ -43,7 +43,7 @@
                                         '-left-[calc(0.5rem_-_1px)]' => !$item['log']->causer,
                                     ])>
                                         @if ($email = $item['log']->causer?->email)
-                                            <img 
+                                            <img
                                                 src="{{ $this->getAvatarUrl($email) }}"
                                                 class="w-6 h-6 rounded-full ring-4 ring-gray-200 dark:ring-gray-600"
                                                 alt="{{ $logUserName }}"

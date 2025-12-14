@@ -131,6 +131,6 @@ trait DisplaysOrderSummary
 
     public static function getOrderSummaryInfolist(): Infolists\Components\Section
     {
-        return self::callStaticLunarHook('exendOrderSummaryInfolist', static::getDefaultOrderSummaryInfolist());
+        return self::callStaticLunarHook('extendOrderSummaryInfolist', static::getDefaultOrderSummaryInfolist());
     }
 }

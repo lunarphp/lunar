@@ -8,6 +8,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
+use Lunar\Base\BaseModel;
+use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Facades\DB;
 use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Product;
@@ -42,11 +44,8 @@ class Dissociate implements ShouldQueue
 
     /**
      * Create a new job instance.
-     *
-     * @param  mixed  $targets
-     * @param  string  $type
      */
-    public function __construct(ProductContract $product, $targets, $type = null)
+    public function __construct(ProductContract $product, Collection|BaseModel|array $targets, ProvidesProductAssociationType|string|null $type = null)
     {
         if (is_array($targets)) {
             $targets = collect($targets);
@@ -72,11 +71,14 @@ class Dissociate implements ShouldQueue
             $query = $this->product->associations()->whereIn(
                 'product_target_id',
                 $this->targets->pluck('id')
+            )->when(
+                $this->type,
+                fn ($query) => $query->where(
+                    'type',
+                    is_string($this->type) ? $this->type : $this->type->value
+                )
             );
 
-            if ($this->type) {
-                $query->whereType($this->type);
-            }
             $query->delete();
         });
     }

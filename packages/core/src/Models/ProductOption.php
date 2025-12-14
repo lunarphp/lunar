@@ -18,10 +18,12 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
  * @property int $id
- * @property \Illuminate\Support\Collection $name
- * @property \Illuminate\Support\Collection $label
+ * @property AsArrayObject $name
+ * @property ?AsArrayObject $label
  * @property int $position
  * @property ?string $handle
+ * @property bool $shared
+ * @property ?AsArrayObject $meta
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
@@ -43,6 +45,7 @@ class ProductOption extends BaseModel implements Contracts\ProductOption, Spatie
         'name' => AsArrayObject::class,
         'label' => AsArrayObject::class,
         'shared' => 'boolean',
+        'meta' => AsArrayObject::class,
     ];
 
     /**

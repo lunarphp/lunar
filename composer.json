@@ -13,7 +13,7 @@
         "awcodes/shout": "^2.0.4",
         "barryvdh/laravel-dompdf": "^3.0",
         "cartalyst/converter": "^9.0|^10",
-        "doctrine/dbal": "^3.6",
+        "doctrine/dbal": "^3.6|^4.0",
         "dompdf/dompdf": "^3.1",
         "ext-bcmath": "*",
         "ext-exif": "*",
