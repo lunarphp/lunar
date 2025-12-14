@@ -259,7 +259,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 if ($chargeBy == 'cart_total') {
                     $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
                 } else {
-                    $price['min_quantity'] = (int) ($price['min_quantity']);
+                    $price['min_quantity'] = (int) $price['min_quantity'];
                 }
 
                 $price['price'] = (int) ($price['price'] * $currency->factor);
