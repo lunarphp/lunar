@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping\Drivers\ShippingMethods;
 
+use Cartalyst\Converter\Laravel\Facades\Converter;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\Pricing;
 use Lunar\Models\Product;
@@ -71,7 +72,15 @@ class ShipBy implements ShippingRateInterface
 
         if ($chargeBy == 'weight') {
             $tier = $cart->lines->sum(function ($line) {
-                return $line->purchasable->weight_value * $line->quantity;
+                $weightUnit = $line->purchasable->weight_unit ?: 'kg';
+
+                $unitWeightKg = Converter::from("weight.{$weightUnit}")
+                    ->to('weight.kg')
+                    ->value($line->purchasable->weight_value)
+                    ->convert()
+                    ->getValue();
+
+                return $unitWeightKg * $line->quantity;
             });
         }
 

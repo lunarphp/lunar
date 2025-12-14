@@ -39,6 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'Min. súly',
+                        'helper_text' => 'Kg-ban adja meg',
                     ],
                     'price' => [
                         'label' => 'Ár',
