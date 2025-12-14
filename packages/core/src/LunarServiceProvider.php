@@ -120,7 +120,7 @@ class LunarServiceProvider extends ServiceProvider
         'urls',
     ];
 
-    protected $root = __DIR__.'/..';
+    protected $root = __DIR__ . '/..';
 
     /**
      * Register any application services.
@@ -131,7 +131,7 @@ class LunarServiceProvider extends ServiceProvider
             $this->mergeConfigFrom("{$this->root}/config/$config.php", "lunar.$config");
         });
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'lunar');
 
         $this->registerAddonManifest();
 
@@ -218,7 +218,7 @@ class LunarServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (! config('lunar.database.disable_migrations', false)) {
-            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         }
 
         $this->registerObservers();
@@ -236,11 +236,11 @@ class LunarServiceProvider extends ServiceProvider
             });
 
             $this->publishes([
-                __DIR__.'/../resources/lang' => lang_path('vendor/lunar'),
+                __DIR__ . '/../resources/lang' => lang_path('vendor/lunar'),
             ], 'lunar.translation');
 
             $this->publishes([
-                __DIR__.'/../database/migrations/' => database_path('migrations'),
+                __DIR__ . '/../database/migrations/' => database_path('migrations'),
             ], 'lunar.migrations');
 
             $this->commands([
@@ -287,7 +287,7 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->instance(Manifest::class, new Manifest(
             new Filesystem,
             $this->app->basePath(),
-            $this->app->bootstrapPath().'/cache/lunar_addons.php'
+            $this->app->bootstrapPath() . '/cache/lunar_addons.php'
         ));
     }
 
@@ -370,7 +370,7 @@ class LunarServiceProvider extends ServiceProvider
                     $orderCases .= "WHEN id = $id THEN $index ";
                 }
 
-                return $this->orderByRaw("CASE $orderCases ELSE ".count($ids).' END');
+                return $this->orderByRaw("CASE $orderCases ELSE " . count($ids) . ' END');
             }
 
             return $this;
@@ -392,9 +392,15 @@ class LunarServiceProvider extends ServiceProvider
         Blueprint::macro('dimensions', function () {
             /** @var Blueprint $this */
             $columns = ['length', 'width', 'height', 'weight', 'volume'];
+            $unitDefaults = [
+                'weight' => 'kg',
+            ];
+
             foreach ($columns as $column) {
                 $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
-                $this->string("{$column}_unit")->default('mm')->nullable();
+                $this->string("{$column}_unit")
+                    ->default($unitDefaults[$column] ?? 'mm')
+                    ->nullable();
             }
         });
 
