@@ -93,3 +93,22 @@ test('core model events are triggered with extended models', function () {
         'eloquent.deleted: '.Product::class
     );
 });
+
+test('multi-level extended model returns correct table name without prefix duplication', function () {
+    $lunarProduct = new \Lunar\Models\Product;
+    $customProduct = new \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct;
+    $deepCustomProduct = new \Lunar\Tests\Core\Stubs\Models\Custom\DeepCustomProduct;
+
+    // All three models should return the same table name
+    expect($customProduct->getTable())
+        ->toBe($lunarProduct->getTable())
+        ->and($deepCustomProduct->getTable())
+        ->toBe($lunarProduct->getTable());
+
+    // Verify the table name is correctly prefixed (not duplicated)
+    $expectedTable = config('lunar.database.table_prefix').'products';
+    expect($deepCustomProduct->getTable())->toBe($expectedTable);
+
+    // Ensure prefix is not duplicated
+    expect($deepCustomProduct->getTable())->not->toContain(config('lunar.database.table_prefix').config('lunar.database.table_prefix'));
+});

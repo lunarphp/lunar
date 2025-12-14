@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
+use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Facades\DB;
 use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Product;
@@ -34,19 +35,14 @@ class Associate implements ShouldQueue
     protected ProductContract $product;
 
     /**
-     * The SKU for the generated variant.
-     *
-     * @var string
+     * The product association type.
      */
-    protected $type = null;
+    protected ProvidesProductAssociationType|string $type;
 
     /**
      * Create a new job instance.
-     *
-     * @param  mixed  $targets
-     * @param  string  $type
      */
-    public function __construct(ProductContract $product, $targets, $type = null)
+    public function __construct(ProductContract $product, mixed $targets, ProvidesProductAssociationType|string $type)
     {
         if (is_array($targets)) {
             $targets = collect($targets);
@@ -73,7 +69,7 @@ class Associate implements ShouldQueue
                 $this->targets->map(function ($model) {
                     return [
                         'product_target_id' => $model->id,
-                        'type' => $this->type,
+                        'type' => is_string($this->type) ? $this->type : $this->type->value,
                     ];
                 })
             );

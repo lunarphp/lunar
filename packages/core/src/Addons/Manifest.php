@@ -70,7 +70,7 @@ class Manifest extends PackageManifest
             'id' => base64_encode($package['name']),
             'slug' => $lunar['slug'] ?? null,
             'editions' => $lunar['editions'] ?? [],
-            'github_url' => $package['source']['url'],
+            'github_url' => $package['source']['url'] ?? '',
             'version' => $package['version'],
             'namespace' => $namespace,
             'autoload' => $autoload,

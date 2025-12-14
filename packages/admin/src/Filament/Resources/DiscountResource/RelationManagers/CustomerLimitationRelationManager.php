@@ -7,6 +7,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 
+use function Filament\Support\generate_search_column_expression;
+
 class CustomerLimitationRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
@@ -37,6 +39,19 @@ class CustomerLimitationRelationManager extends BaseRelationManager
                 ])->recordTitle(function ($record) {
                     return $record->full_name;
                 })->preloadRecordSelect()
+                    ->recordSelectOptionsQuery(function ($query, $search) {
+                        if (! filled($search)) {
+                            return $query;
+                        }
+
+                        foreach (explode(' ', $search) as $word) {
+                            $query->where(function ($query) use ($word) {
+                                foreach (['first_name', 'last_name', 'company_name'] as $index => $column) {
+                                    $query->{$index == 0 ? 'where' : 'orWhere'}(generate_search_column_expression($query->qualifyColumn($column), true, $query->getConnection()), 'like', "%{$word}%");
+                                }
+                            });
+                        }
+                    })
                     ->label(
                         __('lunarpanel::discount.relationmanagers.customers.actions.attach.label')
                     ),

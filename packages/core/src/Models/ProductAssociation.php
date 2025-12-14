@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Base\Enums\ProductAssociation as ProductAssociationEnum;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\ProductAssociationFactory;
 
@@ -24,16 +26,25 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
 
     /**
      * Define the cross-sell type.
+     *
+     * @deprecated 1.2.0
+     * @see \Lunar\Base\Enums\ProductAssociation
      */
     const CROSS_SELL = 'cross-sell';
 
     /**
      * Define the upsell type.
+     *
+     * @deprecated 1.2.0
+     * @see \Lunar\Base\Enums\ProductAssociation
      */
     const UP_SELL = 'up-sell';
 
     /**
      * Define the alternate type.
+     *
+     * @deprecated 1.2.0
+     * @see \Lunar\Base\Enums\ProductAssociation
      */
     const ALTERNATE = 'alternate';
 
@@ -77,7 +88,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      */
     public function scopeCrossSell(Builder $query): Builder
     {
-        return $query->type(self::CROSS_SELL);
+        return $query->type(ProductAssociationEnum::CROSS_SELL);
     }
 
     /**
@@ -85,7 +96,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      */
     public function scopeUpSell(Builder $query): Builder
     {
-        return $query->type(self::UP_SELL);
+        return $query->type(ProductAssociationEnum::UP_SELL);
     }
 
     /**
@@ -93,14 +104,29 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      */
     public function scopeAlternate(Builder $query): Builder
     {
-        return $query->type(self::ALTERNATE);
+        return $query->type(ProductAssociationEnum::ALTERNATE);
     }
 
     /**
      * Apply the type scope.
      */
-    public function scopeType(Builder $query, string $type): Builder
+    public function scopeType(Builder $query, ProvidesProductAssociationType|string $type): Builder
     {
-        return $query->whereType($type);
+        return $query->where(
+            'type',
+            '=',
+            is_string($type) ? $type : $type->value
+        );
+    }
+
+    public static function getTypes(): array
+    {
+        $enum = config('lunar.products.association_types_enum', \Lunar\Base\Enums\ProductAssociation::class);
+
+        return collect($enum::cases())->mapWithKeys(function ($item) {
+            return [
+                $item->value => $item->label(),
+            ];
+        })->toArray();
     }
 }

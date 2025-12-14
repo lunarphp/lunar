@@ -156,7 +156,12 @@ class DiscountManager implements DiscountManagerInterface
                             )
                             )
                             ->orWhere(fn ($query) => $query->collections(
-                                $value->lines->map(fn ($line) => $line->purchasable->product->collections->pluck('id'))->flatten()->filter()->values(),
+                                $value->lines->map(fn ($line) => $line->purchasable?->product?->collections?->pluck('id'))->flatten()->filter()->values(),
+                                ['condition']
+                            )
+                            )
+                            ->orWhere(fn ($query) => $query->brands(
+                                $value->lines->map(fn ($line) => $line->purchasable?->product?->brand_id)->flatten()->filter()->values(),
                                 ['condition']
                             )
                             );
