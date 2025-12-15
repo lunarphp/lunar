@@ -56,6 +56,7 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Database\State\MigrateCartOrderRelationship;
 use Lunar\Database\State\PopulateProductOptionLabelWithName;
+use Lunar\Database\State\UpdateWeightUnitToKg;
 use Lunar\Facades\Telemetry;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
@@ -302,6 +303,7 @@ class LunarServiceProvider extends ServiceProvider
             MigrateCartOrderRelationship::class,
             ConvertTaxbreakdown::class,
             ConvertBackOrderPurchasability::class,
+            UpdateWeightUnitToKg::class,
         ];
 
         foreach ($states as $state) {
