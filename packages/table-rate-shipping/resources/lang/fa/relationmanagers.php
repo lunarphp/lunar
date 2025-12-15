@@ -3,84 +3,84 @@
 return [
     'shipping_methods' => [
         'customer_groups' => [
-            'description' => "Associate customer groups to this shipping method to determine it's availability.",
+            'description' => 'گروه‌های مشتری را به این روش ارسال مرتبط کنید تا در دسترس بودن آن مشخص شود.',
         ],
     ],
     'shipping_rates' => [
-        'title_plural' => 'Shipping Rates',
+        'title_plural' => 'نرخ‌های ارسال',
         'actions' => [
             'create' => [
-                'label' => 'Create Shipping Rate',
+                'label' => 'ایجاد نرخ ارسال',
             ],
         ],
         'notices' => [
-            'prices_incl_tax' => 'All prices include tax, which will be considered when calculating minimum spend.',
-            'prices_excl_tax' => 'All prices exclude tax, the minimum spend will be based on the cart sub total.',
+            'prices_incl_tax' => 'همه قیمت‌ها شامل مالیات هستند و هنگام محاسبه حداقل مبلغ خرید در نظر گرفته می‌شوند.',
+            'prices_excl_tax' => 'همه قیمت‌ها بدون مالیات هستند و حداقل مبلغ خرید بر اساس جمع جزء سبد خرید محاسبه می‌شود.',
         ],
         'form' => [
             'shipping_method_id' => [
-                'label' => 'Shipping Method',
+                'label' => 'روش ارسال',
             ],
             'price' => [
-                'label' => 'Price',
+                'label' => 'قیمت',
             ],
             'prices' => [
-                'label' => 'Price Breaks',
+                'label' => 'شکست قیمت‌ها',
                 'repeater' => [
                     'customer_group_id' => [
-                        'label' => 'Customer Group',
-                        'placeholder' => 'Any',
+                        'label' => 'گروه مشتری',
+                        'placeholder' => 'همه',
                     ],
                     'currency_id' => [
-                        'label' => 'Currency',
+                        'label' => 'ارز',
                     ],
                     'min_spend' => [
-                        'label' => 'Min. Spend',
+                        'label' => 'حداقل مبلغ خرید',
                     ],
                     'min_weight' => [
-                        'label' => 'Min. Weight',
+                        'label' => 'حداقل وزن',
                     ],
                     'price' => [
-                        'label' => 'Price',
+                        'label' => 'قیمت',
                     ],
                 ],
             ],
         ],
         'table' => [
             'enabled' => [
-                'label' => 'Enabled',
+                'label' => 'فعال',
             ],
             'disabled' => [
-                'label' => 'disabled',
+                'label' => 'غیرفعال',
             ],
             'shipping_method' => [
-                'label' => 'Shipping Method',
-                'disabled' => 'Disabled',
+                'label' => 'روش ارسال',
+                'disabled' => 'غیرفعال',
             ],
             'price' => [
-                'label' => 'Price',
+                'label' => 'قیمت',
             ],
             'price_breaks_count' => [
-                'label' => 'Price Breaks',
+                'label' => 'شکست قیمت‌ها',
             ],
         ],
     ],
     'exclusions' => [
-        'title_plural' => 'Shipping Exclusions',
+        'title_plural' => 'استثناهای ارسال',
         'form' => [
             'purchasable' => [
-                'label' => 'Product',
+                'label' => 'محصول',
             ],
         ],
         'actions' => [
             'create' => [
-                'label' => 'Add shipping exclusion list',
+                'label' => 'افزودن لیست استثنای ارسال',
             ],
             'attach' => [
-                'label' => 'Add exclusion list',
+                'label' => 'افزودن لیست استثنا',
             ],
             'detach' => [
-                'label' => 'Remove',
+                'label' => 'حذف',
             ],
         ],
     ],

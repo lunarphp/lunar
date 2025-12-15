@@ -1,58 +1,58 @@
 <?php
 
 return [
-    'label_plural' => 'Shipping Methods',
-    'label' => 'Shipping Method',
+    'label_plural' => 'روش‌های ارسال',
+    'label' => 'روش ارسال',
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'نام',
         ],
         'description' => [
-            'label' => 'Description',
+            'label' => 'توضیحات',
         ],
         'code' => [
-            'label' => 'Code',
+            'label' => 'کد',
         ],
         'cutoff' => [
-            'label' => 'Cutoff',
+            'label' => 'مهلت',
         ],
         'charge_by' => [
-            'label' => 'Charge By',
+            'label' => 'محاسبه بر اساس',
             'options' => [
-                'cart_total' => 'Cart Total',
-                'weight' => 'Weight',
+                'cart_total' => 'جمع کل سبد خرید',
+                'weight' => 'وزن',
             ],
         ],
         'driver' => [
-            'label' => 'Type',
+            'label' => 'نوع',
             'options' => [
-                'ship-by' => 'Standard',
-                'collection' => 'Collection',
+                'ship-by' => 'استاندارد',
+                'collection' => 'تحویل حضوری',
             ],
         ],
         'stock_available' => [
-            'label' => 'Stock of all basket items must be available',
+            'label' => 'موجودی همه اقلام سبد باید در دسترس باشد',
         ],
     ],
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'نام',
         ],
         'code' => [
-            'label' => 'Code',
+            'label' => 'کد',
         ],
         'driver' => [
-            'label' => 'Type',
+            'label' => 'نوع',
             'options' => [
-                'ship-by' => 'Standard',
-                'collection' => 'Collection',
+                'ship-by' => 'استاندارد',
+                'collection' => 'تحویل حضوری',
             ],
         ],
     ],
     'pages' => [
         'availability' => [
-            'label' => 'Availability',
-            'customer_groups' => 'This shipping method is currently unavailable across all customer groups.',
+            'label' => 'دسترس‌پذیری',
+            'customer_groups' => 'این روش ارسال در حال حاضر برای هیچ‌یک از گروه‌های مشتری در دسترس نیست.',
         ],
     ],
 ];

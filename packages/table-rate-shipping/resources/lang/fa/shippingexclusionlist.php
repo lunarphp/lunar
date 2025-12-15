@@ -1,19 +1,19 @@
 <?php
 
 return [
-    'label' => 'Shipping Exclusion List',
-    'label_plural' => 'Shipping Exclusion Lists',
+    'label' => 'لیست استثنای ارسال',
+    'label_plural' => 'لیست‌های استثنای ارسال',
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'نام',
         ],
     ],
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'نام',
         ],
         'exclusions_count' => [
-            'label' => 'No. Products',
+            'label' => 'تعداد محصولات',
         ],
     ],
 ];

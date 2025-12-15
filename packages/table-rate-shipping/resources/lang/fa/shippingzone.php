@@ -1,49 +1,49 @@
 <?php
 
 return [
-    'label' => 'Shipping Zone',
-    'label_plural' => 'Shipping Zones',
+    'label' => 'منطقه ارسال',
+    'label_plural' => 'مناطق ارسال',
     'form' => [
         'unrestricted' => [
-            'content' => 'This shipping zone has no restrictions in place and will be available to all customers at checkout.',
+            'content' => 'این منطقه ارسال هیچ محدودیتی ندارد و برای همه مشتریان در صفحه تسویه‌حساب در دسترس خواهد بود.',
         ],
         'name' => [
-            'label' => 'Name',
+            'label' => 'نام',
         ],
         'type' => [
-            'label' => 'Type',
+            'label' => 'نوع',
             'options' => [
-                'unrestricted' => 'Unrestricted',
-                'countries' => 'Limit to Countries',
-                'states' => 'Limit to States / Provinces',
-                'postcodes' => 'Limit to Postcodes',
+                'unrestricted' => 'بدون محدودیت',
+                'countries' => 'محدود به کشورها',
+                'states' => 'محدود به ایالت‌ها / استان‌ها',
+                'postcodes' => 'محدود به کدپستی‌ها',
             ],
         ],
         'country' => [
-            'label' => 'Country',
+            'label' => 'کشور',
         ],
         'states' => [
-            'label' => 'States',
+            'label' => 'ایالت‌ها / استان‌ها',
         ],
         'countries' => [
-            'label' => 'States',
+            'label' => 'کشورها',
         ],
         'postcodes' => [
-            'label' => 'Postcodes',
-            'helper' => 'List each postcode on a new line. Supports wildcards such as NW*',
+            'label' => 'کدپستی‌ها',
+            'helper' => 'هر کدپستی را در یک خط جداگانه وارد کنید. از کاراکترهای عام مانند NW* پشتیبانی می‌شود.',
         ],
     ],
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'نام',
         ],
         'type' => [
-            'label' => 'Type',
+            'label' => 'نوع',
             'options' => [
-                'unrestricted' => 'Unrestricted',
-                'countries' => 'Limit to Countries',
-                'states' => 'Limit to States / Provinces',
-                'postcodes' => 'Limit to Postcodes',
+                'unrestricted' => 'بدون محدودیت',
+                'countries' => 'محدود به کشورها',
+                'states' => 'محدود به ایالت‌ها / استان‌ها',
+                'postcodes' => 'محدود به کدپستی‌ها',
             ],
         ],
     ],

@@ -2,6 +2,6 @@
 
 return [
     'navigation' => [
-        'group' => 'Shipping',
+        'group' => 'حمل و نقل',
     ],
 ];
