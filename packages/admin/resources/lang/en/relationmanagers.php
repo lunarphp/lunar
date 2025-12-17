@@ -285,11 +285,6 @@ return [
                 'label' => 'Position',
             ],
         ],
-        'form' => [
-            'name' => [
-                'label' => 'Name',
-            ],
-        ],
     ],
 
 ];
