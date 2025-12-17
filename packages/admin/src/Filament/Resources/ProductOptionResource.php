@@ -96,9 +96,11 @@ class ProductOptionResource extends BaseResource
                     ->label(__('lunarpanel::productoption.table.name.label'))
                     ->searchable(),
                 TranslatedTextColumn::make('label')
-                    ->label(__('lunarpanel::productoption.table.label.label')),
+                    ->label(__('lunarpanel::productoption.table.label.label'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('handle')
-                    ->label(__('lunarpanel::productoption.table.handle.label')),
+                    ->label(__('lunarpanel::productoption.table.handle.label'))
+                    ->searchable(),
                 Tables\Columns\BooleanColumn::make('shared')
                     ->label(__('lunarpanel::productoption.table.shared.label')),
             ])
