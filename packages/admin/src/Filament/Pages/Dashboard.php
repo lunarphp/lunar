@@ -19,6 +19,11 @@ class Dashboard extends BaseDashboard
 
     protected static ?int $navigationSort = 1;
 
+    public function getColumns(): int | string | array
+    {
+        return self::callLunarHook('getColumns', 2);
+    }
+    
     public function getWidgets(): array
     {
         return self::callLunarHook('getWidgets', $this->getDefaultWidgets());
