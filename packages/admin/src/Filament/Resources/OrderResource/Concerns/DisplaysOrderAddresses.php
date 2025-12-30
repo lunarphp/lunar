@@ -207,8 +207,8 @@ trait DisplaysOrderAddresses
             ->label(__('lunarpanel::order.action.edit_address.label'))
             ->button()
             ->fillForm(fn ($record) => match ($type) {
-                'shipping' => $record->shippingAddress->toArray(),
-                'billing' => $record->billingAddress->toArray(),
+                'shipping' => $record->shippingAddress?->toArray(),
+                'billing' => $record->billingAddress?->toArray(),
                 default => []
             })
             ->form(function () {
@@ -230,26 +230,49 @@ trait DisplaysOrderAddresses
                     return;
                 }
 
-                $oldData = $record->$addressType->toArray();
+                $existingAddress = $record->$addressType;
+                $isCreating = is_null($existingAddress);
+                $oldData = $existingAddress?->toArray() ?? [];
                 $formFields = array_keys($data);
 
-                $record->$addressType->order_id = $record->id;
-                $record->$addressType->update($data);
-                $refreshed = $record->$addressType->refresh();
+                if ($isCreating) {
+                    $refreshed = $record->$addressType()->create(
+                        array_merge($data, [
+                            'order_id' => $record->id,
+                            'type' => $type,
+                        ])
+                    );
+                    $record->load($addressType);
+                } else {
+                    $record->$addressType->order_id = $record->id;
+                    $record->$addressType->update($data);
+                    $refreshed = $record->$addressType->refresh();
+                }
+
+                $shouldLog = $isCreating;
+                $properties = [
+                    'fields' => $formFields,
+                    'type' => $addressType,
+                    'new' => $refreshed->toArray(),
+                ];
+
+                if (! $isCreating) {
+                    $diff = collect($oldData)->only($formFields)->diff(collect($refreshed->toArray())->only($formFields));
+                    $shouldLog = $diff->count() > 0;
+
+                    if ($shouldLog) {
+                        $properties['previous'] = $oldData;
+                    }
+                }
 
                 // should this be in Core as model observer?
-                $diff = collect($oldData)->only($formFields)->diff(collect($refreshed->toArray())->only($formFields));
-                if ($diff->count()) {
+                if ($shouldLog) {
                     activity()
                         ->causedBy(Filament::auth()->user())
                         ->performedOn($record)
                         ->event('order-address-update')
-                        ->withProperties([
-                            'fields' => $formFields,
-                            'type' => $addressType,
-                            'new' => $record->$addressType->toArray(),
-                            'previous' => $oldData,
-                        ])->log('order-address-update');
+                        ->withProperties($properties)
+                        ->log('order-address-update');
                 }
 
                 $action->successNotificationTitle(__("lunarpanel::order.action.edit_address.notification.{$type}_address.saved"));
