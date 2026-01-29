@@ -1163,3 +1163,85 @@ test('can get same draft order when cart does not change', function () {
         )->toBe($newOrder->id);
 
 });
+
+test('active scope correctly filters unmerged carts and isolates users', function () {
+
+    if (function_exists('setAuthUserConfig')) {
+        setAuthUserConfig();
+    }
+
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+
+    $userA = StubUser::factory()->create();
+    $userB = StubUser::factory()->create();
+
+    // 1. Количка на User B (не трябва да бъде достъпна за User A при никакви условия)
+    Cart::factory()->create([
+        'user_id' => $userB->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    // 2. "Merged" количка на User A (трябва да бъде игнорирана от unmerged())
+    Cart::factory()->create([
+        'user_id' => $userA->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'merged_id' => 100, // Симулираме, че е обединена
+    ]);
+
+    // 3. Валидна "Active" количка на User A
+    $validCart = Cart::factory()->create([
+        'user_id' => $userA->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'merged_id' => null,
+    ]);
+
+    // Симулираме логиката от твоя PR
+    $retrievedCartId = $userA->carts()
+        ->unmerged()
+        ->active()
+        ->latest('id')
+        ->value('id');
+
+    // Проверки
+    expect($retrievedCartId)->toBe($validCart->id)
+        ->and(Cart::count())->toBe(3); // Уверяваме се, че общо има 3, но намираме само 1
+});
+
+test('correct active cart is retrieved and merged carts are ignored when user logs in', function () {
+    // 1. Setup на средата (Currency, Channel, User)
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+
+    // 2. Сценарий: Потребителят има стара количка, която е била обединена
+    Cart::factory()->create([
+        'user_id' => $user->id,
+        'merged_id' => 999, // Тази трябва да бъде прескочена
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    // 3. Сценарий: Потребителят има и текуща активна количка
+    $activeCart = Cart::factory()->create([
+        'user_id' => $user->id,
+        'merged_id' => null, // Тази трябва да бъде намерена
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    // 4. Действие: Симулираме логнат потребител и викаме мениджъра
+    $this->actingAs($user);
+    $manager = app(\Lunar\Managers\CartSessionManager::class);
+    
+    // Извикваме метода, който използва твоя fix
+    $foundCart = $manager->current(); 
+
+    // 5. Проверка: Дали мениджърът е намерил правилната количка
+    expect($foundCart)->not->toBeNull()
+        ->and($foundCart->id)->toBe($activeCart->id)
+        ->and($foundCart->merged_id)->toBeNull();
+});
