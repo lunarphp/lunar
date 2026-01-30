@@ -15,7 +15,7 @@ use Lunar\Models\Contracts\CollectionGroup as CollectionGroupContract;
 
 class CollectionGroupResource extends BaseResource
 {
-    protected static ?string $permission = 'catalog:manage-products';
+    protected static ?string $permission = 'catalog:manage-collections';
 
     protected static ?string $model = CollectionGroupContract::class;
 
