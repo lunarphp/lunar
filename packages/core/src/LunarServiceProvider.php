@@ -107,6 +107,7 @@ class LunarServiceProvider extends ServiceProvider
     protected $configFiles = [
         'cart',
         'cart_session',
+        'customers',
         'database',
         'discounts',
         'media',

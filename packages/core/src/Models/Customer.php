@@ -103,6 +103,11 @@ class Customer extends BaseModel implements Contracts\Customer
         return $this->hasMany(Order::modelClass());
     }
 
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::modelClass());
+    }
+
     public function mappedAttributes(): MorphToMany
     {
         $prefix = config('lunar.database.table_prefix');
