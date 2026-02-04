@@ -92,14 +92,14 @@ class Price extends BaseModel implements Contracts\Price
     /**
      * Return the price inclusive of tax.
      */
-    public function priceIncTax(): int|\Lunar\DataTypes\Price
+    public function priceIncTax(?TaxZone $taxZone = null): int|\Lunar\DataTypes\Price
     {
         if (prices_inc_tax()) {
             return $this->price;
         }
 
         $priceIncTax = clone $this->price;
-        $priceIncTax->value = (int) round($priceIncTax->value * (1 + $this->getPriceableTaxRate()));
+        $priceIncTax->value = (int) round($priceIncTax->value * (1 + $this->getPriceableTaxRate($taxZone)));
 
         return $priceIncTax;
     }
@@ -107,14 +107,14 @@ class Price extends BaseModel implements Contracts\Price
     /**
      * Return the compare price inclusive of tax.
      */
-    public function comparePriceIncTax(): int|\Lunar\DataTypes\Price
+    public function comparePriceIncTax(?TaxZone $taxZone = null): int|\Lunar\DataTypes\Price
     {
         if (prices_inc_tax()) {
             return $this->compare_price;
         }
 
         $comparePriceIncTax = clone $this->compare_price;
-        $comparePriceIncTax->value = (int) round($comparePriceIncTax->value * (1 + $this->getPriceableTaxRate()));
+        $comparePriceIncTax->value = (int) round($comparePriceIncTax->value * (1 + $this->getPriceableTaxRate($taxZone)));
 
         return $comparePriceIncTax;
     }
@@ -122,11 +122,19 @@ class Price extends BaseModel implements Contracts\Price
     /**
      * Return the total tax rate amount within the predefined tax zone for the related priceable
      */
-    protected function getPriceableTaxRate(): int|float
+    protected function getPriceableTaxRate(?TaxZone $taxZone = null): int|float
     {
-        return Blink::once('price_tax_rate_'.$this->priceable->getTaxClass()->id, function () {
-            $taxZone = TaxZone::where('default', '=', 1)->first();
+        /* This function is called multiple times somewhere from the package and since we just added an optional
+         * parameter to it, the initial calls are with Null Tax Zone and the result is cached which
+         * ignores the subsequent calls with a valid Tax Zone.
+         * Hence we forget the cache and let it run with the provided tax zone and cache that value.
+         */
+        if ($taxZone) {
+            Blink::forget('price_tax_rate_'.$this->priceable->getTaxClass()->id);
+        }
 
+        return Blink::once('price_tax_rate_'.$this->priceable->getTaxClass()->id, function () use ($taxZone) {
+            $taxZone = $taxZone ?? TaxZone::where('default', '=', 1)->first();
             if ($taxZone && ! is_null($taxClass = $this->priceable->getTaxClass())) {
                 return $taxClass->taxRateAmounts
                     ->whereIn('tax_rate_id', $taxZone->taxRates->pluck('id'))
