@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Base\Migration;
