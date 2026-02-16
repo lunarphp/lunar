@@ -9,7 +9,11 @@ class AddCanManagePermission extends Migration
 {
     public function up()
     {
-        $guard = LunarPanel::getPanel()->getAuthGuard();
+        try {
+            $guard = LunarPanel::getPanel()->getAuthGuard();
+        } catch (\Exception $e) {
+            return;
+        }
 
         $tableNames = config('permission.table_names');
 
