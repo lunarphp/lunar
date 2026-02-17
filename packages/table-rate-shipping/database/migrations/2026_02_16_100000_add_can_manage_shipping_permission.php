@@ -5,7 +5,7 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Base\Migration;
 use Spatie\Permission\Models\Permission;
 
-class AddCanManagePermission extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -37,4 +37,4 @@ class AddCanManagePermission extends Migration
 
         Permission::query()->where('name', 'shipping:manage')->delete();
     }
-}
+};
