@@ -25,7 +25,6 @@ use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
 use Lunar\Admin\Livewire\Components\TableComponent;
 use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Tables\Components\KeyValue;
-use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 
