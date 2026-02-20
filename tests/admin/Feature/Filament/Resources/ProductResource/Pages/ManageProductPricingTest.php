@@ -99,6 +99,7 @@ it('can set product base prices correctly', function () {
         [
             'id' => null,
             'currency_id' => \Lunar\Models\Currency::getDefault()->id,
+            'sync_prices' => false,
             'label' => 'GBP',
             'value' => '2.32',
             'factor' => '100',

@@ -4,9 +4,11 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Awcodes\BadgeableColumn\Components\Badge;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
+use Filament\Forms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Component;
+use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -46,6 +48,15 @@ class CurrencyResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
+    public static function getDefaultForm(Form $form): Form
+    {
+        return $form->schema([
+            Forms\Components\Section::make('details')->schema(
+                static::getMainFormComponents()
+            )->heading()->columns(),
+        ]);
+    }
+
     protected static function getMainFormComponents(): array
     {
         return [
@@ -55,6 +66,7 @@ class CurrencyResource extends BaseResource
             static::getDecimalPlacesFormComponent(),
             static::getEnabledFormComponent(),
             static::getDefaultFormComponent(),
+            static::getSyncPricesFormComponent(),
         ];
     }
 
@@ -105,6 +117,17 @@ class CurrencyResource extends BaseResource
             ->label(__('lunarpanel::currency.form.default.label'));
     }
 
+    protected static function getSyncPricesFormComponent(): Component
+    {
+        return Toggle::make('sync_prices')
+            ->label(__('lunarpanel::currency.form.sync_prices.label'))
+            ->helperText(__('lunarpanel::currency.form.sync_prices.helper_text'))
+            ->hidden(
+                fn (?Model $record) => (bool) $record?->default
+            )
+            ->default(true);
+    }
+
     protected static function getDefaultTable(Table $table): Table
     {
         return $table->columns([
@@ -126,6 +149,9 @@ class CurrencyResource extends BaseResource
             IconColumn::make('enabled')
                 ->boolean()
                 ->label(__('lunarpanel::currency.table.enabled.label')),
+            IconColumn::make('sync_prices')
+                ->boolean()
+                ->label(__('lunarpanel::currency.table.sync_prices.label')),
         ]);
     }
 

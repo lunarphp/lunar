@@ -27,6 +27,7 @@ use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ListDiscounts;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ManageDiscountAvailability;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ManageDiscountLimitations;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionConditionRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CustomerLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
@@ -433,8 +434,7 @@ class DiscountResource extends BaseResource
             CustomerLimitationRelationManager::class,
             ProductRewardRelationManager::class,
             ProductConditionRelationManager::class,
-            ProductRewardRelationManager::class,
-            ProductConditionRelationManager::class,
+            CollectionConditionRelationManager::class,
         ];
     }
 

@@ -265,7 +265,7 @@ return [
         'title' => 'Giá trị',
         'form' => [
             'name' => [
-                'label' => 'Name',
+                'label' => 'Tên',
             ],
         ],
         'table' => [

@@ -265,7 +265,7 @@ return [
         'title' => 'Waarden',
         'form' => [
             'name' => [
-                'label' => 'Name',
+                'label' => 'Naam',
             ],
         ],
         'table' => [

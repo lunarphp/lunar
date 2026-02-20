@@ -228,7 +228,7 @@ return [
         'title' => 'Wartości',
         'form' => [
             'name' => [
-                'label' => 'Name',
+                'label' => 'Nazwa',
             ],
         ],
         'table' => [

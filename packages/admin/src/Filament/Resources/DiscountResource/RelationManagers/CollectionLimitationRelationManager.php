@@ -30,10 +30,14 @@ class CollectionLimitationRelationManager extends BaseRelationManager
 
     public function getDefaultTable(Table $table): Table
     {
+        $prefix = config('lunar.database.table_prefix');
 
         return $table
             ->description(
                 __('lunarpanel::discount.relationmanagers.collections.description')
+            )
+            ->modifyQueryUsing(
+                fn ($query) => $query->whereIn($prefix.'collection_discount.type', ['limitation', 'exclusion'])
             )
             ->paginated(false)
             ->headerActions([
@@ -48,7 +52,8 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                         )->default('limitation'),
                 ])->recordTitle(function ($record) {
                     return $record->attr('name');
-                })->preloadRecordSelect()
+                })->recordSelectSearchColumns(['attribute_data->name'])
+                    ->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.actions.attach.label')
                     ),

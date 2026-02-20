@@ -13,8 +13,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Admin\Support\Tables\Columns\ThumbnailImageColumn;
-use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Collection as CollectionContract;
 use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Product;
@@ -38,6 +36,7 @@ class ProductConditionRelationManager extends BaseRelationManager
 
     public function getDefaultTable(Table $table): Table
     {
+        $prefix = config('lunar.database.table_prefix');
 
         return $table
             ->heading(
@@ -49,7 +48,7 @@ class ProductConditionRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['condition'])
-                    ->whereIn('discountable_type', [Collection::morphName(), Product::morphName(), ProductVariant::morphName()])
+                    ->whereIn('discountable_type', [Product::morphName(), ProductVariant::morphName()])
                     ->whereHas('discountable')
             )
             ->headerActions([
@@ -57,15 +56,6 @@ class ProductConditionRelationManager extends BaseRelationManager
                     MorphToSelect::make('discountable')
                         ->searchable(true)
                         ->types([
-                            Type::make(Collection::modelClass())
-                                ->titleAttribute('name.en')
-                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
-                                    return get_search_builder(Collection::modelClass(), $search)
-                                        ->get()
-                                        ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->attr('name')])
-                                        ->all();
-                                }),
-
                             Type::make(Product::modelClass())
                                 ->titleAttribute('name.en')
                                 ->getSearchResultsUsing(static function (Select $component, string $search): array {

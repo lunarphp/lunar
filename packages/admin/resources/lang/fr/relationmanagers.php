@@ -265,7 +265,7 @@ return [
         'title' => 'Valeurs',
         'form' => [
             'name' => [
-                'label' => 'Name',
+                'label' => 'Nom',
             ],
         ],
         'table' => [

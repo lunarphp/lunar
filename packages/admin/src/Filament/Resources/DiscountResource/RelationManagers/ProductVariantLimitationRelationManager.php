@@ -50,6 +50,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                         ->types([
                             Type::make(ProductVariant::modelClass())
                                 ->titleAttribute('sku')
+                                ->searchColumns(['sku'])
                                 ->getSearchResultsUsing(static function (Select $component, string $search): array {
                                     $products = get_search_builder(Product::modelClass(), $search)
                                         ->get();

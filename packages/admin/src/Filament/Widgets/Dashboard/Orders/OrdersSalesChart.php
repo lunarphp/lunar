@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 
+use Carbon\CarbonInterface;
 use DateTime;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
@@ -25,7 +26,7 @@ class OrdersSalesChart extends ApexChartWidget
         return __('lunarpanel::widgets.dashboard.orders.order_sales_chart.heading');
     }
 
-    protected function getOrderQuery(?DateTime $from = null, ?DateTime $to = null)
+    protected function getOrderQuery(DateTime|CarbonInterface|null $from = null, DateTime|CarbonInterface|null $to = null)
     {
         return Order::whereNotNull('placed_at')
             ->with(['currency'])

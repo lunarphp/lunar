@@ -11,16 +11,19 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\ProductOptionFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
  * @property int $id
- * @property \Illuminate\Support\Collection $name
- * @property \Illuminate\Support\Collection $label
+ * @property AsArrayObject $name
+ * @property ?AsArrayObject $label
  * @property int $position
  * @property ?string $handle
+ * @property bool $shared
+ * @property ?AsArrayObject $meta
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  */
@@ -30,6 +33,7 @@ class ProductOption extends BaseModel implements Contracts\ProductOption, Spatie
     use HasMacros;
     use HasMedia;
     use HasTranslations;
+    use LogsActivity;
     use Searchable;
 
     /**
@@ -41,6 +45,7 @@ class ProductOption extends BaseModel implements Contracts\ProductOption, Spatie
         'name' => AsArrayObject::class,
         'label' => AsArrayObject::class,
         'shared' => 'boolean',
+        'meta' => AsArrayObject::class,
     ];
 
     /**

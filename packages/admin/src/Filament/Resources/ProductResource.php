@@ -290,6 +290,7 @@ class ProductResource extends BaseResource
                     'draft' => 'warning',
                     'published' => 'success',
                     'deleted' => 'danger',
+                    default => 'primary',
                 }),
             SpatieMediaLibraryImageColumn::make('thumbnail')
                 ->collection(config('lunar.media.collection'))

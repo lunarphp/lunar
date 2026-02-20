@@ -66,7 +66,7 @@ class AttributeSelector extends CheckboxList
             $type = $this->attributableType;
         }
 
-        return AttributeGroup::whereAttributableType($type)->get();
+        return AttributeGroup::whereAttributableType($type)->orderBy('position')->get();
     }
 
     public function getSelectedAttributes($groupId)
@@ -76,6 +76,6 @@ class AttributeSelector extends CheckboxList
 
     public function getAttributes($groupId)
     {
-        return Attribute::where('attribute_group_id', $groupId)->get();
+        return Attribute::where('attribute_group_id', $groupId)->orderBy('position')->get();
     }
 }

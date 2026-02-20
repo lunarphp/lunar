@@ -1,24 +1,14 @@
-<p align="center"><a href="https://lunarphp.io/" target="_blank"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo-dark.svg"><img alt="Lunar" width="200" src="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo.svg"></picture></a></p>
+<p align="center"><a href="https://lunarphp.com/" target="_blank"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo-dark.svg"><img alt="Lunar" width="200" src="https://raw.githubusercontent.com/lunarphp/art/main/lunar-logo.svg"></picture></a></p>
 
-> [!CAUTION]
-> Version 1.x is currently in beta release. We recommend this version for new projects, however, it is not feature-complete and therefore may not be deemed production-ready.
-
-
-[Lunar](https://lunarphp.io) is a set of Laravel packages that bring functionality akin to Shopify and other e-commerce platforms to 
+[Lunar](https://lunarphp.com) is a set of Laravel packages that bring functionality akin to Shopify and other e-commerce platforms to 
 Laravel. You have complete freedom to create your own storefront(s), but we've already done the hard work for you in 
 the backend.
 
 This repository serves as a monorepo for the main packages that make up Lunar.
 
-## Requirements
-
-- PHP >= 8.2
-- Laravel 10 / Laravel 11
-- MySQL 8.0+ / PostgreSQL 9.2+
-
 ## Documentation
 
-- [v1.0 documentation](https://docs-v1.lunarphp.io/)
+- [v1.0 documentation](https://docs.lunarphp.com/)
 
 ## Contribution
 
@@ -28,8 +18,8 @@ This repository serves as a monorepo for the main packages that make up Lunar.
 
 ## Community
 
-- [Join our discord server](https://discord.gg/v6qVWaf) and chat to the developers and people using Lunar.
-- [We have a roadmap](https://github.com/orgs/lunarphp/projects/8) where we will be detailing which features are next.
+- [Join our discord server](https://lunarphp.com/discord) and chat to the developers and people using Lunar.
+- [We have a roadmap](https://github.com/orgs/lunarphp/projects/9) where we will be detailing which features are next.
 
 ## Packages in this monorepo
 

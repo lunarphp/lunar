@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
 
 interface Product
 {
@@ -56,12 +57,12 @@ interface Product
     /**
      * Associate a product to another with a type.
      */
-    public function associate(mixed $product, string $type): void;
+    public function associate(mixed $product, ProvidesProductAssociationType $type): void;
 
     /**
      * Dissociate a product to another with a type.
      */
-    public function dissociate(mixed $product, ?string $type = null): void;
+    public function dissociate(mixed $product, ?ProvidesProductAssociationType $type = null): void;
 
     /**
      * Return the customer groups relationship.

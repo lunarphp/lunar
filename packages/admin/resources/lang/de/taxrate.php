@@ -2,19 +2,19 @@
 
 return [
 
-    'label' => 'Tax Rate',
+    'label' => 'Steuersatz',
 
-    'plural_label' => 'Tax Rates',
+    'plural_label' => 'Steuersätze',
 
     'table' => [
         'name' => [
             'label' => 'Name',
         ],
         'tax_zone' => [
-            'label' => 'Tax Zone',
+            'label' => 'Steuerzone',
         ],
         'priority' => [
-            'label' => 'Priority',
+            'label' => 'Priorität',
         ],
     ],
 
@@ -23,10 +23,10 @@ return [
             'label' => 'Name',
         ],
         'priority' => [
-            'label' => 'Priority',
+            'label' => 'Priorität',
         ],
         'tax_zone_id' => [
-            'label' => 'Tax Zone',
+            'label' => 'Steuerzone',
         ],
     ],
 

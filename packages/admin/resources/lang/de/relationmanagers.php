@@ -213,7 +213,7 @@ return [
         ],
     ],
     'values' => [
-        'title' => 'Values',
+        'title' => 'Werte',
         'form' => [
             'name' => [
                 'label' => 'Name',

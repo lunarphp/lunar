@@ -22,6 +22,9 @@ return [
         'enabled' => [
             'label' => 'Enabled',
         ],
+        'sync_prices' => [
+            'label' => 'Sync Prices',
+        ],
         'default' => [
             'label' => 'Default',
         ],
@@ -45,6 +48,10 @@ return [
         ],
         'default' => [
             'label' => 'Default',
+        ],
+        'sync_prices' => [
+            'label' => 'Sync Prices',
+            'helper_text' => 'Keep prices in this currency in sync with the default currency.',
         ],
     ],
 

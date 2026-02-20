@@ -19,6 +19,8 @@ class ShippingMethodResource extends BaseResource
 {
     protected static ?string $model = ShippingMethod::class;
 
+    protected static ?string $permission = 'shipping:manage';
+
     protected static ?int $navigationSort = 1;
 
     protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
@@ -188,7 +190,7 @@ class ShippingMethodResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    public static function getDefaultPages(): array
     {
         return [
             'index' => Pages\ListShippingMethod::route('/'),

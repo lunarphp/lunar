@@ -15,6 +15,7 @@ use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Arr;
 use Lunar\Models\Contracts\OrderAddress as OrderAddressContract;
 use Lunar\Models\Country;
+use Lunar\Models\OrderAddress;
 use Lunar\Models\State;
 
 trait DisplaysOrderAddresses
@@ -211,8 +212,8 @@ trait DisplaysOrderAddresses
             ->label(__('lunarpanel::order.action.edit_address.label'))
             ->button()
             ->fillForm(fn ($record) => match ($type) {
-                'shipping' => $record->shippingAddress->toArray(),
-                'billing' => $record->billingAddress->toArray(),
+                'shipping' => $record->shippingAddress?->toArray() ?: [],
+                'billing' => $record->billingAddress?->toArray() ?: [],
                 default => []
             })
             ->schema(function () {
@@ -234,8 +235,16 @@ trait DisplaysOrderAddresses
                     return;
                 }
 
-                $oldData = $record->$addressType->toArray();
+                $oldData = $record->$addressType?->toArray() ?: [];
                 $formFields = array_keys($data);
+
+                if (! $record->$addressType) {
+                    $record->$addressType = (new OrderAddress)->forceFill($data);
+                    $record->$addressType->type = $type;
+                }
+
+                $record->$addressType->order_id = $record->id;
+                $record->$addressType->id ? $record->$addressType->update($data) : $record->$addressType->save();
 
                 $record->$addressType->order_id = $record->id;
                 $record->$addressType->update($data);
