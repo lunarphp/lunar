@@ -147,7 +147,7 @@ class ManageOrder extends BaseViewRecord
             ])
             ->compact()
             ->schema([
-                Tags::make(''),
+                Tags::make('tags'),
             ]);
     }
 
@@ -162,30 +162,38 @@ class ManageOrder extends BaseViewRecord
             ->heading(__('lunarpanel::order.infolist.additional_info.label'))
             ->compact()
             ->statePath('meta')
-            ->schema(fn ($state) => blank($state) ? [
-                TextEntry::make('no_additional_info')
-                    ->hiddenLabel()
-                    ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
-            ] : collect($state)
-                ->map(function ($value, $key) {
-                    if (is_array($value)) {
-                        return KeyValueEntry::make('meta_'.$key)->state($value);
-                    }
+            ->schema(function ($record) {
+                $meta = $record?->meta;
 
-                    return TextEntry::make('meta_'.$key)
-                        ->state($value)
-                        ->label($key)
-                        ->copyable()
-                        ->limit(50)->tooltip(function (TextEntry $component): ?string {
-                            $state = $component->getState();
-                            if (strlen($state) <= $component->getCharacterLimit()) {
-                                return null;
-                            }
+                if (blank($meta)) {
+                    return [
+                        TextEntry::make('no_additional_info')
+                            ->hiddenLabel()
+                            ->getStateUsing(fn () => __('lunarpanel::order.infolist.no_additional_info.label')),
+                    ];
+                }
 
-                            return $state;
-                        });
-                })
-                ->toArray());
+                return collect($meta)
+                    ->map(function ($value, $key) {
+                        if (is_array($value)) {
+                            return KeyValueEntry::make('meta_'.$key)->getStateUsing(fn () => $value);
+                        }
+
+                        return TextEntry::make('meta_'.$key)
+                            ->getStateUsing(fn () => $value)
+                            ->label($key)
+                            ->copyable()
+                            ->limit(50)->tooltip(function (TextEntry $component): ?string {
+                                $state = $component->getState();
+                                if (strlen($state) <= $component->getCharacterLimit()) {
+                                    return null;
+                                }
+
+                                return $state;
+                            });
+                    })
+                    ->toArray();
+            });
     }
 
     public static function getAdditionalInfoSection(): Component
@@ -205,22 +213,21 @@ class ManageOrder extends BaseViewRecord
                                 ->content(__('lunarpanel::order.infolist.alert.requires_capture'))
                                 ->visible(fn () => $this->requiresCapture),
                             Shout::make('partially_refunded')
-                                ->state(fn () => $this->paymentStatus)
                                 ->key('partially_refunded_notice')
-                                ->icon(fn ($state) => match ($state) {
+                                ->icon(fn () => match ($this->paymentStatus) {
                                     'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
                                     default => null
                                 })
-                                ->color(fn (Shout $component, $state) => match ($state) {
+                                ->color(fn () => match ($this->paymentStatus) {
                                     'partial-refund' => 'info',
                                     'refunded' => 'danger',
                                     default => null
-                                })->content(fn ($state) => match ($state) {
+                                })->content(fn () => match ($this->paymentStatus) {
                                     'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
-                                    'refunded' => __('lunarpanel::order.infolist.alert.refunded') ,
+                                    'refunded' => __('lunarpanel::order.infolist.alert.refunded'),
                                     default => null
                                 })
-                                ->visible(fn ($state) => in_array($state, ['partial-refund', 'refunded'])),
+                                ->visible(fn () => in_array($this->paymentStatus, ['partial-refund', 'refunded'])),
                         ]),
                         ...static::getInfolistSchema(),
                     ])

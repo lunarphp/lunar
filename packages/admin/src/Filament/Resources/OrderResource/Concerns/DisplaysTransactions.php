@@ -17,7 +17,7 @@ trait DisplaysTransactions
             ->getStateUsing(fn ($record) => $record->transactions)
             ->contained(false)
             ->schema([
-                InfolistsTransaction::make('transactions'),
+                InfolistsTransaction::make('transaction_detail'),
             ]);
     }
 

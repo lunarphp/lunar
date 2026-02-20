@@ -51,23 +51,33 @@ trait ManagesProductPricing
 
         $variant = $this->getOwnerRecord();
 
-        $prices = collect($data['basePrices']);
+        // Merge form-submitted values (value, compare_price) back into
+        // the full basePrices property which contains metadata like
+        // id, currency_id, factor, etc. that aren't form fields.
+        $formPrices = $data['basePrices'] ?? [];
+        $prices = collect($this->basePrices)->map(function (array $price, int $index) use ($formPrices): array {
+            if (isset($formPrices[$index])) {
+                return array_merge($price, $formPrices[$index]);
+            }
+
+            return $price;
+        });
         unset($data['basePrices']);
         $variant->update($data);
 
         $prices->filter(
-            fn ($price) => ! $price['id'] && isset($price['value'])
+            fn ($price) => ! ($price['id'] ?? null) && isset($price['value']) && isset($price['currency_id'])
         )->each(fn ($price) => $variant->prices()->create([
             'currency_id' => $price['currency_id'],
-            'price' => (int) round((float) ($price['value'] * $price['factor'])),
-            'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
+            'price' => (int) round((float) ($price['value'] * ($price['factor'] ?? 1))),
+            'compare_price' => (int) round((float) (($price['compare_price'] ?? 0) * ($price['factor'] ?? 1))),
             'min_quantity' => 1,
             'customer_group_id' => null,
         ])
         );
 
         $prices->filter(
-            fn ($price) => $price['id'] && isset($price['value']) && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
+            fn ($price) => ($price['id'] ?? null) && isset($price['value']) && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
         )->each(fn ($price) => Price::find($price['id'])->update([
             'price' => (int) round((float) ($price['value'] * $price['factor'])),
             'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),

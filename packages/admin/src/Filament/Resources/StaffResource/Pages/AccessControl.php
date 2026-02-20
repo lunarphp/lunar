@@ -10,7 +10,6 @@ use Filament\Resources\Pages\Page;
 use Filament\Support\Enums\Size;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
@@ -197,9 +196,7 @@ class AccessControl extends Page
             ->tooltip(__('lunarpanel::staff.action.delete-role.label'))
             ->iconButton()
             ->requiresConfirmation()
-            ->modalHeading(function (Page $livewire) {
-                $arguments = Arr::last($livewire->mountedActionsArguments);
-
+            ->modalHeading(function (array $arguments) {
                 if ($handle = $arguments['handle'] ?? null) {
                     $role = LunarAccessControl::getRoles()->first(fn ($r) => $r->handle == $handle);
 

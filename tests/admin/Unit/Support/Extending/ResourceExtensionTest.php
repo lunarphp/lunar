@@ -64,14 +64,14 @@ it('can extend table columns', function ($resource, $page) {
 it('can extend form schema', function ($resource, $page) {
     $class = new class extends \Lunar\Admin\Support\Extending\ResourceExtension
     {
-        public function extendForm(Filament\Forms\Form $form): Filament\Forms\Form
+        public function extendForm(Filament\Schemas\Schema $schema): Filament\Schemas\Schema
         {
-            $form->schema([
-                ...$form->getComponents(true),
+            $schema->components([
+                ...$schema->getComponents(true),
                 \Filament\Forms\Components\TextInput::make('test_form_field'),
             ]);
 
-            return $form;
+            return $schema;
         }
     };
 

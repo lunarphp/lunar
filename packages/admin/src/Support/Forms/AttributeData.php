@@ -53,14 +53,13 @@ class AttributeData
                 $attribute->translate('name')
             )
             ->formatStateUsing(function ($state) use ($attribute) {
-                if (
-                    ! $state ||
-                    (get_class($state) != $attribute->type)
-                ) {
-                    return new $attribute->type;
+                if ($state instanceof FieldType) {
+                    return $state->getValue();
                 }
 
-                return $state;
+                $instance = new $attribute->type;
+
+                return $instance->getValue();
             })
             ->mutateStateForValidationUsing(function ($state) {
                 if ($state instanceof FieldType) {
@@ -70,21 +69,17 @@ class AttributeData
                 return $state;
             })
             ->mutateDehydratedStateUsing(function ($state) use ($attribute) {
-                if ($attribute->type == FileFieldType::class) {
-                    $instance = new $attribute->type;
+                if ($state instanceof FieldType) {
+                    return $state;
+                }
+
+                $instance = new $attribute->type;
+
+                if (! blank($state)) {
                     $instance->setValue($state);
-
-                    return $instance;
                 }
 
-                if (
-                    ! $state ||
-                    (get_class($state) != $attribute->type)
-                ) {
-                    return new $attribute->type;
-                }
-
-                return $state;
+                return $instance;
             })
             ->required($attribute->required)
             ->default($attribute->default_value);

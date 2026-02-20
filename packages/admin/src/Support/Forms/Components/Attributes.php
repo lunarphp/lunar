@@ -145,7 +145,15 @@ class Attributes extends Group
         });
 
         $this->mutateRelationshipDataBeforeFillUsing(static function (Attributes $component, array $data): array {
-            return $data[$component->getAttributeDataField()] ?? [];
+            $attributeData = $data[$component->getAttributeDataField()] ?? [];
+
+            foreach ($attributeData as $key => $value) {
+                if ($value instanceof FieldType) {
+                    $attributeData[$key] = $value->getValue();
+                }
+            }
+
+            return $attributeData;
         });
     }
 }
