@@ -56,7 +56,7 @@ class Attributes extends Group
 
         $this->statePath('attribute_data');
 
-        if (blank($this->childComponents)) {
+        if (blank($this->childComponents['default'] ?? [])) {
             $this->schema(function (Get $get, Livewire $livewire, ?Model $record) {
                 $modelClass = $this->modelClassOverride ?: $livewire::getResource()::getModel();
 
