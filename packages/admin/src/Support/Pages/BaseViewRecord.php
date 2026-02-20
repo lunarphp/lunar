@@ -13,7 +13,6 @@ use Lunar\Admin\Support\Pages\Concerns\ExtendsInfolist;
 abstract class BaseViewRecord extends ViewRecord
 {
     use CallsHooks;
-    use CallsHooks;
     use ExtendsFooterWidgets;
     use ExtendsHeaderActions;
     use ExtendsHeaderWidgets;

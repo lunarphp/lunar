@@ -4,9 +4,12 @@ namespace Lunar\Admin;
 
 use Closure;
 use Filament\Facades\Filament;
-use Filament\Facades\Filament\Pages\Page;
-use Filament\Facades\Filament\Resources\Resource;
-use Filament\Facades\Filament\Widgets\Widget;
+use Filament\Pages\Page;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Widgets\Widget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -186,6 +189,10 @@ class LunarPanelManager
                 ->paginationPageOptions([10, 25, 50, 100, 250])
                 ->defaultPaginationPageOption(25);
         });
+
+        Section::configureUsing(fn (Section $section) => $section->columnSpanFull());
+        Grid::configureUsing(fn (Grid $grid) => $grid->columnSpanFull());
+        Fieldset::configureUsing(fn (Fieldset $fieldset) => $fieldset->columnSpanFull());
 
         return $this;
     }

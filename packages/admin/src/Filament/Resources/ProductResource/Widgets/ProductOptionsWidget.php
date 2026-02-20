@@ -51,7 +51,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         $this->configureBaseOptions();
     }
 
-    public function addSharedOptionAction()
+    public function addSharedOptionAction(): Action
     {
         $existing = collect($this->configuredOptions)->pluck('id');
         $options = ProductOption::whereNotIn('id', $existing)
@@ -353,7 +353,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         return $valueIds;
     }
 
-    public function saveVariantsAction()
+    public function saveVariantsAction(): Action
     {
         return Action::make('saveVariants')
             ->action(function () {

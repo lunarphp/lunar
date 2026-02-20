@@ -134,7 +134,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
         }
     }
 
-    public function deleteAction()
+    public function deleteAction(): Action
     {
         return DeleteCollection::make('delete')
             ->after(function (array $arguments) {
@@ -148,7 +148,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
             );
     }
 
-    public function addChildCollectionAction()
+    public function addChildCollectionAction(): Action
     {
         return CreateChildCollection::make('addChildCollection')
             ->icon(
@@ -158,7 +158,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
             );
     }
 
-    public function makeRootAction()
+    public function makeRootAction(): Action
     {
         return Action::make('makeRoot')->requiresConfirmation()->icon(
             fn () => FilamentIcon::resolve('actions::make-collection-root-action')
@@ -171,7 +171,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
         });
     }
 
-    public function createRootCollectionAction()
+    public function createRootCollectionAction(): Action
     {
         return CreateRootCollection::make('createRootCollection')
             ->mutateDataUsing(function (array $data) {
@@ -183,7 +183,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
             );
     }
 
-    public function moveAction()
+    public function moveAction(): Action
     {
         return MoveCollection::make('move')
             ->icon(

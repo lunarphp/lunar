@@ -5,13 +5,11 @@ namespace Lunar\Admin\Support\Forms\Components;
 use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Concerns\HasComponents;
 use Filament\Schemas\Schema;
 use RuntimeException;
 
 class TextInputSelectAffix extends TextInput
 {
-    use HasComponents;
 
     protected string $view = 'lunarpanel::forms.components.text-input-select-affix';
 

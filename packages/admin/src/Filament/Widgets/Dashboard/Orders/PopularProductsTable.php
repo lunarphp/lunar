@@ -12,16 +12,6 @@ class PopularProductsTable extends TableWidget
 {
     protected int|string|array $columnSpan = 'full';
 
-    protected function getTablePollingInterval(): ?string
-    {
-        return '60s';
-    }
-
-    public static function getHeading(): ?string
-    {
-        return __('lunarpanel::widgets.dashboard.latest_orders.heading');
-    }
-
     public function table(Table $table): Table
     {
         return $table
@@ -31,6 +21,7 @@ class PopularProductsTable extends TableWidget
             ->description(
                 fn () => __('lunarpanel::widgets.dashboard.orders.popular_products.description')
             )
+            ->poll('60s')
             ->query(function () {
                 return OrderLine::query()->with(['currency'])->whereHas('order', function ($relation) {
                     $relation->whereBetween('placed_at', [
