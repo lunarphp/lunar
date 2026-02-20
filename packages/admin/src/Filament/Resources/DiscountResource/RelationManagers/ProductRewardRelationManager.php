@@ -62,6 +62,9 @@ class ProductRewardRelationManager extends BaseRelationManager
                                         ->get()
                                         ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
                                         ->all();
+                                })
+                                ->getOptionLabelUsing(function ($value): string {
+                                    return Product::modelClass()::find($value)?->attr('name') ?? $value;
                                 }),
 
                             Type::make(ProductVariant::modelClass())
@@ -72,6 +75,11 @@ class ProductRewardRelationManager extends BaseRelationManager
                                         ->get()
                                         ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();
+                                })
+                                ->getOptionLabelUsing(function ($value): string {
+                                    $variant = ProductVariant::modelClass()::with('product')->find($value);
+
+                                    return $variant ? $variant->product->attr('name').' - '.$variant->sku : $value;
                                 }),
                         ]),
                 ])->label(

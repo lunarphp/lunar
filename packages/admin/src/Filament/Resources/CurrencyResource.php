@@ -4,11 +4,11 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Awcodes\BadgeableColumn\Components\Badge;
 use Awcodes\BadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -48,10 +48,10 @@ class CurrencyResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
-    public static function getDefaultForm(Form $form): Form
+    public static function getDefaultForm(Schema $schema): Schema
     {
-        return $form->schema([
-            Forms\Components\Section::make('details')->schema(
+        return $schema->components([
+            Section::make('details')->schema(
                 static::getMainFormComponents()
             )->heading()->columns(),
         ]);

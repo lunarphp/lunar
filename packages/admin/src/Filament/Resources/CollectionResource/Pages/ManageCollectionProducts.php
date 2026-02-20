@@ -110,7 +110,8 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                                 )
                                 ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();
-                        }),
+                        })
+                        ->getOptionLabelUsing(fn ($value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')),
                 ])->action(function (array $arguments, array $data, Schema $schema, Table $table) {
                     $relationship = Relation::noConstraints(fn () => $table->getRelationship());
 

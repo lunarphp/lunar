@@ -53,7 +53,8 @@ class ManageProductAssociations extends BaseManageRelatedRecords
                             ->get()
                             ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                             ->all();
-                    }),
+                    })
+                    ->getOptionLabelUsing(fn ($value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')),
                 Select::make('type')
                     ->required()
                     ->options(ProductAssociation::getTypes()),

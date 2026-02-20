@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
 use Awcodes\Shout\Components\Shout;
-use Awcodes\Shout\Components\ShoutEntry;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -201,18 +200,18 @@ class ManageOrder extends BaseViewRecord
                 Group::make()
                     ->schema([
                         Group::make()->key('shouts')->schema([
-                            ShoutEntry::make('requires_capture')
+                            Shout::make('requires_capture')
                                 ->type('danger')
                                 ->content(__('lunarpanel::order.infolist.alert.requires_capture'))
                                 ->visible(fn () => $this->requiresCapture),
-                            ShoutEntry::make('partially_refunded')
+                            Shout::make('partially_refunded')
                                 ->state(fn () => $this->paymentStatus)
                                 ->key('partially_refunded_notice')
                                 ->icon(fn ($state) => match ($state) {
                                     'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
                                     default => null
                                 })
-                                ->color(fn (ShoutEntry $component, $state) => match ($state) {
+                                ->color(fn (Shout $component, $state) => match ($state) {
                                     'partial-refund' => 'info',
                                     'refunded' => 'danger',
                                     default => null

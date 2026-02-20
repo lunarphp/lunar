@@ -54,6 +54,9 @@ class ProductLimitationRelationManager extends BaseRelationManager
                                         ->get()
                                         ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
                                         ->all();
+                                })
+                                ->getOptionLabelUsing(function ($value): string {
+                                    return Product::modelClass()::find($value)?->attr('name') ?? $value;
                                 }),
                         ]),
                 ])->label(

@@ -76,7 +76,8 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                                 ->get()
                                 ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();
-                        }),
+                        })
+                        ->getOptionLabelUsing(fn ($value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')),
                 ])
                 ->action(function (array $arguments, array $data) {
                     Product::where('id', '=', $data['recordId'])
