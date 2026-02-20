@@ -10,7 +10,6 @@ use RuntimeException;
 
 class TextInputSelectAffix extends TextInput
 {
-
     protected string $view = 'lunarpanel::forms.components.text-input-select-affix';
 
     protected ?Closure $selectComponentClosure = null;
