@@ -285,9 +285,9 @@ class LunarPanelManager
             ])
             ->font('Poppins')
             ->middleware($panelMiddleware)
-//            ->assets([
-//                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
-//            ], 'lunarphp/panel')
+            ->assets([
+                Css::make('lunar-panel', __DIR__.'/../resources/dist/lunar-panel.css'),
+            ], 'lunarphp/panel')
             ->pages(
                 static::getPages()
             )

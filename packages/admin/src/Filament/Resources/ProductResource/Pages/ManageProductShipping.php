@@ -148,7 +148,7 @@ class ManageProductShipping extends BaseEditRecord
                         fn () => Select::make('length_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::pproductvariant.form.length_unit.label')
+                                __('lunarpanel::productvariant.form.length_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.width_value')

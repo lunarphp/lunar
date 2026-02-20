@@ -263,6 +263,11 @@ return [
     ],
     'values' => [
         'title' => 'Giá trị',
+        'form' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+        ],
         'table' => [
             'name' => [
                 'label' => 'Tên',

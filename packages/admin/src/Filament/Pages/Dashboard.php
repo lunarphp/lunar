@@ -19,12 +19,12 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            //            OrderStatsOverview::class,
-            //            OrderTotalsChart::class,
-            //            OrdersSalesChart::class,
-            //            AverageOrderValueChart::class,
-            //            NewVsReturningCustomersChart::class,
-            //            PopularProductsTable::class,
+            OrderStatsOverview::class,
+            OrderTotalsChart::class,
+            OrdersSalesChart::class,
+            AverageOrderValueChart::class,
+            NewVsReturningCustomersChart::class,
+            PopularProductsTable::class,
             LatestOrdersTable::class,
         ];
     }

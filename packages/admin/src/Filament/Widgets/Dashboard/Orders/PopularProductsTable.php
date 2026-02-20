@@ -38,6 +38,7 @@ class PopularProductsTable extends TableWidget
                 )->groupBy('identifier', 'purchasable_id')
                     ->whereType('physical');
             })->defaultSort('quantity', 'desc')
+            ->defaultKeySort(false)
             ->columns([
                 TextColumn::make('description'),
                 TextColumn::make('identifier'),
