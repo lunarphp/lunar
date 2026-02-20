@@ -28,7 +28,6 @@
         "leandrocfe/filament-apex-charts": "dev-rjs/v4-upgrade",
         "livewire/livewire": "^3.0",
         "lukascivil/treewalker": "0.9.1",
-        "lunarphp/filament3-2fa": "^2.1.0",
         "lunarphp/lunar": "self.version",
         "meilisearch/meilisearch-php": "^1.10",
         "php": "^8.2",

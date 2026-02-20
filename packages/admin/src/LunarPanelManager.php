@@ -63,7 +63,7 @@ use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
 use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Http\Controllers\DownloadPdfController;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
-use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticationPlugin;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 
 class LunarPanelManager
 {
@@ -257,15 +257,8 @@ class LunarPanelManager
         $plugins = [
             FilamentApexChartsPlugin::make(),
         ];
-        //
-        //        if (! $this->twoFactorAuthDisabled) {
-        //            $plugins[] = TwoFactorAuthenticationPlugin::make()
-        //                ->enableTwoFactorAuthentication()
-        //                ->addTwoFactorMenuItem(label: '2FA Settings')
-        //                ->forceTwoFactorSetup(condition: $this->twoFactorAuthForced);
-        //        }
 
-        return Panel::make()
+        $panel = Panel::make()
             ->spa()
             ->default()
             ->id($this->panelId)
@@ -315,7 +308,17 @@ class LunarPanelManager
                 NavigationGroup::make()
                     ->label('Settings')
                     ->collapsed(),
-            ])->sidebarCollapsibleOnDesktop();
+            ])->sidebarCollapsibleOnDesktop()
+            ->profile();
+
+        if (! $this->twoFactorAuthDisabled) {
+            $panel->multiFactorAuthentication(
+                AppAuthentication::make()->recoverable(),
+                isRequired: $this->twoFactorAuthForced,
+            );
+        }
+
+        return $panel;
     }
 
     public function extensions(array $extensions): self

@@ -2,6 +2,10 @@
 
 namespace Lunar\Admin\Models;
 
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
@@ -15,7 +19,6 @@ use Illuminate\Support\Carbon;
 use Lunar\Admin\Database\Factories\StaffFactory;
 use Lunar\Base\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
-use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
 
 /**
  * @property int $id
@@ -33,14 +36,15 @@ use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
  *
  * @method static Builder search(?string $terms)
  */
-class Staff extends Authenticatable implements FilamentUser, HasName
+class Staff extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasName
 {
     use HasFactory;
     use HasRoles;
+    use InteractsWithAppAuthentication;
+    use InteractsWithAppAuthenticationRecovery;
     use LogsActivity;
     use Notifiable;
     use SoftDeletes;
-    //    use TwoFactorAuthenticatable;
 
     protected $guard_name = 'staff';
 
