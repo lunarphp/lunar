@@ -9,8 +9,8 @@
         }
     ],
     "require": {
-        "awcodes/filament-badgeable-column": "^v3.0.0-beta.1",
-        "awcodes/shout": "^v3.0.0-beta.2",
+        "awcodes/filament-badgeable-column": "^3.0|^4.0",
+        "awcodes/shout": "^3.0|^4.0",
         "barryvdh/laravel-dompdf": "^3.0",
         "cartalyst/converter": "^9.0|^10",
         "doctrine/dbal": "^3.6|^4.0",
@@ -18,15 +18,15 @@
         "ext-bcmath": "*",
         "ext-exif": "*",
         "ext-intl": "*",
-        "filament/filament": "^4.1",
-        "filament/spatie-laravel-media-library-plugin": "^4.0",
+        "filament/filament": "^4.1|^5.0",
+        "filament/spatie-laravel-media-library-plugin": "^4.0|^5.0",
         "guzzlehttp/guzzle": "^7.3",
         "http-interop/http-factory-guzzle": "^1.2",
         "kalnoy/nestedset": "^v6.0.5",
         "laravel/framework": "^11.0|^12.0",
         "laravel/scout": "^10.13.1",
-        "leandrocfe/filament-apex-charts": "dev-rjs/v4-upgrade",
-        "livewire/livewire": "^3.0",
+        "leandrocfe/filament-apex-charts": "^4.0|^5.0",
+        "livewire/livewire": "^3.0|^4.0",
         "lukascivil/treewalker": "0.9.1",
         "lunarphp/lunar": "self.version",
         "meilisearch/meilisearch-php": "^1.10",
@@ -42,7 +42,6 @@
         "typesense/typesense-php": "^4.9"
     },
     "require-dev": {
-        "filament/upgrade": "^4.0",
         "larastan/larastan": "^2.9|^3.0",
         "laravel/pint": "1.17.0",
         "mockery/mockery": "^1.6.9",
@@ -88,12 +87,6 @@
             "Lunar\\Tests\\Search\\": "tests/search"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/ralphjsmit/filament-apex-charts"
-        }
-    ],
     "extra": {
         "lunar": {
             "name": [
