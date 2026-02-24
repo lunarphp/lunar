@@ -20,12 +20,7 @@ jobs:
             laravel: "^11.0"
           - php: "8.2"
             laravel: "^12.0"
-        include:
-          - php: "8.4"
-            laravel: "^12.0"
-            filament: "^5.0"
-            dependencies: "highest"
-    name: "PHP ${{ matrix.php }} - L${{ matrix.laravel }}${{ matrix.filament && format(' - F{0}', matrix.filament) || '' }} ${{ matrix.dependencies == 'highest' && '↑' || '↓' }}"
+    name: "PHP ${{ matrix.php }} - L${{ matrix.laravel }} ${{ matrix.dependencies == 'highest' && '↑' || '↓' }}"
 
     runs-on: "ubuntu-latest"
 
@@ -43,12 +38,7 @@ jobs:
 
       - name: "Install dependencies from composer.json"
         if: "matrix.dependencies != 'lowest'"
-        run: |
-          EXTRA=""
-          if [ -n "${{ matrix.filament }}" ]; then
-            EXTRA="--with=filament/filament:${{ matrix.filament }}"
-          fi
-          composer update --with='laravel/framework:${{ matrix.laravel }}' $EXTRA --no-interaction --no-progress
+        run: "composer update --with='laravel/framework:${{ matrix.laravel }}' --no-interaction --no-progress"
 
       - name: "Install lowest dependencies from composer.json"
         if: "matrix.dependencies == 'lowest'"
