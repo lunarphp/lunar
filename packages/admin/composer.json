@@ -13,12 +13,7 @@
         ]
     },
     "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/ralphjsmit/filament-apex-charts"
-        }
-    ],
+    "repositories": [],
     "require": {
         "lunarphp/core": "self.version",
         "filament/filament": "^4.1",
@@ -26,7 +21,7 @@
         "spatie/laravel-permission": "^6.12",
         "barryvdh/laravel-dompdf": "^3.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
-        "leandrocfe/filament-apex-charts": "dev-rjs/v4-upgrade",
+        "leandrocfe/filament-apex-charts": "^5.0",
         "awcodes/shout": "^v3.0.0-beta.2",
         "awcodes/filament-badgeable-column": "^v3.0.0-beta.1"
     },
