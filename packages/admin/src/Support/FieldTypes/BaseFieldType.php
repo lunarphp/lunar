@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
 use Livewire\Livewire;
 use Lunar\Admin\Support\Synthesizers\TextSynth;
 use Lunar\Models\Attribute;

@@ -35,7 +35,7 @@ class CreateChildCollection extends CreateAction
             $formInput = TranslatedText::class;
         }
 
-        $this->form([
+        $this->schema([
             $formInput::make('name')->required(),
         ]);
 

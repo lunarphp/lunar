@@ -17,32 +17,32 @@
         </div>
         <div class="fi-ta-content divide-gray-200 overflow-x-auto">
           @if(count($this->configuredOptions))
-            <x-filament-tables::table>
+            <table class="fi-ta-table">
               <thead>
                 <tr class="bg-gray-50 dark:bg-white/5">
-                  <x-filament-tables::header-cell>
+                  <th class="fi-ta-header-cell">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
                         {{ __('lunarpanel::productoption.widgets.product-options.options-table.table.option.label') }}
                       </span>
-                  </x-filament-tables::header-cell>
-                  <x-filament-tables::header-cell>
+                  </th>
+                  <th class="fi-ta-header-cell">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
                         {{ __('lunarpanel::productoption.widgets.product-options.options-table.table.values.label') }}
                       </span>
-                  </x-filament-tables::header-cell>
+                  </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
               @foreach($this->configuredOptions as $option)
-                <x-filament-tables::row>
-                  <x-filament-tables::cell>
+                <tr class="fi-ta-row">
+                  <td class="fi-ta-cell">
                     <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                       <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
                         {{ $option['value'] }}
                       </span>
                     </div>
-                  </x-filament-tables::cell>
-                  <x-filament-tables::cell>
+                  </td>
+                  <td class="fi-ta-cell">
                     <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                       <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white  ">
                       {{ collect($option['option_values'])
@@ -53,13 +53,20 @@
                       )->join(', ') }}
                       </span>
                     </div>
-                  </x-filament-tables::cell>
-                </x-filament-tables::row>
+                  </td>
+                </tr>
               @endforeach
               </tbody>
-            </x-filament-tables::table>
+            </table>
           @else
-            <x-filament-tables::empty-state heading="No Product Options Configured" icon="lucide-shapes"></x-filament-tables::empty-state>
+            <div class="fi-ta-empty-state">
+              <div class="fi-ta-empty-state-content">
+                <div class="fi-ta-empty-state-icon-bg">
+                  {{ \Filament\Support\generate_icon_html('lucide-shapes', size: \Filament\Support\Enums\IconSize::Large) }}
+                </div>
+                <h4 class="fi-ta-empty-state-heading">No Product Options Configured</h4>
+              </div>
+            </div>
           @endif
         </div>
       </div>
@@ -74,43 +81,43 @@
         </div>
         <div class="fi-ta-content divide-y divide-gray-200 overflow-x-auto dark:divide-white/10 dark:border-t-white/10">
           @if(count($this->variants))
-              <x-filament-tables::table>
+              <table class="fi-ta-table">
                 <thead class="divide-y divide-gray-200 dark:divide-white/5">
                   <tr class="bg-gray-50 dark:bg-white/5">
                     @if($this->hasNewVariants)
-                      <x-filament-tables::header-cell>
-                      </x-filament-tables::header-cell>
+                      <th class="fi-ta-header-cell">
+                      </th>
                     @endif
-                    <x-filament-tables::header-cell class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
+                    <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
                         {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.option.label') }}
                       </span>
-                    </x-filament-tables::header-cell>
-                    <x-filament-tables::header-cell>
+                    </th>
+                    <th class="fi-ta-header-cell">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
                         {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.sku.label') }}
                       </span>
-                    </x-filament-tables::header-cell>
-                    <x-filament-tables::header-cell>
+                    </th>
+                    <th class="fi-ta-header-cell">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
                         {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.price.label') }}
                       </span>
-                    </x-filament-tables::header-cell>
-                    <x-filament-tables::header-cell>
+                    </th>
+                    <th class="fi-ta-header-cell">
                       <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
                         {{ __('lunarpanel::productoption.widgets.product-options.variants-table.table.stock.label') }}
                       </span>
-                    </x-filament-tables::header-cell>
-                    <x-filament-tables::header-cell>
-                    </x-filament-tables::header-cell>
+                    </th>
+                    <th class="fi-ta-header-cell">
+                    </th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
 
                 @foreach($this->variants as $permutationIndex => $permutation)
-                  <x-filament-tables::row wire:key="permutation_{{ $permutation['key'] }}">
+                  <tr class="fi-ta-row" wire:key="permutation_{{ $permutation['key'] }}">
                     @if($this->hasNewVariants)
-                      <x-filament-tables::cell class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
+                      <td class="fi-ta-cell">
                         <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                           @if(!$permutation['variant_id'])
                             <x-filament::badge color="info">
@@ -118,9 +125,9 @@
                             </x-filament::badge>
                           @endif
                         </div>
-                      </x-filament-tables::cell>
+                      </td>
                     @endif
-                    <x-filament-tables::cell>
+                    <td class="fi-ta-cell">
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <span class="fi-ta-text-item-label flex flex-col text-sm leading-6 text-gray-950 dark:text-white">
                           @foreach($permutation['values'] as $option => $value)
@@ -128,8 +135,8 @@
                           @endforeach
                         </span>
                       </div>
-                    </x-filament-tables::cell>
-                    <x-filament-tables::cell>
+                    </td>
+                    <td class="fi-ta-cell">
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <x-filament::input.wrapper>
                           <x-filament::input
@@ -138,8 +145,8 @@
                           />
                         </x-filament::input.wrapper>
                       </div>
-                    </x-filament-tables::cell>
-                    <x-filament-tables::cell class="w-32">
+                    </td>
+                    <td class="fi-ta-cell w-32">
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <x-filament::input.wrapper>
                           <x-filament::input
@@ -148,8 +155,8 @@
                           />
                         </x-filament::input.wrapper>
                       </div>
-                    </x-filament-tables::cell>
-                    <x-filament-tables::cell class="w-32">
+                    </td>
+                    <td class="fi-ta-cell w-32">
                       <div class="fi-ta-text grid w-full gap-y-1 px-3 py-4">
                         <x-filament::input.wrapper>
                           <x-filament::input
@@ -158,8 +165,8 @@
                           />
                         </x-filament::input.wrapper>
                       </div>
-                    </x-filament-tables::cell>
-                    <x-filament-tables::cell>
+                    </td>
+                    <td class="fi-ta-cell">
                       <div class="flex items-center space-x-2">
                         @if($permutation['variant_id'])
                           <x-filament::link :href="$this->getVariantLink($permutation['variant_id'])">
@@ -170,14 +177,21 @@
                           {{ __('lunarpanel::productoption.widgets.product-options.variants-table.actions.delete.label') }}
                         </button>
                       </div>
-                    </x-filament-tables::cell>
+                    </td>
 
-                  </x-filament-tables::row>
+                  </tr>
                 @endforeach
                 </tbody>
-              </x-filament-tables::table>
+              </table>
             @else
-              <x-filament-tables::empty-state :heading="__('lunarpanel::productoption.widgets.product-options.variants-table.empty.heading')" icon="lucide-shapes"></x-filament-tables::empty-state>
+              <div class="fi-ta-empty-state">
+                <div class="fi-ta-empty-state-content">
+                  <div class="fi-ta-empty-state-icon-bg">
+                    {{ \Filament\Support\generate_icon_html('lucide-shapes', size: \Filament\Support\Enums\IconSize::Large) }}
+                  </div>
+                  <h4 class="fi-ta-empty-state-heading">{{ __('lunarpanel::productoption.widgets.product-options.variants-table.empty.heading') }}</h4>
+                </div>
+              </div>
             @endif
         </div>
       </div>
@@ -199,11 +213,15 @@
       </div>
       @if(!count($this->configuredOptions))
         <div wire:key="product_options">
-          <x-filament-tables::empty-state
-            :heading="__('lunarpanel::productoption.widgets.product-options.options-list.empty.heading')"
-            :description="__('lunarpanel::productoption.widgets.product-options.options-list.empty.description')"
-            icon="lucide-shapes"
-          ></x-filament-tables::empty-state>
+          <div class="fi-ta-empty-state">
+            <div class="fi-ta-empty-state-content">
+              <div class="fi-ta-empty-state-icon-bg">
+                {{ \Filament\Support\generate_icon_html('lucide-shapes', size: \Filament\Support\Enums\IconSize::Large) }}
+              </div>
+              <h4 class="fi-ta-empty-state-heading">{{ __('lunarpanel::productoption.widgets.product-options.options-list.empty.heading') }}</h4>
+              <p class="fi-ta-empty-state-description">{{ __('lunarpanel::productoption.widgets.product-options.options-list.empty.description') }}</p>
+            </div>
+          </div>
         </div>
       @else
         <div>

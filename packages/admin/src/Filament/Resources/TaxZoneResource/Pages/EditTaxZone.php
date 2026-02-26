@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\TaxZoneResource\Pages;
 
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Lunar\Admin\Filament\Resources\TaxZoneResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
@@ -13,7 +13,7 @@ class EditTaxZone extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

@@ -45,14 +45,14 @@ it('can extend table columns', function ($relationManager, $page) {
 it('can extend form schema', function ($relationManager, $page) {
     $class = new class extends \Lunar\Admin\Support\Extending\RelationManagerExtension
     {
-        public function extendForm(Filament\Forms\Form $form): Filament\Forms\Form
+        public function extendForm(Filament\Schemas\Schema $schema): Filament\Schemas\Schema
         {
-            $form->schema([
-                ...$form->getComponents(true),
+            $schema->components([
+                ...$schema->getComponents(true),
                 \Filament\Forms\Components\TextInput::make('test_form_field'),
             ]);
 
-            return $form;
+            return $schema;
         }
     };
 
@@ -65,7 +65,7 @@ it('can extend form schema', function ($relationManager, $page) {
     \Livewire\Livewire::test($relationManager, [
         'ownerRecord' => $model,
         'pageClass' => $page,
-    ])->assertFormFieldExists('test_form_field');
+    ])->assertFormFieldExists('test_form_field', 'form');
 })->with([
     'AttributesRelationManager' => [AttributesRelationManager::class, EditAttributeGroup::class],
     'ValuesRelationManager' => [ValuesRelationManager::class, EditProductOption::class],

@@ -2,15 +2,18 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 
-use Awcodes\FilamentBadgeableColumn\Components\Badge;
-use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
+use Awcodes\BadgeableColumn\Components\Badge;
+use Awcodes\BadgeableColumn\Components\BadgeableColumn;
 use Awcodes\Shout\Components\Shout;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Pages\ManageRelatedRecords;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
@@ -44,9 +47,9 @@ class ManageShippingRates extends ManageRelatedRecords
         return __('lunarpanel.shipping::relationmanagers.shipping_rates.title_plural');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             Shout::make('')->content(
                 function () {
                     $pricesIncTax = config('lunar.pricing.stored_inclusive_of_tax', false);
@@ -168,7 +171,7 @@ class ManageShippingRates extends ManageRelatedRecords
                     __('lunarpanel.shipping::relationmanagers.shipping_rates.table.price_breaks_count.label')
                 )->counts('priceBreaks'),
         ])->headerActions([
-            Tables\Actions\CreateAction::make()->label(
+            CreateAction::make()->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.actions.create.label')
             )->action(function (Table $table, ?ShippingRate $shippingRate = null, array $data = []) {
                 $relationship = $table->getRelationship();
@@ -181,18 +184,18 @@ class ManageShippingRates extends ManageRelatedRecords
             })->slideOver(),
         ])->actions([
 
-            Tables\Actions\EditAction::make()->slideOver()->action(function (ShippingRate $shippingRate, array $data) {
+            EditAction::make()->slideOver()->action(function (ShippingRate $shippingRate, array $data) {
                 static::saveShippingRate($shippingRate, $data);
             }),
-            Tables\Actions\DeleteAction::make()->requiresConfirmation(),
-            Tables\Actions\Action::make('disable')->color('warning')->action(function (ShippingRate $shippingRate) {
+            DeleteAction::make()->requiresConfirmation(),
+            Action::make('disable')->color('warning')->action(function (ShippingRate $shippingRate) {
                 $shippingRate->updateQuietly([
                     'enabled' => false,
                 ]);
             })->hidden(
                 fn (ShippingRate $shippingRate) => ! $shippingRate->enabled
             ),
-            Tables\Actions\Action::make('enable')->color('success')->action(function (ShippingRate $shippingRate) {
+            Action::make('enable')->color('success')->action(function (ShippingRate $shippingRate) {
                 $shippingRate->updateQuietly([
                     'enabled' => true,
                 ]);

@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductTypeResource\Pages;
 
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Lunar\Admin\Filament\Resources\ProductTypeResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 
@@ -13,7 +13,7 @@ class ListProductTypes extends BaseListRecords
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 }
