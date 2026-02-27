@@ -37,9 +37,9 @@ interface TaxDriver
     /**
      * Set a tax zone override.
      *
-     * When provided, this zone is used directly instead of resolving one from
-     * the shipping address, allowing middleware to enforce the correct
-     * geographic tax treatment based on IP geo-location or customer country.
+     * When provided, this zone is used directly instead of resolving one from the shipping address, allowing
+     * the developer to handle cases like taxation on IP address basis. Just set the tax zone as and let it
+     * flow smoothly.
      */
     public function setTaxZone(?TaxZone $taxZone = null): self;
 

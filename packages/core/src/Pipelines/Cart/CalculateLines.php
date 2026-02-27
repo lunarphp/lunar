@@ -20,9 +20,7 @@ class CalculateLines
     {
         /** @var Cart $cart */
 
-        // Publish the cart-level tax zone override into the Blink request-scope
-        // store so Price::priceIncTax() / priceExTax() pick it up while
-        // GetUnitPrice computes the per-unit display price for each line.
+        // Cache the TaxZone so that price model taxInc methods accounts for it in computation.
         if ($cart->taxZone) {
             Blink::put('lunar_cart_tax_zone', $cart->taxZone);
         } else {

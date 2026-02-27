@@ -300,7 +300,7 @@ test('can get a compare price inc tax', function () {
     expect($price->comparePriceIncTax()->value)->toEqual(2000);
 });
 
-test('priceIncTax and priceExTax respect the cart tax zone blink override', function () {
+test('priceIncTax and priceExTax respect the cart tax zone', function () {
     // Prices stored ex-tax; we will add tax on top.
     Config::set('lunar.pricing.stored_inclusive_of_tax', false);
 
@@ -352,11 +352,7 @@ test('priceIncTax and priceExTax respect the cart tax zone blink override', func
     expect($price->priceIncTax()->value)->toEqual(1000);
 });
 
-// ---------------------------------------------------------------------------
-// Explicit parameter tests — the UAE / default-class scenario
-// ---------------------------------------------------------------------------
-
-test('priceIncTax explicit taxZone param overrides Blink cart zone', function () {
+test('priceIncTax explicit taxZone param overrides cart zone', function () {
     // Prices stored ex-tax.
     Config::set('lunar.pricing.stored_inclusive_of_tax', false);
 
@@ -409,7 +405,7 @@ test('priceIncTax explicit taxZone param overrides Blink cart zone', function ()
     expect($priceInc->priceExTax(taxZone: $zoneB)->value)->toEqual(1000);
 });
 
-test('priceIncTax accepts an explicit tax zone param (UAE zone scenario)', function () {
+test('priceIncTax accepts an explicit tax zone param', function () {
     Config::set('lunar.pricing.stored_inclusive_of_tax', false);
 
     $currency = Currency::factory()->create(['code' => 'AED', 'decimal_places' => 2, 'default' => true]);

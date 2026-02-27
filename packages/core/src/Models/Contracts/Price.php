@@ -26,22 +26,21 @@ interface Price
     /**
      * Return the price exclusive of tax.
      *
-     * @param  TaxZone|null  $taxZone  Override the tax zone used for rate lookup.
-     *                                 Falls back to the Blink cart zone, then the default zone.
+     * @param  TaxZone|null  $taxZone
      */
     public function priceExTax(?TaxZone $taxZone = null): \Lunar\DataTypes\Price;
 
     /**
      * Return the price inclusive of tax.
      *
-     * @param  TaxZone|null  $taxZone  Override the tax zone used for rate lookup.
+     * @param  TaxZone|null  $taxZone
      */
     public function priceIncTax(?TaxZone $taxZone = null): int|\Lunar\DataTypes\Price;
 
     /**
      * Return the compare price inclusive of tax.
      *
-     * @param  TaxZone|null  $taxZone  Override the tax zone used for rate lookup.
+     * @param  TaxZone|null  $taxZone
      */
     public function comparePriceIncTax(?TaxZone $taxZone = null): int|\Lunar\DataTypes\Price;
 }

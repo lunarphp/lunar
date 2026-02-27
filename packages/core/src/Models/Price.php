@@ -139,13 +139,9 @@ class Price extends BaseModel implements Contracts\Price
      */
     protected function getPriceableTaxRate(?TaxZone $taxZone = null): int|float
     {
-        // Tax class always comes from the priceable (item classification stays on the product)
         $taxClass = $this->priceable->getTaxClass();
-
-        // Resolve tax zone: explicit param → Blink cart override → cached store default zone
         $taxZone ??= Blink::get('lunar_cart_tax_zone')
             ?? Blink::once('lunar_default_tax_zone', fn () => TaxZone::where('default', '=', 1)->first());
-
         $cacheKey = 'price_tax_rate_'.$taxClass->id.'_'.($taxZone?->id ?? 'none');
 
         return Blink::once($cacheKey, function () use ($taxClass, $taxZone) {
