@@ -1163,3 +1163,63 @@ test('can get same draft order when cart does not change', function () {
         )->toBe($newOrder->id);
 
 });
+
+test('cart tax zone override is applied through the full calculation pipeline', function () {
+    // Prices are stored ex-tax; tax is added on top during cart calculation.
+    Config::set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $currency = Currency::factory()->state(['code' => 'GBP'])->create();
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    $taxClass = TaxClass::factory()->create(['name' => 'Standard', 'default' => true]);
+
+    // Default zone: 0 % – simulates a store where no tax applies for unknown locations.
+    $defaultTaxZone = TaxZone::factory()->state(['default' => true])->create();
+    $defaultRate = TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])->create(['name' => 'Default Rate']);
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id'  => $defaultRate->id,
+        'percentage'   => 0,
+    ]);
+
+    // UAE zone: 20 % – the override set by IP-detection middleware.
+    $uaeZone = TaxZone::factory()->state(['default' => false])->create(['name' => 'UAE']);
+    $uaeRate = TaxRate::factory()->state(['tax_zone_id' => $uaeZone])->create(['name' => 'UAE VAT']);
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id'  => $uaeRate->id,
+        'percentage'   => 20,
+    ]);
+
+    $purchasable = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
+
+    Price::factory()->create([
+        'price'          => 1000,
+        'min_quantity'   => 1,
+        'currency_id'    => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id'   => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id'   => $purchasable->id,
+        'quantity'         => 1,
+    ]);
+
+    // Without override – default zone 0 % means no tax.
+    $cart->calculate();
+    expect($cart->taxTotal->value)->toEqual(0);
+    expect($cart->total->value)->toEqual(1000);
+
+    // With zone override – the cart-level zone drives the full pipeline (CalculateLines
+    // publishes the Blink key; CalculateTax passes it to SystemTaxDriver).
+    $cart->setTaxZone($uaeZone)->recalculate();
+    expect($cart->taxTotal->value)->toEqual(200);   // 20 % of 1000
+    expect($cart->total->value)->toEqual(1200);
+
+    // Clearing the override reverts to the default zone → 0 %.
+    $cart->setTaxZone(null)->recalculate();
+    expect($cart->taxTotal->value)->toEqual(0);
+    expect($cart->total->value)->toEqual(1000);
+});

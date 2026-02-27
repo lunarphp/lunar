@@ -41,6 +41,7 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Models\TaxZone;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
@@ -137,6 +138,15 @@ class Cart extends BaseModel implements Contracts\Cart
      * The shipping override to use for the cart.
      */
     public ?ShippingOption $shippingOptionOverride = null;
+
+    /**
+     * The tax zone override for this cart.
+     * When set, this zone will be used instead of resolving a zone from the
+     * shipping address, enabling middleware to enforce the correct geographic
+     * tax treatment based on IP geo-location or customer-provided country
+     * before a full shipping address is known.
+     */
+    public ?TaxZone $taxZone = null;
 
     /**
      * Additional shipping estimate meta data.
@@ -616,5 +626,19 @@ class Cart extends BaseModel implements Contracts\Cart
         }
 
         return $option;
+    }
+
+    /**
+     * Set the tax zone override for this cart.
+     *
+     * When set, all tax calculations will use this zone instead of resolving
+     * one from the shipping address. Pass null to clear the override and fall
+     * back to the address-derived (or default) zone.
+     */
+    public function setTaxZone(?TaxZone $taxZone): Cart
+    {
+        $this->taxZone = $taxZone;
+
+        return $this;
     }
 }

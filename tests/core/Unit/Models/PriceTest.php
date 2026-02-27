@@ -8,6 +8,13 @@ use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
+use Lunar\Models\Country;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRate;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Models\TaxZone;
+use Lunar\Models\TaxZoneCountry;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -291,4 +298,199 @@ test('can get a compare price inc tax', function () {
     ]);
 
     expect($price->comparePriceIncTax()->value)->toEqual(2000);
+});
+
+test('priceIncTax and priceExTax respect the cart tax zone blink override', function () {
+    // Prices stored ex-tax; we will add tax on top.
+    Config::set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+        'default' => true,
+    ]);
+
+    $taxClass = TaxClass::factory()->create();
+
+    // Default zone: 0 %
+    $defaultTaxZone = TaxZone::factory()->state(['default' => true])->create();
+    $defaultRate = TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])->create();
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id'  => $defaultRate->id,
+        'percentage'   => 0,
+    ]);
+
+    // Override zone: 20 %
+    $overrideZone = TaxZone::factory()->state(['default' => false])->create();
+    $overrideRate = TaxRate::factory()->state(['tax_zone_id' => $overrideZone])->create();
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id'  => $overrideRate->id,
+        'percentage'   => 20,
+    ]);
+
+    $variant = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
+
+    $price = Price::factory()->create([
+        'currency_id'    => $currency->id,
+        'priceable_id'   => $variant->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'price'          => 1000,
+        'min_quantity'   => 1,
+    ]);
+
+    // Without override – default zone 0 % applies.
+    expect($price->priceIncTax()->value)->toEqual(1000);
+
+    // With zone override published to Blink – 20 % should apply instead.
+    Blink::put('lunar_cart_tax_zone', $overrideZone);
+    expect($price->priceIncTax()->value)->toEqual(1200);
+
+    // After clearing the override – reverts to 0 %.
+    Blink::forget('lunar_cart_tax_zone');
+    expect($price->priceIncTax()->value)->toEqual(1000);
+});
+
+// ---------------------------------------------------------------------------
+// Explicit parameter tests — the UAE / default-class scenario
+// ---------------------------------------------------------------------------
+
+test('priceIncTax explicit taxZone param overrides Blink cart zone', function () {
+    // Prices stored ex-tax.
+    Config::set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $currency = Currency::factory()->create(['code' => 'AED', 'decimal_places' => 2, 'default' => true]);
+
+    $taxClass = TaxClass::factory()->create(['name' => 'Standard']);
+
+    // Zone A: 5 %
+    $zoneA = TaxZone::factory()->state(['default' => true])->create(['name' => 'Zone A']);
+    $rateA = TaxRate::factory()->state(['tax_zone_id' => $zoneA])->create();
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id'  => $rateA->id,
+        'percentage'   => 5,
+    ]);
+
+    // Zone B: 20 %
+    $zoneB = TaxZone::factory()->state(['default' => false])->create(['name' => 'Zone B']);
+    $rateB = TaxRate::factory()->state(['tax_zone_id' => $zoneB])->create();
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id'  => $rateB->id,
+        'percentage'   => 20,
+    ]);
+
+    $variant = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
+    $price = Price::factory()->create([
+        'currency_id'    => $currency->id,
+        'priceable_id'   => $variant->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'price'          => 1000,
+        'min_quantity'   => 1,
+    ]);
+
+    // Blink says Zone A (5 %), but explicit param Zone B (20 %) must win
+    Blink::put('lunar_cart_tax_zone', $zoneA);
+    expect($price->priceIncTax(taxZone: $zoneB)->value)->toEqual(1200);
+
+    Blink::forget('lunar_cart_tax_zone');
+
+    // Also works on priceExTax (prices stored inc-tax scenario)
+    Config::set('lunar.pricing.stored_inclusive_of_tax', true);
+    $priceInc = Price::factory()->create([
+        'currency_id'    => $currency->id,
+        'priceable_id'   => $variant->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'price'          => 1200,   // stored inc 20 %
+        'min_quantity'   => 1,
+    ]);
+    expect($priceInc->priceExTax(taxZone: $zoneB)->value)->toEqual(1000);
+});
+
+test('priceIncTax accepts an explicit tax zone param (UAE zone scenario)', function () {
+    Config::set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $currency = Currency::factory()->create(['code' => 'AED', 'decimal_places' => 2, 'default' => true]);
+
+    // Default zone: 0 % (global default for unknown locations)
+    $defaultTaxZone = TaxZone::factory()->state(['default' => true])->create(['name' => 'Default']);
+    $defaultTaxClass = TaxClass::factory()->create(['name' => 'Default', 'default' => true]);
+    $defaultRate = TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])->create();
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $defaultTaxClass->id,
+        'tax_rate_id'  => $defaultRate->id,
+        'percentage'   => 0,
+    ]);
+
+    // UAE zone: 10 % VAT
+    $uaeZone = TaxZone::factory()->state(['default' => false])->create(['name' => 'UAE']);
+    $uae = Country::factory()->create(['iso3' => 'ARE', 'name' => 'United Arab Emirates']);
+    TaxZoneCountry::factory()->create(['tax_zone_id' => $uaeZone->id, 'country_id' => $uae->id]);
+    $uaeRate = TaxRate::factory()->state(['tax_zone_id' => $uaeZone])->create(['name' => 'UAE VAT']);
+    $vatTaxClass = TaxClass::factory()->create(['name' => 'UAE VAT 10%']);
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $vatTaxClass->id,
+        'tax_rate_id'  => $uaeRate->id,
+        'percentage'   => 10,
+    ]);
+
+    $variant = ProductVariant::factory(['tax_class_id' => $vatTaxClass->id])->create();
+    $price = Price::factory()->create([
+        'currency_id'    => $currency->id,
+        'priceable_id'   => $variant->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'price'          => 1000,
+        'min_quantity'   => 1,
+    ]);
+
+    // Without zone override – falls back to default zone → 0 % even though
+    // the variant's class has UAE rates configured
+    expect($price->priceIncTax()->value)->toEqual(1000);
+
+    // Passing the UAE zone explicitly returns the 10 % rate for that zone
+    expect($price->priceIncTax(taxZone: $uaeZone)->value)->toEqual(1100);
+});
+
+test('comparePriceIncTax accepts explicit taxZone param', function () {
+    Config::set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $currency = Currency::factory()->create(['code' => 'AED', 'decimal_places' => 2, 'default' => true]);
+
+    $taxClass = TaxClass::factory()->create(['default' => true]);
+
+    // Default zone: 0 %
+    $defaultTaxZone = TaxZone::factory()->state(['default' => true])->create();
+    $defaultRate = TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])->create();
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id'  => $defaultRate->id,
+        'percentage'   => 0,
+    ]);
+
+    // UAE zone: 10 %
+    $uaeZone = TaxZone::factory()->state(['default' => false])->create(['name' => 'UAE']);
+    $uaeRate = TaxRate::factory()->state(['tax_zone_id' => $uaeZone])->create();
+    TaxRateAmount::factory()->create([
+        'tax_class_id' => $taxClass->id,
+        'tax_rate_id'  => $uaeRate->id,
+        'percentage'   => 10,
+    ]);
+
+    $variant = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
+    $price = Price::factory()->create([
+        'currency_id'    => $currency->id,
+        'priceable_id'   => $variant->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'price'          => 1000,
+        'compare_price'  => 1500,
+        'min_quantity'   => 1,
+    ]);
+
+    // Default zone → 0 % on compare price
+    expect($price->comparePriceIncTax()->value)->toEqual(1500);
+
+    // UAE zone → 10 % on compare price
+    expect($price->comparePriceIncTax(taxZone: $uaeZone)->value)->toEqual(1650);
 });

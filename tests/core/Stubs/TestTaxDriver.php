@@ -10,6 +10,7 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxRateAmount;
@@ -40,6 +41,11 @@ class TestTaxDriver implements TaxDriver
      * The cart line.
      */
     protected CartLineContract $cartLine;
+
+    /**
+     * The optional tax zone override.
+     */
+    protected ?TaxZoneContract $taxZone = null;
 
     /**
      * {@inheritDoc}
@@ -87,6 +93,16 @@ class TestTaxDriver implements TaxDriver
     public function setCartLine(CartLineContract $cartLine): self
     {
         $this->cartLine = $cartLine;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTaxZone(?TaxZoneContract $taxZone = null): self
+    {
+        $this->taxZone = $taxZone;
 
         return $this;
     }
