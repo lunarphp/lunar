@@ -42,6 +42,7 @@ use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\TaxZone;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
@@ -67,6 +68,27 @@ class Cart extends BaseModel implements Contracts\Cart
     use HasMacros;
     use LogsActivity;
     use SoftDeletes;
+
+    /**
+     * Restore the tax zone override from the cart's meta JSON column whenever
+     * a Cart is loaded from the database. Using Blink to cache the TaxZone
+     * model lookup avoids repeated DB queries within the same request when
+     * multiple carts are retrieved.
+     */
+    protected static function booted(): void
+    {
+        parent::booted();
+
+        static::retrieved(function (Cart $cart) {
+            $taxZoneId = $cart->meta['tax_zone_id'] ?? null;
+            if ($taxZoneId) {
+                $cart->taxZone = Blink::once(
+                    'cart_tax_zone_'.$taxZoneId,
+                    fn () => TaxZone::find($taxZoneId)
+                );
+            }
+        });
+    }
 
     /**
      * Array of cachable class properties.
@@ -634,10 +656,25 @@ class Cart extends BaseModel implements Contracts\Cart
      * When set, all tax calculations will use this zone instead of resolving
      * one from the shipping address. Pass null to clear the override and fall
      * back to the address-derived (or default) zone.
+     *
+     * The zone ID is mirrored into the cart's `meta` JSON column so the choice
+     * survives across requests. Call `->save()` afterwards to persist it to the
+     * database; the `booted()` retrieved-event listener will then restore the
+     * zone automatically on every subsequent page load.
      */
     public function setTaxZone(?TaxZone $taxZone): Cart
     {
         $this->taxZone = $taxZone;
+
+        // Persist the zone ID in meta so the override survives page reloads.
+        // The caller is responsible for calling ->save() to flush to the DB.
+        $meta = $this->meta ?? new \ArrayObject;
+        if ($taxZone) {
+            $meta['tax_zone_id'] = $taxZone->id;
+        } else {
+            unset($meta['tax_zone_id']);
+        }
+        $this->meta = $meta;
 
         return $this;
     }

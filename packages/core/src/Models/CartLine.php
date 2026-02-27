@@ -40,6 +40,7 @@ class CartLine extends BaseModel implements Contracts\CartLine
      */
     public $cachableProperties = [
         'unitPrice',
+        'unitPriceInclTax',
         'subTotal',
         'discountTotal',
         'taxAmount',
