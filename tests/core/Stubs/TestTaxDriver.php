@@ -116,7 +116,14 @@ class TestTaxDriver implements TaxDriver
 
         if ($this->purchasable) {
             $taxClass = $this->purchasable->getTaxClass();
-            $taxAmounts = $taxClass->taxRateAmounts;
+
+            // When a zone override is provided, restrict to that zone's rate amounts
+            // (mirrors SystemTaxDriver behaviour so cart-level zone tests work correctly).
+            if ($this->taxZone) {
+                $taxAmounts = $this->taxZone->taxAmounts()->whereTaxClassId($taxClass->id)->get();
+            } else {
+                $taxAmounts = $taxClass->taxRateAmounts;
+            }
         } else {
             $taxAmounts = TaxRateAmount::factory(2)->create();
         }

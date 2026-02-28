@@ -1207,19 +1207,19 @@ test('cart tax zone override is applied through the full calculation pipeline', 
         'quantity'         => 1,
     ]);
 
-    // Without override – default zone 0 % means no tax.
-    $cart->calculate();
+    // Default zone (0 %) – the cart-level zone is passed through the full pipeline:
+    // CalculateLines publishes the Blink key; CalculateTax forwards it to the driver.
+    $cart->setTaxZone($defaultTaxZone)->calculate();
     expect($cart->taxTotal->value)->toEqual(0);
     expect($cart->total->value)->toEqual(1000);
 
-    // With zone override – the cart-level zone drives the full pipeline (CalculateLines
-    // publishes the Blink key; CalculateTax passes it to SystemTaxDriver).
+    // Switch to UAE zone (20 %) – the override is correctly picked up.
     $cart->setTaxZone($uaeZone)->recalculate();
     expect($cart->taxTotal->value)->toEqual(200);   // 20 % of 1000
     expect($cart->total->value)->toEqual(1200);
 
-    // Clearing the override reverts to the default zone → 0 %.
-    $cart->setTaxZone(null)->recalculate();
+    // Switch back to the default zone – pipeline correctly reverts to 0 %.
+    $cart->setTaxZone($defaultTaxZone)->recalculate();
     expect($cart->taxTotal->value)->toEqual(0);
     expect($cart->total->value)->toEqual(1000);
 });
