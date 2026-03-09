@@ -53,11 +53,10 @@ class AttributeData
                 $attribute->translate('name')
             )
             ->formatStateUsing(function ($state) use ($attribute) {
-                if ($state instanceof FieldType) {
-                    $value = $state->getValue();
-                } else {
-                    $instance = new $attribute->type;
-                    $value = $instance->getValue();
+                $value = $state instanceof FieldType ? $state->getValue() : $state;
+
+                if ($value === null) {
+                    $value = (new $attribute->type)->getValue();
                 }
 
                 return is_string($value) && blank($value) ? null : $value;
