@@ -7,7 +7,7 @@ use JsonSerializable;
 use Lunar\Base\FieldType;
 use Lunar\Exceptions\FieldTypeException;
 
-class ListField implements FieldType, JsonSerializable, Arrayable
+class ListField implements Arrayable, FieldType, JsonSerializable
 {
     /**
      * @var array
@@ -72,8 +72,6 @@ class ListField implements FieldType, JsonSerializable, Arrayable
 
     /**
      * Return the value as an array (implements Arrayable for Filament 4 compatibility).
-     *
-     * @return array
      */
     public function toArray(): array
     {
