@@ -54,12 +54,13 @@ class AttributeData
             )
             ->formatStateUsing(function ($state) use ($attribute) {
                 if ($state instanceof FieldType) {
-                    return $state->getValue();
+                    $value = $state->getValue();
+                } else {
+                    $instance = new $attribute->type;
+                    $value = $instance->getValue();
                 }
 
-                $instance = new $attribute->type;
-
-                return $instance->getValue();
+                return is_string($value) && blank($value) ? null : $value;
             })
             ->mutateStateForValidationUsing(function ($state) {
                 if ($state instanceof FieldType) {
