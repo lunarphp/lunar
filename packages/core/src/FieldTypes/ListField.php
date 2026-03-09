@@ -3,6 +3,7 @@
 namespace Lunar\FieldTypes;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
 use JsonSerializable;
 use Lunar\Base\FieldType;
 use Lunar\Exceptions\FieldTypeException;
@@ -75,6 +76,6 @@ class ListField implements Arrayable, FieldType, JsonSerializable
      */
     public function toArray(): array
     {
-        return (array) json_decode($this->value ?? '[]', associative: true);
+        return Arr::wrap((array) json_decode($this->value ?? '[]', associative: true));
     }
 }

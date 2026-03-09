@@ -26,3 +26,15 @@ test('check does not allow non arrays', function () {
 
     new ListField('Not an array');
 });
+
+test('toArray returns associative array for keyed values', function () {
+    $field = new ListField([
+        'foo' => 'bar',
+        'baz' => 'qux',
+    ]);
+
+    expect($field->toArray())->toBe([
+        'foo' => 'bar',
+        'baz' => 'qux',
+    ]);
+});
