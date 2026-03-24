@@ -144,8 +144,14 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
      */
     public function getShippingOption(CartContract $cart): ?ShippingOption
     {
-        if (config('lunar.shipping-tables.shipping_rate_tax_calculation') == 'highest') {
-            $this->resolvedTaxClass = $this->resolveHighestTaxRateInCart($cart);
+        $calculateBy = config('lunar.shipping-tables.shipping_rate_tax_calculation');
+
+        if ($calculateBy != 'default') {
+            if (is_callable($calculateBy)) {
+                $this->resolvedTaxClass = call_user_func($calculateBy, $cart);
+            } else {
+                $this->resolvedTaxClass = $this->resolveHighestTaxRateInCart($cart);
+            }
         }
 
         return $this->shippingMethod->driver()->resolve(
