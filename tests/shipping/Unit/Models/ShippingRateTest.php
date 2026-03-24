@@ -7,8 +7,6 @@ uses(\Lunar\Tests\Shipping\TestUtils::class);
 use Illuminate\Support\Facades\Config;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
@@ -99,7 +97,8 @@ test('getTaxClass uses an invokable class as callable config', function () {
     TaxClass::factory()->create(['default' => true]);
     $customTaxClass = TaxClass::factory()->create(['name' => 'Invokable Tax Class']);
 
-    $resolver = new class($customTaxClass) {
+    $resolver = new class($customTaxClass)
+    {
         public function __construct(private TaxClass $taxClass) {}
 
         public function __invoke(Cart $cart): TaxClass
