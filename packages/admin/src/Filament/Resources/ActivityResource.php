@@ -3,12 +3,18 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Carbon\Carbon;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Admin\Filament\Resources\ActivityResource\Pages;
+use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ListActivities;
+use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ViewActivity;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Spatie\Activitylog\Models\Activity;
 
@@ -40,43 +46,43 @@ class ActivityResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
-    public static function getDefaultForm(Form $form): Form
+    public static function getDefaultForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('causer_type')
+        return $schema
+            ->components([
+                TextInput::make('causer_type')
                     ->label(__('lunarpanel::activity.form.causer_type'))
                     ->columnSpan([
                         'default' => 2,
                         'md' => 1,
                     ]),
-                Forms\Components\TextInput::make('causer_id')
+                TextInput::make('causer_id')
                     ->label(__('lunarpanel::activity.form.causer_id'))
                     ->columnSpan([
                         'default' => 2,
                         'md' => 1,
                     ]),
-                Forms\Components\TextInput::make('subject_type')
+                TextInput::make('subject_type')
                     ->label(__('lunarpanel::activity.form.subject_type'))
                     ->columnSpan([
                         'default' => 2,
                         'md' => 1,
                     ]),
-                Forms\Components\TextInput::make('subject_id')
+                TextInput::make('subject_id')
                     ->label(__('lunarpanel::activity.form.subject_id'))
                     ->columnSpan([
                         'default' => 2,
                         'md' => 1,
                     ]),
-                Forms\Components\TextInput::make('description')
+                TextInput::make('description')
                     ->label(__('lunarpanel::activity.form.description'))->columnSpan(2),
-                Forms\Components\KeyValue::make('properties.attributes')
+                KeyValue::make('properties.attributes')
                     ->label(__('lunarpanel::activity.form.attributes'))
                     ->columnSpan([
                         'default' => 2,
                         'md' => 1,
                     ]),
-                Forms\Components\KeyValue::make('properties.old')
+                KeyValue::make('properties.old')
                     ->label(__('lunarpanel::activity.form.old'))
                     ->columnSpan([
                         'default' => 2,
@@ -85,27 +91,27 @@ class ActivityResource extends BaseResource
             ]);
     }
 
-    public static function getDefaultTable(Tables\Table $table): Tables\Table
+    public static function getDefaultTable(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('ID')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('subject_type')
+                TextColumn::make('subject_type')
                     ->label(__('lunarpanel::activity.table.subject'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->label(__('lunarpanel::activity.table.description'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('log_name')
+                TextColumn::make('log_name')
                     ->label(__('lunarpanel::activity.table.log')),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label(__('lunarpanel::activity.table.logged_at'))
                     ->dateTime(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('event')
+                SelectFilter::make('event')
                     ->label(__('lunarpanel::activity.table.event'))
                     ->multiple()
                     ->options([
@@ -113,11 +119,11 @@ class ActivityResource extends BaseResource
                         'updated' => 'Updated',
                         'deleted' => 'Deleted',
                     ]),
-                Tables\Filters\Filter::make('created_at')
-                    ->form([
-                        Forms\Components\DatePicker::make('logged_from')
+                Filter::make('created_at')
+                    ->schema([
+                        DatePicker::make('logged_from')
                             ->label(__('lunarpanel::activity.table.logged_from')),
-                        Forms\Components\DatePicker::make('logged_until')
+                        DatePicker::make('logged_until')
                             ->label(__('lunarpanel::activity.table.logged_until')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -145,7 +151,7 @@ class ActivityResource extends BaseResource
                         return $indicators;
                     }),
             ])
-            ->bulkActions([])
+            ->toolbarActions([])
             ->defaultSort('id', 'DESC');
     }
 
@@ -159,8 +165,8 @@ class ActivityResource extends BaseResource
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListActivities::route('/'),
-            'view' => Pages\ViewActivity::route('/{record}'),
+            'index' => ListActivities::route('/'),
+            'view' => ViewActivity::route('/{record}'),
         ];
     }
 }

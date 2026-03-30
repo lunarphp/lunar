@@ -37,9 +37,9 @@
       <div class="grid grid-cols-2 space-x-4">
         <div>
             <div>
-              <x-filament-forms::field-wrapper.label class="ml-7">
-                {{ __('lunarpanel::components.product-options-list.name.label') }}
-              </x-filament-forms::field-wrapper.label>
+              <label class="fi-fo-field-label ml-7">
+                <span class="fi-fo-field-label-content">{{ __('lunarpanel::components.product-options-list.name.label') }}</span>
+              </label>
               <div class="flex w-full space-x-2 mt-1 items-start">
                 <div
                   @class([
@@ -75,9 +75,9 @@
             </div>
         </div>
         <div class="space-y-1">
-          <x-filament-forms::field-wrapper.label>
-            {{ __('lunarpanel::components.product-options-list.values.label') }}
-          </x-filament-forms::field-wrapper.label>
+          <label class="fi-fo-field-label">
+            <span class="fi-fo-field-label-content">{{ __('lunarpanel::components.product-options-list.values.label') }}</span>
+          </label>
           <div wire:key="option_values_{{ $itemIndex }}">
             <x-lunarpanel::products.variants.product-option-list-values
               :items="$item['option_values']"
