@@ -1,5 +1,6 @@
 <?php
 
+use Filament\Actions\Testing\TestAction;
 use Lunar\Admin\Filament\Resources\ChannelResource;
 use Lunar\Admin\Support\Facades\LunarPanel;
 
@@ -45,5 +46,5 @@ it('can extend form actions', function () {
     $this->asStaff(admin: true);
 
     \Livewire\Livewire::test(ChannelResource\Pages\CreateChannel::class)
-        ->assertActionExists('form_action_a');
+        ->assertActionExists(TestAction::make('form_action_a')->schemaComponent('form-actions', schema: 'content'));
 });

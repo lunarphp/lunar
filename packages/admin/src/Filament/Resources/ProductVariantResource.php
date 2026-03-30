@@ -4,13 +4,21 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
 use Filament\Actions\Action;
-use Filament\Forms;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Form;
-use Filament\Pages\SubNavigationPosition;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\EditProductVariant;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ListProductVariants;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantIdentifiers;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantInventory;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantMedia;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantPricing;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -23,7 +31,7 @@ class ProductVariantResource extends BaseResource
 
     protected static ?string $model = ProductVariantContract::class;
 
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+    protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {
@@ -43,12 +51,12 @@ class ProductVariantResource extends BaseResource
     public static function getDefaultSubNavigation(): array
     {
         return [
-            Pages\EditProductVariant::class,
-            Pages\ManageVariantMedia::class,
-            Pages\ManageVariantPricing::class,
-            Pages\ManageVariantIdentifiers::class,
-            Pages\ManageVariantInventory::class,
-            Pages\ManageVariantShipping::class,
+            EditProductVariant::class,
+            ManageVariantMedia::class,
+            ManageVariantPricing::class,
+            ManageVariantIdentifiers::class,
+            ManageVariantInventory::class,
+            ManageVariantShipping::class,
         ];
     }
 
@@ -67,10 +75,10 @@ class ProductVariantResource extends BaseResource
         ];
     }
 
-    public static function getDefaultForm(Form $form): Form
+    public static function getDefaultForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 static::getAttributeDataFormComponent(),
             ])
             ->columns(1);
@@ -83,52 +91,52 @@ class ProductVariantResource extends BaseResource
         ];
     }
 
-    public static function getSkuFormComponent(): Forms\Components\TextInput
+    public static function getSkuFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('sku');
+        return TextInput::make('sku');
     }
 
-    public static function getGtinFormComponent(): Forms\Components\TextInput
+    public static function getGtinFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('gtin')->label(
+        return TextInput::make('gtin')->label(
             __('lunarpanel::productvariant.form.gtin.label')
         );
     }
 
-    public static function getMpnFormComponent(): Forms\Components\TextInput
+    public static function getMpnFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('mpn')->label(
+        return TextInput::make('mpn')->label(
             __('lunarpanel::productvariant.form.mpn.label')
         );
     }
 
-    public static function getEanFormComponent(): Forms\Components\TextInput
+    public static function getEanFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('ean')->label(
+        return TextInput::make('ean')->label(
             __('lunarpanel::productvariant.form.ean.label')
         );
     }
 
-    public static function getStockFormComponent(): Forms\Components\TextInput
+    public static function getStockFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('stock')
+        return TextInput::make('stock')
             ->label(
                 __('lunarpanel::productvariant.form.stock.label')
             )->numeric();
     }
 
-    public static function getBackorderFormComponent(): Forms\Components\TextInput
+    public static function getBackorderFormComponent(): TextInput
     {
         return
-            Forms\Components\TextInput::make('backorder')
+            TextInput::make('backorder')
                 ->label(
                     __('lunarpanel::productvariant.form.backorder.label')
                 )->numeric();
     }
 
-    public static function getPurchasableFormComponent(): Forms\Components\Select
+    public static function getPurchasableFormComponent(): Select
     {
-        return Forms\Components\Select::make('purchasable')
+        return Select::make('purchasable')
             ->options([
                 'always' => __('lunarpanel::productvariant.form.purchasable.options.always'),
                 'in_stock' => __('lunarpanel::productvariant.form.purchasable.options.in_stock'),
@@ -139,9 +147,9 @@ class ProductVariantResource extends BaseResource
             );
     }
 
-    public static function getUnitQtyFormComponent(): Forms\Components\TextInput
+    public static function getUnitQtyFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('unit_quantity')
+        return TextInput::make('unit_quantity')
             ->label(
                 __('lunarpanel::productvariant.form.unit_quantity.label')
             )->helperText(
@@ -149,9 +157,9 @@ class ProductVariantResource extends BaseResource
             )->numeric();
     }
 
-    public static function getQuantityIncrementFormComponent(): Forms\Components\TextInput
+    public static function getQuantityIncrementFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('quantity_increment')
+        return TextInput::make('quantity_increment')
             ->label(
                 __('lunarpanel::productvariant.form.quantity_increment.label')
             )->helperText(
@@ -159,9 +167,9 @@ class ProductVariantResource extends BaseResource
             )->numeric();
     }
 
-    public static function getMinQuantityFormComponent(): Forms\Components\TextInput
+    public static function getMinQuantityFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('min_quantity')
+        return TextInput::make('min_quantity')
             ->label(
                 __('lunarpanel::productvariant.form.min_quantity.label')
             )->helperText(
@@ -169,9 +177,9 @@ class ProductVariantResource extends BaseResource
             )->numeric();
     }
 
-    public static function getTaxClassIdFormComponent(): Forms\Components\Select
+    public static function getTaxClassIdFormComponent(): Select
     {
-        return Forms\Components\Select::make('tax_class_id')
+        return Select::make('tax_class_id')
             ->label(
                 __('lunarpanel::productvariant.form.tax_class_id.label')
             )
@@ -180,9 +188,9 @@ class ProductVariantResource extends BaseResource
             )->required();
     }
 
-    public static function getTaxRefFormComponent(): Forms\Components\TextInput
+    public static function getTaxRefFormComponent(): TextInput
     {
-        return Forms\Components\TextInput::make('tax_ref')
+        return TextInput::make('tax_ref')
             ->label(
                 __('lunarpanel::product.pages.pricing.form.tax_ref.label')
             )->helperText(
@@ -190,9 +198,9 @@ class ProductVariantResource extends BaseResource
             );
     }
 
-    public static function getShippableFormComponent(): Forms\Components\Toggle
+    public static function getShippableFormComponent(): Toggle
     {
-        return Forms\Components\Toggle::make('shippable')->label(
+        return Toggle::make('shippable')->label(
             __('lunarpanel::productvariant.form.shippable.label')
         )->columnSpan(2);
     }
@@ -216,7 +224,7 @@ class ProductVariantResource extends BaseResource
             )
             ->numeric()
             ->select(
-                fn () => Forms\Components\Select::make('length_unit')
+                fn () => Select::make('length_unit')
                     ->options(
                         static::getMeasurements('length')
                     )
@@ -234,7 +242,7 @@ class ProductVariantResource extends BaseResource
             )
             ->numeric()
             ->select(
-                fn () => Forms\Components\Select::make('width_unit')
+                fn () => Select::make('width_unit')
                     ->options(
                         static::getMeasurements('length')
                     )
@@ -252,7 +260,7 @@ class ProductVariantResource extends BaseResource
             )
             ->numeric()
             ->select(
-                fn () => Forms\Components\Select::make('height_unit')
+                fn () => Select::make('height_unit')
                     ->options(
                         static::getMeasurements('length')
                     )
@@ -270,7 +278,7 @@ class ProductVariantResource extends BaseResource
             )
             ->numeric()
             ->select(
-                fn () => Forms\Components\Select::make('weight_unit')
+                fn () => Select::make('weight_unit')
                     ->options(
                         static::getMeasurements('weight')
                     )
@@ -304,8 +312,8 @@ class ProductVariantResource extends BaseResource
         return $table
             ->columns(static::getTableColumns())
             ->filters([])
-            ->actions([])
-            ->bulkActions([])
+            ->recordActions([])
+            ->toolbarActions([])
             ->selectCurrentPageOnly()
             ->deferLoading();
     }
@@ -325,13 +333,13 @@ class ProductVariantResource extends BaseResource
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListProductVariants::route('/'),
-            'edit' => Pages\EditProductVariant::route('/{record}/edit'),
-            'pricing' => Pages\ManageVariantPricing::route('/{record}/pricing'),
-            'media' => Pages\ManageVariantMedia::route('/{record}/media'),
-            'identifiers' => Pages\ManageVariantIdentifiers::route('/{record}/identifiers'),
-            'inventory' => Pages\ManageVariantInventory::route('/{record}/inventory'),
-            'shipping' => Pages\ManageVariantShipping::route('/{record}/shipping'),
+            'index' => ListProductVariants::route('/'),
+            'edit' => EditProductVariant::route('/{record}/edit'),
+            'pricing' => ManageVariantPricing::route('/{record}/pricing'),
+            'media' => ManageVariantMedia::route('/{record}/media'),
+            'identifiers' => ManageVariantIdentifiers::route('/{record}/identifiers'),
+            'inventory' => ManageVariantInventory::route('/{record}/inventory'),
+            'shipping' => ManageVariantShipping::route('/{record}/shipping'),
         ];
     }
 }

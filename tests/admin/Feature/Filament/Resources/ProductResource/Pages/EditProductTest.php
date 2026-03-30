@@ -60,7 +60,7 @@ it('can edit variant attributes', function ($attributeType, $attributeValue) {
 
     $component->fillForm([
         'variant' => [
-            $attribute->handle => new $attributeType($attributeValue),
+            $attribute->handle => $attributeValue,
         ],
     ])->call('save')
         ->assertHasNoFormErrors();

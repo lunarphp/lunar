@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Actions;
-use Filament\Forms\Components\Grid;
-use Filament\Resources\Components\Tab;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Actions\CreateAction;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
@@ -23,7 +23,7 @@ class ListProducts extends BaseListRecords
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->createAnother(false)->form(
+            CreateAction::make()->createAnother(false)->schema(
                 static::createActionFormInputs()
             )->using(
                 fn (array $data, string $model) => static::createRecord($data, $model)
@@ -92,8 +92,8 @@ class ListProducts extends BaseListRecords
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth
+    public function getMaxContentWidth(): Width
     {
-        return MaxWidth::Full;
+        return Width::Full;
     }
 }

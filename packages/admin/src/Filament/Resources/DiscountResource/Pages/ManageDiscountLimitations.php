@@ -2,11 +2,16 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Lunar\Admin\Filament\Resources\DiscountResource;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CustomerLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductVariantLimitationRelationManager;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
 class ManageDiscountLimitations extends BaseEditRecord
@@ -28,9 +33,9 @@ class ManageDiscountLimitations extends BaseEditRecord
         return FilamentIcon::resolve('lunar::discount-limitations');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([]);
+        return $schema->components([]);
     }
 
     protected function getFormActions(): array
@@ -42,11 +47,11 @@ class ManageDiscountLimitations extends BaseEditRecord
     {
         return [
             RelationGroup::make('Limitations', [
-                DiscountResource\RelationManagers\CustomerLimitationRelationManager::class,
-                DiscountResource\RelationManagers\CollectionLimitationRelationManager::class,
-                DiscountResource\RelationManagers\BrandLimitationRelationManager::class,
-                DiscountResource\RelationManagers\ProductLimitationRelationManager::class,
-                DiscountResource\RelationManagers\ProductVariantLimitationRelationManager::class,
+                CustomerLimitationRelationManager::class,
+                CollectionLimitationRelationManager::class,
+                BrandLimitationRelationManager::class,
+                ProductLimitationRelationManager::class,
+                ProductVariantLimitationRelationManager::class,
             ]),
 
         ];

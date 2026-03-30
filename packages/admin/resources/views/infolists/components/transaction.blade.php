@@ -1,5 +1,5 @@
 @php
-    $transaction = $getState();
+    $transaction = $getRecord();
 @endphp
 
 @once
@@ -15,6 +15,7 @@
             'refund' => 'border-orange-300',
             'intent' => 'border-sky-300',
             'capture' => 'border-green-300',
+            default => 'border-gray-300',
         },
         '!border-red-500 bg-red-50' => !$transaction->success,
         'bg-gray-50' => $transaction->success,
@@ -112,6 +113,7 @@
                 'refund' => "bg-orange-50 dark:bg-orange-400/10 border-orange-300 text-orange-600 dark:text-orange-400",
                 'intent' => "bg-sky-50 dark:bg-sky-400/10 border-sky-300 text-sky-600 dark:text-sky-400",
                 'capture' => "bg-green-50 dark:bg-green-400/10 border-green-300 text-green-600 dark:text-green-400",
+                default => "bg-gray-50 dark:bg-gray-400/10 border-gray-300 text-gray-600 dark:text-gray-400",
             },
         ])
     >
