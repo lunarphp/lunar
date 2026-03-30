@@ -148,7 +148,7 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
 
         if (is_callable($calculateBy)) {
             $this->resolvedTaxClass = call_user_func($calculateBy, $cart);
-        } else if ($calculateBy == 'highest') {
+        } elseif ($calculateBy == 'highest') {
             $this->resolvedTaxClass = $this->resolveHighestTaxRateInCart($cart);
         }
 
