@@ -208,6 +208,8 @@ class BuyXGetY extends AbstractDiscountType
             discount: $this->discount,
         ));
 
+        $cart->discounts->push($this);
+
         return $cart;
     }
 
