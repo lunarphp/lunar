@@ -5,7 +5,7 @@ namespace Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -35,7 +35,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     protected static bool $isLazy = false;
 
-    protected static string $view = 'lunarpanel::resources.collectiongroup-resource.widgets.collection-treeview';
+    protected string $view = 'lunarpanel::resources.collectiongroup-resource.widgets.collection-treeview';
 
     public function mount()
     {
@@ -134,7 +134,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
         }
     }
 
-    public function deleteAction()
+    public function deleteAction(): Action
     {
         return DeleteCollection::make('delete')
             ->after(function (array $arguments) {
@@ -148,7 +148,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
             );
     }
 
-    public function addChildCollectionAction()
+    public function addChildCollectionAction(): Action
     {
         return CreateChildCollection::make('addChildCollection')
             ->icon(
@@ -158,7 +158,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
             );
     }
 
-    public function makeRootAction()
+    public function makeRootAction(): Action
     {
         return Action::make('makeRoot')->requiresConfirmation()->icon(
             fn () => FilamentIcon::resolve('actions::make-collection-root-action')
@@ -171,10 +171,10 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
         });
     }
 
-    public function createRootCollectionAction()
+    public function createRootCollectionAction(): Action
     {
         return CreateRootCollection::make('createRootCollection')
-            ->mutateFormDataUsing(function (array $data) {
+            ->mutateDataUsing(function (array $data) {
                 $data['collection_group_id'] = $this->record->id;
 
                 return $data;
@@ -183,19 +183,19 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
             );
     }
 
-    public function moveAction()
+    public function moveAction(): Action
     {
         return MoveCollection::make('move')
             ->icon(
                 fn () => FilamentIcon::resolve('lunar::move-collection')
-            )->form([
-                Forms\Components\Select::make('target_id')
+            )->schema([
+                Select::make('target_id')
                     ->label(
                         __('lunarpanel::components.collection-tree-view.actions.move.form.target_id.label')
                     )
                     ->model(Collection::modelClass())
                     ->searchable()
-                    ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                    ->getSearchResultsUsing(static function (Select $component, string $search): array {
                         return get_search_builder(Collection::modelClass(), $search)
                             ->get()
                             ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])

@@ -2,6 +2,10 @@
 
 namespace Lunar\Admin\Models;
 
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
@@ -11,10 +15,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Lunar\Admin\Database\Factories\StaffFactory;
 use Lunar\Base\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
-use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
 
 /**
  * @property int $id
@@ -25,21 +29,22 @@ use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
  * @property string $email
  * @property string $password
  * @property string $remember_token
- * @property ?\Illuminate\Support\Carbon $email_verified_at
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property ?Carbon $email_verified_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
  *
- * @method static \Illuminate\Database\Eloquent\Builder search(?string $terms)
+ * @method static Builder search(?string $terms)
  */
-class Staff extends Authenticatable implements FilamentUser, HasName
+class Staff extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasName
 {
     use HasFactory;
     use HasRoles;
+    use InteractsWithAppAuthentication;
+    use InteractsWithAppAuthenticationRecovery;
     use LogsActivity;
     use Notifiable;
     use SoftDeletes;
-    use TwoFactorAuthenticatable;
 
     protected $guard_name = 'staff';
 

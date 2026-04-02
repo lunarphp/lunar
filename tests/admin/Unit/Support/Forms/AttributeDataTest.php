@@ -43,7 +43,7 @@ class TestFieldType extends Lunar\FieldTypes\Text {}
 
 class TestFieldConverter extends \Lunar\Admin\Support\FieldTypes\TextField
 {
-    public static function getFilamentComponent(Lunar\Models\Attribute $attribute): Filament\Forms\Components\Component
+    public static function getFilamentComponent(Lunar\Models\Attribute $attribute): Filament\Schemas\Components\Component
     {
         return \Filament\Forms\Components\RichEditor::make($attribute->handle);
     }

@@ -1163,3 +1163,83 @@ test('can get same draft order when cart does not change', function () {
         )->toBe($newOrder->id);
 
 });
+
+test('active scope correctly filters unmerged carts and isolates users', function () {
+    setAuthUserConfig();
+
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+
+    $userA = StubUser::factory()->create();
+    $userB = StubUser::factory()->create();
+
+    $otherUsersCart = Cart::factory()->create([
+        'user_id' => $userB->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $expectedCart = Cart::factory()->create([
+        'user_id' => $userA->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'merged_id' => null,
+    ]);
+
+    $mergedCart = Cart::factory()->create([
+        'user_id' => $userA->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'merged_id' => $expectedCart->id,
+    ]);
+
+    $cartId = $userA->carts()
+        ->unmerged()
+        ->active()
+        ->latest('id')
+        ->value('id');
+
+    expect($cartId)->toBe($expectedCart->id)
+        ->and($cartId)->not->toBe($otherUsersCart->id)
+        ->and($cartId)->not->toBe($mergedCart->id);
+});
+
+test('cart session manager prefers the latest unmerged cart for an authenticated user', function () {
+    setAuthUserConfig();
+
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+
+    $older = Cart::factory()->create([
+        'user_id' => $user->id,
+        'merged_id' => null,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $expectedCart = Cart::factory()->create([
+        'user_id' => $user->id,
+        'merged_id' => null,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $mergedCart = Cart::factory()->create([
+        'user_id' => $user->id,
+        'merged_id' => $expectedCart->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $manager = app(\Lunar\Managers\CartSessionManager::class);
+    $foundCart = $manager->current();
+
+    expect($foundCart)->not->toBeNull()
+        ->and($foundCart->id)->toBe($expectedCart->id)
+        ->and($foundCart->id)->not->toBe($older->id)
+        ->and($foundCart->id)->not->toBe($mergedCart->id)
+        ->and($foundCart->merged_id)->toBeNull();
+});
