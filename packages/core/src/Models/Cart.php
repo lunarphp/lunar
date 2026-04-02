@@ -261,7 +261,7 @@ class Cart extends BaseModel implements Contracts\Cart
                 ->whereDoesntHave('orders')
                 ->orWhereHas('orders', function ($sub) {
                     $sub->whereNull('placed_at');
-            });
+                });
         });
     }
 

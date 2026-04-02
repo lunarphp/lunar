@@ -1168,29 +1168,29 @@ test('active scope correctly filters unmerged carts and isolates users', functio
     setAuthUserConfig();
 
     $currency = Currency::factory()->create();
-    $channel  = Channel::factory()->create();
+    $channel = Channel::factory()->create();
 
     $userA = StubUser::factory()->create();
     $userB = StubUser::factory()->create();
 
     $otherUsersCart = Cart::factory()->create([
-        'user_id'     => $userB->id,
+        'user_id' => $userB->id,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
+        'channel_id' => $channel->id,
     ]);
 
-    $expectedCart  = Cart::factory()->create([
-        'user_id'     => $userA->id,
+    $expectedCart = Cart::factory()->create([
+        'user_id' => $userA->id,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
-        'merged_id'   => null,
+        'channel_id' => $channel->id,
+        'merged_id' => null,
     ]);
 
     $mergedCart = Cart::factory()->create([
-        'user_id'     => $userA->id,
+        'user_id' => $userA->id,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
-        'merged_id'   => $expectedCart->id,
+        'channel_id' => $channel->id,
+        'merged_id' => $expectedCart->id,
     ]);
 
     $cartId = $userA->carts()
@@ -1208,28 +1208,28 @@ test('cart session manager prefers the latest unmerged cart for an authenticated
     setAuthUserConfig();
 
     $currency = Currency::factory()->create();
-    $channel  = Channel::factory()->create();
-    $user     = StubUser::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
 
     $older = Cart::factory()->create([
-        'user_id'     => $user->id,
-        'merged_id'   => null,
+        'user_id' => $user->id,
+        'merged_id' => null,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
+        'channel_id' => $channel->id,
     ]);
 
     $expectedCart = Cart::factory()->create([
-        'user_id'     => $user->id,
-        'merged_id'   => null,
+        'user_id' => $user->id,
+        'merged_id' => null,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
+        'channel_id' => $channel->id,
     ]);
 
     $mergedCart = Cart::factory()->create([
-        'user_id'     => $user->id,
-        'merged_id'   => $expectedCart->id,
+        'user_id' => $user->id,
+        'merged_id' => $expectedCart->id,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
+        'channel_id' => $channel->id,
     ]);
 
     $this->actingAs($user);
