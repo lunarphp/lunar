@@ -2,6 +2,8 @@
 
 namespace Lunar\Admin\Support;
 
+use Filament\Support\Colors\Color;
+
 class OrderStatus
 {
     protected static array $cachedStatusColor = [];
@@ -15,6 +17,6 @@ class OrderStatus
 
     public static function getColor($status): array
     {
-        return static::$cachedStatusColor[$status] ??= \Filament\Support\Colors\Color::hex(filled($color = config('lunar.orders.statuses.'.$status.'.color')) ? $color : '#7C7C7C');
+        return static::$cachedStatusColor[$status] ??= Color::generateV3Palette(filled($color = config('lunar.orders.statuses.'.$status.'.color')) ? $color : '#7C7C7C');
     }
 }

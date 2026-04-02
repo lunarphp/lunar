@@ -136,7 +136,7 @@ class CartSessionManager implements CartSessionInterface
         );
 
         if (! $cartId && $user = $this->authManager->user()) {
-            $cartId = $user->carts()->active()->first()?->id;
+            $cartId = $user->carts()->unmerged()->active()->latest('id')->value('id');
         }
 
         if (! $cartId) {

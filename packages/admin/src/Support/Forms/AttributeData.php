@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\Forms;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
 use Illuminate\Support\Collection;
 use Lunar\Admin\Support\FieldTypes\Dropdown;
 use Lunar\Admin\Support\FieldTypes\File;
@@ -13,6 +13,7 @@ use Lunar\Admin\Support\FieldTypes\Toggle;
 use Lunar\Admin\Support\FieldTypes\TranslatedText;
 use Lunar\Admin\Support\FieldTypes\Vimeo;
 use Lunar\Admin\Support\FieldTypes\YouTube;
+use Lunar\Base\FieldType;
 use Lunar\FieldTypes\Dropdown as DrodownFieldType;
 use Lunar\FieldTypes\File as FileFieldType;
 use Lunar\FieldTypes\ListField as ListFieldFieldType;
@@ -44,7 +45,7 @@ class AttributeData
         $attribute->type
         ] ?? TextField::class;
 
-        /** @var Component $component */
+        /** @var \Filament\Schemas\Components\Component $component */
         $component = $fieldType::getFilamentComponent($attribute);
 
         return $component
@@ -52,38 +53,33 @@ class AttributeData
                 $attribute->translate('name')
             )
             ->formatStateUsing(function ($state) use ($attribute) {
-                if (
-                    ! $state ||
-                    (get_class($state) != $attribute->type)
-                ) {
-                    return new $attribute->type;
+                if ($state instanceof FieldType) {
+                    return $state->getValue();
                 }
 
-                return $state;
+                $instance = new $attribute->type;
+
+                return $instance->getValue();
             })
             ->mutateStateForValidationUsing(function ($state) {
-                if ($state instanceof \Lunar\Base\FieldType) {
+                if ($state instanceof FieldType) {
                     return $state->getValue();
                 }
 
                 return $state;
             })
             ->mutateDehydratedStateUsing(function ($state) use ($attribute) {
-                if ($attribute->type == FileFieldType::class) {
-                    $instance = new $attribute->type;
+                if ($state instanceof FieldType) {
+                    return $state;
+                }
+
+                $instance = new $attribute->type;
+
+                if (! blank($state)) {
                     $instance->setValue($state);
-
-                    return $instance;
                 }
 
-                if (
-                    ! $state ||
-                    (get_class($state) != $attribute->type)
-                ) {
-                    return new $attribute->type;
-                }
-
-                return $state;
+                return $instance;
             })
             ->required($attribute->required)
             ->default($attribute->default_value);

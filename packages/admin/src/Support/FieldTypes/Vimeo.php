@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Forms\Components\Vimeo as VimeoInput;
 use Lunar\Admin\Support\Synthesizers\VimeoSynth;
 use Lunar\Models\Attribute;

@@ -56,6 +56,7 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Database\State\MigrateCartOrderRelationship;
 use Lunar\Database\State\PopulateProductOptionLabelWithName;
+use Lunar\Database\State\UpdateWeightUnitToKg;
 use Lunar\Facades\Telemetry;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
@@ -302,6 +303,7 @@ class LunarServiceProvider extends ServiceProvider
             MigrateCartOrderRelationship::class,
             ConvertTaxbreakdown::class,
             ConvertBackOrderPurchasability::class,
+            UpdateWeightUnitToKg::class,
         ];
 
         foreach ($states as $state) {
@@ -392,9 +394,15 @@ class LunarServiceProvider extends ServiceProvider
         Blueprint::macro('dimensions', function () {
             /** @var Blueprint $this */
             $columns = ['length', 'width', 'height', 'weight', 'volume'];
+            $unitDefaults = [
+                'weight' => 'kg',
+            ];
+
             foreach ($columns as $column) {
                 $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
-                $this->string("{$column}_unit")->default('mm')->nullable();
+                $this->string("{$column}_unit")
+                    ->default($unitDefaults[$column] ?? 'mm')
+                    ->nullable();
             }
         });
 

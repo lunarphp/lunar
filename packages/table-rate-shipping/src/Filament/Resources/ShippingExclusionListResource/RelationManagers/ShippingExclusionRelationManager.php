@@ -2,10 +2,16 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\RelationManagers;
 
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Models\Contracts\Product as ProductContract;
@@ -22,16 +28,16 @@ class ShippingExclusionRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\MorphToSelect::make('purchasable')
                     ->types([
                         Forms\Components\MorphToSelect\Type::make(Product::modelClass())
                             ->titleAttribute('name')
                             ->getOptionLabelUsing(
-                                fn (Model $record) => $record->purchasable->attr('name')
+                                fn (string $value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')
                             )
                             ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                 return get_search_builder(Product::modelClass(), $search)
@@ -52,21 +58,21 @@ class ShippingExclusionRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('purchasable.thumbnail')
+                SpatieMediaLibraryImageColumn::make('purchasable.thumbnail')
                     ->collection(config('lunar.media.collection'))
                     ->conversion('small')
                     ->limit(1)
                     ->square()
                     ->label(''),
-                Tables\Columns\TextColumn::make('purchasable')
+                TextColumn::make('purchasable')
                     ->formatStateUsing(
                         fn ($state) => $state->attr('name')
                     )
                     ->limit(50)
                     ->label(__('lunarpanel::product.table.name.label')),
-                Tables\Columns\TextColumn::make('purchasable.variants.sku')
+                TextColumn::make('purchasable.variants.sku')
                     ->label(__('lunarpanel::product.table.sku.label'))
-                    ->tooltip(function (Tables\Columns\TextColumn $column, $state): ?string {
+                    ->tooltip(function (TextColumn $column, $state): ?string {
 
                         $skus = collect($state);
 
@@ -88,17 +94,17 @@ class ShippingExclusionRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data, RelationManager $livewire) {
+                CreateAction::make()->mutateFormDataUsing(function (array $data, RelationManager $livewire) {
                     return $data;
                 }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
