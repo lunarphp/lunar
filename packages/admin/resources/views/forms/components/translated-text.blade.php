@@ -4,7 +4,7 @@
     x-data="{ showTranslations: {{ $getExpanded() ? 'true' : 'false' }} }"
 >   
 
-    <div x-data="{ state: $wire.entangle('{{ $getStatePath() }}') }">
+    <div>
         <div class="flex items-center gap-2">
             @if ($getMoreLanguages()->count())
                 <span x-show="showTranslations"

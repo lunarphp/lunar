@@ -3,10 +3,10 @@
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Cartalyst\Converter\Laravel\Facades\Converter;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -117,7 +117,7 @@ class ManageProductShipping extends BaseEditRecord
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $measurements = Converter::getMeasurements();
 
@@ -133,7 +133,7 @@ class ManageProductShipping extends BaseEditRecord
             fn ($value) => [$value => $value]
         );
 
-        return $form->schema([
+        return $schema->components([
             Section::make()->schema([
                 Toggle::make('shippable')->label(
                     __('lunarpanel::productvariant.form.shippable.label')
@@ -148,7 +148,7 @@ class ManageProductShipping extends BaseEditRecord
                         fn () => Select::make('length_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::pproductvariant.form.length_unit.label')
+                                __('lunarpanel::productvariant.form.length_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.width_value')

@@ -256,8 +256,12 @@ class Cart extends BaseModel implements Contracts\Cart
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->whereDoesntHave('orders')->orWhereHas('orders', function ($query) {
-            return $query->whereNull('placed_at');
+        return $query->where(function ($q) {
+            $q
+                ->whereDoesntHave('orders')
+                ->orWhereHas('orders', function ($sub) {
+                    $sub->whereNull('placed_at');
+            });
         });
     }
 

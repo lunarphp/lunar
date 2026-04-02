@@ -1,5 +1,6 @@
 <?php
 
+use Filament\Actions\Testing\TestAction;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
 use Lunar\Admin\Support\Facades\LunarPanel;
 
@@ -55,5 +56,5 @@ it('can extend form actions', function () {
 
     \Livewire\Livewire::test(EditCustomer::class, [
         'record' => $customer->getRouteKey(),
-    ])->assertActionExists('form_action_a');
+    ])->assertActionExists(TestAction::make('form_action_a')->schemaComponent('form-actions', schema: 'content'));
 });
