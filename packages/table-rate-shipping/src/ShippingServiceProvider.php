@@ -5,8 +5,10 @@ namespace Lunar\Shipping;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Base\ShippingModifiers;
+use Lunar\Facades\Discounts;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\CustomerGroup;
+use Lunar\Shipping\DiscountTypes\ShippingDiscount;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
@@ -43,6 +45,8 @@ class ShippingServiceProvider extends ServiceProvider
         $shippingModifiers->add(
             ShippingModifier::class,
         );
+
+        Discounts::addType(ShippingDiscount::class);
 
         Order::observe(OrderObserver::class);
 
