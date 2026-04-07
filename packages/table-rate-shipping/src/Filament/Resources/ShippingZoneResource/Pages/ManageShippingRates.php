@@ -20,7 +20,6 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
 use Lunar\Shipping\Models\Contracts\ShippingMethod as ShippingMethodContract;
 use Lunar\Shipping\Models\ShippingMethod;
@@ -69,22 +68,27 @@ class ManageShippingRates extends ManageRelatedRecords
                 ->live()
                 ->relationship(name: 'shippingMethod', titleAttribute: 'name')
                 ->columnSpan(2),
-            Forms\Components\TextInput::make('price')
-                ->label(
-                    __('lunarpanel.shipping::relationmanagers.shipping_rates.form.price.label')
-                )
-                ->numeric()
-                ->required()
-                ->columnSpan(2)
-                ->afterStateHydrated(static function (Forms\Components\TextInput $component, ?Model $record = null): void {
-                    if ($record) {
-                        $basePrice = $record->basePrices->first();
+            Forms\Components\Section::make(
+                __('lunarpanel.shipping::relationmanagers.shipping_rates.form.base_prices.label')
+            )->schema(static function (): array {
+                $currencies = Currency::whereEnabled(true)
+                    ->orderByDesc('default')
+                    ->orderBy('name')
+                    ->get();
 
-                        $component->state(
-                            $basePrice->price->decimal
-                        );
-                    }
-                }),
+                return $currencies->map(fn ($currency) => Forms\Components\TextInput::make("base_prices.{$currency->id}")
+                    ->label($currency->name)
+                    ->numeric()
+                    ->required($currency->default)
+                    ->afterStateHydrated(static function (Forms\Components\TextInput $component, ?Model $record = null) use ($currency): void {
+                        if ($record) {
+                            if ($basePrice = $record->basePrices->first(fn ($p) => $p->currency_id == $currency->id)) {
+                                $component->state($basePrice->price->decimal);
+                            }
+                        }
+                    })
+                )->toArray();
+            })->columns(2)->columnSpan(2),
             Forms\Components\Repeater::make('prices')
                 ->label(
                     __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.label')
@@ -221,16 +225,26 @@ class ManageShippingRates extends ManageRelatedRecords
 
     protected static function saveShippingRate(?ShippingRate $shippingRate = null, array $data = []): void
     {
-        $currency = Currency::getDefault();
+        $shippingRate->basePrices()->delete();
 
-        $basePrice = $shippingRate->basePrices->first() ?: new Price;
+        $enabledCurrencies = Currency::whereEnabled(true)->get()->keyBy('id');
 
-        $basePrice->price = (int) ($data['price'] * $currency->factor);
-        $basePrice->priceable_type = $shippingRate->getMorphClass();
-        $basePrice->currency_id = $currency->id;
-        $basePrice->priceable_id = $shippingRate->id;
-        $basePrice->customer_group_id = null;
-        $basePrice->save();
+        foreach ($data['base_prices'] ?? [] as $currencyId => $priceValue) {
+            if ($priceValue === null || $priceValue === '') {
+                continue;
+            }
+
+            if (! $currency = $enabledCurrencies->get($currencyId)) {
+                continue;
+            }
+
+            $shippingRate->prices()->create([
+                'price' => (int) round($priceValue * $currency->factor),
+                'currency_id' => $currency->id,
+                'customer_group_id' => null,
+                'min_quantity' => 1,
+            ]);
+        }
 
         $shippingRate->priceBreaks()->delete();
 

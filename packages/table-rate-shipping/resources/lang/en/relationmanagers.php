@@ -21,6 +21,9 @@ return [
             'shipping_method_id' => [
                 'label' => 'Shipping Method',
             ],
+            'base_prices' => [
+                'label' => 'Base Prices',
+            ],
             'price' => [
                 'label' => 'Price',
             ],
