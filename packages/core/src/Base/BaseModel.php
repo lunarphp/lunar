@@ -22,4 +22,18 @@ abstract class BaseModel extends Model
             $this->setConnection($connection);
         }
     }
+
+    /**
+     * Compatibility shim for kalnoy/nestedset which calls whenBooted(),
+     * a method only available in Laravel 12+. On Laravel 11, fall back
+     * to booted() which runs at the same point in the boot lifecycle.
+     */
+    protected static function whenBooted(\Closure $callback): void
+    {
+        if (property_exists(\Illuminate\Database\Eloquent\Model::class, 'bootedCallbacks')) {
+            parent::whenBooted($callback);
+        } else {
+            static::booted($callback);
+        }
+    }
 }
