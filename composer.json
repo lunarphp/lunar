@@ -12,7 +12,7 @@
         "awcodes/filament-badgeable-column": "^v3.0.0-beta.1",
         "awcodes/shout": "^v3.0.0-beta.2",
         "barryvdh/laravel-dompdf": "^3.0",
-        "cartalyst/converter": "^9.0|^10",
+        "cartalyst/converter": "dev-l13-compatibility as 10.0.0",
 
         "dompdf/dompdf": "^3.1",
         "ext-bcmath": "*",
@@ -42,14 +42,14 @@
         "typesense/typesense-php": "^4.9"
     },
     "require-dev": {
-        "filament/upgrade": "^4.0",
-        "larastan/larastan": "^2.9|^3.0",
+"filament/upgrade": "^4.0",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "1.17.0",
         "mockery/mockery": "^1.6.9",
         "orchestra/testbench": "^10.0|^11.0",
-        "pestphp/pest": "^3.0",
-        "pestphp/pest-plugin-laravel": "^3.0",
-        "phpstan/phpstan": "2.1.17",
+        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0",
+        "phpstan/phpstan": "^2.1.17",
         "symplify/monorepo-builder": "^11.0"
     },
     "autoload": {
@@ -88,9 +88,14 @@
             "Lunar\\Tests\\Search\\": "tests/search"
         }
     },
-    "repositories": [],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/laravel-shift/converter"
+        }
+    ],
     "extra": {
-        "lunar": {
+"lunar": {
             "name": [
                 "Table Rate Shipping",
                 "Opayo Payments",
@@ -134,7 +139,7 @@
     },
     "config": {
         "allow-plugins": {
-            "pestphp/pest-plugin": true,
+"pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
     },
