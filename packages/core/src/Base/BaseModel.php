@@ -22,4 +22,22 @@ abstract class BaseModel extends Model
             $this->setConnection($connection);
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resolveCollectionFromAttribute()
+    {
+        $reflectionClass = new \ReflectionClass(static::class);
+
+        $attributes = $reflectionClass->getAttributes(
+            \Illuminate\Database\Eloquent\Attributes\CollectedBy::class
+        );
+
+        if (! isset($attributes[0]) || ! isset($attributes[0]->getArguments()[0])) {
+            return null;
+        }
+
+        return $attributes[0]->getArguments()[0];
+    }
 }
