@@ -124,23 +124,22 @@ class ShippingMethodResource extends BaseResource
             7 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.sunday'),
         ];
 
-        $rows = collect($days)->map(fn ($label, $day) =>
-            Group::make([
-                Forms\Components\Checkbox::make('enabled')
-                    ->label($label)
-                    ->live()
-                    ->columnSpan(1),
-                Forms\Components\TimePicker::make('from')
-                    ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.from.label'))
-                    ->seconds(false)
-                    ->disabled(fn (Get $get) => ! $get('enabled'))
-                    ->columnSpan(1),
-                Forms\Components\TimePicker::make('to')
-                    ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
-                    ->seconds(false)
-                    ->disabled(fn (Get $get) => ! $get('enabled'))
-                    ->columnSpan(1),
-            ])->statePath((string) $day)->columns(3)
+        $rows = collect($days)->map(fn ($label, $day) => Group::make([
+            Forms\Components\Checkbox::make('enabled')
+                ->label($label)
+                ->live()
+                ->columnSpan(1),
+            Forms\Components\TimePicker::make('from')
+                ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.from.label'))
+                ->seconds(false)
+                ->disabled(fn (Get $get) => ! $get('enabled'))
+                ->columnSpan(1),
+            Forms\Components\TimePicker::make('to')
+                ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
+                ->seconds(false)
+                ->disabled(fn (Get $get) => ! $get('enabled'))
+                ->columnSpan(1),
+        ])->statePath((string) $day)->columns(3)
         )->values()->toArray();
 
         return Section::make(__('lunarpanel.shipping::shippingmethod.form.schedule.label'))
