@@ -50,7 +50,7 @@ class ManageShippingRates extends ManageRelatedRecords
     public function form(Schema $schema): Schema
     {
         return $schema->components([
-            Shout::make('')->content(
+            Shout::make('pricing_notice')->content(
                 function () {
                     $pricesIncTax = config('lunar.pricing.stored_inclusive_of_tax', false);
 
@@ -164,8 +164,8 @@ class ManageShippingRates extends ManageRelatedRecords
                         ->visible(fn (Model $record) => ! $record->enabled),
                 ])
                 ->label(__('lunarpanel.shipping::relationmanagers.shipping_rates.table.shipping_method.label')),
-            TextColumn::make('basePrices.0')->formatStateUsing(
-                fn ($state = null) => $state->price->formatted
+            TextColumn::make('basePrices')->formatStateUsing(
+                fn ($state = null) => $state->first()?->price->formatted
             )->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.table.price.label')
             ),
