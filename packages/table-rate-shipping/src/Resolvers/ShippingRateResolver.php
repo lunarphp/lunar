@@ -75,19 +75,11 @@ class ShippingRateResolver
             $value = (float) ($line->purchasable->weight_value ?? 0);
             $unit = $line->purchasable->weight_unit ?? 'kg';
 
-            if ($value === 0.0) {
-                return 0.0;
-            }
-
-            if ($unit !== 'kg') {
-                $value = (float) Converter::from("weight.{$unit}")
-                    ->to('weight.kg')
-                    ->value($value)
-                    ->convert()
-                    ->getValue();
-            }
-
-            return $value * $line->quantity;
+            return (float) Converter::from("weight.{$unit}")
+                ->to('weight.kg')
+                ->value($value * $line->quantity)
+                ->convert()
+                ->getValue();
         });
 
         $this->customerGroups = collect([CustomerGroup::getDefault()]);
