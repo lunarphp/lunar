@@ -29,6 +29,9 @@ return [
             ],
             'to' => [
                 'label' => 'Until',
+                'validation' => [
+                    'after' => 'The until time must be after the from time.',
+                ],
             ],
         ],
         'charge_by' => [

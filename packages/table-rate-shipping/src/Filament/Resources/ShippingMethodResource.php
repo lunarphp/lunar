@@ -138,6 +138,10 @@ class ShippingMethodResource extends BaseResource
                 ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
                 ->seconds(false)
                 ->disabled(fn (Get $get) => ! $get('enabled'))
+                ->rules(fn (Get $get): array => filled($get('from')) ? ['after:'.$get('from')] : [])
+                ->validationMessages([
+                    'after' => __('lunarpanel.shipping::shippingmethod.form.schedule.to.validation.after'),
+                ])
                 ->columnSpan(1),
         ])->statePath((string) $day)->columns(3)
         )->values()->toArray();
