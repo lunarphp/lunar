@@ -68,9 +68,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 ->live()
                 ->relationship(name: 'shippingMethod', titleAttribute: 'name')
                 ->columnSpan(2),
-            Forms\Components\Section::make(
-                __('lunarpanel.shipping::relationmanagers.shipping_rates.form.base_prices.label')
-            )->schema(static function (): array {
+            Forms\Components\Group::make(static function (): array {
                 $currencies = Currency::whereEnabled(true)
                     ->orderByDesc('default')
                     ->orderBy('name')
