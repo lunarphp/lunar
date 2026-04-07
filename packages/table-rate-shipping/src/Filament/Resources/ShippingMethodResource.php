@@ -81,10 +81,8 @@ class ShippingMethodResource extends BaseResource
                 static::getCodeFormComponent(),
                 static::getDriverFormComponent(),
             ])->columns(2),
-            Group::make([
-                static::getCutoffFormComponent(),
-                static::getChargeByFormComponent(),
-            ])->columns(2),
+            static::getChargeByFormComponent(),
+            static::getAvailabilityScheduleFormComponent(),
             static::getStockAvailableFormComponent(),
             static::getDescriptionFormComponent(),
         ];
@@ -113,10 +111,32 @@ class ShippingMethodResource extends BaseResource
             ->unique(ignoreRecord: true);
     }
 
-    public static function getCutoffFormComponent(): Component
+    public static function getAvailabilityScheduleFormComponent(): Component
     {
-        return Forms\Components\TimePicker::make('cutoff')
-            ->label(__('lunarpanel.shipping::shippingmethod.form.cutoff.label'));
+        return Section::make(__('lunarpanel.shipping::shippingmethod.form.schedule.label'))
+            ->schema([
+                Forms\Components\CheckboxList::make('days')
+                    ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.days.label'))
+                    ->helperText(__('lunarpanel.shipping::shippingmethod.form.schedule.days.helper'))
+                    ->options([
+                        1 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.monday'),
+                        2 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.tuesday'),
+                        3 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.wednesday'),
+                        4 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.thursday'),
+                        5 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.friday'),
+                        6 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.saturday'),
+                        7 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.sunday'),
+                    ])
+                    ->columns(4),
+                Group::make([
+                    Forms\Components\TimePicker::make('from')
+                        ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.from.label'))
+                        ->seconds(false),
+                    Forms\Components\TimePicker::make('to')
+                        ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
+                        ->seconds(false),
+                ])->columns(2),
+            ])->statePath('data.schedule')->collapsed()->collapsible();
     }
 
     public static function getStockAvailableFormComponent(): Component

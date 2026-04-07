@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -54,6 +55,52 @@ class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
     public function shippingRates(): HasMany
     {
         return $this->hasMany(ShippingRate::modelClass());
+    }
+
+    /**
+     * Determine whether this shipping method is available at the given moment.
+     * Checks the schedule stored in data.schedule (days + from/to window) first,
+     * then falls back to the legacy cutoff column.
+     */
+    public function isAvailableAt(?Carbon $now = null): bool
+    {
+        $now = $now ?? now();
+        $schedule = $this->data['schedule'] ?? null;
+
+        if ($schedule) {
+            $days = (array) ($schedule['days'] ?? []);
+
+            if (! empty($days) && ! in_array($now->isoWeekday(), $days)) {
+                return false;
+            }
+
+            $from = $schedule['from'] ?? null;
+            if ($from) {
+                if ($now->lt($now->copy()->setTimeFromTimeString($from))) {
+                    return false;
+                }
+            }
+
+            $to = $schedule['to'] ?? null;
+            if ($to) {
+                if ($now->gt($now->copy()->setTimeFromTimeString($to))) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // Legacy cutoff fallback
+        if (! $this->cutoff) {
+            return true;
+        }
+
+        [$h, $m, $s] = explode(':', $this->cutoff);
+
+        $cutoff = $now->copy()->set('hour', (int) $h)->set('minute', (int) $m)->set('second', (int) $s);
+
+        return $cutoff->gt($now);
     }
 
     public function driver(): ShippingRateInterface

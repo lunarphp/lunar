@@ -13,8 +13,27 @@ return [
         'code' => [
             'label' => 'Code',
         ],
-        'cutoff' => [
-            'label' => 'Cutoff',
+        'schedule' => [
+            'label' => 'Availability Schedule',
+            'days' => [
+                'label' => 'Available Days',
+                'helper' => 'Leave empty to allow all days.',
+                'options' => [
+                    'monday' => 'Monday',
+                    'tuesday' => 'Tuesday',
+                    'wednesday' => 'Wednesday',
+                    'thursday' => 'Thursday',
+                    'friday' => 'Friday',
+                    'saturday' => 'Saturday',
+                    'sunday' => 'Sunday',
+                ],
+            ],
+            'from' => [
+                'label' => 'Available From',
+            ],
+            'to' => [
+                'label' => 'Available Until',
+            ],
         ],
         'charge_by' => [
             'label' => 'Charge By',
