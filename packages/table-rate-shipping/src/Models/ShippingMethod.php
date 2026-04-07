@@ -59,8 +59,10 @@ class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
 
     /**
      * Determine whether this shipping method is available at the given moment.
-     * Checks the schedule stored in data.schedule (days + from/to window) first,
-     * then falls back to the legacy cutoff column.
+     *
+     * The schedule is stored in data.schedule keyed by ISO weekday (1=Monday … 7=Sunday).
+     * Each day entry has: enabled (bool), from (time string), to (time string).
+     * Falls back to the legacy cutoff column when no schedule is configured.
      */
     public function isAvailableAt(?Carbon $now = null): bool
     {
@@ -68,24 +70,21 @@ class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
         $schedule = $this->data['schedule'] ?? null;
 
         if ($schedule) {
-            $days = (array) ($schedule['days'] ?? []);
+            $dayKey = (string) $now->isoWeekday();
+            $day = (array) ($schedule[$dayKey] ?? []);
 
-            if (! empty($days) && ! in_array($now->isoWeekday(), $days)) {
+            if (! ($day['enabled'] ?? false)) {
                 return false;
             }
 
-            $from = $schedule['from'] ?? null;
-            if ($from) {
-                if ($now->lt($now->copy()->setTimeFromTimeString($from))) {
-                    return false;
-                }
+            $from = $day['from'] ?? null;
+            if ($from && $now->lt($now->copy()->setTimeFromTimeString($from))) {
+                return false;
             }
 
-            $to = $schedule['to'] ?? null;
-            if ($to) {
-                if ($now->gt($now->copy()->setTimeFromTimeString($to))) {
-                    return false;
-                }
+            $to = $day['to'] ?? null;
+            if ($to && $now->gt($now->copy()->setTimeFromTimeString($to))) {
+                return false;
             }
 
             return true;

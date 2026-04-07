@@ -11,6 +11,7 @@ use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Columns\TextColumn;
@@ -113,30 +114,40 @@ class ShippingMethodResource extends BaseResource
 
     public static function getAvailabilityScheduleFormComponent(): Component
     {
+        $days = [
+            1 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.monday'),
+            2 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.tuesday'),
+            3 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.wednesday'),
+            4 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.thursday'),
+            5 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.friday'),
+            6 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.saturday'),
+            7 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.sunday'),
+        ];
+
+        $rows = collect($days)->map(fn ($label, $day) =>
+            Group::make([
+                Forms\Components\Checkbox::make('enabled')
+                    ->label($label)
+                    ->live()
+                    ->columnSpan(1),
+                Forms\Components\TimePicker::make('from')
+                    ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.from.label'))
+                    ->seconds(false)
+                    ->disabled(fn (Get $get) => ! $get('enabled'))
+                    ->columnSpan(1),
+                Forms\Components\TimePicker::make('to')
+                    ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
+                    ->seconds(false)
+                    ->disabled(fn (Get $get) => ! $get('enabled'))
+                    ->columnSpan(1),
+            ])->statePath((string) $day)->columns(3)
+        )->values()->toArray();
+
         return Section::make(__('lunarpanel.shipping::shippingmethod.form.schedule.label'))
-            ->schema([
-                Forms\Components\CheckboxList::make('days')
-                    ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.days.label'))
-                    ->helperText(__('lunarpanel.shipping::shippingmethod.form.schedule.days.helper'))
-                    ->options([
-                        1 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.monday'),
-                        2 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.tuesday'),
-                        3 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.wednesday'),
-                        4 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.thursday'),
-                        5 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.friday'),
-                        6 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.saturday'),
-                        7 => __('lunarpanel.shipping::shippingmethod.form.schedule.days.options.sunday'),
-                    ])
-                    ->columns(4),
-                Group::make([
-                    Forms\Components\TimePicker::make('from')
-                        ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.from.label'))
-                        ->seconds(false),
-                    Forms\Components\TimePicker::make('to')
-                        ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
-                        ->seconds(false),
-                ])->columns(2),
-            ])->statePath('data.schedule')->collapsed()->collapsible();
+            ->schema($rows)
+            ->statePath('data.schedule')
+            ->collapsed()
+            ->collapsible();
     }
 
     public static function getStockAvailableFormComponent(): Component

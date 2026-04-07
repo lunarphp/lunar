@@ -16,23 +16,19 @@ return [
         'schedule' => [
             'label' => 'Availability Schedule',
             'days' => [
-                'label' => 'Available Days',
-                'helper' => 'Leave empty to allow all days.',
-                'options' => [
-                    'monday' => 'Monday',
-                    'tuesday' => 'Tuesday',
-                    'wednesday' => 'Wednesday',
-                    'thursday' => 'Thursday',
-                    'friday' => 'Friday',
-                    'saturday' => 'Saturday',
-                    'sunday' => 'Sunday',
-                ],
+                'monday' => 'Monday',
+                'tuesday' => 'Tuesday',
+                'wednesday' => 'Wednesday',
+                'thursday' => 'Thursday',
+                'friday' => 'Friday',
+                'saturday' => 'Saturday',
+                'sunday' => 'Sunday',
             ],
             'from' => [
-                'label' => 'Available From',
+                'label' => 'From',
             ],
             'to' => [
-                'label' => 'Available Until',
+                'label' => 'Until',
             ],
         ],
         'charge_by' => [
