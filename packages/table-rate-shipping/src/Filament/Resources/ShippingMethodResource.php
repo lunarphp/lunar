@@ -3,6 +3,7 @@
 namespace Lunar\Shipping\Filament\Resources;
 
 use Awcodes\Shout\Components\Shout;
+use Cartalyst\Converter\Laravel\Facades\Converter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -11,6 +12,7 @@ use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Columns\TextColumn;
@@ -85,6 +87,7 @@ class ShippingMethodResource extends BaseResource
                 static::getCutoffFormComponent(),
                 static::getChargeByFormComponent(),
             ])->columns(2),
+            static::getWeightConstraintsFormComponent(),
             static::getStockAvailableFormComponent(),
             static::getDescriptionFormComponent(),
         ];
@@ -117,6 +120,30 @@ class ShippingMethodResource extends BaseResource
     {
         return Forms\Components\TimePicker::make('cutoff')
             ->label(__('lunarpanel.shipping::shippingmethod.form.cutoff.label'));
+    }
+
+    public static function getWeightConstraintsFormComponent(): Component
+    {
+        $weightUnits = collect(array_keys(Converter::getMeasurements()['weight'] ?? []))
+            ->mapWithKeys(fn ($unit) => [$unit => $unit])
+            ->all();
+
+        return Group::make([
+            Forms\Components\Select::make('weight_unit')
+                ->label(__('lunarpanel.shipping::shippingmethod.form.weight_unit.label'))
+                ->options($weightUnits)
+                ->placeholder(__('lunarpanel.shipping::shippingmethod.form.weight_unit.placeholder')),
+            Forms\Components\TextInput::make('min_weight')
+                ->label(__('lunarpanel.shipping::shippingmethod.form.min_weight.label'))
+                ->numeric()
+                ->minValue(0)
+                ->required(fn (Get $get) => filled($get('weight_unit'))),
+            Forms\Components\TextInput::make('max_weight')
+                ->label(__('lunarpanel.shipping::shippingmethod.form.max_weight.label'))
+                ->numeric()
+                ->minValue(0)
+                ->required(fn (Get $get) => filled($get('weight_unit'))),
+        ])->columns(3);
     }
 
     public static function getStockAvailableFormComponent(): Component
