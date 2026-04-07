@@ -11,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\Pages\ManageRelatedRecords;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
@@ -68,7 +69,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 ->live()
                 ->relationship(name: 'shippingMethod', titleAttribute: 'name')
                 ->columnSpan(2),
-            Forms\Components\Group::make(static function (): array {
+            Group::make(static function (): array {
                 $currencies = Currency::whereEnabled(true)
                     ->orderByDesc('default')
                     ->orderBy('name')
