@@ -64,6 +64,7 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
         foreach ($breakdown->items as $identifier => $item) {
             if ($methodCode && $identifier !== $methodCode) {
                 $newTotal += $item->price->value;
+
                 continue;
             }
 
@@ -110,13 +111,12 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
     {
         $currencies = Currency::enabled()->get();
 
-        $priceFields = $currencies->map(fn ($currency) =>
-            TextInput::make("data.prices.{$currency->code}")
-                ->label($currency->name)
-                ->helperText($currency->code)
-                ->numeric()
-                ->minValue(0)
-                ->required()
+        $priceFields = $currencies->map(fn ($currency) => TextInput::make("data.prices.{$currency->code}")
+            ->label($currency->name)
+            ->helperText($currency->code)
+            ->numeric()
+            ->minValue(0)
+            ->required()
         )->toArray();
 
         return [
