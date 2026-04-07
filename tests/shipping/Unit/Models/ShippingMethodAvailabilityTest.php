@@ -12,8 +12,8 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 // ── No schedule ──────────────────────────────────────────────────────────────
 
-test('is available when no schedule and no cutoff are set', function () {
-    $method = ShippingMethod::factory()->create(['cutoff' => null, 'data' => []]);
+test('is available when no schedule is set', function () {
+    $method = ShippingMethod::factory()->create(['data' => []]);
 
     expect($method->isAvailableAt(Carbon::now()))->toBeTrue();
 });
@@ -24,7 +24,6 @@ test('is available on an enabled day', function () {
     $monday = Carbon::parse('next Monday')->setTime(12, 0);
 
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true],
         ]],
@@ -37,7 +36,6 @@ test('is not available on a day that is not enabled', function () {
     $tuesday = Carbon::parse('next Tuesday')->setTime(12, 0);
 
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true],
             '2' => ['enabled' => false],
@@ -51,7 +49,6 @@ test('is not available on a day absent from the schedule', function () {
     $wednesday = Carbon::parse('next Wednesday')->setTime(12, 0);
 
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true],
         ]],
@@ -66,7 +63,6 @@ test('is available when current time is within the day\'s from/to window', funct
     $monday = Carbon::parse('next Monday')->setTime(13, 0);
 
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true, 'from' => '10:00', 'to' => '17:00'],
         ]],
@@ -79,7 +75,6 @@ test('is not available when current time is before the day\'s from time', functi
     $monday = Carbon::parse('next Monday')->setTime(9, 30);
 
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true, 'from' => '10:00', 'to' => '17:00'],
         ]],
@@ -92,7 +87,6 @@ test('is not available when current time is after the day\'s to time', function 
     $monday = Carbon::parse('next Monday')->setTime(17, 1);
 
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true, 'from' => '10:00', 'to' => '17:00'],
         ]],
@@ -105,7 +99,6 @@ test('is available exactly at the from time', function () {
     $monday = Carbon::parse('next Monday')->setTime(10, 0, 0);
 
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true, 'from' => '10:00', 'to' => '17:00'],
         ]],
@@ -118,7 +111,6 @@ test('is available exactly at the to time', function () {
     $monday = Carbon::parse('next Monday')->setTime(17, 0, 0);
 
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true, 'from' => '10:00', 'to' => '17:00'],
         ]],
@@ -131,7 +123,6 @@ test('is available exactly at the to time', function () {
 
 test('each day can have its own time window', function () {
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '1' => ['enabled' => true, 'from' => '09:00', 'to' => '17:00'], // Mon 9–17
             '6' => ['enabled' => true, 'from' => '10:00', 'to' => '13:00'], // Sat 10–13
@@ -149,7 +140,6 @@ test('each day can have its own time window', function () {
 
 test('an enabled day with no from/to is available all day', function () {
     $method = ShippingMethod::factory()->create([
-        'cutoff' => null,
         'data' => ['schedule' => [
             '3' => ['enabled' => true], // Wednesday, all day
         ]],
@@ -160,41 +150,4 @@ test('an enabled day with no from/to is available all day', function () {
 
     expect($method->isAvailableAt($earlyWednesday))->toBeTrue();
     expect($method->isAvailableAt($lateWednesday))->toBeTrue();
-});
-
-// ── Legacy cutoff fallback ───────────────────────────────────────────────────
-
-test('falls back to cutoff column when no schedule and cutoff has not passed', function () {
-    $now = Carbon::parse('next Monday')->setTime(14, 0);
-
-    $method = ShippingMethod::factory()->create([
-        'cutoff' => '17:00:00',
-        'data' => [],
-    ]);
-
-    expect($method->isAvailableAt($now))->toBeTrue();
-});
-
-test('falls back to cutoff column when no schedule and cutoff has passed', function () {
-    $now = Carbon::parse('next Monday')->setTime(18, 0);
-
-    $method = ShippingMethod::factory()->create([
-        'cutoff' => '17:00:00',
-        'data' => [],
-    ]);
-
-    expect($method->isAvailableAt($now))->toBeFalse();
-});
-
-test('schedule takes priority over the legacy cutoff column', function () {
-    $now = Carbon::parse('next Monday')->setTime(14, 0);
-
-    $method = ShippingMethod::factory()->create([
-        'cutoff' => '10:00:00', // would reject at 14:00 if used
-        'data' => ['schedule' => [
-            '1' => ['enabled' => true, 'from' => '09:00', 'to' => '18:00'],
-        ]],
-    ]);
-
-    expect($method->isAvailableAt($now))->toBeTrue();
 });

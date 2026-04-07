@@ -61,45 +61,36 @@ class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
      * Determine whether this shipping method is available at the given moment.
      *
      * The schedule is stored in data.schedule keyed by ISO weekday (1=Monday … 7=Sunday).
-     * Each day entry has: enabled (bool), from (time string), to (time string).
-     * Falls back to the legacy cutoff column when no schedule is configured.
+     * Each day entry has: enabled (bool), from (time string "H:i"), to (time string "H:i").
+     * When no schedule is configured the method is always available.
      */
     public function isAvailableAt(?Carbon $now = null): bool
     {
         $now = $now ?? now();
         $schedule = $this->data['schedule'] ?? null;
 
-        if ($schedule) {
-            $dayKey = (string) $now->isoWeekday();
-            $day = (array) ($schedule[$dayKey] ?? []);
-
-            if (! ($day['enabled'] ?? false)) {
-                return false;
-            }
-
-            $from = $day['from'] ?? null;
-            if ($from && $now->lt($now->copy()->setTimeFromTimeString($from))) {
-                return false;
-            }
-
-            $to = $day['to'] ?? null;
-            if ($to && $now->gt($now->copy()->setTimeFromTimeString($to))) {
-                return false;
-            }
-
+        if (! $schedule) {
             return true;
         }
 
-        // Legacy cutoff fallback
-        if (! $this->cutoff) {
-            return true;
+        $dayKey = (string) $now->isoWeekday();
+        $day = (array) ($schedule[$dayKey] ?? []);
+
+        if (! ($day['enabled'] ?? false)) {
+            return false;
         }
 
-        [$h, $m, $s] = explode(':', $this->cutoff);
+        $from = $day['from'] ?? null;
+        if ($from && $now->lt($now->copy()->setTimeFromTimeString($from))) {
+            return false;
+        }
 
-        $cutoff = $now->copy()->set('hour', (int) $h)->set('minute', (int) $m)->set('second', (int) $s);
+        $to = $day['to'] ?? null;
+        if ($to && $now->gt($now->copy()->setTimeFromTimeString($to))) {
+            return false;
+        }
 
-        return $cutoff->gt($now);
+        return true;
     }
 
     public function driver(): ShippingRateInterface
