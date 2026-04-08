@@ -124,3 +124,63 @@ test('can chain from value to convert for volume calculation', function () {
     expect($height)->toBe(2.5);
     expect($volumeInL)->toBe(0.125);
 });
+
+test('can format a value using the from measurement format', function () {
+    $result = $this->converter
+        ->from('length.cm')
+        ->value(50);
+
+    expect($result->format())->toBe('50 cm');
+});
+
+test('can format a value using the to measurement format', function () {
+    $result = $this->converter
+        ->from('length.mm')
+        ->value(500)
+        ->to('length.cm')
+        ->convert();
+
+    expect($result->format())->toBe('50 cm');
+});
+
+test('can format with thousands separator', function () {
+    $result = $this->converter
+        ->from('length.mm')
+        ->value(1500000);
+
+    expect($result->format())->toBe('1,500,000.000 mm');
+});
+
+test('can format with custom format string', function () {
+    $result = $this->converter
+        ->from('length.cm')
+        ->value(1050.5);
+
+    expect($result->format('1,0.00 centimeters'))->toBe('1,050.50 centimeters');
+});
+
+test('can format weight values', function () {
+    $result = $this->converter
+        ->from('weight.kg')
+        ->value(2.5);
+
+    expect($result->format())->toBe('2.50 kg');
+});
+
+test('can format negative values', function () {
+    $result = $this->converter
+        ->from('weight.kg')
+        ->value(-2.5);
+
+    expect($result->format())->toBe('-2.50 kg');
+});
+
+test('format returns plain value when no format string available', function () {
+    $converter = new MeasurementConverter([
+        'length' => ['x' => ['unit' => 1]],
+    ]);
+
+    $result = $converter->from('length.x')->value(42);
+
+    expect($result->format())->toBe('42');
+});
