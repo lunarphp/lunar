@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\Cart;
@@ -10,6 +8,8 @@ use Lunar\Models\Channel;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

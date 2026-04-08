@@ -1,12 +1,12 @@
 <?php
 
-uses(TestCase::class)->group('models');
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Address;
 use Lunar\Models\Country;
 use Lunar\Models\Customer;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class)->group('models');
 
 use function Pest\Laravel\assertDatabaseMissing;
 

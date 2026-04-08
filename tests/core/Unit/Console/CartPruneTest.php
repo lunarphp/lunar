@@ -1,13 +1,13 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

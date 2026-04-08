@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Actions\Orders\GenerateOrderReference;
@@ -10,6 +8,8 @@ use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Tests\Core\Stubs\TestOrderReferenceGenerator;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

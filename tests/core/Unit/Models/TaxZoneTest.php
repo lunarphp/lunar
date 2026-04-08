@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
@@ -13,6 +11,8 @@ use Lunar\Models\TaxZoneCustomerGroup;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Models\TaxZoneState;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;

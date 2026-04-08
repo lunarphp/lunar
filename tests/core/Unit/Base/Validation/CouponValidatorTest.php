@@ -1,11 +1,12 @@
 <?php
 
-uses(TestCase::class);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\Validation\CouponValidator;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Models\Discount;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

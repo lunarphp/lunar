@@ -1,13 +1,13 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\PaymentManagerInterface;
 use Lunar\Facades\Payments;
 use Lunar\Tests\Core\Stubs\TestPaymentDriver;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

@@ -1,11 +1,11 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Models\ShippingZonePostcode;
 use Lunar\Tests\Shipping\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

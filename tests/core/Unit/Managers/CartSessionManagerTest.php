@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class)->group('cart_session');
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
@@ -14,6 +12,8 @@ use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class)->group('cart_session');
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseMissing;

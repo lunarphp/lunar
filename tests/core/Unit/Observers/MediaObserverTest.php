@@ -1,13 +1,13 @@
 <?php
 
-uses(TestCase::class)->group('media.observer');
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Lunar\Facades\DB;
 use Lunar\Models\Brand;
 use Lunar\Tests\Core\TestCase;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
+uses(TestCase::class)->group('media.observer');
 
 uses(RefreshDatabase::class);
 

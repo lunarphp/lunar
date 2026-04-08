@@ -1,6 +1,5 @@
 <?php
 
-uses(TestCase::class);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Lunar\Base\FieldTypeManifest;
@@ -10,6 +9,8 @@ use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

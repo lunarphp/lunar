@@ -1,7 +1,5 @@
 <?php
 
-uses(ExtendableTestCase::class)->group('model_extending');
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
@@ -13,6 +11,8 @@ use Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct;
 use Lunar\Tests\Core\Stubs\Models\Custom\DeepCustomProduct;
 use Lunar\Tests\Core\Stubs\Models\CustomOrder;
 use Lunar\Tests\Core\Unit\Base\Extendable\ExtendableTestCase;
+
+uses(ExtendableTestCase::class)->group('model_extending');
 
 uses(RefreshDatabase::class);
 

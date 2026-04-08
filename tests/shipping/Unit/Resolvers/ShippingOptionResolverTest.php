@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
@@ -18,6 +16,8 @@ use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Tests\Shipping\TestCase;
 use Lunar\Tests\Shipping\TestUtils;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 uses(TestUtils::class);

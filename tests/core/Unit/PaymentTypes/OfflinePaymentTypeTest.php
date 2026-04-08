@@ -1,6 +1,5 @@
 <?php
 
-uses(TestCase::class);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
@@ -10,6 +9,8 @@ use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 use Lunar\Models\Order;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

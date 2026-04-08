@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Carts\CreateOrder;
 use Lunar\DataTypes\Price as PriceDataType;
@@ -24,6 +22,8 @@ use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Tests\Core\Stubs\Models\CustomOrder;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 use function Pest\Laravel\assertDatabaseHas;
 

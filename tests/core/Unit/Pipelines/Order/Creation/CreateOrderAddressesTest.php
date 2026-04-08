@@ -1,6 +1,5 @@
 <?php
 
-uses(TestCase::class);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
@@ -9,6 +8,8 @@ use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
 use Lunar\Pipelines\Order\Creation\CreateOrderAddresses;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

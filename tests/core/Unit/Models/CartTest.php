@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class)->group('carts');
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
@@ -31,6 +29,8 @@ use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class)->group('carts');
 
 use function Pest\Laravel\assertDatabaseCount;
 

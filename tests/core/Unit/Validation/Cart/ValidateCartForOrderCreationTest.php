@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
@@ -14,6 +12,8 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Tests\Core\TestCase;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Facades\CartSession;
@@ -17,6 +15,8 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

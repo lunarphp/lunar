@@ -1,12 +1,13 @@
 <?php
 
-uses(TestCase::class);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Tests\Core\TestCase;
 use Spatie\Activitylog\Models\Activity;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

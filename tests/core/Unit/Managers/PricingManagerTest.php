@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\DataTransferObjects\PricingResponse;
 use Lunar\Managers\PricingManager;
@@ -14,6 +12,8 @@ use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestPricingPipeline;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

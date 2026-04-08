@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Country;
 use Lunar\Models\State;
@@ -9,6 +7,8 @@ use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Resolvers\ShippingZoneResolver;
 use Lunar\Tests\Shipping\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

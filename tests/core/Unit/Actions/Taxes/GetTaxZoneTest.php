@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Taxes\GetTaxZone;
 use Lunar\Models\Address;
@@ -12,6 +10,8 @@ use Lunar\Models\TaxZoneCountry;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Models\TaxZoneState;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class)
     ->group('taxes');

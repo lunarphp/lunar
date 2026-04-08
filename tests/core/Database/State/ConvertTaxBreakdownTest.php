@@ -1,6 +1,5 @@
 <?php
 
-uses(TestCase::class);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Lunar\Database\State\ConvertTaxbreakdown;
@@ -9,6 +8,8 @@ use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

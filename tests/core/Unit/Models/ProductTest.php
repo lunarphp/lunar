@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Facades\DB;
@@ -19,6 +17,8 @@ use Lunar\Models\ProductOption;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

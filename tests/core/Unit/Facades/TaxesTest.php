@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
@@ -10,6 +8,8 @@ use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

@@ -1,6 +1,5 @@
 <?php
 
-uses(TestCase::class);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\Casts\ShippingBreakdown as ShippingBreakdownCasts;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
@@ -9,6 +8,8 @@ use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

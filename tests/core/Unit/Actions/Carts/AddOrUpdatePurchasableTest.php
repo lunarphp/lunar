@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Exceptions\InvalidCartLineQuantityException;
@@ -11,6 +9,8 @@ use Lunar\Models\Currency;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

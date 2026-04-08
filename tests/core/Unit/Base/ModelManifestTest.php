@@ -1,13 +1,13 @@
 <?php
 
-uses(TestCase::class)->group('model_extending');
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\ModelManifestInterface;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 use Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class)->group('model_extending');
 
 uses(RefreshDatabase::class);
 

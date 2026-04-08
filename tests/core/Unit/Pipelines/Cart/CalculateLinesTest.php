@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
@@ -9,6 +7,8 @@ use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Pipelines\Cart\CalculateLines;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 

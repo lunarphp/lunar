@@ -1,9 +1,10 @@
 <?php
 
-uses(TestCase::class);
 use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Number;
 use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 test('can set value', function () {
     $field = new Number;
