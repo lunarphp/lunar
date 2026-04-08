@@ -1,7 +1,8 @@
 <?php
 
-uses(\Lunar\Tests\Shipping\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
@@ -14,8 +15,9 @@ use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
+use Lunar\Tests\Shipping\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 /**
  * Build the scaffolding common to all weight tests and return the calculated cart + rate.
