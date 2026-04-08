@@ -154,6 +154,8 @@ class ManageShippingRates extends ManageRelatedRecords
 
     public function table(Table $table): Table
     {
+        $baseCurrency = Currency::getDefault();
+
         return $table->columns([
             BadgeableColumn::make('shippingMethod.name')
                 ->separator('')
@@ -164,8 +166,8 @@ class ManageShippingRates extends ManageRelatedRecords
                         ->visible(fn (Model $record) => ! $record->enabled),
                 ])
                 ->label(__('lunarpanel.shipping::relationmanagers.shipping_rates.table.shipping_method.label')),
-            TextColumn::make('basePrices')->formatStateUsing(
-                fn ($state = null) => $state->first()?->price->formatted
+            TextColumn::make('shippingMethod.id')->formatStateUsing(
+                fn (Model $record) => $record->basePrices->first(fn ($p) => $p->currency_id == $baseCurrency->id)?->price->formatted ?? '-',
             )->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.table.price.label')
             ),
