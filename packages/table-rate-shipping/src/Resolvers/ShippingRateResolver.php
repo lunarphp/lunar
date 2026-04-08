@@ -166,7 +166,7 @@ class ShippingRateResolver
                         return true;
                     }
 
-                    return ! $method->isAvailableAt();
+                    return ! $method->isAvailable();
                 })
                 ->reject(function ($rate) {
                     if ($this->allCartItemsAreInStock || ! ($rate->shippingMethod->stock_available ?? false)) {

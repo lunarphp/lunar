@@ -64,7 +64,27 @@ class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
      * Each day entry has: enabled (bool), from (time string "H:i"), to (time string "H:i").
      * When no schedule is configured the method is always available.
      */
-    public function isAvailableAt(?Carbon $now = null): bool
+    public function scopeAvailableAt(\Illuminate\Database\Eloquent\Builder $query, Carbon $now): \Illuminate\Database\Eloquent\Builder
+    {
+        return $query->where(function ($query) use ($now) {
+            $dayKey = (string) $now->isoWeekday();
+            $time = $now->format('H:i');
+
+            // No schedule configured — always available
+            $query->whereNull('data->schedule')
+                ->orWhereJsonContains('data->schedule->'.$dayKey.'->enabled', true)
+                ->where(function ($query) use ($dayKey, $now) {
+                    $query->whereNull('data->schedule->'.$dayKey.'->from')
+                        ->orWhereTime('data->schedule->'.$dayKey.'->from', '<=', $now);
+                })
+                ->where(function ($query) use ($dayKey, $now) {
+                    $query->whereNull('data->schedule->'.$dayKey.'->to')
+                        ->orWhereTime('data->schedule->'.$dayKey.'->to', '>=', $now);
+                });
+        });
+    }
+
+    public function isAvailable(?Carbon $now = null): bool
     {
         $now = $now ?? now();
         $schedule = $this->data['schedule'] ?? null;
