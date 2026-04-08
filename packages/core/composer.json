@@ -37,7 +37,6 @@
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-activitylog": "^4.10.1",
         "laravel/scout": "^10.13.1",
-        "cartalyst/converter": "^10|^11",
         "kalnoy/nestedset": "^v6.0.5",
 
         "lukascivil/treewalker": "0.9.1",
