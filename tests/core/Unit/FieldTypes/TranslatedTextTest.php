@@ -1,11 +1,12 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 use Illuminate\Support\Collection;
 use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
+use Lunar\Tests\Core\TestCase;
 
 test('can set value', function () {
     $field = new TranslatedText;

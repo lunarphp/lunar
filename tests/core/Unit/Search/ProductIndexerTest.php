@@ -1,7 +1,8 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
@@ -9,8 +10,9 @@ use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Search\ProductIndexer;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can return correct searchable data', function () {
     Language::factory()->create([

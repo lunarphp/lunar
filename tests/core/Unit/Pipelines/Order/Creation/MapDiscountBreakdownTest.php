@@ -1,7 +1,8 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
@@ -13,8 +14,9 @@ use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Pipelines\Order\Creation\CreateOrderLines;
 use Lunar\Pipelines\Order\Creation\MapDiscountBreakdown;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Currency::factory()->create([

@@ -1,8 +1,9 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Toggle;
+use Lunar\Tests\Core\TestCase;
 
 test('can set value', function () {
     $field = new Toggle;

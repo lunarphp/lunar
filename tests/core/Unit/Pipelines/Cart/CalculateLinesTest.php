@@ -1,14 +1,16 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Pipelines\Cart\CalculateLines;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can calculate lines', function ($expectedUnitPrice, $incomingUnitPrice, $unitQuantity) {
     $currency = Currency::factory()->create();

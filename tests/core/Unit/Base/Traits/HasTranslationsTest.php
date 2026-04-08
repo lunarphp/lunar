@@ -1,7 +1,8 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\FieldTypes\Dropdown;
 use Lunar\FieldTypes\ListField;
 use Lunar\FieldTypes\Text;
@@ -9,8 +10,9 @@ use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can translate attributes', function () {
     $attributeGroup = AttributeGroup::factory()->create([

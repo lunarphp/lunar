@@ -4,6 +4,7 @@ namespace Lunar\Base\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Str;
 use Lunar\Base\StandardMediaDefinitions;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -63,7 +64,7 @@ trait HasMedia
     {
         $conversionClasses = config('lunar.media.definitions', []);
 
-        $alias = \Illuminate\Support\Str::snake(class_basename(static::class));
+        $alias = Str::snake(class_basename(static::class));
 
         return $conversionClasses[$alias]
             ?? $conversionClasses[static::class] // fallback for published config

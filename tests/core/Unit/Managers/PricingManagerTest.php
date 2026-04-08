@@ -1,7 +1,8 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\DataTransferObjects\PricingResponse;
 use Lunar\Managers\PricingManager;
 use Lunar\Models\Currency;
@@ -12,8 +13,9 @@ use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestPricingPipeline;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can initialise the manager', function () {
     expect(new PricingManager)->toBeInstanceOf(PricingManager::class);

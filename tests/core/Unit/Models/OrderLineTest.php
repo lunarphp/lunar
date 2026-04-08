@@ -1,7 +1,10 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
@@ -9,11 +12,13 @@ use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
 use Lunar\Tests\Core\Stubs\TestPurchasable;
+use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\assertDatabaseHas;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can make an order line', function () {
     $order = Order::factory()->create();
@@ -95,13 +100,13 @@ test('non eloquent models can be added to an order', function () {
         'default' => true,
     ]);
 
-    $taxClass = \Lunar\Models\TaxClass::factory()->create();
+    $taxClass = TaxClass::factory()->create();
 
-    $shippingOption = new \Lunar\DataTypes\ShippingOption(
+    $shippingOption = new ShippingOption(
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new \Lunar\DataTypes\Price(500, $currency, 1),
+        price: new Price(500, $currency, 1),
         taxClass: $taxClass
     );
 
@@ -109,7 +114,7 @@ test('non eloquent models can be added to an order', function () {
         'order_id' => $order->id,
         'quantity' => 1,
         'type' => $shippingOption->getType(),
-        'purchasable_type' => \Lunar\DataTypes\ShippingOption::class,
+        'purchasable_type' => ShippingOption::class,
         'purchasable_id' => $shippingOption->getIdentifier(),
         'unit_price' => $shippingOption->getPrice()->value,
         'unit_quantity' => $shippingOption->getUnitQuantity(),
@@ -129,7 +134,7 @@ test('non eloquent models can be added to an order', function () {
         name: 'Test Purchasable',
         description: 'Test Purchasable',
         identifier: 'TESTPUR',
-        price: new \Lunar\DataTypes\Price(650, $currency, 1),
+        price: new Price(650, $currency, 1),
         taxClass: $taxClass
     );
 

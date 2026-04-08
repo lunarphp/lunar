@@ -1,19 +1,22 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
+use Lunar\Models\Collection;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Discount;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can determine correct reward qty', function ($linesQuantity, $minQty, $rewardQty, $maxRewardQty, $expected) {
     $driver = new BuyXGetY;
@@ -412,7 +415,7 @@ test('can discount eligible products using collection condition', function () {
         'default' => true,
     ]);
 
-    $collection = \Lunar\Models\Collection::factory()->create();
+    $collection = Collection::factory()->create();
 
     $currency = Currency::factory()->create([
         'code' => 'GBP',

@@ -1,15 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can make a cart line', function () {
     $cart = Cart::factory()->create([

@@ -1,10 +1,12 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can make a product option value with translations', function () {
     $optionValue = ProductOptionValue::factory()

@@ -1,11 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price;
 use Lunar\Exceptions\InvalidDataTypeValueException;
 use Lunar\Models\Currency;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can initiate the datatype', function () {
     $currency = Currency::factory()->create([
@@ -81,7 +83,7 @@ test('can format numbers', function () {
 
     expect($dataType->formatted('fr'))->toEqual('15,00 €');
     expect($dataType->formatted('en-gb'))->toEqual('€15.00');
-    expect($dataType->formatted('en-gb', \NumberFormatter::SPELLOUT))->toEqual('fifteen');
+    expect($dataType->formatted('en-gb', NumberFormatter::SPELLOUT))->toEqual('fifteen');
 });
 
 test('can format numbers specifying decimal places', function () {

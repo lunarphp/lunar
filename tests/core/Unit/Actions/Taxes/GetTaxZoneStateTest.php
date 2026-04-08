@@ -1,11 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Taxes\GetTaxZoneState;
 use Lunar\Models\State;
 use Lunar\Models\TaxZoneState;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can match exact state name', function () {
     $california = State::factory()->create([

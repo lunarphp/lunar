@@ -1,6 +1,7 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\ShippingManifest;
@@ -11,8 +12,9 @@ use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
 use Lunar\Models\TaxClass;
 use Lunar\Pipelines\Order\Creation\CreateShippingLine;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can run pipeline', function () {
     $currency = Currency::factory()->create();

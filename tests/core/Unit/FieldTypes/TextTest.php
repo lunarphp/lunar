@@ -1,8 +1,9 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
 use Lunar\Exceptions\FieldTypeException;
 use Lunar\FieldTypes\Text;
+use Lunar\Tests\Core\TestCase;
 
 test('can set value', function () {
     $field = new Text;
@@ -37,5 +38,5 @@ test('can set value in constructor', function () {
 test('check does not allow non strings', function () {
     $this->expectException(FieldTypeException::class);
 
-    $field = new Text(new \stdClass);
+    $field = new Text(new stdClass);
 });

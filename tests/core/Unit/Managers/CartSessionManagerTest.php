@@ -1,7 +1,8 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('cart_session');
+uses(TestCase::class)->group('cart_session');
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Lunar\Facades\CartSession;
@@ -11,11 +12,13 @@ use Lunar\Models\CartAddress;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
+use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseMissing;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can instantiate manager', function () {
     $manager = app(CartSessionManager::class);
@@ -169,7 +172,7 @@ test('can fetch authenticated users cart and set in session', function () {
     expect($cart)->toBeNull();
 
     actingAs(
-        $user = \Lunar\Tests\Core\Stubs\User::factory()->create()
+        $user = User::factory()->create()
     );
 
     $userCart = Cart::factory()->create([

@@ -215,7 +215,7 @@ class LunarServiceProvider extends ServiceProvider
             }
         });
 
-        \Lunar\Facades\ModelManifest::register();
+        Facades\ModelManifest::register();
     }
 
     /**
@@ -232,7 +232,7 @@ class LunarServiceProvider extends ServiceProvider
         $this->registerBlueprintMacros();
         $this->registerStateListeners();
 
-        \Lunar\Facades\ModelManifest::morphMap();
+        Facades\ModelManifest::morphMap();
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -266,7 +266,7 @@ class LunarServiceProvider extends ServiceProvider
             }
         }
 
-        Arr::macro('permutate', [\Lunar\Utils\Arr::class, 'permutate']);
+        Arr::macro('permutate', [Utils\Arr::class, 'permutate']);
 
         // Handle generator
         Str::macro('handle', function ($string) {

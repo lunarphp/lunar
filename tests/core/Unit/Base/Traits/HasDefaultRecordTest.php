@@ -1,9 +1,11 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Channel;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can get default record with scope', function () {
     $defaultChannel = Channel::factory()->create([

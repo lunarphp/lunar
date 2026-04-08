@@ -1,8 +1,9 @@
 <?php
 
-uses(\Lunar\Tests\Shipping\TestCase::class);
+uses(TestCase::class);
 
 use Lunar\Shipping\Resolvers\PostcodeResolver;
+use Lunar\Tests\Shipping\TestCase;
 
 test('can get postcode query parts', function () {
     $postcode = 'ABC 123';

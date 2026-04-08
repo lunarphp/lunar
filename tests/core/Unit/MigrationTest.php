@@ -1,8 +1,9 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('migrations');
+uses(TestCase::class)->group('migrations');
 
 use Illuminate\Support\Facades\File;
+use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\artisan;
 use function Pest\Laravel\assertDatabaseHas;

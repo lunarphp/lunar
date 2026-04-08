@@ -1,12 +1,14 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
+use Lunar\Tests\Core\TestCase;
 use Spatie\Activitylog\Models\Activity;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Language::factory()->create([

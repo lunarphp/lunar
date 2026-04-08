@@ -1,11 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+uses(TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\Validation\CouponValidator;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Models\Discount;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can validate coupons', function () {
     $validator = app(CouponValidator::class);

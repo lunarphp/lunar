@@ -1,7 +1,8 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('carts');
+uses(TestCase::class)->group('carts');
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\DataTypes\ShippingOption;
@@ -10,6 +11,7 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\Discounts;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Managers\CartSessionManager;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\CartLine;
@@ -28,15 +30,16 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
+use Lunar\Tests\Core\TestCase;
 
-use function Pest\Laravel\{assertDatabaseCount};
+use function Pest\Laravel\assertDatabaseCount;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
-//function setAuthUserConfig()
-//{
+// function setAuthUserConfig()
+// {
 //    Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
-//}
+// }
 
 test('can make a cart', function () {
     $currency = Currency::factory()->create();
@@ -1038,7 +1041,7 @@ test('can get new draft order when cart changes', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new \Lunar\DataTypes\Price(500, $cart->currency, 1),
+        price: new DataTypesPrice(500, $cart->currency, 1),
         taxClass: $taxClass
     );
 
@@ -1124,7 +1127,7 @@ test('can get same draft order when cart does not change', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new \Lunar\DataTypes\Price(500, $cart->currency, 1),
+        price: new DataTypesPrice(500, $cart->currency, 1),
         taxClass: $taxClass
     );
 
@@ -1234,7 +1237,7 @@ test('cart session manager prefers the latest unmerged cart for an authenticated
 
     $this->actingAs($user);
 
-    $manager = app(\Lunar\Managers\CartSessionManager::class);
+    $manager = app(CartSessionManager::class);
     $foundCart = $manager->current();
 
     expect($foundCart)->not->toBeNull()
