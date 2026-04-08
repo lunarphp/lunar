@@ -86,12 +86,6 @@
             "Lunar\\Tests\\Search\\": "tests/search"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/laravel-shift/converter"
-        }
-    ],
     "extra": {
 "lunar": {
             "name": [
