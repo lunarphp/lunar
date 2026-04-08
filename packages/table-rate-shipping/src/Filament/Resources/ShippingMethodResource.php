@@ -137,12 +137,14 @@ class ShippingMethodResource extends BaseResource
                 ->label(__('lunarpanel.shipping::shippingmethod.form.min_weight.label'))
                 ->numeric()
                 ->minValue(0)
+                ->live()
                 ->required(fn (Get $get) => filled($get('weight_unit'))),
             Forms\Components\TextInput::make('max_weight')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.max_weight.label'))
                 ->numeric()
                 ->minValue(0)
-                ->required(fn (Get $get) => filled($get('weight_unit'))),
+                ->required(fn (Get $get) => filled($get('weight_unit')))
+                ->rules(fn (Get $get) => filled($get('min_weight')) ? ['gt:'.$get('min_weight')] : []),
         ])->columns(3);
     }
 
