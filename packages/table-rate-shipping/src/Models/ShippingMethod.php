@@ -3,6 +3,7 @@
 namespace Lunar\Shipping\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -64,7 +65,7 @@ class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
      * Each day entry has: enabled (bool), from (time string "H:i"), to (time string "H:i").
      * When no schedule is configured the method is always available.
      */
-    public function scopeAvailableAt(\Illuminate\Database\Eloquent\Builder $query, Carbon $now): \Illuminate\Database\Eloquent\Builder
+    public function scopeAvailableAt(Builder $query, Carbon $now): Builder
     {
         return $query->where(function ($query) use ($now) {
             $dayKey = (string) $now->isoWeekday();
