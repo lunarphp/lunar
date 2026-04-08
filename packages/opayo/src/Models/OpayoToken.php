@@ -2,6 +2,7 @@
 
 namespace Lunar\Opayo\Models;
 
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 
 /**
@@ -11,9 +12,9 @@ use Lunar\Base\BaseModel;
  * @property string $last_four
  * @property string $token
  * @property ?string $auth_code
- * @property \Illuminate\Support\Carbon $expires_at
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property Carbon $expires_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class OpayoToken extends BaseModel
 {

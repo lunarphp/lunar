@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Base\Enums\ProductAssociation as ProductAssociationEnum;
@@ -16,8 +17,8 @@ use Lunar\Database\Factories\ProductAssociationFactory;
  * @property int $product_parent_id
  * @property int $product_target_id
  * @property string $type
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class ProductAssociation extends BaseModel implements Contracts\ProductAssociation
 {
@@ -28,7 +29,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      * Define the cross-sell type.
      *
      * @deprecated 1.2.0
-     * @see \Lunar\Base\Enums\ProductAssociation
+     * @see ProductAssociationEnum
      */
     const CROSS_SELL = 'cross-sell';
 
@@ -36,7 +37,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      * Define the upsell type.
      *
      * @deprecated 1.2.0
-     * @see \Lunar\Base\Enums\ProductAssociation
+     * @see ProductAssociationEnum
      */
     const UP_SELL = 'up-sell';
 
@@ -44,7 +45,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
      * Define the alternate type.
      *
      * @deprecated 1.2.0
-     * @see \Lunar\Base\Enums\ProductAssociation
+     * @see ProductAssociationEnum
      */
     const ALTERNATE = 'alternate';
 
@@ -121,7 +122,7 @@ class ProductAssociation extends BaseModel implements Contracts\ProductAssociati
 
     public static function getTypes(): array
     {
-        $enum = config('lunar.products.association_types_enum', \Lunar\Base\Enums\ProductAssociation::class);
+        $enum = config('lunar.products.association_types_enum', ProductAssociationEnum::class);
 
         return collect($enum::cases())->mapWithKeys(function ($item) {
             return [

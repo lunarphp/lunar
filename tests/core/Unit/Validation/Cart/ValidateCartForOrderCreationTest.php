@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\Carts\CartException;
@@ -11,9 +10,12 @@ use Lunar\Models\CartAddress;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
+use Lunar\Tests\Core\TestCase;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can validate missing billing address', function () {
     $currency = Currency::factory()->create();
@@ -98,7 +100,7 @@ test('can validate missing shipping option', function () {
         'shippable' => true,
     ]);
 
-    \Lunar\Models\Price::factory()->create([
+    Lunar\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -136,7 +138,7 @@ test('can validate collection with partial shipping address', function () {
         'shippable' => true,
     ]);
 
-    \Lunar\Models\Price::factory()->create([
+    Lunar\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -195,7 +197,7 @@ test('can validate delivery with partial shipping address', function () {
         'shippable' => true,
     ]);
 
-    \Lunar\Models\Price::factory()->create([
+    Lunar\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -265,7 +267,7 @@ test('can validate delivery with populated shipping address', function () {
         'shippable' => true,
     ]);
 
-    \Lunar\Models\Price::factory()->create([
+    Lunar\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),

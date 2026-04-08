@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Illuminate\Support\Collection;
 use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
 use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
 use Lunar\FieldTypes\Dropdown;
@@ -18,7 +19,7 @@ class FieldTypeManifest
     /**
      * The FieldTypes available in Lunar.
      *
-     * @var \Illuminate\Support\Collection
+     * @var Collection
      */
     protected $fieldTypes;
 
@@ -58,7 +59,7 @@ class FieldTypeManifest
     /**
      * Return the fieldtypes.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getTypes()
     {

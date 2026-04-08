@@ -3,6 +3,7 @@
 namespace Lunar\Tests\Admin\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Lunar\Admin\Support\Facades\LunarPanel;
 
 class LunarPanelTestServiceProvider extends ServiceProvider
 {
@@ -11,6 +12,6 @@ class LunarPanelTestServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        \Lunar\Admin\Support\Facades\LunarPanel::register();
+        LunarPanel::register();
     }
 }

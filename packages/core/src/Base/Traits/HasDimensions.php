@@ -3,6 +3,7 @@
 namespace Lunar\Base\Traits;
 
 use Lunar\Facades\Converter;
+use Lunar\Utils\MeasurementConverter;
 
 trait HasDimensions
 {
@@ -27,7 +28,7 @@ trait HasDimensions
     /**
      * Getter for the length attribute.
      *
-     * @return \Lunar\Utils\MeasurementConverter
+     * @return MeasurementConverter
      */
     public function getLengthAttribute()
     {
@@ -39,7 +40,7 @@ trait HasDimensions
     /**
      * Getter for the width attribute.
      *
-     * @return \Lunar\Utils\MeasurementConverter
+     * @return MeasurementConverter
      */
     public function getWidthAttribute()
     {
@@ -51,7 +52,7 @@ trait HasDimensions
     /**
      * Getter for height attribute.
      *
-     * @return \Lunar\Utils\MeasurementConverter
+     * @return MeasurementConverter
      */
     public function getHeightAttribute()
     {
@@ -63,7 +64,7 @@ trait HasDimensions
     /**
      * Getter for weight attribute.
      *
-     * @return \Lunar\Utils\MeasurementConverter
+     * @return MeasurementConverter
      */
     public function getWeightAttribute()
     {
@@ -75,7 +76,7 @@ trait HasDimensions
     /**
      * Getter for the volume attribute.
      *
-     * @return \Lunar\Utils\MeasurementConverter
+     * @return MeasurementConverter
      */
     public function getVolumeAttribute()
     {

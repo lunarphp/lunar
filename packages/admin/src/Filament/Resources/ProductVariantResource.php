@@ -31,7 +31,7 @@ class ProductVariantResource extends BaseResource
 
     protected static ?string $model = ProductVariantContract::class;
 
-    protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {
