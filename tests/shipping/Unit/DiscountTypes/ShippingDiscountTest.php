@@ -1,10 +1,12 @@
 <?php
 
-uses(\Lunar\Tests\Shipping\TestCase::class);
+uses(TestCase::class);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\Discounts;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
@@ -13,10 +15,13 @@ use Lunar\Models\Discount;
 use Lunar\Models\TaxClass;
 use Lunar\Shipping\DiscountTypes\ShippingDiscount;
 use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
+use Lunar\Tests\Shipping\TestCase;
+use Lunar\Tests\Shipping\TestUtils;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-uses(\Lunar\Tests\Shipping\TestUtils::class);
+uses(RefreshDatabase::class);
+uses(TestUtils::class);
 
 beforeEach(function () {
     Currency::factory()->create([
@@ -275,7 +280,7 @@ test('applies correctly through full cart calculation pipeline', function () {
         'data' => ['charge_by' => 'cart_total'],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+    $shippingRate = ShippingRate::factory()->create([
         'shipping_method_id' => $shippingMethod->id,
         'shipping_zone_id' => $shippingZone->id,
     ]);
@@ -308,12 +313,12 @@ test('applies correctly through full cart calculation pipeline', function () {
     $cart->coupon_code = 'FREESHIP';
 
     // Manually set the shipping option on the cart
-    $cart->shippingOptionOverride = new \Lunar\DataTypes\ShippingOption(
+    $cart->shippingOptionOverride = new ShippingOption(
         name: $shippingMethod->name,
         description: '',
         identifier: $shippingMethod->code,
         price: new Price(1000, $currency, 1),
-        taxClass: \Lunar\Models\TaxClass::getDefault(),
+        taxClass: TaxClass::getDefault(),
     );
 
     $cart->calculate();
