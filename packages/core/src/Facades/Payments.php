@@ -4,6 +4,7 @@ namespace Lunar\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Lunar\Base\PaymentManagerInterface;
+use Lunar\Managers\PaymentManager;
 
 /**
  * @method static void createOfflineDriver()
@@ -16,7 +17,7 @@ use Lunar\Base\PaymentManagerInterface;
  * @method static \Lunar\Managers\PaymentManager setContainer(\Illuminate\Contracts\Container\Container $container)
  * @method static \Lunar\Managers\PaymentManager forgetDrivers()
  *
- * @see \Lunar\Managers\PaymentManager
+ * @see PaymentManager
  */
 class Payments extends Facade
 {

@@ -182,7 +182,7 @@ class LunarPanelProvider extends ServiceProvider
 
     protected function registerLunarSynthesizer(): void
     {
-        \Lunar\Admin\Support\Facades\AttributeData::synthesizeLivewireProperties();
+        Support\Facades\AttributeData::synthesizeLivewireProperties();
         Livewire::propertySynthesizer(PriceSynth::class);
     }
 }

@@ -1,15 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Lunar\Base\AttributeManifest;
 use Lunar\Base\AttributeManifestInterface;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 use Lunar\Models\Channel;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can instantiate class', function () {
     $manifest = app(AttributeManifestInterface::class);

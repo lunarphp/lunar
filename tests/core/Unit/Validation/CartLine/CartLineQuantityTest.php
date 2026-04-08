@@ -1,14 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)
-    ->group('validation.cart_line');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Core\TestCase;
 use Lunar\Validation\CartLine\CartLineQuantity;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class)
+    ->group('validation.cart_line');
+
+uses(RefreshDatabase::class);
 
 test('can validate zero quantity', function () {
     $currency = Currency::factory()->create();
@@ -17,7 +20,7 @@ test('can validate zero quantity', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = \Lunar\Models\ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create();
 
     $validator = (new CartLineQuantity)->using(
         cart: $cart,
@@ -37,7 +40,7 @@ test('can validate excessive quantity', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = \Lunar\Models\ProductVariant::factory()->create();
+    $purchasable = ProductVariant::factory()->create();
 
     $quantity = 1000001;
 
@@ -59,7 +62,7 @@ test('can validate minimum quantity', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = \Lunar\Models\ProductVariant::factory()->create([
+    $purchasable = ProductVariant::factory()->create([
         'min_quantity' => 10,
     ]);
 
@@ -83,7 +86,7 @@ test('can validate quantity increment quantity', function (array $quantities, in
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = \Lunar\Models\ProductVariant::factory()->create([
+    $purchasable = ProductVariant::factory()->create([
         'min_quantity' => 1,
         'quantity_increment' => $increment,
     ]);
@@ -172,12 +175,12 @@ test('can validate from cart line id', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = \Lunar\Models\ProductVariant::factory()->create([
+    $purchasable = ProductVariant::factory()->create([
         'quantity_increment' => 25,
     ]);
 
     $cart->lines()->create([
-        'purchasable_type' => \Lunar\Models\ProductVariant::class,
+        'purchasable_type' => ProductVariant::class,
         'purchasable_id' => $purchasable->id,
         'quantity' => 50,
     ]);
