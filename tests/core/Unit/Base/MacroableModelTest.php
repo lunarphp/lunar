@@ -1,8 +1,9 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
 use Lunar\Models\Product;
+use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 beforeEach(function () {
     $this->model = new Product;
