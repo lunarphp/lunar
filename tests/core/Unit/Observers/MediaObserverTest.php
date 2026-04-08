@@ -1,17 +1,20 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('media.observer');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Lunar\Facades\DB;
 use Lunar\Models\Brand;
+use Lunar\Tests\Core\TestCase;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class)->group('media.observer');
+
+uses(RefreshDatabase::class);
 
 test('can only have one primary media for "images" collection', function () {
     $brand = Brand::factory()->create();
 
-    $image = \Illuminate\Http\UploadedFile::fake()->image('foobar.jpg');
+    $image = UploadedFile::fake()->image('foobar.jpg');
 
     $image1 = $brand
         ->addMedia($image)
@@ -70,7 +73,7 @@ test('can only have one primary media for "images" collection', function () {
 
 test('only apply primary media for "images" collection', function () {
     $brand = Brand::factory()->create();
-    $image = \Illuminate\Http\UploadedFile::fake()->image('foobar.jpg');
+    $image = UploadedFile::fake()->image('foobar.jpg');
 
     $image1 = $brand
         ->addMedia($image)
@@ -124,7 +127,7 @@ test('only apply primary media for "images" collection', function () {
 
 test('new primary is selected when current is deleted', function () {
     $brand = Brand::factory()->create();
-    $image = \Illuminate\Http\UploadedFile::fake()->image('foobar.jpg');
+    $image = UploadedFile::fake()->image('foobar.jpg');
 
     $image1 = $brand
         ->addMedia($image)
@@ -158,7 +161,7 @@ test('auto recover more than 1 primary media', function ($isPrimary) {
     for ($x = 0; $x < 3; $x++) {
         $images[] = $brand
             ->addMedia(
-                \Illuminate\Http\UploadedFile::fake()->image("{$x}.jpg")
+                UploadedFile::fake()->image("{$x}.jpg")
             )
             ->preservingOriginal()
             ->toMediaCollection('images');
@@ -173,7 +176,7 @@ test('auto recover more than 1 primary media', function ($isPrimary) {
 
     $brand
         ->addMedia(
-            \Illuminate\Http\UploadedFile::fake()->image('foobar.jpg')
+            UploadedFile::fake()->image('foobar.jpg')
         )
         ->preservingOriginal()
         ->withCustomProperties([
@@ -194,7 +197,7 @@ test('set other media primary if current not primary', function () {
     for ($x = 0; $x < 3; $x++) {
         $brand
             ->addMedia(
-                \Illuminate\Http\UploadedFile::fake()->image("{$x}.jpg")
+                UploadedFile::fake()->image("{$x}.jpg")
             )
             ->preservingOriginal()
             ->toMediaCollection('images');
@@ -209,7 +212,7 @@ test('set other media primary if current not primary', function () {
 
     $image = $brand
         ->addMedia(
-            \Illuminate\Http\UploadedFile::fake()->image('foobar.jpg')
+            UploadedFile::fake()->image('foobar.jpg')
         )
         ->preservingOriginal()
         ->withCustomProperties([
@@ -227,7 +230,7 @@ test('set current media primary if no existing primary', function () {
 
     $image = $brand
         ->addMedia(
-            \Illuminate\Http\UploadedFile::fake()->image('foobar.jpg')
+            UploadedFile::fake()->image('foobar.jpg')
         )
         ->preservingOriginal()
         ->toMediaCollection('images');
@@ -241,7 +244,7 @@ test('can delete last media', function () {
 
     $image = $brand
         ->addMedia(
-            \Illuminate\Http\UploadedFile::fake()->image('foobar.jpg')
+            UploadedFile::fake()->image('foobar.jpg')
         )
         ->preservingOriginal()
         ->withCustomProperties([

@@ -1,14 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasModelExtending;
 use Lunar\Models\Collection as ModelsCollection;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('model is macroable', function () {
     Product::macro('foo', function () {

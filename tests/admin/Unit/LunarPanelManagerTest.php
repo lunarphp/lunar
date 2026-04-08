@@ -6,8 +6,9 @@ use Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Tests\Admin\Stubs\Filament\Extensions\ExtensionA;
 use Lunar\Tests\Admin\Stubs\Filament\Extensions\ExtensionB;
+use Lunar\Tests\Admin\Unit\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Unit\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('lunar.panel');
 
 it('can register multiple extensions at once', function () {

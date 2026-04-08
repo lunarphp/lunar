@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
 use Filament\Actions\Action;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -12,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Facades\Converter;
 
 class ManageVariantShipping extends BaseEditRecord
 {

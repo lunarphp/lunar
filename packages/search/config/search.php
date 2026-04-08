@@ -1,8 +1,10 @@
 <?php
 
+use Lunar\Models\Product;
+
 return [
     'facets' => [
-        \Lunar\Models\Product::class => [
+        Product::class => [
             'brand' => [],
             //            'size' => [],
             //            'colour' => [

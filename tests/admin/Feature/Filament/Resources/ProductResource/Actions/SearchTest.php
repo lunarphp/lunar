@@ -1,24 +1,32 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+use Livewire\Livewire;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
+
+uses(TestCase::class)
     ->group('resource.product.search');
 
 it('can search product by name on list', function () {
 
     $this->asStaff(admin: true);
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    \Lunar\Models\Currency::factory()->create([
+    Currency::factory()->create([
         'default' => true,
     ]);
 
-    $products = \Lunar\Models\Product::factory()->count(2)->create();
+    $products = Product::factory()->count(2)->create();
 
     $products->each(function ($product) {
-        \Lunar\Models\ProductVariant::factory()->create([
+        ProductVariant::factory()->create([
             'product_id' => $product->id,
         ]);
     });
@@ -29,7 +37,7 @@ it('can search product by name on list', function () {
         return $name == $item->translateAttribute('name');
     });
 
-    \Livewire\Livewire::test(Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts::class)
+    Livewire::test(ListProducts::class)
         ->searchTable($name)
         ->assertCanNotSeeTableRecords($products);
 });

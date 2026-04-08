@@ -1,14 +1,16 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can cache model properties', function () {
     $currency = Currency::factory()->create();
