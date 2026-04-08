@@ -12,8 +12,6 @@
         "awcodes/filament-badgeable-column": "^v3.0.0-beta.1",
         "awcodes/shout": "^v3.0.0-beta.2",
         "barryvdh/laravel-dompdf": "^3.0",
-        "cartalyst/converter": "dev-l13-compatibility as 10.0.0",
-
         "dompdf/dompdf": "^3.1",
         "ext-bcmath": "*",
         "ext-exif": "*",
@@ -88,12 +86,7 @@
             "Lunar\\Tests\\Search\\": "tests/search"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/laravel-shift/converter"
-        }
-    ],
+    "repositories": [],
     "extra": {
 "lunar": {
             "name": [
