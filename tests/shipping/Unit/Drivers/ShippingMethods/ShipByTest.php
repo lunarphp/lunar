@@ -231,7 +231,7 @@ test('returns null when cart currency has no shipping price', function () {
         ],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+    $shippingRate = ShippingRate::factory()
         ->create([
             'shipping_method_id' => $shippingMethod->id,
             'shipping_zone_id' => $shippingZone->id,
@@ -288,7 +288,7 @@ test('uses correct currency price for cart currency', function () {
         ],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+    $shippingRate = ShippingRate::factory()
         ->create([
             'shipping_method_id' => $shippingMethod->id,
             'shipping_zone_id' => $shippingZone->id,
@@ -365,7 +365,7 @@ test('uses correct currency price break for cart currency', function () {
         ],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+    $shippingRate = ShippingRate::factory()
         ->create([
             'shipping_method_id' => $shippingMethod->id,
             'shipping_zone_id' => $shippingZone->id,
