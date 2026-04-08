@@ -1,8 +1,5 @@
 <?php
 
-uses(TestCase::class)
-    ->group('validation.cart_line');
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Models\Cart;
@@ -11,6 +8,8 @@ use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 use Lunar\Validation\CartLine\CartLineStock;
 
+uses(TestCase::class)
+    ->group('validation.cart_line');
 uses(RefreshDatabase::class);
 
 test('can validate available stock', function (int $stock, int $backorder, int $quantity, string $purchasable, bool $shouldValidate = true) {

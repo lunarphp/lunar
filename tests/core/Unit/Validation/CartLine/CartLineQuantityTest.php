@@ -1,8 +1,5 @@
 <?php
 
-uses(TestCase::class)
-    ->group('validation.cart_line');
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Exceptions\Carts\CartException;
 use Lunar\Models\Cart;
@@ -10,6 +7,9 @@ use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 use Lunar\Validation\CartLine\CartLineQuantity;
+
+uses(TestCase::class)
+    ->group('validation.cart_line');
 
 uses(RefreshDatabase::class);
 
