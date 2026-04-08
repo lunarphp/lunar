@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
+use Lunar\Facades\Converter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;

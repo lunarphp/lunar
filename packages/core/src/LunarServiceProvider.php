@@ -2,7 +2,8 @@
 
 namespace Lunar;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
+use Lunar\Facades\Converter;
+use Lunar\Utils\MeasurementConverter;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Console\Scheduling\Schedule;
@@ -135,6 +136,10 @@ class LunarServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
 
         $this->registerAddonManifest();
+
+        $this->app->singleton(MeasurementConverter::class, function () {
+            return new MeasurementConverter;
+        });
 
         $this->app->singleton(CartModifiers::class, function () {
             return new CartModifiers;

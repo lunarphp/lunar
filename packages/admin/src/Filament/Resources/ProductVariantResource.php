@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
+use Lunar\Facades\Converter;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;

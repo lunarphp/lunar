@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
+use Lunar\Facades\Converter;
 use Filament\Actions\Action;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
