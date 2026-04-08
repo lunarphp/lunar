@@ -19,6 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
+use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Widgets\AvailabilityScheduleWidget;
 use Lunar\Shipping\Models\Contracts\ShippingMethod;
 
 class ShippingMethodResource extends BaseResource
@@ -83,7 +84,6 @@ class ShippingMethodResource extends BaseResource
                 static::getDriverFormComponent(),
             ])->columns(2),
             static::getChargeByFormComponent(),
-            static::getAvailabilityScheduleFormComponent(),
             static::getStockAvailableFormComponent(),
             static::getDescriptionFormComponent(),
         ];
@@ -219,6 +219,13 @@ class ShippingMethodResource extends BaseResource
                 )->formatStateUsing(
                     fn ($state) => __("lunarpanel.shipping::shippingmethod.table.driver.options.{$state}")
                 ),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            AvailabilityScheduleWidget::class,
         ];
     }
 
