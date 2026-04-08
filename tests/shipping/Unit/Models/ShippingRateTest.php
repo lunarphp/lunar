@@ -1,9 +1,5 @@
 <?php
 
-uses(TestCase::class);
-uses(RefreshDatabase::class);
-uses(TestUtils::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Models\Cart;
@@ -15,6 +11,10 @@ use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Tests\Shipping\TestCase;
 use Lunar\Tests\Shipping\TestUtils;
+
+uses(TestCase::class);
+uses(RefreshDatabase::class);
+uses(TestUtils::class);
 
 function makeShippingRate(Currency $currency): ShippingRate
 {
