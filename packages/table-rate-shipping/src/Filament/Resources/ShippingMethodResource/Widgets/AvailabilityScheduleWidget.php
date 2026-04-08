@@ -29,7 +29,7 @@ class AvailabilityScheduleWidget extends Widget implements HasActions, HasForms
 
     protected static bool $isLazy = false;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function mount(): void
     {
