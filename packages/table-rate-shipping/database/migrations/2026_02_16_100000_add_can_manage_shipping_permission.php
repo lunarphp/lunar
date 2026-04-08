@@ -11,7 +11,7 @@ return new class extends Migration
     {
         try {
             $guard = LunarPanel::getPanel()->getAuthGuard();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return;
         }
 

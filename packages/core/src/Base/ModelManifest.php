@@ -190,7 +190,7 @@ class ModelManifest implements ModelManifestInterface
     public function getMorphMapKey($className): string
     {
         $prefix = config('lunar.database.morph_prefix', null);
-        $key = \Illuminate\Support\Str::snake(class_basename($className));
+        $key = Str::snake(class_basename($className));
 
         return "{$prefix}{$key}";
     }

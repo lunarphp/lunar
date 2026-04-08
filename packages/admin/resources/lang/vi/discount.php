@@ -1,5 +1,7 @@
 <?php
 
+use Lunar\Models\Discount;
+
 return [
     'plural_label' => 'Mã giảm giá',
     'label' => 'Mã giảm giá',
@@ -87,16 +89,16 @@ return [
         ],
         'status' => [
             'label' => 'Trạng thái',
-            \Lunar\Models\Discount::ACTIVE => [
+            Discount::ACTIVE => [
                 'label' => 'Đang hoạt động',
             ],
-            \Lunar\Models\Discount::PENDING => [
+            Discount::PENDING => [
                 'label' => 'Đang chờ',
             ],
-            \Lunar\Models\Discount::EXPIRED => [
+            Discount::EXPIRED => [
                 'label' => 'Đã hết hạn',
             ],
-            \Lunar\Models\Discount::SCHEDULED => [
+            Discount::SCHEDULED => [
                 'label' => 'Đã lên lịch',
             ],
         ],

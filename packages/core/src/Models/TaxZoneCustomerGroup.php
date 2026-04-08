@@ -4,6 +4,7 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\TaxZoneCustomerGroupFactory;
@@ -12,8 +13,8 @@ use Lunar\Database\Factories\TaxZoneCustomerGroupFactory;
  * @property int $id
  * @property ?int $tax_zone_id
  * @property ?int $customer_group_id
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class TaxZoneCustomerGroup extends BaseModel implements Contracts\TaxZoneCustomerGroup
 {

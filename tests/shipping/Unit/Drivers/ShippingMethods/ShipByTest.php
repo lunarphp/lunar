@@ -1,17 +1,22 @@
 <?php
 
-uses(\Lunar\Tests\Shipping\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Currency;
 use Lunar\Models\TaxClass;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Drivers\ShippingMethods\ShipBy;
 use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
+use Lunar\Tests\Shipping\TestCase;
+use Lunar\Tests\Shipping\TestUtils;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-uses(\Lunar\Tests\Shipping\TestUtils::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
+uses(TestUtils::class);
 
 test('can get shipping option by cart total', function () {
     $currency = Currency::factory()->create([
@@ -33,7 +38,7 @@ test('can get shipping option by cart total', function () {
         ],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+    $shippingRate = ShippingRate::factory()
         ->create([
             'shipping_method_id' => $shippingMethod->id,
             'shipping_zone_id' => $shippingZone->id,
@@ -87,7 +92,7 @@ test('can get shipping option by cart total', function () {
 
 test('can get shipping option by cart total when prices include tax', function () {
 
-    \Illuminate\Support\Facades\Config::set('lunar.pricing.stored_inclusive_of_tax', true);
+    Config::set('lunar.pricing.stored_inclusive_of_tax', true);
 
     $currency = Currency::factory()->create([
         'default' => true,
@@ -108,7 +113,7 @@ test('can get shipping option by cart total when prices include tax', function (
         ],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+    $shippingRate = ShippingRate::factory()
         ->create([
             'shipping_method_id' => $shippingMethod->id,
             'shipping_zone_id' => $shippingZone->id,
@@ -167,7 +172,7 @@ test('can get shipping option if outside tier without default price', function (
         ],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()
+    $shippingRate = ShippingRate::factory()
         ->create([
             'shipping_method_id' => $shippingMethod->id,
             'shipping_zone_id' => $shippingZone->id,
@@ -192,7 +197,7 @@ test('can get shipping option if outside tier without default price', function (
         cart: $cart
     );
 
-    $this->expectException(\ErrorException::class);
+    $this->expectException(ErrorException::class);
 
     $driver->resolve($request);
 });

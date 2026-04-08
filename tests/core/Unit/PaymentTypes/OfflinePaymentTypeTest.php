@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Facades\Payments;
@@ -8,8 +8,11 @@ use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 use Lunar\Models\Order;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can authorize payment', function () {
     $cart = Cart::factory()->create();

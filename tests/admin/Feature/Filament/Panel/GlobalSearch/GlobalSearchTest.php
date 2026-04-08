@@ -1,6 +1,20 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+use Filament\Livewire\GlobalSearch;
+use Livewire\Livewire;
+use Lunar\Models\Brand;
+use Lunar\Models\Collection;
+use Lunar\Models\Country;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Models\OrderAddress;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
+
+uses(TestCase::class)
     ->group('actions');
 
 beforeEach(function () {
@@ -10,21 +24,21 @@ beforeEach(function () {
 });
 
 it('can render', function () {
-    \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
+    Livewire::test(GlobalSearch::class)
         ->assertSeeHtml('search');
 });
 
 it('can search customer', function () {
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Customer::factory()->create([
+    $record = Customer::factory()->create([
         'account_ref' => 'X67HB',
     ]);
 
-    \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
+    Livewire::test(GlobalSearch::class)
         ->set('search', $record->account_ref)
         ->assertDispatched('open-global-search-results')
         ->assertSee($record->account_ref);
@@ -32,23 +46,23 @@ it('can search customer', function () {
 
 it('can search order', function () {
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $currency = \Lunar\Models\Currency::factory()->create([
+    $currency = Currency::factory()->create([
         'default' => true,
     ]);
 
-    $country = \Lunar\Models\Country::factory()->create();
+    $country = Country::factory()->create();
 
-    $record = \Lunar\Models\Order::factory()
-        ->for(\Lunar\Models\Customer::factory())
-        ->has(\Lunar\Models\OrderAddress::factory()->state([
+    $record = Order::factory()
+        ->for(Customer::factory())
+        ->has(OrderAddress::factory()->state([
             'type' => 'shipping',
             'country_id' => $country->id,
         ]), 'shippingAddress')
-        ->has(\Lunar\Models\OrderAddress::factory()->state([
+        ->has(OrderAddress::factory()->state([
             'type' => 'billing',
             'country_id' => $country->id,
         ]), 'billingAddress')
@@ -59,7 +73,7 @@ it('can search order', function () {
             ],
         ]);
 
-    \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
+    Livewire::test(GlobalSearch::class)
         ->set('search', $record->reference)
         ->assertDispatched('open-global-search-results')
         ->assertSee($record->reference);
@@ -67,26 +81,26 @@ it('can search order', function () {
 
 it('can search collection', function () {
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Collection::factory()->create();
+    $record = Collection::factory()->create();
 
-    \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
+    Livewire::test(GlobalSearch::class)
         ->set('search', $record->group->name)
         ->assertDispatched('open-global-search-results')
         ->assertSee($record->translateAttribute('name'));
 });
 
 it('can search brand', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $brand = \Lunar\Models\Brand::factory()->create();
+    $brand = Brand::factory()->create();
 
-    \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
+    Livewire::test(GlobalSearch::class)
         ->set('search', $brand->name)
         ->assertDispatched('open-global-search-results')
         ->assertSee($brand->name);
@@ -94,21 +108,21 @@ it('can search brand', function () {
 
 it('can search product', function () {
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    \Lunar\Models\Currency::factory()->create([
+    Currency::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Product::factory()->create();
+    $record = Product::factory()->create();
 
-    \Lunar\Models\ProductVariant::factory()->create([
+    ProductVariant::factory()->create([
         'product_id' => $record->id,
     ]);
 
-    \Livewire\Livewire::test(Filament\Livewire\GlobalSearch::class)
+    Livewire::test(GlobalSearch::class)
         ->set('search', $record->variants->first()->sku)
         ->assertDispatched('open-global-search-results')
         ->assertSee($record->variants->first()->sku);

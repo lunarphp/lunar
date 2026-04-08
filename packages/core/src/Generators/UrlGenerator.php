@@ -14,7 +14,7 @@ class UrlGenerator
     /**
      * The instance of the model.
      *
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var Model
      */
     protected $model;
 
@@ -100,7 +100,7 @@ class UrlGenerator
      *
      * @param  string  $slug
      * @param  string  $separator
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     private function getExistingSlugs($slug, $separator)
     {

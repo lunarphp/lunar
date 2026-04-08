@@ -1,10 +1,11 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
@@ -15,12 +16,15 @@ use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Language::factory()->create([
@@ -182,7 +186,7 @@ test('can have user and customer associated', function () {
         'email' => 'test@domain.com',
         'email_verified_at' => now(),
         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => \Illuminate\Support\Str::random(10),
+        'remember_token' => Str::random(10),
     ]);
 
     $customer = $user->customers()->create(
@@ -269,7 +273,7 @@ test('can delete an order', function () {
     OrderLine::factory(4)->create([
         'order_id' => $order->id,
         'tax_breakdown' => new TaxBreakdown(collect([
-            new \Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount(
+            new TaxBreakdownAmount(
                 price: new Price(10, $currency),
                 identifier: 'VAT',
                 description: 'VAT',

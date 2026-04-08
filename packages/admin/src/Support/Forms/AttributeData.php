@@ -45,7 +45,7 @@ class AttributeData
         $attribute->type
         ] ?? TextField::class;
 
-        /** @var \Filament\Schemas\Components\Component $component */
+        /** @var Component $component */
         $component = $fieldType::getFilamentComponent($attribute);
 
         return $component
