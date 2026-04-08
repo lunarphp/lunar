@@ -3,7 +3,6 @@
 namespace Lunar\Shipping\Filament\Resources;
 
 use Awcodes\Shout\Components\Shout;
-use Cartalyst\Converter\Laravel\Facades\Converter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -19,6 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Facades\Converter;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
 use Lunar\Shipping\Models\Contracts\ShippingMethod;
 

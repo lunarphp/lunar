@@ -2,8 +2,8 @@
 
 namespace Lunar\Shipping\Resolvers;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Support\Collection;
+use Lunar\Facades\Converter;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Contracts\Country as CountryContract;
 use Lunar\Models\CustomerGroup;
