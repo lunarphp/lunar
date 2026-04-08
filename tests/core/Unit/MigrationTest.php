@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\File;
 use Lunar\Tests\Core\TestCase;
+
 use function Pest\Laravel\artisan;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
