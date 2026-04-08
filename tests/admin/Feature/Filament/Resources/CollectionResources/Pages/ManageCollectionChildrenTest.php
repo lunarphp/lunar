@@ -1,32 +1,39 @@
 <?php
 
+use Livewire\Livewire;
+use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionChildren;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\Attribute;
+use Lunar\Models\Collection;
+use Lunar\Models\Language;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.collection');
 
 it('can render the collection children page', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Collection::factory()->create();
+    $record = Collection::factory()->create();
 
     $this->asStaff(admin: true)
-        ->get(\Lunar\Admin\Filament\Resources\CollectionResource::getUrl('children', [
+        ->get(CollectionResource::getUrl('children', [
             'record' => $record,
         ]))
         ->assertSuccessful();
 });
 
 it('can create child categories', function () {
-    $language = \Lunar\Models\Language::factory()->create([
+    $language = Language::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Collection::factory()->create();
+    $record = Collection::factory()->create();
 
-    \Lunar\Models\Attribute::factory()->create([
+    Attribute::factory()->create([
         'name' => [
             'en' => 'Name',
         ],
@@ -34,7 +41,7 @@ it('can create child categories', function () {
             'en' => 'Description',
         ],
         'handle' => 'name',
-        'type' => \Lunar\FieldTypes\TranslatedText::class,
+        'type' => TranslatedText::class,
         'attribute_type' => 'collection',
     ]);
 
@@ -42,7 +49,7 @@ it('can create child categories', function () {
 
     expect($record->children()->count())->toBe(0);
 
-    \Livewire\Livewire::test(ManageCollectionChildren::class, [
+    Livewire::test(ManageCollectionChildren::class, [
         'record' => $record->getKey(),
     ])->callTableAction('createChildCollection', data: [
         'name' => [$language->code => 'Test Child Category'],

@@ -12,8 +12,6 @@
         "awcodes/filament-badgeable-column": "^v3.0.0-beta.1",
         "awcodes/shout": "^v3.0.0-beta.2",
         "barryvdh/laravel-dompdf": "^3.0",
-        "cartalyst/converter": "dev-l13-compatibility as 10.0.0",
-
         "dompdf/dompdf": "^3.1",
         "ext-bcmath": "*",
         "ext-exif": "*",
@@ -44,7 +42,7 @@
     "require-dev": {
 "filament/upgrade": "^4.0",
         "larastan/larastan": "^3.0",
-        "laravel/pint": "1.17.0",
+        "laravel/pint": "1.29.0",
         "mockery/mockery": "^1.6.9",
         "orchestra/testbench": "^10.0|^11.0",
         "pestphp/pest": "^3.0|^4.0",

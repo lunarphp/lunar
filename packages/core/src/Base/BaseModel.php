@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Base\Traits\HasModelExtending;
 
@@ -31,7 +32,7 @@ abstract class BaseModel extends Model
         $reflectionClass = new \ReflectionClass(static::class);
 
         $attributes = $reflectionClass->getAttributes(
-            \Illuminate\Database\Eloquent\Attributes\CollectedBy::class
+            CollectedBy::class
         );
 
         if (! isset($attributes[0]) || ! isset($attributes[0]->getArguments()[0])) {
