@@ -77,8 +77,13 @@ test('does not apply when conditions are not met (wrong coupon)', function () {
         'type' => ShippingDiscount::class,
         'coupon' => 'FREESHIP',
         'data' => [
-            'shipping_method_id' => null,
-            'prices' => ['GBP' => 0],
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0],
+                ],
+            ],
         ],
     ]);
 
@@ -100,8 +105,13 @@ test('applies free shipping to any method when no method is specified', function
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
         'data' => [
-            'shipping_method_id' => null,
-            'prices' => ['GBP' => 0],
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0],
+                ],
+            ],
         ],
     ]);
 
@@ -116,7 +126,7 @@ test('applies free shipping to any method when no method is specified', function
     expect($cart->discountBreakdown->first()->price->value)->toBe(1000);
 });
 
-test('applies configured price (not necessarily free) to shipping', function () {
+test('applies configured fixed price (not necessarily free) to shipping', function () {
     $currency = Currency::getDefault();
 
     $cart = $this->createCart($currency, 1000);
@@ -126,8 +136,13 @@ test('applies configured price (not necessarily free) to shipping', function () 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
         'data' => [
-            'shipping_method_id' => null,
-            'prices' => ['GBP' => 500],
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 500],
+                ],
+            ],
         ],
     ]);
 
@@ -142,7 +157,7 @@ test('applies configured price (not necessarily free) to shipping', function () 
 test('applies only to the matching shipping method', function () {
     $currency = Currency::getDefault();
 
-    $shippingZone = ShippingZone::factory()->create(['type' => 'countries']);
+    ShippingZone::factory()->create(['type' => 'countries']);
 
     $standardMethod = ShippingMethod::factory()->create([
         'driver' => 'ship-by',
@@ -157,8 +172,13 @@ test('applies only to the matching shipping method', function () {
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
         'data' => [
-            'shipping_method_id' => $standardMethod->id,
-            'prices' => ['GBP' => 0],
+            'methods' => [
+                [
+                    'shipping_method_id' => $standardMethod->id,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0],
+                ],
+            ],
         ],
     ]);
 
@@ -187,8 +207,13 @@ test('does not apply when cart uses a different shipping method than configured'
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
         'data' => [
-            'shipping_method_id' => $expressMethod->id,
-            'prices' => ['GBP' => 0],
+            'methods' => [
+                [
+                    'shipping_method_id' => $expressMethod->id,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0],
+                ],
+            ],
         ],
     ]);
 
@@ -210,8 +235,13 @@ test('does not apply when there is no shipping breakdown', function () {
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
         'data' => [
-            'shipping_method_id' => null,
-            'prices' => ['GBP' => 0],
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0],
+                ],
+            ],
         ],
     ]);
 
@@ -232,8 +262,13 @@ test('does not add to discount breakdown when price is already zero', function (
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
         'data' => [
-            'shipping_method_id' => null,
-            'prices' => ['GBP' => 0],
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0],
+                ],
+            ],
         ],
     ]);
 
@@ -255,8 +290,13 @@ test('does not apply when currency has no configured price', function () {
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
         'data' => [
-            'shipping_method_id' => null,
-            'prices' => ['USD' => 0], // configured for USD, cart is GBP
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'fixed',
+                    'prices' => ['USD' => 0], // configured for USD, cart is GBP
+                ],
+            ],
         ],
     ]);
 
@@ -266,6 +306,160 @@ test('does not apply when currency has no configured price', function () {
 
     expect($cart->shippingSubTotal->value)->toBe(1000);
     expect($cart->discounts ?? collect())->toBeEmpty();
+});
+
+test('applies percentage discount to any shipping method', function () {
+    $currency = Currency::getDefault();
+
+    $cart = $this->createCart($currency, 1000);
+    $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
+    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+
+    $discountModel = Discount::factory()->create([
+        'type' => ShippingDiscount::class,
+        'data' => [
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'percentage',
+                    'percentage' => 50,
+                ],
+            ],
+        ],
+    ]);
+
+    $discount = new ShippingDiscount;
+    $discount->with($discountModel);
+    $discount->apply($cart);
+
+    expect($cart->shippingSubTotal->value)->toBe(500);
+    expect($cart->discountBreakdown->first()->price->value)->toBe(500);
+    expect($cart->discounts)->toHaveCount(1);
+});
+
+test('applies 100% percentage discount makes shipping free', function () {
+    $currency = Currency::getDefault();
+
+    $cart = $this->createCart($currency, 1000);
+    $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1200);
+    $cart->shippingSubTotal = new Price(1200, $currency, 1);
+
+    $discountModel = Discount::factory()->create([
+        'type' => ShippingDiscount::class,
+        'data' => [
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'percentage',
+                    'percentage' => 100,
+                ],
+            ],
+        ],
+    ]);
+
+    $discount = new ShippingDiscount;
+    $discount->with($discountModel);
+    $discount->apply($cart);
+
+    expect($cart->shippingSubTotal->value)->toBe(0);
+});
+
+test('applies different rules to different shipping methods', function () {
+    $currency = Currency::getDefault();
+
+    $standardMethod = ShippingMethod::factory()->create([
+        'driver' => 'ship-by',
+        'code' => 'standard',
+        'data' => ['charge_by' => 'cart_total'],
+    ]);
+
+    $expressMethod = ShippingMethod::factory()->create([
+        'driver' => 'ship-by',
+        'code' => 'express',
+        'data' => ['charge_by' => 'cart_total'],
+    ]);
+
+    $breakdown = new ShippingBreakdown;
+    $breakdown->items->put('standard', new ShippingBreakdownItem(
+        name: 'Standard Shipping',
+        identifier: 'standard',
+        price: new Price(1000, $currency, 1),
+    ));
+    $breakdown->items->put('express', new ShippingBreakdownItem(
+        name: 'Express Shipping',
+        identifier: 'express',
+        price: new Price(2000, $currency, 1),
+    ));
+
+    $cart = $this->createCart($currency, 1000);
+    $cart->shippingBreakdown = $breakdown;
+    $cart->shippingSubTotal = new Price(3000, $currency, 1);
+
+    $discountModel = Discount::factory()->create([
+        'type' => ShippingDiscount::class,
+        'data' => [
+            'methods' => [
+                [
+                    'shipping_method_id' => $standardMethod->id,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0],
+                ],
+                [
+                    'shipping_method_id' => $expressMethod->id,
+                    'type' => 'percentage',
+                    'percentage' => 50,
+                ],
+            ],
+        ],
+    ]);
+
+    $discount = new ShippingDiscount;
+    $discount->with($discountModel);
+    $discount->apply($cart);
+
+    expect($cart->shippingBreakdown->items->get('standard')->price->value)->toBe(0);
+    expect($cart->shippingBreakdown->items->get('express')->price->value)->toBe(1000);
+    expect($cart->shippingSubTotal->value)->toBe(1000);
+    expect($cart->discountBreakdown->first()->price->value)->toBe(2000);
+});
+
+test('specific method rule takes priority over catch-all rule', function () {
+    $currency = Currency::getDefault();
+
+    $standardMethod = ShippingMethod::factory()->create([
+        'driver' => 'ship-by',
+        'code' => 'standard',
+        'data' => ['charge_by' => 'cart_total'],
+    ]);
+
+    $cart = $this->createCart($currency, 1000);
+    $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
+    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+
+    $discountModel = Discount::factory()->create([
+        'type' => ShippingDiscount::class,
+        'data' => [
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'percentage',
+                    'percentage' => 10, // catch-all: 10% off
+                ],
+                [
+                    'shipping_method_id' => $standardMethod->id,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0], // specific: free
+                ],
+            ],
+        ],
+    ]);
+
+    $discount = new ShippingDiscount;
+    $discount->with($discountModel);
+    $discount->apply($cart);
+
+    // Should use the specific rule (free), not the catch-all (10% off)
+    expect($cart->shippingSubTotal->value)->toBe(0);
 });
 
 test('applies correctly through full cart calculation pipeline', function () {
@@ -294,8 +488,13 @@ test('applies correctly through full cart calculation pipeline', function () {
         'type' => ShippingDiscount::class,
         'coupon' => 'FREESHIP',
         'data' => [
-            'shipping_method_id' => null,
-            'prices' => ['GBP' => 0],
+            'methods' => [
+                [
+                    'shipping_method_id' => null,
+                    'type' => 'fixed',
+                    'prices' => ['GBP' => 0],
+                ],
+            ],
             'min_prices' => [],
         ],
     ]);

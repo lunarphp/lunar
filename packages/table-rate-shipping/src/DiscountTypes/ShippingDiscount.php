@@ -2,9 +2,11 @@
 
 namespace Lunar\Shipping\DiscountTypes;
 
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Utilities\Get;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
@@ -35,26 +37,30 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
 
         $data = $this->discount->data;
         $currency = $cart->currency;
+        $methods = $data['methods'] ?? [];
 
-        if (! isset($data['prices'][$currency->code])) {
+        if (empty($methods)) {
             return $cart;
         }
-
-        $discountedPrice = (int) $data['prices'][$currency->code];
 
         if (! $cart->shippingBreakdown || $cart->shippingBreakdown->items->isEmpty()) {
             return $cart;
         }
 
-        $shippingMethodId = $data['shipping_method_id'] ?? null;
-        $methodCode = null;
+        // Build a map of method_code => rule, and find any catch-all rule (null shipping_method_id).
+        $codeRules = [];
+        $catchAllRule = null;
 
-        if ($shippingMethodId) {
-            $method = ShippingMethod::find($shippingMethodId);
-            if (! $method) {
-                return $cart;
+        foreach ($methods as $methodRule) {
+            $methodId = $methodRule['shipping_method_id'] ?? null;
+            if ($methodId) {
+                $method = ShippingMethod::find($methodId);
+                if ($method) {
+                    $codeRules[$method->code] = $methodRule;
+                }
+            } else {
+                $catchAllRule = $methodRule;
             }
-            $methodCode = $method->code;
         }
 
         $breakdown = $cart->shippingBreakdown;
@@ -63,10 +69,27 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
         $discountApplied = false;
 
         foreach ($breakdown->items as $identifier => $item) {
-            if ($methodCode && $identifier !== $methodCode) {
+            $rule = $codeRules[$identifier] ?? $catchAllRule;
+
+            if (! $rule) {
                 $newTotal += $item->price->value;
 
                 continue;
+            }
+
+            $type = $rule['type'] ?? 'fixed';
+
+            if ($type === 'percentage') {
+                $percentage = (float) ($rule['percentage'] ?? 0);
+                $discountedPrice = (int) round($item->price->value * (1 - $percentage / 100));
+                $discountedPrice = max(0, $discountedPrice);
+            } else {
+                if (! isset($rule['prices'][$currency->code])) {
+                    $newTotal += $item->price->value;
+
+                    continue;
+                }
+                $discountedPrice = (int) $rule['prices'][$currency->code];
             }
 
             $breakdown->items->put($identifier, new ShippingBreakdownItem(
@@ -112,24 +135,46 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
     {
         $currencies = Currency::enabled()->get();
 
-        $priceFields = $currencies->map(fn ($currency) => TextInput::make("data.prices.{$currency->code}")
+        $priceFields = $currencies->map(fn ($currency) => TextInput::make("prices.{$currency->code}")
             ->label($currency->name)
             ->helperText($currency->code)
             ->numeric()
             ->minValue(0)
-            ->required()
+            ->visible(fn (Get $get) => ($get('type') ?? 'fixed') === 'fixed')
         )->toArray();
 
         return [
-
-            Select::make('data.shipping_method_id')
-                ->label(__('lunarpanel.shipping::discounts.shipping_discount.form.shipping_method_id.label'))
-                ->placeholder(__('lunarpanel.shipping::discounts.shipping_discount.form.shipping_method_id.placeholder'))
-                ->options(fn () => ShippingMethod::get()->pluck('name', 'id'))
-                ->nullable(),
-            Group::make()
-                ->columns(3)
-                ->schema($priceFields),
+            Repeater::make('data.methods')
+                ->label(__('lunarpanel.shipping::discounts.shipping_discount.form.methods.label'))
+                ->addActionLabel(__('lunarpanel.shipping::discounts.shipping_discount.form.methods.add_label'))
+                ->schema([
+                    Select::make('shipping_method_id')
+                        ->label(__('lunarpanel.shipping::discounts.shipping_discount.form.shipping_method_id.label'))
+                        ->placeholder(__('lunarpanel.shipping::discounts.shipping_discount.form.shipping_method_id.placeholder'))
+                        ->options(fn () => ShippingMethod::get()->pluck('name', 'id'))
+                        ->nullable(),
+                    Select::make('type')
+                        ->label(__('lunarpanel.shipping::discounts.shipping_discount.form.type.label'))
+                        ->options([
+                            'fixed' => __('lunarpanel.shipping::discounts.shipping_discount.form.type.options.fixed'),
+                            'percentage' => __('lunarpanel.shipping::discounts.shipping_discount.form.type.options.percentage'),
+                        ])
+                        ->default('fixed')
+                        ->live()
+                        ->required(),
+                    TextInput::make('percentage')
+                        ->label(__('lunarpanel.shipping::discounts.shipping_discount.form.percentage.label'))
+                        ->numeric()
+                        ->minValue(0)
+                        ->maxValue(100)
+                        ->visible(fn (Get $get) => $get('type') === 'percentage'),
+                    Group::make()
+                        ->columnSpanFull()
+                        ->columns(3)
+                        ->schema($priceFields)
+                        ->visible(fn (Get $get) => ($get('type') ?? 'fixed') === 'fixed'),
+                ])
+                ->columns(2),
         ];
     }
 
@@ -140,10 +185,15 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
     {
         $currencies = Currency::enabled()->get();
 
-        foreach ($currencies as $currency) {
-            $stored = $data['data']['prices'][$currency->code] ?? null;
-            if ($stored !== null) {
-                $data['data']['prices'][$currency->code] = $stored / $currency->factor;
+        foreach ($data['data']['methods'] ?? [] as $i => $method) {
+            if (($method['type'] ?? 'fixed') !== 'fixed') {
+                continue;
+            }
+            foreach ($currencies as $currency) {
+                $stored = $method['prices'][$currency->code] ?? null;
+                if ($stored !== null) {
+                    $data['data']['methods'][$i]['prices'][$currency->code] = $stored / $currency->factor;
+                }
             }
         }
 
@@ -162,10 +212,17 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
             if ($minPrice !== null) {
                 $data['data']['min_prices'][$currency->code] = (int) round($minPrice * $currency->factor);
             }
+        }
 
-            $price = $data['data']['prices'][$currency->code] ?? null;
-            if ($price !== null) {
-                $data['data']['prices'][$currency->code] = (int) round($price * $currency->factor);
+        foreach ($data['data']['methods'] ?? [] as $i => $method) {
+            if (($method['type'] ?? 'fixed') !== 'fixed') {
+                continue;
+            }
+            foreach ($currencies as $currency) {
+                $price = $method['prices'][$currency->code] ?? null;
+                if ($price !== null) {
+                    $data['data']['methods'][$i]['prices'][$currency->code] = (int) round($price * $currency->factor);
+                }
             }
         }
 
