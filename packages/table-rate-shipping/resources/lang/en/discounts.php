@@ -2,7 +2,7 @@
 
 return [
     'shipping_discount' => [
-        'name' => 'Shipping Discount',
+        'name' => 'Shipping Price',
         'form' => [
             'shipping_method_id' => [
                 'label' => 'Shipping Method',

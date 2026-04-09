@@ -4,6 +4,7 @@ namespace Lunar\Shipping\DiscountTypes;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Group;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
@@ -120,12 +121,15 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
         )->toArray();
 
         return [
+
             Select::make('data.shipping_method_id')
                 ->label(__('lunarpanel.shipping::discounts.shipping_discount.form.shipping_method_id.label'))
                 ->placeholder(__('lunarpanel.shipping::discounts.shipping_discount.form.shipping_method_id.placeholder'))
                 ->options(fn () => ShippingMethod::get()->pluck('name', 'id'))
                 ->nullable(),
-            ...$priceFields,
+            Group::make()
+                ->columns(3)
+                ->schema($priceFields),
         ];
     }
 
