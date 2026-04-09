@@ -57,9 +57,7 @@ class AttributeData
                     return $state->getValue();
                 }
 
-                $instance = new $attribute->type;
-
-                return $instance->getValue();
+                return $state;
             })
             ->mutateStateForValidationUsing(function ($state) {
                 if ($state instanceof FieldType) {
