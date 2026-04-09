@@ -85,6 +85,56 @@ it('can edit variant attributes', function ($attributeType, $attributeValue) {
     [Number::class, 100],
 ]);
 
+it('can load edit page with existing number attribute', function () {
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    $product = Product::factory()->create();
+    ProductVariant::factory()->create([
+        'product_id' => $product->id,
+    ]);
+
+    $group = AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+        'name' => ['en' => 'Details'],
+        'handle' => 'details',
+        'position' => 1,
+    ]);
+
+    $attribute = Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $group->id,
+        'position' => 1,
+        'name' => ['en' => 'Quantity'],
+        'handle' => 'quantity',
+        'section' => 'main',
+        'type' => Number::class,
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    DB::table('lunar_attributables')->insert([
+        'attribute_id' => $attribute->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
+    ]);
+
+    $product->update([
+        'attribute_data' => collect([
+            'quantity' => new Number(123),
+        ]),
+    ]);
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, [
+        'record' => $product->getRouteKey(),
+        'pageClass' => 'productEdit',
+    ])->assertSuccessful();
+});
+
 it('can save attributes', function () {
     Language::factory()->create([
         'default' => true,
