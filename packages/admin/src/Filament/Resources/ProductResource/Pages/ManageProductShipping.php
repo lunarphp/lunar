@@ -145,6 +145,8 @@ class ManageProductShipping extends BaseEditRecord
                     )
                     ->numeric()
                     ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('length_unit')
                             ->options($lengths)
@@ -158,6 +160,8 @@ class ManageProductShipping extends BaseEditRecord
                     )
                     ->numeric()
                     ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('width_unit')
                             ->options($lengths)
@@ -171,6 +175,8 @@ class ManageProductShipping extends BaseEditRecord
                     )
                     ->numeric()
                     ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('height_unit')
                             ->options($lengths)
@@ -184,6 +190,8 @@ class ManageProductShipping extends BaseEditRecord
                     )
                     ->numeric()
                     ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('weight_unit')
                             ->options($weights)
