@@ -51,6 +51,16 @@ return [
         'stock_available' => [
             'label' => 'Stock of all basket items must be available',
         ],
+        'weight_unit' => [
+            'label' => 'Weight Unit',
+            'placeholder' => 'No weight restriction',
+        ],
+        'min_weight' => [
+            'label' => 'Minimum Weight',
+        ],
+        'max_weight' => [
+            'label' => 'Maximum Weight',
+        ],
     ],
     'table' => [
         'name' => [
