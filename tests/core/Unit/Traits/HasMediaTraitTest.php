@@ -1,13 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
 use Lunar\Base\StandardMediaDefinitions;
+use Lunar\Facades\ModelManifest;
 use Lunar\Models\Product;
 use Lunar\Tests\Core\Stubs\TestStandardMediaDefinitions;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('conversions are loaded', function () {
     $definitions = config('lunar.media.definitions');
@@ -41,16 +45,16 @@ test('custom conversions are loaded', function () {
 });
 
 test('custom conversions are loaded for extended model', function () {
-    \Lunar\Facades\ModelManifest::replace(
-        \Lunar\Models\Contracts\Product::class,
-        \Lunar\Tests\Core\Stubs\Models\Product::class
+    ModelManifest::replace(
+        Lunar\Models\Contracts\Product::class,
+        Lunar\Tests\Core\Stubs\Models\Product::class
     );
 
     Config::set('lunar.media.definitions', [
         'product' => TestStandardMediaDefinitions::class,
     ]);
 
-    $product = invade(app(\Lunar\Models\Contracts\Product::class));
+    $product = invade(app(Lunar\Models\Contracts\Product::class));
 
     expect($product->getDefinitionClass())->toEqual(TestStandardMediaDefinitions::class);
 });

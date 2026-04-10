@@ -1,14 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\Casts\ShippingBreakdown as ShippingBreakdownCasts;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can set from value object', function () {
     $currency = Currency::factory()->create();

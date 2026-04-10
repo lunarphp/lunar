@@ -1,18 +1,23 @@
 <?php
 
+use Filament\Actions\Action;
+use Filament\Actions\Testing\TestAction;
+use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ChannelResource;
+use Lunar\Admin\Support\Extending\CreatePageExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('extending');
 
 it('can extend header actions', function () {
-    $class = new class extends \Lunar\Admin\Support\Extending\CreatePageExtension
+    $class = new class extends CreatePageExtension
     {
         public function headerActions(array $actions): array
         {
             return [
-                \Filament\Actions\Action::make('header_action_a'),
+                Action::make('header_action_a'),
             ];
         }
     };
@@ -23,17 +28,17 @@ it('can extend header actions', function () {
 
     $this->asStaff(admin: true);
 
-    \Livewire\Livewire::test(ChannelResource\Pages\CreateChannel::class)
+    Livewire::test(ChannelResource\Pages\CreateChannel::class)
         ->assertActionExists('header_action_a');
 });
 
 it('can extend form actions', function () {
-    $class = new class extends \Lunar\Admin\Support\Extending\CreatePageExtension
+    $class = new class extends CreatePageExtension
     {
         public function formActions(array $actions): array
         {
             return [
-                \Filament\Actions\Action::make('form_action_a'),
+                Action::make('form_action_a'),
             ];
         }
     };
@@ -44,6 +49,6 @@ it('can extend form actions', function () {
 
     $this->asStaff(admin: true);
 
-    \Livewire\Livewire::test(ChannelResource\Pages\CreateChannel::class)
-        ->assertActionExists('form_action_a');
+    Livewire::test(ChannelResource\Pages\CreateChannel::class)
+        ->assertActionExists(TestAction::make('form_action_a')->schemaComponent('form-actions', schema: 'content'));
 });

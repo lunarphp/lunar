@@ -2,8 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\Select;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
@@ -33,7 +36,7 @@ class BrandLimitationRelationManager extends BaseRelationManager
             )
             ->paginated(false)
             ->headerActions([
-                Tables\Actions\AttachAction::make()->form(fn (Tables\Actions\AttachAction $action): array => [
+                AttachAction::make()->form(fn (AttachAction $action): array => [
                     $action->getRecordSelect(),
                     Select::make('type')
                         ->options(
@@ -50,20 +53,20 @@ class BrandLimitationRelationManager extends BaseRelationManager
                     )
                     ->recordSelectSearchColumns(['name']),
             ])->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.brands.table.name.label')
                     ),
-                Tables\Columns\TextColumn::make('pivot.type')
+                TextColumn::make('pivot.type')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.brands.table.type.label')
                     )->formatStateUsing(
                         fn (string $state) => __("lunarpanel::discount.relationmanagers.brands.table.type.{$state}.label")
                     ),
-            ])->actions([
-                Tables\Actions\DetachAction::make(),
-            ])->bulkActions([
-                Tables\Actions\DetachBulkAction::make(),
+            ])->recordActions([
+                DetachAction::make(),
+            ])->toolbarActions([
+                DetachBulkAction::make(),
             ]);
     }
 }

@@ -1,11 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Channel;
 use Lunar\Models\Product;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can scope results to a channel', function () {
     $channelA = Channel::factory()->create([

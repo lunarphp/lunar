@@ -22,8 +22,8 @@
             </table>
         </div>
     @elseif (($placeholder = $getPlaceholder()) !== null)
-        <x-filament-tables::columns.placeholder>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ $placeholder }}
-        </x-filament-tables::columns.placeholder>
+        </p>
     @endif
 </div>

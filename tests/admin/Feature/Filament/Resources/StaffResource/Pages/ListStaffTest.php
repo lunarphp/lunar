@@ -2,8 +2,11 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\StaffResource;
+use Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff;
+use Lunar\Admin\Models\Staff;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.staff');
 
 it('can render staff index page', function () {
@@ -15,9 +18,9 @@ it('can render staff index page', function () {
 it('can list staff', function () {
     $this->asStaff();
 
-    $staffs = \Lunar\Admin\Models\Staff::factory(5)->create();
+    $staffs = Staff::factory(5)->create();
 
-    Livewire::test(\Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff::class)
+    Livewire::test(ListStaff::class)
         ->assertCountTableRecords(6)
         ->assertCanSeeTableRecords($staffs);
 });

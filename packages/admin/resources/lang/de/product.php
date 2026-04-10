@@ -115,6 +115,7 @@ return [
         ],
         'collections' => [
             'label' => 'Sammlungen',
+            'select_collection' => 'Select a collection',
         ],
         'associations' => [
             'label' => 'Produktverknüpfungen',

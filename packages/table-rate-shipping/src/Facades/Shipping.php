@@ -4,6 +4,7 @@ namespace Lunar\Shipping\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
+use Lunar\Shipping\Managers\ShippingManager;
 
 /**
  * @method static void createFreeShippingDriver()
@@ -23,7 +24,7 @@ use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
  * @method static \Lunar\Shipping\Managers\ShippingManager setContainer(\Illuminate\Contracts\Container\Container $container)
  * @method static \Lunar\Shipping\Managers\ShippingManager forgetDrivers()
  *
- * @see \Lunar\Shipping\Managers\ShippingManager
+ * @see ShippingManager
  */
 class Shipping extends Facade
 {
