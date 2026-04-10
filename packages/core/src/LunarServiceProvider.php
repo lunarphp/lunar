@@ -2,7 +2,6 @@
 
 namespace Lunar;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Console\Scheduling\Schedule;
@@ -57,6 +56,7 @@ use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Database\State\MigrateCartOrderRelationship;
 use Lunar\Database\State\PopulateProductOptionLabelWithName;
 use Lunar\Database\State\UpdateWeightUnitToKg;
+use Lunar\Facades\Converter;
 use Lunar\Facades\Telemetry;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
@@ -102,6 +102,7 @@ use Lunar\Observers\ProductOptionValueObserver;
 use Lunar\Observers\ProductVariantObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
+use Lunar\Utils\MeasurementConverter;
 
 class LunarServiceProvider extends ServiceProvider
 {
@@ -135,6 +136,10 @@ class LunarServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
 
         $this->registerAddonManifest();
+
+        $this->app->singleton(MeasurementConverter::class, function () {
+            return new MeasurementConverter;
+        });
 
         $this->app->singleton(CartModifiers::class, function () {
             return new CartModifiers;
@@ -210,7 +215,7 @@ class LunarServiceProvider extends ServiceProvider
             }
         });
 
-        \Lunar\Facades\ModelManifest::register();
+        Facades\ModelManifest::register();
     }
 
     /**
@@ -227,7 +232,7 @@ class LunarServiceProvider extends ServiceProvider
         $this->registerBlueprintMacros();
         $this->registerStateListeners();
 
-        \Lunar\Facades\ModelManifest::morphMap();
+        Facades\ModelManifest::morphMap();
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -261,7 +266,7 @@ class LunarServiceProvider extends ServiceProvider
             }
         }
 
-        Arr::macro('permutate', [\Lunar\Utils\Arr::class, 'permutate']);
+        Arr::macro('permutate', [Utils\Arr::class, 'permutate']);
 
         // Handle generator
         Str::macro('handle', function ($string) {

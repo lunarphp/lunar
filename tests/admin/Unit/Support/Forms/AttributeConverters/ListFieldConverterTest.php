@@ -1,6 +1,11 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Unit\Livewire\TestCase::class)
+use Filament\Forms\Components\KeyValue;
+use Lunar\FieldTypes\ListField;
+use Lunar\Models\Attribute;
+use Lunar\Tests\Admin\Unit\Livewire\TestCase;
+
+uses(TestCase::class)
     ->group('livewire.support.forms');
 
 describe('list field converter', function () {
@@ -9,12 +14,12 @@ describe('list field converter', function () {
     });
 
     test('can convert attribute to form input component', function () {
-        $attribute = \Lunar\Models\Attribute::factory()->create([
-            'type' => \Lunar\FieldTypes\ListField::class,
+        $attribute = Attribute::factory()->create([
+            'type' => ListField::class,
         ]);
 
-        $inputComponent = \Lunar\Admin\Support\FieldTypes\ListField::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Admin\Support\FieldTypes\ListField::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(\Filament\Forms\Components\KeyValue::class);
+        expect($inputComponent)->toBeInstanceOf(KeyValue::class);
     });
 });

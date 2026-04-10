@@ -1,13 +1,15 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
 use Illuminate\Database\QueryException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can make a product option with translations', function () {
     $productOption = ProductOption::factory()->create();
@@ -28,7 +30,7 @@ test('handle matches name default locale', function () {
     expect(Str::slug($productOption->translate('name')))->toEqual($productOption->handle);
 });
 
-//test('handle if not unique throw exception', function () {
+// test('handle if not unique throw exception', function () {
 //    $productOption = ProductOption::factory()->create();
 //
 //    $this->expectException(QueryException::class);
@@ -44,7 +46,7 @@ test('handle matches name default locale', function () {
 //    ]);
 //
 //    $this->assertDatabaseCount((new ProductOption)->getTable(), 2);
-//});
+// });
 
 test('can delete product option', function () {
     $productOption = ProductOption::factory()->create();

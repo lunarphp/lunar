@@ -2,6 +2,7 @@
 
 namespace Lunar\Database\State;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Facades\DB;
 use Lunar\Models\Brand;
@@ -30,7 +31,7 @@ class EnsureMediaCollectionsAreRenamed
     }
 
     /**
-     * @return \Illuminate\Database\Query\Builder
+     * @return Builder
      */
     protected function getOutdatedMediaQuery()
     {

@@ -1,16 +1,20 @@
 <?php
 
-uses(\Lunar\Tests\Shipping\TestCase::class);
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-uses(\Lunar\Tests\Shipping\TestUtils::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\TaxClass;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
+use Lunar\Tests\Shipping\TestCase;
+use Lunar\Tests\Shipping\TestUtils;
+
+uses(TestCase::class);
+uses(RefreshDatabase::class);
+uses(TestUtils::class);
 
 function makeShippingRate(Currency $currency): ShippingRate
 {
@@ -21,7 +25,7 @@ function makeShippingRate(Currency $currency): ShippingRate
         'data' => ['charge' => ["{$currency->code}" => 500]],
     ]);
 
-    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create(['default' => true]);
+    $customerGroup = CustomerGroup::factory()->create(['default' => true]);
     $shippingMethod->customerGroups()->sync([
         $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
