@@ -164,8 +164,8 @@ class ShippingMethodResource extends BaseResource
                 ->options([
                     'cart_total' => __('lunarpanel.shipping::shippingmethod.form.charge_by.options.cart_total'),
                     'weight' => __('lunarpanel.shipping::shippingmethod.form.charge_by.options.weight'),
-                ]),
-
+                ])
+                ->required(),
         ])->columns(1)->statePath('data');
     }
 
@@ -176,8 +176,9 @@ class ShippingMethodResource extends BaseResource
             ->options([
                 'ship-by' => __('lunarpanel.shipping::shippingmethod.form.driver.options.ship-by'),
                 'collection' => __('lunarpanel.shipping::shippingmethod.form.driver.options.collection'),
-            ])->label('Type')
-            ->default('ship-by');
+            ])
+            ->default('ship-by')
+            ->required();
     }
 
     public static function getDefaultTable(Table $table): Table
