@@ -1,16 +1,26 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+use Illuminate\Support\Facades\DB;
+use Livewire\Livewire;
+use Lunar\Admin\Filament\Resources\CollectionResource\Pages\EditCollection;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Collection;
+use Lunar\Models\Language;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
+
+uses(TestCase::class)
     ->group('resource.collection');
 
 it('can save attributes', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Collection::factory()->create();
+    $record = Collection::factory()->create();
 
-    $group = \Lunar\Models\AttributeGroup::factory()->create([
+    $group = AttributeGroup::factory()->create([
         'attributable_type' => 'collection',
         'name' => [
             'en' => 'Collection Details',
@@ -19,7 +29,7 @@ it('can save attributes', function () {
         'position' => 1,
     ]);
 
-    $attribute = \Lunar\Models\Attribute::factory()->create([
+    $attribute = Attribute::factory()->create([
         'attribute_type' => 'collection',
         'attribute_group_id' => $group->id,
         'position' => 1,
@@ -33,7 +43,7 @@ it('can save attributes', function () {
         'searchable' => false,
     ]);
 
-    \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+    DB::table('lunar_attributables')->insert([
         'attribute_id' => $attribute->id,
         'attributable_type' => 'product_type',
         'attributable_id' => $record->id,
@@ -41,12 +51,12 @@ it('can save attributes', function () {
 
     $this->asStaff(admin: true);
 
-    \Livewire\Livewire::test(\Lunar\Admin\Filament\Resources\CollectionResource\Pages\EditCollection::class, [
+    Livewire::test(EditCollection::class, [
         'record' => $record->getRouteKey(),
         'pageClass' => 'collectionEdit',
     ])->fillForm([
         'attribute_data' => [
-            'name' => new \Lunar\FieldTypes\Text('New Collection Name'),
+            'name' => new Text('New Collection Name'),
         ],
     ])->call('save');
 

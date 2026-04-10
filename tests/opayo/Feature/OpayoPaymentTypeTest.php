@@ -1,14 +1,22 @@
 <?php
 
-use function Pest\Laravel\{assertDatabaseHas};
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\Currency;
+use Lunar\Models\Order;
+use Lunar\Models\Transaction;
+use Lunar\Opayo\Facades\Opayo;
+use Lunar\Opayo\OpayoPaymentType;
+use Lunar\Tests\Opayo\TestCase;
 
-uses(\Lunar\Tests\Opayo\TestCase::class);
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+use function Pest\Laravel\assertDatabaseHas;
+
+uses(TestCase::class);
+uses(RefreshDatabase::class);
 
 it('can handle a successful payment', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
+    $response = (new OpayoPaymentType)->cart($cart)->withData([
         'merchant_key' => 'SUCCESS',
         'card_identifier' => 'CARDTOKEN',
         'status' => 'payment-received',
@@ -17,12 +25,12 @@ it('can handle a successful payment', function () {
     $order = $cart->completedOrder()->first();
 
     expect($response->success)->toBe(true)
-        ->and($response->status)->toEqual(\Lunar\Opayo\Facades\Opayo::AUTH_SUCCESSFUL)
-        ->and($order)->toBeInstanceOf(\Lunar\Models\Order::class)
+        ->and($response->status)->toEqual(Opayo::AUTH_SUCCESSFUL)
+        ->and($order)->toBeInstanceOf(Order::class)
         ->and($order->status)->toBe('payment-received')
         ->and($order->placed_at)->not->toBeNull();
 
-    assertDatabaseHas(\Lunar\Models\Transaction::class, [
+    assertDatabaseHas(Transaction::class, [
         'success' => true,
         'type' => 'capture',
         'driver' => 'opayo',
@@ -36,7 +44,7 @@ it('can handle a successful payment', function () {
 it('can handle a failed payment', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
+    $response = (new OpayoPaymentType)->cart($cart)->withData([
         'merchant_key' => 'FAILED',
         'card_identifier' => 'CARDTOKEN',
         'status' => 'payment-received',
@@ -45,11 +53,11 @@ it('can handle a failed payment', function () {
     $order = $cart->completedOrder()->first();
 
     expect($cart->completedOrder()->first())->toBeNull()
-        ->and($response->status)->toEqual(\Lunar\Opayo\Facades\Opayo::AUTH_FAILED)
+        ->and($response->status)->toEqual(Opayo::AUTH_FAILED)
         ->and($cart->currentDraftOrder())
-        ->toBeInstanceOf(\Lunar\Models\Order::class);
+        ->toBeInstanceOf(Order::class);
 
-    assertDatabaseHas(\Lunar\Models\Transaction::class, [
+    assertDatabaseHas(Transaction::class, [
         'success' => false,
         'type' => 'capture',
         'driver' => 'opayo',
@@ -63,22 +71,22 @@ it('can handle a failed payment', function () {
 it('can handle a 3DSv2 response', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
+    $response = (new OpayoPaymentType)->cart($cart)->withData([
         'merchant_key' => 'SUCCESS_3DSV2',
         'card_identifier' => 'CARDTOKEN',
         'status' => 'payment-received',
     ])->authorize();
 
     expect($cart->completedOrder()->first())->toBeNull()
-        ->and($response->status)->toEqual(\Lunar\Opayo\Facades\Opayo::THREED_AUTH)
+        ->and($response->status)->toEqual(Opayo::THREED_AUTH)
         ->and($cart->currentDraftOrder())
-        ->toBeInstanceOf(\Lunar\Models\Order::class);
+        ->toBeInstanceOf(Order::class);
 });
 
 it('can process a failed 3DSv2 response', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
+    $response = (new OpayoPaymentType)->cart($cart)->withData([
         'cres' => '3DSV2_FAILURE',
         'pares' => '3DSV2_FAILURE',
         'transaction_id' => '3DSV2_FAILURE',
@@ -89,13 +97,13 @@ it('can process a failed 3DSv2 response', function () {
 
     expect($cart->completedOrder()->first())->toBeNull()
         ->and($response->status)
-        ->toEqual(\Lunar\Opayo\Facades\Opayo::AUTH_FAILED)
+        ->toEqual(Opayo::AUTH_FAILED)
         ->and($cart->currentDraftOrder())
-        ->toBeInstanceOf(\Lunar\Models\Order::class)
+        ->toBeInstanceOf(Order::class)
         ->and($cart->currentDraftOrder()->first()->placed_at)
         ->toBeNull();
 
-    assertDatabaseHas(\Lunar\Models\Transaction::class, [
+    assertDatabaseHas(Transaction::class, [
         'success' => false,
         'type' => 'capture',
         'driver' => 'opayo',
@@ -109,7 +117,7 @@ it('can process a failed 3DSv2 response', function () {
 it('can process a successful 3DSv2 response', function () {
     $cart = buildCart();
 
-    $response = (new \Lunar\Opayo\OpayoPaymentType)->cart($cart)->withData([
+    $response = (new OpayoPaymentType)->cart($cart)->withData([
         'cres' => '3DSV2_SUCCESS',
         'pares' => '3DSV2_SUCCESS',
         'transaction_id' => '3DSV2_SUCCESS',
@@ -119,12 +127,12 @@ it('can process a successful 3DSv2 response', function () {
     $order = $cart->completedOrder()->first();
 
     expect($response->success)->toBe(true)
-        ->and($response->status)->toEqual(\Lunar\Opayo\Facades\Opayo::AUTH_SUCCESSFUL)
-        ->and($order)->toBeInstanceOf(\Lunar\Models\Order::class)
+        ->and($response->status)->toEqual(Opayo::AUTH_SUCCESSFUL)
+        ->and($order)->toBeInstanceOf(Order::class)
         ->and($order->status)->toBe('payment-received')
         ->and($order->placed_at)->not->toBeNull();
 
-    assertDatabaseHas(\Lunar\Models\Transaction::class, [
+    assertDatabaseHas(Transaction::class, [
         'success' => true,
         'type' => 'capture',
         'driver' => 'opayo',
@@ -136,13 +144,13 @@ it('can process a successful 3DSv2 response', function () {
 });
 
 it('can return correct payment checks', function () {
-    \Lunar\Models\Currency::factory()->create();
+    Currency::factory()->create();
 
     $cart = buildCart();
 
     $order = $cart->createOrder();
 
-    $transactionA = \Lunar\Models\Transaction::factory()->create([
+    $transactionA = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'opayo',
         'meta' => [
@@ -154,7 +162,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionB = \Lunar\Models\Transaction::factory()->create([
+    $transactionB = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'opayo',
         'meta' => [
@@ -166,7 +174,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionC = \Lunar\Models\Transaction::factory()->create([
+    $transactionC = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'opayo',
         'meta' => [
@@ -178,7 +186,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionD = \Lunar\Models\Transaction::factory()->create([
+    $transactionD = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'opayo',
         'meta' => [

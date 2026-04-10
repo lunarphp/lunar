@@ -2,10 +2,15 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
@@ -38,16 +43,16 @@ class ManageProductPricing extends BaseEditRecord
         return $this->getRecord()->variants()->withTrashed()->first();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         if (! count($this->basePrices)) {
             $this->basePrices = $this->getBasePrices();
         }
 
-        $form->schema([
-            Forms\Components\Section::make()
+        $schema->components([
+            Section::make()
                 ->schema([
-                    Forms\Components\Group::make([
+                    Group::make([
                         ProductVariantResource::getTaxClassIdFormComponent(),
                         ProductVariantResource::getTaxRefFormComponent(),
                     ])->columns(2),
@@ -55,9 +60,9 @@ class ManageProductPricing extends BaseEditRecord
             $this->getBasePriceFormSection(),
         ])->statePath('');
 
-        $this->callLunarHook('extendForm', $form);
+        $this->callLunarHook('extendForm', $schema);
 
-        return $form;
+        return $schema;
     }
 
     public function getRelationManagers(): array
@@ -85,27 +90,27 @@ class ManageProductPricing extends BaseEditRecord
                 fn ($query) => $query->orderBy('min_quantity', 'asc')
             )
             ->columns([
-                Tables\Columns\TextColumn::make('price')
+                TextColumn::make('price')
                     ->label(
                         __('lunarpanel::relationmanagers.pricing.table.price.label')
                     )->formatStateUsing(
                         fn ($state) => $state->formatted,
                     ),
-                Tables\Columns\TextColumn::make('currency.code')->label(
+                TextColumn::make('currency.code')->label(
                     __('lunarpanel::relationmanagers.pricing.table.currency.label')
                 ),
-                Tables\Columns\TextColumn::make('min_quantity')->label(
+                TextColumn::make('min_quantity')->label(
                     __('lunarpanel::relationmanagers.pricing.table.min_quantity.label')
                 ),
-                Tables\Columns\TextColumn::make('customerGroup.name')->label(
+                TextColumn::make('customerGroup.name')->label(
                     __('lunarpanel::relationmanagers.pricing.table.customer_group.label')
                 ),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('currency')
+                SelectFilter::make('currency')
                     ->relationship(name: 'currency', titleAttribute: 'name')
                     ->preload(),
-                Tables\Filters\SelectFilter::make('min_quantity')->options(
+                SelectFilter::make('min_quantity')->options(
                     Price::where('priceable_id', $this->getOwnerRecord()->id)
                         ->where('priceable_type', $this->getOwnerRecord()->getMorphClass())
                         ->get()
@@ -113,7 +118,7 @@ class ManageProductPricing extends BaseEditRecord
                 ),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data) {
+                CreateAction::make()->mutateDataUsing(function (array $data) {
                     $currencyModel = Currency::find($data['currency_id']);
 
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
@@ -121,15 +126,15 @@ class ManageProductPricing extends BaseEditRecord
                     return $data;
                 }),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()->mutateFormDataUsing(function (array $data): array {
+            ->recordActions([
+                EditAction::make()->mutateDataUsing(function (array $data): array {
                     $currencyModel = Currency::find($data['currency_id']);
 
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
 
                     return $data;
                 }),
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ]);
     }
 }

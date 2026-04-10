@@ -3,17 +3,21 @@
 namespace Lunar\Admin\Support\Forms\Components;
 
 use Closure;
-use Filament\Forms;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
 use Lunar\Admin\Support\Facades\AttributeData;
+use Lunar\Base\FieldType;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\Product;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
 
-class Attributes extends Forms\Components\Group
+class Attributes extends Group
 {
     public ?string $modelClassOverride = null;
 
@@ -42,9 +46,38 @@ class Attributes extends Forms\Components\Group
         return $this;
     }
 
-    public function getKey(): ?string
+    public function getKey(bool $isAbsolute = true): ?string
     {
         return 'attributeData'.$this->modelClassOverride;
+    }
+
+    public function hydrateState(?array &$hydratedDefaultState, bool $shouldCallHydrationHooks = true): void
+    {
+        if ($hydratedDefaultState === null) {
+            $this->unwrapFieldTypeState();
+        }
+
+        parent::hydrateState($hydratedDefaultState, $shouldCallHydrationHooks);
+    }
+
+    public function hydrateStatePartially(array $statePaths, bool $shouldCallHydrationHooks = true): void
+    {
+        $this->unwrapFieldTypeState();
+
+        parent::hydrateStatePartially($statePaths, $shouldCallHydrationHooks);
+    }
+
+    protected function unwrapFieldTypeState(): void
+    {
+        $rawState = $this->getRawState();
+
+        if (is_array($rawState) || $rawState instanceof Arrayable) {
+            $rawState = collect($rawState)->map(
+                fn ($value) => $value instanceof FieldType ? $value->getValue() : $value,
+            )->toArray();
+
+            $this->rawState($rawState);
+        }
     }
 
     protected function setUp(): void
@@ -53,8 +86,8 @@ class Attributes extends Forms\Components\Group
 
         $this->statePath('attribute_data');
 
-        if (blank($this->childComponents)) {
-            $this->schema(function (\Filament\Forms\Get $get, Livewire $livewire, ?Model $record) {
+        if (blank($this->childComponents['default'] ?? [])) {
+            $this->schema(function (Get $get, Livewire $livewire, ?Model $record) {
                 $modelClass = $this->modelClassOverride ?: $livewire::getResource()::getModel();
 
                 $productTypeId = null;
@@ -110,7 +143,7 @@ class Attributes extends Forms\Components\Group
                     foreach ($group['fields'] as $field) {
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
-                    $groupComponents[] = Forms\Components\Section::make($group['model']
+                    $groupComponents[] = Section::make($group['model']
                         ->translate('name'))
                         ->schema($sectionFields);
                 }
@@ -125,7 +158,7 @@ class Attributes extends Forms\Components\Group
             }
 
             foreach ($state as $key => $value) {
-                if (! $value instanceof \Lunar\Base\FieldType) {
+                if (! $value instanceof FieldType) {
                     continue;
                 }
 
@@ -142,7 +175,15 @@ class Attributes extends Forms\Components\Group
         });
 
         $this->mutateRelationshipDataBeforeFillUsing(static function (Attributes $component, array $data): array {
-            return $data[$component->getAttributeDataField()] ?? [];
+            $attributeData = $data[$component->getAttributeDataField()] ?? [];
+
+            foreach ($attributeData as $key => $value) {
+                if ($value instanceof FieldType) {
+                    $attributeData[$key] = $value->getValue();
+                }
+            }
+
+            return $attributeData;
         });
     }
 }

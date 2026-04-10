@@ -1,8 +1,7 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Drivers\SystemTaxDriver;
@@ -14,8 +13,11 @@ use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRate;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)->group('taxes');
+uses(TestCase::class);
+
+uses(RefreshDatabase::class)->group('taxes');
 
 test('can set shipping address', function () {
     $address = Address::factory()->create();
@@ -36,7 +38,7 @@ test('can set billing address', function () {
 });
 
 test('must set valid address', function () {
-    $this->expectException(\TypeError::class);
+    $this->expectException(TypeError::class);
 
     $driver = (new SystemTaxDriver)
         ->setShippingAddress('ddd');
@@ -55,7 +57,7 @@ test('can set currency', function () {
 });
 
 test('must set valid currency', function () {
-    $this->expectException(\TypeError::class);
+    $this->expectException(TypeError::class);
 
     $driver = (new SystemTaxDriver)
         ->setCurrency('ddd');
@@ -155,7 +157,7 @@ test('can get breakdown with correct tax zone', function () {
 
     expect($breakdown)->toBeInstanceOf(TaxBreakdown::class);
 
-    //Only the 2 tax rates from the default tax zone should have been applied
+    // Only the 2 tax rates from the default tax zone should have been applied
     expect($breakdown->amounts->count())->toEqual(2);
 
     expect($breakdown->amounts[0]->price->value)->toEqual(100);

@@ -13,7 +13,7 @@ class CustomerStatsOverviewWidget extends BaseWidget
 {
     public ?Model $record = null;
 
-    protected static string $view = 'filament-widgets::stats-overview-widget';
+    protected string $view = 'filament-widgets::stats-overview-widget';
 
     protected function getStats(): array
     {

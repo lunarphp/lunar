@@ -2,13 +2,20 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Components\Component;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Clusters\Taxes;
-use Lunar\Admin\Filament\Resources\TaxRateResource\Pages;
+use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\CreateTaxRate;
+use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\EditTaxRate;
+use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\ListTaxRates;
 use Lunar\Admin\Filament\Resources\TaxRateResource\RelationManagers\TaxRateAmountRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\TaxRate as TaxRateContract;
@@ -41,7 +48,7 @@ class TaxRateResource extends BaseResource
     protected static function getMainFormComponents(): array
     {
         return [
-            Forms\Components\Section::make()->schema([
+            Section::make()->schema([
                 static::getNameFormComponent(),
                 static::getPriorityFormComponent(),
                 static::getTaxZoneFormComponent(),
@@ -51,7 +58,7 @@ class TaxRateResource extends BaseResource
 
     public static function getNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TextInput::make('name')
             ->label(__('lunarpanel::taxrate.form.name.label'))
             ->unique(column: 'name', ignoreRecord: true)
             ->required()
@@ -61,7 +68,7 @@ class TaxRateResource extends BaseResource
 
     public static function getPriorityFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('priority')
+        return TextInput::make('priority')
             ->label(__('lunarpanel::taxrate.form.priority.label'))
             ->required()
             ->numeric()
@@ -71,7 +78,7 @@ class TaxRateResource extends BaseResource
 
     public static function getTaxZoneFormComponent(): Component
     {
-        return Forms\Components\Select::make('tax_zone_id')
+        return Select::make('tax_zone_id')
             ->relationship(name: 'taxZone', titleAttribute: 'name')
             ->label(__('lunarpanel::taxrate.form.tax_zone_id.label'))
             ->live()
@@ -85,12 +92,12 @@ class TaxRateResource extends BaseResource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -98,10 +105,10 @@ class TaxRateResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name'),
-            Tables\Columns\TextColumn::make('taxZone.name')
+            TextColumn::make('name'),
+            TextColumn::make('taxZone.name')
                 ->label(__('lunarpanel::taxrate.table.tax_zone.label')),
-            Tables\Columns\TextColumn::make('priority')
+            TextColumn::make('priority')
                 ->label(__('lunarpanel::taxrate.table.priority.label')),
         ];
     }
@@ -116,9 +123,9 @@ class TaxRateResource extends BaseResource
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListTaxRates::route('/'),
-            'edit' => Pages\EditTaxRate::route('/{record}/edit'),
-            'create' => Pages\CreateTaxRate::route('/create'),
+            'index' => ListTaxRates::route('/'),
+            'edit' => EditTaxRate::route('/{record}/edit'),
+            'create' => CreateTaxRate::route('/create'),
         ];
     }
 }
