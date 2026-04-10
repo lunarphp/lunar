@@ -52,12 +52,14 @@ class AttributeData
             ->label(
                 $attribute->translate('name')
             )
-            ->formatStateUsing(function ($state) {
-                if ($state instanceof FieldType) {
-                    return $state->getValue();
+            ->formatStateUsing(function ($state) use ($attribute) {
+                $value = $state instanceof FieldType ? $state->getValue() : $state;
+
+                if ($value === null) {
+                    $value = (new $attribute->type)->getValue();
                 }
 
-                return $state;
+                return is_string($value) && blank($value) ? null : $value;
             })
             ->mutateStateForValidationUsing(function ($state) {
                 if ($state instanceof FieldType) {
