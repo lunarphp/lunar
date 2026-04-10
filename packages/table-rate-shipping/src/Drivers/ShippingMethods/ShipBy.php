@@ -2,9 +2,9 @@
 
 namespace Lunar\Shipping\Drivers\ShippingMethods;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\MissingCurrencyPriceException;
+use Lunar\Facades\Converter;
 use Lunar\Facades\Pricing;
 use Lunar\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
