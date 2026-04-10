@@ -1,11 +1,18 @@
 <?php
 
+use Filament\Actions\CreateAction;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
+use Lunar\FieldTypes\Dropdown;
+use Lunar\FieldTypes\Number;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
+use Lunar\Models\Language;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.attribute-group');
 
 it('can render relation manager', function () {
@@ -22,7 +29,7 @@ it('can render relation manager', function () {
 
 it('can create attributes', function ($type, $configuration = [], $expectedData = []) {
 
-    $lang = \Lunar\Models\Language::factory()->create([
+    $lang = Language::factory()->create([
         'default' => true,
         'code' => 'en',
     ]);
@@ -34,14 +41,14 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
     Livewire::test(AttributesRelationManager::class, [
         'ownerRecord' => $attributeGroup,
         'pageClass' => EditAttributeGroup::class,
-    ])->callTableAction(\Filament\Actions\CreateAction::class, data: [
+    ])->callTableAction(CreateAction::class, data: [
         'name.'.$lang->code => 'Foobar',
         'type' => $type,
         'handle' => 'foobar',
         'configuration' => $configuration,
     ])->assertHasNoTableActionErrors();
 
-    $this->assertDatabaseHas((new \Lunar\Models\Attribute)->getTable(), [
+    $this->assertDatabaseHas((new Attribute)->getTable(), [
         'attribute_group_id' => $attributeGroup->id,
         'name' => '{"en":"Foobar"}',
         'handle' => 'foobar',
@@ -49,32 +56,32 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
     ]);
 })->with([
     'text' => [
-        \Lunar\FieldTypes\Text::class,
+        Text::class,
         ['richtext' => false],
         '{"richtext":false}',
     ],
     'richtext' => [
-        \Lunar\FieldTypes\Text::class,
+        Text::class,
         ['richtext' => true],
         '{"richtext":true}',
     ],
     'dropdown' => [
-        \Lunar\FieldTypes\Dropdown::class,
+        Dropdown::class,
         [],
         '{"lookups":[]}',
     ],
     'dropdown-with-lookups' => [
-        \Lunar\FieldTypes\Dropdown::class,
+        Dropdown::class,
         ['lookups' => ['Foo' => 'foo', 'Bar' => 'bar']],
         '{"lookups":[{"label":"Foo","value":"foo"},{"label":"Bar","value":"bar"}]}',
     ],
     'number' => [
-        \Lunar\FieldTypes\Number::class,
+        Number::class,
         [],
         '{"min":null,"max":null}',
     ],
     'number-with-min-max' => [
-        \Lunar\FieldTypes\Number::class,
+        Number::class,
         ['min' => 5, 'max' => 10],
         '{"min":5,"max":10}',
     ],

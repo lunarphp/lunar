@@ -3,12 +3,17 @@
 namespace Lunar\Shipping\Filament\Resources;
 
 use Awcodes\Shout\Components\Shout;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Form;
-use Filament\Pages\SubNavigationPosition;
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Resources\BaseResource;
@@ -19,9 +24,11 @@ class ShippingMethodResource extends BaseResource
 {
     protected static ?string $model = ShippingMethod::class;
 
+    protected static ?string $permission = 'shipping:manage';
+
     protected static ?int $navigationSort = 1;
 
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {
@@ -51,16 +58,16 @@ class ShippingMethodResource extends BaseResource
         ];
     }
 
-    public static function getDefaultForm(Form $form): Form
+    public static function getDefaultForm(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             Shout::make('product-customer-groups')
                 ->content(
                     __('lunarpanel.shipping::shippingmethod.pages.availability.customer_groups')
                 )->type('warning')->hidden(function (Model $record) {
                     return $record->customerGroups()->where('enabled', true)->count();
                 }),
-            Forms\Components\Section::make()->schema(
+            Section::make()->schema(
                 static::getMainFormComponents(),
             ),
         ])->columns(1);
@@ -70,11 +77,11 @@ class ShippingMethodResource extends BaseResource
     {
         return [
             static::getNameFormComponent(),
-            Forms\Components\Group::make([
+            Group::make([
                 static::getCodeFormComponent(),
                 static::getDriverFormComponent(),
             ])->columns(2),
-            Forms\Components\Group::make([
+            Group::make([
                 static::getCutoffFormComponent(),
                 static::getChargeByFormComponent(),
             ])->columns(2),
@@ -120,7 +127,7 @@ class ShippingMethodResource extends BaseResource
 
     public static function getChargeByFormComponent(): Component
     {
-        return Forms\Components\Group::make([
+        return Group::make([
             Forms\Components\Select::make('charge_by')
                 ->label(
                     __('lunarpanel.shipping::shippingmethod.form.charge_by.label')
@@ -128,8 +135,8 @@ class ShippingMethodResource extends BaseResource
                 ->options([
                     'cart_total' => __('lunarpanel.shipping::shippingmethod.form.charge_by.options.cart_total'),
                     'weight' => __('lunarpanel.shipping::shippingmethod.form.charge_by.options.weight'),
-                ]),
-
+                ])
+                ->required(),
         ])->columns(1)->statePath('data');
     }
 
@@ -140,8 +147,9 @@ class ShippingMethodResource extends BaseResource
             ->options([
                 'ship-by' => __('lunarpanel.shipping::shippingmethod.form.driver.options.ship-by'),
                 'collection' => __('lunarpanel.shipping::shippingmethod.form.driver.options.collection'),
-            ])->label('Type')
-            ->default('ship-by');
+            ])
+            ->default('ship-by')
+            ->required();
     }
 
     public static function getDefaultTable(Table $table): Table
@@ -152,11 +160,11 @@ class ShippingMethodResource extends BaseResource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -164,15 +172,15 @@ class ShippingMethodResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name')
+            TextColumn::make('name')
                 ->label(
                     __('lunarpanel.shipping::shippingmethod.table.name.label')
                 ),
-            Tables\Columns\TextColumn::make('code')
+            TextColumn::make('code')
                 ->label(
                     __('lunarpanel.shipping::shippingmethod.table.code.label')
                 ),
-            Tables\Columns\TextColumn::make('driver')
+            TextColumn::make('driver')
                 ->label(
                     __('lunarpanel.shipping::shippingmethod.table.driver.label')
                 )->formatStateUsing(

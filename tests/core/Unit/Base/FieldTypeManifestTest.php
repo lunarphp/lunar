@@ -1,14 +1,18 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
 use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
+use Lunar\Models\Cart;
 use Lunar\Models\Channel;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can instantiate class', function () {
     $manifest = app(FieldTypeManifestInterface::class);
@@ -43,5 +47,5 @@ test('cannot add non fieldtype', function () {
         FieldTypeMissingException::class
     );
 
-    $manifest->add(\Lunar\Models\Cart::class);
+    $manifest->add(Cart::class);
 });

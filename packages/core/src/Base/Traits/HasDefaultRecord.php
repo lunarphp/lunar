@@ -2,6 +2,7 @@
 
 namespace Lunar\Base\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
@@ -10,7 +11,7 @@ trait HasDefaultRecord
     /**
      * Return the default scope.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @return void
      */
     public function scopeDefault($query, $default = true)

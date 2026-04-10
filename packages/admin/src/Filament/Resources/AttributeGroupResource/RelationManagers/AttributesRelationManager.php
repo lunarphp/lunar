@@ -2,10 +2,20 @@
 
 namespace Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -27,10 +37,10 @@ class AttributesRelationManager extends BaseRelationManager
 
     protected static ?string $recordTitleAttribute = 'name.en';  // TODO: localise somehow
 
-    public function getDefaultForm(Form $form): Form
+    public function getDefaultForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TranslatedText::make('name')
                     ->label(
                         __('lunarpanel::attribute.form.name.label')
@@ -38,7 +48,7 @@ class AttributesRelationManager extends BaseRelationManager
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                    ->afterStateUpdated(function (string $operation, $state, Set $set) {
                         if ($operation !== 'create') {
                             return;
                         }
@@ -53,7 +63,7 @@ class AttributesRelationManager extends BaseRelationManager
                     )
                     ->afterStateHydrated(fn ($state, $component) => $state ?: $component->state([Language::getDefault()->code => null]))
                     ->maxLength(255),
-                Forms\Components\TextInput::make('handle')
+                TextInput::make('handle')
                     ->label(
                         __('lunarpanel::attribute.form.handle.label')
                     )->dehydrated()
@@ -67,21 +77,21 @@ class AttributesRelationManager extends BaseRelationManager
                         fn (?Model $record) => (bool) $record
                     )
                     ->required(),
-                Forms\Components\Grid::make(3)->schema([
-                    Forms\Components\Toggle::make('searchable')
+                Grid::make(3)->schema([
+                    Toggle::make('searchable')
                         ->label(
                             __('lunarpanel::attribute.form.searchable.label')
                         )->default(false),
-                    Forms\Components\Toggle::make('filterable')
+                    Toggle::make('filterable')
                         ->label(
                             __('lunarpanel::attribute.form.filterable.label')
                         )->default(false),
-                    Forms\Components\Toggle::make('required')
+                    Toggle::make('required')
                         ->label(
                             __('lunarpanel::attribute.form.required.label')
                         )->default(false),
                 ]),
-                Forms\Components\Select::make('type')->label(
+                Select::make('type')->label(
                     __('lunarpanel::attribute.form.type.label')
                 )->disabled(
                     fn (?Model $record) => (bool) $record
@@ -95,13 +105,13 @@ class AttributesRelationManager extends BaseRelationManager
                             $fieldType => __("lunarpanel::fieldtypes.{$langKey}.label"),
                         ];
                     })->toArray()
-                )->required()->live()->afterStateUpdated(fn (Forms\Components\Select $component) => $component
+                )->required()->live()->afterStateUpdated(fn (Select $component) => $component
                     ->getContainer()
                     ->getComponent('configuration')
                     ->getChildComponentContainer()
 
                     ->fill()),
-                Forms\Components\TextInput::make('validation_rules')->label(
+                TextInput::make('validation_rules')->label(
                     __('lunarpanel::attribute.form.validation_rules.label')
                 )
                     ->string()
@@ -109,8 +119,8 @@ class AttributesRelationManager extends BaseRelationManager
                     ->helperText(
                         __('lunarpanel::attribute.form.validation_rules.helper')
                     ),
-                Forms\Components\Grid::make(1)
-                    ->schema(function (Forms\Get $get) {
+                Grid::make(1)
+                    ->schema(function (Get $get) {
                         return AttributeData::getConfigurationFields($get('type'));
                     })->key('configuration')->statePath('configuration'),
             ]);
@@ -123,14 +133,14 @@ class AttributesRelationManager extends BaseRelationManager
                 TranslatedTextColumn::make('name')->label(
                     __('lunarpanel::attribute.table.name.label')
                 ),
-                Tables\Columns\TextColumn::make('description.en')->label(
+                TextColumn::make('description.en')->label(
                     __('lunarpanel::attribute.table.description.label')
                 ),
-                Tables\Columns\TextColumn::make('handle')
+                TextColumn::make('handle')
                     ->label(
                         __('lunarpanel::attribute.table.handle.label')
                     ),
-                Tables\Columns\TextColumn::make('type')->label(
+                TextColumn::make('type')->label(
                     __('lunarpanel::attribute.table.type.label')
                 ),
             ])
@@ -138,7 +148,7 @@ class AttributesRelationManager extends BaseRelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data, RelationManager $livewire) {
+                CreateAction::make()->mutateDataUsing(function (array $data, RelationManager $livewire) {
                     $data['configuration'] = $data['configuration'] ?? [];
                     $data['system'] = false;
                     $data['attribute_type'] = $livewire->ownerRecord->attributable_type;
@@ -147,13 +157,13 @@ class AttributesRelationManager extends BaseRelationManager
                     return $data;
                 }),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('position', 'asc')

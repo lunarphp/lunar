@@ -2,10 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -49,14 +53,14 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
         return __('lunarpanel::collection.pages.products.label');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([
-            Tables\Columns\TextColumn::make('foo'),
+        return $schema->components([
+            TextColumn::make('foo'),
         ]);
     }
 
-    public function reorderTable(array $order): void
+    public function reorderTable(array $order, string|int|null $draggedRecordKey = null): void
     {
         parent::reorderTable($order);
 
@@ -69,42 +73,46 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
     {
         return $table->columns([
 
-            Tables\Columns\SpatieMediaLibraryImageColumn::make('thumbnail')
+            SpatieMediaLibraryImageColumn::make('thumbnail')
                 ->collection(config('lunar.media.collection'))
                 ->conversion('small')
                 ->limit(1)
                 ->square()
                 ->label(''),
-            Tables\Columns\TextColumn::make('attribute_data.name')
+            TextColumn::make('attribute_data.name')
                 ->formatStateUsing(fn (Model $record): string => $record->translateAttribute('name'))
                 ->label(__('lunarpanel::product.table.name.label')),
-        ])->actions([
-            Tables\Actions\DetachAction::make()->after(
+        ])->recordActions([
+            DetachAction::make()->after(
                 fn () => CollectionProductDetached::dispatch($this->getOwnerRecord())
             ),
-            Tables\Actions\EditAction::make()->url(
+            EditAction::make()->url(
                 fn (Model $record) => ProductResource::getUrl('edit', [
                     'record' => $record,
                 ])
             ),
         ])->headerActions([
-            Tables\Actions\AttachAction::make()
+            AttachAction::make()
                 ->label(
                     __('lunarpanel::collection.pages.products.actions.attach.label')
                 )->form([
-                    Forms\Components\Select::make('recordId')
+                    Select::make('recordId')
                         ->label('Product')
                         ->required()
                         ->searchable(true)
-                        ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search, ManageCollectionProducts $livewire): array {
+                        ->getSearchResultsUsing(static function (Select $component, string $search, ManageCollectionProducts $livewire): array {
                             $relationModel = $livewire->getRelationship()->getRelated()::class;
 
                             return get_search_builder($relationModel, $search)
                                 ->get()
+                                ->reject(
+                                    fn (ProductContract $record) => $livewire->getRelationship()->get()->contains($record->getKey())
+                                )
                                 ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();
-                        }),
-                ])->action(function (array $arguments, array $data, Form $form, Table $table) {
+                        })
+                        ->getOptionLabelUsing(fn ($value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')),
+                ])->action(function (array $arguments, array $data, Schema $schema, Table $table) {
                     $relationship = Relation::noConstraints(fn () => $table->getRelationship());
 
                     $product = Product::find($data['recordId']);

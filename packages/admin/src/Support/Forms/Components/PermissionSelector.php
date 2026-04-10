@@ -11,6 +11,7 @@ use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 
 class PermissionSelector extends Field
 {
@@ -198,7 +199,7 @@ class PermissionSelector extends Field
 
         $traits = trait_uses_recursive($record);
 
-        if (! in_array(\Spatie\Permission\Traits\HasRoles::class, $traits)) {
+        if (! in_array(HasRoles::class, $traits)) {
             throw new Exception('Not implemented \Spatie\Permission\Traits\HasRoles');
         }
 

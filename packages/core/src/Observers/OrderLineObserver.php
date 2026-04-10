@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Lunar\Base\Purchasable;
 use Lunar\Exceptions\NonPurchasableItemException;
 use Lunar\Models\Contracts\OrderLine as OrderLineContract;
-use Lunar\Models\OrderLine as OrderLine;
+use Lunar\Models\OrderLine;
 
 class OrderLineObserver
 {
