@@ -4,6 +4,7 @@ namespace Lunar\Admin\Support\Facades;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Admin\Auth\Manifest;
 
 /**
  * @method static Collection getRoles(bool $refresh = false)
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static Collection getAdmin()
  * @method static Collection getRolesWithoutAdmin(bool $refresh = false)
  *
- * @see \Lunar\Admin\Auth\Manifest
+ * @see Manifest
  */
 class LunarAccessControl extends Facade
 {

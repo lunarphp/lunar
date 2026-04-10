@@ -1,10 +1,14 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('models');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Lunar\Models\Channel;
+use Lunar\Models\Discount;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class)->group('models');
+
+uses(RefreshDatabase::class);
 
 test('can make a channel', function () {
     $channel = Channel::factory()->create([
@@ -41,9 +45,9 @@ test('can return associated discounts', function () {
     $channel = Channel::factory()->create();
 
     // Stop observers creating the channel association.
-    \Illuminate\Support\Facades\Event::fake();
+    Event::fake();
 
-    $discount = \Lunar\Models\Discount::factory()->create();
+    $discount = Discount::factory()->create();
 
     expect($channel->discounts)->toHaveCount(0);
 

@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
@@ -28,12 +29,12 @@ use Lunar\Database\Factories\AddressFactory;
  * @property ?string $delivery_instructions
  * @property ?string $contact_mail
  * @property ?string $contact_phone
- * @property ?\Illuminate\Support\Carbon $last_used_at
+ * @property ?Carbon $last_used_at
  * @property array $meta
  * @property bool $shipping_default
  * @property bool $billing_default
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class Address extends BaseModel implements Addressable, Contracts\Address
 {

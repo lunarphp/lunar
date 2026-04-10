@@ -2,20 +2,24 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Tests\Admin\Unit\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Unit\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('support.relationManagers');
 
 it('can render relationship manager', function () {
-    \Lunar\Models\CustomerGroup::factory()->create([
+    CustomerGroup::factory()->create([
         'default' => true,
     ]);
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $product = \Lunar\Models\Product::factory()->create();
+    $product = Product::factory()->create();
 
     $this->asStaff(admin: true);
 

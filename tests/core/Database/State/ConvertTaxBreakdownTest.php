@@ -1,14 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Lunar\Database\State\ConvertTaxbreakdown;
 use Lunar\Facades\DB;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can run', function () {
     Storage::fake('local');
