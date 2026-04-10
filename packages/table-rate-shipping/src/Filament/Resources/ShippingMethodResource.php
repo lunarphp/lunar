@@ -85,7 +85,6 @@ class ShippingMethodResource extends BaseResource
                 static::getDriverFormComponent(),
             ])->columns(2),
             Group::make([
-                static::getCutoffFormComponent(),
                 static::getChargeByFormComponent(),
             ])->columns(2),
             static::getWeightConstraintsFormComponent(),
