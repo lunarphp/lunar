@@ -22,8 +22,8 @@
         "barryvdh/laravel-dompdf": "^3.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
         "leandrocfe/filament-apex-charts": "^5.0",
-        "awcodes/shout": "^v3.0.0-beta.2",
-        "awcodes/filament-badgeable-column": "^v3.0.0-beta.1"
+        "awcodes/shout": "^3.0",
+        "awcodes/filament-badgeable-column": "^3.0"
     },
     "extra": {
         "laravel": {
@@ -34,6 +34,6 @@
     },
     "require-dev": {
         "filament/upgrade": "^4.0",
-        "phpstan/phpstan": "2.1.17"
+        "phpstan/phpstan": "^2.1.17"
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\ShippingManifest;
@@ -13,11 +12,14 @@ use Lunar\Models\OrderLine;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Pipelines\Order\Creation\CleanUpOrderLines;
+use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can run pipeline', function () {
     $currency = Currency::factory()->create();
@@ -49,7 +51,7 @@ test('can run pipeline', function () {
     $purchasable = ProductVariant::factory()->create();
     $purchasableB = ProductVariant::factory()->create();
 
-    \Lunar\Models\Price::factory()->create([
+    Lunar\Models\Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
@@ -57,7 +59,7 @@ test('can run pipeline', function () {
         'priceable_id' => $purchasable->id,
     ]);
 
-    \Lunar\Models\Price::factory()->create([
+    Lunar\Models\Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
@@ -137,7 +139,7 @@ test('will remove lines with same purchasable ids when different', function () {
     $purchasable = ProductVariant::factory()->create();
     $purchasableB = ProductVariant::factory()->create();
 
-    \Lunar\Models\Price::factory()->create([
+    Lunar\Models\Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
@@ -145,7 +147,7 @@ test('will remove lines with same purchasable ids when different', function () {
         'priceable_id' => $purchasable->id,
     ]);
 
-    \Lunar\Models\Price::factory()->create([
+    Lunar\Models\Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,

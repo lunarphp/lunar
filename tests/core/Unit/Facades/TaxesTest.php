@@ -1,15 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\TaxManagerInterface;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Facades\Taxes;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('accessor is correct', function () {
     expect(Taxes::getFacadeAccessor())->toEqual(TaxManagerInterface::class);

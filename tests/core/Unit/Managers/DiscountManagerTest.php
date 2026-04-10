@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Lunar\Base\DataTransferObjects\CartDiscount;
 use Lunar\Base\DiscountManagerInterface;
@@ -18,8 +17,11 @@ use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestDiscountType;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can instantiate manager', function () {
     $manager = app(DiscountManagerInterface::class);

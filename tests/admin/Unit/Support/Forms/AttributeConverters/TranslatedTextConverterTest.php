@@ -1,6 +1,10 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Unit\Livewire\TestCase::class)
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\Attribute;
+use Lunar\Tests\Admin\Unit\Livewire\TestCase;
+
+uses(TestCase::class)
     ->group('livewire.support.forms');
 
 describe('list field converter', function () {
@@ -9,12 +13,12 @@ describe('list field converter', function () {
     });
 
     test('can convert attribute to form input component', function () {
-        $attribute = \Lunar\Models\Attribute::factory()->create([
-            'type' => \Lunar\FieldTypes\TranslatedText::class,
+        $attribute = Attribute::factory()->create([
+            'type' => TranslatedText::class,
         ]);
 
-        $inputComponent = \Lunar\Admin\Support\FieldTypes\TranslatedText::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Admin\Support\FieldTypes\TranslatedText::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(\Lunar\Admin\Support\Forms\Components\TranslatedText::class);
+        expect($inputComponent)->toBeInstanceOf(Lunar\Admin\Support\Forms\Components\TranslatedText::class);
     });
 });
