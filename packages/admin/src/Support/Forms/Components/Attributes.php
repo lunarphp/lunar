@@ -6,6 +6,7 @@ use Closure;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
 use Lunar\Admin\Support\Facades\AttributeData;
@@ -48,6 +49,35 @@ class Attributes extends Group
     public function getKey(bool $isAbsolute = true): ?string
     {
         return 'attributeData'.$this->modelClassOverride;
+    }
+
+    public function hydrateState(?array &$hydratedDefaultState, bool $shouldCallHydrationHooks = true): void
+    {
+        if ($hydratedDefaultState === null) {
+            $this->unwrapFieldTypeState();
+        }
+
+        parent::hydrateState($hydratedDefaultState, $shouldCallHydrationHooks);
+    }
+
+    public function hydrateStatePartially(array $statePaths, bool $shouldCallHydrationHooks = true): void
+    {
+        $this->unwrapFieldTypeState();
+
+        parent::hydrateStatePartially($statePaths, $shouldCallHydrationHooks);
+    }
+
+    protected function unwrapFieldTypeState(): void
+    {
+        $rawState = $this->getRawState();
+
+        if (is_array($rawState) || $rawState instanceof Arrayable) {
+            $rawState = collect($rawState)->map(
+                fn ($value) => $value instanceof FieldType ? $value->getValue() : $value,
+            )->toArray();
+
+            $this->rawState($rawState);
+        }
     }
 
     protected function setUp(): void
