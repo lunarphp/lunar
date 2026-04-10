@@ -16,7 +16,7 @@ uses(TestCase::class);
 test('is available when no schedule is set', function () {
     $method = ShippingMethod::factory()->create(['data' => []]);
 
-    expect($method->isAvailableAt(Carbon::now()))->toBeTrue();
+    expect($method->isAvailable(Carbon::now()))->toBeTrue();
 });
 
 // ── Day-level availability ───────────────────────────────────────────────────
@@ -30,7 +30,7 @@ test('is available on an enabled day', function () {
         ]],
     ]);
 
-    expect($method->isAvailableAt($monday))->toBeTrue();
+    expect($method->isAvailable($monday))->toBeTrue();
 });
 
 test('is not available on a day that is not enabled', function () {
@@ -43,7 +43,7 @@ test('is not available on a day that is not enabled', function () {
         ]],
     ]);
 
-    expect($method->isAvailableAt($tuesday))->toBeFalse();
+    expect($method->isAvailable($tuesday))->toBeFalse();
 });
 
 test('is not available on a day absent from the schedule', function () {
@@ -55,7 +55,7 @@ test('is not available on a day absent from the schedule', function () {
         ]],
     ]);
 
-    expect($method->isAvailableAt($wednesday))->toBeFalse();
+    expect($method->isAvailable($wednesday))->toBeFalse();
 });
 
 // ── Per-day time windows ─────────────────────────────────────────────────────
@@ -69,7 +69,7 @@ test('is available when current time is within the day\'s from/to window', funct
         ]],
     ]);
 
-    expect($method->isAvailableAt($monday))->toBeTrue();
+    expect($method->isAvailable($monday))->toBeTrue();
 });
 
 test('is not available when current time is before the day\'s from time', function () {
@@ -81,7 +81,7 @@ test('is not available when current time is before the day\'s from time', functi
         ]],
     ]);
 
-    expect($method->isAvailableAt($monday))->toBeFalse();
+    expect($method->isAvailable($monday))->toBeFalse();
 });
 
 test('is not available when current time is after the day\'s to time', function () {
@@ -93,7 +93,7 @@ test('is not available when current time is after the day\'s to time', function 
         ]],
     ]);
 
-    expect($method->isAvailableAt($monday))->toBeFalse();
+    expect($method->isAvailable($monday))->toBeFalse();
 });
 
 test('is available exactly at the from time', function () {
@@ -105,7 +105,7 @@ test('is available exactly at the from time', function () {
         ]],
     ]);
 
-    expect($method->isAvailableAt($monday))->toBeTrue();
+    expect($method->isAvailable($monday))->toBeTrue();
 });
 
 test('is available exactly at the to time', function () {
@@ -117,7 +117,7 @@ test('is available exactly at the to time', function () {
         ]],
     ]);
 
-    expect($method->isAvailableAt($monday))->toBeTrue();
+    expect($method->isAvailable($monday))->toBeTrue();
 });
 
 // ── Different windows per day ─────────────────────────────────────────────────
@@ -134,9 +134,9 @@ test('each day can have its own time window', function () {
     $saturdayMorning = Carbon::parse('next Saturday')->setTime(11, 0);
     $saturdayAfternoon = Carbon::parse('next Saturday')->setTime(14, 0);
 
-    expect($method->isAvailableAt($mondayMorning))->toBeTrue();
-    expect($method->isAvailableAt($saturdayMorning))->toBeTrue();
-    expect($method->isAvailableAt($saturdayAfternoon))->toBeFalse();
+    expect($method->isAvailable($mondayMorning))->toBeTrue();
+    expect($method->isAvailable($saturdayMorning))->toBeTrue();
+    expect($method->isAvailable($saturdayAfternoon))->toBeFalse();
 });
 
 test('an enabled day with no from/to is available all day', function () {
@@ -149,6 +149,6 @@ test('an enabled day with no from/to is available all day', function () {
     $earlyWednesday = Carbon::parse('next Wednesday')->setTime(0, 1);
     $lateWednesday = Carbon::parse('next Wednesday')->setTime(23, 59);
 
-    expect($method->isAvailableAt($earlyWednesday))->toBeTrue();
-    expect($method->isAvailableAt($lateWednesday))->toBeTrue();
+    expect($method->isAvailable($earlyWednesday))->toBeTrue();
+    expect($method->isAvailable($lateWednesday))->toBeTrue();
 });
