@@ -51,6 +51,30 @@ class Attributes extends Group
         return 'attributeData'.$this->modelClassOverride;
     }
 
+    public function loadStateFromRelationships(bool $hydrateAll = false): void
+    {
+        parent::loadStateFromRelationships($hydrateAll);
+
+        $rawState = $this->getRawState();
+
+        if (! ($rawState instanceof Arrayable || is_array($rawState))) {
+            return;
+        }
+
+        $data = $rawState instanceof Arrayable ? $rawState->toArray() : $rawState;
+
+        foreach ($data as $key => $value) {
+            if ($value instanceof FieldType) {
+                $fieldValue = $value->getValue();
+                if (is_scalar($fieldValue) || is_null($fieldValue)) {
+                    $data[$key] = is_string($fieldValue) && blank($fieldValue) ? null : $fieldValue;
+                }
+            }
+        }
+
+        $this->rawState($data);
+    }
+
     public function hydrateState(?array &$hydratedDefaultState, bool $shouldCallHydrationHooks = true): void
     {
         if ($hydratedDefaultState === null) {
