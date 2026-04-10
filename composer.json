@@ -70,6 +70,7 @@
             "Lunar\\Search\\": "packages/search/src/",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
+            "Lunar\\Shipping\\Database\\State\\": "packages/table-rate-shipping/database/state",
             "Lunar\\Stripe\\": "packages/stripe/src/"
         }
     },
@@ -86,7 +87,6 @@
             "Lunar\\Tests\\Search\\": "tests/search"
         }
     },
-    "repositories": [],
     "extra": {
 "lunar": {
             "name": [
