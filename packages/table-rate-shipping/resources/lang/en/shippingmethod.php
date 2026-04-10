@@ -13,8 +13,26 @@ return [
         'code' => [
             'label' => 'Code',
         ],
-        'cutoff' => [
-            'label' => 'Cutoff',
+        'schedule' => [
+            'label' => 'Availability Schedule',
+            'days' => [
+                'monday' => 'Monday',
+                'tuesday' => 'Tuesday',
+                'wednesday' => 'Wednesday',
+                'thursday' => 'Thursday',
+                'friday' => 'Friday',
+                'saturday' => 'Saturday',
+                'sunday' => 'Sunday',
+            ],
+            'from' => [
+                'label' => 'From',
+            ],
+            'to' => [
+                'label' => 'Until',
+                'validation' => [
+                    'after' => 'The until time must be after the from time.',
+                ],
+            ],
         ],
         'charge_by' => [
             'label' => 'Charge By',

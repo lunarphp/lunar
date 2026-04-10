@@ -199,16 +199,7 @@ class ShippingRateResolver
                         return true;
                     }
 
-                    if (! $method->cutoff) {
-                        return false;
-                    }
-
-                    [$h, $m, $s] = explode(':', $method->cutoff);
-
-                    return now()->set('hour', (int) $h)
-                        ->set('minute', (int) $m)
-                        ->set('second', (int) $s)
-                        ->isPast();
+                    return ! $method->isAvailable();
                 })
                 ->reject(function ($rate) {
                     if ($this->allCartItemsAreInStock || ! ($rate->shippingMethod->stock_available ?? false)) {
