@@ -21,6 +21,7 @@ class ListShippingMethod extends BaseListRecords
                 Group::make([
                     ShippingMethodResource::getCodeFormComponent(),
                     ShippingMethodResource::getDriverFormComponent(),
+                    ShippingMethodResource::getChargeByFormComponent(),
                 ])->columns(2),
                 ShippingMethodResource::getDescriptionFormComponent(),
             ])->after(function (ShippingMethod $shippingMethod) {
