@@ -1,13 +1,12 @@
 <?php
 
-uses(TestCase::class);
-
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Tests\Shipping\TestCase;
 
 uses(RefreshDatabase::class);
+uses(TestCase::class);
 
 // Schedule is stored as data.schedule keyed by ISO weekday (1=Monday … 7=Sunday).
 // Each entry: { enabled: bool, from: "HH:MM", to: "HH:MM" }
