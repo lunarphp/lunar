@@ -1,8 +1,9 @@
 <?php
 
 use Lunar\Search\Engines\AbstractEngine;
+use Lunar\Tests\Search\TestCase;
 
-uses(\Lunar\Tests\Search\TestCase::class)->group('search');
+uses(TestCase::class)->group('search');
 
 it('can set engine properties', function () {
     $engine = new class extends AbstractEngine

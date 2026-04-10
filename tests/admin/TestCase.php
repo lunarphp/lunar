@@ -5,7 +5,6 @@ namespace Lunar\Tests\Admin;
 use Awcodes\Shout\ShoutServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
-use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
@@ -70,7 +69,6 @@ class TestCase extends BaseTestCase
             MediaLibraryServiceProvider::class,
             PermissionServiceProvider::class,
             ActivitylogServiceProvider::class,
-            ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
             BlinkServiceProvider::class,
 

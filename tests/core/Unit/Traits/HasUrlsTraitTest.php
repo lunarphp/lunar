@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Lunar\FieldTypes\Text;
@@ -10,8 +9,11 @@ use Lunar\Models\Brand;
 use Lunar\Models\Language;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('urls dont generate by default', function () {
     $product = Product::factory()->create();

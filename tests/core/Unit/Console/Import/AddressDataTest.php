@@ -1,10 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Lunar\Models\Country;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can import address data', function () {
     Http::fake(function ($request) {

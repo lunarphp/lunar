@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Carts\AddOrUpdatePurchasable;
 use Lunar\Exceptions\InvalidCartLineQuantityException;
 use Lunar\Models\Cart;
@@ -9,8 +8,11 @@ use Lunar\Models\CartLine;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can add cart lines', function () {
     $currency = Currency::factory()->create();

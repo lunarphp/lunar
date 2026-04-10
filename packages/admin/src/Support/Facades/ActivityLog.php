@@ -10,7 +10,7 @@ use Lunar\Admin\Support\ActivityLog\Manifest;
  * @method static Manifest addRender(string $subject, string $renderer)
  * @method static Collection getItems(string $subject)
  *
- * @see \Lunar\Admin\Support\ActivityLog\Manifest
+ * @see Manifest
  */
 class ActivityLog extends Facade
 {

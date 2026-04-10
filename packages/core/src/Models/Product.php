@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
@@ -37,9 +38,9 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property int $product_type_id
  * @property string $status
  * @property ?\Illuminate\Support\Collection $attribute_data
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
  */
 class Product extends BaseModel implements Contracts\Product, HasThumbnailImage, SpatieHasMedia
 {
