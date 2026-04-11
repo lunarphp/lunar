@@ -152,6 +152,7 @@ class StripePaymentType extends AbstractPayment
         );
 
         PaymentAttemptEvent::dispatch($response);
+        $this->dispatchOrderPaidEvent($response);
 
         $paymentIntentModel->processed_at = now();
 
@@ -216,7 +217,7 @@ class StripePaymentType extends AbstractPayment
             );
         }
 
-        $transaction->order->transactions()->create([
+        $refundTransaction = $transaction->order->transactions()->create([
             'success' => $refund->status != 'failed',
             'type' => 'refund',
             'driver' => 'stripe',
@@ -229,7 +230,11 @@ class StripePaymentType extends AbstractPayment
         ]);
 
         return new PaymentRefund(
-            success: true
+            success: true,
+            refundTransactionId: $refundTransaction->id,
+            reference: $refundTransaction->reference,
+            status: $refundTransaction->status,
+            meta: $refundTransaction->meta?->getArrayCopy() ?: null,
         );
     }
 

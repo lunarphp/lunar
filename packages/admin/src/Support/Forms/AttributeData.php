@@ -97,6 +97,17 @@ class AttributeData
         return collect($this->fieldTypes)->keys();
     }
 
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<string, mixed>
+     */
+    public function mutateConfigurationForForm(?string $type = null, array $configuration = []): array
+    {
+        $fieldType = $this->fieldTypes[$type] ?? null;
+
+        return $fieldType ? $fieldType::mutateConfigurationForForm($configuration) : $configuration;
+    }
+
     public function getConfigurationFields(?string $type = null): array
     {
         $fieldType = $this->fieldTypes[$type] ?? null;

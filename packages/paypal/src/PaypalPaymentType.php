@@ -114,6 +114,7 @@ class PaypalPaymentType extends AbstractPayment
         );
 
         PaymentAttemptEvent::dispatch($response);
+        $this->dispatchOrderPaidEvent($response);
 
         return $response;
     }
@@ -158,7 +159,7 @@ class PaypalPaymentType extends AbstractPayment
                 $currencyCode
             );
 
-            $transaction->order->transactions()->create([
+            $refundTransaction = $transaction->order->transactions()->create([
                 'success' => true,
                 'type' => 'refund',
                 'driver' => 'paypal',
@@ -171,7 +172,11 @@ class PaypalPaymentType extends AbstractPayment
             ]);
 
             return new PaymentRefund(
-                success: true
+                success: true,
+                refundTransactionId: $refundTransaction->id,
+                reference: $refundTransaction->reference,
+                status: $refundTransaction->status,
+                meta: $refundTransaction->meta?->getArrayCopy() ?: null,
             );
         } catch (HttpClientException $e) {
             return new PaymentRefund(

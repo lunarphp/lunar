@@ -52,6 +52,7 @@ describe('attribute data test', function () {
         $inputComponent = AttributeData::getFilamentComponent($attribute);
         expect($inputComponent)->toBeInstanceOf(RichEditor::class);
     });
+
 });
 
 class TestFieldType extends Text {}

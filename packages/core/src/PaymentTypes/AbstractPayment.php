@@ -2,13 +2,16 @@
 
 namespace Lunar\PaymentTypes;
 
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\PaymentTypeInterface;
+use Lunar\Events\OrderPaid;
 use Lunar\Models\Cart;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Contracts\Order as OrderContract;
 use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Order;
+use Lunar\Models\Transaction;
 
 abstract class AbstractPayment implements PaymentTypeInterface
 {
@@ -79,5 +82,31 @@ abstract class AbstractPayment implements PaymentTypeInterface
     public function getPaymentChecks(TransactionContract $transaction): PaymentChecks
     {
         return new PaymentChecks;
+    }
+
+    /**
+     * Dispatch the canonical post-purchase event when an order becomes paid.
+     *
+     * @param  array<string, mixed>  $meta
+     */
+    protected function dispatchOrderPaidEvent(PaymentAuthorize $paymentAuthorize, array $meta = []): void
+    {
+        if (! $paymentAuthorize->success || ! $this->order?->isPlaced()) {
+            return;
+        }
+
+        /** @var Transaction|null $transaction */
+        $transaction = $this->order->transactions()
+            ->whereSuccess(true)
+            ->whereIn('type', ['capture', 'intent'])
+            ->latest('id')
+            ->first();
+
+        OrderPaid::dispatch(
+            order: $this->order,
+            paymentAuthorize: $paymentAuthorize,
+            transaction: $transaction,
+            meta: $meta,
+        );
     }
 }

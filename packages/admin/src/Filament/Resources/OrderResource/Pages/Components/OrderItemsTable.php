@@ -21,10 +21,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Computed;
+use Lunar\Actions\Orders\RefundTransaction;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
 use Lunar\Admin\Livewire\Components\TableComponent;
 use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Tables\Components\KeyValue;
+use Lunar\Base\DataTransferObjects\RefundRequest;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
 
@@ -185,8 +187,23 @@ class OrderItemsTable extends TableComponent
             ])
             ->action(function ($data, BulkAction $action) {
                 $transaction = Transaction::findOrFail($data['transaction']);
+                $selectedLines = $this->record->lines()
+                    ->whereIn('id', $this->selectedTableRecords)
+                    ->get();
 
-                $response = $transaction->refund(bcmul($data['amount'], $this->record->currency->factor), $data['notes']);
+                $response = app(RefundTransaction::class)->execute(
+                    new RefundRequest(
+                        transaction: $transaction,
+                        amount: (int) bcmul($data['amount'], $this->record->currency->factor),
+                        notes: $data['notes'],
+                        actorId: auth('staff')->id() ?: auth()->id(),
+                        lineAllocations: $selectedLines->map(fn ($line) => [
+                            'order_line_id' => $line->id,
+                            'quantity' => $line->quantity,
+                            'amount' => $line->total->value,
+                        ])->values()->all(),
+                    )
+                );
 
                 if (! $response->success) {
                     $action->failureNotification(

@@ -40,6 +40,7 @@ class OfflinePayment extends AbstractPayment
         );
 
         PaymentAttemptEvent::dispatch($response);
+        $this->dispatchOrderPaidEvent($response);
 
         return $response;
     }

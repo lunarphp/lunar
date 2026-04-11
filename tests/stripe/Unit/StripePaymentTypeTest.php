@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Event;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Events\OrderPaid;
 use Lunar\Models\Currency;
 use Lunar\Models\Transaction;
 use Lunar\Stripe\Facades\Stripe;
@@ -16,6 +18,10 @@ it('can capture an order', function () {
     $cart = CartBuilder::build();
     $payment = new StripePaymentType;
 
+    Event::fake([
+        OrderPaid::class,
+    ]);
+
     $response = $payment->cart($cart)->withData([
         'payment_intent' => 'PI_CAPTURE',
     ])->authorize();
@@ -29,6 +35,12 @@ it('can capture an order', function () {
         'order_id' => $cart->refresh()->completedOrder->id,
         'type' => 'capture',
     ]);
+
+    Event::assertDispatched(OrderPaid::class, function (OrderPaid $event) use ($cart) {
+        return $event->order->is($cart->refresh()->completedOrder)
+            && $event->paymentAuthorize->success
+            && $event->transaction?->type === 'capture';
+    });
 })->group('this');
 
 it('can handle failed payments', function () {

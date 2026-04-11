@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
+use Lunar\FieldTypes\Dropdown;
+use Lunar\FieldTypes\ListField as ListFieldType;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\Toggle;
@@ -190,4 +192,147 @@ it('can save attributes', function () {
     ])->call('save')->assertHasNoFormErrors();
 
     expect($record->refresh()->attr('name'))->toBe('New Product Name');
+});
+
+it('hydrates numeric, list, and option attributes as form values', function () {
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
+    $record = Product::factory()->create();
+    ProductVariant::factory()->create([
+        'product_id' => $record->id,
+    ]);
+
+    $group = AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+        'name' => [
+            'en' => 'Sample Details',
+        ],
+        'handle' => 'sample_details',
+        'position' => 1,
+    ]);
+
+    $measurementAttribute = Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $group->id,
+        'position' => 1,
+        'name' => [
+            'en' => 'Sample Measurement',
+        ],
+        'description' => [
+            'en' => 'A sample measurement field.',
+        ],
+        'handle' => 'sample_measurement',
+        'section' => 'main',
+        'type' => Number::class,
+        'configuration' => [
+            'min' => 1,
+        ],
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    $classificationAttribute = Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $group->id,
+        'position' => 2,
+        'name' => [
+            'en' => 'Sample Classification',
+        ],
+        'description' => [
+            'en' => 'A sample option field.',
+        ],
+        'handle' => 'sample_classification',
+        'section' => 'main',
+        'type' => Dropdown::class,
+        'configuration' => [
+            'lookups' => [
+                [
+                    'label' => 'Standard',
+                    'value' => 'standard',
+                ],
+                [
+                    'label' => 'Enhanced',
+                    'value' => 'enhanced',
+                ],
+            ],
+        ],
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    $formFactorAttribute = Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $group->id,
+        'position' => 3,
+        'name' => [
+            'en' => 'Sample Form Factors',
+        ],
+        'description' => [
+            'en' => 'Sample keyed form-factor data.',
+        ],
+        'handle' => 'sample_form_factors',
+        'section' => 'main',
+        'type' => ListFieldType::class,
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+    ]);
+
+    DB::table('lunar_attributables')->insert([
+        [
+            'attribute_id' => $measurementAttribute->id,
+            'attributable_type' => 'product_type',
+            'attributable_id' => $record->productType->id,
+        ],
+        [
+            'attribute_id' => $classificationAttribute->id,
+            'attributable_type' => 'product_type',
+            'attributable_id' => $record->productType->id,
+        ],
+        [
+            'attribute_id' => $formFactorAttribute->id,
+            'attributable_type' => 'product_type',
+            'attributable_id' => $record->productType->id,
+        ],
+    ]);
+
+    $record->update([
+        'attribute_data' => collect([
+            ...($record->attribute_data?->all() ?? []),
+            'sample_measurement' => new Number(333),
+            'sample_classification' => new Dropdown('standard'),
+            'sample_form_factors' => new ListFieldType([
+                'card' => 'contact_card',
+                'tag' => 'luggage_tag',
+            ]),
+        ]),
+    ]);
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, [
+        'record' => $record->getRouteKey(),
+        'pageClass' => 'productEdit',
+    ])->assertFormSet([
+        'attribute_data.sample_measurement' => 333,
+        'attribute_data.sample_classification' => 'standard',
+        'attribute_data.sample_form_factors' => [
+            [
+                'key' => 'card',
+                'value' => 'contact_card',
+            ],
+            [
+                'key' => 'tag',
+                'value' => 'luggage_tag',
+            ],
+        ],
+    ]);
 });

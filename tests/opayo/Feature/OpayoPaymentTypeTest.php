@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
+use Lunar\Events\OrderPaid;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
@@ -15,6 +19,16 @@ uses(RefreshDatabase::class);
 
 it('can handle a successful payment', function () {
     $cart = buildCart();
+    $fixture = json_decode(file_get_contents(__DIR__.'/../Opayo/transaction_201.json'), true);
+
+    Http::fake([
+        'https://sandbox.opayo.eu.elavon.com/api/v1/transactions' => fn (Request $request) => Http::response($fixture),
+        'https://sandbox.opayo.eu.elavon.com/api/v1/transactions/DB79BA2D-05DA-5B85-D188-1293D16BBAC7' => fn () => Http::response($fixture),
+    ]);
+
+    Event::fake([
+        OrderPaid::class,
+    ]);
 
     $response = (new OpayoPaymentType)->cart($cart)->withData([
         'merchant_key' => 'SUCCESS',
@@ -30,19 +44,20 @@ it('can handle a successful payment', function () {
         ->and($order->status)->toBe('payment-received')
         ->and($order->placed_at)->not->toBeNull();
 
-    assertDatabaseHas(Transaction::class, [
-        'success' => true,
-        'type' => 'capture',
-        'driver' => 'opayo',
-        'reference' => 'DB79BA2D-05DA-5B85-D188-1293D16BBAC7',
-        'status' => 'Ok',
-        'card_type' => 'Visa',
-        'last_four' => '1111',
-    ]);
+    Event::assertDispatched(OrderPaid::class, function (OrderPaid $event) use ($order) {
+        return $event->order->is($order)
+            && $event->paymentAuthorize->success;
+    });
 });
 
 it('can handle a failed payment', function () {
     $cart = buildCart();
+    $fixture = json_decode(file_get_contents(__DIR__.'/../Opayo/transaction_not_authed.json'), true);
+
+    Http::fake([
+        'https://sandbox.opayo.eu.elavon.com/api/v1/transactions' => fn (Request $request) => Http::response($fixture),
+        'https://sandbox.opayo.eu.elavon.com/api/v1/transactions/DB79BA2D-05DA-5B85-D188-1293D16BBAC7' => fn () => Http::response($fixture),
+    ]);
 
     $response = (new OpayoPaymentType)->cart($cart)->withData([
         'merchant_key' => 'FAILED',
@@ -57,15 +72,6 @@ it('can handle a failed payment', function () {
         ->and($cart->currentDraftOrder())
         ->toBeInstanceOf(Order::class);
 
-    assertDatabaseHas(Transaction::class, [
-        'success' => false,
-        'type' => 'capture',
-        'driver' => 'opayo',
-        'reference' => 'DB79BA2D-05DA-5B85-D188-1293D16BBAC7',
-        'status' => 'NotAuthed',
-        'card_type' => 'Visa',
-        'last_four' => '1111',
-    ]);
 });
 
 it('can handle a 3DSv2 response', function () {

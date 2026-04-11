@@ -23,6 +23,18 @@ test('can set value in constructor', function () {
     expect($field->getValue())->toEqual(['Foo']);
 });
 
+test('can return keyed values as an array', function () {
+    $field = new ListField([
+        'card' => 'contact_card',
+        'tag' => 'luggage_tag',
+    ]);
+
+    expect($field->getValue())->toEqual([
+        'card' => 'contact_card',
+        'tag' => 'luggage_tag',
+    ]);
+});
+
 test('check does not allow non arrays', function () {
     $this->expectException(FieldTypeException::class);
 

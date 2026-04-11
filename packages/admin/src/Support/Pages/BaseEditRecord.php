@@ -3,7 +3,9 @@
 namespace Lunar\Admin\Support\Pages;
 
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Base\FieldType;
 use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsFooterWidgets;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsFormActions;
@@ -24,7 +26,7 @@ abstract class BaseEditRecord extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        return $this->callLunarHook('beforeFill', $data);
+        return $this->callLunarHook('beforeFill', $this->normalizeFieldTypeState($data));
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
@@ -46,5 +48,27 @@ abstract class BaseEditRecord extends EditRecord
         sync_with_search(
             $this->getRecord()
         );
+    }
+
+    protected function normalizeFieldTypeState(mixed $state): mixed
+    {
+        if ($state instanceof FieldType) {
+            return $this->normalizeFieldTypeState($state->getValue());
+        }
+
+        if ($state instanceof Collection) {
+            return $state
+                ->map(fn (mixed $value): mixed => $this->normalizeFieldTypeState($value))
+                ->all();
+        }
+
+        if (is_array($state)) {
+            return array_map(
+                fn (mixed $value): mixed => $this->normalizeFieldTypeState($value),
+                $state,
+            );
+        }
+
+        return $state;
     }
 }

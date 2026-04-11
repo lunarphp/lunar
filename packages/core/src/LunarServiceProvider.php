@@ -26,12 +26,16 @@ use Lunar\Base\FieldTypeManifest;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Base\ModelManifest;
 use Lunar\Base\ModelManifestInterface;
+use Lunar\Base\OrderLineCapabilities;
+use Lunar\Base\OrderLineCapabilitiesInterface;
 use Lunar\Base\OrderModifiers;
 use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Base\OrderReferenceGeneratorInterface;
 use Lunar\Base\PaymentManagerInterface;
 use Lunar\Base\PricingManagerInterface;
 use Lunar\Base\ProvidesTelemetryInsights;
+use Lunar\Base\RefundAuthorization;
+use Lunar\Base\RefundAuthorizationInterface;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
 use Lunar\Base\ShippingModifiers;
@@ -173,6 +177,10 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(OrderReferenceGenerator::class);
         });
 
+        $this->app->singleton(OrderLineCapabilitiesInterface::class, function ($app) {
+            return $app->make(OrderLineCapabilities::class);
+        });
+
         $this->app->singleton(AttributeManifestInterface::class, function ($app) {
             return $app->make(AttributeManifest::class);
         });
@@ -195,6 +203,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(PaymentManagerInterface::class, function ($app) {
             return $app->make(PaymentManager::class);
+        });
+
+        $this->app->singleton(RefundAuthorizationInterface::class, function ($app) {
+            return $app->make(RefundAuthorization::class);
         });
 
         $this->app->singleton(DiscountManagerInterface::class, function ($app) {

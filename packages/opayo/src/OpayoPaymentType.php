@@ -142,6 +142,7 @@ class OpayoPaymentType extends AbstractPayment
         );
 
         PaymentAttemptEvent::dispatch($response);
+        $this->dispatchOrderPaidEvent($response);
 
         return $response;
     }
@@ -210,7 +211,7 @@ class OpayoPaymentType extends AbstractPayment
             );
         }
 
-        $transaction->order->transactions()->create([
+        $refundTransaction = $transaction->order->transactions()->create([
             'parent_transaction_id' => $transaction->id,
             'success' => true,
             'type' => 'refund',
@@ -225,7 +226,11 @@ class OpayoPaymentType extends AbstractPayment
         ]);
 
         return new PaymentRefund(
-            success: true
+            success: true,
+            refundTransactionId: $refundTransaction->id,
+            reference: $refundTransaction->reference,
+            status: $refundTransaction->status,
+            meta: $refundTransaction->meta?->getArrayCopy() ?: null,
         );
     }
 
@@ -338,6 +343,7 @@ class OpayoPaymentType extends AbstractPayment
         );
 
         PaymentAttemptEvent::dispatch($response);
+        $this->dispatchOrderPaidEvent($response);
 
         return $response;
     }

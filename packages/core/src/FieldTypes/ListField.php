@@ -42,7 +42,7 @@ class ListField implements Arrayable, FieldType, JsonSerializable
      */
     public function getValue()
     {
-        return json_decode($this->value ?? '[]');
+        return json_decode($this->value ?? '[]', associative: true);
     }
 
     /**

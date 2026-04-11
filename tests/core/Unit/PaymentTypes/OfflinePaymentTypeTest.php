@@ -2,7 +2,9 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Events\OrderPaid;
 use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
@@ -123,4 +125,43 @@ test('can set additional meta', function () {
     $meta = (array) $order->meta;
 
     expect($meta['foo'])->toEqual('bar');
+});
+
+test('dispatches order paid when offline payment authorizes successfully', function () {
+    $cart = Cart::factory()->create();
+
+    Config::set('lunar.payments.types.offline', [
+        'authorized' => 'offline-payment',
+    ]);
+
+    CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'billing',
+        'country_id' => Country::factory(),
+        'first_name' => 'Santa',
+        'line_one' => '123 Elf Road',
+        'city' => 'Lapland',
+        'postcode' => 'BILL',
+    ]);
+
+    CartAddress::factory()->create([
+        'cart_id' => $cart->id,
+        'type' => 'shipping',
+        'country_id' => Country::factory(),
+        'first_name' => 'Santa',
+        'line_one' => '123 Elf Road',
+        'city' => 'Lapland',
+        'postcode' => 'SHIPP',
+    ]);
+
+    Event::fake([
+        OrderPaid::class,
+    ]);
+
+    Payments::driver('offline')->cart($cart->refresh())->authorize();
+
+    Event::assertDispatched(OrderPaid::class, function (OrderPaid $event) use ($cart) {
+        return $event->order->is($cart->refresh()->completedOrder)
+            && $event->paymentAuthorize->success;
+    });
 });

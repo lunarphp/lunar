@@ -25,6 +25,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
+use Lunar\Actions\Orders\RefundTransaction;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysOrderAddresses;
@@ -42,6 +43,7 @@ use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\Infolists\Components\Livewire;
 use Lunar\Admin\Support\Infolists\Components\Tags;
 use Lunar\Admin\Support\Pages\BaseViewRecord;
+use Lunar\Base\DataTransferObjects\RefundRequest;
 use Lunar\Models\Order;
 use Lunar\Models\Tag;
 use Lunar\Models\Transaction;
@@ -426,7 +428,14 @@ class ManageOrder extends BaseViewRecord
             ->action(function ($data, $record, Action $action) {
                 $transaction = Transaction::findOrFail($data['transaction']);
 
-                $response = $transaction->refund(bcmul($data['amount'], $record->currency->factor), $data['notes']);
+                $response = app(RefundTransaction::class)->execute(
+                    new RefundRequest(
+                        transaction: $transaction,
+                        amount: (int) bcmul($data['amount'], $record->currency->factor),
+                        notes: $data['notes'],
+                        actorId: auth('staff')->id() ?: auth()->id(),
+                    )
+                );
 
                 if (! $response->success) {
                     $action->failureNotification(
