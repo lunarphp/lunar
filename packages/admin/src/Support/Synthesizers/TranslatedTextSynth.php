@@ -18,7 +18,8 @@ class TranslatedTextSynth extends AbstractFieldSynth
         $languages = Language::orderBy('default', 'desc')->get();
 
         return [
-            $languages->mapWithKeys(fn ($language) => [$language->code => new Text((string) $target->getValue()->get($language->code))]
+            $languages->mapWithKeys(
+                fn ($language) => [$language->code => $target->getValue()->get($language->code)?->getValue() ?? ''],
             )->toArray(),
             [],
         ];
@@ -34,7 +35,8 @@ class TranslatedTextSynth extends AbstractFieldSynth
 
     public function get(&$target, $key)
     {
-        return $target->{$key};
+        // return $target->{$key};
+        return $target->getValue()->get($key)?->getValue() ?? '';
     }
 
     public function set(&$target, $key, $value)
@@ -45,6 +47,10 @@ class TranslatedTextSynth extends AbstractFieldSynth
 
         $collectionValue = $target->getValue();
         $field = $collectionValue->get($key);
+
+        if (! $field instanceof Text) {
+            $field = new Text;
+        }
 
         $field->setValue($value);
 
