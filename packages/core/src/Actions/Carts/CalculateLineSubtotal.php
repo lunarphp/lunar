@@ -16,7 +16,7 @@ class CalculateLineSubtotal
      * Execute the action.
      *
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return \Lunar\Models\CartLine
+     * @return CartLine
      */
     public function execute(
         CartLineContract $cartLine,
@@ -78,7 +78,7 @@ class CalculateLineSubtotal
     /**
      * Return the cart line modifiers.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     private function getModifiers()
     {

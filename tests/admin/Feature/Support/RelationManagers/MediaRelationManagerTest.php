@@ -1,24 +1,31 @@
 <?php
 
 use Livewire\Livewire;
+use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandMedia;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia;
+use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
+use Lunar\Models\Brand;
+use Lunar\Models\Language;
+use Lunar\Models\Product;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('support.relation-managers');
 
 it('can render relation manager', function ($model, $page) {
     $this->asStaff();
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
     $model = $model::factory()->create();
 
-    Livewire::test(\Lunar\Admin\Support\RelationManagers\MediaRelationManager::class, [
+    Livewire::test(MediaRelationManager::class, [
         'ownerRecord' => $model,
         'pageClass' => $page,
     ])->assertSuccessful();
 })->with([
-    [\Lunar\Models\Product::class, \Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia::class],
-    [\Lunar\Models\Brand::class, \Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandMedia::class],
+    [Product::class, ManageProductMedia::class],
+    [Brand::class, ManageBrandMedia::class],
 ]);

@@ -9,20 +9,26 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Admin\Support\Resources\Concerns\ExtendsForms;
+use Lunar\Admin\Support\Resources\Concerns\ExtendsPages;
+use Lunar\Admin\Support\Resources\Concerns\ExtendsRelationManagers;
+use Lunar\Admin\Support\Resources\Concerns\ExtendsSubnavigation;
+use Lunar\Admin\Support\Resources\Concerns\ExtendsTables;
 use Lunar\Base\Traits\Searchable;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
+use ReflectionClass;
 
 use function Filament\Support\generate_search_term_expression;
 
 class BaseResource extends Resource
 {
     use CallsHooks;
-    use Concerns\ExtendsForms;
-    use Concerns\ExtendsPages;
-    use Concerns\ExtendsRelationManagers;
-    use Concerns\ExtendsSubnavigation;
-    use Concerns\ExtendsTables;
+    use ExtendsForms;
+    use ExtendsPages;
+    use ExtendsRelationManagers;
+    use ExtendsSubnavigation;
+    use ExtendsTables;
 
     protected static ?string $permission = null;
 
@@ -53,7 +59,7 @@ class BaseResource extends Resource
 
     public static function getModel(): string
     {
-        $class = new \ReflectionClass(static::$model);
+        $class = new ReflectionClass(static::$model);
 
         if ($class->isInterface()) {
             return app()->get(static::$model)::class;

@@ -7,9 +7,10 @@ use Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff;
 use Lunar\Admin\Support\DataTransferObjects\Permission;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 use Spatie\Permission\Models\Role;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.staff');
 
 beforeEach(fn () => $this->asStaff(admin: true));

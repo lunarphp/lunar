@@ -143,7 +143,7 @@ class PricingManager implements PricingManagerInterface
     /**
      * Get the price for the purchasable.
      *
-     * @return \Lunar\Base\DataTransferObjects\PricingResponse
+     * @return PricingResponse
      */
     public function get()
     {

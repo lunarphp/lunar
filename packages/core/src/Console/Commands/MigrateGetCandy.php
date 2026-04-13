@@ -30,7 +30,7 @@ class MigrateGetCandy extends Command
     public function handle()
     {
         $tableNames = collect(
-            DB::connection()->getDoctrineSchemaManager()->listTableNames()
+            Schema::getTableListing()
         );
 
         $tables = $tableNames->filter(fn ($table) => str_contains($table, 'getcandy_'));
