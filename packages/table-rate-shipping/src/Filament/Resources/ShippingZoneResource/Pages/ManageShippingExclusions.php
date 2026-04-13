@@ -2,10 +2,11 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 
-use Filament\Forms\Form;
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource;
@@ -34,9 +35,9 @@ class ManageShippingExclusions extends ManageRelatedRecords
         return __('lunarpanel.shipping::relationmanagers.exclusions.title_plural');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([]);
+        return $schema->components([]);
     }
 
     public function table(Table $table): Table
@@ -44,7 +45,7 @@ class ManageShippingExclusions extends ManageRelatedRecords
         return $table->columns(
             ShippingExclusionListResource::getTableColumns(),
         )->headerActions([
-            Tables\Actions\AttachAction::make()
+            AttachAction::make()
                 ->color('primary')
                 ->label(
                     __('lunarpanel.shipping::relationmanagers.exclusions.actions.attach.label')
@@ -52,7 +53,7 @@ class ManageShippingExclusions extends ManageRelatedRecords
                 ->preloadRecordSelect()
                 ->recordTitleAttribute('name'),
         ])->actions([
-            Tables\Actions\DetachAction::make('detach')
+            DetachAction::make('detach')
                 ->label(
                     __('lunarpanel.shipping::relationmanagers.exclusions.actions.detach.label')
                 ),

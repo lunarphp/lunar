@@ -1,18 +1,24 @@
 <?php
 
+use Filament\Actions\Action;
+use Filament\Actions\Testing\TestAction;
+use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
+use Lunar\Admin\Support\Extending\EditPageExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Models\Customer;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('extending');
 
 it('can extend header actions', function () {
-    $class = new class extends \Lunar\Admin\Support\Extending\EditPageExtension
+    $class = new class extends EditPageExtension
     {
         public function headerActions(array $actions): array
         {
             return [
-                \Filament\Actions\Action::make('header_action_a'),
+                Action::make('header_action_a'),
             ];
         }
     };
@@ -23,22 +29,22 @@ it('can extend header actions', function () {
 
     $this->asStaff(admin: true);
 
-    $customer = \Lunar\Models\Customer::factory()->create([
+    $customer = Customer::factory()->create([
         'first_name' => 'Geoff',
     ]);
 
-    \Livewire\Livewire::test(EditCustomer::class, [
+    Livewire::test(EditCustomer::class, [
         'record' => $customer->getRouteKey(),
     ])->assertActionExists('header_action_a');
 });
 
 it('can extend form actions', function () {
-    $class = new class extends \Lunar\Admin\Support\Extending\EditPageExtension
+    $class = new class extends EditPageExtension
     {
         public function formActions(array $actions): array
         {
             return [
-                \Filament\Actions\Action::make('form_action_a'),
+                Action::make('form_action_a'),
             ];
         }
     };
@@ -49,11 +55,11 @@ it('can extend form actions', function () {
 
     $this->asStaff(admin: true);
 
-    $customer = \Lunar\Models\Customer::factory()->create([
+    $customer = Customer::factory()->create([
         'first_name' => 'Geoff',
     ]);
 
-    \Livewire\Livewire::test(EditCustomer::class, [
+    Livewire::test(EditCustomer::class, [
         'record' => $customer->getRouteKey(),
-    ])->assertActionExists('form_action_a');
+    ])->assertActionExists(TestAction::make('form_action_a')->schemaComponent('form-actions', schema: 'content'));
 });

@@ -2,8 +2,12 @@
 
 namespace Lunar\Admin\Support\Concerns\Products;
 
-use Filament\Forms;
-use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -47,23 +51,33 @@ trait ManagesProductPricing
 
         $variant = $this->getOwnerRecord();
 
-        $prices = collect($data['basePrices']);
+        // Merge form-submitted values (value, compare_price) back into
+        // the full basePrices property which contains metadata like
+        // id, currency_id, factor, etc. that aren't form fields.
+        $formPrices = $data['basePrices'] ?? [];
+        $prices = collect($this->basePrices)->map(function (array $price, int $index) use ($formPrices): array {
+            if (isset($formPrices[$index])) {
+                return array_merge($price, $formPrices[$index]);
+            }
+
+            return $price;
+        });
         unset($data['basePrices']);
         $variant->update($data);
 
         $prices->filter(
-            fn ($price) => ! $price['id'] && isset($price['value'])
+            fn ($price) => ! ($price['id'] ?? null) && isset($price['value']) && isset($price['currency_id'])
         )->each(fn ($price) => $variant->prices()->create([
             'currency_id' => $price['currency_id'],
-            'price' => (int) round((float) ($price['value'] * $price['factor'])),
-            'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
+            'price' => (int) round((float) ($price['value'] * ($price['factor'] ?? 1))),
+            'compare_price' => (int) round((float) (($price['compare_price'] ?? 0) * ($price['factor'] ?? 1))),
             'min_quantity' => 1,
             'customer_group_id' => null,
         ])
         );
 
         $prices->filter(
-            fn ($price) => $price['id'] && isset($price['value']) && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
+            fn ($price) => ($price['id'] ?? null) && isset($price['value']) && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
         )->each(fn ($price) => Price::find($price['id'])->update([
             'price' => (int) round((float) ($price['value'] * $price['factor'])),
             'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
@@ -79,15 +93,13 @@ trait ManagesProductPricing
 
     public function getBasePriceFormSection(): Section
     {
-        //        dd($this->basePrices);
-
-        return Forms\Components\Section::make(
+        return Section::make(
             __('lunarpanel::relationmanagers.pricing.form.basePrices.title')
         )
             ->schema(
-                collect($this->basePrices)->map(callback: function ($price, $index): Forms\Components\Fieldset {
-                    return Forms\Components\Fieldset::make($price['label'])->schema([
-                        Forms\Components\TextInput::make('value')
+                collect($this->basePrices)->map(function ($price, $index): Fieldset {
+                    return Fieldset::make($price['label'])->schema([
+                        TextInput::make('value')
                             ->label('')
                             ->statePath($index.'.value')
                             ->numeric()
@@ -101,13 +113,13 @@ trait ManagesProductPricing
                             ->extraInputAttributes([
                                 'class' => '',
                             ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                            ->hintIcon(function (Get $get, TextInput $component) use ($index, $price) {
                                 if (! ($price['sync_prices'] ?? false) && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                            })->hintIconTooltip(function (Get $get, TextInput $component) use ($index, $price) {
                                 if ($price['sync_prices'] ?? false) {
                                     return __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price');
                                 }
@@ -120,7 +132,7 @@ trait ManagesProductPricing
                             })
                             ->disabled(fn () => $price['sync_prices'] ?? false)
                             ->live(),
-                        Forms\Components\TextInput::make('compare_price')
+                        TextInput::make('compare_price')
                             ->label('')
                             ->statePath($index.'.compare_price')
                             ->numeric()
@@ -134,13 +146,13 @@ trait ManagesProductPricing
                             ->extraInputAttributes([
                                 'class' => '',
                             ])
-                            ->hintIcon(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                            ->hintIcon(function (Get $get, TextInput $component) use ($index, $price) {
                                 if (! ($price['sync_prices'] ?? false) && $get('basePrices.'.$index.'.id', true)) {
                                     return null;
                                 }
 
                                 return FilamentIcon::resolve('lunar::info');
-                            })->hintIconTooltip(function (Forms\Get $get, Forms\Components\TextInput $component) use ($index, $price) {
+                            })->hintIconTooltip(function (Get $get, TextInput $component) use ($index, $price) {
                                 if ($price['sync_prices'] ?? false) {
                                     return __('lunarpanel::relationmanagers.pricing.form.basePrices.form.price.sync_price');
                                 }
@@ -158,15 +170,15 @@ trait ManagesProductPricing
             )->statePath('basePrices')->columns(1);
     }
 
-    public function form(Forms\Form $form): Forms\Form
+    public function form(Schema $schema): Schema
     {
         if (! count($this->basePrices)) {
             $this->basePrices = $this->getBasePrices();
         }
 
-        $form->schema([
-            Forms\Components\Section::make()->schema([
-                Forms\Components\Group::make([
+        $schema->components([
+            Section::make()->schema([
+                Group::make([
                     ProductVariantResource::getTaxClassIdFormComponent(),
                     ProductVariantResource::getTaxRefFormComponent(),
                 ])->columns(2),
@@ -174,9 +186,9 @@ trait ManagesProductPricing
             $this->getBasePriceFormSection(),
         ])->statePath('');
 
-        $this->callLunarHook('extendForm', $form);
+        $this->callLunarHook('extendForm', $schema);
 
-        return $form;
+        return $schema;
     }
 
     protected function getBasePrices(): array

@@ -2,8 +2,8 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Toggle as ToggleInput;
+use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Synthesizers\ToggleSynth;
 use Lunar\Models\Attribute;
 
