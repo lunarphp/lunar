@@ -88,6 +88,14 @@ class CollectionGroupResource extends BaseResource
             ->label(__('lunarpanel::collectiongroup.form.handle.label'))
             ->unique(ignoreRecord: true)
             ->required()
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+
+                $set('handle', Str::snake(Str::lower($state)));
+            })
             ->maxLength(255);
     }
 
