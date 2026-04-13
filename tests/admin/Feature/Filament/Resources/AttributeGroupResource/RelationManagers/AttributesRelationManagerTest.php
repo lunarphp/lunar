@@ -1,7 +1,6 @@
 <?php
 
 use Filament\Actions\CreateAction;
-use Filament\Actions\EditAction;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
@@ -105,37 +104,3 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
         '{"min":5,"max":10}',
     ],
 ]);
-
-it('hydrates dropdown lookups when editing attributes', function () {
-    Language::factory()->create([
-        'default' => true,
-        'code' => 'en',
-    ]);
-
-    $this->asStaff();
-
-    $attributeGroup = AttributeGroup::factory()->create();
-
-    $attribute = Attribute::factory()->create([
-        'attribute_group_id' => $attributeGroup->id,
-        'type' => Dropdown::class,
-        'configuration' => [
-            'lookups' => [
-                ['label' => 'aaaa', 'value' => 'bbbb'],
-            ],
-        ],
-    ]);
-
-    Livewire::test(AttributesRelationManager::class, [
-        'ownerRecord' => $attributeGroup,
-        'pageClass' => EditAttributeGroup::class,
-    ])
-        ->mountTableAction(EditAction::class, $attribute)
-        ->assertTableActionDataSet([
-            'configuration' => [
-                'lookups' => [
-                    'aaaa' => 'bbbb',
-                ],
-            ],
-        ]);
-});

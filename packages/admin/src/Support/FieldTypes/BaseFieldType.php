@@ -11,15 +11,6 @@ abstract class BaseFieldType
 {
     protected static string $synthesizer = TextSynth::class;
 
-    /**
-     * @param  array<string, mixed>  $configuration
-     * @return array<string, mixed>
-     */
-    public static function mutateConfigurationForForm(array $configuration): array
-    {
-        return $configuration;
-    }
-
     public static function getConfigurationFields(): array
     {
         return [];

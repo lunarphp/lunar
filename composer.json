@@ -40,7 +40,7 @@
         "typesense/typesense-php": "^4.9"
     },
     "require-dev": {
-        "filament/upgrade": "^4.0",
+"filament/upgrade": "^4.0",
         "larastan/larastan": "^3.0",
         "laravel/pint": "1.29.0",
         "mockery/mockery": "^1.6.9",
@@ -88,7 +88,7 @@
         }
     },
     "extra": {
-        "lunar": {
+"lunar": {
             "name": [
                 "Table Rate Shipping",
                 "Opayo Payments",

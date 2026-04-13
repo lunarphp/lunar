@@ -162,15 +162,7 @@ class AttributesRelationManager extends BaseRelationManager
                 }),
             ])
             ->recordActions([
-                EditAction::make()
-                    ->mutateRecordDataUsing(function (array $data): array {
-                        $data['configuration'] = AttributeData::mutateConfigurationForForm(
-                            $data['type'] ?? null,
-                            $data['configuration'] ?? [],
-                        );
-
-                        return $data;
-                    }),
+                EditAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

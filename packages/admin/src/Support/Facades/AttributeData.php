@@ -11,7 +11,6 @@ use Lunar\Models\Attribute;
  * @method static Component getFilamentComponent(Attribute $attribute)
  * @method static \Lunar\Admin\Support\Forms\AttributeData registerFieldType(string $coreFieldType, string $panelFieldType)
  * @method static Collection getFieldTypes()
- * @method static array mutateConfigurationForForm(string|null $type = null, array $configuration = [])
  * @method static array getConfigurationFields(string|null $type = null)
  * @method static void synthesizeLivewireProperties()
  *
