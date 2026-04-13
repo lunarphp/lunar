@@ -3,7 +3,7 @@
 return [
     'shipping_methods' => [
         'customer_groups' => [
-            'description' => "اربط مجموعات العملاء بطريقة الشحن هذه لتحديد توافرها.",
+            'description' => 'اربط مجموعات العملاء بطريقة الشحن هذه لتحديد توافرها.',
         ],
     ],
     'shipping_rates' => [
