@@ -1,11 +1,14 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Search\OrderIndexer;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can return correct searchable data', function () {
     Currency::factory()->create([

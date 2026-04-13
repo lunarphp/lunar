@@ -1,11 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
 use Lunar\Models\Customer;
+use Lunar\Models\Language;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.customer');
 
 it('can render customer edit page', function () {
@@ -49,13 +55,13 @@ it('can save customer data', function () {
 });
 
 it('can save attributes', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Customer::factory()->create();
+    $record = Customer::factory()->create();
 
-    $group = \Lunar\Models\AttributeGroup::factory()->create([
+    $group = AttributeGroup::factory()->create([
         'attributable_type' => 'customer',
         'name' => [
             'en' => 'Details',
@@ -64,7 +70,7 @@ it('can save attributes', function () {
         'position' => 1,
     ]);
 
-    $attribute = \Lunar\Models\Attribute::factory()->create([
+    $attribute = Attribute::factory()->create([
         'attribute_type' => 'customer',
         'attribute_group_id' => $group->id,
         'position' => 1,
@@ -78,7 +84,7 @@ it('can save attributes', function () {
         'searchable' => false,
     ]);
 
-    \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+    DB::table('lunar_attributables')->insert([
         'attribute_id' => $attribute->id,
         'attributable_type' => 'customer',
         'attributable_id' => $record->id,
@@ -86,12 +92,12 @@ it('can save attributes', function () {
 
     $this->asStaff(admin: true);
 
-    \Livewire\Livewire::test(EditCustomer::class, [
+    Livewire::test(EditCustomer::class, [
         'record' => $record->getRouteKey(),
         'pageClass' => 'customerEdit',
     ])->fillForm([
         'attribute_data' => [
-            'name' => new \Lunar\FieldTypes\Text('New Customer Name'),
+            'name' => new Text('New Customer Name'),
         ],
     ])->call('save');
 

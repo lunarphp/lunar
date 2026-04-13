@@ -1,6 +1,12 @@
 <?php
 
 use Lunar\Base\OrderReferenceGenerator;
+use Lunar\Pipelines\Order\Creation\CleanUpOrderLines;
+use Lunar\Pipelines\Order\Creation\CreateOrderAddresses;
+use Lunar\Pipelines\Order\Creation\CreateOrderLines;
+use Lunar\Pipelines\Order\Creation\CreateShippingLine;
+use Lunar\Pipelines\Order\Creation\FillOrderFromCart;
+use Lunar\Pipelines\Order\Creation\MapDiscountBreakdown;
 
 return [
     /*
@@ -109,12 +115,12 @@ return [
     */
     'pipelines' => [
         'creation' => [
-            Lunar\Pipelines\Order\Creation\FillOrderFromCart::class,
-            Lunar\Pipelines\Order\Creation\CreateOrderLines::class,
-            Lunar\Pipelines\Order\Creation\CreateOrderAddresses::class,
-            Lunar\Pipelines\Order\Creation\CreateShippingLine::class,
-            Lunar\Pipelines\Order\Creation\CleanUpOrderLines::class,
-            Lunar\Pipelines\Order\Creation\MapDiscountBreakdown::class,
+            FillOrderFromCart::class,
+            CreateOrderLines::class,
+            CreateOrderAddresses::class,
+            CreateShippingLine::class,
+            CleanUpOrderLines::class,
+            MapDiscountBreakdown::class,
         ],
     ],
 

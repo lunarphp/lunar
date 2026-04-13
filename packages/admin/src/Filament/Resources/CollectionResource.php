@@ -2,13 +2,19 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Components\Component;
-use Filament\Pages\SubNavigationPosition;
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\CollectionResource\Pages;
+use Lunar\Admin\Filament\Resources\CollectionResource\Pages\EditCollection;
+use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ListCollections;
+use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionAvailability;
+use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionChildren;
+use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionMedia;
+use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionProducts;
+use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionUrls;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\Collection as CollectionContract;
@@ -21,7 +27,7 @@ class CollectionResource extends BaseResource
 
     protected static int $globalSearchResultsLimit = 5;
 
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {
@@ -63,10 +69,10 @@ class CollectionResource extends BaseResource
         return $crumbs;
     }
 
-    public static function getDefaultForm(Forms\Form $form): Forms\Form
+    public static function getDefaultForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 static::getAttributeDataFormComponent(),
             ])
             ->columns(1);
@@ -91,25 +97,25 @@ class CollectionResource extends BaseResource
     public static function getDefaultSubNavigation(): array
     {
         return [
-            Pages\EditCollection::class,
-            Pages\ManageCollectionChildren::class,
-            Pages\ManageCollectionProducts::class,
-            Pages\ManageCollectionAvailability::class,
-            Pages\ManageCollectionMedia::class,
-            Pages\ManageCollectionUrls::class,
+            EditCollection::class,
+            ManageCollectionChildren::class,
+            ManageCollectionProducts::class,
+            ManageCollectionAvailability::class,
+            ManageCollectionMedia::class,
+            ManageCollectionUrls::class,
         ];
     }
 
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListCollections::route('/'),
-            'availability' => Pages\ManageCollectionAvailability::route('/{record}/availability'),
-            'children' => Pages\ManageCollectionChildren::route('/{record}/children'),
-            'products' => Pages\ManageCollectionProducts::route('/{record}/products'),
-            'edit' => Pages\EditCollection::route('/{record}/edit'),
-            'media' => Pages\ManageCollectionMedia::route('/{record}/media'),
-            'urls' => Pages\ManageCollectionUrls::route('/{record}/urls'),
+            'index' => ListCollections::route('/'),
+            'availability' => ManageCollectionAvailability::route('/{record}/availability'),
+            'children' => ManageCollectionChildren::route('/{record}/children'),
+            'products' => ManageCollectionProducts::route('/{record}/products'),
+            'edit' => EditCollection::route('/{record}/edit'),
+            'media' => ManageCollectionMedia::route('/{record}/media'),
+            'urls' => ManageCollectionUrls::route('/{record}/urls'),
         ];
     }
 

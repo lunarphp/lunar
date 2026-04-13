@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -92,9 +92,9 @@ class ManageProductInventory extends BaseEditRecord
         ];
     }
 
-    public function getDefaultForm(Form $form): Form
+    public function getDefaultForm(Schema $schema): Schema
     {
-        return (new ManageVariantInventory)->form($form)->statePath('');
+        return (new ManageVariantInventory)->form($schema)->statePath('');
     }
 
     public function getRelationManagers(): array

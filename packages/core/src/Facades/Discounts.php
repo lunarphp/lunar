@@ -4,6 +4,7 @@ namespace Lunar\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Lunar\Base\DiscountManagerInterface;
+use Lunar\Managers\DiscountManager;
 
 /**
  * @method static \Lunar\Managers\DiscountManager channel(\Lunar\Models\Contracts\Channel|\Traversable|array $channel)
@@ -19,7 +20,7 @@ use Lunar\Base\DiscountManagerInterface;
  * @method static \Lunar\Managers\DiscountManager resetDiscounts()
  * @method static bool validateCoupon(string $coupon)
  *
- * @see \Lunar\Managers\DiscountManager
+ * @see DiscountManager
  */
 class Discounts extends Facade
 {

@@ -2,15 +2,25 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
-use Filament\Forms;
-use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Grid;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
-use Lunar\Admin\Filament\Resources\StaffResource\Pages;
+use Lunar\Admin\Filament\Resources\StaffResource\Pages\AccessControl;
+use Lunar\Admin\Filament\Resources\StaffResource\Pages\CreateStaff;
+use Lunar\Admin\Filament\Resources\StaffResource\Pages\EditStaff;
+use Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff;
 use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
 use Lunar\Admin\Support\Forms\Components\PermissionSelector;
@@ -63,7 +73,7 @@ class StaffResource extends BaseResource
 
     protected static function getFirstNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('first_name')
+        return TextInput::make('first_name')
             ->label(__('lunarpanel::staff.form.first_name.label'))
             ->required()
             ->maxLength(255)
@@ -72,7 +82,7 @@ class StaffResource extends BaseResource
 
     protected static function getLastNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('last_name')
+        return TextInput::make('last_name')
             ->label(__('lunarpanel::staff.form.last_name.label'))
             ->required()
             ->maxLength(255)
@@ -81,7 +91,7 @@ class StaffResource extends BaseResource
 
     protected static function getEmailFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('email')
+        return TextInput::make('email')
             ->label(__('lunarpanel::staff.form.email.label'))
             ->email()
             ->required()
@@ -91,7 +101,7 @@ class StaffResource extends BaseResource
 
     protected static function getPasswordFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('password')
+        return TextInput::make('password')
             ->label(__('lunarpanel::staff.form.password.label'))
             ->password()
             ->required(fn ($record) => blank($record))
@@ -103,7 +113,7 @@ class StaffResource extends BaseResource
 
     protected static function getRoleFormComponent(): Component
     {
-        return Forms\Components\Select::make('roles')
+        return Select::make('roles')
             ->label(__('lunarpanel::staff.form.roles.label'))
             ->multiple(true)
             ->options(fn () => LunarAccessControl::getRoles()
@@ -125,13 +135,13 @@ class StaffResource extends BaseResource
                     return trans_choice('lunarpanel::staff.form.roles.helper', $count, ['roles' => $inter->map(fn ($r) => $roles[$r] ?? $r)->join(', ')]);
                 }
             })
-            ->afterStateHydrated(fn (Forms\Components\Select $component, $record) => $component->state($record?->getRoleNames()->toArray() ?? []))
-            ->afterStateUpdated(function ($set, Forms\Components\Select $component) {
+            ->afterStateHydrated(fn (Select $component, $record) => $component->state($record?->getRoleNames()->toArray() ?? []))
+            ->afterStateUpdated(function ($set, Select $component) {
                 $permName = 'permissions';
 
                 /** @var PermissionSelector $permission */
                 $permission = collect($component->getContainer()->getFlatComponents())
-                    ->first(fn (Forms\Components\Field $component) => $component->getName() == $permName);
+                    ->first(fn (Field $component) => $component->getName() == $permName);
 
                 $set($permName, $permission->getPermissionState());
             })
@@ -148,7 +158,7 @@ class StaffResource extends BaseResource
 
     protected static function getRolePermissionContainerFormComponent(): Component
     {
-        return Forms\Components\Grid::make()
+        return Grid::make()
             ->hidden(fn ($record) => $record ? $record->admin : false)
             ->schema([
                 static::getRoleFormComponent(),
@@ -158,7 +168,7 @@ class StaffResource extends BaseResource
 
     protected static function getSuperAdminNotice(): Component
     {
-        return Forms\Components\Toggle::make('admin')
+        return Toggle::make('admin')
             ->label(__('lunarpanel::staff.form.admin.label'))
             ->helperText(__('lunarpanel::staff.form.admin.helper'))
             ->visible(fn ($record) => $record ? $record->admin : false)
@@ -169,13 +179,13 @@ class StaffResource extends BaseResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('first_name')
+                TextColumn::make('first_name')
                     ->label(__('lunarpanel::staff.table.first_name.label')),
-                Tables\Columns\TextColumn::make('last_name')
+                TextColumn::make('last_name')
                     ->label(__('lunarpanel::staff.table.last_name.label')),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->label(__('lunarpanel::staff.table.email.label')),
-                Tables\Columns\TextColumn::make('admin')
+                TextColumn::make('admin')
                     ->label('')
                     ->badge()
                     ->state(function (Model $record): string {
@@ -185,12 +195,12 @@ class StaffResource extends BaseResource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -205,10 +215,10 @@ class StaffResource extends BaseResource
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListStaff::route('/'),
-            'acl' => Pages\AccessControl::route('/access-control'),
-            'create' => Pages\CreateStaff::route('/create'),
-            'edit' => Pages\EditStaff::route('/{record}/edit'),
+            'index' => ListStaff::route('/'),
+            'acl' => AccessControl::route('/access-control'),
+            'create' => CreateStaff::route('/create'),
+            'edit' => EditStaff::route('/{record}/edit'),
         ];
     }
 }

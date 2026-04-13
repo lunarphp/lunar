@@ -2,9 +2,11 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductTypeResource;
+use Lunar\Models\Attribute;
 use Lunar\Models\ProductType;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.productType');
 
 it('can render product type create page', function () {
@@ -32,11 +34,11 @@ it('can create product type', function () {
 it('can associate attributes', function () {
     $productType = ProductType::factory()->make();
 
-    $attributeA = \Lunar\Models\Attribute::factory()->create([
+    $attributeA = Attribute::factory()->create([
         'attribute_type' => 'product',
     ]);
 
-    $attributeB = \Lunar\Models\Attribute::factory()->create([
+    $attributeB = Attribute::factory()->create([
         'attribute_type' => 'product',
     ]);
 
