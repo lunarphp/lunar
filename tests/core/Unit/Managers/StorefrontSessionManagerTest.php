@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 use Lunar\Base\StorefrontSessionInterface;
@@ -10,11 +11,12 @@ use Lunar\Models\Currency;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\actingAs;
 
-uses(\Lunar\Tests\Core\TestCase::class);
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     setAuthUserConfig();
@@ -33,7 +35,7 @@ beforeEach(function (): void {
 });
 
 test('can instantiate the manager', function (): void {
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     expect($manager)->toBeInstanceOf(StorefrontSessionManager::class);
@@ -42,7 +44,7 @@ test('can instantiate the manager', function (): void {
 test('can initialise the channel', function (): void {
     $defaultChannel = Channel::getDefault();
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     expect($manager->getChannel()->id)->toBe($defaultChannel->id);
@@ -51,7 +53,7 @@ test('can initialise the channel', function (): void {
 test('can initialise the customer groups', function (): void {
     $defaultCustomerGroup = CustomerGroup::getDefault();
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     expect($manager->getCustomerGroups())
@@ -64,21 +66,21 @@ test('can initialise the customer groups', function (): void {
 test('can initialise the currency', function (): void {
     $currency = Currency::getDefault();
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     expect($manager->getCurrency()->id)->toBe($currency->id);
 });
 
 test('can initialise the customer without authenticated user', function (): void {
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     expect($manager->getCustomer())->toBeNull();
 });
 
 test('can initialise the latest customer for the authenticated user', function (): void {
-    /** @var \Lunar\Tests\Core\Stubs\User */
+    /** @var User */
     $user = User::factory()->create();
 
     $customers = Customer::factory(5)->create();
@@ -89,7 +91,7 @@ test('can initialise the latest customer for the authenticated user', function (
 
     actingAs($user);
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     expect($manager->getCustomer()->id)->toBe($customers->last()->id);
@@ -98,12 +100,12 @@ test('can initialise the latest customer for the authenticated user', function (
 test('can set channel', function (): void {
     $defaultChannel = Channel::getDefault();
 
-    /** @var \Lunar\Models\Channel */
+    /** @var Channel */
     $otherChannel = Channel::factory()->create([
         'default' => false,
     ]);
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     $sessionKey = $manager->getSessionKey().'_channel';
@@ -120,12 +122,12 @@ test('can set channel', function (): void {
 test('can set multiple customer group', function (): void {
     $defaultCustomerGroup = CustomerGroup::getDefault();
 
-    /** @var \Illuminate\Support\Collection<\Lunar\Models\CustomerGroup> */
+    /** @var Collection<CustomerGroup> */
     $otherCustomerGroups = CustomerGroup::factory(4)->create([
         'default' => false,
     ]);
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     $sessionKey = $manager->getSessionKey().'_customer_groups';
@@ -144,12 +146,12 @@ test('can set multiple customer group', function (): void {
 test('can set a single customer group', function (): void {
     $defaultCustomerGroup = CustomerGroup::getDefault();
 
-    /** @var \Lunar\Models\CustomerGroup */
+    /** @var CustomerGroup */
     $otherCustomerGroup = CustomerGroup::factory()->create([
         'default' => false,
     ]);
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     $sessionKey = $manager->getSessionKey().'_customer_groups';
@@ -168,12 +170,12 @@ test('can set a single customer group', function (): void {
 test('can set currency', function (): void {
     $defaultCurrency = Currency::getDefault();
 
-    /** @var \Lunar\Models\Currency */
+    /** @var Currency */
     $otherCurrency = Currency::factory()->create([
         'default' => false,
     ]);
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     $sessionKey = $manager->getSessionKey().'_currency';
@@ -194,12 +196,12 @@ test('can set customer', function (): void {
 
     $user->customers()->sync($customers->pluck('id'));
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     $sessionKey = $manager->getSessionKey().'_customer';
 
-    /** @var \Lunar\Models\Customer */
+    /** @var Customer */
     $customer = $customers->first();
 
     expect($manager->getCustomer())->toBeNull();
@@ -212,34 +214,34 @@ test('can set customer', function (): void {
 });
 
 test('ensure customer belongs to user', function (): void {
-    /** @var \Lunar\Tests\Core\Stubs\User */
+    /** @var User */
     $user = User::factory()->create();
 
     $customers = Customer::factory(5)->create();
 
     actingAs($user);
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
-    /** @var \Lunar\Models\Customer */
+    /** @var Customer */
     $unrelatedCustomer = $customers->first();
 
     $manager->setCustomer($unrelatedCustomer);
 })->throws(CustomerNotBelongsToUserException::class);
 
 test('can forget all values', function (): void {
-    /** @var \Lunar\Tests\Core\Stubs\User */
+    /** @var User */
     $user = User::factory()->create();
 
-    /** @var \Lunar\Models\Customer */
+    /** @var Customer */
     $customer = Customer::factory()->create();
 
     $user->customers()->sync($customer->id);
 
     actingAs($user);
 
-    /** @var \Lunar\Managers\StorefrontSessionManager */
+    /** @var StorefrontSessionManager */
     $manager = app(StorefrontSessionInterface::class);
 
     $sessionKey = $manager->getSessionKey();

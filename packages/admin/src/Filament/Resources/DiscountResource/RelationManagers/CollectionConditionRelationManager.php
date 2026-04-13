@@ -2,8 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
+use Filament\Actions\AttachAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
@@ -40,7 +43,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
                 fn ($query) => $query->whereIn($prefix.'collection_discount.type', ['condition'])
             )
             ->headerActions([
-                Tables\Actions\AttachAction::make()->form(fn (Tables\Actions\AttachAction $action): array => [
+                AttachAction::make()->form(fn (AttachAction $action): array => [
                     $action->getRecordSelect(),
                     Forms\Components\Hidden::make('type')->default('condition'),
                 ])->recordTitle(function ($record) {
@@ -51,7 +54,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
                         __('lunarpanel::discount.relationmanagers.collection_conditions.actions.attach.label')
                     ),
             ])->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collection_conditions.table.name.label')
                     )
@@ -59,9 +62,9 @@ class CollectionConditionRelationManager extends BaseRelationManager
                         fn (Model $record) => $record->attr('name')
                     ),
             ])->actions([
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Support\Actions;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Closure;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\URL;
@@ -11,7 +12,7 @@ class PdfDownload extends Action
 {
     protected string $pdfView = '';
 
-    protected \Closure|string|null $filename = null;
+    protected Closure|string|null $filename = null;
 
     public function pdfView(string $pdfView): self
     {
@@ -20,7 +21,7 @@ class PdfDownload extends Action
         return $this;
     }
 
-    public function filename(\Closure|string|null $filename): self
+    public function filename(Closure|string|null $filename): self
     {
         $this->filename = $filename;
 

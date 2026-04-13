@@ -3,13 +3,18 @@
 namespace Lunar\Shipping\Filament\Resources;
 
 use Awcodes\Shout\Components\Shout;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Form;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Pages\Page;
-use Filament\Pages\SubNavigationPosition;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -23,9 +28,11 @@ class ShippingZoneResource extends BaseResource
 {
     protected static ?string $model = ShippingZone::class;
 
+    protected static ?string $permission = 'shipping:manage';
+
     protected static ?int $navigationSort = 1;
 
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {
@@ -56,10 +63,10 @@ class ShippingZoneResource extends BaseResource
         ]);
     }
 
-    public static function getDefaultForm(Form $form): Form
+    public static function getDefaultForm(Schema $schema): Schema
     {
-        return $form->schema([
-            Forms\Components\Section::make()->schema(
+        return $schema->components([
+            Section::make()->schema(
                 static::getMainFormComponents(),
             ),
         ]);
@@ -77,7 +84,7 @@ class ShippingZoneResource extends BaseResource
             Shout::make('unrestricted')->content(
                 __('lunarpanel.shipping::shippingzone.form.unrestricted.content')
             )->hidden(
-                fn (Forms\Get $get) => $get('type') != 'unrestricted'
+                fn (Get $get) => $get('type') != 'unrestricted'
             ),
         ];
     }
@@ -110,7 +117,7 @@ class ShippingZoneResource extends BaseResource
             ->label(__('lunarpanel.shipping::shippingzone.form.country.label'))
             ->dehydrated(false)
             ->visible(
-                fn (Forms\Get $get) => ! in_array($get('type'), ['countries', 'unrestricted'])
+                fn (Get $get) => ! in_array($get('type'), ['countries', 'unrestricted'])
             )
             ->options(Country::get()->pluck('name', 'id'))
 
@@ -258,11 +265,11 @@ class ShippingZoneResource extends BaseResource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -270,11 +277,11 @@ class ShippingZoneResource extends BaseResource
     protected static function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name')
+            TextColumn::make('name')
                 ->label(
                     __('lunarpanel.shipping::shippingzone.table.name.label')
                 ),
-            Tables\Columns\TextColumn::make('type')
+            TextColumn::make('type')
                 ->label(
                     __('lunarpanel.shipping::shippingzone.table.type.label')
                 )

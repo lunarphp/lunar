@@ -4,6 +4,7 @@ namespace Lunar\Base;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Lunar\Base\DataTransferObjects\PricingResponse;
 use Lunar\Models\Contracts\Currency;
 use Lunar\Models\Contracts\CustomerGroup;
 
@@ -47,7 +48,7 @@ interface PricingManagerInterface
     /**
      * Get the price for a purchasable.
      *
-     * @return \Lunar\Base\DataTransferObjects\PricingResponse
+     * @return PricingResponse
      */
     public function for(Purchasable $purchasable);
 }

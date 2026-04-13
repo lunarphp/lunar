@@ -1,12 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('migrations');
-
 use Illuminate\Support\Facades\File;
+use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\artisan;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
+
+uses(TestCase::class)->group('migrations');
 
 test('all migrations can run rollback', function () {
     artisan('migrate');

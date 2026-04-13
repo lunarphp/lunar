@@ -9,10 +9,11 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\ActionSize;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Size;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -39,10 +40,10 @@ class ActivityLogFeed extends Component implements HasActions, HasForms
 
     public ?string $comment = null;
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Textarea::make('comment')
                     ->placeholder(__('lunarpanel::components.activity-log.input.placeholder'))
                     ->required()
@@ -56,7 +57,7 @@ class ActivityLogFeed extends Component implements HasActions, HasForms
         return Action::make('addComment')
             ->label(__('lunarpanel::components.activity-log.action.add-comment'))
             ->action(fn () => $this->addComment())
-            ->size(ActionSize::ExtraSmall)
+            ->size(Size::ExtraSmall)
             ->after(function () {
                 Notification::make()
                     ->title(__('lunarpanel::components.activity-log.notification.comment_added'))
@@ -97,10 +98,10 @@ class ActivityLogFeed extends Component implements HasActions, HasForms
      * Returns the activity log for the subject.
      */
     #[Computed]
-    public function activityLog(): \Illuminate\Pagination\LengthAwarePaginator
+    public function activityLog(): LengthAwarePaginator
     {
         $activities = $this->subject->activities()
-            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->with(['causer', 'subject'])
             ->paginate(10, ['*'], $this->pageName);
 
