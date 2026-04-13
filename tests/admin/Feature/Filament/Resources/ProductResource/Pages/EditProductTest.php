@@ -6,6 +6,7 @@ use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\Toggle;
+use Lunar\FieldTypes\TranslatedText as TranslatedTextField;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
 use Lunar\Models\CustomerGroup;
@@ -191,3 +192,145 @@ it('can save attributes', function () {
 
     expect($record->refresh()->attr('name'))->toBe('New Product Name');
 });
+
+it('hydrates translated rich text fields with all locale keys', function () {
+    CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    Language::factory()->create([
+        'code' => 'en',
+        'default' => true,
+    ]);
+
+    Language::factory()->create([
+        'code' => 'es',
+        'default' => false,
+    ]);
+
+    TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
+    $product = Product::factory()->create([
+        'attribute_data' => collect([
+            'description' => new TranslatedTextField(collect()),
+        ]),
+    ]);
+
+    ProductVariant::factory()->create([
+        'product_id' => $product->id,
+    ]);
+
+    createTranslatedRichTextProductAttribute($product, 'description');
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, [
+        'record' => $product->getRouteKey(),
+        'pageClass' => 'productEdit',
+    ])
+        ->assertSuccessful()
+        ->assertSet('data.attribute_data.description.en', '')
+        ->assertSet('data.attribute_data.description.es', '');
+});
+
+it('saves translated rich text fields from rich editor document payloads', function () {
+    CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    Language::factory()->create([
+        'code' => 'en',
+        'default' => true,
+    ]);
+
+    Language::factory()->create([
+        'code' => 'es',
+        'default' => false,
+    ]);
+
+    TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
+    $product = Product::factory()->create([
+        'attribute_data' => collect([
+            'description' => new TranslatedTextField(collect()),
+        ]),
+    ]);
+
+    ProductVariant::factory()->create([
+        'product_id' => $product->id,
+    ]);
+
+    createTranslatedRichTextProductAttribute($product, 'description');
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, [
+        'record' => $product->getRouteKey(),
+        'pageClass' => 'productEdit',
+    ])
+        ->fillForm([
+            'attribute_data' => [
+                'description' => [
+                    'en' => [
+                        'type' => 'doc',
+                        'content' => [
+                            [
+                                'type' => 'paragraph',
+                                'content' => [
+                                    [
+                                        'type' => 'text',
+                                        'text' => 'Rich description',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'es' => '',
+                ],
+            ],
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($product->refresh()->attr('description', 'en'))->toBe('<p>Rich description</p>');
+});
+
+function createTranslatedRichTextProductAttribute(Product $product, string $handle): void
+{
+    $group = AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+        'name' => [
+            'en' => 'Details',
+        ],
+        'handle' => 'details',
+        'position' => 1,
+    ]);
+
+    $attribute = Attribute::factory()->create([
+        'attribute_type' => 'product',
+        'attribute_group_id' => $group->id,
+        'position' => 1,
+        'name' => [
+            'en' => 'Description',
+        ],
+        'handle' => $handle,
+        'section' => 'main',
+        'type' => TranslatedTextField::class,
+        'required' => false,
+        'system' => false,
+        'searchable' => false,
+        'configuration' => [
+            'richtext' => true,
+        ],
+    ]);
+
+    DB::table('lunar_attributables')->insert([
+        'attribute_id' => $attribute->id,
+        'attributable_type' => 'product_type',
+        'attributable_id' => $product->productType->id,
+    ]);
+}
