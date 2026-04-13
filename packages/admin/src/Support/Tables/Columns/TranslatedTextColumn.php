@@ -18,7 +18,7 @@ class TranslatedTextColumn extends TextColumn
 
         $name = $this->getName();
 
-        $this->formatStateUsing(static function (Model $record) use ($name) {
+        $this->state(static function (Model $record) use ($name) {
             return $record->translate($name);
         });
     }
@@ -58,7 +58,7 @@ class TranslatedTextColumn extends TextColumn
 
         $name = $this->getFieldHydrated();
 
-        $this->formatStateUsing(static function (Model $record) use ($name) {
+        $this->state(static function (Model $record) use ($name) {
             return $record->translateAttribute($name);
         });
 
