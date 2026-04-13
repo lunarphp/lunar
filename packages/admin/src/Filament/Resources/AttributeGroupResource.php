@@ -111,7 +111,11 @@ class AttributeGroupResource extends BaseResource
         return TextInput::make('handle')
             ->label(__('lunarpanel::attributegroup.form.handle.label'))
             ->live(onBlur: true)
-            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+
                 $set('handle', Str::snake(Str::lower($state)));
             })
             ->required()

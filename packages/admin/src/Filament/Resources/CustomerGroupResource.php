@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -76,7 +77,11 @@ class CustomerGroupResource extends BaseResource
             ->required()
             ->unique(ignoreRecord: true)
             ->live(onBlur: true)
-            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+
                 $set('handle', Str::snake(Str::lower($state)));
             })
             ->minLength(3)

@@ -68,7 +68,11 @@ class AttributesRelationManager extends BaseRelationManager
                         __('lunarpanel::attribute.form.handle.label')
                     )->dehydrated()
                     ->live(onBlur: true)
-                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                    ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                        if ($operation !== 'create') {
+                            return;
+                        }
+
                         $set('handle', Str::snake(Str::lower($state)));
                     })
                     ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, RelationManager $livewire) {

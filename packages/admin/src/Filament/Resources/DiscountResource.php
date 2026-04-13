@@ -175,7 +175,11 @@ class DiscountResource extends BaseResource
             ->required()
             ->unique(ignoreRecord: true)
             ->live(onBlur: true)
-            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+
                 $set('handle', Str::snake(Str::lower($state)));
             })
             ->maxLength(255)
