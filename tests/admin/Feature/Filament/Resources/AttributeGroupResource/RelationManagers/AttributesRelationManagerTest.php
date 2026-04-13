@@ -28,6 +28,24 @@ it('can render relation manager', function () {
     ])->assertSuccessful();
 });
 
+it('shows translated attribute names as a single state', function () {
+    $this->asStaff();
+
+    $attributeGroup = AttributeGroup::factory()->create();
+
+    $attribute = Attribute::factory()->create([
+        'attribute_group_id' => $attributeGroup->id,
+        'name' => ['en' => 'Details'],
+    ]);
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $attributeGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])
+        ->assertCountTableRecords(1)
+        ->assertTableColumnStateSet('name', 'Details', $attribute);
+});
+
 it('can create attributes', function ($type, $configuration = [], $expectedData = []) {
 
     $lang = Language::factory()->create([
