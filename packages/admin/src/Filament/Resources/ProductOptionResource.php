@@ -93,6 +93,14 @@ class ProductOptionResource extends BaseResource
             ->label(__('lunarpanel::productoption.form.handle.label'))
             ->required()
             ->maxLength(255)
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+
+                $set('handle', Str::snake(Str::lower($state)));
+            })
             ->disabled(fn ($operation, $record) => $operation == 'edit' && (! $record->shared));
     }
 
