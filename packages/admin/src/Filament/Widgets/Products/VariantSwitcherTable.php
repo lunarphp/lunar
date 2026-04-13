@@ -3,7 +3,8 @@
 namespace Lunar\Admin\Filament\Widgets\Products;
 
 use Closure;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Widgets\TableWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,7 +40,7 @@ class VariantSwitcherTable extends TableWidget
         foreach ($optionValues as $values) {
             $option = $values->first()->option;
 
-            $filters[] = Tables\Filters\SelectFilter::make(
+            $filters[] = SelectFilter::make(
                 $option->handle
             )->label($option->translate('name'))
                 ->options(
@@ -68,11 +69,11 @@ class VariantSwitcherTable extends TableWidget
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('sku')
+            TextColumn::make('sku')
                 ->label(
                     __('lunarpanel::widgets.variant_switcher.table.sku.label')
                 )->searchable(),
-            Tables\Columns\TextColumn::make('values')
+            TextColumn::make('values')
                 ->label(
                     __('lunarpanel::widgets.variant_switcher.table.values.label')
                 )

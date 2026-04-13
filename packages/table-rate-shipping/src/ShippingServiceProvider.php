@@ -3,12 +3,19 @@
 namespace Lunar\Shipping;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\MigrationsStarted;
+use Illuminate\Database\Events\NoPendingMigrations;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Base\ShippingModifiers;
+use Lunar\Facades\Discounts;
 use Lunar\Facades\ModelManifest;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
+use Lunar\Shipping\Database\State\MigrateCutoffToSchedule;
+use Lunar\Shipping\DiscountTypes\ShippingDiscount;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Managers\ShippingManager;
 use Lunar\Shipping\Models\ShippingExclusion;
@@ -44,6 +51,8 @@ class ShippingServiceProvider extends ServiceProvider
             ShippingModifier::class,
         );
 
+        Discounts::addType(ShippingDiscount::class);
+
         Order::observe(OrderObserver::class);
 
         Order::resolveRelationUsing('shippingZone', function ($orderModel) {
@@ -76,6 +85,8 @@ class ShippingServiceProvider extends ServiceProvider
             __DIR__.'/Models'
         );
 
+        $this->registerStateListeners();
+
         Relation::morphMap([
             'shipping_exclusion' => ShippingExclusion::modelClass(),
             'shipping_exclusion_list' => ShippingExclusionList::modelClass(),
@@ -84,5 +95,26 @@ class ShippingServiceProvider extends ServiceProvider
             'shipping_zone' => ShippingZone::modelClass(),
             'shipping_zone_postcode' => ShippingZonePostcode::modelClass(),
         ]);
+    }
+
+    protected function registerStateListeners(): void
+    {
+        $states = [
+            MigrateCutoffToSchedule::class,
+        ];
+
+        foreach ($states as $state) {
+            $class = new $state;
+
+            Event::listen(
+                [MigrationsStarted::class],
+                [$class, 'prepare']
+            );
+
+            Event::listen(
+                [MigrationsEnded::class, NoPendingMigrations::class],
+                [$class, 'run']
+            );
+        }
     }
 }

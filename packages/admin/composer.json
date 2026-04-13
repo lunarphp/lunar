@@ -13,17 +13,17 @@
         ]
     },
     "minimum-stability": "dev",
+    "repositories": [],
     "require": {
         "lunarphp/core": "self.version",
-        "filament/filament": "^3.3.36",
-        "filament/spatie-laravel-media-library-plugin": "^3.3.4",
+        "filament/filament": "^4.1",
+        "filament/spatie-laravel-media-library-plugin": "^4.0",
         "spatie/laravel-permission": "^6.12",
         "barryvdh/laravel-dompdf": "^3.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
-        "leandrocfe/filament-apex-charts": "^3.2.0",
-        "awcodes/shout": "^2.0.4",
-        "awcodes/filament-badgeable-column": "^2.3.2",
-        "stephenjude/filament-two-factor-authentication": "^2.0"
+        "leandrocfe/filament-apex-charts": "^5.0",
+        "awcodes/shout": "^3.0",
+        "awcodes/filament-badgeable-column": "^3.0"
     },
     "extra": {
         "laravel": {
@@ -31,5 +31,9 @@
                 "Lunar\\Admin\\LunarPanelProvider"
             ]
         }
+    },
+    "require-dev": {
+        "filament/upgrade": "^4.0",
+        "phpstan/phpstan": "^2.1.17"
     }
 }

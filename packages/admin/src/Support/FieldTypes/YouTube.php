@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Forms\Components\YouTube as YouTubeInput;
 use Lunar\Admin\Support\Synthesizers\YouTubeSynth;
 use Lunar\Models\Attribute;

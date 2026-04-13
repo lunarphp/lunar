@@ -27,7 +27,7 @@ class DemoSeeder extends Seeder
 
         Schema::enableForeignKeyConstraints();
 
-        //======== DATA
+        // ======== DATA
 
         Channel::factory()->create([
             'name' => 'Webstore',

@@ -2,7 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
-use Filament\Tables;
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
@@ -34,7 +36,7 @@ class CustomerLimitationRelationManager extends BaseRelationManager
             )
             ->paginated(false)
             ->headerActions([
-                Tables\Actions\AttachAction::make()->form(fn (Tables\Actions\AttachAction $action): array => [
+                AttachAction::make()->form(fn (AttachAction $action): array => [
                     $action->getRecordSelect(),
                 ])->recordTitle(function ($record) {
                     return $record->full_name;
@@ -56,12 +58,12 @@ class CustomerLimitationRelationManager extends BaseRelationManager
                         __('lunarpanel::discount.relationmanagers.customers.actions.attach.label')
                     ),
             ])->columns([
-                Tables\Columns\TextColumn::make('full_name')
+                TextColumn::make('full_name')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.customers.table.name.label')
                     ),
-            ])->actions([
-                Tables\Actions\DetachAction::make(),
+            ])->recordActions([
+                DetachAction::make(),
             ]);
     }
 }

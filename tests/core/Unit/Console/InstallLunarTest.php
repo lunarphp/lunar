@@ -1,8 +1,10 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 test('install command copies the configuration', function () {
     // $configFiles = array_keys(config('lunar'));

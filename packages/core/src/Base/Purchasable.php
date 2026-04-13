@@ -4,13 +4,14 @@ namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Contracts\TaxClass;
+use Lunar\Models\Price;
 
 interface Purchasable
 {
     /**
      * Get the purchasable prices.
      *
-     * @return \Illuminate\Support\Collection<\Lunar\Models\Price>
+     * @return Collection<Price>
      */
     public function getPrices(): Collection;
 

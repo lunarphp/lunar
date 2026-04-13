@@ -1,17 +1,23 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Generators\UrlGenerator;
+use Lunar\Models\Attribute;
 use Lunar\Models\Brand;
+use Lunar\Models\Collection;
+use Lunar\Models\Discount;
 use Lunar\Models\Language;
+use Lunar\Models\Product;
 use Lunar\Models\Url;
+use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can make a brand', function () {
     $brand = Brand::factory()->create([
@@ -71,7 +77,7 @@ test('generates unique urls', function () {
 });
 
 test('can return mapped attributes', function () {
-    \Lunar\Models\Attribute::factory()->create([
+    Attribute::factory()->create([
         'attribute_type' => 'brand',
     ]);
     $brand = Brand::factory()->create([
@@ -85,12 +91,12 @@ test('can delete a brand', function () {
         'name' => 'Test Brand',
     ]);
 
-    \Lunar\Models\Product::factory()->create([
+    Product::factory()->create([
         'brand_id' => $brand->id,
     ]);
 
-    $discount = \Lunar\Models\Discount::factory()->create();
-    $collection = \Lunar\Models\Collection::factory()->create();
+    $discount = Discount::factory()->create();
+    $collection = Collection::factory()->create();
 
     $brand->discounts()->attach($discount);
     $brand->collections()->attach($collection);
