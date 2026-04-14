@@ -1,8 +1,13 @@
 <?php
 
-use function Pest\Laravel\{get};
+use Lunar\Admin\Filament\Resources\DiscountResource;
+use Lunar\Models\Channel;
+use Lunar\Models\Discount;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+use function Pest\Laravel\get;
+
+uses(TestCase::class)
     ->group('resource.discount');
 
 beforeEach(function () {
@@ -10,11 +15,11 @@ beforeEach(function () {
 });
 
 it('can render discount limitations page', function () {
-    $record = \Lunar\Models\Discount::factory()->create();
+    $record = Discount::factory()->create();
 
-    \Lunar\Models\Channel::factory()->create(['default' => true]);
+    Channel::factory()->create(['default' => true]);
 
-    get(\Lunar\Admin\Filament\Resources\DiscountResource::getUrl('limitations', [
+    get(DiscountResource::getUrl('limitations', [
         'record' => $record,
     ]))->assertSuccessful();
 });

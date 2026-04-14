@@ -1,10 +1,11 @@
 <?php
 
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
-use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\Livewire;
@@ -12,8 +13,9 @@ use Lunar\Admin\Livewire\Components\ActivityLogFeed;
 use Lunar\Admin\Support\Infolists\Components\Timeline;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
+use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
-uses(\Lunar\Tests\Admin\Unit\Livewire\TestCase::class)
+uses(TestCase::class)
     ->group('livewire.activity-feed');
 
 describe('activity feed component', function () {
@@ -72,18 +74,18 @@ describe('activity feed component', function () {
 
 });
 
-class TestActivityFeedComponentInInfolist extends Component implements HasForms, HasInfolists
+class TestActivityFeedComponentInInfolist extends Component implements HasActions, HasForms, HasSchemas
 {
+    use InteractsWithActions;
     use InteractsWithForms;
-    use InteractsWithInfolists;
 
     public $order;
 
-    public function orderInfolist(Infolist $infolist): Infolist
+    public function orderInfolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record($this->order)
-            ->schema([
+            ->components([
                 Timeline::make('timeline'),
             ]);
     }

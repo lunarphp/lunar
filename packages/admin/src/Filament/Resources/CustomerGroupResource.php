@@ -2,15 +2,23 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Awcodes\FilamentBadgeableColumn\Components\Badge;
-use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms;
-use Filament\Forms\Components\Component;
+use Awcodes\BadgeableColumn\Components\Badge;
+use Awcodes\BadgeableColumn\Components\BadgeableColumn;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages;
+use Illuminate\Support\Str;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\EditCustomerGroup;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\ListCustomerGroups;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
@@ -55,7 +63,7 @@ class CustomerGroupResource extends BaseResource
 
     protected static function getNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TextInput::make('name')
             ->label(__('lunarpanel::customergroup.form.name.label'))
             ->required()
             ->maxLength(255)
@@ -64,17 +72,25 @@ class CustomerGroupResource extends BaseResource
 
     protected static function getHandleFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('handle')
+        return TextInput::make('handle')
             ->label(__('lunarpanel::customergroup.form.handle.label'))
             ->required()
             ->unique(ignoreRecord: true)
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+
+                $set('handle', Str::snake(Str::lower($state)));
+            })
             ->minLength(3)
             ->maxLength(255);
     }
 
     protected static function getDefaultFormComponent(): Component
     {
-        return Forms\Components\Toggle::make('default')
+        return Toggle::make('default')
             ->label(__('lunarpanel::customergroup.form.default.label'));
     }
 
@@ -90,12 +106,12 @@ class CustomerGroupResource extends BaseResource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -112,7 +128,7 @@ class CustomerGroupResource extends BaseResource
                         ->visible(fn (Model $record) => $record->default),
                 ])
                 ->label(__('lunarpanel::customergroup.table.name.label')),
-            Tables\Columns\TextColumn::make('handle')
+            TextColumn::make('handle')
                 ->label(__('lunarpanel::customergroup.table.handle.label')),
         ];
     }
@@ -127,9 +143,9 @@ class CustomerGroupResource extends BaseResource
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListCustomerGroups::route('/'),
-            'create' => Pages\CreateCustomerGroup::route('/create'),
-            'edit' => Pages\EditCustomerGroup::route('/{record}/edit'),
+            'index' => ListCustomerGroups::route('/'),
+            'create' => CreateCustomerGroup::route('/create'),
+            'edit' => EditCustomerGroup::route('/{record}/edit'),
         ];
     }
 }

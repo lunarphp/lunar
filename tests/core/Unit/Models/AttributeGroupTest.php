@@ -1,13 +1,15 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('models');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
+use Lunar\Tests\Core\TestCase;
 
-use function Pest\Laravel\{assertDatabaseMissing};
+uses(TestCase::class)->group('models');
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+use function Pest\Laravel\assertDatabaseMissing;
+
+uses(RefreshDatabase::class);
 
 test('can make a attribute group', function () {
     $attributeGroup = AttributeGroup::factory()->create([

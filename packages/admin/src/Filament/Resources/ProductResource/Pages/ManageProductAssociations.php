@@ -2,10 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Lunar\Admin\Events\ProductAssociationsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
@@ -36,21 +40,22 @@ class ManageProductAssociations extends BaseManageRelatedRecords
         return __('lunarpanel::product.pages.associations.label');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('product_target_id')
+        return $schema
+            ->components([
+                Select::make('product_target_id')
                     ->label('Product')
                     ->required()
                     ->searchable(true)
-                    ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                    ->getSearchResultsUsing(static function (Select $component, string $search): array {
                         return get_search_builder(Product::modelClass(), $search)
                             ->get()
                             ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                             ->all();
-                    }),
-                Forms\Components\Select::make('type')
+                    })
+                    ->getOptionLabelUsing(fn ($value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')),
+                Select::make('type')
                     ->required()
                     ->options(ProductAssociation::getTypes()),
             ]);
@@ -62,10 +67,10 @@ class ManageProductAssociations extends BaseManageRelatedRecords
             ->recordTitleAttribute('name')
             ->inverseRelationship('parent')
             ->columns([
-                Tables\Columns\TextColumn::make('target')
+                TextColumn::make('target')
                     ->formatStateUsing(fn (ProductAssociationContract $record): string => $record->target->translateAttribute('name'))
                     ->limit(50)
-                    ->tooltip(function (Tables\Columns\TextColumn $column, ProductAssociationContract $record): ?string {
+                    ->tooltip(function (TextColumn $column, ProductAssociationContract $record): ?string {
                         $state = $column->getState();
 
                         if (strlen($record->target->translateAttribute('name')) <= $column->getCharacterLimit()) {
@@ -76,9 +81,9 @@ class ManageProductAssociations extends BaseManageRelatedRecords
                         return $record->target->translateAttribute('name');
                     })
                     ->label(__('lunarpanel::product.table.name.label')),
-                Tables\Columns\TextColumn::make('target.variants.sku')
+                TextColumn::make('target.variants.sku')
                     ->label('SKU'),
-                Tables\Columns\TextColumn::make('type')->formatStateUsing(function ($state) {
+                TextColumn::make('type')->formatStateUsing(function ($state) {
                     $enum = config('lunar.products.association_types_enum', \Lunar\Base\Enums\ProductAssociation::class);
 
                     return $enum::tryFrom($state)?->label() ?: $state;
@@ -88,22 +93,22 @@ class ManageProductAssociations extends BaseManageRelatedRecords
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->after(
+                CreateAction::make()->after(
                     fn () => ProductAssociationsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
             ])
-            ->actions([
-                Tables\Actions\DeleteAction::make()->after(
+            ->recordActions([
+                DeleteAction::make()->after(
                     fn () => ProductAssociationsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )
                 ),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->after(
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make()->after(
                         fn () => ProductAssociationsUpdated::dispatch(
                             $this->getOwnerRecord()
                         )
