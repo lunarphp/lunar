@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Support\Pages;
 
 use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsFooterWidgets;
@@ -40,7 +41,7 @@ abstract class BaseListRecords extends ListRecords
             $isScoutSearchable
         ) {
             $trashedFilter = collect($this->getTable()->getFilters())
-                ->firstWhere(fn ($filter) => $filter instanceof \Filament\Tables\Filters\TrashedFilter);
+                ->firstWhere(fn ($filter) => $filter instanceof TrashedFilter);
 
             $scoutQuery = static::getModel()::search($search);
 
