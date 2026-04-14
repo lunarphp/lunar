@@ -127,12 +127,6 @@ class AttributesRelationManager extends BaseRelationManager
                     ->schema(function (Get $get) {
                         return AttributeData::getConfigurationFields($get('type'));
                     })
-                    ->afterStateHydrated(function (Grid $component, $state, Get $get): void {
-                        $component->state(AttributeData::mutateConfigurationForForm(
-                            $get('type'),
-                            is_array($state) ? $state : [],
-                        ));
-                    })
                     ->key('configuration')
                     ->statePath('configuration'),
             ]);

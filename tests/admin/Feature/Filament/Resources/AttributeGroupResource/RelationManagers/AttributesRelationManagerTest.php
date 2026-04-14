@@ -131,10 +131,19 @@ it('hydrates dropdown lookups when editing attributes', function () {
         'pageClass' => EditAttributeGroup::class,
     ])
         ->mountTableAction(EditAction::class, $attribute)
+        ->assertSet('mountedActions.0.data.configuration.lookups', [
+            [
+                'key' => 'aaaa',
+                'value' => 'bbbb',
+            ],
+        ])
         ->assertTableActionDataSet([
             'configuration' => [
                 'lookups' => [
-                    'aaaa' => 'bbbb',
+                    [
+                        'key' => 'aaaa',
+                        'value' => 'bbbb',
+                    ],
                 ],
             ],
         ]);
