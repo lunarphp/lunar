@@ -35,7 +35,6 @@ class TranslatedTextSynth extends AbstractFieldSynth
 
     public function get(&$target, $key)
     {
-        // return $target->{$key};
         return $target->getValue()->get($key)?->getValue() ?? '';
     }
 
