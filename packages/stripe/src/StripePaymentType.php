@@ -49,6 +49,7 @@ class StripePaymentType extends AbstractPayment
         $this->stripe = Stripe::getClient();
 
         $this->policy = config('lunar.stripe.policy', 'automatic');
+        $this->allowPartialPayments = config('lunar.stripe.allow_partial_payment', false);
     }
 
     /**
@@ -118,10 +119,10 @@ class StripePaymentType extends AbstractPayment
             $paymentIntentId
         );
 
-        if (! $this->allowPartialPayments && $this->order->total->value != $this->paymentIntent->amount) {
+        if (! $this->paymentIntent) {
             $failure = new PaymentAuthorize(
                 success: false,
-                message: 'Captured amount mismatch',
+                message: 'Unable to locate payment intent',
                 orderId: $this->order->id,
                 paymentType: 'stripe',
             );
@@ -131,10 +132,10 @@ class StripePaymentType extends AbstractPayment
             return $failure;
         }
 
-        if (! $this->paymentIntent) {
+        if (! $this->allowPartialPayments && $this->order->total->value !== (int) $this->paymentIntent->amount) {
             $failure = new PaymentAuthorize(
                 success: false,
-                message: 'Unable to locate payment intent',
+                message: 'Captured amount mismatch',
                 orderId: $this->order->id,
                 paymentType: 'stripe',
             );

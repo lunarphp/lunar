@@ -1,7 +1,7 @@
 {
   "id": "pi_1DqH152eZvKYlo2CFHYZuxkP",
   "object": "payment_intent",
-  "amount": 2000,
+  "amount": {amount},
   "amount_capturable": 0,
   "amount_received": 0,
   "application": null,
