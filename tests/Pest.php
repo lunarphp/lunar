@@ -11,6 +11,7 @@ use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
+use Lunar\Tests\Core\Stubs\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +59,7 @@ function modelsReplaced(): bool
 
 function setAuthUserConfig(): void
 {
-    Config::set('auth.providers.users.model', \Lunar\Tests\Core\Stubs\User::class);
+    Config::set('auth.providers.users.model', User::class);
 }
 
 function buildCart(array $cartParams = []): Cart

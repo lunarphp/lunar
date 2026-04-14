@@ -18,8 +18,9 @@ use Lunar\Models\OrderAddress;
 use Lunar\Models\Price as ModelsPrice;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Transaction;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.order');
 
 beforeEach(function () {

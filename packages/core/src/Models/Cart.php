@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use Lunar\Actions\Carts\AddAddress;
@@ -23,6 +24,7 @@ use Lunar\Actions\Carts\SetShippingOption;
 use Lunar\Actions\Carts\UpdateCartLine;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\CouponString;
 use Lunar\Base\LunarUser;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\CachesProperties;
@@ -53,10 +55,10 @@ use Lunar\Validation\CartLine\CartLineStock;
  * @property int $channel_id
  * @property ?int $order_id
  * @property ?string $coupon_code
- * @property ?\Illuminate\Support\Carbon $completed_at
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property ?Carbon $completed_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
  */
 class Cart extends BaseModel implements Contracts\Cart
 {
@@ -205,6 +207,7 @@ class Cart extends BaseModel implements Contracts\Cart
     protected $casts = [
         'completed_at' => 'datetime',
         'meta' => AsArrayObject::class,
+        'coupon_code' => CouponString::class,
     ];
 
     public function lines(): HasMany
@@ -254,8 +257,12 @@ class Cart extends BaseModel implements Contracts\Cart
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->whereDoesntHave('orders')->orWhereHas('orders', function ($query) {
-            return $query->whereNull('placed_at');
+        return $query->where(function ($q) {
+            $q
+                ->whereDoesntHave('orders')
+                ->orWhereHas('orders', function ($sub) {
+                    $sub->whereNull('placed_at');
+                });
         });
     }
 

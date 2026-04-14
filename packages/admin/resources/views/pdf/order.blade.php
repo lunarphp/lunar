@@ -114,6 +114,7 @@
                                     @endif
                                 </td>
 
+                                @if ($record->shippingAddress)
                                 <td align="left" width="33%">
                                     <h3>Shipping</h3>
                                     {{ $record->shippingAddress->fullName }}<br>
@@ -135,6 +136,7 @@
                                     {{ $record->shippingAddress->postcode }}<br>
                                     {{ $record->shippingAddress->country->name }}<br>
                                 </td>
+                                @endif
 
                                 <td align="right" width="33%">
                                 </td>

@@ -18,13 +18,14 @@ use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
+use Stripe\StripeClient;
 
 class StripePaymentType extends AbstractPayment
 {
     /**
      * The Stripe instance.
      *
-     * @var \Stripe\StripeClient
+     * @var StripeClient
      */
     protected $stripe;
 

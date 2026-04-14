@@ -2,10 +2,11 @@
 
 namespace Lunar\Models;
 
-use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasMedia;
@@ -16,10 +17,11 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 /**
  * @property int $id
  * @property int $product_option_id
- * @property string $name
+ * @property AsArrayObject $name
  * @property int $position
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?AsArrayObject $meta
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class ProductOptionValue extends BaseModel implements Contracts\ProductOptionValue, SpatieHasMedia
 {
@@ -34,7 +36,8 @@ class ProductOptionValue extends BaseModel implements Contracts\ProductOptionVal
      * @var array
      */
     protected $casts = [
-        'name' => AsCollection::class,
+        'name' => AsArrayObject::class,
+        'meta' => AsArrayObject::class,
     ];
 
     /**

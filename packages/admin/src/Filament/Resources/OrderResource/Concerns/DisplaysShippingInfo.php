@@ -2,36 +2,38 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 
-use Filament\Infolists;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\IconPosition;
 
 trait DisplaysShippingInfo
 {
-    public static function getShippingInfolist(): Infolists\Components\Section
+    public static function getShippingInfolist(): Section
     {
         return self::callStaticLunarHook('extendShippingInfolist', static::getDefaultShippingInfolist());
     }
 
-    public static function getDefaultShippingInfolist(): Infolists\Components\Section
+    public static function getDefaultShippingInfolist(): Section
     {
-        return Infolists\Components\Section::make()
+        return Section::make()
             ->schema([
-                Infolists\Components\RepeatableEntry::make('shippingLines')
+                RepeatableEntry::make('shippingLines')
                     ->hiddenLabel()
                     ->contained(false)
                     ->columns(2)
                     ->columnSpan(12)
                     ->schema([
-                        Infolists\Components\TextEntry::make('description')
+                        TextEntry::make('description')
                             ->icon('heroicon-s-truck')
                             ->html()
                             ->iconPosition(IconPosition::Before)
                             ->hiddenLabel(),
-                        Infolists\Components\TextEntry::make('sub_total')
+                        TextEntry::make('sub_total')
                             ->hiddenLabel()
                             ->alignEnd()
                             ->formatStateUsing(fn ($state) => $state->formatted),
-                        Infolists\Components\TextEntry::make('notes')
+                        TextEntry::make('notes')
                             ->hidden(
                                 fn ($state) => ! $state
                             )

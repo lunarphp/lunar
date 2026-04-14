@@ -1,14 +1,16 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Models\Address;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can make a customer with minimum attributes', function () {
     $customer = [

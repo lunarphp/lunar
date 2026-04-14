@@ -1,12 +1,16 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Language::factory()->create([
@@ -26,7 +30,7 @@ test('can generate reference with default config', function () {
         'placed_at' => now(),
     ]);
 
-    \Illuminate\Support\Facades\Config::set('lunar.orders.reference_format', []);
+    Config::set('lunar.orders.reference_format', []);
 
     expect($order->reference)->toBeNull();
 
@@ -41,7 +45,7 @@ test('can generate reference with different config', function ($length, $charact
         'placed_at' => now(),
     ]);
 
-    \Illuminate\Support\Facades\Config::set('lunar.orders.reference_format', [
+    Config::set('lunar.orders.reference_format', [
         'prefix' => $prefix,
         'padding_direction' => $direction,
         'padding_character' => $character,

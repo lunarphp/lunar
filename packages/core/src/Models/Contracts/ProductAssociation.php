@@ -4,6 +4,7 @@ namespace Lunar\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
 
 interface ProductAssociation
 {
@@ -35,5 +36,5 @@ interface ProductAssociation
     /**
      * Apply the type scope.
      */
-    public function scopeType(Builder $query, string $type): Builder;
+    public function scopeType(Builder $query, ProvidesProductAssociationType $type): Builder;
 }

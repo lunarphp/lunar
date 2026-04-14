@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasPrices;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Contracts\TaxClass as TaxClassContract;
@@ -20,6 +21,7 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
 {
     use HasFactory;
     use HasPrices;
+    use LogsActivity;
 
     /**
      * Define which attributes should be
@@ -142,7 +144,11 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
      */
     public function getShippingOption(CartContract $cart): ?ShippingOption
     {
-        if (config('lunar.shipping-tables.shipping_rate_tax_calculation') == 'highest') {
+        $calculateBy = config('lunar.shipping-tables.shipping_rate_tax_calculation');
+
+        if (is_callable($calculateBy)) {
+            $this->resolvedTaxClass = call_user_func($calculateBy, $cart);
+        } elseif ($calculateBy == 'highest') {
             $this->resolvedTaxClass = $this->resolveHighestTaxRateInCart($cart);
         }
 

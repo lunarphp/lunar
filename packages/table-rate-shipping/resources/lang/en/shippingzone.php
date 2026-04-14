@@ -26,7 +26,7 @@ return [
             'label' => 'States',
         ],
         'countries' => [
-            'label' => 'States',
+            'label' => 'Countries',
         ],
         'postcodes' => [
             'label' => 'Postcodes',

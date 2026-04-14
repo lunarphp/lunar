@@ -2,18 +2,26 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Awcodes\FilamentBadgeableColumn\Components\Badge;
-use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms;
-use Filament\Forms\Components\Component;
+use Awcodes\BadgeableColumn\Components\Badge;
+use Awcodes\BadgeableColumn\Components\BadgeableColumn;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Lunar\Admin\Filament\Resources\ChannelResource\Pages;
+use Lunar\Admin\Filament\Resources\ChannelResource\Pages\CreateChannel;
+use Lunar\Admin\Filament\Resources\ChannelResource\Pages\EditChannel;
+use Lunar\Admin\Filament\Resources\ChannelResource\Pages\ListChannels;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Models\Contracts\Channel as ChannelContract;
 
@@ -57,11 +65,11 @@ class ChannelResource extends BaseResource
 
     protected static function getNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TextInput::make('name')
             ->label(__('lunarpanel::channel.form.name.label'))
             ->required()
             ->maxLength(255)
-            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
                 if ($operation !== 'create') {
                     return;
                 }
@@ -73,17 +81,25 @@ class ChannelResource extends BaseResource
 
     protected static function getHandleFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('handle')
+        return TextInput::make('handle')
             ->label(__('lunarpanel::channel.form.handle.label'))
             ->required()
             ->unique(ignoreRecord: true)
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+
+                $set('handle', Str::snake(Str::lower($state)));
+            })
             ->minLength(3)
             ->maxLength(255);
     }
 
     protected static function getUrlFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('url')
+        return TextInput::make('url')
             ->label(__('lunarpanel::channel.form.url.label'))
             ->maxLength(255)
             ->autofocus();
@@ -91,7 +107,7 @@ class ChannelResource extends BaseResource
 
     protected static function getDefaultFormComponent(): Component
     {
-        return Forms\Components\Toggle::make('default')
+        return Toggle::make('default')
             ->label(__('lunarpanel::channel.form.default.label'));
     }
 
@@ -100,14 +116,14 @@ class ChannelResource extends BaseResource
         return $table
             ->columns(static::getTableColumns())
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -124,9 +140,9 @@ class ChannelResource extends BaseResource
                         ->visible(fn (Model $record) => $record->default),
                 ])
                 ->label(__('lunarpanel::channel.table.name.label')),
-            Tables\Columns\TextColumn::make('handle')
+            TextColumn::make('handle')
                 ->label(__('lunarpanel::channel.table.handle.label')),
-            Tables\Columns\TextColumn::make('url')
+            TextColumn::make('url')
                 ->label(__('lunarpanel::channel.table.url.label')),
         ];
     }
@@ -141,9 +157,9 @@ class ChannelResource extends BaseResource
     public static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListChannels::route('/'),
-            'create' => Pages\CreateChannel::route('/create'),
-            'edit' => Pages\EditChannel::route('/{record}/edit'),
+            'index' => ListChannels::route('/'),
+            'create' => CreateChannel::route('/create'),
+            'edit' => EditChannel::route('/{record}/edit'),
         ];
     }
 

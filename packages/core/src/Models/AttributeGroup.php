@@ -5,9 +5,11 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\AttributeGroupFactory;
 
 /**
@@ -16,14 +18,15 @@ use Lunar\Database\Factories\AttributeGroupFactory;
  * @property string $name
  * @property string $handle
  * @property int $position
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class AttributeGroup extends BaseModel implements Contracts\AttributeGroup
 {
     use HasFactory;
     use HasMacros;
     use HasTranslations;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.

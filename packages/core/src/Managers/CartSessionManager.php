@@ -30,7 +30,7 @@ class CartSessionManager implements CartSessionInterface
 
     public function allowsMultipleOrdersPerCart(): bool
     {
-        return config('lunar.cart_session.allow_multiple_per_order', false);
+        return config('lunar.cart_session.allow_multiple_orders_per_cart', false);
     }
 
     /**
@@ -68,8 +68,10 @@ class CartSessionManager implements CartSessionInterface
     /**
      * {@inheritDoc}
      */
-    public function forget(bool $delete = true): void
+    public function forget(?bool $delete = null): void
     {
+        $delete = is_null($delete) ? config('lunar.cart_session.delete_on_forget', true) : $delete;
+
         if ($delete) {
             Cart::destroy(
                 $this->sessionManager->get(
@@ -134,7 +136,7 @@ class CartSessionManager implements CartSessionInterface
         );
 
         if (! $cartId && $user = $this->authManager->user()) {
-            $cartId = $user->carts()->active()->first()?->id;
+            $cartId = $user->carts()->unmerged()->active()->latest('id')->value('id');
         }
 
         if (! $cartId) {

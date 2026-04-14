@@ -1,6 +1,26 @@
 <?php
 
+use Lunar\Actions\Carts\AddAddress;
+use Lunar\Actions\Carts\AddOrUpdatePurchasable;
+use Lunar\Actions\Carts\CreateOrder;
 use Lunar\Actions\Carts\GenerateFingerprint;
+use Lunar\Actions\Carts\GetExistingCartLine;
+use Lunar\Actions\Carts\RemovePurchasable;
+use Lunar\Actions\Carts\SetShippingOption;
+use Lunar\Actions\Carts\UpdateCartLine;
+use Lunar\Pipelines\Cart\ApplyDiscounts;
+use Lunar\Pipelines\Cart\ApplyShipping;
+use Lunar\Pipelines\Cart\Calculate;
+use Lunar\Pipelines\Cart\CalculateLines;
+use Lunar\Pipelines\Cart\CalculateTax;
+use Lunar\Pipelines\CartLine\GetUnitPrice;
+use Lunar\Pipelines\CartPrune\PruneAfter;
+use Lunar\Pipelines\CartPrune\WhereNotMerged;
+use Lunar\Pipelines\CartPrune\WithoutOrders;
+use Lunar\Validation\Cart\ShippingOptionValidator;
+use Lunar\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Validation\CartLine\CartLineQuantity;
+use Lunar\Validation\CartLine\CartLineStock;
 
 return [
     /*
@@ -42,18 +62,18 @@ return [
          * Run these pipelines when the cart is calculating.
         */
         'cart' => [
-            Lunar\Pipelines\Cart\CalculateLines::class,
-            Lunar\Pipelines\Cart\ApplyShipping::class,
-            Lunar\Pipelines\Cart\ApplyDiscounts::class,
-            Lunar\Pipelines\Cart\CalculateTax::class,
-            Lunar\Pipelines\Cart\Calculate::class,
+            CalculateLines::class,
+            ApplyShipping::class,
+            ApplyDiscounts::class,
+            CalculateTax::class,
+            Calculate::class,
         ],
 
         /*
          * Run these pipelines when the cart lines are being calculated.
         */
         'cart_lines' => [
-            Lunar\Pipelines\CartLine\GetUnitPrice::class,
+            GetUnitPrice::class,
         ],
     ],
 
@@ -67,13 +87,13 @@ return [
     |
     */
     'actions' => [
-        'add_to_cart' => Lunar\Actions\Carts\AddOrUpdatePurchasable::class,
-        'get_existing_cart_line' => Lunar\Actions\Carts\GetExistingCartLine::class,
-        'update_cart_line' => Lunar\Actions\Carts\UpdateCartLine::class,
-        'remove_from_cart' => Lunar\Actions\Carts\RemovePurchasable::class,
-        'add_address' => Lunar\Actions\Carts\AddAddress::class,
-        'set_shipping_option' => Lunar\Actions\Carts\SetShippingOption::class,
-        'order_create' => Lunar\Actions\Carts\CreateOrder::class,
+        'add_to_cart' => AddOrUpdatePurchasable::class,
+        'get_existing_cart_line' => GetExistingCartLine::class,
+        'update_cart_line' => UpdateCartLine::class,
+        'remove_from_cart' => RemovePurchasable::class,
+        'add_address' => AddAddress::class,
+        'set_shipping_option' => SetShippingOption::class,
+        'order_create' => CreateOrder::class,
     ],
 
     /*
@@ -88,23 +108,23 @@ return [
     'validators' => [
 
         'add_to_cart' => [
-            Lunar\Validation\CartLine\CartLineQuantity::class,
-            Lunar\Validation\CartLine\CartLineStock::class,
+            CartLineQuantity::class,
+            CartLineStock::class,
         ],
 
         'update_cart_line' => [
-            Lunar\Validation\CartLine\CartLineQuantity::class,
-            Lunar\Validation\CartLine\CartLineStock::class,
+            CartLineQuantity::class,
+            CartLineStock::class,
         ],
 
         'remove_from_cart' => [],
 
         'set_shipping_option' => [
-            Lunar\Validation\Cart\ShippingOptionValidator::class,
+            ShippingOptionValidator::class,
         ],
 
         'order_create' => [
-            Lunar\Validation\Cart\ValidateCartForOrderCreation::class,
+            ValidateCartForOrderCreation::class,
         ],
 
     ],
@@ -144,9 +164,9 @@ return [
         'enabled' => false,
 
         'pipelines' => [
-            Lunar\Pipelines\CartPrune\PruneAfter::class,
-            Lunar\Pipelines\CartPrune\WithoutOrders::class,
-            Lunar\Pipelines\CartPrune\WhereNotMerged::class,
+            PruneAfter::class,
+            WithoutOrders::class,
+            WhereNotMerged::class,
         ],
 
         'prune_interval' => 90, // days

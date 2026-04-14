@@ -2,8 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers;
 
-use Filament\Forms\Form;
-use Filament\Tables;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
@@ -24,10 +29,10 @@ class ValuesRelationManager extends BaseRelationManager
         return $record->translate('name');
     }
 
-    public function getDefaultForm(Form $form): Form
+    public function getDefaultForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TranslatedText::make('name')
                     ->label(__('lunarpanel::relationmanagers.values.form.name.label'))
                     ->required()
@@ -42,22 +47,22 @@ class ValuesRelationManager extends BaseRelationManager
             ->columns([
                 TranslatedTextColumn::make('name')
                     ->label(__('lunarpanel::relationmanagers.values.table.name.label')),
-                Tables\Columns\TextColumn::make('position')
+                TextColumn::make('position')
                     ->label(__('lunarpanel::relationmanagers.values.table.position.label')),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('position', 'asc')

@@ -2,15 +2,47 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Synthesizers\DropdownSynth;
 use Lunar\Models\Attribute;
 
 class Dropdown extends BaseFieldType
 {
     protected static string $synthesizer = DropdownSynth::class;
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<string, mixed>
+     */
+    public static function mutateConfigurationForForm(array $configuration): array
+    {
+        $lookups = $configuration['lookups'] ?? [];
+
+        if (! is_array($lookups)) {
+            return $configuration;
+        }
+
+        $configuration['lookups'] = collect($lookups)
+            ->mapWithKeys(function (mixed $lookup, mixed $key): array {
+                if (! is_array($lookup)) {
+                    return [$key => $lookup];
+                }
+
+                $label = $lookup['label'] ?? $lookup['key'] ?? null;
+                $value = $lookup['value'] ?? $label;
+
+                if (blank($label)) {
+                    return [];
+                }
+
+                return [$label => $value];
+            })
+            ->all();
+
+        return $configuration;
+    }
 
     public static function getFilamentComponent(Attribute $attribute): Component
     {
@@ -33,10 +65,10 @@ class Dropdown extends BaseFieldType
             )
                 ->keyLabel(__('lunarpanel::fieldtypes.dropdown.form.lookups.key_label'))
                 ->valueLabel(__('lunarpanel::fieldtypes.dropdown.form.lookups.value_label'))
-                ->formatStateUsing(function ($state) {
-                    return collect($state)->mapWithKeys(
-                        fn ($lookup) => [$lookup['label'] => $lookup['value'] ?? $lookup['label']]
-                    )->toArray();
+                ->afterStateHydrated(function (KeyValue $component, $state): void {
+                    $component->state(static::mutateConfigurationForForm([
+                        'lookups' => is_array($state) ? $state : [],
+                    ])['lookups'] ?? []);
                 })
                 ->mutateDehydratedStateUsing(function ($state) {
                     return collect($state)->map(function ($value, $label) {

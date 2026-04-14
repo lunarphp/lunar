@@ -1,5 +1,10 @@
 <?php
 
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ActivityResource;
 use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ListActivities;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource;
@@ -11,9 +16,10 @@ use Lunar\Admin\Filament\Resources\LanguageResource;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\ListLanguages;
 use Lunar\Admin\Support\Extending\ResourceExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 use Lunar\Tests\Admin\Stubs\Filament\TestCustomerAddressRelationManager;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('extending', 'extending.resources');
 
 it('can extend relationship managers', function () {
@@ -38,11 +44,11 @@ it('can extend relationship managers', function () {
 it('can extend table columns', function ($resource, $page) {
     $class = new class extends ResourceExtension
     {
-        public function extendTable(Filament\Tables\Table $table): Filament\Tables\Table
+        public function extendTable(Table $table): Table
         {
             return $table->columns([
                 ...$table->getColumns(),
-                \Filament\Tables\Columns\TextColumn::make('test_column'),
+                TextColumn::make('test_column'),
             ]);
         }
     };
@@ -53,7 +59,7 @@ it('can extend table columns', function ($resource, $page) {
 
     $this->asStaff();
 
-    \Livewire\Livewire::test($page)->assertTableColumnExists('test_column');
+    Livewire::test($page)->assertTableColumnExists('test_column');
 })->with([
     'ListCurrencies' => [CurrencyResource::class, ListCurrencies::class],
     'ListLanguages' => [LanguageResource::class, ListLanguages::class],
@@ -62,16 +68,16 @@ it('can extend table columns', function ($resource, $page) {
 ]);
 
 it('can extend form schema', function ($resource, $page) {
-    $class = new class extends \Lunar\Admin\Support\Extending\ResourceExtension
+    $class = new class extends ResourceExtension
     {
-        public function extendForm(Filament\Forms\Form $form): Filament\Forms\Form
+        public function extendForm(Schema $schema): Schema
         {
-            $form->schema([
-                ...$form->getComponents(true),
-                \Filament\Forms\Components\TextInput::make('test_form_field'),
+            $schema->components([
+                ...$schema->getComponents(true),
+                TextInput::make('test_form_field'),
             ]);
 
-            return $form;
+            return $schema;
         }
     };
 
@@ -83,7 +89,7 @@ it('can extend form schema', function ($resource, $page) {
 
     $model = $resource::getModel()::factory()->create();
 
-    \Livewire\Livewire::test($page, [
+    Livewire::test($page, [
         'record' => $model->getRouteKey(),
     ])->assertFormFieldExists('test_form_field');
 })->with([

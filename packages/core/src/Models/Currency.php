@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
@@ -19,8 +20,9 @@ use Lunar\Database\Factories\CurrencyFactory;
  * @property int $decimal_places
  * @property bool $enabled
  * @property bool $default
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property bool $sync_prices
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class Currency extends BaseModel implements Contracts\Currency
 {
@@ -36,6 +38,16 @@ class Currency extends BaseModel implements Contracts\Currency
      * @var array
      */
     protected $guarded = [];
+
+    protected function casts(): array
+    {
+        return [
+            'enabled' => 'boolean',
+            'default' => 'boolean',
+            'sync_prices' => 'boolean',
+            'decimal_places' => 'integer',
+        ];
+    }
 
     /**
      * Return a new factory instance for the model.

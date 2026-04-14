@@ -2,7 +2,6 @@
 
 namespace Lunar;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Console\Scheduling\Schedule;
@@ -32,11 +31,15 @@ use Lunar\Base\OrderReferenceGenerator;
 use Lunar\Base\OrderReferenceGeneratorInterface;
 use Lunar\Base\PaymentManagerInterface;
 use Lunar\Base\PricingManagerInterface;
+use Lunar\Base\ProvidesTelemetryInsights;
 use Lunar\Base\ShippingManifest;
 use Lunar\Base\ShippingManifestInterface;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Base\StorefrontSessionInterface;
 use Lunar\Base\TaxManagerInterface;
+use Lunar\Base\TelemetryInsights;
+use Lunar\Base\TelemetryService;
+use Lunar\Base\TelemetryServiceInterface;
 use Lunar\Console\Commands\AddonsDiscover;
 use Lunar\Console\Commands\Import\AddressData;
 use Lunar\Console\Commands\MigrateGetCandy;
@@ -52,6 +55,9 @@ use Lunar\Database\State\EnsureDefaultTaxClassExists;
 use Lunar\Database\State\EnsureMediaCollectionsAreRenamed;
 use Lunar\Database\State\MigrateCartOrderRelationship;
 use Lunar\Database\State\PopulateProductOptionLabelWithName;
+use Lunar\Database\State\UpdateWeightUnitToKg;
+use Lunar\Facades\Converter;
+use Lunar\Facades\Telemetry;
 use Lunar\Listeners\CartSessionAuthListener;
 use Lunar\Managers\CartSessionManager;
 use Lunar\Managers\DiscountManager;
@@ -70,6 +76,7 @@ use Lunar\Models\Discount;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\OrderLine;
+use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
@@ -88,12 +95,14 @@ use Lunar\Observers\LanguageObserver;
 use Lunar\Observers\MediaObserver;
 use Lunar\Observers\OrderLineObserver;
 use Lunar\Observers\OrderObserver;
+use Lunar\Observers\PriceObserver;
 use Lunar\Observers\ProductObserver;
 use Lunar\Observers\ProductOptionObserver;
 use Lunar\Observers\ProductOptionValueObserver;
 use Lunar\Observers\ProductVariantObserver;
 use Lunar\Observers\TransactionObserver;
 use Lunar\Observers\UrlObserver;
+use Lunar\Utils\MeasurementConverter;
 
 class LunarServiceProvider extends ServiceProvider
 {
@@ -106,6 +115,7 @@ class LunarServiceProvider extends ServiceProvider
         'orders',
         'payments',
         'pricing',
+        'products',
         'search',
         'shipping',
         'taxes',
@@ -126,6 +136,10 @@ class LunarServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
 
         $this->registerAddonManifest();
+
+        $this->app->singleton(MeasurementConverter::class, function () {
+            return new MeasurementConverter;
+        });
 
         $this->app->singleton(CartModifiers::class, function () {
             return new CartModifiers;
@@ -187,7 +201,21 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(DiscountManager::class);
         });
 
-        \Lunar\Facades\ModelManifest::register();
+        $this->app->singleton(ProvidesTelemetryInsights::class, function ($app) {
+            return $app->make(TelemetryInsights::class);
+        });
+
+        $this->app->singleton(TelemetryServiceInterface::class, function ($app) {
+            return $app->make(TelemetryService::class);
+        });
+
+        $this->app->terminating(function () {
+            if (! app()->runningInConsole()) {
+                Telemetry::run();
+            }
+        });
+
+        Facades\ModelManifest::register();
     }
 
     /**
@@ -204,7 +232,7 @@ class LunarServiceProvider extends ServiceProvider
         $this->registerBlueprintMacros();
         $this->registerStateListeners();
 
-        \Lunar\Facades\ModelManifest::morphMap();
+        Facades\ModelManifest::morphMap();
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -238,7 +266,7 @@ class LunarServiceProvider extends ServiceProvider
             }
         }
 
-        Arr::macro('permutate', [\Lunar\Utils\Arr::class, 'permutate']);
+        Arr::macro('permutate', [Utils\Arr::class, 'permutate']);
 
         // Handle generator
         Str::macro('handle', function ($string) {
@@ -280,6 +308,7 @@ class LunarServiceProvider extends ServiceProvider
             MigrateCartOrderRelationship::class,
             ConvertTaxbreakdown::class,
             ConvertBackOrderPurchasability::class,
+            UpdateWeightUnitToKg::class,
         ];
 
         foreach ($states as $state) {
@@ -313,6 +342,7 @@ class LunarServiceProvider extends ServiceProvider
         Language::observe(LanguageObserver::class);
         Order::observe(OrderObserver::class);
         OrderLine::observe(OrderLineObserver::class);
+        Price::observe(PriceObserver::class);
         Product::observe(ProductObserver::class);
         ProductOption::observe(ProductOptionObserver::class);
         ProductOptionValue::observe(ProductOptionValueObserver::class);
@@ -369,9 +399,15 @@ class LunarServiceProvider extends ServiceProvider
         Blueprint::macro('dimensions', function () {
             /** @var Blueprint $this */
             $columns = ['length', 'width', 'height', 'weight', 'volume'];
+            $unitDefaults = [
+                'weight' => 'kg',
+            ];
+
             foreach ($columns as $column) {
                 $this->decimal("{$column}_value", 10, 4)->default(0)->nullable()->index();
-                $this->string("{$column}_unit")->default('mm')->nullable();
+                $this->string("{$column}_unit")
+                    ->default($unitDefaults[$column] ?? 'mm')
+                    ->nullable();
             }
         });
 
@@ -382,7 +418,7 @@ class LunarServiceProvider extends ServiceProvider
             $type = config('lunar.database.users_id_type', 'bigint');
 
             if ($type == 'uuid') {
-                $this->foreignUuId($field_name)
+                $this->foreignUuid($field_name)
                     ->nullable($nullable)
                     ->constrained(
                         (new $userModel)->getTable()

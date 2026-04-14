@@ -19,7 +19,7 @@ class TestPurchasable implements Purchasable
         public $taxReference = null,
         public $option = null,
         public bool $collect = false,
-        public $meta = null
+        public $meta = null,
     ) {
         //  ..
     }
@@ -27,7 +27,7 @@ class TestPurchasable implements Purchasable
     /**
      * Get the price for the purchasable item.
      *
-     * @return \Lunar\DataTypes\Price
+     * @return Price
      */
     public function getPrice()
     {
@@ -108,6 +108,13 @@ class TestPurchasable implements Purchasable
     public function getOption()
     {
         return $this->option;
+    }
+
+    public function getOptions(): Collection
+    {
+        return collect([
+            $this->option,
+        ]);
     }
 
     /**

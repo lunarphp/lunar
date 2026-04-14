@@ -4,11 +4,14 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\CustomerGroupFactory;
 
 /**
@@ -17,8 +20,8 @@ use Lunar\Database\Factories\CustomerGroupFactory;
  * @property string $handle
  * @property bool $default
  * @property ?array $attribute_data
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class CustomerGroup extends BaseModel implements Contracts\CustomerGroup
 {
@@ -26,6 +29,7 @@ class CustomerGroup extends BaseModel implements Contracts\CustomerGroup
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     /**
      * {@inheritDoc}
@@ -96,7 +100,7 @@ class CustomerGroup extends BaseModel implements Contracts\CustomerGroup
     /**
      * Get the mapped attributes relation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
     public function mappedAttributes()
     {

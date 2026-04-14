@@ -1,14 +1,20 @@
 <?php
 
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Models\Currency;
 use Lunar\Models\Transaction;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
+use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
 
 use function Pest\Laravel\assertDatabaseHas;
 
+<<<<<<< add-intent-amount-check-to-stripe
 uses(\Lunar\Tests\Stripe\Unit\TestCase::class)->group('stripe');
+=======
+uses(TestCase::class);
+>>>>>>> 1.x
 
 it('can capture an order', function () {
     $cart = CartBuilder::build();
@@ -237,13 +243,13 @@ it('create a pending transaction when status is requires_action', function () {
 });
 
 it('can return correct payment checks', function () {
-    \Lunar\Models\Currency::factory()->create();
+    Currency::factory()->create();
 
     $cart = buildCart();
 
     $order = $cart->createOrder();
 
-    $transactionA = \Lunar\Models\Transaction::factory()->create([
+    $transactionA = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'stripe',
         'meta' => [
@@ -253,7 +259,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionB = \Lunar\Models\Transaction::factory()->create([
+    $transactionB = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'stripe',
         'meta' => [
@@ -263,7 +269,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionC = \Lunar\Models\Transaction::factory()->create([
+    $transactionC = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'stripe',
         'meta' => [
@@ -273,7 +279,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionD = \Lunar\Models\Transaction::factory()->create([
+    $transactionD = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'stripe',
         'meta' => [
