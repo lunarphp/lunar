@@ -7,14 +7,9 @@ use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
-
 use function Pest\Laravel\assertDatabaseHas;
 
-<<<<<<< add-intent-amount-check-to-stripe
-uses(\Lunar\Tests\Stripe\Unit\TestCase::class)->group('stripe');
-=======
 uses(TestCase::class);
->>>>>>> 1.x
 
 it('can capture an order', function () {
     $cart = CartBuilder::build();
