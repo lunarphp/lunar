@@ -1,5 +1,10 @@
 <?php
 
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
@@ -8,19 +13,21 @@ use Lunar\Admin\Filament\Resources\DiscountResource\Pages\EditDiscount;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\EditProductOption;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers\ValuesRelationManager;
+use Lunar\Admin\Support\Extending\RelationManagerExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('extending');
 
 it('can extend table columns', function ($relationManager, $page) {
-    $class = new class extends \Lunar\Admin\Support\Extending\RelationManagerExtension
+    $class = new class extends RelationManagerExtension
     {
-        public function extendTable(Filament\Tables\Table $table): Filament\Tables\Table
+        public function extendTable(Table $table): Table
         {
             return $table->columns([
                 ...$table->getColumns(),
-                \Filament\Tables\Columns\TextColumn::make('test_column'),
+                TextColumn::make('test_column'),
             ]);
         }
     };
@@ -31,7 +38,7 @@ it('can extend table columns', function ($relationManager, $page) {
 
     $model = $page::getResource()::getModel()::factory()->create();
 
-    \Livewire\Livewire::test($relationManager, [
+    Livewire::test($relationManager, [
         'ownerRecord' => $model,
         'pageClass' => $page,
     ])->assertTableColumnExists('test_column');
@@ -43,16 +50,16 @@ it('can extend table columns', function ($relationManager, $page) {
 ]);
 
 it('can extend form schema', function ($relationManager, $page) {
-    $class = new class extends \Lunar\Admin\Support\Extending\RelationManagerExtension
+    $class = new class extends RelationManagerExtension
     {
-        public function extendForm(Filament\Forms\Form $form): Filament\Forms\Form
+        public function extendForm(Schema $schema): Schema
         {
-            $form->schema([
-                ...$form->getComponents(true),
-                \Filament\Forms\Components\TextInput::make('test_form_field'),
+            $schema->components([
+                ...$schema->getComponents(true),
+                TextInput::make('test_form_field'),
             ]);
 
-            return $form;
+            return $schema;
         }
     };
 
@@ -62,10 +69,10 @@ it('can extend form schema', function ($relationManager, $page) {
 
     $model = $page::getResource()::getModel()::factory()->create();
 
-    \Livewire\Livewire::test($relationManager, [
+    Livewire::test($relationManager, [
         'ownerRecord' => $model,
         'pageClass' => $page,
-    ])->assertFormFieldExists('test_form_field');
+    ])->assertFormFieldExists('test_form_field', 'form');
 })->with([
     'AttributesRelationManager' => [AttributesRelationManager::class, EditAttributeGroup::class],
     'ValuesRelationManager' => [ValuesRelationManager::class, EditProductOption::class],

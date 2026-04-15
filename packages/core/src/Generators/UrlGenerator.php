@@ -5,6 +5,7 @@ namespace Lunar\Generators;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Models\Contracts\Language as LanguageContract;
 use Lunar\Models\Language;
 use Lunar\Models\Url;
 
@@ -13,14 +14,14 @@ class UrlGenerator
     /**
      * The instance of the model.
      *
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var Model
      */
     protected $model;
 
     /**
      * The default language.
      */
-    protected Language $defaultLanguage;
+    protected LanguageContract $defaultLanguage;
 
     /**
      * Construct the class.
@@ -99,7 +100,7 @@ class UrlGenerator
      *
      * @param  string  $slug
      * @param  string  $separator
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     private function getExistingSlugs($slug, $separator)
     {

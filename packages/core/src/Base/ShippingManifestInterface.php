@@ -5,7 +5,7 @@ namespace Lunar\Base;
 use Closure;
 use Illuminate\Support\Collection;
 use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Cart;
+use Lunar\Models\Contracts\Cart;
 
 interface ShippingManifestInterface
 {
@@ -19,7 +19,7 @@ interface ShippingManifestInterface
     /**
      * Add a collection of shipping options to the manifest.
      *
-     * @param  \Lunar\DataTypes\ShippingOption  $shippingOption
+     * @param  ShippingOption  $shippingOption
      * @return self
      */
     public function addOptions(Collection $shippingOptions);

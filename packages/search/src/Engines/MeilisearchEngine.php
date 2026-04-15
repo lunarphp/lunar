@@ -5,6 +5,7 @@ namespace Lunar\Search\Engines;
 use Illuminate\Support\Collection;
 use Laravel\Scout\EngineManager;
 use Lunar\Search\Data\SearchFacet;
+use Lunar\Search\Data\SearchFacetValue;
 use Lunar\Search\Data\SearchHit;
 use Lunar\Search\Data\SearchResults;
 use Meilisearch\Contracts\SearchQuery;
@@ -59,7 +60,7 @@ class MeilisearchEngine extends AbstractEngine
             'links' => (clone $paginator)->setCollection(
                 collect($results['hits'])
             )->appends([
-                'facets' => http_build_query($this->facets),
+                'facets' => $this->facets,
             ])->links(),
         ]);
     }
@@ -74,6 +75,10 @@ class MeilisearchEngine extends AbstractEngine
 
         foreach ($searchQueries as $searchQuery) {
             $filters = collect();
+
+            if (config('scout.soft_delete', false)) {
+                $filters->push('__soft_deleted = 0');
+            }
 
             $msQuery = new SearchQuery;
             $msQuery->setIndexUid($indexes->getUid());
@@ -109,7 +114,7 @@ class MeilisearchEngine extends AbstractEngine
                 'label' => $this->getFacetConfig($field)['label'] ?? $field,
                 'field' => $field,
                 'values' => collect($values)->map(
-                    fn ($count, $value) => SearchFacet\FacetValue::from([
+                    fn ($count, $value) => SearchFacetValue::from([
                         'label' => $value,
                         'value' => $value,
                         'count' => $count,

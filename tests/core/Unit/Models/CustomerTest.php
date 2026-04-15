@@ -1,14 +1,16 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Models\Address;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can make a customer with minimum attributes', function () {
     $customer = [
@@ -16,7 +18,7 @@ test('can make a customer with minimum attributes', function () {
         'first_name' => 'Tony',
         'last_name' => 'Stark',
         'company_name' => null,
-        'vat_no' => null,
+        'tax_identifier' => null,
         'meta' => null,
     ];
 
@@ -36,7 +38,7 @@ test('can make a customer', function () {
         'first_name' => 'Tony',
         'last_name' => 'Stark',
         'company_name' => 'Stark Enterprises',
-        'vat_no' => null,
+        'tax_identifier' => null,
         'meta' => null,
     ];
 
@@ -56,7 +58,7 @@ test('can make a customer with meta attribute', function () {
         'first_name' => 'Tony',
         'last_name' => 'Stark',
         'company_name' => null,
-        'vat_no' => null,
+        'tax_identifier' => null,
         'meta' => [
             'account' => 123456,
         ],

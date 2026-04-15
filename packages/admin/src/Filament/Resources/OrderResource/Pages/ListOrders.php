@@ -2,8 +2,8 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
-use Filament\Resources\Components\Tab;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
@@ -28,7 +28,7 @@ class ListOrders extends BaseListRecords
         );
 
         return [
-            'all' => Tab::make('All'),
+            'all' => Tab::make(__('lunarpanel::order.tabs.all')),
             ...collect($statuses)->mapWithKeys(
                 fn ($config, $status) => [
                     $status => Tab::make($config['label'])
@@ -38,8 +38,8 @@ class ListOrders extends BaseListRecords
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth
+    public function getMaxContentWidth(): Width
     {
-        return MaxWidth::Full;
+        return Width::Full;
     }
 }

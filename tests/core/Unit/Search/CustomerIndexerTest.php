@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
@@ -9,8 +8,11 @@ use Lunar\Models\Customer;
 use Lunar\Models\Language;
 use Lunar\Search\CustomerIndexer;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can return correct searchable data', function () {
     Language::factory()->create([
@@ -64,7 +66,7 @@ test('can return correct searchable data', function () {
 
     expect($data['name'])->toEqual($customer->fullName);
     expect($data['company_name'])->toEqual($customer->company_name);
-    expect($data['vat_no'])->toEqual($customer->vat_no);
+    expect($data['tax_identifier'])->toEqual($customer->tax_identifier);
     expect($data)->toHaveKey('meta_field');
     expect($data['meta_field'])->toEqual('meta_value');
     expect($data['account_ref'])->toEqual($customer->account_ref);

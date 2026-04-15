@@ -3,8 +3,8 @@
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
 use Filament\Actions\Action;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -61,9 +61,9 @@ class ManageVariantInventory extends BaseEditRecord
         ];
     }
 
-    public function getDefaultForm(Form $form): Form
+    public function getDefaultForm(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             Section::make()->schema([
                 ProductVariantResource::getStockFormComponent(),
                 ProductVariantResource::getBackorderFormComponent(),

@@ -29,6 +29,9 @@ return [
         ],
     ],
     'pages' => [
+        'edit' => [
+            'title' => 'Basis Informatie',
+        ],
         'products' => [
             'label' => 'Producten',
             'actions' => [

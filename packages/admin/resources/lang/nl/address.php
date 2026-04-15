@@ -19,6 +19,9 @@ return [
         'company_name' => [
             'label' => 'Bedrijfsnaam',
         ],
+        'tax_identifier' => [
+            'label' => 'BTW-nummer',
+        ],
         'line_one' => [
             'label' => 'Adres',
         ],
@@ -60,6 +63,9 @@ return [
         ],
         'company_name' => [
             'label' => 'Bedrijfsnaam',
+        ],
+        'tax_identifier' => [
+            'label' => 'BTW-nummer',
         ],
         'line_one' => [
             'label' => 'Adresregel Een',

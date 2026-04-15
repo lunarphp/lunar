@@ -2,9 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
+use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Models\Currency;
@@ -13,10 +15,20 @@ class EditDiscount extends BaseEditRecord
 {
     protected static string $resource = DiscountResource::class;
 
+    public function getTitle(): string
+    {
+        return __('lunarpanel::discount.pages.edit.title');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('lunarpanel::discount.pages.edit.title');
+    }
+
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 
@@ -77,8 +89,13 @@ class EditDiscount extends BaseEditRecord
         $managers = [];
 
         if ($this->record->type == BuyXGetY::class) {
-            $managers[] = DiscountResource\RelationManagers\ProductConditionRelationManager::class;
-            $managers[] = DiscountResource\RelationManagers\ProductRewardRelationManager::class;
+            $managers[] = ProductConditionRelationManager::class;
+            $managers[] = ProductRewardRelationManager::class;
+        }
+
+        $type = $this->record->getType();
+        if ($type instanceof LunarPanelDiscountInterface) {
+            $managers = array_merge($managers, $type->lunarPanelRelationManagers());
         }
 
         return $managers;

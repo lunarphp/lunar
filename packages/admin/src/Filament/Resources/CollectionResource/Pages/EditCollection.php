@@ -3,13 +3,14 @@
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
 use Filament\Actions\DeleteAction;
-use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Illuminate\Contracts\Support\Htmlable;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Facades\DB;
 use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 
 class EditCollection extends BaseEditRecord
 {
@@ -49,24 +50,24 @@ class EditCollection extends BaseEditRecord
         }
 
         return [
-            DeleteAction::make('delete')->form([
-                Forms\Components\Select::make('target_collection')
-                    ->model(Collection::class)
+            DeleteAction::make('delete')->schema([
+                Select::make('target_collection')
+                    ->model(Collection::modelClass())
                     ->searchable()
-                    ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search) use ($record): array {
-                        return get_search_builder(Collection::class, $search)
+                    ->getSearchResultsUsing(static function (Select $component, string $search) use ($record): array {
+                        return get_search_builder(Collection::modelClass(), $search)
                             ->get()
                             ->reject(
                                 fn ($result) => $result->isDescendantOf($record)
                             )
-                            ->mapWithKeys(fn (Collection $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                            ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                             ->all();
                     })->helperText(
                         'Choose which collection the children of this collection should be transferred to.'
                     )->hidden(
                         fn () => ! $record->children()->count()
                     ),
-            ])->before(function (Collection $collection, array $data) {
+            ])->before(function (CollectionContract $collection, array $data) {
 
                 $targetId = $data['target_collection'] ?? null;
 

@@ -4,7 +4,7 @@ namespace Lunar\Admin\Support\Actions\Collections;
 
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Facades\DB;
 use Lunar\Models\Attribute;
@@ -16,7 +16,7 @@ class CreateRootCollection extends CreateAction
     {
         parent::setUp();
 
-        $this->action(function (array $arguments, Form $form): void {
+        $this->action(function (array $arguments, Schema $schema): void {
             $model = $this->getModel();
 
             DB::beginTransaction();
@@ -37,7 +37,7 @@ class CreateRootCollection extends CreateAction
             DB::commit();
 
             $this->record($record);
-            $form->model($record);
+            $schema->model($record);
 
             if ($arguments['another'] ?? false) {
                 $this->callAfter();
@@ -46,9 +46,9 @@ class CreateRootCollection extends CreateAction
                 $this->record(null);
 
                 // Ensure that the form record is anonymized so that relationships aren't loaded.
-                $form->model($model);
+                $schema->model($model);
 
-                $form->fill();
+                $schema->fill();
 
                 $this->halt();
 
@@ -67,8 +67,10 @@ class CreateRootCollection extends CreateAction
             $formInput = TranslatedText::class;
         }
 
-        $this->form([
-            $formInput::make('name')->required(),
+        $this->schema([
+            $formInput::make('name')
+                ->label(__('lunarpanel::collection.form.name.label'))
+                ->required(),
         ]);
 
         $this->label(

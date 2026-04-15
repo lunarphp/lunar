@@ -2,15 +2,15 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Models\ProductVariant;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 
 class ManageProductIdentifiers extends BaseEditRecord
 {
@@ -36,7 +36,7 @@ class ManageProductIdentifiers extends BaseEditRecord
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
-        return $parameters['record']->variants()->count() == 1;
+        return $parameters['record']->variants()->withTrashed()->count() == 1;
     }
 
     public function getBreadcrumb(): string
@@ -76,9 +76,9 @@ class ManageProductIdentifiers extends BaseEditRecord
         return $record;
     }
 
-    protected function getVariant(): ProductVariant
+    protected function getVariant(): ProductVariantContract
     {
-        return $this->getRecord()->variants()->first();
+        return $this->getRecord()->variants()->withTrashed()->first();
     }
 
     protected function getFormActions(): array
@@ -88,11 +88,11 @@ class ManageProductIdentifiers extends BaseEditRecord
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $variant = $this->getVariant();
 
-        return $form->schema([
+        return $schema->components([
             Section::make()->schema([
                 ProductVariantResource::getSkuFormComponent()
                     ->live()->unique(

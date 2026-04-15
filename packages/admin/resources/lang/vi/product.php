@@ -6,6 +6,10 @@ return [
 
     'plural_label' => 'Sản phẩm',
 
+    'tabs' => [
+        'all' => 'Tất cả',
+    ],
+
     'status' => [
         'unpublished' => [
             'content' => 'Hiện đang ở trạng thái nháp, sản phẩm này bị ẩn trên tất cả các kênh và nhóm khách hàng.',
@@ -115,6 +119,7 @@ return [
         ],
         'collections' => [
             'label' => 'Bộ sưu tập',
+            'select_collection' => 'Chọn bộ sưu tập',
         ],
         'associations' => [
             'label' => 'Liên kết sản phẩm',

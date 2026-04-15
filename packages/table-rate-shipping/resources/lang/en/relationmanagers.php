@@ -34,8 +34,11 @@ return [
                     'currency_id' => [
                         'label' => 'Currency',
                     ],
-                    'min_quantity' => [
+                    'min_spend' => [
                         'label' => 'Min. Spend',
+                    ],
+                    'min_weight' => [
+                        'label' => 'Min. Weight',
                     ],
                     'price' => [
                         'label' => 'Price',
@@ -44,8 +47,15 @@ return [
             ],
         ],
         'table' => [
+            'enabled' => [
+                'label' => 'Enabled',
+            ],
+            'disabled' => [
+                'label' => 'disabled',
+            ],
             'shipping_method' => [
                 'label' => 'Shipping Method',
+                'disabled' => 'Disabled',
             ],
             'price' => [
                 'label' => 'Price',

@@ -10,6 +10,10 @@ return [
         'manage' => 'Zarządzanie zamówieniami',
     ],
 
+    'tabs' => [
+        'all' => 'Wszelkie',
+    ],
+
     'transactions' => [
         'capture' => 'Przechwycona',
         'intent' => 'Rozpoczęta',
@@ -238,6 +242,8 @@ return [
             'notification' => 'Statusy zamówień zostały zaktualizowane',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Nowy status',
             ],

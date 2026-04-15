@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
 
 use Filament\Actions;
-use Filament\Forms\Components\Group;
+use Filament\Schemas\Components\Group;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Models\CustomerGroup;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource;
@@ -21,6 +21,7 @@ class ListShippingMethod extends BaseListRecords
                 Group::make([
                     ShippingMethodResource::getCodeFormComponent(),
                     ShippingMethodResource::getDriverFormComponent(),
+                    ShippingMethodResource::getChargeByFormComponent(),
                 ])->columns(2),
                 ShippingMethodResource::getDescriptionFormComponent(),
             ])->after(function (ShippingMethod $shippingMethod) {

@@ -2,6 +2,8 @@
 
 namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 
+use Carbon\CarbonInterface;
+use DateTime;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -10,9 +12,9 @@ use Lunar\Models\Order;
 
 class OrderStatsOverview extends BaseWidget
 {
-    protected static ?string $pollingInterval = '60s';
+    protected ?string $pollingInterval = '60s';
 
-    protected function getOrderQuery(?\DateTime $from = null, ?\DateTime $to = null)
+    protected function getOrderQuery(DateTime|CarbonInterface|null $from = null, DateTime|CarbonInterface|null $to = null)
     {
         return Order::whereNotNull('placed_at')
             ->whereBetween('placed_at', [
@@ -69,11 +71,13 @@ class OrderStatsOverview extends BaseWidget
 
     protected function getStatTotal($currentDate, $previousDate, $reference): Stat
     {
-        $currentSubTotal = $currentDate->select(
-            DB::RAW('sum(sub_total) as sub_total')
+        $currentSubTotal = $currentDate->with(['currency'])->select(
+            DB::RAW('MAX(currency_code) as currency_code'),
+            DB::RAW('sum(sub_total) as sub_total'),
         )->first()->sub_total;
 
-        $previousSubTotal = $previousDate->select(
+        $previousSubTotal = $previousDate->with(['currency'])->select(
+            DB::RAW('MAX(currency_code) as currency_code'),
             DB::RAW('sum(sub_total) as sub_total')
         )->first()->sub_total;
 

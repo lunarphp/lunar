@@ -24,4 +24,11 @@ return [
         ],
     ],
 
+    'delete' => [
+        'error' => [
+            'title' => 'Kan belastingklasse niet verwijderen',
+            'body' => 'Deze belastingklasse heeft gekoppelde productvarianten en kan niet worden verwijderd.',
+        ],
+    ],
+
 ];

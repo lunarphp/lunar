@@ -34,7 +34,7 @@ return [
     | want to use Scout when possible on tables in the panel, enable it here.
     |
     */
-    'scout_enabled' => true,
+    'scout_enabled' => false,
 
     /*
     |--------------------------------------------------------------------------

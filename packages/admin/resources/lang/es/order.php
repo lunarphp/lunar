@@ -10,6 +10,10 @@ return [
         'manage' => 'Gestionar',
     ],
 
+    'tabs' => [
+        'all' => 'Todas',
+    ],
+
     'transactions' => [
         'capture' => 'Capturado',
         'intent' => 'Intención',
@@ -79,6 +83,9 @@ return [
             ],
             'company_name' => [
                 'label' => 'Nombre de la Empresa',
+            ],
+            'tax_identifier' => [
+                'label' => 'Identificador Fiscal',
             ],
             'contact_phone' => [
                 'label' => 'Teléfono',
@@ -238,6 +245,8 @@ return [
             'notification' => 'Estado de pedidos actualizado',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Nuevo estado',
             ],

@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\FieldTypes;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
 use Livewire\Livewire;
 use Lunar\Admin\Support\Synthesizers\TextSynth;
 use Lunar\Models\Attribute;
@@ -10,6 +10,15 @@ use Lunar\Models\Attribute;
 abstract class BaseFieldType
 {
     protected static string $synthesizer = TextSynth::class;
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<string, mixed>
+     */
+    public static function mutateConfigurationForForm(array $configuration): array
+    {
+        return $configuration;
+    }
 
     public static function getConfigurationFields(): array
     {

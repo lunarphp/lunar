@@ -2,18 +2,27 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
-use Filament\Forms;
-use Filament\Tables;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\MorphToSelect\Type;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Admin\Support\Tables\Columns\ThumbnailImageColumn;
+use Lunar\Models\Contracts\Product as ProductContract;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
 
 class ProductConditionRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
-    protected static string $relationship = 'purchasables';
+    protected static string $relationship = 'discountables';
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
@@ -27,6 +36,7 @@ class ProductConditionRelationManager extends BaseRelationManager
 
     public function getDefaultTable(Table $table): Table
     {
+        $prefix = config('lunar.database.table_prefix');
 
         return $table
             ->heading(
@@ -38,48 +48,72 @@ class ProductConditionRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['condition'])
-                    ->wherePurchasableType(Product::morphName())
-                    ->whereHas('purchasable')
+                    ->whereIn('discountable_type', [Product::morphName(), ProductVariant::morphName()])
+                    ->whereHas('discountable')
             )
             ->headerActions([
-                Tables\Actions\CreateAction::make()->form([
-                    Forms\Components\MorphToSelect::make('purchasable')
+                CreateAction::make()->schema([
+                    MorphToSelect::make('discountable')
                         ->searchable(true)
                         ->types([
-                            Forms\Components\MorphToSelect\Type::make(Product::class)
+                            Type::make(Product::modelClass())
                                 ->titleAttribute('name.en')
-                                ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                    return get_search_builder(Product::class, $search)
+                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
+                                    return get_search_builder(Product::modelClass(), $search)
                                         ->get()
-                                        ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->attr('name')])
+                                        ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
                                         ->all();
+                                })
+                                ->getOptionLabelUsing(function ($value): string {
+                                    return Product::modelClass()::find($value)?->attr('name') ?? $value;
+                                }),
+
+                            Type::make(ProductVariant::modelClass())
+                                ->titleAttribute('sku')
+                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
+                                    return get_search_builder(ProductVariant::modelClass(), $search)
+                                        ->orWhere('sku', 'like', $search.'%')
+                                        ->get()
+                                        ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
+                                        ->all();
+                                })
+                                ->getOptionLabelUsing(function ($value): string {
+                                    $variant = ProductVariant::modelClass()::with('product')->find($value);
+
+                                    return $variant ? $variant->product->attr('name').' - '.$variant->sku : $value;
                                 }),
                         ]),
                 ])->label(
                     __('lunarpanel::discount.relationmanagers.conditions.actions.attach.label')
-                )->mutateFormDataUsing(function (array $data) {
+                )->mutateDataUsing(function (array $data) {
                     $data['type'] = 'condition';
 
                     return $data;
                 }),
             ])->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('purchasable.thumbnail')
-                    ->collection(config('lunar.media.collection'))
-                    ->conversion('small')
-                    ->limit(1)
-                    ->square()
+                ThumbnailImageColumn::make('discountable_id')
+                    ->resolveThumbnailUrlUsing(fn (?Model $record) => $record?->discountable?->getThumbnailImage())
                     ->label(''),
-                Tables\Columns\TextColumn::make('purchasable.attribute_data.name')
+
+                TextColumn::make('discountable.id')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.conditions.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->purchasable->attr('name')
+                        fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->product->attr('name').' - '.$record->discountable->sku : $record->discountable->attr('name')
                     ),
-            ])->actions([
-                Tables\Actions\DeleteAction::make(),
-            ])->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+
+                TextColumn::make('discountable_type')
+                    ->label(
+                        __('lunarpanel::discount.relationmanagers.conditions.table.type.label')
+                    )
+                    ->formatStateUsing(
+                        fn (Model $record) => str($record->discountable->morphName())->replace('_', ' ')->title(),
+                    ),
+            ])->recordActions([
+                DeleteAction::make(),
+            ])->toolbarActions([
+                DeleteBulkAction::make(),
             ]);
     }
 }

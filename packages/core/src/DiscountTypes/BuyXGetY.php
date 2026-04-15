@@ -9,7 +9,10 @@ use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
+use Lunar\Models\Collection as LunarCollection;
+use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
 
 class BuyXGetY extends AbstractDiscountType
 {
@@ -18,7 +21,7 @@ class BuyXGetY extends AbstractDiscountType
      */
     public function getName(): string
     {
-        return 'Buy X Get Y';
+        return __('lunarpanel::discount.form.buy_x_get_y.heading');
     }
 
     /**
@@ -46,7 +49,7 @@ class BuyXGetY extends AbstractDiscountType
      *
      * @return CartLine
      */
-    public function apply(Cart $cart): Cart
+    public function apply(CartContract $cart): CartContract
     {
         $data = $this->discount->data;
 
@@ -55,11 +58,28 @@ class BuyXGetY extends AbstractDiscountType
         $maxRewardQty = $data['max_reward_qty'] ?? null;
         $automaticallyAddRewards = $data['automatically_add_rewards'] ?? false;
 
-        // Get all purchasables that are eligible.
+        // Get all discountables that are eligible.
         $conditions = $cart->lines->reject(function ($line) {
-            return ! $this->discount->purchasableConditions->first(function ($item) use ($line) {
-                return $item->purchasable_type == Product::morphName() &&
-                    $item->purchasable_id == $line->purchasable->product->id;
+            return ! $this->discount->discountableConditions->first(function ($item) use ($line) {
+                if ($item->discountable_type == Product::morphName() &&
+                    $item->discountable_id == $line->purchasable->product->id
+                ) {
+                    return true;
+                }
+
+                if ($item->discountable_type == ProductVariant::morphName() &&
+                    $item->discountable_id == $line->purchasable->id
+                ) {
+                    return true;
+                }
+
+                if ($item->discountable_type == LunarCollection::morphName() &&
+                    $line->purchasable->product->collections->pluck('id')->contains($item->discountable_id)
+                ) {
+                    return true;
+                }
+
+                return false;
             });
         });
 
@@ -88,11 +108,22 @@ class BuyXGetY extends AbstractDiscountType
 
         // Get the reward lines and sort by cheapest first.
         $rewardLines = $cart->lines->filter(function ($line) {
-            return $this->discount->purchasableRewards->first(function ($item) use ($line) {
-                return $item->purchasable_type == Product::morphName() &&
-                    $item->purchasable_id == $line->purchasable->product->id;
+            return $this->discount->discountableRewards->first(function ($item) use ($line) {
+                if ($item->discountable_type == Product::morphName() &&
+                    $item->discountable_id == $line->purchasable->product->id
+                ) {
+                    return true;
+                }
+
+                if ($item->discountable_type == ProductVariant::morphName() &&
+                    $item->discountable_id == $line->purchasable->id
+                ) {
+                    return true;
+                }
+
+                return false;
             });
-        })->sortBy('subTotal.value');
+        })->sortBy('unitPrice.value');
 
         foreach ($rewardLines as $rewardLine) {
             if (! $remainingRewardQty) {
@@ -142,6 +173,7 @@ class BuyXGetY extends AbstractDiscountType
             $remainingRewardQty -= $qtyToAllocate;
 
             $subTotal = $rewardLine->subTotal->value;
+
             $unitPrice = $rewardLine->unitPrice->value;
 
             $lineDiscountTotal = $unitPrice * $qtyToAllocate;
@@ -164,7 +196,6 @@ class BuyXGetY extends AbstractDiscountType
             }
 
             $cart->freeItems->push($rewardLine->purchasable);
-
         }
 
         if ($automaticallyAddRewards) {
@@ -177,15 +208,17 @@ class BuyXGetY extends AbstractDiscountType
             discount: $this->discount,
         ));
 
+        $cart->discounts->push($this);
+
         return $cart;
     }
 
-    private function processAutomaticRewards(Cart $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
+    private function processAutomaticRewards(CartContract $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
     {
         // we have lines to add
         if ($remainingRewardQty > 0) {
             while ($remainingRewardQty > 0) {
-                $selectedRewardItem = $this->discount->purchasableRewards->random()->purchasable;
+                $selectedRewardItem = $this->discount->discountableRewards->random()->discountable;
                 $purchasable = $selectedRewardItem->variants->first();
 
                 // is it already in cart?
@@ -253,14 +286,18 @@ class BuyXGetY extends AbstractDiscountType
 
                 $discountTotal += $unitPrice;
 
+                if ($discountTotal > $rewardLine->subTotal->value) {
+                    $discountTotal = $rewardLine->subTotal->value;
+                }
+
                 $rewardLine->discountTotal = new Price(
-                    ($rewardLine->discountTotal?->value ?? 0) + $unitPrice,
+                    $discountTotal,
                     $cart->currency,
                     1
                 );
 
                 $rewardLine->subTotalDiscounted = new Price(
-                    $rewardLine->subTotal->value - $rewardLine->discountTotal->value,
+                    max(0, $rewardLine->subTotal->value - $rewardLine->discountTotal->value),
                     $cart->currency,
                     1
                 );

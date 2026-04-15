@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasTranslations;
@@ -29,8 +30,8 @@ use Lunar\Facades\DB;
  * @property string $validation_rules
  * @property bool $filterable
  * @property bool $searchable
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class Attribute extends BaseModel implements Contracts\Attribute
 {
@@ -41,11 +42,12 @@ class Attribute extends BaseModel implements Contracts\Attribute
     protected static function booted(): void
     {
         static::deleting(function (self $attribute) {
-            DB::beginTransaction();
-            DB::table(
+            $connection = DB::connection();
+            $connection->beginTransaction();
+            $connection->table(
                 config('lunar.database.table_prefix').'attributables'
             )->where('attribute_id', '=', $attribute->id)->delete();
-            DB::commit();
+            $connection->commit();
         });
     }
 

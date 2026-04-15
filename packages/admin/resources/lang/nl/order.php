@@ -10,6 +10,10 @@ return [
         'manage' => 'Beheren',
     ],
 
+    'tabs' => [
+        'all' => 'Alle',
+    ],
+
     'transactions' => [
         'capture' => 'Geïncasseerd',
         'intent' => 'Voorgenomen',
@@ -79,6 +83,9 @@ return [
             ],
             'company_name' => [
                 'label' => 'Bedrijfsnaam',
+            ],
+            'tax_identifier' => [
+                'label' => 'BTW-nummer',
             ],
             'contact_phone' => [
                 'label' => 'Telefoon',
@@ -238,6 +245,8 @@ return [
             'notification' => 'Bestellingsstatus bijgewerkt',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Nieuwe status',
             ],

@@ -5,8 +5,10 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\TaxRateFactory;
 use Lunar\Facades\DB;
 
@@ -15,13 +17,14 @@ use Lunar\Facades\DB;
  * @property ?int $tax_zone_id
  * @property bool $priority
  * @property string $name
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class TaxRate extends BaseModel implements Contracts\TaxRate
 {
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     /**
      * Return a new factory instance for the model.

@@ -1,17 +1,19 @@
 <?php
 
-uses(\Lunar\Tests\Shipping\TestCase::class)
-    ->group('shipping', 'shipping-zone');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Models\Country;
 use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Resolvers\ShippingZoneResolver;
+use Lunar\Tests\Shipping\TestCase;
 use Lunar\Tests\Shipping\Stubs\Resolvers\TestCustomPostcodeResolver;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class)
+    ->group('shipping', 'shipping-zone');
+
+uses(RefreshDatabase::class);
 
 test('can fetch shipping zones by country', function () {
     $countryA = Country::factory()->create();

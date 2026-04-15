@@ -2,7 +2,6 @@
 
 namespace Lunar\Tests\Opayo;
 
-use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
@@ -10,11 +9,12 @@ use Livewire\LivewireServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Opayo\OpayoServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
+use Lunar\Tests\TestCase as BaseTestCase;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {
@@ -51,7 +51,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
             LivewireServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ActivitylogServiceProvider::class,
-            ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
             ShippingServiceProvider::class,
             BlinkServiceProvider::class,
@@ -62,7 +61,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        // perform environment setup
+        $this->replaceModelsForTesting();
     }
 
     /**

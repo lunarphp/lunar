@@ -9,6 +9,10 @@ return [
         'manage' => 'Quản lý',
     ],
 
+    'tabs' => [
+        'all' => 'Tất cả',
+    ],
+
     'transactions' => [
         'capture' => 'Đã thu tiền',
         'intent' => 'Chờ thanh toán',
@@ -233,6 +237,8 @@ return [
             'notification' => 'Đã cập nhật trạng thái đơn hàng',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Trạng thái mới',
             ],

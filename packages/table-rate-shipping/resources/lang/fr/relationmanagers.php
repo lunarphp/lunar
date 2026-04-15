@@ -34,8 +34,11 @@ return [
                     'currency_id' => [
                         'label' => 'Devise',
                     ],
-                    'min_quantity' => [
-                        'label' => 'Dépense min.',
+                    'min_spend' => [
+                        'label' => 'Dép. Min.',
+                    ],
+                    'min_weight' => [
+                        'label' => 'Poids Min.',
                     ],
                     'price' => [
                         'label' => 'Prix',

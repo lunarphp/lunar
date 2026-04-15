@@ -1,5 +1,7 @@
 <?php
 
+use Lunar\Models\Discount;
+
 return [
     'plural_label' => 'Rabaty',
     'label' => 'Rabat',
@@ -70,6 +72,12 @@ return [
             'label' => 'Maksymalna ilość zrabatowanych produktów',
             'helper_text' => 'Maksymalna ilość sztuk każdego produktu, która może być objęta zniżką.',
         ],
+        'fixed_value' => [
+            'label' => 'Stała wartość',
+        ],
+        'percentage' => [
+            'label' => 'Procent',
+        ],
     ],
     'table' => [
         'name' => [
@@ -77,16 +85,16 @@ return [
         ],
         'status' => [
             'label' => 'Status',
-            \Lunar\Models\Discount::ACTIVE => [
+            Discount::ACTIVE => [
                 'label' => 'Aktywny',
             ],
-            \Lunar\Models\Discount::PENDING => [
+            Discount::PENDING => [
                 'label' => 'Oczekujący',
             ],
-            \Lunar\Models\Discount::EXPIRED => [
+            Discount::EXPIRED => [
                 'label' => 'Wygasły',
             ],
-            \Lunar\Models\Discount::SCHEDULED => [
+            Discount::SCHEDULED => [
                 'label' => 'Zaplanowany',
             ],
         ],
@@ -103,6 +111,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Dostępność',
+        ],
+        'edit' => [
+            'title' => 'Informacje podstawowe',
         ],
         'limitations' => [
             'label' => 'Ograniczenia',

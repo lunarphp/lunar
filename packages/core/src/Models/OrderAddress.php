@@ -5,6 +5,7 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Lunar\Base\Addressable;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasMacros;
@@ -20,6 +21,7 @@ use Lunar\Database\Factories\OrderAddressFactory;
  * @property ?string $first_name
  * @property ?string $last_name
  * @property ?string $company_name
+ * @property ?string $tax_identifier
  * @property ?string $line_one
  * @property ?string $line_two
  * @property ?string $line_three
@@ -32,8 +34,8 @@ use Lunar\Database\Factories\OrderAddressFactory;
  * @property string $type
  * @property ?string $shipping_option
  * @property array $meta
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class OrderAddress extends BaseModel implements Addressable, Contracts\OrderAddress
 {
@@ -63,6 +65,7 @@ class OrderAddress extends BaseModel implements Addressable, Contracts\OrderAddr
         'first_name',
         'last_name',
         'company_name',
+        'tax_identifier',
         'line_one',
         'line_two',
         'line_three',

@@ -1,12 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Shipping\TestCase::class)
-    ->group('shipping', 'shipping-zone-postcode');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Models\ShippingZonePostcode;
+use Lunar\Tests\Shipping\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class)->group('shipping', 'shipping-zone-postcode');
+
+uses(RefreshDatabase::class);
 
 test('can create model', function () {
     $shippingZone = ShippingZone::factory()->create();

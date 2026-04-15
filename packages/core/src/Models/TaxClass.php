@@ -4,23 +4,26 @@ namespace Lunar\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\TaxClassFactory;
 
 /**
  * @property int $id
  * @property string $name
  * @property bool $default
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class TaxClass extends BaseModel implements Contracts\TaxClass
 {
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     public static function booted()
     {

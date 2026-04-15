@@ -1,15 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can create a price', function () {
     $variant = ProductVariant::factory()->create();
@@ -268,4 +270,27 @@ test('can get a price inc tax', function () {
     ]);
 
     expect($price->priceIncTax()->value)->toEqual(1000);
+});
+
+test('can get a compare price inc tax', function () {
+    Config::set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $variant = ProductVariant::factory()->create();
+
+    $currency = Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+        'default' => true,
+    ]);
+
+    $price = Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $variant->id,
+        'priceable_type' => $variant->getMorphClass(),
+        'price' => 833,
+        'compare_price' => 1667,
+        'min_quantity' => 1,
+    ]);
+
+    expect($price->comparePriceIncTax()->value)->toEqual(2000);
 });

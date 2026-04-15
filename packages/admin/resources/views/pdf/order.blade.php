@@ -95,6 +95,9 @@
                                     @if($record->billingAddress->company_name)
                                       {{ $record->billingAddress->company_name }}<br>
                                     @endif
+                                    @if($record->billingAddress->tax_identifier)
+                                      {{ $record->billingAddress->tax_identifier }}<br>
+                                    @endif
                                     {{ $record->billingAddress->line_one }}
                                     @if($record->billingAddress->line_two)
                                       <br>{{ $record->billingAddress->line_two }}<br>
@@ -106,16 +109,20 @@
                                     {{ $record->billingAddress->state }}<br>
                                     {{ $record->billingAddress->postcode }}<br>
                                     {{ $record->billingAddress->country->name }}<br>
-                                    @if($record->customer?->vat_no)
-                                        <p>VAT No.: {{ $record->customer?->vat_no }}</p>
+                                    @if($record->customer?->tax_identifier)
+                                        <p>Tax Identifier: {{ $record->customer?->tax_identifier }}</p>
                                     @endif
                                 </td>
 
+                                @if ($record->shippingAddress)
                                 <td align="left" width="33%">
                                     <h3>Shipping</h3>
                                     {{ $record->shippingAddress->fullName }}<br>
                                     @if($record->shippingAddress->company_name)
                                       {{ $record->shippingAddress->company_name }}<br>
+                                    @endif
+                                    @if($record->shippingAddress->tax_identifier)
+                                      {{ $record->shippingAddress->tax_identifier }}<br>
                                     @endif
                                     {{ $record->shippingAddress->line_one }}
                                     @if($record->shippingAddress->line_two)
@@ -129,6 +136,7 @@
                                     {{ $record->shippingAddress->postcode }}<br>
                                     {{ $record->shippingAddress->country->name }}<br>
                                 </td>
+                                @endif
 
                                 <td align="right" width="33%">
                                 </td>

@@ -2,11 +2,15 @@
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Base\Traits\Searchable;
 use Lunar\DataTypes\Price;
 use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\Address;
 use Lunar\Models\Attribute;
+use Lunar\Models\ProductVariant;
 
+use function Filament\Support\generate_search_column_expression;
 use function Filament\Support\generate_search_term_expression;
 
 if (! function_exists('price')) {
@@ -17,7 +21,7 @@ if (! function_exists('price')) {
 }
 
 if (! function_exists('sync_with_search')) {
-    function sync_with_search(?Illuminate\Database\Eloquent\Model $model = null): void
+    function sync_with_search(?Model $model = null): void
     {
         if (! $model) {
             return;
@@ -31,11 +35,11 @@ if (! function_exists('sync_with_search')) {
             return;
         }
 
-        if ($model instanceof \Lunar\Models\ProductVariant) {
+        if ($model instanceof ProductVariant) {
             $model->product()->first()->searchable();
         }
 
-        if ($model instanceof \Lunar\Models\Address) {
+        if ($model instanceof Address) {
             $model->customer()->first()->searchable();
         }
 
@@ -75,7 +79,7 @@ if (! function_exists('db_date')) {
 
 if (! function_exists('get_search_builder')) {
 
-    function get_search_builder($model, $search): Laravel\Scout\Builder|Builder
+    function get_search_builder(string $model, string $search): Laravel\Scout\Builder|Builder
     {
         $scoutEnabled = config('lunar.panel.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive($model));
@@ -93,8 +97,10 @@ if (! function_exists('get_search_builder')) {
 
             $search = generate_search_term_expression($search, true, $databaseConnection);
 
+            $isForcedCaseInsensitive = true;
+
             foreach (explode(' ', $search) as $searchWord) {
-                $query->where(function (Builder $query) use ($model, $searchWord) {
+                $query->where(function (Builder $query) use ($model, $searchWord, $isForcedCaseInsensitive, $databaseConnection) {
                     $attributes = Attribute::whereAttributeType($model::morphName())
                         ->whereSearchable(true)
                         ->get();
@@ -113,7 +119,7 @@ if (! function_exists('get_search_builder')) {
                         $whereClause = $isFirst ? 'where' : 'orWhere';
 
                         $query->{$whereClause}(
-                            $searchAttribute,
+                            generate_search_column_expression($query->qualifyColumn($searchAttribute), $isForcedCaseInsensitive, $databaseConnection),
                             'like',
                             "%{$searchWord}%",
                         );

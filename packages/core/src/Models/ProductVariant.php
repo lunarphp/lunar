@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\HasThumbnailImage;
 use Lunar\Base\Purchasable;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasDimensions;
@@ -24,7 +26,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property int $id
  * @property int $product_id
  * @property int $tax_class_id
- * @property ?\Illuminate\Support\Collection $attribute_data
+ * @property ?Collection $attribute_data
  * @property ?string $tax_ref
  * @property int $unit_quantity
  * @property int $min_quantity
@@ -47,11 +49,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property int $stock
  * @property int $backorder
  * @property string $purchasable
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purchasable
+class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
 {
     use HasAttributes;
     use HasDimensions;
@@ -216,5 +218,10 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, Purc
         }
 
         return $this->stock + $this->backorder;
+    }
+
+    public function getThumbnailImage(): string
+    {
+        return $this->getThumbnail()?->getUrl('small') ?? '';
     }
 }

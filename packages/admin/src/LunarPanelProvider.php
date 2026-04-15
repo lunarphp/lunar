@@ -74,6 +74,10 @@ class LunarPanelProvider extends ServiceProvider
             __DIR__.'/../resources/lang' => $this->app->langPath('vendor/lunarpanel'),
         ]);
 
+        $this->publishes([
+            __DIR__.'/../resources/views/pdf' => resource_path('views/vendor/lunarpanel/pdf'),
+        ], 'lunarpanel.pdf');
+
         collect($this->configFiles)->each(function ($config) {
             $this->mergeConfigFrom("{$this->root}/config/$config.php", "lunar.$config");
         });
@@ -178,7 +182,7 @@ class LunarPanelProvider extends ServiceProvider
 
     protected function registerLunarSynthesizer(): void
     {
-        \Lunar\Admin\Support\Facades\AttributeData::synthesizeLivewireProperties();
+        Support\Facades\AttributeData::synthesizeLivewireProperties();
         Livewire::propertySynthesizer(PriceSynth::class);
     }
 }

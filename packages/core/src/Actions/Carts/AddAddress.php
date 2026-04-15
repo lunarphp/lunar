@@ -6,6 +6,7 @@ use Lunar\Actions\AbstractAction;
 use Lunar\Base\Addressable;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
+use Lunar\Models\Contracts\Cart as CartContract;
 
 class AddAddress extends AbstractAction
 {
@@ -15,6 +16,7 @@ class AddAddress extends AbstractAction
         'first_name',
         'last_name',
         'company_name',
+        'tax_identifier',
         'line_one',
         'line_two',
         'line_three',
@@ -29,16 +31,13 @@ class AddAddress extends AbstractAction
 
     /**
      * Execute the action.
-     *
-     * @param  \Lunar\Models\CartLine  $cartLine
-     * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return \Lunar\Models\CartLine
      */
     public function execute(
-        Cart $cart,
+        CartContract $cart,
         array|Addressable $address,
         string $type
     ): self {
+        /** @var Cart $cart */
         // Do we already have an address for this type?
         $cart->addresses()->whereType($type)->delete();
 

@@ -3,9 +3,9 @@
 namespace Lunar\Admin\Support\Forms\Components;
 
 use Closure;
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Collection;
 use Lunar\Models\Language;
 
@@ -154,11 +154,11 @@ class TranslatedText extends TextInput
         return $localeComponent;
     }
 
-    public function getComponentByLanguage(Language $language): ComponentContainer
+    public function getComponentByLanguage(Language $language): Schema
     {
         $this->prepareChildComponents();
 
-        return ComponentContainer::make($this->getLivewire())
+        return Schema::make($this->getLivewire())
             ->parentComponent($this)
             ->components(
                 $this->components
@@ -205,6 +205,20 @@ class TranslatedText extends TextInput
     public function richtextFileAttachmentsDirectory(string|Closure|null $name): static
     {
         $this->richtextFileAttachmentsDirectory = $name;
+
+        return $this;
+    }
+
+    public function richtextFileAttachmentsDisk(string|Closure|null $name): static
+    {
+        $this->richtextFileAttachmentsDisk = $name;
+
+        return $this;
+    }
+
+    public function richtextFileAttachmentsVisibility(string|Closure $visibility): static
+    {
+        $this->richtextFileAttachmentsVisibility = $visibility;
 
         return $this;
     }

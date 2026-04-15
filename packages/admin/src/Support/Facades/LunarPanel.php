@@ -2,20 +2,26 @@
 
 namespace Lunar\Admin\Support\Facades;
 
+use Closure;
+use Filament\Panel;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Admin\LunarPanelManager;
 
 /**
- * @method static \Lunar\Admin\LunarPanelManager register()
- * @method static \Lunar\Admin\LunarPanelManager panel(\Closure $closure)
- * @method static \Filament\Panel getPanel()
- * @method static \Lunar\Admin\LunarPanelManager extensions(array $extensions)
- * @method static array<class-string<\Filament\Resources\Resource>> getResources()
- * @method static array<class-string<\Filament\Pages\Page>> getPages()
- * @method static array<class-string<\Filament\Widgets\Widget>> getWidgets()
- * @method static \Lunar\Admin\LunarPanelManager useRoleAsAdmin(string|array $roleHandle)
- * @method static mixed callHook(string $class, object|null $caller, string $hookName, ...$args)
+ * @method static LunarPanelManager register()
+ * @method static LunarPanelManager panel(Closure $closure)
+ * @method static Panel getPanel()
+ * @method static LunarPanelManager forceTwoFactorAuth(bool $state = true)
+ * @method static LunarPanelManager disableTwoFactorAuth()
+ * @method static LunarPanelManager extensions(array $extensions)
+ * @method static array getExtensions()
+ * @method static array getResources()
+ * @method static array getPages()
+ * @method static array getWidgets()
+ * @method static LunarPanelManager useRoleAsAdmin((array|string) $roleHandle)
+ * @method static mixed callHook(string $class, object|null $caller, string $hookName, void ...$args)
  *
- * @see \Lunar\Admin\LunarPanelManager
+ * @see LunarPanelManager
  */
 class LunarPanel extends Facade
 {

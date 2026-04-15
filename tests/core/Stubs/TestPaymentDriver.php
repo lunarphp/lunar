@@ -5,7 +5,7 @@ namespace Lunar\Tests\Core\Stubs;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
-use Lunar\Models\Transaction;
+use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\PaymentTypes\AbstractPayment;
 
 class TestPaymentDriver extends AbstractPayment
@@ -21,7 +21,7 @@ class TestPaymentDriver extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
+    public function refund(TransactionContract $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
         return new PaymentRefund(true);
     }
@@ -29,7 +29,7 @@ class TestPaymentDriver extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function capture(Transaction $transaction, $amount = 0): PaymentCapture
+    public function capture(TransactionContract $transaction, $amount = 0): PaymentCapture
     {
         return new PaymentCapture(true);
     }

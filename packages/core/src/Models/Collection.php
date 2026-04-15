@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
 use Kalnoy\Nestedset\QueryBuilder;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
+use Lunar\Base\HasThumbnailImage;
 use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasMacros;
@@ -29,11 +31,11 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property string $type
  * @property ?array $attribute_data
  * @property string $sort
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
  */
-class Collection extends BaseModel implements Contracts\Collection, SpatieHasMedia
+class Collection extends BaseModel implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
 {
     use HasChannels,
         HasCustomerGroups,
@@ -147,5 +149,10 @@ class Collection extends BaseModel implements Contracts\Collection, SpatieHasMed
     public function newEloquentBuilder($query): QueryBuilder
     {
         return new QueryBuilder($query);
+    }
+
+    public function getThumbnailImage(): string
+    {
+        return $this->thumbnail?->getUrl('small') ?? '';
     }
 }

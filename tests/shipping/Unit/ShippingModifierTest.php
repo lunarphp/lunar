@@ -1,15 +1,20 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\TaxClass;
 use Lunar\Shipping\Models\ShippingMethod;
+use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
+use Lunar\Tests\Shipping\TestCase;
+use Lunar\Tests\Shipping\TestUtils;
 
-uses(\Lunar\Tests\Shipping\TestCase::class)
-    ->group('shipping', 'shipping-modifier');
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-uses(\Lunar\Tests\Shipping\TestUtils::class);
+uses(TestCase::class)->group('shipping', 'shipping-modifier');
+uses(RefreshDatabase::class);
+uses(TestUtils::class);
 
 test('can set correct shipping options', function () {
     $currency = Currency::factory()->create([
@@ -38,14 +43,14 @@ test('can set correct shipping options', function () {
         ],
     ]);
 
-    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create([
+    $customerGroup = CustomerGroup::factory()->create([
         'default' => true,
     ]);
     $shippingMethod->customerGroups()->sync([
         $customerGroup->id => ['enabled' => true, 'visible' => true, 'starts_at' => now(), 'ends_at' => null],
     ]);
 
-    $shippingRate = \Lunar\Shipping\Models\ShippingRate::factory()->create([
+    $shippingRate = ShippingRate::factory()->create([
         'shipping_method_id' => $shippingMethod->id,
         'shipping_zone_id' => $shippingZone->id,
     ]);
@@ -66,7 +71,7 @@ test('can set correct shipping options', function () {
     $cart = $this->createCart($currency, 6000, calculate: false);
 
     $cart->shippingAddress()->create(
-        \Lunar\Models\CartAddress::factory()->make([
+        CartAddress::factory()->make([
             'country_id' => $country->id,
             'shipping_option' => 'BASEDEL',
             'state' => null,

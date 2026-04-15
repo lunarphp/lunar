@@ -64,6 +64,9 @@ class AttributeManifest
         return $this->types[$key] ?? null;
     }
 
+    /**
+     * @return Collection
+     */
     public function getSearchableAttributes(string $attributeType)
     {
         $attributes = $this->searchableAttributes->get($attributeType, null);

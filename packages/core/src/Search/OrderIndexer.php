@@ -75,6 +75,7 @@ class OrderIndexer extends ScoutIndexer
                 'first_name',
                 'last_name',
                 'company_name',
+                'tax_identifier',
                 'line_one',
                 'line_two',
                 'line_three',

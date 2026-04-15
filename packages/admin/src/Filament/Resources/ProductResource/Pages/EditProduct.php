@@ -2,11 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Actions;
-use Filament\Forms;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Forms\Components\Radio;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Support\Actions\Products\ForceDeleteProductAction;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
 class EditProduct extends BaseEditRecord
@@ -33,7 +35,7 @@ class EditProduct extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\EditAction::make('update_status')
+            EditAction::make('update_status')
                 ->label(
                     __('lunarpanel::product.actions.edit_status.label')
                 )
@@ -42,8 +44,8 @@ class EditProduct extends BaseEditRecord
                 )
                 ->record(
                     $this->record
-                )->form([
-                    Forms\Components\Radio::make('status')->options([
+                )->schema([
+                    Radio::make('status')->options([
                         'published' => __('lunarpanel::product.form.status.options.published.label'),
                         'draft' => __('lunarpanel::product.form.status.options.draft.label'),
                     ])
@@ -52,9 +54,10 @@ class EditProduct extends BaseEditRecord
                             'draft' => __('lunarpanel::product.form.status.options.draft.description'),
                         ])->live(),
                 ]),
-            Actions\DeleteAction::make(),
-            ForceDeleteProductAction::make(),
-            Actions\RestoreAction::make(),
+            DeleteAction::make(),
+            ForceDeleteAction::make()
+                ->databaseTransaction(),
+            RestoreAction::make(),
         ];
     }
 

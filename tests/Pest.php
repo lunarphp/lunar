@@ -1,5 +1,18 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
+use Lunar\DataTypes\Price;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
+use Lunar\Models\CartLine;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\TaxClass;
+use Lunar\Tests\Core\Stubs\User;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -24,20 +37,9 @@
 |
 */
 
-use Lunar\DataTypes\Price;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Facades\ShippingManifest;
-use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
-use Lunar\Models\CartLine;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
-
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
+// expect()->extend('toBeOne', function () {
+//     return $this->toBe(1);
+// });
 
 /*
 |--------------------------------------------------------------------------
@@ -50,9 +52,14 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function setAuthUserConfig()
+function modelsReplaced(): bool
 {
-    Config::set('auth.providers.users.model', 'Lunar\Tests\Core\Stubs\User');
+    return env('LUNAR_TESTING_REPLACE_MODELS', false);
+}
+
+function setAuthUserConfig(): void
+{
+    Config::set('auth.providers.users.model', User::class);
 }
 
 function buildCart(array $cartParams = []): Cart

@@ -5,6 +5,7 @@ namespace Lunar\Tests\Core\Stubs;
 use Illuminate\Support\Collection;
 use Lunar\Base\Purchasable;
 use Lunar\DataTypes\Price;
+use Lunar\Models\Contracts\TaxClass as TaxClassContract;
 use Lunar\Models\TaxClass;
 
 class TestPurchasable implements Purchasable
@@ -14,11 +15,11 @@ class TestPurchasable implements Purchasable
         public $description,
         public $identifier,
         public Price $price,
-        public TaxClass $taxClass,
+        public TaxClassContract $taxClass,
         public $taxReference = null,
         public $option = null,
         public bool $collect = false,
-        public $meta = null
+        public $meta = null,
     ) {
         //  ..
     }
@@ -26,7 +27,7 @@ class TestPurchasable implements Purchasable
     /**
      * Get the price for the purchasable item.
      *
-     * @return \Lunar\DataTypes\Price
+     * @return Price
      */
     public function getPrice()
     {
@@ -107,6 +108,13 @@ class TestPurchasable implements Purchasable
     public function getOption()
     {
         return $this->option;
+    }
+
+    public function getOptions(): Collection
+    {
+        return collect([
+            $this->option,
+        ]);
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+use Lunar\Models\Discount;
+
 return [
     'plural_label' => 'Kortingen',
     'label' => 'Korting',
@@ -74,6 +76,12 @@ return [
             'label' => 'Automatisch beloningen toevoegen',
             'helper_text' => 'Schakel in om beloningsproducten toe te voegen wanneer deze niet in de winkelwagen aanwezig zijn.',
         ],
+        'fixed_value' => [
+            'label' => 'Vaste waarde',
+        ],
+        'percentage' => [
+            'label' => 'Percentage',
+        ],
     ],
     'table' => [
         'name' => [
@@ -81,16 +89,16 @@ return [
         ],
         'status' => [
             'label' => 'Status',
-            \Lunar\Models\Discount::ACTIVE => [
+            Discount::ACTIVE => [
                 'label' => 'Actief',
             ],
-            \Lunar\Models\Discount::PENDING => [
+            Discount::PENDING => [
                 'label' => 'In afwachting',
             ],
-            \Lunar\Models\Discount::EXPIRED => [
+            Discount::EXPIRED => [
                 'label' => 'Verlopen',
             ],
-            \Lunar\Models\Discount::SCHEDULED => [
+            Discount::SCHEDULED => [
                 'label' => 'Gepland',
             ],
         ],
@@ -107,6 +115,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Beschikbaarheid',
+        ],
+        'edit' => [
+            'title' => 'Basisinformatie',
         ],
         'limitations' => [
             'label' => 'Beperkingen',

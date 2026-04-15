@@ -5,10 +5,12 @@ namespace Lunar\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasDefaultRecord;
 use Lunar\Base\Traits\HasMacros;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\TaxZoneFactory;
 
 /**
@@ -18,14 +20,15 @@ use Lunar\Database\Factories\TaxZoneFactory;
  * @property string $price_display
  * @property bool $active
  * @property bool $default
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class TaxZone extends BaseModel implements Contracts\TaxZone
 {
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use LogsActivity;
 
     protected static function booted(): void
     {
@@ -45,7 +48,7 @@ class TaxZone extends BaseModel implements Contracts\TaxZone
             $taxZone->states()->delete();
             $taxZone->postcodes()->delete();
             $taxZone->customerGroups()->delete();
-            $taxZone->taxRates()->delete();
+            $taxZone->taxRates->each->delete();
             DB::commit();
         });
     }

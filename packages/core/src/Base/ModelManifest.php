@@ -4,6 +4,7 @@ namespace Lunar\Base;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -99,10 +100,17 @@ class ModelManifest implements ModelManifestInterface
     protected function bindModel(string $interfaceClass, string $modelClass): void
     {
         // Bind in container
-        app()->bind($interfaceClass, $modelClass);
+        App::bind($interfaceClass, $modelClass);
 
         // Route model binding
         Route::model($this->bindingName($modelClass), $modelClass);
+
+        // Morph map
+        if (App::isBooted()) {
+            Relation::morphMap([
+                $this->getMorphMapKey($this->findLunarModel($modelClass) ?? $modelClass) => $modelClass,
+            ]);
+        }
     }
 
     protected function bindingName(string $modelClass): string
@@ -143,6 +151,19 @@ class ModelManifest implements ModelManifestInterface
         return 'Lunar\\Models\\'.$shortName;
     }
 
+    public function findLunarModel(string|BaseModel $model): ?string
+    {
+        $class = (new \ReflectionClass($model))->getName();
+
+        foreach (class_parents($class) as $ancestorClass) {
+            if ($this->isLunarModel($ancestorClass)) {
+                return $ancestorClass;
+            }
+        }
+
+        return null;
+    }
+
     public function isLunarModel(string|BaseModel $model): bool
     {
         $class = (new \ReflectionClass($model));
@@ -169,7 +190,7 @@ class ModelManifest implements ModelManifestInterface
     public function getMorphMapKey($className): string
     {
         $prefix = config('lunar.database.morph_prefix', null);
-        $key = \Illuminate\Support\Str::snake(class_basename($className));
+        $key = Str::snake(class_basename($className));
 
         return "{$prefix}{$key}";
     }

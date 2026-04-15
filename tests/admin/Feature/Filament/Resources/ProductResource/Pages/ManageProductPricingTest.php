@@ -1,47 +1,57 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+use Livewire\Livewire;
+use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing;
+use Lunar\Models\Currency;
+use Lunar\Models\Language;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
+use Lunar\Models\ProductVariant;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
+
+uses(TestCase::class)
     ->group('resource.product');
 
 it('can render product prices create page', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    \Lunar\Models\Currency::factory()->create([
+    Currency::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Product::factory()->create();
+    $record = Product::factory()->create();
 
-    \Lunar\Models\ProductVariant::factory()->create([
+    ProductVariant::factory()->create([
         'product_id' => $record->id,
     ]);
 
     $this->asStaff(admin: true)
-        ->get(\Lunar\Admin\Filament\Resources\ProductResource::getUrl('pricing', [
+        ->get(ProductResource::getUrl('pricing', [
             'record' => $record,
         ]))
         ->assertSuccessful();
 });
 
 it('will show in navigation when only one variant exists', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    \Lunar\Models\Currency::factory()->create([
+    Currency::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Product::factory()->create();
+    $record = Product::factory()->create();
 
-    \Lunar\Models\ProductVariant::factory()->create([
+    ProductVariant::factory()->create([
         'product_id' => $record->id,
     ]);
 
     $this->asStaff(admin: true)
-        ->get(\Lunar\Admin\Filament\Resources\ProductResource::getUrl('edit', [
+        ->get(ProductResource::getUrl('edit', [
             'record' => $record,
         ]))
         ->assertSuccessful()
@@ -51,26 +61,63 @@ it('will show in navigation when only one variant exists', function () {
 });
 
 it('will not show in navigation when multiple variants exist', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    \Lunar\Models\Currency::factory()->create([
+    Currency::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Product::factory()->create();
+    $record = Product::factory()->create();
 
-    \Lunar\Models\ProductVariant::factory(2)->create([
+    ProductVariant::factory(2)->create([
         'product_id' => $record->id,
     ]);
 
     $this->asStaff(admin: true)
-        ->get(\Lunar\Admin\Filament\Resources\ProductResource::getUrl('index', [
+        ->get(ProductResource::getUrl('index', [
             'record' => $record,
         ]))
         ->assertSuccessful()
         ->assertDontSeeText(
             __('lunarpanel::relationmanagers.pricing.title')
         );
+});
+
+it('can set product base prices correctly', function () {
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $record = Product::factory()->create();
+
+    $variant = ProductVariant::factory()->create([
+        'product_id' => $record->id,
+    ]);
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(ManageProductPricing::class, [
+        'record' => $record->id,
+        'pageClass' => 'productPriceRelationManager',
+    ])->set('basePrices', [
+        [
+            'id' => null,
+            'currency_id' => Currency::getDefault()->id,
+            'sync_prices' => false,
+            'label' => 'GBP',
+            'value' => '2.32',
+            'factor' => '100',
+        ],
+    ])->call('save')->assertHasNoErrors();
+
+    \Pest\Laravel\assertDatabaseHas((new Price)->getTable(), [
+        'price' => '232',
+    ]);
+
 });

@@ -2,6 +2,8 @@
 
 namespace Lunar\Observers;
 
+use Lunar\Jobs\Currencies\CreateCurrencyPrices;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Models\Currency;
 
 class CurrencyObserver
@@ -11,9 +13,10 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function created(Currency $currency)
+    public function created(CurrencyContract $currency)
     {
         $this->ensureOnlyOneDefault($currency);
+        CreateCurrencyPrices::dispatch($currency);
     }
 
     /**
@@ -21,9 +24,14 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function updated(Currency $currency)
+    public function updated(CurrencyContract $currency)
     {
         $this->ensureOnlyOneDefault($currency);
+        if ($currency->default && $currency->sync_prices) {
+            $currency->updateQuietly([
+                'sync_prices' => false,
+            ]);
+        }
     }
 
     /**
@@ -31,9 +39,19 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function deleted(Currency $currency)
+    public function deleted(CurrencyContract $currency)
     {
         //
+    }
+
+    /**
+     * Handle the Currency "deleted" event.
+     *
+     * @return void
+     */
+    public function deleting(CurrencyContract $currency)
+    {
+        $currency->prices()->delete();
     }
 
     /**
@@ -41,7 +59,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function forceDeleted(Currency $currency)
+    public function forceDeleted(CurrencyContract $currency)
     {
         //
     }
@@ -49,9 +67,9 @@ class CurrencyObserver
     /**
      * Ensures that only one default currency exists.
      *
-     * @param  \Lunar\Models\Currency  $savedCurrency  The currency that was just saved.
+     * @param  CurrencyContract  $savedCurrency  The currency that was just saved.
      */
-    protected function ensureOnlyOneDefault(Currency $savedCurrency): void
+    protected function ensureOnlyOneDefault(CurrencyContract $savedCurrency): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedCurrency->default) {

@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
+use Lunar\Base\Casts\CouponString;
 use Lunar\Base\Traits\HasChannels;
 use Lunar\Base\Traits\HasCustomerGroups;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\DiscountFactory;
 use Lunar\DiscountTypes\AbstractDiscountType;
 
@@ -20,21 +23,22 @@ use Lunar\DiscountTypes\AbstractDiscountType;
  * @property string $handle
  * @property ?string $coupon
  * @property string $type
- * @property \Illuminate\Support\Carbon $starts_at
- * @property \Illuminate\Support\Carbon $ends_at
+ * @property Carbon $starts_at
+ * @property Carbon $ends_at
  * @property int $uses
  * @property ?int $max_uses
  * @property int $priority
  * @property bool $stop
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class Discount extends BaseModel implements Contracts\Discount
 {
     use HasChannels,
         HasCustomerGroups,
         HasFactory,
-        HasTranslations;
+        HasTranslations,
+        LogsActivity;
 
     protected $guarded = [];
 
@@ -55,6 +59,7 @@ class Discount extends BaseModel implements Contracts\Discount
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'data' => 'array',
+        'coupon' => CouponString::class,
     ];
 
     /**
@@ -92,29 +97,29 @@ class Discount extends BaseModel implements Contracts\Discount
         )->withTimestamps();
     }
 
-    public function purchasables(): HasMany
+    public function discountables(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass());
+        return $this->hasMany(Discountable::modelClass());
     }
 
-    public function purchasableConditions(): HasMany
+    public function discountableConditions(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('condition');
+        return $this->hasMany(Discountable::modelClass())->whereType('condition');
     }
 
-    public function purchasableExclusions(): HasMany
+    public function discountableExclusions(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('exclusion');
+        return $this->hasMany(Discountable::modelClass())->whereType('exclusion');
     }
 
-    public function purchasableLimitations(): HasMany
+    public function discountableLimitations(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('limitation');
+        return $this->hasMany(Discountable::modelClass())->whereType('limitation');
     }
 
-    public function purchasableRewards(): HasMany
+    public function discountableRewards(): HasMany
     {
-        return $this->hasMany(DiscountPurchasable::modelClass())->whereType('reward');
+        return $this->hasMany(Discountable::modelClass())->whereType('reward');
     }
 
     public function getType(): AbstractDiscountType
@@ -177,6 +182,48 @@ class Discount extends BaseModel implements Contracts\Discount
             });
     }
 
+    public function scopeCollections(Builder $query, iterable $collectionIds = [], array|string $types = []): Builder
+    {
+        if (is_array($collectionIds)) {
+            $collectionIds = collect($collectionIds);
+        }
+
+        $types = Arr::wrap($types);
+        $prefix = config('lunar.database.table_prefix');
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('collections', fn ($query) => $query->when($types, fn ($query) => $query->whereIn("{$prefix}collection_discount.type", $types)))
+                ->orWhereHas('collections',
+                    fn ($relation) => $relation->whereIn('collection_id', $collectionIds)
+                        ->when(
+                            $types,
+                            fn ($query) => $query->whereIn("{$prefix}collection_discount.type", $types)
+                        )
+                )
+        );
+    }
+
+    public function scopeBrands(Builder $query, iterable $brandIds = [], array|string $types = []): Builder
+    {
+        if (is_array($brandIds)) {
+            $brandIds = collect($brandIds);
+        }
+
+        $types = Arr::wrap($types);
+        $prefix = config('lunar.database.table_prefix');
+
+        return $query->where(
+            fn ($subQuery) => $subQuery->whereDoesntHave('brands', fn ($query) => $query->when($types, fn ($query) => $query->whereIn("{$prefix}brand_discount.type", $types)))
+                ->orWhereHas('brands',
+                    fn ($relation) => $relation->whereIn('brand_id', $brandIds)
+                        ->when(
+                            $types,
+                            fn ($query) => $query->whereIn("{$prefix}brand_discount.type", $types)
+                        )
+                )
+        );
+    }
+
     public function scopeProducts(Builder $query, iterable $productIds = [], array|string $types = []): Builder
     {
         if (is_array($productIds)) {
@@ -184,15 +231,16 @@ class Discount extends BaseModel implements Contracts\Discount
         }
 
         $types = Arr::wrap($types);
+        $prefix = config('lunar.database.table_prefix');
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
-                ->orWhereHas('purchasables',
-                    fn ($relation) => $relation->whereIn('purchasable_id', $productIds)
-                        ->wherePurchasableType(Product::morphName())
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->whereDiscountableType(Product::morphName())->when($types, fn ($query) => $query->whereIn("{$prefix}discountables.type", $types)))
+                ->orWhereHas('discountables',
+                    fn ($relation) => $relation->whereIn('discountable_id', $productIds)
+                        ->whereDiscountableType(Product::morphName())
                         ->when(
                             $types,
-                            fn ($query) => $query->whereIn('type', $types)
+                            fn ($query) => $query->whereIn("{$prefix}discountables.type", $types)
                         )
                 )
         );
@@ -205,15 +253,16 @@ class Discount extends BaseModel implements Contracts\Discount
         }
 
         $types = Arr::wrap($types);
+        $prefix = config('lunar.database.table_prefix');
 
         return $query->where(
-            fn ($subQuery) => $subQuery->whereDoesntHave('purchasables', fn ($query) => $query->when($types, fn ($query) => $query->whereIn('type', $types)))
-                ->orWhereHas('purchasables',
-                    fn ($relation) => $relation->whereIn('purchasable_id', $variantIds)
-                        ->wherePurchasableType(ProductVariant::morphName())
+            fn ($subQuery) => $subQuery->whereDoesntHave('discountables', fn ($query) => $query->whereDiscountableType(ProductVariant::morphName())->when($types, fn ($query) => $query->whereIn("{$prefix}discountables.type", $types)))
+                ->orWhereHas('discountables',
+                    fn ($relation) => $relation->whereIn('discountable_id', $variantIds)
+                        ->whereDiscountableType(ProductVariant::morphName())
                         ->when(
                             $types,
-                            fn ($query) => $query->whereIn('type', $types)
+                            fn ($query) => $query->whereIn("{$prefix}discountables.type", $types)
                         )
                 )
         );

@@ -2,11 +2,17 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
-use Filament\Forms;
-use Filament\Tables;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\MorphToSelect\Type;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 
@@ -14,7 +20,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
 {
     protected static bool $isLazy = false;
 
-    protected static string $relationship = 'purchasables';
+    protected static string $relationship = 'discountables';
 
     public function isReadOnly(): bool
     {
@@ -34,57 +40,64 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['limitation', 'exclusion'])
-                    ->wherePurchasableType(ProductVariant::morphName())
-                    ->whereHas('purchasable')
+                    ->whereDiscountableType(ProductVariant::morphName())
+                    ->whereHas('discountable')
             )
             ->headerActions([
-                Tables\Actions\CreateAction::make()->form([
-                    Forms\Components\MorphToSelect::make('purchasable')
+                CreateAction::make()->schema([
+                    MorphToSelect::make('discountable')
                         ->searchable(true)
                         ->types([
-                            Forms\Components\MorphToSelect\Type::make(ProductVariant::class)
+                            Type::make(ProductVariant::modelClass())
                                 ->titleAttribute('sku')
-                                ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                    $products = get_search_builder(Product::class, $search)
+                                ->searchColumns(['sku'])
+                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
+                                    $products = get_search_builder(Product::modelClass(), $search)
                                         ->get();
 
                                     return ProductVariant::whereIn('product_id', $products->pluck('id'))
+                                        ->with(['product'])
                                         ->get()
-                                        ->mapWithKeys(fn (ProductVariant $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
+                                        ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
                                         ->all();
+                                })
+                                ->getOptionLabelUsing(function ($value): string {
+                                    $variant = ProductVariant::modelClass()::with('product')->find($value);
+
+                                    return $variant ? $variant->product->attr('name').' - '.$variant->sku : $value;
                                 }),
                         ]),
                 ])->label(
                     __('lunarpanel::discount.relationmanagers.productvariants.actions.attach.label')
-                )->mutateFormDataUsing(function (array $data) {
+                )->mutateDataUsing(function (array $data) {
                     $data['type'] = 'limitation';
 
                     return $data;
                 }),
             ])->columns([
-                Tables\Columns\TextColumn::make('purchasable')
+                TextColumn::make('discountable')
                     ->formatStateUsing(
-                        fn (Model $model) => $model->purchasable->getDescription()
+                        fn (Model $model) => $model->discountable->getDescription()
                     )
                     ->label(
                         __('lunarpanel::discount.relationmanagers.productvariants.table.name.label')
                     ),
-                Tables\Columns\TextColumn::make('purchasable.sku')
+                TextColumn::make('discountable.sku')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.productvariants.table.sku.label')
                     ),
-                Tables\Columns\TextColumn::make('purchasable.values')
+                TextColumn::make('discountable.values')
                     ->formatStateUsing(function (Model $record) {
-                        return $record->purchasable->values->map(
+                        return $record->discountable->values->map(
                             fn ($value) => $value->translate('name')
                         )->join(', ');
                     })->label(
                         __('lunarpanel::discount.relationmanagers.productvariants.table.values.label')
                     ),
-            ])->actions([
-                Tables\Actions\DeleteAction::make(),
-            ])->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+            ])->recordActions([
+                DeleteAction::make(),
+            ])->toolbarActions([
+                DeleteBulkAction::make(),
             ]);
     }
 }

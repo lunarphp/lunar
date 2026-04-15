@@ -1,7 +1,11 @@
 
 <?php
 
-uses(\Lunar\Tests\Admin\Unit\Livewire\TestCase::class)
+use Lunar\FieldTypes\YouTube;
+use Lunar\Models\Attribute;
+use Lunar\Tests\Admin\Unit\Livewire\TestCase;
+
+uses(TestCase::class)
     ->group('livewire.support.forms');
 
 describe('youtube field converter', function () {
@@ -10,12 +14,12 @@ describe('youtube field converter', function () {
     });
 
     test('can convert attribute to form input component', function () {
-        $attribute = \Lunar\Models\Attribute::factory()->create([
-            'type' => \Lunar\FieldTypes\YouTube::class,
+        $attribute = Attribute::factory()->create([
+            'type' => YouTube::class,
         ]);
 
-        $inputComponent = \Lunar\Admin\Support\FieldTypes\YouTube::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Admin\Support\FieldTypes\YouTube::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(\Lunar\Admin\Support\Forms\Components\YouTube::class);
+        expect($inputComponent)->toBeInstanceOf(Lunar\Admin\Support\Forms\Components\YouTube::class);
     });
 });

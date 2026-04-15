@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\AsAttributeData;
 use Lunar\Base\Traits\HasAttributes;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\HasPersonalDetails;
 use Lunar\Base\Traits\HasTranslations;
+use Lunar\Base\Traits\LogsActivity;
 use Lunar\Base\Traits\Searchable;
 use Lunar\Database\Factories\CustomerFactory;
 
@@ -22,12 +24,12 @@ use Lunar\Database\Factories\CustomerFactory;
  * @property string $first_name
  * @property string $last_name
  * @property ?string $company_name
- * @property ?string $vat_no
+ * @property ?string $tax_identifier
  * @property ?string $account_ref
  * @property ?array $attribute_data
  * @property ?array $meta
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class Customer extends BaseModel implements Contracts\Customer
 {
@@ -36,6 +38,7 @@ class Customer extends BaseModel implements Contracts\Customer
     use HasMacros;
     use HasPersonalDetails;
     use HasTranslations;
+    use LogsActivity;
     use Searchable;
 
     /**

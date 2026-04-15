@@ -46,15 +46,16 @@ class Number implements FieldType, JsonSerializable
     /**
      * Set the value of this field.
      *
-     * @param  int|float  $value
+     * @param  string|int|float|null  $value
      */
     public function setValue($value)
     {
-        if ((! is_numeric($value)) && $value != '') {
+        if (! blank($value) && ! is_numeric($value)) {
             throw new FieldTypeException(self::class.' value must be numeric.');
         }
 
-        $this->value = $value;
+        // Cast to int if the value is a whole number, otherwise use float
+        $this->value = blank($value) ? 0 : (floor($value) == $value ? (int) $value : (float) $value);
     }
 
     /**

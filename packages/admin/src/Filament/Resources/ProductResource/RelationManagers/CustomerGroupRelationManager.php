@@ -2,10 +2,16 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\RelationManagers;
 
-use Filament;
-use Filament\Forms\Form;
-use Filament\Tables;
+use Filament\Actions\AttachAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
@@ -17,6 +23,11 @@ class CustomerGroupRelationManager extends BaseRelationManager
     protected static string $relationship = 'customerGroups';
 
     public ?string $description = null;
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::relationmanagers.customer_groups.title');
+    }
 
     public function isReadOnly(): bool
     {
@@ -31,9 +42,9 @@ class CustomerGroupRelationManager extends BaseRelationManager
             )->toArray();
     }
 
-    public function getDefaultForm(Form $form): Form
+    public function getDefaultForm(Schema $schema): Schema
     {
-        return $form->schema(
+        return $schema->components(
             static::getFormInputs(
                 $this->getPivotColumns()
             )
@@ -43,7 +54,7 @@ class CustomerGroupRelationManager extends BaseRelationManager
     protected static function getFormInputs(array $pivotColumns = []): array
     {
         $columns = collect($pivotColumns)->map(function ($column) {
-            return Filament\Forms\Components\Toggle::make($column)->label(
+            return Toggle::make($column)->label(
                 __("lunarpanel::relationmanagers.customer_groups.form.{$column}.label")
             );
         });
@@ -51,18 +62,18 @@ class CustomerGroupRelationManager extends BaseRelationManager
         $grid = [];
 
         if (! $columns->isEmpty()) {
-            $grid[] = Filament\Forms\Components\Grid::make($columns->count())->schema(
+            $grid[] = Grid::make($columns->count())->schema(
                 $columns->toArray()
             );
         }
 
         return [
             ...$grid,
-            ...[Filament\Forms\Components\Grid::make(2)->schema([
-                Filament\Forms\Components\DateTimePicker::make('starts_at')->label(
+            ...[Grid::make(2)->schema([
+                DateTimePicker::make('starts_at')->label(
                     __('lunarpanel::relationmanagers.customer_groups.form.starts_at.label')
                 ),
-                Filament\Forms\Components\DateTimePicker::make('ends_at')->label(
+                DateTimePicker::make('ends_at')->label(
                     __('lunarpanel::relationmanagers.customer_groups.form.ends_at.label')
                 ),
             ])],
@@ -72,16 +83,11 @@ class CustomerGroupRelationManager extends BaseRelationManager
     public function getDefaultTable(Table $table): Table
     {
         $pivotColumns = collect($this->getPivotColumns())->map(function ($column) {
-            return Tables\Columns\IconColumn::make($column)->label(
+            return IconColumn::make($column)->label(
                 __("lunarpanel::relationmanagers.customer_groups.table.{$column}.label")
             )
-                ->color(fn (string $state): string => match ($state) {
-                    '1' => 'success',
-                    '0' => 'warning',
-                })->icon(fn (string $state): string => match ($state) {
-                    '0' => 'heroicon-o-x-circle',
-                    '1' => 'heroicon-o-check-circle',
-                });
+                ->color(fn ($state): string => $state ? 'success' : 'warning')
+                ->icon(fn ($state): string => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle');
         })->toArray();
 
         return $table
@@ -92,7 +98,7 @@ class CustomerGroupRelationManager extends BaseRelationManager
             )
             ->paginated(false)
             ->headerActions([
-                Tables\Actions\AttachAction::make()->form(fn (Tables\Actions\AttachAction $action): array => [
+                AttachAction::make()->form(fn (AttachAction $action): array => [
                     $action->getRecordSelect(),
                     ...static::getFormInputs(),
                 ])->recordTitle(function ($record) {
@@ -105,21 +111,21 @@ class CustomerGroupRelationManager extends BaseRelationManager
                     ),
             ])->columns([
                 ...[
-                    Tables\Columns\TextColumn::make('name')->label(
+                    TextColumn::make('name')->label(
                         __('lunarpanel::relationmanagers.customer_groups.table.name.label')
                     ),
                 ],
                 ...$pivotColumns,
                 ...[
-                    Tables\Columns\TextColumn::make('starts_at')->label(
+                    TextColumn::make('starts_at')->label(
                         __('lunarpanel::relationmanagers.customer_groups.table.starts_at.label')
                     )->dateTime(),
-                    Tables\Columns\TextColumn::make('ends_at')->label(
+                    TextColumn::make('ends_at')->label(
                         __('lunarpanel::relationmanagers.customer_groups.table.ends_at.label')
                     )->dateTime(),
                 ],
-            ])->actions([
-                Tables\Actions\EditAction::make()->after(
+            ])->recordActions([
+                EditAction::make()->after(
                     fn () => ProductCustomerGroupsUpdated::dispatch(
                         $this->getOwnerRecord()
                     )

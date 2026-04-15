@@ -2,8 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers;
 
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\Select;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
@@ -15,6 +18,11 @@ class CollectionLimitationRelationManager extends BaseRelationManager
 
     protected static string $relationship = 'collections';
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('lunarpanel::collection.plural_label');
+    }
+
     public function isReadOnly(): bool
     {
         return false;
@@ -22,14 +30,18 @@ class CollectionLimitationRelationManager extends BaseRelationManager
 
     public function getDefaultTable(Table $table): Table
     {
+        $prefix = config('lunar.database.table_prefix');
 
         return $table
             ->description(
                 __('lunarpanel::discount.relationmanagers.collections.description')
             )
+            ->modifyQueryUsing(
+                fn ($query) => $query->whereIn($prefix.'collection_discount.type', ['limitation', 'exclusion'])
+            )
             ->paginated(false)
             ->headerActions([
-                Tables\Actions\AttachAction::make()->form(fn (Tables\Actions\AttachAction $action): array => [
+                AttachAction::make()->form(fn (AttachAction $action): array => [
                     $action->getRecordSelect(),
                     Select::make('type')
                         ->options(
@@ -40,12 +52,13 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                         )->default('limitation'),
                 ])->recordTitle(function ($record) {
                     return $record->attr('name');
-                })->preloadRecordSelect()
+                })->recordSelectSearchColumns(['attribute_data->name'])
+                    ->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.actions.attach.label')
                     ),
             ])->columns([
-                Tables\Columns\TextColumn::make('attribute_data.name')
+                TextColumn::make('attribute_data.name')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.table.name.label')
                     )
@@ -53,16 +66,16 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                     ->formatStateUsing(
                         fn (Model $record) => $record->attr('name')
                     ),
-                Tables\Columns\TextColumn::make('pivot.type')
+                TextColumn::make('pivot.type')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.table.type.label')
                     )->formatStateUsing(
                         fn (string $state) => __("lunarpanel::discount.relationmanagers.collections.table.type.{$state}.label")
                     ),
-            ])->actions([
-                Tables\Actions\DetachAction::make(),
-            ])->bulkActions([
-                Tables\Actions\DetachBulkAction::make(),
+            ])->recordActions([
+                DetachAction::make(),
+            ])->toolbarActions([
+                DetachBulkAction::make(),
             ]);
     }
 }

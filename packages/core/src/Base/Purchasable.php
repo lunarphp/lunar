@@ -3,14 +3,15 @@
 namespace Lunar\Base;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\TaxClass;
+use Lunar\Models\Contracts\TaxClass;
+use Lunar\Models\Price;
 
 interface Purchasable
 {
     /**
      * Get the purchasable prices.
      *
-     * @return \Illuminate\Support\Collection<\Lunar\Models\Price>
+     * @return Collection<Price>
      */
     public function getPrices(): Collection;
 
@@ -51,6 +52,11 @@ interface Purchasable
      * @return string|null
      */
     public function getOption();
+
+    /**
+     * Return the options for this purchasable.
+     */
+    public function getOptions(): Collection;
 
     /**
      * Return a unique string which identifies the purchasable item.

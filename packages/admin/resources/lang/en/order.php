@@ -10,6 +10,10 @@ return [
         'manage' => 'Manage',
     ],
 
+    'tabs' => [
+        'all' => 'All',
+    ],
+
     'transactions' => [
         'capture' => 'Captured',
         'intent' => 'Intent',
@@ -79,6 +83,9 @@ return [
             ],
             'company_name' => [
                 'label' => 'Company Name',
+            ],
+            'tax_identifier' => [
+                'label' => 'Tax Identifier',
             ],
             'contact_phone' => [
                 'label' => 'Phone',
@@ -238,6 +245,8 @@ return [
             'notification' => 'Orders status updated',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'New status',
             ],

@@ -9,7 +9,7 @@ class TestUrlGenerator
     /**
      * The instance of the model.
      *
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var Model
      */
     protected $model;
 

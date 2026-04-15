@@ -1,5 +1,7 @@
 <?php
 
+use Lunar\Models\Discount;
+
 return [
     'plural_label' => 'Mã giảm giá',
     'label' => 'Mã giảm giá',
@@ -74,6 +76,12 @@ return [
             'label' => 'Tự động thêm quà tặng',
             'helper_text' => 'Bật để tự động thêm sản phẩm quà tặng khi không có trong giỏ hàng.',
         ],
+        'fixed_value' => [
+            'label' => 'Giá trị cố định',
+        ],
+        'percentage' => [
+            'label' => 'Phần trăm',
+        ],
     ],
     'table' => [
         'name' => [
@@ -81,16 +89,16 @@ return [
         ],
         'status' => [
             'label' => 'Trạng thái',
-            \Lunar\Models\Discount::ACTIVE => [
+            Discount::ACTIVE => [
                 'label' => 'Đang hoạt động',
             ],
-            \Lunar\Models\Discount::PENDING => [
+            Discount::PENDING => [
                 'label' => 'Đang chờ',
             ],
-            \Lunar\Models\Discount::EXPIRED => [
+            Discount::EXPIRED => [
                 'label' => 'Đã hết hạn',
             ],
-            \Lunar\Models\Discount::SCHEDULED => [
+            Discount::SCHEDULED => [
                 'label' => 'Đã lên lịch',
             ],
         ],
@@ -107,6 +115,9 @@ return [
     'pages' => [
         'availability' => [
             'label' => 'Khả dụng',
+        ],
+        'edit' => [
+            'title' => 'Thông tin cơ bản',
         ],
         'limitations' => [
             'label' => 'Giới hạn',

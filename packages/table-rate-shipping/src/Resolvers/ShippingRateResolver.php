@@ -3,8 +3,9 @@
 namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Cart;
-use Lunar\Models\Country;
+use Lunar\Facades\Converter;
+use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Country as CountryContract;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
@@ -15,12 +16,12 @@ class ShippingRateResolver
     /**
      * The cart to use when resolving.
      */
-    protected Cart $cart;
+    protected CartContract $cart;
 
     /**
      * The country to use when resolving.
      */
-    protected ?Country $country = null;
+    protected ?CountryContract $country = null;
 
     /**
      * The customer group to limit to.
@@ -38,14 +39,19 @@ class ShippingRateResolver
     protected ?string $postcode = null;
 
     /**
-     * Whether all cart items are in stock
+     * Whether all cart items are in stock.
      */
     protected ?bool $allCartItemsAreInStock = null;
 
     /**
+     * Total cart weight normalised to kg (the Converter's base weight unit).
+     */
+    protected float $cartWeightKg = 0.0;
+
+    /**
      * Initialise the resolver.
      */
-    public function __construct(?Cart $cart = null)
+    public function __construct(?CartContract $cart = null)
     {
         $this->cart($cart);
     }
@@ -53,7 +59,7 @@ class ShippingRateResolver
     /**
      * Set the cart.
      */
-    public function cart(Cart $cart): self
+    public function cart(CartContract $cart): self
     {
         $this->cart = $cart;
 
@@ -61,6 +67,19 @@ class ShippingRateResolver
 
         $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
             return $line->purchasable->shippable && ($line->purchasable->stock < $line->quantity);
+        });
+
+        // Sum all line weights converted to kg so we can cheaply convert to any
+        // method's weight_unit later without iterating cart lines again.
+        $this->cartWeightKg = (float) $this->cart->lines->sum(function ($line) {
+            $value = (float) ($line->purchasable->weight_value ?? 0);
+            $unit = $line->purchasable->weight_unit ?? 'kg';
+
+            return (float) Converter::from("weight.{$unit}")
+                ->to('weight.kg')
+                ->value($value * $line->quantity)
+                ->convert()
+                ->getValue();
         });
 
         $this->customerGroups = collect([CustomerGroup::getDefault()]);
@@ -101,7 +120,7 @@ class ShippingRateResolver
     /**
      * Set the value for country.
      */
-    public function country(?Country $country = null): self
+    public function country(?CountryContract $country = null): self
     {
         $this->country = $country;
 
@@ -123,6 +142,22 @@ class ShippingRateResolver
         $this->postcode = $postcode;
 
         return $this;
+    }
+
+    /**
+     * Return the cart weight expressed in the given unit.
+     */
+    protected function cartWeightIn(string $unit): float
+    {
+        if ($unit === 'kg') {
+            return $this->cartWeightKg;
+        }
+
+        return (float) Converter::from('weight.kg')
+            ->to("weight.{$unit}")
+            ->value($this->cartWeightKg)
+            ->convert()
+            ->getValue();
     }
 
     /**
@@ -149,6 +184,9 @@ class ShippingRateResolver
 
         foreach ($zones as $zone) {
             $zoneShippingRates = $zone->rates
+                ->reject(function ($state) {
+                    return ! $state->enabled;
+                })
                 ->reject(function ($rate) {
                     $method = $rate->shippingMethod()->customerGroup($this->customerGroups)->first();
 
@@ -161,16 +199,7 @@ class ShippingRateResolver
                         return true;
                     }
 
-                    if (! $method->cutoff) {
-                        return false;
-                    }
-
-                    [$h, $m, $s] = explode(':', $method->cutoff);
-
-                    return now()->set('hour', (int) $h)
-                        ->set('minute', (int) $m)
-                        ->set('second', (int) $s)
-                        ->isPast();
+                    return ! $method->isAvailable();
                 })
                 ->reject(function ($rate) {
                     if ($this->allCartItemsAreInStock || ! ($rate->shippingMethod->stock_available ?? false)) {
@@ -178,6 +207,27 @@ class ShippingRateResolver
                     }
 
                     return true;
+                })
+                ->reject(function ($rate) {
+                    $method = $rate->shippingMethod;
+                    $minWeight = $method->min_weight;
+                    $maxWeight = $method->max_weight;
+
+                    if ($minWeight === null && $maxWeight === null) {
+                        return false;
+                    }
+
+                    $cartWeight = $this->cartWeightIn($method->weight_unit ?? 'kg');
+
+                    if ($minWeight !== null && $cartWeight < (float) $minWeight) {
+                        return true;
+                    }
+
+                    if ($maxWeight !== null && $cartWeight > (float) $maxWeight) {
+                        return true;
+                    }
+
+                    return false;
                 });
 
             foreach ($zoneShippingRates as $shippingRate) {

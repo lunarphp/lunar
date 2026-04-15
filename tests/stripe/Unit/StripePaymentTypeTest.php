@@ -1,14 +1,16 @@
 <?php
 
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Models\Currency;
 use Lunar\Models\Transaction;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
+use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
 
 use function Pest\Laravel\assertDatabaseHas;
 
-uses(\Lunar\Tests\Stripe\Unit\TestCase::class);
+uses(TestCase::class);
 
 it('can capture an order', function () {
     $cart = CartBuilder::build();
@@ -60,6 +62,62 @@ it('can retrieve existing payment intent', function () {
     Stripe::createIntent($cart->calculate());
 
     expect($cart->refresh()->meta['payment_intent'])->toBe('PI_FOOBAR');
+});
+
+it('can handle multiple payment events', function () {
+    $cart = CartBuilder::build();
+    $order = $cart->createOrder();
+
+    $payment = new StripePaymentType;
+
+    $response = $payment->order($order)->withData([
+        'payment_intent' => 'PI_FIRST_FAIL_THEN_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->currentDraftOrder())->not()->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_FIRST_FAIL_THEN_CAPTURE');
+
+    // $cart->refresh();
+    // $cart->paymentIntents->first()->refresh();
+
+    $response = $payment->order($order)->withData([
+        'payment_intent' => 'PI_FIRST_FAIL_THEN_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
+        ->and($cart->paymentIntents->count())->toEqual(1)
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_FIRST_FAIL_THEN_CAPTURE');
+});
+
+it('will fail if intent is in final status', function () {
+    $cart = CartBuilder::build();
+    $order = $cart->createOrder();
+
+    $payment = new StripePaymentType;
+
+    $response = $payment->order($order)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+
+    $response = $payment->order($order)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent already processed')
+        ->and($cart->refresh()->completedOrder->placed_at)->not()->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
 });
 
 it('will fail if cart already has an order', function () {
@@ -115,13 +173,13 @@ it('create a pending transaction when status is requires_action', function () {
 });
 
 it('can return correct payment checks', function () {
-    \Lunar\Models\Currency::factory()->create();
+    Currency::factory()->create();
 
     $cart = buildCart();
 
     $order = $cart->createOrder();
 
-    $transactionA = \Lunar\Models\Transaction::factory()->create([
+    $transactionA = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'stripe',
         'meta' => [
@@ -131,7 +189,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionB = \Lunar\Models\Transaction::factory()->create([
+    $transactionB = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'stripe',
         'meta' => [
@@ -141,7 +199,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionC = \Lunar\Models\Transaction::factory()->create([
+    $transactionC = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'stripe',
         'meta' => [
@@ -151,7 +209,7 @@ it('can return correct payment checks', function () {
         ],
     ]);
 
-    $transactionD = \Lunar\Models\Transaction::factory()->create([
+    $transactionD = Transaction::factory()->create([
         'order_id' => $order->id,
         'driver' => 'stripe',
         'meta' => [
@@ -209,5 +267,4 @@ it('can return correct payment checks', function () {
         ->and($paymentDChecks[2]->successful)
         ->not
         ->toBe(true);
-
 });

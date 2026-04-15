@@ -9,8 +9,8 @@ use Lunar\Base\TaxDriver;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
-use Lunar\Models\CartLine;
-use Lunar\Models\Currency;
+use Lunar\Models\Contracts\CartLine;
+use Lunar\Models\Contracts\Currency;
 use Lunar\Models\TaxZone;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
@@ -127,8 +127,8 @@ class SystemTaxDriver implements TaxDriver
 
                     $amount = new TaxBreakdownAmount(
                         price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
-                        description: $amount->taxRate->name,
                         identifier: "tax_rate_{$amount->taxRate->id}",
+                        description: $amount->taxRate->name,
                         percentage: $amount->percentage
                     );
                     $breakdown->addAmount($amount);
@@ -148,8 +148,8 @@ class SystemTaxDriver implements TaxDriver
 
             $amount = new TaxBreakdownAmount(
                 price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
-                description: $amount->taxRate->name,
                 identifier: "tax_rate_{$amount->taxRate->id}",
+                description: $amount->taxRate->name,
                 percentage: $amount->percentage
             );
             $breakdown->addAmount($amount);

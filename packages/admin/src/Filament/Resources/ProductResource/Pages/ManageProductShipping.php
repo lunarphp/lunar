@@ -2,11 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +13,8 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
 use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Models\ProductVariant;
+use Lunar\Facades\Converter;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 
 class ManageProductShipping extends BaseEditRecord
 {
@@ -45,7 +45,7 @@ class ManageProductShipping extends BaseEditRecord
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
-        return $parameters['record']->variants()->count() == 1;
+        return $parameters['record']->variants()->withTrashed()->count() == 1;
     }
 
     public function getBreadcrumb(): string
@@ -105,9 +105,9 @@ class ManageProductShipping extends BaseEditRecord
         return $record;
     }
 
-    protected function getVariant(): ProductVariant
+    protected function getVariant(): ProductVariantContract
     {
-        return $this->getRecord()->variants()->first();
+        return $this->getRecord()->variants()->withTrashed()->first();
     }
 
     protected function getFormActions(): array
@@ -117,7 +117,7 @@ class ManageProductShipping extends BaseEditRecord
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $measurements = Converter::getMeasurements();
 
@@ -133,7 +133,7 @@ class ManageProductShipping extends BaseEditRecord
             fn ($value) => [$value => $value]
         );
 
-        return $form->schema([
+        return $schema->components([
             Section::make()->schema([
                 Toggle::make('shippable')->label(
                     __('lunarpanel::productvariant.form.shippable.label')
@@ -144,11 +144,14 @@ class ManageProductShipping extends BaseEditRecord
                         __('lunarpanel::productvariant.form.length_value.label')
                     )
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('length_unit')
                             ->options($lengths)
                             ->label(
-                                __('lunarpanel::pproductvariant.form.length_unit.label')
+                                __('lunarpanel::productvariant.form.length_unit.label')
                             )->selectablePlaceholder(false)
                     ),
                 TextInputSelectAffix::make('dimensions.width_value')
@@ -156,6 +159,9 @@ class ManageProductShipping extends BaseEditRecord
                         __('lunarpanel::productvariant.form.width_value.label')
                     )
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('width_unit')
                             ->options($lengths)
@@ -168,6 +174,9 @@ class ManageProductShipping extends BaseEditRecord
                         __('lunarpanel::productvariant.form.height_value.label')
                     )
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('height_unit')
                             ->options($lengths)
@@ -180,6 +189,9 @@ class ManageProductShipping extends BaseEditRecord
                         __('lunarpanel::productvariant.form.weight_value.label')
                     )
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('weight_unit')
                             ->options($weights)

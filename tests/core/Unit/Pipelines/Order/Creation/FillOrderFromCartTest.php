@@ -1,15 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\Price;
 use Lunar\Models\ProductVariant;
 use Lunar\Pipelines\Order\Creation\FillOrderFromCart;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can run pipeline', function () {
     $currency = Currency::factory()->create();
@@ -34,6 +36,7 @@ test('can run pipeline', function () {
         'quantity' => 1,
     ]);
 
+    /** @var Order $order */
     $order = new Order([
         'cart_id' => $cart->id,
     ]);

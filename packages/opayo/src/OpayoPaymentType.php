@@ -2,12 +2,17 @@
 
 namespace Lunar\Opayo;
 
+use Carbon\Carbon;
+use Illuminate\Config\Repository;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Str;
 use Lunar\Base\DataTransferObjects\PaymentCapture;
 use Lunar\Base\DataTransferObjects\PaymentCheck;
 use Lunar\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Base\DataTransferObjects\PaymentRefund;
 use Lunar\Events\PaymentAttemptEvent;
+use Lunar\Models\Contracts\Order as OrderContract;
+use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
 use Lunar\Opayo\DataTransferObjects\AuthPayloadParameters;
@@ -146,8 +151,9 @@ class OpayoPaymentType extends AbstractPayment
      *
      * @param  int  $amount
      */
-    public function capture(Transaction $transaction, $amount = 0): PaymentCapture
+    public function capture(TransactionContract $transaction, $amount = 0): PaymentCapture
     {
+        /** @var Transaction $transaction */
         $response = Opayo::api()->post("transactions/{$transaction->reference}/instructions", [
             'instructionType' => 'release',
             'amount' => $amount,
@@ -184,8 +190,9 @@ class OpayoPaymentType extends AbstractPayment
      *
      * @param  string|null  $notes
      */
-    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
+    public function refund(TransactionContract $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
+        /** @var Transaction $transaction */
         $response = Opayo::api()->post('transactions', [
             'transactionType' => 'Refund',
             'vendorTxCode' => Str::random(40),
@@ -427,15 +434,16 @@ class OpayoPaymentType extends AbstractPayment
     }
 
     /**
-     * @param  \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|mixed|string  $policy
+     * @param  Repository|\Illuminate\Contracts\Foundation\Application|Application|mixed|string  $policy
      */
     public function setPolicy(mixed $policy): void
     {
         $this->policy = $policy;
     }
 
-    public function getPaymentChecks(Transaction $transaction): PaymentChecks
+    public function getPaymentChecks(TransactionContract $transaction): PaymentChecks
     {
+        /** @var Transaction $transaction */
         $meta = $transaction->meta['threedSecure'] ?? null;
 
         $checks = new PaymentChecks;
@@ -510,8 +518,9 @@ class OpayoPaymentType extends AbstractPayment
         return $checks;
     }
 
-    private function saveCard(Order $order, object $details, ?string $authCode = null)
+    private function saveCard(OrderContract $order, object $details, ?string $authCode = null)
     {
+        /** @var Order $order */
         if (! $order->user_id) {
             return;
         }
@@ -522,7 +531,7 @@ class OpayoPaymentType extends AbstractPayment
         $payment->user_id = $this->order->user_id;
         $payment->card_type = strtolower($details->cardType);
         $payment->last_four = $details->lastFourDigits;
-        $payment->expires_at = \Carbon\Carbon::createFromFormat('my', $details->expiryDate)->endOfMonth();
+        $payment->expires_at = Carbon::createFromFormat('my', $details->expiryDate)->endOfMonth();
         $payment->token = $details->cardIdentifier;
         $payment->auth_code = $authCode;
         $payment->save();

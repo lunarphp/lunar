@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DiscountTypes\AmountOff;
 use Lunar\Facades\CartSession;
 use Lunar\Models\Brand;
@@ -15,8 +14,11 @@ use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Currency::factory()->create([
@@ -321,11 +323,11 @@ test('will only apply to lines with correct product', function () {
         ],
     ]);
 
-    $discount->purchasableLimitations()->create([
+    $discount->discountableLimitations()->create([
         'discount_id' => $discount->id,
         'type' => 'limitation',
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
     $cart = $cart->calculate();
@@ -418,11 +420,11 @@ test('will only apply to lines with correct product variant', function () {
         ],
     ]);
 
-    $discount->purchasableLimitations()->create([
+    $discount->discountableLimitations()->create([
         'discount_id' => $discount->id,
         'type' => 'limitation',
-        'purchasable_type' => $purchasableA->getMorphClass(),
-        'purchasable_id' => $purchasableA->id,
+        'discountable_type' => $purchasableA->getMorphClass(),
+        'discountable_id' => $purchasableA->id,
     ]);
 
     $cart = $cart->calculate();
@@ -515,11 +517,11 @@ test('will not apply to lines with excluded product', function () {
         ],
     ]);
 
-    $discount->purchasableExclusions()->create([
+    $discount->discountableExclusions()->create([
         'discount_id' => $discount->id,
         'type' => 'exclusion',
-        'purchasable_type' => $productA->getMorphClass(),
-        'purchasable_id' => $productA->id,
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
     ]);
 
     $cart = $cart->calculate();
@@ -612,11 +614,11 @@ test('will not apply to lines with excluded product variant', function () {
         ],
     ]);
 
-    $discount->purchasableExclusions()->create([
+    $discount->discountableExclusions()->create([
         'discount_id' => $discount->id,
         'type' => 'exclusion',
-        'purchasable_type' => $purchasableA->getMorphClass(),
-        'purchasable_id' => $purchasableA->id,
+        'discountable_type' => $purchasableA->getMorphClass(),
+        'discountable_id' => $purchasableA->id,
     ]);
 
     $cart = $cart->calculate();
@@ -963,6 +965,7 @@ test('can apply discount without coupon code', function () {
     $cart = Cart::factory()->create([
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
+        'coupon_code' => 'NOTAPPLICABLE',
     ]);
 
     $purchasableA = ProductVariant::factory()->create();
