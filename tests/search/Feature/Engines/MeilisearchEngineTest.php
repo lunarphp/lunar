@@ -1,14 +1,23 @@
 <?php
 
-uses(\Lunar\Tests\Search\TestCase::class)->group('search');
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Config;
+use Lunar\Models\Product;
+use Lunar\Search\Data\SearchResults;
+use Lunar\Search\Engines\MeilisearchEngine;
+use Lunar\Search\Facades\Search;
+use Lunar\Tests\Search\TestCase;
+use Mockery\MockInterface;
+
+uses(TestCase::class)->group('search');
 
 function mockWithResponse(array $response)
 {
-    $engine = \Pest\Laravel\partialMock(Lunar\Search\Engines\MeilisearchEngine::class, function (\Mockery\MockInterface $mock) use ($response) {
+    $engine = \Pest\Laravel\partialMock(MeilisearchEngine::class, function (MockInterface $mock) use ($response) {
         $mock->shouldAllowMockingProtectedMethods()
             ->shouldReceive('getRawResults')
             ->andReturn(
-                new \Illuminate\Pagination\LengthAwarePaginator(
+                new LengthAwarePaginator(
                     items: $response,
                     total: 100,
                     perPage: 50,
@@ -21,12 +30,12 @@ function mockWithResponse(array $response)
         $mock->shouldReceive('extendQuery')->andReturnSelf();
     });
 
-    \Lunar\Search\Facades\Search::extend('meilisearch', fn () => $engine);
+    Search::extend('meilisearch', fn () => $engine);
 }
 
 beforeEach(function () {
-    \Illuminate\Support\Facades\Config::set('scout.driver', 'meilisearch');
-    \Illuminate\Support\Facades\Config::set('lunar.search.engine_map.Lunar\Models\Product', 'meilisearch');
+    Config::set('scout.driver', 'meilisearch');
+    Config::set('lunar.search.engine_map.Lunar\Models\Product', 'meilisearch');
 });
 
 it('can fetch empty results', function () {
@@ -39,9 +48,9 @@ it('can fetch empty results', function () {
         'query' => '',
     ]);
 
-    $results = \Lunar\Search\Facades\Search::model(\Lunar\Models\Product::class)->get();
+    $results = Search::model(Product::class)->get();
 
-    expect($results)->toBeInstanceOf(\Lunar\Search\Data\SearchResults::class);
+    expect($results)->toBeInstanceOf(SearchResults::class);
 });
 
 it('can search complete results', function () {
@@ -70,7 +79,7 @@ it('can search complete results', function () {
         'query' => '',
     ]);
 
-    $results = \Lunar\Search\Facades\Search::model(\Lunar\Models\Product::class)->get();
+    $results = Search::model(Product::class)->get();
 
     expect($results->hits)
         ->toHaveCount(1)

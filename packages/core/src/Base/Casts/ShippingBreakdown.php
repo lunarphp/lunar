@@ -4,6 +4,8 @@ namespace Lunar\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Currency;
@@ -13,7 +15,7 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
     /**
      * Cast the given value.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
@@ -43,7 +45,7 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
      * @param  \Lunar\Base\ValueObjects\Cart\ShippingBreakdown  $value
      * @param  array  $attributes
@@ -75,9 +77,9 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
     /**
      * Get the serialized representation of the value.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
-     * @param  \Illuminate\Support\Collection  $value
+     * @param  Collection  $value
      * @param  array<string, mixed>  $attributes
      */
     public function serialize($model, $key, $value, $attributes)

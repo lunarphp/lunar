@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests\Admin\Feature\Filament;
 
+use Barryvdh\DomPDF\ServiceProvider;
 use Lunar\Tests\Admin\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -10,7 +11,7 @@ class TestCase extends BaseTestCase
     {
         return [
             ...parent::getPackageProviders($app),
-            \Barryvdh\DomPDF\ServiceProvider::class,
+            ServiceProvider::class,
         ];
     }
 

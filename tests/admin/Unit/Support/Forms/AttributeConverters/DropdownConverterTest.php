@@ -1,6 +1,11 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Unit\Livewire\TestCase::class)
+use Filament\Forms\Components\Select;
+use Lunar\FieldTypes\Dropdown;
+use Lunar\Models\Attribute;
+use Lunar\Tests\Admin\Unit\Livewire\TestCase;
+
+uses(TestCase::class)
     ->group('livewire.support.forms');
 
 describe('dropdown converter', function () {
@@ -9,18 +14,18 @@ describe('dropdown converter', function () {
     });
 
     test('can convert attribute to form input component', function () {
-        $attribute = \Lunar\Models\Attribute::factory()->create([
-            'type' => \Lunar\FieldTypes\Dropdown::class,
+        $attribute = Attribute::factory()->create([
+            'type' => Dropdown::class,
         ]);
 
-        $inputComponent = \Lunar\Admin\Support\FieldTypes\Dropdown::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Admin\Support\FieldTypes\Dropdown::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(\Filament\Forms\Components\Select::class);
+        expect($inputComponent)->toBeInstanceOf(Select::class);
     });
 
     test('can render dropdown options', function () {
-        $attribute = \Lunar\Models\Attribute::factory()->create([
-            'type' => \Lunar\FieldTypes\Dropdown::class,
+        $attribute = Attribute::factory()->create([
+            'type' => Dropdown::class,
             'configuration' => [
                 'lookups' => [
                     [
@@ -31,11 +36,30 @@ describe('dropdown converter', function () {
             ],
         ]);
 
-        $inputComponent = \Lunar\Admin\Support\FieldTypes\Dropdown::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Admin\Support\FieldTypes\Dropdown::getFilamentComponent($attribute);
 
         $options = $inputComponent->getOptions();
         expect($options)->toBeArray()
             ->toHaveKey('bar')
             ->toContain('Foo');
+    });
+
+    test('can normalize dropdown lookups for edit forms', function () {
+        $configuration = Lunar\Admin\Support\FieldTypes\Dropdown::mutateConfigurationForForm([
+            'lookups' => [
+                [
+                    'label' => 'Foo',
+                    'value' => 'bar',
+                ],
+                'Baz' => 'qux',
+            ],
+        ]);
+
+        expect($configuration)->toBe([
+            'lookups' => [
+                'Foo' => 'bar',
+                'Baz' => 'qux',
+            ],
+        ]);
     });
 });

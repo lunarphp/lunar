@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\CachesProperties;
 use Lunar\Base\Traits\HasMacros;
@@ -23,8 +24,8 @@ use Lunar\DataTypes\Price;
  * @property int $purchasable_id
  * @property int $quantity
  * @property ?array $meta
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class CartLine extends BaseModel implements Contracts\CartLine
 {

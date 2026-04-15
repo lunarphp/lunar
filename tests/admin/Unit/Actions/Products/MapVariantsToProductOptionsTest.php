@@ -1,8 +1,9 @@
 <?php
 
 use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('support.actions');
 
 it('can map variants given one set of option values', function () {

@@ -1,17 +1,22 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+use Lunar\Admin\Filament\Resources\BrandResource;
+use Lunar\Models\Brand;
+use Lunar\Models\Language;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
+
+uses(TestCase::class)
     ->group('resource.collection');
 
 it('can render the brand collections page', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Brand::factory()->create();
+    $record = Brand::factory()->create();
 
     $this->asStaff(admin: true)
-        ->get(\Lunar\Admin\Filament\Resources\BrandResource::getUrl('collections', [
+        ->get(BrandResource::getUrl('collections', [
             'record' => $record,
         ]))
         ->assertSuccessful();

@@ -1,10 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Unit\Models\TestCase::class)
+use Lunar\Admin\Models\Staff;
+use Lunar\Tests\Admin\Unit\Models\TestCase;
+
+uses(TestCase::class)
     ->group('lunar.admin.models');
 
 test('can get full name', function () {
-    $staff = \Lunar\Admin\Models\Staff::factory()->create([
+    $staff = Staff::factory()->create([
         'first_name' => 'Joe',
         'last_name' => 'Bloggs',
     ]);
@@ -13,28 +16,28 @@ test('can get full name', function () {
 });
 
 test('can search staff by name', function () {
-    \Lunar\Admin\Models\Staff::factory()->create([
+    Staff::factory()->create([
         'first_name' => 'Joe',
         'last_name' => 'Bloggs',
     ]);
 
-    \Lunar\Admin\Models\Staff::factory()->create([
+    Staff::factory()->create([
         'first_name' => 'Tim',
         'last_name' => 'Bloggs',
     ]);
 
-    \Lunar\Admin\Models\Staff::factory()->create([
+    Staff::factory()->create([
         'first_name' => 'Bill',
         'last_name' => 'Chance',
     ]);
 
-    expect(\Lunar\Admin\Models\Staff::search('Bloggs')->get())->toHaveCount(2)
-        ->and(\Lunar\Admin\Models\Staff::search('Bill')->get())->toHaveCount(1)
-        ->and(\Lunar\Admin\Models\Staff::search('Joe Bloggs')->get())->toHaveCount(1);
+    expect(Staff::search('Bloggs')->get())->toHaveCount(2)
+        ->and(Staff::search('Bill')->get())->toHaveCount(1)
+        ->and(Staff::search('Joe Bloggs')->get())->toHaveCount(1);
 });
 
 test('can get first name by old key without underscore', function () {
-    $staff = \Lunar\Admin\Models\Staff::factory()->create([
+    $staff = Staff::factory()->create([
         'first_name' => 'Joe',
     ]);
 
@@ -42,7 +45,7 @@ test('can get first name by old key without underscore', function () {
 });
 
 test('can get last name by old key without underscore', function () {
-    $staff = \Lunar\Admin\Models\Staff::factory()->create([
+    $staff = Staff::factory()->create([
         'last_name' => 'Bloggs',
     ]);
 
@@ -50,7 +53,7 @@ test('can get last name by old key without underscore', function () {
 });
 
 test('can set first name by old key without underscore', function () {
-    $staff = \Lunar\Admin\Models\Staff::factory()->create([
+    $staff = Staff::factory()->create([
         'first_name' => 'Joe',
     ]);
 
@@ -61,7 +64,7 @@ test('can set first name by old key without underscore', function () {
 });
 
 test('can set last name by old key without underscore', function () {
-    $staff = \Lunar\Admin\Models\Staff::factory()->create([
+    $staff = Staff::factory()->create([
         'last_name' => 'Bloggs',
     ]);
 

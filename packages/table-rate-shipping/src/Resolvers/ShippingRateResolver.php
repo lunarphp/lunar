@@ -3,10 +3,9 @@
 namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Cart;
+use Lunar\Facades\Converter;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Contracts\Country as CountryContract;
-use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
@@ -40,9 +39,14 @@ class ShippingRateResolver
     protected ?string $postcode = null;
 
     /**
-     * Whether all cart items are in stock
+     * Whether all cart items are in stock.
      */
     protected ?bool $allCartItemsAreInStock = null;
+
+    /**
+     * Total cart weight normalised to kg (the Converter's base weight unit).
+     */
+    protected float $cartWeightKg = 0.0;
 
     /**
      * Initialise the resolver.
@@ -63,6 +67,19 @@ class ShippingRateResolver
 
         $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
             return $line->purchasable->shippable && ($line->purchasable->stock < $line->quantity);
+        });
+
+        // Sum all line weights converted to kg so we can cheaply convert to any
+        // method's weight_unit later without iterating cart lines again.
+        $this->cartWeightKg = (float) $this->cart->lines->sum(function ($line) {
+            $value = (float) ($line->purchasable->weight_value ?? 0);
+            $unit = $line->purchasable->weight_unit ?? 'kg';
+
+            return (float) Converter::from("weight.{$unit}")
+                ->to('weight.kg')
+                ->value($value * $line->quantity)
+                ->convert()
+                ->getValue();
         });
 
         $this->customerGroups = collect([CustomerGroup::getDefault()]);
@@ -128,6 +145,22 @@ class ShippingRateResolver
     }
 
     /**
+     * Return the cart weight expressed in the given unit.
+     */
+    protected function cartWeightIn(string $unit): float
+    {
+        if ($unit === 'kg') {
+            return $this->cartWeightKg;
+        }
+
+        return (float) Converter::from('weight.kg')
+            ->to("weight.{$unit}")
+            ->value($this->cartWeightKg)
+            ->convert()
+            ->getValue();
+    }
+
+    /**
      * Return the shipping methods applicable to the cart.
      */
     public function get(): Collection
@@ -166,16 +199,7 @@ class ShippingRateResolver
                         return true;
                     }
 
-                    if (! $method->cutoff) {
-                        return false;
-                    }
-
-                    [$h, $m, $s] = explode(':', $method->cutoff);
-
-                    return now()->set('hour', (int) $h)
-                        ->set('minute', (int) $m)
-                        ->set('second', (int) $s)
-                        ->isPast();
+                    return ! $method->isAvailable();
                 })
                 ->reject(function ($rate) {
                     if ($this->allCartItemsAreInStock || ! ($rate->shippingMethod->stock_available ?? false)) {
@@ -183,6 +207,27 @@ class ShippingRateResolver
                     }
 
                     return true;
+                })
+                ->reject(function ($rate) {
+                    $method = $rate->shippingMethod;
+                    $minWeight = $method->min_weight;
+                    $maxWeight = $method->max_weight;
+
+                    if ($minWeight === null && $maxWeight === null) {
+                        return false;
+                    }
+
+                    $cartWeight = $this->cartWeightIn($method->weight_unit ?? 'kg');
+
+                    if ($minWeight !== null && $cartWeight < (float) $minWeight) {
+                        return true;
+                    }
+
+                    if ($maxWeight !== null && $cartWeight > (float) $maxWeight) {
+                        return true;
+                    }
+
+                    return false;
                 });
 
             foreach ($zoneShippingRates as $shippingRate) {
