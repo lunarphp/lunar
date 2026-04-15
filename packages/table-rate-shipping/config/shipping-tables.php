@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Shipping\Resolvers\PostcodeResolver;
-
 return [
     'enabled' => env('LUNAR_SHIPPING_TABLES_ENABLED', true),
 
@@ -12,9 +10,5 @@ return [
      * or add a callable to use your own logic (eg => [MyTaxRateCalculator::class, 'calculate'])
      */
     'shipping_rate_tax_calculation' => 'default',
-
-    'resolvers' => [
-        'postcode' => PostcodeResolver::class,
-    ],
 
 ];
