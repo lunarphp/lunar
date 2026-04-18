@@ -144,6 +144,9 @@ class ManageProductShipping extends BaseEditRecord
                         __('lunarpanel::productvariant.form.length_value.label')
                     )
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('length_unit')
                             ->options($lengths)
@@ -156,6 +159,9 @@ class ManageProductShipping extends BaseEditRecord
                         __('lunarpanel::productvariant.form.width_value.label')
                     )
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('width_unit')
                             ->options($lengths)
@@ -168,6 +174,9 @@ class ManageProductShipping extends BaseEditRecord
                         __('lunarpanel::productvariant.form.height_value.label')
                     )
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('height_unit')
                             ->options($lengths)
@@ -180,6 +189,9 @@ class ManageProductShipping extends BaseEditRecord
                         __('lunarpanel::productvariant.form.weight_value.label')
                     )
                     ->numeric()
+                    ->required()
+                    ->minValue(0)
+                    ->maxValue(999999.9999)
                     ->select(
                         fn () => Select::make('weight_unit')
                             ->options($weights)

@@ -87,7 +87,6 @@
             "Lunar\\Tests\\Search\\": "tests/search"
         }
     },
-    "repositories": [],
     "extra": {
 "lunar": {
             "name": [
