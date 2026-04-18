@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Support\FieldTypes;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -20,6 +21,8 @@ class File extends BaseFieldType
         $multiple = (bool) $attribute->configuration->get('multiple');
         $min_files = $attribute->configuration->get('min_files');
         $max_files = $attribute->configuration->get('max_files');
+        $disk = $attribute->configuration->get('disk');
+        $directory = $attribute->configuration->get('directory');
 
         $input = FileUpload::make($attribute->handle)
             ->when(filled($attribute->validation_rules), fn (FileUpload $component) => $component->rules($attribute->validation_rules))
@@ -42,11 +45,21 @@ class File extends BaseFieldType
             $input->maxFiles($max_files);
         }
 
+        if ($disk) {
+            $input->disk($disk);
+        }
+
+        if ($directory) {
+            $input->directory($directory);
+        }
+
         return $input;
     }
 
     public static function getConfigurationFields(): array
     {
+        $disks = array_keys(config('filesystems.disks', []));
+
         return [
             TagsInput::make('file_types')
                 ->label(
@@ -80,6 +93,13 @@ class File extends BaseFieldType
             TextInput::make('max_files')->label(
                 __('lunarpanel::fieldtypes.file.form.max_files.label')
             )->nullable()->numeric(),
+            Select::make('disk')
+                ->label(__('lunarpanel::fieldtypes.file.form.disk.label'))
+                ->options(array_combine($disks, $disks))
+                ->nullable(),
+            TextInput::make('directory')
+                ->label(__('lunarpanel::fieldtypes.file.form.directory.label'))
+                ->nullable(),
         ];
     }
 }
