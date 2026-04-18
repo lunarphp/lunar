@@ -28,7 +28,6 @@ class RescaleWeightBasedShippingMinQuantity
             return;
         }
 
-        // Find all shipping rate IDs for those weight-based methods.
         $shippingRateIds = DB::table("{$prefix}shipping_rates")
             ->whereIn('shipping_method_id', $weightMethodIds)
             ->pluck('id');
