@@ -95,7 +95,7 @@ class File extends BaseFieldType
             )->nullable()->numeric(),
             Select::make('disk')
                 ->label(__('lunarpanel::fieldtypes.file.form.disk.label'))
-                ->options(array_combine($disks, $disks))
+                ->options(! empty($disks) ? array_combine($disks, $disks) : [])
                 ->nullable(),
             TextInput::make('directory')
                 ->label(__('lunarpanel::fieldtypes.file.form.directory.label'))
