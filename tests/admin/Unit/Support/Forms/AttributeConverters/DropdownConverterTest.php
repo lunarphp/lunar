@@ -43,4 +43,23 @@ describe('dropdown converter', function () {
             ->toHaveKey('bar')
             ->toContain('Foo');
     });
+
+    test('can normalize dropdown lookups for edit forms', function () {
+        $configuration = Lunar\Admin\Support\FieldTypes\Dropdown::mutateConfigurationForForm([
+            'lookups' => [
+                [
+                    'label' => 'Foo',
+                    'value' => 'bar',
+                ],
+                'Baz' => 'qux',
+            ],
+        ]);
+
+        expect($configuration)->toBe([
+            'lookups' => [
+                'Foo' => 'bar',
+                'Baz' => 'qux',
+            ],
+        ]);
+    });
 });

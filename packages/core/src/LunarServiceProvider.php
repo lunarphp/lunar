@@ -369,11 +369,11 @@ class LunarServiceProvider extends ServiceProvider
 
     protected function registerBuilderMacros(): void
     {
-        Builder::macro('orderBySequence', function (array $ids) {
+        Builder::macro('orderBySequence', function (iterable $ids) {
             /** @var Builder $this */
             $driver = $this->getConnection()->getDriverName();
 
-            if (empty($ids)) {
+            if (blank($ids)) {
                 return $this;
             }
 
