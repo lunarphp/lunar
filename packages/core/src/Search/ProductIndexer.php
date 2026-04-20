@@ -30,7 +30,7 @@ class ProductIndexer extends ScoutIndexer
     {
         return $query->with([
             'thumbnail',
-            'variants',
+            'variants' => fn ($query) => $query->select('id', 'sku', 'product_id'),
             'productType',
             'brand',
         ]);
