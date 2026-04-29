@@ -41,6 +41,7 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
@@ -162,7 +163,7 @@ class Cart extends BaseModel implements Contracts\Cart
      * tax treatment based on IP geo-location or customer-provided country
      * before a full shipping address is known.
      */
-    public ?TaxZone $taxZone = null;
+    public ?TaxZoneContract $taxZone = null;
 
     /**
      * Additional shipping estimate meta data.
@@ -654,7 +655,7 @@ class Cart extends BaseModel implements Contracts\Cart
      * Call `->save()` afterwards to persist it to the database; the `booted()` retrieved-event listener
      * will then restore the zone automatically on every subsequent page load.
      */
-    public function setTaxZone(?TaxZone $taxZone): Cart
+    public function setTaxZone(?TaxZoneContract $taxZone): Cart
     {
         $this->taxZone = $taxZone;
 

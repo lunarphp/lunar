@@ -14,7 +14,6 @@ use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Models\Customer;
 use Lunar\Models\Order;
-use Lunar\Models\TaxZone;
 
 interface Cart
 {
