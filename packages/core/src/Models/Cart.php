@@ -41,11 +41,10 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
-use Lunar\Models\TaxZone;
-use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
+use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 /**
  * @property int $id
@@ -658,7 +657,8 @@ class Cart extends BaseModel implements Contracts\Cart
     public function setTaxZone(?TaxZone $taxZone): Cart
     {
         $this->taxZone = $taxZone;
-        $meta = $this->meta ?? new \ArrayObject;
+
+        $meta = (array) ($this->meta ?? []);
 
         if ($taxZone) {
             $meta['tax_zone_id'] = $taxZone->id;
@@ -666,7 +666,8 @@ class Cart extends BaseModel implements Contracts\Cart
             unset($meta['tax_zone_id']);
         }
 
-        $this->meta = $meta;
+        $this->forceFill(['meta' => $meta]);
+
         return $this;
     }
 }
