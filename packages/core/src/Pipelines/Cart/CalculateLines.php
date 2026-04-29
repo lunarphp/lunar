@@ -7,7 +7,6 @@ use Illuminate\Pipeline\Pipeline;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Cart;
 use Lunar\Models\Contracts\Cart as CartContract;
-use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class CalculateLines
 {
@@ -19,14 +18,6 @@ class CalculateLines
     public function handle(CartContract $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
-
-        // Cache the TaxZone so that price model taxInc methods accounts for it in computation.
-        if ($cart->taxZone) {
-            Blink::put('lunar_cart_tax_zone', $cart->taxZone);
-        } else {
-            Blink::forget('lunar_cart_tax_zone');
-        }
-
         foreach ($cart->lines as $line) {
             $cartLine = app(Pipeline::class)
                 ->send($line)

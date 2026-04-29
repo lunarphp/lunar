@@ -77,8 +77,7 @@ class Price extends BaseModel implements Contracts\Price
     /**
      * Return the price exclusive of tax.
      *
-     * @param  TaxZone|null  $taxZone  Optional override for the tax zone. Falls back to the
-     *                                 Blink cart override, then the store's default zone.
+     * @param  TaxZone|null  $taxZone  Optional override for the tax zone. Falls back to the store's default zone.
      */
     public function priceExTax(?TaxZoneContract $taxZone = null): \Lunar\DataTypes\Price
     {
@@ -128,21 +127,16 @@ class Price extends BaseModel implements Contracts\Price
     }
 
     /**
-     * Return the total tax rate percentage (as a decimal, e.g. 0.20 for 20 %) for the given
-     * tax zone + priceable's own tax class combination.
+     * Return the total tax rate (as a decimal, e.g. 0.20 = 20%) for the given tax zone
+     * combined with the priceable's own tax class.
      *
-     * Resolution order
-     * ─ Tax class : always from the priceable (product-level classification, never overridden here)
-     * ─ Tax zone  : explicit param → Blink cart override (lunar_cart_tax_zone) → store default zone
-     *
-     * Results are cached in Blink keyed by "{classId}_{zoneId}" so different combinations
-     * never collide within the same request.
+     * Tax zone resolution: explicit param → store default zone.
+     * Results are memoised per "{classId}_{zoneId}" so unrelated combinations never collide.
      */
     protected function getPriceableTaxRate(?TaxZoneContract $taxZone = null): int|float
     {
         $taxClass = $this->priceable->getTaxClass();
-        $taxZone ??= Blink::get('lunar_cart_tax_zone')
-            ?? Blink::once('lunar_default_tax_zone', fn () => TaxZone::where('default', '=', 1)->first());
+        $taxZone ??= Blink::once('lunar_default_tax_zone', fn () => TaxZone::where('default', '=', 1)->first());
         $cacheKey = 'price_tax_rate_'.$taxClass->id.'_'.($taxZone?->id ?? 'none');
 
         return Blink::once($cacheKey, function () use ($taxClass, $taxZone) {
