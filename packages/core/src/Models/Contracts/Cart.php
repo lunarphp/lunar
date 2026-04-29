@@ -14,6 +14,7 @@ use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Models\Customer;
 use Lunar\Models\Order;
+use Lunar\Models\TaxZone;
 
 interface Cart
 {
@@ -188,4 +189,12 @@ interface Cart
      * Return the estimated shipping cost for a cart.
      */
     public function getEstimatedShipping(array $params, bool $setOverride = false): ?ShippingOption;
+
+    /**
+     * Set the tax zone override for this cart.
+     *
+     * When set, all tax calculations use this zone instead of resolving one
+     * from the shipping address. Pass null to clear the override.
+     */
+    public function setTaxZone(?TaxZone $taxZone): \Lunar\Models\Cart;
 }
