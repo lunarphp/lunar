@@ -4,7 +4,7 @@ namespace Lunar\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Lunar\Models\TaxZone;
+use Lunar\Models\Contracts\TaxZone;
 
 interface Price
 {

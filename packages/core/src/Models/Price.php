@@ -9,6 +9,7 @@ use Lunar\Base\BaseModel;
 use Lunar\Base\Casts\Price as CastsPrice;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Database\Factories\PriceFactory;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 /**
@@ -79,7 +80,7 @@ class Price extends BaseModel implements Contracts\Price
      * @param  TaxZone|null  $taxZone  Optional override for the tax zone. Falls back to the
      *                                 Blink cart override, then the store's default zone.
      */
-    public function priceExTax(?TaxZone $taxZone = null): \Lunar\DataTypes\Price
+    public function priceExTax(?TaxZoneContract $taxZone = null): \Lunar\DataTypes\Price
     {
         if (! prices_inc_tax()) {
             return $this->price;
@@ -97,7 +98,7 @@ class Price extends BaseModel implements Contracts\Price
      *
      * @param  TaxZone|null  $taxZone  Optional override for the tax zone.
      */
-    public function priceIncTax(?TaxZone $taxZone = null): int|\Lunar\DataTypes\Price
+    public function priceIncTax(?TaxZoneContract $taxZone = null): int|\Lunar\DataTypes\Price
     {
         if (prices_inc_tax()) {
             return $this->price;
@@ -114,7 +115,7 @@ class Price extends BaseModel implements Contracts\Price
      *
      * @param  TaxZone|null  $taxZone  Optional override for the tax zone.
      */
-    public function comparePriceIncTax(?TaxZone $taxZone = null): int|\Lunar\DataTypes\Price
+    public function comparePriceIncTax(?TaxZoneContract $taxZone = null): int|\Lunar\DataTypes\Price
     {
         if (prices_inc_tax()) {
             return $this->compare_price;
@@ -137,7 +138,7 @@ class Price extends BaseModel implements Contracts\Price
      * Results are cached in Blink keyed by "{classId}_{zoneId}" so different combinations
      * never collide within the same request.
      */
-    protected function getPriceableTaxRate(?TaxZone $taxZone = null): int|float
+    protected function getPriceableTaxRate(?TaxZoneContract $taxZone = null): int|float
     {
         $taxClass = $this->priceable->getTaxClass();
         $taxZone ??= Blink::get('lunar_cart_tax_zone')
