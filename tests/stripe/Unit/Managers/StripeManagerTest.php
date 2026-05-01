@@ -20,3 +20,39 @@ it('can create a payment intent', function () {
         'status' => $intent->status,
     ]);
 });
+
+it('returns legacy payment intent id stored in cart meta', function () {
+    $cart = CartBuilder::build([
+        'meta' => [
+            'payment_intent' => 'PI_LEGACY_META',
+        ],
+    ]);
+
+    expect(Stripe::getCartIntentId($cart))->toBe('PI_LEGACY_META');
+});
+
+it('prefers legacy meta payment intent over active relation', function () {
+    $cart = CartBuilder::build([
+        'meta' => [
+            'payment_intent' => 'PI_LEGACY_META',
+        ],
+    ]);
+
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_RELATION',
+        'status' => 'requires_payment_method',
+    ]);
+
+    expect(Stripe::getCartIntentId($cart))->toBe('PI_LEGACY_META');
+});
+
+it('falls back to active payment intent when no legacy meta', function () {
+    $cart = CartBuilder::build();
+
+    $cart->paymentIntents()->create([
+        'intent_id' => 'PI_RELATION',
+        'status' => 'requires_payment_method',
+    ]);
+
+    expect(Stripe::getCartIntentId($cart))->toBe('PI_RELATION');
+});

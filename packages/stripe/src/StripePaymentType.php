@@ -14,6 +14,7 @@ use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
+use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\InvalidRequestException;
@@ -97,23 +98,6 @@ class StripePaymentType extends AbstractPayment
             'processing_at' => now(),
         ]);
 
-        if (! $this->order) {
-            try {
-                $this->order = $this->cart->createOrder();
-                $paymentIntentModel->order_id = $this->order->id;
-            } catch (DisallowMultipleCartOrdersException|CartException $e) {
-                $failure = new PaymentAuthorize(
-                    success: false,
-                    message: $e->getMessage(),
-                    orderId: $this->order?->id,
-                    paymentType: 'stripe'
-                );
-                PaymentAttemptEvent::dispatch($failure);
-
-                return $failure;
-            }
-        }
-
         $this->paymentIntent = $this->stripe->paymentIntents->retrieve(
             $paymentIntentId
         );
@@ -122,7 +106,7 @@ class StripePaymentType extends AbstractPayment
             $failure = new PaymentAuthorize(
                 success: false,
                 message: 'Unable to locate payment intent',
-                orderId: $this->order->id,
+                orderId: $this->order?->id,
                 paymentType: 'stripe',
             );
 
@@ -137,7 +121,39 @@ class StripePaymentType extends AbstractPayment
             );
         }
 
+        // Sync the Stripe-side status before any local order work so the row
+        // never disagrees with reality even when downstream steps throw.
         $paymentIntentModel->status = $this->paymentIntent->status;
+        $paymentIntentModel->save();
+
+        if (! $this->order) {
+            try {
+                $this->order = $this->cart->createOrder();
+                $paymentIntentModel->order_id = $this->order->id;
+                $paymentIntentModel->save();
+            } catch (DisallowMultipleCartOrdersException|CartException $e) {
+                if ($this->paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED) {
+                    $paymentIntentModel->processed_at = now();
+                    $paymentIntentModel->save();
+
+                    OrphanedPaymentIntentDetected::dispatch(
+                        $paymentIntentId,
+                        $this->cart?->id,
+                        $e->getMessage(),
+                    );
+                }
+
+                $failure = new PaymentAuthorize(
+                    success: false,
+                    message: $e->getMessage(),
+                    orderId: $this->order?->id,
+                    paymentType: 'stripe'
+                );
+                PaymentAttemptEvent::dispatch($failure);
+
+                return $failure;
+            }
+        }
 
         $order = (new UpdateOrderFromIntent)->execute(
             $this->order,
