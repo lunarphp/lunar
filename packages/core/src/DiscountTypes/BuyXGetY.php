@@ -121,6 +121,12 @@ class BuyXGetY extends AbstractDiscountType
                     return true;
                 }
 
+                if ($item->discountable_type == LunarCollection::morphName() &&
+                    $line->purchasable->product->collections->pluck('id')->contains($item->discountable_id)
+                ) {
+                    return true;
+                }
+
                 return false;
             });
         })->sortBy('unitPrice.value');
@@ -219,7 +225,19 @@ class BuyXGetY extends AbstractDiscountType
         if ($remainingRewardQty > 0) {
             while ($remainingRewardQty > 0) {
                 $selectedRewardItem = $this->discount->discountableRewards->random()->discountable;
-                $purchasable = $selectedRewardItem->variants->first();
+
+                if ($selectedRewardItem instanceof LunarCollection) {
+                    $product = $selectedRewardItem->products()->inRandomOrder()->first();
+                    $purchasable = $product?->variants()->first();
+                    $selectedRewardItem = $product;
+                } else {
+                    $purchasable = $selectedRewardItem->variants->first();
+                }
+
+                if (! $purchasable) {
+                    $remainingRewardQty--;
+                    continue;
+                }
 
                 // is it already in cart?
                 $rewardLine = $cart->lines->first(function ($line) use ($purchasable) {
