@@ -236,6 +236,7 @@ class BuyXGetY extends AbstractDiscountType
 
                 if (! $purchasable) {
                     $remainingRewardQty--;
+
                     continue;
                 }
 
