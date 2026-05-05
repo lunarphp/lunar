@@ -46,7 +46,7 @@ return [
             'label' => 'UPC/EAN',
         ],
         'stock' => [
-            'label' => 'Агуулахд',
+            'label' => 'Агуулахын нөөц',
         ],
         'backorder' => [
             'label' => 'Захиалгаар',
@@ -55,8 +55,8 @@ return [
             'label' => 'Худалдаж авах боломж',
             'options' => [
                 'always' => 'Үргэлж',
-                'in_stock' => 'Агуулахд байхад',
-                'in_stock_or_on_backorder' => 'Агуулахд байвал эсвэл захиалгаар',
+                'in_stock' => 'Нөөцтэй үед',
+                'in_stock_or_on_backorder' => 'Нөөцтэй үед эсвэл захиалгаар',
             ],
         ],
         'unit_quantity' => [

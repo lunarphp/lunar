@@ -22,7 +22,7 @@ return [
             ],
             'table' => [
                 'children_count' => [
-                    'label' => 'Хүүхдийн тоо',
+                    'label' => 'Дэд коллекцийн тоо',
                 ],
                 'name' => [
                     'label' => 'Нэр',

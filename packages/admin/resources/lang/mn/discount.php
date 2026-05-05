@@ -8,7 +8,7 @@ return [
             'heading' => 'Нөхцөлүүд',
         ],
         'buy_x_get_y' => [
-            'heading' => 'X аваарай Y аваарай',
+            'heading' => 'X авбал Y урамшуулалтай',
         ],
         'amount_off' => [
             'heading' => 'Хэмжээг бууруулах',
@@ -118,7 +118,7 @@ return [
     ],
     'pages' => [
         'availability' => [
-            'label' => 'Боломж',
+            'label' => 'Бэлэн',
         ],
         'edit' => [
             'title' => 'Үндсэн мэдээлэл',
@@ -146,7 +146,7 @@ return [
                         'label' => 'Хязгаарлалт',
                     ],
                     'exclusion' => [
-                        'label' => 'Тү exclusion',
+                        'label' => 'Хасалт',
                     ],
                 ],
             ],
@@ -157,7 +157,7 @@ return [
                             'label' => 'Хязгаарлалт',
                         ],
                         'exclusion' => [
-                            'label' => 'Тү exclusion',
+                            'label' => 'Хасалт',
                         ],
                     ],
                 ],
@@ -195,7 +195,7 @@ return [
                         'label' => 'Хязгаарлалт',
                     ],
                     'exclusion' => [
-                        'label' => 'Тү exclusion',
+                        'label' => 'Хасалт',
                     ],
                 ],
             ],
@@ -206,7 +206,7 @@ return [
                             'label' => 'Хязгаарлалт',
                         ],
                         'exclusion' => [
-                            'label' => 'Тү exclusion',
+                            'label' => 'Хасалт',
                         ],
                     ],
                 ],
@@ -230,7 +230,7 @@ return [
                         'label' => 'Хязгаарлалт',
                     ],
                     'exclusion' => [
-                        'label' => 'Тү exclusion',
+                        'label' => 'Хасалт',
                     ],
                 ],
             ],
@@ -241,7 +241,7 @@ return [
                             'label' => 'Хязгаарлалт',
                         ],
                         'exclusion' => [
-                            'label' => 'Тү exclusion',
+                            'label' => 'Хасалт',
                         ],
                     ],
                 ],
@@ -265,7 +265,7 @@ return [
                         'label' => 'Хязгаарлалт',
                     ],
                     'exclusion' => [
-                        'label' => 'Тү exclusion',
+                        'label' => 'Хасалт',
                     ],
                 ],
             ],
@@ -276,7 +276,7 @@ return [
                             'label' => 'Хязгаарлалт',
                         ],
                         'exclusion' => [
-                            'label' => 'Тү exclusion',
+                            'label' => 'Хасалт',
                         ],
                     ],
                 ],
@@ -300,7 +300,7 @@ return [
                         'label' => 'Хязгаарлалт',
                     ],
                     'exclusion' => [
-                        'label' => 'Тү exclusion',
+                        'label' => 'Хасалт',
                     ],
                 ],
             ],
@@ -311,7 +311,7 @@ return [
                             'label' => 'Хязгаарлалт',
                         ],
                         'exclusion' => [
-                            'label' => 'Тү exclusion',
+                            'label' => 'Хасалт',
                         ],
                     ],
                 ],
@@ -357,7 +357,7 @@ return [
                             'label' => 'Хязгаарлалт',
                         ],
                         'exclusion' => [
-                            'label' => 'Тү exclusion',
+                            'label' => 'Хасалт',
                         ],
                     ],
                 ],

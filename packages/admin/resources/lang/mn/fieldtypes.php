@@ -6,7 +6,7 @@ return [
         'form' => [
             'lookups' => [
                 'label' => 'Сонголтууд',
-                'key_label' => 'Тайлбар',
+                'key_label' => 'Шошго',
                 'value_label' => 'Утга',
             ],
         ],

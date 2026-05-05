@@ -17,7 +17,7 @@ return [
             'label' => 'Идэвхтэй',
         ],
         'default' => [
-            'label' => 'Анхны',
+            'label' => 'Өгөгдмөл',
         ],
     ],
 
@@ -44,7 +44,7 @@ return [
             'label' => 'Идэвхтэй',
         ],
         'default' => [
-            'label' => 'Анхны',
+            'label' => 'Өгөгдмөл',
         ],
 
         'zone_countries' => [

@@ -11,7 +11,7 @@ return [
             'label' => 'Нэр',
         ],
         'label' => [
-            'label' => 'Тайлбар',
+            'label' => 'Шошго',
         ],
         'handle' => [
             'label' => 'Handle',
@@ -26,7 +26,7 @@ return [
             'label' => 'Нэр',
         ],
         'label' => [
-            'label' => 'Тайлбар',
+            'label' => 'Шошго',
         ],
         'handle' => [
             'label' => 'Handle',
@@ -117,7 +117,7 @@ return [
                         'label' => 'Үнэ',
                     ],
                     'stock' => [
-                        'label' => 'Агуулах',
+                        'label' => 'Нөөц',
                     ],
                 ],
             ],

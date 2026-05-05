@@ -11,7 +11,7 @@ return [
             'label' => 'Нэр',
         ],
         'default' => [
-            'label' => 'Анхны',
+            'label' => 'Өгөгдмөл',
         ],
     ],
 
@@ -20,7 +20,7 @@ return [
             'label' => 'Нэр',
         ],
         'default' => [
-            'label' => 'Анхны',
+            'label' => 'Өгөгдмөл',
         ],
     ],
     'delete' => [

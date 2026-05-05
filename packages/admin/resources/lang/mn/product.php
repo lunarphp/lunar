@@ -41,7 +41,7 @@ return [
             'label' => 'SKU',
         ],
         'stock' => [
-            'label' => 'Агуулах',
+            'label' => 'Нөөц',
         ],
         'producttype' => [
             'label' => 'Бүтээгдэхүүний төрөл',
@@ -93,7 +93,7 @@ return [
 
     'pages' => [
         'availability' => [
-            'label' => 'Боломж',
+            'label' => 'Бэлэн',
         ],
         'edit' => [
             'title' => 'Үндсэн мэдээлэл',

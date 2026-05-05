@@ -17,7 +17,7 @@ return [
             'label' => 'URL',
         ],
         'default' => [
-            'label' => 'Анхны',
+            'label' => 'Өгөгдмөл',
         ],
     ],
 
@@ -32,7 +32,7 @@ return [
             'label' => 'URL',
         ],
         'default' => [
-            'label' => 'Анхны',
+            'label' => 'Өгөгдмөл',
         ],
     ],
 
