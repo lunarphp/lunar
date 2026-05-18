@@ -50,6 +50,7 @@ class StripePaymentType extends AbstractPayment
         $this->stripe = Stripe::getClient();
 
         $this->policy = config('lunar.stripe.policy', 'automatic');
+        $this->allowPartialPayment = config('lunar.stripe.allow_partial_payment', false);
     }
 
     /**
@@ -86,18 +87,6 @@ class StripePaymentType extends AbstractPayment
             return $failure;
         }
 
-        if (! $paymentIntentModel) {
-            $paymentIntentModel = StripePaymentIntent::create([
-                'intent_id' => $paymentIntentId,
-                'cart_id' => $this->cart?->id ?: $this->order->cart_id,
-                'order_id' => $this->order?->id,
-            ]);
-        }
-
-        $paymentIntentModel->update([
-            'processing_at' => now(),
-        ]);
-
         $this->paymentIntent = $this->stripe->paymentIntents->retrieve(
             $paymentIntentId
         );
@@ -114,6 +103,22 @@ class StripePaymentType extends AbstractPayment
 
             return $failure;
         }
+
+        if ($failure = $this->assertIntentMatchesTotal()) {
+            return $failure;
+        }
+
+        if (! $paymentIntentModel) {
+            $paymentIntentModel = StripePaymentIntent::create([
+                'intent_id' => $paymentIntentId,
+                'cart_id' => $this->cart?->id ?: $this->order->cart_id,
+                'order_id' => $this->order?->id,
+            ]);
+        }
+
+        $paymentIntentModel->update([
+            'processing_at' => now(),
+        ]);
 
         if ($this->paymentIntent->status == PaymentIntent::STATUS_REQUIRES_CAPTURE && $this->policy == 'automatic') {
             $this->paymentIntent = $this->stripe->paymentIntents->capture(
@@ -174,6 +179,47 @@ class StripePaymentType extends AbstractPayment
         $paymentIntentModel->save();
 
         return $response;
+    }
+
+    /**
+     * Verify the retrieved payment intent matches the expected order/cart total
+     * and currency. Returns a failure DTO when the check fails, or null on pass.
+     *
+     * Subclasses may override to relax or extend the policy (e.g. per-order
+     * deposit rules).
+     */
+    protected function assertIntentMatchesTotal(): ?PaymentAuthorize
+    {
+        if ($this->allowPartialPayment) {
+            return null;
+        }
+
+        if ($this->order) {
+            $expectedAmount = $this->order->total->value;
+            $expectedCurrency = $this->order->currency_code;
+        } else {
+            $calculated = $this->cart->calculate();
+            $expectedAmount = $calculated->total->value;
+            $expectedCurrency = $calculated->currency->code;
+        }
+
+        $amountMatches = $expectedAmount === (int) $this->paymentIntent->amount;
+        $currencyMatches = strtolower((string) $expectedCurrency) === strtolower((string) $this->paymentIntent->currency);
+
+        if ($amountMatches && $currencyMatches) {
+            return null;
+        }
+
+        $failure = new PaymentAuthorize(
+            success: false,
+            message: 'Payment intent amount does not match order total',
+            orderId: $this->order?->id,
+            paymentType: 'stripe',
+        );
+
+        PaymentAttemptEvent::dispatch($failure);
+
+        return $failure;
     }
 
     /**

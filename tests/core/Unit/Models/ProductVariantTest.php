@@ -36,6 +36,16 @@ test('can create prices through relationship', function () {
     expect($variant->prices)->toHaveCount(1);
 });
 
+test('shippable attribute is cast to bool', function () {
+    $variant = ProductVariant::factory()->create([
+        'shippable' => 0,
+    ])->fresh();
+
+    expect($variant->shippable)->toBeFalse()
+        ->and($variant->isShippable())->toBeFalse()
+        ->and($variant->getType())->toBe('digital');
+});
+
 test('can get correct price', function () {
     $product = Product::factory()->create();
     $variant = ProductVariant::factory()->create([
