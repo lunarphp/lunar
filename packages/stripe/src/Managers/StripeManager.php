@@ -5,6 +5,7 @@ namespace Lunar\Stripe\Managers;
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
 use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;
@@ -85,7 +86,7 @@ class StripeManager
         }
 
         $paymentIntent = $this->buildIntent(
-            $cart->total->value,
+            static::toStripeAmount($cart->total->value, $cart->currency),
             $cart->currency->code,
             $opts
         );
@@ -154,7 +155,7 @@ class StripeManager
 
         $this->getClient()->paymentIntents->update(
             $intentId,
-            ['amount' => $cart->total->value]
+            ['amount' => static::toStripeAmount($cart->total->value, $cart->currency)]
         );
     }
 
@@ -214,6 +215,35 @@ class StripeManager
     public function getCharge(string $chargeId): Charge
     {
         return $this->getClient()->charges->retrieve($chargeId);
+    }
+
+    /**
+     * Convert a Lunar price value to the amount expected by Stripe.
+     *
+     * Lunar stores prices as integers in the smallest unit configured by the
+     * Currency's decimal_places. Stripe expects amounts in its own currency
+     * sub-unit, which differs from Lunar's storage for zero-decimal currencies
+     * (e.g. JPY) and the "x100" zero-decimal special cases (HUF, TWD, UGX).
+     *
+     * @see https://docs.stripe.com/currencies
+     */
+    public static function toStripeAmount(int $value, CurrencyContract $currency): int
+    {
+        $code = strtolower($currency->code);
+
+        $stripeDecimals = match (true) {
+            in_array($code, ['huf', 'twd', 'ugx'], true) => 2,
+            in_array($code, ['bhd', 'jod', 'kwd', 'omr', 'tnd'], true) => 3,
+            in_array($code, [
+                'bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw',
+                'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf',
+            ], true) => 0,
+            default => 2,
+        };
+
+        $majorAmount = $value / (10 ** $currency->decimal_places);
+
+        return (int) round($majorAmount * (10 ** $stripeDecimals));
     }
 
     /**
