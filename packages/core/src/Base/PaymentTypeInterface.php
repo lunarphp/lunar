@@ -34,6 +34,11 @@ interface PaymentTypeInterface
     public function setConfig(array $config): self;
 
     /**
+     * Allow partial payments (e.g. deposits).
+     */
+    public function allowPartialPayment(bool $condition = true): self;
+
+    /**
      * Authorize the payment.
      */
     public function authorize(): ?PaymentAuthorize;
