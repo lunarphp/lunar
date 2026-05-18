@@ -15,7 +15,7 @@ abstract class AbstractPayment implements PaymentTypeInterface
     /**
      * Whether we should allow partial payments
      */
-    protected bool $allowPartialPayments = false;
+    protected bool $allowPartialPayment = false;
 
     /**
      * The instance of the cart.
@@ -83,7 +83,7 @@ abstract class AbstractPayment implements PaymentTypeInterface
 
     public function allowPartialPayment(bool $condition = true): self
     {
-        $this->allowPartialPayments = $condition;
+        $this->allowPartialPayment = $condition;
 
         return $this;
     }

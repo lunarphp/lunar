@@ -7,6 +7,7 @@ use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
+use Lunar\Tests\Stripe\Utils\StripeFake;
 
 use function Pest\Laravel\assertDatabaseHas;
 
@@ -16,9 +17,7 @@ it('can capture an order', function () {
     $cart = CartBuilder::build();
     $payment = new StripePaymentType;
 
-    Stripe::fake()->next([
-        'amount' => $cart->calculate()->total->value,
-    ]);
+    StripeFake::forCart($cart);
 
     $response = $payment->cart($cart)->withData([
         'payment_intent' => 'PI_CAPTURE',
@@ -39,9 +38,7 @@ it('wont capture an order with mismatched intent amount', function () {
     $cart = CartBuilder::build();
     $payment = new StripePaymentType;
 
-    Stripe::fake()->next([
-        'amount' => 100,
-    ]);
+    StripeFake::forCart($cart, ['amount' => 100]);
 
     $response = $payment->cart($cart)->withData([
         'payment_intent' => 'PI_CAPTURE',
@@ -49,23 +46,17 @@ it('wont capture an order with mismatched intent amount', function () {
 
     expect($response)->toBeInstanceOf(PaymentAuthorize::class)
         ->and($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent amount does not match order total')
         ->and($cart->refresh()->completedOrder)->toBeNull()
-        ->and($cart->refresh()->draftOrder)->not()->toBeNull()
-        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
-
-    \Pest\Laravel\assertDatabaseMissing((new Transaction)->getTable(), [
-        'order_id' => $cart->refresh()->draftOrder->id,
-        'type' => 'capture',
-    ]);
+        ->and($cart->refresh()->draftOrder)->toBeNull()
+        ->and($cart->paymentIntents)->toBeEmpty();
 });
 
 it('wont capture an order with greater intent amount', function () {
     $cart = CartBuilder::build();
     $payment = new StripePaymentType;
 
-    Stripe::fake()->next([
-        'amount' => $cart->calculate()->total->value + 1,
-    ]);
+    StripeFake::forCart($cart, ['amount' => $cart->calculate()->total->value + 1]);
 
     $response = $payment->cart($cart)->withData([
         'payment_intent' => 'PI_CAPTURE',
@@ -74,22 +65,33 @@ it('wont capture an order with greater intent amount', function () {
     expect($response)->toBeInstanceOf(PaymentAuthorize::class)
         ->and($response->success)->toBeFalse()
         ->and($cart->refresh()->completedOrder)->toBeNull()
-        ->and($cart->refresh()->draftOrder)->not()->toBeNull()
-        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+        ->and($cart->refresh()->draftOrder)->toBeNull()
+        ->and($cart->paymentIntents)->toBeEmpty();
+});
 
-    \Pest\Laravel\assertDatabaseMissing((new Transaction)->getTable(), [
-        'order_id' => $cart->refresh()->draftOrder->id,
-        'type' => 'capture',
-    ]);
+it('wont capture an order with mismatched intent currency', function () {
+    $cart = CartBuilder::build();
+    $payment = new StripePaymentType;
+
+    StripeFake::forCart($cart, ['currency' => 'xyz']);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent amount does not match order total')
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->refresh()->draftOrder)->toBeNull()
+        ->and($cart->paymentIntents)->toBeEmpty();
 });
 
 it('will capture an order with mismatched intent amount if allowed', function () {
     $cart = CartBuilder::build();
     $payment = new StripePaymentType;
 
-    Stripe::fake()->next([
-        'amount' => 100,
-    ]);
+    StripeFake::forCart($cart, ['amount' => 100]);
 
     $response = $payment->cart($cart)->withData([
         'payment_intent' => 'PI_CAPTURE',
@@ -101,7 +103,7 @@ it('will capture an order with mismatched intent amount if allowed', function ()
         ->and($cart->refresh()->draftOrder)->toBeNull()
         ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
 
-    \Pest\Laravel\assertDatabaseHas((new Transaction)->getTable(), [
+    assertDatabaseHas((new Transaction)->getTable(), [
         'order_id' => $cart->refresh()->completedOrder->id,
         'type' => 'capture',
     ]);
@@ -110,9 +112,7 @@ it('will capture an order with mismatched intent amount if allowed', function ()
 it('can handle failed payments', function () {
     $cart = CartBuilder::build();
 
-    Stripe::fake()->next([
-        'amount' => $cart->calculate()->total->value,
-    ]);
+    StripeFake::forCart($cart);
 
     $payment = new StripePaymentType;
 
@@ -145,13 +145,10 @@ it('can retrieve existing payment intent', function () {
 });
 
 it('can handle multiple payment events', function () {
-
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
 
-    Stripe::fake()->next([
-        'amount' => $order->total->value,
-    ]);
+    StripeFake::forOrder($order);
 
     $payment = new StripePaymentType;
 
@@ -180,9 +177,7 @@ it('will fail if intent is in final status', function () {
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
 
-    Stripe::fake()->next([
-        'amount' => $cart->calculate()->total->value,
-    ]);
+    StripeFake::forCart($cart);
 
     $payment = new StripePaymentType;
 
@@ -214,9 +209,7 @@ it('will fail if cart already has an order', function () {
         'placed_at' => now(),
     ]);
 
-    Stripe::fake()->next([
-        'amount' => $cart->calculate()->total->value,
-    ]);
+    StripeFake::forCart($cart);
 
     $payment = new StripePaymentType;
 
@@ -235,9 +228,7 @@ it('will fail if cart already has an order', function () {
 it('will fail if payment intent status is requires_payment_method', function () {
     $cart = CartBuilder::build();
 
-    Stripe::fake()->next([
-        'amount' => $cart->calculate()->total->value,
-    ]);
+    StripeFake::forCart($cart);
 
     $payment = new StripePaymentType;
 
@@ -254,9 +245,7 @@ it('will fail if payment intent status is requires_payment_method', function () 
 it('create a pending transaction when status is requires_action', function () {
     $cart = CartBuilder::build();
 
-    Stripe::fake()->next([
-        'amount' => $cart->calculate()->total->value,
-    ]);
+    StripeFake::forCart($cart);
 
     $payment = new StripePaymentType;
 
