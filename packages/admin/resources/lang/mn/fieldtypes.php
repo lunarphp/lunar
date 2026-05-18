@@ -67,6 +67,12 @@ return [
             'max_files' => [
                 'label' => 'Хамгийн их файл',
             ],
+            'disk' => [
+                'label' => 'Диск',
+            ],
+            'directory' => [
+                'label' => 'Хавтас',
+            ],
         ],
     ],
 ];
