@@ -2,7 +2,7 @@
 
 namespace Lunar\Base;
 
-use Carbon\Carbon;
+use Illuminate\Cache\NullStore;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -38,6 +38,10 @@ class TelemetryService implements TelemetryServiceInterface
             return false;
         }
 
+        if (Cache::getStore() instanceof NullStore) {
+            return false;
+        }
+
         $lastAttempt = Cache::get($this->getCacheKey());
 
         return ! $lastAttempt || ! now()->parse($lastAttempt)->isToday();
@@ -67,15 +71,17 @@ class TelemetryService implements TelemetryServiceInterface
             return;
         }
 
-        Cache::forget($this->getCacheKey());
+        // Record the attempt up-front so a failed or slow HTTP request still
+        // counts against the daily limit instead of retrying on every hit.
+        Cache::put($this->getCacheKey(), now()->toIso8601String(), now()->endOfDay());
 
-        Cache::remember($this->getCacheKey(), 86400, function (): ?Carbon {
-            $response = Http::withHeader('Accept', 'application/json')
+        try {
+            Http::withHeader('Accept', 'application/json')
                 ->timeout(3)
                 ->retry(3, 100)
                 ->post($this->getInsightsUrl(), $this->getInsightsPayload());
-
-            return $response->successful() ? now() : null;
-        });
+        } catch (\Throwable $e) {
+            // Telemetry must never affect the surrounding request.
+        }
     }
 }
