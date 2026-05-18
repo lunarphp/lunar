@@ -27,7 +27,7 @@ test('can correctly mark order for new customer', function () {
         'type' => 'billing',
     ]);
 
-    MarkAsNewCustomer::dispatch($order->id);
+    MarkAsNewCustomer::dispatchSync($order->id);
 
     expect($order->refresh()->new_customer)->toBeTrue();
 
@@ -42,7 +42,7 @@ test('can correctly mark order for new customer', function () {
         'type' => 'billing',
     ]);
 
-    MarkAsNewCustomer::dispatch($order->id);
+    MarkAsNewCustomer::dispatchSync($order->id);
 
     expect($order->refresh()->new_customer)->toBeFalse();
 });
