@@ -37,8 +37,6 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->loadLaravelMigrations();
-
         // Freeze time to avoid timestamp errors
         $this->freezeTime();
     }
@@ -80,7 +78,7 @@ class TestCase extends BaseTestCase
         $app['config']->set('auth.passwords.users.table', 'password_reset_tokens');
         $app['config']->set('auth.providers.users.model', User::class);
 
-        $this->replaceModelsForTesting();
+        parent::getEnvironmentSetUp($app);
     }
 
     protected function asStaff($admin = true): TestCase

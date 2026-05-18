@@ -42,13 +42,9 @@ class Attributes extends Group
     public function using(string $modelClass): self
     {
         $this->modelClassOverride = $modelClass;
+        $this->key('attributeData'.class_basename($modelClass));
 
         return $this;
-    }
-
-    public function getKey(bool $isAbsolute = true): ?string
-    {
-        return 'attributeData'.$this->modelClassOverride;
     }
 
     public function loadStateFromRelationships(bool $hydrateAll = false): void
@@ -108,6 +104,7 @@ class Attributes extends Group
     {
         parent::setUp();
 
+        $this->key('attributeData');
         $this->statePath('attribute_data');
 
         if (blank($this->childComponents['default'] ?? [])) {
