@@ -10,7 +10,7 @@ uses(TestCase::class)->group('lunar.stripe.jobs');
 it('will dispatch event if payment intent has no found cart or order', function () {
     Event::fake();
 
-    ProcessStripeWebhook::dispatch('PI_FOOBAR', null);
+    ProcessStripeWebhook::dispatchSync('PI_FOOBAR', null);
 
     Event::assertDispatched(
         CartMissingForIntent::class,

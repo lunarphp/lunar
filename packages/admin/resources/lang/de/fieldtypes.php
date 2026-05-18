@@ -53,5 +53,26 @@ return [
     ],
     'file' => [
         'label' => 'Datei',
+        'form' => [
+            'file_types' => [
+                'label' => 'Erlaubte Dateitypen',
+                'placeholder' => 'Neuer MIME',
+            ],
+            'multiple' => [
+                'label' => 'Mehrere Dateien erlauben',
+            ],
+            'min_files' => [
+                'label' => 'Min. Dateien',
+            ],
+            'max_files' => [
+                'label' => 'Max. Dateien',
+            ],
+            'disk' => [
+                'label' => 'Datenträger',
+            ],
+            'directory' => [
+                'label' => 'Verzeichnis',
+            ],
+        ],
     ],
 ];
