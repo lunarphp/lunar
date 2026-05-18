@@ -131,3 +131,68 @@ test('can apply shipping totals', function () {
     expect($cart->shippingSubTotal)->toBeInstanceOf(PriceDataType::class);
     expect($cart->shippingSubTotal->value)->toEqual(500);
 });
+
+test('switching shipping option replaces the breakdown instead of summing', function () {
+    $currency = Currency::factory()->create();
+    $taxClass = TaxClass::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $cart->addresses()->create(
+        CartAddress::factory()->make([
+            'type' => 'shipping',
+            'country_id' => Country::factory(),
+        ])->toArray()
+    );
+
+    $basic = new ShippingOption(
+        name: 'Basic Delivery',
+        description: 'Basic Delivery',
+        identifier: 'BASDEL',
+        price: new PriceDataType(500, $cart->currency, 1),
+        taxClass: $taxClass,
+    );
+
+    $express = new ShippingOption(
+        name: 'Express Delivery',
+        description: 'Express Delivery',
+        identifier: 'EXPDEL',
+        price: new PriceDataType(1500, $cart->currency, 1),
+        taxClass: $taxClass,
+    );
+
+    ShippingManifest::addOption($basic);
+    ShippingManifest::addOption($express);
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $cart->shippingAddress->update(['shipping_option' => 'BASDEL']);
+
+    app(ApplyShipping::class)->handle($cart, fn ($cart) => $cart);
+
+    expect($cart->shippingSubTotal->value)->toEqual(500);
+    expect($cart->shippingBreakdown->items)->toHaveCount(1);
+
+    $cart->shippingAddress->update(['shipping_option' => 'EXPDEL']);
+
+    app(ApplyShipping::class)->handle($cart, fn ($cart) => $cart);
+
+    expect($cart->shippingSubTotal->value)->toEqual(1500);
+    expect($cart->shippingBreakdown->items)->toHaveCount(1);
+});

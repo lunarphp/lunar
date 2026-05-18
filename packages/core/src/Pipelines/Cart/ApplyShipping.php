@@ -21,15 +21,11 @@ final class ApplyShipping
     {
         /** @var Cart $cart */
         $shippingSubTotal = 0;
-        $shippingBreakdown = $cart->shippingBreakdown ?: new ShippingBreakdown;
+        $shippingBreakdown = new ShippingBreakdown;
 
         $shippingOption = $cart->shippingOptionOverride ?: ShippingManifest::getShippingOption($cart);
 
         if ($shippingOption) {
-            if ($cart->shippingOptionOverride) {
-                $shippingBreakdown->items = collect();
-            }
-
             $shippingBreakdown->items->put(
                 $shippingOption->getIdentifier(),
                 new ShippingBreakdownItem(
