@@ -3,28 +3,26 @@ name: fix-code-style
 on:
   push:
 
+permissions:
+  contents: write
+
 jobs:
   fix-code-style:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.head_ref }}
+          fetch-depth: 0
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-      - name: Set up Node
-        uses: actions/setup-node@v2
-      - name: Install dependencies
-        run: |
-          composer install --no-interaction
+          tools: composer:v2, pint
       - name: Run Pint
-        run: composer pint
+        run: pint --parallel --diff=origin/1.x
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_user_name: "GitHub Action"
           commit_user_email: "action@github.com"
