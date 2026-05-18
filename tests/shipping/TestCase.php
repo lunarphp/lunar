@@ -35,19 +35,4 @@ class TestCase extends BaseTestCase
             BlinkServiceProvider::class,
         ];
     }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        $this->replaceModelsForTesting();
-    }
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
 }

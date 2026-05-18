@@ -14,6 +14,8 @@ uses(TestCase::class);
 uses(RefreshDatabase::class);
 
 test('conversions are loaded', function () {
+    config()->set('media-library.queue_conversions_by_default', false);
+
     $definitions = config('lunar.media.definitions');
 
     expect($definitions)->toHaveCount(6);
