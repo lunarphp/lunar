@@ -9,29 +9,18 @@ class CustomerObserver
     /**
      * Handle the Customer "deleting" event.
      *
-     * This observer performs minimal cleanup to avoid FK constraint violations
-     * when customers are deleted programmatically (e.g., $customer->delete()).
-     * For intelligent deletion with configurable strategies, use ProcessCustomerDeletion action.
+     * Releases foreign key references so the customer can be deleted without
+     * constraint violations. Order and cart rows are kept (customer_id nulled);
+     * addresses are owned by the customer and removed.
      */
     public function deleting(CustomerContract $customer): void
     {
-        // Clean up carts to avoid FK constraints
-        $customer->carts()->each(function ($cart) {
-            $cart->lines()->delete();
-            $cart->forceDelete();
-        });
+        $customer->carts()->update(['customer_id' => null]);
+        $customer->orders()->update(['customer_id' => null]);
+        $customer->addresses()->delete();
 
-        // Detach many-to-many relationships to avoid FK constraints
         $customer->customerGroups()->detach();
         $customer->discounts()->detach();
         $customer->users()->detach();
-
-        // Delete related records to avoid FK constraints
-        $customer->addresses()->delete();
-
-        // Delete wishlists if available
-        if (method_exists($customer, 'wishlists')) {
-            $customer->wishlists()->delete();
-        }
     }
 }

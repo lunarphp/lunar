@@ -3,8 +3,11 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Models\Address;
+use Lunar\Models\Cart;
 use Lunar\Models\Customer;
 use Lunar\Models\CustomerGroup;
+use Lunar\Models\Discount;
+use Lunar\Models\Order;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
@@ -128,6 +131,52 @@ test('can fetch customer addresses', function () {
     ]);
 
     expect($customer->addresses()->get())->toHaveCount($addresses->count());
+});
+
+test('can delete a customer without foreign key violations', function () {
+    $customer = Customer::factory()->create();
+    $group = CustomerGroup::factory()->create();
+    $discount = Discount::factory()->create();
+    $user = User::factory()->create();
+
+    Cart::factory()->create(['customer_id' => $customer->id]);
+    Order::factory()->create(['customer_id' => $customer->id]);
+    Address::factory()->create(['customer_id' => $customer->id]);
+
+    $customer->customerGroups()->attach($group);
+    $customer->discounts()->attach($discount);
+    $customer->users()->attach($user);
+
+    $customer->delete();
+
+    $this->assertDatabaseMissing('lunar_customers', ['id' => $customer->id]);
+});
+
+test('deleting a customer preserves orders and carts with customer_id nulled', function () {
+    $customer = Customer::factory()->create();
+    $cart = Cart::factory()->create(['customer_id' => $customer->id]);
+    $order = Order::factory()->create(['customer_id' => $customer->id]);
+
+    $customer->delete();
+
+    $this->assertDatabaseHas('lunar_carts', ['id' => $cart->id, 'customer_id' => null]);
+    $this->assertDatabaseHas('lunar_orders', ['id' => $order->id, 'customer_id' => null]);
+});
+
+test('deleting a customer removes owned addresses and pivot rows', function () {
+    $customer = Customer::factory()->create();
+    $address = Address::factory()->create(['customer_id' => $customer->id]);
+    $group = CustomerGroup::factory()->create();
+    $user = User::factory()->create();
+
+    $customer->customerGroups()->attach($group);
+    $customer->users()->attach($user);
+
+    $customer->delete();
+
+    $this->assertDatabaseMissing('lunar_addresses', ['id' => $address->id]);
+    $this->assertDatabaseMissing('lunar_customer_customer_group', ['customer_id' => $customer->id]);
+    $this->assertDatabaseMissing('lunar_customer_user', ['customer_id' => $customer->id]);
 });
 
 test('can retrieve latest customer', function () {
