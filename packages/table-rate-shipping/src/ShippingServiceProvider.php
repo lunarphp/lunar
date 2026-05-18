@@ -15,7 +15,6 @@ use Lunar\Models\CustomerGroup;
 use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Shipping\Database\State\MigrateCutoffToSchedule;
-use Lunar\Shipping\Database\State\RescaleWeightBasedShippingMinQuantity;
 use Lunar\Shipping\DiscountTypes\ShippingDiscount;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Managers\ShippingManager;
@@ -101,7 +100,6 @@ class ShippingServiceProvider extends ServiceProvider
     protected function registerStateListeners(): void
     {
         $states = [
-            RescaleWeightBasedShippingMinQuantity::class,
             MigrateCutoffToSchedule::class,
         ];
 
