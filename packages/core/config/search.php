@@ -1,5 +1,18 @@
 <?php
 
+use Lunar\Models\Brand;
+use Lunar\Models\Collection;
+use Lunar\Models\Customer;
+use Lunar\Models\Order;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
+use Lunar\Search\BrandIndexer;
+use Lunar\Search\CollectionIndexer;
+use Lunar\Search\CustomerIndexer;
+use Lunar\Search\OrderIndexer;
+use Lunar\Search\ProductIndexer;
+use Lunar\Search\ProductOptionIndexer;
+
 return [
 
     /*
@@ -16,12 +29,12 @@ return [
         /*
          * These models are required by the system, do not change them.
          */
-        Lunar\Models\Brand::class,
-        Lunar\Models\Collection::class,
-        Lunar\Models\Customer::class,
-        Lunar\Models\Order::class,
-        Lunar\Models\Product::class,
-        Lunar\Models\ProductOption::class,
+        Brand::class,
+        Collection::class,
+        Customer::class,
+        Order::class,
+        Product::class,
+        ProductOption::class,
 
         /*
          * Below you can add your own models for indexing...
@@ -45,12 +58,12 @@ return [
     ],
 
     'indexers' => [
-        Lunar\Models\Brand::class => Lunar\Search\BrandIndexer::class,
-        Lunar\Models\Collection::class => Lunar\Search\CollectionIndexer::class,
-        Lunar\Models\Customer::class => Lunar\Search\CustomerIndexer::class,
-        Lunar\Models\Order::class => Lunar\Search\OrderIndexer::class,
-        Lunar\Models\Product::class => Lunar\Search\ProductIndexer::class,
-        Lunar\Models\ProductOption::class => Lunar\Search\ProductOptionIndexer::class,
+        Brand::class => BrandIndexer::class,
+        Collection::class => CollectionIndexer::class,
+        Customer::class => CustomerIndexer::class,
+        Order::class => OrderIndexer::class,
+        Product::class => ProductIndexer::class,
+        ProductOption::class => ProductOptionIndexer::class,
     ],
 
 ];

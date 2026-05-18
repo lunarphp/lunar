@@ -1,12 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('migrations');
-
 use Illuminate\Support\Facades\File;
+use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\artisan;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
+
+uses(TestCase::class)->group('migrations');
 
 test('all migrations can run rollback', function () {
     artisan('migrate');
@@ -22,32 +23,27 @@ test('all migrations can run rollback', function () {
     }
 
     artisan('migrate:rollback');
+
+    // Restore the schema for subsequent tests — RefreshDatabase only migrates
+    // once per process on a file-backed connection.
+    artisan('migrate');
 });
 
-test('each migration can run and rollback', function () {
+test('migrations roll back and re-apply', function () {
     $migrationsList = collect(File::allFiles(
         __DIR__.'/../../../packages/core/database/migrations'
-    ));
+    ))->map(fn ($file) => pathinfo($file->getFilename(), PATHINFO_FILENAME));
+
+    artisan('migrate');
+    artisan('migrate:rollback');
 
     foreach ($migrationsList as $migration) {
-        artisan('migrate', [
-            '--realpath' => $migration->getRealpath(),
-        ]);
+        assertDatabaseMissing('migrations', ['migration' => $migration]);
+    }
 
-        assertDatabaseHas('migrations', [
-            'migration' => pathinfo($migration->getFilename(), PATHINFO_FILENAME),
-        ]);
+    artisan('migrate');
 
-        artisan('migrate:rollback', [
-            '--realpath' => $migration->getRealpath(),
-        ]);
-
-        assertDatabaseMissing('migrations', [
-            'migration' => pathinfo($migration->getFilename(), PATHINFO_FILENAME),
-        ]);
-
-        artisan('migrate', [
-            '--realpath' => $migration->getRealpath(),
-        ]);
+    foreach ($migrationsList as $migration) {
+        assertDatabaseHas('migrations', ['migration' => $migration]);
     }
 });

@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('carts');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\DataTypes\ShippingOption;
@@ -10,6 +9,7 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\Discounts;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Managers\CartSessionManager;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\CartLine;
@@ -28,15 +28,18 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
+use Lunar\Tests\Core\TestCase;
 
-use function Pest\Laravel\{assertDatabaseCount};
+uses(TestCase::class)->group('carts');
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+use function Pest\Laravel\assertDatabaseCount;
 
-//function setAuthUserConfig()
-//{
+uses(RefreshDatabase::class);
+
+// function setAuthUserConfig()
+// {
 //    Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
-//}
+// }
 
 test('can make a cart', function () {
     $currency = Currency::factory()->create();
@@ -1038,7 +1041,7 @@ test('can get new draft order when cart changes', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new \Lunar\DataTypes\Price(500, $cart->currency, 1),
+        price: new DataTypesPrice(500, $cart->currency, 1),
         taxClass: $taxClass
     );
 
@@ -1124,7 +1127,7 @@ test('can get same draft order when cart does not change', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new \Lunar\DataTypes\Price(500, $cart->currency, 1),
+        price: new DataTypesPrice(500, $cart->currency, 1),
         taxClass: $taxClass
     );
 
@@ -1168,29 +1171,29 @@ test('active scope correctly filters unmerged carts and isolates users', functio
     setAuthUserConfig();
 
     $currency = Currency::factory()->create();
-    $channel  = Channel::factory()->create();
+    $channel = Channel::factory()->create();
 
     $userA = StubUser::factory()->create();
     $userB = StubUser::factory()->create();
 
     $otherUsersCart = Cart::factory()->create([
-        'user_id'     => $userB->id,
+        'user_id' => $userB->id,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
+        'channel_id' => $channel->id,
     ]);
 
-    $expectedCart  = Cart::factory()->create([
-        'user_id'     => $userA->id,
+    $expectedCart = Cart::factory()->create([
+        'user_id' => $userA->id,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
-        'merged_id'   => null,
+        'channel_id' => $channel->id,
+        'merged_id' => null,
     ]);
 
     $mergedCart = Cart::factory()->create([
-        'user_id'     => $userA->id,
+        'user_id' => $userA->id,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
-        'merged_id'   => $expectedCart->id,
+        'channel_id' => $channel->id,
+        'merged_id' => $expectedCart->id,
     ]);
 
     $cartId = $userA->carts()
@@ -1208,33 +1211,33 @@ test('cart session manager prefers the latest unmerged cart for an authenticated
     setAuthUserConfig();
 
     $currency = Currency::factory()->create();
-    $channel  = Channel::factory()->create();
-    $user     = StubUser::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
 
     $older = Cart::factory()->create([
-        'user_id'     => $user->id,
-        'merged_id'   => null,
+        'user_id' => $user->id,
+        'merged_id' => null,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
+        'channel_id' => $channel->id,
     ]);
 
     $expectedCart = Cart::factory()->create([
-        'user_id'     => $user->id,
-        'merged_id'   => null,
+        'user_id' => $user->id,
+        'merged_id' => null,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
+        'channel_id' => $channel->id,
     ]);
 
     $mergedCart = Cart::factory()->create([
-        'user_id'     => $user->id,
-        'merged_id'   => $expectedCart->id,
+        'user_id' => $user->id,
+        'merged_id' => $expectedCart->id,
         'currency_id' => $currency->id,
-        'channel_id'  => $channel->id,
+        'channel_id' => $channel->id,
     ]);
 
     $this->actingAs($user);
 
-    $manager = app(\Lunar\Managers\CartSessionManager::class);
+    $manager = app(CartSessionManager::class);
     $foundCart = $manager->current();
 
     expect($foundCart)->not->toBeNull()

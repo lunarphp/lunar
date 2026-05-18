@@ -1,6 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Unit\Livewire\TestCase::class)
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TextInput;
+use Lunar\Admin\Support\FieldTypes\TextField;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Attribute;
+use Lunar\Tests\Admin\Unit\Livewire\TestCase;
+
+uses(TestCase::class)
     ->group('livewire.support.forms');
 
 describe('list field converter', function () {
@@ -9,25 +16,25 @@ describe('list field converter', function () {
     });
 
     test('can convert attribute to form input component', function () {
-        $attribute = \Lunar\Models\Attribute::factory()->create([
-            'type' => \Lunar\FieldTypes\Text::class,
+        $attribute = Attribute::factory()->create([
+            'type' => Text::class,
         ]);
 
-        $inputComponent = \Lunar\Admin\Support\FieldTypes\TextField::getFilamentComponent($attribute);
+        $inputComponent = TextField::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(\Filament\Forms\Components\TextInput::class);
+        expect($inputComponent)->toBeInstanceOf(TextInput::class);
     });
 
     test('can return richtext component', function () {
-        $attribute = \Lunar\Models\Attribute::factory()->create([
-            'type' => \Lunar\FieldTypes\Text::class,
+        $attribute = Attribute::factory()->create([
+            'type' => Text::class,
             'configuration' => [
                 'richtext' => true,
             ],
         ]);
 
-        $inputComponent = \Lunar\Admin\Support\FieldTypes\TextField::getFilamentComponent($attribute);
+        $inputComponent = TextField::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(\Filament\Forms\Components\RichEditor::class);
+        expect($inputComponent)->toBeInstanceOf(RichEditor::class);
     });
 });

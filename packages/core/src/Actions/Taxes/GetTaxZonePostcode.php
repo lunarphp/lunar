@@ -3,6 +3,7 @@
 namespace Lunar\Actions\Taxes;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Lunar\Models\TaxZonePostcode;
 
 class GetTaxZonePostcode
@@ -11,7 +12,7 @@ class GetTaxZonePostcode
      * Execute the action.
      *
      * @param  string  $postcode
-     * @return null|\Lunar\Models\TaxZonePostcode
+     * @return null|TaxZonePostcode
      */
     public function execute($postcode)
     {
@@ -44,7 +45,7 @@ class GetTaxZonePostcode
      * Return the zone or zones which match this postcode.
      *
      * @param  string  $postcode
-     * @return \Lunar\Models\TaxZonePostcode|\Illuminate\Support\Collection
+     * @return TaxZonePostcode|Collection
      */
     protected function getZoneMatches($postcode)
     {

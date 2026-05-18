@@ -1,9 +1,14 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Facades\DB;
+use Lunar\FieldTypes\Number;
+use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Jobs\Products\Associations\Associate;
+use Lunar\Jobs\Products\Associations\Dissociate;
+use Lunar\Jobs\SyncTags;
 use Lunar\Models\Brand;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
@@ -11,18 +16,22 @@ use Lunar\Models\CustomerGroup;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOption;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can make a product', function () {
     $attribute_data = collect([
-        'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
-        'pack_qty' => new \Lunar\FieldTypes\Number(12345),
-        'description' => new \Lunar\FieldTypes\TranslatedText(collect([
-            'en' => new \Lunar\FieldTypes\Text('Blue'),
-            'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+        'meta_title' => new Text('I like cake'),
+        'pack_qty' => new Number(12345),
+        'description' => new TranslatedText(collect([
+            'en' => new Text('Blue'),
+            'fr' => new Text('Bleu'),
         ])),
     ]);
 
@@ -37,11 +46,11 @@ test('can make a product', function () {
 
 test('can fetch product options', function () {
     $attribute_data = collect([
-        'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
-        'pack_qty' => new \Lunar\FieldTypes\Number(12345),
-        'description' => new \Lunar\FieldTypes\TranslatedText(collect([
-            'en' => new \Lunar\FieldTypes\Text('Blue'),
-            'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+        'meta_title' => new Text('I like cake'),
+        'pack_qty' => new Number(12345),
+        'description' => new TranslatedText(collect([
+            'en' => new Text('Blue'),
+            'fr' => new Text('Bleu'),
         ])),
     ]);
 
@@ -51,7 +60,7 @@ test('can fetch product options', function () {
             'attribute_data' => $attribute_data,
         ]);
 
-    $productOptions = \Lunar\Models\ProductOption::factory(2)->create();
+    $productOptions = ProductOption::factory(2)->create();
 
     foreach ($productOptions as $index => $productOption) {
         $product->productOptions()->attach($productOption, ['position' => $index + 1]);
@@ -63,11 +72,11 @@ test('can fetch product options', function () {
 
 test('can fetch using status scope', function () {
     $attribute_data = collect([
-        'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
-        'pack_qty' => new \Lunar\FieldTypes\Number(12345),
-        'description' => new \Lunar\FieldTypes\TranslatedText(collect([
-            'en' => new \Lunar\FieldTypes\Text('Blue'),
-            'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+        'meta_title' => new Text('I like cake'),
+        'pack_qty' => new Number(12345),
+        'description' => new TranslatedText(collect([
+            'en' => new Text('Blue'),
+            'fr' => new Text('Bleu'),
         ])),
     ]);
 
@@ -301,7 +310,7 @@ test('product can sync tags', function () {
 
     $tags = collect(['foo', 'bar', 'char']);
 
-    $product->syncTags($tags);
+    SyncTags::dispatchSync($product, $tags);
 
     expect($product->load('tags')->tags)->toHaveCount(3);
 });
@@ -407,9 +416,9 @@ test('can associate multiple products', function () {
     $targetA = Product::factory()->create();
     $targetB = Product::factory()->create();
 
-    $parent->associate([$targetA, $targetB], \Lunar\Base\Enums\ProductAssociation::UP_SELL);
+    Associate::dispatchSync($parent, [$targetA, $targetB], Lunar\Base\Enums\ProductAssociation::UP_SELL);
 
-    $assoc = $parent->associations()->type(\Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
+    $assoc = $parent->associations()->type(Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
 
     expect($assoc)->toHaveCount(2);
 });
@@ -418,12 +427,12 @@ test('can associate products via helper', function () {
     $parent = Product::factory()->create();
     $target = Product::factory()->create();
 
-    $parent->associate($target, \Lunar\Base\Enums\ProductAssociation::UP_SELL);
+    Associate::dispatchSync($parent, $target, Lunar\Base\Enums\ProductAssociation::UP_SELL);
 
-    $assoc = $parent->associations()->type(\Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
+    $assoc = $parent->associations()->type(Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
 
     expect($assoc)->toHaveCount(1)
-        ->and($assoc->first()->type)->toEqual(\Lunar\Base\Enums\ProductAssociation::UP_SELL->value);
+        ->and($assoc->first()->type)->toEqual(Lunar\Base\Enums\ProductAssociation::UP_SELL->value);
 });
 
 test('can remove all associations', function () {
@@ -438,7 +447,7 @@ test('can remove all associations', function () {
 
     expect($parent->refresh()->associations)->toHaveCount(1);
 
-    $parent->dissociate($target);
+    Dissociate::dispatchSync($parent, $target);
 
     expect($parent->refresh()->associations)->toHaveCount(0);
 });
@@ -450,22 +459,22 @@ test('can only remove associations of a certain type', function () {
     ProductAssociation::factory()->create([
         'product_parent_id' => $parent,
         'product_target_id' => $target,
-        'type' => \Lunar\Base\Enums\ProductAssociation::CROSS_SELL->value,
+        'type' => Lunar\Base\Enums\ProductAssociation::CROSS_SELL->value,
     ]);
 
     ProductAssociation::factory()->create([
         'product_parent_id' => $parent,
         'product_target_id' => $target,
-        'type' => \Lunar\Base\Enums\ProductAssociation::UP_SELL->value,
+        'type' => Lunar\Base\Enums\ProductAssociation::UP_SELL->value,
     ]);
 
     expect($parent->refresh()->associations)->toHaveCount(2);
 
-    $parent->dissociate($target, \Lunar\Base\Enums\ProductAssociation::CROSS_SELL);
+    Dissociate::dispatchSync($parent, $target, Lunar\Base\Enums\ProductAssociation::CROSS_SELL);
 
     expect($parent->refresh()->associations)->toHaveCount(1)
         ->and($parent->refresh()->associations->first()->type)->toEqual(
-            \Lunar\Base\Enums\ProductAssociation::UP_SELL->value
+            Lunar\Base\Enums\ProductAssociation::UP_SELL->value
         );
 });
 
@@ -483,11 +492,11 @@ test('can have collections relationship', function () {
 
 test('can retrieve prices', function () {
     $attribute_data = collect([
-        'meta_title' => new \Lunar\FieldTypes\Text('I like cake'),
-        'pack_qty' => new \Lunar\FieldTypes\Number(12345),
-        'description' => new \Lunar\FieldTypes\TranslatedText(collect([
-            'en' => new \Lunar\FieldTypes\Text('Blue'),
-            'fr' => new \Lunar\FieldTypes\Text('Bleu'),
+        'meta_title' => new Text('I like cake'),
+        'pack_qty' => new Number(12345),
+        'description' => new TranslatedText(collect([
+            'en' => new Text('Blue'),
+            'fr' => new Text('Bleu'),
         ])),
     ]);
 

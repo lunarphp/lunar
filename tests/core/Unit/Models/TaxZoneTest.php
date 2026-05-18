@@ -1,16 +1,23 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Country;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\State;
+use Lunar\Models\TaxRate;
 use Lunar\Models\TaxZone;
+use Lunar\Models\TaxZoneCountry;
+use Lunar\Models\TaxZoneCustomerGroup;
+use Lunar\Models\TaxZonePostcode;
+use Lunar\Models\TaxZoneState;
+use Lunar\Tests\Core\TestCase;
+
+uses(TestCase::class);
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('can make a tax zone class', function () {
     $data = [
@@ -157,21 +164,21 @@ test('can delete a tax zone', function () {
         'postcode' => 'ABC 123',
     ]);
 
-    \Lunar\Models\TaxRate::factory()->create([
+    TaxRate::factory()->create([
         'tax_zone_id' => $zone->id,
     ]);
 
-    assertDatabaseHas(\Lunar\Models\TaxZoneCountry::class, ['tax_zone_id' => $zone->id]);
-    assertDatabaseHas(\Lunar\Models\TaxZoneCustomerGroup::class, ['tax_zone_id' => $zone->id]);
-    assertDatabaseHas(\Lunar\Models\TaxZoneState::class, ['tax_zone_id' => $zone->id]);
-    assertDatabaseHas(\Lunar\Models\TaxZonePostcode::class, ['tax_zone_id' => $zone->id]);
-    assertDatabaseHas(\Lunar\Models\TaxRate::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseHas(TaxZoneCountry::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseHas(TaxZoneCustomerGroup::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseHas(TaxZoneState::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseHas(TaxZonePostcode::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseHas(TaxRate::class, ['tax_zone_id' => $zone->id]);
 
     $zone->delete();
 
-    assertDatabaseMissing(\Lunar\Models\TaxZoneCountry::class, ['tax_zone_id' => $zone->id]);
-    assertDatabaseMissing(\Lunar\Models\TaxZoneCustomerGroup::class, ['tax_zone_id' => $zone->id]);
-    assertDatabaseMissing(\Lunar\Models\TaxZoneState::class, ['tax_zone_id' => $zone->id]);
-    assertDatabaseMissing(\Lunar\Models\TaxZonePostcode::class, ['tax_zone_id' => $zone->id]);
-    assertDatabaseMissing(\Lunar\Models\TaxRate::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseMissing(TaxZoneCountry::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseMissing(TaxZoneCustomerGroup::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseMissing(TaxZoneState::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseMissing(TaxZonePostcode::class, ['tax_zone_id' => $zone->id]);
+    assertDatabaseMissing(TaxRate::class, ['tax_zone_id' => $zone->id]);
 })->group('foo');

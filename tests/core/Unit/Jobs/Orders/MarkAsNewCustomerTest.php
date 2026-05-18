@@ -1,12 +1,15 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Jobs\Orders\MarkAsNewCustomer;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
 use Lunar\Models\OrderAddress;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can correctly mark order for new customer', function () {
     Currency::factory()->create([
@@ -24,7 +27,7 @@ test('can correctly mark order for new customer', function () {
         'type' => 'billing',
     ]);
 
-    MarkAsNewCustomer::dispatch($order->id);
+    MarkAsNewCustomer::dispatchSync($order->id);
 
     expect($order->refresh()->new_customer)->toBeTrue();
 
@@ -39,7 +42,7 @@ test('can correctly mark order for new customer', function () {
         'type' => 'billing',
     ]);
 
-    MarkAsNewCustomer::dispatch($order->id);
+    MarkAsNewCustomer::dispatchSync($order->id);
 
     expect($order->refresh()->new_customer)->toBeFalse();
 });
