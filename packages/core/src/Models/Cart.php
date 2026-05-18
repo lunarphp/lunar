@@ -46,7 +46,6 @@ use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
-use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 /**
  * @property int $id
@@ -55,6 +54,7 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property ?int $merged_id
  * @property int $currency_id
  * @property int $channel_id
+ * @property ?int $tax_zone_id
  * @property ?int $order_id
  * @property ?string $coupon_code
  * @property ?Carbon $completed_at
@@ -69,22 +69,6 @@ class Cart extends BaseModel implements Contracts\Cart
     use HasMacros;
     use LogsActivity;
     use SoftDeletes;
-
-    /** Restore the tax zone override from the cart's meta JSON column whenever a Cart is loaded from the database. */
-    protected static function booted(): void
-    {
-        parent::booted();
-
-        static::retrieved(function (Cart $cart) {
-            $taxZoneId = $cart->meta['tax_zone_id'] ?? null;
-            if ($taxZoneId) {
-                $cart->taxZone = Blink::once(
-                    'cart_tax_zone_'.$taxZoneId,
-                    fn () => TaxZone::find($taxZoneId)
-                );
-            }
-        });
-    }
 
     /**
      * Array of cachable class properties.
@@ -156,15 +140,6 @@ class Cart extends BaseModel implements Contracts\Cart
      * The shipping override to use for the cart.
      */
     public ?ShippingOption $shippingOptionOverride = null;
-
-    /**
-     * The tax zone override for this cart.
-     * When set, this zone will be used instead of resolving a zone from the
-     * shipping address, enabling middleware to enforce the correct geographic
-     * tax treatment based on IP geo-location or customer-provided country
-     * before a full shipping address is known.
-     */
-    public ?TaxZoneContract $taxZone = null;
 
     /**
      * Additional shipping estimate meta data.
@@ -255,6 +230,11 @@ class Cart extends BaseModel implements Contracts\Cart
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::modelClass());
+    }
+
+    public function taxZone(): BelongsTo
+    {
+        return $this->belongsTo(TaxZone::modelClass());
     }
 
     public function scopeUnmerged(Builder $query): Builder
@@ -520,8 +500,12 @@ class Cart extends BaseModel implements Contracts\Cart
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
-    public function setShippingAddress(array|Addressable $address): Cart
+    public function setShippingAddress(array|Addressable $address, bool $clearTaxZone = true): Cart
     {
+        if ($clearTaxZone && $this->tax_zone_id) {
+            $this->taxZone()->dissociate()->save();
+        }
+
         return $this->addAddress($address, 'shipping');
     }
 
@@ -653,27 +637,24 @@ class Cart extends BaseModel implements Contracts\Cart
     /**
      * Set the tax zone override for this cart.
      *
-     * When set, all tax calculations will use this zone instead of resolving one from the shipping address.
+     * When set, all tax calculations use this zone instead of resolving one from the shipping address.
      * Pass null to clear the override and fall back to the address-derived (or default) zone.
-     *
-     * The zone ID is mirrored into the cart's `meta` JSON column so the choice survives across requests.
-     * Call `->save()` afterwards to persist it to the database; the `booted()` retrieved-event listener
-     * will then restore the zone automatically on every subsequent page load.
+     * Pass `$refresh = false` to skip persistence and recalculation (useful for previewing without writing).
      */
-    public function setTaxZone(?TaxZoneContract $taxZone): Cart
+    public function setTaxZone(?TaxZoneContract $taxZone, bool $refresh = true): Cart
     {
-        $this->taxZone = $taxZone;
-
-        $meta = (array) ($this->meta ?? []);
-
         if ($taxZone) {
-            $meta['tax_zone_id'] = $taxZone->id;
+            $this->taxZone()->associate($taxZone);
         } else {
-            unset($meta['tax_zone_id']);
+            $this->taxZone()->dissociate();
         }
 
-        $this->forceFill(['meta' => $meta]);
+        if (! $refresh) {
+            return $this;
+        }
 
-        return $this;
+        $this->save();
+
+        return $this->refresh()->recalculate();
     }
 }

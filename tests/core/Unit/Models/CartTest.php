@@ -1227,6 +1227,30 @@ test('cart tax zone override is applied through the full calculation pipeline', 
     expect($cart->total->value)->toEqual(1000);
 });
 
+test('setShippingAddress clears the tax zone override by default', function () {
+    $currency = Currency::factory()->create();
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    $taxZone = TaxZone::factory()->state(['default' => false])->create();
+    $cart->setTaxZone($taxZone, refresh: false)->save();
+
+    $cart->setShippingAddress(CartAddress::factory()->make()->toArray());
+
+    expect($cart->fresh()->tax_zone_id)->toBeNull();
+});
+
+test('setShippingAddress preserves the tax zone override when opted out', function () {
+    $currency = Currency::factory()->create();
+    $cart = Cart::factory()->create(['currency_id' => $currency->id]);
+
+    $taxZone = TaxZone::factory()->state(['default' => false])->create();
+    $cart->setTaxZone($taxZone, refresh: false)->save();
+
+    $cart->setShippingAddress(CartAddress::factory()->make()->toArray(), clearTaxZone: false);
+
+    expect($cart->fresh()->tax_zone_id)->toEqual($taxZone->id);
+});
+
 test('active scope correctly filters unmerged carts and isolates users', function () {
     setAuthUserConfig();
 

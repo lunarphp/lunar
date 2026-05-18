@@ -139,8 +139,12 @@ interface Cart
 
     /**
      * Set the shipping address.
+     *
+     * By default any tax-zone override set on the cart is cleared, since
+     * the address is now the authoritative source for tax-zone resolution.
+     * Pass `$clearTaxZone = false` to keep a previously-pinned zone.
      */
-    public function setShippingAddress(array|Addressable $address): \Lunar\Models\Cart;
+    public function setShippingAddress(array|Addressable $address, bool $clearTaxZone = true): \Lunar\Models\Cart;
 
     /**
      * Set the billing address.
@@ -194,6 +198,7 @@ interface Cart
      *
      * When set, all tax calculations use this zone instead of resolving one
      * from the shipping address. Pass null to clear the override.
+     * Pass `$refresh = false` to skip persistence and recalculation.
      */
-    public function setTaxZone(?TaxZone $taxZone): \Lunar\Models\Cart;
+    public function setTaxZone(?TaxZone $taxZone, bool $refresh = true): \Lunar\Models\Cart;
 }
