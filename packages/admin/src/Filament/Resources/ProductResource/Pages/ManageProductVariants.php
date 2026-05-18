@@ -2,17 +2,9 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
@@ -72,31 +64,11 @@ class ManageProductVariants extends BaseManageRelatedRecords
 
     public function table(Table $table): Table
     {
-        return $table;
+        return parent::table($table);
+    }
 
-        return $table
-            ->recordTitleAttribute('name')
-            ->columns([
-                TextColumn::make('sku'),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                CreateAction::make(),
-                //                Tables\Actions\AssociateAction::make(),
-            ])
-            ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                //                Tables\Actions\DissociateAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    //                    Tables\Actions\DissociateBulkAction::make(),
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+    protected function getDefaultTable(Table $table): Table
+    {
+        return $table;
     }
 }
