@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'roles.admin.label' => 'Админ',
+    'roles.admin.description' => 'Бүрэн эрхтэй админ',
+    'roles.staff.label' => 'Ажилтан',
+    'roles.staff.description' => 'Үндсэн эрхтэй ажилтан',
+    'permissions.settings.label' => 'Тохиргоо',
+    'permissions.settings.description' => 'Hub-ын тохиргоо хэсэгт хандах эрх олгоно',
+    'permissions.settings:core.label' => 'Үндсэн тохиргоо',
+    'permissions.settings:core.description' => 'Сувгууд, хэлүүд, валют гэх мэт дэлгүүрийн үндсэн тохиргоонд хандах эрх',
+    'permissions.settings:manage-staff.label' => 'Ажилчдын удирдлага',
+    'permissions.settings:manage-staff.description' => 'Ажилтны бусад ажилтныг засах эрх олгоно',
+    'permissions.settings:manage-attributes.label' => 'Атрибутуудын удирдлага',
+    'permissions.settings:manage-attributes.description' => 'Ажилтныг атрибутуудыг засах болон нэмэх эрх олгоно',
+    'permissions.catalog:manage-products.label' => 'Бүтээгдэхүүнүүдийн удирдлага',
+    'permissions.catalog:manage-products.description' => 'Бүтээгдэхүүн, бүтээгдэхүүний төрлүүд болон брендүүдийг засах эрх олгоно',
+    'permissions.catalog:manage-collections.label' => 'Коллекцуудын удирдлага',
+    'permissions.catalog:manage-collections.description' => 'Коллекцууд болон тэдгээрийн бүлгүүдийг засах эрх олгоно',
+    'permissions.sales:manage-orders.label' => 'Захиалгуудын удирдлага',
+    'permissions.sales:manage-orders.description' => 'Захиалгуудыг удирдах эрх олгоно',
+    'permissions.sales:manage-customers.label' => 'Харилцагчдын удирдлага',
+    'permissions.sales:manage-customers.description' => 'Харилцагчдыг удирдах эрх олгоно',
+    'permissions.sales:manage-discounts.label' => 'Хөнгөлөлтүүдийн удирдлага',
+    'permissions.sales:manage-discounts.description' => 'Хөнгөлөлтүүдийг удирдах эрх олгоно',
+];
