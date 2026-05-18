@@ -53,5 +53,26 @@ return [
     ],
     'file' => [
         'label' => 'Datoteka',
+        'form' => [
+            'file_types' => [
+                'label' => 'Dozvoljeni tipovi datoteka',
+                'placeholder' => 'Novi MIME',
+            ],
+            'multiple' => [
+                'label' => 'Dozvoli više datoteka',
+            ],
+            'min_files' => [
+                'label' => 'Min. datoteka',
+            ],
+            'max_files' => [
+                'label' => 'Maks. datoteka',
+            ],
+            'disk' => [
+                'label' => 'Disk',
+            ],
+            'directory' => [
+                'label' => 'Direktorij',
+            ],
+        ],
     ],
 ];
