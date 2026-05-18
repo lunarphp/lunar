@@ -53,6 +53,27 @@ return [
     ],
     'file' => [
         'label' => 'Plik',
+        'form' => [
+            'file_types' => [
+                'label' => 'Dozwolone typy plików',
+                'placeholder' => 'Nowy MIME',
+            ],
+            'multiple' => [
+                'label' => 'Zezwól na wiele plików',
+            ],
+            'min_files' => [
+                'label' => 'Min. plików',
+            ],
+            'max_files' => [
+                'label' => 'Maks. plików',
+            ],
+            'disk' => [
+                'label' => 'Dysk',
+            ],
+            'directory' => [
+                'label' => 'Katalog',
+            ],
+        ],
     ],
     'keyvalue' => [
         'label' => 'Klucz - wartość',

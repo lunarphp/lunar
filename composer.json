@@ -20,7 +20,7 @@
         "filament/spatie-laravel-media-library-plugin": "^4.0",
         "guzzlehttp/guzzle": "^7.3",
         "http-interop/http-factory-guzzle": "^1.2",
-        "kalnoy/nestedset": "^v6.0.5",
+        "kalnoy/nestedset": "^v6.0.5|^v7.0.1",
         "laravel/framework": "^12.0|^13.0",
         "laravel/scout": "^10.13.1",
         "leandrocfe/filament-apex-charts": "^5.0",
@@ -40,7 +40,7 @@
         "typesense/typesense-php": "^4.9"
     },
     "require-dev": {
-"filament/upgrade": "^4.0",
+        "filament/upgrade": "^4.0",
         "larastan/larastan": "^3.0",
         "laravel/pint": "1.29.0",
         "mockery/mockery": "^1.6.9",
@@ -88,7 +88,7 @@
         }
     },
     "extra": {
-"lunar": {
+        "lunar": {
             "name": [
                 "Table Rate Shipping",
                 "Opayo Payments",
@@ -132,7 +132,7 @@
     },
     "config": {
         "allow-plugins": {
-"pestphp/pest-plugin": true,
+            "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
     },
