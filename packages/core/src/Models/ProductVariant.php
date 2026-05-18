@@ -75,7 +75,7 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
      * {@inheritDoc}
      */
     protected $casts = [
-        'requires_shipping' => 'bool',
+        'shippable' => 'bool',
         'attribute_data' => AsAttributeData::class,
     ];
 

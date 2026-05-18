@@ -7,6 +7,7 @@ use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
+use Lunar\Tests\Stripe\Utils\StripeFake;
 
 use function Pest\Laravel\assertDatabaseHas;
 
@@ -15,6 +16,8 @@ uses(TestCase::class);
 it('can capture an order', function () {
     $cart = CartBuilder::build();
     $payment = new StripePaymentType;
+
+    StripeFake::forCart($cart);
 
     $response = $payment->cart($cart)->withData([
         'payment_intent' => 'PI_CAPTURE',
@@ -29,10 +32,87 @@ it('can capture an order', function () {
         'order_id' => $cart->refresh()->completedOrder->id,
         'type' => 'capture',
     ]);
-})->group('this');
+});
+
+it('wont capture an order with mismatched intent amount', function () {
+    $cart = CartBuilder::build();
+    $payment = new StripePaymentType;
+
+    StripeFake::forCart($cart, ['amount' => 100]);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent amount does not match order total')
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->refresh()->draftOrder)->toBeNull()
+        ->and($cart->paymentIntents)->toBeEmpty();
+});
+
+it('wont capture an order with greater intent amount', function () {
+    $cart = CartBuilder::build();
+    $payment = new StripePaymentType;
+
+    StripeFake::forCart($cart, ['amount' => $cart->calculate()->total->value + 1]);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->refresh()->draftOrder)->toBeNull()
+        ->and($cart->paymentIntents)->toBeEmpty();
+});
+
+it('wont capture an order with mismatched intent currency', function () {
+    $cart = CartBuilder::build();
+    $payment = new StripePaymentType;
+
+    StripeFake::forCart($cart, ['currency' => 'xyz']);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse()
+        ->and($response->message)->toEqual('Payment intent amount does not match order total')
+        ->and($cart->refresh()->completedOrder)->toBeNull()
+        ->and($cart->refresh()->draftOrder)->toBeNull()
+        ->and($cart->paymentIntents)->toBeEmpty();
+});
+
+it('will capture an order with mismatched intent amount if allowed', function () {
+    $cart = CartBuilder::build();
+    $payment = new StripePaymentType;
+
+    StripeFake::forCart($cart, ['amount' => 100]);
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->allowPartialPayment()->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeTrue()
+        ->and($cart->refresh()->completedOrder)->not()->toBeNull()
+        ->and($cart->refresh()->draftOrder)->toBeNull()
+        ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_CAPTURE');
+
+    assertDatabaseHas((new Transaction)->getTable(), [
+        'order_id' => $cart->refresh()->completedOrder->id,
+        'type' => 'capture',
+    ]);
+});
 
 it('can handle failed payments', function () {
     $cart = CartBuilder::build();
+
+    StripeFake::forCart($cart);
 
     $payment = new StripePaymentType;
 
@@ -50,7 +130,7 @@ it('can handle failed payments', function () {
         'type' => 'capture',
         'success' => false,
     ]);
-})->group('noo');
+});
 
 it('can retrieve existing payment intent', function () {
     $cart = CartBuilder::build([
@@ -59,7 +139,7 @@ it('can retrieve existing payment intent', function () {
         ],
     ]);
 
-    Stripe::createIntent($cart->calculate());
+    Stripe::createIntent($cart->calculate(), []);
 
     expect($cart->refresh()->meta['payment_intent'])->toBe('PI_FOOBAR');
 });
@@ -67,6 +147,8 @@ it('can retrieve existing payment intent', function () {
 it('can handle multiple payment events', function () {
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
+
+    StripeFake::forOrder($order);
 
     $payment = new StripePaymentType;
 
@@ -79,9 +161,6 @@ it('can handle multiple payment events', function () {
         ->and($cart->refresh()->completedOrder)->toBeNull()
         ->and($cart->currentDraftOrder())->not()->toBeNull()
         ->and($cart->paymentIntents->first()->intent_id)->toEqual('PI_FIRST_FAIL_THEN_CAPTURE');
-
-    // $cart->refresh();
-    // $cart->paymentIntents->first()->refresh();
 
     $response = $payment->order($order)->withData([
         'payment_intent' => 'PI_FIRST_FAIL_THEN_CAPTURE',
@@ -97,6 +176,8 @@ it('can handle multiple payment events', function () {
 it('will fail if intent is in final status', function () {
     $cart = CartBuilder::build();
     $order = $cart->createOrder();
+
+    StripeFake::forCart($cart);
 
     $payment = new StripePaymentType;
 
@@ -128,6 +209,8 @@ it('will fail if cart already has an order', function () {
         'placed_at' => now(),
     ]);
 
+    StripeFake::forCart($cart);
+
     $payment = new StripePaymentType;
 
     $response = $payment->cart($cart)->withData([
@@ -145,6 +228,8 @@ it('will fail if cart already has an order', function () {
 it('will fail if payment intent status is requires_payment_method', function () {
     $cart = CartBuilder::build();
 
+    StripeFake::forCart($cart);
+
     $payment = new StripePaymentType;
 
     $response = $payment->cart($cart)->withData([
@@ -159,6 +244,8 @@ it('will fail if payment intent status is requires_payment_method', function () 
 
 it('create a pending transaction when status is requires_action', function () {
     $cart = CartBuilder::build();
+
+    StripeFake::forCart($cart);
 
     $payment = new StripePaymentType;
 
