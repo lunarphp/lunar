@@ -89,4 +89,17 @@ test('product_product_option unique migration removes duplicates', function () {
         ->and($remainingPairs->first())->toBe($survivorId);
 
     expect(DB::table($table)->count())->toBe(3);
+
+    // Factory rows created here are committed (DDL inside the test breaks the
+    // RefreshDatabase transaction), so explicitly clean them up to avoid
+    // leaking into subsequent tests.
+    DB::table($table)->delete();
+    DB::table(config('lunar.database.table_prefix').'product_options')
+        ->whereIn('id', [$optionA->id, $optionB->id])->delete();
+    DB::table(config('lunar.database.table_prefix').'products')
+        ->whereIn('id', [$productA->id, $productB->id])->delete();
+    DB::table(config('lunar.database.table_prefix').'product_types')
+        ->whereIn('id', [$productA->product_type_id, $productB->product_type_id])->delete();
+    DB::table(config('lunar.database.table_prefix').'brands')
+        ->whereIn('id', [$productA->brand_id, $productB->brand_id])->delete();
 });
