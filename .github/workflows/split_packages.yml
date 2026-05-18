@@ -19,7 +19,7 @@ jobs:
           - "stripe"
           - "search"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Monorepo Split of ${{ matrix.package }}
         uses: danharrin/monorepo-split-github-action@v2.4.0
         env:

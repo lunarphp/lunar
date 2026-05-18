@@ -20,8 +20,6 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->loadLaravelMigrations();
-
         // Additional setup
         Config::set('providers.users.model', User::class);
         Config::set('lunar.urls.generator', TestUrlGenerator::class);
@@ -47,10 +45,5 @@ class TestCase extends BaseTestCase
             NestedSetServiceProvider::class,
             BlinkServiceProvider::class,
         ];
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        $this->replaceModelsForTesting();
     }
 }

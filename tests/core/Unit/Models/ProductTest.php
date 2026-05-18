@@ -6,6 +6,9 @@ use Lunar\Facades\DB;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
+use Lunar\Jobs\Products\Associations\Associate;
+use Lunar\Jobs\Products\Associations\Dissociate;
+use Lunar\Jobs\SyncTags;
 use Lunar\Models\Brand;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection;
@@ -307,7 +310,7 @@ test('product can sync tags', function () {
 
     $tags = collect(['foo', 'bar', 'char']);
 
-    $product->syncTags($tags);
+    SyncTags::dispatchSync($product, $tags);
 
     expect($product->load('tags')->tags)->toHaveCount(3);
 });
@@ -413,7 +416,7 @@ test('can associate multiple products', function () {
     $targetA = Product::factory()->create();
     $targetB = Product::factory()->create();
 
-    $parent->associate([$targetA, $targetB], Lunar\Base\Enums\ProductAssociation::UP_SELL);
+    Associate::dispatchSync($parent, [$targetA, $targetB], Lunar\Base\Enums\ProductAssociation::UP_SELL);
 
     $assoc = $parent->associations()->type(Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
 
@@ -424,7 +427,7 @@ test('can associate products via helper', function () {
     $parent = Product::factory()->create();
     $target = Product::factory()->create();
 
-    $parent->associate($target, Lunar\Base\Enums\ProductAssociation::UP_SELL);
+    Associate::dispatchSync($parent, $target, Lunar\Base\Enums\ProductAssociation::UP_SELL);
 
     $assoc = $parent->associations()->type(Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
 
@@ -444,7 +447,7 @@ test('can remove all associations', function () {
 
     expect($parent->refresh()->associations)->toHaveCount(1);
 
-    $parent->dissociate($target);
+    Dissociate::dispatchSync($parent, $target);
 
     expect($parent->refresh()->associations)->toHaveCount(0);
 });
@@ -467,7 +470,7 @@ test('can only remove associations of a certain type', function () {
 
     expect($parent->refresh()->associations)->toHaveCount(2);
 
-    $parent->dissociate($target, Lunar\Base\Enums\ProductAssociation::CROSS_SELL);
+    Dissociate::dispatchSync($parent, $target, Lunar\Base\Enums\ProductAssociation::CROSS_SELL);
 
     expect($parent->refresh()->associations)->toHaveCount(1)
         ->and($parent->refresh()->associations->first()->type)->toEqual(
