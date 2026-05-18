@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('carts');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\DataTypes\Price as DataTypesPrice;
 use Lunar\DataTypes\ShippingOption;
@@ -10,6 +9,7 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\Discounts;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Managers\CartSessionManager;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\CartLine;
@@ -28,15 +28,18 @@ use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
+use Lunar\Tests\Core\TestCase;
 
-use function Pest\Laravel\{assertDatabaseCount};
+uses(TestCase::class)->group('carts');
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+use function Pest\Laravel\assertDatabaseCount;
 
-//function setAuthUserConfig()
-//{
+uses(RefreshDatabase::class);
+
+// function setAuthUserConfig()
+// {
 //    Config::set('auth.providers.users.model', 'Lunar\Tests\Stubs\User');
-//}
+// }
 
 test('can make a cart', function () {
     $currency = Currency::factory()->create();
@@ -1038,7 +1041,7 @@ test('can get new draft order when cart changes', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new \Lunar\DataTypes\Price(500, $cart->currency, 1),
+        price: new DataTypesPrice(500, $cart->currency, 1),
         taxClass: $taxClass
     );
 
@@ -1124,7 +1127,7 @@ test('can get same draft order when cart does not change', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new \Lunar\DataTypes\Price(500, $cart->currency, 1),
+        price: new DataTypesPrice(500, $cart->currency, 1),
         taxClass: $taxClass
     );
 
@@ -1178,8 +1181,8 @@ test('cart tax zone override is applied through the full calculation pipeline', 
     $defaultRate = TaxRate::factory()->state(['tax_zone_id' => $defaultTaxZone])->create(['name' => 'Default Rate']);
     TaxRateAmount::factory()->create([
         'tax_class_id' => $taxClass->id,
-        'tax_rate_id'  => $defaultRate->id,
-        'percentage'   => 0,
+        'tax_rate_id' => $defaultRate->id,
+        'percentage' => 0,
     ]);
 
     // UAE zone: 20 % – the override set by IP-detection middleware.
@@ -1187,24 +1190,24 @@ test('cart tax zone override is applied through the full calculation pipeline', 
     $uaeRate = TaxRate::factory()->state(['tax_zone_id' => $uaeZone])->create(['name' => 'UAE VAT']);
     TaxRateAmount::factory()->create([
         'tax_class_id' => $taxClass->id,
-        'tax_rate_id'  => $uaeRate->id,
-        'percentage'   => 20,
+        'tax_rate_id' => $uaeRate->id,
+        'percentage' => 20,
     ]);
 
     $purchasable = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
 
     Price::factory()->create([
-        'price'          => 1000,
-        'min_quantity'   => 1,
-        'currency_id'    => $currency->id,
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
         'priceable_type' => $purchasable->getMorphClass(),
-        'priceable_id'   => $purchasable->id,
+        'priceable_id' => $purchasable->id,
     ]);
 
     $cart->lines()->create([
         'purchasable_type' => $purchasable->getMorphClass(),
-        'purchasable_id'   => $purchasable->id,
-        'quantity'         => 1,
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
     ]);
 
     // Default zone (0 %) – the cart-level zone is passed through the full pipeline:
@@ -1222,4 +1225,84 @@ test('cart tax zone override is applied through the full calculation pipeline', 
     $cart->setTaxZone($defaultTaxZone)->recalculate();
     expect($cart->taxTotal->value)->toEqual(0);
     expect($cart->total->value)->toEqual(1000);
+});
+
+test('active scope correctly filters unmerged carts and isolates users', function () {
+    setAuthUserConfig();
+
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+
+    $userA = StubUser::factory()->create();
+    $userB = StubUser::factory()->create();
+
+    $otherUsersCart = Cart::factory()->create([
+        'user_id' => $userB->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $expectedCart = Cart::factory()->create([
+        'user_id' => $userA->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'merged_id' => null,
+    ]);
+
+    $mergedCart = Cart::factory()->create([
+        'user_id' => $userA->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+        'merged_id' => $expectedCart->id,
+    ]);
+
+    $cartId = $userA->carts()
+        ->unmerged()
+        ->active()
+        ->latest('id')
+        ->value('id');
+
+    expect($cartId)->toBe($expectedCart->id)
+        ->and($cartId)->not->toBe($otherUsersCart->id)
+        ->and($cartId)->not->toBe($mergedCart->id);
+});
+
+test('cart session manager prefers the latest unmerged cart for an authenticated user', function () {
+    setAuthUserConfig();
+
+    $currency = Currency::factory()->create();
+    $channel = Channel::factory()->create();
+    $user = StubUser::factory()->create();
+
+    $older = Cart::factory()->create([
+        'user_id' => $user->id,
+        'merged_id' => null,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $expectedCart = Cart::factory()->create([
+        'user_id' => $user->id,
+        'merged_id' => null,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $mergedCart = Cart::factory()->create([
+        'user_id' => $user->id,
+        'merged_id' => $expectedCart->id,
+        'currency_id' => $currency->id,
+        'channel_id' => $channel->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $manager = app(CartSessionManager::class);
+    $foundCart = $manager->current();
+
+    expect($foundCart)->not->toBeNull()
+        ->and($foundCart->id)->toBe($expectedCart->id)
+        ->and($foundCart->id)->not->toBe($older->id)
+        ->and($foundCart->id)->not->toBe($mergedCart->id)
+        ->and($foundCart->merged_id)->toBeNull();
 });

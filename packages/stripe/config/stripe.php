@@ -1,5 +1,8 @@
 <?php
 
+use Lunar\Stripe\Actions\StoreCharges;
+use Stripe\PaymentIntent;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -40,6 +43,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Allow partial payments
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the amount on the PaymentIntent does not need to match the
+    | order total. This is useful for stores that accept deposits or partial
+    | payments. When disabled (default), a mismatch will cause authorization
+    | to fail.
+    |
+    */
+    'allow_partial_payment' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Status mapping
     |--------------------------------------------------------------------------
     |
@@ -50,13 +66,13 @@ return [
     | Reference: https://stripe.com/docs/api/charges/object
     */
     'status_mapping' => [
-        \Stripe\PaymentIntent::STATUS_REQUIRES_CAPTURE => 'requires-capture',
-        \Stripe\PaymentIntent::STATUS_CANCELED => 'cancelled',
-        \Stripe\PaymentIntent::STATUS_PROCESSING => 'processing',
-        \Stripe\PaymentIntent::STATUS_REQUIRES_ACTION => 'awaiting-payment',
-        \Stripe\PaymentIntent::STATUS_REQUIRES_CONFIRMATION => 'auth-pending',
-        \Stripe\PaymentIntent::STATUS_REQUIRES_PAYMENT_METHOD => 'failed',
-        \Stripe\PaymentIntent::STATUS_SUCCEEDED => 'payment-received',
+        PaymentIntent::STATUS_REQUIRES_CAPTURE => 'requires-capture',
+        PaymentIntent::STATUS_CANCELED => 'cancelled',
+        PaymentIntent::STATUS_PROCESSING => 'processing',
+        PaymentIntent::STATUS_REQUIRES_ACTION => 'awaiting-payment',
+        PaymentIntent::STATUS_REQUIRES_CONFIRMATION => 'auth-pending',
+        PaymentIntent::STATUS_REQUIRES_PAYMENT_METHOD => 'failed',
+        PaymentIntent::STATUS_SUCCEEDED => 'payment-received',
     ],
 
     'actions' => [
@@ -71,6 +87,6 @@ return [
         |
         | Reference: https://stripe.com/docs/api/charges/object
         */
-        'store_charges' => \Lunar\Stripe\Actions\StoreCharges::class,
+        'store_charges' => StoreCharges::class,
     ],
 ];

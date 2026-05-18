@@ -67,6 +67,14 @@ class AttributesRelationManager extends BaseRelationManager
                     ->label(
                         __('lunarpanel::attribute.form.handle.label')
                     )->dehydrated()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                        if ($operation !== 'create') {
+                            return;
+                        }
+
+                        $set('handle', Str::snake(Str::lower($state)));
+                    })
                     ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, RelationManager $livewire) {
                         return $rule->where('attribute_group_id', $livewire->ownerRecord->id);
                     })->disabled(
@@ -118,7 +126,9 @@ class AttributesRelationManager extends BaseRelationManager
                 Grid::make(1)
                     ->schema(function (Get $get) {
                         return AttributeData::getConfigurationFields($get('type'));
-                    })->key('configuration')->statePath('configuration'),
+                    })
+                    ->key('configuration')
+                    ->statePath('configuration'),
             ]);
     }
 
@@ -154,7 +164,15 @@ class AttributesRelationManager extends BaseRelationManager
                 }),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->mutateRecordDataUsing(function (array $data): array {
+                        $data['configuration'] = AttributeData::mutateConfigurationForForm(
+                            $data['type'] ?? null,
+                            $data['configuration'] ?? [],
+                        );
+
+                        return $data;
+                    }),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

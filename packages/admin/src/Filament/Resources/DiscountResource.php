@@ -40,6 +40,7 @@ use Lunar\DiscountTypes\BuyXGetY;
 use Lunar\Facades\Discounts;
 use Lunar\Models\Contracts\Discount as DiscountContract;
 use Lunar\Models\Currency;
+use Lunar\Models\Discount;
 
 class DiscountResource extends BaseResource
 {
@@ -49,7 +50,7 @@ class DiscountResource extends BaseResource
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
     public static function getLabel(): string
     {
@@ -173,6 +174,14 @@ class DiscountResource extends BaseResource
             ->label(__('lunarpanel::discount.form.handle.label'))
             ->required()
             ->unique(ignoreRecord: true)
+            ->live(onBlur: true)
+            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                if ($operation !== 'create') {
+                    return;
+                }
+
+                $set('handle', Str::snake(Str::lower($state)));
+            })
             ->maxLength(255)
             ->autofocus();
     }
@@ -375,10 +384,10 @@ class DiscountResource extends BaseResource
                 ->label(__('lunarpanel::discount.table.status.label'))
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
-                    \Lunar\Models\Discount::ACTIVE => 'success',
-                    \Lunar\Models\Discount::EXPIRED => 'danger',
-                    \Lunar\Models\Discount::PENDING => 'gray',
-                    \Lunar\Models\Discount::SCHEDULED => 'info',
+                    Discount::ACTIVE => 'success',
+                    Discount::EXPIRED => 'danger',
+                    Discount::PENDING => 'gray',
+                    Discount::SCHEDULED => 'info',
                 })
                 ->toggleable(),
             TextColumn::make('name')

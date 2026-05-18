@@ -1,7 +1,7 @@
 {
   "id": "pi_1DqH152eZvKYlo2CFHYZuxkP",
   "object": "payment_intent",
-  "amount": 2000,
+  "amount": "{amount}",
   "amount_capturable": 0,
   "amount_received": 0,
   "application": null,
@@ -19,7 +19,7 @@
   "client_secret": "pi_1DqH152eZvKYlo2CFHYZuxkP_secret_XNCxrfxMZshhdt1VmraRVGMKY",
   "confirmation_method": "automatic",
   "created": 1546940219,
-  "currency": "usd",
+  "currency": "{currency}",
   "customer": null,
   "description": null,
   "invoice": null,

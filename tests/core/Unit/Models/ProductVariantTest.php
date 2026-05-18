@@ -1,7 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Exceptions\MissingCurrencyPriceException;
 use Lunar\Facades\Pricing;
@@ -14,8 +13,11 @@ use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRate;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Models\TaxZone;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can create prices through relationship', function () {
     $product = Product::factory()->create();
@@ -32,6 +34,16 @@ test('can create prices through relationship', function () {
     ]);
 
     expect($variant->prices)->toHaveCount(1);
+});
+
+test('shippable attribute is cast to bool', function () {
+    $variant = ProductVariant::factory()->create([
+        'shippable' => 0,
+    ])->fresh();
+
+    expect($variant->shippable)->toBeFalse()
+        ->and($variant->isShippable())->toBeFalse()
+        ->and($variant->getType())->toBe('digital');
 });
 
 test('can get correct price', function () {

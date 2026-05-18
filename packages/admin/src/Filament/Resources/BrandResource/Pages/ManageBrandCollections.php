@@ -37,6 +37,11 @@ class ManageBrandCollections extends BaseManageRelatedRecords
 
     public function table(Table $table): Table
     {
+        return parent::table($table);
+    }
+
+    protected function getDefaultTable(Table $table): Table
+    {
         return $table->columns([
             TranslatedTextColumn::make('attribute_data.name')
                 ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))

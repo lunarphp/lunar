@@ -1,11 +1,13 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Actions\Taxes\GetTaxZonePostcode;
 use Lunar\Models\TaxZonePostcode;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class)
+uses(TestCase::class);
+
+uses(RefreshDatabase::class)
     ->group('taxes');
 
 test('can match exact postcode', function () {

@@ -1,30 +1,37 @@
 <?php
 
+use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView;
+use Lunar\FieldTypes\TranslatedText;
+use Lunar\Models\Attribute;
+use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
+use Lunar\Models\Language;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('resource.product.widgets');
 
 it('can mount widget', function () {
-    $group = \Lunar\Models\CollectionGroup::factory()->create();
+    $group = CollectionGroup::factory()->create();
 
-    \Livewire\Livewire::test(CollectionTreeView::class, [
+    Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->assertHasNoErrors();
 });
 
 it('can render collection tree', function () {
-    $group = \Lunar\Models\CollectionGroup::factory()->create();
+    $group = CollectionGroup::factory()->create();
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $collection = \Lunar\Models\Collection::factory(1)->create([
+    $collection = Collection::factory(1)->create([
         'collection_group_id' => $group->id,
     ]);
 
-    \Livewire\Livewire::test(CollectionTreeView::class, [
+    Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->assertSet('nodes', CollectionTreeView::mapCollections(
         collect($collection)
@@ -32,19 +39,19 @@ it('can render collection tree', function () {
 });
 
 it('can create root collection', function () {
-    $group = \Lunar\Models\CollectionGroup::factory()->create();
+    $group = CollectionGroup::factory()->create();
 
-    \Lunar\Models\Attribute::factory()->create([
+    Attribute::factory()->create([
         'handle' => 'name',
-        'type' => \Lunar\FieldTypes\TranslatedText::class,
+        'type' => TranslatedText::class,
         'attribute_type' => 'collection',
     ]);
 
-    $language = \Lunar\Models\Language::factory()->create([
+    $language = Language::factory()->create([
         'default' => true,
     ]);
 
-    \Livewire\Livewire::test(CollectionTreeView::class, [
+    Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->callAction('createRootCollection', [
         'name' => [$language->code => 'Foo Bar'],
@@ -53,23 +60,23 @@ it('can create root collection', function () {
 });
 
 it('can toggle collection children', function () {
-    $group = \Lunar\Models\CollectionGroup::factory()->create();
+    $group = CollectionGroup::factory()->create();
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $collection = \Lunar\Models\Collection::factory()->create([
+    $collection = Collection::factory()->create([
         'collection_group_id' => $group->id,
     ]);
 
-    \Lunar\Models\Collection::factory(2)->create([
+    Collection::factory(2)->create([
         'collection_group_id' => $group->id,
     ])->each(
         fn ($child) => $collection->prependNode($child)
     );
 
-    \Livewire\Livewire::test(CollectionTreeView::class, [
+    Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->assertSet('nodes.0.children', [])
         ->call('toggleChildren', $collection->id)
@@ -82,29 +89,29 @@ it('can toggle collection children', function () {
 });
 
 it('can create child collection', function () {
-    $group = \Lunar\Models\CollectionGroup::factory()->create();
+    $group = CollectionGroup::factory()->create();
 
-    \Lunar\Models\Attribute::factory()->create([
+    Attribute::factory()->create([
         'handle' => 'name',
-        'type' => \Lunar\FieldTypes\TranslatedText::class,
+        'type' => TranslatedText::class,
         'attribute_type' => 'collection',
     ]);
 
-    $language = \Lunar\Models\Language::factory()->create([
+    $language = Language::factory()->create([
         'default' => true,
     ]);
 
-    $collection = \Lunar\Models\Collection::factory()->create([
+    $collection = Collection::factory()->create([
         'collection_group_id' => $group->id,
     ]);
 
-    $child = \Lunar\Models\Collection::factory()->create([
+    $child = Collection::factory()->create([
         'collection_group_id' => $group->id,
     ]);
 
     $collection->prependNode($child);
 
-    \Livewire\Livewire::test(CollectionTreeView::class, [
+    Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->callAction('addChildCollection', [
         'name' => [$language->code => 'Sub Collection'],
@@ -117,23 +124,23 @@ it('can create child collection', function () {
 });
 
 it('can set child collection as root', function () {
-    $group = \Lunar\Models\CollectionGroup::factory()->create();
+    $group = CollectionGroup::factory()->create();
 
-    \Lunar\Models\Attribute::factory()->create([
+    Attribute::factory()->create([
         'handle' => 'name',
-        'type' => \Lunar\FieldTypes\TranslatedText::class,
+        'type' => TranslatedText::class,
         'attribute_type' => 'collection',
     ]);
 
-    $language = \Lunar\Models\Language::factory()->create([
+    $language = Language::factory()->create([
         'default' => true,
     ]);
 
-    $collection = \Lunar\Models\Collection::factory()->create([
+    $collection = Collection::factory()->create([
         'collection_group_id' => $group->id,
     ]);
 
-    \Livewire\Livewire::test(CollectionTreeView::class, [
+    Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->callAction('addChildCollection', [
         'name' => [$language->code => 'Sub Collection'],
@@ -142,21 +149,21 @@ it('can set child collection as root', function () {
 });
 
 it('can reorder collections', function () {
-    $group = \Lunar\Models\CollectionGroup::factory()->create();
+    $group = CollectionGroup::factory()->create();
 
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $collectionA = \Lunar\Models\Collection::factory()->create([
+    $collectionA = Collection::factory()->create([
         'collection_group_id' => $group->id,
     ]);
 
-    $collectionB = \Lunar\Models\Collection::factory()->create([
+    $collectionB = Collection::factory()->create([
         'collection_group_id' => $group->id,
     ]);
 
-    \Livewire\Livewire::test(CollectionTreeView::class, [
+    Livewire::test(CollectionTreeView::class, [
         'record' => $group,
     ])->assertSet('nodes.0.id', $collectionA->id)
         ->assertSet('nodes.1.id', $collectionB->id)

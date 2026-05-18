@@ -2,6 +2,7 @@
 
 namespace Lunar\Base;
 
+use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Base\Traits\HasModelExtending;
 
@@ -21,5 +22,23 @@ abstract class BaseModel extends Model
         if ($connection = config('lunar.database.connection')) {
             $this->setConnection($connection);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resolveCollectionFromAttribute()
+    {
+        $reflectionClass = new \ReflectionClass(static::class);
+
+        $attributes = $reflectionClass->getAttributes(
+            CollectedBy::class
+        );
+
+        if (! isset($attributes[0]) || ! isset($attributes[0]->getArguments()[0])) {
+            return null;
+        }
+
+        return $attributes[0]->getArguments()[0];
     }
 }

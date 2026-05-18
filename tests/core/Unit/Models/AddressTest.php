@@ -1,14 +1,16 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('models');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Address;
 use Lunar\Models\Country;
 use Lunar\Models\Customer;
+use Lunar\Tests\Core\TestCase;
 
-use function Pest\Laravel\{assertDatabaseMissing};
+uses(TestCase::class)->group('models');
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+use function Pest\Laravel\assertDatabaseMissing;
+
+uses(RefreshDatabase::class);
 
 test('can make an address with minimal attributes', function () {
     $country = Country::factory()->create();

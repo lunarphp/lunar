@@ -39,6 +39,11 @@ class ManageBrandProducts extends BaseManageRelatedRecords
 
     public function table(Table $table): Table
     {
+        return parent::table($table);
+    }
+
+    protected function getDefaultTable(Table $table): Table
+    {
         return $table->columns([
             ProductResource::getNameTableColumn()->searchable()
                 ->url(function (Model $record) {

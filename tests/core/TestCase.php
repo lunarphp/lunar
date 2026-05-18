@@ -2,7 +2,6 @@
 
 namespace Lunar\Tests\Core;
 
-use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\Facades\Taxes;
@@ -20,8 +19,6 @@ class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->loadLaravelMigrations();
 
         // Additional setup
         Config::set('providers.users.model', User::class);
@@ -45,14 +42,8 @@ class TestCase extends BaseTestCase
             LunarServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ActivitylogServiceProvider::class,
-            ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
             BlinkServiceProvider::class,
         ];
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        $this->replaceModelsForTesting();
     }
 }

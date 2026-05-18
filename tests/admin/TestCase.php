@@ -5,7 +5,6 @@ namespace Lunar\Tests\Admin;
 use Awcodes\Shout\ShoutServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
-use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
@@ -38,8 +37,6 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->loadLaravelMigrations();
-
         // Freeze time to avoid timestamp errors
         $this->freezeTime();
     }
@@ -70,7 +67,6 @@ class TestCase extends BaseTestCase
             MediaLibraryServiceProvider::class,
             PermissionServiceProvider::class,
             ActivitylogServiceProvider::class,
-            ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
             BlinkServiceProvider::class,
 
@@ -82,7 +78,7 @@ class TestCase extends BaseTestCase
         $app['config']->set('auth.passwords.users.table', 'password_reset_tokens');
         $app['config']->set('auth.providers.users.model', User::class);
 
-        $this->replaceModelsForTesting();
+        parent::getEnvironmentSetUp($app);
     }
 
     protected function asStaff($admin = true): TestCase

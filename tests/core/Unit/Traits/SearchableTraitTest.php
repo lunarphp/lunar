@@ -1,6 +1,6 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Laravel\Scout\Engines\DatabaseEngine;
 use Laravel\Scout\Engines\NullEngine;
@@ -8,8 +8,11 @@ use Lunar\Models\Collection;
 use Lunar\Models\Product;
 use Lunar\Search\ProductIndexer;
 use Lunar\Search\ScoutIndexer;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can get correct engine mapping', function () {
     $product = Product::factory()->create();

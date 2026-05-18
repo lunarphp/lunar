@@ -1,16 +1,26 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+use Illuminate\Support\Facades\DB;
+use Livewire\Livewire;
+use Lunar\Admin\Filament\Resources\BrandResource\Pages\EditBrand;
+use Lunar\FieldTypes\Text;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Brand;
+use Lunar\Models\Language;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
+
+uses(TestCase::class)
     ->group('resource.brand');
 
 it('can save attributes', function () {
-    \Lunar\Models\Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $record = \Lunar\Models\Brand::factory()->create();
+    $record = Brand::factory()->create();
 
-    $group = \Lunar\Models\AttributeGroup::factory()->create([
+    $group = AttributeGroup::factory()->create([
         'attributable_type' => 'brand',
         'name' => [
             'en' => 'Details',
@@ -19,7 +29,7 @@ it('can save attributes', function () {
         'position' => 1,
     ]);
 
-    $attribute = \Lunar\Models\Attribute::factory()->create([
+    $attribute = Attribute::factory()->create([
         'attribute_type' => 'brand',
         'attribute_group_id' => $group->id,
         'position' => 1,
@@ -33,7 +43,7 @@ it('can save attributes', function () {
         'searchable' => false,
     ]);
 
-    \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+    DB::table('lunar_attributables')->insert([
         'attribute_id' => $attribute->id,
         'attributable_type' => 'brand',
         'attributable_id' => $record->id,
@@ -41,12 +51,12 @@ it('can save attributes', function () {
 
     $this->asStaff(admin: true);
 
-    \Livewire\Livewire::test(\Lunar\Admin\Filament\Resources\BrandResource\Pages\EditBrand::class, [
+    Livewire::test(EditBrand::class, [
         'record' => $record->getRouteKey(),
         'pageClass' => 'brandEdit',
     ])->fillForm([
         'attribute_data' => [
-            'name' => new \Lunar\FieldTypes\Text('New Brand Name'),
+            'name' => new Text('New Brand Name'),
         ],
     ])->call('save');
 

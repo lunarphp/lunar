@@ -1,15 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Jobs\Collections\UpdateProductPositions;
 use Lunar\Models\Collection;
 use Lunar\Models\Currency;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can reorder products by price', function () {
     Currency::factory()->create([
@@ -43,7 +45,7 @@ test('can reorder products by price', function () {
 
     expect($collection->products)->toHaveCount(2);
 
-    UpdateProductPositions::dispatch($collection->refresh());
+    UpdateProductPositions::dispatchSync($collection->refresh());
 
     $collectionProducts = $collection->products()->get();
 
@@ -55,7 +57,7 @@ test('can reorder products by price', function () {
         'sort' => 'min_price:desc',
     ]);
 
-    UpdateProductPositions::dispatch($collection->refresh());
+    UpdateProductPositions::dispatchSync($collection->refresh());
 
     $collectionProducts = $collection->products()->get();
 
@@ -82,7 +84,7 @@ test('can reorder products by sku', function () {
 
     expect($collection->products)->toHaveCount(2);
 
-    UpdateProductPositions::dispatch($collection->refresh());
+    UpdateProductPositions::dispatchSync($collection->refresh());
 
     $collectionProducts = $collection->products()->get();
 
@@ -94,7 +96,7 @@ test('can reorder products by sku', function () {
         'sort' => 'sku:desc',
     ]);
 
-    UpdateProductPositions::dispatch($collection->refresh());
+    UpdateProductPositions::dispatchSync($collection->refresh());
 
     $collectionProducts = $collection->products()->get();
 
