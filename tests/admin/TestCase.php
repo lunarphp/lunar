@@ -29,9 +29,6 @@ use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
 use Technikermathe\LucideIcons\BladeLucideIconsServiceProvider;
 
-use function Orchestra\Testbench\after_resolving;
-use function Orchestra\Testbench\default_migration_path;
-
 class TestCase extends BaseTestCase
 {
     use RefreshDatabase;
@@ -42,16 +39,6 @@ class TestCase extends BaseTestCase
 
         // Freeze time to avoid timestamp errors
         $this->freezeTime();
-    }
-
-    // Register laravel migrations on the migrator instead of running them
-    // separately — a standalone migrate commits DDL and resets RefreshDatabase's
-    // per-process cache.
-    protected function defineDatabaseMigrations(): void
-    {
-        after_resolving($this->app, 'migrator', static function ($migrator) {
-            $migrator->path(default_migration_path());
-        });
     }
 
     protected function getPackageProviders($app): array
@@ -91,16 +78,7 @@ class TestCase extends BaseTestCase
         $app['config']->set('auth.passwords.users.table', 'password_reset_tokens');
         $app['config']->set('auth.providers.users.model', User::class);
 
-        $this->replaceModelsForTesting();
-
-        // File-backed SQLite per worker; Testbench wipes RefreshDatabase's
-        // cache for `:memory:`, forcing a full migrate every test.
-        $dbPath = sys_get_temp_dir().'/lunar-test-'.getmypid().'.sqlite';
-        if (! file_exists($dbPath)) {
-            touch($dbPath);
-        }
-
-        $app['config']->set('database.connections.testing.database', $dbPath);
+        parent::getEnvironmentSetUp($app);
     }
 
     protected function asStaff($admin = true): TestCase

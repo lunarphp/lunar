@@ -14,9 +14,6 @@ use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
-use function Orchestra\Testbench\after_resolving;
-use function Orchestra\Testbench\default_migration_path;
-
 class TestCase extends BaseTestCase
 {
     protected function setUp(): void
@@ -39,16 +36,6 @@ class TestCase extends BaseTestCase
         $this->freezeTime();
     }
 
-    // Register laravel migrations on the migrator instead of running them
-    // separately — a standalone migrate commits DDL and resets RefreshDatabase's
-    // per-process cache.
-    protected function defineDatabaseMigrations(): void
-    {
-        after_resolving($this->app, 'migrator', static function ($migrator) {
-            $migrator->path(default_migration_path());
-        });
-    }
-
     protected function getPackageProviders($app)
     {
         return [
@@ -58,19 +45,5 @@ class TestCase extends BaseTestCase
             NestedSetServiceProvider::class,
             BlinkServiceProvider::class,
         ];
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        $this->replaceModelsForTesting();
-
-        // File-backed SQLite per worker; Testbench wipes RefreshDatabase's
-        // cache for `:memory:`, forcing a full migrate every test.
-        $dbPath = sys_get_temp_dir().'/lunar-test-'.getmypid().'.sqlite';
-        if (! file_exists($dbPath)) {
-            touch($dbPath);
-        }
-
-        $app['config']->set('database.connections.testing.database', $dbPath);
     }
 }
