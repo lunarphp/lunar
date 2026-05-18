@@ -29,6 +29,9 @@ return [
         ],
     ],
     'pages' => [
+        'edit' => [
+            'title' => 'Osnovni podaci',
+        ],
         'products' => [
             'label' => 'Proizvodi',
             'actions' => [

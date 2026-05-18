@@ -22,6 +22,9 @@ return [
         'enabled' => [
             'label' => 'Omogućeno',
         ],
+        'sync_prices' => [
+            'label' => 'Sinkroniziraj cijene',
+        ],
         'default' => [
             'label' => 'Zadano',
         ],
@@ -45,6 +48,10 @@ return [
         ],
         'default' => [
             'label' => 'Zadano',
+        ],
+        'sync_prices' => [
+            'label' => 'Sinkroniziraj cijene',
+            'helper_text' => 'Održavajte cijene u ovoj valuti usklađene sa zadanom valutom.',
         ],
     ],
 

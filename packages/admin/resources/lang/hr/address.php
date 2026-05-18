@@ -19,6 +19,9 @@ return [
         'company_name' => [
             'label' => 'Naziv tvrtke',
         ],
+        'tax_identifier' => [
+            'label' => 'Porezni broj',
+        ],
         'line_one' => [
             'label' => 'Adresa',
         ],
@@ -60,6 +63,9 @@ return [
         ],
         'company_name' => [
             'label' => 'Naziv tvrtke',
+        ],
+        'tax_identifier' => [
+            'label' => 'Porezni broj',
         ],
         'line_one' => [
             'label' => 'Redak adrese 1',
