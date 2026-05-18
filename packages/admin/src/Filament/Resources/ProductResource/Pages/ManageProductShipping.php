@@ -45,7 +45,7 @@ class ManageProductShipping extends BaseEditRecord
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
-        return $parameters['record']->variants()->count() == 1;
+        return ($parameters['record']->variants_count ?? $parameters['record']->variants()->count()) == 1;
     }
 
     public function getBreadcrumb(): string
@@ -107,7 +107,7 @@ class ManageProductShipping extends BaseEditRecord
 
     protected function getVariant(): ProductVariantContract
     {
-        return $this->getRecord()->variants()->withTrashed()->first();
+        return $this->getRecord()->variants()->first();
     }
 
     protected function getFormActions(): array

@@ -84,6 +84,64 @@ it('will not show in navigation when multiple variants exist', function () {
         );
 });
 
+it('will show in navigation when only one active variant remains after trashing', function () {
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $record = Product::factory()->create();
+
+    $variants = ProductVariant::factory(2)->create([
+        'product_id' => $record->id,
+    ]);
+
+    $variants->first()->delete();
+
+    $this->asStaff(admin: true)
+        ->get(ProductResource::getUrl('edit', [
+            'record' => $record,
+        ]))
+        ->assertSuccessful()
+        ->assertSeeText(
+            __('lunarpanel::product.pages.inventory.label')
+        );
+});
+
+it('mounts inventory page using the active variant when a trashed variant exists with a lower id', function () {
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $record = Product::factory()->create();
+
+    $trashedVariant = ProductVariant::factory()->create([
+        'product_id' => $record->id,
+        'stock' => 99,
+    ]);
+
+    $trashedVariant->delete();
+
+    $activeVariant = ProductVariant::factory()->create([
+        'product_id' => $record->id,
+        'stock' => 42,
+    ]);
+
+    $this->asStaff();
+
+    Livewire::test(
+        ManageProductInventory::class, [
+            'record' => $record->getRouteKey(),
+        ])->assertSet('stock', $activeVariant->stock);
+});
+
 it('can update variant stock figures', function () {
     $language = Language::factory()->create([
         'default' => true,
