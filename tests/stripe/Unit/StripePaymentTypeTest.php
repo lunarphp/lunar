@@ -1,9 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Event;
 use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Models\Currency;
 use Lunar\Models\Transaction;
+use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
+use Lunar\Stripe\Models\StripePaymentIntent;
 use Lunar\Stripe\StripePaymentType;
 use Lunar\Tests\Stripe\Unit\TestCase;
 use Lunar\Tests\Stripe\Utils\CartBuilder;
@@ -257,6 +260,69 @@ it('create a pending transaction when status is requires_action', function () {
     expect($response->success)->toBeFalse();
 
     expect($cart->refresh()->completedOrder)->toBeNull();
+});
+
+it('syncs payment intent status when order creation fails on a succeeded stripe intent', function () {
+    Event::fake([OrphanedPaymentIntentDetected::class]);
+
+    $cart = CartBuilder::build();
+
+    // Force createOrder to throw a CartException — strip the addresses
+    $cart->addresses()->delete();
+    $cart->refresh();
+
+    StripeFake::forCart($cart);
+
+    $payment = new StripePaymentType;
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_CAPTURE',
+    ])->authorize();
+
+    expect($response)->toBeInstanceOf(PaymentAuthorize::class)
+        ->and($response->success)->toBeFalse();
+
+    // Status must be synced from Stripe so the row is no longer "active"
+    assertDatabaseHas(StripePaymentIntent::class, [
+        'intent_id' => 'PI_CAPTURE',
+        'cart_id' => $cart->id,
+        'status' => 'succeeded',
+    ]);
+
+    $intentRow = StripePaymentIntent::where('intent_id', 'PI_CAPTURE')->first();
+    expect($intentRow->processed_at)->not()->toBeNull();
+
+    Event::assertDispatched(OrphanedPaymentIntentDetected::class, function ($event) use ($cart) {
+        return $event->paymentIntentId === 'PI_CAPTURE'
+            && $event->cartId === $cart->id;
+    });
+});
+
+it('syncs payment intent status when order creation fails on a non-succeeded stripe intent', function () {
+    Event::fake([OrphanedPaymentIntentDetected::class]);
+
+    $cart = CartBuilder::build();
+
+    $cart->addresses()->delete();
+    $cart->refresh();
+
+    StripeFake::forCart($cart);
+
+    $payment = new StripePaymentType;
+
+    $response = $payment->cart($cart)->withData([
+        'payment_intent' => 'PI_FAIL',
+    ])->authorize();
+
+    expect($response->success)->toBeFalse();
+
+    assertDatabaseHas(StripePaymentIntent::class, [
+        'intent_id' => 'PI_FAIL',
+        'cart_id' => $cart->id,
+        'status' => 'requires_payment_method',
+    ]);
+
+    Event::assertNotDispatched(OrphanedPaymentIntentDetected::class);
 });
 
 it('can return correct payment checks', function () {
