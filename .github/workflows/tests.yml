@@ -62,4 +62,7 @@ jobs:
           DB_CONNECTION: testing
           DB_DATABASE: ":memory:"
           LUNAR_TESTING_REPLACE_MODELS: ${{ matrix.extend-models }}
-        run: ./vendor/bin/pest --testsuite ${{ matrix.testsuite }}
+        # PRs skip the `slow` group (the per-migration up/down/up coverage test
+        # accounts for ~28% of core-suite runtime). Push to 1.x and the daily
+        # schedule run everything.
+        run: ./vendor/bin/pest --testsuite ${{ matrix.testsuite }} ${{ github.event_name == 'pull_request' && '--exclude-group=slow' || '' }}

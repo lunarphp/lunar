@@ -51,4 +51,4 @@ test('each migration can run and rollback', function () {
             '--realpath' => $migration->getRealpath(),
         ]);
     }
-});
+})->group('slow');
