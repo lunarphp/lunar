@@ -1,5 +1,7 @@
 <?php
 
+use Lunar\Models\Discount;
+
 return [
     'plural_label' => 'Хөнгөлөлтүүд',
     'label' => 'Хөнгөлөлт',
@@ -87,16 +89,16 @@ return [
         ],
         'status' => [
             'label' => 'Статус',
-            \Lunar\Models\Discount::ACTIVE => [
+            Discount::ACTIVE => [
                 'label' => 'Идэвхтэй',
             ],
-            \Lunar\Models\Discount::PENDING => [
+            Discount::PENDING => [
                 'label' => 'Хүлээгдэж буй',
             ],
-            \Lunar\Models\Discount::EXPIRED => [
+            Discount::EXPIRED => [
                 'label' => 'Хугацаа дууссан',
             ],
-            \Lunar\Models\Discount::SCHEDULED => [
+            Discount::SCHEDULED => [
                 'label' => 'Товлогдсон',
             ],
         ],
