@@ -1,6 +1,10 @@
 <?php
 
-uses(\Lunar\Tests\Admin\Unit\Livewire\TestCase::class)
+use Lunar\FieldTypes\Toggle;
+use Lunar\Models\Attribute;
+use Lunar\Tests\Admin\Unit\Livewire\TestCase;
+
+uses(TestCase::class)
     ->group('livewire.support.forms');
 
 describe('toggle field converter', function () {
@@ -9,12 +13,12 @@ describe('toggle field converter', function () {
     });
 
     test('can convert attribute to form input component', function () {
-        $attribute = \Lunar\Models\Attribute::factory()->create([
-            'type' => \Lunar\FieldTypes\Toggle::class,
+        $attribute = Attribute::factory()->create([
+            'type' => Toggle::class,
         ]);
 
-        $inputComponent = \Lunar\Admin\Support\FieldTypes\Toggle::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Admin\Support\FieldTypes\Toggle::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(\Filament\Forms\Components\Toggle::class);
+        expect($inputComponent)->toBeInstanceOf(Filament\Forms\Components\Toggle::class);
     });
 });

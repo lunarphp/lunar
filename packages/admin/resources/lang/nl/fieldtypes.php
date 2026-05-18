@@ -67,6 +67,12 @@ return [
             'max_files' => [
                 'label' => 'Max. Bestanden',
             ],
+            'disk' => [
+                'label' => 'Schijf',
+            ],
+            'directory' => [
+                'label' => 'Map',
+            ],
         ],
     ],
 ];

@@ -22,7 +22,8 @@
   "autoload": {
     "psr-4": {
       "Lunar\\Shipping\\": "src",
-      "Lunar\\Shipping\\Database\\Factories\\": "database/factories"
+      "Lunar\\Shipping\\Database\\Factories\\": "database/factories",
+      "Lunar\\Shipping\\Database\\State\\": "database/state"
     }
   },
   "extra": {
@@ -36,7 +37,7 @@
     }
   },
   "require": {
-    "php": "^8.2",
+    "php": "^8.3",
     "lunarphp/lunar": "self.version"
   }
 }

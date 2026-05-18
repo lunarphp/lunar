@@ -1,14 +1,16 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Base\ShippingModifier;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Models\Cart;
 use Lunar\Models\Contracts\Cart as CartContract;
 use Lunar\Models\Currency;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $currency = Currency::factory()->create([

@@ -1,23 +1,31 @@
 <?php
 
-uses(\Lunar\Tests\Core\Unit\Base\Extendable\ExtendableTestCase::class)->group('model_extending');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
+use Lunar\Facades\ModelManifest;
+use Lunar\Models\Order;
 use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
+use Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct;
+use Lunar\Tests\Core\Stubs\Models\Custom\DeepCustomProduct;
+use Lunar\Tests\Core\Stubs\Models\CustomOrder;
+use Lunar\Tests\Core\Unit\Base\Extendable\ExtendableTestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(ExtendableTestCase::class)->group('model_extending');
+
+uses(RefreshDatabase::class);
 
 beforeEach(
     function () {
-        \Lunar\Facades\ModelManifest::replace(
-            \Lunar\Models\Contracts\Product::class,
-            \Lunar\Tests\Core\Stubs\Models\Product::class
+        ModelManifest::replace(
+            Lunar\Models\Contracts\Product::class,
+            Lunar\Tests\Core\Stubs\Models\Product::class
         );
 
-        \Lunar\Facades\ModelManifest::replace(
-            \Lunar\Models\Contracts\ProductOption::class,
-            \Lunar\Tests\Core\Stubs\Models\ProductOption::class
+        ModelManifest::replace(
+            Lunar\Models\Contracts\ProductOption::class,
+            Lunar\Tests\Core\Stubs\Models\ProductOption::class
         );
     }
 );
@@ -25,28 +33,28 @@ beforeEach(
 test('can get new instance of the registered model', function () {
     $product = Product::find(1);
 
-    expect($product)->toBeInstanceOf(\Lunar\Tests\Core\Stubs\Models\Product::class);
+    expect($product)->toBeInstanceOf(Lunar\Tests\Core\Stubs\Models\Product::class);
 });
 
 test('can forward calls to extended model', function () {
     // @phpstan-ignore-next-line
     $sizeOption = ProductOption::with('sizes')->find(1);
 
-    expect($sizeOption)->toBeInstanceOf(\Lunar\Tests\Core\Stubs\Models\ProductOption::class);
+    expect($sizeOption)->toBeInstanceOf(Lunar\Tests\Core\Stubs\Models\ProductOption::class);
 
     expect($sizeOption->sizes)->toBeInstanceOf(Collection::class);
     expect($sizeOption->sizes)->toHaveCount(1);
 });
 
 test('extended model returns correct table name', function () {
-    expect((new \Lunar\Tests\Core\Stubs\Models\CustomOrder)->getTable())
+    expect((new CustomOrder)->getTable())
         ->toBe(
-            (new \Lunar\Models\Order)->getTable()
+            (new Order)->getTable()
         );
 });
 
 test('can forward static method calls to extended model', function () {
-    /** @see \Lunar\Tests\Core\Stubs\Models\ProductOption::getSizesStatic() */
+    /** @see Lunar\Tests\Core\Stubs\Models\ProductOption::getSizesStatic() */
     $newStaticMethod = ProductOption::getSizesStatic();
 
     expect($newStaticMethod)->toBeInstanceOf(Collection::class);
@@ -54,14 +62,14 @@ test('can forward static method calls to extended model', function () {
 });
 
 test('morph map is correct when models are extended', function () {
-    \Lunar\Facades\ModelManifest::replace(
-        \Lunar\Models\Contracts\Product::class,
-        \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::class
+    ModelManifest::replace(
+        Lunar\Models\Contracts\Product::class,
+        CustomProduct::class
     );
 
-    expect((new \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct)->getMorphClass())
+    expect((new CustomProduct)->getMorphClass())
         ->toBe('product')
-        ->and(\Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::morphName())
+        ->and(CustomProduct::morphName())
         ->toBe('product')
         ->and((new Product)->getMorphClass())
         ->toBe('product')
@@ -70,34 +78,34 @@ test('morph map is correct when models are extended', function () {
 });
 
 test('core model events are triggered with extended models', function () {
-    \Illuminate\Support\Facades\Event::fake();
+    Event::fake();
 
-    $product = \Lunar\Tests\Core\Stubs\Models\Product::factory()->create();
+    $product = Lunar\Tests\Core\Stubs\Models\Product::factory()->create();
 
     $product->delete();
 
-    \Illuminate\Support\Facades\Event::assertDispatched(
+    Event::assertDispatched(
         'eloquent.deleted: '.Product::class
     );
 
-    \Lunar\Facades\ModelManifest::replace(
-        \Lunar\Models\Contracts\Product::class,
-        \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::class
+    ModelManifest::replace(
+        Lunar\Models\Contracts\Product::class,
+        CustomProduct::class
     );
 
-    $product = \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct::factory()->create();
+    $product = CustomProduct::factory()->create();
 
     $product->delete();
 
-    \Illuminate\Support\Facades\Event::assertDispatched(
+    Event::assertDispatched(
         'eloquent.deleted: '.Product::class
     );
 });
 
 test('multi-level extended model returns correct table name without prefix duplication', function () {
-    $lunarProduct = new \Lunar\Models\Product;
-    $customProduct = new \Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct;
-    $deepCustomProduct = new \Lunar\Tests\Core\Stubs\Models\Custom\DeepCustomProduct;
+    $lunarProduct = new Product;
+    $customProduct = new CustomProduct;
+    $deepCustomProduct = new DeepCustomProduct;
 
     // All three models should return the same table name
     expect($customProduct->getTable())
