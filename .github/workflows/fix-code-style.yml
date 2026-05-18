@@ -12,22 +12,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      - name: Cache Composer dependencies
-        uses: actions/cache@v5
-        with:
-          path: ~/.composer/cache/files
-          key: composer-cs-${{ hashFiles('composer.json') }}
-          restore-keys: |
-            composer-cs-
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-      - name: Install dependencies
-        run: |
-          composer install --no-interaction --no-scripts
+          tools: composer:v2, pint
       - name: Run Pint
-        run: composer pint
+        run: pint
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
