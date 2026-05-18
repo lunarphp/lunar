@@ -39,13 +39,9 @@ class TestCase extends BaseTestCase
         $this->freezeTime();
     }
 
-    /**
-     * Register Laravel's default migrations with the migrator so they get
-     * picked up by `migrate:fresh` alongside Lunar's migrations on the first
-     * test. Paired with the file-backed SQLite database configured in
-     * getEnvironmentSetUp, this lets RefreshDatabase keep its migrated state
-     * across tests — migrations run once per process instead of once per test.
-     */
+    // Register laravel migrations on the migrator instead of running them
+    // separately — a standalone migrate commits DDL and resets RefreshDatabase's
+    // per-process cache.
     protected function defineDatabaseMigrations(): void
     {
         after_resolving($this->app, 'migrator', static function ($migrator) {
@@ -68,11 +64,8 @@ class TestCase extends BaseTestCase
     {
         $this->replaceModelsForTesting();
 
-        // Switch the default testing connection from `:memory:` to a per-process
-        // file-backed SQLite database. Testbench actively resets
-        // RefreshDatabase's in-memory PDO cache between tests, which forces a
-        // full migrate every test. With a file path, the cache survives and
-        // migrations only run once per process.
+        // File-backed SQLite per worker; Testbench wipes RefreshDatabase's
+        // cache for `:memory:`, forcing a full migrate every test.
         $dbPath = sys_get_temp_dir().'/lunar-test-'.getmypid().'.sqlite';
         if (! file_exists($dbPath)) {
             touch($dbPath);

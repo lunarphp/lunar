@@ -7,7 +7,7 @@ on:
   push:
     branches: [1.x]
   schedule:
-    # Daily full-matrix sweep so we still catch dependency drift on lower combos.
+    # Daily full-matrix sweep to catch dependency drift on the lower combos.
     - cron: "0 6 * * *"
 
 concurrency:
@@ -20,8 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # PRs run a slimmed matrix (highest PHP × both Laravels × extend-models=false).
-        # Push to 1.x and the daily schedule run the full matrix.
+        # PRs run a slimmed matrix; push and the schedule run the full one.
         php: ${{ fromJSON(github.event_name == 'pull_request' && '["8.4"]' || '["8.3","8.4"]') }}
         laravel: ["12.*", "13.*"]
         dependency-version: [prefer-stable]
@@ -62,7 +61,5 @@ jobs:
           DB_CONNECTION: testing
           DB_DATABASE: ":memory:"
           LUNAR_TESTING_REPLACE_MODELS: ${{ matrix.extend-models }}
-        # PRs skip the `slow` group (the per-migration up/down/up coverage test
-        # accounts for ~28% of core-suite runtime). Push to 1.x and the daily
-        # schedule run everything.
-        run: ./vendor/bin/pest --testsuite ${{ matrix.testsuite }} ${{ github.event_name == 'pull_request' && '--exclude-group=slow' || '' }}
+        # PRs skip the `slow` group; push and the daily schedule run everything.
+        run: ./vendor/bin/pest --testsuite ${{ matrix.testsuite }} --parallel ${{ github.event_name == 'pull_request' && '--exclude-group=slow' || '' }}
