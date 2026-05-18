@@ -34,9 +34,13 @@ class Stripe extends Facade
         return 'lunar:stripe';
     }
 
-    public static function fake(): void
+    public static function fake(array $data = []): MockClient
     {
         $mockClient = new MockClient;
+        $mockClient->next($data);
+
         ApiRequestor::setHttpClient($mockClient);
+
+        return $mockClient;
     }
 }
