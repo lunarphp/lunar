@@ -255,6 +255,48 @@ test('can validate delivery with partial shipping address', function () {
     }
 });
 
+test('fails when a cart line points at a soft-deleted purchasable', function () {
+    $currency = Currency::factory()->create();
+    $taxClass = TaxClass::factory()->create();
+
+    $cart = Cart::factory()->create([
+        'currency_id' => $currency->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create([
+        'shippable' => false,
+    ]);
+
+    Lunar\Models\Price::factory()->create([
+        'currency_id' => $currency->id,
+        'priceable_id' => $purchasable->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'price' => 500,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    CartAddress::factory()->create([
+        'type' => 'billing',
+        'cart_id' => $cart->id,
+    ]);
+
+    $purchasable->delete();
+
+    $validator = (new ValidateCartForOrderCreation)->using(
+        cart: $cart->fresh()
+    );
+
+    $this->expectException(CartException::class);
+    $this->expectExceptionMessage(__('lunar::exceptions.carts.line_unavailable'));
+
+    $validator->validate();
+});
+
 test('can validate delivery with populated shipping address', function () {
     $currency = Currency::factory()->create();
     $taxClass = TaxClass::factory()->create();

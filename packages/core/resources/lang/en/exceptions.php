@@ -11,6 +11,7 @@ return [
     'carts.billing_incomplete' => 'The billing address is incomplete',
     'carts.order_exists' => 'An order for this cart already exists',
     'carts.shipping_option_missing' => 'Missing Shipping Option',
+    'carts.line_unavailable' => 'A line in this cart is no longer available',
     'missing_currency_price' => 'No price for currency ":currency" exists',
     'minimum_quantity' => 'You must add a minimum of :quantity items.',
     'quantity_increment' => 'Quantity :quantity must be in increments of :increment',
