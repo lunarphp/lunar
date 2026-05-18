@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         # PRs run a slimmed matrix (highest PHP × both Laravels × extend-models=false).
-        # Push to 1.x and the weekly schedule run the full matrix.
+        # Push to 1.x and the daily schedule run the full matrix.
         php: ${{ fromJSON(github.event_name == 'pull_request' && '["8.4"]' || '["8.3","8.4"]') }}
         laravel: ["12.*", "13.*"]
         dependency-version: [prefer-stable]
@@ -35,7 +35,7 @@ jobs:
     name: ${{ matrix.testsuite }} - PHP ${{ matrix.php }} - L${{ matrix.laravel }} ${{ matrix.dependency-version == 'prefer-lowest' && '↓' || '↑' }} ${{ matrix.extend-models == 'true' && 'E' || '' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -51,7 +51,7 @@ jobs:
           composer require "orchestra/testbench:${{ matrix.testbench }}" --dev --no-update --no-interaction
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
         with:
           composer-options: "--prefer-dist ${{ matrix.dependency-version == 'prefer-lowest' && '--prefer-lowest' || '' }}"
           custom-cache-key: composer-p${{ matrix.php }}-l${{ matrix.laravel }}-${{ matrix.dependency-version }}-${{ hashFiles('composer.json') }}
