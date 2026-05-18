@@ -59,25 +59,21 @@ it('falls back to active payment intent when no legacy meta', function () {
     expect(Stripe::getCartIntentId($cart))->toBe('PI_RELATION');
 });
 
-it('converts amounts for standard two-decimal currencies', function () {
-    $currency = Currency::factory()->make([
-        'code' => 'USD',
-        'decimal_places' => 2,
-    ]);
-
-    expect(StripeManager::toStripeAmount(1148, $currency))->toBe(1148);
-});
-
-it('converts amounts for zero-decimal currencies', function (string $code) {
+it('passes through amounts for standard currencies', function (string $code, int $decimals, int $value) {
     $currency = Currency::factory()->make([
         'code' => $code,
-        'decimal_places' => 0,
+        'decimal_places' => $decimals,
     ]);
 
-    expect(StripeManager::toStripeAmount(1000, $currency))->toBe(1000);
-})->with(['JPY', 'KRW', 'VND']);
+    expect(StripeManager::toStripeAmount($value, $currency))->toBe($value);
+})->with([
+    ['USD', 2, 1148],
+    ['JPY', 0, 1000],
+    ['KRW', 0, 1000],
+    ['BHD', 3, 10234],
+]);
 
-it('multiplies amounts by 100 for special zero-decimal currencies', function (string $code) {
+it('multiplies HUF/TWD/UGX amounts by 100 when stored as zero-decimal', function (string $code) {
     $currency = Currency::factory()->make([
         'code' => $code,
         'decimal_places' => 0,
@@ -86,31 +82,13 @@ it('multiplies amounts by 100 for special zero-decimal currencies', function (st
     expect(StripeManager::toStripeAmount(11480, $currency))->toBe(1148000);
 })->with(['HUF', 'TWD', 'UGX']);
 
-it('converts amounts for three-decimal currencies', function () {
-    $currency = Currency::factory()->make([
-        'code' => 'BHD',
-        'decimal_places' => 3,
-    ]);
-
-    expect(StripeManager::toStripeAmount(10234, $currency))->toBe(10234);
-});
-
-it('handles HUF when configured with two decimal places', function () {
+it('passes through HUF when stored with two decimal places', function () {
     $currency = Currency::factory()->make([
         'code' => 'HUF',
         'decimal_places' => 2,
     ]);
 
     expect(StripeManager::toStripeAmount(1148000, $currency))->toBe(1148000);
-});
-
-it('handles JPY when configured with two decimal places', function () {
-    $currency = Currency::factory()->make([
-        'code' => 'JPY',
-        'decimal_places' => 2,
-    ]);
-
-    expect(StripeManager::toStripeAmount(100000, $currency))->toBe(1000);
 });
 
 it('is case-insensitive on the currency code', function () {

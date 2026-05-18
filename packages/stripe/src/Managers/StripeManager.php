@@ -220,30 +220,23 @@ class StripeManager
     /**
      * Convert a Lunar price value to the amount expected by Stripe.
      *
-     * Lunar stores prices as integers in the smallest unit configured by the
-     * Currency's decimal_places. Stripe expects amounts in its own currency
-     * sub-unit, which differs from Lunar's storage for zero-decimal currencies
-     * (e.g. JPY) and the "x100" zero-decimal special cases (HUF, TWD, UGX).
+     * For most currencies Stripe expects the amount in the same sub-unit
+     * Lunar already stores it in (controlled by `Currency::decimal_places`).
+     * HUF, TWD and UGX are the exception: although they are ISO zero-decimal
+     * currencies, Stripe requires amounts to be sent as if they had two
+     * decimal places.
      *
      * @see https://docs.stripe.com/currencies
      */
     public static function toStripeAmount(int $value, CurrencyContract $currency): int
     {
-        $code = strtolower($currency->code);
-
-        $stripeDecimals = match (true) {
-            in_array($code, ['huf', 'twd', 'ugx'], true) => 2,
-            in_array($code, ['bhd', 'jod', 'kwd', 'omr', 'tnd'], true) => 3,
-            in_array($code, [
-                'bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw',
-                'mga', 'pyg', 'rwf', 'vnd', 'vuv', 'xaf', 'xof', 'xpf',
-            ], true) => 0,
-            default => 2,
-        };
+        if (! in_array(strtolower($currency->code), ['huf', 'twd', 'ugx'], true)) {
+            return $value;
+        }
 
         $majorAmount = $value / (10 ** $currency->decimal_places);
 
-        return (int) round($majorAmount * (10 ** $stripeDecimals));
+        return (int) round($majorAmount * 100);
     }
 
     /**
