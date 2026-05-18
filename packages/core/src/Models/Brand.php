@@ -61,6 +61,7 @@ class Brand extends BaseModel implements Contracts\Brand, SpatieHasMedia
     {
         static::deleting(function (self $brand) {
             DB::beginTransaction();
+            $brand->products()->withTrashed()->update(['brand_id' => null]);
             $brand->discounts()->detach();
             $brand->collections()->detach();
             DB::commit();
