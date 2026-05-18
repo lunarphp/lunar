@@ -11,6 +11,8 @@ class MockClient implements ClientInterface
 {
     public string $rBody = '{}';
 
+    public array $nextData = [];
+
     public int $rcode = 200;
 
     public array $rheaders = [];
@@ -24,6 +26,13 @@ class MockClient implements ClientInterface
         $this->url = 'https://checkout.stripe.com/pay/cs_test_'.Str::random(32);
     }
 
+    public function next(array $data): self
+    {
+        $this->nextData = $data;
+
+        return $this;
+    }
+
     public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1')
     {
         $id = array_slice(explode('/', $absUrl), -1)[0];
@@ -33,6 +42,7 @@ class MockClient implements ClientInterface
         if ($method == 'get' && str_contains($absUrl, 'charges/CH_LINK')) {
             $this->rBody = $this->getResponse('charge_link', [
                 'status' => 'succeeded',
+                ...$this->nextData,
             ]);
 
             return [$this->rBody, $this->rcode, $this->rheaders];
@@ -51,6 +61,7 @@ class MockClient implements ClientInterface
             $this->rBody = $this->getResponse('charges', [
                 'status' => $status,
                 'failure_code' => $failureCode,
+                ...$this->nextData,
             ]);
 
             return [$this->rBody, $this->rcode, $this->rheaders];
@@ -68,6 +79,7 @@ class MockClient implements ClientInterface
                     'payment_error' => null,
                     'failure_code' => null,
                     'captured' => true,
+                    ...$this->nextData,
                 ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
@@ -84,6 +96,8 @@ class MockClient implements ClientInterface
                     'payment_error' => null,
                     'failure_code' => null,
                     'captured' => true,
+                    'amount' => 2000,
+                    ...$this->nextData,
                 ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
@@ -98,13 +112,16 @@ class MockClient implements ClientInterface
                     'payment_error' => 'foo',
                     'failure_code' => 1234,
                     'captured' => false,
+                    ...$this->nextData,
                 ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }
 
             if (str_contains($absUrl, 'PI_REQUIRES_PAYMENT_METHOD')) {
-                $this->rBody = $this->getResponse('payment_intent_requires_payment_method');
+                $this->rBody = $this->getResponse('payment_intent_requires_payment_method', [
+                    ...$this->nextData,
+                ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
             }
@@ -118,6 +135,7 @@ class MockClient implements ClientInterface
                     'payment_error' => 'foo',
                     'failure_code' => 1234,
                     'captured' => false,
+                    ...$this->nextData,
                 ]);
 
                 return [$this->rBody, $this->rcode, $this->rheaders];
@@ -133,6 +151,7 @@ class MockClient implements ClientInterface
                     'payment_error' => $succeeded ? null : 'failed',
                     'failure_code' => $succeeded ? null : 1234,
                     'captured' => $succeeded,
+                    ...$this->nextData,
                 ]);
 
                 $this->failThenCaptureCalled = true;

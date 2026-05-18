@@ -43,6 +43,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Allow partial payments
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the amount on the PaymentIntent does not need to match the
+    | order total. This is useful for stores that accept deposits or partial
+    | payments. When disabled (default), a mismatch will cause authorization
+    | to fail.
+    |
+    */
+    'allow_partial_payment' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Status mapping
     |--------------------------------------------------------------------------
     |
