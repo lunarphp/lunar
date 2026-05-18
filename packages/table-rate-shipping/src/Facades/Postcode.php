@@ -9,7 +9,7 @@ use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
 use Lunar\Shipping\Managers\PostcodeManager;
 
 /**
- * @method static \Lunar\Shipping\Managers\PostcodeManager addResolver(string|PostcodeResolverInterface $resolver)
+ * @method static \Lunar\Shipping\Managers\PostcodeManager addResolver(string|PostcodeResolverInterface|array $resolver)
  * @method static PostcodeResolverInterface country(CountryContract $country)
  * @method static Collection getResolvers()
  *

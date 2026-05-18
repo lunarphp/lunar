@@ -29,6 +29,53 @@ test('addResolver returns the manager for fluent chaining', function () {
     expect($manager->addResolver(PostcodeResolver::class))->toBe($manager);
 });
 
+test('addResolver accepts an array and registers each entry in order', function () {
+    $instance = new class implements PostcodeResolverInterface
+    {
+        public function supportsCountry(CountryContract $country): bool
+        {
+            return true;
+        }
+
+        public function getParts(string $postcode, CountryContract $country): Collection
+        {
+            return collect([$postcode]);
+        }
+    };
+
+    $manager = new PostcodeManager;
+    $manager->addResolver([PostcodeResolver::class, $instance]);
+
+    expect($manager->getResolvers())->toHaveCount(2);
+    expect($manager->getResolvers()->all())->toBe([PostcodeResolver::class, $instance]);
+});
+
+test('addResolver array registration preserves last-wins matching order', function () {
+    $gb = Country::factory()->create(['iso2' => 'GB']);
+    $us = Country::factory()->create(['iso2' => 'US']);
+
+    $gbOnly = new class implements PostcodeResolverInterface
+    {
+        public string $label = 'gb-only';
+
+        public function supportsCountry(CountryContract $country): bool
+        {
+            return $country->iso2 === 'GB';
+        }
+
+        public function getParts(string $postcode, CountryContract $country): Collection
+        {
+            return collect([$postcode]);
+        }
+    };
+
+    $manager = new PostcodeManager;
+    $manager->addResolver([PostcodeResolver::class, $gbOnly]);
+
+    expect($manager->country($gb))->toBe($gbOnly);
+    expect($manager->country($us))->toBeInstanceOf(PostcodeResolver::class);
+});
+
 test('country returns the last-registered matching resolver', function () {
     $gb = Country::factory()->create(['iso2' => 'GB']);
 

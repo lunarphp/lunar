@@ -23,11 +23,16 @@ class PostcodeManager
     }
 
     /**
-     * Register a resolver. Class strings are resolved lazily via the container.
+     * Register one or more resolvers. Class strings are resolved lazily via the container.
+     * When passed an array, entries are pushed in order — later entries win during matching.
+     *
+     * @param  string|PostcodeResolverInterface|array<int, string|PostcodeResolverInterface>  $resolver
      */
-    public function addResolver(string|PostcodeResolverInterface $resolver): self
+    public function addResolver(string|PostcodeResolverInterface|array $resolver): self
     {
-        $this->resolvers->push($resolver);
+        foreach (is_array($resolver) ? $resolver : [$resolver] as $entry) {
+            $this->resolvers->push($entry);
+        }
 
         return $this;
     }
