@@ -45,7 +45,7 @@ test('can reorder products by price', function () {
 
     expect($collection->products)->toHaveCount(2);
 
-    UpdateProductPositions::dispatch($collection->refresh());
+    UpdateProductPositions::dispatchSync($collection->refresh());
 
     $collectionProducts = $collection->products()->get();
 
@@ -57,7 +57,7 @@ test('can reorder products by price', function () {
         'sort' => 'min_price:desc',
     ]);
 
-    UpdateProductPositions::dispatch($collection->refresh());
+    UpdateProductPositions::dispatchSync($collection->refresh());
 
     $collectionProducts = $collection->products()->get();
 
@@ -84,7 +84,7 @@ test('can reorder products by sku', function () {
 
     expect($collection->products)->toHaveCount(2);
 
-    UpdateProductPositions::dispatch($collection->refresh());
+    UpdateProductPositions::dispatchSync($collection->refresh());
 
     $collectionProducts = $collection->products()->get();
 
@@ -96,7 +96,7 @@ test('can reorder products by sku', function () {
         'sort' => 'sku:desc',
     ]);
 
-    UpdateProductPositions::dispatch($collection->refresh());
+    UpdateProductPositions::dispatchSync($collection->refresh());
 
     $collectionProducts = $collection->products()->get();
 
