@@ -23,6 +23,11 @@ test('all migrations can run rollback', function () {
     }
 
     artisan('migrate:rollback');
+
+    // Re-apply migrations so subsequent tests find the schema intact.
+    // RefreshDatabase only runs `migrate:fresh` once per process when the
+    // testing connection is file-backed; without this we leave the DB stripped.
+    artisan('migrate');
 });
 
 test('each migration can run and rollback', function () {
