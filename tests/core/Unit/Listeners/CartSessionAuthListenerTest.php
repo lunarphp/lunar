@@ -1,17 +1,20 @@
 <?php
 
 use Illuminate\Auth\Events\Logout;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Lunar\Facades\CartSession;
 use Lunar\Models\Cart;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
+use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\actingAs;
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('cart_session');
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class)->group('cart_session');
+uses(RefreshDatabase::class);
 
 test('cart is soft deleted on logout when delete_on_logout is true', function () {
     // Ensure required defaults exist
@@ -24,7 +27,7 @@ test('cart is soft deleted on logout when delete_on_logout is true', function ()
     $cart = CartSession::current();
 
     // Authenticate a Lunar user so the Logout listener will act on it
-    $user = \Lunar\Tests\Core\Stubs\User::factory()->create();
+    $user = User::factory()->create();
     actingAs($user);
 
     // Sanity checks
@@ -53,7 +56,7 @@ test('cart is not soft deleted on logout when delete_on_logout is false', functi
     $cart = CartSession::current();
 
     // Authenticate a Lunar user so the Logout listener will act on it
-    $user = \Lunar\Tests\Core\Stubs\User::factory()->create();
+    $user = User::factory()->create();
     actingAs($user);
 
     // Sanity checks

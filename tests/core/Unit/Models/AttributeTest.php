@@ -1,13 +1,17 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class)->group('models');
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Lunar\FieldTypes\Text;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
+use Lunar\Tests\Core\TestCase;
 
-use function Pest\Laravel\{assertDatabaseMissing};
+uses(TestCase::class)->group('models');
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+use function Pest\Laravel\assertDatabaseMissing;
+
+uses(RefreshDatabase::class);
 
 test('can make a attribute', function () {
     $options = [
@@ -28,7 +32,7 @@ test('can make a attribute', function () {
             ],
             'handle' => 'meta_description',
             'section' => 'product_variant',
-            'type' => \Lunar\FieldTypes\Text::class,
+            'type' => Text::class,
             'required' => false,
             'default_value' => '',
             'configuration' => [
@@ -39,7 +43,7 @@ test('can make a attribute', function () {
 
     expect($attribute->name->get('en'))->toEqual('Meta Description');
     expect($attribute->handle)->toEqual('meta_description');
-    expect($attribute->type)->toEqual(\Lunar\FieldTypes\Text::class);
+    expect($attribute->type)->toEqual(Text::class);
     expect($attribute->system)->toBeTrue();
     expect($attribute->position)->toEqual(4);
     expect($attribute->configuration->get('options'))->toEqual($options);
@@ -64,7 +68,7 @@ test('can delete an attribute', function () {
             ],
             'handle' => 'meta_description',
             'section' => 'product_variant',
-            'type' => \Lunar\FieldTypes\Text::class,
+            'type' => Text::class,
             'required' => false,
             'default_value' => '',
             'configuration' => [
@@ -73,7 +77,7 @@ test('can delete an attribute', function () {
             'system' => true,
         ]);
 
-    \Illuminate\Support\Facades\DB::table('lunar_attributables')->insert([
+    DB::table('lunar_attributables')->insert([
         'attributable_type' => 'Lunar\Models\ProductType',
         'attributable_id' => 1,
         'attribute_id' => $attribute->id,

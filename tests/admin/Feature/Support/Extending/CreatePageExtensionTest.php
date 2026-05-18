@@ -1,13 +1,18 @@
 <?php
 
+use Illuminate\Database\Eloquent\Model;
+use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\CreateCustomer;
+use Lunar\Admin\Support\Extending\CreatePageExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Models\Customer;
+use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
-uses(\Lunar\Tests\Admin\Feature\Filament\TestCase::class)
+uses(TestCase::class)
     ->group('extending');
 
 it('can customise page headings', function () {
-    $class = new class extends \Lunar\Admin\Support\Extending\CreatePageExtension
+    $class = new class extends CreatePageExtension
     {
         public function heading($title): string
         {
@@ -26,13 +31,13 @@ it('can customise page headings', function () {
 
     $this->asStaff(admin: true);
 
-    \Livewire\Livewire::test(CreateCustomer::class)
+    Livewire::test(CreateCustomer::class)
         ->assertSee('New Heading')
         ->assertSee('New Subheading');
 });
 
 it('can change data before creation', function () {
-    $class = new class extends \Lunar\Admin\Support\Extending\CreatePageExtension
+    $class = new class extends CreatePageExtension
     {
         public function beforeCreate(array $data): array
         {
@@ -48,7 +53,7 @@ it('can change data before creation', function () {
 
     $this->asStaff(admin: true);
 
-    \Livewire\Livewire::test(CreateCustomer::class)
+    Livewire::test(CreateCustomer::class)
         ->fillForm([
             'title' => 'Mr',
             'first_name' => 'Jeff',
@@ -56,15 +61,15 @@ it('can change data before creation', function () {
         ])->call('create')
         ->assertHasNoFormErrors();
 
-    $this->assertDatabaseHas(\Lunar\Models\Customer::class, [
+    $this->assertDatabaseHas(Customer::class, [
         'first_name' => 'Jacob',
     ]);
 });
 
 it('can manipulate model after creation', function () {
-    $class = new class extends \Lunar\Admin\Support\Extending\CreatePageExtension
+    $class = new class extends CreatePageExtension
     {
-        public function afterCreation(Illuminate\Database\Eloquent\Model $record, array $data): Illuminate\Database\Eloquent\Model
+        public function afterCreation(Model $record, array $data): Model
         {
             $record->update([
                 'first_name' => 'Geoff',
@@ -80,7 +85,7 @@ it('can manipulate model after creation', function () {
 
     $this->asStaff(admin: true);
 
-    \Livewire\Livewire::test(CreateCustomer::class)
+    Livewire::test(CreateCustomer::class)
         ->fillForm([
             'title' => 'Mr',
             'first_name' => 'Jeff',
@@ -88,7 +93,7 @@ it('can manipulate model after creation', function () {
         ])->call('create')
         ->assertHasNoFormErrors();
 
-    $this->assertDatabaseHas(\Lunar\Models\Customer::class, [
+    $this->assertDatabaseHas(Customer::class, [
         'first_name' => 'Geoff',
     ]);
 });

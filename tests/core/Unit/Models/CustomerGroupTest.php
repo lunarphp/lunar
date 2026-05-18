@@ -1,13 +1,18 @@
 <?php
 
-uses(\Lunar\Tests\Core\TestCase::class);
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Discount;
+use Lunar\Tests\Core\TestCase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class);
+
+uses(RefreshDatabase::class);
 
 test('can return discounts', function () {
-    $customerGroup = \Lunar\Models\CustomerGroup::factory()->create();
+    $customerGroup = CustomerGroup::factory()->create();
 
-    \Lunar\Models\Discount::factory()->create();
+    Discount::factory()->create();
 
     expect($customerGroup->refresh()->discounts)->toHaveCount(1);
 });

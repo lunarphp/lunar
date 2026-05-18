@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Events\ProductPricingUpdated;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\DataTypes\Price as PriceDataType;
 use Lunar\Facades\DB;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
@@ -76,14 +77,10 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                 ])->columns(2),
 
                 Group::make([
-                    TextInput::make('price')->formatStateUsing(
-                        fn ($state) => $state?->decimal(rounding: false)
-                    )->numeric()->helperText(
+                    TextInput::make('price')->numeric()->helperText(
                         __('lunarpanel::relationmanagers.pricing.form.price.helper_text')
                     )->required(),
-                    TextInput::make('compare_price')->formatStateUsing(
-                        fn ($state) => $state?->decimal(rounding: false)
-                    )->label(
+                    TextInput::make('compare_price')->label(
                         __('lunarpanel::relationmanagers.pricing.form.compare_price.label')
                     )->helperText(
                         __('lunarpanel::relationmanagers.pricing.form.compare_price.helper_text')
@@ -152,18 +149,31 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                     ),
             ])
             ->recordActions([
-                EditAction::make()->mutateDataUsing(function (array $data): array {
-                    $currencyModel = Currency::find($data['currency_id']);
+                EditAction::make()
+                    ->mutateRecordDataUsing(fn (array $data): array => $this->unwrapPriceData($data))
+                    ->mutateDataUsing(function (array $data): array {
+                        $currencyModel = Currency::find($data['currency_id']);
 
-                    $data['min_quantity'] = 1;
-                    $data['price'] = (int) ($data['price'] * $currencyModel->factor);
-                    $data['compare_price'] = (int) ($data['compare_price'] * $currencyModel->factor);
+                        $data['min_quantity'] = 1;
+                        $data['price'] = (int) ($data['price'] * $currencyModel->factor);
+                        $data['compare_price'] = (int) ($data['compare_price'] * $currencyModel->factor);
 
-                    return $data;
-                })->after(
-                    fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
-                ),
+                        return $data;
+                    })->after(
+                        fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
+                    ),
                 DeleteAction::make(),
             ]);
+    }
+
+    protected function unwrapPriceData(array $data): array
+    {
+        foreach (['price', 'compare_price'] as $key) {
+            if (($data[$key] ?? null) instanceof PriceDataType) {
+                $data[$key] = $data[$key]->decimal(rounding: false);
+            }
+        }
+
+        return $data;
     }
 }

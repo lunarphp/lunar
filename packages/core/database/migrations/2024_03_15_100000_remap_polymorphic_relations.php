@@ -1,58 +1,102 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Base\Migration;
+use Lunar\Facades\ModelManifest;
+use Lunar\Models\Address;
+use Lunar\Models\Asset;
+use Lunar\Models\Attribute;
+use Lunar\Models\AttributeGroup;
+use Lunar\Models\Brand;
+use Lunar\Models\Cart;
+use Lunar\Models\CartAddress;
+use Lunar\Models\CartLine;
+use Lunar\Models\Channel;
+use Lunar\Models\Collection;
+use Lunar\Models\CollectionGroup;
+use Lunar\Models\Country;
+use Lunar\Models\Currency;
+use Lunar\Models\Customer;
+use Lunar\Models\CustomerGroup;
+use Lunar\Models\Discount;
+use Lunar\Models\Discountable;
+use Lunar\Models\DiscountCollection;
+use Lunar\Models\Language;
+use Lunar\Models\Order;
+use Lunar\Models\OrderAddress;
+use Lunar\Models\OrderLine;
+use Lunar\Models\Price;
+use Lunar\Models\Product;
+use Lunar\Models\ProductAssociation;
+use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
+use Lunar\Models\ProductType;
+use Lunar\Models\ProductVariant;
+use Lunar\Models\State;
+use Lunar\Models\Tag;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRate;
+use Lunar\Models\TaxRateAmount;
+use Lunar\Models\TaxZone;
+use Lunar\Models\TaxZoneCountry;
+use Lunar\Models\TaxZoneCustomerGroup;
+use Lunar\Models\TaxZonePostcode;
+use Lunar\Models\TaxZoneState;
+use Lunar\Models\Transaction;
+use Lunar\Models\Url;
+use Lunar\Models\UserPermission;
 
 class RemapPolymorphicRelations extends Migration
 {
     public function up()
     {
         $modelClasses = collect([
-            \Lunar\Models\CartLine::class,
-            \Lunar\Models\ProductOption::class,
-            \Lunar\Models\Asset::class,
-            \Lunar\Models\Brand::class,
-            \Lunar\Models\TaxZone::class,
-            \Lunar\Models\TaxZoneCountry::class,
-            \Lunar\Models\TaxZoneCustomerGroup::class,
-            \Lunar\Models\DiscountCollection::class,
-            \Lunar\Models\TaxClass::class,
-            \Lunar\Models\ProductOptionValue::class,
-            \Lunar\Models\Channel::class,
-            \Lunar\Models\AttributeGroup::class,
-            \Lunar\Models\Tag::class,
-            \Lunar\Models\Cart::class,
-            \Lunar\Models\Collection::class,
-            \Lunar\Models\Discount::class,
-            \Lunar\Models\TaxRate::class,
-            \Lunar\Models\Price::class,
-            \Lunar\Models\Discountable::class,
-            \Lunar\Models\State::class,
-            \Lunar\Models\UserPermission::class,
-            \Lunar\Models\OrderAddress::class,
-            \Lunar\Models\Country::class,
-            \Lunar\Models\Address::class,
-            \Lunar\Models\Url::class,
-            \Lunar\Models\ProductVariant::class,
-            \Lunar\Models\TaxZonePostcode::class,
-            \Lunar\Models\ProductAssociation::class,
-            \Lunar\Models\TaxRateAmount::class,
-            \Lunar\Models\Attribute::class,
-            \Lunar\Models\Order::class,
-            \Lunar\Models\Customer::class,
-            \Lunar\Models\OrderLine::class,
-            \Lunar\Models\CartAddress::class,
-            \Lunar\Models\Language::class,
-            \Lunar\Models\TaxZoneState::class,
-            \Lunar\Models\Currency::class,
-            \Lunar\Models\Product::class,
-            \Lunar\Models\Transaction::class,
-            \Lunar\Models\ProductType::class,
-            \Lunar\Models\CollectionGroup::class,
-            \Lunar\Models\CustomerGroup::class,
+            CartLine::class,
+            ProductOption::class,
+            Asset::class,
+            Brand::class,
+            TaxZone::class,
+            TaxZoneCountry::class,
+            TaxZoneCustomerGroup::class,
+            DiscountCollection::class,
+            TaxClass::class,
+            ProductOptionValue::class,
+            Channel::class,
+            AttributeGroup::class,
+            Tag::class,
+            Cart::class,
+            Collection::class,
+            Discount::class,
+            TaxRate::class,
+            Price::class,
+            Discountable::class,
+            State::class,
+            UserPermission::class,
+            OrderAddress::class,
+            Country::class,
+            Address::class,
+            Url::class,
+            ProductVariant::class,
+            TaxZonePostcode::class,
+            ProductAssociation::class,
+            TaxRateAmount::class,
+            Attribute::class,
+            Order::class,
+            Customer::class,
+            OrderLine::class,
+            CartAddress::class,
+            Language::class,
+            TaxZoneState::class,
+            Currency::class,
+            Product::class,
+            Transaction::class,
+            ProductType::class,
+            CollectionGroup::class,
+            CustomerGroup::class,
         ])->mapWithKeys(
             fn ($class) => [
-                $class => \Lunar\Facades\ModelManifest::getMorphMapKey($class),
+                $class => ModelManifest::getMorphMapKey($class),
             ]
         );
 
@@ -82,7 +126,7 @@ class RemapPolymorphicRelations extends Migration
                 if (! Schema::hasTable($table)) {
                     continue;
                 }
-                \Illuminate\Support\Facades\DB::table($table)
+                DB::table($table)
                     ->where($column, '=', $modelClass)
                     ->update([
                         $column => $mapping,
@@ -90,7 +134,7 @@ class RemapPolymorphicRelations extends Migration
             }
 
             foreach ($tables as $tableName => $columns) {
-                $table = \Illuminate\Support\Facades\DB::table(
+                $table = DB::table(
                     $this->prefix.$tableName
                 );
 
