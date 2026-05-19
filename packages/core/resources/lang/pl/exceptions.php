@@ -11,7 +11,7 @@ return [
     'carts.billing_incomplete' => 'Adres rozliczeniowy jest niekompletny',
     'carts.order_exists' => 'Zamówienie dla tego koszyka już istnieje',
     'carts.shipping_option_missing' => 'Brak opcji wysyłki',
-    'carts.line_unavailable' => 'Pozycja w tym koszyku nie jest już dostępna',
+    'carts.line_unavailable' => 'Pozycja w tym koszyku nie jest już dostępna (:identifier)',
     'missing_currency_price' => 'Nie istnieje cena dla waluty ":currency"',
     'minimum_quantity' => 'Musisz dodać co najmniej :quantity elementów.',
     'quantity_increment' => 'Ilość :quantity musi być wielokrotnością :increment',

@@ -19,14 +19,14 @@ class ValidateCartForOrderCreation extends BaseValidator
             return $this->fail('cart', __('lunar::exceptions.carts.order_exists'));
         }
 
-        $cart->loadMissing('lines.purchasable');
-
-        $hasUnavailableLine = $cart->lines->contains(
+        $unavailableLine = $cart->lines->first(
             fn ($line) => ! $line->purchasable || ! $line->purchasable->isPurchasable()
         );
 
-        if ($hasUnavailableLine) {
-            return $this->fail('cart', __('lunar::exceptions.carts.line_unavailable'));
+        if ($unavailableLine) {
+            return $this->fail('cart', __('lunar::exceptions.carts.line_unavailable', [
+                'identifier' => $unavailableLine->purchasable?->getIdentifier() ?? "#{$unavailableLine->id}",
+            ]));
         }
 
         // Do we have a billing address?

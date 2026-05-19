@@ -11,7 +11,7 @@ return [
     'carts.billing_incomplete' => 'آدرس صورت‌حساب ناقص است.',
     'carts.order_exists' => 'برای این سبد از قبل سفارشی ثبت شده است.',
     'carts.shipping_option_missing' => 'گزینه ارسال انتخاب نشده است.',
-    'carts.line_unavailable' => 'یکی از اقلام این سبد دیگر در دسترس نیست.',
+    'carts.line_unavailable' => 'یکی از اقلام این سبد دیگر در دسترس نیست (:identifier).',
     'missing_currency_price' => 'هیچ قیمتی برای ارز ":currency" وجود ندارد.',
     'minimum_quantity' => 'باید حداقل :quantity مورد اضافه کنید.',
     'quantity_increment' => 'تعداد :quantity باید مضربی از :increment باشد.',

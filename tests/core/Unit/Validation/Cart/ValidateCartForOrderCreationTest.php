@@ -293,7 +293,9 @@ test('fails when a cart line points at a soft-deleted purchasable', function () 
     );
 
     $this->expectException(CartException::class);
-    $this->expectExceptionMessage(__('lunar::exceptions.carts.line_unavailable'));
+    $this->expectExceptionMessage(__('lunar::exceptions.carts.line_unavailable', [
+        'identifier' => $purchasable->getIdentifier(),
+    ]));
 
     $validator->validate();
 });
@@ -337,7 +339,9 @@ test('fails when a cart line points at a draft product', function () {
     );
 
     $this->expectException(CartException::class);
-    $this->expectExceptionMessage(__('lunar::exceptions.carts.line_unavailable'));
+    $this->expectExceptionMessage(__('lunar::exceptions.carts.line_unavailable', [
+        'identifier' => $purchasable->getIdentifier(),
+    ]));
 
     $validator->validate();
 });
