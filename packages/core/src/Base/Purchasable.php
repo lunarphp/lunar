@@ -85,6 +85,11 @@ interface Purchasable
     public function canBeFulfilledAtQuantity(int $quantity): bool;
 
     /**
+     * Return whether this item is currently available for purchase.
+     */
+    public function isPurchasable(): bool;
+
+    /**
      * Returns the total inventory the purchasable has available
      */
     public function getTotalInventory(): int;

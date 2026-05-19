@@ -53,6 +53,7 @@ use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Tag;
 
@@ -129,12 +130,65 @@ class ProductResource extends BaseResource
                     ->content(
                         __('lunarpanel::product.status.availability.customer_groups')
                     )->type('warning')->hidden(function (Model $record) {
+                        if ($record?->status != 'published') {
+                            return true;
+                        }
+
                         return $record->customerGroups()->where('enabled', true)->count();
+                    }),
+                Shout::make('product-no-default-customer-group')
+                    ->content(
+                        __('lunarpanel::product.status.availability.no_default_customer_group')
+                    )->type('warning')->hidden(function (Model $record) {
+                        if ($record?->status != 'published') {
+                            return true;
+                        }
+
+                        if (! $record->customerGroups()->where('enabled', true)->exists()) {
+                            return true;
+                        }
+
+                        return (bool) CustomerGroup::getDefault();
+                    }),
+                Shout::make('product-hidden-from-guests')
+                    ->content(
+                        __('lunarpanel::product.status.availability.hidden_from_guests')
+                    )->type('warning')->hidden(function (Model $record) {
+                        if ($record?->status != 'published') {
+                            return true;
+                        }
+
+                        if (! $record->customerGroups()->where('enabled', true)->exists()) {
+                            return true;
+                        }
+
+                        $default = CustomerGroup::getDefault();
+
+                        if (! $default) {
+                            return true;
+                        }
+
+                        return $record->customerGroups()
+                            ->where('customer_group_id', $default->id)
+                            ->where(function ($query) {
+                                $query->where('enabled', true)->orWhere('visible', true);
+                            })
+                            ->where(function ($query) {
+                                $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+                            })
+                            ->where(function ($query) {
+                                $query->whereNull('ends_at')->orWhere('ends_at', '>=', now());
+                            })
+                            ->exists();
                     }),
                 Shout::make('product-channels')
                     ->content(
                         __('lunarpanel::product.status.availability.channels')
                     )->type('warning')->hidden(function (Model $record) {
+                        if ($record?->status != 'published') {
+                            return true;
+                        }
+
                         return $record->channels()->where('enabled', true)->count();
                     }),
                 Section::make()
