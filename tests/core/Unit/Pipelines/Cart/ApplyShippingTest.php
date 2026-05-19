@@ -13,6 +13,7 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRateAmount;
 use Lunar\Pipelines\Cart\ApplyShipping;
+use Lunar\Pipelines\Cart\CalculateShippingSubTotal;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -45,6 +46,8 @@ test('can apply empty shipping totals', function () {
     expect($cart->shippingTotal)->toBeNull();
 
     app(ApplyShipping::class)->handle($cart, function ($cart) {
+        app(CalculateShippingSubTotal::class)->handle($cart, fn ($cart) => $cart);
+
         return $cart;
     });
 
@@ -125,6 +128,8 @@ test('can apply shipping totals', function () {
     expect($cart->shippingTotal)->toBeNull();
 
     app(ApplyShipping::class)->handle($cart, function ($cart) {
+        app(CalculateShippingSubTotal::class)->handle($cart, fn ($cart) => $cart);
+
         return $cart;
     });
 
@@ -182,16 +187,21 @@ test('switching shipping option replaces the breakdown instead of summing', func
         'quantity' => 1,
     ]);
 
+    $runShippingPipeline = fn ($cart) => app(ApplyShipping::class)->handle(
+        $cart,
+        fn ($cart) => app(CalculateShippingSubTotal::class)->handle($cart, fn ($cart) => $cart),
+    );
+
     $cart->shippingAddress->update(['shipping_option' => 'BASDEL']);
 
-    app(ApplyShipping::class)->handle($cart, fn ($cart) => $cart);
+    $runShippingPipeline($cart);
 
     expect($cart->shippingSubTotal->value)->toEqual(500);
     expect($cart->shippingBreakdown->items)->toHaveCount(1);
 
     $cart->shippingAddress->update(['shipping_option' => 'EXPDEL']);
 
-    app(ApplyShipping::class)->handle($cart, fn ($cart) => $cart);
+    $runShippingPipeline($cart);
 
     expect($cart->shippingSubTotal->value)->toEqual(1500);
     expect($cart->shippingBreakdown->items)->toHaveCount(1);
