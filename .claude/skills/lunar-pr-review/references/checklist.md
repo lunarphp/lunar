@@ -123,6 +123,74 @@ class FooResource extends BaseResource
 
 ---
 
+## Model contracts (type-hinting)
+
+**Why**: `packages/core/src/Base/ModelManifest.php` binds each `Lunar\Models\Contracts\*` interface to its concrete model in the container. Consumers replace a model with `Lunar::useModel(ProductContract::class, MyProduct::class)`. Code that type-hints the concrete `Lunar\Models\Product` silently bypasses that override — the consumer's subclass still gets stored, but a `Product $product` parameter rejects it on a strict type check, and IDE/static-analysis assumes properties that the subclass may have changed.
+
+**Where the contract is required** (non-exhaustive — apply to all changed code):
+
+| Surface                                | Example                                                                              |
+|----------------------------------------|--------------------------------------------------------------------------------------|
+| Pipeline `handle()` params/returns     | `public function handle(OrderContract $order, Closure $next): mixed`                 |
+| Manager methods                        | `public function apply(CartContract $cart): CartContract`                            |
+| Promoted constructor properties        | `public function __construct(public ?CartContract $cart = null) {}`                  |
+| Action / job / listener method params  | `public function handle(ProductContract $product): void`                             |
+| Event constructor params & properties  | `public function __construct(public OrderContract $order) {}` (also: breaking-change risk) |
+| PHPDoc `@param` / `@return` / `@var`   | `@return \Illuminate\Support\Collection<int, ProductContract>`                       |
+| Container resolution                   | `app(ProductContract::class)`, `resolve(CartContract::class)`                        |
+| Filament resource `$model`             | `protected static ?string $model = ProductContract::class;`                          |
+
+**Reference patterns from the codebase**:
+
+- `packages/core/src/Pipelines/Order/Creation/CreateOrderLines.php` — `handle(OrderContract $order, Closure $next)`.
+- `packages/core/src/Managers/CartSessionManager.php` — `public ?CartContract $cart = null` and `use(CartContract $cart): CartContract`.
+- `packages/core/src/PaymentTypes/AbstractPayment.php` — `protected ?CartContract $cart = null; protected ?OrderContract $order = null;`.
+
+**Where concrete classes are correct** (do not flag):
+
+- The model class itself, plus its relations, scopes, casts, observers' `$model` property.
+- `database/factories/*Factory.php` and `database/seeders/`.
+- Migrations.
+- Test fixtures: `Product::factory()->create()`, `Order::find(1)`.
+- Type-narrowing `instanceof` checks with a documented reason.
+
+**Common smells to flag**:
+
+```php
+// Bad — defeats consumer overrides
+use Lunar\Models\Cart;
+
+public function handle(Cart $cart, Closure $next): mixed { … }
+
+// Good
+use Lunar\Models\Contracts\Cart as CartContract;
+
+public function handle(CartContract $cart, Closure $next): mixed { … }
+```
+
+```php
+// Bad
+public function __construct(public Order $order) {}
+
+// Good
+public function __construct(public OrderContract $order) {}
+```
+
+```php
+// Bad
+$cart = app(Cart::class);
+$cart = new Cart;
+
+// Good
+$cart = app(CartContract::class);
+```
+
+**Heuristic for the reviewer**: in the diff, for each `use Lunar\Models\<Name>;` added outside an exempt path, grep the same file for `<Name> $` (parameter/property), `: <Name>` (return type), `@param <Name>`, `@return <Name>`, `new <Name>`, and `app(<Name>::class)`. Each hit is a Blocker finding unless covered by an exemption above.
+
+**Severity**: Blocker — the public contract surface is part of the 1.x stability promise, and this directly affects model-extension consumers. Pair this finding with a fix snippet so it's a one-line rename rather than a discussion.
+
+---
+
 ## PHP conventions (from `CLAUDE.md`)
 
 | Rule                                    | Example                                                                       |
@@ -235,6 +303,106 @@ These are lower-frequency but worth flagging when the diff touches the relevant 
 - **Notifications & mail** — new notification subjects/bodies and `resources/views/vendor/mail` templates also need translating, not just lang files.
 - **User-facing copy** — spelling/grammar on labels, error messages, and notification text. Cheap to fix in review, expensive after release.
 - **Filament navigation** — added resources without `$navigationSort` slot to the bottom of the group; usually fine, but flag if it disrupts grouping.
+
+---
+
+## Reuse existing scopes & traits
+
+Lunar models lean heavily on traits in `packages/core/src/Base/Traits/`. New code that reaches into related tables with hand-rolled `where` chains usually has a scope sitting right there waiting to be used.
+
+**Traits to check first**:
+
+| Trait                                       | Use instead of…                                                            |
+|---------------------------------------------|-----------------------------------------------------------------------------|
+| `HasCustomerGroups`                         | `->customerGroups()->where('enabled', true)->where(fn($q) => $q->whereNull('starts_at')->orWhere('starts_at', '<=', now()))…` ladders |
+| `HasChannels`                               | `->channels()->where('enabled', true)…` — use `->channel($channel)` instead |
+| `HasUrls`                                   | manual `->urls()->where('default', true)->first()`                          |
+| `HasTags` / `HasMedia` / `HasTranslations`  | bespoke pivot filtering — check the trait first                             |
+
+**Bad** (`packages/admin/src/Filament/Resources/ProductResource.php` — flagged on PR #2468):
+
+```php
+return $record->customerGroups()
+    ->where('customer_group_id', $default->id)
+    ->where(fn ($q) => $q->where('enabled', true)->orWhere('visible', true))
+    ->where(fn ($q) => $q->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
+    ->where(fn ($q) => $q->whereNull('ends_at')->orWhere('ends_at', '>=', now()))
+    ->exists();
+```
+
+**Better** — let the trait's scope encode the eligibility rules so they stay consistent across resources, validators, and pipelines:
+
+```php
+return $record->customerGroups()
+    ->whereKey($default->id)
+    ->active() // or whichever scope HasCustomerGroups exposes for this window
+    ->exists();
+```
+
+When flagging, point at the trait file so the user can verify the scope name — e.g. `packages/core/src/Base/Traits/HasCustomerGroups.php`. If the scope genuinely doesn't exist yet but the same query is repeated, suggest adding it.
+
+**Validators / pipeline stages**: `packages/core/src/Validation/**` and `packages/core/src/Pipelines/**` are particularly prone to inlining trait logic. A validator that grows past ~30 lines of query composition should either extract to a model scope or to a small invokable rule class.
+
+---
+
+## Control-flow simplification
+
+Reviewers actively flag stacked `if` guards in this repo (PR #2468 had 5 separate comments on the same file). The pattern shows up most in `Shout::make(...)->hidden(fn (Model $record) => …)` closures on Filament resources, and in cart/order validators.
+
+**Bad** — back-to-back guards that all return the same literal:
+
+```php
+->hidden(function (Model $record) {
+    if ($record?->status != 'published') {
+        return true;
+    }
+
+    return $record->customerGroups()->where('enabled', true)->count();
+});
+```
+
+**Better** — fold the guard into the return:
+
+```php
+->hidden(fn (Model $record) =>
+    $record?->status != 'published'
+    || $record->customerGroups()->enabled()->exists()
+);
+```
+
+**Bad** — three guards, one expression:
+
+```php
+if ($record?->status != 'published') { return true; }
+if (! $record->customerGroups()->where('enabled', true)->exists()) { return true; }
+$default = CustomerGroup::getDefault();
+if (! $default) { return true; }
+
+return $record->customerGroups()->…->exists();
+```
+
+**Better** — early-return *only* when the next computation can't run; collapse same-outcome guards:
+
+```php
+if ($record?->status != 'published'
+    || ! $record->customerGroups()->enabled()->exists()
+) {
+    return true;
+}
+
+$default = CustomerGroup::getDefault();
+
+return ! $default || $record->customerGroups()->eligibleFor($default)->exists();
+```
+
+**Severity calibration**:
+- One stacked closure → Nit.
+- 3+ stacked guards in one closure, or the same pattern across sibling components in one file → Should-fix.
+- Closure exceeds ~5 statements of query composition → Should-fix; recommend extracting to a private method or a model scope.
+
+`exists()` vs `count()`: while reviewing, also flag `->count()` used purely as a boolean (the original `ProductResource.php` example does this) — `->exists()` is faster and clearer.
+
+Keep curly braces (per repo PHP conventions) — *simplifying* doesn't mean stripping braces; it means removing the guards entirely or merging them.
 
 ---
 
