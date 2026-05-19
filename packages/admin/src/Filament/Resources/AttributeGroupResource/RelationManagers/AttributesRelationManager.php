@@ -76,7 +76,7 @@ class AttributesRelationManager extends BaseRelationManager
                         $set('handle', Str::snake(Str::lower($state)));
                     })
                     ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, RelationManager $livewire) {
-                        return $rule->where('attribute_group_id', $livewire->ownerRecord->id);
+                        return $rule->where('attribute_type', $livewire->ownerRecord->attributable_type);
                     })->disabled(
                         fn (?Model $record) => (bool) $record
                     )

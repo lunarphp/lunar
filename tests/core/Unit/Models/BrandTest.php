@@ -91,9 +91,14 @@ test('can delete a brand', function () {
         'name' => 'Test Brand',
     ]);
 
-    Product::factory()->create([
+    $activeProduct = Product::factory()->create([
         'brand_id' => $brand->id,
     ]);
+
+    $trashedProduct = Product::factory()->create([
+        'brand_id' => $brand->id,
+    ]);
+    $trashedProduct->delete();
 
     $discount = Discount::factory()->create();
     $collection = Collection::factory()->create();
@@ -125,5 +130,15 @@ test('can delete a brand', function () {
 
     assertDatabaseMissing(Brand::class, [
         'id' => $brand->id,
+    ]);
+
+    assertDatabaseHas(Product::class, [
+        'id' => $activeProduct->id,
+        'brand_id' => null,
+    ]);
+
+    assertDatabaseHas(Product::class, [
+        'id' => $trashedProduct->id,
+        'brand_id' => null,
     ]);
 });
