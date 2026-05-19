@@ -34,11 +34,7 @@ class TelemetryService implements TelemetryServiceInterface
 
     public function shouldRun(): bool
     {
-        if (! $this->shouldRun) {
-            return false;
-        }
-
-        if (Cache::getStore() instanceof NullStore) {
+        if (! $this->shouldRun || Cache::getStore() instanceof NullStore) {
             return false;
         }
 
@@ -73,7 +69,11 @@ class TelemetryService implements TelemetryServiceInterface
 
         // Record the attempt up-front so a failed or slow HTTP request still
         // counts against the daily limit instead of retrying on every hit.
-        Cache::put($this->getCacheKey(), now()->toIso8601String(), now()->endOfDay());
+        Cache::put(
+            $this->getCacheKey(),
+            now()->toIso8601String(),
+            now()->endOfDay(),
+        );
 
         try {
             Http::withHeader('Accept', 'application/json')
