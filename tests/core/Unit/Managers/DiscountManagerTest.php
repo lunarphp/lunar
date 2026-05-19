@@ -400,3 +400,246 @@ test('can get discount with coupon', function () {
 
     expect(Discounts::getDiscounts($cart->refresh()))->toHaveCount(1);
 });
+
+test('stop flag halts further discounts after a discount applies', function () {
+    Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => Currency::getDefault()->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create([
+        'product_id' => Product::factory(),
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => Currency::getDefault()->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $stopper = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Stopper',
+        'priority' => 10,
+        'stop' => true,
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 5,
+        ],
+    ]);
+
+    $shouldNotApply = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Should not apply',
+        'priority' => 5,
+        'stop' => false,
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 20,
+        ],
+    ]);
+
+    foreach ([$stopper, $shouldNotApply] as $discount) {
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+    }
+
+    $cart->calculate();
+
+    expect($cart->discounts)->toHaveCount(1);
+    expect($cart->discounts->first()->discount->name)->toBe('Stopper');
+});
+
+test('stop flag does not halt further discounts when conditions fail', function () {
+    Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => Currency::getDefault()->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create([
+        'product_id' => Product::factory(),
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => Currency::getDefault()->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $couponed = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Coupon discount that wont match',
+        'priority' => 10,
+        'stop' => true,
+        'coupon' => 'WRONG',
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 20,
+        ],
+    ]);
+
+    $fallback = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Fallback',
+        'priority' => 5,
+        'stop' => false,
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
+
+    foreach ([$couponed, $fallback] as $discount) {
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+    }
+
+    $cart->calculate();
+
+    expect($cart->discounts)->toHaveCount(1);
+    expect($cart->discounts->first()->discount->name)->toBe('Fallback');
+});
+
+test('stop=false discount lets further discounts apply', function () {
+    Currency::factory()->create([
+        'code' => 'GBP',
+        'decimal_places' => 2,
+    ]);
+
+    $channel = Channel::factory()->create([
+        'default' => true,
+    ]);
+
+    $customerGroup = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => Currency::getDefault()->id,
+    ]);
+
+    $purchasable = ProductVariant::factory()->create([
+        'product_id' => Product::factory(),
+    ]);
+
+    Price::factory()->create([
+        'price' => 1000,
+        'min_quantity' => 1,
+        'currency_id' => Currency::getDefault()->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $first = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'First',
+        'priority' => 10,
+        'stop' => false,
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 10,
+        ],
+    ]);
+
+    $second = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Second',
+        'priority' => 5,
+        'stop' => false,
+        'data' => [
+            'fixed_value' => false,
+            'percentage' => 20,
+        ],
+    ]);
+
+    foreach ([$first, $second] as $discount) {
+        $discount->customerGroups()->sync([
+            $customerGroup->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+
+        $discount->channels()->sync([
+            $channel->id => [
+                'enabled' => true,
+                'starts_at' => now(),
+            ],
+        ]);
+    }
+
+    $cart->calculate();
+
+    expect($cart->discounts)->toHaveCount(2);
+});

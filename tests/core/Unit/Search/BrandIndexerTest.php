@@ -9,7 +9,7 @@ use Lunar\Models\Language;
 use Lunar\Search\BrandIndexer;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('search', 'indexer');
 
 uses(RefreshDatabase::class);
 
@@ -64,5 +64,4 @@ test('can return correct searchable data', function () {
         ->and($data)->not()->toHaveKey($attributeC->handle)
         ->and($data)->toHaveKey($attributeD->handle.'_en')
         ->and($data)->toHaveKey($attributeD->handle.'_dk');
-
-})->group('foo');
+});

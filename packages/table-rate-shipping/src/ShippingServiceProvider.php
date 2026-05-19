@@ -17,6 +17,7 @@ use Lunar\Models\Product;
 use Lunar\Shipping\Database\State\MigrateCutoffToSchedule;
 use Lunar\Shipping\DiscountTypes\ShippingDiscount;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
+use Lunar\Shipping\Managers\PostcodeManager;
 use Lunar\Shipping\Managers\ShippingManager;
 use Lunar\Shipping\Models\ShippingExclusion;
 use Lunar\Shipping\Models\ShippingExclusionList;
@@ -25,12 +26,20 @@ use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Models\ShippingZonePostcode;
 use Lunar\Shipping\Observers\OrderObserver;
+use Lunar\Shipping\Resolvers\PostcodeResolver;
 
 class ShippingServiceProvider extends ServiceProvider
 {
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/shipping-tables.php', 'lunar.shipping-tables');
+
+        $this->app->singleton(PostcodeManager::class, function () {
+            $manager = new PostcodeManager;
+            $manager->addResolver(PostcodeResolver::class);
+
+            return $manager;
+        });
     }
 
     public function boot(ShippingModifiers $shippingModifiers)

@@ -204,18 +204,15 @@ class DiscountResource extends BaseResource
 
     protected static function getPriorityFormComponent(): Component
     {
-        return Select::make('priority')
+        return TextInput::make('priority')
             ->label(__('lunarpanel::discount.form.priority.label'))
             ->helperText(
                 __('lunarpanel::discount.form.priority.helper_text')
             )
-            ->options(function () {
-                return [
-                    1 => __('lunarpanel::discount.form.priority.options.low.label'),
-                    5 => __('lunarpanel::discount.form.priority.options.medium.label'),
-                    10 => __('lunarpanel::discount.form.priority.options.high.label'),
-                ];
-            });
+            ->numeric()
+            ->minValue(1)
+            ->maxValue(100)
+            ->default(1);
     }
 
     protected static function getStopFormComponent(): Component
@@ -223,6 +220,9 @@ class DiscountResource extends BaseResource
         return Toggle::make('stop')
             ->label(
                 __('lunarpanel::discount.form.stop.label')
+            )
+            ->helperText(
+                __('lunarpanel::discount.form.stop.helper_text')
             );
     }
 

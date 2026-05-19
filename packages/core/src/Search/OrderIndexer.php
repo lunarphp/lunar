@@ -35,11 +35,33 @@ class OrderIndexer extends ScoutIndexer
     public function makeAllSearchableUsing(Builder $query): Builder
     {
         return $query->with([
-            'channel',
-            'transactions',
-            'productLines',
-            'addresses',
-            'tags',
+            'channel' => fn ($query) => $query->select('id', 'name'),
+            'transactions' => fn ($query) => $query->select('id', 'order_id', 'reference'),
+            'productLines' => fn ($query) => $query->select('id', 'order_id', 'description', 'identifier'),
+            'addresses' => fn ($query) => $query->select(
+                'id',
+                'order_id',
+                'country_id',
+                'type',
+                'first_name',
+                'last_name',
+                'company_name',
+                'tax_identifier',
+                'line_one',
+                'line_two',
+                'line_three',
+                'city',
+                'state',
+                'postcode',
+                'contact_email',
+                'contact_phone',
+            )->with([
+                'country' => fn ($query) => $query->select('id', 'name'),
+            ]),
+            'tags' => fn ($query) => $query->select(
+                $query->getModel()->qualifyColumn('id'),
+                $query->getModel()->qualifyColumn('value'),
+            ),
         ]);
     }
 

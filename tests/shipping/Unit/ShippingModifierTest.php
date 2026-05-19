@@ -12,7 +12,7 @@ use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Tests\Shipping\TestCase;
 use Lunar\Tests\Shipping\TestUtils;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('shipping', 'shipping-modifier');
 uses(RefreshDatabase::class);
 uses(TestUtils::class);
 
@@ -82,4 +82,4 @@ test('can set correct shipping options', function () {
     $option = $cart->refresh()->getShippingOption();
 
     expect($option->price->value)->toBe(0);
-})->group('shipping-modifier');
+});
