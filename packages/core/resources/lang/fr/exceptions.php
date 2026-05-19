@@ -12,6 +12,7 @@ return [
     'carts.order_exists' => 'Une commande pour ce panier existe déjà',
     'carts.shipping_option_missing' => 'Option d\'expédition manquante',
     'carts.line_unavailable' => 'Un article de ce panier n\'est plus disponible (:identifier)',
+    'carts.line_not_purchasable' => ':identifier ne peut pas être acheté sur ce canal ni par votre groupe de clients',
     'missing_currency_price' => 'Aucun prix pour la devise ":currency" n\'existe',
     'minimum_quantity' => 'Vous devez ajouter un minimum de :quantity articles.',
     'quantity_increment' => 'La quantité :quantity doit être par incréments de :increment',

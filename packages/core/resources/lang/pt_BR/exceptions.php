@@ -12,6 +12,7 @@ return [
     'carts.order_exists' => 'Já existe um pedido para este carrinho',
     'carts.shipping_option_missing' => 'Opção de envio ausente',
     'carts.line_unavailable' => 'Um item deste carrinho não está mais disponível (:identifier)',
+    'carts.line_not_purchasable' => ':identifier não pode ser comprado neste canal ou pelo seu grupo de clientes',
     'missing_currency_price' => 'Não existe preço para a moeda ":currency"',
     'minimum_quantity' => 'Você deve adicionar no mínimo :quantity itens.',
     'quantity_increment' => 'A quantidade :quantity deve estar em incrementos de :increment',
