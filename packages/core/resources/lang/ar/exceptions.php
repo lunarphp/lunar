@@ -11,6 +11,7 @@ return [
     'carts.billing_incomplete' => 'عنوان الفوترة غير مكتمل.',
     'carts.order_exists' => 'يوجد طلب مرتبط بهذه السلة بالفعل.',
     'carts.shipping_option_missing' => 'خيار الشحن مفقود.',
+    'carts.line_unavailable' => 'أحد عناصر هذه السلة لم يعد متاحاً.',
     'missing_currency_price' => 'لا يوجد سعر للعملة ":currency".',
     'minimum_quantity' => 'يجب إضافة حد أدنى قدره :quantity من العناصر.',
     'quantity_increment' => 'يجب أن تكون الكمية :quantity بمضاعفات قدرها :increment.',

@@ -11,6 +11,7 @@ return [
     'carts.billing_incomplete' => 'Adresa za naplatu je nepotpuna',
     'carts.order_exists' => 'Narudžba za ovu košaricu već postoji',
     'carts.shipping_option_missing' => 'Nedostaje opcija dostave',
+    'carts.line_unavailable' => 'Stavka u ovoj košarici više nije dostupna',
     'missing_currency_price' => 'Ne postoji cijena za valutu ":currency"',
     'minimum_quantity' => 'Morate dodati najmanje :quantity stavki.',
     'quantity_increment' => 'Količina :quantity mora biti u koracima od :increment',

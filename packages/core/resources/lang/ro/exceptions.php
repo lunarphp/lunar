@@ -11,6 +11,7 @@ return [
     'carts.billing_incomplete' => 'Adresa de facturare este incompletă',
     'carts.order_exists' => 'Există deja o comandă pentru acest coș',
     'carts.shipping_option_missing' => 'Opțiune de livrare lipsă',
+    'carts.line_unavailable' => 'Un articol din acest coș nu mai este disponibil',
     'missing_currency_price' => 'Nu există un preț pentru moneda ":currency"',
     'minimum_quantity' => 'Trebuie să adăugați cel puțin :quantity articole.',
     'quantity_increment' => 'Cantitatea :quantity trebuie să fie în multipli de :increment',

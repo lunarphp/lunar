@@ -11,6 +11,7 @@ return [
     'carts.billing_incomplete' => 'Төлбөрийн хаяг бүрэн бус байна',
     'carts.order_exists' => 'Энэ сагсны захиалга аль хэдийн үүссэн байна',
     'carts.shipping_option_missing' => 'Хүргэлтийн сонголт байхгүй байна',
+    'carts.line_unavailable' => 'Энэ сагсны нэг бараа боломжгүй болсон байна',
     'missing_currency_price' => '":currency" валютын үнэ байхгүй байна',
     'minimum_quantity' => 'Та хамгийн багадаа :quantity ширхэгийг нэмэх ёстой.',
     'quantity_increment' => ':quantity тоо хэмжээ нь :increment-ын үржвэр байх ёстой',
