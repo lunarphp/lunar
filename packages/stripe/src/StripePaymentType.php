@@ -14,6 +14,7 @@ use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
+use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\InvalidRequestException;
@@ -49,6 +50,7 @@ class StripePaymentType extends AbstractPayment
         $this->stripe = Stripe::getClient();
 
         $this->policy = config('lunar.stripe.policy', 'automatic');
+        $this->allowPartialPayment = config('lunar.stripe.allow_partial_payment', false);
     }
 
     /**
@@ -85,6 +87,27 @@ class StripePaymentType extends AbstractPayment
             return $failure;
         }
 
+        $this->paymentIntent = $this->stripe->paymentIntents->retrieve(
+            $paymentIntentId
+        );
+
+        if (! $this->paymentIntent) {
+            $failure = new PaymentAuthorize(
+                success: false,
+                message: 'Unable to locate payment intent',
+                orderId: $this->order?->id,
+                paymentType: 'stripe',
+            );
+
+            PaymentAttemptEvent::dispatch($failure);
+
+            return $failure;
+        }
+
+        if ($failure = $this->assertIntentMatchesTotal()) {
+            return $failure;
+        }
+
         if (! $paymentIntentModel) {
             $paymentIntentModel = StripePaymentIntent::create([
                 'intent_id' => $paymentIntentId,
@@ -97,11 +120,34 @@ class StripePaymentType extends AbstractPayment
             'processing_at' => now(),
         ]);
 
+        if ($this->paymentIntent->status == PaymentIntent::STATUS_REQUIRES_CAPTURE && $this->policy == 'automatic') {
+            $this->paymentIntent = $this->stripe->paymentIntents->capture(
+                $this->data['payment_intent']
+            );
+        }
+
+        // Sync the Stripe-side status before any local order work so the row
+        // never disagrees with reality even when downstream steps throw.
+        $paymentIntentModel->status = $this->paymentIntent->status;
+        $paymentIntentModel->save();
+
         if (! $this->order) {
             try {
                 $this->order = $this->cart->createOrder();
                 $paymentIntentModel->order_id = $this->order->id;
+                $paymentIntentModel->save();
             } catch (DisallowMultipleCartOrdersException|CartException $e) {
+                if ($this->paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED) {
+                    $paymentIntentModel->processed_at = now();
+                    $paymentIntentModel->save();
+
+                    OrphanedPaymentIntentDetected::dispatch(
+                        $paymentIntentId,
+                        $this->cart?->id,
+                        $e->getMessage(),
+                    );
+                }
+
                 $failure = new PaymentAuthorize(
                     success: false,
                     message: $e->getMessage(),
@@ -113,31 +159,6 @@ class StripePaymentType extends AbstractPayment
                 return $failure;
             }
         }
-
-        $this->paymentIntent = $this->stripe->paymentIntents->retrieve(
-            $paymentIntentId
-        );
-
-        if (! $this->paymentIntent) {
-            $failure = new PaymentAuthorize(
-                success: false,
-                message: 'Unable to locate payment intent',
-                orderId: $this->order->id,
-                paymentType: 'stripe',
-            );
-
-            PaymentAttemptEvent::dispatch($failure);
-
-            return $failure;
-        }
-
-        if ($this->paymentIntent->status == PaymentIntent::STATUS_REQUIRES_CAPTURE && $this->policy == 'automatic') {
-            $this->paymentIntent = $this->stripe->paymentIntents->capture(
-                $this->data['payment_intent']
-            );
-        }
-
-        $paymentIntentModel->status = $this->paymentIntent->status;
 
         $order = (new UpdateOrderFromIntent)->execute(
             $this->order,
@@ -158,6 +179,47 @@ class StripePaymentType extends AbstractPayment
         $paymentIntentModel->save();
 
         return $response;
+    }
+
+    /**
+     * Verify the retrieved payment intent matches the expected order/cart total
+     * and currency. Returns a failure DTO when the check fails, or null on pass.
+     *
+     * Subclasses may override to relax or extend the policy (e.g. per-order
+     * deposit rules).
+     */
+    protected function assertIntentMatchesTotal(): ?PaymentAuthorize
+    {
+        if ($this->allowPartialPayment) {
+            return null;
+        }
+
+        if ($this->order) {
+            $expectedAmount = $this->order->total->value;
+            $expectedCurrency = $this->order->currency_code;
+        } else {
+            $calculated = $this->cart->calculate();
+            $expectedAmount = $calculated->total->value;
+            $expectedCurrency = $calculated->currency->code;
+        }
+
+        $amountMatches = $expectedAmount === (int) $this->paymentIntent->amount;
+        $currencyMatches = strtolower((string) $expectedCurrency) === strtolower((string) $this->paymentIntent->currency);
+
+        if ($amountMatches && $currencyMatches) {
+            return null;
+        }
+
+        $failure = new PaymentAuthorize(
+            success: false,
+            message: 'Payment intent amount does not match order total',
+            orderId: $this->order?->id,
+            paymentType: 'stripe',
+        );
+
+        PaymentAttemptEvent::dispatch($failure);
+
+        return $failure;
     }
 
     /**
