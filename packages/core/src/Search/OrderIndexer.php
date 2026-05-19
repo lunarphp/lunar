@@ -58,7 +58,10 @@ class OrderIndexer extends ScoutIndexer
             )->with([
                 'country' => fn ($query) => $query->select('id', 'name'),
             ]),
-            'tags' => fn ($query) => $query->select('id', 'value'),
+            'tags' => fn ($query) => $query->select(
+                $query->getModel()->qualifyColumn('id'),
+                $query->getModel()->qualifyColumn('value'),
+            ),
         ]);
     }
 
