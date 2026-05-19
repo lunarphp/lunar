@@ -11,26 +11,23 @@ class ProductObserver
      */
     public function deleting(ProductContract $product): void
     {
-        if (! $product->isForceDeleting()) {
-            return;
+        if ($product->isForceDeleting()) {
+            $product->variants()->withTrashed()->get()->each->forceDelete();
+
+            $product->collections()->detach();
+
+            $product->customerGroups()->detach();
+
+            $product->urls()->delete();
+
+            $product->productOptions()->detach();
+
+            $product->channels()->detach();
+
+            $product->tags()->detach();
         }
 
-        $product->variants()->withTrashed()->get()->each->forceDelete();
-
-        $product->collections()->detach();
-
-        $product->customerGroups()->detach();
-
-        $product->urls()->delete();
-
-        $product->productOptions()->detach();
-
         $product->associations()->delete();
-
         $product->inverseAssociations()->delete();
-
-        $product->channels()->detach();
-
-        $product->tags()->detach();
     }
 }
