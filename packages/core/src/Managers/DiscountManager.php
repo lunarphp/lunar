@@ -224,6 +224,14 @@ class DiscountManager implements DiscountManagerInterface
 
         foreach ($this->discounts as $discount) {
             $cart = $discount->getType()->apply($cart);
+
+            $wasApplied = (bool) $cart->discounts?->contains(
+                fn ($applied) => $applied->discount->is($discount)
+            );
+
+            if ($wasApplied && $discount->stop) {
+                break;
+            }
         }
 
         return $cart;
