@@ -62,8 +62,8 @@ class BuyXGetY extends AbstractDiscountType
             ->where('discountable_type', LunarCollection::morphName())
             ->isNotEmpty()
             || $this->discount->discountableRewards
-            ->where('discountable_type', LunarCollection::morphName())
-            ->isNotEmpty();
+                ->where('discountable_type', LunarCollection::morphName())
+                ->isNotEmpty();
 
         $productCollectionIds = collect();
 
@@ -243,6 +243,7 @@ class BuyXGetY extends AbstractDiscountType
 
                 if (! $selectedRewardItem) {
                     $remainingRewardQty--;
+
                     continue;
                 }
 
