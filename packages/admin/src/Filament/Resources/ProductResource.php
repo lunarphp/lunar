@@ -134,11 +134,9 @@ class ProductResource extends BaseResource
             return false;
         }
 
-        return $record->customerGroups()
-            ->where('customer_group_id', $default->id)
-            ->where(fn ($query) => $query->where('enabled', true)->orWhere('visible', true))
-            ->where(fn ($query) => $query->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
-            ->where(fn ($query) => $query->whereNull('ends_at')->orWhere('ends_at', '>=', now()))
+        return $record->newQuery()
+            ->whereKey($record->getKey())
+            ->customerGroup($default)
             ->exists();
     }
 
