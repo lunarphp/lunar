@@ -123,6 +123,74 @@ class FooResource extends BaseResource
 
 ---
 
+## Model contracts (type-hinting)
+
+**Why**: `packages/core/src/Base/ModelManifest.php` binds each `Lunar\Models\Contracts\*` interface to its concrete model in the container. Consumers replace a model with `Lunar::useModel(ProductContract::class, MyProduct::class)`. Code that type-hints the concrete `Lunar\Models\Product` silently bypasses that override — the consumer's subclass still gets stored, but a `Product $product` parameter rejects it on a strict type check, and IDE/static-analysis assumes properties that the subclass may have changed.
+
+**Where the contract is required** (non-exhaustive — apply to all changed code):
+
+| Surface                                | Example                                                                              |
+|----------------------------------------|--------------------------------------------------------------------------------------|
+| Pipeline `handle()` params/returns     | `public function handle(OrderContract $order, Closure $next): mixed`                 |
+| Manager methods                        | `public function apply(CartContract $cart): CartContract`                            |
+| Promoted constructor properties        | `public function __construct(public ?CartContract $cart = null) {}`                  |
+| Action / job / listener method params  | `public function handle(ProductContract $product): void`                             |
+| Event constructor params & properties  | `public function __construct(public OrderContract $order) {}` (also: breaking-change risk) |
+| PHPDoc `@param` / `@return` / `@var`   | `@return \Illuminate\Support\Collection<int, ProductContract>`                       |
+| Container resolution                   | `app(ProductContract::class)`, `resolve(CartContract::class)`                        |
+| Filament resource `$model`             | `protected static ?string $model = ProductContract::class;`                          |
+
+**Reference patterns from the codebase**:
+
+- `packages/core/src/Pipelines/Order/Creation/CreateOrderLines.php` — `handle(OrderContract $order, Closure $next)`.
+- `packages/core/src/Managers/CartSessionManager.php` — `public ?CartContract $cart = null` and `use(CartContract $cart): CartContract`.
+- `packages/core/src/PaymentTypes/AbstractPayment.php` — `protected ?CartContract $cart = null; protected ?OrderContract $order = null;`.
+
+**Where concrete classes are correct** (do not flag):
+
+- The model class itself, plus its relations, scopes, casts, observers' `$model` property.
+- `database/factories/*Factory.php` and `database/seeders/`.
+- Migrations.
+- Test fixtures: `Product::factory()->create()`, `Order::find(1)`.
+- Type-narrowing `instanceof` checks with a documented reason.
+
+**Common smells to flag**:
+
+```php
+// Bad — defeats consumer overrides
+use Lunar\Models\Cart;
+
+public function handle(Cart $cart, Closure $next): mixed { … }
+
+// Good
+use Lunar\Models\Contracts\Cart as CartContract;
+
+public function handle(CartContract $cart, Closure $next): mixed { … }
+```
+
+```php
+// Bad
+public function __construct(public Order $order) {}
+
+// Good
+public function __construct(public OrderContract $order) {}
+```
+
+```php
+// Bad
+$cart = app(Cart::class);
+$cart = new Cart;
+
+// Good
+$cart = app(CartContract::class);
+```
+
+**Heuristic for the reviewer**: in the diff, for each `use Lunar\Models\<Name>;` added outside an exempt path, grep the same file for `<Name> $` (parameter/property), `: <Name>` (return type), `@param <Name>`, `@return <Name>`, `new <Name>`, and `app(<Name>::class)`. Each hit is a Blocker finding unless covered by an exemption above.
+
+**Severity**: Blocker — the public contract surface is part of the 1.x stability promise, and this directly affects model-extension consumers. Pair this finding with a fix snippet so it's a one-line rename rather than a discussion.
+
+---
+
 ## PHP conventions (from `CLAUDE.md`)
 
 | Rule                                    | Example                                                                       |

@@ -72,6 +72,25 @@ For files under `packages/admin/src/Filament/Resources/`:
 - New resources set `protected static ?string $permission`.
 - Navigation icons resolved via `FilamentIcon::resolve('lunar::…')`.
 
+### Model contracts (type-hinting) — Blocker
+
+Eloquent models in `packages/*/src/Models/` are bound to interfaces in `Lunar\Models\Contracts\*` via the model manifest, so consumers can swap in their own subclass. Code that type-hints the concrete model defeats that extension point.
+
+Anywhere outside the model class itself and its factory/seeder, type hints, return types, property types, and PHPDoc references must use the contract, not the concrete model:
+
+- Method parameters & return types: `public function handle(CartContract $cart, Closure $next): CartContract`.
+- Promoted/declared properties: `protected ?OrderContract $order = null;`.
+- PHPDoc: `@param Closure(OrderContract): mixed $next`, `@return Collection<int, ProductContract>`.
+- DI / container resolution: `app(CartContract::class)`, not `app(Cart::class)` or `new Cart`.
+
+Exemptions (concrete class is correct here):
+- The model class itself, its relations, scopes, and casts.
+- Factories, seeders, and migrations.
+- Tests creating fixtures (`Product::factory()->create()`).
+- `instanceof` checks against the concrete class only when there is a documented reason (otherwise prefer the contract).
+
+Flag as **Blocker** in new/changed code: `use Lunar\Models\Foo;` followed by a type hint `Foo $foo` in a service, action, manager, pipeline, observer, listener, event, or job. Suggest the fix as `use Lunar\Models\Contracts\Foo as FooContract;` and rename the hint to `FooContract`.
+
 ### PHP conventions — Should-fix / Nit
 
 Per repo `CLAUDE.md`:
