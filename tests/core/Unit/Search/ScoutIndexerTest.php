@@ -11,7 +11,7 @@ use Lunar\Models\Product;
 use Lunar\Search\ScoutIndexer;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('search', 'indexer');
 
 uses(RefreshDatabase::class);
 

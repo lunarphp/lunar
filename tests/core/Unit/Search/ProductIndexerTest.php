@@ -10,7 +10,7 @@ use Lunar\Models\ProductVariant;
 use Lunar\Search\ProductIndexer;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('search', 'indexer');
 
 uses(RefreshDatabase::class);
 

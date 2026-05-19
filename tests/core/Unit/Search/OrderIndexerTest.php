@@ -11,7 +11,7 @@ use Lunar\Models\Transaction;
 use Lunar\Search\OrderIndexer;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('search', 'indexer');
 
 uses(RefreshDatabase::class);
 

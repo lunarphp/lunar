@@ -6,7 +6,7 @@ use Lunar\Models\ProductOptionValue;
 use Lunar\Search\ProductOptionIndexer;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('search', 'indexer');
 
 uses(RefreshDatabase::class);
 
