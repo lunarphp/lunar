@@ -1,16 +1,15 @@
 <?php
 
-namespace Lunar\Shipping\Resolvers;
+namespace Lunar\Tests\Shipping\Stubs\Resolvers;
 
 use Illuminate\Support\Collection;
 use Lunar\Models\Contracts\Country as CountryContract;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
 
-class PostcodeResolver implements PostcodeResolverInterface
+class TestCustomPostcodeResolver implements PostcodeResolverInterface
 {
     /**
-     * ISO-2 country codes this resolver handles. An empty array matches every country,
-     * making this resolver a safe catch-all when registered first.
+     * ISO-2 codes this test resolver claims. Override via subclass if you need a different set.
      *
      * @var array<int, string>
      */
@@ -28,13 +27,10 @@ class PostcodeResolver implements PostcodeResolverInterface
 
         return collect([
             $postcode,
-            rtrim(substr($postcode, 0, -3), 'a..zA..Z'),
-            rtrim(substr($postcode, 0, -3), 'a..zA..Z').'*',
-            rtrim($postcode, '0..9'),
-            rtrim($postcode, '0..9').'*',
-            substr($postcode, 0, 2),
+            substr($postcode, 0, 1).'*',
             substr($postcode, 0, 2).'*',
-            substr($postcode, 0, 1),
+            substr($postcode, 0, 3).'*',
+            substr($postcode, 0, 4).'*',
         ])->filter()->unique()->values();
     }
 }

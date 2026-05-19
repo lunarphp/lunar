@@ -5,7 +5,7 @@ use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Shipping\Models\ShippingZonePostcode;
 use Lunar\Tests\Shipping\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('shipping', 'shipping-zone-postcode');
 
 uses(RefreshDatabase::class);
 
