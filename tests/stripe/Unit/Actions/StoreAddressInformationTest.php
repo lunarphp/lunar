@@ -14,9 +14,10 @@ uses(TestCase::class);
 it('can store payment intent address information', function () {
     $cart = CartBuilder::build();
 
-    $country = Country::factory()->create([
-        'iso2' => 'GB',
-    ]);
+    $country = Country::firstOrCreate(
+        ['iso2' => 'GB'],
+        Country::factory()->raw(['iso2' => 'GB']),
+    );
 
     $order = $cart->createOrder();
 
@@ -55,9 +56,10 @@ it('can store payment intent address information', function () {
 it('can store link payment intent address information', function () {
     $cart = CartBuilder::build();
 
-    $country = Country::factory()->create([
-        'iso2' => 'GB',
-    ]);
+    $country = Country::firstOrCreate(
+        ['iso2' => 'GB'],
+        Country::factory()->raw(['iso2' => 'GB']),
+    );
 
     $order = $cart->createOrder();
 
