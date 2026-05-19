@@ -13,6 +13,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Admin\Support\Tables\Columns\ThumbnailImageColumn;
+use Lunar\Models\Collection;
+use Lunar\Models\Contracts\Collection as CollectionContract;
 use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\Product;
@@ -47,7 +49,7 @@ class ProductRewardRelationManager extends BaseRelationManager
             ->paginated(false)
             ->modifyQueryUsing(
                 fn ($query) => $query->whereIn('type', ['reward'])
-                    ->whereIn('discountable_type', [Product::morphName(), ProductVariant::morphName()])
+                    ->whereIn('discountable_type', [Product::morphName(), ProductVariant::morphName(), Collection::morphName()])
                     ->whereHas('discountable')
             )
             ->headerActions([
@@ -81,6 +83,18 @@ class ProductRewardRelationManager extends BaseRelationManager
 
                                     return $variant ? $variant->product->attr('name').' - '.$variant->sku : $value;
                                 }),
+
+                            Type::make(Collection::modelClass())
+                                ->titleAttribute('name')
+                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
+                                    return get_search_builder(Collection::modelClass(), $search)
+                                        ->get()
+                                        ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->attr('name')])
+                                        ->all();
+                                })
+                                ->getOptionLabelUsing(function ($value): string {
+                                    return Collection::modelClass()::find($value)?->attr('name') ?? $value;
+                                }),
                         ]),
                 ])->label(
                     __('lunarpanel::discount.relationmanagers.rewards.actions.attach.label')
@@ -98,16 +112,20 @@ class ProductRewardRelationManager extends BaseRelationManager
                     ->label(
                         __('lunarpanel::discount.relationmanagers.conditions.table.name.label')
                     )
-                    ->formatStateUsing(
-                        fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->product->attr('name').' - '.$record->discountable->sku : $record->discountable->attr('name')
-                    ),
+                    ->formatStateUsing(function (Model $record) {
+                        if ($record->discountable instanceof ProductVariantContract) {
+                            return $record->discountable->product->attr('name').' - '.$record->discountable->sku;
+                        }
+
+                        return $record->discountable?->attr('name');
+                    }),
 
                 TextColumn::make('discountable_type')
                     ->label(
                         __('lunarpanel::discount.relationmanagers.conditions.table.type.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => str($record->discountable->morphName())->replace('_', ' ')->title(),
+                        fn (Model $record) => $record->discountable ? str($record->discountable->morphName())->replace('_', ' ')->title() : null,
                     ),
 
             ])->recordActions([
