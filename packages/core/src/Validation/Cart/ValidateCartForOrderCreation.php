@@ -3,6 +3,7 @@
 namespace Lunar\Validation\Cart;
 
 use Illuminate\Support\Facades\Validator;
+use Lunar\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Validation\BaseValidator;
 
 class ValidateCartForOrderCreation extends BaseValidator
@@ -19,13 +20,13 @@ class ValidateCartForOrderCreation extends BaseValidator
             return $this->fail('cart', __('lunar::exceptions.carts.order_exists'));
         }
 
-        $unavailableLine = $cart->lines->first(
+        $unavailableLines = $cart->lines->filter(
             fn ($line) => ! $line->purchasable || ! $line->purchasable->isPurchasable()
         );
 
-        if ($unavailableLine) {
+        if ($unavailableLines->isNotEmpty()) {
             return $this->fail('cart', __('lunar::exceptions.carts.line_unavailable', [
-                'identifier' => $unavailableLine->purchasable?->getIdentifier() ?? "#{$unavailableLine->id}",
+                'identifier' => $unavailableLines->map($this->cartLineLabel(...))->implode(', '),
             ]));
         }
 
@@ -67,6 +68,11 @@ class ValidateCartForOrderCreation extends BaseValidator
         }
 
         return $this->pass();
+    }
+
+    private function cartLineLabel(CartLineContract $line): string
+    {
+        return $line->purchasable?->getIdentifier() ?? "#{$line->id}";
     }
 
     /**

@@ -116,6 +116,32 @@ class ProductResource extends BaseResource
         ];
     }
 
+    protected static function isPublished(?Model $record): bool
+    {
+        return $record?->status === 'published';
+    }
+
+    protected static function hasEnabledCustomerGroup(Model $record): bool
+    {
+        return $record->customerGroups()->where('enabled', true)->exists();
+    }
+
+    protected static function isDefaultGroupVisibleToGuests(Model $record): bool
+    {
+        $default = CustomerGroup::modelClass()::getDefault();
+
+        if (! $default) {
+            return false;
+        }
+
+        return $record->customerGroups()
+            ->where('customer_group_id', $default->id)
+            ->where(fn ($query) => $query->where('enabled', true)->orWhere('visible', true))
+            ->where(fn ($query) => $query->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
+            ->where(fn ($query) => $query->whereNull('ends_at')->orWhere('ends_at', '>=', now()))
+            ->exists();
+    }
+
     public static function getDefaultForm(Schema $schema): Schema
     {
         return $schema
@@ -124,73 +150,33 @@ class ProductResource extends BaseResource
                     ->content(
                         __('lunarpanel::product.status.unpublished.content')
                     )->type('info')->hidden(
-                        fn (Model $record) => $record?->status == 'published'
+                        fn (Model $record) => static::isPublished($record)
                     ),
                 Shout::make('product-customer-groups')
                     ->content(
                         __('lunarpanel::product.status.availability.customer_groups')
-                    )->type('warning')->hidden(function (Model $record) {
-                        if ($record?->status != 'published') {
-                            return true;
-                        }
-
-                        return $record->customerGroups()->where('enabled', true)->count();
-                    }),
+                    )->type('warning')->hidden(fn (Model $record) => ! static::isPublished($record) || static::hasEnabledCustomerGroup($record)
+                    ),
                 Shout::make('product-no-default-customer-group')
                     ->content(
                         __('lunarpanel::product.status.availability.no_default_customer_group')
-                    )->type('warning')->hidden(function (Model $record) {
-                        if ($record?->status != 'published') {
-                            return true;
-                        }
-
-                        if (! $record->customerGroups()->where('enabled', true)->exists()) {
-                            return true;
-                        }
-
-                        return (bool) CustomerGroup::getDefault();
-                    }),
+                    )->type('warning')->hidden(fn (Model $record) => ! static::isPublished($record)
+                        || ! static::hasEnabledCustomerGroup($record)
+                        || (bool) CustomerGroup::modelClass()::getDefault()
+                    ),
                 Shout::make('product-hidden-from-guests')
                     ->content(
                         __('lunarpanel::product.status.availability.hidden_from_guests')
-                    )->type('warning')->hidden(function (Model $record) {
-                        if ($record?->status != 'published') {
-                            return true;
-                        }
-
-                        if (! $record->customerGroups()->where('enabled', true)->exists()) {
-                            return true;
-                        }
-
-                        $default = CustomerGroup::getDefault();
-
-                        if (! $default) {
-                            return true;
-                        }
-
-                        return $record->customerGroups()
-                            ->where('customer_group_id', $default->id)
-                            ->where(function ($query) {
-                                $query->where('enabled', true)->orWhere('visible', true);
-                            })
-                            ->where(function ($query) {
-                                $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
-                            })
-                            ->where(function ($query) {
-                                $query->whereNull('ends_at')->orWhere('ends_at', '>=', now());
-                            })
-                            ->exists();
-                    }),
+                    )->type('warning')->hidden(fn (Model $record) => ! static::isPublished($record)
+                        || ! static::hasEnabledCustomerGroup($record)
+                        || ! CustomerGroup::modelClass()::getDefault()
+                        || static::isDefaultGroupVisibleToGuests($record)
+                    ),
                 Shout::make('product-channels')
                     ->content(
                         __('lunarpanel::product.status.availability.channels')
-                    )->type('warning')->hidden(function (Model $record) {
-                        if ($record?->status != 'published') {
-                            return true;
-                        }
-
-                        return $record->channels()->where('enabled', true)->count();
-                    }),
+                    )->type('warning')->hidden(fn (Model $record) => ! static::isPublished($record) || $record->channels()->where('enabled', true)->count()
+                    ),
                 Section::make()
                     ->schema(
                         static::getMainFormComponents(),

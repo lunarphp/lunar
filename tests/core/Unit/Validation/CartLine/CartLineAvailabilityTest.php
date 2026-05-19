@@ -146,6 +146,21 @@ test('fails when the channel pivot has ended', function () {
     expect(fn () => $validator->validate())->toThrow(CartException::class);
 });
 
+test('fails when the parent product is soft-deleted', function () {
+    $variant = ProductVariant::factory()->create();
+
+    $variant->product->delete();
+
+    $validator = (new CartLineAvailability)->using(
+        cart: $this->cart,
+        purchasable: $variant->fresh(),
+        quantity: 1,
+        meta: []
+    );
+
+    expect(fn () => $validator->validate())->toThrow(CartException::class);
+});
+
 test('passes for non-variant purchasables such as shipping options', function () {
     $option = new ShippingOption(
         name: 'Standard',

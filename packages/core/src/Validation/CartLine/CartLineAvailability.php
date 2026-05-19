@@ -3,8 +3,11 @@
 namespace Lunar\Validation\CartLine;
 
 use Illuminate\Support\Collection;
+use Lunar\Base\Purchasable;
 use Lunar\Models\Channel;
 use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Channel as ChannelContract;
+use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Product;
@@ -28,8 +31,16 @@ class CartLineAvailability extends BaseValidator
             )?->purchasable;
         }
 
-        if (! $purchasable instanceof ProductVariantContract) {
+        if (! $purchasable instanceof Purchasable) {
             return $this->pass();
+        }
+
+        if (! $purchasable instanceof ProductVariantContract) {
+            return $purchasable->isPurchasable()
+                ? $this->pass()
+                : $this->fail('purchasable', __('lunar::exceptions.carts.line_not_purchasable', [
+                    'identifier' => $purchasable->getIdentifier(),
+                ]));
         }
 
         $channel = $this->resolveChannel($cart);
@@ -39,11 +50,12 @@ class CartLineAvailability extends BaseValidator
             return $this->pass();
         }
 
-        $pivotTable = (new Product)->customerGroups()->getTable();
+        $productClass = Product::modelClass();
+        $pivotTable = (new $productClass)->customerGroups()->getTable();
         $now = now();
 
-        $available = Product::query()
-            ->whereKey($purchasable->product_id)
+        $available = $productClass::query()
+            ->where('id', $purchasable->product_id)
             ->channel($channel)
             ->whereHas('customerGroups', function ($relation) use ($groups, $pivotTable, $now) {
                 $relation->whereIn("{$pivotTable}.customer_group_id", $groups->pluck('id'))
@@ -63,17 +75,19 @@ class CartLineAvailability extends BaseValidator
         return $this->pass();
     }
 
-    private function resolveChannel(?CartContract $cart): ?Channel
+    private function resolveChannel(?CartContract $cart): ?ChannelContract
     {
+        $channelClass = Channel::modelClass();
+
         if ($cart?->channel_id) {
-            return Channel::find($cart->channel_id);
+            return $channelClass::find($cart->channel_id);
         }
 
-        return Channel::getDefault();
+        return $channelClass::getDefault();
     }
 
     /**
-     * @return Collection<int, \Lunar\Models\Contracts\CustomerGroup>
+     * @return Collection<int, CustomerGroupContract>
      */
     private function resolveCustomerGroups(?CartContract $cart): Collection
     {
@@ -85,7 +99,7 @@ class CartLineAvailability extends BaseValidator
             }
         }
 
-        $default = CustomerGroup::getDefault();
+        $default = CustomerGroup::modelClass()::getDefault();
 
         return $default ? new Collection([$default]) : new Collection;
     }
