@@ -5,9 +5,9 @@ namespace Lunar\Validation\CartLine;
 use Illuminate\Support\Collection;
 use Lunar\Models\Channel;
 use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
 use Lunar\Validation\BaseValidator;
 
 class CartLineAvailability extends BaseValidator
@@ -17,14 +17,20 @@ class CartLineAvailability extends BaseValidator
      */
     public function validate(): bool
     {
-        $purchasable = $this->parameters['purchasable'] ?? null;
-
-        if (! $purchasable instanceof ProductVariant) {
-            return $this->pass();
-        }
-
         /** @var ?CartContract $cart */
         $cart = $this->parameters['cart'] ?? null;
+        $cartLineId = $this->parameters['cartLineId'] ?? null;
+        $purchasable = $this->parameters['purchasable'] ?? null;
+
+        if (! $purchasable && $cartLineId && $cart) {
+            $purchasable = $cart->lines->first(
+                fn ($cartLine) => $cartLine->id == $cartLineId
+            )?->purchasable;
+        }
+
+        if (! $purchasable instanceof ProductVariantContract) {
+            return $this->pass();
+        }
 
         $channel = $this->resolveChannel($cart);
         $groups = $this->resolveCustomerGroups($cart);
@@ -33,8 +39,7 @@ class CartLineAvailability extends BaseValidator
             return $this->pass();
         }
 
-        $product = new Product;
-        $pivotTable = $product->customerGroups()->getTable();
+        $pivotTable = (new Product)->customerGroups()->getTable();
         $now = now();
 
         $available = Product::query()

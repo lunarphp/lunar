@@ -188,3 +188,23 @@ test('cart add throws when the product is not visible in the channel', function 
     expect(fn () => $this->cart->add($variant))
         ->toThrow(CartException::class);
 });
+
+test('resolves the purchasable from cartLineId when none is passed directly', function () {
+    $variant = ProductVariant::factory()->create();
+    $variant->product->channels()->detach();
+
+    $line = $this->cart->lines()->create([
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
+        'quantity' => 1,
+    ]);
+
+    $validator = (new CartLineAvailability)->using(
+        cart: $this->cart->fresh(),
+        cartLineId: $line->id,
+        quantity: 2,
+        meta: []
+    );
+
+    expect(fn () => $validator->validate())->toThrow(CartException::class);
+});
