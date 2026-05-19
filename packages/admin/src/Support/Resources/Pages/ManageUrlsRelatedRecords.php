@@ -81,6 +81,11 @@ class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
 
     public function table(Table $table): Table
     {
+        return parent::table($table);
+    }
+
+    protected function getDefaultTable(Table $table): Table
+    {
         return $table
             ->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query) => $query->orderBy('language_id')->orderBy('default', 'desc'))

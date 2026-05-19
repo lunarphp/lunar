@@ -16,7 +16,7 @@ use Lunar\Shipping\Models\ShippingZone;
 use Lunar\Tests\Shipping\TestCase;
 use Lunar\Tests\Shipping\TestUtils;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('shipping', 'shipping-driver', 'shipping-driver-shipby');
 
 uses(RefreshDatabase::class);
 uses(TestUtils::class);

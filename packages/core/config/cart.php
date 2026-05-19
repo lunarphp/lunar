@@ -12,6 +12,7 @@ use Lunar\Pipelines\Cart\ApplyDiscounts;
 use Lunar\Pipelines\Cart\ApplyShipping;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Pipelines\Cart\CalculateLines;
+use Lunar\Pipelines\Cart\CalculateShippingSubTotal;
 use Lunar\Pipelines\Cart\CalculateTax;
 use Lunar\Pipelines\CartLine\GetUnitPrice;
 use Lunar\Pipelines\CartPrune\PruneAfter;
@@ -64,6 +65,7 @@ return [
         'cart' => [
             CalculateLines::class,
             ApplyShipping::class,
+            CalculateShippingSubTotal::class,
             ApplyDiscounts::class,
             CalculateTax::class,
             Calculate::class,

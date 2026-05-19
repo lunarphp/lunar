@@ -58,6 +58,11 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
 
     public function table(Table $table): Table
     {
+        return parent::table($table);
+    }
+
+    protected function getDefaultTable(Table $table): Table
+    {
         $record = $this->getOwnerRecord();
 
         return $table->columns([

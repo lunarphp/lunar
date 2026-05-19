@@ -5,6 +5,7 @@ namespace Lunar\Stripe\Managers;
 use Illuminate\Support\Collection;
 use Lunar\Models\Cart;
 use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;
@@ -33,7 +34,7 @@ class StripeManager
 
     public function getCartIntentId(CartContract $cart): ?string
     {
-        return $cartModel->meta['payment_intent'] ?? $cart->paymentIntents()->active()->first()?->intent_id;
+        return $cart->meta['payment_intent'] ?? $cart->paymentIntents()->active()->first()?->intent_id;
     }
 
     public function fetchOrCreateIntent(CartContract $cart, array $createOptions = []): PaymentIntent
@@ -85,7 +86,7 @@ class StripeManager
         }
 
         $paymentIntent = $this->buildIntent(
-            $cart->total->value,
+            static::toStripeAmount($cart->total->value, $cart->currency),
             $cart->currency->code,
             $opts
         );
@@ -154,7 +155,7 @@ class StripeManager
 
         $this->getClient()->paymentIntents->update(
             $intentId,
-            ['amount' => $cart->total->value]
+            ['amount' => static::toStripeAmount($cart->total->value, $cart->currency)]
         );
     }
 
@@ -214,6 +215,28 @@ class StripeManager
     public function getCharge(string $chargeId): Charge
     {
         return $this->getClient()->charges->retrieve($chargeId);
+    }
+
+    /**
+     * Convert a Lunar price value to the amount expected by Stripe.
+     *
+     * For most currencies Stripe expects the amount in the same sub-unit
+     * Lunar already stores it in (controlled by `Currency::decimal_places`).
+     * HUF, TWD and UGX are the exception: although they are ISO zero-decimal
+     * currencies, Stripe requires amounts to be sent as if they had two
+     * decimal places.
+     *
+     * @see https://docs.stripe.com/currencies
+     */
+    public static function toStripeAmount(int $value, CurrencyContract $currency): int
+    {
+        if (! in_array(strtolower($currency->code), ['huf', 'twd', 'ugx'], true)) {
+            return $value;
+        }
+
+        $majorAmount = $value / (10 ** $currency->decimal_places);
+
+        return (int) round($majorAmount * 100);
     }
 
     /**

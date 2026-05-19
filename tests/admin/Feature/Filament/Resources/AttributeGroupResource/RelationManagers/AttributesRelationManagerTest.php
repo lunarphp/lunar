@@ -106,6 +106,72 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
     ],
 ]);
 
+it('rejects duplicate handles across groups of the same attribute type', function () {
+    Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
+    ]);
+
+    $this->asStaff();
+
+    $groupOne = AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+    ]);
+
+    $groupTwo = AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+    ]);
+
+    Attribute::factory()->create([
+        'attribute_group_id' => $groupOne->id,
+        'attribute_type' => 'product',
+        'handle' => 'size',
+    ]);
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $groupTwo,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableAction(CreateAction::class, data: [
+        'name.en' => 'Size',
+        'type' => Text::class,
+        'handle' => 'size',
+        'configuration' => ['richtext' => false],
+    ])->assertHasTableActionErrors(['handle']);
+});
+
+it('allows duplicate handles across groups of different attribute types', function () {
+    Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
+    ]);
+
+    $this->asStaff();
+
+    $productGroup = AttributeGroup::factory()->create([
+        'attributable_type' => 'product',
+    ]);
+
+    $collectionGroup = AttributeGroup::factory()->create([
+        'attributable_type' => 'collection',
+    ]);
+
+    Attribute::factory()->create([
+        'attribute_group_id' => $productGroup->id,
+        'attribute_type' => 'product',
+        'handle' => 'size',
+    ]);
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $collectionGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableAction(CreateAction::class, data: [
+        'name.en' => 'Size',
+        'type' => Text::class,
+        'handle' => 'size',
+        'configuration' => ['richtext' => false],
+    ])->assertHasNoTableActionErrors();
+});
+
 it('hydrates dropdown lookups when editing attributes', function () {
     Language::factory()->create([
         'default' => true,
