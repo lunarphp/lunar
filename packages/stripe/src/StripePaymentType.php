@@ -14,6 +14,7 @@ use Lunar\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Models\Transaction;
 use Lunar\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
+use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\InvalidRequestException;
@@ -119,11 +120,34 @@ class StripePaymentType extends AbstractPayment
             'processing_at' => now(),
         ]);
 
+        if ($this->paymentIntent->status == PaymentIntent::STATUS_REQUIRES_CAPTURE && $this->policy == 'automatic') {
+            $this->paymentIntent = $this->stripe->paymentIntents->capture(
+                $this->data['payment_intent']
+            );
+        }
+
+        // Sync the Stripe-side status before any local order work so the row
+        // never disagrees with reality even when downstream steps throw.
+        $paymentIntentModel->status = $this->paymentIntent->status;
+        $paymentIntentModel->save();
+
         if (! $this->order) {
             try {
                 $this->order = $this->cart->createOrder();
                 $paymentIntentModel->order_id = $this->order->id;
+                $paymentIntentModel->save();
             } catch (DisallowMultipleCartOrdersException|CartException $e) {
+                if ($this->paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED) {
+                    $paymentIntentModel->processed_at = now();
+                    $paymentIntentModel->save();
+
+                    OrphanedPaymentIntentDetected::dispatch(
+                        $paymentIntentId,
+                        $this->cart?->id,
+                        $e->getMessage(),
+                    );
+                }
+
                 $failure = new PaymentAuthorize(
                     success: false,
                     message: $e->getMessage(),
@@ -135,14 +159,6 @@ class StripePaymentType extends AbstractPayment
                 return $failure;
             }
         }
-
-        if ($this->paymentIntent->status == PaymentIntent::STATUS_REQUIRES_CAPTURE && $this->policy == 'automatic') {
-            $this->paymentIntent = $this->stripe->paymentIntents->capture(
-                $this->data['payment_intent']
-            );
-        }
-
-        $paymentIntentModel->status = $this->paymentIntent->status;
 
         $order = (new UpdateOrderFromIntent)->execute(
             $this->order,

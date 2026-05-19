@@ -71,6 +71,11 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
 
     public function table(Table $table): Table
     {
+        return parent::table($table);
+    }
+
+    protected function getDefaultTable(Table $table): Table
+    {
         return $table->columns([
 
             SpatieMediaLibraryImageColumn::make('thumbnail')

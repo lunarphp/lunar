@@ -1,6 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
+use Lunar\Models\Product;
+use Lunar\Models\ProductOption;
 use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\artisan;
@@ -46,4 +50,56 @@ test('migrations roll back and re-apply', function () {
     foreach ($migrationsList as $migration) {
         assertDatabaseHas('migrations', ['migration' => $migration]);
     }
+});
+
+test('product_product_option unique migration removes duplicates', function () {
+    $table = config('lunar.database.table_prefix').'product_product_option';
+
+    artisan('migrate');
+    artisan('migrate:rollback', ['--step' => 1]);
+
+    expect(Schema::hasIndex($table, ['product_id', 'product_option_id'], 'unique'))->toBeFalse();
+
+    [$productA, $productB] = Product::factory()->count(2)->create()->all();
+    [$optionA, $optionB] = ProductOption::factory()->count(2)->create()->all();
+
+    DB::table($table)->insert([
+        ['product_id' => $productA->id, 'product_option_id' => $optionA->id, 'position' => 1],
+        ['product_id' => $productA->id, 'product_option_id' => $optionA->id, 'position' => 2],
+        ['product_id' => $productA->id, 'product_option_id' => $optionA->id, 'position' => 3],
+        ['product_id' => $productA->id, 'product_option_id' => $optionB->id, 'position' => 1],
+        ['product_id' => $productB->id, 'product_option_id' => $optionA->id, 'position' => 1],
+    ]);
+
+    $survivorId = DB::table($table)
+        ->where('product_id', $productA->id)
+        ->where('product_option_id', $optionA->id)
+        ->min('id');
+
+    artisan('migrate');
+
+    expect(Schema::hasIndex($table, ['product_id', 'product_option_id'], 'unique'))->toBeTrue();
+
+    $remainingPairs = DB::table($table)
+        ->where('product_id', $productA->id)
+        ->where('product_option_id', $optionA->id)
+        ->pluck('id');
+
+    expect($remainingPairs)->toHaveCount(1)
+        ->and($remainingPairs->first())->toBe($survivorId);
+
+    expect(DB::table($table)->count())->toBe(3);
+
+    // Factory rows created here are committed (DDL inside the test breaks the
+    // RefreshDatabase transaction), so explicitly clean them up to avoid
+    // leaking into subsequent tests.
+    DB::table($table)->delete();
+    DB::table(config('lunar.database.table_prefix').'product_options')
+        ->whereIn('id', [$optionA->id, $optionB->id])->delete();
+    DB::table(config('lunar.database.table_prefix').'products')
+        ->whereIn('id', [$productA->id, $productB->id])->delete();
+    DB::table(config('lunar.database.table_prefix').'product_types')
+        ->whereIn('id', [$productA->product_type_id, $productB->product_type_id])->delete();
+    DB::table(config('lunar.database.table_prefix').'brands')
+        ->whereIn('id', [$productA->brand_id, $productB->brand_id])->delete();
 });
