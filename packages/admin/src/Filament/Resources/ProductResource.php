@@ -130,11 +130,7 @@ class ProductResource extends BaseResource
     {
         $default = CustomerGroup::modelClass()::getDefault();
 
-        if (! $default) {
-            return false;
-        }
-
-        return $record->newQuery()
+        return $default && $record->newQuery()
             ->whereKey($record->getKey())
             ->customerGroup($default)
             ->exists();
