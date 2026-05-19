@@ -85,7 +85,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                                 }),
 
                             Type::make(Collection::modelClass())
-                                ->titleAttribute('id')
+                                ->titleAttribute('name')
                                 ->getSearchResultsUsing(static function (Select $component, string $search): array {
                                     return get_search_builder(Collection::modelClass(), $search)
                                         ->get()
@@ -117,7 +117,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                             return $record->discountable->product->attr('name').' - '.$record->discountable->sku;
                         }
 
-                        return $record->discountable->attr('name');
+                        return $record->discountable?->attr('name');
                     }),
 
                 TextColumn::make('discountable_type')
@@ -125,7 +125,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                         __('lunarpanel::discount.relationmanagers.conditions.table.type.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => str($record->discountable->morphName())->replace('_', ' ')->title(),
+                        fn (Model $record) => $record->discountable ? str($record->discountable->morphName())->replace('_', ' ')->title() : null,
                     ),
 
             ])->recordActions([

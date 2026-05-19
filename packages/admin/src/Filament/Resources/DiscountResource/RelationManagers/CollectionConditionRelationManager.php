@@ -49,6 +49,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
                 CreateAction::make()->schema([
                     Select::make('discountable_id')
                         ->label(__('lunarpanel::collection.singular_label'))
+                        ->required()
                         ->searchable()
                         ->getSearchResultsUsing(static function (string $search): array {
                             return get_search_builder(Collection::modelClass(), $search)
@@ -74,7 +75,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
                         __('lunarpanel::discount.relationmanagers.collection_conditions.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->discountable->attr('name')
+                        fn (Model $record) => $record->discountable?->attr('name')
                     ),
             ])->recordActions([
                 DeleteAction::make(),
