@@ -58,9 +58,24 @@ class BuyXGetY extends AbstractDiscountType
         $maxRewardQty = $data['max_reward_qty'] ?? null;
         $automaticallyAddRewards = $data['automatically_add_rewards'] ?? false;
 
+        $hasCollectionDiscountables = $this->discount->discountableConditions
+            ->where('discountable_type', LunarCollection::morphName())
+            ->isNotEmpty()
+            || $this->discount->discountableRewards
+            ->where('discountable_type', LunarCollection::morphName())
+            ->isNotEmpty();
+
+        $productCollectionIds = collect();
+
+        if ($hasCollectionDiscountables) {
+            $products = $cart->lines->map(fn ($line) => $line->purchasable->product)->unique('id');
+            $products->loadMissing('collections');
+            $productCollectionIds = $products->mapWithKeys(fn ($p) => [$p->id => $p->collections->pluck('id')]);
+        }
+
         // Get all discountables that are eligible.
-        $conditions = $cart->lines->reject(function ($line) {
-            return ! $this->discount->discountableConditions->first(function ($item) use ($line) {
+        $conditions = $cart->lines->reject(function ($line) use ($productCollectionIds) {
+            return ! $this->discount->discountableConditions->first(function ($item) use ($line, $productCollectionIds) {
                 if ($item->discountable_type == Product::morphName() &&
                     $item->discountable_id == $line->purchasable->product->id
                 ) {
@@ -74,7 +89,7 @@ class BuyXGetY extends AbstractDiscountType
                 }
 
                 if ($item->discountable_type == LunarCollection::morphName() &&
-                    $line->purchasable->product->collections->pluck('id')->contains($item->discountable_id)
+                    ($productCollectionIds->get($line->purchasable->product->id) ?? collect())->contains($item->discountable_id)
                 ) {
                     return true;
                 }
@@ -107,8 +122,8 @@ class BuyXGetY extends AbstractDiscountType
         $discountTotal = 0;
 
         // Get the reward lines and sort by cheapest first.
-        $rewardLines = $cart->lines->filter(function ($line) {
-            return $this->discount->discountableRewards->first(function ($item) use ($line) {
+        $rewardLines = $cart->lines->filter(function ($line) use ($productCollectionIds) {
+            return $this->discount->discountableRewards->first(function ($item) use ($line, $productCollectionIds) {
                 if ($item->discountable_type == Product::morphName() &&
                     $item->discountable_id == $line->purchasable->product->id
                 ) {
@@ -117,6 +132,12 @@ class BuyXGetY extends AbstractDiscountType
 
                 if ($item->discountable_type == ProductVariant::morphName() &&
                     $item->discountable_id == $line->purchasable->id
+                ) {
+                    return true;
+                }
+
+                if ($item->discountable_type == LunarCollection::morphName() &&
+                    ($productCollectionIds->get($line->purchasable->product->id) ?? collect())->contains($item->discountable_id)
                 ) {
                     return true;
                 }
@@ -219,7 +240,25 @@ class BuyXGetY extends AbstractDiscountType
         if ($remainingRewardQty > 0) {
             while ($remainingRewardQty > 0) {
                 $selectedRewardItem = $this->discount->discountableRewards->random()->discountable;
-                $purchasable = $selectedRewardItem->variants->first();
+
+                if (! $selectedRewardItem) {
+                    $remainingRewardQty--;
+                    continue;
+                }
+
+                if ($selectedRewardItem instanceof LunarCollection) {
+                    $product = $selectedRewardItem->products()->inRandomOrder()->first();
+                    $purchasable = $product?->variants()->first();
+                    $selectedRewardItem = $product;
+                } else {
+                    $purchasable = $selectedRewardItem->variants->first();
+                }
+
+                if (! $purchasable) {
+                    $remainingRewardQty--;
+
+                    continue;
+                }
 
                 // is it already in cart?
                 $rewardLine = $cart->lines->first(function ($line) use ($purchasable) {
