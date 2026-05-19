@@ -306,6 +306,106 @@ These are lower-frequency but worth flagging when the diff touches the relevant 
 
 ---
 
+## Reuse existing scopes & traits
+
+Lunar models lean heavily on traits in `packages/core/src/Base/Traits/`. New code that reaches into related tables with hand-rolled `where` chains usually has a scope sitting right there waiting to be used.
+
+**Traits to check first**:
+
+| Trait                                       | Use instead of…                                                            |
+|---------------------------------------------|-----------------------------------------------------------------------------|
+| `HasCustomerGroups`                         | `->customerGroups()->where('enabled', true)->where(fn($q) => $q->whereNull('starts_at')->orWhere('starts_at', '<=', now()))…` ladders |
+| `HasChannels`                               | `->channels()->where('enabled', true)…` — use `->channel($channel)` instead |
+| `HasUrls`                                   | manual `->urls()->where('default', true)->first()`                          |
+| `HasTags` / `HasMedia` / `HasTranslations`  | bespoke pivot filtering — check the trait first                             |
+
+**Bad** (`packages/admin/src/Filament/Resources/ProductResource.php` — flagged on PR #2468):
+
+```php
+return $record->customerGroups()
+    ->where('customer_group_id', $default->id)
+    ->where(fn ($q) => $q->where('enabled', true)->orWhere('visible', true))
+    ->where(fn ($q) => $q->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
+    ->where(fn ($q) => $q->whereNull('ends_at')->orWhere('ends_at', '>=', now()))
+    ->exists();
+```
+
+**Better** — let the trait's scope encode the eligibility rules so they stay consistent across resources, validators, and pipelines:
+
+```php
+return $record->customerGroups()
+    ->whereKey($default->id)
+    ->active() // or whichever scope HasCustomerGroups exposes for this window
+    ->exists();
+```
+
+When flagging, point at the trait file so the user can verify the scope name — e.g. `packages/core/src/Base/Traits/HasCustomerGroups.php`. If the scope genuinely doesn't exist yet but the same query is repeated, suggest adding it.
+
+**Validators / pipeline stages**: `packages/core/src/Validation/**` and `packages/core/src/Pipelines/**` are particularly prone to inlining trait logic. A validator that grows past ~30 lines of query composition should either extract to a model scope or to a small invokable rule class.
+
+---
+
+## Control-flow simplification
+
+Reviewers actively flag stacked `if` guards in this repo (PR #2468 had 5 separate comments on the same file). The pattern shows up most in `Shout::make(...)->hidden(fn (Model $record) => …)` closures on Filament resources, and in cart/order validators.
+
+**Bad** — back-to-back guards that all return the same literal:
+
+```php
+->hidden(function (Model $record) {
+    if ($record?->status != 'published') {
+        return true;
+    }
+
+    return $record->customerGroups()->where('enabled', true)->count();
+});
+```
+
+**Better** — fold the guard into the return:
+
+```php
+->hidden(fn (Model $record) =>
+    $record?->status != 'published'
+    || $record->customerGroups()->enabled()->exists()
+);
+```
+
+**Bad** — three guards, one expression:
+
+```php
+if ($record?->status != 'published') { return true; }
+if (! $record->customerGroups()->where('enabled', true)->exists()) { return true; }
+$default = CustomerGroup::getDefault();
+if (! $default) { return true; }
+
+return $record->customerGroups()->…->exists();
+```
+
+**Better** — early-return *only* when the next computation can't run; collapse same-outcome guards:
+
+```php
+if ($record?->status != 'published'
+    || ! $record->customerGroups()->enabled()->exists()
+) {
+    return true;
+}
+
+$default = CustomerGroup::getDefault();
+
+return ! $default || $record->customerGroups()->eligibleFor($default)->exists();
+```
+
+**Severity calibration**:
+- One stacked closure → Nit.
+- 3+ stacked guards in one closure, or the same pattern across sibling components in one file → Should-fix.
+- Closure exceeds ~5 statements of query composition → Should-fix; recommend extracting to a private method or a model scope.
+
+`exists()` vs `count()`: while reviewing, also flag `->count()` used purely as a boolean (the original `ProductResource.php` example does this) — `->exists()` is faster and clearer.
+
+Keep curly braces (per repo PHP conventions) — *simplifying* doesn't mean stripping braces; it means removing the guards entirely or merging them.
+
+---
+
 ## Severity quick guide
 
 - **Blocker**: would break consumers, leak data, or land an obvious bug. Don't merge without fixing.

@@ -119,6 +119,28 @@ Lunar is multi-channel. Models using `Lunar\Base\Traits\HasChannels` (`Product`,
 - New queries on these models in admin lists, storefront-facing endpoints, or scheduled jobs should call `->channel($channel)` (or be explicitly justified as cross-channel).
 - New columns/relations on a channelled model that drive visibility need the channel scope wired in, not just the column added.
 
+### Reuse existing scopes & traits — Should-fix
+
+Before reviewing any new Eloquent query, check whether the related trait/model already exposes a scope for the same condition. Hand-rolled `->where(...)->orWhere(...)` chains that duplicate a trait scope are a Should-fix.
+
+- `Lunar\Base\Traits\HasCustomerGroups` exposes a scope for customer-group eligibility (enabled/visible/`starts_at`/`ends_at` windowing). New `->customerGroups()->where('enabled', true)…` chains in resources, widgets, validators, or pipelines should use that scope.
+- `Lunar\Base\Traits\HasChannels` — see Channel scoping above; use `->channel(...)`, not `->channels()->where('enabled', true)…`.
+- `Lunar\Base\Traits\HasUrls` — use the `default()` / active scope rather than re-checking columns inline.
+- Status enums on `Product`, `Order`, etc. — prefer `->whereIn('status', SomeStatus::active())` or the existing helper over string-literal comparisons.
+
+When flagging, name the specific trait/scope the author should use, not just "use a scope". If the scope doesn't exist yet but the same chain is repeated 2+ times in the diff, suggest adding it to the trait.
+
+### Control-flow simplification — Nit (Should-fix when stacked)
+
+Lunar's Filament resources and validators have accumulated long ladders of `if ($x) { return true; } if ($y) { return true; }` inside closures (notably `Shout::make(...)->hidden(fn ...)`). Reviewers consistently push back on these — flag them.
+
+- Multiple sequential `if (cond) { return $literal; }` returning the same literal collapse into one `if (a || b || c) { return $literal; }` or a single boolean expression on the return.
+- A trailing `if (! $x) { return true; } return (bool) $x;` is just `return ! $x;` (or the equivalent expression).
+- Guard clauses are fine and preferred over nested `if/else`, but each one should branch to a *different* outcome — back-to-back guards returning the same value are noise.
+- Closures that grow past ~5 statements doing query composition should be extracted to a named private method or, better, an Eloquent scope (see above).
+
+Treat a single instance as a Nit; flag as Should-fix when the same closure stacks 3+ early returns or when the pattern repeats across sibling components in the same file.
+
 ### Money & price handling — Blocker
 
 Money in Lunar lives in `Lunar\DataTypes\Price` (integer minor units + `Currency`) and the `Lunar\Base\Casts\Price` cast.
