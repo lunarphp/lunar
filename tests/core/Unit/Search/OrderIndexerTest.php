@@ -73,5 +73,5 @@ test('can return correct searchable data', function () {
     expect($data['shipping_last_name'])->toEqual($address->last_name);
     expect($data['shipping_country'])->toEqual($country->name);
     expect($data['shipping_fullname'])->toEqual($address->first_name.' '.$address->last_name);
-    expect($data['tags'])->toBe(['vip']);
+    expect($data['tags'])->toBe(['VIP']);
 });
