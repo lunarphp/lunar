@@ -19,6 +19,8 @@ class ValidateCartForOrderCreation extends BaseValidator
             return $this->fail('cart', __('lunar::exceptions.carts.order_exists'));
         }
 
+        $cart->loadMissing('lines.purchasable');
+
         $hasUnavailableLine = $cart->lines->contains(
             fn ($line) => ! $line->purchasable || ! $line->purchasable->isPurchasable()
         );
