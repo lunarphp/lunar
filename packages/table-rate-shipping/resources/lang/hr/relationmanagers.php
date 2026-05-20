@@ -39,6 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'Min. težina',
+                        'helper_text' => 'Unesite težinu u kilogramima',
                     ],
                     'price' => [
                         'label' => 'Cijena',

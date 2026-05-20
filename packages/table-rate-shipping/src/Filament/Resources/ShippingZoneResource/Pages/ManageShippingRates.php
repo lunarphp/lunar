@@ -117,15 +117,16 @@ class ManageShippingRates extends ManageRelatedRecords
                         ->numeric()
                         ->required(),
                     Forms\Components\TextInput::make('min_quantity')
-                        ->label(
-                            function (Get $get) {
-                                if (static::getShippingChargeBy($get('../../shipping_method_id')) == 'weight') {
-                                    return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.label');
-                                }
-
-                                return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label');
-                            }
+                        ->label(fn (Get $get) => static::isWeightCharge($get)
+                            ? __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.label')
+                            : __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label')
                         )
+                        ->helperText(fn (Get $get) => static::isWeightCharge($get)
+                            ? __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.helper_text')
+                            : null
+                        )
+                        // Unit symbol — intentionally not translated.
+                        ->suffix(fn (Get $get) => static::isWeightCharge($get) ? 'kg' : null)
                         ->numeric()
                         ->required(),
                 ])->afterStateHydrated(
@@ -142,7 +143,7 @@ class ManageShippingRates extends ManageRelatedRecords
                                         'customer_group_id' => $price->customer_group_id,
                                         'price' => $price->price->decimal,
                                         'currency_id' => $price->currency_id,
-                                        'min_quantity' => $chargeBy == 'cart_total' ? $price->min_quantity / $currency->factor : $price->min_quantity / 100,
+                                        'min_quantity' => $chargeBy == 'cart_total' ? $price->min_quantity / $currency->factor : $price->min_quantity,
                                     ];
                                 })->toArray()
                             );
@@ -224,6 +225,11 @@ class ManageShippingRates extends ManageRelatedRecords
         return ($method?->data['charge_by'] ?? null) ?? 'cart_total';
     }
 
+    private static function isWeightCharge(Get $get): bool
+    {
+        return static::getShippingChargeBy($get('../../shipping_method_id')) === 'weight';
+    }
+
     protected static function saveShippingRate(?ShippingRate $shippingRate = null, array $data = []): void
     {
         $shippingRate->basePrices()->delete();
@@ -259,7 +265,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 if ($chargeBy == 'cart_total') {
                     $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
                 } else {
-                    $price['min_quantity'] = (int) ($price['min_quantity'] * 100);
+                    $price['min_quantity'] = (int) $price['min_quantity'];
                 }
 
                 $price['price'] = (int) ($price['price'] * $currency->factor);
