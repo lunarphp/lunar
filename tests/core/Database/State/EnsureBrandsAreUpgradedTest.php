@@ -15,7 +15,11 @@ uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 
+// Exercises a v1.x → v2.x state transition that no longer applies to the
+// flattened v2 baseline (brands table + products.brand_id ship from day 1).
+// Coverage for the upgrade path moves to packages/upgrade tests under spec 0001.
 test('can run', function () {
+    $this->markTestSkipped('Obsolete after spec 0003 flat baseline. Moves to upgrade package tests.');
     Storage::fake('local');
 
     Language::factory()->create([
