@@ -39,6 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'حداقل وزن',
+                        'helper_text' => 'وزن را به کیلوگرم وارد کنید',
                     ],
                     'price' => [
                         'label' => 'قیمت',

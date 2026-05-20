@@ -117,33 +117,16 @@ class ManageShippingRates extends ManageRelatedRecords
                         ->numeric()
                         ->required(),
                     Forms\Components\TextInput::make('min_quantity')
-                        ->label(
-                            function (Get $get) {
-                                if (static::getShippingChargeBy($get('../../shipping_method_id')) == 'weight') {
-                                    return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.label');
-                                }
-
-                                return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label');
-                            }
+                        ->label(fn (Get $get) => static::isWeightCharge($get)
+                            ? __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.label')
+                            : __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_spend.label')
                         )
-                        ->helperText(
-                            function (Get $get) {
-                                if (static::getShippingChargeBy($get('../../shipping_method_id')) == 'weight') {
-                                    return __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.helper_text');
-                                }
-
-                                return null;
-                            }
+                        ->helperText(fn (Get $get) => static::isWeightCharge($get)
+                            ? __('lunarpanel.shipping::relationmanagers.shipping_rates.form.prices.repeater.min_weight.helper_text')
+                            : null
                         )
-                        ->suffix(
-                            function (Get $get) {
-                                if (static::getShippingChargeBy($get('../../shipping_method_id')) == 'weight') {
-                                    return 'kg';
-                                }
-
-                                return null;
-                            }
-                        )
+                        // Unit symbol — intentionally not translated.
+                        ->suffix(fn (Get $get) => static::isWeightCharge($get) ? 'kg' : null)
                         ->numeric()
                         ->required(),
                 ])->afterStateHydrated(
@@ -240,6 +223,11 @@ class ManageShippingRates extends ManageRelatedRecords
         }
 
         return ($method?->data['charge_by'] ?? null) ?? 'cart_total';
+    }
+
+    private static function isWeightCharge(Get $get): bool
+    {
+        return static::getShippingChargeBy($get('../../shipping_method_id')) === 'weight';
     }
 
     protected static function saveShippingRate(?ShippingRate $shippingRate = null, array $data = []): void

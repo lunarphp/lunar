@@ -4,7 +4,6 @@ namespace Lunar\Shipping\Drivers\ShippingMethods;
 
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Exceptions\MissingCurrencyPriceException;
-use Lunar\Facades\Converter;
 use Lunar\Facades\Pricing;
 use Lunar\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
@@ -72,19 +71,9 @@ class ShipBy implements ShippingRateInterface
         $tier = $subTotal;
 
         if ($chargeBy == 'weight') {
-            $tier = $cart->lines->sum(function ($line) {
-                $weightUnit = array_key_exists($line->purchasable->weight_unit, Converter::getMeasurements()['weight'] ?? [])
-                    ? $line->purchasable->weight_unit
-                    : 'kg';
-
-                $unitWeightKg = Converter::from("weight.{$weightUnit}")
-                    ->to('weight.kg')
-                    ->value($line->purchasable->weight_value)
-                    ->convert()
-                    ->getValue();
-
-                return $unitWeightKg * $line->quantity;
-            });
+            $tier = $cart->lines->sum(
+                fn ($line) => $line->purchasable->weight->to('weight.kg')->convert()->getValue() * $line->quantity
+            );
         }
 
         // Do we have a suitable tier price?

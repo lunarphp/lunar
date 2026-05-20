@@ -28,25 +28,27 @@ return new class extends Migration
             return;
         }
 
+        // Only rescale rows that are still in legacy "kg × 100" storage. The
+        // `min_quantity % 100 = 0` guard makes a second run a no-op: already
+        // rescaled values (5, 10, 25…) and any raw kg values entered via the
+        // new UI are skipped. Legitimate breakpoints that happen to be a
+        // multiple of 100 kg (e.g. 100, 200) are inherently ambiguous on first
+        // run; document those rows post-deploy if they exist.
         DB::table($this->prefix.'prices')
             ->where('priceable_type', 'shipping_rate')
             ->whereIn('priceable_id', $shippingRateIds)
             ->where('min_quantity', '>', 1)
-            ->orderBy('id')
-            ->chunkById(100, function ($prices) {
-                foreach ($prices as $price) {
-                    DB::table($this->prefix.'prices')
-                        ->where('id', $price->id)
-                        ->update([
-                            'min_quantity' => (int) ($price->min_quantity / 100),
-                        ]);
-                }
-            });
+            ->whereRaw('min_quantity % 100 = 0')
+            ->update([
+                'min_quantity' => DB::raw('min_quantity / 100'),
+            ]);
     }
 
     public function down(): void
     {
-        //
+        // Intentionally irreversible: the original value of an already-1 row
+        // is indistinguishable from a rescaled-to-1 row, so we cannot restore
+        // the previous kg × 100 storage faithfully.
     }
 
     protected function tablesExist(): bool

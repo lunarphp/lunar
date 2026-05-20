@@ -39,6 +39,7 @@ return [
                     ],
                     'min_weight' => [
                         'label' => 'Min. Ağırlık',
+                        'helper_text' => 'Ağırlığı kilogram olarak girin',
                     ],
                     'price' => [
                         'label' => 'Fiyat',
