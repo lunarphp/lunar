@@ -6,9 +6,6 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Events\MigrationsEnded;
-use Illuminate\Database\Events\MigrationsStarted;
-use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -47,15 +44,6 @@ use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
-use Lunar\Core\Database\State\ConvertBackOrderPurchasability;
-use Lunar\Core\Database\State\ConvertProductTypeAttributesToProducts;
-use Lunar\Core\Database\State\ConvertTaxbreakdown;
-use Lunar\Core\Database\State\EnsureBrandsAreUpgraded;
-use Lunar\Core\Database\State\EnsureDefaultTaxClassExists;
-use Lunar\Core\Database\State\EnsureMediaCollectionsAreRenamed;
-use Lunar\Core\Database\State\MigrateCartOrderRelationship;
-use Lunar\Core\Database\State\PopulateProductOptionLabelWithName;
-use Lunar\Core\Database\State\UpdateWeightUnitToKg;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
 use Lunar\Core\Listeners\CartSessionAuthListener;
@@ -230,7 +218,6 @@ class LunarServiceProvider extends ServiceProvider
         $this->registerObservers();
         $this->registerBuilderMacros();
         $this->registerBlueprintMacros();
-        $this->registerStateListeners();
 
         Facades\ModelManifest::morphMap();
 
@@ -295,35 +282,6 @@ class LunarServiceProvider extends ServiceProvider
             $this->app->basePath(),
             $this->app->bootstrapPath().'/cache/lunar_addons.php'
         ));
-    }
-
-    protected function registerStateListeners()
-    {
-        $states = [
-            ConvertProductTypeAttributesToProducts::class,
-            EnsureDefaultTaxClassExists::class,
-            EnsureBrandsAreUpgraded::class,
-            EnsureMediaCollectionsAreRenamed::class,
-            PopulateProductOptionLabelWithName::class,
-            MigrateCartOrderRelationship::class,
-            ConvertTaxbreakdown::class,
-            ConvertBackOrderPurchasability::class,
-            UpdateWeightUnitToKg::class,
-        ];
-
-        foreach ($states as $state) {
-            $class = new $state;
-
-            Event::listen(
-                [MigrationsStarted::class],
-                [$class, 'prepare']
-            );
-
-            Event::listen(
-                [MigrationsEnded::class, NoPendingMigrations::class],
-                [$class, 'run']
-            );
-        }
     }
 
     /**

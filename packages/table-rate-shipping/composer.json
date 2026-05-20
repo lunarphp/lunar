@@ -22,8 +22,7 @@
   "autoload": {
     "psr-4": {
       "Lunar\\Shipping\\": "src",
-      "Lunar\\Shipping\\Database\\Factories\\": "database/factories",
-      "Lunar\\Shipping\\Database\\State\\": "database/state"
+      "Lunar\\Shipping\\Database\\Factories\\": "database/factories"
     }
   },
   "extra": {
