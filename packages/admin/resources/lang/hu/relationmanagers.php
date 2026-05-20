@@ -32,6 +32,7 @@ return [
             'description' => 'Kapcsoljon vásárlói csoportokat a(z) :type-hoz az elérhetőség meghatározásához.',
             'name' => [
                 'label' => 'Név',
+                'default_description' => 'Alapértelmezett — szabályozza a vendég-hozzáférést',
             ],
             'enabled' => [
                 'label' => 'Engedélyezve',

@@ -32,6 +32,7 @@ return [
             'description' => 'Müşteri gruplarını bu :type ile ilişkilendirerek kullanılabilirliğini belirleyin.',
             'name' => [
                 'label' => 'Ad',
+                'default_description' => 'Varsayılan — misafir erişimini yönetir',
             ],
             'enabled' => [
                 'label' => 'Etkin',

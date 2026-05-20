@@ -334,3 +334,90 @@ function createTranslatedRichTextProductAttribute(Product $product, string $hand
         'attributable_id' => $product->productType->id,
     ]);
 }
+
+it('warns when the product is hidden from guests but visible to other groups', function () {
+    Language::factory()->create(['default' => true]);
+
+    $default = CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $wholesale = CustomerGroup::factory()->create([
+        'default' => false,
+    ]);
+
+    $product = Product::factory()->create(['status' => 'published']);
+
+    $product->customerGroups()->updateExistingPivot($default->id, [
+        'enabled' => false,
+        'visible' => false,
+    ]);
+
+    $product->customerGroups()->updateExistingPivot($wholesale->id, [
+        'enabled' => true,
+        'visible' => true,
+    ]);
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
+        ->assertSuccessful()
+        ->assertSee(__('lunarpanel::product.status.availability.hidden_from_guests'));
+});
+
+it('does not warn when the default group is enabled for the product', function () {
+    Language::factory()->create(['default' => true]);
+
+    CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $product = Product::factory()->create(['status' => 'published']);
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
+        ->assertSuccessful()
+        ->assertDontSee(__('lunarpanel::product.status.availability.hidden_from_guests'));
+});
+
+it('warns when no default customer group exists', function () {
+    Language::factory()->create(['default' => true]);
+
+    $group = CustomerGroup::factory()->create([
+        'default' => false,
+    ]);
+
+    $product = Product::factory()->create(['status' => 'published']);
+
+    $product->customerGroups()->updateExistingPivot($group->id, [
+        'enabled' => true,
+        'visible' => true,
+    ]);
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
+        ->assertSuccessful()
+        ->assertSee(__('lunarpanel::product.status.availability.no_default_customer_group'));
+});
+
+it('suppresses availability warnings when product is in draft', function () {
+    Language::factory()->create(['default' => true]);
+
+    CustomerGroup::factory()->create([
+        'default' => true,
+    ]);
+
+    $product = Product::factory()->create(['status' => 'draft']);
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
+        ->assertSuccessful()
+        ->assertSee(__('lunarpanel::product.status.unpublished.content'))
+        ->assertDontSee(__('lunarpanel::product.status.availability.customer_groups'))
+        ->assertDontSee(__('lunarpanel::product.status.availability.channels'))
+        ->assertDontSee(__('lunarpanel::product.status.availability.hidden_from_guests'))
+        ->assertDontSee(__('lunarpanel::product.status.availability.no_default_customer_group'));
+});

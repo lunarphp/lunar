@@ -32,6 +32,7 @@ return [
             'description' => 'قم بارفاق مجموعات العملاء بهذا :type لتحديد مدى توفره.',
             'name' => [
                 'label' => 'الاسم',
+                'default_description' => 'افتراضي — يتحكم بوصول الزوار',
             ],
             'enabled' => [
                 'label' => 'مفعل',

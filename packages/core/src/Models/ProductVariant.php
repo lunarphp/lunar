@@ -211,6 +211,14 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
         return $quantity <= $this->getTotalInventory();
     }
 
+    public function isPurchasable(): bool
+    {
+        return ! $this->trashed()
+            && $this->product
+            && ! $this->product->trashed()
+            && $this->product->status === 'published';
+    }
+
     public function getTotalInventory(): int
     {
         if ($this->purchasable == 'in_stock') {

@@ -12,11 +12,13 @@ return [
 
     'status' => [
         'unpublished' => [
-            'content' => 'În prezent în stadiu de ciornă, acest produs este ascuns în toate canalele și grupurile de clienți.',
+            'content' => 'În prezent în stadiu de ciornă, acest produs este indisponibil în toate canalele și grupurile de clienți.',
         ],
         'availability' => [
             'customer_groups' => 'Acest produs nu este disponibil momentan pentru niciun grup de clienți.',
             'channels' => 'Acest produs nu este disponibil momentan în niciun canal.',
+            'hidden_from_guests' => 'Vizitatorii nu pot vedea sau cumpăra acest produs în acest moment. Grupul de clienți implicit nu este activat sau vizibil pentru acesta.',
+            'no_default_customer_group' => 'Niciun grup de clienți implicit nu este setat, așa că vizibilitatea pentru vizitatori nu poate fi controlată aici. Marcați un grup de clienți ca implicit pentru a gestiona accesul vizitatorilor.',
         ],
     ],
 
