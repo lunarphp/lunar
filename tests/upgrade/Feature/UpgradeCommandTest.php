@@ -40,6 +40,8 @@ it('aborts when an unknown step is requested', function () {
 it('runs the plan when guards pass', function () {
     stubUpgradeGuards();
 
+    config(['lunar.upgrade.ledger' => ['v1_match' => [], 'v2_baseline' => []]]);
+
     artisan('lunar:upgrade', ['--dry-run' => true])
         ->expectsOutputToContain('Upgrade plan:')
         ->assertExitCode(0);

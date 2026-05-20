@@ -1,6 +1,6 @@
 # 0003 — Flatten v1.x migrations into a v2 baseline
 
-- Status: draft
+- Status: accepted (infrastructure landed; schema flattening tracked separately)
 - Author: Glenn Jacobs
 - Created: 2026-05-20
 - TODO item: "Flatten v1.x migrations into a v2 baseline"
