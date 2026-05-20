@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Contracts\Discount as DiscountContract;
+use Lunar\Core\Models\Contracts\Discount as DiscountContract;
 
 class DiscountObserver
 {

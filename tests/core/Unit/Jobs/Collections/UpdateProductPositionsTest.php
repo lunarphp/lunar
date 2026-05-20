@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Jobs\Collections\UpdateProductPositions;
-use Lunar\Models\Collection;
-use Lunar\Models\Currency;
-use Lunar\Models\Price;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Jobs\Collections\UpdateProductPositions;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

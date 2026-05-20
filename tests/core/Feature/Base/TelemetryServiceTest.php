@@ -5,9 +5,9 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Lunar\Base\ProvidesTelemetryInsights;
-use Lunar\Base\TelemetryInsights;
-use Lunar\Facades\Telemetry;
+use Lunar\Core\Base\ProvidesTelemetryInsights;
+use Lunar\Core\Base\TelemetryInsights;
+use Lunar\Core\Facades\Telemetry;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

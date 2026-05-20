@@ -3,9 +3,9 @@
 namespace Lunar\Stripe\Managers;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Stripe\Enums\CancellationReason;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;

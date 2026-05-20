@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Base\ValueObjects\Cart;
+namespace Lunar\Core\Base\ValueObjects\Cart;
 
-use Lunar\Models\Contracts\ProductVariant;
+use Lunar\Core\Models\Contracts\ProductVariant;
 
 class FreeItem
 {

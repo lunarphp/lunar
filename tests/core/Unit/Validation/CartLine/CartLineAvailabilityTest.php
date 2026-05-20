@@ -1,17 +1,17 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\DataTypes\Price as PriceDataType;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\Carts\CartException;
-use Lunar\Models\Cart;
-use Lunar\Models\Channel;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
+use Lunar\Core\DataTypes\Price as PriceDataType;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Exceptions\Carts\CartException;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Validation\CartLine\CartLineAvailability;
 use Lunar\Tests\Core\TestCase;
-use Lunar\Validation\CartLine\CartLineAvailability;
 use Spatie\LaravelBlink\BlinkFacade;
 
 uses(TestCase::class)

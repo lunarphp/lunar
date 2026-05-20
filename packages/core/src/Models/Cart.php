@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,38 +14,38 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use Lunar\Actions\Carts\AddAddress;
-use Lunar\Actions\Carts\AddOrUpdatePurchasable;
-use Lunar\Actions\Carts\AssociateUser;
-use Lunar\Actions\Carts\CreateOrder;
-use Lunar\Actions\Carts\GenerateFingerprint;
-use Lunar\Actions\Carts\RemovePurchasable;
-use Lunar\Actions\Carts\SetShippingOption;
-use Lunar\Actions\Carts\UpdateCartLine;
-use Lunar\Base\Addressable;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\CouponString;
-use Lunar\Base\LunarUser;
-use Lunar\Base\Purchasable;
-use Lunar\Base\Traits\CachesProperties;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
-use Lunar\Base\ValueObjects\Cart\FreeItem;
-use Lunar\Base\ValueObjects\Cart\Promotion;
-use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Database\Factories\CartFactory;
-use Lunar\DataTypes\Price;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\Carts\CartException;
-use Lunar\Exceptions\FingerprintMismatchException;
-use Lunar\Facades\DB;
-use Lunar\Facades\ShippingManifest;
-use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
-use Lunar\Pipelines\Cart\Calculate;
-use Lunar\Validation\Cart\ValidateCartForOrderCreation;
-use Lunar\Validation\CartLine\CartLineStock;
+use Lunar\Core\Actions\Carts\AddAddress;
+use Lunar\Core\Actions\Carts\AddOrUpdatePurchasable;
+use Lunar\Core\Actions\Carts\AssociateUser;
+use Lunar\Core\Actions\Carts\CreateOrder;
+use Lunar\Core\Actions\Carts\GenerateFingerprint;
+use Lunar\Core\Actions\Carts\RemovePurchasable;
+use Lunar\Core\Actions\Carts\SetShippingOption;
+use Lunar\Core\Actions\Carts\UpdateCartLine;
+use Lunar\Core\Base\Addressable;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Casts\CouponString;
+use Lunar\Core\Base\LunarUser;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Base\Traits\CachesProperties;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\FreeItem;
+use Lunar\Core\Base\ValueObjects\Cart\Promotion;
+use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Database\Factories\CartFactory;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Exceptions\Carts\CartException;
+use Lunar\Core\Exceptions\FingerprintMismatchException;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Core\Pipelines\Cart\Calculate;
+use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Core\Validation\CartLine\CartLineStock;
 
 /**
  * @property int $id

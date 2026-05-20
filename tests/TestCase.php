@@ -2,7 +2,7 @@
 
 namespace Lunar\Tests;
 
-use Lunar\Facades\ModelManifest;
+use Lunar\Core\Facades\ModelManifest;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Spatie\StructureDiscoverer\Discover;
 

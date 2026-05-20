@@ -1,14 +1,14 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
-use Lunar\Models\CustomerGroup;
+use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
+use Lunar\Core\Models\CustomerGroup;
 
 trait HasCustomerGroups
 {

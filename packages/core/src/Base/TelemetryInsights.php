@@ -1,14 +1,14 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Collection;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
-use Lunar\Models\Order;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 
 class TelemetryInsights implements ProvidesTelemetryInsights
 {

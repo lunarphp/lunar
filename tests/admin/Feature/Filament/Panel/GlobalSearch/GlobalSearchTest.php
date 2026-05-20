@@ -2,16 +2,16 @@
 
 use Filament\Livewire\GlobalSearch;
 use Livewire\Livewire;
-use Lunar\Models\Brand;
-use Lunar\Models\Collection;
-use Lunar\Models\Country;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\Language;
-use Lunar\Models\Order;
-use Lunar\Models\OrderAddress;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderAddress;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

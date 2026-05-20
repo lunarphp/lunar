@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Base\ValueObjects\Cart;
+namespace Lunar\Core\Base\ValueObjects\Cart;
 
 use Illuminate\Support\Collection;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Contracts\Discount;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Contracts\Discount;
 
 class DiscountBreakdown
 {

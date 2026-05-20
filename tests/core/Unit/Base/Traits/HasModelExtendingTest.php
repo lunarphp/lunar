@@ -3,10 +3,10 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
-use Lunar\Facades\ModelManifest;
-use Lunar\Models\Order;
-use Lunar\Models\Product;
-use Lunar\Models\ProductOption;
+use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductOption;
 use Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct;
 use Lunar\Tests\Core\Stubs\Models\Custom\DeepCustomProduct;
 use Lunar\Tests\Core\Stubs\Models\CustomOrder;
@@ -19,12 +19,12 @@ uses(RefreshDatabase::class);
 beforeEach(
     function () {
         ModelManifest::replace(
-            Lunar\Models\Contracts\Product::class,
+            Lunar\Core\Models\Contracts\Product::class,
             Lunar\Tests\Core\Stubs\Models\Product::class
         );
 
         ModelManifest::replace(
-            Lunar\Models\Contracts\ProductOption::class,
+            Lunar\Core\Models\Contracts\ProductOption::class,
             Lunar\Tests\Core\Stubs\Models\ProductOption::class
         );
     }
@@ -63,7 +63,7 @@ test('can forward static method calls to extended model', function () {
 
 test('morph map is correct when models are extended', function () {
     ModelManifest::replace(
-        Lunar\Models\Contracts\Product::class,
+        Lunar\Core\Models\Contracts\Product::class,
         CustomProduct::class
     );
 
@@ -89,7 +89,7 @@ test('core model events are triggered with extended models', function () {
     );
 
     ModelManifest::replace(
-        Lunar\Models\Contracts\Product::class,
+        Lunar\Core\Models\Contracts\Product::class,
         CustomProduct::class
     );
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Closure;
-use Lunar\Models\Contracts\Cart;
-use Lunar\Models\Contracts\Order;
+use Lunar\Core\Models\Contracts\Cart;
+use Lunar\Core\Models\Contracts\Order;
 
 abstract class OrderModifier
 {

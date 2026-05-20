@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasMedia;
-use Lunar\Base\Traits\HasTranslations;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Base\Traits\Searchable;
-use Lunar\Database\Factories\ProductOptionFactory;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\HasMedia;
+use Lunar\Core\Base\Traits\HasTranslations;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Database\Factories\ProductOptionFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**

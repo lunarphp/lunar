@@ -21,7 +21,7 @@ use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\EditCustomerGroup
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\ListCustomerGroups;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
+use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 
 class CustomerGroupResource extends BaseResource
 {

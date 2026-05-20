@@ -1,14 +1,14 @@
 <?php
 
-namespace Lunar\Database\Seeders;
+namespace Lunar\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Channel;
-use Lunar\Models\ProductType;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\ProductType;
 
 class DemoSeeder extends Seeder
 {

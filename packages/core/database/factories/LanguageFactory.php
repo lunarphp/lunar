@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Language;
+use Lunar\Core\Models\Language;
 
 class LanguageFactory extends BaseFactory
 {

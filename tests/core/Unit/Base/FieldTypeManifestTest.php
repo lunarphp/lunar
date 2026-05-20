@@ -2,12 +2,12 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Base\FieldTypeManifest;
-use Lunar\Base\FieldTypeManifestInterface;
-use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
-use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
-use Lunar\Models\Cart;
-use Lunar\Models\Channel;
+use Lunar\Core\Base\FieldTypeManifest;
+use Lunar\Core\Base\FieldTypeManifestInterface;
+use Lunar\Core\Exceptions\FieldTypes\FieldTypeMissingException;
+use Lunar\Core\Exceptions\FieldTypes\InvalidFieldTypeException;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Channel;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

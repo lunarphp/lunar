@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Core\Stubs;
 
-use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
-use Lunar\DataTypes\Price;
-use Lunar\DiscountTypes\AbstractDiscountType;
-use Lunar\Models\Contracts\Cart;
+use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdown;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DiscountTypes\AbstractDiscountType;
+use Lunar\Core\Models\Contracts\Cart;
 
 class TestAbstractDiscount extends AbstractDiscountType
 {

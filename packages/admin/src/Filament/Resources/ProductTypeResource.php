@@ -18,9 +18,9 @@ use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\EditProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\ListProductTypes;
 use Lunar\Admin\Support\Forms\Components\AttributeSelector;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\ProductType as ProductTypeContract;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Contracts\ProductType as ProductTypeContract;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 
 class ProductTypeResource extends BaseResource
 {

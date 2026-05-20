@@ -1,18 +1,18 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Support\Collection;
-use Lunar\Exceptions\FieldTypes\FieldTypeMissingException;
-use Lunar\Exceptions\FieldTypes\InvalidFieldTypeException;
-use Lunar\FieldTypes\Dropdown;
-use Lunar\FieldTypes\File;
-use Lunar\FieldTypes\ListField;
-use Lunar\FieldTypes\Number;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\Toggle;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\FieldTypes\YouTube;
+use Lunar\Core\Exceptions\FieldTypes\FieldTypeMissingException;
+use Lunar\Core\Exceptions\FieldTypes\InvalidFieldTypeException;
+use Lunar\Core\FieldTypes\Dropdown;
+use Lunar\Core\FieldTypes\File;
+use Lunar\Core\FieldTypes\ListField;
+use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\Toggle;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\FieldTypes\YouTube;
 
 class FieldTypeManifest
 {

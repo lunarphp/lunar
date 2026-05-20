@@ -3,7 +3,7 @@
 namespace Lunar\Opayo\Models;
 
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
+use Lunar\Core\Base\BaseModel;
 
 /**
  * @property int $id

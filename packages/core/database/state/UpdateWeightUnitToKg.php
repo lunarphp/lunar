@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Database\State;
+namespace Lunar\Core\Database\State;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;

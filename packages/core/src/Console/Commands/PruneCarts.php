@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Console\Commands;
+namespace Lunar\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Pipeline\Pipeline;
-use Lunar\Models\Cart;
+use Lunar\Core\Models\Cart;
 
 class PruneCarts extends Command
 {

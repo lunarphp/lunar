@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Models\Contracts;
+namespace Lunar\Core\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Lunar\Models\ProductOptionValue;
+use Lunar\Core\Models\ProductOptionValue;
 
 interface ProductOption
 {

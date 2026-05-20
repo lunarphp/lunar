@@ -1,16 +1,16 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\DataTypes\Price;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\NonPurchasableItemException;
-use Lunar\Models\CartLine;
-use Lunar\Models\Channel;
-use Lunar\Models\Currency;
-use Lunar\Models\Order;
-use Lunar\Models\OrderLine;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Exceptions\NonPurchasableItemException;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Tests\Core\Stubs\TestPurchasable;
 use Lunar\Tests\Core\TestCase;
 

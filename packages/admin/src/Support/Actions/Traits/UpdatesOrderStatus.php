@@ -12,7 +12,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Lunar\Models\Order;
+use Lunar\Core\Models\Order;
 
 trait UpdatesOrderStatus
 {

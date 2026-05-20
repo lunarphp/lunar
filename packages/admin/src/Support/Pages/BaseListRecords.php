@@ -12,7 +12,7 @@ use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderWidgets;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsHeadings;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsTablePagination;
 use Lunar\Admin\Support\Pages\Concerns\ExtendsTabs;
-use Lunar\Base\Traits\Searchable;
+use Lunar\Core\Base\Traits\Searchable;
 
 abstract class BaseListRecords extends ListRecords
 {

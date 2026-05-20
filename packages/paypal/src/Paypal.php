@@ -3,8 +3,8 @@
 namespace Lunar\Paypal;
 
 use Illuminate\Support\Facades\Http;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class Paypal implements PaypalInterface
 {

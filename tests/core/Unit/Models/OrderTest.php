@@ -2,19 +2,19 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
-use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\Language;
-use Lunar\Models\Order;
-use Lunar\Models\OrderLine;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\Transaction;
+use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\Transaction;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 

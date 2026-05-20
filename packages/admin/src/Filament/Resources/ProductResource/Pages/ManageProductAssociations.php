@@ -14,10 +14,10 @@ use Filament\Tables\Table;
 use Lunar\Admin\Events\ProductAssociationsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Models\Contracts\Product as ProductContract;
-use Lunar\Models\Contracts\ProductAssociation as ProductAssociationContract;
-use Lunar\Models\Product;
-use Lunar\Models\ProductAssociation;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Contracts\ProductAssociation as ProductAssociationContract;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductAssociation;
 
 class ManageProductAssociations extends BaseManageRelatedRecords
 {
@@ -89,7 +89,7 @@ class ManageProductAssociations extends BaseManageRelatedRecords
                 TextColumn::make('target.variants.sku')
                     ->label('SKU'),
                 TextColumn::make('type')->formatStateUsing(function ($state) {
-                    $enum = config('lunar.products.association_types_enum', \Lunar\Base\Enums\ProductAssociation::class);
+                    $enum = config('lunar.products.association_types_enum', \Lunar\Core\Base\Enums\ProductAssociation::class);
 
                     return $enum::tryFrom($state)?->label() ?: $state;
                 }),

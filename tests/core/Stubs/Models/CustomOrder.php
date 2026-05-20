@@ -2,6 +2,6 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-use Lunar\Models\Order;
+use Lunar\Core\Models\Order;
 
 class CustomOrder extends Order {}

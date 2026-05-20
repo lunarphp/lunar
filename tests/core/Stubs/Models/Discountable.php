@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class Discountable extends \Lunar\Models\Discountable {}
+class Discountable extends \Lunar\Core\Models\Discountable {}

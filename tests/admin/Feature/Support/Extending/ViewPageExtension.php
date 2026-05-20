@@ -7,11 +7,11 @@ use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Extending\ViewPageExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
-use Lunar\Models\Country;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\Order;
-use Lunar\Models\OrderAddress;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderAddress;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

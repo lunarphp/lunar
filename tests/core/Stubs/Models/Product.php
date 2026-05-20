@@ -2,7 +2,7 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class Product extends \Lunar\Models\Product
+class Product extends \Lunar\Core\Models\Product
 {
     use SearchableTrait;
 

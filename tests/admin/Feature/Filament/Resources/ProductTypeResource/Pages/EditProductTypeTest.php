@@ -2,8 +2,8 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\EditProductType;
-use Lunar\Models\Attribute;
-use Lunar\Models\ProductType;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\ProductType;
 use Lunar\Tests\Admin\TestCase;
 
 uses(TestCase::class)

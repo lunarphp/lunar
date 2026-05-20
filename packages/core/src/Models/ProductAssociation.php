@@ -1,16 +1,16 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
-use Lunar\Base\Enums\ProductAssociation as ProductAssociationEnum;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Database\Factories\ProductAssociationFactory;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Base\Enums\ProductAssociation as ProductAssociationEnum;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Database\Factories\ProductAssociationFactory;
 
 /**
  * @property int $id

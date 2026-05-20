@@ -1,16 +1,16 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Lunar\Models\Attribute;
-use Lunar\Models\Brand;
-use Lunar\Models\Collection as ModelsCollection;
-use Lunar\Models\Customer;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Collection as ModelsCollection;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 
 class AttributeManifest
 {

@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
-use Lunar\Models\Currency;
-use Lunar\Models\TaxClass;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;

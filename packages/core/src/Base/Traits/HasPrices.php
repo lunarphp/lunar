@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Lunar\Facades\Pricing;
-use Lunar\Managers\PricingManager;
-use Lunar\Models\Price;
+use Lunar\Core\Facades\Pricing;
+use Lunar\Core\Managers\PricingManager;
+use Lunar\Core\Models\Price;
 
 trait HasPrices
 {

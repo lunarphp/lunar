@@ -1,15 +1,15 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
-use Lunar\Models\Channel;
-use Lunar\Models\Contracts\Channel as ChannelContract;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Contracts\Channel as ChannelContract;
 
 trait HasChannels
 {

@@ -2,20 +2,20 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Base\DataTransferObjects\CartDiscount;
-use Lunar\Base\DiscountManagerInterface;
-use Lunar\DiscountTypes\AmountOff;
-use Lunar\Facades\Discounts;
-use Lunar\Managers\DiscountManager;
-use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
-use Lunar\Models\Channel;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Discount;
-use Lunar\Models\Price;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Base\DataTransferObjects\CartDiscount;
+use Lunar\Core\Base\DiscountManagerInterface;
+use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\Facades\Discounts;
+use Lunar\Core\Managers\DiscountManager;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestDiscountType;
 use Lunar\Tests\Core\TestCase;
 

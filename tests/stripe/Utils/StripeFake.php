@@ -2,8 +2,8 @@
 
 namespace Lunar\Tests\Stripe\Utils;
 
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\MockClient;
 

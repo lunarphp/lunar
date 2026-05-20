@@ -3,7 +3,7 @@
 namespace Lunar\Stripe\Components;
 
 use Livewire\Component;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Stripe\Facades\Stripe;
 use Stripe\Stripe as StripeClient;
 

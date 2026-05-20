@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Actions\Orders;
+namespace Lunar\Core\Actions\Orders;
 
-use Lunar\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
 
 class GenerateOrderReference
 {

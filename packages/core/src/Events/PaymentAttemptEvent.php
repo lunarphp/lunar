@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Events;
+namespace Lunar\Core\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Lunar\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
 
 class PaymentAttemptEvent
 {

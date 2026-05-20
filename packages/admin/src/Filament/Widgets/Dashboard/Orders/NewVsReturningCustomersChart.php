@@ -6,9 +6,9 @@ use Carbon\CarbonInterface;
 use Carbon\CarbonPeriod;
 use DateTime;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
-use Lunar\Facades\DB;
-use Lunar\Models\Currency;
-use Lunar\Models\Order;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Order;
 
 class NewVsReturningCustomersChart extends ApexChartWidget
 {

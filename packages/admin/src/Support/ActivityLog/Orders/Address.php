@@ -3,7 +3,7 @@
 namespace Lunar\Admin\Support\ActivityLog\Orders;
 
 use Lunar\Admin\Support\ActivityLog\AbstractRender;
-use Lunar\Models\Country;
+use Lunar\Core\Models\Country;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\LaravelBlink\BlinkFacade;
 

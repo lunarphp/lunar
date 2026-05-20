@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasMedia as TraitsHasMedia;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\HasMedia as TraitsHasMedia;
 use Spatie\MediaLibrary\HasMedia;
 
 /**

@@ -3,12 +3,12 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
-use Lunar\Facades\DB;
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Brand;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
-use Lunar\Models\ProductType;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductType;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

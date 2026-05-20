@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Jobs\Orders;
+namespace Lunar\Core\Jobs\Orders;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,9 +9,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Lunar\Facades\DB;
-use Lunar\Models\Order;
-use Lunar\Models\OrderAddress;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderAddress;
 
 class MarkAsNewCustomer implements ShouldQueue
 {

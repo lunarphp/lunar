@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Jobs\Orders\MarkAsNewCustomer;
-use Lunar\Models\Currency;
-use Lunar\Models\Order;
-use Lunar\Models\OrderAddress;
+use Lunar\Core\Jobs\Orders\MarkAsNewCustomer;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderAddress;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

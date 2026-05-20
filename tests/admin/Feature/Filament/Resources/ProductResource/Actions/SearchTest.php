@@ -2,10 +2,10 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

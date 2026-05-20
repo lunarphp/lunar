@@ -1,7 +1,7 @@
 <?php
 
-use Lunar\Base\Traits\LunarUser;
-use Lunar\Facades\DB;
+use Lunar\Core\Base\Traits\LunarUser;
+use Lunar\Core\Facades\DB;
 
 if (! function_exists('is_lunar_user')) {
     function is_lunar_user($user)

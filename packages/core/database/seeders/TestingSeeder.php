@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Database\Seeders;
+namespace Lunar\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 

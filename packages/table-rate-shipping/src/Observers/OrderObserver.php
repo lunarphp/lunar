@@ -2,8 +2,8 @@
 
 namespace Lunar\Shipping\Observers;
 
-use Lunar\Models\Contracts\Order as OrderContract;
-use Lunar\Models\Order;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Facades\Shipping;
 

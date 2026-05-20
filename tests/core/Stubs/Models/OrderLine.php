@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class OrderLine extends \Lunar\Models\OrderLine {}
+class OrderLine extends \Lunar\Core\Models\OrderLine {}

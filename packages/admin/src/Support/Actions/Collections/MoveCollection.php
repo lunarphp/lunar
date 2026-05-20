@@ -4,8 +4,8 @@ namespace Lunar\Admin\Support\Actions\Collections;
 
 use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Facades\DB;
-use Lunar\Models\Collection;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Collection;
 
 class MoveCollection extends Action
 {

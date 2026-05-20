@@ -1,18 +1,18 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\DataTypes\Price;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\Carts\CartException;
-use Lunar\Facades\ShippingManifest;
-use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
-use Lunar\Models\Currency;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Exceptions\Carts\CartException;
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartAddress;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Tests\Core\TestCase;
-use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 
 uses(TestCase::class);
 
@@ -101,7 +101,7 @@ test('can validate missing shipping option', function () {
         'shippable' => true,
     ]);
 
-    Lunar\Models\Price::factory()->create([
+    Lunar\Core\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -139,7 +139,7 @@ test('can validate collection with partial shipping address', function () {
         'shippable' => true,
     ]);
 
-    Lunar\Models\Price::factory()->create([
+    Lunar\Core\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -198,7 +198,7 @@ test('can validate delivery with partial shipping address', function () {
         'shippable' => true,
     ]);
 
-    Lunar\Models\Price::factory()->create([
+    Lunar\Core\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -268,7 +268,7 @@ test('fails when a cart line points at a soft-deleted purchasable', function () 
         'shippable' => false,
     ]);
 
-    Lunar\Models\Price::factory()->create([
+    Lunar\Core\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -314,7 +314,7 @@ test('fails when a cart line points at a draft product', function () {
         'shippable' => false,
     ]);
 
-    Lunar\Models\Price::factory()->create([
+    Lunar\Core\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -358,7 +358,7 @@ test('can validate delivery with populated shipping address', function () {
         'shippable' => true,
     ]);
 
-    Lunar\Models\Price::factory()->create([
+    Lunar\Core\Models\Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),

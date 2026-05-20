@@ -1,14 +1,14 @@
 <?php
 
-namespace Lunar\PaymentTypes;
+namespace Lunar\Core\PaymentTypes;
 
-use Lunar\Base\DataTransferObjects\PaymentChecks;
-use Lunar\Base\PaymentTypeInterface;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\Order as OrderContract;
-use Lunar\Models\Contracts\Transaction as TransactionContract;
-use Lunar\Models\Order;
+use Lunar\Core\Base\DataTransferObjects\PaymentChecks;
+use Lunar\Core\Base\PaymentTypeInterface;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
+use Lunar\Core\Models\Order;
 
 abstract class AbstractPayment implements PaymentTypeInterface
 {

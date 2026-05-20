@@ -1,15 +1,15 @@
 <?php
 
-namespace Lunar\Pipelines\Cart;
+namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\DataTypes\Price;
-use Lunar\Facades\ShippingManifest;
-use Lunar\Facades\Taxes;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Facades\Taxes;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class CalculateTax
 {

@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Discount;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Discount;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

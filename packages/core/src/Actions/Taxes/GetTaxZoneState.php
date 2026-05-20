@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Actions\Taxes;
+namespace Lunar\Core\Actions\Taxes;
 
-use Lunar\Models\TaxZoneState;
+use Lunar\Core\Models\TaxZoneState;
 
 class GetTaxZoneState
 {

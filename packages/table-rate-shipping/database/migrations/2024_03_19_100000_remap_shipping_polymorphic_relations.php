@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
-use Lunar\Base\Migration;
-use Lunar\Models\Product;
+use Lunar\Core\Base\Migration;
+use Lunar\Core\Models\Product;
 use Lunar\Shipping\Models\ShippingRate;
 
 return new class extends Migration

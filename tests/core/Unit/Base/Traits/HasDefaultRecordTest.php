@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Channel;
+use Lunar\Core\Models\Channel;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

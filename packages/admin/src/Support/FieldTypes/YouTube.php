@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\FieldTypes;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Forms\Components\YouTube as YouTubeInput;
 use Lunar\Admin\Support\Synthesizers\YouTubeSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 class YouTube extends BaseFieldType
 {

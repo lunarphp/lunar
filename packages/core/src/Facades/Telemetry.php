@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Facades;
+namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Base\TelemetryService;
-use Lunar\Base\TelemetryServiceInterface;
+use Lunar\Core\Base\TelemetryService;
+use Lunar\Core\Base\TelemetryServiceInterface;
 
 /**
  * @method static void optOut()

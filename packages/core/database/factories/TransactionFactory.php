@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Order;
-use Lunar\Models\Transaction;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Transaction;
 
 class TransactionFactory extends BaseFactory
 {

@@ -6,7 +6,7 @@ use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Synthesizers\DropdownSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 class Dropdown extends BaseFieldType
 {

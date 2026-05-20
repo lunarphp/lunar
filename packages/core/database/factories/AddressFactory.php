@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Address;
-use Lunar\Models\Country;
+use Lunar\Core\Models\Address;
+use Lunar\Core\Models\Country;
 
 class AddressFactory extends BaseFactory
 {

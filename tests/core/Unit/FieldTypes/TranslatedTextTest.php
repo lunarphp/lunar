@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Collection;
-use Lunar\Exceptions\FieldTypeException;
-use Lunar\FieldTypes\Number;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
+use Lunar\Core\Exceptions\FieldTypeException;
+use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\ProductOptionValue;
+use Lunar\Core\Models\ProductOptionValue;
 
 class ProductOptionValueFactory extends BaseFactory
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\OrderAddress;
+use Lunar\Core\Models\OrderAddress;
 
 class OrderAddressFactory extends BaseFactory
 {

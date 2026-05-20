@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Addons;
+namespace Lunar\Core\Addons;
 
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Arr;

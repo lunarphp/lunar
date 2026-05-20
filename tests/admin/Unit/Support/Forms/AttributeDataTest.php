@@ -7,12 +7,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Facades\AttributeData;
 use Lunar\Admin\Support\FieldTypes\TextField;
-use Lunar\FieldTypes\Dropdown;
-use Lunar\FieldTypes\ListField;
-use Lunar\FieldTypes\Number;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\YouTube;
-use Lunar\Models\Attribute;
+use Lunar\Core\FieldTypes\Dropdown;
+use Lunar\Core\FieldTypes\ListField;
+use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\YouTube;
+use Lunar\Core\Models\Attribute;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)

@@ -1,16 +1,16 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Actions\Carts\CalculateLine;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\DataTypes\Price as DataTypesPrice;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
-use Lunar\Models\TaxRateAmount;
+use Lunar\Core\Actions\Carts\CalculateLine;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\DataTypes\Price as DataTypesPrice;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxRateAmount;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

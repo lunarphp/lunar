@@ -3,8 +3,8 @@
 namespace Lunar\Shipping\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 interface ShippingRate
 {

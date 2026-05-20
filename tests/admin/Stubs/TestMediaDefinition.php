@@ -2,7 +2,7 @@
 
 namespace Lunar\Tests\Admin\Stubs;
 
-use Lunar\Base\MediaDefinitionsInterface;
+use Lunar\Core\Base\MediaDefinitionsInterface;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 

@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\EditCollectionGroup;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\ListCollectionGroups;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\CollectionGroup as CollectionGroupContract;
+use Lunar\Core\Models\Contracts\CollectionGroup as CollectionGroupContract;
 
 class CollectionGroupResource extends BaseResource
 {

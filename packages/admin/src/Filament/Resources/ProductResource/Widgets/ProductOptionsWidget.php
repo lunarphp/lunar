@@ -17,14 +17,14 @@ use Illuminate\Support\Str;
 use Lunar\Admin\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
-use Lunar\Facades\DB;
-use Lunar\Models\Contracts\ProductOption as ProductOptionContract;
-use Lunar\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
-use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
-use Lunar\Models\Language;
-use Lunar\Models\ProductOption;
-use Lunar\Models\ProductOptionValue;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
+use Lunar\Core\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
+use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\ProductOption;
+use Lunar\Core\Models\ProductOptionValue;
+use Lunar\Core\Models\ProductVariant;
 
 class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 {

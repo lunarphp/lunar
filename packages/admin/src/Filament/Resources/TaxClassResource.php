@@ -19,7 +19,7 @@ use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\CreateTaxClass;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\EditTaxClass;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\ListTaxClasses;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\TaxClass as TaxClassContract;
+use Lunar\Core\Models\Contracts\TaxClass as TaxClassContract;
 
 class TaxClassResource extends BaseResource
 {

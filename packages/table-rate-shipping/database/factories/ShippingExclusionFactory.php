@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Product;
 use Lunar\Shipping\Models\ShippingExclusion;
 
 class ShippingExclusionFactory extends Factory

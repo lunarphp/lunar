@@ -1,15 +1,15 @@
 <?php
 
-namespace Lunar\DiscountTypes;
+namespace Lunar\Core\DiscountTypes;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
-use Lunar\Base\DiscountTypeInterface;
-use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\Discount as DiscountContract;
-use Lunar\Models\Discount;
+use Lunar\Core\Base\DiscountTypeInterface;
+use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdown;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Discount as DiscountContract;
+use Lunar\Core\Models\Discount;
 
 abstract class AbstractDiscountType implements DiscountTypeInterface
 {
@@ -94,7 +94,7 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     /**
      * Check if discount's conditions met.
      *
-     * @param  Lunar\Base\ValueObjects\Cart\DiscountBreakdown  $breakdown
+     * @param  Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdown  $breakdown
      * @return self
      */
     protected function addDiscountBreakdown(CartContract $cart, DiscountBreakdown $breakdown)

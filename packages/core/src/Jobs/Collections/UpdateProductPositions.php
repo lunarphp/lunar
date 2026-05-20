@@ -1,16 +1,16 @@
 <?php
 
-namespace Lunar\Jobs\Collections;
+namespace Lunar\Core\Jobs\Collections;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Lunar\Actions\Collections\SortProducts;
-use Lunar\Facades\DB;
-use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Actions\Collections\SortProducts;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class UpdateProductPositions implements ShouldQueue
 {

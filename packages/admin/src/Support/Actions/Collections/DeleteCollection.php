@@ -4,7 +4,7 @@ namespace Lunar\Admin\Support\Actions\Collections;
 
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
-use Lunar\Models\Collection;
+use Lunar\Core\Models\Collection;
 
 class DeleteCollection extends DeleteAction
 {

@@ -2,7 +2,7 @@
 
 namespace Lunar\Shipping\Interfaces;
 
-use Lunar\DataTypes\ShippingOption;
+use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Models\ShippingRate;
 

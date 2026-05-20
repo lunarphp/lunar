@@ -2,11 +2,11 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasModelExtending;
-use Lunar\Models\Collection as ModelsCollection;
-use Lunar\Models\Product;
-use Lunar\Models\Url;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\HasModelExtending;
+use Lunar\Core\Models\Collection as ModelsCollection;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\Url;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

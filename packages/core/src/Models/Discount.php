@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\CouponString;
-use Lunar\Base\Traits\HasChannels;
-use Lunar\Base\Traits\HasCustomerGroups;
-use Lunar\Base\Traits\HasTranslations;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Database\Factories\DiscountFactory;
-use Lunar\DiscountTypes\AbstractDiscountType;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Casts\CouponString;
+use Lunar\Core\Base\Traits\HasChannels;
+use Lunar\Core\Base\Traits\HasCustomerGroups;
+use Lunar\Core\Base\Traits\HasTranslations;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Database\Factories\DiscountFactory;
+use Lunar\Core\DiscountTypes\AbstractDiscountType;
 
 /**
  * @property int $id

@@ -4,11 +4,11 @@ namespace Lunar\Admin\Support\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\CheckboxList;
-use Lunar\Facades\ModelManifest;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Product;
-use Lunar\Models\ProductType;
+use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductType;
 
 class AttributeSelector extends CheckboxList
 {

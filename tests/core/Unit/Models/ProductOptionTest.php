@@ -3,8 +3,8 @@
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Lunar\Models\ProductOption;
-use Lunar\Models\ProductOptionValue;
+use Lunar\Core\Models\ProductOption;
+use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

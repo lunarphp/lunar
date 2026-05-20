@@ -3,11 +3,11 @@
 namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
-use Lunar\Facades\Converter;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\Country as CountryContract;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\State;
+use Lunar\Core\Facades\Converter;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Facades\Shipping;
 

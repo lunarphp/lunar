@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Brand;
+use Lunar\Core\Models\Brand;
 
 class BrandFactory extends BaseFactory
 {

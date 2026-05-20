@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Console\Commands\Orders;
+namespace Lunar\Core\Console\Commands\Orders;
 
 use Illuminate\Console\Command;
-use Lunar\Jobs\Orders\MarkAsNewCustomer;
-use Lunar\Models\Order;
+use Lunar\Core\Jobs\Orders\MarkAsNewCustomer;
+use Lunar\Core\Models\Order;
 
 class SyncNewCustomerOrders extends Command
 {

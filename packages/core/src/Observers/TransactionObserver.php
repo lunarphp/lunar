@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Contracts\Transaction as TransactionContract;
-use Lunar\Models\Transaction;
+use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
+use Lunar\Core\Models\Transaction;
 
 class TransactionObserver
 {

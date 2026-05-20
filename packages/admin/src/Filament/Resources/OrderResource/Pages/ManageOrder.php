@@ -42,9 +42,9 @@ use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
 use Lunar\Admin\Support\Infolists\Components\Livewire;
 use Lunar\Admin\Support\Infolists\Components\Tags;
 use Lunar\Admin\Support\Pages\BaseViewRecord;
-use Lunar\Models\Order;
-use Lunar\Models\Tag;
-use Lunar\Models\Transaction;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Tag;
+use Lunar\Core\Models\Transaction;
 
 /**
  * @property Order $record

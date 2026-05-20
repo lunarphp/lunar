@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Models\Product;
+use Lunar\Core\Models\Product;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
-use Lunar\Models\CustomerGroup;
+use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
+use Lunar\Core\Models\CustomerGroup;
 
 class CustomerGroupObserver
 {

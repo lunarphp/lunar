@@ -1,7 +1,7 @@
 <?php
 
-use Lunar\Models\Country;
-use Lunar\Models\OrderAddress;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\OrderAddress;
 use Lunar\Stripe\Actions\StoreAddressInformation;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Tests\Stripe\Unit\TestCase;

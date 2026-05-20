@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\State;
+namespace Lunar\Core\Database\State;
 
 use Illuminate\Support\Facades\Schema;
-use Lunar\Models\TaxClass;
+use Lunar\Core\Models\TaxClass;
 
 class EnsureDefaultTaxClassExists
 {

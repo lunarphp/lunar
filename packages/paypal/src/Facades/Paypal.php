@@ -12,7 +12,7 @@ use Lunar\Paypal\PaypalInterface;
  * @method static array getOrder(string $orderId)
  * @method static array capture(string $orderId)
  * @method static array refund(void $transactionId, string $amount, string $currencyCode)
- * @method static array buildInitialOrder(\Lunar\Models\Contracts\Cart $cart)
+ * @method static array buildInitialOrder(\Lunar\Core\Models\Contracts\Cart $cart)
  *
  * @see \Lunar\Paypal\Paypal
  */

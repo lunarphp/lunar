@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Contracts\Channel;
-use Lunar\Models\Contracts\Currency;
-use Lunar\Models\Contracts\Customer;
-use Lunar\Models\Contracts\CustomerGroup;
+use Lunar\Core\Models\Contracts\Channel;
+use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Contracts\Customer;
+use Lunar\Core\Models\Contracts\CustomerGroup;
 
 interface StorefrontSessionInterface
 {

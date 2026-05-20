@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Models\Contracts\Product as ProductContract;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Product;
 
 class ManageBrandProducts extends BaseManageRelatedRecords
 {

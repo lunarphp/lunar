@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Facades;
+namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Base\ModelManifestInterface;
+use Lunar\Core\Base\ModelManifestInterface;
 
 /**
  * @method static void register()
@@ -13,12 +13,12 @@ use Lunar\Base\ModelManifestInterface;
  * @method static string|null get(string $interfaceClass)
  * @method static string guessContractClass(string $modelClass)
  * @method static string guessModelClass(string $modelContract)
- * @method static string|null findLunarModel(\Lunar\Base\BaseModel|string $model)
- * @method static bool isLunarModel(\Lunar\Base\BaseModel|string $model)
+ * @method static string|null findLunarModel(\Lunar\Core\Base\BaseModel|string $model)
+ * @method static bool isLunarModel(\Lunar\Core\Base\BaseModel|string $model)
  * @method static void morphMap()
  * @method static string getMorphMapKey(void $className)
  *
- * @see \Lunar\Base\ModelManifest
+ * @see \Lunar\Core\Base\ModelManifest
  */
 class ModelManifest extends Facade
 {

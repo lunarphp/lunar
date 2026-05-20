@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\DiscountTypes;
+namespace Lunar\Core\DiscountTypes;
 
-use Lunar\Base\ValueObjects\Cart\DiscountBreakdown;
-use Lunar\Base\ValueObjects\Cart\DiscountBreakdownLine;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Cart;
-use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdownLine;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class AmountOff extends AbstractDiscountType
 {

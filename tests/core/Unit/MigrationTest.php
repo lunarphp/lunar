@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
-use Lunar\Models\Product;
-use Lunar\Models\ProductOption;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductOption;
 use Lunar\Tests\Core\TestCase;
 
 use function Pest\Laravel\artisan;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasTranslations;
-use Lunar\Database\Factories\AttributeFactory;
-use Lunar\Facades\DB;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\HasTranslations;
+use Lunar\Core\Database\Factories\AttributeFactory;
+use Lunar\Core\Facades\DB;
 
 /**
  * @property int $id

@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use DateTime;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Lunar\Exceptions\SchedulingException;
+use Lunar\Core\Exceptions\SchedulingException;
 
 trait CanScheduleAvailability
 {

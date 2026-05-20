@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Lunar\Models\Country;
+use Lunar\Core\Models\Country;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

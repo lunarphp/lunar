@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Exceptions\Carts;
+namespace Lunar\Core\Exceptions\Carts;
 
 class BillingAddressIncompleteException extends CartException
 {

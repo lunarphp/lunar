@@ -1,6 +1,6 @@
 # 0002 — Core namespace change
 
-- Status: draft
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-05-20
 - TODO item: "Change to `\Lunar\Core` namespace"

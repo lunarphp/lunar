@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
-use Lunar\Jobs\SyncTags;
-use Lunar\Models\Tag;
+use Lunar\Core\Jobs\SyncTags;
+use Lunar\Core\Models\Tag;
 
 trait HasTags
 {

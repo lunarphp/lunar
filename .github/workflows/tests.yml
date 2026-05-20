@@ -24,7 +24,7 @@ jobs:
         php: ${{ fromJSON(github.event_name == 'pull_request' && '["8.4"]' || '["8.3","8.4"]') }}
         laravel: ["12.*", "13.*"]
         dependency-version: [prefer-stable]
-        testsuite: [core, admin, shipping, stripe, search]
+        testsuite: [core, admin, shipping, stripe, search, upgrade]
         extend-models: ${{ fromJSON(github.event_name == 'pull_request' && '["false"]' || '["true","false"]') }}
         include:
           - laravel: 12.*

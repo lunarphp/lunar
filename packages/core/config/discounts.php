@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Base\Validation\CouponValidator;
+use Lunar\Core\Base\Validation\CouponValidator;
 
 return [
 

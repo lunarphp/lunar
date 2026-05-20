@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Tag;
+use Lunar\Core\Models\Tag;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

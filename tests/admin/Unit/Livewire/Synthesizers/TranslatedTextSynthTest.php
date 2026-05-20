@@ -2,9 +2,9 @@
 
 use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Lunar\Admin\Support\Synthesizers\TranslatedTextSynth;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Language;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 use stdClass;
 

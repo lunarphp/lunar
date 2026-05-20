@@ -3,7 +3,7 @@
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\EditDiscount;
-use Lunar\Models\Discount;
+use Lunar\Core\Models\Discount;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 use function Pest\Laravel\assertDatabaseHas;

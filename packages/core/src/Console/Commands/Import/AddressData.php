@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Console\Commands\Import;
+namespace Lunar\Core\Console\Commands\Import;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Laravel\Prompts\Progress;
-use Lunar\Models\Country;
+use Lunar\Core\Models\Country;
 
 use function Laravel\Prompts\progress;
 

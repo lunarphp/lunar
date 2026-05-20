@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Discountable;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Discountable;
+use Lunar\Core\Models\ProductVariant;
 
 class DiscountableFactory extends BaseFactory
 {

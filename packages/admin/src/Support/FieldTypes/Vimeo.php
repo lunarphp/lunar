@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\FieldTypes;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Forms\Components\Vimeo as VimeoInput;
 use Lunar\Admin\Support\Synthesizers\VimeoSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 class Vimeo extends BaseFieldType
 {

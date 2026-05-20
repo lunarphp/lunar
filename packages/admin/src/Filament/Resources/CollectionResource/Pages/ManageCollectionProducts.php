@@ -18,8 +18,8 @@ use Lunar\Admin\Events\CollectionProductDetached;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Models\Contracts\Product as ProductContract;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Product;
 
 class ManageCollectionProducts extends BaseManageRelatedRecords
 {

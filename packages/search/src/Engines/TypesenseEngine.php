@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\EngineManager;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Product;
 use Lunar\Search\Data\SearchFacet;
 use Lunar\Search\Data\SearchFacetValue;
 use Lunar\Search\Data\SearchHit;

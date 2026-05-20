@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\FieldTypes\Dropdown;
-use Lunar\FieldTypes\ListField;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Product;
-use Lunar\Models\ProductOption;
+use Lunar\Core\FieldTypes\Dropdown;
+use Lunar\Core\FieldTypes\ListField;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductOption;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Brand;
-use Lunar\Models\Product;
-use Lunar\Models\ProductType;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductType;
 
 class ProductFactory extends BaseFactory
 {

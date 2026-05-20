@@ -2,11 +2,11 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
-use Lunar\Database\State\ConvertTaxbreakdown;
-use Lunar\Facades\DB;
-use Lunar\Models\Channel;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
+use Lunar\Core\Database\State\ConvertTaxbreakdown;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

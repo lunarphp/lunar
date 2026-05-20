@@ -2,7 +2,7 @@
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Config;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Product;
 use Lunar\Search\Data\SearchResults;
 use Lunar\Search\Engines\MeilisearchEngine;
 use Lunar\Search\Facades\Search;
@@ -35,7 +35,7 @@ function mockWithResponse(array $response)
 
 beforeEach(function () {
     Config::set('scout.driver', 'meilisearch');
-    Config::set('lunar.search.engine_map.Lunar\Models\Product', 'meilisearch');
+    Config::set('lunar.search.engine_map.Lunar\Core\Models\Product', 'meilisearch');
 });
 
 it('can fetch empty results', function () {

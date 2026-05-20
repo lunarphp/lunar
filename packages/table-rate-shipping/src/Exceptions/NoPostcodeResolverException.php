@@ -2,7 +2,7 @@
 
 namespace Lunar\Shipping\Exceptions;
 
-use Lunar\Exceptions\LunarException;
+use Lunar\Core\Exceptions\LunarException;
 
 class NoPostcodeResolverException extends LunarException
 {

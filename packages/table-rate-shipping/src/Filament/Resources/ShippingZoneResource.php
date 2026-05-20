@@ -19,8 +19,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Country;
-use Lunar\Models\State;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\State;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 use Lunar\Shipping\Models\Contracts\ShippingZone;
 

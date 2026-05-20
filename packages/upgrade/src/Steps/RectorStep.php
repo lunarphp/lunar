@@ -26,7 +26,10 @@ class RectorStep implements UpgradeStep
 
     public function run(StepContext $context): void
     {
-        if (LunarSetList::V1_TO_V2 === []) {
+        $renameCount = count(LunarSetList::V1_TO_V2_CLASS_RENAMES);
+        $extraRules = count(LunarSetList::V1_TO_V2);
+
+        if ($renameCount === 0 && $extraRules === 0) {
             $context->report->record(
                 $this->name(),
                 StepReport::STATUS_SKIPPED,
@@ -36,12 +39,13 @@ class RectorStep implements UpgradeStep
             return;
         }
 
-        // Future specs land their invocation here. The skeleton intentionally
-        // does not shell out to `rector process` until at least one rule exists.
+        // Future specs land the actual `rector process` invocation here. The
+        // skeleton records what would run; users invoke the bundled
+        // `config/rector.php` against their app directly until then.
         $context->report->record(
             $this->name(),
             $context->dryRun ? StepReport::STATUS_DRY_RUN : StepReport::STATUS_OK,
-            'Would run '.count(LunarSetList::V1_TO_V2).' Rector rule(s) against '.count($context->paths).' path(s).',
+            "Would rewrite {$renameCount} class reference(s) across ".count($context->paths).' path(s).',
         );
     }
 }

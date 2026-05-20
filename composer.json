@@ -58,13 +58,13 @@
             "packages/search/src/helpers.php"
         ],
         "psr-4": {
-            "Lunar\\": "packages/core/src",
+            "Lunar\\Core\\": "packages/core/src",
             "Lunar\\Admin\\": "packages/admin/src/",
             "Lunar\\Admin\\Database\\Factories\\": "packages/admin/database/factories",
             "Lunar\\Admin\\Database\\State\\": "packages/admin/database/state",
-            "Lunar\\Database\\Factories\\": "packages/core/database/factories",
-            "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
-            "Lunar\\Database\\State\\": "packages/core/database/state",
+            "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
+            "Lunar\\Core\\Database\\Seeders\\": "packages/core/database/seeders",
+            "Lunar\\Core\\Database\\State\\": "packages/core/database/state",
             "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",
             "Lunar\\Paypal\\": "packages/paypal/src/",
@@ -113,7 +113,7 @@
                 "Lunar\\Opayo\\OpayoServiceProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
                 "Lunar\\Upgrade\\UpgradeServiceProvider",
-                "Lunar\\LunarServiceProvider"
+                "Lunar\\Core\\LunarServiceProvider"
             ]
         }
     },

@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\Contracts\Country as CountryContract;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
 
 class PostcodeResolver implements PostcodeResolverInterface

@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\Database\State;
+namespace Lunar\Core\Database\State;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
-use Lunar\Models\Brand;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
 
 class EnsureBrandsAreUpgraded
 {

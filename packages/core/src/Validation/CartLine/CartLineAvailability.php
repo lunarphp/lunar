@@ -1,19 +1,19 @@
 <?php
 
-namespace Lunar\Validation\CartLine;
+namespace Lunar\Core\Validation\CartLine;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Lunar\Base\Purchasable;
-use Lunar\Base\Traits\HasCustomerGroups;
-use Lunar\Models\Channel;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\Channel as ChannelContract;
-use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
-use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Product;
-use Lunar\Validation\BaseValidator;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Base\Traits\HasCustomerGroups;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Channel as ChannelContract;
+use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
+use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Validation\BaseValidator;
 
 class CartLineAvailability extends BaseValidator
 {

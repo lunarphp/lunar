@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Country;
-use Lunar\Models\TaxZone;
-use Lunar\Models\TaxZoneCountry;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\TaxZone;
+use Lunar\Core\Models\TaxZoneCountry;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

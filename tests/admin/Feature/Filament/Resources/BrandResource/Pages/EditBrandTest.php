@@ -3,11 +3,11 @@
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\EditBrand;
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Brand;
-use Lunar\Models\Language;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

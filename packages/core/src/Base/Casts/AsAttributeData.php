@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Base\Casts;
+namespace Lunar\Core\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Collection;
-use Lunar\Base\FieldType;
-use Lunar\Exceptions\FieldTypeException;
+use Lunar\Core\Base\FieldType;
+use Lunar\Core\Exceptions\FieldTypeException;
 
 class AsAttributeData implements Castable
 {

@@ -9,7 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Synthesizers\FileSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 class File extends BaseFieldType
 {

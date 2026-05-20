@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\FieldTypes;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Forms\Components\TranslatedText as TranslatedTextComponent;
 use Lunar\Admin\Support\Synthesizers\TranslatedTextSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 class TranslatedText extends BaseFieldType
 {

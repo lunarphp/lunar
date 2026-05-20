@@ -3,7 +3,7 @@
 namespace Lunar\Admin\Support\Synthesizers;
 
 use Illuminate\Support\Arr;
-use Lunar\FieldTypes\File;
+use Lunar\Core\FieldTypes\File;
 
 class FileSynth extends AbstractFieldSynth
 {

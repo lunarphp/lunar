@@ -3,7 +3,7 @@
 namespace Lunar\Stripe\Actions;
 
 use Illuminate\Support\Facades\DB;
-use Lunar\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Stripe\Facades\Stripe;
 use Stripe\PaymentIntent;
 

@@ -1,8 +1,8 @@
 <?php
 
 use Filament\Forms\Components\Select;
-use Lunar\FieldTypes\Dropdown;
-use Lunar\Models\Attribute;
+use Lunar\Core\FieldTypes\Dropdown;
+use Lunar\Core\Models\Attribute;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)

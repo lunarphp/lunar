@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Actions\Carts;
+namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Actions\AbstractAction;
-use Lunar\Base\Purchasable;
-use Lunar\Exceptions\InvalidCartLineQuantityException;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Exceptions\InvalidCartLineQuantityException;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class AddOrUpdatePurchasable extends AbstractAction
 {

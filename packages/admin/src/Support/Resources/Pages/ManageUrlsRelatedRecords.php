@@ -24,7 +24,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Events\ModelUrlsUpdated;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Facades\ModelManifest;
+use Lunar\Core\Facades\ModelManifest;
 
 class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
 {

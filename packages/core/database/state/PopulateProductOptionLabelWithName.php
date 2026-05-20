@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Database\State;
+namespace Lunar\Core\Database\State;
 
 use Illuminate\Support\Facades\Schema;
-use Lunar\Facades\DB;
-use Lunar\Models\ProductOption;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\ProductOption;
 
 class PopulateProductOptionLabelWithName
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Lunar\Pipelines\Cart;
+namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
-use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
-use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
-use Lunar\DataTypes\Price;
-use Lunar\Facades\ShippingManifest;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 final class ApplyShipping
 {

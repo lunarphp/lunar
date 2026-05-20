@@ -2,11 +2,11 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Base\AttributeManifest;
-use Lunar\Base\AttributeManifestInterface;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\Channel;
+use Lunar\Core\Base\AttributeManifest;
+use Lunar\Core\Base\AttributeManifestInterface;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Channel;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

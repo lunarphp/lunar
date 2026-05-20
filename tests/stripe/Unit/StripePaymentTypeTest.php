@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
-use Lunar\Base\DataTransferObjects\PaymentAuthorize;
-use Lunar\Models\Currency;
-use Lunar\Models\Transaction;
+use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Transaction;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Models\StripePaymentIntent;

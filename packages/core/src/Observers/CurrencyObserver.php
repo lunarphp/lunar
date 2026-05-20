@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Jobs\Currencies\CreateCurrencyPrices;
-use Lunar\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Models\Currency;
+use Lunar\Core\Jobs\Currencies\CreateCurrencyPrices;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Currency;
 
 class CurrencyObserver
 {

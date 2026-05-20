@@ -6,7 +6,7 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
-use Lunar\LunarServiceProvider;
+use Lunar\Core\LunarServiceProvider;
 use Lunar\Opayo\OpayoServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
 use Lunar\Tests\TestCase as BaseTestCase;

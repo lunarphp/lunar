@@ -17,11 +17,11 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\ModelPricesUpdated;
-use Lunar\DataTypes\Price as PriceDataType;
-use Lunar\Facades\DB;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
+use Lunar\Core\DataTypes\Price as PriceDataType;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Price;
 
 class PriceRelationManager extends BaseRelationManager
 {

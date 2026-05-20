@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
-use Lunar\Facades\DB;
-use Lunar\Models\Attribute;
-use Lunar\Models\Currency;
-use Lunar\Models\Product;
-use Lunar\Models\TaxClass;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\TaxClass;
 
 class ListProducts extends BaseListRecords
 {

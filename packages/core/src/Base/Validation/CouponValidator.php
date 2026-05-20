@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Base\Validation;
+namespace Lunar\Core\Base\Validation;
 
-use Lunar\Models\Discount;
+use Lunar\Core\Models\Discount;
 
 class CouponValidator implements CouponValidatorInterface
 {

@@ -10,8 +10,8 @@ use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionC
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\DiscountTypes\BuyXGetY;
-use Lunar\Models\Currency;
+use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\Models\Currency;
 
 class EditDiscount extends BaseEditRecord
 {

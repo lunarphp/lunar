@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\Synthesizers;
 
-use Lunar\FieldTypes\YouTube;
+use Lunar\Core\FieldTypes\YouTube;
 
 class YouTubeSynth extends AbstractFieldSynth
 {

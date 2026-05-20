@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
-use Lunar\Base\DataTransferObjects\PricingResponse;
-use Lunar\Models\Contracts\Currency;
-use Lunar\Models\Contracts\CustomerGroup;
+use Lunar\Core\Base\DataTransferObjects\PricingResponse;
+use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Contracts\CustomerGroup;
 
 interface PricingManagerInterface
 {

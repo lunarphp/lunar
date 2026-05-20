@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\Managers;
 
 use Illuminate\Support\Manager;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Shipping\Drivers\ShippingMethods\Collection;
 use Lunar\Shipping\Drivers\ShippingMethods\FlatRate;
 use Lunar\Shipping\Drivers\ShippingMethods\FreeShipping;

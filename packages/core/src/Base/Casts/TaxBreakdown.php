@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\Base\Casts;
+namespace Lunar\Core\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Currency;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Currency;
 use Spatie\LaravelBlink\BlinkFacade;
 
 class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
@@ -19,11 +19,11 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return \Lunar\Base\ValueObjects\Cart\TaxBreakdown
+     * @return \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown
      */
     public function get($model, $key, $value, $attributes)
     {
-        $breakdown = new \Lunar\Base\ValueObjects\Cart\TaxBreakdown;
+        $breakdown = new \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 
         $breakdown->amounts = collect(
             json_decode($value, false)
@@ -58,8 +58,8 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if ($value && ! is_a($value, \Lunar\Base\ValueObjects\Cart\TaxBreakdown::class)) {
-            throw new \Exception('Tax breakdown must be instance of Lunar\Base\ValueObjects\Cart\TaxBreakdown');
+        if ($value && ! is_a($value, \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown::class)) {
+            throw new \Exception('Tax breakdown must be instance of Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown');
         }
 
         if (! $value) {

@@ -13,10 +13,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Admin\Support\Tables\Columns\ThumbnailImageColumn;
-use Lunar\Models\Contracts\Product as ProductContract;
-use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 
 class ProductConditionRelationManager extends BaseRelationManager
 {

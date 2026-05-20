@@ -2,7 +2,7 @@
 
 namespace Lunar\Stripe\DataTransferObjects;
 
-use Lunar\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Stripe\PaymentIntent;
 
 class OrderIntent

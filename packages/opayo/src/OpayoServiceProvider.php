@@ -5,7 +5,7 @@ namespace Lunar\Opayo;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Lunar\Facades\Payments;
+use Lunar\Core\Facades\Payments;
 use Lunar\Opayo\Components\PaymentForm;
 
 class OpayoServiceProvider extends ServiceProvider

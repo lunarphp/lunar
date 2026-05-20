@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Models\CustomerGroup;
+use Lunar\Core\Models\CustomerGroup;
 
 class CustomerGroupFactory extends BaseFactory
 {

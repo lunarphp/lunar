@@ -3,7 +3,7 @@
 namespace Lunar\Admin\Actions\Products;
 
 use Illuminate\Support\Str;
-use Lunar\Utils\Arr;
+use Lunar\Core\Utils\Arr;
 
 class MapVariantsToProductOptions
 {

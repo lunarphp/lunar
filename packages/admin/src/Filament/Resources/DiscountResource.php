@@ -35,12 +35,12 @@ use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimi
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductVariantLimitationRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\DiscountTypes\AmountOff;
-use Lunar\DiscountTypes\BuyXGetY;
-use Lunar\Facades\Discounts;
-use Lunar\Models\Contracts\Discount as DiscountContract;
-use Lunar\Models\Currency;
-use Lunar\Models\Discount;
+use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\Facades\Discounts;
+use Lunar\Core\Models\Contracts\Discount as DiscountContract;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Discount;
 
 class DiscountResource extends BaseResource
 {

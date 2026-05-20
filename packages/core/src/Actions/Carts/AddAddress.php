@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Actions\Carts;
+namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Actions\AbstractAction;
-use Lunar\Base\Addressable;
-use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Base\Addressable;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartAddress;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class AddAddress extends AbstractAction
 {

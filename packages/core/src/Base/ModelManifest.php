@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -130,7 +130,7 @@ class ModelManifest implements ModelManifestInterface
         $lunarContract = collect(
             $class->getInterfaceNames()
         )->first(
-            fn ($contract) => str_contains("Lunar\\Models\\Contracts\\{$shortName}", $contract)
+            fn ($contract) => str_contains("Lunar\\Core\\Models\\Contracts\\{$shortName}", $contract)
         );
 
         return $lunarContract ?: "{$namespace}\\Contracts\\$shortName";
@@ -148,7 +148,7 @@ class ModelManifest implements ModelManifestInterface
 
         $shortName = (new \ReflectionClass($modelContract))->getShortName();
 
-        return 'Lunar\\Models\\'.$shortName;
+        return 'Lunar\\Core\\Models\\'.$shortName;
     }
 
     public function findLunarModel(string|BaseModel $model): ?string
@@ -168,7 +168,7 @@ class ModelManifest implements ModelManifestInterface
     {
         $class = (new \ReflectionClass($model));
 
-        return $class->getNamespaceName() == 'Lunar\\Models';
+        return $class->getNamespaceName() == 'Lunar\\Core\\Models';
     }
 
     public function morphMap(): void

@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Facades;
+namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Utils\MeasurementConverter;
+use Lunar\Core\Utils\MeasurementConverter;
 
 /**
  * @method static MeasurementConverter from(string $measurement)

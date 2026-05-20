@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Facades\DB;
-use Lunar\Models\Contracts\Language as LanguageContract;
-use Lunar\Models\Language;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Contracts\Language as LanguageContract;
+use Lunar\Core\Models\Language;
 
 class LanguageObserver
 {

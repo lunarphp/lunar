@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Models\Order;
-use Lunar\Models\OrderLine;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\ProductVariant;
 
 class OrderLineFactory extends BaseFactory
 {

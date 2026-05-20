@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Base\DataTransferObjects\PaymentAuthorize;
-use Lunar\Base\PaymentManagerInterface;
-use Lunar\Facades\Payments;
+use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Core\Base\PaymentManagerInterface;
+use Lunar\Core\Facades\Payments;
 use Lunar\Tests\Core\Stubs\TestPaymentDriver;
 use Lunar\Tests\Core\TestCase;
 

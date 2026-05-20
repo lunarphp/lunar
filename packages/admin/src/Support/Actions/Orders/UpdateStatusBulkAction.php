@@ -6,7 +6,7 @@ use Filament\Actions\BulkAction;
 use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Collection;
 use Lunar\Admin\Support\Actions\Traits\UpdatesOrderStatus;
-use Lunar\Facades\DB;
+use Lunar\Core\Facades\DB;
 
 class UpdateStatusBulkAction extends BulkAction
 {

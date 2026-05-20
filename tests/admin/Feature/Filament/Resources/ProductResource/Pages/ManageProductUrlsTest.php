@@ -1,8 +1,8 @@
 <?php
 
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

@@ -14,7 +14,7 @@ use Lunar\Admin\Filament\Resources\TagResource\Pages\CreateTag;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\EditTag;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\ListTags;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Tag as TagContract;
+use Lunar\Core\Models\Contracts\Tag as TagContract;
 
 class TagResource extends BaseResource
 {

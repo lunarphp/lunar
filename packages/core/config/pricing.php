@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Pricing\DefaultPriceFormatter;
+use Lunar\Core\Pricing\DefaultPriceFormatter;
 
 return [
 

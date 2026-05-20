@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
-use Lunar\Facades\Converter;
-use Lunar\Utils\MeasurementConverter;
+use Lunar\Core\Facades\Converter;
+use Lunar\Core\Utils\MeasurementConverter;
 
 trait HasDimensions
 {

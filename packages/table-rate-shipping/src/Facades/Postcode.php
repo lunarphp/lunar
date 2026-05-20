@@ -4,7 +4,7 @@ namespace Lunar\Shipping\Facades;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
-use Lunar\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\Contracts\Country as CountryContract;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
 use Lunar\Shipping\Managers\PostcodeManager;
 

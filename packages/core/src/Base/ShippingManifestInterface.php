@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Closure;
 use Illuminate\Support\Collection;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Contracts\Cart;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Contracts\Cart;
 
 interface ShippingManifestInterface
 {

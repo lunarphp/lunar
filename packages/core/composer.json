@@ -21,10 +21,10 @@
     ],
     "autoload": {
         "psr-4": {
-            "Lunar\\": "src",
-            "Lunar\\Database\\Factories\\": "database/factories",
-            "Lunar\\Database\\Seeders\\": "database/seeders",
-            "Lunar\\Database\\State\\": "database/state"
+            "Lunar\\Core\\": "src",
+            "Lunar\\Core\\Database\\Factories\\": "database/factories",
+            "Lunar\\Core\\Database\\Seeders\\": "database/seeders",
+            "Lunar\\Core\\Database\\State\\": "database/state"
         },
         "files": [
             "src/helpers.php"
@@ -33,7 +33,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lunar\\LunarServiceProvider"
+                "Lunar\\Core\\LunarServiceProvider"
             ]
         }
     },

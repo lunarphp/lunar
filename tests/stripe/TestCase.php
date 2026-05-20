@@ -5,7 +5,7 @@ namespace Lunar\Tests\Stripe;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
-use Lunar\LunarServiceProvider;
+use Lunar\Core\LunarServiceProvider;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\StripePaymentsServiceProvider;
 use Lunar\Tests\Stubs\User;

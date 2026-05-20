@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Base\DataTransferObjects;
+namespace Lunar\Core\Base\DataTransferObjects;
 
-use Lunar\Models\Contracts\Cart;
-use Lunar\Models\Contracts\CartLine;
-use Lunar\Models\Contracts\Discount;
+use Lunar\Core\Models\Contracts\Cart;
+use Lunar\Core\Models\Contracts\CartLine;
+use Lunar\Core\Models\Contracts\Discount;
 
 class CartDiscount
 {

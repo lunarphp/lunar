@@ -3,8 +3,8 @@
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Lunar\Admin\Support\FieldTypes\TextField;
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Attribute;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Attribute;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)

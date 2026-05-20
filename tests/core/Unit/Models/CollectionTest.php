@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Collection;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Collection;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

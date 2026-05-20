@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Base\Purchasable;
-use Lunar\Exceptions\NonPurchasableItemException;
-use Lunar\Models\CartLine;
-use Lunar\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Exceptions\NonPurchasableItemException;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 
 class CartLineObserver
 {

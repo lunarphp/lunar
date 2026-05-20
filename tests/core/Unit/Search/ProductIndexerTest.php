@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
-use Lunar\Search\ProductIndexer;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Search\ProductIndexer;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('search', 'indexer');

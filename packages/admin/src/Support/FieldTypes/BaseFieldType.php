@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\FieldTypes;
 use Filament\Schemas\Components\Component;
 use Livewire\Livewire;
 use Lunar\Admin\Support\Synthesizers\TextSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 abstract class BaseFieldType
 {

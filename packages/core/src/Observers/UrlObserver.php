@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Contracts\Url as UrlContract;
-use Lunar\Models\Url;
+use Lunar\Core\Models\Contracts\Url as UrlContract;
+use Lunar\Core\Models\Url;
 
 class UrlObserver
 {

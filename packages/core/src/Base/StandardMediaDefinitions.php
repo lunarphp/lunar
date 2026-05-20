@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Spatie\Image\Enums\BorderType;
 use Spatie\Image\Enums\Fit;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Support\Arr;
-use Lunar\Base\FieldType;
+use Lunar\Core\Base\FieldType;
 
 trait HasTranslations
 {

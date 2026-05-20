@@ -18,9 +18,9 @@ beforeEach(function () {
     });
 
     DB::table('upgrade_test_table')->insert([
-        ['subject_type' => 'Lunar\Models\Product'],
-        ['subject_type' => 'Lunar\Models\Product'],
-        ['subject_type' => 'Lunar\Models\Order'],
+        ['subject_type' => 'Lunar\Core\Models\Product'],
+        ['subject_type' => 'Lunar\Core\Models\Product'],
+        ['subject_type' => 'Lunar\Core\Models\Order'],
         ['subject_type' => 'App\Models\Other'],
     ]);
 });
@@ -33,8 +33,8 @@ it('rewrites mapped class strings and leaves others alone', function () {
     $rewriter = app(ClassStringRewriter::class);
 
     $affected = $rewriter->rewrite('upgrade_test_table', 'subject_type', [
-        'Lunar\Models\Product' => 'Lunar\Core\Models\Product',
-        'Lunar\Models\Order' => 'Lunar\Core\Models\Order',
+        'Lunar\Core\Models\Product' => 'Lunar\Core\Models\Product',
+        'Lunar\Core\Models\Order' => 'Lunar\Core\Models\Order',
     ]);
 
     expect($affected)->toBe(3);
@@ -49,14 +49,14 @@ it('reports counts in dry-run without writing', function () {
     $rewriter = app(ClassStringRewriter::class);
 
     $counts = $rewriter->dryRun('upgrade_test_table', 'subject_type', [
-        'Lunar\Models\Product' => 'Lunar\Core\Models\Product',
-        'Lunar\Models\Missing' => 'Lunar\Core\Models\Missing',
+        'Lunar\Core\Models\Product' => 'Lunar\Core\Models\Product',
+        'Lunar\Core\Models\Missing' => 'Lunar\Core\Models\Missing',
     ]);
 
     expect($counts)->toBe([
-        'Lunar\Models\Product' => 2,
-        'Lunar\Models\Missing' => 0,
+        'Lunar\Core\Models\Product' => 2,
+        'Lunar\Core\Models\Missing' => 0,
     ]);
 
-    assertDatabaseHas('upgrade_test_table', ['subject_type' => 'Lunar\Models\Product']);
+    assertDatabaseHas('upgrade_test_table', ['subject_type' => 'Lunar\Core\Models\Product']);
 });

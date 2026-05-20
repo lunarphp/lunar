@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Jobs\Currencies;
+namespace Lunar\Core\Jobs\Currencies;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -8,8 +8,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
-use Lunar\Models\Contracts\Price;
-use Lunar\Models\Currency;
+use Lunar\Core\Models\Contracts\Price;
+use Lunar\Core\Models\Currency;
 
 class SyncPriceCurrencies implements ShouldQueue
 {
@@ -34,7 +34,7 @@ class SyncPriceCurrencies implements ShouldQueue
             ->get();
 
         foreach ($currencies as $currency) {
-            $priceCounterpart = \Lunar\Models\Price::where('priceable_id', $this->price->priceable_id)
+            $priceCounterpart = \Lunar\Core\Models\Price::where('priceable_id', $this->price->priceable_id)
                 ->where('priceable_type', $this->price->priceable_type)
                 ->where('currency_id', $currency->id)
                 ->where('id', '!=', $this->price->id)
@@ -43,7 +43,7 @@ class SyncPriceCurrencies implements ShouldQueue
                 ->first();
 
             if (! $priceCounterpart) {
-                $priceCounterpart = (new \Lunar\Models\Price)->forceFill([
+                $priceCounterpart = (new \Lunar\Core\Models\Price)->forceFill([
                     ...Arr::except($this->price->getAttributes(), ['id']),
                     'currency_id' => $currency->id,
                     'price' => $this->price->price->value * $currency->exchange_rate,

@@ -1,14 +1,14 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Lunar\Base\BaseModel;
-use Lunar\Facades\ModelManifest;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Facades\ModelManifest;
 use ReflectionClass;
 
 trait HasModelExtending

@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Rules;
+namespace Lunar\Core\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Lunar\Base\Validation\CouponValidator;
+use Lunar\Core\Base\Validation\CouponValidator;
 
 class ValidCoupon implements ValidationRule
 {

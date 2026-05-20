@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Closure;
-use Lunar\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 
 abstract class CartLineModifier
 {

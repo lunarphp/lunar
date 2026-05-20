@@ -1,15 +1,15 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Base\Addressable;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Database\Factories\AddressFactory;
+use Lunar\Core\Base\Addressable;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Database\Factories\AddressFactory;
 
 /**
  * @property int $id

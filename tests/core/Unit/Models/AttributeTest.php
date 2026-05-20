@@ -2,9 +2,9 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('models');
@@ -78,7 +78,7 @@ test('can delete an attribute', function () {
         ]);
 
     DB::table('lunar_attributables')->insert([
-        'attributable_type' => 'Lunar\Models\ProductType',
+        'attributable_type' => 'Lunar\Core\Models\ProductType',
         'attributable_id' => 1,
         'attribute_id' => $attribute->id,
     ]);

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Schema;
 use Lunar\Admin\Support\Facades\LunarPanel;
-use Lunar\Base\Migration;
+use Lunar\Core\Base\Migration;
 use Spatie\Permission\Models\Permission;
 
 return new class extends Migration

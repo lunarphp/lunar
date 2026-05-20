@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\Managers;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\Contracts\Country as CountryContract;
 use Lunar\Shipping\Exceptions\NoPostcodeResolverException;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
 

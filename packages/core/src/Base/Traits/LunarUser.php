@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Lunar\Models\Cart;
-use Lunar\Models\Customer;
-use Lunar\Models\Order;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Order;
 
 trait LunarUser
 {

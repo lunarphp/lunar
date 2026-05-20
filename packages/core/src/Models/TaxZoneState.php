@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Database\Factories\TaxZoneStateFactory;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Database\Factories\TaxZoneStateFactory;
 
 /**
  * @property int $id

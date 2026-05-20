@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Core\Unit\Base\Extendable;
 
-use Lunar\Facades\ModelManifest;
-use Lunar\Models\Product;
-use Lunar\Models\ProductOption;
-use Lunar\Models\ProductOptionValue;
+use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductOption;
+use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Tests\Core\TestCase;
 
 class ExtendableTestCase extends TestCase

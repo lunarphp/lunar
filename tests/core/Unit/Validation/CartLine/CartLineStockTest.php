@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Exceptions\Carts\CartException;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Exceptions\Carts\CartException;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Validation\CartLine\CartLineStock;
 use Lunar\Tests\Core\TestCase;
-use Lunar\Validation\CartLine\CartLineStock;
 
 uses(TestCase::class)
     ->group('validation.cart_line');

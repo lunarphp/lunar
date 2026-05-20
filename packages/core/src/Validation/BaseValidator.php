@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Validation;
+namespace Lunar\Core\Validation;
 
 use Illuminate\Support\MessageBag;
-use Lunar\Exceptions\Carts\CartException;
+use Lunar\Core\Exceptions\Carts\CartException;
 
 abstract class BaseValidator
 {

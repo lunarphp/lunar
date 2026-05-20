@@ -23,7 +23,7 @@ use Lunar\Admin\Filament\Resources\ChannelResource\Pages\CreateChannel;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages\EditChannel;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages\ListChannels;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Channel as ChannelContract;
+use Lunar\Core\Models\Contracts\Channel as ChannelContract;
 
 class ChannelResource extends BaseResource
 {

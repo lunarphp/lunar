@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Collection;
-use Lunar\Models\CollectionGroup;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\CollectionGroup;
 
 class CollectionFactory extends BaseFactory
 {

@@ -9,10 +9,10 @@ use Lunar\Admin\Support\ActivityLog\Orders\EmailNotification;
 use Lunar\Admin\Support\ActivityLog\Orders\Intent;
 use Lunar\Admin\Support\ActivityLog\Orders\Refund;
 use Lunar\Admin\Support\ActivityLog\Orders\StatusUpdate;
-use Lunar\Base\BaseModel;
-use Lunar\Models\Order;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 
 class Manifest
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Models\Channel;
+use Lunar\Core\Models\Channel;
 
 class ChannelFactory extends BaseFactory
 {

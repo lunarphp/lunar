@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\Synthesizers;
 
-use Lunar\FieldTypes\Dropdown;
+use Lunar\Core\FieldTypes\Dropdown;
 
 class DropdownSynth extends AbstractFieldSynth
 {

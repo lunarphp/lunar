@@ -6,9 +6,9 @@ use Filament\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
-use Lunar\Facades\DB;
-use Lunar\Models\Attribute;
-use Lunar\Models\Collection;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Collection;
 
 class CreateRootCollection extends CreateAction
 {
@@ -63,7 +63,7 @@ class CreateRootCollection extends CreateAction
 
         $formInput = TextInput::class;
 
-        if ($attribute?->type == \Lunar\FieldTypes\TranslatedText::class) {
+        if ($attribute?->type == \Lunar\Core\FieldTypes\TranslatedText::class) {
             $formInput = TranslatedText::class;
         }
 

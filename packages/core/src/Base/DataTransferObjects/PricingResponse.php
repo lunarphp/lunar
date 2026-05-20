@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Base\DataTransferObjects;
+namespace Lunar\Core\Base\DataTransferObjects;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Contracts\Price;
+use Lunar\Core\Models\Contracts\Price;
 
 class PricingResponse
 {

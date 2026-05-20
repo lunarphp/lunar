@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,16 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\DiscountBreakdown;
-use Lunar\Base\Casts\Price;
-use Lunar\Base\Casts\ShippingBreakdown;
-use Lunar\Base\Casts\TaxBreakdown;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasTags;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Base\Traits\Searchable;
-use Lunar\Database\Factories\OrderFactory;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Casts\DiscountBreakdown;
+use Lunar\Core\Base\Casts\Price;
+use Lunar\Core\Base\Casts\ShippingBreakdown;
+use Lunar\Core\Base\Casts\TaxBreakdown;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\HasTags;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Database\Factories\OrderFactory;
 
 /**
  * @property int $id

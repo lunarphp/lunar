@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\ProductOption;
-use Lunar\Models\ProductOptionValue;
+use Lunar\Core\Models\ProductOption;
+use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

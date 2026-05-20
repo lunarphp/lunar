@@ -4,7 +4,7 @@ namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Resources\Pages\ManageUrlsRelatedRecords;
-use Lunar\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class ManageCollectionUrls extends ManageUrlsRelatedRecords
 {

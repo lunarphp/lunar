@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Contracts\ProductOption as ProductOptionContract;
-use Lunar\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
-use Lunar\Models\ProductOption;
+use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
+use Lunar\Core\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
+use Lunar\Core\Models\ProductOption;
 
 class ProductOptionObserver
 {

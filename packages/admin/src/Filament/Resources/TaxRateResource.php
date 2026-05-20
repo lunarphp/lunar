@@ -18,7 +18,7 @@ use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\EditTaxRate;
 use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\ListTaxRates;
 use Lunar\Admin\Filament\Resources\TaxRateResource\RelationManagers\TaxRateAmountRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\TaxRate as TaxRateContract;
+use Lunar\Core\Models\Contracts\TaxRate as TaxRateContract;
 
 class TaxRateResource extends BaseResource
 {

@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Models\Discount;
+use Lunar\Core\Models\Discount;
 
 return [
     'plural_label' => 'Mã giảm giá',

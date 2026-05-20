@@ -23,8 +23,8 @@ use Lunar\Admin\Support\Actions\Orders\UpdateStatusBulkAction;
 use Lunar\Admin\Support\CustomerStatus;
 use Lunar\Admin\Support\OrderStatus;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Order as OrderContract;
-use Lunar\Models\Order;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 
 class OrderResource extends BaseResource
 {

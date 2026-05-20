@@ -2,18 +2,18 @@
 
 namespace Lunar\Tests\Core\Stubs;
 
-use Lunar\Base\Addressable;
-use Lunar\Base\Purchasable;
-use Lunar\Base\TaxDriver;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Contracts\CartLine as CartLineContract;
-use Lunar\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
-use Lunar\Models\Currency;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxRateAmount;
+use Lunar\Core\Base\Addressable;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Base\TaxDriver;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxRateAmount;
 
 class TestTaxDriver implements TaxDriver
 {

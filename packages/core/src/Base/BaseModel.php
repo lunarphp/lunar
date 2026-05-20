@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Base\Traits\HasModelExtending;
+use Lunar\Core\Base\Traits\HasModelExtending;
 
 abstract class BaseModel extends Model
 {

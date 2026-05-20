@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Console\Commands;
+namespace Lunar\Core\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lunar\Addons\Manifest;
+use Lunar\Core\Addons\Manifest;
 
 class AddonsDiscover extends Command
 {

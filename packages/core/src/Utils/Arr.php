@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Utils;
+namespace Lunar\Core\Utils;
 
 use TreeWalker;
 

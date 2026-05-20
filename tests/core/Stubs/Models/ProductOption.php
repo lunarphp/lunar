@@ -5,7 +5,7 @@ namespace Lunar\Tests\Core\Stubs\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
-class ProductOption extends \Lunar\Models\ProductOption
+class ProductOption extends \Lunar\Core\Models\ProductOption
 {
     use SizesTrait;
 

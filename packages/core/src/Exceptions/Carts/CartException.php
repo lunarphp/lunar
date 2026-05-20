@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Exceptions\Carts;
+namespace Lunar\Core\Exceptions\Carts;
 
 use Illuminate\Contracts\Support\MessageBag;
-use Lunar\Exceptions\LunarException;
+use Lunar\Core\Exceptions\LunarException;
 
 class CartException extends LunarException
 {

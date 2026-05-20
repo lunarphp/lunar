@@ -5,7 +5,7 @@ namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Lunar\Admin\Filament\Resources\OrderResource;
-use Lunar\Models\Order;
+use Lunar\Core\Models\Order;
 
 class LatestOrdersTable extends TableWidget
 {

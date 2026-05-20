@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\ProductVariant;
 
 class CartLineFactory extends BaseFactory
 {

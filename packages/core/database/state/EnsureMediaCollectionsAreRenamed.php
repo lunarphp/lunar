@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\Database\State;
+namespace Lunar\Core\Database\State;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Schema;
-use Lunar\Facades\DB;
-use Lunar\Models\Brand;
-use Lunar\Models\Collection;
-use Lunar\Models\Product;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Product;
 
 class EnsureMediaCollectionsAreRenamed
 {

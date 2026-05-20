@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\DataTypes;
+namespace Lunar\Core\DataTypes;
 
-use Lunar\Exceptions\InvalidDataTypeValueException;
-use Lunar\Models\Contracts\Currency;
-use Lunar\Pricing\DefaultPriceFormatter;
+use Lunar\Core\Exceptions\InvalidDataTypeValueException;
+use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Pricing\DefaultPriceFormatter;
 
 class Price
 {

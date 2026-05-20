@@ -1,12 +1,12 @@
 <?php
 
-use Lunar\Base\OrderReferenceGenerator;
-use Lunar\Pipelines\Order\Creation\CleanUpOrderLines;
-use Lunar\Pipelines\Order\Creation\CreateOrderAddresses;
-use Lunar\Pipelines\Order\Creation\CreateOrderLines;
-use Lunar\Pipelines\Order\Creation\CreateShippingLine;
-use Lunar\Pipelines\Order\Creation\FillOrderFromCart;
-use Lunar\Pipelines\Order\Creation\MapDiscountBreakdown;
+use Lunar\Core\Base\OrderReferenceGenerator;
+use Lunar\Core\Pipelines\Order\Creation\CleanUpOrderLines;
+use Lunar\Core\Pipelines\Order\Creation\CreateOrderAddresses;
+use Lunar\Core\Pipelines\Order\Creation\CreateOrderLines;
+use Lunar\Core\Pipelines\Order\Creation\CreateShippingLine;
+use Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart;
+use Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown;
 
 return [
     /*
