@@ -1,10 +1,18 @@
 # TODO List for Lunar v2
 
+## Approach
+
+Each item below should have a written spec in `specs/` (alongside this file in the Lunar package) before implementation begins. One markdown file per item, named `NNNN-short-slug.md`, starting from `specs/0000-template.md`. See `specs/README.md` for the full convention.
+
 ## Outstanding
 
+- Add an Upgrade package for those migrating from v1.x (using Rector) — land first so subsequent breaking specs can ship their Rector rules and data migrations into it
+- Flatten v1.x migrations into a v2 baseline — single flat set of migration files at v2.0.0; upgrade package handles the v1 → v2 schema transformation and rewrites the `migrations` ledger
 - Change to `\Lunar\Core` namespace
 - Support `Model::preventLazyLoading()`
 - Ensure all service-layer classes are DI'd
+- Filament v5 upgrade
+- Move core Filament e-commerce components to a new `lunarphp/filament` package
 - Add events, including specific events for cache invalidation
 - Add `public_id` (ULID) to externally-addressable models
 - Add `name` and `description` dedicated fields
@@ -25,10 +33,8 @@
 - Cart/order line grouping
 - Split out Promotions concept from Discounts
 - Add cart totals caching in the database
-- Filament v5 upgrade
 - Add Boost guidelines to packages
-- Move core Filament e-commerce components to a new `lunarphp/filament` package
-- Add an Upgrade package for those migrating from v1.x (using Rector)
+
 
 ## Ideas
 
