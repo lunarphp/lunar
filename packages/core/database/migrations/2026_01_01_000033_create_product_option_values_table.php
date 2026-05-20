@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create($this->prefix.'product_option_values', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('product_option_id')->constrained($this->prefix.'product_options');
-            $table->json('name');
+            $table->jsonb('name');
             $table->timestamps();
             $table->integer('position')->default(0)->index();
             $table->jsonb('meta')->nullable();

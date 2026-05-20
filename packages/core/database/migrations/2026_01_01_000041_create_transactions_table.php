@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->string('card_type')->nullable();
             $table->string('last_four')->nullable();
-            $table->json('meta')->nullable();
+            $table->jsonb('meta')->nullable();
             $table->timestamps();
             $table->foreignId('parent_transaction_id')->nullable()->constrained($this->prefix.'transactions');
             $table->dateTime('captured_at')->nullable()->index();

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('delivery_instructions', 1000)->nullable();
             $table->string('contact_email')->nullable();
             $table->string('contact_phone')->nullable();
-            $table->json('meta')->nullable();
+            $table->jsonb('meta')->nullable();
             $table->boolean('shipping_default')->default(false);
             $table->boolean('billing_default')->default(false);
             $table->timestamps();

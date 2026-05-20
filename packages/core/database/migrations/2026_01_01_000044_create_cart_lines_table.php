@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('cart_id')->constrained($this->prefix.'carts');
             $table->morphs('purchasable');
             $table->unsignedInteger('quantity');
-            $table->json('meta')->nullable();
+            $table->jsonb('meta')->nullable();
             $table->timestamps();
         });
     }

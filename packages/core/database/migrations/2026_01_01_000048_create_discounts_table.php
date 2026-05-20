@@ -21,7 +21,7 @@ return new class extends Migration
             $table->mediumInteger('priority')->unsigned()->index()->default(1);
             $table->boolean('stop')->default(false)->index();
             $table->string('restriction')->index()->nullable();
-            $table->json('data')->nullable();
+            $table->jsonb('data')->nullable();
             $table->timestamps();
             $table->mediumInteger('max_uses_per_user')->unsigned()->nullable();
         });

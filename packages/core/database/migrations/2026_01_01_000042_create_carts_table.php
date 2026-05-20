@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('order_id')->nullable()->constrained($this->prefix.'orders');
             $table->string('coupon_code')->index()->nullable();
             $table->dateTime('completed_at')->nullable()->index();
-            $table->json('meta')->nullable();
+            $table->jsonb('meta')->nullable();
             $table->timestamps();
             $table->foreignId('customer_id')->nullable()->constrained($this->prefix.'customers');
             $table->softDeletes();

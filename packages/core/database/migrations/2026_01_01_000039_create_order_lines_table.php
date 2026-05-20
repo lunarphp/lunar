@@ -21,11 +21,11 @@ return new class extends Migration
             $table->unsignedInteger('quantity');
             $table->unsignedBigInteger('sub_total');
             $table->unsignedBigInteger('discount_total');
-            $table->json('tax_breakdown');
+            $table->jsonb('tax_breakdown');
             $table->unsignedBigInteger('tax_total');
             $table->unsignedBigInteger('total');
             $table->text('notes')->nullable();
-            $table->json('meta')->nullable();
+            $table->jsonb('meta')->nullable();
             $table->timestamps();
         });
     }

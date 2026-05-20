@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('sub_total');
             $table->unsignedBigInteger('discount_total');
             $table->unsignedBigInteger('shipping_total');
-            $table->json('tax_breakdown');
+            $table->jsonb('tax_breakdown');
             $table->unsignedBigInteger('tax_total');
             $table->unsignedBigInteger('total');
             $table->text('notes')->nullable();
@@ -26,12 +26,12 @@ return new class extends Migration
             $table->string('compare_currency_code', 3)->nullable();
             $table->decimal('exchange_rate', 10, 4)->default(1);
             $table->dateTime('placed_at')->nullable()->index();
-            $table->json('meta')->nullable();
+            $table->jsonb('meta')->nullable();
             $table->timestamps();
             $table->foreignId('customer_id')->nullable()->constrained($this->prefix.'customers');
             $table->boolean('new_customer')->default(false)->index();
-            $table->json('discount_breakdown')->nullable();
-            $table->json('shipping_breakdown')->nullable();
+            $table->jsonb('discount_breakdown')->nullable();
+            $table->jsonb('shipping_breakdown')->nullable();
             $table->foreignId('cart_id')->nullable()->constrained($this->prefix.'carts')->nullOnDelete();
             $table->string('fingerprint')->nullable()->index();
         });

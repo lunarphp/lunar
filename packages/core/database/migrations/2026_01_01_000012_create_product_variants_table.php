@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('purchasable')->default('always')->index();
             $table->integer('quantity_increment')->unsigned()->default(1)->index();
             $table->integer('min_quantity')->unsigned()->default(1)->index();
-            $table->json('attribute_data')->nullable();
+            $table->jsonb('attribute_data')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->index('deleted_at');

@@ -125,7 +125,6 @@ return [
             '2026_01_01_000057_create_discountables_table',
             '2026_01_01_900000_create_media_table',
             '2026_01_01_900001_create_activity_log_table',
-            '2026_01_01_999000_switch_to_jsonb',
         ],
     ],
 

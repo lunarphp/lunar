@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'product_options', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->json('name');
+            $table->jsonb('name');
             $table->string('handle')->nullable()->index();
             $table->boolean('shared')->default(false)->index();
-            $table->json('label')->nullable();
+            $table->jsonb('label')->nullable();
             $table->jsonb('meta')->nullable();
             $table->timestamps();
         });

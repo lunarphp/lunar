@@ -13,20 +13,20 @@ return new class extends Migration
             $table->string('attribute_type')->index();
             $table->foreignId('attribute_group_id')->constrained($this->prefix.'attribute_groups');
             $table->integer('position')->index();
-            $table->json('name');
+            $table->jsonb('name');
             $table->string('handle');
             $table->string('section')->nullable();
             $table->string('type')->index();
             $table->boolean('required');
             $table->string('default_value')->nullable();
-            $table->json('configuration');
+            $table->jsonb('configuration');
             $table->boolean('system');
             $table->timestamps();
             $table->unique(['attribute_type', 'handle']);
             $table->boolean('searchable')->default(true)->index();
             $table->boolean('filterable')->default(false)->index();
             $table->string('validation_rules')->nullable();
-            $table->json('description')->nullable();
+            $table->jsonb('description')->nullable();
         });
     }
 

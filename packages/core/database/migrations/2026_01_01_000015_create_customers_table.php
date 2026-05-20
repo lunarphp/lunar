@@ -15,9 +15,9 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('company_name')->nullable();
             $table->string('tax_identifier')->nullable();
-            $table->json('meta')->nullable();
+            $table->jsonb('meta')->nullable();
             $table->timestamps();
-            $table->json('attribute_data')->nullable();
+            $table->jsonb('attribute_data')->nullable();
             $table->string('account_ref')->nullable()->index();
         });
     }

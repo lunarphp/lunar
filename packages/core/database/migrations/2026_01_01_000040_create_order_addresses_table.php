@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('contact_phone')->nullable();
             $table->string('type')->default('shipping')->index();
             $table->string('shipping_option')->nullable();
-            $table->json('meta')->nullable();
+            $table->jsonb('meta')->nullable();
             $table->timestamps();
             $table->string('tax_identifier')->nullable();
         });

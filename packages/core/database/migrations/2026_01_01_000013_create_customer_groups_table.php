@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('handle')->unique();
             $table->boolean('default')->default(false)->index();
             $table->timestamps();
-            $table->json('attribute_data')->nullable();
+            $table->jsonb('attribute_data')->nullable();
         });
     }
 

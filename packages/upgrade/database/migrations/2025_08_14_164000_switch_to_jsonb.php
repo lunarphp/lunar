@@ -5,12 +5,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Base\Migration;
 
+/**
+ * Postgres-only v1 → v2 upgrade step: convert legacy json columns to jsonb.
+ *
+ * Fresh v2 installs declare these columns as jsonb in their create migrations,
+ * so this runs only for users upgrading from a v1.x install whose schema was
+ * created with the original json() Blueprint calls.
+ */
 return new class extends Migration
 {
-    /**
-     * Postgres-only optimisation: convert json columns to jsonb for indexing
-     * and faster reads. No-op on MySQL/SQLite where jsonb is unavailable.
-     */
     private array $columnsToUpdate = [
         'activity_log' => [
             ['name' => 'properties', 'nullable' => true],
@@ -97,6 +100,10 @@ return new class extends Migration
         foreach ($this->columnsToUpdate as $table => $columns) {
             $fullTableName = $this->getTableName($table);
 
+            if (! Schema::hasTable($fullTableName)) {
+                continue;
+            }
+
             Schema::table($fullTableName, function (Blueprint $blueprint) use ($columns) {
                 foreach ($columns as $column) {
                     $blueprint->jsonb($column['name'])
@@ -115,6 +122,10 @@ return new class extends Migration
 
         foreach ($this->columnsToUpdate as $table => $columns) {
             $fullTableName = $this->getTableName($table);
+
+            if (! Schema::hasTable($fullTableName)) {
+                continue;
+            }
 
             Schema::table($fullTableName, function (Blueprint $blueprint) use ($columns) {
                 foreach ($columns as $column) {
