@@ -27,7 +27,6 @@
 
 ## Ideas
 
-- ULID primary keys
 - Inventory
 - RMA
 - Admin MCP
