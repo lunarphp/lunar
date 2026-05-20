@@ -47,8 +47,3 @@ test('migrations roll back and re-apply', function () {
         assertDatabaseHas('migrations', ['migration' => $migration]);
     }
 });
-
-// The v1 `add_unique_lunar_product_product_option` migration moved to the
-// upgrade package; the v2 baseline ships the unique constraint in the
-// `create_product_product_option_table` migration directly. The dedupe
-// behaviour is exercised by the upgrade package's tests under spec 0001.
