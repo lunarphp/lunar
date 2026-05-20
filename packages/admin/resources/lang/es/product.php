@@ -12,11 +12,13 @@ return [
 
     'status' => [
         'unpublished' => [
-            'content' => 'Actualmente en estado de borrador, este producto está oculto en todos los canales y grupos de clientes.',
+            'content' => 'Actualmente en estado de borrador, este producto no está disponible en todos los canales y grupos de clientes.',
         ],
         'availability' => [
             'customer_groups' => 'Este producto actualmente no está disponible para todos los grupos de clientes.',
             'channels' => 'Este producto actualmente no está disponible para todos los canales.',
+            'hidden_from_guests' => 'Los invitados actualmente no pueden ver ni comprar este producto. El grupo de clientes predeterminado no está habilitado ni visible para él.',
+            'no_default_customer_group' => 'No se ha establecido un grupo de clientes predeterminado, por lo que la visibilidad para invitados no se puede controlar aquí. Marca un grupo de clientes como predeterminado para gestionar el acceso de invitados.',
         ],
     ],
 

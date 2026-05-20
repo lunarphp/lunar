@@ -53,6 +53,7 @@ use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 use Lunar\Models\Contracts\Product as ProductContract;
 use Lunar\Models\Currency;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\Tag;
 
@@ -115,6 +116,26 @@ class ProductResource extends BaseResource
         ];
     }
 
+    protected static function isPublished(?Model $record): bool
+    {
+        return $record?->status === 'published';
+    }
+
+    protected static function hasEnabledCustomerGroup(Model $record): bool
+    {
+        return $record->customerGroups()->where('enabled', true)->exists();
+    }
+
+    protected static function isDefaultGroupVisibleToGuests(Model $record): bool
+    {
+        $default = CustomerGroup::modelClass()::getDefault();
+
+        return $default && $record->newQuery()
+            ->whereKey($record->getKey())
+            ->customerGroup($default)
+            ->exists();
+    }
+
     public static function getDefaultForm(Schema $schema): Schema
     {
         return $schema
@@ -123,20 +144,33 @@ class ProductResource extends BaseResource
                     ->content(
                         __('lunarpanel::product.status.unpublished.content')
                     )->type('info')->hidden(
-                        fn (Model $record) => $record?->status == 'published'
+                        fn (Model $record) => static::isPublished($record)
                     ),
                 Shout::make('product-customer-groups')
                     ->content(
                         __('lunarpanel::product.status.availability.customer_groups')
-                    )->type('warning')->hidden(function (Model $record) {
-                        return $record->customerGroups()->where('enabled', true)->count();
-                    }),
+                    )->type('warning')->hidden(fn (Model $record) => ! static::isPublished($record) || static::hasEnabledCustomerGroup($record)
+                    ),
+                Shout::make('product-no-default-customer-group')
+                    ->content(
+                        __('lunarpanel::product.status.availability.no_default_customer_group')
+                    )->type('warning')->hidden(fn (Model $record) => ! static::isPublished($record)
+                        || ! static::hasEnabledCustomerGroup($record)
+                        || (bool) CustomerGroup::modelClass()::getDefault()
+                    ),
+                Shout::make('product-hidden-from-guests')
+                    ->content(
+                        __('lunarpanel::product.status.availability.hidden_from_guests')
+                    )->type('warning')->hidden(fn (Model $record) => ! static::isPublished($record)
+                        || ! static::hasEnabledCustomerGroup($record)
+                        || ! CustomerGroup::modelClass()::getDefault()
+                        || static::isDefaultGroupVisibleToGuests($record)
+                    ),
                 Shout::make('product-channels')
                     ->content(
                         __('lunarpanel::product.status.availability.channels')
-                    )->type('warning')->hidden(function (Model $record) {
-                        return $record->channels()->where('enabled', true)->count();
-                    }),
+                    )->type('warning')->hidden(fn (Model $record) => ! static::isPublished($record) || $record->channels()->where('enabled', true)->count()
+                    ),
                 Section::make()
                     ->schema(
                         static::getMainFormComponents(),

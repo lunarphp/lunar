@@ -12,11 +12,13 @@ return [
 
     'status' => [
         'unpublished' => [
-            'content' => 'Jelenleg vázlat státuszban van, ez a termék minden csatornán és vásárlói csoportban rejtve van.',
+            'content' => 'Jelenleg vázlat státuszban van, ez a termék egyik csatornán és vásárlói csoportban sem érhető el.',
         ],
         'availability' => [
             'customer_groups' => 'Ez a termék jelenleg nem elérhető egyik vásárlói csoport számára sem.',
             'channels' => 'Ez a termék jelenleg nem elérhető egyik csatornán sem.',
+            'hidden_from_guests' => 'A vendégek jelenleg nem láthatják és nem vásárolhatják meg ezt a terméket. Az alapértelmezett vásárlói csoport nincs engedélyezve vagy láthatóvá téve hozzá.',
+            'no_default_customer_group' => 'Nincs beállítva alapértelmezett vásárlói csoport, ezért a vendégek láthatósága itt nem szabályozható. Jelölj meg egy vásárlói csoportot alapértelmezettként a vendégek hozzáférésének szabályozásához.',
         ],
     ],
 

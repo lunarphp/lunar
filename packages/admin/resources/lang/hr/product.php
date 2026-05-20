@@ -8,11 +8,13 @@ return [
 
     'status' => [
         'unpublished' => [
-            'content' => 'Trenutno u statusu skice, ovaj proizvod skriven je u svim kanalima i grupama kupaca.',
+            'content' => 'Trenutno u statusu skice, ovaj proizvod nije dostupan ni u jednom kanalu ni u jednoj grupi kupaca.',
         ],
         'availability' => [
             'customer_groups' => 'Ovaj proizvod trenutno nije dostupan nijednoj grupi kupaca.',
             'channels' => 'Ovaj proizvod trenutno nije dostupan nijednom kanalu.',
+            'hidden_from_guests' => 'Gosti trenutno ne mogu vidjeti ni kupiti ovaj proizvod. Zadana grupa kupaca nije omogućena ni vidljiva za njega.',
+            'no_default_customer_group' => 'Zadana grupa kupaca nije postavljena, pa se vidljivost za goste ne može kontrolirati ovdje. Označite jednu grupu kupaca kao zadanu kako biste upravljali pristupom gostiju.',
         ],
     ],
 

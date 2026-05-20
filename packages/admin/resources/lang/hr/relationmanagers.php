@@ -32,6 +32,7 @@ return [
             'description' => 'Povežite grupe kupaca s ovim proizvodom kako biste odredili dostupnost.',
             'name' => [
                 'label' => 'Naziv',
+                'default_description' => 'Zadano — upravlja pristupom gostiju',
             ],
             'enabled' => [
                 'label' => 'Omogućeno',

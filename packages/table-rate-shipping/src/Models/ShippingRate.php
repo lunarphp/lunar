@@ -170,6 +170,11 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
         return 1;
     }
 
+    public function isPurchasable(): bool
+    {
+        return true;
+    }
+
     private function resolveHighestTaxRateInCart(CartContract $cart): ?TaxClass
     {
         $highestRate = false;

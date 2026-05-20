@@ -14,11 +14,13 @@ return [
 
     'status' => [
         'unpublished' => [
-            'content' => 'Currently in draft status, this product is hidden across all channels and customer groups.',
+            'content' => 'در حال حاضر در وضعیت پیش‌نویس، این محصول در همه کانال‌ها و گروه‌های مشتری در دسترس نیست.',
         ],
         'availability' => [
-            'customer_groups' => 'This product is currently unavailable for all customer groups.',
-            'channels' => 'This product is currently unavailable for all channels.',
+            'customer_groups' => 'این محصول در حال حاضر برای همه گروه‌های مشتری در دسترس نیست.',
+            'channels' => 'این محصول در حال حاضر برای همه کانال‌ها در دسترس نیست.',
+            'hidden_from_guests' => 'مهمانان در حال حاضر نمی‌توانند این محصول را ببینند یا بخرند. گروه مشتری پیش‌فرض برای آن فعال یا قابل مشاهده نیست.',
+            'no_default_customer_group' => 'گروه مشتری پیش‌فرضی تنظیم نشده است، بنابراین مشاهده‌پذیری مهمانان از اینجا قابل کنترل نیست. یک گروه مشتری را به‌عنوان پیش‌فرض علامت بزنید تا دسترسی مهمانان را مدیریت کنید.',
         ],
     ],
 

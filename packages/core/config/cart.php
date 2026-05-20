@@ -20,6 +20,7 @@ use Lunar\Pipelines\CartPrune\WhereNotMerged;
 use Lunar\Pipelines\CartPrune\WithoutOrders;
 use Lunar\Validation\Cart\ShippingOptionValidator;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
+use Lunar\Validation\CartLine\CartLineAvailability;
 use Lunar\Validation\CartLine\CartLineQuantity;
 use Lunar\Validation\CartLine\CartLineStock;
 
@@ -112,11 +113,13 @@ return [
         'add_to_cart' => [
             CartLineQuantity::class,
             CartLineStock::class,
+            CartLineAvailability::class,
         ],
 
         'update_cart_line' => [
             CartLineQuantity::class,
             CartLineStock::class,
+            CartLineAvailability::class,
         ],
 
         'remove_from_cart' => [],

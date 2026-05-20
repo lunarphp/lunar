@@ -11,6 +11,8 @@ return [
     'carts.billing_incomplete' => 'Fatura adresi eksik',
     'carts.order_exists' => 'Bu sepet için zaten bir sipariş var',
     'carts.shipping_option_missing' => 'Kargo Seçeneği Eksik',
+    'carts.line_unavailable' => 'Bu sepetteki bir ürün artık mevcut değil (:identifier)',
+    'carts.line_not_purchasable' => ':identifier bu kanaldan veya müşteri grubunuz tarafından satın alınamaz',
     'missing_currency_price' => '":currency" para birimi için fiyat mevcut değil',
     'minimum_quantity' => 'En az :quantity adet eklemelisiniz.',
     'quantity_increment' => ':quantity miktarı :increment\'lik artışlarla olmalıdır',
