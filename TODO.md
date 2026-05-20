@@ -17,6 +17,7 @@
 - Move core Filament e-commerce components to a new `lunarphp/filament` package
 - Add Vendors concept to support marketplace developments
 - Attributes remodel to simplify data and allow for re-use
+- `StorefrontContext` for CartSessionManager and other services
 - Region concept to define channel, currency, language, tax_zone, countries and price display
 - Add events, including specific events for cache invalidation
 - Make order line purchasables optional
