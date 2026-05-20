@@ -10,6 +10,7 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\DataTypes\Price;
 use Lunar\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Models\Currency;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxRateAmount;
@@ -40,6 +41,11 @@ class TestTaxDriver implements TaxDriver
      * The cart line.
      */
     protected CartLineContract $cartLine;
+
+    /**
+     * The optional tax zone override.
+     */
+    protected ?TaxZoneContract $taxZone = null;
 
     /**
      * {@inheritDoc}
@@ -94,13 +100,30 @@ class TestTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
+    public function setTaxZone(?TaxZoneContract $taxZone = null): self
+    {
+        $this->taxZone = $taxZone;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getBreakdown($subTotal): TaxBreakdown
     {
         $breakdown = new TaxBreakdown;
 
         if ($this->purchasable) {
             $taxClass = $this->purchasable->getTaxClass();
-            $taxAmounts = $taxClass->taxRateAmounts;
+
+            // When a zone override is provided, restrict to that zone's rate amounts
+            // (mirrors SystemTaxDriver behaviour so cart-level zone tests work correctly).
+            if ($this->taxZone) {
+                $taxAmounts = $this->taxZone->taxAmounts()->whereTaxClassId($taxClass->id)->get();
+            } else {
+                $taxAmounts = $taxClass->taxRateAmounts;
+            }
         } else {
             $taxAmounts = TaxRateAmount::factory(2)->create();
         }
