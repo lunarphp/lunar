@@ -42,6 +42,7 @@ use Lunar\Exceptions\Carts\CartException;
 use Lunar\Exceptions\FingerprintMismatchException;
 use Lunar\Facades\DB;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Pipelines\Cart\Calculate;
 use Lunar\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Validation\CartLine\CartLineStock;
@@ -53,6 +54,7 @@ use Lunar\Validation\CartLine\CartLineStock;
  * @property ?int $merged_id
  * @property int $currency_id
  * @property int $channel_id
+ * @property ?int $tax_zone_id
  * @property ?int $order_id
  * @property ?string $coupon_code
  * @property ?Carbon $completed_at
@@ -228,6 +230,11 @@ class Cart extends BaseModel implements Contracts\Cart
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::modelClass());
+    }
+
+    public function taxZone(): BelongsTo
+    {
+        return $this->belongsTo(TaxZone::modelClass());
     }
 
     public function scopeUnmerged(Builder $query): Builder
@@ -493,8 +500,12 @@ class Cart extends BaseModel implements Contracts\Cart
             ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
     }
 
-    public function setShippingAddress(array|Addressable $address): Cart
+    public function setShippingAddress(array|Addressable $address, bool $clearTaxZone = true): Cart
     {
+        if ($clearTaxZone && $this->tax_zone_id) {
+            $this->taxZone()->dissociate()->save();
+        }
+
         return $this->addAddress($address, 'shipping');
     }
 
@@ -621,5 +632,29 @@ class Cart extends BaseModel implements Contracts\Cart
         }
 
         return $option;
+    }
+
+    /**
+     * Set the tax zone override for this cart.
+     *
+     * When set, all tax calculations use this zone instead of resolving one from the shipping address.
+     * Pass null to clear the override and fall back to the address-derived (or default) zone.
+     * Pass `$refresh = false` to skip persistence and recalculation (useful for previewing without writing).
+     */
+    public function setTaxZone(?TaxZoneContract $taxZone, bool $refresh = true): Cart
+    {
+        if ($taxZone) {
+            $this->taxZone()->associate($taxZone);
+        } else {
+            $this->taxZone()->dissociate();
+        }
+
+        if (! $refresh) {
+            return $this;
+        }
+
+        $this->save();
+
+        return $this->refresh()->recalculate();
     }
 }
