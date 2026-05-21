@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\Brand;
-use Lunar\Models\Language;
-use Lunar\Search\BrandIndexer;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Search\BrandIndexer;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('search', 'indexer');

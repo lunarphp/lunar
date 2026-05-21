@@ -3,9 +3,9 @@
 namespace Lunar\Tests\Core\Stubs;
 
 use Closure;
-use Lunar\Base\CartModifier;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Base\CartModifier;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class TestCartModifier extends CartModifier
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Contracts\Order as OrderContract;
-use Lunar\Models\Order;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 
 class OrderObserver
 {

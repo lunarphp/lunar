@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\HtmlString;
-use Lunar\DataTypes\Price;
+use Lunar\Core\DataTypes\Price;
 
 trait DisplaysOrderTotals
 {

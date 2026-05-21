@@ -4,7 +4,7 @@ namespace Lunar\Tests\Search;
 
 use Illuminate\Support\Facades\Config;
 use Laravel\Scout\ScoutServiceProvider;
-use Lunar\LunarServiceProvider;
+use Lunar\Core\LunarServiceProvider;
 use Lunar\Search\SearchServiceProvider;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Tests\Stubs\User;

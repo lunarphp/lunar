@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\Actions\Orders;
 use Filament\Actions\Action;
 use Filament\Support\Enums\Width;
 use Lunar\Admin\Support\Actions\Traits\UpdatesOrderStatus;
-use Lunar\Models\Order;
+use Lunar\Core\Models\Order;
 
 class UpdateStatusAction extends Action
 {

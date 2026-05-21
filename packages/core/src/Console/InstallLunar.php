@@ -1,25 +1,25 @@
 <?php
 
-namespace Lunar\Console;
+namespace Lunar\Core\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Lunar\Admin\Models\Staff;
-use Lunar\Facades\DB;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Channel;
-use Lunar\Models\Collection;
-use Lunar\Models\CollectionGroup;
-use Lunar\Models\Country;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
-use Lunar\Models\ProductType;
-use Lunar\Models\TaxClass;
-use Lunar\Models\TaxZone;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\CollectionGroup;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductType;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxZone;
 
 use function Laravel\Prompts\confirm;
 

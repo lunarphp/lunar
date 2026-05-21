@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Tag;
+use Lunar\Core\Models\Tag;
 
 class TagFactory extends BaseFactory
 {

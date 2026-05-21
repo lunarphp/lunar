@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Base\DataTransferObjects\PricingResponse;
-use Lunar\Managers\PricingManager;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Base\DataTransferObjects\PricingResponse;
+use Lunar\Core\Managers\PricingManager;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestPricingPipeline;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;

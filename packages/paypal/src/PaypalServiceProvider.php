@@ -3,7 +3,7 @@
 namespace Lunar\Paypal;
 
 use Illuminate\Support\ServiceProvider;
-use Lunar\Facades\Payments;
+use Lunar\Core\Facades\Payments;
 
 class PaypalServiceProvider extends ServiceProvider
 {

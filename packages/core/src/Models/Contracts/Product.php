@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Models\Contracts;
+namespace Lunar\Core\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
 
 interface Product
 {

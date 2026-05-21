@@ -1,8 +1,8 @@
 <?php
 
 use Filament\Forms\Components\KeyValue;
-use Lunar\FieldTypes\ListField;
-use Lunar\Models\Attribute;
+use Lunar\Core\FieldTypes\ListField;
+use Lunar\Core\Models\Attribute;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)

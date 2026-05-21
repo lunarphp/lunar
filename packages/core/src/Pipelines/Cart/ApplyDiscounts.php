@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Pipelines\Cart;
+namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
-use Lunar\Facades\Discounts;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Facades\Discounts;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 final class ApplyDiscounts
 {

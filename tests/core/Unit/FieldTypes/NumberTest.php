@@ -1,7 +1,7 @@
 <?php
 
-use Lunar\Exceptions\FieldTypeException;
-use Lunar\FieldTypes\Number;
+use Lunar\Core\Exceptions\FieldTypeException;
+use Lunar\Core\FieldTypes\Number;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

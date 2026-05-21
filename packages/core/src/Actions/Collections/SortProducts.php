@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Actions\Collections;
+namespace Lunar\Core\Actions\Collections;
 
-use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Collection as CollectionContract;
-use Lunar\Models\Currency;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Models\Currency;
 
 class SortProducts
 {

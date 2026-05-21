@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Base\Casts;
+namespace Lunar\Core\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
-use Lunar\DataTypes\Price as PriceDataType;
-use Lunar\Models\Currency;
+use Lunar\Core\DataTypes\Price as PriceDataType;
+use Lunar\Core\Models\Currency;
 
 class Price implements CastsAttributes
 {

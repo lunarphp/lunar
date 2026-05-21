@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Utils\MeasurementConverter;
+use Lunar\Core\Utils\MeasurementConverter;
 
 beforeEach(function () {
     $this->converter = new MeasurementConverter([

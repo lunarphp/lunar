@@ -2,10 +2,10 @@
 
 namespace Lunar\Admin\Support\Actions\Traits;
 
-use Lunar\Facades\DB;
-use Lunar\Models\Attribute;
-use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 trait CreatesChildCollections
 {

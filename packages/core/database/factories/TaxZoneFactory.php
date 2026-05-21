@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\TaxZone;
+use Lunar\Core\Models\TaxZone;
 
 class TaxZoneFactory extends BaseFactory
 {

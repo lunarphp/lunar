@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 trait HasAttributes
 {

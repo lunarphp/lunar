@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Jobs\Products\Associations;
+namespace Lunar\Core\Jobs\Products\Associations;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -8,11 +8,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
-use Lunar\Facades\DB;
-use Lunar\Models\Contracts\Product as ProductContract;
-use Lunar\Models\Product;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Product;
 
 class Dissociate implements ShouldQueue
 {

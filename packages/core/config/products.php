@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Base\Enums\ProductAssociation;
+use Lunar\Core\Base\Enums\ProductAssociation;
 
 return [
     'association_types_enum' => ProductAssociation::class,

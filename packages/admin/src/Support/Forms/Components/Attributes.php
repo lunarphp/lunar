@@ -10,12 +10,12 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
 use Lunar\Admin\Support\Facades\AttributeData;
-use Lunar\Base\FieldType;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Product;
-use Lunar\Models\ProductType;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Base\FieldType;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductType;
+use Lunar\Core\Models\ProductVariant;
 
 class Attributes extends Group
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Base\Validation;
+namespace Lunar\Core\Base\Validation;
 
 interface CouponValidatorInterface
 {

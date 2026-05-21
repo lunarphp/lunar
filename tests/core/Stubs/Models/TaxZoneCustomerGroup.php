@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class TaxZoneCustomerGroup extends \Lunar\Models\TaxZoneCustomerGroup {}
+class TaxZoneCustomerGroup extends \Lunar\Core\Models\TaxZoneCustomerGroup {}

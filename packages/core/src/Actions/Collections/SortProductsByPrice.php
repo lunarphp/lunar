@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Actions\Collections;
+namespace Lunar\Core\Actions\Collections;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Models\Contracts\Product as ProductContract;
-use Lunar\Models\Currency;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Product;
 
 class SortProductsByPrice
 {

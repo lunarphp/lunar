@@ -5,7 +5,7 @@ use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\CreateCustomer;
 use Lunar\Admin\Support\Extending\CreatePageExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
-use Lunar\Models\Customer;
+use Lunar\Core\Models\Customer;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

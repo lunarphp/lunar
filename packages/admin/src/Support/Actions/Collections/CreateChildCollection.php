@@ -7,8 +7,8 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Actions\Traits\CreatesChildCollections;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\Collection;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Collection;
 
 class CreateChildCollection extends CreateAction
 {
@@ -31,7 +31,7 @@ class CreateChildCollection extends CreateAction
 
         $formInput = TextInput::class;
 
-        if ($attribute?->type == \Lunar\FieldTypes\TranslatedText::class) {
+        if ($attribute?->type == \Lunar\Core\FieldTypes\TranslatedText::class) {
             $formInput = TranslatedText::class;
         }
 

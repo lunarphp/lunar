@@ -21,9 +21,9 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShi
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Facades\Converter;
-use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
-use Lunar\Models\TaxClass;
+use Lunar\Core\Facades\Converter;
+use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\TaxClass;
 
 class ProductVariantResource extends BaseResource
 {

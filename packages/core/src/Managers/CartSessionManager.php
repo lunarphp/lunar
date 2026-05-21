@@ -1,20 +1,20 @@
 <?php
 
-namespace Lunar\Managers;
+namespace Lunar\Core\Managers;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
-use Lunar\Base\CartSessionInterface;
-use Lunar\Facades\ShippingManifest;
-use Lunar\Models\Cart;
-use Lunar\Models\Channel;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\Channel as ChannelContract;
-use Lunar\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Models\Currency;
-use Lunar\Models\Order;
+use Lunar\Core\Base\CartSessionInterface;
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Channel as ChannelContract;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Order;
 
 class CartSessionManager implements CartSessionInterface
 {

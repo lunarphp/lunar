@@ -4,7 +4,7 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Resources\Pages\ManageUrlsRelatedRecords;
-use Lunar\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
 
 class ManageProductUrls extends ManageUrlsRelatedRecords
 {

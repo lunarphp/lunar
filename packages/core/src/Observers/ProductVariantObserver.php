@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\ProductVariant;
 
 class ProductVariantObserver
 {

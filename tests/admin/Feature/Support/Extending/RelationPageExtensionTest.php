@@ -8,9 +8,9 @@ use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionProd
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductMedia;
 use Lunar\Admin\Support\Extending\RelationPageExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
-use Lunar\Models\Collection;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

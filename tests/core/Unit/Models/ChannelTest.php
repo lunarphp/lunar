@@ -2,8 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
-use Lunar\Models\Channel;
-use Lunar\Models\Discount;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Discount;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('models');

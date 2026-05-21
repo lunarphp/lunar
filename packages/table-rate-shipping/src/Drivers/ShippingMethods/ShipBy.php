@@ -2,10 +2,10 @@
 
 namespace Lunar\Shipping\Drivers\ShippingMethods;
 
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\MissingCurrencyPriceException;
-use Lunar\Facades\Pricing;
-use Lunar\Models\Product;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Exceptions\MissingCurrencyPriceException;
+use Lunar\Core\Facades\Pricing;
+use Lunar\Core\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 use Lunar\Shipping\Models\ShippingRate;

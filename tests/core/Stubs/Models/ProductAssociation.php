@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class ProductAssociation extends \Lunar\Models\ProductAssociation {}
+class ProductAssociation extends \Lunar\Core\Models\ProductAssociation {}

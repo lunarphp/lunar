@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\DataTypes\Price as DataTypesPrice;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\DataTypes\Price as DataTypesPrice;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

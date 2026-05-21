@@ -3,7 +3,7 @@
 namespace Lunar\Paypal\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Lunar\Facades\CartSession;
+use Lunar\Core\Facades\CartSession;
 use Lunar\Paypal\Facades\Paypal;
 
 class GetPaypalOrderController extends Controller

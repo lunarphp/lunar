@@ -1,20 +1,20 @@
 <?php
 
-namespace Lunar\Managers;
+namespace Lunar\Core\Managers;
 
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Lunar\Base\DataTransferObjects\CartDiscount;
-use Lunar\Base\DiscountManagerInterface;
-use Lunar\Base\Validation\CouponValidator;
-use Lunar\DiscountTypes\AmountOff;
-use Lunar\DiscountTypes\BuyXGetY;
-use Lunar\Models\Channel;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\Channel as ChannelContract;
-use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Discount;
+use Lunar\Core\Base\DataTransferObjects\CartDiscount;
+use Lunar\Core\Base\DiscountManagerInterface;
+use Lunar\Core\Base\Validation\CouponValidator;
+use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Channel as ChannelContract;
+use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Discount;
 
 class DiscountManager implements DiscountManagerInterface
 {

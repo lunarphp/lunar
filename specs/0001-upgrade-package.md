@@ -1,6 +1,6 @@
 # 0001 — Upgrade package
 
-- Status: draft
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-05-20
 - TODO item: "Add an Upgrade package for those migrating from v1.x (using Rector)"

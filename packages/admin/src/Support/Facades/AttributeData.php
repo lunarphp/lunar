@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\Facades;
 use Filament\Forms\Components\Component;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 /**
  * @method static Component getFilamentComponent(Attribute $attribute)

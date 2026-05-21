@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Scout\EngineManager;
 use Laravel\Scout\Searchable as ScoutSearchable;
-use Lunar\Search\ScoutIndexer;
+use Lunar\Core\Search\ScoutIndexer;
 
 trait Searchable
 {

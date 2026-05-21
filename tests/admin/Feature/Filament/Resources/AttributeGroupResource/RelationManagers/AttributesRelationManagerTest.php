@@ -5,12 +5,12 @@ use Filament\Actions\EditAction;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
-use Lunar\FieldTypes\Dropdown;
-use Lunar\FieldTypes\Number;
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Language;
+use Lunar\Core\FieldTypes\Dropdown;
+use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

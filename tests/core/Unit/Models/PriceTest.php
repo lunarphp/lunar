@@ -2,17 +2,17 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\DataTypes\Price as DataTypesPrice;
-use Lunar\Models\Country;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
-use Lunar\Models\TaxRate;
-use Lunar\Models\TaxRateAmount;
-use Lunar\Models\TaxZone;
-use Lunar\Models\TaxZoneCountry;
+use Lunar\Core\DataTypes\Price as DataTypesPrice;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxRate;
+use Lunar\Core\Models\TaxRateAmount;
+use Lunar\Core\Models\TaxZone;
+use Lunar\Core\Models\TaxZoneCountry;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

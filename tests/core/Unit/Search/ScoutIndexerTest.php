@@ -2,13 +2,13 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\Collection;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
-use Lunar\Search\ScoutIndexer;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Search\ScoutIndexer;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('search', 'indexer');

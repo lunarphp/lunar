@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class Collection extends \Lunar\Models\Collection {}
+class Collection extends \Lunar\Core\Models\Collection {}

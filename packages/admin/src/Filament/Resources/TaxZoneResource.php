@@ -24,9 +24,9 @@ use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\CreateTaxZone;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\EditTaxZone;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\ListTaxZones;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
-use Lunar\Models\Country;
-use Lunar\Models\State;
+use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\State;
 
 class TaxZoneResource extends BaseResource
 {

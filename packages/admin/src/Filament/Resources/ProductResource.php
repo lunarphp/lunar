@@ -48,14 +48,14 @@ use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\Contracts\Product as ProductContract;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\Tag;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\Tag;
 
 class ProductResource extends BaseResource
 {

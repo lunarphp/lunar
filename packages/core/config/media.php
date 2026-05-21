@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Base\StandardMediaDefinitions;
+use Lunar\Core\Base\StandardMediaDefinitions;
 
 return [
 

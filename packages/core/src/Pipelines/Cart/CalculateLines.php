@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Pipelines\Cart;
+namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
 use Illuminate\Pipeline\Pipeline;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class CalculateLines
 {

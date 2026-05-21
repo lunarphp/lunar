@@ -4,8 +4,8 @@ namespace Lunar\Stripe\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Lunar\Base\BaseModel;
-use Lunar\Models\Cart;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Models\Cart;
 use Stripe\PaymentIntent;
 
 class StripePaymentIntent extends BaseModel

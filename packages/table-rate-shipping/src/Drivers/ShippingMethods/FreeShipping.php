@@ -2,9 +2,9 @@
 
 namespace Lunar\Shipping\Drivers\ShippingMethods;
 
-use Lunar\DataTypes\Price;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Product;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 use Lunar\Shipping\Models\ShippingRate;

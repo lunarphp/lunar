@@ -3,7 +3,7 @@
 namespace Lunar\Search;
 
 use Illuminate\Support\Manager;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Product;
 use Lunar\Search\Contracts\SearchManagerContract;
 use Lunar\Search\Engines\AbstractEngine;
 use Lunar\Search\Engines\DatabaseEngine;

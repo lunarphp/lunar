@@ -25,7 +25,7 @@ use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandProducts;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandUrls;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Brand as BrandContract;
+use Lunar\Core\Models\Contracts\Brand as BrandContract;
 
 class BrandResource extends BaseResource
 {

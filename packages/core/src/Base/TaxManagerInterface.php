@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
-use Lunar\Drivers\SystemTaxDriver;
+use Lunar\Core\Drivers\SystemTaxDriver;
 
 interface TaxManagerInterface
 {

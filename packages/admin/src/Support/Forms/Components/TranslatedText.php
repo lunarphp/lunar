@@ -7,7 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Collection;
-use Lunar\Models\Language;
+use Lunar\Core\Models\Language;
 
 class TranslatedText extends TextInput
 {

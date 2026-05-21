@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Models\AttributeGroup;
+use Lunar\Core\Models\AttributeGroup;
 
 class AttributeGroupFactory extends BaseFactory
 {

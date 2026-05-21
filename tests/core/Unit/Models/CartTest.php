@@ -2,35 +2,35 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\DataTypes\Price as DataTypesPrice;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\DiscountTypes\AmountOff;
-use Lunar\Exceptions\Carts\CartException;
-use Lunar\Exceptions\FingerprintMismatchException;
-use Lunar\Facades\Discounts;
-use Lunar\Facades\ShippingManifest;
-use Lunar\Managers\CartSessionManager;
-use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
-use Lunar\Models\CartLine;
-use Lunar\Models\Channel;
-use Lunar\Models\Country;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Discount;
-use Lunar\Models\Order;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
-use Lunar\Models\TaxRate;
-use Lunar\Models\TaxRateAmount;
-use Lunar\Models\TaxZone;
-use Lunar\Models\TaxZonePostcode;
+use Lunar\Core\DataTypes\Price as DataTypesPrice;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\Exceptions\Carts\CartException;
+use Lunar\Core\Exceptions\FingerprintMismatchException;
+use Lunar\Core\Facades\Discounts;
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Managers\CartSessionManager;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartAddress;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxRate;
+use Lunar\Core\Models\TaxRateAmount;
+use Lunar\Core\Models\TaxZone;
+use Lunar\Core\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class)->group('carts');
+uses(TestCase::class)->group('carts', 'cross-db');
 
 use function Pest\Laravel\assertDatabaseCount;
 
@@ -54,8 +54,9 @@ test('can make a cart', function () {
     $this->assertDatabaseHas((new Cart)->getTable(), [
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
-        'meta' => json_encode(['foo' => 'bar']),
     ]);
+
+    expect((array) $cart->fresh()->meta)->toEqual(['foo' => 'bar']);
 
     $variant = ProductVariant::factory()->create();
 

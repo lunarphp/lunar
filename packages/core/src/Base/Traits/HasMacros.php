@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Base\Traits;
+namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Support\Traits\Macroable;
 

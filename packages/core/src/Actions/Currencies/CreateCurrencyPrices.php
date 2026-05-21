@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Actions\Currencies;
+namespace Lunar\Core\Actions\Currencies;
 
 use Illuminate\Support\Facades\DB;
-use Lunar\Models\Contracts\Currency;
+use Lunar\Core\Models\Contracts\Currency;
 
 class CreateCurrencyPrices
 {

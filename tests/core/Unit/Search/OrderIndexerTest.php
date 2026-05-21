@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Country;
-use Lunar\Models\Currency;
-use Lunar\Models\Order;
-use Lunar\Models\OrderAddress;
-use Lunar\Models\OrderLine;
-use Lunar\Models\Tag;
-use Lunar\Models\Transaction;
-use Lunar\Search\OrderIndexer;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderAddress;
+use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\Tag;
+use Lunar\Core\Models\Transaction;
+use Lunar\Core\Search\OrderIndexer;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('search', 'indexer');

@@ -3,7 +3,7 @@
 namespace Lunar\Tests\Core\Stubs;
 
 use Closure;
-use Lunar\Base\PricingManagerInterface;
+use Lunar\Core\Base\PricingManagerInterface;
 
 class TestPricingPipeline
 {

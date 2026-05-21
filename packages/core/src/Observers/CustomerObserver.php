@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Contracts\Customer as CustomerContract;
+use Lunar\Core\Models\Contracts\Customer as CustomerContract;
 
 class CustomerObserver
 {

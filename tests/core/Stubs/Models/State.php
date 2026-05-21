@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class State extends \Lunar\Models\State {}
+class State extends \Lunar\Core\Models\State {}

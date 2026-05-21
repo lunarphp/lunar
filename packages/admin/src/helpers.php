@@ -3,12 +3,12 @@
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Base\Traits\Searchable;
-use Lunar\DataTypes\Price;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Address;
-use Lunar\Models\Attribute;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Address;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\ProductVariant;
 
 use function Filament\Support\generate_search_column_expression;
 use function Filament\Support\generate_search_term_expression;

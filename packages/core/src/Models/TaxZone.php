@@ -1,17 +1,17 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasDefaultRecord;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Database\Factories\TaxZoneFactory;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\HasDefaultRecord;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Database\Factories\TaxZoneFactory;
 
 /**
  * @property int $id

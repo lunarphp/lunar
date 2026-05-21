@@ -2,9 +2,9 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Models\Contracts\Country as CountryContract;
-use Lunar\Models\Country;
-use Lunar\Models\State;
+use Lunar\Core\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Facades\Postcode;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;

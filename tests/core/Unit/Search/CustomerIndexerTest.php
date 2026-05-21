@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\Customer;
-use Lunar\Models\Language;
-use Lunar\Search\CustomerIndexer;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Search\CustomerIndexer;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 

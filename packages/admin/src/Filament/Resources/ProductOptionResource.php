@@ -22,8 +22,8 @@ use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers\Values
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\Models\Contracts\ProductOption as ProductOptionContract;
-use Lunar\Models\Language;
+use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
+use Lunar\Core\Models\Language;
 
 class ProductOptionResource extends BaseResource
 {

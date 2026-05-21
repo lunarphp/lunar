@@ -18,9 +18,9 @@ use Lunar\Admin\Support\Actions\Collections\CreateChildCollection;
 use Lunar\Admin\Support\Actions\Collections\CreateRootCollection;
 use Lunar\Admin\Support\Actions\Collections\DeleteCollection;
 use Lunar\Admin\Support\Actions\Collections\MoveCollection;
-use Lunar\Facades\DB;
-use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class CollectionTreeView extends Widget implements HasActions, HasForms
 {

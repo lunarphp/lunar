@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Country;
+use Lunar\Core\Models\Country;
 use Lunar\Shipping\Resolvers\PostcodeResolver;
 use Lunar\Tests\Shipping\TestCase;
 

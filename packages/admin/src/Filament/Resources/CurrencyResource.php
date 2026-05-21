@@ -18,7 +18,7 @@ use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\EditCurrency;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 class CurrencyResource extends BaseResource
 {

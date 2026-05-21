@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Country;
+use Lunar\Core\Models\Country;
 
 class CountryFactory extends BaseFactory
 {

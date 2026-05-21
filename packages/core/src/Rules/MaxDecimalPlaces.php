@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Rules;
+namespace Lunar\Core\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;

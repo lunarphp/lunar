@@ -10,7 +10,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Collection;
+use Lunar\Core\Models\Collection;
 
 class CollectionLimitationRelationManager extends BaseRelationManager
 {

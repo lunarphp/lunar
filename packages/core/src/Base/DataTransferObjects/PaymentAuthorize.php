@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Base\DataTransferObjects;
+namespace Lunar\Core\Base\DataTransferObjects;
 
 class PaymentAuthorize
 {

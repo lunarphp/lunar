@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 

@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\Synthesizers;
 
-use Lunar\FieldTypes\Text;
+use Lunar\Core\FieldTypes\Text;
 
 class TextSynth extends AbstractFieldSynth
 {

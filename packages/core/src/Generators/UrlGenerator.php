@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\Generators;
+namespace Lunar\Core\Generators;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Lunar\Models\Contracts\Language as LanguageContract;
-use Lunar\Models\Language;
-use Lunar\Models\Url;
+use Lunar\Core\Models\Contracts\Language as LanguageContract;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Url;
 
 class UrlGenerator
 {

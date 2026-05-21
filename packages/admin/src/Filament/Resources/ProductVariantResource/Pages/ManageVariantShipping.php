@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Facades\Converter;
+use Lunar\Core\Facades\Converter;
 
 class ManageVariantShipping extends BaseEditRecord
 {

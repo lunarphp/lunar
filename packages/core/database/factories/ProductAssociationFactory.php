@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Product;
-use Lunar\Models\ProductAssociation;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductAssociation;
 
 class ProductAssociationFactory extends BaseFactory
 {

@@ -15,7 +15,7 @@ use Lunar\Admin\Filament\Resources\LanguageResource\Pages\CreateLanguage;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\EditLanguage;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\ListLanguages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Language as LanguageContract;
+use Lunar\Core\Models\Contracts\Language as LanguageContract;
 
 class LanguageResource extends BaseResource
 {

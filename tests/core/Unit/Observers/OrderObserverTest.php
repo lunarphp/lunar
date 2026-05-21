@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
-use Lunar\Models\Order;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Order;
 use Lunar\Tests\Core\TestCase;
 use Spatie\Activitylog\Models\Activity;
 

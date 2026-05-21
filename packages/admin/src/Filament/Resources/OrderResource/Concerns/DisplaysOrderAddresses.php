@@ -13,10 +13,10 @@ use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Arr;
-use Lunar\Models\Contracts\OrderAddress as OrderAddressContract;
-use Lunar\Models\Country;
-use Lunar\Models\OrderAddress;
-use Lunar\Models\State;
+use Lunar\Core\Models\Contracts\OrderAddress as OrderAddressContract;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\OrderAddress;
+use Lunar\Core\Models\State;
 
 trait DisplaysOrderAddresses
 {

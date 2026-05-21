@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Exceptions;
+namespace Lunar\Core\Exceptions;
 
 class FingerprintMismatchException extends LunarException
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Models\Channel;
-use Lunar\Models\Order;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Order;
 
 class OrderFactory extends BaseFactory
 {

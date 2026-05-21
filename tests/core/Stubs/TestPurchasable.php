@@ -3,10 +3,10 @@
 namespace Lunar\Tests\Core\Stubs;
 
 use Illuminate\Support\Collection;
-use Lunar\Base\Purchasable;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Contracts\TaxClass as TaxClassContract;
-use Lunar\Models\TaxClass;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Contracts\TaxClass as TaxClassContract;
+use Lunar\Core\Models\TaxClass;
 
 class TestPurchasable implements Purchasable
 {

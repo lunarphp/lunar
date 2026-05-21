@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class TaxClass extends \Lunar\Models\TaxClass {}
+class TaxClass extends \Lunar\Core\Models\TaxClass {}

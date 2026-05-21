@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Search;
+namespace Lunar\Core\Search;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Facades\AttributeManifest;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Search\Interfaces\ScoutIndexerInterface;
+use Lunar\Core\Facades\AttributeManifest;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Search\Interfaces\ScoutIndexerInterface;
 
 class ScoutIndexer implements ScoutIndexerInterface
 {

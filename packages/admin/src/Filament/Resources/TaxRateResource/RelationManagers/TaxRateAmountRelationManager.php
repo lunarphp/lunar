@@ -12,7 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Validation\Rules\Unique;
-use Lunar\Models\TaxRateAmount;
+use Lunar\Core\Models\TaxRateAmount;
 
 class TaxRateAmountRelationManager extends RelationManager
 {

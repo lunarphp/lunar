@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\Synthesizers;
 
-use Lunar\FieldTypes\Vimeo;
+use Lunar\Core\FieldTypes\Vimeo;
 
 class VimeoSynth extends AbstractFieldSynth
 {

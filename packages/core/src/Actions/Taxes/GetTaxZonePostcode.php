@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Actions\Taxes;
+namespace Lunar\Core\Actions\Taxes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Lunar\Models\TaxZonePostcode;
+use Lunar\Core\Models\TaxZonePostcode;
 
 class GetTaxZonePostcode
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Search;
+namespace Lunar\Core\Search;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

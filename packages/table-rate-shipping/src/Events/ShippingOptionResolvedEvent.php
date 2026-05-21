@@ -5,9 +5,9 @@ namespace Lunar\Shipping\Events;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Shipping\Models\ShippingRate;
 
 class ShippingOptionResolvedEvent

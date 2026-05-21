@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\FieldTypes;
 use Filament\Forms\Components\Toggle as ToggleInput;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Synthesizers\ToggleSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 class Toggle extends BaseFieldType
 {

@@ -3,8 +3,8 @@
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ListDiscounts;
-use Lunar\DiscountTypes\BuyXGetY;
-use Lunar\Models\Discount;
+use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\Models\Discount;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 use function Pest\Laravel\get;

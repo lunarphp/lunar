@@ -3,9 +3,9 @@
 use Filament\Resources\RelationManagers\RelationGroup;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandMedia;
-use Lunar\Models\Brand;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Language;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Admin\Unit\Filament\TestCase;
 
 uses(TestCase::class)

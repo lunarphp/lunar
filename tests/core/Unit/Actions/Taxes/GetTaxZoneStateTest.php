@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Actions\Taxes\GetTaxZoneState;
-use Lunar\Models\State;
-use Lunar\Models\TaxZoneState;
+use Lunar\Core\Actions\Taxes\GetTaxZoneState;
+use Lunar\Core\Models\State;
+use Lunar\Core\Models\TaxZoneState;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

@@ -7,8 +7,8 @@ use DateTime;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Lunar\Facades\DB;
-use Lunar\Models\Order;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Order;
 
 class OrderStatsOverview extends BaseWidget
 {

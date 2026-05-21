@@ -18,7 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Facades\Converter;
+use Lunar\Core\Facades\Converter;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Widgets\AvailabilityScheduleWidget;
 use Lunar\Shipping\Models\Contracts\ShippingMethod;

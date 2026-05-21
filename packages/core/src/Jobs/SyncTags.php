@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Jobs;
+namespace Lunar\Core\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,8 +10,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Lunar\Facades\DB;
-use Lunar\Models\Tag;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Tag;
 
 class SyncTags implements ShouldQueue
 {

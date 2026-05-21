@@ -8,9 +8,9 @@ use Illuminate\Contracts\Support\Htmlable;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Facades\DB;
-use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class EditCollection extends BaseEditRecord
 {

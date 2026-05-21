@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Models\Contracts;
+namespace Lunar\Core\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
 
 interface ProductAssociation
 {

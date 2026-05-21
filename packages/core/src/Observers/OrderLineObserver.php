@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Lunar\Base\Purchasable;
-use Lunar\Exceptions\NonPurchasableItemException;
-use Lunar\Models\Contracts\OrderLine as OrderLineContract;
-use Lunar\Models\OrderLine;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Exceptions\NonPurchasableItemException;
+use Lunar\Core\Models\Contracts\OrderLine as OrderLineContract;
+use Lunar\Core\Models\OrderLine;
 
 class OrderLineObserver
 {

@@ -17,7 +17,7 @@ use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionProd
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionUrls;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class CollectionResource extends BaseResource
 {

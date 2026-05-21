@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Exceptions\FieldTypes;
+namespace Lunar\Core\Exceptions\FieldTypes;
 
-use Lunar\Exceptions\LunarException;
+use Lunar\Core\Exceptions\LunarException;
 
 class InvalidFieldTypeException extends LunarException
 {

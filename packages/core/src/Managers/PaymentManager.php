@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Managers;
+namespace Lunar\Core\Managers;
 
 use Illuminate\Support\Manager;
 use Illuminate\Support\Str;
-use Lunar\PaymentTypes\OfflinePayment;
+use Lunar\Core\PaymentTypes\OfflinePayment;
 
 class PaymentManager extends Manager
 {

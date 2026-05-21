@@ -1,19 +1,19 @@
 <?php
 
-namespace Lunar\Managers;
+namespace Lunar\Core\Managers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Lunar\Base\DataTransferObjects\PricingResponse;
-use Lunar\Base\PricingManagerInterface;
-use Lunar\Base\Purchasable;
-use Lunar\Exceptions\MissingCurrencyPriceException;
-use Lunar\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Models\Contracts\CustomerGroup as CustomerGroupContract;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
+use Lunar\Core\Base\DataTransferObjects\PricingResponse;
+use Lunar\Core\Base\PricingManagerInterface;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Exceptions\MissingCurrencyPriceException;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
 
 class PricingManager implements PricingManagerInterface
 {

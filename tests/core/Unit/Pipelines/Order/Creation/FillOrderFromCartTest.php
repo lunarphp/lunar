@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\Order;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
-use Lunar\Pipelines\Order\Creation\FillOrderFromCart;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Pipelines\Order\Creation\FillOrderFromCart;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

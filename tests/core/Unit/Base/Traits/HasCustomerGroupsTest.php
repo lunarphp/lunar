@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Exceptions\SchedulingException;
-use Lunar\Models\Channel;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Product;
+use Lunar\Core\Exceptions\SchedulingException;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Product;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

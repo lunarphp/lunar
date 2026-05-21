@@ -2,10 +2,10 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\Base\OrderReferenceGenerator;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
-use Lunar\Models\Order;
+use Lunar\Core\Base\OrderReferenceGenerator;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Order;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

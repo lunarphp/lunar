@@ -5,8 +5,8 @@ namespace Lunar\Admin\Filament\Widgets\Dashboard\Orders;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
-use Lunar\Facades\DB;
-use Lunar\Models\OrderLine;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\OrderLine;
 
 class PopularProductsTable extends TableWidget
 {

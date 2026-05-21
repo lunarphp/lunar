@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Currency;
-use Lunar\Models\TaxClass;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Drivers\ShippingMethods\Collection;
 use Lunar\Shipping\Models\ShippingMethod;

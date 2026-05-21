@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Models\ProductOption;
+use Lunar\Core\Models\ProductOption;
 
 class ProductOptionFactory extends BaseFactory
 {

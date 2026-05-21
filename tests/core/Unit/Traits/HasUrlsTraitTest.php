@@ -3,12 +3,12 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Lunar\FieldTypes\Text;
-use Lunar\Generators\UrlGenerator;
-use Lunar\Models\Brand;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
-use Lunar\Models\Url;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Generators\UrlGenerator;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\Url;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

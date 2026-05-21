@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\DataTypes;
+namespace Lunar\Core\DataTypes;
 
 use Illuminate\Support\Collection;
-use Lunar\Base\Purchasable;
-use Lunar\Models\TaxClass;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Models\TaxClass;
 
 class ShippingOption implements Purchasable
 {

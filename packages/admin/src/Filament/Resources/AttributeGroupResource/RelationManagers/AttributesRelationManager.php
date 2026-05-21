@@ -24,7 +24,7 @@ use Lunar\Admin\Support\Facades\AttributeData;
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\Models\Language;
+use Lunar\Core\Models\Language;
 
 class AttributesRelationManager extends BaseRelationManager
 {

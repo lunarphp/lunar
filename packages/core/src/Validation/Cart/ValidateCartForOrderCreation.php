@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Validation\Cart;
+namespace Lunar\Core\Validation\Cart;
 
 use Illuminate\Support\Facades\Validator;
-use Lunar\Models\Contracts\CartLine as CartLineContract;
-use Lunar\Validation\BaseValidator;
+use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Validation\BaseValidator;
 
 class ValidateCartForOrderCreation extends BaseValidator
 {

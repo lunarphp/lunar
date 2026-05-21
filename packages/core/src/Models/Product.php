@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -14,22 +14,22 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\AsAttributeData;
-use Lunar\Base\Enums\Concerns\ProvidesProductAssociationType;
-use Lunar\Base\HasThumbnailImage;
-use Lunar\Base\Traits\HasChannels;
-use Lunar\Base\Traits\HasCustomerGroups;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasMedia;
-use Lunar\Base\Traits\HasTags;
-use Lunar\Base\Traits\HasTranslations;
-use Lunar\Base\Traits\HasUrls;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Base\Traits\Searchable;
-use Lunar\Database\Factories\ProductFactory;
-use Lunar\Jobs\Products\Associations\Associate;
-use Lunar\Jobs\Products\Associations\Dissociate;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Casts\AsAttributeData;
+use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Base\HasThumbnailImage;
+use Lunar\Core\Base\Traits\HasChannels;
+use Lunar\Core\Base\Traits\HasCustomerGroups;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\HasMedia;
+use Lunar\Core\Base\Traits\HasTags;
+use Lunar\Core\Base\Traits\HasTranslations;
+use Lunar\Core\Base\Traits\HasUrls;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Database\Factories\ProductFactory;
+use Lunar\Core\Jobs\Products\Associations\Associate;
+use Lunar\Core\Jobs\Products\Associations\Dissociate;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -131,7 +131,7 @@ class Product extends BaseModel implements Contracts\Product, HasThumbnailImage,
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
-            \Lunar\Models\Collection::modelClass(),
+            \Lunar\Core\Models\Collection::modelClass(),
             config('lunar.database.table_prefix').'collection_product'
         )->withPivot(['position'])->orderByPivot('position')->withTimestamps();
     }

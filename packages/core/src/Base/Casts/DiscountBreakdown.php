@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\Base\Casts;
+namespace Lunar\Core\Base\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Currency;
-use Lunar\Models\OrderLine;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\OrderLine;
 
 class DiscountBreakdown implements CastsAttributes
 {

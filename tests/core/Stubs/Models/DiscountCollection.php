@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class DiscountCollection extends \Lunar\Models\DiscountCollection {}
+class DiscountCollection extends \Lunar\Core\Models\DiscountCollection {}

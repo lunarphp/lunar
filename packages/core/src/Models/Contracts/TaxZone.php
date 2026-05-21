@@ -1,5 +1,5 @@
 <?php
 
-namespace Lunar\Models\Contracts;
+namespace Lunar\Core\Models\Contracts;
 
 interface TaxZone {}

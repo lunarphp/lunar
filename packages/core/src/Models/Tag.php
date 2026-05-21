@@ -1,17 +1,17 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Database\Factories\TagFactory;
-use Lunar\Facades\DB;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Database\Factories\TagFactory;
+use Lunar\Core\Facades\DB;
 
 /**
  * @property int $id

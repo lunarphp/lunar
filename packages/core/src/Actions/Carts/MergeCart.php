@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Actions\Carts;
+namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Facades\DB;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class MergeCart
 {

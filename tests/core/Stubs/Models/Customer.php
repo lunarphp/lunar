@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class Customer extends \Lunar\Models\Customer {}
+class Customer extends \Lunar\Core\Models\Customer {}

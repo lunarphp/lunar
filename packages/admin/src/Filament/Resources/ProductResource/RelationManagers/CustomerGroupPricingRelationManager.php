@@ -18,11 +18,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
 use Lunar\Admin\Events\ProductPricingUpdated;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\DataTypes\Price as PriceDataType;
-use Lunar\Facades\DB;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
+use Lunar\Core\DataTypes\Price as PriceDataType;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Price;
 
 class CustomerGroupPricingRelationManager extends BaseRelationManager
 {

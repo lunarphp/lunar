@@ -11,8 +11,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Collection;
-use Lunar\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class CollectionConditionRelationManager extends BaseRelationManager
 {

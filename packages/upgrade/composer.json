@@ -1,0 +1,38 @@
+{
+    "name": "lunarphp/upgrade",
+    "description": "Upgrade tooling for migrating Lunar v1.x installations to v2.x.",
+    "keywords": [
+        "lunar",
+        "laravel",
+        "ecommerce",
+        "upgrade",
+        "rector"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lunar",
+            "homepage": "https://lunarphp.io/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Lunar\\Upgrade\\": "src",
+            "Lunar\\Upgrade\\Database\\Migrations\\": "database/migrations"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lunar\\Upgrade\\UpgradeServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "^12.0|^13.0",
+        "laravel/prompts": "^0.1|^0.2|^0.3",
+        "rector/rector": "^2.0"
+    }
+}

@@ -19,7 +19,7 @@ use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Lunar\Admin\LunarPanelProvider;
 use Lunar\Admin\Models\Staff;
-use Lunar\LunarServiceProvider;
+use Lunar\Core\LunarServiceProvider;
 use Lunar\Tests\Admin\Providers\LunarPanelTestServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
 use Lunar\Tests\TestCase as BaseTestCase;

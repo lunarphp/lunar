@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\FieldTypes;
+namespace Lunar\Core\FieldTypes;
 
 use JsonSerializable;
-use Lunar\Base\FieldType;
+use Lunar\Core\Base\FieldType;
 
 class File implements FieldType, JsonSerializable
 {

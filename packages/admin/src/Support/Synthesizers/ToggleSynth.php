@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\Synthesizers;
 
-use Lunar\FieldTypes\Toggle;
+use Lunar\Core\FieldTypes\Toggle;
 
 class ToggleSynth extends AbstractFieldSynth
 {

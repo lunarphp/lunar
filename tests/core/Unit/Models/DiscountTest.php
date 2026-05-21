@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Brand;
-use Lunar\Models\Collection;
-use Lunar\Models\Discount;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 

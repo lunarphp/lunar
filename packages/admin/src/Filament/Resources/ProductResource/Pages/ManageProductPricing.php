@@ -19,8 +19,8 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Concerns\Products\ManagesProductPricing;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
-use Lunar\Models\Currency;
-use Lunar\Models\Price;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Price;
 
 class ManageProductPricing extends BaseEditRecord
 {

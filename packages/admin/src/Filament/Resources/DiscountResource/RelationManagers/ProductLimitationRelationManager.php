@@ -13,8 +13,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Contracts\Product as ProductContract;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Product;
 
 class ProductLimitationRelationManager extends BaseRelationManager
 {

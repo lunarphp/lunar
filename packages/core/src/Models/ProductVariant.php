@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\AsAttributeData;
-use Lunar\Base\HasThumbnailImage;
-use Lunar\Base\Purchasable;
-use Lunar\Base\Traits\HasAttributes;
-use Lunar\Base\Traits\HasDimensions;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\HasPrices;
-use Lunar\Base\Traits\HasTranslations;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Database\Factories\ProductVariantFactory;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Casts\AsAttributeData;
+use Lunar\Core\Base\HasThumbnailImage;
+use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Base\Traits\HasAttributes;
+use Lunar\Core\Base\Traits\HasDimensions;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\HasPrices;
+use Lunar\Core\Base\Traits\HasTranslations;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Database\Factories\ProductVariantFactory;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 

@@ -13,7 +13,7 @@ use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class ManageProductCollections extends BaseManageRelatedRecords
 {

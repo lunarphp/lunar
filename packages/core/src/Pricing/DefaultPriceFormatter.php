@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Pricing;
+namespace Lunar\Core\Pricing;
 
 use Illuminate\Support\Facades\App;
-use Lunar\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Models\Currency;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Currency;
 use NumberFormatter;
 
 class DefaultPriceFormatter implements PriceFormatterInterface

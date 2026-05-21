@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Actions\Carts;
+namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
-use Lunar\Models\Contracts\Cart as CartContract;
-use Lunar\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 
 class GenerateFingerprint
 {

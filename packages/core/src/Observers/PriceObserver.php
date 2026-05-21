@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
-use Lunar\Jobs\Currencies\SyncPriceCurrencies;
-use Lunar\Models\Contracts\Price;
-use Lunar\Models\Currency;
+use Lunar\Core\Jobs\Currencies\SyncPriceCurrencies;
+use Lunar\Core\Models\Contracts\Price;
+use Lunar\Core\Models\Currency;
 
 class PriceObserver implements ShouldHandleEventsAfterCommit
 {

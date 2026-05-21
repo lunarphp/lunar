@@ -1,8 +1,8 @@
 <?php
 
 use Filament\Forms\Components\TextInput;
-use Lunar\FieldTypes\Number;
-use Lunar\Models\Attribute;
+use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\Models\Attribute;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)

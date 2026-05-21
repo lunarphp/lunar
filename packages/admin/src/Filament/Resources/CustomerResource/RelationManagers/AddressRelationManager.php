@@ -12,8 +12,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\CustomerAddressEdited;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Contracts\Address as AddressContract;
-use Lunar\Models\State;
+use Lunar\Core\Models\Contracts\Address as AddressContract;
+use Lunar\Core\Models\State;
 
 class AddressRelationManager extends BaseRelationManager
 {

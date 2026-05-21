@@ -2,7 +2,7 @@
 
 namespace Lunar\Shipping\DataTransferObjects;
 
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Shipping\Models\ShippingRate;
 
 class ShippingOptionRequest

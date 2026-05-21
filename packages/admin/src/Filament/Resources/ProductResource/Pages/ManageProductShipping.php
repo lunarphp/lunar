@@ -13,8 +13,8 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
 use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Facades\Converter;
-use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Facades\Converter;
+use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 
 class ManageProductShipping extends BaseEditRecord
 {

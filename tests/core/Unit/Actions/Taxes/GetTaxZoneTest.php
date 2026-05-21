@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Actions\Taxes\GetTaxZone;
-use Lunar\Models\Address;
-use Lunar\Models\Country;
-use Lunar\Models\State;
-use Lunar\Models\TaxZone;
-use Lunar\Models\TaxZoneCountry;
-use Lunar\Models\TaxZonePostcode;
-use Lunar\Models\TaxZoneState;
+use Lunar\Core\Actions\Taxes\GetTaxZone;
+use Lunar\Core\Models\Address;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\State;
+use Lunar\Core\Models\TaxZone;
+use Lunar\Core\Models\TaxZoneCountry;
+use Lunar\Core\Models\TaxZonePostcode;
+use Lunar\Core\Models\TaxZoneState;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

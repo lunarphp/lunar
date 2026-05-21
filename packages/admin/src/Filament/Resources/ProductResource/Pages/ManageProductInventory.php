@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantInventory;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 
 class ManageProductInventory extends BaseEditRecord
 {

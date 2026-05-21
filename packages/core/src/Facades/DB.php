@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Facades;
+namespace Lunar\Core\Facades;
 
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\DB as DBFacade;
@@ -119,7 +119,7 @@ class DB extends DBFacade
     /**
      * Get the registered DatabaseManger class.
      *
-     * @return \Lunar\Managers\DatabaseManager
+     * @return \Lunar\Core\Managers\DatabaseManager
      */
     public static function connection()
     {

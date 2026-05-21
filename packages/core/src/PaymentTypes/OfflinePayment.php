@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\PaymentTypes;
+namespace Lunar\Core\PaymentTypes;
 
-use Lunar\Base\DataTransferObjects\PaymentAuthorize;
-use Lunar\Base\DataTransferObjects\PaymentCapture;
-use Lunar\Base\DataTransferObjects\PaymentRefund;
-use Lunar\Events\PaymentAttemptEvent;
-use Lunar\Models\Contracts\Transaction as TransactionContract;
+use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Core\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Core\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Core\Events\PaymentAttemptEvent;
+use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 
 class OfflinePayment extends AbstractPayment
 {

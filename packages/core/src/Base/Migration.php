@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Database\Migrations\Migration as BaseMigration;
 

@@ -2,26 +2,26 @@
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Facades\DB;
-use Lunar\FieldTypes\Number;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Jobs\Products\Associations\Associate;
-use Lunar\Jobs\Products\Associations\Dissociate;
-use Lunar\Jobs\SyncTags;
-use Lunar\Models\Brand;
-use Lunar\Models\Channel;
-use Lunar\Models\Collection;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
-use Lunar\Models\Product;
-use Lunar\Models\ProductAssociation;
-use Lunar\Models\ProductOption;
-use Lunar\Models\ProductType;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Jobs\Products\Associations\Associate;
+use Lunar\Core\Jobs\Products\Associations\Dissociate;
+use Lunar\Core\Jobs\SyncTags;
+use Lunar\Core\Models\Brand;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductAssociation;
+use Lunar\Core\Models\ProductOption;
+use Lunar\Core\Models\ProductType;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 
@@ -458,9 +458,9 @@ test('can associate multiple products', function () {
     $targetA = Product::factory()->create();
     $targetB = Product::factory()->create();
 
-    Associate::dispatchSync($parent, [$targetA, $targetB], Lunar\Base\Enums\ProductAssociation::UP_SELL);
+    Associate::dispatchSync($parent, [$targetA, $targetB], Lunar\Core\Base\Enums\ProductAssociation::UP_SELL);
 
-    $assoc = $parent->associations()->type(Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
+    $assoc = $parent->associations()->type(Lunar\Core\Base\Enums\ProductAssociation::UP_SELL)->get();
 
     expect($assoc)->toHaveCount(2);
 });
@@ -469,12 +469,12 @@ test('can associate products via helper', function () {
     $parent = Product::factory()->create();
     $target = Product::factory()->create();
 
-    Associate::dispatchSync($parent, $target, Lunar\Base\Enums\ProductAssociation::UP_SELL);
+    Associate::dispatchSync($parent, $target, Lunar\Core\Base\Enums\ProductAssociation::UP_SELL);
 
-    $assoc = $parent->associations()->type(Lunar\Base\Enums\ProductAssociation::UP_SELL)->get();
+    $assoc = $parent->associations()->type(Lunar\Core\Base\Enums\ProductAssociation::UP_SELL)->get();
 
     expect($assoc)->toHaveCount(1)
-        ->and($assoc->first()->type)->toEqual(Lunar\Base\Enums\ProductAssociation::UP_SELL->value);
+        ->and($assoc->first()->type)->toEqual(Lunar\Core\Base\Enums\ProductAssociation::UP_SELL->value);
 });
 
 test('can remove all associations', function () {
@@ -501,22 +501,22 @@ test('can only remove associations of a certain type', function () {
     ProductAssociation::factory()->create([
         'product_parent_id' => $parent,
         'product_target_id' => $target,
-        'type' => Lunar\Base\Enums\ProductAssociation::CROSS_SELL->value,
+        'type' => Lunar\Core\Base\Enums\ProductAssociation::CROSS_SELL->value,
     ]);
 
     ProductAssociation::factory()->create([
         'product_parent_id' => $parent,
         'product_target_id' => $target,
-        'type' => Lunar\Base\Enums\ProductAssociation::UP_SELL->value,
+        'type' => Lunar\Core\Base\Enums\ProductAssociation::UP_SELL->value,
     ]);
 
     expect($parent->refresh()->associations)->toHaveCount(2);
 
-    Dissociate::dispatchSync($parent, $target, Lunar\Base\Enums\ProductAssociation::CROSS_SELL);
+    Dissociate::dispatchSync($parent, $target, Lunar\Core\Base\Enums\ProductAssociation::CROSS_SELL);
 
     expect($parent->refresh()->associations)->toHaveCount(1)
         ->and($parent->refresh()->associations->first()->type)->toEqual(
-            Lunar\Base\Enums\ProductAssociation::UP_SELL->value
+            Lunar\Core\Base\Enums\ProductAssociation::UP_SELL->value
         );
 });
 

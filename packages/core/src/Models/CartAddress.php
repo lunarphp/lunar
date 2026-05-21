@@ -1,20 +1,20 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Base\Addressable;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Traits\CachesProperties;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Database\Factories\CartAddressFactory;
-use Lunar\DataTypes\Price;
-use Lunar\DataTypes\ShippingOption;
+use Lunar\Core\Base\Addressable;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Traits\CachesProperties;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Database\Factories\CartAddressFactory;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataTypes\ShippingOption;
 
 /**
  * @property int $id

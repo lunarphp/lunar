@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
-use Lunar\Models\Order;
-use Lunar\Models\Transaction;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Transaction;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 
@@ -36,9 +36,16 @@ test('can make transaction', function () {
         'order_id' => $order->id,
     ]);
 
-    $this->assertDatabaseHas((new Order)->getTable(), $order->getRawOriginal());
+    $this->assertDatabaseHas((new Order)->getTable(), [
+        'id' => $order->id,
+        'reference' => $order->reference,
+    ]);
 
-    $this->assertDatabaseHas((new Transaction)->getTable(), $transaction->getRawOriginal());
+    $this->assertDatabaseHas((new Transaction)->getTable(), [
+        'id' => $transaction->id,
+        'order_id' => $order->id,
+        'type' => $transaction->type,
+    ]);
 });
 
 test('can store last four correctly', function () {

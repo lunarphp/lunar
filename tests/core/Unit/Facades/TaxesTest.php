@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Base\TaxManagerInterface;
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Facades\Taxes;
-use Lunar\Models\Currency;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Base\TaxManagerInterface;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Facades\Taxes;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;
 use Lunar\Tests\Core\TestCase;
 

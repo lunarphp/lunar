@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Models\State;
+use Lunar\Core\Models\State;
 
 class StateFactory extends BaseFactory
 {

@@ -5,7 +5,7 @@ namespace Lunar\Shipping\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Lunar\Base\BaseModel;
+use Lunar\Core\Base\BaseModel;
 use Lunar\Shipping\Factories\ShippingExclusionFactory;
 
 class ShippingExclusion extends BaseModel implements Contracts\ShippingExclusion

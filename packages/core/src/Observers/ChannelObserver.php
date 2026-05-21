@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Channel;
-use Lunar\Models\Contracts\Channel as ChannelContract;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Contracts\Channel as ChannelContract;
 
 class ChannelObserver
 {

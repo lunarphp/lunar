@@ -2,10 +2,10 @@
 
 namespace Lunar\Tests\Shipping;
 
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
 
 trait TestUtils
 {

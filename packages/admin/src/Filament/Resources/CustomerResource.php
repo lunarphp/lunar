@@ -28,7 +28,7 @@ use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\UserRelatio
 use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOverviewWidget;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Models\Contracts\Customer as CustomerContract;
+use Lunar\Core\Models\Contracts\Customer as CustomerContract;
 
 class CustomerResource extends BaseResource
 {

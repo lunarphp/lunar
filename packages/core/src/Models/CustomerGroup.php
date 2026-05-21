@@ -1,18 +1,18 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\AsAttributeData;
-use Lunar\Base\Traits\HasAttributes;
-use Lunar\Base\Traits\HasDefaultRecord;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Base\Traits\LogsActivity;
-use Lunar\Database\Factories\CustomerGroupFactory;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Casts\AsAttributeData;
+use Lunar\Core\Base\Traits\HasAttributes;
+use Lunar\Core\Base\Traits\HasDefaultRecord;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Database\Factories\CustomerGroupFactory;
 
 /**
  * @property int $id

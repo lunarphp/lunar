@@ -17,7 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Lunar\Admin\Database\Factories\StaffFactory;
-use Lunar\Base\Traits\LogsActivity;
+use Lunar\Core\Base\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 
 /**

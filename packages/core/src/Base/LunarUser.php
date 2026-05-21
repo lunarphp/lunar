@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Lunar\Models\Contracts\Customer;
+use Lunar\Core\Models\Contracts\Customer;
 
 interface LunarUser
 {

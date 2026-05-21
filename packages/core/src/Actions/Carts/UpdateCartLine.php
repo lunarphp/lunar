@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Actions\Carts;
+namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Actions\AbstractAction;
-use Lunar\Facades\DB;
-use Lunar\Models\CartLine;
+use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\CartLine;
 
 class UpdateCartLine extends AbstractAction
 {

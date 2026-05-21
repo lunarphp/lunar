@@ -2,10 +2,10 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\TaxClass;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;

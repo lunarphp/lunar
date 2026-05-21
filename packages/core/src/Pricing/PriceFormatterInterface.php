@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Pricing;
+namespace Lunar\Core\Pricing;
 
 interface PriceFormatterInterface
 {

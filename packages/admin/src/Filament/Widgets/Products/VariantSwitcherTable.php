@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
-use Lunar\Models\ProductOptionValue;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Models\ProductOptionValue;
+use Lunar\Core\Models\ProductVariant;
 
 class VariantSwitcherTable extends TableWidget
 {

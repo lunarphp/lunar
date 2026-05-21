@@ -3,8 +3,8 @@
 namespace Lunar\Admin\Support\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
-use Lunar\DataTypes\Price;
-use Lunar\Models\Currency;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Models\Currency;
 
 final class PriceSynth extends Synth
 {

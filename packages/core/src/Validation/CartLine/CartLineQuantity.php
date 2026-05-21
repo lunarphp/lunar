@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Validation\CartLine;
+namespace Lunar\Core\Validation\CartLine;
 
-use Lunar\Validation\BaseValidator;
+use Lunar\Core\Validation\BaseValidator;
 
 class CartLineQuantity extends BaseValidator
 {

@@ -14,9 +14,9 @@ use Lunar\Admin\Support\Resources\Concerns\ExtendsPages;
 use Lunar\Admin\Support\Resources\Concerns\ExtendsRelationManagers;
 use Lunar\Admin\Support\Resources\Concerns\ExtendsSubnavigation;
 use Lunar\Admin\Support\Resources\Concerns\ExtendsTables;
-use Lunar\Base\Traits\Searchable;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
+use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
 use ReflectionClass;
 
 use function Filament\Support\generate_search_term_expression;

@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Models\Currency;
+use Lunar\Core\Models\Currency;
 use Lunar\Stripe\Facades\Stripe;
 use Lunar\Stripe\Managers\StripeManager;
 use Lunar\Stripe\Models\StripePaymentIntent;

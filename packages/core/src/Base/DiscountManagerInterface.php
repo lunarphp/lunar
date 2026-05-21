@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
 use Illuminate\Support\Collection;
-use Lunar\Base\DataTransferObjects\CartDiscount;
-use Lunar\Models\Contracts\Cart;
+use Lunar\Core\Base\DataTransferObjects\CartDiscount;
+use Lunar\Core\Models\Contracts\Cart;
 
 interface DiscountManagerInterface
 {

@@ -4,11 +4,11 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
-use Lunar\FieldTypes\Text;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Customer;
-use Lunar\Models\Language;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

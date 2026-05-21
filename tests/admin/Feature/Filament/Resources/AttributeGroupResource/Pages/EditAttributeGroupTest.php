@@ -3,8 +3,8 @@
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\Language;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

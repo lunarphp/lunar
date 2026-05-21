@@ -6,7 +6,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Lunar\Admin\Support\Synthesizers\NumberSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 class Number extends BaseFieldType
 {

@@ -2,11 +2,11 @@
 
 namespace Lunar\Tests\Core\Stubs;
 
-use Lunar\Base\DataTransferObjects\PaymentAuthorize;
-use Lunar\Base\DataTransferObjects\PaymentCapture;
-use Lunar\Base\DataTransferObjects\PaymentRefund;
-use Lunar\Models\Contracts\Transaction as TransactionContract;
-use Lunar\PaymentTypes\AbstractPayment;
+use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Core\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Core\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
+use Lunar\Core\PaymentTypes\AbstractPayment;
 
 class TestPaymentDriver extends AbstractPayment
 {

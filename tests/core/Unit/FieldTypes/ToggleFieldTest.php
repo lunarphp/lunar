@@ -1,7 +1,7 @@
 <?php
 
-use Lunar\Exceptions\FieldTypeException;
-use Lunar\FieldTypes\Toggle;
+use Lunar\Core\Exceptions\FieldTypeException;
+use Lunar\Core\FieldTypes\Toggle;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

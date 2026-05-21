@@ -48,6 +48,7 @@
         "pestphp/pest": "^3.0|^4.0",
         "pestphp/pest-plugin-laravel": "^3.0|^4.0",
         "phpstan/phpstan": "^2.1.17",
+        "rector/rector": "^2.0",
         "symplify/monorepo-builder": "^11.0"
     },
     "autoload": {
@@ -57,21 +58,21 @@
             "packages/search/src/helpers.php"
         ],
         "psr-4": {
-            "Lunar\\": "packages/core/src",
+            "Lunar\\Core\\": "packages/core/src",
             "Lunar\\Admin\\": "packages/admin/src/",
             "Lunar\\Admin\\Database\\Factories\\": "packages/admin/database/factories",
             "Lunar\\Admin\\Database\\State\\": "packages/admin/database/state",
-            "Lunar\\Database\\Factories\\": "packages/core/database/factories",
-            "Lunar\\Database\\Seeders\\": "packages/core/database/seeders",
-            "Lunar\\Database\\State\\": "packages/core/database/state",
+            "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
+            "Lunar\\Core\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",
             "Lunar\\Paypal\\": "packages/paypal/src/",
             "Lunar\\Search\\": "packages/search/src/",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
             "Lunar\\Shipping\\Database\\Factories\\": "packages/table-rate-shipping/database/factories",
-            "Lunar\\Shipping\\Database\\State\\": "packages/table-rate-shipping/database/state",
-            "Lunar\\Stripe\\": "packages/stripe/src/"
+            "Lunar\\Stripe\\": "packages/stripe/src/",
+            "Lunar\\Upgrade\\": "packages/upgrade/src/",
+            "Lunar\\Upgrade\\Database\\Migrations\\": "packages/upgrade/database/migrations"
         }
     },
     "autoload-dev": {
@@ -84,7 +85,8 @@
             "Lunar\\Tests\\Shipping\\": "tests/shipping",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
             "Lunar\\Tests\\Stripe\\": "tests/stripe",
-            "Lunar\\Tests\\Search\\": "tests/search"
+            "Lunar\\Tests\\Search\\": "tests/search",
+            "Lunar\\Tests\\Upgrade\\": "tests/upgrade"
         }
     },
     "extra": {
@@ -95,7 +97,8 @@
                 "Search",
                 "Meilisearch",
                 "Paypal Payments",
-                "Stripe Payments"
+                "Stripe Payments",
+                "Upgrade"
             ]
         },
         "laravel": {
@@ -107,7 +110,8 @@
                 "Lunar\\Admin\\LunarPanelProvider",
                 "Lunar\\Opayo\\OpayoServiceProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
-                "Lunar\\LunarServiceProvider"
+                "Lunar\\Upgrade\\UpgradeServiceProvider",
+                "Lunar\\Core\\LunarServiceProvider"
             ]
         }
     },
@@ -119,7 +123,8 @@
         "lunarphp/paypal": "self.version",
         "lunarphp/search": "self.version",
         "lunarphp/stripe": "self.version",
-        "lunarphp/table-rate-shipping": "self.version"
+        "lunarphp/table-rate-shipping": "self.version",
+        "lunarphp/upgrade": "self.version"
     },
     "scripts": {
         "pint": "pint",

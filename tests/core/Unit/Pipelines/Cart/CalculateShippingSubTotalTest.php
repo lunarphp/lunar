@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Base\ValueObjects\Cart\ShippingBreakdown;
-use Lunar\Base\ValueObjects\Cart\ShippingBreakdownItem;
-use Lunar\DataTypes\Price as PriceDataType;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Pipelines\Cart\CalculateShippingSubTotal;
+use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Core\DataTypes\Price as PriceDataType;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Pipelines\Cart\CalculateShippingSubTotal;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

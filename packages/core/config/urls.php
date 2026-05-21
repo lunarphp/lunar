@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Generators\UrlGenerator;
+use Lunar\Core\Generators\UrlGenerator;
 
 return [
 

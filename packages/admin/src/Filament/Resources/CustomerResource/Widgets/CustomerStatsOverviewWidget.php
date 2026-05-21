@@ -5,9 +5,9 @@ namespace Lunar\Admin\Filament\Resources\CustomerResource\Widgets;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\DataTypes\Price;
-use Lunar\Facades\DB;
-use Lunar\Models\Currency;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Currency;
 
 class CustomerStatsOverviewWidget extends BaseWidget
 {

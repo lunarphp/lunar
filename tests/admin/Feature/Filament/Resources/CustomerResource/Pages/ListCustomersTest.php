@@ -3,7 +3,7 @@
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ListCustomers;
-use Lunar\Models\Customer;
+use Lunar\Core\Models\Customer;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

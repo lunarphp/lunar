@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\CartAddress;
-use Lunar\Models\Country;
-use Lunar\Models\Currency;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
-use Lunar\Models\TaxRateAmount;
+use Lunar\Core\Models\CartAddress;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxRateAmount;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionLookup;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Models\ShippingMethod;

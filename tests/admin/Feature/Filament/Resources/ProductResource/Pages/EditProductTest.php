@@ -3,17 +3,17 @@
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
-use Lunar\FieldTypes\Number;
-use Lunar\FieldTypes\Text;
-use Lunar\FieldTypes\Toggle;
-use Lunar\FieldTypes\TranslatedText as TranslatedTextField;
-use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Language;
-use Lunar\Models\Product;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
+use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\FieldTypes\Toggle;
+use Lunar\Core\FieldTypes\TranslatedText as TranslatedTextField;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Tests\Admin\Unit\Filament\TestCase;
 
 uses(TestCase::class)

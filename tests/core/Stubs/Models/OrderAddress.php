@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class OrderAddress extends \Lunar\Models\OrderAddress {}
+class OrderAddress extends \Lunar\Core\Models\OrderAddress {}

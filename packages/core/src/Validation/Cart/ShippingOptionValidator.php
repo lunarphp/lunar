@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Validation\Cart;
+namespace Lunar\Core\Validation\Cart;
 
-use Lunar\Validation\BaseValidator;
+use Lunar\Core\Validation\BaseValidator;
 
 class ShippingOptionValidator extends BaseValidator
 {

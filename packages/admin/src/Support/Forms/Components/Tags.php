@@ -6,8 +6,8 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\TagsInput;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Lunar\Facades\DB;
-use Lunar\Models\Tag;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Tag;
 
 class Tags extends TagsInput
 {

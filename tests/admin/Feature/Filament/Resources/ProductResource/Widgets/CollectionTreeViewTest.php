@@ -2,11 +2,11 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView;
-use Lunar\FieldTypes\TranslatedText;
-use Lunar\Models\Attribute;
-use Lunar\Models\Collection;
-use Lunar\Models\CollectionGroup;
-use Lunar\Models\Language;
+use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\CollectionGroup;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

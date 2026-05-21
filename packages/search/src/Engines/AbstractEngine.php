@@ -4,7 +4,7 @@ namespace Lunar\Search\Engines;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Lunar\Models\Product;
+use Lunar\Core\Models\Product;
 use Lunar\Search\Data\Builder\SearchQuery;
 
 abstract class AbstractEngine

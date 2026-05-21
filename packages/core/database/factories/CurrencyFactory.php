@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
-use Lunar\Models\Currency;
+use Lunar\Core\Models\Currency;
 
 class CurrencyFactory extends BaseFactory
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Models\Contracts;
+namespace Lunar\Core\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Lunar\DiscountTypes\AbstractDiscountType;
+use Lunar\Core\DiscountTypes\AbstractDiscountType;
 
 interface Discount
 {

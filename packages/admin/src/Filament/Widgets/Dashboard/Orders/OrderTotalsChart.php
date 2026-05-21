@@ -7,9 +7,9 @@ use Carbon\CarbonPeriod;
 use DateTime;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
-use Lunar\Facades\DB;
-use Lunar\Models\Currency;
-use Lunar\Models\Order;
+use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Order;
 
 class OrderTotalsChart extends ApexChartWidget
 {

@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Actions\Carts\AssociateUser;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\Order;
+use Lunar\Core\Actions\Carts\AssociateUser;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Order;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 

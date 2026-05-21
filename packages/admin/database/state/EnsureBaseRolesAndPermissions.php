@@ -17,7 +17,12 @@ class EnsureBaseRolesAndPermissions
 
     public function run()
     {
-        $guard = LunarPanel::getPanel()->getAuthGuard();
+        try {
+            $guard = LunarPanel::getPanel()->getAuthGuard();
+        } catch (\Throwable $e) {
+            // No admin panel registered — nothing to seed.
+            return;
+        }
 
         $tableNames = config('permission.table_names');
 
@@ -31,13 +36,6 @@ class EnsureBaseRolesAndPermissions
         }
 
         if (Schema::hasTable($tableNames['permissions'])) {
-            // Rename any existing permissions
-            Permission::where('name', 'catalogue:manage-products')->update(['name' => 'catalog:manage-products']);
-            Permission::where('name', 'catalogue:manage-collections')->update(['name' => 'catalog:manage-collections']);
-            Permission::where('name', 'catalogue:manage-orders')->update(['name' => 'sales:manage-orders']);
-            Permission::where('name', 'catalogue:manage-customers')->update(['name' => 'sales:manage-customers']);
-            Permission::where('name', 'catalogue:manage-discounts')->update(['name' => 'sales:manage-discounts']);
-
             foreach (LunarAccessControl::getBasePermissions() as $permission) {
                 Permission::firstOrCreate([
                     'name' => $permission,

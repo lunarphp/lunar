@@ -1,8 +1,8 @@
 
 <?php
 
-use Lunar\FieldTypes\YouTube;
-use Lunar\Models\Attribute;
+use Lunar\Core\FieldTypes\YouTube;
+use Lunar\Core\Models\Attribute;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)

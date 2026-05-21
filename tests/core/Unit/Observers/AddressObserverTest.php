@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Address;
-use Lunar\Models\Customer;
+use Lunar\Core\Models\Address;
+use Lunar\Core\Models\Customer;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

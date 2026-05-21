@@ -1,15 +1,15 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Exceptions\NonPurchasableItemException;
-use Lunar\Models\Cart;
-use Lunar\Models\CartLine;
-use Lunar\Models\Channel;
-use Lunar\Models\ProductVariant;
+use Lunar\Core\Exceptions\NonPurchasableItemException;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 

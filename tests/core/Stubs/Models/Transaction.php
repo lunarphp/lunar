@@ -2,4 +2,4 @@
 
 namespace Lunar\Tests\Core\Stubs\Models;
 
-class Transaction extends \Lunar\Models\Transaction {}
+class Transaction extends \Lunar\Core\Models\Transaction {}

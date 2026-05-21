@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Database\Factories;
+namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\DiscountTypes\AmountOff;
-use Lunar\Models\Discount;
+use Lunar\Core\DiscountTypes\AmountOff;
+use Lunar\Core\Models\Discount;
 
 class DiscountFactory extends BaseFactory
 {

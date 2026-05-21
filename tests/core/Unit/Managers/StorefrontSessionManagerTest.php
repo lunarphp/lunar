@@ -3,13 +3,13 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
-use Lunar\Base\StorefrontSessionInterface;
-use Lunar\Exceptions\CustomerNotBelongsToUserException;
-use Lunar\Managers\StorefrontSessionManager;
-use Lunar\Models\Channel;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\CustomerGroup;
+use Lunar\Core\Base\StorefrontSessionInterface;
+use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
+use Lunar\Core\Managers\StorefrontSessionManager;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 

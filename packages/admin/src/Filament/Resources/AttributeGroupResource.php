@@ -22,10 +22,10 @@ use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\Attri
 use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
-use Lunar\Facades\AttributeManifest;
-use Lunar\Facades\ModelManifest;
-use Lunar\Models\Contracts\AttributeGroup as AttributeGroupContract;
-use Lunar\Models\Language;
+use Lunar\Core\Facades\AttributeManifest;
+use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Models\Contracts\AttributeGroup as AttributeGroupContract;
+use Lunar\Core\Models\Language;
 
 class AttributeGroupResource extends BaseResource
 {

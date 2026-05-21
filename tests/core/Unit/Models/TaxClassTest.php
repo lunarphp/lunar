@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\TaxClass;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

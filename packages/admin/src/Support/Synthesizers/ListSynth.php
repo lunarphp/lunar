@@ -2,7 +2,7 @@
 
 namespace Lunar\Admin\Support\Synthesizers;
 
-use Lunar\FieldTypes\ListField;
+use Lunar\Core\FieldTypes\ListField;
 
 class ListSynth extends AbstractFieldSynth
 {

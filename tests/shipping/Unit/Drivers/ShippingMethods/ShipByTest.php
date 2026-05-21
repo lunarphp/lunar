@@ -2,12 +2,12 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Models\Cart;
-use Lunar\Models\Currency;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 use Lunar\Shipping\Drivers\ShippingMethods\ShipBy;
 use Lunar\Shipping\Models\ShippingMethod;

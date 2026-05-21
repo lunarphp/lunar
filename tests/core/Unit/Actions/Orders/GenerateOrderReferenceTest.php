@@ -2,10 +2,10 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\Actions\Orders\GenerateOrderReference;
-use Lunar\Models\Currency;
-use Lunar\Models\Language;
-use Lunar\Models\Order;
+use Lunar\Core\Actions\Orders\GenerateOrderReference;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Order;
 use Lunar\Tests\Core\Stubs\TestOrderReferenceGenerator;
 use Lunar\Tests\Core\TestCase;
 

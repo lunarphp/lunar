@@ -4,10 +4,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Laravel\Scout\Engines\DatabaseEngine;
 use Laravel\Scout\Engines\NullEngine;
-use Lunar\Models\Collection;
-use Lunar\Models\Product;
-use Lunar\Search\ProductIndexer;
-use Lunar\Search\ScoutIndexer;
+use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Search\ProductIndexer;
+use Lunar\Core\Search\ScoutIndexer;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

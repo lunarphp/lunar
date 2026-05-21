@@ -1,16 +1,16 @@
 <?php
 
-namespace Lunar\Models;
+namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Base\BaseModel;
-use Lunar\Base\Casts\Price as CastsPrice;
-use Lunar\Base\Traits\HasMacros;
-use Lunar\Database\Factories\PriceFactory;
-use Lunar\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\Casts\Price as CastsPrice;
+use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Database\Factories\PriceFactory;
+use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 /**
@@ -19,7 +19,7 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property ?int $currency_id
  * @property string $priceable_type
  * @property int $priceable_id
- * @property \Lunar\DataTypes\Price $price
+ * @property \Lunar\Core\DataTypes\Price $price
  * @property ?int $compare_price
  * @property int $min_quantity
  * @property ?Carbon $created_at
@@ -80,7 +80,7 @@ class Price extends BaseModel implements Contracts\Price
      *
      * @param  TaxZone|null  $taxZone  Optional override for the tax zone. Falls back to the store's default zone.
      */
-    public function priceExTax(?TaxZoneContract $taxZone = null): \Lunar\DataTypes\Price
+    public function priceExTax(?TaxZoneContract $taxZone = null): \Lunar\Core\DataTypes\Price
     {
         if (! prices_inc_tax()) {
             return $this->price;
@@ -98,7 +98,7 @@ class Price extends BaseModel implements Contracts\Price
      *
      * @param  TaxZone|null  $taxZone  Optional override for the tax zone.
      */
-    public function priceIncTax(?TaxZoneContract $taxZone = null): int|\Lunar\DataTypes\Price
+    public function priceIncTax(?TaxZoneContract $taxZone = null): int|\Lunar\Core\DataTypes\Price
     {
         if (prices_inc_tax()) {
             return $this->price;
@@ -115,7 +115,7 @@ class Price extends BaseModel implements Contracts\Price
      *
      * @param  TaxZone|null  $taxZone  Optional override for the tax zone.
      */
-    public function comparePriceIncTax(?TaxZoneContract $taxZone = null): int|\Lunar\DataTypes\Price
+    public function comparePriceIncTax(?TaxZoneContract $taxZone = null): int|\Lunar\Core\DataTypes\Price
     {
         if (prices_inc_tax()) {
             return $this->compare_price;

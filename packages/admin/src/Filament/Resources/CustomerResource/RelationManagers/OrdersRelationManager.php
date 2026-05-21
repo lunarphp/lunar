@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
 
 class OrdersRelationManager extends BaseRelationManager
 {

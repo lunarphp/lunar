@@ -3,8 +3,8 @@
 namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
-use Lunar\Models\Cart;
-use Lunar\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionLookup;
 use Lunar\Shipping\Events\ShippingOptionResolvedEvent;
 

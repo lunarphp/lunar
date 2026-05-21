@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Observers;
+namespace Lunar\Core\Observers;
 
-use Lunar\Models\Address;
-use Lunar\Models\Contracts\Address as AddressContract;
+use Lunar\Core\Models\Address;
+use Lunar\Core\Models\Contracts\Address as AddressContract;
 
 class AddressObserver
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Base;
+namespace Lunar\Core\Base;
 
-use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Models\Contracts\CartLine;
-use Lunar\Models\Contracts\Currency;
-use Lunar\Models\Contracts\TaxZone;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Models\Contracts\CartLine;
+use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Contracts\TaxZone;
 
 interface TaxDriver
 {

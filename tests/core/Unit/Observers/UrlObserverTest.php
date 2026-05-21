@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Models\Language;
-use Lunar\Models\Url;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Url;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

@@ -5,7 +5,7 @@ namespace Lunar\Admin\Support\FieldTypes;
 use Filament\Forms\Components\KeyValue;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Synthesizers\ListSynth;
-use Lunar\Models\Attribute;
+use Lunar\Core\Models\Attribute;
 
 class ListField extends BaseFieldType
 {

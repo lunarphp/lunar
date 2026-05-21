@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Pipelines\CartLine;
+namespace Lunar\Core\Pipelines\CartLine;
 
 use Closure;
-use Lunar\DataTypes\Price;
-use Lunar\Facades\Pricing;
-use Lunar\Models\CartLine;
-use Lunar\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\DataTypes\Price;
+use Lunar\Core\Facades\Pricing;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class GetUnitPrice

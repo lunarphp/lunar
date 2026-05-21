@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunar\Managers;
+namespace Lunar\Core\Managers;
 
 use Illuminate\Support\Manager;
-use Lunar\Drivers\SystemTaxDriver;
+use Lunar\Core\Drivers\SystemTaxDriver;
 
 class TaxManager extends Manager
 {

@@ -1,25 +1,25 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Actions\Carts\CreateOrder;
-use Lunar\DataTypes\Price as PriceDataType;
-use Lunar\DataTypes\ShippingOption;
-use Lunar\Exceptions\DisallowMultipleCartOrdersException;
-use Lunar\Facades\ModelManifest;
-use Lunar\Facades\ShippingManifest;
-use Lunar\Models\Cart;
-use Lunar\Models\CartAddress;
-use Lunar\Models\Country;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
-use Lunar\Models\CustomerGroup;
-use Lunar\Models\Order;
-use Lunar\Models\OrderAddress;
-use Lunar\Models\OrderLine;
-use Lunar\Models\Price;
-use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
-use Lunar\Models\TaxRateAmount;
+use Lunar\Core\Actions\Carts\CreateOrder;
+use Lunar\Core\DataTypes\Price as PriceDataType;
+use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Exceptions\DisallowMultipleCartOrdersException;
+use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Facades\ShippingManifest;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartAddress;
+use Lunar\Core\Models\Country;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderAddress;
+use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\Price;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\TaxClass;
+use Lunar\Core\Models\TaxRateAmount;
 use Lunar\Tests\Core\Stubs\Models\CustomOrder;
 use Lunar\Tests\Core\TestCase;
 
@@ -114,7 +114,7 @@ function can_update_draft_order()
 
 test('can create order', function () {
     ModelManifest::replace(
-        Lunar\Models\Contracts\Order::class,
+        Lunar\Core\Models\Contracts\Order::class,
         CustomOrder::class
     );
     CustomerGroup::factory()->create([

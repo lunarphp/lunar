@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Actions;
+namespace Lunar\Core\Actions;
 
 use Closure;
 
