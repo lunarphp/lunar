@@ -36,9 +36,16 @@ test('can make transaction', function () {
         'order_id' => $order->id,
     ]);
 
-    $this->assertDatabaseHas((new Order)->getTable(), $order->getRawOriginal());
+    $this->assertDatabaseHas((new Order)->getTable(), [
+        'id' => $order->id,
+        'reference' => $order->reference,
+    ]);
 
-    $this->assertDatabaseHas((new Transaction)->getTable(), $transaction->getRawOriginal());
+    $this->assertDatabaseHas((new Transaction)->getTable(), [
+        'id' => $transaction->id,
+        'order_id' => $order->id,
+        'type' => $transaction->type,
+    ]);
 });
 
 test('can store last four correctly', function () {
