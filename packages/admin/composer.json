@@ -16,14 +16,14 @@
     "repositories": [],
     "require": {
         "lunarphp/core": "self.version",
-        "filament/filament": "^4.1",
-        "filament/spatie-laravel-media-library-plugin": "^4.0",
+        "filament/filament": "^5.0",
+        "filament/spatie-laravel-media-library-plugin": "^5.0",
         "spatie/laravel-permission": "^6.12",
         "barryvdh/laravel-dompdf": "^3.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
         "leandrocfe/filament-apex-charts": "^5.0",
-        "awcodes/shout": "^3.0",
-        "awcodes/filament-badgeable-column": "^3.0"
+        "awcodes/shout": "^4.0",
+        "awcodes/filament-badgeable-column": "^4.0"
     },
     "extra": {
         "laravel": {
@@ -33,7 +33,7 @@
         }
     },
     "require-dev": {
-        "filament/upgrade": "^4.0",
+        "filament/upgrade": "^5.0",
         "phpstan/phpstan": "^2.1.17"
     }
 }
