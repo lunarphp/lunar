@@ -58,10 +58,12 @@ test('can make a full address', function () {
 
     $address = Address::create($data);
 
-    $data['meta'] = json_encode($data['meta']);
+    $expectedMeta = $data['meta'];
+    unset($data['meta']);
 
     $this->assertDatabaseHas('lunar_addresses', $data);
 
+    expect((array) $address->fresh()->meta)->toEqual($expectedMeta);
     expect($address->customer)->toBeInstanceOf(Customer::class);
     expect($address->country)->toBeInstanceOf(Country::class);
 });

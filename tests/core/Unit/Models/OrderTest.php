@@ -235,16 +235,6 @@ test('can cast and store shipping breakdown', function () {
 
     $order->save();
 
-    $this->assertDatabaseHas((new Order)->getTable(), [
-        'shipping_breakdown' => json_encode([[
-            'name' => 'Breakdown A',
-            'identifier' => 'BA',
-            'value' => 123,
-            'formatted' => $shippingPrice->formatted,
-            'currency' => $currency->toArray(),
-        ]]),
-    ]);
-
     $breakdown = $order->refresh()->shipping_breakdown;
 
     expect($breakdown->items)->toHaveCount(1);

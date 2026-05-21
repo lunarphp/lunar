@@ -54,8 +54,9 @@ test('can make a cart', function () {
     $this->assertDatabaseHas((new Cart)->getTable(), [
         'currency_id' => $currency->id,
         'channel_id' => $channel->id,
-        'meta' => json_encode(['foo' => 'bar']),
     ]);
+
+    expect((array) $cart->fresh()->meta)->toEqual(['foo' => 'bar']);
 
     $variant = ProductVariant::factory()->create();
 
