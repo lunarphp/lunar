@@ -33,7 +33,6 @@
         }
     },
     "require-dev": {
-        "filament/upgrade": "^5.0",
         "phpstan/phpstan": "^2.1.17"
     }
 }
