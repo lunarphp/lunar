@@ -74,7 +74,7 @@ class ManageUrlsRelatedRecords extends BaseManageRelatedRecords
                         ->required(),
                     Select::make('language_id')->label(
                         __('lunarpanel::relationmanagers.urls.table.language.label')
-                    )->relationship(name: 'language', titleAttribute: 'name')->required()->reactive(),
+                    )->relationship(name: 'language', titleAttribute: 'name')->required()->live(),
                 ])->columns(2)->columnSpan(2),
             ]);
     }

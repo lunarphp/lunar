@@ -5,7 +5,7 @@ namespace Lunar\Admin\Filament\Resources\ProductOptionResource\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -51,7 +51,8 @@ class ProductOptionTable
             TextColumn::make('handle')
                 ->label(__('lunarpanel::productoption.table.handle.label'))
                 ->searchable(),
-            BooleanColumn::make('shared')
+            IconColumn::make('shared')
+                ->boolean()
                 ->label(__('lunarpanel::productoption.table.shared.label')),
         ];
     }

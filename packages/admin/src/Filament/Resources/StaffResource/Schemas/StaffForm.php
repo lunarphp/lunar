@@ -113,7 +113,7 @@ class StaffForm
 
                 $set($permName, $permission->getPermissionState());
             })
-            ->reactive()
+            ->live()
             ->saveRelationshipsUsing(fn ($state, $record) => $record->syncRoles($state))
             ->dehydrated(false);
     }
