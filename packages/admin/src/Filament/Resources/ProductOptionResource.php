@@ -2,28 +2,17 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables\Columns\BooleanColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\CreateProductOption;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\EditProductOption;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\ListProductOptions;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers\ValuesRelationManager;
-use Lunar\Admin\Support\Forms\Components\TranslatedText;
+use Lunar\Admin\Filament\Resources\ProductOptionResource\Schemas\ProductOptionForm;
+use Lunar\Admin\Filament\Resources\ProductOptionResource\Tables\ProductOptionTable;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
-use Lunar\Core\Models\Language;
 
 class ProductOptionResource extends BaseResource
 {
@@ -53,86 +42,14 @@ class ProductOptionResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
-    protected static function getMainFormComponents(): array
+    public static function form(Schema $schema): Schema
     {
-        return [
-            static::getNameFormComponent(),
-            static::getLabelFormComponent(),
-            static::getHandleFormComponent(),
-        ];
+        return ProductOptionForm::configure($schema);
     }
 
-    protected static function getNameFormComponent(): Component
+    public static function table(Table $table): Table
     {
-        return TranslatedText::make('name')
-            ->label(__('lunarpanel::productoption.form.name.label'))
-            ->required()
-            ->maxLength(255)
-            ->afterStateUpdated(function (string $operation, $state, Set $set) {
-                if ($operation !== 'create') {
-                    return;
-                }
-                $set('handle', Str::slug($state[Language::getDefault()->code]));
-            })
-            ->live(onBlur: true)
-            ->autofocus();
-    }
-
-    protected static function getLabelFormComponent(): Component
-    {
-        return TranslatedText::make('label')
-            ->label(__('lunarpanel::productoption.form.label.label'))
-            ->required()
-            ->maxLength(255)
-            ->autofocus();
-    }
-
-    protected static function getHandleFormComponent(): Component
-    {
-        return TextInput::make('handle')
-            ->label(__('lunarpanel::productoption.form.handle.label'))
-            ->required()
-            ->maxLength(255)
-            ->live(onBlur: true)
-            ->afterStateUpdated(function (string $operation, $state, Set $set) {
-                if ($operation !== 'create') {
-                    return;
-                }
-
-                $set('handle', Str::snake(Str::lower($state)));
-            })
-            ->disabled(fn ($operation, $record) => $operation == 'edit' && (! $record->shared));
-    }
-
-    public static function getDefaultTable(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TranslatedTextColumn::make('name')
-                    ->label(__('lunarpanel::productoption.table.name.label'))
-                    ->searchable(),
-                TranslatedTextColumn::make('label')
-                    ->label(__('lunarpanel::productoption.table.label.label'))
-                    ->searchable(),
-                TextColumn::make('handle')
-                    ->label(__('lunarpanel::productoption.table.handle.label'))
-                    ->searchable(),
-                BooleanColumn::make('shared')
-                    ->label(__('lunarpanel::productoption.table.shared.label')),
-            ])
-            ->filters([
-                Filter::make('shared')
-                    ->query(fn (Builder $query): Builder => $query->where('shared', true)),
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
-            ->searchable();
+        return ProductOptionTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -142,7 +59,7 @@ class ProductOptionResource extends BaseResource
         ];
     }
 
-    public static function getDefaultPages(): array
+    public static function getPages(): array
     {
         return [
             'index' => ListProductOptions::route('/'),
