@@ -4,7 +4,6 @@ namespace Lunar\Admin\Support\Infolists\Components;
 
 use Closure;
 use Filament\Infolists\Components\Entry;
-use Livewire\Mechanisms\ComponentRegistry;
 
 class Livewire extends Entry
 {
@@ -28,6 +27,6 @@ class Livewire extends Entry
 
     public function getContentName(): string
     {
-        return app(ComponentRegistry::class)->getName($this->livewireComponent);
+        return app('livewire.factory')->resolveComponentName($this->livewireComponent);
     }
 }

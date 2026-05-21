@@ -4,7 +4,7 @@
     </x-filament::section.heading>
 
 
-    @livewire('lunar.admin.livewire.components.activity-log-feed', [
+    @livewire(\Lunar\Admin\Livewire\Components\ActivityLogFeed::class, [
         'subject' => $getRecord()
     ])
 </section>
