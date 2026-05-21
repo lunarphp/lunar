@@ -7,8 +7,8 @@ use Filament\Tables\Table;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ActivityResource;
 use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ListActivities;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\ListAttributeGroups;
+use Lunar\Admin\Filament\Resources\AttributeGroupResource\Tables\AttributeGroupTable;
 use Lunar\Admin\Filament\Resources\CurrencyResource;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
 use Lunar\Admin\Filament\Resources\CustomerResource;
@@ -64,8 +64,28 @@ it('can extend table columns', function ($resource, $page) {
     'ListCurrencies' => [CurrencyResource::class, ListCurrencies::class],
     'ListLanguages' => [LanguageResource::class, ListLanguages::class],
     'ListActivities' => [ActivityResource::class, ListActivities::class],
-    'ListAttributeGroups' => [AttributeGroupResource::class, ListAttributeGroups::class],
 ]);
+
+it('can extend table columns on split-class tables (configureTable hook)', function () {
+    $class = new class extends ResourceExtension
+    {
+        public function configureTable(Table $table): Table
+        {
+            return $table->columns([
+                ...$table->getColumns(),
+                TextColumn::make('test_column'),
+            ]);
+        }
+    };
+
+    LunarPanel::extensions([
+        AttributeGroupTable::class => $class::class,
+    ]);
+
+    $this->asStaff();
+
+    Livewire::test(ListAttributeGroups::class)->assertTableColumnExists('test_column');
+});
 
 it('can extend form schema', function ($resource, $page) {
     $class = new class extends ResourceExtension
