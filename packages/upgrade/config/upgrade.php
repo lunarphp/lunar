@@ -124,6 +124,7 @@ return [
             '2026_01_01_000056_create_cart_lines_table',
             '2026_01_01_000057_create_media_product_variant_table',
             '2026_01_01_000058_create_product_option_value_product_variant_table',
+            '2026_01_01_000059_add_orders_cart_id_foreign_key',
             '2026_01_01_900001_create_activity_log_table',
             '2026_01_02_000000_create_staff_table',
             '2026_01_02_000001_create_permission_tables',

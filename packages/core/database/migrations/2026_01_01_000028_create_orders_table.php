@@ -32,7 +32,8 @@ return new class extends Migration
             $table->boolean('new_customer')->default(false)->index();
             $table->jsonb('discount_breakdown')->nullable();
             $table->jsonb('shipping_breakdown')->nullable();
-            // FK omitted to break the orders↔carts cycle (carts.order_id keeps its FK).
+            // The FK to lunar_carts is added in a follow-up migration to break
+            // the orders ↔ carts circular dependency at create time.
             $table->unsignedBigInteger('cart_id')->nullable()->index();
             $table->string('fingerprint')->nullable()->index();
         });
