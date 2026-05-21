@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Pages\Enums\SubNavigationPosition;
-use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
@@ -63,18 +62,18 @@ class BrandResource extends BaseResource
         return BrandTable::configure($table);
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    protected static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             EditBrand::class,
             ManageBrandMedia::class,
             ManageBrandUrls::class,
             ManageBrandProducts::class,
             ManageBrandCollections::class,
-        ]);
+        ];
     }
 
-    public static function getPages(): array
+    protected static function getDefaultPages(): array
     {
         return [
             'index' => ListBrands::route('/'),

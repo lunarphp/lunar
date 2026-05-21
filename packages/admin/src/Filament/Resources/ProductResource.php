@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Pages\Enums\SubNavigationPosition;
-use Filament\Pages\Page;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
@@ -80,9 +79,9 @@ class ProductResource extends BaseResource
         return ProductTable::configure($table);
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    protected static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             EditProduct::class,
             ManageProductAvailability::class,
             ManageProductMedia::class,
@@ -94,10 +93,10 @@ class ProductResource extends BaseResource
             ManageProductUrls::class,
             ManageProductCollections::class,
             ManageProductAssociations::class,
-        ]);
+        ];
     }
 
-    public static function getRelations(): array
+    protected static function getDefaultRelations(): array
     {
         return [
             RelationGroup::make('Availability', [
@@ -110,7 +109,7 @@ class ProductResource extends BaseResource
         ];
     }
 
-    public static function getPages(): array
+    protected static function getDefaultPages(): array
     {
         return [
             'index' => ListProducts::route('/'),

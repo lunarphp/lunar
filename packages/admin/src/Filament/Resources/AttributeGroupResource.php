@@ -52,14 +52,14 @@ class AttributeGroupResource extends BaseResource
         return AttributeGroupTable::configure($table);
     }
 
-    public static function getRelations(): array
+    protected static function getDefaultRelations(): array
     {
         return [
             AttributesRelationManager::class,
         ];
     }
 
-    public static function getPages(): array
+    protected static function getDefaultPages(): array
     {
         return [
             'index' => ListAttributeGroups::route('/'),

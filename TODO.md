@@ -6,7 +6,7 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 
 ## Outstanding
 
-- Filament v5 schemas refactor — Catalog merged; Sales / Settings / Shipping families + Pages refactor + wrapper-trait removal remain (spec 0005)
+- Pages refactor (spec 0005 follow-up) — apply the split-class playbook to the 10 page-extension traits under `Support/Pages/Concerns/` once a downstream need surfaces; structural hooks were preserved on resources so this is no longer blocking.
 - Move core Filament e-commerce components to a new `lunarphp/filament` package
 - Support `Model::preventLazyLoading()`
 - Ensure all service-layer classes are DI'd
@@ -47,3 +47,4 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Flatten v1.x migrations into a v2 baseline — single flat set of migration files at v2.0.0; upgrade package handles the v1 → v2 schema transformation and rewrites the `migrations` ledger
 - Change to `\Lunar\Core` namespace
 - Filament v5 upgrade (spec 0004)
+- Filament v5 schemas refactor (spec 0005)

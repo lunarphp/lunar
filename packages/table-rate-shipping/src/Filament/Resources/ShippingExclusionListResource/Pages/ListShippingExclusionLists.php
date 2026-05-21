@@ -5,6 +5,7 @@ namespace Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Pages;
 use Filament\Actions;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource;
+use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Schemas\ShippingExclusionListForm;
 
 class ListShippingExclusionLists extends BaseListRecords
 {
@@ -14,7 +15,7 @@ class ListShippingExclusionLists extends BaseListRecords
     {
         return [
             Actions\CreateAction::make()->form([
-                ShippingExclusionListResource::getNameFormComponent(),
+                ShippingExclusionListForm::getNameComponent(),
             ]),
         ];
     }

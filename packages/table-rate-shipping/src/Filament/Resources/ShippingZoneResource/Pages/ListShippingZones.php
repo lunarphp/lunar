@@ -5,6 +5,7 @@ namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 use Filament\Actions;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
+use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Schemas\ShippingZoneForm;
 
 class ListShippingZones extends BaseListRecords
 {
@@ -14,8 +15,8 @@ class ListShippingZones extends BaseListRecords
     {
         return [
             Actions\CreateAction::make()->form([
-                ShippingZoneResource::getNameFormComponent(),
-                ShippingZoneResource::getTypeFormComponent(),
+                ShippingZoneForm::getNameComponent(),
+                ShippingZoneForm::getTypeComponent(),
             ]),
         ];
     }

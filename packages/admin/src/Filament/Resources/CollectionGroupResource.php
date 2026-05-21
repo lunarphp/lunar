@@ -50,12 +50,7 @@ class CollectionGroupResource extends BaseResource
         return CollectionGroupTable::configure($table);
     }
 
-    public static function getRelations(): array
-    {
-        return [];
-    }
-
-    public static function getPages(): array
+    protected static function getDefaultPages(): array
     {
         return [
             'index' => ListCollectionGroups::route('/'),
