@@ -73,17 +73,16 @@ class ManageProductAssociations extends BaseManageRelatedRecords
             ->inverseRelationship('parent')
             ->columns([
                 TextColumn::make('target')
-                    ->formatStateUsing(fn (ProductAssociationContract $record): string => $record->target->translateAttribute('name'))
+                    ->formatStateUsing(fn (ProductAssociationContract $record): ?string => $record->target->translateAttribute('name'))
                     ->limit(50)
                     ->tooltip(function (TextColumn $column, ProductAssociationContract $record): ?string {
-                        $state = $column->getState();
+                        $name = $record->target->translateAttribute('name');
 
-                        if (strlen($record->target->translateAttribute('name')) <= $column->getCharacterLimit()) {
+                        if ($name === null || strlen($name) <= $column->getCharacterLimit()) {
                             return null;
                         }
 
-                        // Only render the tooltip if the column contents exceeds the length limit.
-                        return $record->target->translateAttribute('name');
+                        return $name;
                     })
                     ->label(__('lunarpanel::product.table.name.label')),
                 TextColumn::make('target.variants.sku')
