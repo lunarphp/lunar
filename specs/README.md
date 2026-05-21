@@ -28,4 +28,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0002 | Core namespace change       | completed   |
 | 0003 | Flatten v1.x migrations     | completed   |
 | 0004 | Filament v5 upgrade         | completed   |
-| 0005 | Filament v5 schemas refactor | in-progress |
+| 0005 | Filament v5 schemas refactor | completed   |

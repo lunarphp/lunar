@@ -392,4 +392,19 @@ final class LunarSetList
      * @var array<int, class-string>
      */
     public const V1_TO_V2 = [];
+
+    /**
+     * Method renames on Lunar base classes, contributed by v2 breaking
+     * specs. Consumed by `RenameMethodRector` via `MethodCallRename`.
+     *
+     * Spec 0005 dropped the resource-level wrapper traits, renaming the
+     * protected slot methods `getDefaultForm` / `getDefaultTable` back to
+     * Filament's native `form` / `table` entry points.
+     *
+     * @var array<int, array{0: class-string, 1: string, 2: string}>
+     */
+    public const V1_TO_V2_METHOD_RENAMES = [
+        ['Lunar\\Admin\\Support\\Resources\\BaseResource', 'getDefaultForm', 'form'],
+        ['Lunar\\Admin\\Support\\Resources\\BaseResource', 'getDefaultTable', 'table'],
+    ];
 }

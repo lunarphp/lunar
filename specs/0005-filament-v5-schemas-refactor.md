@@ -1,6 +1,6 @@
 # 0005 — Filament v5 schemas refactor
 
-- Status: in-progress (Catalog family merged via #2481; Sales / Settings / Shipping remain)
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-21
 - TODO item: "Filament v5 schemas refactor"

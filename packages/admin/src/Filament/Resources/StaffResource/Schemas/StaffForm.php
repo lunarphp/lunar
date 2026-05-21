@@ -9,7 +9,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
 use Lunar\Admin\Support\Concerns\CallsHooks;
@@ -24,9 +23,7 @@ class StaffForm
     {
         return self::callStaticLunarHook(
             'configureForm',
-            $schema->components([
-                Section::make()->schema(static::getMainComponents()),
-            ]),
+            $schema->components(static::getMainComponents()),
         );
     }
 
