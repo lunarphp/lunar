@@ -1,6 +1,6 @@
 # 0005 — Filament v5 schemas refactor
 
-- Status: draft
+- Status: in-progress (Catalog family merged via #2481; Sales / Settings / Shipping remain)
 - Author: Glenn Jacobs
 - Created: 2026-05-21
 - TODO item: "Filament v5 schemas refactor"
@@ -117,6 +117,24 @@ Coordination:
 - **`BaseResource` shape**: keep `BaseResource extends Resource` as the entry point; compose Lunar concerns via small traits in `Support/Resources/Concerns/`, mirroring Filament's own `Resource.php` (143 lines composing 11 traits). The wrapper traits (`ExtendsForms`, `ExtendsTables`, `ExtendsPages`, `ExtendsRelationManagers`, `ExtendsSubnavigation`) are deleted; the actual Lunar behaviour inline on `BaseResource` today is extracted into named concerns: `HasLunarPermissions` (permission gate + `can()` + `registerNavigationItems()`), `ResolvesModelContract` (interface-aware `getModel()`), `HasScoutGlobalSearch` (Scout-aware global search). Result: `BaseResource` itself drops to ~15 lines.
 - **Granular helpers**: keep the per-component helpers (`getNameFormComponent`, `getSkuFormComponent`, `getNameTableColumn`, etc.) as `public static` methods on the new `{Resource}Form` / `{Resource}Table` classes. Audit found real cross-resource reuse — e.g. `BrandResource/Pages/ManageBrandProducts.php` reuses `ProductResource::getNameTableColumn()` and `getSkuTableColumn()`; `ProductResource/Pages/ListProducts.php` reuses `getBaseNameFormComponent()` et al for its create modal. These helpers also become the cleanest extension target: an add-on can override `getSkuFormComponent()` to replace just the SKU field rather than mutating the whole built schema.
 - **PR slicing**: one PR per resource family. Catalog (Brand, Product, ProductOption, ProductType, ProductVariant, Collection, CollectionGroup, Tag, Attribute, AttributeGroup), Sales (Order, Customer, CustomerGroup, Discount), Settings (Channel, Currency, Language, Staff, TaxClass, TaxRate, TaxZone, Activity). Shipping resources land as their own PR. Each PR is reviewable in isolation; the `BaseResource` + concerns trim lands in the first PR.
+
+## Progress
+
+**Merged** (PR #2481, branched off `2.x`):
+
+- Catalog family — 9 resources migrated to the split-class layout: Brand, Product, Tag, Collection, CollectionGroup, ProductType, ProductOption, ProductVariant, AttributeGroup. Each resource keeps metadata, page registration, navigation, and global search overrides; form/table components live in `{Resource}/Schemas/{Resource}Form.php` and `{Resource}/Tables/{Resource}Table.php`. Granular component helpers retained as `public static` methods on the split classes (audit confirmed real cross-resource consumers).
+- `BaseResource` trimmed to compose three named concerns: `HasLunarPermissions`, `ResolvesModelContract`, `HasScoutGlobalSearch`. Wrapper traits (`ExtendsForms`, `ExtendsTables`, `ExtendsPages`, `ExtendsRelationManagers`, `ExtendsSubnavigation`) remain in place for unmigrated resources; deleted when no caller depends on them.
+- Hook contract on migrated resources: `LunarPanel::extensions([{Resource}Form::class => …])` with `configureForm` / `configureTable` method names. `ResourceExtensionTest` exercises both legacy and new patterns.
+- Cross-resource consumer call sites updated in lockstep: `BrandResource/Pages/ManageBrandProducts`, 3× `ProductVariantResource/Pages/Manage*`, 2× `ProductResource/Pages/Manage*`, `Support/Concerns/Products/ManagesProductPricing`.
+
+**Outstanding**:
+
+- **Sales family**: `OrderResource`, `CustomerResource`, `CustomerGroupResource`, `DiscountResource`. Order has known cross-consumers (`LatestOrdersTable` widget, `OrdersRelationManager` on Customer). Discount has `ListDiscounts` consuming `getNameFormComponent`.
+- **Settings family**: `ChannelResource`, `CurrencyResource`, `LanguageResource`, `StaffResource`, `TaxClassResource`, `TaxRateResource`, `TaxZoneResource`, `ActivityResource`.
+- **Shipping**: 3 resources in `packages/table-rate-shipping/src/Filament/Resources/` (`ShippingZoneResource`, `ShippingMethodResource`, `ShippingExclusionListResource`).
+- **Pages refactor** (spec § Apply Pages refactor in lockstep): the 10 page-extension traits under `Support/Pages/Concerns/` still need rebuilding at the new seam. Deferred until all resources are migrated so the Page-base shape lands once.
+- **Cluster pages**: `src/Filament/Clusters/Taxes.php` and its children — pattern decided when Settings/Tax resources are touched.
+- **Wrapper-trait removal**: once every resource above is migrated, delete the five `Extends*` traits on `BaseResource` and add Rector rules in `lunarphp/upgrade` for the renamed methods (`getDefaultForm` → `form`, `getDefaultTable` → `table`, etc.).
 
 ## References
 

@@ -6,9 +6,7 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 
 ## Outstanding
 
-- Filament v5 upgrade
-- Filament v5 schemas refactor (spec 0005)
-- Extend upgrade package's class-string rewriter to walk JSON-embedded FQCNs (`attribute_data` columns on products, variants, collections, brands, customers — `AsAttributeData::get()` silently drops fields whose stored `field_type` no longer resolves, leaving `translateAttribute()` returning null across the panel)
+- Filament v5 schemas refactor — Catalog merged; Sales / Settings / Shipping families + Pages refactor + wrapper-trait removal remain (spec 0005)
 - Move core Filament e-commerce components to a new `lunarphp/filament` package
 - Support `Model::preventLazyLoading()`
 - Ensure all service-layer classes are DI'd
@@ -48,3 +46,4 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Add an Upgrade package for those migrating from v1.x (using Rector) — land first so subsequent breaking specs can ship their Rector rules and data migrations into it
 - Flatten v1.x migrations into a v2 baseline — single flat set of migration files at v2.0.0; upgrade package handles the v1 → v2 schema transformation and rewrites the `migrations` ledger
 - Change to `\Lunar\Core` namespace
+- Filament v5 upgrade (spec 0004)
