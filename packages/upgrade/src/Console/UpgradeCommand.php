@@ -30,8 +30,8 @@ class UpgradeCommand extends Command
         StepRegistry $registry,
     ): int {
         try {
-            $versionGuard->assertLatestV1();
             $schemaGuard->assertV1MigrationsApplied($this->option('connection'));
+            $versionGuard->assertV1SchemaPresent($this->option('connection'));
 
             $steps = $registry->resolve(
                 (array) $this->option('only'),
