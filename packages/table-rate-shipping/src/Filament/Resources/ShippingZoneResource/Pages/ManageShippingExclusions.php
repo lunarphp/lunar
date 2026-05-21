@@ -9,7 +9,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
-use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource;
+use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Tables\ShippingExclusionListTable;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
 
 class ManageShippingExclusions extends ManageRelatedRecords
@@ -43,7 +43,7 @@ class ManageShippingExclusions extends ManageRelatedRecords
     public function table(Table $table): Table
     {
         return $table->columns(
-            ShippingExclusionListResource::getTableColumns(),
+            ShippingExclusionListTable::getColumns(),
         )->headerActions([
             AttachAction::make()
                 ->color('primary')
