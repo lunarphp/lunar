@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Pages\Enums\SubNavigationPosition;
-use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -74,24 +73,19 @@ class CollectionResource extends BaseResource
         return CollectionForm::configure($schema);
     }
 
-    public static function getRelations(): array
+    protected static function getDefaultSubNavigation(): array
     {
-        return [];
-    }
-
-    public static function getRecordSubNavigation(Page $page): array
-    {
-        return $page->generateNavigationItems([
+        return [
             EditCollection::class,
             ManageCollectionChildren::class,
             ManageCollectionProducts::class,
             ManageCollectionAvailability::class,
             ManageCollectionMedia::class,
             ManageCollectionUrls::class,
-        ]);
+        ];
     }
 
-    public static function getPages(): array
+    protected static function getDefaultPages(): array
     {
         return [
             'index' => ListCollections::route('/'),

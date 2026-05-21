@@ -6,8 +6,8 @@ use Filament\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
+use Lunar\Admin\Filament\Resources\OrderResource\Tables\OrderTable;
 use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 
@@ -23,7 +23,7 @@ class OrdersRelationManager extends BaseRelationManager
     public function getDefaultTable(Table $table): Table
     {
         return $table->columns(
-            OrderResource::getTableColumns()
+            OrderTable::getColumns()
         )->modifyQueryUsing(
             fn (Builder $query): Builder => $query->with(['currency'])
         )->recordActions([

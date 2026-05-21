@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Actions\Action;
 use Filament\Pages\Enums\SubNavigationPosition;
-use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -80,24 +79,19 @@ class ProductVariantResource extends BaseResource
         return ProductVariantTable::configure($table);
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    protected static function getDefaultSubNavigation(): array
     {
-        return $page->generateNavigationItems([
+        return [
             EditProductVariant::class,
             ManageVariantMedia::class,
             ManageVariantPricing::class,
             ManageVariantIdentifiers::class,
             ManageVariantInventory::class,
             ManageVariantShipping::class,
-        ]);
+        ];
     }
 
-    public static function getRelations(): array
-    {
-        return [];
-    }
-
-    public static function getPages(): array
+    protected static function getDefaultPages(): array
     {
         return [
             'index' => ListProductVariants::route('/'),

@@ -51,12 +51,7 @@ class TagResource extends BaseResource
         return TagTable::configure($table);
     }
 
-    public static function getRelations(): array
-    {
-        return [];
-    }
-
-    public static function getPages(): array
+    protected static function getDefaultPages(): array
     {
         return [
             'index' => ListTags::route('/'),

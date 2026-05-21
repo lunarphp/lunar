@@ -52,14 +52,14 @@ class ProductOptionResource extends BaseResource
         return ProductOptionTable::configure($table);
     }
 
-    public static function getRelations(): array
+    protected static function getDefaultRelations(): array
     {
         return [
             ValuesRelationManager::class,
         ];
     }
 
-    public static function getPages(): array
+    protected static function getDefaultPages(): array
     {
         return [
             'index' => ListProductOptions::route('/'),
