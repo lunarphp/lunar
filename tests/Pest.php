@@ -26,6 +26,15 @@ use Lunar\Tests\Core\Stubs\User;
 
 // uses(Tests\TestCase::class)->in('Feature');
 
+// Tag every test under the schema-exercising suites with the `cross-db` group.
+// The cross-db CI job filters on `--group=cross-db` to run them against MySQL
+// and Postgres; SQLite-only runs ignore the group entirely.
+uses()->group('cross-db')->in(
+    __DIR__.'/core',
+    __DIR__.'/shipping',
+    __DIR__.'/upgrade',
+);
+
 /*
 |--------------------------------------------------------------------------
 | Expectations

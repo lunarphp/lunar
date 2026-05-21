@@ -62,3 +62,84 @@ jobs:
           DB_DATABASE: ":memory:"
           LUNAR_TESTING_REPLACE_MODELS: ${{ matrix.extend-models }}
         run: ./vendor/bin/pest --testsuite ${{ matrix.testsuite }} --parallel
+
+  cross-db-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        driver: [mysql, pgsql]
+    name: cross-db - ${{ matrix.driver }}
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: lunar_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lunar_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: mbstring, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite
+          tools: composer:v2
+          coverage: none
+
+      - name: Pin Laravel + Testbench versions
+        run: |
+          composer require "laravel/framework:13.*" --no-update --no-interaction
+          composer require "orchestra/testbench:11.*" --dev --no-update --no-interaction
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v4
+        with:
+          composer-options: "--prefer-dist"
+          custom-cache-key: composer-p8.4-l13.*-prefer-stable-${{ hashFiles('composer.json') }}
+
+      - name: Execute cross-db tests (mysql)
+        if: matrix.driver == 'mysql'
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: testing
+          DB_DRIVER: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: "3306"
+          DB_DATABASE: lunar_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: ./vendor/bin/pest --group=cross-db --parallel
+
+      - name: Execute cross-db tests (pgsql)
+        if: matrix.driver == 'pgsql'
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: testing
+          DB_DRIVER: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: "5432"
+          DB_DATABASE: lunar_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+        run: ./vendor/bin/pest --group=cross-db --parallel
