@@ -88,7 +88,7 @@ Coordination:
 
 - Lands on top of [[0004-filament-v5-upgrade]] (already complete). Filament v5 + Livewire v4 are already installed, so this spec is pure refactor — no dependency moves.
 - Lands **before** the planned "Move core Filament e-commerce components to a new `lunarphp/filament` package" extraction. Extracting after the refactor means the new package is born with v5-idiomatic shape; doing it before doubles the migration work across two packages.
-- The upgrade package ([[0001-upgrade-package]]) gains Rector rules for the renamed methods on `BaseResource` so user code that overrode `getDefaultForm` / `getDefaultTable` / `getMainFormComponents` etc. gets rewritten or surfaced as a deprecation.
+- The upgrade package ([[0001-upgrade-package]]) gains Rector rules for the renamed methods on `BaseResource` so user code that overrode `getDefaultForm` / `getDefaultTable` / `getMainFormComponents` etc. gets rewritten. No deprecation cycle — v2 is the breaking-change window, removals are straight removals.
 
 ## Alternatives considered
 
