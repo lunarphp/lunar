@@ -61,9 +61,15 @@ test('can make an order', function () {
         'user_id' => null,
     ]);
 
-    $data = $order->getRawOriginal();
-
-    $this->assertDatabaseHas((new Order)->getTable(), $data);
+    $this->assertDatabaseHas((new Order)->getTable(), [
+        'id' => $order->id,
+        'reference' => $order->reference,
+        'status' => $order->status,
+        'sub_total' => $order->sub_total,
+        'tax_total' => $order->tax_total,
+        'total' => $order->total,
+        'currency_code' => $order->currency_code,
+    ]);
 });
 
 test('order has correct casting', function () {
