@@ -127,14 +127,16 @@ Coordination:
 - Hook contract on migrated resources: `LunarPanel::extensions([{Resource}Form::class => …])` with `configureForm` / `configureTable` method names. `ResourceExtensionTest` exercises both legacy and new patterns.
 - Cross-resource consumer call sites updated in lockstep: `BrandResource/Pages/ManageBrandProducts`, 3× `ProductVariantResource/Pages/Manage*`, 2× `ProductResource/Pages/Manage*`, `Support/Concerns/Products/ManagesProductPricing`.
 
-**Outstanding**:
+**Merged** (PR #2483, branched off `2.x`):
 
-- **Sales family**: `OrderResource`, `CustomerResource`, `CustomerGroupResource`, `DiscountResource`. Order has known cross-consumers (`LatestOrdersTable` widget, `OrdersRelationManager` on Customer). Discount has `ListDiscounts` consuming `getNameFormComponent`.
-- **Settings family**: `ChannelResource`, `CurrencyResource`, `LanguageResource`, `StaffResource`, `TaxClassResource`, `TaxRateResource`, `TaxZoneResource`, `ActivityResource`.
-- **Shipping**: 3 resources in `packages/table-rate-shipping/src/Filament/Resources/` (`ShippingZoneResource`, `ShippingMethodResource`, `ShippingExclusionListResource`).
-- **Pages refactor** (spec § Apply Pages refactor in lockstep): the 10 page-extension traits under `Support/Pages/Concerns/` still need rebuilding at the new seam. Deferred until all resources are migrated so the Page-base shape lands once.
-- **Cluster pages**: `src/Filament/Clusters/Taxes.php` and its children — pattern decided when Settings/Tax resources are touched.
-- **Wrapper-trait removal**: once every resource above is migrated, delete the five `Extends*` traits on `BaseResource` and add Rector rules in `lunarphp/upgrade` for the renamed methods (`getDefaultForm` → `form`, `getDefaultTable` → `table`, etc.).
+- Sales family — `OrderResource`, `CustomerResource`, `CustomerGroupResource`, `DiscountResource` migrated to the split-class layout. Cross-consumers updated in lockstep: `LatestOrdersTable` widget, `OrdersRelationManager` on Customer, `ListDiscounts` consumer of `getNameFormComponent`.
+- Settings family — `ChannelResource`, `CurrencyResource`, `LanguageResource`, `StaffResource`, `TaxClassResource`, `TaxRateResource`, `TaxZoneResource`, `ActivityResource` migrated. Cluster pages under `src/Filament/Clusters/Taxes.php` and children handled inline with the Tax resources.
+- Shipping — `ShippingZoneResource`, `ShippingMethodResource`, `ShippingExclusionListResource` in `packages/table-rate-shipping/src/Filament/Resources/` migrated.
+- Wrapper-trait removal — the five `Extends*` traits on `BaseResource` (`ExtendsForms`, `ExtendsTables`, `ExtendsPages`, `ExtendsRelationManagers`, `ExtendsSubnavigation`) deleted. Rector rules for the renamed methods (`getDefaultForm` → `form`, `getDefaultTable` → `table`, etc.) shipped in `lunarphp/upgrade`.
+
+**Deferred follow-up** (tracked on `TODO.md`):
+
+- Pages refactor — the 10 page-extension traits under `Support/Pages/Concerns/` were left in place. Resource migration preserved their hook contract, so the split-class playbook can be applied later when a downstream need surfaces, without blocking v2.
 
 ## References
 
@@ -147,5 +149,5 @@ Coordination:
 - Filament v5 schemas overview: https://filamentphp.com/docs/5.x/schemas/overview
 - Filament v5 resources overview: https://filamentphp.com/docs/5.x/resources/overview
 - [[0001-upgrade-package]] (completed) — Rector host for the `BaseResource` method renames
-- [[0004-filament-v5-upgrade]] (in progress on `feature/0004-filament-v5`) — must land first
+- [[0004-filament-v5-upgrade]] (completed) — landed first
 - TODO: "Move core Filament e-commerce components to a new `lunarphp/filament` package" — must land **after** this spec

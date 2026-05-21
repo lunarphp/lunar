@@ -1,6 +1,6 @@
 # 0004 — Filament v5 upgrade
 
-- Status: draft
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-21
 - TODO item: "Filament v5 upgrade"
