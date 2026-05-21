@@ -17,7 +17,12 @@ class EnsureBaseRolesAndPermissions
 
     public function run()
     {
-        $guard = LunarPanel::getPanel()->getAuthGuard();
+        try {
+            $guard = LunarPanel::getPanel()->getAuthGuard();
+        } catch (\Throwable $e) {
+            // No admin panel registered — nothing to seed.
+            return;
+        }
 
         $tableNames = config('permission.table_names');
 
