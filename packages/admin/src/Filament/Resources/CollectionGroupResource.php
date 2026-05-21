@@ -2,20 +2,13 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\EditCollectionGroup;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\ListCollectionGroups;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource\Schemas\CollectionGroupForm;
+use Lunar\Admin\Filament\Resources\CollectionGroupResource\Tables\CollectionGroupTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\CollectionGroup as CollectionGroupContract;
 
@@ -47,99 +40,22 @@ class CollectionGroupResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function getDefaultForm(Schema $schema): Schema
+    public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Section::make()->schema(
-                    static::getMainFormComponents()
-                )->columns(2),
-            ]);
-    }
-
-    protected static function getMainFormComponents(): array
-    {
-        return [
-            static::getNameFormComponent(),
-            static::getHandleFormComponent(),
-        ];
-    }
-
-    protected static function getNameFormComponent(): Component
-    {
-        return TextInput::make('name')
-            ->label(__('lunarpanel::collectiongroup.form.name.label'))
-            ->required()
-            ->maxLength(255)
-            ->autofocus()
-            ->unique(ignoreRecord: true)
-            ->live(onBlur: true)
-            ->afterStateUpdated(function (string $operation, $state, Set $set) {
-                if ($operation !== 'create') {
-                    return;
-                }
-                $set('handle', Str::slug($state));
-            });
-    }
-
-    protected static function getHandleFormComponent(): Component
-    {
-        return TextInput::make('handle')
-            ->label(__('lunarpanel::collectiongroup.form.handle.label'))
-            ->unique(ignoreRecord: true)
-            ->required()
-            ->live(onBlur: true)
-            ->afterStateUpdated(function (string $operation, $state, Set $set) {
-                if ($operation !== 'create') {
-                    return;
-                }
-
-                $set('handle', Str::snake(Str::lower($state)));
-            })
-            ->maxLength(255);
+        return CollectionGroupForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns(static::getTableColumns())
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
-    protected static function getTableColumns(): array
-    {
-        return [
-            TextColumn::make('name')
-                ->label(__('lunarpanel::collectiongroup.table.name.label')),
-            TextColumn::make('handle')
-                ->label(__('lunarpanel::collectiongroup.table.handle.label')),
-            TextColumn::make('collections_count')
-                ->counts('collections')
-                ->formatStateUsing(
-                    fn ($state) => number_format($state, 0)
-                )
-                ->label(__('lunarpanel::collectiongroup.table.collections_count.label')),
-        ];
+        return CollectionGroupTable::configure($table);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    public static function getDefaultPages(): array
+    public static function getPages(): array
     {
         return [
             'index' => ListCollectionGroups::route('/'),
