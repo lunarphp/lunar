@@ -148,6 +148,8 @@ return [
             '2026_01_03_000014_add_weight_constraints_to_shipping_methods_table',
             '2026_01_03_000015_remove_cutoff_from_shipping_methods_table',
             '2026_01_03_000016_rescale_weight_based_shipping_min_quantity',
+            '2026_01_04_000000_create_stripe_payment_intents_table',
+            '2026_01_05_000000_create_opayo_tokens_table',
         ],
     ],
 
