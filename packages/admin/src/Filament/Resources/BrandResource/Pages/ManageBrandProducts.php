@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductResource\Tables\ProductTable;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
@@ -45,13 +46,13 @@ class ManageBrandProducts extends BaseManageRelatedRecords
     protected function getDefaultTable(Table $table): Table
     {
         return $table->columns([
-            ProductResource::getNameTableColumn()->searchable()
+            ProductTable::getNameColumn()->searchable()
                 ->url(function (Model $record) {
                     return ProductResource::getUrl('edit', [
                         'record' => $record->getKey(),
                     ]);
                 }),
-            ProductResource::getSkuTableColumn(),
+            ProductTable::getSkuColumn(),
         ])->recordActions([
             DetachAction::make()
                 ->action(function (Model $record) {

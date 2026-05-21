@@ -2,17 +2,10 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\TextInput;
 use Filament\Pages\Enums\SubNavigationPosition;
-use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Section;
+use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +16,8 @@ use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandCollections;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandMedia;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandProducts;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandUrls;
-use Lunar\Admin\Support\Forms\Components\Attributes;
+use Lunar\Admin\Filament\Resources\BrandResource\Schemas\BrandForm;
+use Lunar\Admin\Filament\Resources\BrandResource\Tables\BrandTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Brand as BrandContract;
 
@@ -59,97 +53,28 @@ class BrandResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function getDefaultSubNavigation(): array
+    public static function form(Schema $schema): Schema
     {
-        return [
+        return BrandForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return BrandTable::configure($table);
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
             EditBrand::class,
             ManageBrandMedia::class,
             ManageBrandUrls::class,
             ManageBrandProducts::class,
             ManageBrandCollections::class,
-        ];
+        ]);
     }
 
-    public static function getDefaultForm(Schema $schema): Schema
-    {
-        return $schema
-            ->components([
-                Section::make()
-                    ->schema(
-                        static::getMainFormComponents(),
-                    ),
-                static::getAttributeDataFormComponent(),
-            ])
-            ->columns(1);
-    }
-
-    protected static function getMainFormComponents(): array
-    {
-        return [
-            static::getNameFormComponent(),
-        ];
-    }
-
-    protected static function getNameFormComponent(): Component
-    {
-        return TextInput::make('name')
-            ->label(__('lunarpanel::brand.form.name.label'))
-            ->required()
-            ->maxLength(255)
-            ->autofocus();
-    }
-
-    protected static function getAttributeDataFormComponent(): Component
-    {
-        return Attributes::make();
-    }
-
-    public static function getDefaultTable(Table $table): Table
-    {
-        return $table
-            ->columns(static::getTableColumns())
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])->searchable();
-    }
-
-    protected static function getTableColumns(): array
-    {
-        return [
-            SpatieMediaLibraryImageColumn::make('thumbnail')
-                ->collection(config('lunar.media.collection'))
-                ->conversion('small')
-                ->limit(1)
-                ->square()
-                ->label(''),
-            TextColumn::make('name')
-                ->label(__('lunarpanel::brand.table.name.label'))
-                ->searchable(),
-            TextColumn::make('products_count')
-                ->counts('products')
-                ->formatStateUsing(
-                    fn ($state) => number_format($state, 0)
-                )
-                ->label(__('lunarpanel::brand.table.products_count.label')),
-        ];
-    }
-
-    public static function getDefaultRelations(): array
-    {
-        return [
-
-        ];
-    }
-
-    public static function getDefaultPages(): array
+    public static function getPages(): array
     {
         return [
             'index' => ListBrands::route('/'),

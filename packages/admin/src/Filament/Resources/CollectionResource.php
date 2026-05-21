@@ -3,7 +3,7 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Pages\Enums\SubNavigationPosition;
-use Filament\Schemas\Components\Component;
+use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +15,7 @@ use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionChil
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionMedia;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionProducts;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionUrls;
-use Lunar\Admin\Support\Forms\Components\Attributes;
+use Lunar\Admin\Filament\Resources\CollectionResource\Schemas\CollectionForm;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
@@ -69,44 +69,29 @@ class CollectionResource extends BaseResource
         return $crumbs;
     }
 
-    public static function getDefaultForm(Schema $schema): Schema
+    public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                static::getAttributeDataFormComponent(),
-            ])
-            ->columns(1);
+        return CollectionForm::configure($schema);
     }
 
-    protected static function getAttributeDataFormComponent(): Component
-    {
-        return Attributes::make();
-    }
-
-    protected static function getMainFormComponents(): array
-    {
-        return [
-        ];
-    }
-
-    protected static function getDefaultRelations(): array
+    public static function getRelations(): array
     {
         return [];
     }
 
-    public static function getDefaultSubNavigation(): array
+    public static function getRecordSubNavigation(Page $page): array
     {
-        return [
+        return $page->generateNavigationItems([
             EditCollection::class,
             ManageCollectionChildren::class,
             ManageCollectionProducts::class,
             ManageCollectionAvailability::class,
             ManageCollectionMedia::class,
             ManageCollectionUrls::class,
-        ];
+        ]);
     }
 
-    public static function getDefaultPages(): array
+    public static function getPages(): array
     {
         return [
             'index' => ListCollections::route('/'),
@@ -127,7 +112,7 @@ class CollectionResource extends BaseResource
     public static function getGloballySearchableAttributes(): array
     {
         return [
-            'group.name', // Needed to trig canGloballySearch()
+            'group.name',
         ];
     }
 

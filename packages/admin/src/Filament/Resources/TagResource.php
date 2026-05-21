@@ -2,17 +2,14 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\CreateTag;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\EditTag;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\ListTags;
+use Lunar\Admin\Filament\Resources\TagResource\Schemas\TagForm;
+use Lunar\Admin\Filament\Resources\TagResource\Tables\TagTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Tag as TagContract;
 
@@ -44,55 +41,22 @@ class TagResource extends BaseResource
         return __('lunarpanel::global.sections.settings');
     }
 
-    protected static function getMainFormComponents(): array
+    public static function form(Schema $schema): Schema
     {
-        return [
-            static::getValueFormComponent(),
-        ];
+        return TagForm::configure($schema);
     }
 
-    protected static function getValueFormComponent(): Component
+    public static function table(Table $table): Table
     {
-        return TextInput::make('value')
-            ->label(__('lunarpanel::tag.form.value.label'))
-            ->required()
-            ->maxLength(255)
-            ->autofocus();
-    }
-
-    public static function getDefaultTable(Table $table): Table
-    {
-        return $table
-            ->columns(static::getTableColumns())
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
-    protected static function getTableColumns(): array
-    {
-        return [
-            TextColumn::make('value')
-                ->label(__('lunarpanel::tag.table.value.label')),
-        ];
+        return TagTable::configure($table);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    public static function getDefaultPages(): array
+    public static function getPages(): array
     {
         return [
             'index' => ListTags::route('/'),

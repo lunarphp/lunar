@@ -8,7 +8,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Schemas\ProductVariantForm;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 
@@ -94,15 +94,15 @@ class ManageProductIdentifiers extends BaseEditRecord
 
         return $schema->components([
             Section::make()->schema([
-                ProductVariantResource::getSkuFormComponent()
+                ProductVariantForm::getSkuComponent()
                     ->live()->unique(
                         table: fn () => $variant->getTable(),
                         ignorable: $variant,
                         ignoreRecord: true,
                     ),
-                ProductVariantResource::getGtinFormComponent(),
-                ProductVariantResource::getMpnFormComponent(),
-                ProductVariantResource::getEanFormComponent(),
+                ProductVariantForm::getGtinComponent(),
+                ProductVariantForm::getMpnComponent(),
+                ProductVariantForm::getEanComponent(),
             ])->columns(1),
         ])->statePath('');
     }

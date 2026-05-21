@@ -2,25 +2,15 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\CreateProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\EditProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\ListProductTypes;
-use Lunar\Admin\Support\Forms\Components\AttributeSelector;
+use Lunar\Admin\Filament\Resources\ProductTypeResource\Schemas\ProductTypeForm;
+use Lunar\Admin\Filament\Resources\ProductTypeResource\Tables\ProductTypeTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\ProductType as ProductTypeContract;
-use Lunar\Core\Models\Product;
-use Lunar\Core\Models\ProductVariant;
 
 class ProductTypeResource extends BaseResource
 {
@@ -28,7 +18,7 @@ class ProductTypeResource extends BaseResource
 
     protected static ?string $model = ProductTypeContract::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-swatch';  // TODO: remove me in Filament 3.1
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-swatch';
 
     protected static ?int $navigationSort = 2;
 
@@ -52,107 +42,22 @@ class ProductTypeResource extends BaseResource
         return __('lunarpanel::global.sections.catalog');
     }
 
-    public static function getDefaultForm(Schema $schema): Schema
+    public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Section::make()->schema(
-                    static::getMainFormComponents()
-                ),
-                Tabs::make('Attributes')->tabs([
-                    Tab::make(__('lunarpanel::producttype.tabs.product_attributes.label'))
-                        ->schema([
-                            AttributeSelector::make('mappedAttributes')
-                                ->withType(Product::morphName())
-                                ->relationship(name: 'mappedAttributes')
-                                ->label('')
-                                ->columnSpan(2),
-                        ]),
-                    Tab::make(__('lunarpanel::producttype.tabs.variant_attributes.label'))
-                        ->schema([
-                            AttributeSelector::make('mappedAttributes')
-                                ->withType(ProductVariant::morphName())
-                                ->relationship(name: 'mappedAttributes')
-                                ->label('')
-                                ->columnSpan(2),
-                        ])->visible(
-                            config('lunar.panel.enable_variants', true)
-                        ),
-
-                ])->columnSpan(2),
-            ]);
+        return ProductTypeForm::configure($schema);
     }
 
-    protected static function getMainFormComponents(): array
+    public static function table(Table $table): Table
     {
-        return [
-            static::getNameFormComponent(),
-        ];
-    }
-
-    protected static function getNameFormComponent(): Component
-    {
-        return TextInput::make('name')
-            ->label(__('lunarpanel::producttype.form.name.label'))
-            ->required()
-            ->maxLength(255)
-            ->autofocus();
-    }
-
-    public static function getDefaultTable(Table $table): Table
-    {
-        return $table
-            ->columns(static::getTableColumns())
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
-    protected static function getTableColumns(): array
-    {
-        return [
-            TextColumn::make('name')
-                ->label(__('lunarpanel::producttype.table.name.label')),
-            TextColumn::make('products_count')
-                ->counts('products')
-                ->formatStateUsing(
-                    fn ($state) => number_format($state, 0)
-                )
-                ->label(__('lunarpanel::producttype.table.products_count.label')),
-            TextColumn::make('product_attributes_count')
-                ->counts('productAttributes')
-                ->formatStateUsing(
-                    fn ($state) => number_format($state, 0)
-                )
-                ->label(__('lunarpanel::producttype.table.product_attributes_count.label')),
-            TextColumn::make('variant_attributes_count')
-                ->counts('variantAttributes')
-                ->formatStateUsing(
-                    fn ($state) => number_format($state, 0)
-                )
-                ->label(__('lunarpanel::producttype.table.variant_attributes_count.label'))
-                ->visible(
-                    config('lunar.panel.enable_variants', true)
-                ),
-        ];
+        return ProductTypeTable::configure($table);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    public static function getDefaultPages(): array
+    public static function getPages(): array
     {
         return [
             'index' => ListProductTypes::route('/'),

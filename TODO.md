@@ -7,6 +7,8 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 ## Outstanding
 
 - Filament v5 upgrade
+- Filament v5 schemas refactor (spec 0005)
+- Extend upgrade package's class-string rewriter to walk JSON-embedded FQCNs (`attribute_data` columns on products, variants, collections, brands, customers — `AsAttributeData::get()` silently drops fields whose stored `field_type` no longer resolves, leaving `translateAttribute()` returning null across the panel)
 - Move core Filament e-commerce components to a new `lunarphp/filament` package
 - Support `Model::preventLazyLoading()`
 - Ensure all service-layer classes are DI'd

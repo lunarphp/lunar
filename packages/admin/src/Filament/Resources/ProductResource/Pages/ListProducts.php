@@ -9,6 +9,7 @@ use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
+use Lunar\Admin\Filament\Resources\ProductResource\Schemas\ProductForm;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Attribute;
@@ -37,12 +38,12 @@ class ListProducts extends BaseListRecords
     {
         return [
             Grid::make(2)->schema([
-                ProductResource::getBaseNameFormComponent(),
-                ProductResource::getProductTypeFormComponent()->required(),
+                ProductForm::getBaseNameComponent(),
+                ProductForm::getProductTypeComponent()->required(),
             ]),
             Grid::make(2)->schema([
-                ProductResource::getSkuFormComponent(),
-                ProductResource::getBasePriceFormComponent(),
+                ProductForm::getSkuComponent(),
+                ProductForm::getBasePriceComponent(),
             ]),
         ];
     }

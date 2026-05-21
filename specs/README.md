@@ -22,7 +22,10 @@ Each spec carries a `Status:` line in its frontmatter / header:
 
 ## Index
 
-| #    | Title                 | Status |
-| ---- | --------------------- | ------ |
-| 0001 | Upgrade package       | draft  |
-| 0002 | Core namespace change | draft  |
+| #    | Title                       | Status      |
+| ---- | --------------------------- | ----------- |
+| 0001 | Upgrade package             | completed   |
+| 0002 | Core namespace change       | completed   |
+| 0003 | Flatten v1.x migrations     | completed   |
+| 0004 | Filament v5 upgrade         | draft       |
+| 0005 | Filament v5 schemas refactor | draft      |
