@@ -17,6 +17,7 @@ trait DisplaysShippingInfo
     public static function getDefaultShippingInfolist(): Section
     {
         return Section::make()
+            ->hidden(fn ($record) => $record === null || $record->shippingLines->isEmpty())
             ->schema([
                 RepeatableEntry::make('shippingLines')
                     ->hiddenLabel()
