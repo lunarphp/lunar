@@ -11,7 +11,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Schemas\ProductVariantForm;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Price;
 
@@ -179,8 +179,8 @@ trait ManagesProductPricing
         $schema->components([
             Section::make()->schema([
                 Group::make([
-                    ProductVariantResource::getTaxClassIdFormComponent(),
-                    ProductVariantResource::getTaxRefFormComponent(),
+                    ProductVariantForm::getTaxClassIdComponent(),
+                    ProductVariantForm::getTaxRefComponent(),
                 ])->columns(2),
             ]),
             $this->getBasePriceFormSection(),
