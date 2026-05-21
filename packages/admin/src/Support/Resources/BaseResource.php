@@ -41,7 +41,7 @@ class BaseResource extends Resource
         parent::registerNavigationItems();
     }
 
-    public static function can(string $action, ?Model $record = null): bool
+    public static function can(string|\UnitEnum $action, ?Model $record = null): bool
     {
         return static::hasPermission();
     }
