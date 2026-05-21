@@ -8,7 +8,7 @@ use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 

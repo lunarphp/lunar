@@ -7,7 +7,7 @@ use function Pest\Laravel\artisan;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
-uses(TestCase::class)->group('migrations');
+uses(TestCase::class)->group('migrations', 'cross-db');
 
 test('all migrations can run rollback', function () {
     artisan('migrate');

@@ -30,7 +30,7 @@ use Lunar\Core\Models\TaxZonePostcode;
 use Lunar\Tests\Core\Stubs\User as StubUser;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class)->group('carts');
+uses(TestCase::class)->group('carts', 'cross-db');
 
 use function Pest\Laravel\assertDatabaseCount;
 

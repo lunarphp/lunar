@@ -9,7 +9,7 @@ use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 

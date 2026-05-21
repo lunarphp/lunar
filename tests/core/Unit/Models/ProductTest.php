@@ -21,7 +21,7 @@ use Lunar\Core\Models\ProductType;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 

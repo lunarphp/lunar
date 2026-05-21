@@ -18,7 +18,7 @@ use Lunar\Core\Models\Transaction;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;

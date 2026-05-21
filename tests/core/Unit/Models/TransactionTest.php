@@ -7,7 +7,7 @@ use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Transaction;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 

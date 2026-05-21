@@ -6,7 +6,7 @@ use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Customer;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class)->group('models');
+uses(TestCase::class)->group('models', 'cross-db');
 
 use function Pest\Laravel\assertDatabaseMissing;
 

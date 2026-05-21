@@ -15,7 +15,7 @@ use Lunar\Core\Models\TaxRateAmount;
 use Lunar\Core\Models\TaxZone;
 use Lunar\Tests\Core\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class)->group('cross-db');
 
 uses(RefreshDatabase::class);
 
