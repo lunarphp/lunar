@@ -15,7 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
-use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Filament\Resources\ProductVariantResource\Schemas\ProductVariantForm;
 use Lunar\Admin\Support\Concerns\Products\ManagesProductPricing;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
@@ -53,8 +53,8 @@ class ManageProductPricing extends BaseEditRecord
             Section::make()
                 ->schema([
                     Group::make([
-                        ProductVariantResource::getTaxClassIdFormComponent(),
-                        ProductVariantResource::getTaxRefFormComponent(),
+                        ProductVariantForm::getTaxClassIdComponent(),
+                        ProductVariantForm::getTaxRefComponent(),
                     ])->columns(2),
                 ]),
             $this->getBasePriceFormSection(),
