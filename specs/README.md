@@ -29,4 +29,5 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0003 | Flatten v1.x migrations     | completed   |
 | 0004 | Filament v5 upgrade         | completed   |
 | 0005 | Filament v5 schemas refactor | completed   |
-| 0006 | Extract `lunarphp/filament` bridge package and reshape the install model | proposed |
+| 0006 | Extract `lunarphp/filament` bridge package and reshape the install model | implemented |
+| 0007 | Inline page-extension traits into base page classes | draft       |
