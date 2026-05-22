@@ -9,9 +9,9 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Lunar\Admin\Support\Concerns\CallsHooks;
-use Lunar\Filament\Forms\Components\AttributeSelector;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Filament\Forms\Components\AttributeSelector;
 
 class ProductTypeForm
 {

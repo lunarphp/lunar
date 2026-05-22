@@ -2,17 +2,14 @@
 
 namespace Lunar\Filament\Schemas\Product;
 
-use Filament\Schemas\Components\Callout;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Concerns\CallsHooks;
-use Lunar\Filament\Forms\Components\Attributes;
-use Lunar\Filament\Forms\Components\Tags as TagsComponent;
-use Lunar\Filament\Forms\Components\TranslatedText as TranslatedTextInput;
 use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Models\Attribute;
@@ -21,6 +18,9 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Tag;
+use Lunar\Filament\Forms\Components\Attributes;
+use Lunar\Filament\Forms\Components\Tags as TagsComponent;
+use Lunar\Filament\Forms\Components\TranslatedText as TranslatedTextInput;
 
 class ProductForm
 {
