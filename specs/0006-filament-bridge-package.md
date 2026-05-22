@@ -1,6 +1,6 @@
 # 0006 — Extract `lunarphp/filament` bridge package and reshape the install model
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-05-22
 - TODO item: "Move core Filament e-commerce components to a new `lunarphp/filament` package"
@@ -199,7 +199,7 @@ One PR per logical group. Each PR moves code, updates internal call sites in `pa
 3. **Attribute system** — FieldTypes, Synthesizers, `Support/Forms/AttributeData.php`. Single PR because they're tightly coupled.
 4. **Widgets** — Dashboard widgets and the product variant switcher widget.
 5. **Schemas/Tables/RelationManagers — catalog family** — Brand, Product, Tag, Collection, CollectionGroup, ProductType, ProductOption (+ values relation manager), ProductVariant, AttributeGroup (+ attributes relation manager), Attribute. Product's customer-group and customer-group-pricing relation managers move with it.
-6. **Schemas/Tables/RelationManagers — sales family** — Order, Customer (+ address/orders/user relation managers), CustomerGroup, Discount (+ the eight discount limitation/condition/reward relation managers).
+6. **Schemas/Tables/RelationManagers — sales family** — Order (table only — the order resource is page-cluster-driven and has no single edit form), Customer (+ address/orders/user relation managers), CustomerGroup, Discount (+ the eight discount limitation/condition/reward relation managers).
 7. **Schemas/Tables/RelationManagers — settings family** — Channel, Currency, Language, Staff, TaxClass, TaxRate (+ amounts relation manager), TaxZone, Activity.
 8. **Extension hook registry** — extract `ComponentExtensions` registry into the bridge, point `LunarPanel::extensions([…])` at it via a proxy. Lands after the schemas so the registry has somewhere to register against.
 9. **Publishable stubs** — wire up `vendor:publish --tag=lunar-filament.schemas`, runtime resolution that prefers published classes, and the documentation distinguishing publish vs. extension vs. subclass-and-rebind. Lands last so the publishable surface covers every class moved by PRs 5–7.
@@ -229,19 +229,21 @@ One PR per logical group. Each PR moves code, updates internal call sites in `pa
 
 ## Open questions
 
-- **Filament plugin requires**: `filament/spatie-laravel-media-library-plugin` and `mallardduck/blade-lucide-icons` move to the bridge. The previously-listed `awcodes/shout`, `awcodes/filament-badgeable-column`, `leandrocfe/filament-apex-charts`, and `technikermathe/blade-lucide-icons` packages were either swapped (charts → Filament native) or never actually pulled by the moved code; they are not part of the bridge's `composer.json`.
-- **Tests**: the bridge needs Pest tests that boot under Orchestra Testbench **without** the admin panel, to prove the components are usable standalone. Today the admin suite runs against a Lunar-panel-shaped Filament boot. What's the smallest Testbench setup that exercises a Filament component without `LunarPanel`? Tracked as a PR 1 acceptance criterion.
 - **Publishable starter pages/resources**: the flight plan hints at "perhaps having some pre-made Filament resources/pages that you can publish to get a head start." This spec covers publishable **schemas, tables, infolists, and relation managers**, which is most of the value. Publishable full `{Resource}.php` + `Pages/*` stubs (so a downstream dev gets a complete Lunar-style resource they can own) is out of scope here, worth scoping in a follow-up spec once the runtime bridge has shipped.
 - **Final v1.x `lunarphp/lunar` release**: do we cut a final `lunarphp/lunar` release on the `1.x` branch with `"abandoned": "lunarphp/admin"`, or just mark the existing Packagist entry abandoned via the maintainer UI? The release route gives `composer outdated` users a version bump signal too. Recommend cutting a release.
 - **Repository structure for `lunarphp/admin`**: the directory stays at `packages/admin/`, but the published name changes. Should the directory eventually be renamed to match (e.g. `packages/admin/` already matches, no action needed — but worth confirming during PR 0). No other internal package has this mismatch.
+- **Translation key deduplication**: during the bridge cut, admin's `lunarpanel::` lang files were copied (not moved) into the bridge under `lunar-filament::` so the bridge functions standalone without breaking admin's existing call sites. Both packages now ship identical copies of ~27 lang files across 16 locales. Follow-up spec: once admin's remaining views/pages migrate to call the bridge keys directly, admin can drop the duplicates and retain only the shell-specific strings (navigation, dashboard headings, cluster labels, command output).
 
 ## Resolved questions
 
-- **Schemas / Tables / Infolists / RelationManagers all move to the bridge** — confirmed. Plus a publishable-stub mechanism (`vendor:publish --tag=lunar-filament.schemas`) so downstream devs can take ownership of any of these files and make them their own. Runtime resolution prefers the published copy.
+- **Schemas / Tables / Infolists / RelationManagers all move to the bridge** — confirmed. Plus a publishable-stub mechanism (`vendor:publish --tag=lunar-filament.schemas`) so downstream devs can take ownership of any of these files and make them their own. Runtime resolution prefers the published copy via `Lunar\Filament\Support\Resolver`, wired into every admin `{Resource}.php`'s `form()` / `table()` / `infolist()` delegate.
 - **Namespace `Lunar\Filament\…` and facade `LunarFilament::extensions([…])`** — confirmed. Symmetric with `Lunar\Admin` / `LunarPanel`.
 - **RelationManagers move with the schemas** — all 17 existing managers are commerce-model relations and move with their schema/table family in PRs 5–7.
 - **Repo split trigger**: when **stable v2** ships. Not gated on API stability metrics or Filament's release cadence — v2.0.0 is the natural cutover.
 - **`LunarPanel::extensions([…])` proxy** lives in admin; the registry lives in the bridge. The bridge owns its own extension points for the components/widgets/schemas it ships; admin owns its own extension points for the pages and resource shells it ships. The proxy on `LunarPanel` exists for backward compatibility during v2 and is removed when the admin shell phases out in v3.
+- **Resource-tied widgets** — `CustomerStatsOverviewWidget`, `ProductOptionsWidget`, and `CollectionTreeView` all move to the bridge alongside the dashboard widgets. The admin-coupled URL lookups are routed through `Lunar\Filament\Support\RecordUrls::for($key, $record, $context = [])`, with admin's `LunarPanelProvider::registerBridgeRecordUrls()` binding closures for `order`, `product_variant`, and `collection_edit`. Downstream panels override the same config keys (or leave them null, in which case bridge tables/widgets render without the link).
+- **Filament plugin requires**: `filament/spatie-laravel-media-library-plugin` and `mallardduck/blade-lucide-icons` move to the bridge. The previously-listed `awcodes/shout`, `awcodes/filament-badgeable-column`, `leandrocfe/filament-apex-charts`, and `technikermathe/blade-lucide-icons` packages were either swapped (charts → Filament native) or never actually pulled by the moved code; they are not part of the bridge's `composer.json`.
+- **Bridge-only Testbench boot** — `tests/filament/TestCase.php` boots Filament + the bridge service provider with no `LunarPanelProvider` in scope. The bridge suite (`phpunit.xml` testsuite `filament`, wired into the CI matrix) covers the service provider, the extensions registry/facade, the resolver, the record-URL helper, and standalone instantiation of representative form/table primitives. This is the proof that the bridge is genuinely usable in any Filament v5 panel.
 
 ## References
 
