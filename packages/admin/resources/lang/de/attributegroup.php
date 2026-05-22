@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Attributgruppe',
-
     'plural_label' => 'Attributgruppen',
-
     'table' => [
         'attributable_type' => [
             'label' => 'Typ',
@@ -20,7 +17,6 @@ return [
             'label' => 'Position',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Typ',
@@ -35,7 +31,6 @@ return [
             'label' => 'Position',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

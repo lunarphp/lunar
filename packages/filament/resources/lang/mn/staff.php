@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Ажилтан',
-
     'plural_label' => 'Ажилчид',
-
     'table' => [
         'first_name' => [
             'label' => 'Нэр',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Супер Админ',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Нэр',
@@ -50,7 +46,6 @@ return [
             'label' => 'Дүрийн нэр',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Хандалтын хяналт',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Дүр устгах: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Хандалтын хяналт',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Дүр болон Эрх Lunar дээр бүртгэгдээгүй байна',
         ],
     ],
-
 ];

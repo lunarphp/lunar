@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Jezik',
-
     'plural_label' => 'Jezici',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -17,7 +14,6 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -29,5 +25,4 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
 ];

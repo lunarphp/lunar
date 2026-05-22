@@ -1,15 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Sản phẩm',
-
     'plural_label' => 'Sản phẩm',
-
     'tabs' => [
         'all' => 'Tất cả',
+        'published' => 'Published',
+        'draft' => 'Draft',
     ],
-
     'status' => [
         'unpublished' => [
             'content' => 'Hiện đang ở trạng thái nháp, sản phẩm này không khả dụng trên tất cả các kênh và nhóm khách hàng.',
@@ -21,7 +19,6 @@ return [
             'no_default_customer_group' => 'Chưa thiết lập nhóm khách hàng mặc định, do đó không thể kiểm soát khả năng hiển thị cho khách tại đây. Đánh dấu một nhóm khách hàng làm mặc định để quản lý quyền truy cập của khách.',
         ],
     ],
-
     'table' => [
         'status' => [
             'label' => 'Trạng thái',
@@ -47,14 +44,12 @@ return [
             'label' => 'Loại sản phẩm',
         ],
     ],
-
     'actions' => [
         'edit_status' => [
             'label' => 'Cập nhật trạng thái',
             'heading' => 'Cập nhật trạng thái',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Tên',
@@ -83,12 +78,13 @@ return [
         ],
         'tags' => [
             'label' => 'Thẻ',
+            'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
         ],
         'collections' => [
             'label' => 'Bộ sưu tập',
+            'select_collection' => 'Select a collection',
         ],
     ],
-
     'pages' => [
         'availability' => [
             'label' => 'Tình trạng có sẵn',
@@ -127,5 +123,4 @@ return [
             'label' => 'Liên kết sản phẩm',
         ],
     ],
-
 ];

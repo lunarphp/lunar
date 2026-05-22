@@ -1,15 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Producto',
-
     'plural_label' => 'Productos',
-
     'tabs' => [
         'all' => 'Todo',
+        'published' => 'Published',
+        'draft' => 'Draft',
     ],
-
     'status' => [
         'unpublished' => [
             'content' => 'Actualmente en estado de borrador, este producto no está disponible en todos los canales y grupos de clientes.',
@@ -21,7 +19,6 @@ return [
             'no_default_customer_group' => 'No se ha establecido un grupo de clientes predeterminado, por lo que la visibilidad para invitados no se puede controlar aquí. Marca un grupo de clientes como predeterminado para gestionar el acceso de invitados.',
         ],
     ],
-
     'table' => [
         'status' => [
             'label' => 'Estado',
@@ -47,14 +44,12 @@ return [
             'label' => 'Tipo de Producto',
         ],
     ],
-
     'actions' => [
         'edit_status' => [
             'label' => 'Actualizar Estado',
             'heading' => 'Actualizar Estado',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nombre',
@@ -87,9 +82,9 @@ return [
         ],
         'collections' => [
             'label' => 'Colecciones',
+            'select_collection' => 'Select a collection',
         ],
     ],
-
     'pages' => [
         'availability' => [
             'label' => 'Disponibilidad',
@@ -128,5 +123,4 @@ return [
             'label' => 'Asociaciones de Productos',
         ],
     ],
-
 ];

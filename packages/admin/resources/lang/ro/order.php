@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Comandă',
-
     'plural_label' => 'Comenzi',
-
     'breadcrumb' => [
         'manage' => 'Gestionează',
     ],
-
     'tabs' => [
         'all' => 'Toate',
     ],
-
     'transactions' => [
         'capture' => 'Capturat',
         'intent' => 'Intenție',
         'refund' => 'Rambursat',
         'failed' => 'Eșuat',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Stare',
@@ -63,7 +57,6 @@ return [
             'label' => 'Plasată înainte de',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'Țară',
             ],
         ],
-
         'reference' => [
             'label' => 'Referință',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Sumă',
-
             'hint' => [
                 'less_than_total' => 'Urmează să capturezi o sumă mai mică decât valoarea totală a tranzacției',
             ],
         ],
-
         'notes' => [
             'label' => 'Note',
         ],
         'confirm' => [
             'label' => 'Confirmă',
-
             'alert' => 'Este necesară confirmarea',
-
             'hint' => [
                 'capture' => 'Confirmă că dorești să capturezi această plată',
                 'refund' => 'Confirmă că dorești să rambursezi această sumă.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Note',
@@ -238,13 +225,14 @@ return [
             'refunded' => 'Această comandă a fost rambursată.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Actualizează starea',
             'notification' => 'Starea comenzilor a fost actualizată',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Stare nouă',
             ],
@@ -262,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Editează',
-
             'notification' => [
                 'error' => 'Eroare',
-
                 'billing_address' => [
                     'saved' => 'Adresa de facturare a fost salvată',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Adresa de livrare a fost salvată',
                 ],
@@ -286,7 +271,6 @@ return [
         ],
         'capture_payment' => [
             'label' => 'Capturează plata',
-
             'notification' => [
                 'error' => 'A apărut o problemă la capturare',
                 'success' => 'Capturare reușită',
@@ -294,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Rambursare',
-
             'notification' => [
                 'error' => 'A apărut o problemă la rambursare',
                 'success' => 'Rambursare reușită',
             ],
         ],
     ],
-
 ];

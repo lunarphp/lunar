@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Активност',
-
     'plural_label' => 'Активности',
-
     'table' => [
         'subject' => 'Обект',
         'description' => 'Описание',
@@ -15,7 +12,6 @@ return [
         'logged_from' => 'Записано от',
         'logged_until' => 'Записано до',
     ],
-
     'form' => [
         'causer_type' => 'Тип инициатор',
         'causer_id' => 'ID на инициатора',
@@ -25,5 +21,4 @@ return [
         'attributes' => 'Атрибути',
         'old' => 'Старо',
     ],
-
 ];

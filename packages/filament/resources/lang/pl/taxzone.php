@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Strefa podatkowa',
-
     'plural_label' => 'Strefy podatkowe',
-
     'table' => [
         'name' => [
             'label' => 'Nazwa',
@@ -20,7 +17,6 @@ return [
             'label' => 'Domyślna',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nazwa',
@@ -46,24 +42,18 @@ return [
         'default' => [
             'label' => 'Domyślna',
         ],
-
         'zone_countries' => [
             'label' => 'Kraje',
         ],
-
         'zone_country' => [
             'label' => 'Kraj',
         ],
-
         'zone_states' => [
             'label' => 'Stany',
         ],
-
         'zone_postcodes' => [
             'label' => 'Kody pocztowe',
             'helper' => 'Wprowadź każdy kod pocztowy w nowej linii. Obsługuje znaki wieloznaczne, takie jak NW*',
         ],
-
     ],
-
 ];

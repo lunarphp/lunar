@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Monedă',
-
     'plural_label' => 'Monede',
-
     'table' => [
         'name' => [
             'label' => 'Nume',
@@ -29,7 +26,6 @@ return [
             'label' => 'Implicită',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',
@@ -54,5 +50,4 @@ return [
             'helper_text' => 'Păstrează prețurile în această monedă sincronizate cu moneda implicită.',
         ],
     ],
-
 ];

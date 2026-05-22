@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Nhóm thuộc tính',
-
     'plural_label' => 'Nhóm thuộc tính',
-
     'table' => [
         'attributable_type' => [
             'label' => 'Loại',
@@ -20,7 +17,6 @@ return [
             'label' => 'Vị trí',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Loại',
@@ -35,7 +31,6 @@ return [
             'label' => 'Vị trí',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Adóosztály',
-
     'plural_label' => 'Adóosztályok',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -14,7 +11,6 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Endereço',
-
     'plural_label' => 'Endereços',
-
     'table' => [
         'title' => [
             'label' => 'Título',
@@ -50,7 +47,6 @@ return [
             'label' => 'Telefone de contato',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Título',
@@ -95,5 +91,4 @@ return [
             'label' => 'Telefone de contato',
         ],
     ],
-
 ];

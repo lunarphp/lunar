@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'Popusti',
     'label' => 'Popust',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'Prioritet',
             'helper_text' => 'Popusti s višim prioritetom primjenjuju se prvi.',
-            'options' => [
-                'low' => [
-                    'label' => 'Nizak',
-                ],
-                'medium' => [
-                    'label' => 'Srednji',
-                ],
-                'high' => [
-                    'label' => 'Visok',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'Ne primjenjuj daljnje popuste nakon ovoga',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'Kupon',
@@ -76,6 +64,12 @@ return [
             'label' => 'Automatski dodaj nagrade',
             'helper_text' => 'Uključite kako biste dodali nagradne proizvode ako se ne nalaze u košarici.',
         ],
+        'fixed_value' => [
+            'label' => 'Fixed value',
+        ],
+        'percentage' => [
+            'label' => 'Percentage',
+        ],
     ],
     'table' => [
         'name' => [
@@ -83,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'Status',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'Aktivan',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'Na čekanju',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'Istekao',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'Zakazan',
             ],
         ],
@@ -105,10 +99,19 @@ return [
         'ends_at' => [
             'label' => 'Datum završetka',
         ],
+        'created_at' => [
+            'label' => 'Created At',
+        ],
+        'coupon' => [
+            'label' => 'Coupon',
+        ],
     ],
     'pages' => [
         'availability' => [
             'label' => 'Dostupnost',
+        ],
+        'edit' => [
+            'title' => 'Basic Information',
         ],
         'limitations' => [
             'label' => 'Ograničenja',
@@ -147,6 +150,20 @@ return [
                             'label' => 'Isključenje',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'customers' => [
+            'title' => 'Customers',
+            'description' => 'Select which customers this discount should be limited to.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Attach Customer',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],
@@ -287,6 +304,20 @@ return [
                             'label' => 'Izuzetak',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'collection_conditions' => [
+            'title' => 'Collection Conditions',
+            'description' => 'Select the collection conditions required for the discount to apply.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Condition',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],

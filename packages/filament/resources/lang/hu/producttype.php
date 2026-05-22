@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Terméktípus',
-
     'plural_label' => 'Terméktípusok',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -20,7 +17,6 @@ return [
             'label' => 'Termékváltozat attribútumok',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'Termék attribútumok',
@@ -29,18 +25,15 @@ return [
             'label' => 'Termékváltozat attribútumok',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'Nincsenek elérhető attribútumcsoportok.',
         'no_attributes' => 'Nincsenek elérhető attribútumok.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Клиентска група',
-
     'plural_label' => 'Клиентски групи',
-
     'table' => [
         'name' => [
             'label' => 'Име',
@@ -17,7 +14,6 @@ return [
             'label' => 'По подразбиране',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Име',
@@ -29,7 +25,6 @@ return [
             'label' => 'По подразбиране',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

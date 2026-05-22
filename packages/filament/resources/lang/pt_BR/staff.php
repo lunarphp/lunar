@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Equipe',
-
     'plural_label' => 'Equipe',
-
     'table' => [
         'first_name' => [
             'label' => 'Nome',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Super Admin',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Nome',
@@ -50,7 +46,6 @@ return [
             'label' => 'Nome da função',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Controle de acesso',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Excluir função: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Controle de acesso',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Função e permissão não registradas no Lunar',
         ],
     ],
-
 ];

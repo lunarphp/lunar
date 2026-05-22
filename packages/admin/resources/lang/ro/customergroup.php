@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Grup de clienți',
-
     'plural_label' => 'Grupe de clienți',
-
     'table' => [
         'name' => [
             'label' => 'Nume',
@@ -17,7 +14,6 @@ return [
             'label' => 'Implicit',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',
@@ -29,7 +25,6 @@ return [
             'label' => 'Implicit',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

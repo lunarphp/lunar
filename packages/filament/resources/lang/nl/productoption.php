@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Productoptie',
-
     'plural_label' => 'Productopties',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -20,7 +17,6 @@ return [
             'label' => 'Gedeeld',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naam',
@@ -32,7 +28,6 @@ return [
             'label' => 'Handvat',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -57,6 +52,9 @@ return [
                         ],
                         'no_shared_components' => [
                             'label' => 'Er zijn geen gedeelde opties beschikbaar.',
+                        ],
+                        'preselect' => [
+                            'label' => 'Preselect all values by default.',
                         ],
                     ],
                 ],
@@ -120,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

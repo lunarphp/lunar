@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Steuersatz',
-
     'plural_label' => 'Steuersätze',
-
     'table' => [
         'name' => [
             'label' => 'Name',
@@ -17,7 +14,6 @@ return [
             'label' => 'Priorität',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -29,5 +25,4 @@ return [
             'label' => 'Steuerzone',
         ],
     ],
-
 ];

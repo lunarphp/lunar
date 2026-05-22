@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Porezna zona',
-
     'plural_label' => 'Porezne zone',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -20,7 +17,6 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -46,24 +42,18 @@ return [
         'default' => [
             'label' => 'Zadano',
         ],
-
         'zone_countries' => [
             'label' => 'Države',
         ],
-
         'zone_country' => [
             'label' => 'Država',
         ],
-
         'zone_states' => [
             'label' => 'Županije / Savezne države',
         ],
-
         'zone_postcodes' => [
             'label' => 'Poštanski brojevi',
             'helper' => 'Navedite svaki poštanski broj u novom retku. Podržava zamjenske znakove poput NW*',
         ],
-
     ],
-
 ];

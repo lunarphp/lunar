@@ -7,6 +7,7 @@ return [
     'plural_label' => 'Activities',
 
     'table' => [
+        'id' => 'ID',
         'subject' => 'Subject',
         'description' => 'Description',
         'log' => 'Log',

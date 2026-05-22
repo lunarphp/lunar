@@ -88,6 +88,51 @@ return [
             ],
         ],
     ],
+    'medias' => [
+        'title' => 'Media',
+        'title_plural' => 'Media',
+        'actions' => [
+            'attach' => [
+                'label' => 'Attach Media',
+            ],
+            'create' => [
+                'label' => 'Create Media',
+            ],
+            'detach' => [
+                'label' => 'Detach',
+            ],
+            'view' => [
+                'label' => 'View',
+            ],
+        ],
+        'form' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+            'media' => [
+                'label' => 'Image',
+            ],
+            'primary' => [
+                'label' => 'Primary',
+            ],
+        ],
+        'table' => [
+            'image' => [
+                'label' => 'Image',
+            ],
+            'file' => [
+                'label' => 'File',
+            ],
+            'name' => [
+                'label' => 'Name',
+            ],
+            'primary' => [
+                'label' => 'Primary',
+            ],
+        ],
+        'all_media_attached' => 'There are no product images available to attach',
+        'variant_description' => 'Attach product images to this variant',
+    ],
     'urls' => [
         'title' => 'URL',
         'title_plural' => 'URLe',
@@ -204,6 +249,7 @@ return [
                     'price' => [
                         'label' => 'Cena',
                         'helper_text' => 'Cena zakupu, przed rabatami.',
+                        'sync_price' => 'Price is synced with the default currency.',
                     ],
                     'compare_price' => [
                         'label' => 'Cena porównawcza',

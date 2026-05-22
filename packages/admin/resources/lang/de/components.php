@@ -6,18 +6,14 @@ return [
             'updated' => 'Tags aktualisiert',
         ],
     ],
-
     'activity-log' => [
         'input' => [
             'placeholder' => 'Einen Kommentar hinzufügen',
         ],
-
         'action' => [
             'add-comment' => 'Kommentar hinzufügen',
         ],
-
         'system' => 'System',
-
         'partials' => [
             'orders' => [
                 'order_created' => 'Bestellung erstellt',
@@ -41,18 +37,15 @@ return [
                 'removed' => 'Entfernt',
             ],
         ],
-
         'notification' => [
             'comment_added' => 'Kommentar hinzugefügt',
         ],
     ],
-
     'forms' => [
         'youtube' => [
             'helperText' => 'Geben Sie die ID des YouTube-Videos ein, z.B. dQw4w9WgXcQ',
         ],
     ],
-
     'collection-tree-view' => [
         'actions' => [
             'move' => [
@@ -75,7 +68,6 @@ return [
             ],
         ],
     ],
-
     'product-options-list' => [
         'add-option' => [
             'label' => 'Option hinzufügen',

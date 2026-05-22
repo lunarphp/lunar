@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Personal',
-
     'plural_label' => 'Personal',
-
     'table' => [
         'first_name' => [
             'label' => 'Prenume',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Super administrator',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Prenume',
@@ -50,7 +46,6 @@ return [
             'label' => 'Nume rol',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Control acces',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Șterge rolul: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Control acces',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Rolul și permisiunea nu sunt înregistrate în Lunar',
         ],
     ],
-
 ];

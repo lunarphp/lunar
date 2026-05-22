@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Zona de imposto',
-
     'plural_label' => 'Zonas de imposto',
-
     'table' => [
         'name' => [
             'label' => 'Nome',
@@ -20,7 +17,6 @@ return [
             'label' => 'Padrão',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nome',
@@ -46,24 +42,18 @@ return [
         'default' => [
             'label' => 'Padrão',
         ],
-
         'zone_countries' => [
             'label' => 'Países',
         ],
-
         'zone_country' => [
             'label' => 'País',
         ],
-
         'zone_states' => [
             'label' => 'Estados',
         ],
-
         'zone_postcodes' => [
             'label' => 'CEPs',
             'helper' => 'Liste cada CEP em uma nova linha. Suporta curingas como NW*',
         ],
-
     ],
-
 ];

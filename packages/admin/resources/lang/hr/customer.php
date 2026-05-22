@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Kupac',
-
     'plural_label' => 'Kupci',
-
     'table' => [
         'full_name' => [
             'label' => 'Naziv',
@@ -35,7 +32,6 @@ return [
             'label' => 'Povratni',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Titula',
@@ -59,5 +55,4 @@ return [
             'label' => 'Grupe kupaca',
         ],
     ],
-
 ];

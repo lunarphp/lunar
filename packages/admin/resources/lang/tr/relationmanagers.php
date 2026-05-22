@@ -273,6 +273,11 @@ return [
     ],
     'values' => [
         'title' => 'Değerler',
+        'form' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+        ],
         'table' => [
             'name' => [
                 'label' => 'Ad',
@@ -282,5 +287,4 @@ return [
             ],
         ],
     ],
-
 ];

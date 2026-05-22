@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Ürün Türü',
-
     'plural_label' => 'Ürün Türleri',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -20,7 +17,6 @@ return [
             'label' => 'Varyant Özellikleri',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'Ürün Özellikleri',
@@ -29,18 +25,15 @@ return [
             'label' => 'Varyant Özellikleri',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'Mevcut özellik grubu yok.',
         'no_attributes' => 'Mevcut özellik yok.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

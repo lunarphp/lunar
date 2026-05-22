@@ -47,6 +47,5 @@ return [
                 'label' => 'Szállítási e-mail',
             ],
         ],
-
     ],
 ];

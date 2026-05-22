@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Korisnik',
-
     'plural_label' => 'Korisnici',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -14,7 +11,6 @@ return [
             'label' => 'E-mail',
         ],
     ],
-
     'form' => [
         'email' => [
             'label' => 'E-mail',

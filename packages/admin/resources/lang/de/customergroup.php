@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Kundengruppe',
-
     'plural_label' => 'Kundengruppen',
-
     'table' => [
         'name' => [
             'label' => 'Name',
@@ -17,7 +14,6 @@ return [
             'label' => 'Standard',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -29,7 +25,6 @@ return [
             'label' => 'Standard',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

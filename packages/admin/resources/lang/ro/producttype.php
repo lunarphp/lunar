@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Tip produs',
-
     'plural_label' => 'Tipuri de produse',
-
     'table' => [
         'name' => [
             'label' => 'Nume',
@@ -20,7 +17,6 @@ return [
             'label' => 'Atribute variantă',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'Atribute produs',
@@ -29,18 +25,15 @@ return [
             'label' => 'Atribute variantă',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'Nu există grupe de atribute disponibile.',
         'no_attributes' => 'Nu există atribute disponibile.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

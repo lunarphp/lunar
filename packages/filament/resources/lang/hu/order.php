@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Rendelés',
-
     'plural_label' => 'Rendelések',
-
     'breadcrumb' => [
         'manage' => 'Kezelés',
     ],
-
     'tabs' => [
         'all' => 'Mind',
     ],
-
     'transactions' => [
         'capture' => 'Lekönyvelve',
         'intent' => 'Fizetési szándék',
         'refund' => 'Visszatérítve',
         'failed' => 'Sikertelen',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Státusz',
@@ -63,7 +57,6 @@ return [
             'label' => 'Rendelés ideje előtt',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'Ország',
             ],
         ],
-
         'reference' => [
             'label' => 'Hivatkozás',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Összeg',
-
             'hint' => [
                 'less_than_total' => 'Ön kevesebb összeget készül lekönyvelni, mint a teljes tranzakció értéke',
             ],
         ],
-
         'notes' => [
             'label' => 'Megjegyzések',
         ],
         'confirm' => [
             'label' => 'Megerősítés',
-
             'alert' => 'Megerősítés szükséges',
-
             'hint' => [
                 'capture' => 'Kérjük, erősítse meg, hogy le akarja könyvelni ezt a fizetést',
                 'refund' => 'Kérjük, erősítse meg, hogy vissza kívánja téríteni ezt az összeget.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Megjegyzések',
@@ -238,13 +225,14 @@ return [
             'refunded' => 'Ennél a rendelésnél visszatérítés történt.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Státusz frissítése',
             'notification' => 'Rendelések státusza frissítve',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Új státusz',
             ],
@@ -262,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Szerkesztés',
-
             'notification' => [
                 'error' => 'Hiba',
-
                 'billing_address' => [
                     'saved' => 'Számlázási cím mentve',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Szállítási cím mentve',
                 ],
@@ -286,7 +271,6 @@ return [
         ],
         'capture_payment' => [
             'label' => 'Fizetés lekönyvelése',
-
             'notification' => [
                 'error' => 'Hiba történt a lekönyvelés során',
                 'success' => 'Lekönyvelés sikeres',
@@ -294,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Visszatérítés',
-
             'notification' => [
                 'error' => 'Hiba történt a visszatérítés során',
                 'success' => 'Visszatérítés sikeres',
             ],
         ],
     ],
-
 ];

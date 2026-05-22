@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'کلاس مالیاتی',
-
     'plural_label' => 'کلاس‌های مالیاتی',
-
     'table' => [
         'name' => [
             'label' => 'نام',
@@ -14,7 +11,6 @@ return [
             'label' => 'پیش‌فرض',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'نام',

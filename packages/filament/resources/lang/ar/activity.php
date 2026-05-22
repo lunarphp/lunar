@@ -1,12 +1,10 @@
 <?php
 
 return [
-
     'label' => 'نشاط',
-
     'plural_label' => 'الأنشطة',
-
     'table' => [
+        'id' => 'ID',
         'subject' => 'الموضوع',
         'description' => 'الوصف',
         'log' => 'السجل',
@@ -15,7 +13,6 @@ return [
         'logged_from' => 'مسجل من',
         'logged_until' => 'مسجل حتى',
     ],
-
     'form' => [
         'causer_type' => 'نوع الفاعل',
         'causer_id' => 'معرّف الفاعل',
@@ -25,5 +22,4 @@ return [
         'attributes' => 'الخصائص',
         'old' => 'القيمة القديمة',
     ],
-
 ];

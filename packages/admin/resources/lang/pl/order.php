@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Zamówienie',
-
     'plural_label' => 'Zamówienia',
-
     'breadcrumb' => [
         'manage' => 'Zarządzanie zamówieniami',
     ],
-
     'tabs' => [
         'all' => 'Wszelkie',
     ],
-
     'transactions' => [
         'capture' => 'Przechwycona',
         'intent' => 'Rozpoczęta',
         'refund' => 'Zwrócona',
         'failed' => 'Nieudana',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -63,7 +57,6 @@ return [
             'label' => 'Złożone przed',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -84,6 +77,9 @@ return [
             'company_name' => [
                 'label' => 'Nazwa firmy',
             ],
+            'tax_identifier' => [
+                'label' => 'Tax Identifier',
+            ],
             'contact_phone' => [
                 'label' => 'Telefon',
             ],
@@ -103,7 +99,6 @@ return [
                 'label' => 'Kraj',
             ],
         ],
-
         'reference' => [
             'label' => 'Numer zamówienia',
         ],
@@ -115,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Kwota',
-
             'hint' => [
                 'less_than_total' => 'Próbujesz pobrać kwotę mniejszą niż całkowita wartość transakcji.',
             ],
         ],
-
         'notes' => [
             'label' => 'Notatki',
         ],
         'confirm' => [
             'label' => 'Potwierdź',
-
             'alert' => 'Wymaga potwierdzenia',
-
             'hint' => [
                 'capture' => 'Potwierdź, że chcesz przechwycić tę kwotę.',
                 'refund' => 'Potwierdź, że chcesz zwrócić tę kwotę.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Notatki',
@@ -235,7 +225,6 @@ return [
             'refunded' => 'To zamówienie zostało zwrócone.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Aktualizuj statusy',
@@ -261,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Edytuj adres',
-
             'notification' => [
                 'error' => 'Błąd',
-
                 'billing_address' => [
                     'saved' => 'Adres rozliczeniowy zapisany',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Adres dostawy zapisany',
                 ],
@@ -276,10 +262,15 @@ return [
         ],
         'edit_tags' => [
             'label' => 'Edytuj tagi',
+            'form' => [
+                'tags' => [
+                    'label' => 'Tags',
+                    'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
+                ],
+            ],
         ],
         'capture_payment' => [
             'label' => 'Przechwyć płatność',
-
             'notification' => [
                 'error' => 'Wystąpił problem z przechwyceniem płatności',
                 'success' => 'Płatność przechwycona',
@@ -287,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Zwróć płatność',
-
             'notification' => [
                 'error' => 'Wystąpił problem ze zwróceniem płatności',
                 'success' => 'Płatność zwrócona',
             ],
         ],
     ],
-
 ];

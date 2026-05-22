@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Product Option',
-
     'plural_label' => 'Product Options',
-
     'table' => [
         'name' => [
             'label' => 'Name',
@@ -20,7 +17,6 @@ return [
             'label' => 'Shared',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -32,7 +28,6 @@ return [
             'label' => 'Handle',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -123,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

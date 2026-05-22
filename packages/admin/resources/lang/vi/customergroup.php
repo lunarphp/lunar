@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Nhóm khách hàng',
-
     'plural_label' => 'Nhóm khách hàng',
-
     'table' => [
         'name' => [
             'label' => 'Tên',
@@ -17,7 +14,6 @@ return [
             'label' => 'Mặc định',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Tên',
@@ -29,7 +25,6 @@ return [
             'label' => 'Mặc định',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

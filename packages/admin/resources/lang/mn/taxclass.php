@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Татварын ангилал',
-
     'plural_label' => 'Татварын ангиллууд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -14,7 +11,6 @@ return [
             'label' => 'Өгөгдмөл',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',

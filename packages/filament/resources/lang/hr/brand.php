@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Brend',
-
     'plural_label' => 'Brendovi',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -14,13 +11,11 @@ return [
             'label' => 'Broj proizvoda',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -71,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

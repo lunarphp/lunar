@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Sipariş',
-
     'plural_label' => 'Siparişler',
-
     'breadcrumb' => [
         'manage' => 'Yönet',
     ],
-
     'tabs' => [
         'all' => 'Tümü',
     ],
-
     'transactions' => [
         'capture' => 'Tahsil Edildi',
         'intent' => 'Ödeme Niyeti',
         'refund' => 'İade Edildi',
         'failed' => 'Başarısız',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Durum',
@@ -63,7 +57,6 @@ return [
             'label' => 'Bu Tarihten Önce',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'Ülke',
             ],
         ],
-
         'reference' => [
             'label' => 'Referans',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Miktar',
-
             'hint' => [
                 'less_than_total' => 'Toplam işlem tutarından daha az bir miktar tahsil etmek üzeresiniz',
             ],
         ],
-
         'notes' => [
             'label' => 'Notlar',
         ],
         'confirm' => [
             'label' => 'Onayla',
-
             'alert' => 'Onay gerekli',
-
             'hint' => [
                 'capture' => 'Lütfen bu ödemeyi tahsil etmek istediğinizi onaylayın',
                 'refund' => 'Lütfen bu tutarı iade etmek istediğinizi onaylayın.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Notlar',
@@ -238,13 +225,14 @@ return [
             'refunded' => 'Bu sipariş iade edildi.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Durumu Güncelle',
             'notification' => 'Siparişlerin durumu güncellendi',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Yeni durum',
             ],
@@ -262,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Düzenle',
-
             'notification' => [
                 'error' => 'Hata',
-
                 'billing_address' => [
                     'saved' => 'Fatura adresi kaydedildi',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Kargo adresi kaydedildi',
                 ],
@@ -286,7 +271,6 @@ return [
         ],
         'capture_payment' => [
             'label' => 'Ödemeyi Tahsil Et',
-
             'notification' => [
                 'error' => 'Yakalama ile ilgili bir sorun oluştu',
                 'success' => 'Yakalama başarılı',
@@ -294,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'İade',
-
             'notification' => [
                 'error' => 'İade ile ilgili bir sorun oluştu',
                 'success' => 'İade başarılı',
             ],
         ],
     ],
-
 ];

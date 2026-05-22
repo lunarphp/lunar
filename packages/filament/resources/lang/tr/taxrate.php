@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Vergi Oranı',
-
     'plural_label' => 'Vergi Oranları',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -17,7 +14,6 @@ return [
             'label' => 'Öncelik',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
@@ -29,5 +25,4 @@ return [
             'label' => 'Vergi Bölgesi',
         ],
     ],
-
 ];

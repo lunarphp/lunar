@@ -48,8 +48,15 @@ return [
             ],
         ],
         'table' => [
+            'enabled' => [
+                'label' => 'Enabled',
+            ],
+            'disabled' => [
+                'label' => 'disabled',
+            ],
             'shipping_method' => [
                 'label' => 'Phương thức vận chuyển',
+                'disabled' => 'Disabled',
             ],
             'price' => [
                 'label' => 'Giá',

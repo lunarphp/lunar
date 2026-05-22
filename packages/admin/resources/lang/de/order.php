@@ -1,22 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Bestellung',
-
     'plural_label' => 'Bestellungen',
-
     'breadcrumb' => [
         'manage' => 'Verwalten',
     ],
-
+    'tabs' => [
+        'all' => 'All',
+    ],
     'transactions' => [
         'capture' => 'Erfasst',
         'intent' => 'Absicht',
         'refund' => 'Erstattet',
         'failed' => 'Fehlgeschlagen',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -59,7 +57,6 @@ return [
             'label' => 'Plaziert vor',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -80,6 +77,9 @@ return [
             'company_name' => [
                 'label' => 'Firmenname',
             ],
+            'tax_identifier' => [
+                'label' => 'Tax Identifier',
+            ],
             'contact_phone' => [
                 'label' => 'Telefon',
             ],
@@ -99,7 +99,6 @@ return [
                 'label' => 'Land',
             ],
         ],
-
         'reference' => [
             'label' => 'Referenz',
         ],
@@ -111,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Betrag',
-
             'hint' => [
                 'less_than_total' => 'Sie sind dabei, einen Betrag zu erfassen, der kleiner ist als der gesamte Transaktionswert',
             ],
         ],
-
         'notes' => [
             'label' => 'Notizen',
         ],
         'confirm' => [
             'label' => 'Bestätigen',
-
             'alert' => 'Bestätigung erforderlich',
-
             'hint' => [
                 'capture' => 'Bitte bestätigen Sie, dass Sie diese Zahlung erfassen möchten',
                 'refund' => 'Bitte bestätigen Sie, dass Sie diesen Betrag erstatten möchten.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Notizen',
@@ -231,7 +225,6 @@ return [
             'refunded' => 'Diese Bestellung wurde erstattet.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Status aktualisieren',
@@ -257,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Bearbeiten',
-
             'notification' => [
                 'error' => 'Fehler',
-
                 'billing_address' => [
                     'saved' => 'Rechnungsadresse gespeichert',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Lieferadresse gespeichert',
                 ],
@@ -272,10 +262,15 @@ return [
         ],
         'edit_tags' => [
             'label' => 'Bearbeiten',
+            'form' => [
+                'tags' => [
+                    'label' => 'Tags',
+                    'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
+                ],
+            ],
         ],
         'capture_payment' => [
             'label' => 'Zahlung erfassen',
-
             'notification' => [
                 'error' => 'Bei der Erfassung gab es ein Problem',
                 'success' => 'Erfassung erfolgreich',
@@ -283,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Rückerstattung',
-
             'notification' => [
                 'error' => 'Bei der Rückerstattung gab es ein Problem',
                 'success' => 'Rückerstattung erfolgreich',
             ],
         ],
     ],
-
 ];

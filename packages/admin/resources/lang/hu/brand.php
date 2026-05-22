@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Márka',
-
     'plural_label' => 'Márkák',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -14,13 +11,11 @@ return [
             'label' => 'Termékek száma',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -71,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

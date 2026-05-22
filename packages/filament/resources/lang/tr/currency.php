@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Para Birimi',
-
     'plural_label' => 'Para Birimleri',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -29,7 +26,6 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
@@ -54,5 +50,4 @@ return [
             'helper_text' => 'Bu para birimindeki fiyatları varsayılan para birimi ile senkronize tutun.',
         ],
     ],
-
 ];

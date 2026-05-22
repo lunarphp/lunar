@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Nyelv',
-
     'plural_label' => 'Nyelvek',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -17,7 +14,6 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -29,5 +25,4 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
 ];

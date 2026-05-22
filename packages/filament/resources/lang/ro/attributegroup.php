@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Grup de atribute',
-
     'plural_label' => 'Grupe de atribute',
-
     'table' => [
         'attributable_type' => [
             'label' => 'Tip',
@@ -20,7 +17,6 @@ return [
             'label' => 'Poziție',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Tip',
@@ -35,7 +31,6 @@ return [
             'label' => 'Poziție',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

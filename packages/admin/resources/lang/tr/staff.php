@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Personel',
-
     'plural_label' => 'Personel',
-
     'table' => [
         'first_name' => [
             'label' => 'Ad',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Süper Yönetici',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Ad',
@@ -50,7 +46,6 @@ return [
             'label' => 'Rol Adı',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Erişim Kontrolü',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Rolü sil: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Erişim Kontrolü',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Rol ve İzin Lunar\'da kayıtlı değil',
         ],
     ],
-
 ];

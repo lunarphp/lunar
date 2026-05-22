@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Moneda',
-
     'plural_label' => 'Monedas',
-
     'table' => [
         'name' => [
             'label' => 'Nombre',
@@ -22,11 +19,13 @@ return [
         'enabled' => [
             'label' => 'Habilitado',
         ],
+        'sync_prices' => [
+            'label' => 'Sync Prices',
+        ],
         'default' => [
             'label' => 'Predeterminado',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nombre',
@@ -46,6 +45,9 @@ return [
         'default' => [
             'label' => 'Predeterminado',
         ],
+        'sync_prices' => [
+            'label' => 'Sync Prices',
+            'helper_text' => 'Keep prices in this currency in sync with the default currency.',
+        ],
     ],
-
 ];

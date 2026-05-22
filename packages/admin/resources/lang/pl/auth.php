@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roles
-     */
     'roles.admin.label' => 'Admin',
     'roles.admin.description' => 'Admin z pełnym dostępem',
     'roles.staff.label' => 'Personel',
     'roles.staff.description' => 'Personel z podstawowym dostępem',
-    /**
-     * Permissions.
-     */
     'permissions.settings.label' => 'Ustawienia',
     'permissions.settings.description' => 'Pozwala na dostęp do ustawień sklepu',
     'permissions.settings:core.label' => 'Ustawienia podstawowe',

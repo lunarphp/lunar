@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Grupo de coleções',
-
     'plural_label' => 'Grupos de coleções',
-
     'table' => [
         'name' => [
             'label' => 'Nome',
@@ -17,7 +14,6 @@ return [
             'label' => 'Qtd. de coleções',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nome',
@@ -26,7 +22,6 @@ return [
             'label' => 'Identificador',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

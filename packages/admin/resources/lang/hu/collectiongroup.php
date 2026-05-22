@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Gyűjteménycsoport',
-
     'plural_label' => 'Gyűjteménycsoportok',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -17,7 +14,6 @@ return [
             'label' => 'Gyűjtemények száma',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -26,7 +22,6 @@ return [
             'label' => 'Azonosító',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

@@ -6,13 +6,13 @@ use Lunar\Filament\Support\Facades\LunarFilament;
 
 trait CallsHooks
 {
-    protected function callLunarHook(...$args)
+    protected function callLunarHook(string $hookName, mixed ...$args): mixed
     {
-        return LunarFilament::callHook(static::class, $this, ...$args);
+        return LunarFilament::callHook(static::class, $this, $hookName, ...$args);
     }
 
-    protected static function callStaticLunarHook(...$args)
+    protected static function callStaticLunarHook(string $hookName, mixed ...$args): mixed
     {
-        return LunarFilament::callHook(static::class, null, ...$args);
+        return LunarFilament::callHook(static::class, null, $hookName, ...$args);
     }
 }

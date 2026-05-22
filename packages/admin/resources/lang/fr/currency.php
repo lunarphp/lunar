@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Devise',
-
     'plural_label' => 'Devises',
-
     'table' => [
         'name' => [
             'label' => 'Nom',
@@ -22,11 +19,13 @@ return [
         'enabled' => [
             'label' => 'Activé',
         ],
+        'sync_prices' => [
+            'label' => 'Sync Prices',
+        ],
         'default' => [
             'label' => 'Par défaut',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nom',
@@ -46,6 +45,9 @@ return [
         'default' => [
             'label' => 'Par défaut',
         ],
+        'sync_prices' => [
+            'label' => 'Sync Prices',
+            'helper_text' => 'Keep prices in this currency in sync with the default currency.',
+        ],
     ],
-
 ];

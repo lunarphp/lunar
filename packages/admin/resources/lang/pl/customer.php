@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Klient',
-
     'plural_label' => 'Klienci',
-
     'table' => [
         'full_name' => [
             'label' => 'Imię i nazwisko',
@@ -35,7 +32,6 @@ return [
             'label' => 'Powracający',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Tytuł',
@@ -49,15 +45,14 @@ return [
         'company_name' => [
             'label' => 'Nazwa firmy',
         ],
-        'tax_identifier' => [
-            'label' => 'NIP',
-        ],
         'account_ref' => [
             'label' => 'Numer konta',
+        ],
+        'tax_identifier' => [
+            'label' => 'NIP',
         ],
         'customer_groups' => [
             'label' => 'Grupy klientów',
         ],
     ],
-
 ];

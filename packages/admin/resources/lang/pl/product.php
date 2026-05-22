@@ -1,15 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Produkt',
-
     'plural_label' => 'Produkty',
-
     'tabs' => [
         'all' => 'Wszystkie',
+        'published' => 'Published',
+        'draft' => 'Draft',
     ],
-
     'status' => [
         'unpublished' => [
             'content' => 'Produkt jest obecnie w trybie szkicu i jest niedostępny we wszystkich kanałach i grupach klientów.',
@@ -21,7 +19,6 @@ return [
             'no_default_customer_group' => 'Nie ustawiono domyślnej grupy klientów, więc widoczność dla gości nie może być kontrolowana w tym miejscu. Oznacz jedną grupę klientów jako domyślną, aby zarządzać dostępem gości.',
         ],
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -47,14 +44,12 @@ return [
             'label' => 'Typ produktu',
         ],
     ],
-
     'actions' => [
         'edit_status' => [
             'label' => 'Edytuj status',
             'heading' => 'Edytuj status produktu',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nazwa',
@@ -83,18 +78,19 @@ return [
         ],
         'tags' => [
             'label' => 'Tagi',
+            'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
         ],
         'collections' => [
             'label' => 'Kolekcje',
+            'select_collection' => 'Select a collection',
         ],
     ],
-
     'pages' => [
         'availability' => [
             'label' => 'Dostępność',
         ],
-        'media' => [
-            'label' => 'Media',
+        'edit' => [
+            'title' => 'Basic Information',
         ],
         'identifiers' => [
             'label' => 'Identyfikatory',
@@ -127,5 +123,4 @@ return [
             'label' => 'Powiązania',
         ],
     ],
-
 ];

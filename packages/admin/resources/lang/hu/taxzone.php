@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Adózóna',
-
     'plural_label' => 'Adózónák',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -20,7 +17,6 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -46,24 +42,18 @@ return [
         'default' => [
             'label' => 'Alapértelmezett',
         ],
-
         'zone_countries' => [
             'label' => 'Országok',
         ],
-
         'zone_country' => [
             'label' => 'Ország',
         ],
-
         'zone_states' => [
             'label' => 'Államok',
         ],
-
         'zone_postcodes' => [
             'label' => 'Irányítószámok',
             'helper' => 'Listázd az egyes irányítószámokat új sorban. Támogatja a helyettesítő karaktereket, mint például NW*',
         ],
-
     ],
-
 ];

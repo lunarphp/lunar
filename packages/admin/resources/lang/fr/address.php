@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Adresse',
-
     'plural_label' => 'Adresses',
-
     'table' => [
         'title' => [
             'label' => 'Titre',
@@ -50,7 +47,6 @@ return [
             'label' => 'Téléphone de contact',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Titre',
@@ -95,5 +91,4 @@ return [
             'label' => 'Téléphone de contact',
         ],
     ],
-
 ];

@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Commande',
-
     'plural_label' => 'Commandes',
-
     'breadcrumb' => [
         'manage' => 'Gérer',
     ],
-
     'tabs' => [
         'all' => 'Toutes',
     ],
-
     'transactions' => [
         'capture' => 'Capturé',
         'intent' => 'Intention',
         'refund' => 'Remboursé',
         'failed' => 'Échoué',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Statut',
@@ -63,7 +57,6 @@ return [
             'label' => 'Placée avant',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'Pays',
             ],
         ],
-
         'reference' => [
             'label' => 'Référence',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Montant',
-
             'hint' => [
                 'less_than_total' => 'Vous êtes sur le point de capturer un montant inférieur à la valeur totale de la transaction',
             ],
         ],
-
         'notes' => [
             'label' => 'Notes',
         ],
         'confirm' => [
             'label' => 'Confirmer',
-
             'alert' => 'Confirmation requise',
-
             'hint' => [
                 'capture' => 'Veuillez confirmer que vous souhaitez capturer ce paiement',
                 'refund' => 'Veuillez confirmer que vous souhaitez rembourser ce montant.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Notes',
@@ -238,7 +225,6 @@ return [
             'refunded' => 'Cette commande a été remboursée.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Mettre à jour le statut',
@@ -264,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Modifier',
-
             'notification' => [
                 'error' => 'Erreur',
-
                 'billing_address' => [
                     'saved' => 'Adresse de facturation enregistrée',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Adresse de livraison enregistrée',
                 ],
@@ -279,10 +262,15 @@ return [
         ],
         'edit_tags' => [
             'label' => 'Modifier',
+            'form' => [
+                'tags' => [
+                    'label' => 'Tags',
+                    'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
+                ],
+            ],
         ],
         'capture_payment' => [
             'label' => 'Capturer le paiement',
-
             'notification' => [
                 'error' => 'Il y a eu un problème avec la capture',
                 'success' => 'Capture réussie',
@@ -290,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Rembourser',
-
             'notification' => [
                 'error' => 'Il y a eu un problème avec le remboursement',
                 'success' => 'Remboursement réussi',
             ],
         ],
     ],
-
 ];

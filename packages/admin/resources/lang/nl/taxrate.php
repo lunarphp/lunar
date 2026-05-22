@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Belastingtarief',
-
     'plural_label' => 'Belastingtarieven',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -17,7 +14,6 @@ return [
             'label' => 'Prioriteit',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naam',
@@ -29,5 +25,4 @@ return [
             'label' => 'Belastingzone',
         ],
     ],
-
 ];

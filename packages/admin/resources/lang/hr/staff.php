@@ -1,17 +1,14 @@
 <?php
 
 return [
-
     'label' => 'Osoblje',
-
     'plural_label' => 'Osoblje',
-
     'table' => [
-        'firstname' => [
-            'label' => 'Ime',
+        'first_name' => [
+            'label' => 'First Name',
         ],
-        'lastname' => [
-            'label' => 'Prezime',
+        'last_name' => [
+            'label' => 'Last Name',
         ],
         'email' => [
             'label' => 'E-mail',
@@ -20,13 +17,12 @@ return [
             'badge' => 'Super administrator',
         ],
     ],
-
     'form' => [
-        'firstname' => [
-            'label' => 'Ime',
+        'first_name' => [
+            'label' => 'First Name',
         ],
-        'lastname' => [
-            'label' => 'Prezime',
+        'last_name' => [
+            'label' => 'Last Name',
         ],
         'email' => [
             'label' => 'E-mail',
@@ -50,7 +46,6 @@ return [
             'label' => 'Naziv uloge',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Kontrola pristupa',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Izbriši ulogu: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Kontrola pristupa',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Uloga i dozvola nisu registrirane u Lunaru',
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Porezna stopa',
-
     'plural_label' => 'Porezne stope',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -17,7 +14,6 @@ return [
             'label' => 'Prioritet',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -29,5 +25,4 @@ return [
             'label' => 'Porezna zona',
         ],
     ],
-
 ];

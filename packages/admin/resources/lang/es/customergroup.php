@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Grupo de Clientes',
-
     'plural_label' => 'Grupos de Clientes',
-
     'table' => [
         'name' => [
             'label' => 'Nombre',
@@ -17,7 +14,6 @@ return [
             'label' => 'Predeterminado',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nombre',
@@ -29,7 +25,6 @@ return [
             'label' => 'Predeterminado',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

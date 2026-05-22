@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'مجموعة تشكيلات',
-
     'plural_label' => 'مجموعات التشكيلات',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -17,7 +14,6 @@ return [
             'label' => 'عدد التشكيلات',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'الاسم',
@@ -26,7 +22,6 @@ return [
             'label' => 'المعرف',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

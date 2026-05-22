@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Activiteit',
-
     'plural_label' => 'Activiteiten',
-
     'table' => [
         'subject' => 'Onderwerp',
         'description' => 'Beschrijving',
@@ -15,7 +12,6 @@ return [
         'logged_from' => 'Gelogd Vanaf',
         'logged_until' => 'Gelogd Tot',
     ],
-
     'form' => [
         'causer_type' => 'Veroorzaker Type',
         'causer_id' => 'Veroorzaker Id',
@@ -25,5 +21,4 @@ return [
         'attributes' => 'Attributen',
         'old' => 'Oud',
     ],
-
 ];

@@ -47,6 +47,5 @@ return [
                 'label' => 'E-mail livrare',
             ],
         ],
-
     ],
 ];

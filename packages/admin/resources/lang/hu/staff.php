@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Munkatárs',
-
     'plural_label' => 'Munkatársak',
-
     'table' => [
         'first_name' => [
             'label' => 'Keresztnév',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Főadminisztrátor',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Keresztnév',
@@ -50,7 +46,6 @@ return [
             'label' => 'Szerepkör neve',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Hozzáférés-vezérlés',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Szerepkör törlése: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Hozzáférés-vezérlés',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Szerepkör és jogosultság nincs regisztrálva a Lunarban',
         ],
     ],
-
 ];

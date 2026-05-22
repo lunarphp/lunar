@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'Хөнгөлөлтүүд',
     'label' => 'Хөнгөлөлт',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'Эрэмбэ',
             'helper_text' => 'Илүү өндөр эрэмбэтэй хөнгөлөлтүүд эхэндээ хэрэгжинэ.',
-            'options' => [
-                'low' => [
-                    'label' => 'Бага',
-                ],
-                'medium' => [
-                    'label' => 'Дунд',
-                ],
-                'high' => [
-                    'label' => 'Өндөр',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'Энэ хөнгөлөлтийн дараа бусад хөнгөлөлтийг зогсоох',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'Купон',
@@ -89,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'Статус',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'Идэвхтэй',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'Хүлээгдэж буй',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'Хугацаа дууссан',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'Товлогдсон',
             ],
         ],

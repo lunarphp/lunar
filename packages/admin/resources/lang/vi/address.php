@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Địa chỉ',
-
     'plural_label' => 'Địa chỉ',
-
     'table' => [
         'title' => [
             'label' => 'Tiêu đề',
@@ -19,6 +16,9 @@ return [
         'company_name' => [
             'label' => 'Tên công ty',
         ],
+        'tax_identifier' => [
+            'label' => 'Tax Identifier',
+        ],
         'line_one' => [
             'label' => 'Địa chỉ',
         ],
@@ -47,7 +47,6 @@ return [
             'label' => 'Số điện thoại',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Tiêu đề',
@@ -61,6 +60,9 @@ return [
         'company_name' => [
             'label' => 'Tên công ty',
         ],
+        'tax_identifier' => [
+            'label' => 'Tax Identifier',
+        ],
         'line_one' => [
             'label' => 'Địa chỉ',
         ],
@@ -89,5 +91,4 @@ return [
             'label' => 'Số điện thoại',
         ],
     ],
-
 ];

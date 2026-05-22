@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Csatorna',
-
     'plural_label' => 'Csatornák',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -20,7 +17,6 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -35,5 +31,4 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
 ];

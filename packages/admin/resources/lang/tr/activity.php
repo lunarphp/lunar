@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Aktivite',
-
     'plural_label' => 'Aktiviteler',
-
     'table' => [
         'subject' => 'Konu',
         'description' => 'Açıklama',
@@ -15,7 +12,6 @@ return [
         'logged_from' => 'Kayıt Başlangıcı',
         'logged_until' => 'Kayıt Bitişi',
     ],
-
     'form' => [
         'causer_type' => 'Oluşturan Türü',
         'causer_id' => 'Oluşturan ID',
@@ -25,5 +21,4 @@ return [
         'attributes' => 'Özellikler',
         'old' => 'Eski',
     ],
-
 ];

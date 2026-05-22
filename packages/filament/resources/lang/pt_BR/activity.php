@@ -1,12 +1,10 @@
 <?php
 
 return [
-
     'label' => 'Atividade',
-
     'plural_label' => 'Atividades',
-
     'table' => [
+        'id' => 'ID',
         'subject' => 'Assunto',
         'description' => 'Descrição',
         'log' => 'Registro',
@@ -15,7 +13,6 @@ return [
         'logged_from' => 'Registrado de',
         'logged_until' => 'Registrado até',
     ],
-
     'form' => [
         'causer_type' => 'Tipo do agente',
         'causer_id' => 'ID do agente',
@@ -25,5 +22,4 @@ return [
         'attributes' => 'Atributos',
         'old' => 'Antigo',
     ],
-
 ];

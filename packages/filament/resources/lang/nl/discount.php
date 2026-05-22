@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'Kortingen',
     'label' => 'Korting',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'Prioriteit',
             'helper_text' => 'Kortingen met een hogere prioriteit worden eerst toegepast.',
-            'options' => [
-                'low' => [
-                    'label' => 'Laag',
-                ],
-                'medium' => [
-                    'label' => 'Middel',
-                ],
-                'high' => [
-                    'label' => 'Hoog',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'Stop andere kortingen na deze toe te passen',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'Coupon',
@@ -89,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'Status',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'Actief',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'In afwachting',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'Verlopen',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'Gepland',
             ],
         ],
@@ -110,6 +98,12 @@ return [
         ],
         'ends_at' => [
             'label' => 'Einddatum',
+        ],
+        'created_at' => [
+            'label' => 'Created At',
+        ],
+        'coupon' => [
+            'label' => 'Coupon',
         ],
     ],
     'pages' => [
@@ -156,6 +150,20 @@ return [
                             'label' => 'Uitsluiting',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'customers' => [
+            'title' => 'Customers',
+            'description' => 'Select which customers this discount should be limited to.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Attach Customer',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],
@@ -296,6 +304,20 @@ return [
                             'label' => 'Uitsluiting',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'collection_conditions' => [
+            'title' => 'Collection Conditions',
+            'description' => 'Select the collection conditions required for the discount to apply.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Condition',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],

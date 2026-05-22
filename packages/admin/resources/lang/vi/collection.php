@@ -1,17 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Bộ sưu tập',
-
     'plural_label' => 'Bộ sưu tập',
-
     'form' => [
         'name' => [
             'label' => 'Tên',
         ],
     ],
-
     'pages' => [
         'children' => [
             'label' => 'Bộ sưu tập con',
@@ -41,5 +37,4 @@ return [
             ],
         ],
     ],
-
 ];

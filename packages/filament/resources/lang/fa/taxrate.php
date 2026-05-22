@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'نرخ مالیات',
-
     'plural_label' => 'نرخ‌های مالیات',
-
     'table' => [
         'name' => [
             'label' => 'نام',
@@ -17,7 +14,6 @@ return [
             'label' => 'اولویت',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'نام',
@@ -29,5 +25,4 @@ return [
             'label' => 'منطقه مالیاتی',
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Коллекцын бүлэг',
-
     'plural_label' => 'Коллекцын бүлгүүд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -17,7 +14,6 @@ return [
             'label' => 'Коллекцийн тоо',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
@@ -26,7 +22,6 @@ return [
             'label' => 'Handle',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

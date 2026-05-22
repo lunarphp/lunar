@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Loại sản phẩm',
-
     'plural_label' => 'Loại sản phẩm',
-
     'table' => [
         'name' => [
             'label' => 'Tên',
@@ -20,7 +17,6 @@ return [
             'label' => 'Thuộc tính biến thể',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'Thuộc tính sản phẩm',
@@ -29,18 +25,15 @@ return [
             'label' => 'Thuộc tính biến thể',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Tên',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'Không có nhóm thuộc tính nào.',
         'no_attributes' => 'Không có thuộc tính nào.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'خيار المنتج',
-
     'plural_label' => 'خيارات المنتج',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -20,7 +17,6 @@ return [
             'label' => 'مشترك',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'الاسم',
@@ -32,7 +28,6 @@ return [
             'label' => 'المعرف',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -123,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

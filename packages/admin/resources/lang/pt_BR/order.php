@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Pedido',
-
     'plural_label' => 'Pedidos',
-
     'breadcrumb' => [
         'manage' => 'Gerenciar',
     ],
-
     'tabs' => [
         'all' => 'Todos',
     ],
-
     'transactions' => [
         'capture' => 'Capturado',
         'intent' => 'Intenção',
         'refund' => 'Reembolsado',
         'failed' => 'Falhou',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -63,7 +57,6 @@ return [
             'label' => 'Realizado antes',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'País',
             ],
         ],
-
         'reference' => [
             'label' => 'Referência',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Valor',
-
             'hint' => [
                 'less_than_total' => 'Você está prestes a capturar um valor menor que o total da transação',
             ],
         ],
-
         'notes' => [
             'label' => 'Notas',
         ],
         'confirm' => [
             'label' => 'Confirmar',
-
             'alert' => 'Confirmação necessária',
-
             'hint' => [
                 'capture' => 'Confirme que deseja capturar este pagamento',
                 'refund' => 'Confirme que deseja reembolsar este valor.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Notas',
@@ -238,13 +225,14 @@ return [
             'refunded' => 'Este pedido foi reembolsado.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Atualizar status',
             'notification' => 'Status dos pedidos atualizado',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Novo status',
             ],
@@ -262,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Editar',
-
             'notification' => [
                 'error' => 'Erro',
-
                 'billing_address' => [
                     'saved' => 'Endereço de cobrança salvo',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Endereço de entrega salvo',
                 ],
@@ -286,7 +271,6 @@ return [
         ],
         'capture_payment' => [
             'label' => 'Capturar pagamento',
-
             'notification' => [
                 'error' => 'Houve um problema na captura',
                 'success' => 'Captura realizada com sucesso',
@@ -294,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Reembolsar',
-
             'notification' => [
                 'error' => 'Houve um problema no reembolso',
                 'success' => 'Reembolso realizado com sucesso',
             ],
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Харилцагчийн бүлэг',
-
     'plural_label' => 'Харилцагчийн бүлгүүд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -17,7 +14,6 @@ return [
             'label' => 'Өгөгдмөл',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
@@ -29,7 +25,6 @@ return [
             'label' => 'Өгөгдмөл',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

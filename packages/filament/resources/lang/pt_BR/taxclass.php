@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Classe de imposto',
-
     'plural_label' => 'Classes de imposto',
-
     'table' => [
         'name' => [
             'label' => 'Nome',
@@ -14,7 +11,6 @@ return [
             'label' => 'Padrão',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nome',

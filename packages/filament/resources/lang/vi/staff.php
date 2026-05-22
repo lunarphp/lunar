@@ -1,17 +1,14 @@
 <?php
 
 return [
-
     'label' => 'Nhân viên',
-
     'plural_label' => 'Nhân viên',
-
     'table' => [
-        'firstname' => [
-            'label' => 'Tên',
+        'first_name' => [
+            'label' => 'First Name',
         ],
-        'lastname' => [
-            'label' => 'Họ',
+        'last_name' => [
+            'label' => 'Last Name',
         ],
         'email' => [
             'label' => 'Email',
@@ -20,13 +17,12 @@ return [
             'badge' => 'Quản trị viên cao cấp',
         ],
     ],
-
     'form' => [
-        'firstname' => [
-            'label' => 'Tên',
+        'first_name' => [
+            'label' => 'First Name',
         ],
-        'lastname' => [
-            'label' => 'Họ',
+        'last_name' => [
+            'label' => 'Last Name',
         ],
         'email' => [
             'label' => 'Email',
@@ -50,7 +46,6 @@ return [
             'label' => 'Tên vai trò',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Kiểm soát truy cập',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Xóa vai trò: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Kiểm soát truy cập',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Vai trò và quyền chưa được đăng ký trong Lunar',
         ],
     ],
-
 ];

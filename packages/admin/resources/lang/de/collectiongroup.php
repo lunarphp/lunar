@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Sammlungsgruppe',
-
     'plural_label' => 'Sammlungsgruppen',
-
     'table' => [
         'name' => [
             'label' => 'Name',
@@ -17,7 +14,6 @@ return [
             'label' => 'Anzahl Sammlungen',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -26,7 +22,6 @@ return [
             'label' => 'Handle',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

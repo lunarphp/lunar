@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Хэрэглэгч',
-
     'plural_label' => 'Хэрэглэгчид',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -14,7 +11,6 @@ return [
             'label' => 'Имэйл',
         ],
     ],
-
     'form' => [
         'email' => [
             'label' => 'Имэйл',

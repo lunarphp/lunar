@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Thuế suất',
-
     'plural_label' => 'Thuế suất',
-
     'table' => [
         'name' => [
             'label' => 'Tên',
@@ -17,7 +14,6 @@ return [
             'label' => 'Độ ưu tiên',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Tên',
@@ -29,5 +25,4 @@ return [
             'label' => 'Vùng thuế',
         ],
     ],
-
 ];

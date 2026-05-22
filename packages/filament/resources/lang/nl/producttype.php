@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Producttype',
-
     'plural_label' => 'Producttypen',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -20,7 +17,6 @@ return [
             'label' => 'Variantattributen',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'Productattributen',
@@ -29,18 +25,15 @@ return [
             'label' => 'Variantattributen',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naam',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'Er zijn geen attributengroepen beschikbaar.',
         'no_attributes' => 'Er zijn geen attributen beschikbaar.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

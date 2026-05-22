@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Харилцагч',
-
     'plural_label' => 'Харилцагчид',
-
     'table' => [
         'full_name' => [
             'label' => 'Нэр',
@@ -35,7 +32,6 @@ return [
             'label' => 'Дахин ирсэн',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Гарчиг',
@@ -59,5 +55,4 @@ return [
             'label' => 'Харилцагчийн бүлгүүд',
         ],
     ],
-
 ];

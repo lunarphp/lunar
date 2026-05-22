@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Clasă de taxe',
-
     'plural_label' => 'Clase de taxe',
-
     'table' => [
         'name' => [
             'label' => 'Nume',
@@ -14,7 +11,6 @@ return [
             'label' => 'Implicită',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',

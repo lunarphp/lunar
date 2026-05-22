@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Adókulcs',
-
     'plural_label' => 'Adókulcsok',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -17,7 +14,6 @@ return [
             'label' => 'Prioritás',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -29,5 +25,4 @@ return [
             'label' => 'Adózóna',
         ],
     ],
-
 ];

@@ -92,8 +92,14 @@ return [
         'title' => 'Medios',
         'title_plural' => 'Medios',
         'actions' => [
+            'attach' => [
+                'label' => 'Attach Media',
+            ],
             'create' => [
                 'label' => 'Crear Medio',
+            ],
+            'detach' => [
+                'label' => 'Detach',
             ],
             'view' => [
                 'label' => 'Ver',
@@ -124,6 +130,8 @@ return [
                 'label' => 'Primario',
             ],
         ],
+        'all_media_attached' => 'There are no product images available to attach',
+        'variant_description' => 'Attach product images to this variant',
     ],
     'urls' => [
         'title' => 'URL',
@@ -241,6 +249,7 @@ return [
                     'price' => [
                         'label' => 'Precio',
                         'helper_text' => 'El precio de compra, antes de descuentos.',
+                        'sync_price' => 'Price is synced with the default currency.',
                     ],
                     'compare_price' => [
                         'label' => 'Precio Comparativo',

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Атрибутын бүлэг',
-
     'plural_label' => 'Атрибутын бүлгүүд',
-
     'table' => [
         'attributable_type' => [
             'label' => 'Төрөл',
@@ -20,7 +17,6 @@ return [
             'label' => 'Байрлал',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Төрөл',
@@ -35,7 +31,6 @@ return [
             'label' => 'Байрлал',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

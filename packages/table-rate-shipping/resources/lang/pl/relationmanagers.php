@@ -48,8 +48,15 @@ return [
             ],
         ],
         'table' => [
+            'enabled' => [
+                'label' => 'Enabled',
+            ],
+            'disabled' => [
+                'label' => 'disabled',
+            ],
             'shipping_method' => [
                 'label' => 'Metoda dostawy',
+                'disabled' => 'Disabled',
             ],
             'price' => [
                 'label' => 'Cena',

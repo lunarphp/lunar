@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Activity',
-
     'plural_label' => 'Activities',
-
     'table' => [
         'subject' => 'Subject',
         'description' => 'Description',
@@ -15,7 +12,6 @@ return [
         'logged_from' => 'Logged From',
         'logged_until' => 'Logged Until',
     ],
-
     'form' => [
         'causer_type' => 'Causer Type',
         'causer_id' => 'Causer Id',
@@ -25,5 +21,4 @@ return [
         'attributes' => 'Attributes',
         'old' => 'Old',
     ],
-
 ];

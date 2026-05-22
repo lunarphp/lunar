@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'الخصومات',
     'label' => 'خصم',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'الأولوية',
             'helper_text' => 'سيتم تطبيق الخصومات ذات الأولوية الأعلى أولاً.',
-            'options' => [
-                'low' => [
-                    'label' => 'منخفضة',
-                ],
-                'medium' => [
-                    'label' => 'متوسطة',
-                ],
-                'high' => [
-                    'label' => 'مرتفعة',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'إيقاف تطبيق الخصومات الأخرى بعد هذا الخصم',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'كوبون',
@@ -89,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'الحالة',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'نشط',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'قيد الانتظار',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'منتهي',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'مجدول',
             ],
         ],

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Бүтээгдэхүүний сонголт',
-
     'plural_label' => 'Бүтээгдэхүүний сонголтууд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -20,7 +17,6 @@ return [
             'label' => 'Хуваалцсан',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
@@ -32,7 +28,6 @@ return [
             'label' => 'Handle',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -123,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

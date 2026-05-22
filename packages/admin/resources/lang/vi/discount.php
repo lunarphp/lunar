@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'Mã giảm giá',
     'label' => 'Mã giảm giá',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'Độ ưu tiên',
             'helper_text' => 'Giảm giá có độ ưu tiên cao hơn sẽ được áp dụng trước.',
-            'options' => [
-                'low' => [
-                    'label' => 'Thấp',
-                ],
-                'medium' => [
-                    'label' => 'Trung bình',
-                ],
-                'high' => [
-                    'label' => 'Cao',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'Dừng áp dụng các giảm giá khác sau mã này',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'Mã giảm giá',
@@ -89,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'Trạng thái',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'Đang hoạt động',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'Đang chờ',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'Đã hết hạn',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'Đã lên lịch',
             ],
         ],
@@ -110,6 +98,12 @@ return [
         ],
         'ends_at' => [
             'label' => 'Ngày kết thúc',
+        ],
+        'created_at' => [
+            'label' => 'Created At',
+        ],
+        'coupon' => [
+            'label' => 'Coupon',
         ],
     ],
     'pages' => [
@@ -156,6 +150,20 @@ return [
                             'label' => 'Loại trừ',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'customers' => [
+            'title' => 'Customers',
+            'description' => 'Select which customers this discount should be limited to.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Attach Customer',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],
@@ -296,6 +304,20 @@ return [
                             'label' => 'Loại trừ',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'collection_conditions' => [
+            'title' => 'Collection Conditions',
+            'description' => 'Select the collection conditions required for the discount to apply.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Condition',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],

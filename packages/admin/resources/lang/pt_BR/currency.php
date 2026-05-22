@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Moeda',
-
     'plural_label' => 'Moedas',
-
     'table' => [
         'name' => [
             'label' => 'Nome',
@@ -29,7 +26,6 @@ return [
             'label' => 'Padrão',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nome',
@@ -54,5 +50,4 @@ return [
             'helper_text' => 'Manter preços nesta moeda sincronizados com a moeda padrão.',
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'لغة',
-
     'plural_label' => 'اللغات',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -17,7 +14,6 @@ return [
             'label' => 'افتراضي',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'الاسم',
@@ -29,5 +25,4 @@ return [
             'label' => 'افتراضي',
         ],
     ],
-
 ];

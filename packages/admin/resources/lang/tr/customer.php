@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Müşteri',
-
     'plural_label' => 'Müşteriler',
-
     'table' => [
         'full_name' => [
             'label' => 'Ad Soyad',
@@ -35,7 +32,6 @@ return [
             'label' => 'Geri Dönen',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Ünvan',
@@ -59,5 +55,4 @@ return [
             'label' => 'Müşteri Grupları',
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Kanal',
-
     'plural_label' => 'Kanali',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -20,7 +17,6 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -35,5 +31,4 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
 ];

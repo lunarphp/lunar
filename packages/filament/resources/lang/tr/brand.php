@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Marka',
-
     'plural_label' => 'Markalar',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -14,13 +11,11 @@ return [
             'label' => 'Ürün Sayısı',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -71,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

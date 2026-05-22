@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Vásárló',
-
     'plural_label' => 'Vásárlók',
-
     'table' => [
         'full_name' => [
             'label' => 'Név',
@@ -35,7 +32,6 @@ return [
             'label' => 'Visszatérő',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Cím',
@@ -59,5 +55,4 @@ return [
             'label' => 'Vásárlói csoportok',
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Atrybut',
-
     'plural_label' => 'Atrybuty',
-
     'table' => [
         'name' => [
             'label' => 'Nazwa',
@@ -20,7 +17,6 @@ return [
             'label' => 'Typ',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Typ',
@@ -49,6 +45,7 @@ return [
         ],
         'validation_rules' => [
             'label' => 'Reguły walidacji',
+            'helper' => 'Rules for attribute field, example: min:1|max:10|...',
         ],
     ],
 ];

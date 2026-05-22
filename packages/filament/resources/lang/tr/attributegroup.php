@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Özellik Grubu',
-
     'plural_label' => 'Özellik Grupları',
-
     'table' => [
         'attributable_type' => [
             'label' => 'Tür',
@@ -20,7 +17,6 @@ return [
             'label' => 'Pozisyon',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Tür',
@@ -35,7 +31,6 @@ return [
             'label' => 'Pozisyon',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

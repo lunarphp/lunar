@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'Rabatte',
     'label' => 'Rabatt',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'Priorität',
             'helper_text' => 'Rabatte mit höherer Priorität werden zuerst angewendet.',
-            'options' => [
-                'low' => [
-                    'label' => 'Niedrig',
-                ],
-                'medium' => [
-                    'label' => 'Mittel',
-                ],
-                'high' => [
-                    'label' => 'Hoch',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'Weitere Rabatte nach diesem nicht anwenden',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'Gutschein',
@@ -76,6 +64,12 @@ return [
             'label' => 'Belohnungen automatisch hinzufügen',
             'helper_text' => 'Einschalten, um Belohnungsprodukte hinzuzufügen, wenn sie nicht im Warenkorb vorhanden sind.',
         ],
+        'fixed_value' => [
+            'label' => 'Fixed value',
+        ],
+        'percentage' => [
+            'label' => 'Percentage',
+        ],
     ],
     'table' => [
         'name' => [
@@ -83,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'Status',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'Aktiv',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'Ausstehend',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'Abgelaufen',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'Geplant',
             ],
         ],
@@ -105,10 +99,19 @@ return [
         'ends_at' => [
             'label' => 'Enddatum',
         ],
+        'created_at' => [
+            'label' => 'Created At',
+        ],
+        'coupon' => [
+            'label' => 'Coupon',
+        ],
     ],
     'pages' => [
         'availability' => [
             'label' => 'Verfügbarkeit',
+        ],
+        'edit' => [
+            'title' => 'Basic Information',
         ],
         'limitations' => [
             'label' => 'Beschränkungen',
@@ -147,6 +150,20 @@ return [
                             'label' => 'Ausschluss',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'customers' => [
+            'title' => 'Customers',
+            'description' => 'Select which customers this discount should be limited to.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Attach Customer',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],
@@ -287,6 +304,20 @@ return [
                             'label' => 'Ausschluss',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'collection_conditions' => [
+            'title' => 'Collection Conditions',
+            'description' => 'Select the collection conditions required for the discount to apply.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Condition',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],

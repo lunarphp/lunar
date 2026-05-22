@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Attribútum',
-
     'plural_label' => 'Attribútumok',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -20,7 +17,6 @@ return [
             'label' => 'Típus',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Típus',

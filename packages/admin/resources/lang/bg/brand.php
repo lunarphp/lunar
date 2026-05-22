@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Марка',
-
     'plural_label' => 'Марките',
-
     'table' => [
         'name' => [
             'label' => 'Име',
@@ -14,13 +11,11 @@ return [
             'label' => 'Брой продукти',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Име',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -71,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

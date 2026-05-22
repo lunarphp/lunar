@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Потребител',
-
     'plural_label' => 'Потребители',
-
     'table' => [
         'name' => [
             'label' => 'Име',
@@ -14,7 +11,6 @@ return [
             'label' => 'Имейл',
         ],
     ],
-
     'form' => [
         'email' => [
             'label' => 'Имейл',

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Opcija proizvoda',
-
     'plural_label' => 'Opcije proizvoda',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -20,7 +17,6 @@ return [
             'label' => 'Dijeljeno',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -32,7 +28,6 @@ return [
             'label' => 'Identifikator',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -57,6 +52,9 @@ return [
                         ],
                         'no_shared_components' => [
                             'label' => 'Nema dostupnih dijeljenih opcija.',
+                        ],
+                        'preselect' => [
+                            'label' => 'Preselect all values by default.',
                         ],
                     ],
                 ],
@@ -120,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Attribuut',
-
     'plural_label' => 'Attributen',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -20,7 +17,6 @@ return [
             'label' => 'Type',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Type',

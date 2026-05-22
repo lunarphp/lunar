@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Personeel',
-
     'plural_label' => 'Personeel',
-
     'table' => [
         'first_name' => [
             'label' => 'Voornaam',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Super Admin',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Voornaam',
@@ -50,7 +46,6 @@ return [
             'label' => 'Rolnaam',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Toegangscontrole',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Rol verwijderen: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Toegangscontrole',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Rol en Machtiging niet geregistreerd in Lunar',
         ],
     ],
-
 ];

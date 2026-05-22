@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Merk',
-
     'plural_label' => 'Merken',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -14,13 +11,11 @@ return [
             'label' => 'Aantal Producten',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naam',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -71,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

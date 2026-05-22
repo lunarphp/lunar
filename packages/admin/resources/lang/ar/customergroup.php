@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'مجموعة عملاء',
-
     'plural_label' => 'مجموعات العملاء',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -17,7 +14,6 @@ return [
             'label' => 'افتراضي',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'الاسم',
@@ -29,7 +25,6 @@ return [
             'label' => 'افتراضي',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

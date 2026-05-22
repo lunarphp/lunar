@@ -71,7 +71,7 @@ class ActivityTable
     {
         return [
             TextColumn::make('id')
-                ->label('ID')
+                ->label(__('lunar-filament::activity.table.id'))
                 ->sortable(),
             TextColumn::make('subject_type')
                 ->label(__('lunar-filament::activity.table.subject'))

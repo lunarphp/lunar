@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Поръчка',
-
     'plural_label' => 'Поръчки',
-
     'breadcrumb' => [
         'manage' => 'Управление',
     ],
-
     'tabs' => [
         'all' => 'Всички',
     ],
-
     'transactions' => [
         'capture' => 'Каптурирано',
         'intent' => 'Очакващо',
         'refund' => 'Възстановено',
         'failed' => 'Неуспешно',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Статус',
@@ -63,7 +57,6 @@ return [
             'label' => 'Поръчки преди',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'Държава',
             ],
         ],
-
         'reference' => [
             'label' => 'Референция',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Сума',
-
             'hint' => [
                 'less_than_total' => 'Ще каптурирате сума, по-малка от общата стойност на транзакцията',
             ],
         ],
-
         'notes' => [
             'label' => 'Бележки',
         ],
         'confirm' => [
             'label' => 'Потвърди',
-
             'alert' => 'Изисква се потвърждение',
-
             'hint' => [
                 'capture' => 'Моля, потвърдете, че искате да каптурирате това плащане',
                 'refund' => 'Моля, потвърдете, че желаете да възстановите тази сума.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Бележки',
@@ -238,13 +225,14 @@ return [
             'refunded' => 'Тази поръчка е възстановена.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Актуализиране на статус',
             'notification' => 'Статусите на поръчките са актуализирани',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'Нов статус',
             ],
@@ -262,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Редактиране',
-
             'notification' => [
                 'error' => 'Грешка',
-
                 'billing_address' => [
                     'saved' => 'Адресът за фактуриране е запазен',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Адресът за доставка е запазен',
                 ],
@@ -286,7 +271,6 @@ return [
         ],
         'capture_payment' => [
             'label' => 'Каптуриране на плащане',
-
             'notification' => [
                 'error' => 'Възникна проблем при каптурирането',
                 'success' => 'Каптурирането е успешно',
@@ -294,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Възстановяване',
-
             'notification' => [
                 'error' => 'Възникна проблем при възстановяването',
                 'success' => 'Възстановяването е успешно',
             ],
         ],
     ],
-
 ];

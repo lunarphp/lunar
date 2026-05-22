@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Kanal',
-
     'plural_label' => 'Kanallar',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -20,7 +17,6 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
@@ -35,5 +31,4 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
-
 ];

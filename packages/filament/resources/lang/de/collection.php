@@ -1,17 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Sammlung',
-
     'plural_label' => 'Sammlungen',
-
     'form' => [
         'name' => [
             'label' => 'Name',
         ],
     ],
-
     'pages' => [
         'children' => [
             'label' => 'Untergeordnete Sammlungen',
@@ -32,9 +28,6 @@ return [
         'edit' => [
             'label' => 'Grundinformation',
         ],
-        'media' => [
-            'label' => 'Medien',
-        ],
         'products' => [
             'label' => 'Produkte',
             'actions' => [
@@ -44,5 +37,4 @@ return [
             ],
         ],
     ],
-
 ];

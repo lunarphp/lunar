@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Taxa de imposto',
-
     'plural_label' => 'Taxas de imposto',
-
     'table' => [
         'name' => [
             'label' => 'Nome',
@@ -17,7 +14,6 @@ return [
             'label' => 'Prioridade',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nome',
@@ -29,5 +25,4 @@ return [
             'label' => 'Zona de imposto',
         ],
     ],
-
 ];

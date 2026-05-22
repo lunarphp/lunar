@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'عنوان',
-
     'plural_label' => 'العناوين',
-
     'table' => [
         'title' => [
             'label' => 'اللقب',
@@ -50,7 +47,6 @@ return [
             'label' => 'رقم الهاتف',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'اللقب',
@@ -95,5 +91,4 @@ return [
             'label' => 'رقم الهاتف',
         ],
     ],
-
 ];

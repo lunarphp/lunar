@@ -1,15 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Termék',
-
     'plural_label' => 'Termékek',
-
     'tabs' => [
         'all' => 'Mind',
+        'published' => 'Published',
+        'draft' => 'Draft',
     ],
-
     'status' => [
         'unpublished' => [
             'content' => 'Jelenleg vázlat státuszban van, ez a termék egyik csatornán és vásárlói csoportban sem érhető el.',
@@ -21,7 +19,6 @@ return [
             'no_default_customer_group' => 'Nincs beállítva alapértelmezett vásárlói csoport, ezért a vendégek láthatósága itt nem szabályozható. Jelölj meg egy vásárlói csoportot alapértelmezettként a vendégek hozzáférésének szabályozásához.',
         ],
     ],
-
     'table' => [
         'status' => [
             'label' => 'Státusz',
@@ -47,14 +44,12 @@ return [
             'label' => 'Terméktípus',
         ],
     ],
-
     'actions' => [
         'edit_status' => [
             'label' => 'Státusz frissítése',
             'heading' => 'Státusz frissítése',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -90,7 +85,6 @@ return [
             'select_collection' => 'Válassz gyűjteményt',
         ],
     ],
-
     'pages' => [
         'availability' => [
             'label' => 'Elérhetőség',
@@ -129,5 +123,4 @@ return [
             'label' => 'Termékasszociációk',
         ],
     ],
-
 ];

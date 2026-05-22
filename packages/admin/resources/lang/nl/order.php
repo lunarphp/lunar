@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Bestelling',
-
     'plural_label' => 'Bestellingen',
-
     'breadcrumb' => [
         'manage' => 'Beheren',
     ],
-
     'tabs' => [
         'all' => 'Alle',
     ],
-
     'transactions' => [
         'capture' => 'Geïncasseerd',
         'intent' => 'Voorgenomen',
         'refund' => 'Terugbetaald',
         'failed' => 'Mislukt',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -63,7 +57,6 @@ return [
             'label' => 'Geplaatst voor',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'Land',
             ],
         ],
-
         'reference' => [
             'label' => 'Referentie',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Bedrag',
-
             'hint' => [
                 'less_than_total' => 'Je staat op het punt een bedrag te incasseren dat minder is dan de totale transactiewaarde',
             ],
         ],
-
         'notes' => [
             'label' => 'Notities',
         ],
         'confirm' => [
             'label' => 'Bevestigen',
-
             'alert' => 'Bevestiging vereist',
-
             'hint' => [
                 'capture' => 'Bevestig alstublieft dat u deze betaling wilt incasseren',
                 'refund' => 'Bevestig alstublieft dat u dit bedrag wilt terugbetalen.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Notities',
@@ -238,7 +225,6 @@ return [
             'refunded' => 'Deze bestelling is terugbetaald.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Status Bijwerken',
@@ -264,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Bewerken',
-
             'notification' => [
                 'error' => 'Fout',
-
                 'billing_address' => [
                     'saved' => 'Factuuradres opgeslagen',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Verzendadres opgeslagen',
                 ],
@@ -279,10 +262,15 @@ return [
         ],
         'edit_tags' => [
             'label' => 'Bewerken',
+            'form' => [
+                'tags' => [
+                    'label' => 'Tags',
+                    'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
+                ],
+            ],
         ],
         'capture_payment' => [
             'label' => 'Betaling Incasseren',
-
             'notification' => [
                 'error' => 'Er was een probleem met het incasseren',
                 'success' => 'Incasseren succesvol',
@@ -290,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Terugbetaling',
-
             'notification' => [
                 'error' => 'Er was een probleem met de terugbetaling',
                 'success' => 'Terugbetaling succesvol',
             ],
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Personnel',
-
     'plural_label' => 'Personnel',
-
     'table' => [
         'first_name' => [
             'label' => 'Prénom',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Super Admin',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Prénom',
@@ -50,7 +46,6 @@ return [
             'label' => 'Nom du rôle',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Contrôle d\'accès',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Supprimer le rôle : :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Contrôle d\'accès',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Rôle et autorisation non enregistrés dans Lunar',
         ],
     ],
-
 ];

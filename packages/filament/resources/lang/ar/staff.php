@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'موظف',
-
     'plural_label' => 'الموظفون',
-
     'table' => [
         'first_name' => [
             'label' => 'الاسم الأول',
@@ -20,7 +17,6 @@ return [
             'badge' => 'المسؤول الأعلى',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'الاسم الأول',
@@ -50,7 +46,6 @@ return [
             'label' => 'اسم الرتبة',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'التحكم في الصلاحيات',
@@ -63,7 +58,6 @@ return [
             'heading' => 'حذف الرتبة: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'التحكم في الصلاحيات',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'الرتبة والصلاحية غير مسجّلين',
         ],
     ],
-
 ];

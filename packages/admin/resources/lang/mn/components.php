@@ -6,7 +6,6 @@ return [
             'updated' => 'Тагнууд шинэчлэгдсэн',
         ],
     ],
-
     'activity-log' => [
         'input' => [
             'placeholder' => 'Сэтгэгдэл нэмэх',
@@ -42,13 +41,11 @@ return [
             'comment_added' => 'Сэтгэгдэл нэмэгдсэн',
         ],
     ],
-
     'forms' => [
         'youtube' => [
             'helperText' => 'YouTube видеоны ID-г оруулна уу. Жишээ нь: dQw4w9WgXcQ',
         ],
     ],
-
     'collection-tree-view' => [
         'actions' => [
             'move' => [
@@ -71,7 +68,6 @@ return [
             ],
         ],
     ],
-
     'product-options-list' => [
         'add-option' => [
             'label' => 'Сонголт нэмэх',

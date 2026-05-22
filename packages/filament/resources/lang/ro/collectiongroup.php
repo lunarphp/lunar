@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Grup de colecții',
-
     'plural_label' => 'Grupe de colecții',
-
     'table' => [
         'name' => [
             'label' => 'Nume',
@@ -17,7 +14,6 @@ return [
             'label' => 'Nr. colecții',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',
@@ -26,7 +22,6 @@ return [
             'label' => 'Identificator',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

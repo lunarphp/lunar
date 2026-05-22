@@ -6,18 +6,14 @@ return [
             'updated' => 'Đã cập nhật thẻ',
         ],
     ],
-
     'activity-log' => [
         'input' => [
             'placeholder' => 'Thêm bình luận',
         ],
-
         'action' => [
             'add-comment' => 'Thêm bình luận',
         ],
-
         'system' => 'Hệ thống',
-
         'partials' => [
             'orders' => [
                 'order_created' => 'Đã tạo đơn hàng',
@@ -29,33 +25,27 @@ return [
                 'billingAddress' => 'Địa chỉ thanh toán',
                 'shippingAddress' => 'Địa chỉ giao hàng',
             ],
-
             'update' => [
                 'updated' => 'Đã cập nhật :model',
             ],
-
             'create' => [
                 'created' => 'Đã tạo :model',
             ],
-
             'tags' => [
                 'updated' => 'Đã cập nhật thẻ',
                 'added' => 'Đã thêm',
                 'removed' => 'Đã xóa',
             ],
         ],
-
         'notification' => [
             'comment_added' => 'Đã thêm bình luận',
         ],
     ],
-
     'forms' => [
         'youtube' => [
             'helperText' => 'Nhập ID của video YouTube. Ví dụ: dQw4w9WgXcQ',
         ],
     ],
-
     'collection-tree-view' => [
         'actions' => [
             'move' => [
@@ -78,7 +68,6 @@ return [
             ],
         ],
     ],
-
     'product-options-list' => [
         'add-option' => [
             'label' => 'Thêm tùy chọn',

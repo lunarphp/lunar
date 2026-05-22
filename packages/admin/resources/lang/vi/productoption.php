@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Tùy chọn sản phẩm',
-
     'plural_label' => 'Tùy chọn sản phẩm',
-
     'table' => [
         'name' => [
             'label' => 'Tên',
@@ -20,7 +17,6 @@ return [
             'label' => 'Dùng chung',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Tên',
@@ -32,7 +28,6 @@ return [
             'label' => 'Định danh',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -57,6 +52,9 @@ return [
                         ],
                         'no_shared_components' => [
                             'label' => 'Không có tùy chọn dùng chung nào.',
+                        ],
+                        'preselect' => [
+                            'label' => 'Preselect all values by default.',
                         ],
                     ],
                 ],
@@ -120,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Nhóm bộ sưu tập',
-
     'plural_label' => 'Nhóm bộ sưu tập',
-
     'table' => [
         'name' => [
             'label' => 'Tên',
@@ -17,7 +14,6 @@ return [
             'label' => 'Số bộ sưu tập',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Tên',
@@ -26,7 +22,6 @@ return [
             'label' => 'Định danh',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

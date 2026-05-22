@@ -47,6 +47,5 @@ return [
                 'label' => 'Kargo E-postası',
             ],
         ],
-
     ],
 ];

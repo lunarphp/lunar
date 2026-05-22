@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Personal',
-
     'plural_label' => 'Personal',
-
     'table' => [
         'first_name' => [
             'label' => 'Nombre',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Super Admin',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Nombre',
@@ -50,7 +46,6 @@ return [
             'label' => 'Nombre del Rol',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Control de Acceso',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Eliminar rol: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Control de Acceso',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Rol y Permiso no registrados en Lunar',
         ],
     ],
-
 ];

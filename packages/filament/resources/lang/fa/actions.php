@@ -47,6 +47,5 @@ return [
                 'label' => 'Shipping Email',
             ],
         ],
-
     ],
 ];

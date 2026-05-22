@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Персонал',
-
     'plural_label' => 'Персонал',
-
     'table' => [
         'first_name' => [
             'label' => 'Име',
@@ -20,7 +17,6 @@ return [
             'badge' => 'Супер администратор',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'Име',
@@ -50,7 +46,6 @@ return [
             'label' => 'Име на роля',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Контрол на достъпа',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Изтрий роля: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Контрол на достъпа',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Ролята и разрешението не са регистрирани в Lunar',
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Felhasználó',
-
     'plural_label' => 'Felhasználók',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -14,7 +11,6 @@ return [
             'label' => 'E-mail',
         ],
     ],
-
     'form' => [
         'email' => [
             'label' => 'E-mail',

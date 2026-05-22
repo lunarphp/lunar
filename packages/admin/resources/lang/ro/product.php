@@ -1,15 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Produs',
-
     'plural_label' => 'Produse',
-
     'tabs' => [
         'all' => 'Toate',
+        'published' => 'Published',
+        'draft' => 'Draft',
     ],
-
     'status' => [
         'unpublished' => [
             'content' => 'În prezent în stadiu de ciornă, acest produs este indisponibil în toate canalele și grupurile de clienți.',
@@ -21,7 +19,6 @@ return [
             'no_default_customer_group' => 'Niciun grup de clienți implicit nu este setat, așa că vizibilitatea pentru vizitatori nu poate fi controlată aici. Marcați un grup de clienți ca implicit pentru a gestiona accesul vizitatorilor.',
         ],
     ],
-
     'table' => [
         'status' => [
             'label' => 'Stare',
@@ -47,14 +44,12 @@ return [
             'label' => 'Tip produs',
         ],
     ],
-
     'actions' => [
         'edit_status' => [
             'label' => 'Actualizează starea',
             'heading' => 'Actualizează starea',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',
@@ -90,7 +85,6 @@ return [
             'select_collection' => 'Selectează o colecție',
         ],
     ],
-
     'pages' => [
         'availability' => [
             'label' => 'Disponibilitate',
@@ -129,5 +123,4 @@ return [
             'label' => 'Asocieri produs',
         ],
     ],
-
 ];

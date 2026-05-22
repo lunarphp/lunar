@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Type de produit',
-
     'plural_label' => 'Types de produit',
-
     'table' => [
         'name' => [
             'label' => 'Nom',
@@ -20,7 +17,6 @@ return [
             'label' => 'Attributs de variante',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'Attributs de produit',
@@ -29,18 +25,15 @@ return [
             'label' => 'Attributs de variante',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nom',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'Aucun groupe d\'attributs disponible.',
         'no_attributes' => 'Aucun attribut disponible.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

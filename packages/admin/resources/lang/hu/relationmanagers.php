@@ -273,6 +273,11 @@ return [
     ],
     'values' => [
         'title' => 'Értékek',
+        'form' => [
+            'name' => [
+                'label' => 'Name',
+            ],
+        ],
         'table' => [
             'name' => [
                 'label' => 'Név',
@@ -282,5 +287,4 @@ return [
             ],
         ],
     ],
-
 ];

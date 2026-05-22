@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Valuta',
-
     'plural_label' => 'Valute',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -29,7 +26,6 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -54,5 +50,4 @@ return [
             'helper_text' => 'Održavajte cijene u ovoj valuti usklađene sa zadanom valutom.',
         ],
     ],
-
 ];

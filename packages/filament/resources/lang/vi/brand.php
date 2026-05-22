@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Thương hiệu',
-
     'plural_label' => 'Thương hiệu',
-
     'table' => [
         'name' => [
             'label' => 'Tên',
@@ -14,13 +11,11 @@ return [
             'label' => 'Số sản phẩm',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Tên',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -71,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

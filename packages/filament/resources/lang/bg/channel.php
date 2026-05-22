@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Канал',
-
     'plural_label' => 'Канали',
-
     'table' => [
         'name' => [
             'label' => 'Име',
@@ -20,7 +17,6 @@ return [
             'label' => 'По подразбиране',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Име',
@@ -35,5 +31,4 @@ return [
             'label' => 'По подразбиране',
         ],
     ],
-
 ];

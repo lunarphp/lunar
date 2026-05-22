@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'standard-media-definitions' => [
+        'collection-titles' => [
+            'images' => 'Images',
+        ],
+    ],
     'product-association-types' => [
         'cross-sell' => 'Cross-Selling',
         'up-sell' => 'Up-Selling',

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Opțiune produs',
-
     'plural_label' => 'Opțiuni produs',
-
     'table' => [
         'name' => [
             'label' => 'Nume',
@@ -20,7 +17,6 @@ return [
             'label' => 'Partajată',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',
@@ -32,7 +28,6 @@ return [
             'label' => 'Identificator',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -123,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

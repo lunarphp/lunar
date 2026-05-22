@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'کارمند',
-
     'plural_label' => 'کارمندان',
-
     'table' => [
         'first_name' => [
             'label' => 'نام',
@@ -20,7 +17,6 @@ return [
             'badge' => 'سوپر ادمین',
         ],
     ],
-
     'form' => [
         'first_name' => [
             'label' => 'نام',
@@ -50,7 +46,6 @@ return [
             'label' => 'نام نقش',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'کنترل دسترسی',
@@ -63,7 +58,6 @@ return [
             'heading' => 'حذف نقش: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'کنترل دسترسی',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'نقش و مجوز در لونا ثبت نشده‌اند',
         ],
     ],
-
 ];

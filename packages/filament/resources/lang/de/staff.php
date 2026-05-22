@@ -1,17 +1,14 @@
 <?php
 
 return [
-
     'label' => 'Mitarbeiter',
-
     'plural_label' => 'Mitarbeiter',
-
     'table' => [
-        'firstname' => [
-            'label' => 'Vorname',
+        'first_name' => [
+            'label' => 'First Name',
         ],
-        'lastname' => [
-            'label' => 'Nachname',
+        'last_name' => [
+            'label' => 'Last Name',
         ],
         'email' => [
             'label' => 'E-Mail',
@@ -20,13 +17,12 @@ return [
             'badge' => 'Super Admin',
         ],
     ],
-
     'form' => [
-        'firstname' => [
-            'label' => 'Vorname',
+        'first_name' => [
+            'label' => 'First Name',
         ],
-        'lastname' => [
-            'label' => 'Nachname',
+        'last_name' => [
+            'label' => 'Last Name',
         ],
         'email' => [
             'label' => 'E-Mail',
@@ -50,7 +46,6 @@ return [
             'label' => 'Rollenname',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Zugriffskontrolle',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Rolle löschen: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Zugriffskontrolle',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Rolle und Berechtigung nicht in Lunar registriert',
         ],
     ],
-
 ];

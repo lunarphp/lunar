@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'سمة',
-
     'plural_label' => 'السمات',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -20,7 +17,6 @@ return [
             'label' => 'النوع',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'النوع',

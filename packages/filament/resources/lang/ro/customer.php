@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Client',
-
     'plural_label' => 'Clienți',
-
     'table' => [
         'full_name' => [
             'label' => 'Nume',
@@ -35,7 +32,6 @@ return [
             'label' => 'Revenit',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Titlu',
@@ -59,5 +55,4 @@ return [
             'label' => 'Grupuri de clienți',
         ],
     ],
-
 ];

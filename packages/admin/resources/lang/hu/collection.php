@@ -1,17 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Gyűjtemény',
-
     'plural_label' => 'Gyűjtemények',
-
     'form' => [
         'name' => [
             'label' => 'Név',
         ],
     ],
-
     'pages' => [
         'children' => [
             'label' => 'Algyűjtemények',
@@ -41,5 +37,4 @@ return [
             ],
         ],
     ],
-
 ];

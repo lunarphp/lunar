@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Activitate',
-
     'plural_label' => 'Activități',
-
     'table' => [
         'subject' => 'Subiect',
         'description' => 'Descriere',
@@ -15,7 +12,6 @@ return [
         'logged_from' => 'Înregistrat de la',
         'logged_until' => 'Înregistrat până la',
     ],
-
     'form' => [
         'causer_type' => 'Tipul cauzatorului',
         'causer_id' => 'ID autor',
@@ -25,5 +21,4 @@ return [
         'attributes' => 'Atribute',
         'old' => 'Vechi',
     ],
-
 ];

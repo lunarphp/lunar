@@ -1,17 +1,14 @@
 <?php
 
 return [
-
     'label' => 'Personel',
-
     'plural_label' => 'Personel',
-
     'table' => [
-        'firstname' => [
-            'label' => 'Imię',
+        'first_name' => [
+            'label' => 'First Name',
         ],
-        'lastname' => [
-            'label' => 'Nazwisko',
+        'last_name' => [
+            'label' => 'Last Name',
         ],
         'email' => [
             'label' => 'Email',
@@ -20,13 +17,12 @@ return [
             'badge' => 'Super Admin',
         ],
     ],
-
     'form' => [
-        'firstname' => [
-            'label' => 'Imię',
+        'first_name' => [
+            'label' => 'First Name',
         ],
-        'lastname' => [
-            'label' => 'Nazwisko',
+        'last_name' => [
+            'label' => 'Last Name',
         ],
         'email' => [
             'label' => 'Email',
@@ -50,7 +46,6 @@ return [
             'label' => 'Rola',
         ],
     ],
-
     'action' => [
         'acl' => [
             'label' => 'Kontrola dostępu',
@@ -63,7 +58,6 @@ return [
             'heading' => 'Usuń rolę: :role',
         ],
     ],
-
     'acl' => [
         'title' => 'Kontrola dostępu',
         'tooltip' => [
@@ -77,5 +71,4 @@ return [
             'no-role-permission' => 'Rola i uprawnienie nie są zarejestrowane w Lunar',
         ],
     ],
-
 ];

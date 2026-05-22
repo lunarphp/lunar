@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Marke',
-
     'plural_label' => 'Marken',
-
     'table' => [
         'name' => [
             'label' => 'Name',
@@ -14,13 +11,11 @@ return [
             'label' => 'Anzahl Produkte',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Name',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -29,6 +24,9 @@ return [
         ],
     ],
     'pages' => [
+        'edit' => [
+            'title' => 'Basic Information',
+        ],
         'products' => [
             'label' => 'Produkte',
             'actions' => [
@@ -68,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

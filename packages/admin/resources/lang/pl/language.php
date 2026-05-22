@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Język',
-
     'plural_label' => 'Języki',
-
     'table' => [
         'name' => [
             'label' => 'Nazwa',
@@ -17,7 +14,6 @@ return [
             'label' => 'Domyślny',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nazwa',
@@ -29,5 +25,4 @@ return [
             'label' => 'Domyślny',
         ],
     ],
-
 ];

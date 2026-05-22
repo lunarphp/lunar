@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Client',
-
     'plural_label' => 'Clients',
-
     'table' => [
         'full_name' => [
             'label' => 'Nom',
@@ -35,7 +32,6 @@ return [
             'label' => 'Retour',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Titre',
@@ -59,5 +55,4 @@ return [
             'label' => 'Groupes de clients',
         ],
     ],
-
 ];

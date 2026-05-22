@@ -28,6 +28,9 @@
         "filament/spatie-laravel-media-library-plugin": "^5.0",
         "mallardduck/blade-lucide-icons": "^1.26"
     },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1.17"
+    },
     "extra": {
         "lunar": {
             "name": "Filament Bridge"

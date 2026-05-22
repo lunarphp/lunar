@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Ürün Seçeneği',
-
     'plural_label' => 'Ürün Seçenekleri',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -20,7 +17,6 @@ return [
             'label' => 'Paylaşılan',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
@@ -32,7 +28,6 @@ return [
             'label' => 'Tanımlayıcı',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -123,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

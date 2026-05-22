@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Grupa kupaca',
-
     'plural_label' => 'Grupe kupaca',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -17,7 +14,6 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -29,7 +25,6 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

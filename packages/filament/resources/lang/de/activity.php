@@ -1,12 +1,10 @@
 <?php
 
 return [
-
     'label' => 'Aktivität',
-
     'plural_label' => 'Aktivitäten',
-
     'table' => [
+        'id' => 'ID',
         'subject' => 'Betreff',
         'description' => 'Beschreibung',
         'log' => 'Protokoll',
@@ -15,7 +13,6 @@ return [
         'logged_from' => 'Protokolliert von',
         'logged_until' => 'Protokolliert bis',
     ],
-
     'form' => [
         'causer_type' => 'Verursacher-Typ',
         'causer_id' => 'Verursacher-ID',
@@ -25,5 +22,4 @@ return [
         'attributes' => 'Attribute',
         'old' => 'Alt',
     ],
-
 ];

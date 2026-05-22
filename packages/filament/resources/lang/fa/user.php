@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'کاربر',
-
     'plural_label' => 'کاربران',
-
     'table' => [
         'name' => [
             'label' => 'نام',
@@ -14,7 +11,6 @@ return [
             'label' => 'ایمیل',
         ],
     ],
-
     'form' => [
         'email' => [
             'label' => 'ایمیل',

@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'İndirimler',
     'label' => 'İndirim',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'Öncelik',
             'helper_text' => 'Yüksek öncelikli indirimler önce uygulanır.',
-            'options' => [
-                'low' => [
-                    'label' => 'Düşük',
-                ],
-                'medium' => [
-                    'label' => 'Orta',
-                ],
-                'high' => [
-                    'label' => 'Yüksek',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'Bundan sonra diğer indirimlerin uygulanmasını durdur',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'Kupon',
@@ -89,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'Durum',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'Aktif',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'Beklemede',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'Süresi Dolmuş',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'Planlanmış',
             ],
         ],
@@ -316,6 +304,20 @@ return [
                             'label' => 'Hariç Tutma',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'collection_conditions' => [
+            'title' => 'Collection Conditions',
+            'description' => 'Select the collection conditions required for the discount to apply.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Condition',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],

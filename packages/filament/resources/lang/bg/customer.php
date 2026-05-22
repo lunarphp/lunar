@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Клиент',
-
     'plural_label' => 'Клиенти',
-
     'table' => [
         'full_name' => [
             'label' => 'Име',
@@ -35,7 +32,6 @@ return [
             'label' => 'Връщащ се',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Обръщение',
@@ -59,5 +55,4 @@ return [
             'label' => 'Клиентски групи',
         ],
     ],
-
 ];

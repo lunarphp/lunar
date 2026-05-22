@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Koleksiyon Grubu',
-
     'plural_label' => 'Koleksiyon Grupları',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -17,7 +14,6 @@ return [
             'label' => 'Koleksiyon Sayısı',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
@@ -26,7 +22,6 @@ return [
             'label' => 'Tanımlayıcı',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

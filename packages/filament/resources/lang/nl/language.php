@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Taal',
-
     'plural_label' => 'Talen',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -17,7 +14,6 @@ return [
             'label' => 'Standaard',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naam',
@@ -29,5 +25,4 @@ return [
             'label' => 'Standaard',
         ],
     ],
-
 ];

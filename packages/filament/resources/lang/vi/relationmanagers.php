@@ -92,8 +92,14 @@ return [
         'title' => 'Phương tiện',
         'title_plural' => 'Phương tiện',
         'actions' => [
+            'attach' => [
+                'label' => 'Attach Media',
+            ],
             'create' => [
                 'label' => 'Tạo phương tiện',
+            ],
+            'detach' => [
+                'label' => 'Detach',
             ],
             'view' => [
                 'label' => 'Xem',
@@ -124,6 +130,8 @@ return [
                 'label' => 'Chính',
             ],
         ],
+        'all_media_attached' => 'There are no product images available to attach',
+        'variant_description' => 'Attach product images to this variant',
     ],
     'urls' => [
         'title' => 'Đường dẫn',
@@ -241,6 +249,7 @@ return [
                     'price' => [
                         'label' => 'Giá',
                         'helper_text' => 'Giá mua, trước khi giảm giá.',
+                        'sync_price' => 'Price is synced with the default currency.',
                     ],
                     'compare_price' => [
                         'label' => 'Giá so sánh',

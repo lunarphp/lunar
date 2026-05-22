@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'واجهه بيع',
-
     'plural_label' => 'واجهات البيع',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -20,7 +17,6 @@ return [
             'label' => 'افتراضي',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'الاسم',
@@ -35,5 +31,4 @@ return [
             'label' => 'افتراضي',
         ],
     ],
-
 ];

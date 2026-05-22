@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Бренд',
-
     'plural_label' => 'Брендүүд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -14,13 +11,11 @@ return [
             'label' => 'Бүтээгдэхүүний тоо',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -71,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

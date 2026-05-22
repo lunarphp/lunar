@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Данъчен клас',
-
     'plural_label' => 'Данъчни класове',
-
     'table' => [
         'name' => [
             'label' => 'Име',
@@ -14,7 +11,6 @@ return [
             'label' => 'По подразбиране',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Име',

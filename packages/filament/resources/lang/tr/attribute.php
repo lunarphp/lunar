@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Özellik',
-
     'plural_label' => 'Özellikler',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -20,7 +17,6 @@ return [
             'label' => 'Tür',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Tür',

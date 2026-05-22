@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roles
-     */
     'roles.admin.label' => 'Beheerder',
     'roles.admin.description' => 'Beheerder met volledige toegang',
     'roles.staff.label' => 'Personeel',
     'roles.staff.description' => 'Personeel met fundamentele toegang',
-    /**
-     * Permissions.
-     */
     'permissions.settings.label' => 'Instellingen',
     'permissions.settings.description' => 'Geeft toegang tot het instellingengebied van de hub',
     'permissions.settings:core.label' => 'Kerninstellingen',

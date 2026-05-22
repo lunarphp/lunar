@@ -2,24 +2,19 @@
 
 return [
     'label' => 'Đơn hàng',
-
     'plural_label' => 'Đơn hàng',
-
     'breadcrumb' => [
         'manage' => 'Quản lý',
     ],
-
     'tabs' => [
         'all' => 'Tất cả',
     ],
-
     'transactions' => [
         'capture' => 'Đã thu tiền',
         'intent' => 'Chờ thanh toán',
         'refund' => 'Đã hoàn tiền',
         'failed' => 'Thất bại',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Trạng thái',
@@ -62,7 +57,6 @@ return [
             'label' => 'Đặt trước',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -83,6 +77,9 @@ return [
             'company_name' => [
                 'label' => 'Tên công ty',
             ],
+            'tax_identifier' => [
+                'label' => 'Tax Identifier',
+            ],
             'contact_phone' => [
                 'label' => 'Số điện thoại',
             ],
@@ -102,7 +99,6 @@ return [
                 'label' => 'Quốc gia',
             ],
         ],
-
         'reference' => [
             'label' => 'Mã tham chiếu',
         ],
@@ -130,7 +126,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Ghi chú',
@@ -230,7 +225,6 @@ return [
             'refunded' => 'Đơn hàng này đã được hoàn tiền',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Cập nhật trạng thái',
@@ -268,6 +262,12 @@ return [
         ],
         'edit_tags' => [
             'label' => 'Chỉnh sửa',
+            'form' => [
+                'tags' => [
+                    'label' => 'Tags',
+                    'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
+                ],
+            ],
         ],
         'capture_payment' => [
             'label' => 'Thu tiền thanh toán',

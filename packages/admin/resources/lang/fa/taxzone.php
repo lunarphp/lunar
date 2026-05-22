@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'منطقه مالیاتی',
-
     'plural_label' => 'مناطق مالیاتی',
-
     'table' => [
         'name' => [
             'label' => 'نام',
@@ -20,7 +17,6 @@ return [
             'label' => 'پیش‌فرض',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'نام',
@@ -46,24 +42,18 @@ return [
         'default' => [
             'label' => 'پیش‌فرض',
         ],
-
         'zone_countries' => [
             'label' => 'کشورها',
         ],
-
         'zone_country' => [
             'label' => 'کشور',
         ],
-
         'zone_states' => [
             'label' => 'استان‌ها',
         ],
-
         'zone_postcodes' => [
             'label' => 'کدهای پستی',
             'helper' => 'هر کد پستی را در یک خط جداگانه وارد کنید. از کاراکترهای عام مثل NW* پشتیبانی می‌شود.',
         ],
-
     ],
-
 ];

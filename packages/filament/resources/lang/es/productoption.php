@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Opción de Producto',
-
     'plural_label' => 'Opciones de Producto',
-
     'table' => [
         'name' => [
             'label' => 'Nombre',
@@ -20,7 +17,6 @@ return [
             'label' => 'Compartido',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nombre',
@@ -32,7 +28,6 @@ return [
             'label' => 'Identificador',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -57,6 +52,9 @@ return [
                         ],
                         'no_shared_components' => [
                             'label' => 'No hay opciones compartidas disponibles.',
+                        ],
+                        'preselect' => [
+                            'label' => 'Preselect all values by default.',
                         ],
                     ],
                 ],
@@ -120,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

@@ -47,6 +47,5 @@ return [
                 'label' => 'Verzend E-mail',
             ],
         ],
-
     ],
 ];

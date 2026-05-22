@@ -1,17 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Collection',
-
     'plural_label' => 'Collections',
-
     'form' => [
         'name' => [
             'label' => 'Name',
         ],
     ],
-
     'pages' => [
         'children' => [
             'label' => 'Child Collections',
@@ -41,5 +37,4 @@ return [
             ],
         ],
     ],
-
 ];

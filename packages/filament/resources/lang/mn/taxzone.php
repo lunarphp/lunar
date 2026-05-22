@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Татварын бүс',
-
     'plural_label' => 'Татварын бүсүүд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -20,7 +17,6 @@ return [
             'label' => 'Өгөгдмөл',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
@@ -46,24 +42,18 @@ return [
         'default' => [
             'label' => 'Өгөгдмөл',
         ],
-
         'zone_countries' => [
             'label' => 'Улсууд',
         ],
-
         'zone_country' => [
             'label' => 'Улс',
         ],
-
         'zone_states' => [
             'label' => 'Аймаг/Муж',
         ],
-
         'zone_postcodes' => [
             'label' => 'Шуудангийн код',
             'helper' => 'Шуудангийн кодыг шинэ мөрөнд бичнэ үү. NW* гэх мэт тэмдэглэгээ дэмжинэ',
         ],
-
     ],
-
 ];

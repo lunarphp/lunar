@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Currency',
-
     'plural_label' => 'Currencies',
-
     'table' => [
         'name' => [
             'label' => 'Name',
@@ -29,7 +26,6 @@ return [
             'label' => 'Default',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -54,5 +50,4 @@ return [
             'helper_text' => 'Keep prices in this currency in sync with the default currency.',
         ],
     ],
-
 ];

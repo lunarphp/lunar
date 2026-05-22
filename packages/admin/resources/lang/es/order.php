@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Pedido',
-
     'plural_label' => 'Pedidos',
-
     'breadcrumb' => [
         'manage' => 'Gestionar',
     ],
-
     'tabs' => [
         'all' => 'Todas',
     ],
-
     'transactions' => [
         'capture' => 'Capturado',
         'intent' => 'Intención',
         'refund' => 'Reembolsado',
         'failed' => 'Fallido',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Estado',
@@ -63,7 +57,6 @@ return [
             'label' => 'Realizado antes de',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'País',
             ],
         ],
-
         'reference' => [
             'label' => 'Referencia',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Cantidad',
-
             'hint' => [
                 'less_than_total' => 'Está a punto de capturar un monto menor al valor total de la transacción',
             ],
         ],
-
         'notes' => [
             'label' => 'Notas',
         ],
         'confirm' => [
             'label' => 'Confirmar',
-
             'alert' => 'Se requiere confirmación',
-
             'hint' => [
                 'capture' => 'Por favor confirme que desea capturar este pago',
                 'refund' => 'Por favor confirme que desea reembolsar esta cantidad.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Notas',
@@ -238,7 +225,6 @@ return [
             'refunded' => 'Este pedido ha sido reembolsado.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Actualizar Estado',
@@ -264,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Editar',
-
             'notification' => [
                 'error' => 'Error',
-
                 'billing_address' => [
                     'saved' => 'Dirección de facturación guardada',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Dirección de envío guardada',
                 ],
@@ -279,10 +262,15 @@ return [
         ],
         'edit_tags' => [
             'label' => 'Editar',
+            'form' => [
+                'tags' => [
+                    'label' => 'Tags',
+                    'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
+                ],
+            ],
         ],
         'capture_payment' => [
             'label' => 'Capturar Pago',
-
             'notification' => [
                 'error' => 'Hubo un problema con la captura',
                 'success' => 'Captura exitosa',
@@ -290,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Reembolsar',
-
             'notification' => [
                 'error' => 'Hubo un problema con el reembolso',
                 'success' => 'Reembolso exitoso',
             ],
         ],
     ],
-
 ];

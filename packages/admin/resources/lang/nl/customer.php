@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Klant',
-
     'plural_label' => 'Klanten',
-
     'table' => [
         'full_name' => [
             'label' => 'Naam',
@@ -35,7 +32,6 @@ return [
             'label' => 'Terugkerend',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Titel',
@@ -59,5 +55,4 @@ return [
             'label' => 'Klantengroepen',
         ],
     ],
-
 ];

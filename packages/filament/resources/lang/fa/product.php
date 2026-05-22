@@ -1,17 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Product',
-
     'plural_label' => 'Products',
-
     'tabs' => [
         'all' => 'All',
         'published' => 'Published',
         'draft' => 'Draft',
     ],
-
     'status' => [
         'unpublished' => [
             'content' => 'در حال حاضر در وضعیت پیش‌نویس، این محصول در همه کانال‌ها و گروه‌های مشتری در دسترس نیست.',
@@ -23,7 +19,6 @@ return [
             'no_default_customer_group' => 'گروه مشتری پیش‌فرضی تنظیم نشده است، بنابراین مشاهده‌پذیری مهمانان از اینجا قابل کنترل نیست. یک گروه مشتری را به‌عنوان پیش‌فرض علامت بزنید تا دسترسی مهمانان را مدیریت کنید.',
         ],
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -49,14 +44,12 @@ return [
             'label' => 'Product Type',
         ],
     ],
-
     'actions' => [
         'edit_status' => [
             'label' => 'Update Status',
             'heading' => 'Update Status',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -92,7 +85,6 @@ return [
             'select_collection' => 'Select a collection',
         ],
     ],
-
     'pages' => [
         'availability' => [
             'label' => 'Availability',
@@ -131,5 +123,4 @@ return [
             'label' => 'Product Associations',
         ],
     ],
-
 ];

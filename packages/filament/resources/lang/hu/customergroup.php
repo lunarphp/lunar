@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Vásárlói csoport',
-
     'plural_label' => 'Vásárlói csoportok',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -17,7 +14,6 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -29,7 +25,6 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'نوع المنتج',
-
     'plural_label' => 'أنواع المنتجات',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -20,7 +17,6 @@ return [
             'label' => 'سمات المتغير',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'سمات المنتج',
@@ -29,18 +25,15 @@ return [
             'label' => 'سمات المتغير',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'الاسم',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'لا توجد مجموعات سمات متاحة.',
         'no_attributes' => 'لا توجد سمات متاحة.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

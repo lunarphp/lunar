@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Grupa atrybutów',
-
     'plural_label' => 'Grupy atrybutów',
-
     'table' => [
         'attributable_type' => [
             'label' => 'Typ',
@@ -20,7 +17,6 @@ return [
             'label' => 'Pozycja',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Typ',
@@ -35,7 +31,6 @@ return [
             'label' => 'Pozycja',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

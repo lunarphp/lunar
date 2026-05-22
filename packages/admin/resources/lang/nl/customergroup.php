@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Klantengroep',
-
     'plural_label' => 'Klantengroepen',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -17,7 +14,6 @@ return [
             'label' => 'Standaard',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naam',
@@ -29,7 +25,6 @@ return [
             'label' => 'Standaard',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

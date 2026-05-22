@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roller
-     */
     'roles.admin.label' => 'Yönetici',
     'roles.admin.description' => 'Tam yetkili yönetici',
     'roles.staff.label' => 'Personel',
     'roles.staff.description' => 'Temel yetkili personel',
-    /**
-     * İzinler.
-     */
     'permissions.settings.label' => 'Ayarlar',
     'permissions.settings.description' => 'Yönetim panelinin ayarlar alanına erişim sağlar',
     'permissions.settings:core.label' => 'Ana Ayarlar',

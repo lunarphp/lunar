@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Хэл',
-
     'plural_label' => 'Хэлүүд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -17,7 +14,6 @@ return [
             'label' => 'Өгөгдмөл',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
@@ -29,5 +25,4 @@ return [
             'label' => 'Өгөгдмөл',
         ],
     ],
-
 ];

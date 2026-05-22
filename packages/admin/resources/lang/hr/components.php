@@ -6,18 +6,14 @@ return [
             'updated' => 'Oznake ažurirane',
         ],
     ],
-
     'activity-log' => [
         'input' => [
             'placeholder' => 'Dodaj komentar',
         ],
-
         'action' => [
             'add-comment' => 'Dodaj komentar',
         ],
-
         'system' => 'Sustav',
-
         'partials' => [
             'orders' => [
                 'order_created' => 'Narudžba izrađena',
@@ -41,18 +37,15 @@ return [
                 'removed' => 'Uklonjeno',
             ],
         ],
-
         'notification' => [
             'comment_added' => 'Komentar dodan',
         ],
     ],
-
     'forms' => [
         'youtube' => [
             'helperText' => 'Unesite ID YouTube videozapisa, npr. dQw4w9WgXcQ',
         ],
     ],
-
     'collection-tree-view' => [
         'actions' => [
             'move' => [
@@ -75,7 +68,6 @@ return [
             ],
         ],
     ],
-
     'product-options-list' => [
         'add-option' => [
             'label' => 'Dodaj opciju',

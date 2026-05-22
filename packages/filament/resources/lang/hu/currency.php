@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Pénznem',
-
     'plural_label' => 'Pénznemek',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -29,7 +26,6 @@ return [
             'label' => 'Alapértelmezett',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -54,5 +50,4 @@ return [
             'helper_text' => 'Tartsa ennek a pénznemnek az árait szinkronban az alapértelmezett pénznem áraival.',
         ],
     ],
-
 ];

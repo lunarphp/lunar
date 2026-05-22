@@ -1,17 +1,13 @@
 <?php
 
 return [
-
     'label' => 'تشكيلة',
-
     'plural_label' => 'التشكيلات',
-
     'form' => [
         'name' => [
             'label' => 'الاسم',
         ],
     ],
-
     'pages' => [
         'children' => [
             'label' => 'التشكيلات الفرعية',
@@ -41,5 +37,4 @@ return [
             ],
         ],
     ],
-
 ];

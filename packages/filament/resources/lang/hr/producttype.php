@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Tip proizvoda',
-
     'plural_label' => 'Tipovi proizvoda',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -20,7 +17,6 @@ return [
             'label' => 'Atributi varijanti',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'Atributi proizvoda',
@@ -29,18 +25,15 @@ return [
             'label' => 'Atributi varijanti',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'Nema dostupnih grupa atributa.',
         'no_attributes' => 'Nema dostupnih atributa.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

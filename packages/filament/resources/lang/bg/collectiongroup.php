@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Група колекции',
-
     'plural_label' => 'Групи колекции',
-
     'table' => [
         'name' => [
             'label' => 'Име',
@@ -17,7 +14,6 @@ return [
             'label' => 'Брой колекции',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Име',
@@ -26,7 +22,6 @@ return [
             'label' => 'Код',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

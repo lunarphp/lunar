@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roles
-     */
     'roles.admin.label' => 'Quản trị viên',
     'roles.admin.description' => 'Quản trị viên với quyền truy cập đầy đủ',
     'roles.staff.label' => 'Nhân viên',
     'roles.staff.description' => 'Nhân viên với quyền truy cập cơ bản',
-    /**
-     * Permissions.
-     */
     'permissions.settings.label' => 'Cài đặt',
     'permissions.settings.description' => 'Cho phép truy cập vào khu vực cài đặt của hệ thống',
     'permissions.settings:core.label' => 'Cài đặt cốt lõi',

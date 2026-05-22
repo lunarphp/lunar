@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Müşteri Grubu',
-
     'plural_label' => 'Müşteri Grupları',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -17,7 +14,6 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
@@ -29,7 +25,6 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

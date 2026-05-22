@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Stawka podatkowa',
-
     'plural_label' => 'Stawki podatkowe',
-
     'table' => [
         'name' => [
             'label' => 'Nazwa',
@@ -17,7 +14,6 @@ return [
             'label' => 'Priorytet',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nazwa',
@@ -29,5 +25,4 @@ return [
             'label' => 'Strefa podatkowa',
         ],
     ],
-
 ];

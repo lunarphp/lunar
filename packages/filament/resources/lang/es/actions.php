@@ -47,6 +47,5 @@ return [
                 'label' => 'Correo de envío',
             ],
         ],
-
     ],
 ];

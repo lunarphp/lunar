@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Суваг',
-
     'plural_label' => 'Сувгууд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -20,7 +17,6 @@ return [
             'label' => 'Өгөгдмөл',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
@@ -35,5 +31,4 @@ return [
             'label' => 'Өгөгдмөл',
         ],
     ],
-
 ];

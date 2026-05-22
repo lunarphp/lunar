@@ -1,12 +1,10 @@
 <?php
 
 return [
-
     'label' => 'Tevékenység',
-
     'plural_label' => 'Tevékenységek',
-
     'table' => [
+        'id' => 'ID',
         'subject' => 'Tárgy',
         'description' => 'Leírás',
         'log' => 'Napló',
@@ -15,7 +13,6 @@ return [
         'logged_from' => 'Naplózva innen',
         'logged_until' => 'Naplózva eddig',
     ],
-
     'form' => [
         'causer_type' => 'Okozó típusa',
         'causer_id' => 'Okozó azonosító',
@@ -25,5 +22,4 @@ return [
         'attributes' => 'Attribútumok',
         'old' => 'Régi',
     ],
-
 ];

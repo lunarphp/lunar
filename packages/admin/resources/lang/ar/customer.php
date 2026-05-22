@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'عميل',
-
     'plural_label' => 'العملاء',
-
     'table' => [
         'full_name' => [
             'label' => 'الاسم',
@@ -35,7 +32,6 @@ return [
             'label' => 'عائد',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'اللقب',
@@ -59,5 +55,4 @@ return [
             'label' => 'مجموعات العملاء',
         ],
     ],
-
 ];

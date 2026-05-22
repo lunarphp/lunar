@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Rată de taxă',
-
     'plural_label' => 'Rate de taxă',
-
     'table' => [
         'name' => [
             'label' => 'Nume',
@@ -17,7 +14,6 @@ return [
             'label' => 'Prioritate',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',
@@ -29,5 +25,4 @@ return [
             'label' => 'Zonă de taxe',
         ],
     ],
-
 ];

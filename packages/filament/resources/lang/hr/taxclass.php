@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Porezni razred',
-
     'plural_label' => 'Porezni razredi',
-
     'table' => [
         'name' => [
             'label' => 'Naziv',
@@ -14,7 +11,6 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -23,12 +19,10 @@ return [
             'label' => 'Zadano',
         ],
     ],
-
     'delete' => [
         'error' => [
             'title' => 'Porezni razred nije moguće izbrisati',
             'body' => 'Ovaj porezni razred ima pridružene varijante proizvoda i nije ga moguće izbrisati.',
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Activité',
-
     'plural_label' => 'Activités',
-
     'table' => [
         'subject' => 'Sujet',
         'description' => 'Description',
@@ -15,7 +12,6 @@ return [
         'logged_from' => 'Enregistré depuis',
         'logged_until' => 'Enregistré jusqu\'à',
     ],
-
     'form' => [
         'causer_type' => 'Type de responsable',
         'causer_id' => 'ID du responsable',
@@ -25,5 +21,4 @@ return [
         'attributes' => 'Attributs',
         'old' => 'Ancien',
     ],
-
 ];

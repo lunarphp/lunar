@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'Descontos',
     'label' => 'Desconto',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'Prioridade',
             'helper_text' => 'Descontos com maior prioridade serão aplicados primeiro.',
-            'options' => [
-                'low' => [
-                    'label' => 'Baixa',
-                ],
-                'medium' => [
-                    'label' => 'Média',
-                ],
-                'high' => [
-                    'label' => 'Alta',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'Interromper outros descontos após este',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'Cupom',
@@ -89,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'Status',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'Ativo',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'Pendente',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'Expirado',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'Agendado',
             ],
         ],
@@ -316,6 +304,20 @@ return [
                             'label' => 'Exclusão',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'collection_conditions' => [
+            'title' => 'Collection Conditions',
+            'description' => 'Select the collection conditions required for the discount to apply.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Condition',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],

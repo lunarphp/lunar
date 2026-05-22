@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Canal',
-
     'plural_label' => 'Canais',
-
     'table' => [
         'name' => [
             'label' => 'Nome',
@@ -20,7 +17,6 @@ return [
             'label' => 'Padrão',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nome',
@@ -35,5 +31,4 @@ return [
             'label' => 'Padrão',
         ],
     ],
-
 ];

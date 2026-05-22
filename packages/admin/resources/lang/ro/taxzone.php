@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Zonă de taxe',
-
     'plural_label' => 'Zone de taxe',
-
     'table' => [
         'name' => [
             'label' => 'Nume',
@@ -20,7 +17,6 @@ return [
             'label' => 'Implicită',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nume',
@@ -46,24 +42,18 @@ return [
         'default' => [
             'label' => 'Implicită',
         ],
-
         'zone_countries' => [
             'label' => 'Țări',
         ],
-
         'zone_country' => [
             'label' => 'Țară',
         ],
-
         'zone_states' => [
             'label' => 'Județe',
         ],
-
         'zone_postcodes' => [
             'label' => 'Coduri poștale',
             'helper' => 'Listați fiecare cod poștal pe o linie nouă. Suportă wildcard-uri precum NW*',
         ],
-
     ],
-
 ];

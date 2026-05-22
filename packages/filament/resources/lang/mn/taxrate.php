@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Татварын хувь',
-
     'plural_label' => 'Татварын хувь',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -17,7 +14,6 @@ return [
             'label' => 'Эрэмбэ',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
@@ -29,5 +25,4 @@ return [
             'label' => 'Татварын бүс',
         ],
     ],
-
 ];

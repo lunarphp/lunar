@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Termék opció',
-
     'plural_label' => 'Termék opciók',
-
     'table' => [
         'name' => [
             'label' => 'Név',
@@ -20,7 +17,6 @@ return [
             'label' => 'Megosztott',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Név',
@@ -32,7 +28,6 @@ return [
             'label' => 'Azonosító',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -123,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

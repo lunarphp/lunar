@@ -56,7 +56,7 @@ return [
             'options' => [
                 'always' => 'Zawsze',
                 'in_stock' => 'Tylko gdy jest w magazynie',
-                'backorder' => 'Na zamówienie',
+                'in_stock_or_on_backorder' => 'In Stock or On Backorder',
             ],
         ],
         'unit_quantity' => [

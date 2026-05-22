@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Khách hàng',
-
     'plural_label' => 'Khách hàng',
-
     'table' => [
         'full_name' => [
             'label' => 'Họ và tên',
@@ -35,7 +32,6 @@ return [
             'label' => 'Quay lại',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Tiêu đề',
@@ -59,5 +55,4 @@ return [
             'label' => 'Nhóm khách hàng',
         ],
     ],
-
 ];

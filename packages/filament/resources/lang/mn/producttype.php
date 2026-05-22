@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Бүтээгдэхүүний төрөл',
-
     'plural_label' => 'Бүтээгдэхүүний төрлүүд',
-
     'table' => [
         'name' => [
             'label' => 'Нэр',
@@ -20,7 +17,6 @@ return [
             'label' => 'Вариантын атрибутууд',
         ],
     ],
-
     'tabs' => [
         'product_attributes' => [
             'label' => 'Бүтээгдэхүүний атрибутууд',
@@ -29,18 +25,15 @@ return [
             'label' => 'Вариантын атрибутууд',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Нэр',
         ],
     ],
-
     'attributes' => [
         'no_groups' => 'Атрибутын бүлгүүд байхгүй байна.',
         'no_attributes' => 'Атрибутууд байхгүй байна.',
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -48,5 +41,4 @@ return [
             ],
         ],
     ],
-
 ];

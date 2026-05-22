@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Thuộc tính',
-
     'plural_label' => 'Thuộc tính',
-
     'table' => [
         'name' => [
             'label' => 'Tên',
@@ -20,7 +17,6 @@ return [
             'label' => 'Loại',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Loại',

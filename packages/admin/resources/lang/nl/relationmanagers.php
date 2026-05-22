@@ -92,8 +92,14 @@ return [
         'title' => 'Media',
         'title_plural' => 'Media',
         'actions' => [
+            'attach' => [
+                'label' => 'Attach Media',
+            ],
             'create' => [
                 'label' => 'Media Aanmaken',
+            ],
+            'detach' => [
+                'label' => 'Detach',
             ],
             'view' => [
                 'label' => 'Bekijken',
@@ -124,6 +130,8 @@ return [
                 'label' => 'Primair',
             ],
         ],
+        'all_media_attached' => 'There are no product images available to attach',
+        'variant_description' => 'Attach product images to this variant',
     ],
     'urls' => [
         'title' => 'URL',
@@ -241,6 +249,7 @@ return [
                     'price' => [
                         'label' => 'Prijs',
                         'helper_text' => 'De aankoopprijs, voor kortingen.',
+                        'sync_price' => 'Price is synced with the default currency.',
                     ],
                     'compare_price' => [
                         'label' => 'Vergelijkingsprijs',

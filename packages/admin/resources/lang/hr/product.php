@@ -1,11 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Proizvod',
-
     'plural_label' => 'Proizvodi',
-
+    'tabs' => [
+        'all' => 'All',
+        'published' => 'Published',
+        'draft' => 'Draft',
+    ],
     'status' => [
         'unpublished' => [
             'content' => 'Trenutno u statusu skice, ovaj proizvod nije dostupan ni u jednom kanalu ni u jednoj grupi kupaca.',
@@ -17,7 +19,6 @@ return [
             'no_default_customer_group' => 'Zadana grupa kupaca nije postavljena, pa se vidljivost za goste ne može kontrolirati ovdje. Označite jednu grupu kupaca kao zadanu kako biste upravljali pristupom gostiju.',
         ],
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -43,14 +44,12 @@ return [
             'label' => 'Tip proizvoda',
         ],
     ],
-
     'actions' => [
         'edit_status' => [
             'label' => 'Ažuriraj status',
             'heading' => 'Ažuriraj status',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
@@ -79,18 +78,19 @@ return [
         ],
         'tags' => [
             'label' => 'Oznake',
+            'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
         ],
         'collections' => [
             'label' => 'Kolekcije',
+            'select_collection' => 'Select a collection',
         ],
     ],
-
     'pages' => [
         'availability' => [
             'label' => 'Dostupnost',
         ],
-        'media' => [
-            'label' => 'Mediji',
+        'edit' => [
+            'title' => 'Basic Information',
         ],
         'identifiers' => [
             'label' => 'Identifikatori proizvoda',
@@ -123,5 +123,4 @@ return [
             'label' => 'Povezani proizvodi',
         ],
     ],
-
 ];

@@ -1,17 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Kolekcija',
-
     'plural_label' => 'Kolekcije',
-
     'form' => [
         'name' => [
             'label' => 'Naziv',
         ],
     ],
-
     'pages' => [
         'children' => [
             'label' => 'Podređene kolekcije',
@@ -32,9 +28,6 @@ return [
         'edit' => [
             'label' => 'Osnovni podaci',
         ],
-        'media' => [
-            'label' => 'Mediji',
-        ],
         'products' => [
             'label' => 'Proizvodi',
             'actions' => [
@@ -44,5 +37,4 @@ return [
             ],
         ],
     ],
-
 ];

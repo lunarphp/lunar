@@ -1,22 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Narudžba',
-
     'plural_label' => 'Narudžbe',
-
     'breadcrumb' => [
         'manage' => 'Upravljanje',
     ],
-
+    'tabs' => [
+        'all' => 'All',
+    ],
     'transactions' => [
         'capture' => 'Naplaćeno',
         'intent' => 'Namjera',
         'refund' => 'Vraćeno',
         'failed' => 'Neuspješno',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -59,7 +57,6 @@ return [
             'label' => 'Naručeno prije',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -80,6 +77,9 @@ return [
             'company_name' => [
                 'label' => 'Naziv tvrtke',
             ],
+            'tax_identifier' => [
+                'label' => 'Tax Identifier',
+            ],
             'contact_phone' => [
                 'label' => 'Telefon',
             ],
@@ -99,7 +99,6 @@ return [
                 'label' => 'Zemlja',
             ],
         ],
-
         'reference' => [
             'label' => 'Referenca',
         ],
@@ -111,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Iznos',
-
             'hint' => [
                 'less_than_total' => 'Želite naplatiti iznos koji je manji od ukupne vrijednosti transakcije',
             ],
         ],
-
         'notes' => [
             'label' => 'Bilješke',
         ],
         'confirm' => [
             'label' => 'Potvrdi',
-
             'alert' => 'Potrebna je potvrda',
-
             'hint' => [
                 'capture' => 'Molimo potvrdite da želite naplatiti ovu uplatu',
                 'refund' => 'Molimo potvrdite da želite vratiti ovaj iznos.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Bilješke',
@@ -231,7 +225,6 @@ return [
             'refunded' => 'Ova narudžba je vraćena.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Ažuriraj status',
@@ -257,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Uredi',
-
             'notification' => [
                 'error' => 'Greška',
-
                 'billing_address' => [
                     'saved' => 'Adresa naplate spremljena',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Adresa dostave spremljena',
                 ],
@@ -272,10 +262,15 @@ return [
         ],
         'edit_tags' => [
             'label' => 'Uredi',
+            'form' => [
+                'tags' => [
+                    'label' => 'Tags',
+                    'helper_text' => 'Separate tags by pressing Enter, Tab or comma (,)',
+                ],
+            ],
         ],
         'capture_payment' => [
             'label' => 'Naplati uplatu',
-
             'notification' => [
                 'error' => 'Došlo je do problema prilikom naplate',
                 'success' => 'Naplata uspješna',
@@ -283,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Povrat',
-
             'notification' => [
                 'error' => 'Došlo je do problema prilikom povrata',
                 'success' => 'Povrat uspješan',
             ],
         ],
     ],
-
 ];

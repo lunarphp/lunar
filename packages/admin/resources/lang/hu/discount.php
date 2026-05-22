@@ -1,7 +1,5 @@
 <?php
 
-use Lunar\Core\Models\Discount;
-
 return [
     'plural_label' => 'Kedvezmények',
     'label' => 'Kedvezmény',
@@ -30,20 +28,10 @@ return [
         'priority' => [
             'label' => 'Prioritás',
             'helper_text' => 'A magasabb prioritású kedvezmények kerülnek először alkalmazásra.',
-            'options' => [
-                'low' => [
-                    'label' => 'Alacsony',
-                ],
-                'medium' => [
-                    'label' => 'Közepes',
-                ],
-                'high' => [
-                    'label' => 'Magas',
-                ],
-            ],
         ],
         'stop' => [
             'label' => 'Más kedvezmények alkalmazásának megakadályozása ez után',
+            'helper_text' => 'When this discount applies, any discount with a lower priority will be skipped. Give discounts different priorities to control the order they apply in.',
         ],
         'coupon' => [
             'label' => 'Kupon',
@@ -89,16 +77,16 @@ return [
         ],
         'status' => [
             'label' => 'Státusz',
-            Discount::ACTIVE => [
+            'active' => [
                 'label' => 'Aktív',
             ],
-            Discount::PENDING => [
+            'pending' => [
                 'label' => 'Függőben',
             ],
-            Discount::EXPIRED => [
+            'expired' => [
                 'label' => 'Lejárt',
             ],
-            Discount::SCHEDULED => [
+            'scheduled' => [
                 'label' => 'Ütemezett',
             ],
         ],
@@ -316,6 +304,20 @@ return [
                             'label' => 'Kizárás',
                         ],
                     ],
+                ],
+            ],
+        ],
+        'collection_conditions' => [
+            'title' => 'Collection Conditions',
+            'description' => 'Select the collection conditions required for the discount to apply.',
+            'actions' => [
+                'attach' => [
+                    'label' => 'Add Condition',
+                ],
+            ],
+            'table' => [
+                'name' => [
+                    'label' => 'Name',
                 ],
             ],
         ],

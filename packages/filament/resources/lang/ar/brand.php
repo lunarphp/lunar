@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'علامة تجارية',
-
     'plural_label' => 'العلامات التجارية',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -14,13 +11,11 @@ return [
             'label' => 'عدد المنتجات',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'الاسم',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [
@@ -71,5 +66,4 @@ return [
             ],
         ],
     ],
-
 ];

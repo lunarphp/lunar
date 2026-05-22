@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Dil',
-
     'plural_label' => 'Diller',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -17,7 +14,6 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',
@@ -29,5 +25,4 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
-
 ];

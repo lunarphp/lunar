@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Produktoption',
-
     'plural_label' => 'Produktoptionen',
-
     'table' => [
         'name' => [
             'label' => 'Name',
@@ -20,7 +17,6 @@ return [
             'label' => 'Geteilt',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Name',
@@ -32,7 +28,6 @@ return [
             'label' => 'Handle',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -57,6 +52,9 @@ return [
                         ],
                         'no_shared_components' => [
                             'label' => 'Keine geteilten Optionen verfügbar.',
+                        ],
+                        'preselect' => [
+                            'label' => 'Preselect all values by default.',
                         ],
                     ],
                 ],
@@ -120,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

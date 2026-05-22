@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'فئة ضريبة',
-
     'plural_label' => 'فئات الضرائب',
-
     'table' => [
         'name' => [
             'label' => 'الاسم',
@@ -14,7 +11,6 @@ return [
             'label' => 'افتراضي',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'الاسم',

@@ -1,17 +1,13 @@
 <?php
 
 return [
-
     'label' => 'Koleksiyon',
-
     'plural_label' => 'Koleksiyonlar',
-
     'form' => [
         'name' => [
             'label' => 'Ad',
         ],
     ],
-
     'pages' => [
         'children' => [
             'label' => 'Alt Koleksiyonlar',
@@ -41,5 +37,4 @@ return [
             ],
         ],
     ],
-
 ];

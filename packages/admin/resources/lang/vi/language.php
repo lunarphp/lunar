@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Ngôn ngữ',
-
     'plural_label' => 'Ngôn ngữ',
-
     'table' => [
         'name' => [
             'label' => 'Tên',
@@ -17,7 +14,6 @@ return [
             'label' => 'Mặc định',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Tên',
@@ -29,5 +25,4 @@ return [
             'label' => 'Mặc định',
         ],
     ],
-
 ];

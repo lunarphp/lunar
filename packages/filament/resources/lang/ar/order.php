@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'طلب',
-
     'plural_label' => 'الطلبات',
-
     'breadcrumb' => [
         'manage' => 'إدارة',
     ],
-
     'tabs' => [
         'all' => 'الكل',
     ],
-
     'transactions' => [
         'capture' => 'تم الاستلام',
         'intent' => 'نية الدفع',
         'refund' => 'تم الاسترجاع',
         'failed' => 'فشل',
     ],
-
     'table' => [
         'status' => [
             'label' => 'الحالة',
@@ -63,7 +57,6 @@ return [
             'label' => 'تم الطلب قبل',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'الدولة',
             ],
         ],
-
         'reference' => [
             'label' => 'الرقم المرجعي',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'المبلغ',
-
             'hint' => [
                 'less_than_total' => 'أنت على وشك استلام مبلغ أقل من إجمالي قيمة المعاملة',
             ],
         ],
-
         'notes' => [
             'label' => 'ملاحظات',
         ],
         'confirm' => [
             'label' => 'تأكيد',
-
             'alert' => 'يتطلب التأكيد',
-
             'hint' => [
                 'capture' => 'يرجى تأكيد رغبتك في استلام هذا الدفع',
                 'refund' => 'يرجى تأكيد رغبتك في استرجاع هذا المبلغ',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'ملاحظات',
@@ -238,13 +225,14 @@ return [
             'refunded' => 'تم استرجاع هذا الطلب بالكامل.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'تحديث الحالة',
             'notification' => 'تم تحديث حالة الطلبات',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'الحالة الجديدة',
             ],
@@ -262,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'تعديل',
-
             'notification' => [
                 'error' => 'حدث خطأ',
-
                 'billing_address' => [
                     'saved' => 'تم حفظ عنوان الفاتورة',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'تم حفظ عنوان الشحن',
                 ],
@@ -286,7 +271,6 @@ return [
         ],
         'capture_payment' => [
             'label' => 'استلام الدفع',
-
             'notification' => [
                 'error' => 'حدثت مشكلة أثناء الاستلام',
                 'success' => 'تم الاستلام بنجاح',
@@ -294,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'استرجاع',
-
             'notification' => [
                 'error' => 'حدثت مشكلة أثناء الاسترجاع',
                 'success' => 'تم الاسترجاع بنجاح',
             ],
         ],
     ],
-
 ];

@@ -6,19 +6,14 @@ return [
             'updated' => 'Étiquettes mises à jour',
         ],
     ],
-
     'activity-log' => [
-
         'input' => [
             'placeholder' => 'Ajouter un commentaire',
         ],
-
         'action' => [
             'add-comment' => 'Ajouter un commentaire',
         ],
-
         'system' => 'Système',
-
         'partials' => [
             'orders' => [
                 'order_created' => 'Commande créée',
@@ -30,34 +25,27 @@ return [
                 'billingAddress' => 'Adresse de facturation',
                 'shippingAddress' => 'Adresse de livraison',
             ],
-
             'update' => [
                 'updated' => ':model mis à jour',
             ],
-
             'create' => [
                 'created' => ':model créé',
             ],
-
             'tags' => [
                 'updated' => 'Étiquettes mises à jour',
                 'added' => 'Ajouté',
                 'removed' => 'Supprimé',
             ],
         ],
-
         'notification' => [
             'comment_added' => 'Commentaire ajouté',
         ],
-
     ],
-
     'forms' => [
         'youtube' => [
             'helperText' => 'Entrez l\'ID de la vidéo YouTube. par exemple, dQw4w9WgXcQ',
         ],
     ],
-
     'collection-tree-view' => [
         'actions' => [
             'move' => [
@@ -80,7 +68,6 @@ return [
             ],
         ],
     ],
-
     'product-options-list' => [
         'add-option' => [
             'label' => 'Ajouter une option',

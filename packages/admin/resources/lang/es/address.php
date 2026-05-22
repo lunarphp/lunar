@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Dirección',
-
     'plural_label' => 'Direcciones',
-
     'table' => [
         'title' => [
             'label' => 'Título',
@@ -50,7 +47,6 @@ return [
             'label' => 'Teléfono de contacto',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Título',
@@ -95,5 +91,4 @@ return [
             'label' => 'Teléfono de contacto',
         ],
     ],
-
 ];

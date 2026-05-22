@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Belastingzone',
-
     'plural_label' => 'Belastingzones',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -20,7 +17,6 @@ return [
             'label' => 'Standaard',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naam',
@@ -46,24 +42,18 @@ return [
         'default' => [
             'label' => 'Standaard',
         ],
-
         'zone_countries' => [
             'label' => 'Landen',
         ],
-
         'zone_country' => [
             'label' => 'Land',
         ],
-
         'zone_states' => [
             'label' => 'Staten',
         ],
-
         'zone_postcodes' => [
             'label' => 'Postcodes',
             'helper' => 'Plaats elke postcode op een nieuwe regel. Ondersteunt wildcards zoals NW*',
         ],
-
     ],
-
 ];

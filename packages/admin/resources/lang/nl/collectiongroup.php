@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Collectiegroep',
-
     'plural_label' => 'Collectiegroepen',
-
     'table' => [
         'name' => [
             'label' => 'Naam',
@@ -17,7 +14,6 @@ return [
             'label' => 'Aantal Collecties',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Naam',
@@ -26,7 +22,6 @@ return [
             'label' => 'Handvat',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

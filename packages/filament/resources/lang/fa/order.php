@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Order',
-
     'plural_label' => 'Orders',
-
     'breadcrumb' => [
         'manage' => 'Manage',
     ],
-
     'tabs' => [
         'all' => 'All',
     ],
-
     'transactions' => [
         'capture' => 'Captured',
         'intent' => 'Intent',
         'refund' => 'Refunded',
         'failed' => 'Failed',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Status',
@@ -63,7 +57,6 @@ return [
             'label' => 'Placed before',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'Country',
             ],
         ],
-
         'reference' => [
             'label' => 'Reference',
         ],
@@ -118,27 +110,22 @@ return [
         ],
         'amount' => [
             'label' => 'Amount',
-
             'hint' => [
-                'less_than_total' => "You're about to capture an amount less than the total transaction value",
+                'less_than_total' => 'You\'re about to capture an amount less than the total transaction value',
             ],
         ],
-
         'notes' => [
             'label' => 'Notes',
         ],
         'confirm' => [
             'label' => 'Confirm',
-
             'alert' => 'Confirmation required',
-
             'hint' => [
                 'capture' => 'Please confirm you want to capture this payment',
                 'refund' => 'Please confirm you wish to refund this amount.',
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Notes',
@@ -238,13 +225,14 @@ return [
             'refunded' => 'This order has been refunded.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Update Status',
             'notification' => 'Orders status updated',
         ],
         'update_status' => [
+            'label' => 'Update Status',
+            'notification' => 'Order status updated',
             'new_status' => [
                 'label' => 'New status',
             ],
@@ -262,14 +250,11 @@ return [
         ],
         'edit_address' => [
             'label' => 'Edit',
-
             'notification' => [
                 'error' => 'Error',
-
                 'billing_address' => [
                     'saved' => 'Billing address saved',
                 ],
-
                 'shipping_address' => [
                     'saved' => 'Shipping address saved',
                 ],
@@ -286,7 +271,6 @@ return [
         ],
         'capture_payment' => [
             'label' => 'Capture Payment',
-
             'notification' => [
                 'error' => 'There was a problem with the capture',
                 'success' => 'Capture successful',
@@ -294,12 +278,10 @@ return [
         ],
         'refund_payment' => [
             'label' => 'Refund',
-
             'notification' => [
                 'error' => 'There was a problem with the refund',
                 'success' => 'Refund successful',
             ],
         ],
     ],
-
 ];

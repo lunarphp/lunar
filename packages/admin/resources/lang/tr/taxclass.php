@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Vergi Sınıfı',
-
     'plural_label' => 'Vergi Sınıfları',
-
     'table' => [
         'name' => [
             'label' => 'Ad',
@@ -14,7 +11,6 @@ return [
             'label' => 'Varsayılan',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Ad',

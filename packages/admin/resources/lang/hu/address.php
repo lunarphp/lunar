@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Cím',
-
     'plural_label' => 'Címek',
-
     'table' => [
         'title' => [
             'label' => 'Cím',
@@ -50,7 +47,6 @@ return [
             'label' => 'Kapcsolattartó telefonszám',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Cím',
@@ -95,5 +91,4 @@ return [
             'label' => 'Kapcsolattartó telefonszám',
         ],
     ],
-
 ];

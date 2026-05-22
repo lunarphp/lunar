@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Grupa kolekcji',
-
     'plural_label' => 'Grupy kolekcji',
-
     'table' => [
         'name' => [
             'label' => 'Nazwa',
@@ -17,7 +14,6 @@ return [
             'label' => 'Liczba kolekcji',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Nazwa',
@@ -26,7 +22,6 @@ return [
             'label' => 'Slug',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

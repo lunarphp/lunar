@@ -1,26 +1,20 @@
 <?php
 
 return [
-
     'label' => 'Захиалга',
-
     'plural_label' => 'Захиалгууд',
-
     'breadcrumb' => [
         'manage' => 'Удирдах',
     ],
-
     'tabs' => [
         'all' => 'Бүгд',
     ],
-
     'transactions' => [
         'capture' => 'Төлсөн',
         'intent' => 'Нөөц',
         'refund' => 'Буцаасан',
         'failed' => 'Амжилтгүй',
     ],
-
     'table' => [
         'status' => [
             'label' => 'Статус',
@@ -63,7 +57,6 @@ return [
             'label' => 'Өмнө захиалсан',
         ],
     ],
-
     'form' => [
         'address' => [
             'first_name' => [
@@ -106,7 +99,6 @@ return [
                 'label' => 'Улс',
             ],
         ],
-
         'reference' => [
             'label' => 'Лавлагаа',
         ],
@@ -122,7 +114,6 @@ return [
                 'less_than_total' => 'Та нийт гүйлгээнээс бага дүн төлөх гэж байна',
             ],
         ],
-
         'notes' => [
             'label' => 'Тэмдэглэл',
         ],
@@ -135,7 +126,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'notes' => [
             'label' => 'Тэмдэглэл',
@@ -235,7 +225,6 @@ return [
             'refunded' => 'Энэ захиалга буцаагдсан.',
         ],
     ],
-
     'action' => [
         'bulk_update_status' => [
             'label' => 'Статус шинэчлэх',
@@ -295,5 +284,4 @@ return [
             ],
         ],
     ],
-
 ];

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Продуктова опция',
-
     'plural_label' => 'Продуктови опции',
-
     'table' => [
         'name' => [
             'label' => 'Име',
@@ -20,7 +17,6 @@ return [
             'label' => 'Споделена',
         ],
     ],
-
     'form' => [
         'name' => [
             'label' => 'Име',
@@ -32,7 +28,6 @@ return [
             'label' => 'Код',
         ],
     ],
-
     'widgets' => [
         'product-options' => [
             'notifications' => [
@@ -123,5 +118,4 @@ return [
             ],
         ],
     ],
-
 ];

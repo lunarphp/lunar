@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Attribútumcsoport',
-
     'plural_label' => 'Attribútumcsoportok',
-
     'table' => [
         'attributable_type' => [
             'label' => 'Típus',
@@ -20,7 +17,6 @@ return [
             'label' => 'Pozíció',
         ],
     ],
-
     'form' => [
         'attributable_type' => [
             'label' => 'Típus',
@@ -35,7 +31,6 @@ return [
             'label' => 'Pozíció',
         ],
     ],
-
     'action' => [
         'delete' => [
             'notification' => [

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Adres',
-
     'plural_label' => 'Adresy',
-
     'table' => [
         'title' => [
             'label' => 'Tytuł',
@@ -19,6 +16,9 @@ return [
         'company_name' => [
             'label' => 'Nazwa Firmy',
         ],
+        'tax_identifier' => [
+            'label' => 'Tax Identifier',
+        ],
         'line_one' => [
             'label' => 'Adres',
         ],
@@ -47,7 +47,6 @@ return [
             'label' => 'Telefon',
         ],
     ],
-
     'form' => [
         'title' => [
             'label' => 'Tytuł',
@@ -61,6 +60,9 @@ return [
         'company_name' => [
             'label' => 'Nazwa Firmy',
         ],
+        'tax_identifier' => [
+            'label' => 'Tax Identifier',
+        ],
         'line_one' => [
             'label' => 'Adres',
         ],
@@ -89,5 +91,4 @@ return [
             'label' => 'Telefon',
         ],
     ],
-
 ];

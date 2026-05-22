@@ -75,7 +75,4 @@ return [
             ],
         ],
     ],
-    'keyvalue' => [
-        'label' => 'Klucz - wartość',
-    ],
 ];
