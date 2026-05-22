@@ -20,11 +20,11 @@ use Lunar\Core\Generators\UrlGenerator;
 use Lunar\Core\LunarServiceProvider;
 use Lunar\Filament\LunarFilamentServiceProvider;
 use Lunar\Tests\TestCase as BaseTestCase;
+use MallardDuck\LucideIcons\BladeLucideIconsServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelBlink\BlinkServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
-use Technikermathe\LucideIcons\BladeLucideIconsServiceProvider;
 
 /**
  * Boots Filament against the bridge package without `lunarphp/admin`'s
