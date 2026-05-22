@@ -15,10 +15,10 @@ use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandCollections;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandMedia;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandProducts;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandUrls;
-use Lunar\Admin\Filament\Resources\BrandResource\Schemas\BrandForm;
-use Lunar\Admin\Filament\Resources\BrandResource\Tables\BrandTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Brand as BrandContract;
+use Lunar\Filament\Schemas\Brand\BrandForm;
+use Lunar\Filament\Tables\Brand\BrandTable;
 
 class BrandResource extends BaseResource
 {

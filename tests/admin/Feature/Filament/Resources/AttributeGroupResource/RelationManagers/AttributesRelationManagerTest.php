@@ -4,13 +4,13 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
 use Lunar\Core\FieldTypes\Dropdown;
 use Lunar\Core\FieldTypes\Number;
 use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Language;
+use Lunar\Filament\RelationManagers\AttributeGroup\AttributesRelationManager;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

@@ -1,10 +1,10 @@
 <?php
 
 use Livewire\Livewire;
-use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
+use Lunar\Filament\RelationManagers\Product\CustomerGroupRelationManager;
 use Lunar\Tests\Admin\Unit\Filament\TestCase;
 
 uses(TestCase::class)

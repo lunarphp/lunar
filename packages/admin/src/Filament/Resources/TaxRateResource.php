@@ -9,11 +9,11 @@ use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\CreateTaxRate;
 use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\EditTaxRate;
 use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\ListTaxRates;
-use Lunar\Admin\Filament\Resources\TaxRateResource\RelationManagers\TaxRateAmountRelationManager;
-use Lunar\Admin\Filament\Resources\TaxRateResource\Schemas\TaxRateForm;
-use Lunar\Admin\Filament\Resources\TaxRateResource\Tables\TaxRateTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\TaxRate as TaxRateContract;
+use Lunar\Filament\RelationManagers\TaxRate\TaxRateAmountRelationManager;
+use Lunar\Filament\Schemas\TaxRate\TaxRateForm;
+use Lunar\Filament\Tables\TaxRate\TaxRateTable;
 
 class TaxRateResource extends BaseResource
 {

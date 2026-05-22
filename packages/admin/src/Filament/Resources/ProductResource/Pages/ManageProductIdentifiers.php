@@ -8,9 +8,9 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Filament\Resources\ProductVariantResource\Schemas\ProductVariantForm;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
 
 class ManageProductIdentifiers extends BaseEditRecord
 {

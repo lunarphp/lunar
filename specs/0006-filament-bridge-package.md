@@ -1,6 +1,6 @@
 # 0006 — Extract `lunarphp/filament` bridge package and reshape the install model
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-05-22
 - TODO item: "Move core Filament e-commerce components to a new `lunarphp/filament` package"

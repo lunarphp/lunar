@@ -8,10 +8,10 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\CreateTag;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\EditTag;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\ListTags;
-use Lunar\Admin\Filament\Resources\TagResource\Schemas\TagForm;
-use Lunar\Admin\Filament\Resources\TagResource\Tables\TagTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Tag as TagContract;
+use Lunar\Filament\Schemas\Tag\TagForm;
+use Lunar\Filament\Tables\Tag\TagTable;
 
 class TagResource extends BaseResource
 {

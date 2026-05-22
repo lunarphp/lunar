@@ -5,10 +5,10 @@ namespace Lunar\Admin\Support\Actions\Collections;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
+use Lunar\Filament\Forms\Components\TranslatedText;
 
 class CreateRootCollection extends CreateAction
 {

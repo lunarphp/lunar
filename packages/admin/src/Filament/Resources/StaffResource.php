@@ -9,10 +9,10 @@ use Lunar\Admin\Filament\Resources\StaffResource\Pages\AccessControl;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\CreateStaff;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\EditStaff;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff;
-use Lunar\Admin\Filament\Resources\StaffResource\Schemas\StaffForm;
-use Lunar\Admin\Filament\Resources\StaffResource\Tables\StaffTable;
 use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Filament\Schemas\Staff\StaffForm;
+use Lunar\Filament\Tables\Staff\StaffTable;
 
 class StaffResource extends BaseResource
 {

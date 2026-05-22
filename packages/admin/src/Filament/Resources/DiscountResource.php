@@ -10,18 +10,18 @@ use Lunar\Admin\Filament\Resources\DiscountResource\Pages\EditDiscount;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ListDiscounts;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ManageDiscountAvailability;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ManageDiscountLimitations;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionConditionRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CustomerLimitationRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductVariantLimitationRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\Schemas\DiscountForm;
-use Lunar\Admin\Filament\Resources\DiscountResource\Tables\DiscountTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Discount as DiscountContract;
+use Lunar\Filament\RelationManagers\Discount\BrandLimitationRelationManager;
+use Lunar\Filament\RelationManagers\Discount\CollectionConditionRelationManager;
+use Lunar\Filament\RelationManagers\Discount\CollectionLimitationRelationManager;
+use Lunar\Filament\RelationManagers\Discount\CustomerLimitationRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductConditionRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductLimitationRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductRewardRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductVariantLimitationRelationManager;
+use Lunar\Filament\Schemas\Discount\DiscountForm;
+use Lunar\Filament\Tables\Discount\DiscountTable;
 
 class DiscountResource extends BaseResource
 {

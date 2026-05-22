@@ -6,13 +6,13 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Facades\AttributeData;
-use Lunar\Admin\Support\FieldTypes\TextField;
 use Lunar\Core\FieldTypes\Dropdown;
 use Lunar\Core\FieldTypes\ListField;
 use Lunar\Core\FieldTypes\Number;
 use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\FieldTypes\YouTube;
 use Lunar\Core\Models\Attribute;
+use Lunar\Filament\FieldTypes\TextField;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)
@@ -38,7 +38,7 @@ describe('attribute data test', function () {
         [Text::class, RichEditor::class, ['richtext' => true]],
         [Dropdown::class, Select::class],
         [ListField::class, KeyValue::class],
-        [YouTube::class, Lunar\Admin\Support\Forms\Components\YouTube::class],
+        [YouTube::class, Lunar\Filament\Forms\Components\YouTube::class],
         [Number::class, TextInput::class],
     ]);
 

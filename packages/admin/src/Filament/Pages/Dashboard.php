@@ -3,15 +3,15 @@
 namespace Lunar\Admin\Filament\Pages;
 
 use Filament\Support\Facades\FilamentIcon;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Pages\BaseDashboard;
+use Lunar\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
+use Lunar\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
+use Lunar\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
+use Lunar\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
+use Lunar\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
+use Lunar\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
+use Lunar\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 
 class Dashboard extends BaseDashboard
 {

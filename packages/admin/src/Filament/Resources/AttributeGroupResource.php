@@ -8,11 +8,11 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\CreateAttributeGroup;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\ListAttributeGroups;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\Schemas\AttributeGroupForm;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\Tables\AttributeGroupTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\AttributeGroup as AttributeGroupContract;
+use Lunar\Filament\RelationManagers\AttributeGroup\AttributesRelationManager;
+use Lunar\Filament\Schemas\AttributeGroup\AttributeGroupForm;
+use Lunar\Filament\Tables\AttributeGroup\AttributeGroupTable;
 
 class AttributeGroupResource extends BaseResource
 {

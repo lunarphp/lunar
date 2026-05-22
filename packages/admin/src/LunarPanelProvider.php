@@ -10,7 +10,6 @@ use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
 use Lunar\Admin\Auth\Manifest;
 use Lunar\Admin\Console\Commands\MakeLunarAdminCommand;
 use Lunar\Admin\Database\State\EnsureBaseRolesAndPermissions;
@@ -29,8 +28,6 @@ use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Listeners\FilamentUpgradedListener;
 use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
-use Lunar\Admin\Support\Forms\AttributeData;
-use Lunar\Admin\Support\Synthesizers\PriceSynth;
 
 class LunarPanelProvider extends ServiceProvider
 {
@@ -54,9 +51,7 @@ class LunarPanelProvider extends ServiceProvider
             return new ActivityLogManifest;
         });
 
-        $this->app->scoped('lunar-attribute-data', function (): AttributeData {
-            return new AttributeData;
-        });
+        // 'lunar-attribute-data' binding now lives in LunarFilamentServiceProvider.
     }
 
     public function boot(): void
@@ -182,7 +177,8 @@ class LunarPanelProvider extends ServiceProvider
 
     protected function registerLunarSynthesizer(): void
     {
-        Support\Facades\AttributeData::synthesizeLivewireProperties();
-        Livewire::propertySynthesizer(PriceSynth::class);
+        // The bridge (lunarphp/filament) now owns synthesizer registration via
+        // LunarFilamentServiceProvider::registerSynthesizers(). Kept as a no-op
+        // for v2 in case downstream code overrides this method; removed in v3.
     }
 }

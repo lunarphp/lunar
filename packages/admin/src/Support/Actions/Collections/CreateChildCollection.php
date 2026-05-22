@@ -6,9 +6,9 @@ use Filament\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Support\Actions\Traits\CreatesChildCollections;
-use Lunar\Admin\Support\Forms\Components\TranslatedText;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
+use Lunar\Filament\Forms\Components\TranslatedText;
 
 class CreateChildCollection extends CreateAction
 {

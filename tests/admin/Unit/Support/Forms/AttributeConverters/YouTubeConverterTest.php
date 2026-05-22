@@ -18,8 +18,8 @@ describe('youtube field converter', function () {
             'type' => YouTube::class,
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\YouTube::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\YouTube::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(Lunar\Admin\Support\Forms\Components\YouTube::class);
+        expect($inputComponent)->toBeInstanceOf(Lunar\Filament\Forms\Components\YouTube::class);
     });
 });

@@ -2,7 +2,6 @@
 
 namespace Lunar\Tests\Admin;
 
-use Awcodes\Shout\ShoutServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
@@ -20,6 +19,7 @@ use Livewire\LivewireServiceProvider;
 use Lunar\Admin\LunarPanelProvider;
 use Lunar\Admin\Models\Staff;
 use Lunar\Core\LunarServiceProvider;
+use Lunar\Filament\LunarFilamentServiceProvider;
 use Lunar\Tests\Admin\Providers\LunarPanelTestServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
 use Lunar\Tests\TestCase as BaseTestCase;
@@ -45,6 +45,7 @@ class TestCase extends BaseTestCase
     {
         return [
             LunarServiceProvider::class,
+            LunarFilamentServiceProvider::class,
             LunarPanelProvider::class,
 
             ActionsServiceProvider::class,
@@ -59,7 +60,6 @@ class TestCase extends BaseTestCase
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
             BladeLucideIconsServiceProvider::class,
-            ShoutServiceProvider::class,
 
             LunarPanelTestServiceProvider::class,
 

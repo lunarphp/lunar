@@ -5,8 +5,8 @@ namespace Lunar\Admin\Filament\Resources\DiscountResource\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Schemas\Components\Group;
 use Lunar\Admin\Filament\Resources\DiscountResource;
-use Lunar\Admin\Filament\Resources\DiscountResource\Schemas\DiscountForm;
 use Lunar\Admin\Support\Pages\BaseListRecords;
+use Lunar\Filament\Schemas\Discount\DiscountForm;
 
 class ListDiscounts extends BaseListRecords
 {

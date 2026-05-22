@@ -55,15 +55,16 @@ use Lunar\Admin\Filament\Resources\TagResource;
 use Lunar\Admin\Filament\Resources\TaxClassResource;
 use Lunar\Admin\Filament\Resources\TaxRateResource;
 use Lunar\Admin\Filament\Resources\TaxZoneResource;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
-use Lunar\Admin\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 use Lunar\Admin\Http\Controllers\DownloadPdfController;
 use Lunar\Admin\Support\Facades\LunarAccessControl;
+use Lunar\Filament\Support\ComponentExtensions\Registry;
+use Lunar\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
+use Lunar\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
+use Lunar\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
+use Lunar\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
+use Lunar\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
+use Lunar\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
+use Lunar\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 
 class LunarPanelManager
 {
@@ -323,19 +324,20 @@ class LunarPanelManager
 
     public function extensions(array $extensions): self
     {
+        $registry = app(Registry::class);
+
         foreach ($extensions as $class => $extension) {
             if (! is_array($extension)) {
                 $extension = [$extension];
             }
 
-            $this->extensions[$class] = [
-                ...$this->extensions[$class] ?? [],
-                ...collect($extension)->reject(
-                    fn ($extension) => ! class_exists($extension)
-                )->map(
-                    fn ($extension) => app($extension)
-                )->values()->toArray(),
-            ];
+            $instances = collect($extension)
+                ->reject(fn ($extension) => is_string($extension) && ! class_exists($extension))
+                ->map(fn ($extension) => is_object($extension) ? $extension : app($extension))
+                ->values()
+                ->toArray();
+
+            $registry->register([$class => $instances]);
         }
 
         return $this;
@@ -343,7 +345,7 @@ class LunarPanelManager
 
     public function getExtensions(): array
     {
-        return $this->extensions;
+        return app(Registry::class)->all();
     }
 
     /**
@@ -379,15 +381,17 @@ class LunarPanelManager
 
     public function callHook(string $class, ?object $caller, string $hookName, ...$args): mixed
     {
-        if (isset($this->extensions[$class])) {
-            foreach ($this->extensions[$class] as $extension) {
-                if (method_exists($extension, $hookName)) {
+        $extensions = app(Registry::class)->for($class);
+
+        foreach ($extensions as $extension) {
+            if (method_exists($extension, $hookName)) {
+                if (method_exists($extension, 'setCaller')) {
                     $extension->setCaller($caller);
-                    $args[0] = $extension->{$hookName}(...$args);
                 }
+                $args[0] = $extension->{$hookName}(...$args);
             }
         }
 
-        return $args[0];
+        return $args[0] ?? null;
     }
 }

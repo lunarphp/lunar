@@ -18,7 +18,7 @@ describe('list field converter', function () {
             'type' => ListField::class,
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\ListField::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\ListField::getFilamentComponent($attribute);
 
         expect($inputComponent)->toBeInstanceOf(KeyValue::class);
     });

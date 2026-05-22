@@ -14,10 +14,10 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantInv
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantMedia;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantPricing;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
-use Lunar\Admin\Filament\Resources\ProductVariantResource\Schemas\ProductVariantForm;
-use Lunar\Admin\Filament\Resources\ProductVariantResource\Tables\ProductVariantTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
+use Lunar\Filament\Tables\ProductVariant\ProductVariantTable;
 
 class ProductVariantResource extends BaseResource
 {
@@ -60,7 +60,7 @@ class ProductVariantResource extends BaseResource
     public static function getVariantSwitcherWidget(Model $record): Action
     {
         return Action::make('switch_variant')
-            ->label(__('lunarpanel::widgets.variant_switcher.label'))
+            ->label(__('lunar-filament::widgets.variant_switcher.label'))
             ->modalContent(function () use ($record) {
                 return view('lunarpanel::actions.switch-variant', [
                     'record' => $record->product,

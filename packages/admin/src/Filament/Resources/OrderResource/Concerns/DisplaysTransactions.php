@@ -5,7 +5,7 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
-use Lunar\Admin\Support\Infolists\Components\Transaction as InfolistsTransaction;
+use Lunar\Filament\Infolists\Components\Transaction as InfolistsTransaction;
 
 trait DisplaysTransactions
 {

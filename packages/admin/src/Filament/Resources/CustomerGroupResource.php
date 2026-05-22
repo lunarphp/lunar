@@ -8,10 +8,10 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGroup;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\EditCustomerGroup;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\ListCustomerGroups;
-use Lunar\Admin\Filament\Resources\CustomerGroupResource\Schemas\CustomerGroupForm;
-use Lunar\Admin\Filament\Resources\CustomerGroupResource\Tables\CustomerGroupTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
+use Lunar\Filament\Schemas\CustomerGroup\CustomerGroupForm;
+use Lunar\Filament\Tables\CustomerGroup\CustomerGroupTable;
 
 class CustomerGroupResource extends BaseResource
 {

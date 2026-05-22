@@ -2,8 +2,8 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingMethodResource\Schemas;
 
-use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -22,9 +22,9 @@ class ShippingMethodForm
         return self::callStaticLunarHook(
             'configureForm',
             $schema->components([
-                Shout::make('product-customer-groups')
-                    ->content(__('lunarpanel.shipping::shippingmethod.pages.availability.customer_groups'))
-                    ->type('warning')
+                Callout::make()
+                    ->heading(__('lunarpanel.shipping::shippingmethod.pages.availability.customer_groups'))
+                    ->status('warning')
                     ->hidden(fn (Model $record) => $record->customerGroups()->where('enabled', true)->count()),
                 Section::make()->schema(static::getMainComponents()),
             ])->columns(1),

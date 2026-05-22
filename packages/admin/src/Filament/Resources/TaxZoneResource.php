@@ -9,10 +9,10 @@ use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\CreateTaxZone;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\EditTaxZone;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\ListTaxZones;
-use Lunar\Admin\Filament\Resources\TaxZoneResource\Schemas\TaxZoneForm;
-use Lunar\Admin\Filament\Resources\TaxZoneResource\Tables\TaxZoneTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Filament\Schemas\TaxZone\TaxZoneForm;
+use Lunar\Filament\Tables\TaxZone\TaxZoneTable;
 
 class TaxZoneResource extends BaseResource
 {

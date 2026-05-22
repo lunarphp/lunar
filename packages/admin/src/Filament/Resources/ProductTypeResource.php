@@ -7,10 +7,10 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\CreateProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\EditProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\ListProductTypes;
-use Lunar\Admin\Filament\Resources\ProductTypeResource\Schemas\ProductTypeForm;
-use Lunar\Admin\Filament\Resources\ProductTypeResource\Tables\ProductTypeTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\ProductType as ProductTypeContract;
+use Lunar\Filament\Schemas\ProductType\ProductTypeForm;
+use Lunar\Filament\Tables\ProductType\ProductTypeTable;
 
 class ProductTypeResource extends BaseResource
 {

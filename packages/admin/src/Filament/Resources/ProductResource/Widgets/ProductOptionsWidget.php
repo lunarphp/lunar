@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Widgets;
 
-use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -11,6 +10,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Callout;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -60,8 +60,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 
         return Action::make('addSharedOption')
             ->schema([
-                Shout::make('no_shared_components')
-                    ->content(
+                Callout::make()
+                    ->status('info')
+                    ->heading(
                         __('lunarpanel::productoption.widgets.product-options.actions.add-shared-option.form.no_shared_components.label')
                     )
                     ->visible(

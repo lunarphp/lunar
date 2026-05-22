@@ -1,7 +1,7 @@
 <?php
 
-use Lunar\Admin\Support\Synthesizers\ListSynth;
 use Lunar\Core\FieldTypes\ListField;
+use Lunar\Filament\Synthesizers\ListSynth;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)

@@ -7,10 +7,10 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\EditCollectionGroup;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\ListCollectionGroups;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Schemas\CollectionGroupForm;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Tables\CollectionGroupTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\CollectionGroup as CollectionGroupContract;
+use Lunar\Filament\Schemas\CollectionGroup\CollectionGroupForm;
+use Lunar\Filament\Tables\CollectionGroup\CollectionGroupTable;
 
 class CollectionGroupResource extends BaseResource
 {

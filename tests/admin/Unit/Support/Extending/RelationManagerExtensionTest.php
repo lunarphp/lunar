@@ -6,15 +6,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
-use Lunar\Admin\Filament\Resources\AttributeGroupResource\RelationManagers\AttributesRelationManager;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
-use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\AddressRelationManager;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\EditDiscount;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\EditProductOption;
-use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers\ValuesRelationManager;
 use Lunar\Admin\Support\Extending\RelationManagerExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Filament\RelationManagers\AttributeGroup\AttributesRelationManager;
+use Lunar\Filament\RelationManagers\Customer\AddressRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductLimitationRelationManager;
+use Lunar\Filament\RelationManagers\ProductOption\ValuesRelationManager;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

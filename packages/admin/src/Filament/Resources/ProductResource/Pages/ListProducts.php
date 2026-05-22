@@ -9,13 +9,13 @@ use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Filament\Resources\ProductResource\Schemas\ProductForm;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\TaxClass;
+use Lunar\Filament\Schemas\Product\ProductForm;
 
 class ListProducts extends BaseListRecords
 {

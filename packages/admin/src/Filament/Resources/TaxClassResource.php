@@ -9,10 +9,10 @@ use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\CreateTaxClass;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\EditTaxClass;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\ListTaxClasses;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Schemas\TaxClassForm;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Tables\TaxClassTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\TaxClass as TaxClassContract;
+use Lunar\Filament\Schemas\TaxClass\TaxClassForm;
+use Lunar\Filament\Tables\TaxClass\TaxClassTable;
 
 class TaxClassResource extends BaseResource
 {

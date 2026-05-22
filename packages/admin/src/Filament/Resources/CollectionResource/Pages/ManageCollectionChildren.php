@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\ChildCollectionCreated;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Admin\Support\Tables\Actions\Collections\CreateChildCollection;
+use Lunar\Filament\Tables\Actions\Collections\CreateChildCollection;
 
 class ManageCollectionChildren extends BaseManageRelatedRecords
 {

@@ -10,8 +10,8 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
-use Lunar\Admin\Filament\Resources\ProductVariantResource\Schemas\ProductVariantForm;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
 
 class ManageVariantInventory extends BaseEditRecord
 {

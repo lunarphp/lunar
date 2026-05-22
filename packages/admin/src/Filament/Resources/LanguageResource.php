@@ -8,10 +8,10 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\CreateLanguage;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\EditLanguage;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\ListLanguages;
-use Lunar\Admin\Filament\Resources\LanguageResource\Schemas\LanguageForm;
-use Lunar\Admin\Filament\Resources\LanguageResource\Tables\LanguageTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Language as LanguageContract;
+use Lunar\Filament\Schemas\Language\LanguageForm;
+use Lunar\Filament\Tables\Language\LanguageTable;
 
 class LanguageResource extends BaseResource
 {

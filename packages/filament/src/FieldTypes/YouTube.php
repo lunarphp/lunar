@@ -1,0 +1,24 @@
+<?php
+
+namespace Lunar\Filament\FieldTypes;
+
+use Filament\Schemas\Components\Component;
+use Lunar\Filament\Forms\Components\YouTube as YouTubeInput;
+use Lunar\Filament\Synthesizers\YouTubeSynth;
+use Lunar\Core\Models\Attribute;
+
+class YouTube extends BaseFieldType
+{
+    protected static string $synthesizer = YouTubeSynth::class;
+
+    public static function getFilamentComponent(Attribute $attribute): Component
+    {
+        return YouTubeInput::make($attribute->handle)
+            ->live(debounce: 200)
+            ->when(filled($attribute->validation_rules), fn (YouTubeInput $component) => $component->rules($attribute->validation_rules))
+            ->required((bool) $attribute->required)
+            ->helperText(
+                $attribute->translate('description') ?? __('lunarpanel::components.forms.youtube.helperText')
+            );
+    }
+}

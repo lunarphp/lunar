@@ -14,9 +14,9 @@ use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionChil
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionMedia;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionProducts;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionUrls;
-use Lunar\Admin\Filament\Resources\CollectionResource\Schemas\CollectionForm;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Filament\Schemas\Collection\CollectionForm;
 
 class CollectionResource extends BaseResource
 {

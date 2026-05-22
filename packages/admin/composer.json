@@ -1,5 +1,5 @@
 {
-    "name": "lunarphp/lunar",
+    "name": "lunarphp/admin",
     "description": "Admin panel for LunarPHP",
     "license": "MIT",
     "autoload": {
@@ -21,9 +21,7 @@
         "spatie/laravel-permission": "^6.12",
         "barryvdh/laravel-dompdf": "^3.0",
         "technikermathe/blade-lucide-icons": "^v3.0",
-        "leandrocfe/filament-apex-charts": "^5.0",
-        "awcodes/shout": "^4.0",
-        "awcodes/filament-badgeable-column": "^4.0"
+        "leandrocfe/filament-apex-charts": "^5.0"
     },
     "extra": {
         "laravel": {

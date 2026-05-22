@@ -7,11 +7,11 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Lunar\Admin\Filament\Resources\DiscountResource;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\BrandLimitationRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionLimitationRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductLimitationRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductVariantLimitationRelationManager;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Filament\RelationManagers\Discount\BrandLimitationRelationManager;
+use Lunar\Filament\RelationManagers\Discount\CollectionLimitationRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductLimitationRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductVariantLimitationRelationManager;
 
 class ManageBuyXGetYDiscount extends BaseEditRecord
 {

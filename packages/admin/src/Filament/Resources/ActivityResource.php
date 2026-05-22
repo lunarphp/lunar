@@ -7,9 +7,9 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ListActivities;
 use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ViewActivity;
-use Lunar\Admin\Filament\Resources\ActivityResource\Schemas\ActivityForm;
-use Lunar\Admin\Filament\Resources\ActivityResource\Tables\ActivityTable;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Filament\Schemas\Activity\ActivityForm;
+use Lunar\Filament\Tables\Activity\ActivityTable;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivityResource extends BaseResource

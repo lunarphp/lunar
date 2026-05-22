@@ -8,10 +8,10 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\EditCurrency;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
-use Lunar\Admin\Filament\Resources\CurrencyResource\Schemas\CurrencyForm;
-use Lunar\Admin\Filament\Resources\CurrencyResource\Tables\CurrencyTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Filament\Schemas\Currency\CurrencyForm;
+use Lunar\Filament\Tables\Currency\CurrencyTable;
 
 class CurrencyResource extends BaseResource
 {
