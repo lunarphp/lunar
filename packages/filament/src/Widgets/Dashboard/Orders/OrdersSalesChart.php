@@ -5,23 +5,22 @@ namespace Lunar\Filament\Widgets\Dashboard\Orders;
 use Carbon\CarbonInterface;
 use DateTime;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+use Filament\Widgets\LineChartWidget;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
+use Lunar\Filament\Widgets\Dashboard\Orders\Concerns\HasChartPalette;
 
-class OrdersSalesChart extends ApexChartWidget
+class OrdersSalesChart extends LineChartWidget
 {
+    use HasChartPalette;
     use InteractsWithPageFilters;
-
-    /**
-     * Chart Id
-     */
-    protected static ?string $chartId = 'ordersSalesChart';
 
     protected ?string $pollingInterval = '60s';
 
-    protected function getHeading(): ?string
+    protected ?string $heading = null;
+
+    public function getHeading(): ?string
     {
         return __('lunar-filament::widgets.dashboard.orders.order_sales_chart.heading');
     }
@@ -36,9 +35,8 @@ class OrdersSalesChart extends ApexChartWidget
             ]);
     }
 
-    protected function getOptions(): array
+    protected function getData(): array
     {
-        $currency = Currency::getDefault();
         $date = now()->settings([
             'monthOverflow' => false,
         ]);
@@ -71,43 +69,54 @@ class OrdersSalesChart extends ApexChartWidget
             $salesData[] = $order->sub_total->decimal;
         }
 
+        [$orders, $sales] = [$this->chartColor(0), $this->chartColor(1)];
+
         return [
-            'chart' => [
-                'type' => 'area',
-                'stacked' => false,
-                'toolbar' => [
-                    'show' => false,
-                ],
-            ],
-            'dataLabels' => [
-                'enabled' => false,
-            ],
-            'series' => [
+            'datasets' => [
                 [
-                    'name' => __('lunar-filament::widgets.dashboard.orders.order_sales_chart.series_one.label'),
+                    'label' => __('lunar-filament::widgets.dashboard.orders.order_sales_chart.series_one.label'),
                     'data' => $ordersData,
+                    'fill' => true,
+                    'yAxisID' => 'y',
+                    'borderColor' => $orders['border'],
+                    'backgroundColor' => $orders['background'],
                 ],
                 [
-                    'name' => __('lunar-filament::widgets.dashboard.orders.order_sales_chart.series_two.label'),
+                    'label' => __('lunar-filament::widgets.dashboard.orders.order_sales_chart.series_two.label'),
                     'data' => $salesData,
+                    'fill' => true,
+                    'yAxisID' => 'y1',
+                    'borderColor' => $sales['border'],
+                    'backgroundColor' => $sales['background'],
                 ],
             ],
-            'xaxis' => [
-                'categories' => $labels,
-            ],
-            'yaxis' => [
-                [
-                    'seriesName' => 'OrderCount',
-                    'min' => 0,
-                    'decimalsInFloat' => 0,
+            'labels' => $labels,
+        ];
+    }
+
+    protected function getOptions(): array
+    {
+        $currency = Currency::getDefault();
+
+        return [
+            'scales' => [
+                'y' => [
+                    'type' => 'linear',
+                    'position' => 'left',
+                    'beginAtZero' => true,
+                    'ticks' => ['precision' => 0],
                     'title' => [
+                        'display' => true,
                         'text' => __('lunar-filament::widgets.dashboard.orders.order_sales_chart.yaxis.series_one.label'),
                     ],
                 ],
-                [
-                    'seriesName' => 'SalesRevenue',
-                    'opposite' => true,
+                'y1' => [
+                    'type' => 'linear',
+                    'position' => 'right',
+                    'beginAtZero' => true,
+                    'grid' => ['drawOnChartArea' => false],
                     'title' => [
+                        'display' => true,
                         'text' => __('lunar-filament::widgets.dashboard.orders.order_sales_chart.yaxis.series_two.label', [
                             'currency' => $currency->code,
                         ]),

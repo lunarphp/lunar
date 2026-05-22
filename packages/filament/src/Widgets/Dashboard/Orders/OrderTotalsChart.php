@@ -6,23 +6,22 @@ use Carbon\CarbonInterface;
 use Carbon\CarbonPeriod;
 use DateTime;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+use Filament\Widgets\LineChartWidget;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
+use Lunar\Filament\Widgets\Dashboard\Orders\Concerns\HasChartPalette;
 
-class OrderTotalsChart extends ApexChartWidget
+class OrderTotalsChart extends LineChartWidget
 {
+    use HasChartPalette;
     use InteractsWithPageFilters;
-
-    /**
-     * Chart Id
-     */
-    protected static ?string $chartId = 'orderTotalsChart';
 
     protected ?string $pollingInterval = '60s';
 
-    protected function getHeading(): ?string
+    protected ?string $heading = null;
+
+    public function getHeading(): ?string
     {
         return __('lunar-filament::widgets.dashboard.orders.order_totals_chart.heading');
     }
@@ -37,12 +36,8 @@ class OrderTotalsChart extends ApexChartWidget
             ]);
     }
 
-    protected function getOptions(): array
+    protected function getData(): array
     {
-        $datasets = [];
-        $labels = [];
-        $currency = Currency::getDefault();
-
         $date = now()->settings([
             'monthOverflow' => false,
         ]);
@@ -52,41 +47,45 @@ class OrderTotalsChart extends ApexChartWidget
         $currentPeriod = $this->getTotalsForPeriod($from, $date);
         $previousPeriod = $this->getTotalsForPeriod($from->clone()->subYear(), $date->clone()->subYear());
 
+        [$current, $previous] = [$this->chartColor(0), $this->chartColor(1)];
+
         return [
-            'chart' => [
-                'type' => 'area',
-                'toolbar' => [
-                    'show' => false,
-                ],
-            ],
-            'dataLabels' => [
-                'enabled' => false,
-            ],
-            'series' => [
+            'datasets' => [
                 [
-                    'name' => __('lunar-filament::widgets.dashboard.orders.order_totals_chart.series_one.label'),
-                    'data' => $currentPeriod->pluck('sub_total'),
+                    'label' => __('lunar-filament::widgets.dashboard.orders.order_totals_chart.series_one.label'),
+                    'data' => $currentPeriod->pluck('sub_total')->all(),
+                    'fill' => true,
+                    'borderColor' => $current['border'],
+                    'backgroundColor' => $current['background'],
                 ],
                 [
-                    'name' => __('lunar-filament::widgets.dashboard.orders.order_totals_chart.series_two.label'),
-                    'data' => $previousPeriod->pluck('sub_total'),
+                    'label' => __('lunar-filament::widgets.dashboard.orders.order_totals_chart.series_two.label'),
+                    'data' => $previousPeriod->pluck('sub_total')->all(),
+                    'fill' => true,
+                    'borderColor' => $previous['border'],
+                    'backgroundColor' => $previous['background'],
                 ],
             ],
-            'xaxis' => [
-                'categories' => $previousPeriod->map(
-                    fn ($record) => "{$record->month}"
-                ),
+            'labels' => $previousPeriod->map(fn ($record) => $record->month)->all(),
+        ];
+    }
+
+    protected function getOptions(): array
+    {
+        $currency = Currency::getDefault();
+
+        return [
+            'plugins' => [
+                'legend' => ['display' => true],
             ],
-            'yaxis' => [
-                'title' => [
-                    'text' => __('lunar-filament::widgets.dashboard.orders.order_totals_chart.yaxis.label', [
-                        'currency' => $currency->code,
-                    ]),
-                ],
-            ],
-            'tooltip' => [
-                'x' => [
-                    'format' => 'dd MMM yyyy',
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => __('lunar-filament::widgets.dashboard.orders.order_totals_chart.yaxis.label', [
+                            'currency' => $currency->code,
+                        ]),
+                    ],
                 ],
             ],
         ];
@@ -116,7 +115,6 @@ class OrderTotalsChart extends ApexChartWidget
             )->orderBy(DB::RAW(db_date('placed_at', '%Y-%m')), 'desc')->get();
 
         foreach ($period as $date) {
-            // Find our records for this period.
             $report = $results->first(function ($month) use ($date) {
                 return $month->monthstamp == $date->format('Ym');
             });

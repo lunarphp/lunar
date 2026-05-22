@@ -21,7 +21,6 @@
         "kalnoy/nestedset": "^v6.0.5|^v7.0.1",
         "laravel/framework": "^12.0|^13.0",
         "laravel/scout": "^10.13.1",
-        "leandrocfe/filament-apex-charts": "^5.0",
         "livewire/livewire": "^4.1",
         "lukascivil/treewalker": "0.9.1",
         "lunarphp/admin": "self.version",

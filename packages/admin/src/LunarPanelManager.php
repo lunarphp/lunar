@@ -29,7 +29,6 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use Lunar\Admin\Filament\AvatarProviders\GravatarProvider;
 use Lunar\Admin\Filament\Pages\Dashboard;
 use Lunar\Admin\Filament\Resources\ActivityResource;
@@ -255,9 +254,7 @@ class LunarPanelManager
                 ->name('lunar.pdf.download')->middleware($panelMiddleware);
         }
 
-        $plugins = [
-            FilamentApexChartsPlugin::make(),
-        ];
+        $plugins = [];
 
         $panel = Panel::make()
             ->spa()

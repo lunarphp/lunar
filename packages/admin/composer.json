@@ -20,8 +20,7 @@
         "filament/spatie-laravel-media-library-plugin": "^5.0",
         "spatie/laravel-permission": "^6.12",
         "barryvdh/laravel-dompdf": "^3.0",
-        "mallardduck/blade-lucide-icons": "^1.26",
-        "leandrocfe/filament-apex-charts": "^5.0"
+        "mallardduck/blade-lucide-icons": "^1.26"
     },
     "extra": {
         "laravel": {
