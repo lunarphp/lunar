@@ -501,7 +501,6 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\Actions\\Traits\\CreatesChildCollections' => 'Lunar\\Filament\\Support\\Concerns\\CreatesChildCollections',
         'Lunar\\Admin\\Support\\Actions\\Traits\\UpdatesOrderStatus' => 'Lunar\\Filament\\Support\\Concerns\\UpdatesOrderStatus',
         'Lunar\\Admin\\Support\\Actions\\Orders\\UpdateStatusBulkAction' => 'Lunar\\Filament\\Tables\\Actions\\Orders\\UpdateStatusBulkAction',
-        'Lunar\\Admin\\Support\\Facades\\AttributeData' => 'Lunar\\Filament\\Support\\Facades\\AttributeData',
         'Lunar\\Admin\\Base\\LunarPanelDiscountInterface' => 'Lunar\\Filament\\Contracts\\DiscountFormType',
         'Lunar\\Admin\\Events\\ChildCollectionCreated' => 'Lunar\\Filament\\Events\\ChildCollectionCreated',
         'Lunar\\Admin\\Events\\CollectionProductAttached' => 'Lunar\\Filament\\Events\\CollectionProductAttached',
