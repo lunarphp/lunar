@@ -7,7 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class TaxRateForm
 {
@@ -35,7 +35,7 @@ class TaxRateForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel::taxrate.form.name.label'))
+            ->label(__('lunar-filament::taxrate.form.name.label'))
             ->unique(column: 'name', ignoreRecord: true)
             ->required()
             ->maxLength(255)
@@ -45,7 +45,7 @@ class TaxRateForm
     public static function getPriorityComponent(): Component
     {
         return TextInput::make('priority')
-            ->label(__('lunarpanel::taxrate.form.priority.label'))
+            ->label(__('lunar-filament::taxrate.form.priority.label'))
             ->required()
             ->numeric()
             ->maxLength(255)
@@ -56,7 +56,7 @@ class TaxRateForm
     {
         return Select::make('tax_zone_id')
             ->relationship(name: 'taxZone', titleAttribute: 'name')
-            ->label(__('lunarpanel::taxrate.form.tax_zone_id.label'))
+            ->label(__('lunar-filament::taxrate.form.tax_zone_id.label'))
             ->live()
             ->required();
     }

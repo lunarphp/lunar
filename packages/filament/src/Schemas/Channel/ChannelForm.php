@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ChannelForm
 {
@@ -38,7 +38,7 @@ class ChannelForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel::channel.form.name.label'))
+            ->label(__('lunar-filament::channel.form.name.label'))
             ->required()
             ->maxLength(255)
             ->afterStateUpdated(function (string $operation, $state, Set $set) {
@@ -54,7 +54,7 @@ class ChannelForm
     public static function getHandleComponent(): Component
     {
         return TextInput::make('handle')
-            ->label(__('lunarpanel::channel.form.handle.label'))
+            ->label(__('lunar-filament::channel.form.handle.label'))
             ->required()
             ->unique(ignoreRecord: true)
             ->live(onBlur: true)
@@ -72,7 +72,7 @@ class ChannelForm
     public static function getUrlComponent(): Component
     {
         return TextInput::make('url')
-            ->label(__('lunarpanel::channel.form.url.label'))
+            ->label(__('lunar-filament::channel.form.url.label'))
             ->maxLength(255)
             ->autofocus();
     }
@@ -80,6 +80,6 @@ class ChannelForm
     public static function getDefaultComponent(): Component
     {
         return Toggle::make('default')
-            ->label(__('lunarpanel::channel.form.default.label'));
+            ->label(__('lunar-filament::channel.form.default.label'));
     }
 }

@@ -6,10 +6,10 @@ use Filament\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
-use Lunar\Filament\Tables\Order\OrderTable;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
+use Lunar\Filament\Support\RecordUrls;
+use Lunar\Filament\Tables\Order\OrderTable;
 
 class OrdersRelationManager extends BaseRelationManager
 {
@@ -17,7 +17,7 @@ class OrdersRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::order.plural_label');
+        return __('lunar-filament::order.plural_label');
     }
 
     public function getDefaultTable(Table $table): Table
@@ -28,7 +28,7 @@ class OrdersRelationManager extends BaseRelationManager
             fn (Builder $query): Builder => $query->with(['currency'])
         )->recordActions([
             Action::make('viewOrder')
-                ->url(fn (OrderContract $record): string => ManageOrder::getUrl(['record' => $record])),
+                ->url(fn (OrderContract $record): ?string => RecordUrls::for('order', $record)),
         ]);
     }
 }

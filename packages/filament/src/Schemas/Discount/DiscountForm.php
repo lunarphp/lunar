@@ -14,12 +14,12 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
-use Lunar\Admin\Base\LunarPanelDiscountInterface;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Currency;
+use Lunar\Filament\Contracts\DiscountFormType;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class DiscountForm
 {
@@ -28,7 +28,7 @@ class DiscountForm
     public static function configure(Schema $schema): Schema
     {
         $discountSchemas = Discounts::getTypes()->map(function ($discount) {
-            if (! $discount instanceof LunarPanelDiscountInterface) {
+            if (! $discount instanceof DiscountFormType) {
                 return;
             }
 
@@ -45,13 +45,13 @@ class DiscountForm
                 Section::make('')->schema(static::getMainComponents()),
                 Section::make('conditions')
                     ->schema(static::getConditionsComponents())
-                    ->heading(__('lunarpanel::discount.form.conditions.heading')),
+                    ->heading(__('lunar-filament::discount.form.conditions.heading')),
                 Section::make('buy_x_get_y')
-                    ->heading(__('lunarpanel::discount.form.buy_x_get_y.heading'))
+                    ->heading(__('lunar-filament::discount.form.buy_x_get_y.heading'))
                     ->visible(fn (Get $get) => $get('type') == BuyXGetY::class)
                     ->schema(static::getBuyXGetYComponents()),
                 Section::make('amount_off')
-                    ->heading(__('lunarpanel::discount.form.amount_off.heading'))
+                    ->heading(__('lunar-filament::discount.form.amount_off.heading'))
                     ->visible(fn (Get $get) => $get('type') == AmountOff::class)
                     ->schema(static::getAmountOffComponents()),
                 ...$discountSchemas,
@@ -88,14 +88,14 @@ class DiscountForm
             ])->columns(3),
             Fieldset::make()
                 ->schema(static::getMinimumCartAmountsComponents())
-                ->label(__('lunarpanel::discount.form.minimum_cart_amount.label')),
+                ->label(__('lunar-filament::discount.form.minimum_cart_amount.label')),
         ];
     }
 
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel::discount.form.name.label'))
+            ->label(__('lunar-filament::discount.form.name.label'))
             ->live(onBlur: true)
             ->afterStateUpdated(function (string $operation, $state, Set $set) {
                 if ($operation !== 'create') {
@@ -111,7 +111,7 @@ class DiscountForm
     public static function getHandleComponent(): Component
     {
         return TextInput::make('handle')
-            ->label(__('lunarpanel::discount.form.handle.label'))
+            ->label(__('lunar-filament::discount.form.handle.label'))
             ->required()
             ->unique(ignoreRecord: true)
             ->live(onBlur: true)
@@ -129,7 +129,7 @@ class DiscountForm
     public static function getStartsAtComponent(): Component
     {
         return DateTimePicker::make('starts_at')
-            ->label(__('lunarpanel::discount.form.starts_at.label'))
+            ->label(__('lunar-filament::discount.form.starts_at.label'))
             ->required()
             ->before(fn (Get $get) => $get('ends_at'));
     }
@@ -137,14 +137,14 @@ class DiscountForm
     public static function getEndsAtComponent(): Component
     {
         return DateTimePicker::make('ends_at')
-            ->label(__('lunarpanel::discount.form.ends_at.label'));
+            ->label(__('lunar-filament::discount.form.ends_at.label'));
     }
 
     public static function getPriorityComponent(): Component
     {
         return TextInput::make('priority')
-            ->label(__('lunarpanel::discount.form.priority.label'))
-            ->helperText(__('lunarpanel::discount.form.priority.helper_text'))
+            ->label(__('lunar-filament::discount.form.priority.label'))
+            ->helperText(__('lunar-filament::discount.form.priority.helper_text'))
             ->numeric()
             ->minValue(1)
             ->maxValue(100)
@@ -154,30 +154,30 @@ class DiscountForm
     public static function getStopComponent(): Component
     {
         return Toggle::make('stop')
-            ->label(__('lunarpanel::discount.form.stop.label'))
-            ->helperText(__('lunarpanel::discount.form.stop.helper_text'));
+            ->label(__('lunar-filament::discount.form.stop.label'))
+            ->helperText(__('lunar-filament::discount.form.stop.helper_text'));
     }
 
     public static function getCouponComponent(): Component
     {
         return TextInput::make('coupon')
-            ->label(__('lunarpanel::discount.form.coupon.label'))
-            ->helperText(__('lunarpanel::discount.form.coupon.helper_text'))
+            ->label(__('lunar-filament::discount.form.coupon.label'))
+            ->helperText(__('lunar-filament::discount.form.coupon.helper_text'))
             ->unique(ignoreRecord: true);
     }
 
     public static function getMaxUsesComponent(): Component
     {
         return TextInput::make('max_uses')
-            ->label(__('lunarpanel::discount.form.max_uses.label'))
-            ->helperText(__('lunarpanel::discount.form.max_uses.helper_text'));
+            ->label(__('lunar-filament::discount.form.max_uses.label'))
+            ->helperText(__('lunar-filament::discount.form.max_uses.helper_text'));
     }
 
     public static function getMaxUsesPerUserComponent(): Component
     {
         return TextInput::make('max_uses_per_user')
-            ->label(__('lunarpanel::discount.form.max_uses_per_user.label'))
-            ->helperText(__('lunarpanel::discount.form.max_uses_per_user.helper_text'));
+            ->label(__('lunar-filament::discount.form.max_uses_per_user.label'))
+            ->helperText(__('lunar-filament::discount.form.max_uses_per_user.helper_text'));
     }
 
     public static function getMinimumCartAmountsComponents(): array
@@ -236,10 +236,10 @@ class DiscountForm
 
         return [
             Toggle::make('data.fixed_value')
-                ->label(__('lunarpanel::discount.form.fixed_value.label'))
+                ->label(__('lunar-filament::discount.form.fixed_value.label'))
                 ->live(),
             TextInput::make('data.percentage')
-                ->label(__('lunarpanel::discount.form.percentage.label'))
+                ->label(__('lunar-filament::discount.form.percentage.label'))
                 ->visible(fn (Get $get) => ! $get('data.fixed_value'))
                 ->numeric(),
             Group::make($currencyInputs)
@@ -252,22 +252,22 @@ class DiscountForm
     {
         return [
             TextInput::make('data.min_qty')
-                ->label(__('lunarpanel::discount.form.min_qty.label'))
-                ->helperText(__('lunarpanel::discount.form.min_qty.helper_text'))
+                ->label(__('lunar-filament::discount.form.min_qty.label'))
+                ->helperText(__('lunar-filament::discount.form.min_qty.helper_text'))
                 ->numeric(),
             Group::make([
                 TextInput::make('data.reward_qty')
-                    ->label(__('lunarpanel::discount.form.reward_qty.label'))
-                    ->helperText(__('lunarpanel::discount.form.reward_qty.helper_text'))
+                    ->label(__('lunar-filament::discount.form.reward_qty.label'))
+                    ->helperText(__('lunar-filament::discount.form.reward_qty.helper_text'))
                     ->numeric(),
                 TextInput::make('data.max_reward_qty')
-                    ->label(__('lunarpanel::discount.form.max_reward_qty.label'))
-                    ->helperText(__('lunarpanel::discount.form.max_reward_qty.helper_text'))
+                    ->label(__('lunar-filament::discount.form.max_reward_qty.label'))
+                    ->helperText(__('lunar-filament::discount.form.max_reward_qty.helper_text'))
                     ->numeric(),
             ])->columns(2),
             Toggle::make('data.automatically_add_rewards')
-                ->label(__('lunarpanel::discount.form.automatic_rewards.label'))
-                ->helperText(__('lunarpanel::discount.form.automatic_rewards.helper_text')),
+                ->label(__('lunar-filament::discount.form.automatic_rewards.label'))
+                ->helperText(__('lunar-filament::discount.form.automatic_rewards.helper_text')),
         ];
     }
 }

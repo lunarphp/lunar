@@ -7,7 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class AttributeGroupTable
@@ -38,13 +38,13 @@ class AttributeGroupTable
     {
         return [
             TextColumn::make('attributable_type')
-                ->label(__('lunarpanel::attributegroup.table.attributable_type.label')),
+                ->label(__('lunar-filament::attributegroup.table.attributable_type.label')),
             TranslatedTextColumn::make('name')
-                ->label(__('lunarpanel::attributegroup.table.name.label')),
+                ->label(__('lunar-filament::attributegroup.table.name.label')),
             TextColumn::make('handle')
-                ->label(__('lunarpanel::attributegroup.table.handle.label')),
+                ->label(__('lunar-filament::attributegroup.table.handle.label')),
             TextColumn::make('position')
-                ->label(__('lunarpanel::attributegroup.table.position.label'))
+                ->label(__('lunar-filament::attributegroup.table.position.label'))
                 ->sortable(),
         ];
     }

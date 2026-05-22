@@ -12,6 +12,7 @@ use Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff;
 use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Filament\Schemas\Staff\StaffForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Staff\StaffTable;
 
 class StaffResource extends BaseResource
@@ -49,12 +50,12 @@ class StaffResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return StaffForm::configure($schema);
+        return Resolver::form(StaffForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return StaffTable::configure($table);
+        return Resolver::table(StaffTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

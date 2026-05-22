@@ -32,6 +32,7 @@ use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Filament\RelationManagers\Product\CustomerGroupPricingRelationManager;
 use Lunar\Filament\RelationManagers\Product\CustomerGroupRelationManager;
 use Lunar\Filament\Schemas\Product\ProductForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Product\ProductTable;
 use Lunar\Filament\Widgets\Products\VariantSwitcherTable;
 
@@ -71,12 +72,12 @@ class ProductResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return ProductForm::configure($schema);
+        return Resolver::form(ProductForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return ProductTable::configure($table);
+        return Resolver::table(ProductTable::class, $table);
     }
 
     protected static function getDefaultSubNavigation(): array

@@ -9,8 +9,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Filament\Forms\Components\Attributes;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class CustomerGroupForm
 {
@@ -39,7 +39,7 @@ class CustomerGroupForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel::customergroup.form.name.label'))
+            ->label(__('lunar-filament::customergroup.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -48,7 +48,7 @@ class CustomerGroupForm
     public static function getHandleComponent(): Component
     {
         return TextInput::make('handle')
-            ->label(__('lunarpanel::customergroup.form.handle.label'))
+            ->label(__('lunar-filament::customergroup.form.handle.label'))
             ->required()
             ->unique(ignoreRecord: true)
             ->live(onBlur: true)
@@ -66,7 +66,7 @@ class CustomerGroupForm
     public static function getDefaultComponent(): Component
     {
         return Toggle::make('default')
-            ->label(__('lunarpanel::customergroup.form.default.label'));
+            ->label(__('lunar-filament::customergroup.form.default.label'));
     }
 
     public static function getAttributeDataComponent(): Component

@@ -9,13 +9,13 @@ use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
-use Lunar\Admin\Support\Facades\AttributeData;
 use Lunar\Core\Base\FieldType;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductType;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Filament\Support\Facades\AttributeData;
 
 class Attributes extends Group
 {

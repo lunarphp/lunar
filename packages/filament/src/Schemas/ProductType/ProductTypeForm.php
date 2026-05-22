@@ -8,10 +8,10 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Forms\Components\AttributeSelector;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ProductTypeForm
 {
@@ -24,7 +24,7 @@ class ProductTypeForm
             $schema->components([
                 Section::make()->schema(static::getMainComponents()),
                 Tabs::make('Attributes')->tabs([
-                    Tab::make(__('lunarpanel::producttype.tabs.product_attributes.label'))
+                    Tab::make(__('lunar-filament::producttype.tabs.product_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
                                 ->withType(Product::morphName())
@@ -32,7 +32,7 @@ class ProductTypeForm
                                 ->label('')
                                 ->columnSpan(2),
                         ]),
-                    Tab::make(__('lunarpanel::producttype.tabs.variant_attributes.label'))
+                    Tab::make(__('lunar-filament::producttype.tabs.variant_attributes.label'))
                         ->schema([
                             AttributeSelector::make('mappedAttributes')
                                 ->withType(ProductVariant::morphName())
@@ -57,7 +57,7 @@ class ProductTypeForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel::producttype.form.name.label'))
+            ->label(__('lunar-filament::producttype.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();

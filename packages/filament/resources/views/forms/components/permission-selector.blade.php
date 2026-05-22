@@ -8,7 +8,7 @@
 >
     <div
         x-data="{
-            tooltip: @js(__('lunarpanel::staff.acl.tooltip.roles-included')),
+            tooltip: @js(__('lunar-filament::staff.acl.tooltip.roles-included')),
         }"
     >
         <div class="fi-ta-ctn [&_table]:h-[1px] transition-all">

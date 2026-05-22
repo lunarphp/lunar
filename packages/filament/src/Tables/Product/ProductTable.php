@@ -12,7 +12,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class ProductTable
@@ -27,7 +27,7 @@ class ProductTable
                 ->columns(static::getColumns())
                 ->filters([
                     SelectFilter::make('brand')
-                        ->label(__('lunarpanel::product.table.brand.label'))
+                        ->label(__('lunar-filament::product.table.brand.label'))
                         ->relationship('brand', 'name'),
                     TrashedFilter::make(),
                 ])
@@ -48,12 +48,12 @@ class ProductTable
     {
         return [
             TextColumn::make('status')
-                ->label(__('lunarpanel::product.table.status.label'))
+                ->label(__('lunar-filament::product.table.status.label'))
                 ->badge()
                 ->getStateUsing(
                     fn (Model $record) => $record->deleted_at ? 'deleted' : $record->status
                 )
-                ->formatStateUsing(fn ($state) => __('lunarpanel::product.table.status.states.'.$state))
+                ->formatStateUsing(fn ($state) => __('lunar-filament::product.table.status.states.'.$state))
                 ->color(fn (string $state): string => match ($state) {
                     'draft' => 'warning',
                     'published' => 'success',
@@ -69,15 +69,15 @@ class ProductTable
                 ->label(''),
             static::getNameColumn(),
             TextColumn::make('brand.name')
-                ->label(__('lunarpanel::product.table.brand.label'))
+                ->label(__('lunar-filament::product.table.brand.label'))
                 ->toggleable()
                 ->searchable(),
             static::getSkuColumn(),
             TextColumn::make('variants_sum_stock')
-                ->label(__('lunarpanel::product.table.stock.label'))
+                ->label(__('lunar-filament::product.table.stock.label'))
                 ->sum('variants', 'stock'),
             TextColumn::make('productType.name')
-                ->label(__('lunarpanel::product.table.producttype.label'))
+                ->label(__('lunar-filament::product.table.producttype.label'))
                 ->limit(30)
                 ->tooltip(function (TextColumn $column): ?string {
                     $state = $column->getState();
@@ -98,14 +98,14 @@ class ProductTable
             ->attributeData()
             ->limitedTooltip()
             ->limit(50)
-            ->label(__('lunarpanel::product.table.name.label'))
+            ->label(__('lunar-filament::product.table.name.label'))
             ->searchable();
     }
 
     public static function getSkuColumn(): Column
     {
         return TextColumn::make('variants.sku')
-            ->label(__('lunarpanel::product.table.sku.label'))
+            ->label(__('lunar-filament::product.table.sku.label'))
             ->tooltip(function (TextColumn $column, Model $record): ?string {
 
                 if ($record->variants->count() <= $column->getListLimit()) {

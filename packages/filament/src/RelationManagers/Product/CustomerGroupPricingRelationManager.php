@@ -16,13 +16,13 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
-use Lunar\Admin\Events\ProductPricingUpdated;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Core\DataTypes\Price as PriceDataType;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Price;
+use Lunar\Filament\Events\ProductPricingUpdated;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class CustomerGroupPricingRelationManager extends BaseRelationManager
 {
@@ -32,12 +32,12 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::relationmanagers.customer_group_pricing.title');
+        return __('lunar-filament::relationmanagers.customer_group_pricing.title');
     }
 
     protected function getTableHeading(): string|Htmlable|null
     {
-        return __('lunarpanel::relationmanagers.customer_group_pricing.table.heading');
+        return __('lunar-filament::relationmanagers.customer_group_pricing.table.heading');
     }
 
     public function getDefaultForm(Schema $schema): Schema
@@ -47,19 +47,19 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                 Group::make([
                     Select::make('currency_id')
                         ->label(
-                            __('lunarpanel::relationmanagers.pricing.form.currency_id.label')
+                            __('lunar-filament::relationmanagers.pricing.form.currency_id.label')
                         )->relationship(name: 'currency', titleAttribute: 'name')
                         ->default(function () {
                             return Currency::getDefault()?->id;
                         })
                         ->helperText(
-                            __('lunarpanel::relationmanagers.pricing.form.currency_id.helper_text')
+                            __('lunar-filament::relationmanagers.pricing.form.currency_id.helper_text')
                         )->required(),
                     Select::make('customer_group_id')
                         ->label(
-                            __('lunarpanel::relationmanagers.pricing.form.customer_group_id.label')
+                            __('lunar-filament::relationmanagers.pricing.form.customer_group_id.label')
                         )->helperText(
-                            __('lunarpanel::relationmanagers.pricing.form.customer_group_id.helper_text')
+                            __('lunar-filament::relationmanagers.pricing.form.customer_group_id.helper_text')
                         )->relationship(name: 'customerGroup', titleAttribute: 'name')
                         ->required()
                         ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, Get $get) {
@@ -78,12 +78,12 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
                 Group::make([
                     TextInput::make('price')->numeric()->helperText(
-                        __('lunarpanel::relationmanagers.pricing.form.price.helper_text')
+                        __('lunar-filament::relationmanagers.pricing.form.price.helper_text')
                     )->required(),
                     TextInput::make('compare_price')->label(
-                        __('lunarpanel::relationmanagers.pricing.form.compare_price.label')
+                        __('lunar-filament::relationmanagers.pricing.form.compare_price.label')
                     )->helperText(
-                        __('lunarpanel::relationmanagers.pricing.form.compare_price.helper_text')
+                        __('lunar-filament::relationmanagers.pricing.form.compare_price.helper_text')
                     )->numeric(),
                 ])->columns(2),
             ])->columns(1);
@@ -97,7 +97,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
         return $table
             ->recordTitleAttribute('name')
             ->description(
-                __('lunarpanel::relationmanagers.customer_group_pricing.table.description')
+                __('lunar-filament::relationmanagers.customer_group_pricing.table.description')
             )
             ->modifyQueryUsing(
                 fn ($query) => $query
@@ -107,21 +107,21 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
             )
             ->defaultSort(fn ($query) => $query->orderBy('cg.name')->orderBy('min_quantity'))
             ->emptyStateHeading(
-                __('lunarpanel::relationmanagers.customer_group_pricing.table.empty_state.label')
+                __('lunar-filament::relationmanagers.customer_group_pricing.table.empty_state.label')
             )
-            ->emptyStateDescription(__('lunarpanel::relationmanagers.customer_group_pricing.table.empty_state.description'))
+            ->emptyStateDescription(__('lunar-filament::relationmanagers.customer_group_pricing.table.empty_state.description'))
             ->columns([
                 TextColumn::make('price')
                     ->label(
-                        __('lunarpanel::relationmanagers.pricing.table.price.label')
+                        __('lunar-filament::relationmanagers.pricing.table.price.label')
                     )->formatStateUsing(
                         fn ($state) => $state->formatted,
                     )->sortable(),
                 TextColumn::make('currency.code')->label(
-                    __('lunarpanel::relationmanagers.pricing.table.currency.label')
+                    __('lunar-filament::relationmanagers.pricing.table.currency.label')
                 )->sortable(),
                 TextColumn::make('customerGroup.name')->label(
-                    __('lunarpanel::relationmanagers.pricing.table.customer_group.label')
+                    __('lunar-filament::relationmanagers.pricing.table.customer_group.label')
                 )->sortable(),
             ])
             ->filters([
@@ -129,7 +129,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                     ->relationship(name: 'currency', titleAttribute: 'name')
                     ->preload()
                     ->label(
-                        __('lunarpanel::relationmanagers.pricing.table.currency.label')
+                        __('lunar-filament::relationmanagers.pricing.table.currency.label')
                     ),
             ])
             ->headerActions([
@@ -142,8 +142,8 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
                     return $data;
                 })->label(
-                    __('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.label')
-                )->modalHeading(__('lunarpanel::relationmanagers.customer_group_pricing.table.actions.create.modal.heading'))
+                    __('lunar-filament::relationmanagers.customer_group_pricing.table.actions.create.label')
+                )->modalHeading(__('lunar-filament::relationmanagers.customer_group_pricing.table.actions.create.modal.heading'))
                     ->after(
                         fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
                     ),

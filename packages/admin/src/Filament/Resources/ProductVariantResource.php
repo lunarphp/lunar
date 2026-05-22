@@ -17,6 +17,7 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShi
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\ProductVariant\ProductVariantTable;
 
 class ProductVariantResource extends BaseResource
@@ -71,12 +72,12 @@ class ProductVariantResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return ProductVariantForm::configure($schema);
+        return Resolver::form(ProductVariantForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return ProductVariantTable::configure($table);
+        return Resolver::table(ProductVariantTable::class, $table);
     }
 
     protected static function getDefaultSubNavigation(): array

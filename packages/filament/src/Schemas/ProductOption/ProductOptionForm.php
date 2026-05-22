@@ -8,9 +8,9 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Core\Models\Language;
 use Lunar\Filament\Forms\Components\TranslatedText;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ProductOptionForm
 {
@@ -38,7 +38,7 @@ class ProductOptionForm
     public static function getNameComponent(): Component
     {
         return TranslatedText::make('name')
-            ->label(__('lunarpanel::productoption.form.name.label'))
+            ->label(__('lunar-filament::productoption.form.name.label'))
             ->required()
             ->maxLength(255)
             ->afterStateUpdated(function (string $operation, $state, Set $set) {
@@ -54,7 +54,7 @@ class ProductOptionForm
     public static function getLabelComponent(): Component
     {
         return TranslatedText::make('label')
-            ->label(__('lunarpanel::productoption.form.label.label'))
+            ->label(__('lunar-filament::productoption.form.label.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -63,7 +63,7 @@ class ProductOptionForm
     public static function getHandleComponent(): Component
     {
         return TextInput::make('handle')
-            ->label(__('lunarpanel::productoption.form.handle.label'))
+            ->label(__('lunar-filament::productoption.form.handle.label'))
             ->required()
             ->maxLength(255)
             ->live(onBlur: true)

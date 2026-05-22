@@ -48,17 +48,17 @@ class TaxRateAmountRelationManager extends RelationManager
     {
         return $table
             ->description(
-                __('lunarpanel::relationmanagers.tax_rate_amounts.table.description')
+                __('lunar-filament::relationmanagers.tax_rate_amounts.table.description')
             )
             ->paginated(false)
             ->headerActions([
                 CreateAction::make('create'),
             ])->columns([
                 TextColumn::make('taxClass.name')->label(
-                    __('lunarpanel::relationmanagers.tax_rate_amounts.table.tax_class.label')
+                    __('lunar-filament::relationmanagers.tax_rate_amounts.table.tax_class.label')
                 ),
                 TextColumn::make('percentage')->label(
-                    __('lunarpanel::relationmanagers.tax_rate_amounts.table.percentage.label')
+                    __('lunar-filament::relationmanagers.tax_rate_amounts.table.percentage.label')
                 ),
             ])->recordActions([
                 EditAction::make(),

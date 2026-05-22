@@ -21,6 +21,7 @@ use Lunar\Filament\RelationManagers\Discount\ProductLimitationRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductRewardRelationManager;
 use Lunar\Filament\RelationManagers\Discount\ProductVariantLimitationRelationManager;
 use Lunar\Filament\Schemas\Discount\DiscountForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Discount\DiscountTable;
 
 class DiscountResource extends BaseResource
@@ -55,12 +56,12 @@ class DiscountResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return DiscountForm::configure($schema);
+        return Resolver::form(DiscountForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return DiscountTable::configure($table);
+        return Resolver::table(DiscountTable::class, $table);
     }
 
     protected static function getDefaultSubNavigation(): array

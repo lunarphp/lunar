@@ -11,10 +11,10 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class ProductVariantLimitationRelationManager extends BaseRelationManager
 {
@@ -32,10 +32,10 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
 
         return $table
             ->heading(
-                __('lunarpanel::discount.relationmanagers.productvariants.title')
+                __('lunar-filament::discount.relationmanagers.productvariants.title')
             )
             ->description(
-                __('lunarpanel::discount.relationmanagers.productvariants.description')
+                __('lunar-filament::discount.relationmanagers.productvariants.description')
             )
             ->paginated(false)
             ->modifyQueryUsing(
@@ -68,7 +68,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                                 }),
                         ]),
                 ])->label(
-                    __('lunarpanel::discount.relationmanagers.productvariants.actions.attach.label')
+                    __('lunar-filament::discount.relationmanagers.productvariants.actions.attach.label')
                 )->mutateDataUsing(function (array $data) {
                     $data['type'] = 'limitation';
 
@@ -80,11 +80,11 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                         fn (Model $model) => $model->discountable->getDescription()
                     )
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.productvariants.table.name.label')
+                        __('lunar-filament::discount.relationmanagers.productvariants.table.name.label')
                     ),
                 TextColumn::make('discountable.sku')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.productvariants.table.sku.label')
+                        __('lunar-filament::discount.relationmanagers.productvariants.table.sku.label')
                     ),
                 TextColumn::make('discountable.values')
                     ->formatStateUsing(function (Model $record) {
@@ -92,7 +92,7 @@ class ProductVariantLimitationRelationManager extends BaseRelationManager
                             fn ($value) => $value->translate('name')
                         )->join(', ');
                     })->label(
-                        __('lunarpanel::discount.relationmanagers.productvariants.table.values.label')
+                        __('lunar-filament::discount.relationmanagers.productvariants.table.values.label')
                     ),
             ])->recordActions([
                 DeleteAction::make(),

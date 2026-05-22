@@ -7,11 +7,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Filament\Forms\Components\Attributes;
 use Lunar\Filament\Forms\Components\TextInputSelectAffix;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ProductVariantForm
 {
@@ -49,35 +49,35 @@ class ProductVariantForm
     public static function getGtinComponent(): TextInput
     {
         return TextInput::make('gtin')->label(
-            __('lunarpanel::productvariant.form.gtin.label')
+            __('lunar-filament::productvariant.form.gtin.label')
         );
     }
 
     public static function getMpnComponent(): TextInput
     {
         return TextInput::make('mpn')->label(
-            __('lunarpanel::productvariant.form.mpn.label')
+            __('lunar-filament::productvariant.form.mpn.label')
         );
     }
 
     public static function getEanComponent(): TextInput
     {
         return TextInput::make('ean')->label(
-            __('lunarpanel::productvariant.form.ean.label')
+            __('lunar-filament::productvariant.form.ean.label')
         );
     }
 
     public static function getStockComponent(): TextInput
     {
         return TextInput::make('stock')
-            ->label(__('lunarpanel::productvariant.form.stock.label'))
+            ->label(__('lunar-filament::productvariant.form.stock.label'))
             ->numeric();
     }
 
     public static function getBackorderComponent(): TextInput
     {
         return TextInput::make('backorder')
-            ->label(__('lunarpanel::productvariant.form.backorder.label'))
+            ->label(__('lunar-filament::productvariant.form.backorder.label'))
             ->numeric();
     }
 
@@ -85,41 +85,41 @@ class ProductVariantForm
     {
         return Select::make('purchasable')
             ->options([
-                'always' => __('lunarpanel::productvariant.form.purchasable.options.always'),
-                'in_stock' => __('lunarpanel::productvariant.form.purchasable.options.in_stock'),
-                'in_stock_or_on_backorder' => __('lunarpanel::productvariant.form.purchasable.options.in_stock_or_on_backorder'),
+                'always' => __('lunar-filament::productvariant.form.purchasable.options.always'),
+                'in_stock' => __('lunar-filament::productvariant.form.purchasable.options.in_stock'),
+                'in_stock_or_on_backorder' => __('lunar-filament::productvariant.form.purchasable.options.in_stock_or_on_backorder'),
             ])
-            ->label(__('lunarpanel::productvariant.form.purchasable.label'));
+            ->label(__('lunar-filament::productvariant.form.purchasable.label'));
     }
 
     public static function getUnitQtyComponent(): TextInput
     {
         return TextInput::make('unit_quantity')
-            ->label(__('lunarpanel::productvariant.form.unit_quantity.label'))
-            ->helperText(__('lunarpanel::productvariant.form.unit_quantity.helper_text'))
+            ->label(__('lunar-filament::productvariant.form.unit_quantity.label'))
+            ->helperText(__('lunar-filament::productvariant.form.unit_quantity.helper_text'))
             ->numeric();
     }
 
     public static function getQuantityIncrementComponent(): TextInput
     {
         return TextInput::make('quantity_increment')
-            ->label(__('lunarpanel::productvariant.form.quantity_increment.label'))
-            ->helperText(__('lunarpanel::productvariant.form.quantity_increment.helper_text'))
+            ->label(__('lunar-filament::productvariant.form.quantity_increment.label'))
+            ->helperText(__('lunar-filament::productvariant.form.quantity_increment.helper_text'))
             ->numeric();
     }
 
     public static function getMinQuantityComponent(): TextInput
     {
         return TextInput::make('min_quantity')
-            ->label(__('lunarpanel::productvariant.form.min_quantity.label'))
-            ->helperText(__('lunarpanel::productvariant.form.min_quantity.helper_text'))
+            ->label(__('lunar-filament::productvariant.form.min_quantity.label'))
+            ->helperText(__('lunar-filament::productvariant.form.min_quantity.helper_text'))
             ->numeric();
     }
 
     public static function getTaxClassIdComponent(): Select
     {
         return Select::make('tax_class_id')
-            ->label(__('lunarpanel::productvariant.form.tax_class_id.label'))
+            ->label(__('lunar-filament::productvariant.form.tax_class_id.label'))
             ->options(TaxClass::all()->pluck('name', 'id'))
             ->required();
     }
@@ -127,14 +127,14 @@ class ProductVariantForm
     public static function getTaxRefComponent(): TextInput
     {
         return TextInput::make('tax_ref')
-            ->label(__('lunarpanel::product.pages.pricing.form.tax_ref.label'))
-            ->helperText(__('lunarpanel::product.pages.pricing.form.tax_ref.helper_text'));
+            ->label(__('lunar-filament::product.pages.pricing.form.tax_ref.label'))
+            ->helperText(__('lunar-filament::product.pages.pricing.form.tax_ref.helper_text'));
     }
 
     public static function getShippableComponent(): Toggle
     {
         return Toggle::make('shippable')
-            ->label(__('lunarpanel::productvariant.form.shippable.label'))
+            ->label(__('lunar-filament::productvariant.form.shippable.label'))
             ->columnSpan(2);
     }
 
@@ -150,12 +150,12 @@ class ProductVariantForm
     public static function getLengthComponent(): TextInputSelectAffix
     {
         return TextInputSelectAffix::make('length_value')
-            ->label(__('lunarpanel::productvariant.form.length_value.label'))
+            ->label(__('lunar-filament::productvariant.form.length_value.label'))
             ->numeric()
             ->select(
                 fn () => Select::make('length_unit')
                     ->options(static::getMeasurements('length'))
-                    ->label(__('lunarpanel::productvariant.form.length_unit.label'))
+                    ->label(__('lunar-filament::productvariant.form.length_unit.label'))
                     ->selectablePlaceholder(false)
             );
     }
@@ -163,12 +163,12 @@ class ProductVariantForm
     public static function getWidthComponent(): TextInputSelectAffix
     {
         return TextInputSelectAffix::make('width_value')
-            ->label(__('lunarpanel::productvariant.form.width_value.label'))
+            ->label(__('lunar-filament::productvariant.form.width_value.label'))
             ->numeric()
             ->select(
                 fn () => Select::make('width_unit')
                     ->options(static::getMeasurements('length'))
-                    ->label(__('lunarpanel::productvariant.form.width_unit.label'))
+                    ->label(__('lunar-filament::productvariant.form.width_unit.label'))
                     ->selectablePlaceholder(false)
             );
     }
@@ -176,12 +176,12 @@ class ProductVariantForm
     public static function getHeightComponent(): TextInputSelectAffix
     {
         return TextInputSelectAffix::make('height_value')
-            ->label(__('lunarpanel::productvariant.form.height_value.label'))
+            ->label(__('lunar-filament::productvariant.form.height_value.label'))
             ->numeric()
             ->select(
                 fn () => Select::make('height_unit')
                     ->options(static::getMeasurements('length'))
-                    ->label(__('lunarpanel::productvariant.form.height_unit.label'))
+                    ->label(__('lunar-filament::productvariant.form.height_unit.label'))
                     ->selectablePlaceholder(false)
             );
     }
@@ -189,12 +189,12 @@ class ProductVariantForm
     public static function getWeightComponent(): TextInputSelectAffix
     {
         return TextInputSelectAffix::make('weight_value')
-            ->label(__('lunarpanel::productvariant.form.weight_value.label'))
+            ->label(__('lunar-filament::productvariant.form.weight_value.label'))
             ->numeric()
             ->select(
                 fn () => Select::make('weight_unit')
                     ->options(static::getMeasurements('weight'))
-                    ->label(__('lunarpanel::productvariant.form.weight_unit.label'))
+                    ->label(__('lunar-filament::productvariant.form.weight_unit.label'))
                     ->selectablePlaceholder(false)
             );
     }

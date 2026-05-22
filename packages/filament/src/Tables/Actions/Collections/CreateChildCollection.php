@@ -4,9 +4,18 @@ namespace Lunar\Filament\Tables\Actions\Collections;
 
 use Filament\Actions\CreateAction;
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Actions\Traits\CreatesChildCollections;
 use Lunar\Filament\Forms\Components\TranslatedText;
+use Lunar\Filament\Support\Concerns\CreatesChildCollections;
 
+/**
+ * Creates a child collection inside a Filament table relationship — the
+ * parent is read from `$table->getRelationship()->getParent()`, so the
+ * action must be mounted on a table whose relationship yields a Collection.
+ *
+ * For the standalone (id-argument) variant used by the admin's collection
+ * tree widget, see
+ * {@see \Lunar\Admin\Support\Actions\Collections\CreateChildCollection}.
+ */
 class CreateChildCollection extends CreateAction
 {
     use CreatesChildCollections;
@@ -31,7 +40,7 @@ class CreateChildCollection extends CreateAction
         $this->createAnother(false);
 
         $this->label(
-            __('lunarpanel::collection.pages.children.actions.create_child.label')
+            __('lunar-filament::collection.pages.children.actions.create_child.label')
         );
     }
 }

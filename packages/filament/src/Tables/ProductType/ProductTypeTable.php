@@ -7,7 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ProductTypeTable
 {
@@ -35,25 +35,25 @@ class ProductTypeTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel::producttype.table.name.label')),
+                ->label(__('lunar-filament::producttype.table.name.label')),
             TextColumn::make('products_count')
                 ->counts('products')
                 ->formatStateUsing(
                     fn ($state) => number_format($state, 0)
                 )
-                ->label(__('lunarpanel::producttype.table.products_count.label')),
+                ->label(__('lunar-filament::producttype.table.products_count.label')),
             TextColumn::make('product_attributes_count')
                 ->counts('productAttributes')
                 ->formatStateUsing(
                     fn ($state) => number_format($state, 0)
                 )
-                ->label(__('lunarpanel::producttype.table.product_attributes_count.label')),
+                ->label(__('lunar-filament::producttype.table.product_attributes_count.label')),
             TextColumn::make('variant_attributes_count')
                 ->counts('variantAttributes')
                 ->formatStateUsing(
                     fn ($state) => number_format($state, 0)
                 )
-                ->label(__('lunarpanel::producttype.table.variant_attributes_count.label'))
+                ->label(__('lunar-filament::producttype.table.variant_attributes_count.label'))
                 ->visible(
                     config('lunar.panel.enable_variants', true)
                 ),

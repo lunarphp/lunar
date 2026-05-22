@@ -17,8 +17,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Lunar\\Filament\\": "src/",
-            "Lunar\\Filament\\Database\\Factories\\": "database/factories"
+            "Lunar\\Filament\\": "src/"
         }
     },
     "minimum-stability": "dev",

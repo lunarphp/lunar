@@ -7,7 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class TaxRateTable
 {
@@ -36,9 +36,9 @@ class TaxRateTable
         return [
             TextColumn::make('name'),
             TextColumn::make('taxZone.name')
-                ->label(__('lunarpanel::taxrate.table.tax_zone.label')),
+                ->label(__('lunar-filament::taxrate.table.tax_zone.label')),
             TextColumn::make('priority')
-                ->label(__('lunarpanel::taxrate.table.priority.label')),
+                ->label(__('lunar-filament::taxrate.table.priority.label')),
         ];
     }
 }

@@ -7,7 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class CollectionGroupTable
 {
@@ -35,15 +35,15 @@ class CollectionGroupTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel::collectiongroup.table.name.label')),
+                ->label(__('lunar-filament::collectiongroup.table.name.label')),
             TextColumn::make('handle')
-                ->label(__('lunarpanel::collectiongroup.table.handle.label')),
+                ->label(__('lunar-filament::collectiongroup.table.handle.label')),
             TextColumn::make('collections_count')
                 ->counts('collections')
                 ->formatStateUsing(
                     fn ($state) => number_format($state, 0)
                 )
-                ->label(__('lunarpanel::collectiongroup.table.collections_count.label')),
+                ->label(__('lunar-filament::collectiongroup.table.collections_count.label')),
         ];
     }
 }

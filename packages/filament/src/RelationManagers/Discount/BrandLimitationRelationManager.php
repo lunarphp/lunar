@@ -9,7 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class BrandLimitationRelationManager extends BaseRelationManager
 {
@@ -19,7 +19,7 @@ class BrandLimitationRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::brand.plural_label');
+        return __('lunar-filament::brand.plural_label');
     }
 
     public function isReadOnly(): bool
@@ -32,7 +32,7 @@ class BrandLimitationRelationManager extends BaseRelationManager
 
         return $table
             ->description(
-                __('lunarpanel::discount.relationmanagers.brands.description')
+                __('lunar-filament::discount.relationmanagers.brands.description')
             )
             ->paginated(false)
             ->headerActions([
@@ -41,27 +41,27 @@ class BrandLimitationRelationManager extends BaseRelationManager
                     Select::make('type')
                         ->options(
                             fn () => [
-                                'limitation' => __('lunarpanel::discount.relationmanagers.brands.form.type.options.limitation.label'),
-                                'exclusion' => __('lunarpanel::discount.relationmanagers.brands.form.type.options.exclusion.label'),
+                                'limitation' => __('lunar-filament::discount.relationmanagers.brands.form.type.options.limitation.label'),
+                                'exclusion' => __('lunar-filament::discount.relationmanagers.brands.form.type.options.exclusion.label'),
                             ]
                         )->default('limitation'),
                 ])->recordTitle(function ($record) {
                     return $record->name;
                 })->preloadRecordSelect()
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.brands.actions.attach.label')
+                        __('lunar-filament::discount.relationmanagers.brands.actions.attach.label')
                     )
                     ->recordSelectSearchColumns(['name']),
             ])->columns([
                 TextColumn::make('name')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.brands.table.name.label')
+                        __('lunar-filament::discount.relationmanagers.brands.table.name.label')
                     ),
                 TextColumn::make('pivot.type')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.brands.table.type.label')
+                        __('lunar-filament::discount.relationmanagers.brands.table.type.label')
                     )->formatStateUsing(
-                        fn (string $state) => __("lunarpanel::discount.relationmanagers.brands.table.type.{$state}.label")
+                        fn (string $state) => __("lunar-filament::discount.relationmanagers.brands.table.type.{$state}.label")
                     ),
             ])->recordActions([
                 DetachAction::make(),

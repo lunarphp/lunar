@@ -8,7 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class CustomerGroupTable
 {
@@ -36,14 +36,14 @@ class CustomerGroupTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel::customergroup.table.name.label')),
+                ->label(__('lunar-filament::customergroup.table.name.label')),
             TextColumn::make('default_indicator')
-                ->state(fn (Model $record) => $record->default ? __('lunarpanel::customergroup.table.default.label') : null)
+                ->state(fn (Model $record) => $record->default ? __('lunar-filament::customergroup.table.default.label') : null)
                 ->badge()
                 ->color('gray')
                 ->label(''),
             TextColumn::make('handle')
-                ->label(__('lunarpanel::customergroup.table.handle.label')),
+                ->label(__('lunar-filament::customergroup.table.handle.label')),
         ];
     }
 }

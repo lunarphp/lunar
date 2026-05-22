@@ -10,6 +10,14 @@ use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
 use Lunar\Filament\Forms\Components\TranslatedText;
 
+/**
+ * Creates a child collection from an explicit `id` argument supplied by the
+ * caller — used by the admin shell's `CollectionTreeView` widget, which sits
+ * outside a Filament table relationship and resolves the parent itself.
+ *
+ * For the in-table-relationship variant used by the children page, see
+ * {@see \Lunar\Filament\Tables\Actions\Collections\CreateChildCollection}.
+ */
 class CreateChildCollection extends CreateAction
 {
     use CreatesChildCollections;

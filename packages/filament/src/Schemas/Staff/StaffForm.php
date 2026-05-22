@@ -11,9 +11,8 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
-use Lunar\Admin\Support\Concerns\CallsHooks;
-use Lunar\Admin\Support\Facades\LunarAccessControl;
 use Lunar\Filament\Forms\Components\PermissionSelector;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class StaffForm
 {
@@ -42,7 +41,7 @@ class StaffForm
     public static function getFirstNameComponent(): Component
     {
         return TextInput::make('first_name')
-            ->label(__('lunarpanel::staff.form.first_name.label'))
+            ->label(__('lunar-filament::staff.form.first_name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -51,7 +50,7 @@ class StaffForm
     public static function getLastNameComponent(): Component
     {
         return TextInput::make('last_name')
-            ->label(__('lunarpanel::staff.form.last_name.label'))
+            ->label(__('lunar-filament::staff.form.last_name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -60,7 +59,7 @@ class StaffForm
     public static function getEmailComponent(): Component
     {
         return TextInput::make('email')
-            ->label(__('lunarpanel::staff.form.email.label'))
+            ->label(__('lunar-filament::staff.form.email.label'))
             ->email()
             ->required()
             ->unique(ignoreRecord: true)
@@ -70,37 +69,37 @@ class StaffForm
     public static function getPasswordComponent(): Component
     {
         return TextInput::make('password')
-            ->label(__('lunarpanel::staff.form.password.label'))
+            ->label(__('lunar-filament::staff.form.password.label'))
             ->password()
             ->required(fn ($record) => blank($record))
             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
             ->dehydrated(fn (?string $state): bool => filled($state))
-            ->hint(fn ($record) => filled($record) ? __('lunarpanel::staff.form.password.hint') : null)
+            ->hint(fn ($record) => filled($record) ? __('lunar-filament::staff.form.password.hint') : null)
             ->maxLength(255);
     }
 
     public static function getRoleComponent(): Component
     {
         return Select::make('roles')
-            ->label(__('lunarpanel::staff.form.roles.label'))
+            ->label(__('lunar-filament::staff.form.roles.label'))
             ->multiple(true)
-            ->options(fn () => LunarAccessControl::getRoles()
+            ->options(fn () => app('lunar-access-control')->getRoles()
                 ->when(
-                    ! Filament::auth()->user()->hasRole(LunarAccessControl::getAdmin()->toArray()),
-                    fn ($roles) => $roles->reject(fn ($r) => LunarAccessControl::getAdmin()->contains($r->handle))
+                    ! Filament::auth()->user()->hasRole(app('lunar-access-control')->getAdmin()->toArray()),
+                    fn ($roles) => $roles->reject(fn ($r) => app('lunar-access-control')->getAdmin()->contains($r->handle))
                 )
                 ->map(fn ($r) => ['handle' => $r->handle, 'label' => $r->transLabel])
                 ->pluck('label', 'handle')
                 ->toArray())
             ->helperText(function ($state) {
-                $inter = LunarAccessControl::getAdmin()->intersect($state);
+                $inter = app('lunar-access-control')->getAdmin()->intersect($state);
 
                 if ($count = $inter->count()) {
-                    $roles = LunarAccessControl::getRoles()
+                    $roles = app('lunar-access-control')->getRoles()
                         ->map(fn ($r) => ['handle' => $r->handle, 'label' => $r->transLabel])
                         ->pluck('label', 'handle');
 
-                    return trans_choice('lunarpanel::staff.form.roles.helper', $count, ['roles' => $inter->map(fn ($r) => $roles[$r] ?? $r)->join(', ')]);
+                    return trans_choice('lunar-filament::staff.form.roles.helper', $count, ['roles' => $inter->map(fn ($r) => $roles[$r] ?? $r)->join(', ')]);
                 }
             })
             ->afterStateHydrated(fn (Select $component, $record) => $component->state($record?->getRoleNames()->toArray() ?? []))
@@ -121,7 +120,7 @@ class StaffForm
     public static function getPermissionComponent(): Component
     {
         return PermissionSelector::make('permissions')
-            ->label(__('lunarpanel::staff.form.permissions.label'));
+            ->label(__('lunar-filament::staff.form.permissions.label'));
     }
 
     public static function getRolePermissionContainerComponent(): Component
@@ -137,8 +136,8 @@ class StaffForm
     public static function getSuperAdminNotice(): Component
     {
         return Toggle::make('admin')
-            ->label(__('lunarpanel::staff.form.admin.label'))
-            ->helperText(__('lunarpanel::staff.form.admin.helper'))
+            ->label(__('lunar-filament::staff.form.admin.label'))
+            ->helperText(__('lunar-filament::staff.form.admin.helper'))
             ->visible(fn ($record) => $record ? $record->admin : false)
             ->disabled();
     }

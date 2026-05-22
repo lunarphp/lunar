@@ -7,7 +7,7 @@ use Filament\Actions\DetachAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 use function Filament\Support\generate_search_column_expression;
 
@@ -19,7 +19,7 @@ class CustomerLimitationRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::customer.plural_label');
+        return __('lunar-filament::customer.plural_label');
     }
 
     public function isReadOnly(): bool
@@ -32,7 +32,7 @@ class CustomerLimitationRelationManager extends BaseRelationManager
 
         return $table
             ->description(
-                __('lunarpanel::discount.relationmanagers.customers.description')
+                __('lunar-filament::discount.relationmanagers.customers.description')
             )
             ->paginated(false)
             ->headerActions([
@@ -55,12 +55,12 @@ class CustomerLimitationRelationManager extends BaseRelationManager
                         }
                     })
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.customers.actions.attach.label')
+                        __('lunar-filament::discount.relationmanagers.customers.actions.attach.label')
                     ),
             ])->columns([
                 TextColumn::make('full_name')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.customers.table.name.label')
+                        __('lunar-filament::discount.relationmanagers.customers.table.name.label')
                     ),
             ])->recordActions([
                 DetachAction::make(),

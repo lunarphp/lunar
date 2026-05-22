@@ -20,11 +20,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
-use Lunar\Admin\Support\Facades\AttributeData;
-use Lunar\Filament\Forms\Components\TranslatedText;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 use Lunar\Core\Models\Language;
+use Lunar\Filament\Forms\Components\TranslatedText;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
+use Lunar\Filament\Support\Facades\AttributeData;
+use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class AttributesRelationManager extends BaseRelationManager
 {
@@ -32,7 +32,7 @@ class AttributesRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::attribute.plural_label');
+        return __('lunar-filament::attribute.plural_label');
     }
 
     protected static ?string $recordTitleAttribute = 'name.en';  // TODO: localise somehow
@@ -43,7 +43,7 @@ class AttributesRelationManager extends BaseRelationManager
             ->components([
                 TranslatedText::make('name')
                     ->label(
-                        __('lunarpanel::attribute.form.name.label')
+                        __('lunar-filament::attribute.form.name.label')
                     )
                     ->required()
                     ->maxLength(255)
@@ -56,16 +56,16 @@ class AttributesRelationManager extends BaseRelationManager
                     }),
                 TranslatedText::make('description')
                     ->label(
-                        __('lunarpanel::attribute.form.description.label')
+                        __('lunar-filament::attribute.form.description.label')
                     )
                     ->helperText(
-                        __('lunarpanel::attribute.form.description.helper')
+                        __('lunar-filament::attribute.form.description.helper')
                     )
                     ->afterStateHydrated(fn ($state, $component) => $state ?: $component->state([Language::getDefault()->code => null]))
                     ->maxLength(255),
                 TextInput::make('handle')
                     ->label(
-                        __('lunarpanel::attribute.form.handle.label')
+                        __('lunar-filament::attribute.form.handle.label')
                     )->dehydrated()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (string $operation, $state, Set $set) {
@@ -84,19 +84,19 @@ class AttributesRelationManager extends BaseRelationManager
                 Grid::make(3)->schema([
                     Toggle::make('searchable')
                         ->label(
-                            __('lunarpanel::attribute.form.searchable.label')
+                            __('lunar-filament::attribute.form.searchable.label')
                         )->default(false),
                     Toggle::make('filterable')
                         ->label(
-                            __('lunarpanel::attribute.form.filterable.label')
+                            __('lunar-filament::attribute.form.filterable.label')
                         )->default(false),
                     Toggle::make('required')
                         ->label(
-                            __('lunarpanel::attribute.form.required.label')
+                            __('lunar-filament::attribute.form.required.label')
                         )->default(false),
                 ]),
                 Select::make('type')->label(
-                    __('lunarpanel::attribute.form.type.label')
+                    __('lunar-filament::attribute.form.type.label')
                 )->disabled(
                     fn (?Model $record) => (bool) $record
                 )->options(
@@ -116,12 +116,12 @@ class AttributesRelationManager extends BaseRelationManager
 
                     ->fill()),
                 TextInput::make('validation_rules')->label(
-                    __('lunarpanel::attribute.form.validation_rules.label')
+                    __('lunar-filament::attribute.form.validation_rules.label')
                 )
                     ->string()
                     ->nullable()
                     ->helperText(
-                        __('lunarpanel::attribute.form.validation_rules.helper')
+                        __('lunar-filament::attribute.form.validation_rules.helper')
                     ),
                 Grid::make(1)
                     ->schema(function (Get $get) {
@@ -137,17 +137,17 @@ class AttributesRelationManager extends BaseRelationManager
         return $table
             ->columns([
                 TranslatedTextColumn::make('name')->label(
-                    __('lunarpanel::attribute.table.name.label')
+                    __('lunar-filament::attribute.table.name.label')
                 ),
                 TextColumn::make('description.en')->label(
-                    __('lunarpanel::attribute.table.description.label')
+                    __('lunar-filament::attribute.table.description.label')
                 ),
                 TextColumn::make('handle')
                     ->label(
-                        __('lunarpanel::attribute.table.handle.label')
+                        __('lunar-filament::attribute.table.handle.label')
                     ),
                 TextColumn::make('type')->label(
-                    __('lunarpanel::attribute.table.type.label')
+                    __('lunar-filament::attribute.table.type.label')
                 ),
             ])
             ->filters([

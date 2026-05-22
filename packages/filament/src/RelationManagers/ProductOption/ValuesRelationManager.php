@@ -12,7 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Filament\Forms\Components\TranslatedText;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class ValuesRelationManager extends BaseRelationManager
@@ -21,7 +21,7 @@ class ValuesRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::relationmanagers.values.title');
+        return __('lunar-filament::relationmanagers.values.title');
     }
 
     public function getTableRecordTitle(Model $record): ?string
@@ -34,7 +34,7 @@ class ValuesRelationManager extends BaseRelationManager
         return $schema
             ->components([
                 TranslatedText::make('name')
-                    ->label(__('lunarpanel::relationmanagers.values.form.name.label'))
+                    ->label(__('lunar-filament::relationmanagers.values.form.name.label'))
                     ->required()
                     ->maxLength(255),
             ]);
@@ -46,9 +46,9 @@ class ValuesRelationManager extends BaseRelationManager
 
             ->columns([
                 TranslatedTextColumn::make('name')
-                    ->label(__('lunarpanel::relationmanagers.values.table.name.label')),
+                    ->label(__('lunar-filament::relationmanagers.values.table.name.label')),
                 TextColumn::make('position')
-                    ->label(__('lunarpanel::relationmanagers.values.table.position.label')),
+                    ->label(__('lunar-filament::relationmanagers.values.table.position.label')),
             ])
             ->filters([
                 //

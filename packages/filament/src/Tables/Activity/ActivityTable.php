@@ -9,7 +9,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ActivityTable
 {
@@ -23,7 +23,7 @@ class ActivityTable
                 ->columns(static::getColumns())
                 ->filters([
                     SelectFilter::make('event')
-                        ->label(__('lunarpanel::activity.table.event'))
+                        ->label(__('lunar-filament::activity.table.event'))
                         ->multiple()
                         ->options([
                             'created' => 'Created',
@@ -33,9 +33,9 @@ class ActivityTable
                     Filter::make('created_at')
                         ->schema([
                             DatePicker::make('logged_from')
-                                ->label(__('lunarpanel::activity.table.logged_from')),
+                                ->label(__('lunar-filament::activity.table.logged_from')),
                             DatePicker::make('logged_until')
-                                ->label(__('lunarpanel::activity.table.logged_until')),
+                                ->label(__('lunar-filament::activity.table.logged_until')),
                         ])
                         ->query(function (Builder $query, array $data): Builder {
                             return $query
@@ -74,15 +74,15 @@ class ActivityTable
                 ->label('ID')
                 ->sortable(),
             TextColumn::make('subject_type')
-                ->label(__('lunarpanel::activity.table.subject'))
+                ->label(__('lunar-filament::activity.table.subject'))
                 ->searchable(),
             TextColumn::make('description')
-                ->label(__('lunarpanel::activity.table.description'))
+                ->label(__('lunar-filament::activity.table.description'))
                 ->searchable(),
             TextColumn::make('log_name')
-                ->label(__('lunarpanel::activity.table.log')),
+                ->label(__('lunar-filament::activity.table.log')),
             TextColumn::make('created_at')
-                ->label(__('lunarpanel::activity.table.logged_at'))
+                ->label(__('lunar-filament::activity.table.logged_at'))
                 ->dateTime(),
         ];
     }

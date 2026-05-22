@@ -10,7 +10,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class CustomerTable
 {
@@ -24,7 +24,7 @@ class CustomerTable
                 ->columns(static::getColumns())
                 ->filters([
                     SelectFilter::make('customer_group')
-                        ->label(__('lunarpanel::customergroup.label'))
+                        ->label(__('lunar-filament::customergroup.label'))
                         ->relationship(
                             name: 'customerGroups',
                             titleAttribute: 'name',
@@ -52,25 +52,25 @@ class CustomerTable
     {
         return [
             TextColumn::make('first_name')
-                ->label(__('lunarpanel::customer.table.first_name.label'))
+                ->label(__('lunar-filament::customer.table.first_name.label'))
                 ->sortable()
                 ->searchable(),
             TextColumn::make('last_name')
-                ->label(__('lunarpanel::customer.table.last_name.label'))
+                ->label(__('lunar-filament::customer.table.last_name.label'))
                 ->sortable()
                 ->searchable(),
             TextColumn::make('company_name')
-                ->label(__('lunarpanel::customer.table.company_name.label'))
+                ->label(__('lunar-filament::customer.table.company_name.label'))
                 ->sortable()
                 ->searchable(),
             TextColumn::make('tax_identifier')
-                ->label(__('lunarpanel::customer.table.tax_identifier.label'))
+                ->label(__('lunar-filament::customer.table.tax_identifier.label'))
                 ->sortable(),
             TextColumn::make('account_ref')
-                ->label(__('lunarpanel::customer.table.account_reference.label'))
+                ->label(__('lunar-filament::customer.table.account_reference.label'))
                 ->sortable(),
             TextColumn::make('customerGroups.name')
-                ->label(__('lunarpanel::customergroup.label'))
+                ->label(__('lunar-filament::customergroup.label'))
                 ->badge()
                 ->limitList(1)
                 ->tooltip(function (TextColumn $column, Model $record): ?string {

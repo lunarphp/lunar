@@ -42,4 +42,21 @@ return [
     |
     */
     'register_widgets_on_default_panel' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Record URL resolvers
+    |--------------------------------------------------------------------------
+    |
+    | Bridge tables and widgets link to per-record management pages owned by
+    | whichever panel is consuming them. Each entry is a Filament resource or
+    | page class string. The bridge calls `{class}::getUrl(['record' => $record])`
+    | when present; an empty string disables the link. The `lunarphp/admin`
+    | shell overrides these defaults at boot.
+    |
+    */
+    'record_urls' => [
+        'order' => null,
+        'product_variant' => null,
+    ],
 ];

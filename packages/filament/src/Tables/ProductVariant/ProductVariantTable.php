@@ -3,7 +3,7 @@
 namespace Lunar\Filament\Tables\ProductVariant;
 
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ProductVariantTable
 {

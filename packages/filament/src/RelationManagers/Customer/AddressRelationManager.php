@@ -10,10 +10,10 @@ use Filament\Schemas\Components\Group;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Events\CustomerAddressEdited;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Core\Models\Contracts\Address as AddressContract;
 use Lunar\Core\Models\State;
+use Lunar\Filament\Events\CustomerAddressEdited;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class AddressRelationManager extends BaseRelationManager
 {
@@ -26,33 +26,33 @@ class AddressRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::address.plural_label');
+        return __('lunar-filament::address.plural_label');
     }
 
     public function getDefaultTable(Table $table): Table
     {
         return $table
             ->heading(
-                __('lunarpanel::address.plural_label')
+                __('lunar-filament::address.plural_label')
             )
             ->columns([
                 TextColumn::make('title')->label(
-                    __('lunarpanel::address.table.title.label')
+                    __('lunar-filament::address.table.title.label')
                 ),
                 TextColumn::make('first_name')->label(
-                    __('lunarpanel::address.table.first_name.label')
+                    __('lunar-filament::address.table.first_name.label')
                 ),
                 TextColumn::make('last_name')->label(
-                    __('lunarpanel::address.table.last_name.label')
+                    __('lunar-filament::address.table.last_name.label')
                 ),
                 TextColumn::make('company_name')->label(
-                    __('lunarpanel::address.table.company_name.label')
+                    __('lunar-filament::address.table.company_name.label')
                 ),
                 TextColumn::make('tax_identifier')->label(
-                    __('lunarpanel::address.table.tax_identifier.label')
+                    __('lunar-filament::address.table.tax_identifier.label')
                 ),
                 TextColumn::make('line_one')->label(
-                    __('lunarpanel::address.table.line_one.label')
+                    __('lunar-filament::address.table.line_one.label')
                 )->description(function (Model $record) {
                     if (! $record->line_two && $record->line_three) {
                         return $record->line_three;
@@ -64,19 +64,19 @@ class AddressRelationManager extends BaseRelationManager
                     return "{$record->line_two}, {$record->line_three}";
                 }),
                 TextColumn::make('city')->label(
-                    __('lunarpanel::address.table.city.label')
+                    __('lunar-filament::address.table.city.label')
                 ),
                 TextColumn::make('state')->label(
-                    __('lunarpanel::address.table.state.label')
+                    __('lunar-filament::address.table.state.label')
                 ),
                 TextColumn::make('postcode')->label(
-                    __('lunarpanel::address.table.postcode.label')
+                    __('lunar-filament::address.table.postcode.label')
                 ),
                 TextColumn::make('contact_email')->label(
-                    __('lunarpanel::address.table.contact_email.label')
+                    __('lunar-filament::address.table.contact_email.label')
                 ),
                 TextColumn::make('contact_phone')->label(
-                    __('lunarpanel::address.table.contact_phone.label')
+                    __('lunar-filament::address.table.contact_phone.label')
                 ),
             ])->recordActions([
                 EditAction::make('editAddress')
@@ -101,35 +101,35 @@ class AddressRelationManager extends BaseRelationManager
                     ->schema([
                         Group::make()->schema([
                             TextInput::make('title')->label(
-                                __('lunarpanel::address.form.title.label')
+                                __('lunar-filament::address.form.title.label')
                             )->columnSpan(1),
                             TextInput::make('first_name')->label(
-                                __('lunarpanel::address.form.first_name.label')
+                                __('lunar-filament::address.form.first_name.label')
                             )->columnSpan(2),
                             TextInput::make('last_name')->label(
-                                __('lunarpanel::address.form.last_name.label')
+                                __('lunar-filament::address.form.last_name.label')
                             )->columnSpan(2),
                         ])->columns(5),
                         TextInput::make('company_name')->label(
-                            __('lunarpanel::address.form.company_name.label')
+                            __('lunar-filament::address.form.company_name.label')
                         ),
                         TextInput::make('tax_identifier')->label(
-                            __('lunarpanel::address.form.tax_identifier.label')
+                            __('lunar-filament::address.form.tax_identifier.label')
                         ),
                         Group::make()->schema([
                             TextInput::make('line_one')->label(
-                                __('lunarpanel::address.form.line_one.label')
+                                __('lunar-filament::address.form.line_one.label')
                             ),
                             TextInput::make('line_two')->label(
-                                __('lunarpanel::address.form.line_two.label')
+                                __('lunar-filament::address.form.line_two.label')
                             ),
                             TextInput::make('line_three')->label(
-                                __('lunarpanel::address.form.line_three.label')
+                                __('lunar-filament::address.form.line_three.label')
                             ),
                         ])->columns(3),
                         Group::make()->schema([
                             Select::make('country_id')->label(
-                                __('lunarpanel::address.form.country_id.label')
+                                __('lunar-filament::address.form.country_id.label')
                             )->relationship(
                                 name: 'country',
                             )->getOptionLabelFromRecordUsing(function (Model $record) {
@@ -138,7 +138,7 @@ class AddressRelationManager extends BaseRelationManager
                                 return "{$record->emoji} $name";
                             }),
                             TextInput::make('state')->label(
-                                __('lunarpanel::address.form.state.label')
+                                __('lunar-filament::address.form.state.label')
                             )->datalist(function ($record) {
                                 return State::whereCountryId($record->country_id)
                                     ->where('name', 'LIKE', "%{$record->state}%")
@@ -149,18 +149,18 @@ class AddressRelationManager extends BaseRelationManager
                         ])->columns(2),
                         Group::make()->schema([
                             TextInput::make('city')->label(
-                                __('lunarpanel::address.form.city.label')
+                                __('lunar-filament::address.form.city.label')
                             ),
                             TextInput::make('postcode')->label(
-                                __('lunarpanel::address.form.postcode.label')
+                                __('lunar-filament::address.form.postcode.label')
                             ),
                         ])->columns(2),
                         Group::make()->schema([
                             TextInput::make('contact_email')->label(
-                                __('lunarpanel::address.form.contact_email.label')
+                                __('lunar-filament::address.form.contact_email.label')
                             ),
                             TextInput::make('contact_phone')->label(
-                                __('lunarpanel::address.form.contact_phone.label')
+                                __('lunar-filament::address.form.contact_phone.label')
                             ),
                         ])->columns(2),
                     ]),

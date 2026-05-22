@@ -13,6 +13,7 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\TaxRate as TaxRateContract;
 use Lunar\Filament\RelationManagers\TaxRate\TaxRateAmountRelationManager;
 use Lunar\Filament\Schemas\TaxRate\TaxRateForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\TaxRate\TaxRateTable;
 
 class TaxRateResource extends BaseResource
@@ -42,12 +43,12 @@ class TaxRateResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return TaxRateForm::configure($schema);
+        return Resolver::form(TaxRateForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return TaxRateTable::configure($table);
+        return Resolver::table(TaxRateTable::class, $table);
     }
 
     protected static function getDefaultRelations(): array

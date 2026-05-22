@@ -6,7 +6,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class TagForm
 {
@@ -34,7 +34,7 @@ class TagForm
     public static function getValueComponent(): Component
     {
         return TextInput::make('value')
-            ->label(__('lunarpanel::tag.form.value.label'))
+            ->label(__('lunar-filament::tag.form.value.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();

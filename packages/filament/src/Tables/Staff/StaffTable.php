@@ -8,7 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class StaffTable
 {
@@ -36,16 +36,16 @@ class StaffTable
     {
         return [
             TextColumn::make('first_name')
-                ->label(__('lunarpanel::staff.table.first_name.label')),
+                ->label(__('lunar-filament::staff.table.first_name.label')),
             TextColumn::make('last_name')
-                ->label(__('lunarpanel::staff.table.last_name.label')),
+                ->label(__('lunar-filament::staff.table.last_name.label')),
             TextColumn::make('email')
-                ->label(__('lunarpanel::staff.table.email.label')),
+                ->label(__('lunar-filament::staff.table.email.label')),
             TextColumn::make('admin')
                 ->label('')
                 ->badge()
                 ->state(function (Model $record): string {
-                    return $record->admin ? __('lunarpanel::staff.table.admin.badge') : '';
+                    return $record->admin ? __('lunar-filament::staff.table.admin.badge') : '';
                 }),
         ];
     }

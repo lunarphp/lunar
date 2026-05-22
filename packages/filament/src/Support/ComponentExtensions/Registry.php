@@ -48,24 +48,25 @@ class Registry
 
     /**
      * Invoke `$hookName(...$args)` on every extension registered against `$target`.
-     * The first non-null return value wins; otherwise returns null.
+     *
+     * Each extension receives the current `$args` and its return value replaces
+     * `$args[0]` for the next extension in the stack. When no extension defines
+     * the hook, the original `$args[0]` passes through unchanged.
      */
     public function callHook(string $target, ?object $caller, string $hookName, mixed ...$args): mixed
     {
-        $result = null;
-
         foreach ($this->for($target) as $extension) {
             if (! method_exists($extension, $hookName)) {
                 continue;
             }
 
-            $value = $extension->{$hookName}($caller, ...$args);
-
-            if ($value !== null) {
-                $result = $value;
+            if (method_exists($extension, 'setCaller')) {
+                $extension->setCaller($caller);
             }
+
+            $args[0] = $extension->{$hookName}(...$args);
         }
 
-        return $result;
+        return $args[0] ?? null;
     }
 }

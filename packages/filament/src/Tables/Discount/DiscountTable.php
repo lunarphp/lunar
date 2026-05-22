@@ -7,8 +7,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Core\Models\Discount;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class DiscountTable
 {
@@ -38,9 +38,9 @@ class DiscountTable
         return [
             TextColumn::make('status')
                 ->formatStateUsing(function ($state) {
-                    return __("lunarpanel::discount.table.status.{$state}.label");
+                    return __("lunar-filament::discount.table.status.{$state}.label");
                 })
-                ->label(__('lunarpanel::discount.table.status.label'))
+                ->label(__('lunar-filament::discount.table.status.label'))
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
                     Discount::ACTIVE => 'success',
@@ -50,7 +50,7 @@ class DiscountTable
                 })
                 ->toggleable(),
             TextColumn::make('name')
-                ->label(__('lunarpanel::discount.table.name.label'))
+                ->label(__('lunar-filament::discount.table.name.label'))
                 ->searchable()
                 ->sortable()
                 ->toggleable(),
@@ -58,25 +58,25 @@ class DiscountTable
                 ->formatStateUsing(function ($state) {
                     return (new $state)->getName();
                 })
-                ->label(__('lunarpanel::discount.table.type.label'))
+                ->label(__('lunar-filament::discount.table.type.label'))
                 ->toggleable(),
             TextColumn::make('starts_at')
-                ->label(__('lunarpanel::discount.table.starts_at.label'))
+                ->label(__('lunar-filament::discount.table.starts_at.label'))
                 ->date()
                 ->sortable()
                 ->toggleable(),
             TextColumn::make('ends_at')
-                ->label(__('lunarpanel::discount.table.ends_at.label'))
+                ->label(__('lunar-filament::discount.table.ends_at.label'))
                 ->date()
                 ->sortable()
                 ->toggleable(),
             TextColumn::make('coupon')
-                ->label(__('lunarpanel::discount.table.coupon.label'))
+                ->label(__('lunar-filament::discount.table.coupon.label'))
                 ->searchable()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('created_at')
-                ->label(__('lunarpanel::discount.table.created_at.label'))
+                ->label(__('lunar-filament::discount.table.created_at.label'))
                 ->date()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),

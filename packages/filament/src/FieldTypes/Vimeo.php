@@ -3,9 +3,9 @@
 namespace Lunar\Filament\FieldTypes;
 
 use Filament\Schemas\Components\Component;
+use Lunar\Core\Models\Attribute;
 use Lunar\Filament\Forms\Components\Vimeo as VimeoInput;
 use Lunar\Filament\Synthesizers\VimeoSynth;
-use Lunar\Core\Models\Attribute;
 
 class Vimeo extends BaseFieldType
 {
@@ -18,7 +18,7 @@ class Vimeo extends BaseFieldType
             ->when(filled($attribute->validation_rules), fn (VimeoInput $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
             ->helperText(
-                $attribute->translate('description') ?? __('lunarpanel::components.forms.youtube.helperText')
+                $attribute->translate('description') ?? __('lunar-filament::components.forms.youtube.helperText')
             );
     }
 }

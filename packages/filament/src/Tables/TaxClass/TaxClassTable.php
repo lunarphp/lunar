@@ -8,7 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class TaxClassTable
 {
@@ -36,9 +36,9 @@ class TaxClassTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel::taxclass.table.name.label')),
+                ->label(__('lunar-filament::taxclass.table.name.label')),
             TextColumn::make('default_indicator')
-                ->state(fn (Model $record) => $record->default ? __('lunarpanel::taxclass.table.default.label') : null)
+                ->state(fn (Model $record) => $record->default ? __('lunar-filament::taxclass.table.default.label') : null)
                 ->badge()
                 ->color('gray')
                 ->label(''),

@@ -7,7 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class TagTable
 {
@@ -35,7 +35,7 @@ class TagTable
     {
         return [
             TextColumn::make('value')
-                ->label(__('lunarpanel::tag.table.value.label')),
+                ->label(__('lunar-filament::tag.table.value.label')),
         ];
     }
 }

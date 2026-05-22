@@ -12,6 +12,7 @@ use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\ListTaxZones;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Filament\Schemas\TaxZone\TaxZoneForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\TaxZone\TaxZoneTable;
 
 class TaxZoneResource extends BaseResource
@@ -41,12 +42,12 @@ class TaxZoneResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return TaxZoneForm::configure($schema);
+        return Resolver::form(TaxZoneForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return TaxZoneTable::configure($table);
+        return Resolver::table(TaxZoneTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

@@ -11,6 +11,7 @@ use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\ListCustomerGroup
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Filament\Schemas\CustomerGroup\CustomerGroupForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\CustomerGroup\CustomerGroupTable;
 
 class CustomerGroupResource extends BaseResource
@@ -43,12 +44,12 @@ class CustomerGroupResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return CustomerGroupForm::configure($schema);
+        return Resolver::form(CustomerGroupForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return CustomerGroupTable::configure($table);
+        return Resolver::table(CustomerGroupTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

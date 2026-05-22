@@ -18,6 +18,7 @@ use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandUrls;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Brand as BrandContract;
 use Lunar\Filament\Schemas\Brand\BrandForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Brand\BrandTable;
 
 class BrandResource extends BaseResource
@@ -54,12 +55,12 @@ class BrandResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return BrandForm::configure($schema);
+        return Resolver::form(BrandForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return BrandTable::configure($table);
+        return Resolver::table(BrandTable::class, $table);
     }
 
     protected static function getDefaultSubNavigation(): array

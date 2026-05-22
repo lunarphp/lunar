@@ -6,7 +6,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class CurrencyTable
 {
@@ -24,24 +24,24 @@ class CurrencyTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel::currency.table.name.label')),
+                ->label(__('lunar-filament::currency.table.name.label')),
             TextColumn::make('default_indicator')
-                ->state(fn (Model $record) => $record->default ? __('lunarpanel::currency.table.default.label') : null)
+                ->state(fn (Model $record) => $record->default ? __('lunar-filament::currency.table.default.label') : null)
                 ->badge()
                 ->color('gray')
                 ->label(''),
             TextColumn::make('code')
-                ->label(__('lunarpanel::currency.table.code.label')),
+                ->label(__('lunar-filament::currency.table.code.label')),
             TextColumn::make('exchange_rate')
-                ->label(__('lunarpanel::currency.table.exchange_rate.label')),
+                ->label(__('lunar-filament::currency.table.exchange_rate.label')),
             TextColumn::make('decimal_places')
-                ->label(__('lunarpanel::currency.table.decimal_places.label')),
+                ->label(__('lunar-filament::currency.table.decimal_places.label')),
             IconColumn::make('enabled')
                 ->boolean()
-                ->label(__('lunarpanel::currency.table.enabled.label')),
+                ->label(__('lunar-filament::currency.table.enabled.label')),
             IconColumn::make('sync_prices')
                 ->boolean()
-                ->label(__('lunarpanel::currency.table.sync_prices.label')),
+                ->label(__('lunar-filament::currency.table.sync_prices.label')),
         ];
     }
 }

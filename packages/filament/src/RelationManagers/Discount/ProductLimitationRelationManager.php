@@ -12,9 +12,9 @@ use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class ProductLimitationRelationManager extends BaseRelationManager
 {
@@ -31,10 +31,10 @@ class ProductLimitationRelationManager extends BaseRelationManager
     {
         return $table
             ->heading(
-                __('lunarpanel::discount.relationmanagers.products.title')
+                __('lunar-filament::discount.relationmanagers.products.title')
             )
             ->description(
-                __('lunarpanel::discount.relationmanagers.products.description')
+                __('lunar-filament::discount.relationmanagers.products.description')
             )
             ->paginated(false)
             ->modifyQueryUsing(
@@ -60,7 +60,7 @@ class ProductLimitationRelationManager extends BaseRelationManager
                                 }),
                         ]),
                 ])->label(
-                    __('lunarpanel::discount.relationmanagers.products.actions.attach.label')
+                    __('lunar-filament::discount.relationmanagers.products.actions.attach.label')
                 )->mutateDataUsing(function (array $data) {
                     $data['type'] = 'limitation';
 
@@ -75,7 +75,7 @@ class ProductLimitationRelationManager extends BaseRelationManager
                     ->label(''),
                 TextColumn::make('discountable.attribute_data.name')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.products.table.name.label')
+                        __('lunar-filament::discount.relationmanagers.products.table.name.label')
                     )
                     ->formatStateUsing(
                         fn (Model $record) => $record->discountable->attr('name')

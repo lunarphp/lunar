@@ -378,17 +378,6 @@ class LunarPanelManager
 
     public function callHook(string $class, ?object $caller, string $hookName, ...$args): mixed
     {
-        $extensions = app(Registry::class)->for($class);
-
-        foreach ($extensions as $extension) {
-            if (method_exists($extension, $hookName)) {
-                if (method_exists($extension, 'setCaller')) {
-                    $extension->setCaller($caller);
-                }
-                $args[0] = $extension->{$hookName}(...$args);
-            }
-        }
-
-        return $args[0] ?? null;
+        return app(Registry::class)->callHook($class, $caller, $hookName, ...$args);
     }
 }

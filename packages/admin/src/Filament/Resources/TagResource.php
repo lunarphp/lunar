@@ -11,6 +11,7 @@ use Lunar\Admin\Filament\Resources\TagResource\Pages\ListTags;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Tag as TagContract;
 use Lunar\Filament\Schemas\Tag\TagForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Tag\TagTable;
 
 class TagResource extends BaseResource
@@ -43,12 +44,12 @@ class TagResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return TagForm::configure($schema);
+        return Resolver::form(TagForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return TagTable::configure($table);
+        return Resolver::table(TagTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

@@ -11,12 +11,12 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
-use Lunar\Filament\Tables\Columns\ThumbnailImageColumn;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
+use Lunar\Filament\Tables\Columns\ThumbnailImageColumn;
 
 class ProductConditionRelationManager extends BaseRelationManager
 {
@@ -26,7 +26,7 @@ class ProductConditionRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::discount.relationmanagers.conditions.title');
+        return __('lunar-filament::discount.relationmanagers.conditions.title');
     }
 
     public function isReadOnly(): bool
@@ -40,10 +40,10 @@ class ProductConditionRelationManager extends BaseRelationManager
 
         return $table
             ->heading(
-                __('lunarpanel::discount.relationmanagers.conditions.title')
+                __('lunar-filament::discount.relationmanagers.conditions.title')
             )
             ->description(
-                __('lunarpanel::discount.relationmanagers.conditions.description')
+                __('lunar-filament::discount.relationmanagers.conditions.description')
             )
             ->paginated(false)
             ->modifyQueryUsing(
@@ -84,7 +84,7 @@ class ProductConditionRelationManager extends BaseRelationManager
                                 }),
                         ]),
                 ])->label(
-                    __('lunarpanel::discount.relationmanagers.conditions.actions.attach.label')
+                    __('lunar-filament::discount.relationmanagers.conditions.actions.attach.label')
                 )->mutateDataUsing(function (array $data) {
                     $data['type'] = 'condition';
 
@@ -97,7 +97,7 @@ class ProductConditionRelationManager extends BaseRelationManager
 
                 TextColumn::make('discountable.id')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.conditions.table.name.label')
+                        __('lunar-filament::discount.relationmanagers.conditions.table.name.label')
                     )
                     ->formatStateUsing(
                         fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->product->attr('name').' - '.$record->discountable->sku : $record->discountable->attr('name')
@@ -105,7 +105,7 @@ class ProductConditionRelationManager extends BaseRelationManager
 
                 TextColumn::make('discountable_type')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.conditions.table.type.label')
+                        __('lunar-filament::discount.relationmanagers.conditions.table.type.label')
                     )
                     ->formatStateUsing(
                         fn (Model $record) => str($record->discountable->morphName())->replace('_', ' ')->title(),

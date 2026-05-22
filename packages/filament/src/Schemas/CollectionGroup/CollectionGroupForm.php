@@ -8,7 +8,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class CollectionGroupForm
 {
@@ -35,7 +35,7 @@ class CollectionGroupForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel::collectiongroup.form.name.label'))
+            ->label(__('lunar-filament::collectiongroup.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus()
@@ -52,7 +52,7 @@ class CollectionGroupForm
     public static function getHandleComponent(): Component
     {
         return TextInput::make('handle')
-            ->label(__('lunarpanel::collectiongroup.form.handle.label'))
+            ->label(__('lunar-filament::collectiongroup.form.handle.label'))
             ->unique(ignoreRecord: true)
             ->required()
             ->live(onBlur: true)

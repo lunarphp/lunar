@@ -12,6 +12,7 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\AttributeGroup as AttributeGroupContract;
 use Lunar\Filament\RelationManagers\AttributeGroup\AttributesRelationManager;
 use Lunar\Filament\Schemas\AttributeGroup\AttributeGroupForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\AttributeGroup\AttributeGroupTable;
 
 class AttributeGroupResource extends BaseResource
@@ -44,12 +45,12 @@ class AttributeGroupResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return AttributeGroupForm::configure($schema);
+        return Resolver::form(AttributeGroupForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return AttributeGroupTable::configure($table);
+        return Resolver::table(AttributeGroupTable::class, $table);
     }
 
     protected static function getDefaultRelations(): array

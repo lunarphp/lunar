@@ -12,6 +12,7 @@ use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
 use Lunar\Filament\RelationManagers\ProductOption\ValuesRelationManager;
 use Lunar\Filament\Schemas\ProductOption\ProductOptionForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\ProductOption\ProductOptionTable;
 
 class ProductOptionResource extends BaseResource
@@ -44,12 +45,12 @@ class ProductOptionResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return ProductOptionForm::configure($schema);
+        return Resolver::form(ProductOptionForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return ProductOptionTable::configure($table);
+        return Resolver::table(ProductOptionTable::class, $table);
     }
 
     protected static function getDefaultRelations(): array

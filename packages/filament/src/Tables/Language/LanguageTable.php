@@ -5,7 +5,7 @@ namespace Lunar\Filament\Tables\Language;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class LanguageTable
 {
@@ -23,14 +23,14 @@ class LanguageTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel::language.table.name.label')),
+                ->label(__('lunar-filament::language.table.name.label')),
             TextColumn::make('default_indicator')
-                ->state(fn (Model $record) => $record->default ? __('lunarpanel::language.table.default.label') : null)
+                ->state(fn (Model $record) => $record->default ? __('lunar-filament::language.table.default.label') : null)
                 ->badge()
                 ->color('gray')
                 ->label(''),
             TextColumn::make('code')
-                ->label(__('lunarpanel::language.table.code.label')),
+                ->label(__('lunar-filament::language.table.code.label')),
         ];
     }
 }

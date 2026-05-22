@@ -9,11 +9,11 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Core\Facades\AttributeManifest;
 use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\Language;
 use Lunar\Filament\Forms\Components\TranslatedText;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class AttributeGroupForm
 {
@@ -42,7 +42,7 @@ class AttributeGroupForm
     public static function getAttributableTypeComponent(): Component
     {
         return Select::make('attributable_type')
-            ->label(__('lunarpanel::attributegroup.form.attributable_type.label'))
+            ->label(__('lunar-filament::attributegroup.form.attributable_type.label'))
             ->options(function () {
                 return AttributeManifest::getTypes()->mapWithKeys(
                     fn ($type) => [
@@ -57,7 +57,7 @@ class AttributeGroupForm
     public static function getNameComponent(): Component
     {
         return TranslatedText::make('name')
-            ->label(__('lunarpanel::attributegroup.form.name.label'))
+            ->label(__('lunar-filament::attributegroup.form.name.label'))
             ->required()
             ->maxLength(255)
             ->afterStateUpdated(function (string $operation, $state, Set $set) {
@@ -73,7 +73,7 @@ class AttributeGroupForm
     public static function getHandleComponent(): Component
     {
         return TextInput::make('handle')
-            ->label(__('lunarpanel::attributegroup.form.handle.label'))
+            ->label(__('lunar-filament::attributegroup.form.handle.label'))
             ->live(onBlur: true)
             ->afterStateUpdated(function (string $operation, $state, Set $set) {
                 if ($operation !== 'create') {
@@ -89,7 +89,7 @@ class AttributeGroupForm
     public static function getPositionComponent(): Component
     {
         return TextInput::make('position')
-            ->label(__('lunarpanel::attributegroup.form.position.label'))
+            ->label(__('lunar-filament::attributegroup.form.position.label'))
             ->numeric()
             ->minValue(1)
             ->maxValue(100)

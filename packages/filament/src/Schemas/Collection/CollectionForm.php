@@ -4,8 +4,8 @@ namespace Lunar\Filament\Schemas\Collection;
 
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Filament\Forms\Components\Attributes;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class CollectionForm
 {

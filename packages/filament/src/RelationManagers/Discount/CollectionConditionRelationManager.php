@@ -10,9 +10,9 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class CollectionConditionRelationManager extends BaseRelationManager
 {
@@ -22,7 +22,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::discount.relationmanagers.collection_conditions.title');
+        return __('lunar-filament::discount.relationmanagers.collection_conditions.title');
     }
 
     public function isReadOnly(): bool
@@ -34,10 +34,10 @@ class CollectionConditionRelationManager extends BaseRelationManager
     {
         return $table
             ->heading(
-                __('lunarpanel::discount.relationmanagers.collection_conditions.title')
+                __('lunar-filament::discount.relationmanagers.collection_conditions.title')
             )
             ->description(
-                __('lunarpanel::discount.relationmanagers.collection_conditions.description')
+                __('lunar-filament::discount.relationmanagers.collection_conditions.description')
             )
             ->paginated(false)
             ->modifyQueryUsing(
@@ -48,7 +48,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
             ->headerActions([
                 CreateAction::make()->schema([
                     Select::make('discountable_id')
-                        ->label(__('lunarpanel::collection.singular_label'))
+                        ->label(__('lunar-filament::collection.singular_label'))
                         ->required()
                         ->searchable()
                         ->getSearchResultsUsing(static function (string $search): array {
@@ -63,7 +63,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
                     Forms\Components\Hidden::make('discountable_type')
                         ->default(Collection::morphName()),
                 ])->label(
-                    __('lunarpanel::discount.relationmanagers.collection_conditions.actions.attach.label')
+                    __('lunar-filament::discount.relationmanagers.collection_conditions.actions.attach.label')
                 )->mutateDataUsing(function (array $data) {
                     $data['type'] = 'condition';
 
@@ -72,7 +72,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
             ])->columns([
                 TextColumn::make('discountable.id')
                     ->label(
-                        __('lunarpanel::discount.relationmanagers.collection_conditions.table.name.label')
+                        __('lunar-filament::discount.relationmanagers.collection_conditions.table.name.label')
                     )
                     ->formatStateUsing(
                         fn (Model $record) => $record->discountable?->attr('name')

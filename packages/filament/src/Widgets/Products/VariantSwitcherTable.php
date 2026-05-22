@@ -10,9 +10,9 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Filament\Support\RecordUrls;
 
 class VariantSwitcherTable extends TableWidget
 {
@@ -89,11 +89,7 @@ class VariantSwitcherTable extends TableWidget
 
     protected function getTableRecordUrlUsing(): ?Closure
     {
-        return function (Model $record) {
-            return ProductVariantResource::getUrl('edit', [
-                'record' => $record,
-            ]);
-        };
+        return fn (Model $record) => RecordUrls::for('product_variant', $record);
     }
 
     protected function getTableHeading(): string|Htmlable|null

@@ -9,8 +9,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
-use Lunar\Admin\Events\CustomerUserEdited;
-use Lunar\Admin\Support\RelationManagers\BaseRelationManager;
+use Lunar\Filament\Events\CustomerUserEdited;
+use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class UserRelationManager extends BaseRelationManager
 {
@@ -23,16 +23,16 @@ class UserRelationManager extends BaseRelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('lunarpanel::user.plural_label');
+        return __('lunar-filament::user.plural_label');
     }
 
     public function getDefaultTable(Table $table): Table
     {
         return $table->columns([
             TextColumn::make('name')
-                ->label(__('lunarpanel::user.table.name.label')),
+                ->label(__('lunar-filament::user.table.name.label')),
             TextColumn::make('email')
-                ->label(__('lunarpanel::user.table.email.label')),
+                ->label(__('lunar-filament::user.table.email.label')),
         ])->recordActions([
             EditAction::make('edit')
                 ->after(
@@ -42,14 +42,14 @@ class UserRelationManager extends BaseRelationManager
                     Group::make([
                         TextInput::make('email')
                             ->label(
-                                __('lunarpanel::user.form.email.label')
+                                __('lunar-filament::user.form.email.label')
                             )
                             ->required()
                             ->email()
                             ->columnSpan(2),
                         TextInput::make('password')
                             ->label(
-                                __('lunarpanel::user.form.password.label')
+                                __('lunar-filament::user.form.password.label')
                             )
                             ->password()
                             ->minLength(8)
@@ -60,7 +60,7 @@ class UserRelationManager extends BaseRelationManager
                             ->confirmed(),
                         TextInput::make('password_confirmation')
                             ->label(
-                                __('lunarpanel::user.form.password_confirmation.label')
+                                __('lunar-filament::user.form.password_confirmation.label')
                             )
                             ->password()
                             ->minLength(8)

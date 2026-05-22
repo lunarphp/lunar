@@ -25,6 +25,8 @@ use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 use Lunar\Admin\Events\ProductPricingUpdated;
 use Lunar\Admin\Events\ProductVariantOptionsUpdated;
+use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
+use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Listeners\FilamentUpgradedListener;
 use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
@@ -116,7 +118,27 @@ class LunarPanelProvider extends ServiceProvider
         $this->registerPermissionManifest();
         $this->registerStateListeners();
         $this->registerLunarSynthesizer();
+        $this->registerBridgeRecordUrls();
         // $this->registerUpgradedListener();
+    }
+
+    /**
+     * Point the bridge's record-URL resolvers at the admin shell's pages.
+     *
+     * Bridge tables/widgets call `RecordUrls::for(...)` to link out to a
+     * record's management page. Without this binding the link is omitted —
+     * which is the correct behaviour for downstream panels that don't ship
+     * the admin shell.
+     */
+    protected function registerBridgeRecordUrls(): void
+    {
+        $this->app['config']->set('lunar-filament.record_urls.order',
+            fn ($record) => ManageOrder::getUrl(['record' => $record]),
+        );
+
+        $this->app['config']->set('lunar-filament.record_urls.product_variant',
+            fn ($record) => ProductVariantResource::getUrl('edit', ['record' => $record]),
+        );
     }
 
     /**

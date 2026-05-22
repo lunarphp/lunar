@@ -11,10 +11,10 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\State;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class TaxZoneForm
 {
@@ -50,7 +50,7 @@ class TaxZoneForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel::taxzone.form.name.label'))
+            ->label(__('lunar-filament::taxzone.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -60,12 +60,12 @@ class TaxZoneForm
     {
         return Select::make('zone_type')
             ->options([
-                'country' => __('lunarpanel::taxzone.form.zone_type.options.country'),
-                'states' => __('lunarpanel::taxzone.form.zone_type.options.states'),
-                'postcodes' => __('lunarpanel::taxzone.form.zone_type.options.postcodes'),
+                'country' => __('lunar-filament::taxzone.form.zone_type.options.country'),
+                'states' => __('lunar-filament::taxzone.form.zone_type.options.states'),
+                'postcodes' => __('lunar-filament::taxzone.form.zone_type.options.postcodes'),
             ])
             ->default('country')
-            ->label(__('lunarpanel::taxzone.form.zone_type.label'))
+            ->label(__('lunar-filament::taxzone.form.zone_type.label'))
             ->live()
             ->required()
             ->selectablePlaceholder(false);
@@ -74,7 +74,7 @@ class TaxZoneForm
     public static function getZoneTypeCountriesComponent(): Component
     {
         return Select::make('zone_countries')
-            ->label(__('lunarpanel::taxzone.form.zone_countries.label'))
+            ->label(__('lunar-filament::taxzone.form.zone_countries.label'))
             ->visible(fn ($get) => $get('zone_type') == 'country')
             ->dehydrated(false)
             ->options(Country::get()->pluck('name', 'iso3'))
@@ -111,7 +111,7 @@ class TaxZoneForm
     public static function getZoneTypeCountryComponent(): Component
     {
         return Select::make('zone_country')
-            ->label(__('lunarpanel::taxzone.form.zone_country.label'))
+            ->label(__('lunar-filament::taxzone.form.zone_country.label'))
             ->visible(fn ($get) => $get('zone_type') !== 'country')
             ->dehydrated(false)
             ->required()
@@ -135,7 +135,7 @@ class TaxZoneForm
     public static function getZoneTypeStatesComponent(): Component
     {
         return Select::make('zone_states')
-            ->label(__('lunarpanel::taxzone.form.zone_states.label'))
+            ->label(__('lunar-filament::taxzone.form.zone_states.label'))
             ->visible(fn ($get) => $get('zone_type') == 'states')
             ->dehydrated(false)
             ->options(fn ($get) => State::where('country_id', $get('zone_country'))->get()->pluck('name', 'code'))
@@ -172,11 +172,11 @@ class TaxZoneForm
     public static function getZoneTypePostcodesComponent(): Component
     {
         return Textarea::make('zone_postcodes')
-            ->label(__('lunarpanel::taxzone.form.zone_postcodes.label'))
+            ->label(__('lunar-filament::taxzone.form.zone_postcodes.label'))
             ->visible(fn ($get) => $get('zone_type') == 'postcodes')
             ->dehydrated(false)
             ->rows(10)
-            ->helperText(__('lunarpanel::taxzone.form.zone_postcodes.helper'))
+            ->helperText(__('lunar-filament::taxzone.form.zone_postcodes.helper'))
             ->required()
             ->afterStateHydrated(static function (Textarea $component, ?Model $record): void {
                 if ($record) {
@@ -201,23 +201,23 @@ class TaxZoneForm
     {
         return Select::make('price_display')
             ->options([
-                'tax_inclusive' => __('lunarpanel::taxzone.form.price_display.options.include_tax'),
-                'tax_exclusive' => __('lunarpanel::taxzone.form.price_display.options.exclude_tax'),
+                'tax_inclusive' => __('lunar-filament::taxzone.form.price_display.options.include_tax'),
+                'tax_exclusive' => __('lunar-filament::taxzone.form.price_display.options.exclude_tax'),
             ])
-            ->label(__('lunarpanel::taxzone.form.price_display.label'))
+            ->label(__('lunar-filament::taxzone.form.price_display.label'))
             ->required();
     }
 
     public static function getActiveComponent(): Component
     {
         return Toggle::make('active')
-            ->label(__('lunarpanel::taxzone.form.active.label'));
+            ->label(__('lunar-filament::taxzone.form.active.label'));
     }
 
     public static function getDefaultComponent(): Component
     {
         return Toggle::make('default')
-            ->label(__('lunarpanel::taxzone.form.default.label'));
+            ->label(__('lunar-filament::taxzone.form.default.label'));
     }
 
     private static function syncCountries(TaxZoneContract $taxZone, $selectedCountries): void

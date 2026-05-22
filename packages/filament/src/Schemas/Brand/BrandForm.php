@@ -6,8 +6,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Filament\Forms\Components\Attributes;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class BrandForm
 {
@@ -36,7 +36,7 @@ class BrandForm
     public static function getNameComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('lunarpanel::brand.form.name.label'))
+            ->label(__('lunar-filament::brand.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();

@@ -9,7 +9,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ChannelTable
 {
@@ -39,16 +39,16 @@ class ChannelTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel::channel.table.name.label')),
+                ->label(__('lunar-filament::channel.table.name.label')),
             TextColumn::make('default_indicator')
-                ->state(fn (Model $record) => $record->default ? __('lunarpanel::channel.table.default.label') : null)
+                ->state(fn (Model $record) => $record->default ? __('lunar-filament::channel.table.default.label') : null)
                 ->badge()
                 ->color('gray')
                 ->label(''),
             TextColumn::make('handle')
-                ->label(__('lunarpanel::channel.table.handle.label')),
+                ->label(__('lunar-filament::channel.table.handle.label')),
             TextColumn::make('url')
-                ->label(__('lunarpanel::channel.table.url.label')),
+                ->label(__('lunar-filament::channel.table.url.label')),
         ];
     }
 }

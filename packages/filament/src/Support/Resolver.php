@@ -2,6 +2,9 @@
 
 namespace Lunar\Filament\Support;
 
+use Filament\Schemas\Schema;
+use Filament\Tables\Table;
+
 /**
  * Resolves the runtime class for a bridge schema, table, or relation manager.
  *
@@ -15,6 +18,39 @@ namespace Lunar\Filament\Support;
  */
 class Resolver
 {
+    /**
+     * Configure a Filament schema via a bridge form class, preferring the
+     * consumer's published subclass when one is present.
+     */
+    public static function form(string $bridgeFormClass, Schema $schema): Schema
+    {
+        $class = static::resolve($bridgeFormClass);
+
+        return $class::configure($schema);
+    }
+
+    /**
+     * Configure a Filament table via a bridge table class, preferring the
+     * consumer's published subclass when one is present.
+     */
+    public static function table(string $bridgeTableClass, Table $table): Table
+    {
+        $class = static::resolve($bridgeTableClass);
+
+        return $class::configure($table);
+    }
+
+    /**
+     * Configure a Filament infolist schema via a bridge infolist class,
+     * preferring the consumer's published subclass when one is present.
+     */
+    public static function infolist(string $bridgeInfolistClass, Schema $schema): Schema
+    {
+        $class = static::resolve($bridgeInfolistClass);
+
+        return $class::configure($schema);
+    }
+
     /**
      * @template T
      *

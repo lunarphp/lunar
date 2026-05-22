@@ -10,7 +10,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class ProductOptionTable
@@ -43,17 +43,17 @@ class ProductOptionTable
     {
         return [
             TranslatedTextColumn::make('name')
-                ->label(__('lunarpanel::productoption.table.name.label'))
+                ->label(__('lunar-filament::productoption.table.name.label'))
                 ->searchable(),
             TranslatedTextColumn::make('label')
-                ->label(__('lunarpanel::productoption.table.label.label'))
+                ->label(__('lunar-filament::productoption.table.label.label'))
                 ->searchable(),
             TextColumn::make('handle')
-                ->label(__('lunarpanel::productoption.table.handle.label'))
+                ->label(__('lunar-filament::productoption.table.handle.label'))
                 ->searchable(),
             IconColumn::make('shared')
                 ->boolean()
-                ->label(__('lunarpanel::productoption.table.shared.label')),
+                ->label(__('lunar-filament::productoption.table.shared.label')),
         ];
     }
 }

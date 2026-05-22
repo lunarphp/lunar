@@ -11,6 +11,7 @@ use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Filament\Schemas\Currency\CurrencyForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Currency\CurrencyTable;
 
 class CurrencyResource extends BaseResource
@@ -43,12 +44,12 @@ class CurrencyResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return CurrencyForm::configure($schema);
+        return Resolver::form(CurrencyForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return CurrencyTable::configure($table);
+        return Resolver::table(CurrencyTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

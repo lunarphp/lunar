@@ -19,11 +19,11 @@
                         </x-filament::section>
                     </label>
                 @empty
-                    {{ __('lunarpanel::producttype.attributes.no_attributes') }}
+                    {{ __('lunar-filament::producttype.attributes.no_attributes') }}
                 @endforelse
             </div>
         </x-filament::fieldset>
     @empty
-        {{ __('lunarpanel::producttype.attributes.no_groups') }}
+        {{ __('lunar-filament::producttype.attributes.no_groups') }}
     @endforelse
 </x-dynamic-component>

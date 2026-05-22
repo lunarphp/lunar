@@ -11,6 +11,7 @@ use Lunar\Admin\Filament\Resources\LanguageResource\Pages\ListLanguages;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Language as LanguageContract;
 use Lunar\Filament\Schemas\Language\LanguageForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Language\LanguageTable;
 
 class LanguageResource extends BaseResource
@@ -43,12 +44,12 @@ class LanguageResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return LanguageForm::configure($schema);
+        return Resolver::form(LanguageForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return LanguageTable::configure($table);
+        return Resolver::table(LanguageTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

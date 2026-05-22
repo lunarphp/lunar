@@ -9,7 +9,6 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Models\Attribute;
@@ -21,6 +20,7 @@ use Lunar\Core\Models\Tag;
 use Lunar\Filament\Forms\Components\Attributes;
 use Lunar\Filament\Forms\Components\Tags as TagsComponent;
 use Lunar\Filament\Forms\Components\TranslatedText as TranslatedTextInput;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ProductForm
 {
@@ -54,22 +54,22 @@ class ProductForm
     {
         return [
             Callout::make()
-                ->heading(__('lunarpanel::product.status.unpublished.content'))
+                ->heading(__('lunar-filament::product.status.unpublished.content'))
                 ->status('info')
                 ->hidden(fn (Model $record) => static::isPublished($record)),
             Callout::make()
-                ->heading(__('lunarpanel::product.status.availability.customer_groups'))
+                ->heading(__('lunar-filament::product.status.availability.customer_groups'))
                 ->status('warning')
                 ->hidden(fn (Model $record) => ! static::isPublished($record) || static::hasEnabledCustomerGroup($record)),
             Callout::make()
-                ->heading(__('lunarpanel::product.status.availability.no_default_customer_group'))
+                ->heading(__('lunar-filament::product.status.availability.no_default_customer_group'))
                 ->status('warning')
                 ->hidden(fn (Model $record) => ! static::isPublished($record)
                     || ! static::hasEnabledCustomerGroup($record)
                     || (bool) CustomerGroup::modelClass()::getDefault()
                 ),
             Callout::make()
-                ->heading(__('lunarpanel::product.status.availability.hidden_from_guests'))
+                ->heading(__('lunar-filament::product.status.availability.hidden_from_guests'))
                 ->status('warning')
                 ->hidden(fn (Model $record) => ! static::isPublished($record)
                     || ! static::hasEnabledCustomerGroup($record)
@@ -77,7 +77,7 @@ class ProductForm
                     || static::isDefaultGroupVisibleToGuests($record)
                 ),
             Callout::make()
-                ->heading(__('lunarpanel::product.status.availability.channels'))
+                ->heading(__('lunar-filament::product.status.availability.channels'))
                 ->status('warning')
                 ->hidden(fn (Model $record) => ! static::isPublished($record) || $record->channels()->where('enabled', true)->count()),
         ];
@@ -96,7 +96,7 @@ class ProductForm
         $validation = static::getSkuValidation();
 
         $input = TextInput::make('sku')
-            ->label(__('lunarpanel::product.form.sku.label'))
+            ->label(__('lunar-filament::product.form.sku.label'))
             ->required($validation['required'] ?? false);
 
         if ($validation['unique'] ?? false) {
@@ -135,14 +135,14 @@ class ProductForm
         }
 
         return $component
-            ->label(__('lunarpanel::product.form.name.label'))
+            ->label(__('lunar-filament::product.form.name.label'))
             ->required();
     }
 
     public static function getBrandComponent(): Component
     {
         return Select::make('brand_id')
-            ->label(__('lunarpanel::product.form.brand.label'))
+            ->label(__('lunar-filament::product.form.brand.label'))
             ->relationship('brand', 'name')
             ->searchable()
             ->preload()
@@ -154,7 +154,7 @@ class ProductForm
     public static function getProductTypeComponent(): Component
     {
         return Select::make('product_type_id')
-            ->label(__('lunarpanel::product.form.producttype.label'))
+            ->label(__('lunar-filament::product.form.producttype.label'))
             ->relationship('productType', 'name')
             ->searchable()
             ->preload()
@@ -167,8 +167,8 @@ class ProductForm
         return TagsComponent::make('tags')
             ->suggestions(Tag::all()->pluck('value')->all())
             ->splitKeys(['Tab', ','])
-            ->label(__('lunarpanel::product.form.tags.label'))
-            ->helperText(__('lunarpanel::product.form.tags.helper_text'));
+            ->label(__('lunar-filament::product.form.tags.label'))
+            ->helperText(__('lunar-filament::product.form.tags.helper_text'));
     }
 
     public static function getAttributeDataComponent(): Component

@@ -7,7 +7,7 @@
                         <tr class="divide-x divide-gray-950/10 dark:divide-white/10">
                             <td class="p-2 font-medium whitespace-nowrap">
                                 @php
-                                    $langKey = "lunarpanel::order.infolist.{$key}.label";
+                                    $langKey = "lunar-filament::order.infolist.{$key}.label";
                                     $label = __($langKey);
                                 @endphp
                                 {{ $label == $langKey ? $key : $label }}

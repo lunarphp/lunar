@@ -17,6 +17,7 @@ use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionUrls
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 use Lunar\Filament\Schemas\Collection\CollectionForm;
+use Lunar\Filament\Support\Resolver;
 
 class CollectionResource extends BaseResource
 {
@@ -70,7 +71,7 @@ class CollectionResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return CollectionForm::configure($schema);
+        return Resolver::form(CollectionForm::class, $schema);
     }
 
     protected static function getDefaultSubNavigation(): array

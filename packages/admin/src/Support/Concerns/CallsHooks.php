@@ -2,17 +2,9 @@
 
 namespace Lunar\Admin\Support\Concerns;
 
-use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Filament\Support\Concerns\CallsHooks as BridgeCallsHooks;
 
 trait CallsHooks
 {
-    protected function callLunarHook(...$args)
-    {
-        return LunarPanel::callHook(static::class, $this, ...$args);
-    }
-
-    protected static function callStaticLunarHook(...$args)
-    {
-        return LunarPanel::callHook(static::class, null, ...$args);
-    }
+    use BridgeCallsHooks;
 }

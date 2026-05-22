@@ -19,6 +19,7 @@ use Lunar\Filament\RelationManagers\Customer\AddressRelationManager;
 use Lunar\Filament\RelationManagers\Customer\OrdersRelationManager;
 use Lunar\Filament\RelationManagers\Customer\UserRelationManager;
 use Lunar\Filament\Schemas\Customer\CustomerForm;
+use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Customer\CustomerTable;
 
 class CustomerResource extends BaseResource
@@ -53,12 +54,12 @@ class CustomerResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return CustomerForm::configure($schema);
+        return Resolver::form(CustomerForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return CustomerTable::configure($table);
+        return Resolver::table(CustomerTable::class, $table);
     }
 
     public static function getWidgets(): array

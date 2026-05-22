@@ -7,9 +7,6 @@ use Exception;
 use Filament\Forms\Components\Field;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
-use Lunar\Admin\Models\Staff;
-use Lunar\Admin\Support\Facades\LunarAccessControl;
-use Lunar\Admin\Support\Facades\LunarPanel;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -44,12 +41,12 @@ class PermissionSelector extends Field
 
             $selectedRoles = $component->getRolesState();
 
-            $admins = LunarAccessControl::getAdmin()->intersect($selectedRoles);
+            $admins = app('lunar-access-control')->getAdmin()->intersect($selectedRoles);
 
             $filteredRoles = collect($selectedRoles)->reject(fn ($r) => $admins->contains($r));
 
             foreach ($filteredRoles as $role) {
-                $roleModel = Role::findByName($role, LunarPanel::getPanel()->getAuthGuard());
+                $roleModel = Role::findByName($role, app('lunar-panel')->getPanel()->getAuthGuard());
                 $rolePerms = $roleModel->getAllPermissions();
 
                 foreach ($rolePerms as $perm) {
@@ -57,7 +54,7 @@ class PermissionSelector extends Field
                 }
             }
 
-            $groupedPermissions = LunarAccessControl::getGroupedPermissions();
+            $groupedPermissions = app('lunar-access-control')->getGroupedPermissions();
 
             if ($admins->count()) {
                 $filtered = [];
@@ -97,24 +94,24 @@ class PermissionSelector extends Field
         $isUpdated = filled($state);
 
         if (is_null($state)) {
-            $state = LunarAccessControl::getPermissions()
+            $state = app('lunar-access-control')->getPermissions()
                 ->mapWithKeys(fn ($p) => [$p->handle => false])->toArray();
         }
 
         $directPermissions = $this->getAuthorizeRecord()?->getDirectPermissions()?->pluck('name') ?? collect();
-        $groupedPermissions = LunarAccessControl::getGroupedPermissions();
+        $groupedPermissions = app('lunar-access-control')->getGroupedPermissions();
 
         $rolesPermissions = [];
 
         $selectedRoles = $this->getRolesState();
 
-        $admins = LunarAccessControl::getAdmin()->intersect($selectedRoles);
+        $admins = app('lunar-access-control')->getAdmin()->intersect($selectedRoles);
 
         $filteredRoles = collect($selectedRoles)->reject(fn ($r) => $admins->contains($r));
 
         // permissions from roles
         foreach ($filteredRoles as $role) {
-            $roleModel = Role::findByName($role, LunarPanel::getPanel()->getAuthGuard());
+            $roleModel = Role::findByName($role, app('lunar-panel')->getPanel()->getAuthGuard());
             $rolePerms = $roleModel->getAllPermissions();
 
             foreach ($rolePerms as $perm) {
@@ -179,7 +176,7 @@ class PermissionSelector extends Field
 
     public function getGroupedPermissions(): Collection
     {
-        return LunarAccessControl::getGroupedPermissions();
+        return app('lunar-access-control')->getGroupedPermissions();
     }
 
     public function authorize(Closure $authorize): static
@@ -203,7 +200,6 @@ class PermissionSelector extends Field
             throw new Exception('Not implemented \Spatie\Permission\Traits\HasRoles');
         }
 
-        /** @var Staff $record */
         return $record;
     }
 
@@ -229,13 +225,13 @@ class PermissionSelector extends Field
     {
         $exclude = $this->getRolesState();
 
-        $roles = LunarAccessControl::getRolesWithoutAdmin()
+        $roles = app('lunar-access-control')->getRolesWithoutAdmin()
             ->filter(fn ($role) => in_array($role->handle, $exclude));
 
         $permissions = [];
 
         foreach ($roles as $role) {
-            $roleModel = Role::findByName($role->handle, LunarPanel::getPanel()->getAuthGuard());
+            $roleModel = Role::findByName($role->handle, app('lunar-panel')->getPanel()->getAuthGuard());
 
             $rolePerms = $roleModel->getAllPermissions();
 

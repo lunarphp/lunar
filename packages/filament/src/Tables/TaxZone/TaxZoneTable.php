@@ -9,7 +9,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class TaxZoneTable
 {
@@ -37,20 +37,20 @@ class TaxZoneTable
     {
         return [
             TextColumn::make('name')
-                ->label(__('lunarpanel::taxzone.table.name.label')),
+                ->label(__('lunar-filament::taxzone.table.name.label')),
             TextColumn::make('default_indicator')
-                ->state(fn (Model $record) => $record->default ? __('lunarpanel::taxzone.table.default.label') : null)
+                ->state(fn (Model $record) => $record->default ? __('lunar-filament::taxzone.table.default.label') : null)
                 ->badge()
                 ->color('gray')
                 ->label(''),
             TextColumn::make('zone_type')
-                ->label(__('lunarpanel::taxzone.table.zone_type.label'))
+                ->label(__('lunar-filament::taxzone.table.zone_type.label'))
                 ->formatStateUsing(
-                    fn ($state) => __("lunarpanel::taxzone.form.zone_type.options.{$state}")
+                    fn ($state) => __("lunar-filament::taxzone.form.zone_type.options.{$state}")
                 ),
             IconColumn::make('active')
                 ->boolean()
-                ->label(__('lunarpanel::taxzone.table.active.label')),
+                ->label(__('lunar-filament::taxzone.table.active.label')),
         ];
     }
 }
