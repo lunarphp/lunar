@@ -6,12 +6,12 @@ use Filament\Actions\DeleteAction;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Admin\Filament\Resources\DiscountResource;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\CollectionConditionRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductConditionRelationManager;
-use Lunar\Admin\Filament\Resources\DiscountResource\RelationManagers\ProductRewardRelationManager;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\Models\Currency;
+use Lunar\Filament\RelationManagers\Discount\CollectionConditionRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductConditionRelationManager;
+use Lunar\Filament\RelationManagers\Discount\ProductRewardRelationManager;
 
 class EditDiscount extends BaseEditRecord
 {

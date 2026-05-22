@@ -17,8 +17,8 @@ describe('list field converter', function () {
             'type' => TranslatedText::class,
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\TranslatedText::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\TranslatedText::getFilamentComponent($attribute);
 
-        expect($inputComponent)->toBeInstanceOf(Lunar\Admin\Support\Forms\Components\TranslatedText::class);
+        expect($inputComponent)->toBeInstanceOf(Lunar\Filament\Forms\Components\TranslatedText::class);
     });
 });

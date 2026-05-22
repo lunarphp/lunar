@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roles
-     */
     'roles.admin.label' => 'مشرف',
     'roles.admin.description' => 'مشرف بصلاحيات كاملة',
     'roles.staff.label' => 'موظف',
     'roles.staff.description' => 'الموظف بصلاحيات أساسية',
-    /**
-     * Permissions.
-     */
     'permissions.settings.label' => 'الإعدادات',
     'permissions.settings.description' => 'يمنح الوصول إلى منطقة إعدادات النظام',
     'permissions.settings:core.label' => 'الإعدادات الأساسية',

@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Үйл ажиллагаа',
-
     'plural_label' => 'Үйл ажиллагаанууд',
-
     'table' => [
         'subject' => 'Сэдэв',
         'description' => 'Тайлбар',
@@ -15,7 +12,6 @@ return [
         'logged_from' => 'Эхэлсэн',
         'logged_until' => 'Дууссан',
     ],
-
     'form' => [
         'causer_type' => 'Шалтгаан төрөл',
         'causer_id' => 'Шалтгаан ID',
@@ -25,5 +21,4 @@ return [
         'attributes' => 'Атрибутууд',
         'old' => 'Хуучин',
     ],
-
 ];

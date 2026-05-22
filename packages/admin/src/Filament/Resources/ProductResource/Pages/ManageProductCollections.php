@@ -12,8 +12,8 @@ use Filament\Tables\Table;
 use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class ManageProductCollections extends BaseManageRelatedRecords
 {

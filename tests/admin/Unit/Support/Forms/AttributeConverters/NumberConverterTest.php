@@ -18,7 +18,7 @@ describe('list field converter', function () {
             'type' => Number::class,
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\Number::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\Number::getFilamentComponent($attribute);
 
         expect($inputComponent)->toBeInstanceOf(TextInput::class);
         expect($inputComponent->isNumeric())->toBeTrue();

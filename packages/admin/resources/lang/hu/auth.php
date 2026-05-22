@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roles
-     */
     'roles.admin.label' => 'Admin',
     'roles.admin.description' => 'Teljes hozzáféréssel rendelkező admin',
     'roles.staff.label' => 'Munkatárs',
     'roles.staff.description' => 'Alapvető jogosultságokkal rendelkező munkatárs',
-    /**
-     * Permissions.
-     */
     'permissions.settings.label' => 'Beállítások',
     'permissions.settings.description' => 'Hozzáférést ad a Hub beállítási területéhez',
     'permissions.settings:core.label' => 'Alapbeállítások',

@@ -2,17 +2,9 @@
 
 namespace Lunar\Admin\Support\Concerns\RelationManagers;
 
-use Filament\Schemas\Schema;
+use Lunar\Filament\Support\Concerns\RelationManagers\ExtendsForms as BridgeExtendsForms;
 
 trait ExtendsForms
 {
-    public function form(Schema $schema): Schema
-    {
-        return self::callLunarHook('extendForm', $this->getDefaultForm($schema));
-    }
-
-    public function getDefaultForm(Schema $schema): Schema
-    {
-        return $schema;
-    }
+    use BridgeExtendsForms;
 }

@@ -23,17 +23,18 @@ use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductShipping;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductUrls;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductVariants;
-use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
-use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
-use Lunar\Admin\Filament\Resources\ProductResource\Schemas\ProductForm;
-use Lunar\Admin\Filament\Resources\ProductResource\Tables\ProductTable;
-use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
-use Lunar\Admin\Filament\Widgets\Products\VariantSwitcherTable;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Filament\RelationManagers\Product\CustomerGroupPricingRelationManager;
+use Lunar\Filament\RelationManagers\Product\CustomerGroupRelationManager;
+use Lunar\Filament\Schemas\Product\ProductForm;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\Product\ProductTable;
+use Lunar\Filament\Widgets\Products\ProductOptionsWidget;
+use Lunar\Filament\Widgets\Products\VariantSwitcherTable;
 
 class ProductResource extends BaseResource
 {
@@ -71,12 +72,12 @@ class ProductResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return ProductForm::configure($schema);
+        return Resolver::form(ProductForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return ProductTable::configure($table);
+        return Resolver::table(ProductTable::class, $table);
     }
 
     protected static function getDefaultSubNavigation(): array

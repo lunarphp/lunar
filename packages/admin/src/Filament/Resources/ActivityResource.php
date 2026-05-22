@@ -7,9 +7,10 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ListActivities;
 use Lunar\Admin\Filament\Resources\ActivityResource\Pages\ViewActivity;
-use Lunar\Admin\Filament\Resources\ActivityResource\Schemas\ActivityForm;
-use Lunar\Admin\Filament\Resources\ActivityResource\Tables\ActivityTable;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Filament\Schemas\Activity\ActivityForm;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\Activity\ActivityTable;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivityResource extends BaseResource
@@ -42,12 +43,12 @@ class ActivityResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return ActivityForm::configure($schema);
+        return Resolver::form(ActivityForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return ActivityTable::configure($table);
+        return Resolver::table(ActivityTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

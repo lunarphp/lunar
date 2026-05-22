@@ -2,11 +2,11 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 
-use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
 use Filament\Support\Facades\FilamentIcon;
@@ -107,7 +107,7 @@ class ManageVariantMedia extends BaseManageRelatedRecords
                     ->modalHeading(__('lunarpanel::relationmanagers.medias.actions.attach.label'))
                     ->modalWidth(Width::Medium)
                     ->schema([
-                        Shout::make('no_media_available')->content(
+                        Callout::make()->status('info')->heading(
                             __('lunarpanel::relationmanagers.medias.all_media_attached')
                         )->visible(
                             fn (Get $get) => $this->getRecord()->product->media()->count() <= $this->getRecord()->images()->count()

@@ -6,8 +6,7 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 
 ## Outstanding
 
-- Pages refactor (spec 0005 follow-up) — apply the split-class playbook to the 10 page-extension traits under `Support/Pages/Concerns/` once a downstream need surfaces; structural hooks were preserved on resources so this is no longer blocking.
-- Move core Filament e-commerce components to a new `lunarphp/filament` package
+- Pages refactor — inline the 10 page-extension traits into the 5 base page classes (spec 0007).
 - Support `Model::preventLazyLoading()`
 - Ensure all service-layer classes are DI'd
 - Add events, including specific events for cache invalidation
@@ -48,3 +47,4 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Change to `\Lunar\Core` namespace
 - Filament v5 upgrade (spec 0004)
 - Filament v5 schemas refactor (spec 0005)
+- Extract `lunarphp/filament` bridge package and reshape the install model (spec 0006)

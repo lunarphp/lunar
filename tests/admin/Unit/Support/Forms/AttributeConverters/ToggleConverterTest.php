@@ -17,7 +17,7 @@ describe('toggle field converter', function () {
             'type' => Toggle::class,
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\Toggle::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\Toggle::getFilamentComponent($attribute);
 
         expect($inputComponent)->toBeInstanceOf(Filament\Forms\Components\Toggle::class);
     });

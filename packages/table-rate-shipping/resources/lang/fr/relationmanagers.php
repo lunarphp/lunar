@@ -3,7 +3,7 @@
 return [
     'shipping_methods' => [
         'customer_groups' => [
-            'description' => "Associez des groupes de clients à cette méthode d'expédition pour déterminer sa disponibilité.",
+            'description' => 'Associez des groupes de clients à cette méthode d\'expédition pour déterminer sa disponibilité.',
         ],
     ],
     'shipping_rates' => [
@@ -48,8 +48,15 @@ return [
             ],
         ],
         'table' => [
+            'enabled' => [
+                'label' => 'Enabled',
+            ],
+            'disabled' => [
+                'label' => 'disabled',
+            ],
             'shipping_method' => [
                 'label' => 'Méthode d\'expédition',
+                'disabled' => 'Disabled',
             ],
             'price' => [
                 'label' => 'Prix',

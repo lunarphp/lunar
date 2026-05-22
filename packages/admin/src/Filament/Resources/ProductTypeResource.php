@@ -7,10 +7,11 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\CreateProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\EditProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\ListProductTypes;
-use Lunar\Admin\Filament\Resources\ProductTypeResource\Schemas\ProductTypeForm;
-use Lunar\Admin\Filament\Resources\ProductTypeResource\Tables\ProductTypeTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\ProductType as ProductTypeContract;
+use Lunar\Filament\Schemas\ProductType\ProductTypeForm;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\ProductType\ProductTypeTable;
 
 class ProductTypeResource extends BaseResource
 {
@@ -44,12 +45,12 @@ class ProductTypeResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return ProductTypeForm::configure($schema);
+        return Resolver::form(ProductTypeForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return ProductTypeTable::configure($table);
+        return Resolver::table(ProductTypeTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

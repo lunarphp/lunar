@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Rollen
-     */
     'roles.admin.label' => 'Admin',
     'roles.admin.description' => 'Admin mit vollem Zugriff',
     'roles.staff.label' => 'Mitarbeiter',
     'roles.staff.description' => 'Mitarbeiter mit grundlegenden Zugriffsrechten',
-    /**
-     * Berechtigungen.
-     */
     'permissions.settings.label' => 'Einstellungen',
     'permissions.settings.description' => 'Ermöglicht den Zugriff auf den Einstellungsbereich des Hubs',
     'permissions.settings:core.label' => 'Grundeinstellungen',

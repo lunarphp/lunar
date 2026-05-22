@@ -8,11 +8,12 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\CreateProductOption;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\EditProductOption;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\ListProductOptions;
-use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers\ValuesRelationManager;
-use Lunar\Admin\Filament\Resources\ProductOptionResource\Schemas\ProductOptionForm;
-use Lunar\Admin\Filament\Resources\ProductOptionResource\Tables\ProductOptionTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
+use Lunar\Filament\RelationManagers\ProductOption\ValuesRelationManager;
+use Lunar\Filament\Schemas\ProductOption\ProductOptionForm;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\ProductOption\ProductOptionTable;
 
 class ProductOptionResource extends BaseResource
 {
@@ -44,12 +45,12 @@ class ProductOptionResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return ProductOptionForm::configure($schema);
+        return Resolver::form(ProductOptionForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return ProductOptionTable::configure($table);
+        return Resolver::table(ProductOptionTable::class, $table);
     }
 
     protected static function getDefaultRelations(): array

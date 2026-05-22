@@ -2,7 +2,7 @@
 name: lunar-pr-review
 description: Review a Lunar pull request or branch against the 1.x main branch. Activates on /lunar:pr-review, or when the user asks to "review this PR/branch/diff" inside the Lunar monorepo. Checks translation completeness across 16 locales, missing tests/factories, migration safety, Filament contract usage, PHP conventions, and breaking-change risk on the public contract surface.
 metadata:
-  audience: lunarphp/lunar contributors
+  audience: Lunar monorepo contributors
 ---
 
 # Lunar PR Review

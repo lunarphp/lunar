@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roles
-     */
     'roles.admin.label' => 'Админ',
     'roles.admin.description' => 'Админ с пълен достъп',
     'roles.staff.label' => 'Персонал',
     'roles.staff.description' => 'Персонал с основен достъп',
-    /**
-     * Permissions.
-     */
     'permissions.settings.label' => 'Настройки',
     'permissions.settings.description' => 'Дава достъп до зоната с настройки на хъба',
     'permissions.settings:core.label' => 'Основни настройки',

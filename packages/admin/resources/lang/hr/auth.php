@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Uloge
-     */
     'roles.admin.label' => 'Administrator',
     'roles.admin.description' => 'Administrator s punim pristupnim pravima',
     'roles.staff.label' => 'Osoblje',
     'roles.staff.description' => 'Osoblje s osnovnim pristupnim pravima',
-    /**
-     * Dozvole.
-     */
     'permissions.settings.label' => 'Postavke',
     'permissions.settings.description' => 'Omogućuje pristup području postavki unutar sustava',
     'permissions.settings:core.label' => 'Osnovne postavke',

@@ -11,10 +11,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Filament\Resources\ProductResource\Tables\ProductTable;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
+use Lunar\Filament\Tables\Product\ProductTable;
 
 class ManageBrandProducts extends BaseManageRelatedRecords
 {

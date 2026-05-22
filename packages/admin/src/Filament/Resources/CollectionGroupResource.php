@@ -7,10 +7,11 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\EditCollectionGroup;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Pages\ListCollectionGroups;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Schemas\CollectionGroupForm;
-use Lunar\Admin\Filament\Resources\CollectionGroupResource\Tables\CollectionGroupTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\CollectionGroup as CollectionGroupContract;
+use Lunar\Filament\Schemas\CollectionGroup\CollectionGroupForm;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\CollectionGroup\CollectionGroupTable;
 
 class CollectionGroupResource extends BaseResource
 {
@@ -42,12 +43,12 @@ class CollectionGroupResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return CollectionGroupForm::configure($schema);
+        return Resolver::form(CollectionGroupForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return CollectionGroupTable::configure($table);
+        return Resolver::table(CollectionGroupTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

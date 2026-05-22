@@ -11,9 +11,9 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Filament\Resources\ProductVariantResource\Schemas\ProductVariantForm;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Price;
+use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
 
 trait ManagesProductPricing
 {

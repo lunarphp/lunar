@@ -2,13 +2,13 @@
 
 use Filament\Actions\EditAction;
 use Livewire\Livewire;
-use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Filament\RelationManagers\Product\CustomerGroupPricingRelationManager;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

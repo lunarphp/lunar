@@ -4,8 +4,8 @@ namespace Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
 
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Facades\FilamentIcon;
-use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupRelationManager;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Lunar\Filament\RelationManagers\Product\CustomerGroupRelationManager;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Widgets\AvailabilityScheduleWidget;
 

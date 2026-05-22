@@ -12,14 +12,15 @@ use Lunar\Admin\Filament\Resources\CustomerResource\Pages\CreateCustomer;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ViewCustomer;
-use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\AddressRelationManager;
-use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager;
-use Lunar\Admin\Filament\Resources\CustomerResource\RelationManagers\UserRelationManager;
-use Lunar\Admin\Filament\Resources\CustomerResource\Schemas\CustomerForm;
-use Lunar\Admin\Filament\Resources\CustomerResource\Tables\CustomerTable;
-use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOverviewWidget;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Customer as CustomerContract;
+use Lunar\Filament\RelationManagers\Customer\AddressRelationManager;
+use Lunar\Filament\RelationManagers\Customer\OrdersRelationManager;
+use Lunar\Filament\RelationManagers\Customer\UserRelationManager;
+use Lunar\Filament\Schemas\Customer\CustomerForm;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\Customer\CustomerTable;
+use Lunar\Filament\Widgets\Customer\CustomerStatsOverviewWidget;
 
 class CustomerResource extends BaseResource
 {
@@ -53,12 +54,12 @@ class CustomerResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return CustomerForm::configure($schema);
+        return Resolver::form(CustomerForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return CustomerTable::configure($table);
+        return Resolver::table(CustomerTable::class, $table);
     }
 
     public static function getWidgets(): array

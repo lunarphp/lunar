@@ -9,13 +9,14 @@ use Lunar\Core\Models\Attribute;
 
 /**
  * @method static Component getFilamentComponent(Attribute $attribute)
- * @method static \Lunar\Admin\Support\Forms\AttributeData registerFieldType(string $coreFieldType, string $panelFieldType)
+ * @method static \Lunar\Filament\Support\Forms\AttributeData registerFieldType(string $coreFieldType, string $panelFieldType)
  * @method static Collection getFieldTypes()
  * @method static array mutateConfigurationForForm(string|null $type = null, array $configuration = [])
  * @method static array getConfigurationFields(string|null $type = null)
  * @method static void synthesizeLivewireProperties()
  *
- * @see \Lunar\Admin\Support\Forms\AttributeData
+ * @see \Lunar\Filament\Support\Forms\AttributeData
+ * @deprecated Use \Lunar\Filament\Support\Facades\AttributeData. Removed in v3.
  */
 class AttributeData extends Facade
 {

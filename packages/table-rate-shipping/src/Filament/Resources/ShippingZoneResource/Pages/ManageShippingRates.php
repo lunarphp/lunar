@@ -2,15 +2,13 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
 
-use Awcodes\BadgeableColumn\Components\Badge;
-use Awcodes\BadgeableColumn\Components\BadgeableColumn;
-use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\Pages\ManageRelatedRecords;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
@@ -50,7 +48,7 @@ class ManageShippingRates extends ManageRelatedRecords
     public function form(Schema $schema): Schema
     {
         return $schema->components([
-            Shout::make('pricing_notice')->content(
+            Callout::make()->status('info')->heading(
                 function () {
                     $pricesIncTax = config('lunar.pricing.stored_inclusive_of_tax', false);
 
@@ -158,15 +156,13 @@ class ManageShippingRates extends ManageRelatedRecords
         $baseCurrency = Currency::getDefault();
 
         return $table->columns([
-            BadgeableColumn::make('shippingMethod.name')
-                ->separator('')
-                ->suffixBadges([
-                    Badge::make('default')
-                        ->label(__('lunarpanel.shipping::relationmanagers.shipping_rates.table.shipping_method.disabled'))
-                        ->color('warning')
-                        ->visible(fn (Model $record) => ! $record->enabled),
-                ])
+            TextColumn::make('shippingMethod.name')
                 ->label(__('lunarpanel.shipping::relationmanagers.shipping_rates.table.shipping_method.label')),
+            TextColumn::make('disabled_indicator')
+                ->state(fn (Model $record) => ! $record->enabled ? __('lunarpanel.shipping::relationmanagers.shipping_rates.table.shipping_method.disabled') : null)
+                ->badge()
+                ->color('warning')
+                ->label(''),
             TextColumn::make('shippingMethod.id')->formatStateUsing(
                 fn (Model $record) => $record->basePrices->first(fn ($p) => $p->currency_id == $baseCurrency->id)?->price->formatted ?? '-',
             )->label(

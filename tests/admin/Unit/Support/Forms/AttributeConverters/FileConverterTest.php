@@ -18,7 +18,7 @@ describe('file field converter', function () {
             'type' => File::class,
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\File::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\File::getFilamentComponent($attribute);
 
         expect($inputComponent)->toBeInstanceOf(FileUpload::class);
     });
@@ -31,7 +31,7 @@ describe('file field converter', function () {
             ],
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\File::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\File::getFilamentComponent($attribute);
 
         expect($inputComponent->getDiskName())->toBe('public');
     });
@@ -44,7 +44,7 @@ describe('file field converter', function () {
             ],
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\File::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\File::getFilamentComponent($attribute);
 
         expect($inputComponent->getDirectory())->toBe('products/images');
     });
@@ -58,7 +58,7 @@ describe('file field converter', function () {
             ],
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\File::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\File::getFilamentComponent($attribute);
 
         expect($inputComponent->getDiskName())->toBe('s3')
             ->and($inputComponent->getDirectory())->toBe('catalog/files');

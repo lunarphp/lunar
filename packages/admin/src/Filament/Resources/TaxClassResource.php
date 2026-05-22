@@ -9,10 +9,11 @@ use Lunar\Admin\Filament\Clusters\Taxes;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\CreateTaxClass;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\EditTaxClass;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\ListTaxClasses;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Schemas\TaxClassForm;
-use Lunar\Admin\Filament\Resources\TaxClassResource\Tables\TaxClassTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\TaxClass as TaxClassContract;
+use Lunar\Filament\Schemas\TaxClass\TaxClassForm;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\TaxClass\TaxClassTable;
 
 class TaxClassResource extends BaseResource
 {
@@ -41,12 +42,12 @@ class TaxClassResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return TaxClassForm::configure($schema);
+        return Resolver::form(TaxClassForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return TaxClassTable::configure($table);
+        return Resolver::table(TaxClassTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

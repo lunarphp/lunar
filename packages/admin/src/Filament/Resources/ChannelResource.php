@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages\CreateChannel;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages\EditChannel;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages\ListChannels;
-use Lunar\Admin\Filament\Resources\ChannelResource\Schemas\ChannelForm;
-use Lunar\Admin\Filament\Resources\ChannelResource\Tables\ChannelTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Channel as ChannelContract;
+use Lunar\Filament\Schemas\Channel\ChannelForm;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\Channel\ChannelTable;
 
 class ChannelResource extends BaseResource
 {
@@ -45,12 +46,12 @@ class ChannelResource extends BaseResource
 
     public static function form(Schema $schema): Schema
     {
-        return ChannelForm::configure($schema);
+        return Resolver::form(ChannelForm::class, $schema);
     }
 
     public static function table(Table $table): Table
     {
-        return ChannelTable::configure($table);
+        return Resolver::table(ChannelTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

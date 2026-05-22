@@ -17,6 +17,7 @@ class StepRegistry
      * @var array<int, class-string<UpgradeStep>>
      */
     public const STEPS = [
+        ComposerRequireRewriteStep::class,
         RectorStep::class,
         DataMigrationStep::class,
         LedgerRewriteStep::class,

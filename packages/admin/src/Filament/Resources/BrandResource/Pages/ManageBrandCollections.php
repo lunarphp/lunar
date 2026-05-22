@@ -9,9 +9,9 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Admin\Support\Tables\Columns\TranslatedTextColumn;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class ManageBrandCollections extends BaseManageRelatedRecords
 {

@@ -2,19 +2,6 @@
 
 namespace Lunar\Admin\Events;
 
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
+use Lunar\Filament\Events\ProductVariantOptionsUpdated as BridgeEvent;
 
-class ProductVariantOptionsUpdated
-{
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    /**
-     * Create a new event instance.
-     */
-    public function __construct(
-        public Model $model
-    ) {}
-}
+class ProductVariantOptionsUpdated extends BridgeEvent {}

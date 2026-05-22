@@ -4,7 +4,7 @@ Lunar is a headless PHP/Laravel e-commerce package. This directory is the **pack
 
 ## Layout
 
-- `packages/` — sub-packages published from this monorepo (`core`, `admin`, `search`, `stripe`, `paypal`, `opayo`, `table-rate-shipping`, `meilisearch`, `upgrade`).
+- `packages/` — sub-packages published from this monorepo (`core`, `admin`, `filament`, `search`, `stripe`, `paypal`, `opayo`, `table-rate-shipping`, `meilisearch`, `upgrade`).
 - `tests/` — Pest tests grouped per sub-package (admin, core, search, stripe, shipping, upgrade); see `phpunit.xml` for the testsuites.
 - `specs/` — design docs for v2 work (see below).
 - `TODO.md` — the v2 work tracker.

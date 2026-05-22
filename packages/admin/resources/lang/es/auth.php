@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roles
-     */
     'roles.admin.label' => 'Administrador',
     'roles.admin.description' => 'Administrador con acceso completo',
     'roles.staff.label' => 'Personal',
     'roles.staff.description' => 'Personal con acceso fundamental',
-    /**
-     * Permisos.
-     */
     'permissions.settings.label' => 'Configuraciones',
     'permissions.settings.description' => 'Otorga acceso al área de configuraciones del centro',
     'permissions.settings:core.label' => 'Configuraciones Principales',

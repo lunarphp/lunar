@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\EditOrder;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ListOrders;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
-use Lunar\Admin\Filament\Resources\OrderResource\Tables\OrderTable;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
+use Lunar\Filament\Support\Resolver;
+use Lunar\Filament\Tables\Order\OrderTable;
 
 class OrderResource extends BaseResource
 {
@@ -52,7 +53,7 @@ class OrderResource extends BaseResource
 
     public static function table(Table $table): Table
     {
-        return OrderTable::configure($table);
+        return Resolver::table(OrderTable::class, $table);
     }
 
     protected static function getDefaultPages(): array

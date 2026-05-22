@@ -1,11 +1,8 @@
 <?php
 
 return [
-
     'label' => 'Hoạt động',
-
     'plural_label' => 'Hoạt động',
-
     'table' => [
         'subject' => 'Đối tượng',
         'description' => 'Mô tả',
@@ -15,7 +12,6 @@ return [
         'logged_from' => 'Ghi nhật ký từ',
         'logged_until' => 'Ghi nhật ký đến',
     ],
-
     'form' => [
         'causer_type' => 'Loại người thực hiện',
         'causer_id' => 'Mã người thực hiện',
@@ -25,5 +21,4 @@ return [
         'attributes' => 'Thuộc tính',
         'old' => 'Cũ',
     ],
-
 ];

@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
-use Awcodes\Shout\Components\Shout;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -13,8 +12,10 @@ use Filament\Infolists\Components\Entry;
 use Filament\Infolists\Components\KeyValueEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
@@ -38,13 +39,12 @@ use Lunar\Admin\Support\Actions\Orders\UpdateStatusAction;
 use Lunar\Admin\Support\Actions\PdfDownload;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
 use Lunar\Admin\Support\Concerns\CallsHooks;
-use Lunar\Admin\Support\Forms\Components\Tags as TagsComponent;
-use Lunar\Admin\Support\Infolists\Components\Livewire;
-use Lunar\Admin\Support\Infolists\Components\Tags;
 use Lunar\Admin\Support\Pages\BaseViewRecord;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
 use Lunar\Core\Models\Transaction;
+use Lunar\Filament\Forms\Components\Tags as TagsComponent;
+use Lunar\Filament\Infolists\Components\Tags;
 
 /**
  * @property Order $record
@@ -91,8 +91,10 @@ class ManageOrder extends BaseViewRecord
 
     public static function getOrderLinesTable(): Livewire
     {
-        return Livewire::make('lines')
-            ->content(OrderItemsTable::class);
+        return Livewire::make(
+            OrderItemsTable::class,
+            fn ($record) => ['record' => $record],
+        )->key('lunar_livewire_order_lines');
     }
 
     public static function getInfolistSchema(): array
@@ -208,21 +210,21 @@ class ManageOrder extends BaseViewRecord
                 Group::make()
                     ->schema([
                         Group::make()->key('shouts')->schema([
-                            Shout::make('requires_capture')
-                                ->type('danger')
-                                ->content(__('lunarpanel::order.infolist.alert.requires_capture'))
+                            Callout::make()
+                                ->status('danger')
+                                ->heading(__('lunarpanel::order.infolist.alert.requires_capture'))
                                 ->visible(fn () => $this->requiresCapture),
-                            Shout::make('partially_refunded')
+                            Callout::make()
                                 ->key('partially_refunded_notice')
                                 ->icon(fn () => match ($this->paymentStatus) {
                                     'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
                                     default => null
                                 })
-                                ->color(fn () => match ($this->paymentStatus) {
+                                ->status(fn () => match ($this->paymentStatus) {
                                     'partial-refund' => 'info',
                                     'refunded' => 'danger',
                                     default => null
-                                })->content(fn () => match ($this->paymentStatus) {
+                                })->heading(fn () => match ($this->paymentStatus) {
                                     'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
                                     'refunded' => __('lunarpanel::order.infolist.alert.refunded'),
                                     default => null
@@ -508,11 +510,11 @@ class ManageOrder extends BaseViewRecord
                             return null;
                         }
 
-                        return Shout::make('alert')
+                        return Callout::make()
                             ->container($component->getContainer())
-                            ->type('danger')
+                            ->status('danger')
                             ->icon(FilamentIcon::resolve('lunar::exclamation-circle'))
-                            ->content($message);
+                            ->heading($message);
                     })
                     ->numeric(),
                 Toggle::make('confirm')

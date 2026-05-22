@@ -18,7 +18,7 @@ describe('dropdown converter', function () {
             'type' => Dropdown::class,
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\Dropdown::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\Dropdown::getFilamentComponent($attribute);
 
         expect($inputComponent)->toBeInstanceOf(Select::class);
     });
@@ -36,7 +36,7 @@ describe('dropdown converter', function () {
             ],
         ]);
 
-        $inputComponent = Lunar\Admin\Support\FieldTypes\Dropdown::getFilamentComponent($attribute);
+        $inputComponent = Lunar\Filament\FieldTypes\Dropdown::getFilamentComponent($attribute);
 
         $options = $inputComponent->getOptions();
         expect($options)->toBeArray()
@@ -45,7 +45,7 @@ describe('dropdown converter', function () {
     });
 
     test('can normalize dropdown lookups for edit forms', function () {
-        $configuration = Lunar\Admin\Support\FieldTypes\Dropdown::mutateConfigurationForForm([
+        $configuration = Lunar\Filament\FieldTypes\Dropdown::mutateConfigurationForForm([
             'lookups' => [
                 [
                     'label' => 'Foo',

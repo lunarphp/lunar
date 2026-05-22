@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Rôles
-     */
     'roles.admin.label' => 'Admin',
     'roles.admin.description' => 'Administrateur avec accès complet',
     'roles.staff.label' => 'Personnel',
     'roles.staff.description' => 'Personnel avec accès fondamental',
-    /**
-     * Permissions
-     */
     'permissions.settings.label' => 'Paramètres',
     'permissions.settings.description' => 'Donne accès à la zone des paramètres du hub',
     'permissions.settings:core.label' => 'Paramètres de base',

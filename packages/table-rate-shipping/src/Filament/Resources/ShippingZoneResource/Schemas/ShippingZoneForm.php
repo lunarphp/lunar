@@ -2,8 +2,8 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Schemas;
 
-use Awcodes\Shout\Components\Shout;
 use Filament\Forms;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -37,8 +37,9 @@ class ShippingZoneForm
             static::getPostcodesComponent(),
             static::getStatesComponent(),
             static::getCountriesComponent(),
-            Shout::make('unrestricted')
-                ->content(__('lunarpanel.shipping::shippingzone.form.unrestricted.content'))
+            Callout::make()
+                ->status('info')
+                ->heading(__('lunarpanel.shipping::shippingzone.form.unrestricted.content'))
                 ->hidden(fn (Get $get) => $get('type') != 'unrestricted'),
         ];
     }

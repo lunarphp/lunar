@@ -1,16 +1,10 @@
 <?php
 
 return [
-    /**
-     * Roles
-     */
     'roles.admin.label' => 'Administrator',
     'roles.admin.description' => 'Administrator cu acces complet',
     'roles.staff.label' => 'Personal',
     'roles.staff.description' => 'Personal cu acces de bază',
-    /**
-     * Permissions.
-     */
     'permissions.settings.label' => 'Setări',
     'permissions.settings.description' => 'Oferă acces la zona de setări a hub-ului',
     'permissions.settings:core.label' => 'Setări de bază',

@@ -4,8 +4,8 @@ namespace Lunar\Admin\Filament\Resources\ProductOptionResource\Pages;
 
 use Filament\Actions\DeleteAction;
 use Lunar\Admin\Filament\Resources\ProductOptionResource;
-use Lunar\Admin\Filament\Resources\ProductOptionResource\RelationManagers\ValuesRelationManager;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Filament\RelationManagers\ProductOption\ValuesRelationManager;
 
 class EditProductOption extends BaseEditRecord
 {
