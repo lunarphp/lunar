@@ -10,10 +10,10 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Lunar\Admin\Support\Concerns\CallsHooks;
-use Lunar\Filament\Forms\Components\TranslatedText;
 use Lunar\Core\Facades\AttributeManifest;
 use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\Language;
+use Lunar\Filament\Forms\Components\TranslatedText;
 
 class AttributeGroupForm
 {
