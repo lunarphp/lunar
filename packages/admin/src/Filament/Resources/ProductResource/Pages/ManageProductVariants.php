@@ -7,8 +7,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
+use Lunar\Filament\Widgets\Products\ProductOptionsWidget;
 
 class ManageProductVariants extends BaseManageRelatedRecords
 {

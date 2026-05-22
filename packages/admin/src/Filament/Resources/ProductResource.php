@@ -23,7 +23,6 @@ use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductShipping;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductUrls;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductVariants;
-use Lunar\Admin\Filament\Resources\ProductResource\Widgets\ProductOptionsWidget;
 use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
@@ -34,6 +33,7 @@ use Lunar\Filament\RelationManagers\Product\CustomerGroupRelationManager;
 use Lunar\Filament\Schemas\Product\ProductForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Product\ProductTable;
+use Lunar\Filament\Widgets\Products\ProductOptionsWidget;
 use Lunar\Filament\Widgets\Products\VariantSwitcherTable;
 
 class ProductResource extends BaseResource

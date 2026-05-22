@@ -12,7 +12,6 @@ use Lunar\Admin\Filament\Resources\CustomerResource\Pages\CreateCustomer;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ViewCustomer;
-use Lunar\Admin\Filament\Resources\CustomerResource\Widgets\CustomerStatsOverviewWidget;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Customer as CustomerContract;
 use Lunar\Filament\RelationManagers\Customer\AddressRelationManager;
@@ -21,6 +20,7 @@ use Lunar\Filament\RelationManagers\Customer\UserRelationManager;
 use Lunar\Filament\Schemas\Customer\CustomerForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Customer\CustomerTable;
+use Lunar\Filament\Widgets\Customer\CustomerStatsOverviewWidget;
 
 class CustomerResource extends BaseResource
 {

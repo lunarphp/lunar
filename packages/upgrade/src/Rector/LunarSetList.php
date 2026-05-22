@@ -517,6 +517,15 @@ final class LunarSetList
         'Lunar\\Admin\\Events\\ProductCustomerGroupsUpdated' => 'Lunar\\Filament\\Events\\ProductCustomerGroupsUpdated',
         'Lunar\\Admin\\Events\\ProductPricingUpdated' => 'Lunar\\Filament\\Events\\ProductPricingUpdated',
         'Lunar\\Admin\\Events\\ProductVariantOptionsUpdated' => 'Lunar\\Filament\\Events\\ProductVariantOptionsUpdated',
+        // Resource-tied widgets moved to bridge.
+        'Lunar\\Admin\\Filament\\Resources\\CustomerResource\\Widgets\\CustomerStatsOverviewWidget' => 'Lunar\\Filament\\Widgets\\Customer\\CustomerStatsOverviewWidget',
+        'Lunar\\Admin\\Filament\\Resources\\ProductResource\\Widgets\\ProductOptionsWidget' => 'Lunar\\Filament\\Widgets\\Products\\ProductOptionsWidget',
+        'Lunar\\Admin\\Filament\\Resources\\CollectionGroupResource\\Widgets\\CollectionTreeView' => 'Lunar\\Filament\\Widgets\\Collections\\CollectionTreeView',
+        'Lunar\\Admin\\Actions\\Products\\MapVariantsToProductOptions' => 'Lunar\\Filament\\Actions\\Products\\MapVariantsToProductOptions',
+        'Lunar\\Admin\\Support\\Actions\\Collections\\CreateChildCollection' => 'Lunar\\Filament\\Actions\\Collections\\CreateChildCollection',
+        'Lunar\\Admin\\Support\\Actions\\Collections\\CreateRootCollection' => 'Lunar\\Filament\\Actions\\Collections\\CreateRootCollection',
+        'Lunar\\Admin\\Support\\Actions\\Collections\\DeleteCollection' => 'Lunar\\Filament\\Actions\\Collections\\DeleteCollection',
+        'Lunar\\Admin\\Support\\Actions\\Collections\\MoveCollection' => 'Lunar\\Filament\\Actions\\Collections\\MoveCollection',
 
     ];
 

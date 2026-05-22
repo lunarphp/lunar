@@ -12,9 +12,9 @@ use Lunar\Filament\Support\Concerns\CreatesChildCollections;
  * parent is read from `$table->getRelationship()->getParent()`, so the
  * action must be mounted on a table whose relationship yields a Collection.
  *
- * For the standalone (id-argument) variant used by the admin's collection
- * tree widget, see
- * {@see \Lunar\Admin\Support\Actions\Collections\CreateChildCollection}.
+ * For the standalone (id-argument) variant used by tree widgets and other
+ * non-relationship contexts, see
+ * {@see \Lunar\Filament\Actions\Collections\CreateChildCollection}.
  */
 class CreateChildCollection extends CreateAction
 {

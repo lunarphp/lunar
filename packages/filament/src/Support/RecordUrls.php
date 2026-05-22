@@ -13,7 +13,7 @@ namespace Lunar\Filament\Support;
  */
 class RecordUrls
 {
-    public static function for(string $key, mixed $record): ?string
+    public static function for(string $key, mixed $record, array $context = []): ?string
     {
         $resolver = config('lunar-filament.record_urls.'.$key);
 
@@ -21,6 +21,6 @@ class RecordUrls
             return null;
         }
 
-        return $resolver($record);
+        return $resolver($record, $context);
     }
 }
