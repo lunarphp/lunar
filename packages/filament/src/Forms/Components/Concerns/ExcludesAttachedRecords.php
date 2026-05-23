@@ -46,8 +46,6 @@ trait ExcludesAttachedRecords
     }
 
     /**
-     * @template T of \Illuminate\Support\Collection
-     *
      * @param  Collection<int, Model>  $records
      * @return Collection<int, Model>
      */
