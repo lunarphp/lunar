@@ -12,8 +12,8 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Lunar\Admin\Filament\Resources\StaffResource;
-use Lunar\Admin\Support\Facades\LunarAccessControl;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Core\Support\Facades\LunarAccessControl;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -34,7 +34,7 @@ class AccessControl extends Page
 
     public function getTitle(): string|Htmlable
     {
-        return __('lunarpanel::staff.acl.title');
+        return __('lunar::staff.acl.title');
     }
 
     public function mount()
@@ -101,7 +101,7 @@ class AccessControl extends Page
             }
 
             Notification::make()
-                ->title(__('lunarpanel::staff.acl.notification.updated'))
+                ->title(__('lunar::staff.acl.notification.updated'))
                 ->success()
                 ->send();
         }
@@ -114,7 +114,7 @@ class AccessControl extends Page
         try {
             [$roleHandle, $permissionHandle] = explode($this->stateSeparator, $path);
         } catch (Exception $e) {
-            $error = __('lunarpanel::staff.acl.notification.error');
+            $error = __('lunar::staff.acl.notification.error');
         }
 
         if (blank($error)) {
@@ -134,11 +134,11 @@ class AccessControl extends Page
             }
 
             if (blank($registeredRole) || blank($role)) {
-                $error = __('lunarpanel::staff.acl.notification.no-role');
+                $error = __('lunar::staff.acl.notification.no-role');
             }
 
             if (blank($registeredPermission) || blank($permission)) {
-                $error = blank($error) ? __('lunarpanel::staff.acl.notification.no-permission') : __('lunarpanel::staff.acl.notification.no-role-permission');
+                $error = blank($error) ? __('lunar::staff.acl.notification.no-permission') : __('lunar::staff.acl.notification.no-role-permission');
             }
         }
 
@@ -170,11 +170,11 @@ class AccessControl extends Page
     {
         return [
             Action::make('add_role')
-                ->label('lunarpanel::staff.action.add-role.label')
+                ->label('lunar::staff.action.add-role.label')
                 ->translateLabel()
                 ->schema([
                     TextInput::make('name')
-                        ->label('lunarpanel::staff.form.role.label')
+                        ->label('lunar::staff.form.role.label')
                         ->translateLabel()
                         ->unique(table: Role::class)
                         ->required(),
@@ -193,14 +193,14 @@ class AccessControl extends Page
             ->icon('heroicon-m-trash')
             ->color('danger')
             ->size(Size::Small)
-            ->tooltip(__('lunarpanel::staff.action.delete-role.label'))
+            ->tooltip(__('lunar::staff.action.delete-role.label'))
             ->iconButton()
             ->requiresConfirmation()
             ->modalHeading(function (array $arguments) {
                 if ($handle = $arguments['handle'] ?? null) {
                     $role = LunarAccessControl::getRoles()->first(fn ($r) => $r->handle == $handle);
 
-                    return __('lunarpanel::staff.action.delete-role.heading', ['role' => $role->transLabel]);
+                    return __('lunar::staff.action.delete-role.heading', ['role' => $role->transLabel]);
                 }
 
                 return null;

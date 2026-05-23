@@ -11,11 +11,13 @@ return new class extends Migration
         Schema::create($this->prefix.'staff', function (Blueprint $table) {
             $table->id();
             $table->boolean('admin')->default(false)->index();
-            $table->string('firstname')->index();
-            $table->string('lastname')->index();
+            $table->string('first_name')->index();
+            $table->string('last_name')->index();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->text('app_authentication_secret')->nullable();
+            $table->text('app_authentication_recovery_codes')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

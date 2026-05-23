@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Admin\Support\DataTransferObjects;
+namespace Lunar\Core\Support\DataTransferObjects;
 
 class Role
 {
@@ -42,7 +42,7 @@ class Role
 
     public function transLabel(): string
     {
-        $key = "lunarpanel::auth.roles.{$this->handle}.label";
+        $key = "lunar::auth.roles.{$this->handle}.label";
         $trans = __($key);
 
         return $trans == $key ? $this->handle : $trans;
@@ -50,7 +50,7 @@ class Role
 
     public function transDescription(): string
     {
-        $key = "lunarpanel::auth.roles.{$this->handle}.description";
+        $key = "lunar::auth.roles.{$this->handle}.description";
         $trans = __($key);
 
         return $trans == $key ? $this->handle : $trans;

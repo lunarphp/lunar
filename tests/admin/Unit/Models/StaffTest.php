@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Admin\Models\Staff;
+use Lunar\Core\Models\Staff;
 use Lunar\Tests\Admin\Unit\Models\TestCase;
 
 uses(TestCase::class)

@@ -525,6 +525,14 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\Actions\\Collections\\CreateRootCollection' => 'Lunar\\Filament\\Actions\\Collections\\CreateRootCollection',
         'Lunar\\Admin\\Support\\Actions\\Collections\\DeleteCollection' => 'Lunar\\Filament\\Actions\\Collections\\DeleteCollection',
         'Lunar\\Admin\\Support\\Actions\\Collections\\MoveCollection' => 'Lunar\\Filament\\Actions\\Collections\\MoveCollection',
+        // --- Spec 0010: Staff + auth move to core ---
+        'Lunar\\Admin\\Models\\Staff' => 'Lunar\\Core\\Models\\Staff',
+        'Lunar\\Admin\\Auth\\Manifest' => 'Lunar\\Core\\Auth\\Manifest',
+        'Lunar\\Admin\\Database\\Factories\\StaffFactory' => 'Lunar\\Core\\Database\\Factories\\StaffFactory',
+        'Lunar\\Admin\\Database\\State\\EnsureBaseRolesAndPermissions' => 'Lunar\\Core\\Database\\State\\EnsureBaseRolesAndPermissions',
+        'Lunar\\Admin\\Support\\DataTransferObjects\\Permission' => 'Lunar\\Core\\Support\\DataTransferObjects\\Permission',
+        'Lunar\\Admin\\Support\\DataTransferObjects\\Role' => 'Lunar\\Core\\Support\\DataTransferObjects\\Role',
+        'Lunar\\Admin\\Support\\Facades\\LunarAccessControl' => 'Lunar\\Core\\Support\\Facades\\LunarAccessControl',
 
     ];
 

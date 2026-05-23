@@ -9,8 +9,8 @@ use Lunar\Admin\Filament\Resources\StaffResource\Pages\AccessControl;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\CreateStaff;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\EditStaff;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff;
-use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Core\Models\Staff;
 use Lunar\Filament\Schemas\Staff\StaffForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Staff\StaffTable;
@@ -25,12 +25,12 @@ class StaffResource extends BaseResource
 
     public static function getLabel(): string
     {
-        return __('lunarpanel::staff.label');
+        return __('lunar::staff.label');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('lunarpanel::staff.plural_label');
+        return __('lunar::staff.plural_label');
     }
 
     public static function getNavigationIcon(): ?string

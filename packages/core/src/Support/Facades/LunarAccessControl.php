@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Admin\Support\Facades;
+namespace Lunar\Core\Support\Facades;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
-use Lunar\Admin\Auth\Manifest;
+use Lunar\Core\Auth\Manifest;
 
 /**
  * @method static Collection getRoles(bool $refresh = false)
