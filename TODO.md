@@ -38,6 +38,7 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Admin MCP
 - Storefront MCP
 - Developer MCP
+- Filament package additions — see [`packages/filament/IDEAS.md`](packages/filament/IDEAS.md)
 
 ## Done
 
