@@ -525,7 +525,6 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\Actions\\Collections\\CreateRootCollection' => 'Lunar\\Filament\\Actions\\Collections\\CreateRootCollection',
         'Lunar\\Admin\\Support\\Actions\\Collections\\DeleteCollection' => 'Lunar\\Filament\\Actions\\Collections\\DeleteCollection',
         'Lunar\\Admin\\Support\\Actions\\Collections\\MoveCollection' => 'Lunar\\Filament\\Actions\\Collections\\MoveCollection',
-        'Lunar\\Admin\\Support\\Concerns\\CallsHooks' => 'Lunar\\Filament\\Support\\Concerns\\CallsHooks',
 
     ];
 
