@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
+use Filament\Actions\CreateAction;
 use Filament\Actions\ViewAction;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
@@ -12,7 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\ChildCollectionCreated;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Filament\Tables\Actions\Collections\CreateChildCollection;
+use Lunar\Core\Actions\Collections\CreateChildCollection;
+use Lunar\Filament\Forms\Components\TranslatedText;
 
 class ManageCollectionChildren extends BaseManageRelatedRecords
 {
@@ -80,9 +82,17 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
                 return CollectionResource::getUrl('edit', ['record' => $record]);
             }),
         ])->headerActions([
-            CreateChildCollection::make('createChildCollection')->after(
-                fn () => ChildCollectionCreated::dispatch($this->getRecord())
-            ),
+            CreateAction::make('createChildCollection')
+                ->label(__('lunar-filament::collection.pages.children.actions.create_child.label'))
+                ->createAnother(false)
+                ->schema([
+                    TranslatedText::make('name')->required(),
+                ])
+                ->action(fn (array $data, Table $table) => CreateChildCollection::run(
+                    parent: $table->getRelationship()->getParent(),
+                    name: $data['name'],
+                ))
+                ->after(fn () => ChildCollectionCreated::dispatch($this->getRecord())),
         ]);
     }
 }

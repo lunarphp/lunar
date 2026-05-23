@@ -23,6 +23,7 @@ return [
         'status' => [
             'label' => 'Trạng thái',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'Đã xóa',
                 'draft' => 'Bản nháp',
                 'published' => 'Đã xuất bản',

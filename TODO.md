@@ -50,3 +50,4 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Extract `lunarphp/filament` bridge package and reshape the install model (spec 0006)
 - Pages refactor — inline the 10 page-extension traits into the 5 base page classes (spec 0007)
 - Reusable Filament entity-selector components — 16 selector classes in `lunarphp/filament` replacing 17+ duplicated implementations across admin and filament (spec 0008)
+- Filament-native verbs and discoverability — first-party actions library (refund, capture, fulfilment status, duplicate product, bulk publish/unpublish/archive, stock adjust) + Filament global search descriptors lifted into the bridge package (spec 0009)

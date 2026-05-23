@@ -23,6 +23,7 @@ return [
         'status' => [
             'label' => 'Status',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'Izbrisano',
                 'draft' => 'Skica',
                 'published' => 'Objavljeno',

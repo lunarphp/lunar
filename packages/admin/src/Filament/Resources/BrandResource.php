@@ -6,8 +6,6 @@ use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\CreateBrand;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\EditBrand;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ListBrands;
@@ -17,12 +15,18 @@ use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandProducts;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandUrls;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Brand as BrandContract;
+use Lunar\Filament\GlobalSearch\BrandGlobalSearch;
+use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
 use Lunar\Filament\Schemas\Brand\BrandForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Brand\BrandTable;
 
 class BrandResource extends BaseResource
 {
+    use HasLunarGlobalSearch;
+
+    protected static string $globalSearch = BrandGlobalSearch::class;
+
     protected static ?string $permission = 'catalog:manage-products';
 
     protected static ?string $model = BrandContract::class;
@@ -84,18 +88,6 @@ class BrandResource extends BaseResource
             'urls' => ManageBrandUrls::route('/{record}/urls'),
             'products' => ManageBrandProducts::route('/{record}/products'),
             'collections' => ManageBrandCollections::route('/{record}/collections'),
-        ];
-    }
-
-    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
-    {
-        return $record->name;
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [
-            'name',
         ];
     }
 }

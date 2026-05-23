@@ -51,6 +51,46 @@ class RecordSearch
     }
 
     /**
+     * Apply a Scout global-search constraint to an Eloquent query, narrowing
+     * it to the Scout-returned ids in score order.
+     *
+     * @param  class-string<Model>  $model
+     */
+    public static function applyScoutConstraint(Builder $query, string $search, string $model): void
+    {
+        $ids = collect($model::search($search)->keys())->map(
+            fn ($result) => str_replace($model.'::', '', $result)
+        );
+
+        $query
+            ->whereIn('id', $ids)
+            ->orderBySequence($ids);
+    }
+
+    /**
+     * Merge translated searchable attribute paths (each pointing at a
+     * searchable `TranslatedText` attribute via `attribute_data->{handle}->value`)
+     * into the resource-supplied list.
+     *
+     * @param  class-string<Model>  $model
+     * @param  array<int, string|array<int, string>>  $resourceAttributes
+     * @return array<int, string|array<int, string>>
+     */
+    public static function globallySearchableAttributes(string $model, array $resourceAttributes): array
+    {
+        $translated = Attribute::query()
+            ->whereAttributeType($model::morphName())
+            ->whereSearchable(true)
+            ->get()
+            ->filter(fn (Attribute $attribute): bool => $attribute->type === TranslatedText::class)
+            ->map(fn (Attribute $attribute): string => 'attribute_data->'.$attribute->handle.'->value')
+            ->values()
+            ->all();
+
+        return array_values(array_merge($resourceAttributes, $translated));
+    }
+
+    /**
      * Build a translated-attribute DB query mirroring the legacy
      * `get_search_builder()` helper.
      *

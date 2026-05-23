@@ -2,36 +2,8 @@
 
 namespace Lunar\Filament\Actions\Collections;
 
-use Filament\Actions\Action;
-use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Collection;
-
-class MoveCollection extends Action
-{
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->record(function (array $arguments) {
-            return Collection::find($arguments['id']);
-        });
-
-        $this->action(function (array $arguments, array $data, Model $record): void {
-            DB::beginTransaction();
-
-            $target = Collection::find($data['target_id']);
-
-            $record->parent()->associate($target)->save();
-
-            DB::commit();
-
-            $this->success();
-
-        });
-
-        $this->label(
-            __('lunar-filament::actions.collections.move.label')
-        );
-    }
-}
+/**
+ * @deprecated since v2 — use `Lunar\Filament\Actions\Collections\MoveCollectionAction`.
+ *             This shim forwards to the renamed class and will be removed in v3.
+ */
+class MoveCollection extends MoveCollectionAction {}

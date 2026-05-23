@@ -23,6 +23,7 @@ return [
         'status' => [
             'label' => 'Státusz',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'Törölve',
                 'draft' => 'Vázlat',
                 'published' => 'Közzétéve',

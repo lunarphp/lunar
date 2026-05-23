@@ -38,6 +38,8 @@ php artisan migrate
 | Resource schemas | `Lunar\Filament\Schemas\{Model}\{Model}Form` | `ProductForm`, `OrderForm`, `BrandForm`, … (20 models) |
 | Resource tables | `Lunar\Filament\Tables\{Model}\{Model}Table` | `ProductTable`, `OrderTable`, … |
 | Relation managers | `Lunar\Filament\RelationManagers\{Model}\*` | Customer addresses, Discount conditions, ProductOption values, … |
+| Actions | `Lunar\Filament\Actions\{Subject}\*Action` | `RefundOrderAction`, `CaptureOrderAction`, `DuplicateProductAction`, `PublishProductsBulkAction` |
+| Global-search descriptors | `Lunar\Filament\GlobalSearch\*GlobalSearch` | `OrderGlobalSearch`, `ProductGlobalSearch`, `CustomerGlobalSearch` |
 | Dashboard widgets | `Lunar\Filament\Widgets\*` | `OrderStatsOverview`, `OrdersSalesChart`, `LatestOrdersTable` |
 | Attribute system | `Lunar\Filament\FieldTypes\*` | `TextField`, `TranslatedText`, `Dropdown`, `Toggle`, `ListField`, … |
 
@@ -295,6 +297,90 @@ $schema->components([
 ```
 
 Models with a complete schema, table, infolist, and relation managers: `Activity`, `AttributeGroup`, `Brand`, `Channel`, `Collection`, `CollectionGroup`, `Currency`, `Customer`, `CustomerGroup`, `Discount`, `Language`, `Order`, `Product`, `ProductOption`, `ProductType`, `ProductVariant`, `Staff`, `Tag`, `TaxClass`, `TaxRate`, `TaxZone`.
+
+---
+
+## Actions
+
+First-class Filament `Action` / `BulkAction` classes for every commerce verb the admin uses. The Filament class owns the modal schema, labels, notifications, and visibility predicate; the underlying business logic lives in a `Lunar\Core\Actions\*` counterpart so a CLI, API, or different UI can call the same code.
+
+| Action | Wraps | Where it fits |
+| --- | --- | --- |
+| `Orders\RefundOrderAction` | `Core\Actions\Orders\RefundOrder` | Order header / detail page |
+| `Orders\CaptureOrderAction` | `Core\Actions\Orders\CaptureOrder` | Order header / detail page |
+| `Orders\UpdateOrderStatusAction` / `UpdateOrderStatusBulkAction` | `Core\Actions\Orders\UpdateOrderStatus` | Order header + order table bulk |
+| `Orders\MarkOrderAsShippedAction` / `MarkOrdersAsShippedBulkAction` | `Core\Actions\Orders\MarkOrderAsShipped` | Order header + order table bulk |
+| `Orders\AddOrderNoteAction` | — (Filament-only single-field write) | Order header |
+| `Orders\DownloadOrderPdfAction` | — (Filament-only, subclass of `Support\DownloadPdfAction`) | Order header |
+| `Products\DuplicateProductAction` | `Core\Actions\Products\DuplicateProduct` | Product row / header |
+| `Products\PublishProductsBulkAction` / `UnpublishProductsBulkAction` / `ArchiveProductsBulkAction` | `Core\Actions\Products\UpdateProductStatus` | Product table |
+| `Products\AdjustStockAction` | `Core\Actions\Products\AdjustStock` | Variant row |
+| `Collections\CreateRootCollectionAction` / `CreateChildCollectionAction` | `Core\Actions\Collections\CreateRootCollection` / `CreateChildCollection` | Collection tree view |
+| `Collections\MoveCollectionAction` / `DeleteCollectionAction` | `Core\Actions\Collections\MoveCollection` / `DeleteCollection` | Collection tree view |
+
+Drop into any header/row/bulk action array — they work like any Filament action:
+
+```php
+use Lunar\Filament\Actions\Orders\CaptureOrderAction;
+use Lunar\Filament\Actions\Orders\RefundOrderAction;
+use Lunar\Filament\Actions\Orders\UpdateOrderStatusAction;
+
+protected function getDefaultHeaderActions(): array
+{
+    return [
+        CaptureOrderAction::make(),
+        RefundOrderAction::make(),
+        UpdateOrderStatusAction::make(),
+    ];
+}
+```
+
+Need the verb outside Filament (e.g. an API endpoint)? Call the core action directly:
+
+```php
+use Lunar\Core\Actions\Orders\RefundOrder;
+
+$result = RefundOrder::run(
+    order: $order,
+    transactionId: $transaction->id,
+    amount: '25.00',
+    notes: 'Customer requested partial refund',
+);
+```
+
+The core action validates the amount against `RefundOrder::availableToRefund($order)`, dispatches through the underlying payment driver, and returns the driver's `PaymentRefund` result. Bulk Filament actions are thin loops over the same core action wrapped in a single transaction.
+
+Shared `Concerns` traits (`InteractsWithTransactions`, `ConfirmsDestructiveAction`) cover the repeating form fragments — extend or override them in a subclass to bend the schema without re-implementing the whole action.
+
+---
+
+## Global search
+
+Each searchable Lunar model has a `GlobalSearchDescriptor` subclass that owns its searchable attribute list, result title, result details, and eager-loaded query. Consumers compose their own Filament resource and opt in with one trait and one property:
+
+```php
+use Filament\Resources\Resource;
+use Lunar\Core\Models\Product;
+use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
+use Lunar\Filament\GlobalSearch\ProductGlobalSearch;
+
+class MyProductResource extends Resource
+{
+    use HasLunarGlobalSearch;
+
+    protected static ?string $model = Product::class;
+
+    protected static string $globalSearch = ProductGlobalSearch::class;
+}
+```
+
+The trait forwards `getGloballySearchableAttributes`, `getGlobalSearchResultTitle`, `getGlobalSearchResultDetails`, and `getGlobalSearchEloquentQuery` to the descriptor, and routes the actual constraint-building through `RecordSearch` — the same Scout-vs-translated-attribute backend the entity selectors use. Scout is used when `lunar.panel.scout_enabled=true` and the model uses `Laravel\Scout\Searchable`; otherwise the query falls back to LIKE-matching across the resource's attribute list plus any searchable `TranslatedText` attributes.
+
+`getGlobalSearchResultUrl` stays on the resource — only the resource knows its own URL.
+
+Descriptors shipped: `OrderGlobalSearch`, `ProductGlobalSearch`, `CustomerGlobalSearch`, `CollectionGlobalSearch`, `BrandGlobalSearch`.
+
+There is no panel-wide auto-registration to enable or disable — global search is opt-in per resource via the trait. A consumer who only wants Lunar models in their existing resources adds the trait there; one who omits it gets no Lunar global-search rows.
 
 ---
 
