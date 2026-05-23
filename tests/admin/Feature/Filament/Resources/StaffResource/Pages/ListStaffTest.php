@@ -3,7 +3,7 @@
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff;
-use Lunar\Admin\Models\Staff;
+use Lunar\Core\Models\Staff;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)

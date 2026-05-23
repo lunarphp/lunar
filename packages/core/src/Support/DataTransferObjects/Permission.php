@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Admin\Support\DataTransferObjects;
+namespace Lunar\Core\Support\DataTransferObjects;
 
 use Illuminate\Support\Collection;
 
@@ -49,7 +49,7 @@ class Permission
 
     public function transLabel(): string
     {
-        $key = "lunarpanel::auth.permissions.{$this->handle}.label";
+        $key = "lunar::auth.permissions.{$this->handle}.label";
         $trans = __($key);
 
         return $trans == $key ? $this->handle : $trans;
@@ -57,7 +57,7 @@ class Permission
 
     public function transDescription(): string
     {
-        $key = "lunarpanel::auth.permissions.{$this->handle}.description";
+        $key = "lunar::auth.permissions.{$this->handle}.description";
         $trans = __($key);
 
         return $trans == $key ? $this->handle : $trans;

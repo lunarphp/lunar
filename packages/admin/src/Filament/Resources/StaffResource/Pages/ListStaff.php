@@ -16,7 +16,7 @@ class ListStaff extends BaseListRecords
     {
         return [
             Action::make('access-control')
-                ->label(__('lunarpanel::staff.action.acl.label'))
+                ->label(__('lunar::staff.action.acl.label'))
                 ->color(Color::Lime)
                 ->url(fn () => StaffResource::getUrl('acl')),
             CreateAction::make(),

@@ -6,7 +6,7 @@ use Filament\Facades\Filament;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Hash;
-use Lunar\Admin\Models\Staff;
+use Lunar\Core\Models\Staff;
 
 use function Laravel\Prompts\password;
 use function Laravel\Prompts\text;

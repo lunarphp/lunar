@@ -4,7 +4,6 @@ namespace Lunar\Core\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Lunar\Admin\Models\Staff;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Models\Attribute;
@@ -18,6 +17,7 @@ use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductType;
+use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxZone;
 
