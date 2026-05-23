@@ -39,4 +39,19 @@ return [
     */
     'disable_migrations' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Prevent Lazy Loading
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, accessing an Eloquent relation on a Lunar model that has
+    | not been eager-loaded throws a LunarLazyLoadingViolation. The same
+    | switch also enforces accessing missing attributes and silently
+    | discarded mass-assigned attributes on Lunar models. Defaults to
+    | 'auto' — enforced outside production. Set to true to enforce
+    | everywhere (recommended once your code is clean) or false to disable.
+    |
+    */
+    'prevent_lazy_loading' => env('LUNAR_PREVENT_LAZY_LOADING', 'auto'),
+
 ];

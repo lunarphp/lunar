@@ -21,6 +21,7 @@ use Lunar\Core\Base\CartSessionInterface;
 use Lunar\Core\Base\DiscountManagerInterface;
 use Lunar\Core\Base\FieldTypeManifest;
 use Lunar\Core\Base\FieldTypeManifestInterface;
+use Lunar\Core\Base\LunarLazyLoading;
 use Lunar\Core\Base\ModelManifest;
 use Lunar\Core\Base\ModelManifestInterface;
 use Lunar\Core\Base\OrderModifiers;
@@ -124,6 +125,10 @@ class LunarServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar');
 
         $this->registerAddonManifest();
+
+        $this->app->singleton(LunarLazyLoading::class, function () {
+            return new LunarLazyLoading;
+        });
 
         $this->app->singleton(MeasurementConverter::class, function () {
             return new MeasurementConverter;

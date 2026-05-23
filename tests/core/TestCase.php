@@ -25,6 +25,7 @@ class TestCase extends BaseTestCase
         Config::set('lunar.urls.generator', TestUrlGenerator::class);
         Config::set('lunar.taxes.driver', 'test');
         Config::set('lunar.media.collection', 'images');
+        Config::set('lunar.database.prevent_lazy_loading', false);
 
         Taxes::extend('test', function ($app) {
             return $app->make(TestTaxDriver::class);

@@ -22,6 +22,8 @@ class TestCase extends BaseTestCase
     {
         $this->replaceModelsForTesting();
 
+        $app['config']->set('lunar.database.prevent_lazy_loading', false);
+
         match (env('DB_DRIVER', 'sqlite')) {
             'mysql' => $this->configureMysql($app),
             'pgsql' => $this->configurePgsql($app),

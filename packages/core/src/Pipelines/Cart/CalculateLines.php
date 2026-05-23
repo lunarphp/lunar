@@ -18,7 +18,11 @@ class CalculateLines
     public function handle(CartContract $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
+        $cart->loadMissing(['lines.purchasable', 'currency']);
+
         foreach ($cart->lines as $line) {
+            $line->setRelation('cart', $cart);
+
             $cartLine = app(Pipeline::class)
                 ->send($line)
                 ->through(

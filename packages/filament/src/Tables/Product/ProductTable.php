@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
@@ -25,6 +26,9 @@ class ProductTable
             'configureTable',
             $table
                 ->columns(static::getColumns())
+                ->modifyQueryUsing(
+                    fn (Builder $query): Builder => $query->with(['brand', 'productType'])
+                )
                 ->filters([
                     SelectFilter::make('brand')
                         ->label(__('lunar-filament::product.table.brand.label'))
