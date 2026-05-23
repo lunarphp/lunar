@@ -38,7 +38,9 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                 __('lunar-filament::discount.relationmanagers.collections.description')
             )
             ->modifyQueryUsing(
-                fn ($query) => $query->whereIn($prefix.'collection_discount.type', ['limitation', 'exclusion'])
+                fn ($query) => $query
+                    ->whereIn($prefix.'collection_discount.type', ['limitation', 'exclusion'])
+                    ->with('ancestors')
             )
             ->paginated(false)
             ->headerActions([
