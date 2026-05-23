@@ -94,6 +94,12 @@ class TestCase extends BaseTestCase
 
         $staff->assignRole($admin ? 'admin' : 'staff');
 
+        $resolvedModel = config('lunar.staff.model', Staff::class);
+
+        if ($resolvedModel !== Staff::class) {
+            return $resolvedModel::find($staff->getKey());
+        }
+
         return $staff;
     }
 }
