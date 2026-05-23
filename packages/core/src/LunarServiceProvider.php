@@ -6,6 +6,10 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\MigrationsStarted;
+use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -13,6 +17,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Core\Addons\Manifest;
+use Lunar\Core\Auth\Manifest as AccessControlManifest;
 use Lunar\Core\Base\AttributeManifest;
 use Lunar\Core\Base\AttributeManifestInterface;
 use Lunar\Core\Base\CartLineModifiers;
@@ -44,6 +49,7 @@ use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
+use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
 use Lunar\Core\Listeners\CartSessionAuthListener;
@@ -69,6 +75,7 @@ use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductOption;
 use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\Models\Url;
 use Lunar\Core\Observers\AddressObserver;
@@ -106,6 +113,7 @@ class LunarServiceProvider extends ServiceProvider
         'products',
         'search',
         'shipping',
+        'staff',
         'taxes',
         'urls',
     ];
@@ -204,6 +212,12 @@ class LunarServiceProvider extends ServiceProvider
         });
 
         Facades\ModelManifest::register();
+
+        $this->app->scoped('lunar-access-control', function (): AccessControlManifest {
+            return new AccessControlManifest;
+        });
+
+        $this->app->alias('lunar-access-control', AccessControlManifest::class);
     }
 
     /**
@@ -273,6 +287,61 @@ class LunarServiceProvider extends ServiceProvider
             Logout::class,
             [CartSessionAuthListener::class, 'logout']
         );
+
+        $this->registerStaffAuthGuard();
+        $this->registerStaffStateListeners();
+
+        Relation::morphMap([
+            'staff' => config('lunar.staff.model', Staff::class),
+        ]);
+    }
+
+    /**
+     * Register the staff auth guard + provider.
+     */
+    protected function registerStaffAuthGuard(): void
+    {
+        if (! config('lunar.staff.register_guard', true)) {
+            return;
+        }
+
+        $provider = config('lunar.staff.provider', 'staff');
+        $guard = config('lunar.staff.guard', 'staff');
+        $model = config('lunar.staff.model', Staff::class);
+
+        $this->app['config']->set("auth.providers.{$provider}", [
+            'driver' => 'eloquent',
+            'model' => $model,
+        ]);
+
+        $this->app['config']->set("auth.guards.{$guard}", [
+            'driver' => 'session',
+            'provider' => $provider,
+        ]);
+    }
+
+    /**
+     * Register state listeners (e.g. base roles and permissions).
+     */
+    protected function registerStaffStateListeners(): void
+    {
+        $states = [
+            EnsureBaseRolesAndPermissions::class,
+        ];
+
+        foreach ($states as $state) {
+            $class = new $state;
+
+            Event::listen(
+                [MigrationsStarted::class],
+                [$class, 'prepare']
+            );
+
+            Event::listen(
+                [MigrationsEnded::class, NoPendingMigrations::class],
+                [$class, 'run']
+            );
+        }
     }
 
     protected function registerAddonManifest()

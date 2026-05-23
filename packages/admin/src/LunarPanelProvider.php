@@ -3,16 +3,11 @@
 namespace Lunar\Admin;
 
 use Filament\Support\Events\FilamentUpgraded;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Events\MigrationsEnded;
-use Illuminate\Database\Events\MigrationsStarted;
-use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Lunar\Admin\Auth\Manifest;
 use Lunar\Admin\Console\Commands\MakeLunarAdminCommand;
-use Lunar\Admin\Database\State\EnsureBaseRolesAndPermissions;
+use Lunar\Admin\Console\Commands\PublishAdminResourcesCommand;
 use Lunar\Admin\Events\ChildCollectionCreated;
 use Lunar\Admin\Events\CollectionProductDetached;
 use Lunar\Admin\Events\CustomerAddressEdited;
@@ -29,7 +24,6 @@ use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Listeners\FilamentUpgradedListener;
-use Lunar\Admin\Models\Staff;
 use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
 
 class LunarPanelProvider extends ServiceProvider
@@ -46,23 +40,16 @@ class LunarPanelProvider extends ServiceProvider
             return new LunarPanelManager;
         });
 
-        $this->app->scoped('lunar-access-control', function (): Manifest {
-            return new Manifest;
-        });
-
         $this->app->scoped('lunar-activity-log', function (): ActivityLogManifest {
             return new ActivityLogManifest;
         });
 
-        // 'lunar-attribute-data' binding now lives in LunarFilamentServiceProvider.
+        // 'lunar-access-control' binding now lives in Lunar\Core\LunarServiceProvider.
+        // 'lunar-attribute-data' binding lives in LunarFilamentServiceProvider.
     }
 
     public function boot(): void
     {
-        if (! config('lunar.database.disable_migrations', false)) {
-            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        }
-
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunarpanel');
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunarpanel');
@@ -89,12 +76,9 @@ class LunarPanelProvider extends ServiceProvider
 
             $this->commands([
                 MakeLunarAdminCommand::class,
+                PublishAdminResourcesCommand::class,
             ]);
         }
-
-        Relation::morphMap([
-            'staff' => Staff::class,
-        ]);
 
         Event::listen([
             ChildCollectionCreated::class,
@@ -115,9 +99,7 @@ class LunarPanelProvider extends ServiceProvider
             __DIR__.'/../public' => public_path('vendor/lunarpanel'),
         ], 'public');
 
-        $this->registerAuthGuard();
         $this->registerPermissionManifest();
-        $this->registerStateListeners();
         $this->registerLunarSynthesizer();
         $this->registerBridgeRecordUrls();
         // $this->registerUpgradedListener();
@@ -147,22 +129,6 @@ class LunarPanelProvider extends ServiceProvider
     }
 
     /**
-     * Register our auth guard.
-     */
-    protected function registerAuthGuard(): void
-    {
-        $this->app['config']->set('auth.providers.staff', [
-            'driver' => 'eloquent',
-            'model' => Staff::class,
-        ]);
-
-        $this->app['config']->set('auth.guards.staff', [
-            'driver' => 'session',
-            'provider' => 'staff',
-        ]);
-    }
-
-    /**
      * Register our permissions manifest.
      */
     protected function registerPermissionManifest(): void
@@ -179,27 +145,6 @@ class LunarPanelProvider extends ServiceProvider
     protected function registerUpgradedListener(): void
     {
         Event::listen(FilamentUpgraded::class, FilamentUpgradedListener::class);
-    }
-
-    protected function registerStateListeners()
-    {
-        $states = [
-            EnsureBaseRolesAndPermissions::class,
-        ];
-
-        foreach ($states as $state) {
-            $class = new $state;
-
-            Event::listen(
-                [MigrationsStarted::class],
-                [$class, 'prepare']
-            );
-
-            Event::listen(
-                [MigrationsEnded::class, NoPendingMigrations::class],
-                [$class, 'run']
-            );
-        }
     }
 
     protected function registerLunarSynthesizer(): void

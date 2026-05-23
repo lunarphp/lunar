@@ -11,6 +11,7 @@ use Lunar\Tests\Stubs\User;
 use Lunar\Tests\TestCase as BaseTestCase;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\LaravelData\LaravelDataServiceProvider;
+use Spatie\Permission\PermissionServiceProvider;
 
 class TestCase extends BaseTestCase
 {
@@ -35,6 +36,7 @@ class TestCase extends BaseTestCase
             LaravelDataServiceProvider::class,
             SearchServiceProvider::class,
             ScoutServiceProvider::class,
+            PermissionServiceProvider::class,
         ];
     }
 }

@@ -57,10 +57,9 @@
         "psr-4": {
             "Lunar\\Core\\": "packages/core/src",
             "Lunar\\Admin\\": "packages/admin/src/",
-            "Lunar\\Admin\\Database\\Factories\\": "packages/admin/database/factories",
-            "Lunar\\Admin\\Database\\State\\": "packages/admin/database/state",
             "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Core\\Database\\Seeders\\": "packages/core/database/seeders",
+            "Lunar\\Core\\Database\\State\\": "packages/core/database/state",
             "Lunar\\Filament\\": "packages/filament/src/",
             "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",

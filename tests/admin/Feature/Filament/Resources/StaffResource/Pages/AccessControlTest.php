@@ -4,9 +4,9 @@ use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\AccessControl;
 use Lunar\Admin\Filament\Resources\StaffResource\Pages\ListStaff;
-use Lunar\Admin\Support\DataTransferObjects\Permission;
-use Lunar\Admin\Support\Facades\LunarAccessControl;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Core\Support\DataTransferObjects\Permission;
+use Lunar\Core\Support\Facades\LunarAccessControl;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 use Spatie\Permission\Models\Role;
 

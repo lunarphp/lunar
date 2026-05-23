@@ -54,16 +54,9 @@ use Lunar\Admin\Filament\Resources\TaxClassResource;
 use Lunar\Admin\Filament\Resources\TaxRateResource;
 use Lunar\Admin\Filament\Resources\TaxZoneResource;
 use Lunar\Admin\Http\Controllers\DownloadPdfController;
-use Lunar\Admin\Support\Facades\LunarAccessControl;
+use Lunar\Core\Support\Facades\LunarAccessControl;
+use Lunar\Filament\LunarPlugin;
 use Lunar\Filament\Support\ComponentExtensions\Registry;
-use Lunar\Filament\Widgets\Collections\CollectionTreeView;
-use Lunar\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
-use Lunar\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
-use Lunar\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;
-use Lunar\Filament\Widgets\Dashboard\Orders\OrdersSalesChart;
-use Lunar\Filament\Widgets\Dashboard\Orders\OrderStatsOverview;
-use Lunar\Filament\Widgets\Dashboard\Orders\OrderTotalsChart;
-use Lunar\Filament\Widgets\Dashboard\Orders\PopularProductsTable;
 
 class LunarPanelManager
 {
@@ -76,6 +69,11 @@ class LunarPanelManager
     protected array $extensions = [];
 
     protected string $panelId = 'lunar';
+
+    /**
+     * @var array<class-string>
+     */
+    protected array $excludedResources = [];
 
     protected static $resources = [
         ActivityResource::class,
@@ -105,15 +103,11 @@ class LunarPanelManager
         Dashboard::class,
     ];
 
-    protected static $widgets = [
-        OrderStatsOverview::class,
-        OrderTotalsChart::class,
-        OrdersSalesChart::class,
-        AverageOrderValueChart::class,
-        NewVsReturningCustomersChart::class,
-        PopularProductsTable::class,
-        LatestOrdersTable::class,
-    ];
+    /**
+     * Bridge widgets are registered via LunarPlugin; this array stays for backwards-compat with
+     * downstream code calling LunarPanelManager::getWidgets().
+     */
+    protected static $widgets = [];
 
     public function register(): self
     {
@@ -254,7 +248,9 @@ class LunarPanelManager
                 ->name('lunar.pdf.download')->middleware($panelMiddleware);
         }
 
-        $plugins = [];
+        $plugins = [
+            LunarPlugin::make()->fullPreset(),
+        ];
 
         $panel = Panel::make()
             ->spa()
@@ -282,14 +278,11 @@ class LunarPanelManager
                 static::getPages()
             )
             ->resources(
-                static::getResources()
+                $this->getActiveResources()
             )
             ->discoverClusters(
                 in: realpath(__DIR__.'/Filament/Clusters'),
                 for: 'Lunar\Admin\Filament\Clusters'
-            )
-            ->widgets(
-                static::getWidgets()
             )
             ->authMiddleware([
                 Authenticate::class,
@@ -298,7 +291,6 @@ class LunarPanelManager
             ->discoverLivewireComponents(__DIR__.'/Livewire', 'Lunar\\Admin\\Livewire')
             ->livewireComponents([
                 OrderItemsTable::class,
-                CollectionTreeView::class,
             ])
             ->navigationGroups([
                 'Catalog',
@@ -351,6 +343,29 @@ class LunarPanelManager
     public static function getResources(): array
     {
         return static::$resources;
+    }
+
+    /**
+     * Stop registering specific Lunar resources on the panel.
+     *
+     * Use this when you've published a resource via `lunar:admin:publish` and
+     * want to register your owned copy in its place.
+     *
+     * @param  array<class-string>  $resources
+     */
+    public function excludeResources(array $resources): self
+    {
+        $this->excludedResources = array_values(array_unique(array_merge($this->excludedResources, $resources)));
+
+        return $this;
+    }
+
+    /**
+     * @return array<class-string<resource>>
+     */
+    public function getActiveResources(): array
+    {
+        return array_values(array_diff(static::getResources(), $this->excludedResources));
     }
 
     /**

@@ -1,14 +1,7 @@
 <?php
 
-namespace Lunar\Admin\Models;
+namespace Lunar\Core\Models;
 
-use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
-use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
-use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
-use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasName;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,8 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Lunar\Admin\Database\Factories\StaffFactory;
 use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Database\Factories\StaffFactory;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -36,12 +29,10 @@ use Spatie\Permission\Traits\HasRoles;
  *
  * @method static Builder search(?string $terms)
  */
-class Staff extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasName
+class Staff extends Authenticatable
 {
     use HasFactory;
     use HasRoles;
-    use InteractsWithAppAuthentication;
-    use InteractsWithAppAuthenticationRecovery;
     use LogsActivity;
     use Notifiable;
     use SoftDeletes;
@@ -71,6 +62,22 @@ class Staff extends Authenticatable implements FilamentUser, HasAppAuthenticatio
         'full_name',
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setTable(config('lunar.database.table_prefix').'staff');
+
+        if ($connection = config('lunar.database.connection')) {
+            $this->setConnection($connection);
+        }
+    }
+
+    protected static function newFactory(): StaffFactory
+    {
+        return StaffFactory::new();
+    }
+
     protected function firstname(): Attribute
     {
         return Attribute::make(
@@ -90,24 +97,8 @@ class Staff extends Authenticatable implements FilamentUser, HasAppAuthenticatio
     protected function fullName(): Attribute
     {
         return Attribute::get(
-            fn (): string => "{$this->first_name} {$this->last_name}",
+            fn (): string => trim("{$this->first_name} {$this->last_name}"),
         );
-    }
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(config('lunar.database.table_prefix').$this->getTable());
-
-        if ($connection = config('lunar.database.connection')) {
-            $this->setConnection($connection);
-        }
-    }
-
-    protected static function newFactory(): StaffFactory
-    {
-        return StaffFactory::new();
     }
 
     public function scopeSearch(Builder $query, ?string $terms): void
@@ -119,15 +110,5 @@ class Staff extends Authenticatable implements FilamentUser, HasAppAuthenticatio
         foreach (explode(' ', $terms) as $term) {
             $query->whereAny(['email', 'first_name', 'last_name'], 'LIKE', "%{$term}%");
         }
-    }
-
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return true;
-    }
-
-    public function getFilamentName(): string
-    {
-        return $this->full_name;
     }
 }

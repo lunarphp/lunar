@@ -1,10 +1,9 @@
 <?php
 
-namespace Lunar\Admin\Database\State;
+namespace Lunar\Core\Database\State;
 
 use Illuminate\Support\Facades\Schema;
-use Lunar\Admin\Support\Facades\LunarAccessControl;
-use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Core\Auth\Manifest;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -17,17 +16,17 @@ class EnsureBaseRolesAndPermissions
 
     public function run()
     {
-        try {
-            $guard = LunarPanel::getPanel()->getAuthGuard();
-        } catch (\Throwable $e) {
-            // No admin panel registered — nothing to seed.
-            return;
-        }
+        $manifest = app(Manifest::class);
+        $guard = $manifest->getAuthGuard();
 
         $tableNames = config('permission.table_names');
 
+        if (! $tableNames) {
+            return;
+        }
+
         if (Schema::hasTable($tableNames['roles'])) {
-            foreach (LunarAccessControl::getBaseRoles() as $role) {
+            foreach ($manifest->getBaseRoles() as $role) {
                 Role::query()->firstOrCreate([
                     'name' => $role,
                     'guard_name' => $guard,
@@ -36,7 +35,7 @@ class EnsureBaseRolesAndPermissions
         }
 
         if (Schema::hasTable($tableNames['permissions'])) {
-            foreach (LunarAccessControl::getBasePermissions() as $permission) {
+            foreach ($manifest->getBasePermissions() as $permission) {
                 Permission::firstOrCreate([
                     'name' => $permission,
                     'guard_name' => $guard,
