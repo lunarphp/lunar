@@ -1,6 +1,6 @@
 # 0007 — Inline page-extension traits into base page classes
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-05-22
 - TODO item: "Pages refactor (spec 0005 follow-up)"

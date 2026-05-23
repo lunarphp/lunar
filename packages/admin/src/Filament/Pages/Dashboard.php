@@ -3,8 +3,8 @@
 namespace Lunar\Admin\Filament\Pages;
 
 use Filament\Support\Facades\FilamentIcon;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Pages\BaseDashboard;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Widgets\Dashboard\Orders\AverageOrderValueChart;
 use Lunar\Filament\Widgets\Dashboard\Orders\LatestOrdersTable;
 use Lunar\Filament\Widgets\Dashboard\Orders\NewVsReturningCustomersChart;

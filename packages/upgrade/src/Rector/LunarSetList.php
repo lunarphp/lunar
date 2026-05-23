@@ -525,6 +525,7 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\Actions\\Collections\\CreateRootCollection' => 'Lunar\\Filament\\Actions\\Collections\\CreateRootCollection',
         'Lunar\\Admin\\Support\\Actions\\Collections\\DeleteCollection' => 'Lunar\\Filament\\Actions\\Collections\\DeleteCollection',
         'Lunar\\Admin\\Support\\Actions\\Collections\\MoveCollection' => 'Lunar\\Filament\\Actions\\Collections\\MoveCollection',
+        'Lunar\\Admin\\Support\\Concerns\\CallsHooks' => 'Lunar\\Filament\\Support\\Concerns\\CallsHooks',
 
     ];
 
@@ -534,6 +535,30 @@ final class LunarSetList
      * @var array<int, class-string>
      */
     public const V1_TO_V2 = [];
+
+    /**
+     * Classes/traits removed in v2 with no replacement target.
+     *
+     * Spec 0007 inlined the ten page-extension traits under
+     * `Lunar\Admin\Support\Pages\Concerns\` into their five base page
+     * classes. Downstream code that imported a trait directly hits a
+     * "Trait not found" error pointing at the FQCN listed here — drop
+     * the `use` line, the base page already provides the behaviour.
+     *
+     * @var array<int, class-string>
+     */
+    public const V1_TO_V2_REMOVED_CLASSES = [
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsFooterWidgets',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsFormActions',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsForms',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsHeaderActions',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsHeaderWidgets',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsHeadings',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsInfolist',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsTablePagination',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsTables',
+        'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsTabs',
+    ];
 
     /**
      * Method renames on Lunar base classes, contributed by v2 breaking

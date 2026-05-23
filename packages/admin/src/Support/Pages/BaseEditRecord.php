@@ -3,24 +3,87 @@
 namespace Lunar\Admin\Support\Pages;
 
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Schema;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Support\Concerns\CallsHooks;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsFooterWidgets;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsFormActions;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsForms;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderActions;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderWidgets;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsHeadings;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 abstract class BaseEditRecord extends EditRecord
 {
     use CallsHooks;
-    use ExtendsFooterWidgets;
-    use ExtendsFormActions;
-    use ExtendsForms;
-    use ExtendsHeaderActions;
-    use ExtendsHeaderWidgets;
-    use ExtendsHeadings;
+
+    protected function getDefaultFooterWidgets(): array
+    {
+        return [];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return $this->callLunarHook('footerWidgets', $this->getDefaultFooterWidgets());
+    }
+
+    protected function getDefaultFormActions(): array
+    {
+        return [];
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            ...parent::getFormActions(),
+            ...$this->callLunarHook('formActions', $this->getDefaultFormActions()),
+        ];
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return self::callLunarHook('extendForm', $this->getDefaultForm($schema));
+    }
+
+    public function getDefaultForm(Schema $schema): Schema
+    {
+        return static::getResource()::form($schema);
+    }
+
+    protected function getDefaultHeaderActions(): array
+    {
+        return [];
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return $this->callLunarHook('headerActions', $this->getDefaultHeaderActions());
+    }
+
+    protected function getDefaultHeaderWidgets(): array
+    {
+        return [];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return $this->callLunarHook('headerWidgets', $this->getDefaultHeaderWidgets());
+    }
+
+    public function getDefaultHeading(): string
+    {
+        return $this->heading ?? $this->getTitle();
+    }
+
+    public function getHeading(): string|Htmlable
+    {
+        return $this->callLunarHook('heading', $this->getDefaultHeading(), $this->record ?? null);
+    }
+
+    public function getDefaultSubheading(): ?string
+    {
+        return $this->subheading;
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return $this->callLunarHook('subHeading', $this->getDefaultSubheading(), $this->record ?? null);
+    }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
