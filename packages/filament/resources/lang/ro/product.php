@@ -23,6 +23,7 @@ return [
         'status' => [
             'label' => 'Stare',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'Șters',
                 'draft' => 'Ciornă',
                 'published' => 'Publicat',

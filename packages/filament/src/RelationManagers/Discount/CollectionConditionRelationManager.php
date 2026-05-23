@@ -47,7 +47,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
             ->headerActions([
                 CreateAction::make()->schema([
                     CollectionSelect::make('discountable_id')
-                        ->label(__('lunar-filament::collection.singular_label'))
+                        ->label(__('lunar-filament::collection.label'))
                         ->required(),
                     Forms\Components\Hidden::make('discountable_type')
                         ->default(Collection::morphName()),

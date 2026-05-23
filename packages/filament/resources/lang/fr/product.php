@@ -23,6 +23,7 @@ return [
         'status' => [
             'label' => 'Statut',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'Supprimé',
                 'draft' => 'Brouillon',
                 'published' => 'Publié',

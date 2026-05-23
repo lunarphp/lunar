@@ -2,14 +2,14 @@
 
 Brainstorm of additions to `lunarphp/filament` that would make it more useful to Filament developers. Not specs, not commitments — a parking lot. Promote an item to `specs/NNNN-…md` when work starts.
 
-Last updated: 2026-05-23.
+Last updated: 2026-05-23. Spec 0009 (items #2 + #4) shipped.
 
 ## High-value, idiomatic-Filament additions
 
 1. **`LunarPlugin::make()` installation** — Filament v5 devs expect `$panel->plugin(LunarPlugin::make()->widgets()->resources())`. We register via service provider today; a real plugin object makes opt-in granular and matches what every other Filament package does.
-2. **Filament Actions library** — `RefundOrderAction`, `CapturePaymentAction`, `MarkAsShippedAction`, `FulfilLineAction`, `DuplicateProductAction`, `BulkPublishProductsAction`, `AdjustStockAction`. Likely the single biggest gap — commerce is verb-heavy and Filament's action system is where that belongs.
+2. **Filament Actions library** — `RefundOrderAction`, `CapturePaymentAction`, `MarkAsShippedAction`, `FulfilLineAction`, `DuplicateProductAction`, `BulkPublishProductsAction`, `AdjustStockAction`. Likely the single biggest gap — commerce is verb-heavy and Filament's action system is where that belongs. _(Shipped in spec 0009.)_
 3. **Importer/Exporter classes** — pre-built `ProductImporter`, `CustomerImporter`, `OrderExporter` using Filament's `Importer`/`Exporter` (translated columns, attribute mapping, channel scoping). Very common ask.
-4. **Global Search providers** — register Product/Order/Customer/Collection as Filament global search results, respecting Scout when available. Small wiring, big UX.
+4. **Global Search providers** — register Product/Order/Customer/Collection as Filament global search results, respecting Scout when available. Small wiring, big UX. _(Shipped in spec 0009.)_
 5. **Test helpers (Pest)** — `actingAsStaff()`, factories for `attribute_data`, assertions like `assertProductSelectIncludes($product)`, helpers for stubbing `RecordSearch`.
 
 ## Commerce-specific Filament components
@@ -40,6 +40,6 @@ Last updated: 2026-05-23.
 20. **Customer impersonation action** — admin clicks → opens storefront session as that customer. Common ask, modest scope.
 21. **Webhook management UI** — needs a domain decision (core or filament?).
 
-## Suggested first spec
+## Suggested next spec
 
-**#2 (Actions library) + #4 (Global Search)** as a single "Filament-native verbs and discoverability" spec — both small, both close obvious gaps, both make the package feel finished rather than ported.
+**#3 (Importer/Exporter classes)** — pre-built `ProductImporter`, `CustomerImporter`, `OrderExporter` using Filament's `Importer`/`Exporter` machinery. With actions and global search shipped (spec 0009), the import/export gap is the next-largest "this should already exist" item.

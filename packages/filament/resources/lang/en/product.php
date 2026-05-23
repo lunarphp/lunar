@@ -28,6 +28,7 @@ return [
         'status' => [
             'label' => 'Status',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'Deleted',
                 'draft' => 'Draft',
                 'published' => 'Published',

@@ -23,6 +23,7 @@ return [
         'status' => [
             'label' => 'Статус',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'Устгасан',
                 'draft' => 'Ноорог',
                 'published' => 'Нийтлэгдсэн',

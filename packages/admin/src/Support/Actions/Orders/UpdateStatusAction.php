@@ -2,31 +2,10 @@
 
 namespace Lunar\Admin\Support\Actions\Orders;
 
-use Filament\Actions\Action;
-use Filament\Support\Enums\Width;
-use Lunar\Admin\Support\Actions\Traits\UpdatesOrderStatus;
-use Lunar\Core\Models\Order;
+use Lunar\Filament\Actions\Orders\UpdateOrderStatusAction;
 
-class UpdateStatusAction extends Action
-{
-    use UpdatesOrderStatus;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->label(
-            __('lunarpanel::actions.orders.update_status.label')
-        );
-
-        $this->modalWidth(Width::TwoExtraLarge);
-
-        $this->schema(
-            $this->getFormSteps()
-        );
-
-        $this->action(
-            fn (Order $record, array $data) => $this->updateStatus($record, $data)
-        );
-    }
-}
+/**
+ * @deprecated since v2 — use `Lunar\Filament\Actions\Orders\UpdateOrderStatusAction`.
+ *             This shim forwards to the bridge class and will be removed in v3.
+ */
+class UpdateStatusAction extends UpdateOrderStatusAction {}

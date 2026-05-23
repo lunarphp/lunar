@@ -12,11 +12,11 @@ use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Lunar\Filament\Actions\Orders\UpdateOrderStatusBulkAction;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Support\CustomerStatus;
 use Lunar\Filament\Support\OrderStatus;
 use Lunar\Filament\Support\RecordUrls;
-use Lunar\Filament\Tables\Actions\Orders\UpdateStatusBulkAction;
 
 class OrderTable
 {
@@ -40,7 +40,7 @@ class OrderTable
                 ->recordUrl(fn ($record) => RecordUrls::for('order', $record))
                 ->toolbarActions([
                     BulkActionGroup::make([
-                        UpdateStatusBulkAction::make('update_status')
+                        UpdateOrderStatusBulkAction::make()
                             ->deselectRecordsAfterCompletion(),
                     ]),
                 ])

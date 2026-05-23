@@ -2,6 +2,10 @@
 
 namespace Lunar\Admin\Support\Actions\Orders;
 
-use Lunar\Filament\Tables\Actions\Orders\UpdateStatusBulkAction as BridgeUpdateStatusBulkAction;
+use Lunar\Filament\Actions\Orders\UpdateOrderStatusBulkAction;
 
-class UpdateStatusBulkAction extends BridgeUpdateStatusBulkAction {}
+/**
+ * @deprecated since v2 — use `Lunar\Filament\Actions\Orders\UpdateOrderStatusBulkAction`.
+ *             This shim forwards to the bridge class and will be removed in v3.
+ */
+class UpdateStatusBulkAction extends UpdateOrderStatusBulkAction {}

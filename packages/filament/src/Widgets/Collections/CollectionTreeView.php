@@ -16,10 +16,10 @@ use Illuminate\Support\Arr;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
-use Lunar\Filament\Actions\Collections\CreateChildCollection;
-use Lunar\Filament\Actions\Collections\CreateRootCollection;
-use Lunar\Filament\Actions\Collections\DeleteCollection;
-use Lunar\Filament\Actions\Collections\MoveCollection;
+use Lunar\Filament\Actions\Collections\CreateChildCollectionAction;
+use Lunar\Filament\Actions\Collections\CreateRootCollectionAction;
+use Lunar\Filament\Actions\Collections\DeleteCollectionAction;
+use Lunar\Filament\Actions\Collections\MoveCollectionAction;
 use Lunar\Filament\Support\RecordUrls;
 
 class CollectionTreeView extends Widget implements HasActions, HasForms
@@ -133,7 +133,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     public function deleteAction(): Action
     {
-        return DeleteCollection::make('delete')
+        return DeleteCollectionAction::make('delete')
             ->after(function (array $arguments) {
                 $index = $this->findIndex($arguments['id'], $this->nodes);
 
@@ -147,7 +147,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     public function addChildCollectionAction(): Action
     {
-        return CreateChildCollection::make('addChildCollection')
+        return CreateChildCollectionAction::make('addChildCollection')
             ->icon(
                 fn () => FilamentIcon::resolve('lunar::sub-collection')
             )->after(
@@ -170,7 +170,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     public function createRootCollectionAction(): Action
     {
-        return CreateRootCollection::make('createRootCollection')
+        return CreateRootCollectionAction::make('createRootCollection')
             ->mutateDataUsing(function (array $data) {
                 $data['collection_group_id'] = $this->record->id;
 
@@ -182,7 +182,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     public function moveAction(): Action
     {
-        return MoveCollection::make('move')
+        return MoveCollectionAction::make('move')
             ->icon(
                 fn () => FilamentIcon::resolve('lunar::move-collection')
             )->schema([

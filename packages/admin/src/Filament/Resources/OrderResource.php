@@ -4,20 +4,23 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\EditOrder;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ListOrders;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
-use Lunar\Core\Models\Order;
+use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
+use Lunar\Filament\GlobalSearch\OrderGlobalSearch;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Order\OrderTable;
 
 class OrderResource extends BaseResource
 {
+    use HasLunarGlobalSearch;
+
+    protected static string $globalSearch = OrderGlobalSearch::class;
+
     protected static ?string $permission = 'sales:manage-orders';
 
     protected static ?string $model = OrderContract::class;
@@ -65,56 +68,10 @@ class OrderResource extends BaseResource
         ];
     }
 
-    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
-    {
-        return $record->reference;
-    }
-
     public static function getGlobalSearchResultUrl(Model $record): ?string
     {
         return OrderResource::getUrl('order', [
             'record' => $record,
         ]);
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [
-            'reference',
-            'customer_reference',
-            'notes',
-            'billingAddress.first_name',
-            'billingAddress.last_name',
-            'billingAddress.contact_email',
-            'tags.value',
-        ];
-    }
-
-    public static function getGlobalSearchEloquentQuery(): Builder
-    {
-        return parent::getGlobalSearchEloquentQuery()->with([
-            'billingAddress',
-            'tags',
-        ]);
-    }
-
-    public static function getGlobalSearchResultDetails(Model $record): array
-    {
-        /** @var Order $record */
-        $details = [
-            __('lunarpanel::order.table.status.label') => $record->getStatusLabelAttribute(),
-            __('lunarpanel::order.table.total.label') => $record->total?->formatted,
-            __('lunarpanel::order.table.customer.label') => $record->billingAddress?->fullName,
-        ];
-
-        if ($record->billingAddress?->contact_email) {
-            $details[__('lunarpanel::order.table.email.label')] = $record->billingAddress->contact_email;
-        }
-
-        if ($record->placed_at) {
-            $details[__('lunarpanel::order.table.date.label')] = $record->placed_at;
-        }
-
-        return $details;
     }
 }

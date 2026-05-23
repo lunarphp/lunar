@@ -4,9 +4,6 @@ namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Schemas\Schema;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\EditCollection;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ListCollections;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionAvailability;
@@ -16,11 +13,17 @@ use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionProd
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionUrls;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Filament\GlobalSearch\CollectionGlobalSearch;
+use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
 use Lunar\Filament\Schemas\Collection\CollectionForm;
 use Lunar\Filament\Support\Resolver;
 
 class CollectionResource extends BaseResource
 {
+    use HasLunarGlobalSearch;
+
+    protected static string $globalSearch = CollectionGlobalSearch::class;
+
     protected static ?string $permission = 'catalog:manage-collections';
 
     protected static ?string $model = CollectionContract::class;
@@ -97,24 +100,5 @@ class CollectionResource extends BaseResource
             'media' => ManageCollectionMedia::route('/{record}/media'),
             'urls' => ManageCollectionUrls::route('/{record}/urls'),
         ];
-    }
-
-    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
-    {
-        return $record->translateAttribute('name');
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [
-            'group.name',
-        ];
-    }
-
-    public static function getGlobalSearchEloquentQuery(): Builder
-    {
-        return parent::getGlobalSearchEloquentQuery()->with([
-            'group',
-        ]);
     }
 }

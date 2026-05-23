@@ -2,6 +2,10 @@
 
 namespace Lunar\Admin\Support\Actions\Collections;
 
-use Lunar\Filament\Actions\Collections\CreateChildCollection as BridgeCreateChildCollection;
+use Lunar\Filament\Actions\Collections\CreateChildCollectionAction;
 
-class CreateChildCollection extends BridgeCreateChildCollection {}
+/**
+ * @deprecated since v2 — use `Lunar\Filament\Actions\Collections\CreateChildCollectionAction`.
+ *             This shim forwards to the bridge class and will be removed in v3.
+ */
+class CreateChildCollection extends CreateChildCollectionAction {}

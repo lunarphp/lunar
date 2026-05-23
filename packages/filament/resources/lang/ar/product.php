@@ -23,6 +23,7 @@ return [
         'status' => [
             'label' => 'الحالة',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'محذوف',
                 'draft' => 'مسودة',
                 'published' => 'منشور',

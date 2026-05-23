@@ -23,6 +23,7 @@ return [
         'status' => [
             'label' => 'Durum',
             'states' => [
+                'archived' => 'Archived',
                 'deleted' => 'Silindi',
                 'draft' => 'Taslak',
                 'published' => 'Yayınlandı',

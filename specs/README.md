@@ -32,3 +32,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0006 | Extract `lunarphp/filament` bridge package and reshape the install model | implemented |
 | 0007 | Inline page-extension traits into base page classes | draft       |
 | 0008 | Reusable Filament entity-selector components | implemented |
+| 0009 | Filament-native verbs and discoverability (actions library + global search) | implemented |

@@ -7,9 +7,7 @@ use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts;
@@ -28,6 +26,8 @@ use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
+use Lunar\Filament\GlobalSearch\ProductGlobalSearch;
 use Lunar\Filament\RelationManagers\Product\CustomerGroupPricingRelationManager;
 use Lunar\Filament\RelationManagers\Product\CustomerGroupRelationManager;
 use Lunar\Filament\Schemas\Product\ProductForm;
@@ -38,6 +38,10 @@ use Lunar\Filament\Widgets\Products\VariantSwitcherTable;
 
 class ProductResource extends BaseResource
 {
+    use HasLunarGlobalSearch;
+
+    protected static string $globalSearch = ProductGlobalSearch::class;
+
     protected static ?string $permission = 'catalog:manage-products';
 
     protected static ?string $model = ProductContract::class;
@@ -136,19 +140,6 @@ class ProductResource extends BaseResource
         ];
     }
 
-    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
-    {
-        return $record->translateAttribute('name');
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [
-            'variants.sku',
-            'tags.value',
-        ];
-    }
-
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -156,23 +147,5 @@ class ProductResource extends BaseResource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
-    }
-
-    public static function getGlobalSearchEloquentQuery(): Builder
-    {
-        return parent::getGlobalSearchEloquentQuery()->with([
-            'variants',
-            'brand',
-            'tags',
-        ]);
-    }
-
-    public static function getGlobalSearchResultDetails(Model $record): array
-    {
-        return [
-            __('lunarpanel::product.table.sku.label') => $record->variants->first()->getIdentifier(),
-            __('lunarpanel::product.table.stock.label') => $record->variants->first()->stock,
-            __('lunarpanel::product.table.brand.label') => $record->brand?->name,
-        ];
     }
 }

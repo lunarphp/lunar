@@ -5,15 +5,14 @@ namespace Lunar\Admin\Filament\Resources;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\CreateCustomer;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use Lunar\Admin\Support\Resources\BaseResource;
 use Lunar\Core\Models\Contracts\Customer as CustomerContract;
+use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
+use Lunar\Filament\GlobalSearch\CustomerGlobalSearch;
 use Lunar\Filament\RelationManagers\Customer\AddressRelationManager;
 use Lunar\Filament\RelationManagers\Customer\OrdersRelationManager;
 use Lunar\Filament\RelationManagers\Customer\UserRelationManager;
@@ -24,6 +23,10 @@ use Lunar\Filament\Widgets\Customer\CustomerStatsOverviewWidget;
 
 class CustomerResource extends BaseResource
 {
+    use HasLunarGlobalSearch;
+
+    protected static string $globalSearch = CustomerGlobalSearch::class;
+
     protected static ?string $permission = 'sales:manage-customers';
 
     protected static ?string $model = CustomerContract::class;
@@ -86,49 +89,5 @@ class CustomerResource extends BaseResource
             'edit' => EditCustomer::route('/{record}/edit'),
             'view' => ViewCustomer::route('/{record}'),
         ];
-    }
-
-    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
-    {
-        return $record->company_name ?: $record->fullName;
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [
-            'first_name',
-            'last_name',
-            'company_name',
-            'account_ref',
-            'tax_identifier',
-            'users.name',
-            'users.email',
-        ];
-    }
-
-    public static function getGlobalSearchEloquentQuery(): Builder
-    {
-        return parent::getGlobalSearchEloquentQuery()->with([
-            'users',
-        ]);
-    }
-
-    public static function getGlobalSearchResultDetails(Model $record): array
-    {
-        /** @var Customer $record */
-        $details = [
-            __('lunarpanel::customer.table.full_name.label') => $record->fullName,
-            __('lunarpanel::customer.table.title.label') => $record->title,
-        ];
-
-        if ($record->account_ref) {
-            $details[__('lunarpanel::customer.table.account_reference.label')] = $record->account_ref;
-        }
-
-        if ($record->users() && $record->users()->count() >= 1) {
-            $details[__('lunarpanel::user.table.email.label')] = $record->users()->first()->email;
-        }
-
-        return $details;
     }
 }
