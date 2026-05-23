@@ -4,25 +4,83 @@ namespace Lunar\Admin\Support\Pages;
 
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Filters\TrashedFilter;
+use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Admin\Support\Concerns\CallsHooks;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsFooterWidgets;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderActions;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsHeaderWidgets;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsHeadings;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsTablePagination;
-use Lunar\Admin\Support\Pages\Concerns\ExtendsTabs;
 use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 abstract class BaseListRecords extends ListRecords
 {
     use CallsHooks;
-    use ExtendsFooterWidgets;
-    use ExtendsHeaderActions;
-    use ExtendsHeaderWidgets;
-    use ExtendsHeadings;
-    use ExtendsTablePagination;
-    use ExtendsTabs;
+
+    protected function getDefaultFooterWidgets(): array
+    {
+        return [];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return $this->callLunarHook('footerWidgets', $this->getDefaultFooterWidgets());
+    }
+
+    protected function getDefaultHeaderActions(): array
+    {
+        return [];
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return $this->callLunarHook('headerActions', $this->getDefaultHeaderActions());
+    }
+
+    protected function getDefaultHeaderWidgets(): array
+    {
+        return [];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return $this->callLunarHook('headerWidgets', $this->getDefaultHeaderWidgets());
+    }
+
+    public function getDefaultHeading(): string
+    {
+        return $this->heading ?? $this->getTitle();
+    }
+
+    public function getHeading(): string|Htmlable
+    {
+        return $this->callLunarHook('heading', $this->getDefaultHeading(), $this->record ?? null);
+    }
+
+    public function getDefaultSubheading(): ?string
+    {
+        return $this->subheading;
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return $this->callLunarHook('subHeading', $this->getDefaultSubheading(), $this->record ?? null);
+    }
+
+    protected function paginateTableQuery(Builder $query): Paginator|CursorPaginator
+    {
+        $result = $this->callLunarHook('paginateTableQuery', $query, $this->getTableRecordsPerPage());
+
+        return $result instanceof Builder ? parent::paginateTableQuery($result) : $result;
+    }
+
+    protected function getDefaultTabs(): array
+    {
+        return [];
+    }
+
+    public function getTabs(): array
+    {
+        return $this->callLunarHook('getTabs', $this->getDefaultTabs());
+    }
 
     protected function applySearchToTableQuery(Builder $query): Builder
     {

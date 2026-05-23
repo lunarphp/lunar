@@ -7,7 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Support\Concerns\CallsHooks;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ShippingExclusionListTable
 {

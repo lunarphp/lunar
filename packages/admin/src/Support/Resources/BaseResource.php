@@ -7,10 +7,10 @@ use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\RelationManagers\RelationManagerConfiguration;
 use Filament\Resources\Resource;
-use Lunar\Admin\Support\Concerns\CallsHooks;
 use Lunar\Admin\Support\Resources\Concerns\HasLunarPermissions;
 use Lunar\Admin\Support\Resources\Concerns\HasScoutGlobalSearch;
 use Lunar\Admin\Support\Resources\Concerns\ResolvesModelContract;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class BaseResource extends Resource
 {
