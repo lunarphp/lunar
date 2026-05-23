@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources\BrandResource\Pages;
 
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
-use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
@@ -12,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
+use Lunar\Filament\Forms\Components\ProductSelect;
 use Lunar\Filament\Tables\Product\ProductTable;
 
 class ManageBrandProducts extends BaseManageRelatedRecords
@@ -71,19 +70,11 @@ class ManageBrandProducts extends BaseManageRelatedRecords
                     __('lunarpanel::brand.pages.products.actions.attach.label')
                 )
                 ->form([
-                    Select::make('recordId')
+                    ProductSelect::make('recordId')
                         ->label(
                             __('lunarpanel::brand.pages.products.actions.attach.form.record_id.label')
                         )
-                        ->required()
-                        ->searchable()
-                        ->getSearchResultsUsing(static function (Select $component, string $search): array {
-                            return Product::search($search)
-                                ->get()
-                                ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
-                                ->all();
-                        })
-                        ->getOptionLabelUsing(fn ($value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')),
+                        ->required(),
                 ])
                 ->action(function (array $arguments, array $data) {
                     Product::where('id', '=', $data['recordId'])

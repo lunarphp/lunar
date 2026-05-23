@@ -2,7 +2,6 @@
 
 namespace Lunar\Filament\Schemas\Product;
 
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Component;
@@ -18,6 +17,8 @@ use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Tag;
 use Lunar\Filament\Forms\Components\Attributes;
+use Lunar\Filament\Forms\Components\BrandSelect;
+use Lunar\Filament\Forms\Components\ProductTypeSelect;
 use Lunar\Filament\Forms\Components\Tags as TagsComponent;
 use Lunar\Filament\Forms\Components\TranslatedText as TranslatedTextInput;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -141,23 +142,14 @@ class ProductForm
 
     public static function getBrandComponent(): Component
     {
-        return Select::make('brand_id')
-            ->label(__('lunar-filament::product.form.brand.label'))
-            ->relationship('brand', 'name')
-            ->searchable()
-            ->preload()
-            ->createOptionForm([
-                TextInput::make('name')->required(),
-            ]);
+        return BrandSelect::make('brand_id')
+            ->label(__('lunar-filament::product.form.brand.label'));
     }
 
     public static function getProductTypeComponent(): Component
     {
-        return Select::make('product_type_id')
+        return ProductTypeSelect::make('product_type_id')
             ->label(__('lunar-filament::product.form.producttype.label'))
-            ->relationship('productType', 'name')
-            ->searchable()
-            ->preload()
             ->live()
             ->required();
     }

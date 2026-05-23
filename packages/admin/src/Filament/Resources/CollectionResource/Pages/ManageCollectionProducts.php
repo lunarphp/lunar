@@ -5,7 +5,6 @@ namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -18,8 +17,8 @@ use Lunar\Admin\Events\CollectionProductDetached;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
+use Lunar\Filament\Forms\Components\ProductSelect;
 
 class ManageCollectionProducts extends BaseManageRelatedRecords
 {
@@ -101,22 +100,9 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                 ->label(
                     __('lunarpanel::collection.pages.products.actions.attach.label')
                 )->form([
-                    Select::make('recordId')
-                        ->label('Product')
+                    ProductSelect::make('recordId')
                         ->required()
-                        ->searchable(true)
-                        ->getSearchResultsUsing(static function (Select $component, string $search, ManageCollectionProducts $livewire): array {
-                            $relationModel = $livewire->getRelationship()->getRelated()::class;
-
-                            return get_search_builder($relationModel, $search)
-                                ->get()
-                                ->reject(
-                                    fn (ProductContract $record) => $livewire->getRelationship()->get()->contains($record->getKey())
-                                )
-                                ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
-                                ->all();
-                        })
-                        ->getOptionLabelUsing(fn ($value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')),
+                        ->excludeAttached(),
                 ])->action(function (array $arguments, array $data, Schema $schema, Table $table) {
                     $relationship = Relation::noConstraints(fn () => $table->getRelationship());
 

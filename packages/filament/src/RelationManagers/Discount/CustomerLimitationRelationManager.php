@@ -4,12 +4,12 @@ namespace Lunar\Filament\RelationManagers\Discount;
 
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Filament\Forms\Components\CustomerSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
-
-use function Filament\Support\generate_search_column_expression;
 
 class CustomerLimitationRelationManager extends BaseRelationManager
 {
@@ -36,24 +36,10 @@ class CustomerLimitationRelationManager extends BaseRelationManager
             )
             ->paginated(false)
             ->headerActions([
-                AttachAction::make()->form(fn (AttachAction $action): array => [
-                    $action->getRecordSelect(),
-                ])->recordTitle(function ($record) {
-                    return $record->full_name;
-                })->preloadRecordSelect()
-                    ->recordSelectOptionsQuery(function ($query, $search) {
-                        if (! filled($search)) {
-                            return $query;
-                        }
-
-                        foreach (explode(' ', $search) as $word) {
-                            $query->where(function ($query) use ($word) {
-                                foreach (['first_name', 'last_name', 'company_name'] as $index => $column) {
-                                    $query->{$index == 0 ? 'where' : 'orWhere'}(generate_search_column_expression($query->qualifyColumn($column), true, $query->getConnection()), 'like', "%{$word}%");
-                                }
-                            });
-                        }
-                    })
+                AttachAction::make()
+                    ->recordSelect(fn (Select $select) => CustomerSelect::applyTo($select))
+                    ->recordTitle(fn ($record) => $record->full_name)
+                    ->preloadRecordSelect()
                     ->label(
                         __('lunar-filament::discount.relationmanagers.customers.actions.attach.label')
                     ),

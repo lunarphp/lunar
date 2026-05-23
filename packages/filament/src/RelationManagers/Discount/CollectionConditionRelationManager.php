@@ -6,12 +6,11 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Filament\Forms\Components\CollectionSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class CollectionConditionRelationManager extends BaseRelationManager
@@ -47,19 +46,9 @@ class CollectionConditionRelationManager extends BaseRelationManager
             )
             ->headerActions([
                 CreateAction::make()->schema([
-                    Select::make('discountable_id')
+                    CollectionSelect::make('discountable_id')
                         ->label(__('lunar-filament::collection.singular_label'))
-                        ->required()
-                        ->searchable()
-                        ->getSearchResultsUsing(static function (string $search): array {
-                            return get_search_builder(Collection::modelClass(), $search)
-                                ->get()
-                                ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->attr('name')])
-                                ->all();
-                        })
-                        ->getOptionLabelUsing(function ($value): string {
-                            return Collection::modelClass()::find($value)?->attr('name') ?? $value;
-                        }),
+                        ->required(),
                     Forms\Components\Hidden::make('discountable_type')
                         ->default(Collection::morphName()),
                 ])->label(
