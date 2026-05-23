@@ -45,8 +45,8 @@ class Price implements CastsAttributes
 
     protected function resolveUnitQuantity(Model $model): int
     {
-        if ($model->isRelation('priceable')) {
-            $priceable = $model->priceable;
+        if ($model->relationLoaded('priceable')) {
+            $priceable = $model->getRelation('priceable');
 
             if ($priceable !== null && isset($priceable->unit_quantity)) {
                 return (int) $priceable->unit_quantity;
