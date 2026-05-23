@@ -194,6 +194,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
                     ->searchable()
                     ->getSearchResultsUsing(static function (Select $component, string $search): array {
                         return get_search_builder(Collection::modelClass(), $search)
+                            ->with('ancestors')
                             ->get()
                             ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
                             ->all();

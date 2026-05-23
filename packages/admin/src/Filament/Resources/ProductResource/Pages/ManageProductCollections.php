@@ -9,6 +9,7 @@ use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
@@ -47,6 +48,9 @@ class ManageProductCollections extends BaseManageRelatedRecords
         return $table
             ->recordTitleAttribute('name')
             ->reorderable('position')
+            ->modifyQueryUsing(
+                fn (Builder $query): Builder => $query->with('ancestors')
+            )
             ->columns([
                 TranslatedTextColumn::make('attribute_data.name')
                     ->description(fn (CollectionContract $record): string => $record->breadcrumb->implode(' > '))
