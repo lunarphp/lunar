@@ -14,10 +14,9 @@ use Filament\Tables\Table;
 use Lunar\Admin\Events\ProductAssociationsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Contracts\ProductAssociation as ProductAssociationContract;
-use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductAssociation;
+use Lunar\Filament\Forms\Components\ProductSelect;
 
 class ManageProductAssociations extends BaseManageRelatedRecords
 {
@@ -44,17 +43,8 @@ class ManageProductAssociations extends BaseManageRelatedRecords
     {
         return $schema
             ->components([
-                Select::make('product_target_id')
-                    ->label('Product')
-                    ->required()
-                    ->searchable(true)
-                    ->getSearchResultsUsing(static function (Select $component, string $search): array {
-                        return get_search_builder(Product::modelClass(), $search)
-                            ->get()
-                            ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
-                            ->all();
-                    })
-                    ->getOptionLabelUsing(fn ($value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')),
+                ProductSelect::make('product_target_id')
+                    ->required(),
                 Select::make('type')
                     ->required()
                     ->options(ProductAssociation::getTypes()),

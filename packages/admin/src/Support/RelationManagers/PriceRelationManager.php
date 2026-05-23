@@ -6,7 +6,6 @@ use Closure;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
@@ -22,6 +21,8 @@ use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Price;
+use Lunar\Filament\Forms\Components\CurrencySelect;
+use Lunar\Filament\Forms\Components\CustomerGroupSelect;
 
 class PriceRelationManager extends BaseRelationManager
 {
@@ -42,24 +43,24 @@ class PriceRelationManager extends BaseRelationManager
         return $schema
             ->components([
                 Group::make([
-                    Select::make('currency_id')
+                    CurrencySelect::make('currency_id')
                         ->label(
                             __('lunarpanel::relationmanagers.pricing.form.currency_id.label')
-                        )->relationship(name: 'currency', titleAttribute: 'name')
-                        ->default(function () {
-                            return Currency::getDefault()?->id;
-                        })
+                        )
                         ->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.currency_id.helper_text')
-                        )->required(),
-                    Select::make('customer_group_id')
+                        )
+                        ->required(),
+                    CustomerGroupSelect::make('customer_group_id')
                         ->label(
                             __('lunarpanel::relationmanagers.pricing.form.customer_group_id.label')
-                        )->placeholder(
+                        )
+                        ->placeholder(
                             __('lunarpanel::relationmanagers.pricing.form.customer_group_id.placeholder')
-                        )->helperText(
+                        )
+                        ->helperText(
                             __('lunarpanel::relationmanagers.pricing.form.customer_group_id.helper_text')
-                        )->relationship(name: 'customerGroup', titleAttribute: 'name'),
+                        ),
                     TextInput::make('min_quantity')
                         ->label(
                             __('lunarpanel::relationmanagers.pricing.form.min_quantity.label')

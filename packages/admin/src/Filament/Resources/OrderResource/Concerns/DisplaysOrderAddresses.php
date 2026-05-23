@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Component;
@@ -14,9 +13,9 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Arr;
 use Lunar\Core\Models\Contracts\OrderAddress as OrderAddressContract;
-use Lunar\Core\Models\Country;
 use Lunar\Core\Models\OrderAddress;
-use Lunar\Core\Models\State;
+use Lunar\Filament\Forms\Components\CountrySelect;
+use Lunar\Filament\Forms\Components\StateSelect;
 
 trait DisplaysOrderAddresses
 {
@@ -97,21 +96,18 @@ trait DisplaysOrderAddresses
                         ->maxLength(255)
                         ->autocomplete(false)
                         ->required(),
-                    TextInput::make('state')
+                    StateSelect::make('state')
                         ->label(__('lunarpanel::order.form.address.state.label'))
-                        ->autocomplete('state') // to disable browser input history while keeping datalist
-                        ->datalist(fn ($get) => State::whereCountryId($get('country_id'))->pluck('name')->toArray())
+                        ->dependsOn('country_id')
                         ->maxLength(255),
                     TextInput::make('postcode')
                         ->label(__('lunarpanel::order.form.address.postcode.label'))
                         ->autocomplete(false)
                         ->maxLength(255),
                 ]),
-            Select::make('country_id')
+            CountrySelect::make('country_id')
                 ->label(__('lunarpanel::order.form.address.country_id.label'))
-                ->options(fn () => Country::get()->pluck('name', 'id'))
                 ->live()
-                ->searchable()
                 ->required(),
         ]);
     }

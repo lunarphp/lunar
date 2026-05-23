@@ -5,7 +5,6 @@ namespace Lunar\Filament\RelationManagers\Product;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
@@ -22,6 +21,8 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Price;
 use Lunar\Filament\Events\ProductPricingUpdated;
+use Lunar\Filament\Forms\Components\CurrencySelect;
+use Lunar\Filament\Forms\Components\CustomerGroupSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class CustomerGroupPricingRelationManager extends BaseRelationManager
@@ -45,22 +46,21 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
         return $schema
             ->components([
                 Group::make([
-                    Select::make('currency_id')
+                    CurrencySelect::make('currency_id')
                         ->label(
                             __('lunar-filament::relationmanagers.pricing.form.currency_id.label')
-                        )->relationship(name: 'currency', titleAttribute: 'name')
-                        ->default(function () {
-                            return Currency::getDefault()?->id;
-                        })
+                        )
                         ->helperText(
                             __('lunar-filament::relationmanagers.pricing.form.currency_id.helper_text')
-                        )->required(),
-                    Select::make('customer_group_id')
+                        )
+                        ->required(),
+                    CustomerGroupSelect::make('customer_group_id')
                         ->label(
                             __('lunar-filament::relationmanagers.pricing.form.customer_group_id.label')
-                        )->helperText(
+                        )
+                        ->helperText(
                             __('lunar-filament::relationmanagers.pricing.form.customer_group_id.helper_text')
-                        )->relationship(name: 'customerGroup', titleAttribute: 'name')
+                        )
                         ->required()
                         ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, Get $get) {
                             $owner = $this->getOwnerRecord();

@@ -4,15 +4,15 @@ namespace Lunar\Filament\RelationManagers\Customer;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Group;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Models\Contracts\Address as AddressContract;
-use Lunar\Core\Models\State;
 use Lunar\Filament\Events\CustomerAddressEdited;
+use Lunar\Filament\Forms\Components\CountrySelect;
+use Lunar\Filament\Forms\Components\StateSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class AddressRelationManager extends BaseRelationManager
@@ -128,24 +128,12 @@ class AddressRelationManager extends BaseRelationManager
                             ),
                         ])->columns(3),
                         Group::make()->schema([
-                            Select::make('country_id')->label(
+                            CountrySelect::make('country_id')->label(
                                 __('lunar-filament::address.form.country_id.label')
-                            )->relationship(
-                                name: 'country',
-                            )->getOptionLabelFromRecordUsing(function (Model $record) {
-                                $name = $record->native ?: $record->name;
-
-                                return "{$record->emoji} $name";
-                            }),
-                            TextInput::make('state')->label(
+                            ),
+                            StateSelect::make('state')->label(
                                 __('lunar-filament::address.form.state.label')
-                            )->datalist(function ($record) {
-                                return State::whereCountryId($record->country_id)
-                                    ->where('name', 'LIKE', "%{$record->state}%")
-                                    ->get()->map(
-                                        fn ($state) => $state->name
-                                    );
-                            }),
+                            )->dependsOn('country_id'),
                         ])->columns(2),
                         Group::make()->schema([
                             TextInput::make('city')->label(

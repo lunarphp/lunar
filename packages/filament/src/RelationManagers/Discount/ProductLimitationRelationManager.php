@@ -5,15 +5,12 @@ namespace Lunar\Filament\RelationManagers\Discount;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Forms\Components\MorphToSelect;
-use Filament\Forms\Components\MorphToSelect\Type;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
+use Lunar\Filament\Forms\Components\DiscountTargetSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class ProductLimitationRelationManager extends BaseRelationManager
@@ -44,21 +41,8 @@ class ProductLimitationRelationManager extends BaseRelationManager
             )
             ->headerActions([
                 CreateAction::make()->schema([
-                    MorphToSelect::make('discountable')
-                        ->searchable(true)
-                        ->types([
-                            Type::make(Product::modelClass())
-                                ->titleAttribute('name.en')
-                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
-                                    return get_search_builder(Product::modelClass(), $search)
-                                        ->get()
-                                        ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
-                                        ->all();
-                                })
-                                ->getOptionLabelUsing(function ($value): string {
-                                    return Product::modelClass()::find($value)?->attr('name') ?? $value;
-                                }),
-                        ]),
+                    DiscountTargetSelect::make('discountable')
+                        ->targets([Product::class]),
                 ])->label(
                     __('lunar-filament::discount.relationmanagers.products.actions.attach.label')
                 )->mutateDataUsing(function (array $data) {

@@ -10,7 +10,7 @@ use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Filament\Forms\Components\CollectionSelect;
 use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class ManageBrandCollections extends BaseManageRelatedRecords
@@ -53,19 +53,8 @@ class ManageBrandCollections extends BaseManageRelatedRecords
             DetachAction::make(),
         ])->headerActions([
             AttachAction::make()
-                ->recordSelect(
-                    function (Select $select) {
-                        return $select->placeholder(
-                            __('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder')
-                        )
-                            ->getSearchResultsUsing(static function (Select $component, string $search): array {
-                                return Collection::search($search)
-                                    ->get()
-                                    ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
-                                    ->all();
-                            });
-                    }
-                ),
+                ->recordSelect(fn (Select $select) => CollectionSelect::applyTo($select)
+                    ->placeholder(__('lunarpanel::brand.pages.collections.table.header_actions.attach.record_select.placeholder'))),
         ]);
     }
 }

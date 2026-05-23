@@ -5,16 +5,13 @@ namespace Lunar\Filament\RelationManagers\Discount;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Forms\Components\MorphToSelect;
-use Filament\Forms\Components\MorphToSelect\Type;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Filament\Forms\Components\DiscountTargetSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 use Lunar\Filament\Tables\Columns\ThumbnailImageColumn;
 
@@ -53,36 +50,8 @@ class ProductConditionRelationManager extends BaseRelationManager
             )
             ->headerActions([
                 CreateAction::make()->schema([
-                    MorphToSelect::make('discountable')
-                        ->searchable(true)
-                        ->types([
-                            Type::make(Product::modelClass())
-                                ->titleAttribute('name.en')
-                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
-                                    return get_search_builder(Product::modelClass(), $search)
-                                        ->get()
-                                        ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->attr('name')])
-                                        ->all();
-                                })
-                                ->getOptionLabelUsing(function ($value): string {
-                                    return Product::modelClass()::find($value)?->attr('name') ?? $value;
-                                }),
-
-                            Type::make(ProductVariant::modelClass())
-                                ->titleAttribute('sku')
-                                ->getSearchResultsUsing(static function (Select $component, string $search): array {
-                                    return get_search_builder(ProductVariant::modelClass(), $search)
-                                        ->orWhere('sku', 'like', $search.'%')
-                                        ->get()
-                                        ->mapWithKeys(fn (ProductVariantContract $record): array => [$record->getKey() => $record->product->attr('name').' - '.$record->sku])
-                                        ->all();
-                                })
-                                ->getOptionLabelUsing(function ($value): string {
-                                    $variant = ProductVariant::modelClass()::with('product')->find($value);
-
-                                    return $variant ? $variant->product->attr('name').' - '.$variant->sku : $value;
-                                }),
-                        ]),
+                    DiscountTargetSelect::make('discountable')
+                        ->targets([Product::class, ProductVariant::class]),
                 ])->label(
                     __('lunar-filament::discount.relationmanagers.conditions.actions.attach.label')
                 )->mutateDataUsing(function (array $data) {

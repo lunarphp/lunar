@@ -48,3 +48,4 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Filament v5 schemas refactor (spec 0005)
 - Extract `lunarphp/filament` bridge package and reshape the install model (spec 0006)
 - Pages refactor — inline the 10 page-extension traits into the 5 base page classes (spec 0007)
+- Reusable Filament entity-selector components — 16 selector classes in `lunarphp/filament` replacing 17+ duplicated implementations across admin and filament (spec 0008)

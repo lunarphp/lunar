@@ -10,6 +10,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Models\Collection;
+use Lunar\Filament\Forms\Components\CollectionSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class CollectionLimitationRelationManager extends BaseRelationManager
@@ -41,18 +42,19 @@ class CollectionLimitationRelationManager extends BaseRelationManager
             )
             ->paginated(false)
             ->headerActions([
-                AttachAction::make()->form(fn (AttachAction $action): array => [
-                    $action->getRecordSelect(),
-                    Select::make('type')
-                        ->options(
-                            fn () => [
-                                'limitation' => __('lunar-filament::discount.relationmanagers.collections.form.type.options.limitation.label'),
-                                'exclusion' => __('lunar-filament::discount.relationmanagers.collections.form.type.options.exclusion.label'),
-                            ]
-                        )->default('limitation'),
-                ])->recordTitle(function ($record) {
-                    return $record->attr('name');
-                })->recordSelectSearchColumns(['attribute_data->name'])
+                AttachAction::make()
+                    ->recordSelect(fn (Select $select) => CollectionSelect::applyTo($select))
+                    ->form(fn (AttachAction $action): array => [
+                        $action->getRecordSelect(),
+                        Select::make('type')
+                            ->options(
+                                fn () => [
+                                    'limitation' => __('lunar-filament::discount.relationmanagers.collections.form.type.options.limitation.label'),
+                                    'exclusion' => __('lunar-filament::discount.relationmanagers.collections.form.type.options.exclusion.label'),
+                                ]
+                            )->default('limitation'),
+                    ])
+                    ->recordTitle(fn ($record) => $record->attr('name'))
                     ->preloadRecordSelect()
                     ->label(
                         __('lunar-filament::discount.relationmanagers.collections.actions.attach.label')
