@@ -44,6 +44,16 @@ When asked to start a new piece of work that isn't already specced, write the sp
 - Filter by suite: `vendor/bin/pest --testsuite=core`.
 - Use factories; do not invent ad-hoc test data when a factory state already covers it.
 
+## Static analysis (REQUIRED)
+
+PHPStan (via Larastan, level 0) is part of the test pipeline and **must pass before finalizing any PHP change**. Treat it as non-optional, alongside Pint and Pest.
+
+- Run from this directory: `vendor/bin/phpstan analyse --no-progress`.
+- Configuration: `phpstan.neon.dist` — scans every `packages/*/src`, excludes `tests/`, `config/`, and vendor paths.
+- The `composer test` script chains pint check + pest + phpstan; CI runs the same. Skipping phpstan locally just defers the failure to CI.
+- Fix the underlying type/contract issue. Do not add `@phpstan-ignore`, baseline entries, `assert()`, or inline `@var` to silence errors unless you have a specific reason (and call it out in the PR).
+- When introducing new public surface (selectors, schemas, helpers), add type hints and array-shape PHPDoc so phpstan can verify call sites without baseline noise.
+
 ## Reviewing changes
 
 Run the `lunar:pr-review` skill (or `/lunar:pr-review`) before opening a PR — it checks translation completeness across the 16 locales, missing tests/factories, migration safety, Filament contract usage, and breaking-change risk on the public surface.
