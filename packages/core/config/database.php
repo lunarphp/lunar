@@ -48,10 +48,10 @@ return [
     | not been eager-loaded throws a LunarLazyLoadingViolation. The same
     | switch also enforces accessing missing attributes and silently
     | discarded mass-assigned attributes on Lunar models. Defaults to
-    | 'auto' — enforced outside production. Set to true to enforce
-    | everywhere (recommended once your code is clean) or false to disable.
+    | false — opt in by setting LUNAR_PREVENT_LAZY_LOADING=true or 'auto'
+    | (enforced outside production) once your call sites are clean.
     |
     */
-    'prevent_lazy_loading' => env('LUNAR_PREVENT_LAZY_LOADING', 'auto'),
+    'prevent_lazy_loading' => env('LUNAR_PREVENT_LAZY_LOADING', false),
 
 ];
