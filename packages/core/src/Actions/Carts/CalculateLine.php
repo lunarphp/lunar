@@ -6,8 +6,8 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Actions\Carts\CalculatesLine;
 use Lunar\Core\Contracts\Actions\Carts\CalculatesLineSubtotal;
 use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\DataObjects\PriceValue;
-use Lunar\Core\Facades\Taxes;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 
@@ -15,6 +15,7 @@ class CalculateLine implements CalculatesLine
 {
     public function __construct(
         protected CalculatesLineSubtotal $calculatesLineSubtotal,
+        protected TaxManager $taxManager,
     ) {}
 
     /**
@@ -40,7 +41,7 @@ class CalculateLine implements CalculatesLine
 
         $subTotal = $cartLine->subTotal->subtract($cartLine->discountTotal);
 
-        $taxBreakDown = Taxes::setShippingAddress($shippingAddress)
+        $taxBreakDown = $this->taxManager->setShippingAddress($shippingAddress)
             ->setBillingAddress($billingAddress)
             ->setCurrency($cart->currency)
             ->setPurchasable($purchasable)

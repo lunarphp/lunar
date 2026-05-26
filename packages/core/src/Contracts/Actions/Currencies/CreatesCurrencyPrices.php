@@ -6,5 +6,5 @@ use Lunar\Core\Models\Contracts\Currency;
 
 interface CreatesCurrencyPrices
 {
-    public function handle(Currency $incomingCurrency, Currency $baseCurrency): void;
+    public function execute(Currency $incomingCurrency, Currency $baseCurrency): void;
 }

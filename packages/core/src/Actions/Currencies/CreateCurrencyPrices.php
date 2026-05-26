@@ -8,7 +8,7 @@ use Lunar\Core\Models\Contracts\Currency;
 
 class CreateCurrencyPrices implements CreatesCurrencyPrices
 {
-    public function handle(Currency $incomingCurrency, Currency $baseCurrency): void
+    public function execute(Currency $incomingCurrency, Currency $baseCurrency): void
     {
         $tablePrefix = config('lunar.database.table_prefix');
 

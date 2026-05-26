@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Exceptions\OrderActionException;
-use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Transaction;
+use Lunar\Core\Pricing\PriceCalculatorInterface;
 
 /**
  * Issue a refund against an existing capture transaction on an order.
@@ -21,6 +21,10 @@ use Lunar\Core\Models\Transaction;
  */
 final class RefundOrder implements RefundsOrder
 {
+    public function __construct(
+        protected PriceCalculatorInterface $priceCalculator,
+    ) {}
+
     /**
      * Major-unit amount (decimal) to refund. Converted to minor units using
      * the order's currency factor before being handed to the driver.
@@ -39,7 +43,7 @@ final class RefundOrder implements RefundsOrder
             throw new OrderActionException('Transaction is not a successful capture and cannot be refunded.');
         }
 
-        $minorAmount = PriceCalculator::toMinor($amount, $order->currency);
+        $minorAmount = $this->priceCalculator->toMinor($amount, $order->currency);
 
         if ($minorAmount <= 0) {
             throw new OrderActionException('Refund amount must be greater than zero.');

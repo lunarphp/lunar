@@ -44,6 +44,6 @@ class CreateCurrencyPrices implements ShouldQueue
             return;
         }
 
-        app(CreatesCurrencyPrices::class)->handle($this->currency, $default);
+        app(CreatesCurrencyPrices::class)->execute($this->currency, $default);
     }
 }

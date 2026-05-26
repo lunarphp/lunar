@@ -23,7 +23,8 @@ interface TaxManager
     /**
      * Build the provider.
      *
+     * @param  class-string  $provider
      * @return TaxDriver
      */
-    public function buildProvider();
+    public function buildProvider($provider);
 }
