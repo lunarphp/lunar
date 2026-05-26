@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\PriceFactory;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
@@ -140,12 +141,17 @@ class Price extends Base implements Contracts\Price, HasCurrency
     public function priceExTax(?TaxZoneContract $taxZone = null): PriceValue
     {
         $value = (int) $this->price;
+        $currency = $this->resolveCurrency();
 
         if (prices_inc_tax()) {
-            $value = (int) round($value / (1 + $this->getPriceableTaxRate($taxZone)));
+            $value = PriceCalculator::withoutTax(
+                $value,
+                (float) $this->getPriceableTaxRate($taxZone),
+                $currency,
+            );
         }
 
-        return new PriceValue($value, $this->resolveCurrency());
+        return new PriceValue($value, $currency);
     }
 
     /**
@@ -156,12 +162,17 @@ class Price extends Base implements Contracts\Price, HasCurrency
     public function priceIncTax(?TaxZoneContract $taxZone = null): PriceValue
     {
         $value = (int) $this->price;
+        $currency = $this->resolveCurrency();
 
         if (! prices_inc_tax()) {
-            $value = (int) round($value * (1 + $this->getPriceableTaxRate($taxZone)));
+            $value = PriceCalculator::withTax(
+                $value,
+                (float) $this->getPriceableTaxRate($taxZone),
+                $currency,
+            );
         }
 
-        return new PriceValue($value, $this->resolveCurrency());
+        return new PriceValue($value, $currency);
     }
 
     /**
@@ -172,12 +183,17 @@ class Price extends Base implements Contracts\Price, HasCurrency
     public function comparePriceIncTax(?TaxZoneContract $taxZone = null): PriceValue
     {
         $value = (int) $this->compare_price;
+        $currency = $this->resolveCurrency();
 
         if (! prices_inc_tax()) {
-            $value = (int) round($value * (1 + $this->getPriceableTaxRate($taxZone)));
+            $value = PriceCalculator::withTax(
+                $value,
+                (float) $this->getPriceableTaxRate($taxZone),
+                $currency,
+            );
         }
 
-        return new PriceValue($value, $this->resolveCurrency());
+        return new PriceValue($value, $currency);
     }
 
     /**

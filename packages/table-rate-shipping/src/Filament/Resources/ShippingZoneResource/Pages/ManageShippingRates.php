@@ -17,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
@@ -242,7 +243,7 @@ class ManageShippingRates extends ManageRelatedRecords
             }
 
             $shippingRate->prices()->create([
-                'price' => (int) round($priceValue * $currency->factor),
+                'price' => PriceCalculator::toMinor($priceValue, $currency),
                 'currency_id' => $currency->id,
                 'customer_group_id' => null,
                 'min_quantity' => 1,
@@ -259,12 +260,12 @@ class ManageShippingRates extends ManageRelatedRecords
                 $currency = $currencies->first(fn ($currency) => $currency->id == $price['currency_id']);
 
                 if ($chargeBy == 'cart_total') {
-                    $price['min_quantity'] = (int) ($price['min_quantity'] * $currency->factor);
+                    $price['min_quantity'] = PriceCalculator::toMinor((float) $price['min_quantity'], $currency);
                 } else {
                     $price['min_quantity'] = (int) $price['min_quantity'];
                 }
 
-                $price['price'] = (int) ($price['price'] * $currency->factor);
+                $price['price'] = PriceCalculator::toMinor((float) $price['price'], $currency);
 
                 return $price;
             }

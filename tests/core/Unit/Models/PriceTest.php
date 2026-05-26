@@ -192,7 +192,8 @@ test('can get a price ex tax', function () {
     ]);
 
     expect($price->priceExTax())->toBeInstanceOf(PriceValue::class);
-    expect($price->priceExTax()->value)->toEqual(833);
+    // Strict inverse: 832 is the largest x where withTax(x, 0.20) <= 999.
+    expect($price->priceExTax()->value)->toEqual(832);
 });
 
 test('can get a price inc tax', function () {
