@@ -14,6 +14,7 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Core\Pricing\PriceFormatterInterface;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 /**
@@ -84,6 +85,52 @@ class Price extends BaseModel implements Contracts\Price, HasCurrency
         $this->loadMissing('currency');
 
         return $this->currency ?? Currency::getDefault();
+    }
+
+    /**
+     * Format the given money column divided by the priceable's
+     * `unit_quantity` — e.g. display the per-single-unit figure for a
+     * pack price stored against a variant with `unit_quantity > 1`.
+     */
+    public function unitFormat(string $field, ?string $locale = null, ?int $decimalPlaces = null, bool $trimTrailingZeros = true): ?string
+    {
+        $value = $this->getAttribute($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return app(PriceFormatterInterface::class, [
+            'value' => (int) $value,
+            'currency' => $this->resolveCurrency(),
+            'unitQty' => $this->resolvePriceableUnitQuantity(),
+        ])->unitFormatted($locale, decimalPlaces: $decimalPlaces, trimTrailingZeros: $trimTrailingZeros);
+    }
+
+    /**
+     * Decimal form of {@see unitFormat()} — the per-single-unit value of
+     * the given money column in the priceable's currency, as a float.
+     */
+    public function unitDecimal(string $field, bool $rounding = true): ?float
+    {
+        $value = $this->getAttribute($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return app(PriceFormatterInterface::class, [
+            'value' => (int) $value,
+            'currency' => $this->resolveCurrency(),
+            'unitQty' => $this->resolvePriceableUnitQuantity(),
+        ])->unitDecimal($rounding);
+    }
+
+    private function resolvePriceableUnitQuantity(): int
+    {
+        $this->loadMissing('priceable');
+
+        return (int) ($this->priceable->unit_quantity ?? 1);
     }
 
     /**

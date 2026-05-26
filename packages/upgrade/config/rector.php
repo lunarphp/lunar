@@ -29,5 +29,5 @@ return RectorConfig::configure()
     ->withConfiguredRule(DropPriceValueAccessRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
     ->withConfiguredRule(RewritePriceDecimalCallRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
     ->withConfiguredRule(RewritePriceFormattedCallRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
-    ->withConfiguredRule(RewriteUnitPriceFormatterCallRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
+    ->withConfiguredRule(RewriteUnitPriceFormatterCallRector::class, LunarSetList::V1_TO_V2_UNIT_AWARE_ATTRIBUTES)
     ->withRules(LunarSetList::V1_TO_V2);

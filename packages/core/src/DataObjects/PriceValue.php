@@ -11,8 +11,6 @@ class PriceValue implements HasCurrency
     use FormatsPrices {
         format as private traitFormat;
         decimal as private traitDecimal;
-        unitFormat as private;
-        unitDecimal as private;
     }
 
     public function __construct(

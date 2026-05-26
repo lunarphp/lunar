@@ -560,8 +560,29 @@ final class LunarSetList
         'Lunar\\Models\\OrderLine' => ['unit_price', 'sub_total', 'tax_total', 'discount_total', 'total'],
         'Lunar\\Core\\Models\\Transaction' => ['amount'],
         'Lunar\\Models\\Transaction' => ['amount'],
-        'Lunar\\Core\\Models\\Price' => ['price'],
-        'Lunar\\Models\\Price' => ['price'],
+        'Lunar\\Core\\Models\\Price' => ['price', 'compare_price'],
+        'Lunar\\Models\\Price' => ['price', 'compare_price'],
+    ];
+
+    /**
+     * Money attribute columns that carry a unit-quantity semantic,
+     * contributed by spec 0012.
+     *
+     * Only the catalogue `Price` model (`lunar_prices.price` /
+     * `compare_price`) stores a raw per-pack price that requires
+     * division by `priceable->unit_quantity` to display per-single-unit.
+     * `OrderLine.unit_price` is persisted *already divided* to per-
+     * single-unit by `CalculateLineSubtotal`, so `unitDecimal` /
+     * `unitFormatted` calls on order lines were a latent v1 bug (double
+     * division when `unit_quantity > 1`). The unit-rewrite rule only
+     * touches the catalogue Price model; `unit*` calls on other models
+     * are left alone for manual review (the upgrade docs flag this).
+     *
+     * @var array<class-string, list<string>>
+     */
+    public const V1_TO_V2_UNIT_AWARE_ATTRIBUTES = [
+        'Lunar\\Core\\Models\\Price' => ['price', 'compare_price'],
+        'Lunar\\Models\\Price' => ['price', 'compare_price'],
     ];
 
     /**

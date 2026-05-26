@@ -25,7 +25,6 @@ use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
 use Lunar\Admin\Livewire\Components\TableComponent;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Transaction;
-use Lunar\Core\Pricing\PriceFormatterInterface;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Tables\Components\KeyValue;
 
@@ -102,11 +101,7 @@ class OrderItemsTable extends TableComponent
 
                             $states = [];
 
-                            $states['unit_price'] = app(PriceFormatterInterface::class, [
-                                'value' => (int) $record->unit_price,
-                                'currency' => $record->resolveCurrency(),
-                                'unitQty' => (int) $record->unit_quantity,
-                            ])->unitFormatted(decimalPlaces: 4);
+                            $states['unit_price'] = $record->format('unit_price', decimalPlaces: 4);
                             $states['quantity'] = $record->quantity;
                             $states['sub_total'] = $record->format('sub_total');
                             $states['discount_total'] = $record->format('discount_total');

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Lunar\Upgrade\Rector\Price;
 
-use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\Price;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
@@ -18,16 +18,21 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * Rewrites `$model->col->unitDecimal(...)` / `unitFormatted(...)` on
- * migrated money attributes (spec 0012) to the new `unitDecimal('col', ...)`
- * / `unitFormat('col', ...)` helpers contributed by the `FormatsPrices`
- * trait. The trait reads `unit_quantity` from the model (or its loaded
- * `priceable` relation) and forwards it to the formatter, restoring the
- * v1 ergonomics without per-attribute value objects.
+ * Rewrites `$price->col->unitDecimal(...)` / `unitFormatted(...)` on the
+ * catalogue `Lunar\Core\Models\Price` model (spec 0012) to
+ * `$price->unitDecimal('col', ...)` / `$price->unitFormat('col', ...)`.
+ * The new helpers divide by `priceable->unit_quantity`, matching v1
+ * `Casts\Price::resolveUnitQuantity()` for catalogue rows.
  *
- * Dynamic property accesses (`$model->{$col}->unitDecimal(...)`) and
- * non-Lunar receivers are left untouched; downstream owners need to swap
- * them by hand. The upgrade docs flag this as a manual step.
+ * Calls on other models (`Order`, `OrderLine`, `Transaction`) are
+ * intentionally **not** rewritten by this rule: their persisted money
+ * columns are already per-single-unit (`CalculateLineSubtotal` does the
+ * division eagerly), so `unitDecimal` / `unitFormatted` there was a
+ * latent v1 bug. The upgrade docs flag those callsites as a manual
+ * review point.
+ *
+ * Dynamic property accesses (`$price->{$col}->unitDecimal(...)`) and
+ * non-Lunar receivers are also left untouched.
  */
 final class RewriteUnitPriceFormatterCallRector extends AbstractRector implements ConfigurableRectorInterface
 {
@@ -48,17 +53,17 @@ final class RewriteUnitPriceFormatterCallRector extends AbstractRector implement
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Rewrites `$model->col->unitDecimal(...)` / `unitFormatted(...)` to the `FormatsPrices` `unitDecimal(\'col\', ...)` / `unitFormat(\'col\', ...)` helpers.',
+            'Rewrites `$price->col->unitDecimal(...)` / `unitFormatted(...)` on the catalogue Price model to `$price->unitDecimal(\'col\', ...)` / `$price->unitFormat(\'col\', ...)`.',
             [new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
-$unit = $line->unit_price->unitDecimal();
-$display = $line->unit_price->unitFormatted();
+$unit = $catalogPrice->price->unitDecimal();
+$display = $catalogPrice->price->unitFormatted();
 CODE_SAMPLE,
                 <<<'CODE_SAMPLE'
-$unit = $line->unitDecimal('unit_price');
-$display = $line->unitFormat('unit_price');
+$unit = $catalogPrice->unitDecimal('price');
+$display = $catalogPrice->unitFormat('price');
 CODE_SAMPLE,
-                [OrderLine::class => ['unit_price']],
+                [Price::class => ['price']],
             )],
         );
     }
