@@ -6,9 +6,9 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
 
 class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
 {
@@ -19,11 +19,11 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return \Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown
+     * @return \Lunar\Core\ValueObjects\Cart\ShippingBreakdown
      */
     public function get($model, $key, $value, $attributes)
     {
-        $breakdown = new \Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
+        $breakdown = new \Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
 
         $breakdown->items = collect(
             json_decode($value, false)
@@ -47,14 +47,14 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      *
      * @param  Model  $model
      * @param  string  $key
-     * @param  \Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown  $value
+     * @param  \Lunar\Core\ValueObjects\Cart\ShippingBreakdown  $value
      * @param  array  $attributes
      * @return array
      */
     public function set($model, $key, $value, $attributes)
     {
-        if ($value && ! is_a($value, \Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown::class)) {
-            throw new \Exception('Shipping breakdown must be instance of Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown');
+        if ($value && ! is_a($value, \Lunar\Core\ValueObjects\Cart\ShippingBreakdown::class)) {
+            throw new \Exception('Shipping breakdown must be instance of Lunar\Core\ValueObjects\Cart\ShippingBreakdown');
         }
 
         if (! $value) {

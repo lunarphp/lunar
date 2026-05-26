@@ -2,9 +2,9 @@
 
 namespace Lunar\Core\Database\Factories;
 
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Order;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 class OrderFactory extends BaseFactory
 {

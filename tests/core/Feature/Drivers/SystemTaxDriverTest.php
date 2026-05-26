@@ -3,7 +3,6 @@
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Drivers\SystemTaxDriver;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\CartLine;
@@ -13,6 +12,7 @@ use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxRate;
 use Lunar\Core\Models\TaxRateAmount;
 use Lunar\Core\Models\TaxZone;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

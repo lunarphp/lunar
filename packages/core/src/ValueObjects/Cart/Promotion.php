@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base\ValueObjects\Cart;
+namespace Lunar\Core\ValueObjects\Cart;
 
 use Lunar\Core\DataObjects\PriceValue;
 

@@ -3,10 +3,10 @@
 namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 class OrderLineFactory extends BaseFactory
 {

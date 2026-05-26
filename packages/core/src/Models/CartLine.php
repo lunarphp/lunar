@@ -13,9 +13,9 @@ use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Base\Traits\CachesProperties;
 use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Base\Traits\LogsActivity;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Database\Factories\CartLineFactory;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 /**
  * @property int $id

@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Core\Casts\TaxBreakdown as TaxBreakdownCasts;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

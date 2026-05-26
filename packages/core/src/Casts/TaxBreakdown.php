@@ -5,9 +5,9 @@ namespace Lunar\Core\Casts;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Spatie\LaravelBlink\BlinkFacade;
 
 class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
@@ -19,11 +19,11 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown
+     * @return \Lunar\Core\ValueObjects\Cart\TaxBreakdown
      */
     public function get($model, $key, $value, $attributes)
     {
-        $breakdown = new \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+        $breakdown = new \Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
         $breakdown->amounts = collect(
             json_decode($value, false)
@@ -50,7 +50,7 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      *
      * @param  Model  $model
      * @param  string  $key
-     * @param  \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown  $value
+     * @param  \Lunar\Core\ValueObjects\Cart\TaxBreakdown  $value
      * @param  array  $attributes
      * @return array
      *
@@ -58,8 +58,8 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if ($value && ! is_a($value, \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown::class)) {
-            throw new \Exception('Tax breakdown must be instance of Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown');
+        if ($value && ! is_a($value, \Lunar\Core\ValueObjects\Cart\TaxBreakdown::class)) {
+            throw new \Exception('Tax breakdown must be instance of Lunar\Core\ValueObjects\Cart\TaxBreakdown');
         }
 
         if (! $value) {

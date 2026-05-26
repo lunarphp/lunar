@@ -4,8 +4,6 @@ namespace Lunar\Core\DiscountTypes;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdown;
-use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdownLine;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
@@ -13,6 +11,8 @@ use Lunar\Core\Models\Collection as LunarCollection;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
+use Lunar\Core\ValueObjects\Cart\DiscountBreakdownLine;
 
 class BuyXGetY extends AbstractDiscountType
 {

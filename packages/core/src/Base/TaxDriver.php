@@ -2,10 +2,10 @@
 
 namespace Lunar\Core\Base;
 
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Models\Contracts\CartLine;
 use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\TaxZone;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 interface TaxDriver
 {
