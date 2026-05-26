@@ -1,7 +1,7 @@
 <?php
 
-use Lunar\Core\Concerns\IsLunarUser;
 use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Concerns\IsLunarUser;
 
 if (! function_exists('is_lunar_user')) {
     function is_lunar_user($user)

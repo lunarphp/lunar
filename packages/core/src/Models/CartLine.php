@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\CachesProperties;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Database\Factories\CartLineFactory;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Models\Concerns\CachesProperties;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 /**

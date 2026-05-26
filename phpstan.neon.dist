@@ -13,4 +13,4 @@ parameters:
     ignoreErrors:
         -
             message: '#Unsafe usage of new static\(\).#'
-            path: packages/core/src/Concerns/HasModelExtending.php
+            path: packages/core/src/Models/Concerns/HasModelExtending.php

@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Lunar\Core\Concerns\HasDefaultRecord;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Database\Factories\TaxZoneFactory;
+use Lunar\Core\Models\Concerns\HasDefaultRecord;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id

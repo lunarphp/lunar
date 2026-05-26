@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\TransactionFactory;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**

@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\HasMedia;
-use Lunar\Core\Concerns\HasTranslations;
-use Lunar\Core\Concerns\LogsActivity;
-use Lunar\Core\Concerns\Searchable;
 use Lunar\Core\Database\Factories\ProductOptionFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Models\Concerns\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**

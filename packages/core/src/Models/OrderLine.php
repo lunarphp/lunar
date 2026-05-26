@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Casts\TaxBreakdown;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderLineFactory;
 use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**

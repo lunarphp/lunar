@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Database\Factories\StaffFactory;
+use Lunar\Core\Models\Concerns\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 
 /**

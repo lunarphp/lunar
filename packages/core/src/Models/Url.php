@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Database\Factories\UrlFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
 
 /**
  * @property int $id

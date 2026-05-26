@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Concerns;
+namespace Lunar\Core\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;

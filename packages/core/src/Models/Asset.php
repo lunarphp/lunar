@@ -4,7 +4,7 @@ namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\HasMedia as TraitsHasMedia;
+use Lunar\Core\Models\Concerns\HasMedia as TraitsHasMedia;
 use Spatie\MediaLibrary\HasMedia;
 
 /**

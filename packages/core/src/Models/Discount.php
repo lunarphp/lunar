@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Casts\CouponString;
-use Lunar\Core\Concerns\HasChannels;
-use Lunar\Core\Concerns\HasCustomerGroups;
-use Lunar\Core\Concerns\HasTranslations;
-use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Database\Factories\DiscountFactory;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
+use Lunar\Core\Models\Concerns\HasChannels;
+use Lunar\Core\Models\Concerns\HasCustomerGroups;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id

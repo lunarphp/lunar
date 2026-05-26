@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\HasTranslations;
-use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Database\Factories\AttributeGroupFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id

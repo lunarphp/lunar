@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Concerns;
+namespace Lunar\Core\Models\Concerns;
 
 use ReflectionClass;
 use Spatie\LaravelBlink\BlinkFacade as Blink;

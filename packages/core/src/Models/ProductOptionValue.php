@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\HasMedia;
-use Lunar\Core\Concerns\HasTranslations;
 use Lunar\Core\Database\Factories\ProductOptionValueFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasTranslations;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**

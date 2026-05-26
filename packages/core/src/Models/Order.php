@@ -11,13 +11,13 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Casts\DiscountBreakdown;
 use Lunar\Core\Casts\ShippingBreakdown;
 use Lunar\Core\Casts\TaxBreakdown;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\HasTags;
-use Lunar\Core\Concerns\LogsActivity;
-use Lunar\Core\Concerns\Searchable;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderFactory;
 use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasTags;
+use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**

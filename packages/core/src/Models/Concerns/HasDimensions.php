@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Concerns;
+namespace Lunar\Core\Models\Concerns;
 
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Utils\MeasurementConverter;

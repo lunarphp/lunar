@@ -5,9 +5,9 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\HasDefaultRecord;
-use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Database\Factories\LanguageFactory;
+use Lunar\Core\Models\Concerns\HasDefaultRecord;
+use Lunar\Core\Models\Concerns\HasMacros;
 
 /**
  * @property int $id

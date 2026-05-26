@@ -3,7 +3,7 @@
 namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Lunar\Core\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasMacros;
 
 class UserPermission extends Base implements Contracts\UserPermission
 {

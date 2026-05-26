@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Database\Factories\ProductAssociationFactory;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Core\Enums\ProductAssociation as ProductAssociationEnum;
+use Lunar\Core\Models\Concerns\HasMacros;
 
 /**
  * @property int $id

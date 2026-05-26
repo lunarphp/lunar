@@ -10,15 +10,15 @@ use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
 use Kalnoy\Nestedset\QueryBuilder;
 use Lunar\Core\Casts\AsAttributeData;
-use Lunar\Core\Concerns\HasChannels;
-use Lunar\Core\Concerns\HasCustomerGroups;
-use Lunar\Core\Concerns\HasMacros;
-use Lunar\Core\Concerns\HasMedia;
-use Lunar\Core\Concerns\HasTranslations;
-use Lunar\Core\Concerns\HasUrls;
-use Lunar\Core\Concerns\Searchable;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\CollectionFactory;
+use Lunar\Core\Models\Concerns\HasChannels;
+use Lunar\Core\Models\Concerns\HasCustomerGroups;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\HasUrls;
+use Lunar\Core\Models\Concerns\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
