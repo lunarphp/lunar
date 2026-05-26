@@ -1,6 +1,6 @@
 # 0013 — `Base/` directory reorganisation
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-05-26
 - TODO item: (new — to be added under "Outstanding")

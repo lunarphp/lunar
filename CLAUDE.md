@@ -37,6 +37,7 @@ When asked to start a new piece of work that isn't already specced, write the sp
 - **Migrations**: v2 ships a flat baseline (spec 0003). Schema changes go in a new migration; do not edit the baseline. The `upgrade` package handles v1 → v2 transformations.
 - **Filament**: v5 with the schemas refactor applied (spec 0005). Use schemas, not the deprecated wrapper traits.
 - **Namespace**: `Lunar\Core\…` for core (spec 0002), `Lunar\Admin\…`, `Lunar\Search\…`, etc. for other sub-packages.
+- **Folder responsibilities** (`packages/core/src/`, spec 0013): each top-level folder names a single concern. `Casts/` holds Eloquent cast classes. `Concerns/` holds behaviour traits (the trait equivalent of `Contracts/`). `Contracts/` holds every interface — drop the `Interface` suffix when adding a new one. `DataObjects/` holds plain value containers and DTOs. `Drivers/` holds swappable driver implementations. `Enums/` holds PHP enums. `FieldTypes/` holds attribute field types plus the `Manifest` that catalogues them. `Manifests/` holds cross-domain manifests (`AttributeManifest`, `ModelManifest`, `ShippingManifest`). `Media/` holds media-definition classes. `Models/` holds Eloquent models extending `Models\Base`. `Modifiers/` holds the `Cart`, `CartLine`, `Order` and `Shipping` modifier abstracts and their collection wrappers. `Orders/` holds order-related services like `ReferenceGenerator`. `Telemetry/` holds the telemetry service and its insights provider. `ValueObjects/` holds richer immutable values (cart breakdowns, free items, promotions).
 
 ## Tests
 
