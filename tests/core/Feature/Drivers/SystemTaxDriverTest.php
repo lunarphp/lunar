@@ -22,7 +22,7 @@ uses(RefreshDatabase::class)->group('taxes');
 test('can set shipping address', function () {
     $address = Address::factory()->create();
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setShippingAddress($address);
 
     expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
@@ -31,7 +31,7 @@ test('can set shipping address', function () {
 test('can set billing address', function () {
     $address = Address::factory()->create();
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setBillingAddress($address);
 
     expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
@@ -40,17 +40,17 @@ test('can set billing address', function () {
 test('must set valid address', function () {
     $this->expectException(TypeError::class);
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setShippingAddress('ddd');
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setBillingAddress('ddd');
 });
 
 test('can set currency', function () {
     $currency = Currency::factory()->create();
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setCurrency($currency);
 
     expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
@@ -59,14 +59,14 @@ test('can set currency', function () {
 test('must set valid currency', function () {
     $this->expectException(TypeError::class);
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setCurrency('ddd');
 });
 
 test('can set purchasable', function () {
     $variant = ProductVariant::factory()->create();
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setPurchasable($variant);
 
     expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
@@ -75,7 +75,7 @@ test('can set purchasable', function () {
 test('can set cart line', function () {
     $line = CartLine::factory()->create();
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setCartLine($line);
 
     expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
@@ -91,7 +91,7 @@ test('can get breakdown', function () {
     $subTotal = 833;
 
     // 8.33 in decimal
-    $breakdown = (new SystemTaxDriver)
+    $breakdown = app(SystemTaxDriver::class)
         ->setShippingAddress($address)
         ->setBillingAddress($address)
         ->setCurrency($currency)
@@ -111,7 +111,7 @@ test('can get breakdown price inc', function () {
     $line = CartLine::factory()->create();
     $subTotal = 999;
 
-    $breakdown = (new SystemTaxDriver)
+    $breakdown = app(SystemTaxDriver::class)
         ->setShippingAddress($address)
         ->setBillingAddress($address)
         ->setCurrency($currency)
@@ -127,7 +127,7 @@ test('can get breakdown price inc', function () {
 test('can set tax zone', function () {
     $taxZone = TaxZone::factory()->create();
 
-    $driver = (new SystemTaxDriver)
+    $driver = app(SystemTaxDriver::class)
         ->setTaxZone($taxZone);
 
     expect($driver)->toBeInstanceOf(SystemTaxDriver::class);
@@ -158,7 +158,7 @@ test('uses cart tax zone override instead of default zone', function () {
     $variant = ProductVariant::factory(['tax_class_id' => $taxClass->id])->create();
     $line = CartLine::factory(['purchasable_id' => $variant->id])->create();
 
-    $breakdown = (new SystemTaxDriver)
+    $breakdown = app(SystemTaxDriver::class)
         ->setShippingAddress($address)
         ->setBillingAddress($address)
         ->setCurrency($currency)
@@ -190,7 +190,7 @@ test('falls back to address-derived zone when no override is set', function () {
     $line = CartLine::factory(['purchasable_id' => $variant->id])->create();
 
     // No setTaxZone() call
-    $breakdown = (new SystemTaxDriver)
+    $breakdown = app(SystemTaxDriver::class)
         ->setShippingAddress($address)
         ->setBillingAddress($address)
         ->setCurrency($currency)
@@ -228,7 +228,7 @@ test('can get breakdown with correct tax zone', function () {
     $subTotal = 1000;
 
     // 10.00 in decimal
-    $breakdown = (new SystemTaxDriver)
+    $breakdown = app(SystemTaxDriver::class)
         ->setShippingAddress($address)
         ->setBillingAddress($address)
         ->setCurrency($currency)
