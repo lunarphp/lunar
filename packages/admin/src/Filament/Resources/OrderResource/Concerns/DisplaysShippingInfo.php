@@ -33,7 +33,7 @@ trait DisplaysShippingInfo
                         TextEntry::make('sub_total')
                             ->hiddenLabel()
                             ->alignEnd()
-                            ->formatStateUsing(fn ($state) => $state->formatted),
+                            ->formatStateUsing(fn ($state, $record) => $record->format('sub_total')),
                         TextEntry::make('notes')
                             ->hidden(
                                 fn ($state) => ! $state

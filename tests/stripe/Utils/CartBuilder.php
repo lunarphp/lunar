@@ -2,7 +2,7 @@
 
 namespace Lunar\Tests\Stripe\Utils;
 
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
@@ -36,7 +36,7 @@ class CartBuilder
                 name: 'Basic Delivery',
                 description: 'Basic test delivery',
                 identifier: 'BASDEL',
-                price: new Price(500, $cart->currency, 1),
+                price: new PriceValue(500, $cart->currency),
                 taxClass: $taxClass
             )
         );

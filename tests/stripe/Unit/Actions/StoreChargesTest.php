@@ -26,7 +26,7 @@ it('can store successful charge', function () {
     $transaction = $order->transactions->first();
 
     expect($transaction->type)->toBe('capture');
-    expect($transaction->amount->value)->toBe($charge->amount);
+    expect($transaction->amount)->toBe($charge->amount);
     expect($transaction->reference)->toBe($charge->id);
 })->group('lunar.stripe.actions');
 

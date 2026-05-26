@@ -18,7 +18,7 @@ class GenerateFingerprint
                 $line->purchasable_type.
                 $line->purchasable_id.
                 $line->quantity.
-                $line->subTotal;
+                $line->subTotal?->value;
         });
 
         $value .= $cart->user_id.$cart->currency_id.$cart->coupon_code;

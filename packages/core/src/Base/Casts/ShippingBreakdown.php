@@ -7,7 +7,7 @@ use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 
 class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
@@ -34,7 +34,7 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
                 $key => new ShippingBreakdownItem(
                     name: $shipping->name,
                     identifier: $shipping->identifier,
-                    price: new Price($shipping->value, $currency, 1),
+                    price: new PriceValue((int) $shipping->value, $currency),
                 ),
             ];
         });
@@ -63,12 +63,14 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
 
         return [
             $key => $value->items->map(function ($item) {
+                $currency = $item->price->resolveCurrency();
+
                 return [
                     'name' => $item->name,
                     'identifier' => $item->identifier,
                     'value' => $item->price->value,
-                    'formatted' => $item->price->formatted,
-                    'currency' => $item->price->currency->toArray(),
+                    'formatted' => $item->price->format(),
+                    'currency' => $currency->toArray(),
                 ];
             })->toJson(),
         ];

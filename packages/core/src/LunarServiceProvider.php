@@ -97,6 +97,8 @@ use Lunar\Core\Observers\ProductOptionValueObserver;
 use Lunar\Core\Observers\ProductVariantObserver;
 use Lunar\Core\Observers\TransactionObserver;
 use Lunar\Core\Observers\UrlObserver;
+use Lunar\Core\Pricing\DefaultPriceFormatter;
+use Lunar\Core\Pricing\PriceFormatterInterface;
 use Lunar\Core\Utils\MeasurementConverter;
 
 class LunarServiceProvider extends ServiceProvider
@@ -183,6 +185,12 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->bind(PricingManagerInterface::class, function ($app) {
             return $app->make(PricingManager::class);
+        });
+
+        $this->app->bind(PriceFormatterInterface::class, function ($app, array $parameters = []) {
+            $concrete = config('lunar.pricing.formatter', DefaultPriceFormatter::class);
+
+            return $app->make($concrete, $parameters);
         });
 
         $this->app->singleton(TaxManagerInterface::class, function ($app) {

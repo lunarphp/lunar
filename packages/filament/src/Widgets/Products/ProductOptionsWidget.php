@@ -265,7 +265,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
             return [
                 'id' => $variant->id,
                 'sku' => $variant->sku,
-                'price' => $variant->basePrices->first()?->price->decimal ?: 0,
+                'price' => $variant->basePrices->first()?->decimal('price') ?: 0,
                 'stock' => $variant->stock,
                 'values' => $variant->values->mapWithKeys(
                     fn ($value) => [$value->option->translate('name') => $value->translate('name')]

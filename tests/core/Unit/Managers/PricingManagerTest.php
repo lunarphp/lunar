@@ -382,7 +382,7 @@ test('can pipeline purchasable price', function () {
     expect($pricing)->toBeInstanceOf(PricingResponse::class);
 
     expect($pricing->matched->id)->toEqual($price->id);
-    expect($pricing->matched->price->value)->toEqual($price->price->value);
+    expect($pricing->matched->price)->toEqual($price->price);
 
     config()->set('lunar.pricing.pipelines', [
         // set price to 200
@@ -395,6 +395,6 @@ test('can pipeline purchasable price', function () {
 
     expect($pricing->matched->id)->toEqual($price->id);
 
-    $this->assertNotEquals($price->price->value, $pricing->matched->price->value);
-    expect($pricing->matched->price->value)->toEqual(200);
+    $this->assertNotEquals($price->price, $pricing->matched->price);
+    expect($pricing->matched->price)->toEqual(200);
 });

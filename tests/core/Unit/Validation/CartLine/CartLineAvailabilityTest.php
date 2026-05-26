@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DataTypes\Price as PriceDataType;
+use Lunar\Core\DataObjects\PriceValue as PriceDataType;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Models\Cart;

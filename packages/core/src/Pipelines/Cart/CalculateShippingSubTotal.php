@@ -3,7 +3,7 @@
 namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
@@ -21,10 +21,9 @@ final class CalculateShippingSubTotal
     public function handle(CartContract $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
-        $cart->shippingSubTotal = new Price(
+        $cart->shippingSubTotal = new PriceValue(
             $cart->shippingBreakdown?->items->sum('price.value') ?? 0,
             $cart->currency,
-            1,
         );
 
         return $next($cart);

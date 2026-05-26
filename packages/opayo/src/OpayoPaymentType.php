@@ -389,7 +389,7 @@ class OpayoPaymentType extends AbstractPayment
             merchantSessionKey: $this->data['merchant_key'],
             cardIdentifier: $this->data['card_identifier'],
             vendorTxCode: Str::random(40),
-            amount: $this->order->total->value,
+            amount: $this->order->total,
             currency: $this->order->currency_code,
             customerFirstName: $billingAddress->first_name,
             customerLastName: $billingAddress->last_name,

@@ -31,7 +31,7 @@ class StripeFake
     public static function forOrder(OrderContract $order, array $extra = []): MockClient
     {
         return Stripe::fake([
-            'amount' => $order->total->value,
+            'amount' => $order->total,
             'currency' => strtolower($order->currency_code),
             ...$extra,
         ]);

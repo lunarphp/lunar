@@ -15,7 +15,6 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
-use Lunar\Core\DataTypes\Price as PriceDataType;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
@@ -115,7 +114,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                     ->label(
                         __('lunar-filament::relationmanagers.pricing.table.price.label')
                     )->formatStateUsing(
-                        fn ($state) => $state->formatted,
+                        fn ($state, $record) => $record->format('price'),
                     )->sortable(),
                 TextColumn::make('currency.code')->label(
                     __('lunar-filament::relationmanagers.pricing.table.currency.label')
@@ -168,10 +167,15 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
     protected function unwrapPriceData(array $data): array
     {
+        $currencyId = $data['currency_id'] ?? null;
+        $currency = $currencyId ? Currency::find($currencyId) : null;
+
         foreach (['price', 'compare_price'] as $key) {
-            if (($data[$key] ?? null) instanceof PriceDataType) {
-                $data[$key] = $data[$key]->decimal(rounding: false);
+            if (! isset($data[$key]) || $data[$key] === null || ! $currency) {
+                continue;
             }
+
+            $data[$key] = ((int) $data[$key]) / $currency->factor;
         }
 
         return $data;

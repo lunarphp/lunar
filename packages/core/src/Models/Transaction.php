@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\Price;
 use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\TransactionFactory;
 use Lunar\Core\Facades\Payments;
+use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**
  * @property int $id
@@ -32,8 +34,9 @@ use Lunar\Core\Facades\Payments;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Transaction extends BaseModel implements Contracts\Transaction
+class Transaction extends BaseModel implements Contracts\Transaction, HasCurrency
 {
+    use FormatsPrices;
     use HasFactory;
     use HasMacros;
     use LogsActivity;
@@ -48,9 +51,16 @@ class Transaction extends BaseModel implements Contracts\Transaction
      */
     protected $casts = [
         'refund' => 'bool',
-        'amount' => Price::class,
+        'amount' => 'integer',
         'meta' => AsArrayObject::class,
     ];
+
+    public function resolveCurrency(): CurrencyContract
+    {
+        $this->loadMissing('order.currency');
+
+        return $this->order?->currency ?? Currency::getDefault();
+    }
 
     /**
      * Return a new factory instance for the model.

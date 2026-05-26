@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\Price;
 use Lunar\Core\Base\Casts\TaxBreakdown;
 use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderLineFactory;
+use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**
  * @property int $id
@@ -37,8 +39,9 @@ use Lunar\Core\Database\Factories\OrderLineFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class OrderLine extends BaseModel implements Contracts\OrderLine
+class OrderLine extends BaseModel implements Contracts\OrderLine, HasCurrency
 {
+    use FormatsPrices;
     use HasFactory;
     use HasMacros;
     use LogsActivity;
@@ -69,12 +72,19 @@ class OrderLine extends BaseModel implements Contracts\OrderLine
         'quantity' => 'integer',
         'meta' => AsArrayObject::class,
         'tax_breakdown' => TaxBreakdown::class,
-        'unit_price' => Price::class,
-        'sub_total' => Price::class,
-        'tax_total' => Price::class,
-        'discount_total' => Price::class,
-        'total' => Price::class,
+        'unit_price' => 'integer',
+        'sub_total' => 'integer',
+        'tax_total' => 'integer',
+        'discount_total' => 'integer',
+        'total' => 'integer',
     ];
+
+    public function resolveCurrency(): CurrencyContract
+    {
+        $this->loadMissing('order.currency');
+
+        return $this->order?->currency ?? Currency::getDefault();
+    }
 
     public function order(): BelongsTo
     {

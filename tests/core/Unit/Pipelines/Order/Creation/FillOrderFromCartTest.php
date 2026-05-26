@@ -50,8 +50,8 @@ test('can run pipeline', function () {
     expect($order->reference)->not->toBeNull();
     expect($order->user_id)->toEqual($cart->user_id);
     expect($order->channel_id)->toEqual($cart->channel_id);
-    expect($order->sub_total->value)->toEqual($cart->subTotal->value);
-    expect($order->discount_otal?->value)->toEqual($cart->discountTotal?->value);
-    expect($order->tax_total->value)->toEqual($cart->taxTotal->value);
-    expect($order->total->value)->toEqual($cart->total->value);
+    expect($order->sub_total)->toEqual($cart->subTotal->value);
+    expect($order->discount_total)->toEqual($cart->discountTotal?->value);
+    expect($order->tax_total)->toEqual($cart->taxTotal->value);
+    expect($order->total)->toEqual($cart->total->value);
 });

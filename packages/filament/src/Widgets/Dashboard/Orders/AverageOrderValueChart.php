@@ -96,7 +96,7 @@ class AverageOrderValueChart extends LineChartWidget
                 $result = $merged->first(function ($month) use ($date) {
                     return $month->date == $date->format('Y-m');
                 });
-                $data->push($result?->sub_total->decimal ?: 0);
+                $data->push($result?->decimal('sub_total') ?: 0);
             }
 
             $color = $this->chartColor($index);

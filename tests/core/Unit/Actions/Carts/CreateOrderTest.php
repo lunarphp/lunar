@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Carts\CreateOrder;
-use Lunar\Core\DataTypes\Price as PriceDataType;
+use Lunar\Core\DataObjects\PriceValue as PriceDataType;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Core\Facades\ModelManifest;
@@ -206,7 +206,7 @@ test('can create order', function () {
             'identifier' => $tax->identifier,
             'percentage' => $tax->percentage,
             'value' => $tax->price->value,
-            'currency_code' => $tax->price->currency->code,
+            'currency_code' => $tax->price->resolveCurrency()->code,
         ]];
     });
 
@@ -338,7 +338,7 @@ test('can create order with customer', function () {
             'identifier' => $tax->identifier,
             'percentage' => $tax->percentage,
             'value' => $tax->price->value,
-            'currency_code' => $tax->price->currency->code,
+            'currency_code' => $tax->price->resolveCurrency()->code,
         ]];
     });
 

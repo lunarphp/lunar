@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
@@ -68,7 +68,7 @@ test('can add option', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         )
     );
@@ -86,7 +86,7 @@ test('can add multiple options', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         )
     );
@@ -100,7 +100,7 @@ test('can add multiple options', function () {
             name: 'Basic Delivery #'.$i,
             description: 'Basic Delivery',
             identifier: 'BASDEL'.$i,
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         ));
     }
@@ -124,7 +124,7 @@ test('cannot add the same option identifier more than once', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         )
     );
@@ -134,7 +134,7 @@ test('cannot add the same option identifier more than once', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         )
     );
@@ -150,7 +150,7 @@ test('can clear options', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         )
     );
@@ -170,7 +170,7 @@ test('can retrieve option', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         )
     );
@@ -180,7 +180,7 @@ test('can retrieve option', function () {
             name: 'Basic Delivery 2',
             description: 'Basic Delivery',
             identifier: 'BASDEL2',
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         )
     );
@@ -198,7 +198,7 @@ test('can retrieve cart shipping option', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $this->cart->currency, 1),
+            price: new PriceValue(500, $this->cart->currency),
             taxClass: $taxClass
         )
     );
@@ -228,7 +228,7 @@ test('can retrieve cart shipping option using', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new Price(500, $this->cart->currency, 1),
+        price: new PriceValue(500, $this->cart->currency),
         taxClass: $taxClass
     );
 

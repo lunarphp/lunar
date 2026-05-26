@@ -15,7 +15,7 @@ use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Base\Traits\LogsActivity;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Database\Factories\CartLineFactory;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 
 /**
  * @property int $id
@@ -53,37 +53,37 @@ class CartLine extends BaseModel implements Contracts\CartLine
     /**
      * The cart line unit price.
      */
-    public ?Price $unitPrice = null;
+    public ?PriceValue $unitPrice = null;
 
     /**
      * The cart line unit price.
      */
-    public ?Price $unitPriceInclTax = null;
+    public ?PriceValue $unitPriceInclTax = null;
 
     /**
      * The cart line sub total.
      */
-    public ?Price $subTotal = null;
+    public ?PriceValue $subTotal = null;
 
     /**
      * The discounted sub total
      */
-    public ?Price $subTotalDiscounted = null;
+    public ?PriceValue $subTotalDiscounted = null;
 
     /**
      * The discount total.
      */
-    public ?Price $discountTotal = null;
+    public ?PriceValue $discountTotal = null;
 
     /**
      * The cart line tax amount.
      */
-    public ?Price $taxAmount = null;
+    public ?PriceValue $taxAmount = null;
 
     /**
      * The cart line total.
      */
-    public ?Price $total = null;
+    public ?PriceValue $total = null;
 
     /**
      * The promotion description.

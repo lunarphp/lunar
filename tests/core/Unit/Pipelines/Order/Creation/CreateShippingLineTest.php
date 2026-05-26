@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
@@ -34,7 +34,7 @@ test('can run pipeline', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $cart->currency, 1),
+            price: new PriceValue(500, $cart->currency),
             taxClass: TaxClass::factory()->create()
         )
     );
@@ -74,7 +74,7 @@ test('can update shipping line if exists', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $cart->currency, 1),
+            price: new PriceValue(500, $cart->currency),
             taxClass: TaxClass::factory()->create()
         )
     );

@@ -5,7 +5,7 @@ namespace Lunar\Filament\Widgets\Customer;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Currency;
 
@@ -29,14 +29,15 @@ class CustomerStatsOverviewWidget extends BaseWidget
             DB::RAW('sub_total * exchange_rate')
         ));
 
-        $totalSpend = new Price($total, Currency::getDefault());
+        $currency = Currency::getDefault();
 
-        $avgSpend = new Price($avg, Currency::getDefault());
+        $totalSpend = new PriceValue($total, $currency);
+        $avgSpend = new PriceValue($avg, $currency);
 
         return [
             Stat::make(__('lunar-filament::widgets.customer.stats_overview.total_orders.label'), $this->record->orders()->count()),
-            Stat::make(__('lunar-filament::widgets.customer.stats_overview.avg_spend.label'), $avgSpend->formatted),
-            Stat::make(__('lunar-filament::widgets.customer.stats_overview.total_spend.label'), $totalSpend->formatted),
+            Stat::make(__('lunar-filament::widgets.customer.stats_overview.avg_spend.label'), $avgSpend->format()),
+            Stat::make(__('lunar-filament::widgets.customer.stats_overview.total_spend.label'), $totalSpend->format()),
         ];
     }
 }

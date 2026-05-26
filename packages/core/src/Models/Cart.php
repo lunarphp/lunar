@@ -36,7 +36,7 @@ use Lunar\Core\Base\ValueObjects\Cart\Promotion;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Database\Factories\CartFactory;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\FingerprintMismatchException;
@@ -94,40 +94,40 @@ class Cart extends BaseModel implements Contracts\Cart
      * The cart sub total.
      * Sum of cart line amounts, before tax, shipping and cart-level discounts.
      */
-    public ?Price $subTotal = null;
+    public ?PriceValue $subTotal = null;
 
     /**
      * The cart sub total.
      * Sum of cart line amounts, before tax, shipping minus discount totals.
      */
-    public ?Price $subTotalDiscounted = null;
+    public ?PriceValue $subTotalDiscounted = null;
 
     /**
      * The shipping sub total for the cart.
      */
-    public ?Price $shippingSubTotal = null;
+    public ?PriceValue $shippingSubTotal = null;
 
     /**
      * The shipping tax total for the cart.
      */
-    public ?Price $shippingTaxTotal = null;
+    public ?PriceValue $shippingTaxTotal = null;
 
     /**
      * The shipping total for the cart.
      */
-    public ?Price $shippingTotal = null;
+    public ?PriceValue $shippingTotal = null;
 
     /**
      * The cart tax total.
      * Sum of all tax to pay across cart lines and shipping.
      */
-    public ?Price $taxTotal = null;
+    public ?PriceValue $taxTotal = null;
 
     /**
      * The discount total.
      * Sum of all cart line discounts and cart-level discounts.
      */
-    public ?Price $discountTotal = null;
+    public ?PriceValue $discountTotal = null;
 
     /**
      * All the discount breakdowns for the cart.
@@ -155,7 +155,7 @@ class Cart extends BaseModel implements Contracts\Cart
      * The cart total.
      * Sum of the cart-line amounts, shipping and tax, minus cart-level discount amount.
      */
-    public ?Price $total = null;
+    public ?PriceValue $total = null;
 
     /**
      * All the tax breakdowns for the cart.
@@ -291,7 +291,7 @@ class Cart extends BaseModel implements Contracts\Cart
             ->where('fingerprint', $this->fingerprint())
             ->when(
                 $this->total,
-                fn (Builder $query, Price $price) => $query->where('total', $price->value)
+                fn (Builder $query, PriceValue $price) => $query->where('total', $price->value)
             )->first();
     }
 

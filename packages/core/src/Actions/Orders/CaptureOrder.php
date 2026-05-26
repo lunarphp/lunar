@@ -42,7 +42,7 @@ final class CaptureOrder extends AbstractAction
             throw new OrderActionException('Capture amount must be greater than zero.');
         }
 
-        if ($minorAmount > $transaction->amount->value) {
+        if ($minorAmount > $transaction->amount) {
             throw new OrderActionException('Capture amount exceeds the transaction amount.');
         }
 

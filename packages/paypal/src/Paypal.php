@@ -109,7 +109,7 @@ class Paypal implements PaypalInterface
                     ],
                     'amount' => [
                         'currency_code' => $cart->currency->code,
-                        'value' => (string) $cart->total->decimal,
+                        'value' => (string) $cart->total->decimal(),
                     ],
                 ],
             ],

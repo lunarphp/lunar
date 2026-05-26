@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 use Lunar\Upgrade\Rector\LunarSetList;
+use Lunar\Upgrade\Rector\Price\DropPriceValueAccessRector;
+use Lunar\Upgrade\Rector\Price\RewritePriceDecimalCallRector;
+use Lunar\Upgrade\Rector\Price\RewritePriceFormattedCallRector;
+use Lunar\Upgrade\Rector\Price\RewriteUnitPriceFormatterCallRector;
 use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
@@ -22,4 +26,8 @@ return RectorConfig::configure()
             LunarSetList::V1_TO_V2_METHOD_RENAMES,
         ),
     )
+    ->withConfiguredRule(DropPriceValueAccessRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
+    ->withConfiguredRule(RewritePriceDecimalCallRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
+    ->withConfiguredRule(RewritePriceFormattedCallRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
+    ->withConfiguredRule(RewriteUnitPriceFormatterCallRector::class, LunarSetList::V1_TO_V2_UNIT_AWARE_ATTRIBUTES)
     ->withRules(LunarSetList::V1_TO_V2);

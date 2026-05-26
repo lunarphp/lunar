@@ -43,7 +43,7 @@ class PopularProductsTable extends TableWidget
                 TextColumn::make('description'),
                 TextColumn::make('identifier'),
                 TextColumn::make('quantity'),
-                TextColumn::make('sub_total')->formatStateUsing(fn ($state): string => $state->formatted),
+                TextColumn::make('sub_total')->formatStateUsing(fn ($state, $record): string => $record->format('sub_total')),
             ]);
     }
 }

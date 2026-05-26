@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Channel;
@@ -49,7 +49,7 @@ function makeShippingBreakdown(Currency $currency, string $methodCode, int $pric
     $breakdown->items->put($methodCode, new ShippingBreakdownItem(
         name: 'Standard Shipping',
         identifier: $methodCode,
-        price: new Price($priceValue, $currency, 1),
+        price: new PriceValue($priceValue, $currency),
     ));
 
     return $breakdown;
@@ -71,7 +71,7 @@ test('does not apply when conditions are not met (wrong coupon)', function () {
     $cart = $this->createCart($currency, 1000);
     $cart->coupon_code = 'WRONGCODE';
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
-    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(1000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -100,7 +100,7 @@ test('applies free shipping to any method when no method is specified', function
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
-    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(1000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -131,7 +131,7 @@ test('applies configured fixed price (not necessarily free) to shipping', functi
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'express', 2000);
-    $cart->shippingSubTotal = new Price(2000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(2000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -167,7 +167,7 @@ test('applies only to the matching shipping method', function () {
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
-    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(1000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -202,7 +202,7 @@ test('does not apply when cart uses a different shipping method than configured'
     $cart = $this->createCart($currency, 1000);
     // Cart has 'standard' in breakdown, but discount is for 'express'
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
-    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(1000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -257,7 +257,7 @@ test('does not add to discount breakdown when price is already zero', function (
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 0);
-    $cart->shippingSubTotal = new Price(0, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(0, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -285,7 +285,7 @@ test('does not apply when currency has no configured price', function () {
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
-    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(1000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -313,7 +313,7 @@ test('applies percentage discount to any shipping method', function () {
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
-    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(1000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -342,7 +342,7 @@ test('applies 100% percentage discount makes shipping free', function () {
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1200);
-    $cart->shippingSubTotal = new Price(1200, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(1200, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -383,17 +383,17 @@ test('applies different rules to different shipping methods', function () {
     $breakdown->items->put('standard', new ShippingBreakdownItem(
         name: 'Standard Shipping',
         identifier: 'standard',
-        price: new Price(1000, $currency, 1),
+        price: new PriceValue(1000, $currency),
     ));
     $breakdown->items->put('express', new ShippingBreakdownItem(
         name: 'Express Shipping',
         identifier: 'express',
-        price: new Price(2000, $currency, 1),
+        price: new PriceValue(2000, $currency),
     ));
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = $breakdown;
-    $cart->shippingSubTotal = new Price(3000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(3000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -434,7 +434,7 @@ test('specific method rule takes priority over catch-all rule', function () {
 
     $cart = $this->createCart($currency, 1000);
     $cart->shippingBreakdown = makeShippingBreakdown($currency, 'standard', 1000);
-    $cart->shippingSubTotal = new Price(1000, $currency, 1);
+    $cart->shippingSubTotal = new PriceValue(1000, $currency);
 
     $discountModel = Discount::factory()->create([
         'type' => ShippingDiscount::class,
@@ -515,7 +515,7 @@ test('applies correctly through full cart calculation pipeline', function () {
         name: $shippingMethod->name,
         description: '',
         identifier: $shippingMethod->code,
-        price: new Price(1000, $currency, 1),
+        price: new PriceValue(1000, $currency),
         taxClass: TaxClass::getDefault(),
     );
 
