@@ -78,7 +78,7 @@ class ManageProductAssociations extends BaseManageRelatedRecords
                 TextColumn::make('target.variants.sku')
                     ->label('SKU'),
                 TextColumn::make('type')->formatStateUsing(function ($state) {
-                    $enum = config('lunar.products.association_types_enum', \Lunar\Core\Base\Enums\ProductAssociation::class);
+                    $enum = config('lunar.products.association_types_enum', \Lunar\Core\Enums\ProductAssociation::class);
 
                     return $enum::tryFrom($state)?->label() ?: $state;
                 }),

@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Core\Base\Enums;
+namespace Lunar\Core\Enums;
 
-use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 
 enum ProductAssociation: string implements ProvidesProductAssociationType
 {

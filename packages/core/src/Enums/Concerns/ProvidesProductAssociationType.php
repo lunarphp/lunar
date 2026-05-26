@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Core\Base\Enums\Concerns;
+namespace Lunar\Core\Enums\Concerns;
 
-use Lunar\Core\Base\Enums\ProductAssociation;
+use Lunar\Core\Enums\ProductAssociation;
 
 /**
  * @mixin ProductAssociation

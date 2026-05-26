@@ -458,9 +458,9 @@ test('can associate multiple products', function () {
     $targetA = Product::factory()->create();
     $targetB = Product::factory()->create();
 
-    Associate::dispatchSync($parent, [$targetA, $targetB], Lunar\Core\Base\Enums\ProductAssociation::UP_SELL);
+    Associate::dispatchSync($parent, [$targetA, $targetB], Lunar\Core\Enums\ProductAssociation::UP_SELL);
 
-    $assoc = $parent->associations()->type(Lunar\Core\Base\Enums\ProductAssociation::UP_SELL)->get();
+    $assoc = $parent->associations()->type(Lunar\Core\Enums\ProductAssociation::UP_SELL)->get();
 
     expect($assoc)->toHaveCount(2);
 });
@@ -469,12 +469,12 @@ test('can associate products via helper', function () {
     $parent = Product::factory()->create();
     $target = Product::factory()->create();
 
-    Associate::dispatchSync($parent, $target, Lunar\Core\Base\Enums\ProductAssociation::UP_SELL);
+    Associate::dispatchSync($parent, $target, Lunar\Core\Enums\ProductAssociation::UP_SELL);
 
-    $assoc = $parent->associations()->type(Lunar\Core\Base\Enums\ProductAssociation::UP_SELL)->get();
+    $assoc = $parent->associations()->type(Lunar\Core\Enums\ProductAssociation::UP_SELL)->get();
 
     expect($assoc)->toHaveCount(1)
-        ->and($assoc->first()->type)->toEqual(Lunar\Core\Base\Enums\ProductAssociation::UP_SELL->value);
+        ->and($assoc->first()->type)->toEqual(Lunar\Core\Enums\ProductAssociation::UP_SELL->value);
 });
 
 test('can remove all associations', function () {
@@ -501,22 +501,22 @@ test('can only remove associations of a certain type', function () {
     ProductAssociation::factory()->create([
         'product_parent_id' => $parent,
         'product_target_id' => $target,
-        'type' => Lunar\Core\Base\Enums\ProductAssociation::CROSS_SELL->value,
+        'type' => Lunar\Core\Enums\ProductAssociation::CROSS_SELL->value,
     ]);
 
     ProductAssociation::factory()->create([
         'product_parent_id' => $parent,
         'product_target_id' => $target,
-        'type' => Lunar\Core\Base\Enums\ProductAssociation::UP_SELL->value,
+        'type' => Lunar\Core\Enums\ProductAssociation::UP_SELL->value,
     ]);
 
     expect($parent->refresh()->associations)->toHaveCount(2);
 
-    Dissociate::dispatchSync($parent, $target, Lunar\Core\Base\Enums\ProductAssociation::CROSS_SELL);
+    Dissociate::dispatchSync($parent, $target, Lunar\Core\Enums\ProductAssociation::CROSS_SELL);
 
     expect($parent->refresh()->associations)->toHaveCount(1)
         ->and($parent->refresh()->associations->first()->type)->toEqual(
-            Lunar\Core\Base\Enums\ProductAssociation::UP_SELL->value
+            Lunar\Core\Enums\ProductAssociation::UP_SELL->value
         );
 });
 

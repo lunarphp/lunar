@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;

@@ -4,7 +4,7 @@ namespace Lunar\Core\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 
 interface ProductAssociation
 {
