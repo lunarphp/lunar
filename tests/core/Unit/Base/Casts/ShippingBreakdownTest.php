@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Base\Casts\ShippingBreakdown as ShippingBreakdownCasts;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Core\Casts\ShippingBreakdown as ShippingBreakdownCasts;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;

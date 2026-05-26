@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base\Casts;
+namespace Lunar\Core\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Str;

@@ -1,16 +1,16 @@
 <?php
 
-namespace Lunar\Core\Base\Casts;
+namespace Lunar\Core\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
-use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
+use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
+use Spatie\LaravelBlink\BlinkFacade;
 
-class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
+class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
 {
     /**
      * Cast the given value.
@@ -19,22 +19,25 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return \Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown
+     * @return \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown
      */
     public function get($model, $key, $value, $attributes)
     {
-        $breakdown = new \Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
+        $breakdown = new \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 
-        $breakdown->items = collect(
+        $breakdown->amounts = collect(
             json_decode($value, false)
-        )->mapWithKeys(function ($shipping, $key) {
-            $currency = Currency::whereCode($shipping->currency->code)->first();
+        )->mapWithKeys(function ($amount, $key) {
+            $currency = BlinkFacade::once("currency_{$amount->currency_code}", function () use ($amount) {
+                return Currency::whereCode($amount->currency_code)->first();
+            });
 
             return [
-                $key => new ShippingBreakdownItem(
-                    name: $shipping->name,
-                    identifier: $shipping->identifier,
-                    price: new PriceValue((int) $shipping->value, $currency),
+                $key => new TaxBreakdownAmount(
+                    price: new PriceValue((int) $amount->value, $currency),
+                    identifier: $amount->identifier,
+                    description: $amount->description,
+                    percentage: $amount->percentage,
                 ),
             ];
         });
@@ -47,14 +50,16 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      *
      * @param  Model  $model
      * @param  string  $key
-     * @param  \Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown  $value
+     * @param  \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown  $value
      * @param  array  $attributes
      * @return array
+     *
+     * @throws \Exception
      */
     public function set($model, $key, $value, $attributes)
     {
-        if ($value && ! is_a($value, \Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown::class)) {
-            throw new \Exception('Shipping breakdown must be instance of Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown');
+        if ($value && ! is_a($value, \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown::class)) {
+            throw new \Exception('Tax breakdown must be instance of Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown');
         }
 
         if (! $value) {
@@ -62,15 +67,13 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
         }
 
         return [
-            $key => $value->items->map(function ($item) {
-                $currency = $item->price->resolveCurrency();
-
+            $key => $value->amounts->map(function ($item) {
                 return [
-                    'name' => $item->name,
+                    'description' => $item->description,
                     'identifier' => $item->identifier,
+                    'percentage' => $item->percentage,
                     'value' => $item->price->value,
-                    'formatted' => $item->price->format(),
-                    'currency' => $currency->toArray(),
+                    'currency_code' => $item->price->resolveCurrency()->code,
                 ];
             })->toJson(),
         ];
@@ -81,7 +84,7 @@ class ShippingBreakdown implements CastsAttributes, SerializesCastableAttributes
      *
      * @param  Model  $model
      * @param  string  $key
-     * @param  Collection  $value
+     * @param  mixed  $value
      * @param  array<string, mixed>  $attributes
      */
     public function serialize($model, $key, $value, $attributes)

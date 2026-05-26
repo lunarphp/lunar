@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\CouponString;
 use Lunar\Core\Base\Traits\HasChannels;
 use Lunar\Core\Base\Traits\HasCustomerGroups;
 use Lunar\Core\Base\Traits\HasTranslations;
 use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Casts\CouponString;
 use Lunar\Core\Database\Factories\DiscountFactory;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
 

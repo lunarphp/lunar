@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\AsAttributeData;
 use Lunar\Core\Base\Traits\HasAttributes;
 use Lunar\Core\Base\Traits\HasDefaultRecord;
 use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Database\Factories\CustomerGroupFactory;
 
 /**
