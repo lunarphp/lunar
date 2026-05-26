@@ -4,7 +4,7 @@ namespace Lunar\Filament\Actions\Collections;
 
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
-use Lunar\Core\Actions\Collections\DeleteCollection;
+use Lunar\Core\Contracts\Actions\Collections\DeletesCollection;
 use Lunar\Core\Models\Collection;
 
 class DeleteCollectionAction extends DeleteAction
@@ -33,7 +33,7 @@ class DeleteCollectionAction extends DeleteAction
         $this->record(fn (array $arguments) => Collection::find($arguments['id']));
 
         $this->action(function (Collection $record): void {
-            DeleteCollection::run(collection: $record);
+            app(DeletesCollection::class)->execute(collection: $record);
 
             $this->success();
         });

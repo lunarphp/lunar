@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Actions\Orders;
 
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Orders\UpdatesOrderStatus;
 use Lunar\Core\Events\Orders\OrderStatusUpdated;
 use Lunar\Core\Exceptions\OrderActionException;
@@ -17,7 +16,7 @@ use Lunar\Core\Models\Order;
  * When the state-machines TODO item lands, the body is re-implemented as a
  * transition without changing this signature.
  */
-final class UpdateOrderStatus extends AbstractAction implements UpdatesOrderStatus
+final class UpdateOrderStatus implements UpdatesOrderStatus
 {
     public function execute(OrderContract $order, string $status): Order
     {

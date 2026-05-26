@@ -28,7 +28,7 @@ beforeEach(function () {
 test('creates a root collection inside a group', function () {
     $group = CollectionGroup::factory()->create();
 
-    $collection = CreateRootCollection::run($group->id, 'Trousers');
+    $collection = app(CreateRootCollection::class)->execute($group->id, 'Trousers');
 
     expect($collection)->toBeInstanceOf(Collection::class);
     expect($collection->collection_group_id)->toBe($group->id);
@@ -37,9 +37,9 @@ test('creates a root collection inside a group', function () {
 
 test('creates a child collection under a parent', function () {
     $group = CollectionGroup::factory()->create();
-    $parent = CreateRootCollection::run($group->id, 'Outerwear');
+    $parent = app(CreateRootCollection::class)->execute($group->id, 'Outerwear');
 
-    $child = CreateChildCollection::run($parent->fresh(), 'Coats');
+    $child = app(CreateChildCollection::class)->execute($parent->fresh(), 'Coats');
 
     expect($child->parent_id)->toBe($parent->id);
     expect($child->collection_group_id)->toBe($group->id);

@@ -23,7 +23,7 @@ test('updates the order status and fires an event', function () {
 
     $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
-    UpdateOrderStatus::run($order, 'payment-received');
+    app(UpdateOrderStatus::class)->execute($order, 'payment-received');
 
     expect($order->fresh()->status)->toBe('payment-received');
 
@@ -37,7 +37,7 @@ test('does not fire an event when status is unchanged', function () {
 
     $order = Order::factory()->create(['status' => 'payment-received']);
 
-    UpdateOrderStatus::run($order, 'payment-received');
+    app(UpdateOrderStatus::class)->execute($order, 'payment-received');
 
     Event::assertNotDispatched(OrderStatusUpdated::class);
 });
@@ -45,5 +45,5 @@ test('does not fire an event when status is unchanged', function () {
 test('throws when the status is not configured', function () {
     $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
-    UpdateOrderStatus::run($order, 'not-a-real-status');
+    app(UpdateOrderStatus::class)->execute($order, 'not-a-real-status');
 })->throws(OrderActionException::class);

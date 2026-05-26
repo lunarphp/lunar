@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Actions\Collections;
 
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Collections\CreatesChildCollection;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Attribute;
@@ -13,7 +12,7 @@ use Lunar\Core\Models\Contracts\Collection as CollectionContract;
  * Create a child collection under a parent, taking care of nested-set
  * `appendNode` linkage so descendants are positioned correctly.
  */
-final class CreateChildCollection extends AbstractAction implements CreatesChildCollection
+final class CreateChildCollection implements CreatesChildCollection
 {
     public function execute(CollectionContract $parent, string|array $name): Collection
     {

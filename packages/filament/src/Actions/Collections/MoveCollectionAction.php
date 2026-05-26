@@ -4,7 +4,7 @@ namespace Lunar\Filament\Actions\Collections;
 
 use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Actions\Collections\MoveCollection;
+use Lunar\Core\Contracts\Actions\Collections\MovesCollection;
 use Lunar\Core\Exceptions\CollectionActionException;
 use Lunar\Core\Models\Collection;
 
@@ -25,7 +25,7 @@ class MoveCollectionAction extends Action
             $target = isset($data['target_id']) ? Collection::find($data['target_id']) : null;
 
             try {
-                MoveCollection::run(collection: $record, target: $target);
+                app(MovesCollection::class)->execute(collection: $record, target: $target);
             } catch (CollectionActionException $exception) {
                 $this->failureNotificationTitle($exception->getMessage());
                 $this->failure();

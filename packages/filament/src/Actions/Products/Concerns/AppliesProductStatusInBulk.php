@@ -3,7 +3,7 @@
 namespace Lunar\Filament\Actions\Products\Concerns;
 
 use Illuminate\Database\Eloquent\Collection;
-use Lunar\Core\Actions\Products\UpdateProductStatus;
+use Lunar\Core\Contracts\Actions\Products\UpdatesProductStatus;
 use Lunar\Core\Facades\DB;
 
 trait AppliesProductStatusInBulk
@@ -13,7 +13,7 @@ trait AppliesProductStatusInBulk
         DB::beginTransaction();
 
         foreach ($records as $record) {
-            UpdateProductStatus::run($record, $status);
+            app(UpdatesProductStatus::class)->execute($record, $status);
         }
 
         DB::commit();

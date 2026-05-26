@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Carts\RemovesPurchasable;
 use Lunar\Core\Exceptions\CartLineIdMismatchException;
 use Lunar\Core\Facades\DB;
@@ -10,7 +9,7 @@ use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
-class RemovePurchasable extends AbstractAction implements RemovesPurchasable
+class RemovePurchasable implements RemovesPurchasable
 {
     /**
      * Execute the action.

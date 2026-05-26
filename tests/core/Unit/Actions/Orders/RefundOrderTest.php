@@ -37,7 +37,7 @@ it('refunds a successful capture within the available balance', function () {
         'amount' => 10_000,
     ]);
 
-    $result = RefundOrder::run($order, $capture->id, '25.00');
+    $result = app(RefundOrder::class)->execute($order, $capture->id, '25.00');
 
     expect($result)->toBeInstanceOf(PaymentRefund::class);
     expect($result->success)->toBeTrue();
@@ -54,7 +54,7 @@ it('rejects refund amounts that exceed available to refund', function () {
         'amount' => 5_000,
     ]);
 
-    RefundOrder::run($order, $capture->id, '75.00');
+    app(RefundOrder::class)->execute($order, $capture->id, '75.00');
 })->throws(OrderActionException::class, 'Refund amount exceeds the available amount on this order.');
 
 it('rejects refunding against a non-capture transaction', function () {
@@ -68,7 +68,7 @@ it('rejects refunding against a non-capture transaction', function () {
         'amount' => 5_000,
     ]);
 
-    RefundOrder::run($order, $intent->id, '10.00');
+    app(RefundOrder::class)->execute($order, $intent->id, '10.00');
 })->throws(OrderActionException::class);
 
 it('subtracts existing refunds from the available balance', function () {

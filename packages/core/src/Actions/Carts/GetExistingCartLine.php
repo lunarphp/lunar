@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Carts\GetsExistingCartLine;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Models\Cart;
@@ -10,7 +9,7 @@ use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Core\Utils\Arr;
 
-class GetExistingCartLine extends AbstractAction implements GetsExistingCartLine
+class GetExistingCartLine implements GetsExistingCartLine
 {
     /**
      * Execute the action

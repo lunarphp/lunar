@@ -2,14 +2,13 @@
 
 namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Carts\AddsOrUpdatesPurchasable;
 use Lunar\Core\Contracts\Actions\Carts\GetsExistingCartLine;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Exceptions\InvalidCartLineQuantityException;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
-class AddOrUpdatePurchasable extends AbstractAction implements AddsOrUpdatesPurchasable
+class AddOrUpdatePurchasable implements AddsOrUpdatesPurchasable
 {
     public function __construct(
         protected GetsExistingCartLine $getsExistingCartLine,

@@ -4,7 +4,7 @@ namespace Lunar\Filament\Actions\Products;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
-use Lunar\Core\Actions\Products\AdjustStock;
+use Lunar\Core\Contracts\Actions\Products\AdjustsStock;
 use Lunar\Core\Models\ProductVariant;
 
 class AdjustStockAction extends Action
@@ -32,7 +32,7 @@ class AdjustStockAction extends Action
                     ->label(__('lunar-filament::actions.products.adjust_stock.fields.reason.label'))
                     ->maxLength(255),
             ])
-            ->action(fn (array $data, ProductVariant $record) => AdjustStock::run(
+            ->action(fn (array $data, ProductVariant $record) => app(AdjustsStock::class)->execute(
                 $record,
                 (int) $data['delta'],
                 $data['reason'] ?? null,

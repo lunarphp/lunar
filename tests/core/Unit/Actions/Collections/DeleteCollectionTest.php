@@ -22,7 +22,7 @@ beforeEach(function () {
 test('deletes a leaf collection', function () {
     $collection = Collection::factory()->create(['collection_group_id' => $this->group->id]);
 
-    expect(DeleteCollection::run($collection))->toBeTrue();
+    expect(app(DeleteCollection::class)->execute($collection))->toBeTrue();
     expect(Collection::find($collection->id))->toBeNull();
 });
 
@@ -31,7 +31,7 @@ test('rejects deleting a collection with descendants without a target', function
     $child = Collection::factory()->create(['collection_group_id' => $this->group->id]);
     $parent->appendNode($child);
 
-    DeleteCollection::run($parent->fresh());
+    app(DeleteCollection::class)->execute($parent->fresh());
 })->throws(CollectionActionException::class);
 
 test('re-parents descendants when a target is provided', function () {
@@ -41,7 +41,7 @@ test('re-parents descendants when a target is provided', function () {
 
     $newHome = Collection::factory()->create(['collection_group_id' => $this->group->id]);
 
-    DeleteCollection::run($parent->fresh(), $newHome);
+    app(DeleteCollection::class)->execute($parent->fresh(), $newHome);
 
     expect(Collection::find($parent->id))->toBeNull();
     expect($child->fresh()->parent_id)->toBe($newHome->id);

@@ -2,13 +2,12 @@
 
 namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Carts\AssociatesUser;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
-class AssociateUser extends AbstractAction implements AssociatesUser
+class AssociateUser implements AssociatesUser
 {
     public function __construct(
         protected MergeCart $mergeCart,

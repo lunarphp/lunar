@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Carts;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\App;
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Carts\CreatesOrder;
 use Lunar\Core\Exceptions\DisallowMultipleCartOrdersException;
 use Lunar\Core\Facades\DB;
@@ -14,7 +13,7 @@ use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
-final class CreateOrder extends AbstractAction implements CreatesOrder
+final class CreateOrder implements CreatesOrder
 {
     /**
      * Execute the action.

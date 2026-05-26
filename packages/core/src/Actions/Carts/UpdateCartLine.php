@@ -2,12 +2,11 @@
 
 namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Carts\UpdatesCartLine;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\CartLine;
 
-class UpdateCartLine extends AbstractAction implements UpdatesCartLine
+class UpdateCartLine implements UpdatesCartLine
 {
     /**
      * Execute the action.

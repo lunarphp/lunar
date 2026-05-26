@@ -3,7 +3,6 @@
 namespace Lunar\Core\Actions\Orders;
 
 use Illuminate\Database\Eloquent\Collection;
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Orders\CapturesOrder;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\Exceptions\OrderActionException;
@@ -18,7 +17,7 @@ use Lunar\Core\Models\Transaction;
  * underlying transaction's payment driver. Returns the driver's
  * `PaymentCapture` result unchanged.
  */
-final class CaptureOrder extends AbstractAction implements CapturesOrder
+final class CaptureOrder implements CapturesOrder
 {
     /**
      * Major-unit amount (decimal) to capture. Converted to minor units using

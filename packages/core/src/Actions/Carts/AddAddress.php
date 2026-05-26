@@ -2,14 +2,13 @@
 
 namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\Contracts\Actions\Carts\AddsAddress;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
-class AddAddress extends AbstractAction implements AddsAddress
+class AddAddress implements AddsAddress
 {
     protected array $fillableAttributes = [
         'country_id',

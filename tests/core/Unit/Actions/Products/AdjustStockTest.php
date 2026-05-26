@@ -19,7 +19,7 @@ beforeEach(function () {
 test('adds stock using a positive delta', function () {
     $variant = ProductVariant::factory()->create(['stock' => 5]);
 
-    AdjustStock::run($variant, 3, 'restock');
+    app(AdjustStock::class)->execute($variant, 3, 'restock');
 
     expect($variant->fresh()->stock)->toBe(8);
 });
@@ -27,7 +27,7 @@ test('adds stock using a positive delta', function () {
 test('removes stock using a negative delta', function () {
     $variant = ProductVariant::factory()->create(['stock' => 5]);
 
-    AdjustStock::run($variant, -2);
+    app(AdjustStock::class)->execute($variant, -2);
 
     expect($variant->fresh()->stock)->toBe(3);
 });
@@ -35,13 +35,13 @@ test('removes stock using a negative delta', function () {
 test('rejects deltas that would push stock below zero', function () {
     $variant = ProductVariant::factory()->create(['stock' => 1]);
 
-    AdjustStock::run($variant, -5);
+    app(AdjustStock::class)->execute($variant, -5);
 })->throws(ProductActionException::class);
 
 test('is a no-op when delta is zero', function () {
     $variant = ProductVariant::factory()->create(['stock' => 5]);
 
-    AdjustStock::run($variant, 0);
+    app(AdjustStock::class)->execute($variant, 0);
 
     expect($variant->fresh()->stock)->toBe(5);
 });

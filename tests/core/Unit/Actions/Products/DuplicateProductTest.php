@@ -27,7 +27,7 @@ test('duplicates a product as a draft', function () {
 
     ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => 'WIDGET-1']);
 
-    $duplicate = DuplicateProduct::run($product);
+    $duplicate = app(DuplicateProduct::class)->execute($product);
 
     expect($duplicate)->toBeInstanceOf(Product::class);
     expect($duplicate->id)->not->toBe($product->id);
