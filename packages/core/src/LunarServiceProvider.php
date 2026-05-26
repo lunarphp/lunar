@@ -195,88 +195,8 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->registerAddonManifest();
 
-        $this->app->singleton(MeasurementConverter::class, function () {
-            return new MeasurementConverter;
-        });
-
-        $this->app->singleton(CartModifiers::class, function () {
-            return new CartModifiers;
-        });
-
-        $this->app->singleton(CartLineModifiers::class, function () {
-            return new CartLineModifiers;
-        });
-
-        $this->app->singleton(OrderModifiers::class, function () {
-            return new OrderModifiers;
-        });
-
-        $this->app->singleton(CartSession::class, function ($app) {
-            return $app->make(CartSessionManager::class);
-        });
-
-        $this->app->singleton(StorefrontSession::class, function ($app) {
-            return $app->make(StorefrontSessionManager::class);
-        });
-
-        $this->app->singleton(ShippingModifiers::class, function ($app) {
-            return new ShippingModifiers;
-        });
-
-        $this->app->singleton(ShippingManifest::class, function ($app) {
-            return $app->make(ShippingManifestImpl::class);
-        });
-
-        $this->app->singleton(OrderReferenceGenerator::class, function ($app) {
-            return $app->make(OrderReferenceGeneratorImpl::class);
-        });
-
-        $this->app->singleton(AttributeManifest::class, function ($app) {
-            return $app->make(AttributeManifestImpl::class);
-        });
-
-        $this->app->singleton(FieldTypeManifest::class, function ($app) {
-            return $app->make(FieldTypeManifestImpl::class);
-        });
-
-        $this->app->singleton(ModelManifest::class, function ($app) {
-            return $app->make(ModelManifestImpl::class);
-        });
-
-        $this->app->bind(PricingManager::class, function ($app) {
-            return $app->make(PricingManagerImpl::class);
-        });
-
-        $this->app->bind(PriceFormatterInterface::class, function ($app, array $parameters = []) {
-            $concrete = config('lunar.pricing.formatter', DefaultPriceFormatter::class);
-
-            return $app->make($concrete, $parameters);
-        });
-
-        $this->app->singleton(PriceCalculatorInterface::class, DefaultPriceCalculator::class);
-
-        $this->app->singleton(TaxManager::class, function ($app) {
-            return $app->make(TaxManagerImpl::class);
-        });
-
-        $this->app->singleton(PaymentManager::class, function ($app) {
-            return $app->make(PaymentManagerImpl::class);
-        });
-
-        $this->app->singleton(DiscountManager::class, function ($app) {
-            return $app->make(DiscountManagerImpl::class);
-        });
-
-        $this->app->bind(CouponValidator::class, CouponValidatorImpl::class);
-
-        $this->app->singleton(ProvidesTelemetryInsights::class, function ($app) {
-            return $app->make(TelemetryInsights::class);
-        });
-
-        $this->app->singleton(TelemetryService::class, function ($app) {
-            return $app->make(TelemetryServiceImpl::class);
-        });
-
+        $this->registerServices();
+        $this->registerManagers();
         $this->registerActions();
 
         $this->app->terminating(function () {
@@ -416,6 +336,100 @@ class LunarServiceProvider extends ServiceProvider
                 [$class, 'run']
             );
         }
+    }
+
+    /**
+     * Bind the stateless services, manifests, registries and value helpers.
+     */
+    protected function registerServices(): void
+    {
+        $this->app->singleton(MeasurementConverter::class, function () {
+            return new MeasurementConverter;
+        });
+
+        $this->app->singleton(CartModifiers::class, function () {
+            return new CartModifiers;
+        });
+
+        $this->app->singleton(CartLineModifiers::class, function () {
+            return new CartLineModifiers;
+        });
+
+        $this->app->singleton(OrderModifiers::class, function () {
+            return new OrderModifiers;
+        });
+
+        $this->app->singleton(ShippingModifiers::class, function () {
+            return new ShippingModifiers;
+        });
+
+        $this->app->singleton(ShippingManifest::class, function ($app) {
+            return $app->make(ShippingManifestImpl::class);
+        });
+
+        $this->app->singleton(AttributeManifest::class, function ($app) {
+            return $app->make(AttributeManifestImpl::class);
+        });
+
+        $this->app->singleton(FieldTypeManifest::class, function ($app) {
+            return $app->make(FieldTypeManifestImpl::class);
+        });
+
+        $this->app->singleton(ModelManifest::class, function ($app) {
+            return $app->make(ModelManifestImpl::class);
+        });
+
+        $this->app->singleton(OrderReferenceGenerator::class, function ($app) {
+            return $app->make(OrderReferenceGeneratorImpl::class);
+        });
+
+        $this->app->bind(PriceFormatterInterface::class, function ($app, array $parameters = []) {
+            $concrete = config('lunar.pricing.formatter', DefaultPriceFormatter::class);
+
+            return $app->make($concrete, $parameters);
+        });
+
+        $this->app->singleton(PriceCalculatorInterface::class, DefaultPriceCalculator::class);
+
+        $this->app->bind(CouponValidator::class, CouponValidatorImpl::class);
+
+        $this->app->singleton(ProvidesTelemetryInsights::class, function ($app) {
+            return $app->make(TelemetryInsights::class);
+        });
+
+        $this->app->singleton(TelemetryService::class, function ($app) {
+            return $app->make(TelemetryServiceImpl::class);
+        });
+    }
+
+    /**
+     * Bind the manager contracts to their default implementations.
+     */
+    protected function registerManagers(): void
+    {
+        $this->app->singleton(CartSession::class, function ($app) {
+            return $app->make(CartSessionManager::class);
+        });
+
+        $this->app->singleton(StorefrontSession::class, function ($app) {
+            return $app->make(StorefrontSessionManager::class);
+        });
+
+        $this->app->bind(PricingManager::class, function ($app) {
+            return $app->make(PricingManagerImpl::class);
+        });
+
+        $this->app->singleton(TaxManager::class, function ($app) {
+            return $app->make(TaxManagerImpl::class);
+        });
+
+        $this->app->singleton(PaymentManager::class, function ($app) {
+            return $app->make(PaymentManagerImpl::class);
+        });
+
+        $this->app->singleton(DiscountManager::class, function ($app) {
+            return $app->make(DiscountManagerImpl::class);
+        });
     }
 
     /**
