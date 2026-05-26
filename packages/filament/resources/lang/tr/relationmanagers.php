@@ -239,7 +239,7 @@ return [
                 'label' => 'Para Birimi',
                 'helper_text' => 'Bu fiyat için para birimini seçin.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Karşılaştırma Fiyatı',
                 'helper_text' => 'Satın alma fiyatıyla karşılaştırma için orijinal fiyat veya tavsiye edilen satış fiyat (RRP).',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'İndirimlerden önce satın alma fiyatı.',
                         'sync_price' => 'Fiyat varsayılan para birimi ile senkronize edildi.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Karşılaştırma Fiyatı',
                         'helper_text' => 'Satın alma fiyatıyla karşılaştırma için orijinal fiyat veya tavsiye edilen satış fiyat (RRP).',
                     ],

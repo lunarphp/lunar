@@ -559,8 +559,8 @@ final class LunarSetList
         'Lunar\\Models\\OrderLine' => ['unit_price', 'sub_total', 'tax_total', 'discount_total', 'total'],
         'Lunar\\Core\\Models\\Transaction' => ['amount'],
         'Lunar\\Models\\Transaction' => ['amount'],
-        'Lunar\\Core\\Models\\Price' => ['price', 'compare_price'],
-        'Lunar\\Models\\Price' => ['price', 'compare_price'],
+        'Lunar\\Core\\Models\\Price' => ['price', 'list_price'],
+        'Lunar\\Models\\Price' => ['price', 'list_price'],
     ];
 
     /**
@@ -568,7 +568,7 @@ final class LunarSetList
      * contributed by spec 0012.
      *
      * Only the catalogue `Price` model (`lunar_prices.price` /
-     * `compare_price`) stores a raw per-pack price that requires
+     * `list_price`) stores a raw per-pack price that requires
      * division by `priceable->unit_quantity` to display per-single-unit.
      * `OrderLine.unit_price` is persisted *already divided* to per-
      * single-unit by `CalculateLineSubtotal`, so `unitDecimal` /
@@ -580,8 +580,8 @@ final class LunarSetList
      * @var array<class-string, list<string>>
      */
     public const V1_TO_V2_UNIT_AWARE_ATTRIBUTES = [
-        'Lunar\\Core\\Models\\Price' => ['price', 'compare_price'],
-        'Lunar\\Models\\Price' => ['price', 'compare_price'],
+        'Lunar\\Core\\Models\\Price' => ['price', 'list_price'],
+        'Lunar\\Models\\Price' => ['price', 'list_price'],
     ];
 
     /**
@@ -627,6 +627,27 @@ final class LunarSetList
     public const V1_TO_V2_METHOD_RENAMES = [
         ['Lunar\\Admin\\Support\\Resources\\BaseResource', 'getDefaultForm', 'form'],
         ['Lunar\\Admin\\Support\\Resources\\BaseResource', 'getDefaultTable', 'table'],
+    ];
+
+    /**
+     * Property/attribute renames on Lunar models, contributed by v2
+     * breaking specs. Consumed by `RenamePropertyRector` via
+     * `RenameProperty`.
+     *
+     * Spec 0017 renamed the catalogue `Price` model's `compare_price`
+     * column to `list_price`. The rename fires before the money-attribute
+     * rewrites (which now key on `list_price`), so a chained v1 call such
+     * as `$price->compare_price->decimal()` first becomes
+     * `$price->list_price->decimal()` and then `$price->decimal('list_price')`.
+     * Both the v1 (`Lunar\Models\Price`) and v2 (`Lunar\Core\Models\Price`)
+     * class strings are listed so the rename applies regardless of whether
+     * `RenameClassRector` has already rewritten the surrounding type.
+     *
+     * @var array<int, array{0: class-string, 1: string, 2: string}>
+     */
+    public const V1_TO_V2_PROPERTY_RENAMES = [
+        ['Lunar\\Core\\Models\\Price', 'compare_price', 'list_price'],
+        ['Lunar\\Models\\Price', 'compare_price', 'list_price'],
     ];
 
     /**

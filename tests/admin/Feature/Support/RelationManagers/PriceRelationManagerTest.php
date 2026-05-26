@@ -52,7 +52,7 @@ it('can mount the edit action on a tier price without a Price object cast error'
         'currency_id' => $currency->id,
         'min_quantity' => 5,
         'price' => 1099,
-        'compare_price' => 1299,
+        'list_price' => 1299,
     ]);
 
     $this->asStaff(admin: true);
@@ -64,7 +64,7 @@ it('can mount the edit action on a tier price without a Price object cast error'
         ->mountTableAction(EditAction::class, $price)
         ->assertTableActionDataSet([
             'price' => 10.99,
-            'compare_price' => 12.99,
+            'list_price' => 12.99,
             'min_quantity' => 5,
             'currency_id' => $currency->id,
         ])

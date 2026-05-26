@@ -40,7 +40,7 @@ it('can mount the edit action on a customer group price without a Price object c
         'customer_group_id' => $customerGroup->id,
         'min_quantity' => 1,
         'price' => 1099,
-        'compare_price' => 1299,
+        'list_price' => 1299,
     ]);
 
     $this->asStaff(admin: true);
@@ -52,7 +52,7 @@ it('can mount the edit action on a customer group price without a Price object c
         ->mountTableAction(EditAction::class, $price)
         ->assertTableActionDataSet([
             'price' => 10.99,
-            'compare_price' => 12.99,
+            'list_price' => 12.99,
             'customer_group_id' => $customerGroup->id,
             'currency_id' => $currency->id,
         ])

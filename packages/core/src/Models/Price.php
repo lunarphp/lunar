@@ -24,7 +24,7 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property string $priceable_type
  * @property int $priceable_id
  * @property int $price
- * @property ?int $compare_price
+ * @property ?int $list_price
  * @property int $min_quantity
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -53,7 +53,7 @@ class Price extends Base implements Contracts\Price, HasCurrency
 
     protected $casts = [
         'price' => 'integer',
-        'compare_price' => 'integer',
+        'list_price' => 'integer',
     ];
 
     /**
@@ -176,13 +176,13 @@ class Price extends Base implements Contracts\Price, HasCurrency
     }
 
     /**
-     * Return the compare price inclusive of tax.
+     * Return the list price inclusive of tax.
      *
      * @param  TaxZoneContract|null  $taxZone  Optional override for the tax zone.
      */
-    public function comparePriceIncTax(?TaxZoneContract $taxZone = null): PriceValue
+    public function listPriceIncTax(?TaxZoneContract $taxZone = null): PriceValue
     {
-        $value = (int) $this->compare_price;
+        $value = (int) $this->list_price;
         $currency = $this->resolveCurrency();
 
         if (! prices_inc_tax()) {

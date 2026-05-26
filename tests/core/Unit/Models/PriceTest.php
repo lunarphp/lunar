@@ -78,7 +78,7 @@ test('format and decimal helpers expose currency-aware values', function () {
     expect($price->format('price', 'en-gb'))->toEqual('£12.99');
 });
 
-test('compare price is cast as integer', function () {
+test('list price is cast as integer', function () {
     $variant = ProductVariant::factory()->create();
 
     $currency = Currency::factory()->create([
@@ -91,13 +91,13 @@ test('compare price is cast as integer', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => $variant->getMorphClass(),
         'price' => 1299,
-        'compare_price' => 1399,
+        'list_price' => 1399,
         'min_quantity' => 1,
     ]);
 
-    expect($price->compare_price)->toBe(1399);
-    expect($price->decimal('compare_price'))->toEqual(13.99);
-    expect($price->format('compare_price', 'en_gb'))->toEqual('£13.99');
+    expect($price->list_price)->toBe(1399);
+    expect($price->decimal('list_price'))->toEqual(13.99);
+    expect($price->format('list_price', 'en_gb'))->toEqual('£13.99');
 });
 
 test('can get a price', function () {
@@ -218,7 +218,7 @@ test('can get a price inc tax', function () {
     expect($price->priceIncTax()->value)->toEqual(1000);
 });
 
-test('can get a compare price inc tax', function () {
+test('can get a list price inc tax', function () {
     Config::set('lunar.pricing.stored_inclusive_of_tax', false);
 
     $variant = ProductVariant::factory()->create();
@@ -234,11 +234,11 @@ test('can get a compare price inc tax', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => $variant->getMorphClass(),
         'price' => 833,
-        'compare_price' => 1667,
+        'list_price' => 1667,
         'min_quantity' => 1,
     ]);
 
-    expect($price->comparePriceIncTax()->value)->toEqual(2000);
+    expect($price->listPriceIncTax()->value)->toEqual(2000);
 });
 
 test('priceIncTax falls back to the default tax zone when no zone is given', function () {
@@ -381,7 +381,7 @@ test('priceIncTax accepts an explicit tax zone param', function () {
     expect($price->priceIncTax(taxZone: $uaeZone)->value)->toEqual(1100);
 });
 
-test('comparePriceIncTax accepts explicit taxZone param', function () {
+test('listPriceIncTax accepts explicit taxZone param', function () {
     Config::set('lunar.pricing.stored_inclusive_of_tax', false);
 
     $currency = Currency::factory()->create(['code' => 'AED', 'decimal_places' => 2, 'default' => true]);
@@ -412,13 +412,13 @@ test('comparePriceIncTax accepts explicit taxZone param', function () {
         'priceable_id' => $variant->id,
         'priceable_type' => $variant->getMorphClass(),
         'price' => 1000,
-        'compare_price' => 1500,
+        'list_price' => 1500,
         'min_quantity' => 1,
     ]);
 
-    // Default zone → 0 % on compare price
-    expect($price->comparePriceIncTax()->value)->toEqual(1500);
+    // Default zone → 0 % on list price
+    expect($price->listPriceIncTax()->value)->toEqual(1500);
 
-    // UAE zone → 10 % on compare price
-    expect($price->comparePriceIncTax(taxZone: $uaeZone)->value)->toEqual(1650);
+    // UAE zone → 10 % on list price
+    expect($price->listPriceIncTax(taxZone: $uaeZone)->value)->toEqual(1650);
 });

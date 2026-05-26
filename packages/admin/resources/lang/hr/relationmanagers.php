@@ -239,7 +239,7 @@ return [
                 'label' => 'Valuta',
                 'helper_text' => 'Odaberite valutu za ovu cijenu.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Usporedna cijena',
                 'helper_text' => 'Izvorna cijena ili preporučena maloprodajna cijena, za usporedbu s kupovnom cijenom.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'Kupovna cijena, prije popusta.',
                         'sync_price' => 'Price is synced with the default currency.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Usporedna cijena',
                         'helper_text' => 'Izvorna cijena ili preporučena maloprodajna cijena, za usporedbu s kupovnom cijenom.',
                     ],

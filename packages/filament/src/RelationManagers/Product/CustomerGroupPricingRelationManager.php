@@ -79,10 +79,10 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                     TextInput::make('price')->numeric()->helperText(
                         __('lunar-filament::relationmanagers.pricing.form.price.helper_text')
                     )->required(),
-                    TextInput::make('compare_price')->label(
-                        __('lunar-filament::relationmanagers.pricing.form.compare_price.label')
+                    TextInput::make('list_price')->label(
+                        __('lunar-filament::relationmanagers.pricing.form.list_price.label')
                     )->helperText(
-                        __('lunar-filament::relationmanagers.pricing.form.compare_price.helper_text')
+                        __('lunar-filament::relationmanagers.pricing.form.list_price.helper_text')
                     )->numeric(),
                 ])->columns(2),
             ])->columns(1);
@@ -137,7 +137,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
                     $data['min_quantity'] = 1;
                     $data['price'] = (int) ($data['price'] * $currencyModel->factor);
-                    $data['compare_price'] = (int) ($data['compare_price'] * $currencyModel->factor);
+                    $data['list_price'] = (int) ($data['list_price'] * $currencyModel->factor);
 
                     return $data;
                 })->label(
@@ -155,7 +155,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
 
                         $data['min_quantity'] = 1;
                         $data['price'] = (int) ($data['price'] * $currencyModel->factor);
-                        $data['compare_price'] = (int) ($data['compare_price'] * $currencyModel->factor);
+                        $data['list_price'] = (int) ($data['list_price'] * $currencyModel->factor);
 
                         return $data;
                     })->after(
@@ -170,7 +170,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
         $currencyId = $data['currency_id'] ?? null;
         $currency = $currencyId ? Currency::find($currencyId) : null;
 
-        foreach (['price', 'compare_price'] as $key) {
+        foreach (['price', 'list_price'] as $key) {
             if (! isset($data[$key]) || $data[$key] === null || ! $currency) {
                 continue;
             }

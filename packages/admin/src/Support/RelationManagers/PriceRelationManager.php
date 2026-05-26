@@ -98,10 +98,10 @@ class PriceRelationManager extends BaseRelationManager
                     TextInput::make('price')->numeric()->helperText(
                         __('lunarpanel::relationmanagers.pricing.form.price.helper_text')
                     )->required(),
-                    TextInput::make('compare_price')->label(
-                        __('lunarpanel::relationmanagers.pricing.form.compare_price.label')
+                    TextInput::make('list_price')->label(
+                        __('lunarpanel::relationmanagers.pricing.form.list_price.label')
                     )->helperText(
-                        __('lunarpanel::relationmanagers.pricing.form.compare_price.helper_text')
+                        __('lunarpanel::relationmanagers.pricing.form.list_price.helper_text')
                     )->numeric(),
                 ])->columns(2),
             ])->columns(1);
@@ -203,7 +203,7 @@ class PriceRelationManager extends BaseRelationManager
         $currencyId = $data['currency_id'] ?? null;
         $currency = $currencyId ? Currency::find($currencyId) : null;
 
-        foreach (['price', 'compare_price'] as $key) {
+        foreach (['price', 'list_price'] as $key) {
             if (! isset($data[$key]) || $data[$key] === null || ! $currency) {
                 continue;
             }

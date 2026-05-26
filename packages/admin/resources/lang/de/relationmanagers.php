@@ -239,7 +239,7 @@ return [
                 'label' => 'Währung',
                 'helper_text' => 'Wählen Sie die Währung für diesen Preis aus.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Vergleichspreis',
                 'helper_text' => 'Der ursprüngliche Preis oder UVP, zum Vergleich mit dem Kaufpreis.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'Der Kaufpreis, vor Rabatten.',
                         'sync_price' => 'Price is synced with the default currency.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Vergleichspreis',
                         'helper_text' => 'Der ursprüngliche Preis oder UVP, zum Vergleich mit dem Kaufpreis.',
                     ],

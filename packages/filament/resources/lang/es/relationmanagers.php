@@ -239,7 +239,7 @@ return [
                 'label' => 'Moneda',
                 'helper_text' => 'Selecciona la moneda para este precio.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Precio Comparativo',
                 'helper_text' => 'El precio original o RRP, para comparación con su precio de compra.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'El precio de compra, antes de descuentos.',
                         'sync_price' => 'Price is synced with the default currency.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Precio Comparativo',
                         'helper_text' => 'El precio original o RRP, para comparación con su precio de compra.',
                     ],

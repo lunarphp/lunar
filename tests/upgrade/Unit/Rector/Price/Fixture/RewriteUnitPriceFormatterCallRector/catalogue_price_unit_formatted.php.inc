@@ -4,7 +4,7 @@ namespace Lunar\Tests\Upgrade\Unit\Rector\Price\Fixture\RewriteUnitPriceFormatte
 
 function unit_formatted(\Lunar\Core\Models\Price $catalogPrice): ?string
 {
-    return $catalogPrice->compare_price->unitFormatted('en_GB');
+    return $catalogPrice->list_price->unitFormatted('en_GB');
 }
 
 ?>
@@ -15,7 +15,7 @@ namespace Lunar\Tests\Upgrade\Unit\Rector\Price\Fixture\RewriteUnitPriceFormatte
 
 function unit_formatted(\Lunar\Core\Models\Price $catalogPrice): ?string
 {
-    return $catalogPrice->unitFormat('compare_price', 'en_GB');
+    return $catalogPrice->unitFormat('list_price', 'en_GB');
 }
 
 ?>

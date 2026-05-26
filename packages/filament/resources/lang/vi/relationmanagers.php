@@ -239,7 +239,7 @@ return [
                 'label' => 'Tiền tệ',
                 'helper_text' => 'Chọn tiền tệ cho giá này.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Giá so sánh',
                 'helper_text' => 'Giá gốc hoặc giá bán lẻ đề xuất, để so sánh với giá mua.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'Giá mua, trước khi giảm giá.',
                         'sync_price' => 'Price is synced with the default currency.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Giá so sánh',
                         'helper_text' => 'Giá gốc hoặc giá bán lẻ đề xuất, để so sánh với giá mua.',
                     ],

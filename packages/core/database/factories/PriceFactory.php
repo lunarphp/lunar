@@ -13,7 +13,7 @@ class PriceFactory extends BaseFactory
     {
         return [
             'price' => $this->faker->numberBetween(1, 2500),
-            'compare_price' => $this->faker->numberBetween(1, 2500),
+            'list_price' => $this->faker->numberBetween(1, 2500),
             'currency_id' => Currency::factory(),
         ];
     }
