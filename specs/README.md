@@ -40,3 +40,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0014 | Price calculator service | draft       |
 | 0015 | PriceValue arithmetic | implemented |
 | 0016 | Service-layer dependency injection | implemented |
+| 0017 | Rename `compare_price` to `list_price` | implemented |

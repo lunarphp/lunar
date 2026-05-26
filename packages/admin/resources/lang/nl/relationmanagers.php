@@ -239,7 +239,7 @@ return [
                 'label' => 'Valuta',
                 'helper_text' => 'Selecteer de valuta voor deze prijs.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Vergelijkingsprijs',
                 'helper_text' => 'De oorspronkelijke prijs of adviesprijs, ter vergelijking met de aankoopprijs.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'De aankoopprijs, voor kortingen.',
                         'sync_price' => 'Price is synced with the default currency.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Vergelijkingsprijs',
                         'helper_text' => 'De oorspronkelijke prijs of adviesprijs, ter vergelijking met de aankoopprijs.',
                     ],

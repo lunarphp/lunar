@@ -239,9 +239,9 @@ return [
                 'label' => 'Currency',
                 'helper_text' => 'Select the currency for this price.',
             ],
-            'compare_price' => [
-                'label' => 'Comparison Price',
-                'helper_text' => 'The original price or RRP, for comparison with its purchase price.',
+            'list_price' => [
+                'label' => 'List Price',
+                'helper_text' => 'The list price or RRP, shown for comparison with the purchase price.',
             ],
             'basePrices' => [
                 'title' => 'Prices',
@@ -251,9 +251,9 @@ return [
                         'helper_text' => 'The purchase price, before discounts.',
                         'sync_price' => 'Price is synced with the default currency.',
                     ],
-                    'compare_price' => [
-                        'label' => 'Comparison Price',
-                        'helper_text' => 'The original price or RRP, for comparison with its purchase price.',
+                    'list_price' => [
+                        'label' => 'List Price',
+                        'helper_text' => 'The list price or RRP, shown for comparison with the purchase price.',
                     ],
                 ],
                 'tooltip' => 'Automatically generated based on currency exchange rates.',

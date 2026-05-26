@@ -239,7 +239,7 @@ return [
                 'label' => 'Monedă',
                 'helper_text' => 'Selectați moneda pentru acest preț.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Preț de comparație',
                 'helper_text' => 'Prețul original sau RRP, pentru comparație cu prețul de achiziție.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'Prețul de achiziție, înainte de reduceri.',
                         'sync_price' => 'Prețul este sincronizat cu moneda implicită.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Preț de comparație',
                         'helper_text' => 'Prețul original sau RRP, pentru comparație cu prețul de achiziție.',
                     ],

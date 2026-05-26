@@ -239,7 +239,7 @@ return [
                 'label' => 'Moeda',
                 'helper_text' => 'Selecione a moeda para este preço.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Preço de comparação',
                 'helper_text' => 'O preço original (ou preço sugerido) para comparação com o preço de compra.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'Preço de compra, antes de descontos.',
                         'sync_price' => 'Preço sincronizado com a moeda padrão.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Preço de comparação',
                         'helper_text' => 'O preço original (ou preço sugerido) para comparação com o preço de compra.',
                     ],

@@ -34,7 +34,7 @@ interface Price
     public function priceIncTax(?TaxZone $taxZone = null): PriceValue;
 
     /**
-     * Return the compare price inclusive of tax.
+     * Return the list price inclusive of tax.
      */
-    public function comparePriceIncTax(?TaxZone $taxZone = null): PriceValue;
+    public function listPriceIncTax(?TaxZone $taxZone = null): PriceValue;
 }

@@ -239,7 +239,7 @@ return [
                 'label' => 'Waluta',
                 'helper_text' => 'Wybierz walutę dla tej ceny.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Cena porównawcza',
                 'helper_text' => 'Oryginalna cena lub sugerowana cena producenta, do porównania z ceną zakupu.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'Cena zakupu, przed rabatami.',
                         'sync_price' => 'Price is synced with the default currency.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Cena porównawcza',
                         'helper_text' => 'Oryginalna cena lub sugerowana cena producenta, do porównania z ceną zakupu.',
                     ],

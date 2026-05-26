@@ -239,7 +239,7 @@ return [
                 'label' => 'Pénznem',
                 'helper_text' => 'Válaszd ki az ár pénznemét.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Összehasonlító ár',
                 'helper_text' => 'Az eredeti ár vagy ajánlott fogyasztói ár, az összehasonlításhoz.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'A vásárlási ár, kedvezmények előtt.',
                         'sync_price' => 'Az ár szinkronizálva van az alapértelmezett pénznemmel.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Összehasonlító ár',
                         'helper_text' => 'Az eredeti ár vagy ajánlott fogyasztói ár, az összehasonlításhoz.',
                     ],

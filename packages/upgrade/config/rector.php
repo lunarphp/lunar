@@ -11,7 +11,9 @@ use Lunar\Upgrade\Rector\Price\RewriteUnitPriceFormatterCallRector;
 use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
+use Rector\Renaming\Rector\PropertyFetch\RenamePropertyRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
+use Rector\Renaming\ValueObject\RenameProperty;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -25,6 +27,13 @@ return RectorConfig::configure()
         array_map(
             fn (array $rename): MethodCallRename => new MethodCallRename(...$rename),
             LunarSetList::V1_TO_V2_METHOD_RENAMES,
+        ),
+    )
+    ->withConfiguredRule(
+        RenamePropertyRector::class,
+        array_map(
+            fn (array $rename): RenameProperty => new RenameProperty(...$rename),
+            LunarSetList::V1_TO_V2_PROPERTY_RENAMES,
         ),
     )
     ->withConfiguredRule(DropPriceValueAccessRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)

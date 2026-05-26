@@ -239,7 +239,7 @@ return [
                 'label' => 'Devise',
                 'helper_text' => 'Sélectionnez la devise pour ce prix.',
             ],
-            'compare_price' => [
+            'list_price' => [
                 'label' => 'Prix de comparaison',
                 'helper_text' => 'Le prix d\'origine ou PDSF, pour la comparaison avec son prix d\'achat.',
             ],
@@ -251,7 +251,7 @@ return [
                         'helper_text' => 'Le prix d\'achat, avant réductions.',
                         'sync_price' => 'Price is synced with the default currency.',
                     ],
-                    'compare_price' => [
+                    'list_price' => [
                         'label' => 'Prix de comparaison',
                         'helper_text' => 'Le prix d\'origine ou PDSF, pour la comparaison avec son prix d\'achat.',
                     ],

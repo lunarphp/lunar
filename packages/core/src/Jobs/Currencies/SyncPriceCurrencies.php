@@ -47,7 +47,7 @@ class SyncPriceCurrencies implements ShouldQueue
                     ...Arr::except($this->price->getAttributes(), ['id']),
                     'currency_id' => $currency->id,
                     'price' => $this->price->price * $currency->exchange_rate,
-                    'compare_price' => $this->price->compare_price * $currency->exchange_rate,
+                    'list_price' => $this->price->list_price * $currency->exchange_rate,
                 ]);
 
                 $priceCounterpart->saveQuietly();
@@ -56,7 +56,7 @@ class SyncPriceCurrencies implements ShouldQueue
             }
 
             $priceCounterpart->price = $this->price->price * $currency->exchange_rate;
-            $priceCounterpart->compare_price = $this->price->compare_price * $currency->exchange_rate;
+            $priceCounterpart->list_price = $this->price->list_price * $currency->exchange_rate;
             $priceCounterpart->saveQuietly();
         }
     }

@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('currency_id')->nullable(false);
             $table->morphs('priceable');
             $table->unsignedBigInteger('price');
-            $table->unsignedBigInteger('compare_price')->nullable();
+            $table->unsignedBigInteger('list_price')->nullable();
             $table->integer('min_quantity')->default(1)->index();
             $table->timestamps();
         });
