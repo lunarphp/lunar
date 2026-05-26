@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Core\Base\OrderReferenceGenerator;
+use Lunar\Core\Orders\ReferenceGenerator;
 use Lunar\Core\Pipelines\Order\Creation\CleanUpOrderLines;
 use Lunar\Core\Pipelines\Order\Creation\CreateOrderAddresses;
 use Lunar\Core\Pipelines\Order\Creation\CreateOrderLines;
@@ -52,7 +52,7 @@ return [
     | when you create an order from a cart.
     |
     */
-    'reference_generator' => OrderReferenceGenerator::class,
+    'reference_generator' => ReferenceGenerator::class,
 
     /*
     |--------------------------------------------------------------------------

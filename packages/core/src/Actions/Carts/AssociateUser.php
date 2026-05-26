@@ -3,7 +3,7 @@
 namespace Lunar\Core\Actions\Carts;
 
 use Lunar\Core\Actions\AbstractAction;
-use Lunar\Core\Base\LunarUser;
+use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 

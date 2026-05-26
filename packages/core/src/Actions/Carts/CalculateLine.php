@@ -3,7 +3,7 @@
 namespace Lunar\Core\Actions\Carts;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\Addressable;
+use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\Taxes;
 use Lunar\Core\Models\CartLine;

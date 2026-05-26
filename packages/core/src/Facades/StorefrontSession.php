@@ -3,7 +3,6 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\StorefrontSessionInterface;
 use Lunar\Core\Managers\StorefrontSessionManager;
 
 /**
@@ -29,6 +28,6 @@ class StorefrontSession extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return StorefrontSessionInterface::class;
+        return \Lunar\Core\Contracts\StorefrontSession::class;
     }
 }

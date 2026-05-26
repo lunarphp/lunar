@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Orders\RefundOrder;
-use Lunar\Core\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Currency;

@@ -5,9 +5,8 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Database\Factories\TaxZoneCountryFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
 
 /**
  * @property int $id
@@ -16,7 +15,7 @@ use Lunar\Core\Database\Factories\TaxZoneCountryFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxZoneCountry extends BaseModel implements Contracts\TaxZoneCountry
+class TaxZoneCountry extends Base implements Contracts\TaxZoneCountry
 {
     use HasFactory;
     use HasMacros;

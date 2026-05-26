@@ -9,17 +9,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
 use Kalnoy\Nestedset\QueryBuilder;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\AsAttributeData;
-use Lunar\Core\Base\HasThumbnailImage;
-use Lunar\Core\Base\Traits\HasChannels;
-use Lunar\Core\Base\Traits\HasCustomerGroups;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasMedia;
-use Lunar\Core\Base\Traits\HasTranslations;
-use Lunar\Core\Base\Traits\HasUrls;
-use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Casts\AsAttributeData;
+use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\CollectionFactory;
+use Lunar\Core\Models\Concerns\HasChannels;
+use Lunar\Core\Models\Concerns\HasCustomerGroups;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\HasUrls;
+use Lunar\Core\Models\Concerns\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -35,7 +34,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Collection extends BaseModel implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
+class Collection extends Base implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
 {
     use HasChannels,
         HasCustomerGroups,

@@ -3,7 +3,6 @@
 namespace Lunar\Core\FieldTypes;
 
 use JsonSerializable;
-use Lunar\Core\Base\FieldType;
 use Lunar\Core\Exceptions\FieldTypeException;
 
 class Number implements FieldType, JsonSerializable

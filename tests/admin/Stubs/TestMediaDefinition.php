@@ -2,11 +2,11 @@
 
 namespace Lunar\Tests\Admin\Stubs;
 
-use Lunar\Core\Base\MediaDefinitionsInterface;
+use Lunar\Core\Contracts\MediaDefinitions;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class TestMediaDefinition implements MediaDefinitionsInterface
+class TestMediaDefinition implements MediaDefinitions
 {
     public function registerMediaConversions(HasMedia $model, ?Media $media = null): void {}
 

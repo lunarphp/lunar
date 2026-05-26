@@ -4,7 +4,7 @@ namespace Lunar\Core\Actions\Orders;
 
 use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Actions\AbstractAction;
-use Lunar\Core\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Contracts\Transaction as TransactionContract;

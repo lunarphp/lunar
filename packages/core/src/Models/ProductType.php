@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasAttributes;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\LogsActivity;
 use Lunar\Core\Database\Factories\ProductTypeFactory;
+use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
@@ -18,7 +17,7 @@ use Lunar\Core\Database\Factories\ProductTypeFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductType extends BaseModel implements Contracts\ProductType
+class ProductType extends Base implements Contracts\ProductType
 {
     use HasAttributes;
     use HasFactory;

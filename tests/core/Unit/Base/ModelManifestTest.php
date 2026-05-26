@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Base\ModelManifestInterface;
+use Lunar\Core\Contracts\ModelManifest as ModelManifestContract;
 use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\Product;
 use Lunar\Tests\Core\Stubs\Models\Custom\CustomProduct;
@@ -12,9 +12,9 @@ uses(TestCase::class)->group('model_extending');
 uses(RefreshDatabase::class);
 
 test('can instantiate class', function () {
-    $manifest = app(ModelManifestInterface::class);
+    $manifest = app(ModelManifestContract::class);
 
-    expect($manifest)->toBeInstanceOf(Lunar\Core\Base\ModelManifest::class);
+    expect($manifest)->toBeInstanceOf(Lunar\Core\Manifests\ModelManifest::class);
 });
 
 test('can add model', function () {

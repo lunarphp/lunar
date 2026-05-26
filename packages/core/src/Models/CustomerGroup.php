@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\AsAttributeData;
-use Lunar\Core\Base\Traits\HasAttributes;
-use Lunar\Core\Base\Traits\HasDefaultRecord;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Database\Factories\CustomerGroupFactory;
+use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasDefaultRecord;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
@@ -23,7 +22,7 @@ use Lunar\Core\Database\Factories\CustomerGroupFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CustomerGroup extends BaseModel implements Contracts\CustomerGroup
+class CustomerGroup extends Base implements Contracts\CustomerGroup
 {
     use HasAttributes;
     use HasDefaultRecord;

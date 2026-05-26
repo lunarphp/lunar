@@ -8,15 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\AsAttributeData;
-use Lunar\Core\Base\Traits\HasAttributes;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasPersonalDetails;
-use Lunar\Core\Base\Traits\HasTranslations;
-use Lunar\Core\Base\Traits\LogsActivity;
-use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Database\Factories\CustomerFactory;
+use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPersonalDetails;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Models\Concerns\Searchable;
 
 /**
  * @property int $id
@@ -31,7 +30,7 @@ use Lunar\Core\Database\Factories\CustomerFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Customer extends BaseModel implements Contracts\Customer
+class Customer extends Base implements Contracts\Customer
 {
     use HasAttributes;
     use HasFactory;

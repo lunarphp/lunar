@@ -5,9 +5,8 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Database\Factories\CountryFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
 
 /**
  * @property int $id
@@ -23,7 +22,7 @@ use Lunar\Core\Database\Factories\CountryFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Country extends BaseModel implements Contracts\Country
+class Country extends Base implements Contracts\Country
 {
     use HasFactory;
     use HasMacros;

@@ -8,13 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\TaxBreakdown;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Casts\TaxBreakdown;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderLineFactory;
 use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**
@@ -39,7 +38,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class OrderLine extends BaseModel implements Contracts\OrderLine, HasCurrency
+class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
 {
     use FormatsPrices;
     use HasFactory;

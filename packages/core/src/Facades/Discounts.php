@@ -3,8 +3,7 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\DiscountManagerInterface;
-use Lunar\Core\Managers\DiscountManager;
+use Lunar\Core\Contracts\DiscountManager;
 
 /**
  * @method static \Lunar\Core\Managers\DiscountManager channel(\Lunar\Core\Models\Contracts\Channel|\Traversable|array $channel)
@@ -14,7 +13,7 @@ use Lunar\Core\Managers\DiscountManager;
  * @method static \Illuminate\Support\Collection getCustomerGroups()
  * @method static \Lunar\Core\Managers\DiscountManager addType(string $classname)
  * @method static \Illuminate\Support\Collection getTypes()
- * @method static \Lunar\Core\Managers\DiscountManager addApplied(\Lunar\Core\Base\DataTransferObjects\CartDiscount $cartDiscount)
+ * @method static \Lunar\Core\Managers\DiscountManager addApplied(\Lunar\Core\DataObjects\CartDiscount $cartDiscount)
  * @method static \Illuminate\Support\Collection getApplied()
  * @method static \Lunar\Core\Models\Contracts\Cart apply(\Lunar\Core\Models\Contracts\Cart $cart)
  * @method static \Lunar\Core\Managers\DiscountManager resetDiscounts()
@@ -29,6 +28,6 @@ class Discounts extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return DiscountManagerInterface::class;
+        return DiscountManager::class;
     }
 }

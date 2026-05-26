@@ -2,9 +2,9 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasModelExtending;
+use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Collection as ModelsCollection;
+use Lunar\Core\Models\Concerns\HasModelExtending;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\Url;
 use Lunar\Tests\Core\TestCase;
@@ -66,6 +66,6 @@ test('macros are scoped to the correct model', function () {
 });
 
 test('base model includes trait', function () {
-    $uses = class_uses_recursive(BaseModel::class);
+    $uses = class_uses_recursive(Base::class);
     expect(in_array(HasModelExtending::class, $uses))->toBeTrue();
 });

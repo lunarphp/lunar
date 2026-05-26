@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
-use Lunar\Core\Base\Enums\ProductAssociation as ProductAssociationEnum;
-use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Database\Factories\ProductAssociationFactory;
+use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Enums\ProductAssociation as ProductAssociationEnum;
+use Lunar\Core\Models\Concerns\HasMacros;
 
 /**
  * @property int $id
@@ -20,7 +19,7 @@ use Lunar\Core\Database\Factories\ProductAssociationFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductAssociation extends BaseModel implements Contracts\ProductAssociation
+class ProductAssociation extends Base implements Contracts\ProductAssociation
 {
     use HasFactory;
     use HasMacros;

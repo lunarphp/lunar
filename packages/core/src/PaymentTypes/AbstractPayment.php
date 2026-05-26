@@ -2,15 +2,15 @@
 
 namespace Lunar\Core\PaymentTypes;
 
-use Lunar\Core\Base\DataTransferObjects\PaymentChecks;
-use Lunar\Core\Base\PaymentTypeInterface;
+use Lunar\Core\Contracts\PaymentType;
+use Lunar\Core\DataObjects\PaymentChecks;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Core\Models\Order;
 
-abstract class AbstractPayment implements PaymentTypeInterface
+abstract class AbstractPayment implements PaymentType
 {
     /**
      * Whether we should allow partial payments

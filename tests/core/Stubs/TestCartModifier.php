@@ -3,10 +3,10 @@
 namespace Lunar\Tests\Core\Stubs;
 
 use Closure;
-use Lunar\Core\Base\CartModifier;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Modifiers\CartModifier;
 
 class TestCartModifier extends CartModifier
 {

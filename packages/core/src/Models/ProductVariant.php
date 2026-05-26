@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\AsAttributeData;
-use Lunar\Core\Base\HasThumbnailImage;
-use Lunar\Core\Base\Purchasable;
-use Lunar\Core\Base\Traits\HasAttributes;
-use Lunar\Core\Base\Traits\HasDimensions;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasPrices;
-use Lunar\Core\Base\Traits\HasTranslations;
-use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Casts\AsAttributeData;
+use Lunar\Core\Contracts\HasThumbnailImage;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Database\Factories\ProductVariantFactory;
+use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasDimensions;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPrices;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\LogsActivity;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -53,7 +52,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
+class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
 {
     use HasAttributes;
     use HasDimensions;

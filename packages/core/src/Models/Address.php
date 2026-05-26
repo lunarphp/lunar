@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\Addressable;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Database\Factories\AddressFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
 
 /**
  * @property int $id
@@ -36,7 +35,7 @@ use Lunar\Core\Database\Factories\AddressFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Address extends BaseModel implements Addressable, Contracts\Address
+class Address extends Base implements Addressable, Contracts\Address
 {
     use HasFactory, HasMacros;
 

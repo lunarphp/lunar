@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
-use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\Discounts;
@@ -11,6 +9,8 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\TaxClass;
+use Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
+use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Shipping\DiscountTypes\ShippingDiscount;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;

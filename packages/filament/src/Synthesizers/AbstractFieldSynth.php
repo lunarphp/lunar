@@ -3,7 +3,7 @@
 namespace Lunar\Filament\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
-use Lunar\Core\Base\FieldType;
+use Lunar\Core\FieldTypes\FieldType;
 
 abstract class AbstractFieldSynth extends Synth
 {

@@ -4,8 +4,7 @@ namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMedia as TraitsHasMedia;
+use Lunar\Core\Models\Concerns\HasMedia as TraitsHasMedia;
 use Spatie\MediaLibrary\HasMedia;
 
 /**
@@ -13,7 +12,7 @@ use Spatie\MediaLibrary\HasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Asset extends BaseModel implements Contracts\Asset, HasMedia
+class Asset extends Base implements Contracts\Asset, HasMedia
 {
     use TraitsHasMedia;
 

@@ -7,11 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasMedia;
-use Lunar\Core\Base\Traits\HasTranslations;
 use Lunar\Core\Database\Factories\ProductOptionValueFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasTranslations;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -23,7 +22,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductOptionValue extends BaseModel implements Contracts\ProductOptionValue, SpatieHasMedia
+class ProductOptionValue extends Base implements Contracts\ProductOptionValue, SpatieHasMedia
 {
     use HasFactory;
     use HasMacros;

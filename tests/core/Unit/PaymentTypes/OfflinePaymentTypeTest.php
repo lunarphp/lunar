@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;

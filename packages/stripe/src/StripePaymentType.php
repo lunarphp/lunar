@@ -2,11 +2,11 @@
 
 namespace Lunar\Stripe;
 
-use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
-use Lunar\Core\Base\DataTransferObjects\PaymentCapture;
-use Lunar\Core\Base\DataTransferObjects\PaymentCheck;
-use Lunar\Core\Base\DataTransferObjects\PaymentChecks;
-use Lunar\Core\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Core\DataObjects\PaymentAuthorize;
+use Lunar\Core\DataObjects\PaymentCapture;
+use Lunar\Core\DataObjects\PaymentCheck;
+use Lunar\Core\DataObjects\PaymentChecks;
+use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\DisallowMultipleCartOrdersException;

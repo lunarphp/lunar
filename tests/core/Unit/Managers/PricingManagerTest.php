@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Base\DataTransferObjects\PricingResponse;
+use Lunar\Core\DataObjects\PricingResponse;
 use Lunar\Core\Managers\PricingManager;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;

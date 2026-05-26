@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Carts\CalculateLine;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\DataObjects\PriceValue as DataTypesPrice;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
@@ -11,6 +10,7 @@ use Lunar\Core\Models\Price;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxRateAmount;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

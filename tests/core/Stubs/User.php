@@ -5,12 +5,13 @@ namespace Lunar\Tests\Core\Stubs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Lunar\Core\Base\Traits\LunarUser;
+use Lunar\Core\Contracts\LunarUser;
+use Lunar\Core\Models\Concerns\IsLunarUser;
 
-class User extends Authenticatable implements \Lunar\Core\Base\LunarUser
+class User extends Authenticatable implements LunarUser
 {
     use HasFactory;
-    use LunarUser;
+    use IsLunarUser;
     use Notifiable;
 
     /**

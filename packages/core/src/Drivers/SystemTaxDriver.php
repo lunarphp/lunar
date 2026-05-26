@@ -3,16 +3,15 @@
 namespace Lunar\Core\Drivers;
 
 use Lunar\Core\Actions\Taxes\GetTaxZone;
-use Lunar\Core\Base\Addressable;
-use Lunar\Core\Base\Purchasable;
-use Lunar\Core\Base\TaxDriver;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
+use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Contracts\CartLine;
 use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Models\TaxZone;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 class SystemTaxDriver implements TaxDriver

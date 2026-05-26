@@ -3,7 +3,6 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\CartSessionInterface;
 use Lunar\Core\Managers\CartSessionManager;
 
 /**
@@ -33,6 +32,6 @@ class CartSession extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return CartSessionInterface::class;
+        return \Lunar\Core\Contracts\CartSession::class;
     }
 }

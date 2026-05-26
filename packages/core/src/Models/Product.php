@@ -14,22 +14,21 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\AsAttributeData;
-use Lunar\Core\Base\Enums\Concerns\ProvidesProductAssociationType;
-use Lunar\Core\Base\HasThumbnailImage;
-use Lunar\Core\Base\Traits\HasChannels;
-use Lunar\Core\Base\Traits\HasCustomerGroups;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasMedia;
-use Lunar\Core\Base\Traits\HasTags;
-use Lunar\Core\Base\Traits\HasTranslations;
-use Lunar\Core\Base\Traits\HasUrls;
-use Lunar\Core\Base\Traits\LogsActivity;
-use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Casts\AsAttributeData;
+use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\ProductFactory;
+use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Core\Jobs\Products\Associations\Associate;
 use Lunar\Core\Jobs\Products\Associations\Dissociate;
+use Lunar\Core\Models\Concerns\HasChannels;
+use Lunar\Core\Models\Concerns\HasCustomerGroups;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasTags;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\HasUrls;
+use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Models\Concerns\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -42,7 +41,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Product extends BaseModel implements Contracts\Product, HasThumbnailImage, SpatieHasMedia
+class Product extends Base implements Contracts\Product, HasThumbnailImage, SpatieHasMedia
 {
     use HasChannels;
     use HasCustomerGroups;

@@ -2,11 +2,11 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\DataTransferObjects\CartDiscount;
-use Lunar\Core\Base\DiscountManagerInterface;
+use Lunar\Core\Contracts\DiscountManager;
+use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\Facades\Discounts;
-use Lunar\Core\Managers\DiscountManager;
+use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
@@ -24,12 +24,12 @@ uses(TestCase::class);
 uses(RefreshDatabase::class);
 
 test('can instantiate manager', function () {
-    $manager = app(DiscountManagerInterface::class);
-    expect($manager)->toBeInstanceOf(DiscountManager::class);
+    $manager = app(DiscountManager::class);
+    expect($manager)->toBeInstanceOf(DiscountManagerImpl::class);
 });
 
 test('can set channel', function () {
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     $channel = Channel::factory()->create();
 
@@ -51,7 +51,7 @@ test('can set channel', function () {
 });
 
 test('can set customer group', function () {
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     $customerGroup = CustomerGroup::factory()->create();
 
@@ -105,7 +105,7 @@ test('can restrict discounts to channel', function () {
         ],
     ]);
 
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     expect($manager->getDiscounts())->toBeEmpty();
 
@@ -192,7 +192,7 @@ test('can restrict discounts to customer group', function () {
         ],
     ]);
 
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     expect($manager->getDiscounts())->toHaveCount(1);
 
@@ -225,20 +225,20 @@ test('can restrict discounts to customer group', function () {
 });
 
 test('can fetch discount types', function () {
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     expect($manager->getTypes())->toBeInstanceOf(Collection::class);
 });
 
 test('can fetch applied discounts', function () {
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     expect($manager->getApplied())->toBeInstanceOf(Collection::class);
     expect($manager->getApplied())->toHaveCount(0);
 });
 
 test('can add applied discount', function () {
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     expect($manager->getApplied())->toBeInstanceOf(Collection::class);
 
@@ -260,7 +260,7 @@ test('can add applied discount', function () {
 });
 
 test('can add new types', function () {
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     $testType = $manager->getTypes()->first(function ($type) {
         return get_class($type) == TestDiscountType::class;
@@ -278,7 +278,7 @@ test('can add new types', function () {
 });
 
 test('can validate coupons', function () {
-    $manager = app(DiscountManagerInterface::class);
+    $manager = app(DiscountManager::class);
 
     Discount::factory()->create([
         'type' => AmountOff::class,

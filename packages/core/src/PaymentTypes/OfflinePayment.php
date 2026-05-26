@@ -2,9 +2,9 @@
 
 namespace Lunar\Core\PaymentTypes;
 
-use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
-use Lunar\Core\Base\DataTransferObjects\PaymentCapture;
-use Lunar\Core\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Core\DataObjects\PaymentAuthorize;
+use Lunar\Core\DataObjects\PaymentCapture;
+use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 

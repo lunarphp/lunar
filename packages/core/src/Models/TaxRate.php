@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\LogsActivity;
 use Lunar\Core\Database\Factories\TaxRateFactory;
 use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
@@ -20,7 +19,7 @@ use Lunar\Core\Facades\DB;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxRate extends BaseModel implements Contracts\TaxRate
+class TaxRate extends Base implements Contracts\TaxRate
 {
     use HasFactory;
     use HasMacros;

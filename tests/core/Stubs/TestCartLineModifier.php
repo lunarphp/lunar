@@ -3,9 +3,9 @@
 namespace Lunar\Tests\Core\Stubs;
 
 use Closure;
-use Lunar\Core\Base\CartLineModifier;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Modifiers\CartLineModifier;
 
 class TestCartLineModifier extends CartLineModifier
 {

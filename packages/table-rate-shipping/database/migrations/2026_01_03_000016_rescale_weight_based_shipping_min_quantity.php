@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Lunar\Core\Base\Migration;
+use Lunar\Core\Database\Migration;
 
 return new class extends Migration
 {

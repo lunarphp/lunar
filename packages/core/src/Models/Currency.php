@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasDefaultRecord;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\LogsActivity;
 use Lunar\Core\Database\Factories\CurrencyFactory;
+use Lunar\Core\Models\Concerns\HasDefaultRecord;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
@@ -24,7 +23,7 @@ use Lunar\Core\Database\Factories\CurrencyFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Currency extends BaseModel implements Contracts\Currency
+class Currency extends Base implements Contracts\Currency
 {
     use HasDefaultRecord;
     use HasFactory;

@@ -33,10 +33,11 @@ When asked to start a new piece of work that isn't already specced, write the sp
 ## Conventions specific to Lunar
 
 - **Translations**: 16 locales live under each sub-package's `resources/lang/` (`ar, bg, de, en, es, fa, fr, hr, hu, mn, nl, pl, pt_BR, ro, tr, vi`). When adding or renaming a translation key, update **every** locale — English first, then mirror the key (English value is acceptable as a placeholder) across the other 15.
-- **Public contract surface**: this package is consumed by downstream apps. Treat anything outside `Concerns/`, `Support/`, and internal namespaces as a contract — breaking changes require a spec and a Rector rule in the `upgrade` package.
+- **Public contract surface**: this package is consumed by downstream apps. Treat anything outside `Models/Concerns/`, `Support/`, and internal namespaces as a contract — breaking changes require a spec and a Rector rule in the `upgrade` package.
 - **Migrations**: v2 ships a flat baseline (spec 0003). Schema changes go in a new migration; do not edit the baseline. The `upgrade` package handles v1 → v2 transformations.
 - **Filament**: v5 with the schemas refactor applied (spec 0005). Use schemas, not the deprecated wrapper traits.
 - **Namespace**: `Lunar\Core\…` for core (spec 0002), `Lunar\Admin\…`, `Lunar\Search\…`, etc. for other sub-packages.
+- **Folder responsibilities** (`packages/core/src/`, spec 0013): each top-level folder names a single concern. `Casts/` holds Eloquent cast classes. `Contracts/` holds every interface — drop the `Interface` suffix when adding a new one. `DataObjects/` holds plain value containers and DTOs. `Drivers/` holds swappable driver implementations. `Enums/` holds PHP enums. `FieldTypes/` holds attribute field types plus the `Manifest` that catalogues them. `Manifests/` holds cross-domain manifests (`AttributeManifest`, `ModelManifest`, `ShippingManifest`). `Media/` holds media-definition classes. `Models/` holds Eloquent models extending `Models\Base`; `Models/Concerns/` is the home for traits that attach to Eloquent models (`HasChannels`, `HasMedia`, `HasPrices`, `IsLunarUser`, `Searchable`, …). `Modifiers/` holds the `Cart`, `CartLine`, `Order` and `Shipping` modifier abstracts and their collection wrappers. `Orders/` holds order-related services like `ReferenceGenerator`. `Telemetry/` holds the telemetry service and its insights provider. `ValueObjects/` holds richer immutable values (cart breakdowns, free items, promotions).
 
 ## Tests
 

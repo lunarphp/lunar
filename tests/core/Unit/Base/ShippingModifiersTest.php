@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Base\ShippingModifier;
-use Lunar\Core\Base\ShippingModifiers;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Modifiers\ShippingModifier;
+use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

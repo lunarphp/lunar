@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\PriceFactory;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Pricing\PriceFormatterInterface;
@@ -29,7 +28,7 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Price extends BaseModel implements Contracts\Price, HasCurrency
+class Price extends Base implements Contracts\Price, HasCurrency
 {
     use FormatsPrices;
     use HasFactory;

@@ -5,10 +5,9 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\LogsActivity;
 use Lunar\Core\Database\Factories\CollectionGroupFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
@@ -17,7 +16,7 @@ use Lunar\Core\Database\Factories\CollectionGroupFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CollectionGroup extends BaseModel implements Contracts\CollectionGroup
+class CollectionGroup extends Base implements Contracts\CollectionGroup
 {
     use HasFactory;
     use HasMacros;

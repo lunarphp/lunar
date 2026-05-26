@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Base\Validation\CouponValidator;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Validation\CouponValidator;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 

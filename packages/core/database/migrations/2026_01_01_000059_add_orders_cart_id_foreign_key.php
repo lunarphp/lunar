@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Lunar\Core\Base\Migration;
+use Lunar\Core\Database\Migration;
 
 /**
  * Closes the orders ↔ carts foreign-key cycle.

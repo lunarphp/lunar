@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\DiscountBreakdown;
-use Lunar\Core\Base\Casts\ShippingBreakdown;
-use Lunar\Core\Base\Casts\TaxBreakdown;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasTags;
-use Lunar\Core\Base\Traits\LogsActivity;
-use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Casts\DiscountBreakdown;
+use Lunar\Core\Casts\ShippingBreakdown;
+use Lunar\Core\Casts\TaxBreakdown;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderFactory;
 use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasTags;
+use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**
@@ -46,7 +45,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Order extends BaseModel implements Contracts\Order, HasCurrency
+class Order extends Base implements Contracts\Order, HasCurrency
 {
     use FormatsPrices;
     use HasFactory;

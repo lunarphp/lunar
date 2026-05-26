@@ -3,7 +3,7 @@
 namespace Lunar\Opayo\Models;
 
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Models\Base;
 
 /**
  * @property int $id
@@ -16,7 +16,7 @@ use Lunar\Core\Base\BaseModel;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class OpayoToken extends BaseModel
+class OpayoToken extends Base
 {
     /**
      * Define which attributes should be

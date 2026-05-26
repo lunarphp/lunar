@@ -18,30 +18,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Core\Addons\Manifest;
 use Lunar\Core\Auth\Manifest as AccessControlManifest;
-use Lunar\Core\Base\AttributeManifest;
-use Lunar\Core\Base\AttributeManifestInterface;
-use Lunar\Core\Base\CartLineModifiers;
-use Lunar\Core\Base\CartModifiers;
-use Lunar\Core\Base\CartSessionInterface;
-use Lunar\Core\Base\DiscountManagerInterface;
-use Lunar\Core\Base\FieldTypeManifest;
-use Lunar\Core\Base\FieldTypeManifestInterface;
-use Lunar\Core\Base\ModelManifest;
-use Lunar\Core\Base\ModelManifestInterface;
-use Lunar\Core\Base\OrderModifiers;
-use Lunar\Core\Base\OrderReferenceGenerator;
-use Lunar\Core\Base\OrderReferenceGeneratorInterface;
-use Lunar\Core\Base\PaymentManagerInterface;
-use Lunar\Core\Base\PricingManagerInterface;
-use Lunar\Core\Base\ProvidesTelemetryInsights;
-use Lunar\Core\Base\ShippingManifest;
-use Lunar\Core\Base\ShippingManifestInterface;
-use Lunar\Core\Base\ShippingModifiers;
-use Lunar\Core\Base\StorefrontSessionInterface;
-use Lunar\Core\Base\TaxManagerInterface;
-use Lunar\Core\Base\TelemetryInsights;
-use Lunar\Core\Base\TelemetryService;
-use Lunar\Core\Base\TelemetryServiceInterface;
 use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\MigrateGetCandy;
@@ -49,16 +25,33 @@ use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
+use Lunar\Core\Contracts\AttributeManifest;
+use Lunar\Core\Contracts\CartSession;
+use Lunar\Core\Contracts\DiscountManager;
+use Lunar\Core\Contracts\FieldTypeManifest;
+use Lunar\Core\Contracts\ModelManifest;
+use Lunar\Core\Contracts\OrderReferenceGenerator;
+use Lunar\Core\Contracts\PaymentManager;
+use Lunar\Core\Contracts\PricingManager;
+use Lunar\Core\Contracts\ProvidesTelemetryInsights;
+use Lunar\Core\Contracts\ShippingManifest;
+use Lunar\Core\Contracts\StorefrontSession;
+use Lunar\Core\Contracts\TaxManager;
+use Lunar\Core\Contracts\TelemetryService;
 use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
+use Lunar\Core\FieldTypes\Manifest as FieldTypeManifestImpl;
 use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Managers\CartSessionManager;
-use Lunar\Core\Managers\DiscountManager;
-use Lunar\Core\Managers\PaymentManager;
-use Lunar\Core\Managers\PricingManager;
+use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
+use Lunar\Core\Managers\PaymentManager as PaymentManagerImpl;
+use Lunar\Core\Managers\PricingManager as PricingManagerImpl;
 use Lunar\Core\Managers\StorefrontSessionManager;
-use Lunar\Core\Managers\TaxManager;
+use Lunar\Core\Managers\TaxManager as TaxManagerImpl;
+use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
+use Lunar\Core\Manifests\ModelManifest as ModelManifestImpl;
+use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
@@ -78,6 +71,10 @@ use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\Models\Url;
+use Lunar\Core\Modifiers\CartLineModifiers;
+use Lunar\Core\Modifiers\CartModifiers;
+use Lunar\Core\Modifiers\OrderModifiers;
+use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Core\Observers\AddressObserver;
 use Lunar\Core\Observers\CartLineObserver;
 use Lunar\Core\Observers\ChannelObserver;
@@ -97,8 +94,11 @@ use Lunar\Core\Observers\ProductOptionValueObserver;
 use Lunar\Core\Observers\ProductVariantObserver;
 use Lunar\Core\Observers\TransactionObserver;
 use Lunar\Core\Observers\UrlObserver;
+use Lunar\Core\Orders\ReferenceGenerator as OrderReferenceGeneratorImpl;
 use Lunar\Core\Pricing\DefaultPriceFormatter;
 use Lunar\Core\Pricing\PriceFormatterInterface;
+use Lunar\Core\Telemetry\Insights as TelemetryInsights;
+use Lunar\Core\Telemetry\TelemetryService as TelemetryServiceImpl;
 use Lunar\Core\Utils\MeasurementConverter;
 
 class LunarServiceProvider extends ServiceProvider
@@ -151,11 +151,11 @@ class LunarServiceProvider extends ServiceProvider
             return new OrderModifiers;
         });
 
-        $this->app->singleton(CartSessionInterface::class, function ($app) {
+        $this->app->singleton(CartSession::class, function ($app) {
             return $app->make(CartSessionManager::class);
         });
 
-        $this->app->singleton(StorefrontSessionInterface::class, function ($app) {
+        $this->app->singleton(StorefrontSession::class, function ($app) {
             return $app->make(StorefrontSessionManager::class);
         });
 
@@ -163,28 +163,28 @@ class LunarServiceProvider extends ServiceProvider
             return new ShippingModifiers;
         });
 
-        $this->app->singleton(ShippingManifestInterface::class, function ($app) {
-            return $app->make(ShippingManifest::class);
+        $this->app->singleton(ShippingManifest::class, function ($app) {
+            return $app->make(ShippingManifestImpl::class);
         });
 
-        $this->app->singleton(OrderReferenceGeneratorInterface::class, function ($app) {
-            return $app->make(OrderReferenceGenerator::class);
+        $this->app->singleton(OrderReferenceGenerator::class, function ($app) {
+            return $app->make(OrderReferenceGeneratorImpl::class);
         });
 
-        $this->app->singleton(AttributeManifestInterface::class, function ($app) {
-            return $app->make(AttributeManifest::class);
+        $this->app->singleton(AttributeManifest::class, function ($app) {
+            return $app->make(AttributeManifestImpl::class);
         });
 
-        $this->app->singleton(FieldTypeManifestInterface::class, function ($app) {
-            return $app->make(FieldTypeManifest::class);
+        $this->app->singleton(FieldTypeManifest::class, function ($app) {
+            return $app->make(FieldTypeManifestImpl::class);
         });
 
-        $this->app->singleton(ModelManifestInterface::class, function ($app) {
-            return $app->make(ModelManifest::class);
+        $this->app->singleton(ModelManifest::class, function ($app) {
+            return $app->make(ModelManifestImpl::class);
         });
 
-        $this->app->bind(PricingManagerInterface::class, function ($app) {
-            return $app->make(PricingManager::class);
+        $this->app->bind(PricingManager::class, function ($app) {
+            return $app->make(PricingManagerImpl::class);
         });
 
         $this->app->bind(PriceFormatterInterface::class, function ($app, array $parameters = []) {
@@ -193,24 +193,24 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make($concrete, $parameters);
         });
 
-        $this->app->singleton(TaxManagerInterface::class, function ($app) {
-            return $app->make(TaxManager::class);
+        $this->app->singleton(TaxManager::class, function ($app) {
+            return $app->make(TaxManagerImpl::class);
         });
 
-        $this->app->singleton(PaymentManagerInterface::class, function ($app) {
-            return $app->make(PaymentManager::class);
+        $this->app->singleton(PaymentManager::class, function ($app) {
+            return $app->make(PaymentManagerImpl::class);
         });
 
-        $this->app->singleton(DiscountManagerInterface::class, function ($app) {
-            return $app->make(DiscountManager::class);
+        $this->app->singleton(DiscountManager::class, function ($app) {
+            return $app->make(DiscountManagerImpl::class);
         });
 
         $this->app->singleton(ProvidesTelemetryInsights::class, function ($app) {
             return $app->make(TelemetryInsights::class);
         });
 
-        $this->app->singleton(TelemetryServiceInterface::class, function ($app) {
-            return $app->make(TelemetryService::class);
+        $this->app->singleton(TelemetryService::class, function ($app) {
+            return $app->make(TelemetryServiceImpl::class);
         });
 
         $this->app->terminating(function () {

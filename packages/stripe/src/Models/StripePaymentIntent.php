@@ -4,11 +4,11 @@ namespace Lunar\Stripe\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Cart;
 use Stripe\PaymentIntent;
 
-class StripePaymentIntent extends BaseModel
+class StripePaymentIntent extends Base
 {
     const FINAL_STATES = [PaymentIntent::STATUS_CANCELED, PaymentIntent::STATUS_SUCCEEDED];
 

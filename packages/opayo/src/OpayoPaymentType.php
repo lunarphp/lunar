@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Config\Repository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Str;
-use Lunar\Core\Base\DataTransferObjects\PaymentCapture;
-use Lunar\Core\Base\DataTransferObjects\PaymentCheck;
-use Lunar\Core\Base\DataTransferObjects\PaymentChecks;
-use Lunar\Core\Base\DataTransferObjects\PaymentRefund;
+use Lunar\Core\DataObjects\PaymentCapture;
+use Lunar\Core\DataObjects\PaymentCheck;
+use Lunar\Core\DataObjects\PaymentChecks;
+use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
@@ -42,7 +42,7 @@ class OpayoPaymentType extends AbstractPayment
     /**
      * Authorize the payment for processing.
      *
-     * @return \Lunar\Core\Base\DataTransferObjects\PaymentAuthorize
+     * @return \Lunar\Core\DataObjects\PaymentAuthorize
      */
     public function authorize(): PaymentAuthorize|ThreeDSecureResponse
     {

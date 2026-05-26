@@ -6,17 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Casts\AsAttributeData;
-use Lunar\Core\Base\Traits\HasAttributes;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasMedia;
-use Lunar\Core\Base\Traits\HasTranslations;
-use Lunar\Core\Base\Traits\HasUrls;
-use Lunar\Core\Base\Traits\LogsActivity;
-use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Database\Factories\BrandFactory;
 use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\HasUrls;
+use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Models\Concerns\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -26,7 +25,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Brand extends BaseModel implements Contracts\Brand, SpatieHasMedia
+class Brand extends Base implements Contracts\Brand, SpatieHasMedia
 {
     use HasAttributes;
     use HasFactory;

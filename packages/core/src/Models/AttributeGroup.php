@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasTranslations;
-use Lunar\Core\Base\Traits\LogsActivity;
 use Lunar\Core\Database\Factories\AttributeGroupFactory;
+use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
@@ -21,7 +20,7 @@ use Lunar\Core\Database\Factories\AttributeGroupFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class AttributeGroup extends BaseModel implements Contracts\AttributeGroup
+class AttributeGroup extends Base implements Contracts\AttributeGroup
 {
     use HasFactory;
     use HasMacros;

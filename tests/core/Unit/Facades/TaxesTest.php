@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Base\TaxManagerInterface;
-use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
+use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\Facades\Taxes;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;
 use Lunar\Tests\Core\TestCase;
 
@@ -14,7 +14,7 @@ uses(TestCase::class);
 uses(RefreshDatabase::class);
 
 test('accessor is correct', function () {
-    expect(Taxes::getFacadeAccessor())->toEqual(TaxManagerInterface::class);
+    expect(Taxes::getFacadeAccessor())->toEqual(TaxManager::class);
 });
 
 test('can extend taxes', function () {
