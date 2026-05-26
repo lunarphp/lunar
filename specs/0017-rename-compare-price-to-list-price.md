@@ -1,6 +1,6 @@
 # 0017 — Rename `compare_price` to `list_price`
 
-- Status: implemented
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-26
 - TODO item: Change `compare_price` to `list_price`
