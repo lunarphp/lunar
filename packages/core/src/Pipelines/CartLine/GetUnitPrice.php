@@ -26,6 +26,7 @@ class GetUnitPrice
         if ($customer = $cart->customer) {
             $customerGroups = $customer->customerGroups;
         } else {
+            $cart->user?->loadMissing('customers.customerGroups');
             $customerGroups = $cart->user?->customers->pluck('customerGroups')->flatten();
         }
 

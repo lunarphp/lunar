@@ -18,7 +18,15 @@ class CalculateLines
     public function handle(CartContract $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
-        $cart->loadMissing(['lines.purchasable', 'currency']);
+        $cart->loadMissing([
+            'lines.purchasable',
+            'currency',
+            'taxZone',
+            'shippingAddress',
+            'billingAddress',
+            'user',
+            'customer.customerGroups',
+        ]);
 
         foreach ($cart->lines as $line) {
             $line->setRelation('cart', $cart);
