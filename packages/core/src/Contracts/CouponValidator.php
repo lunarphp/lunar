@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Core\Base\Validation;
+namespace Lunar\Core\Contracts;
 
-interface CouponValidatorInterface
+interface CouponValidator
 {
     /**
      * Validate a coupon for whether it can be used.

@@ -5,7 +5,6 @@ namespace Lunar\Core\Managers;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Lunar\Core\Base\DiscountManagerInterface;
-use Lunar\Core\Base\Validation\CouponValidator;
 use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
@@ -15,6 +14,7 @@ use Lunar\Core\Models\Contracts\Channel as ChannelContract;
 use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Validation\CouponValidator;
 
 class DiscountManager implements DiscountManagerInterface
 {

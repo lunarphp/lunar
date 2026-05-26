@@ -1,10 +1,11 @@
 <?php
 
-namespace Lunar\Core\Base\Validation;
+namespace Lunar\Core\Validation;
 
+use Lunar\Core\Contracts\CouponValidator as CouponValidatorContract;
 use Lunar\Core\Models\Discount;
 
-class CouponValidator implements CouponValidatorInterface
+class CouponValidator implements CouponValidatorContract
 {
     public function validate(string $coupon): bool
     {
