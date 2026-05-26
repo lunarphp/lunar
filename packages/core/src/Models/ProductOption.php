@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasMedia;
-use Lunar\Core\Base\Traits\HasTranslations;
-use Lunar\Core\Base\Traits\LogsActivity;
-use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Concerns\HasMacros;
+use Lunar\Core\Concerns\HasMedia;
+use Lunar\Core\Concerns\HasTranslations;
+use Lunar\Core\Concerns\LogsActivity;
+use Lunar\Core\Concerns\Searchable;
 use Lunar\Core\Database\Factories\ProductOptionFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 

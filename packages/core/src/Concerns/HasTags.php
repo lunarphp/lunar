@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base\Traits;
+namespace Lunar\Core\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;

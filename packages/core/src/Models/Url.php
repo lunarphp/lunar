@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Database\Factories\UrlFactory;
 
 /**

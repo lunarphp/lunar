@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Core\Base\Traits\LunarUser;
+use Lunar\Core\Concerns\IsLunarUser;
 use Lunar\Core\Facades\DB;
 
 if (! function_exists('is_lunar_user')) {
@@ -8,7 +8,7 @@ if (! function_exists('is_lunar_user')) {
     {
         $traits = class_uses_recursive($user);
 
-        return in_array(LunarUser::class, $traits);
+        return in_array(IsLunarUser::class, $traits);
     }
 }
 

@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasAttributes;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Concerns\HasAttributes;
+use Lunar\Core\Concerns\HasMacros;
+use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Database\Factories\ProductTypeFactory;
 
 /**

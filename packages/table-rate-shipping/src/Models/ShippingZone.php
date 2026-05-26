@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\State;

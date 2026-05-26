@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasDefaultRecord;
-use Lunar\Core\Base\Traits\HasMacros;
+use Lunar\Core\Concerns\HasDefaultRecord;
+use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Database\Factories\LanguageFactory;
 
 /**

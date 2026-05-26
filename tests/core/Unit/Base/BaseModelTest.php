@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasModelExtending;
+use Lunar\Core\Concerns\HasModelExtending;
 use Lunar\Core\Models\Collection as ModelsCollection;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\Url;

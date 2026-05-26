@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasPersonalDetails;
-use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Concerns\HasMacros;
+use Lunar\Core\Concerns\HasPersonalDetails;
+use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Database\Factories\OrderAddressFactory;
 

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasDefaultRecord;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\LogsActivity;
+use Lunar\Core\Concerns\HasDefaultRecord;
+use Lunar\Core\Concerns\HasMacros;
+use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Database\Factories\TaxZoneFactory;
 
 /**

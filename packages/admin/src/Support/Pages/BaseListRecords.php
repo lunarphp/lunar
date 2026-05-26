@@ -8,7 +8,7 @@ use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Concerns\Searchable;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 abstract class BaseListRecords extends ListRecords

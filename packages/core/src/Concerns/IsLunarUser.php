@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base\Traits;
+namespace Lunar\Core\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -8,7 +8,7 @@ use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Order;
 
-trait LunarUser
+trait IsLunarUser
 {
     public function customers(): BelongsToMany
     {

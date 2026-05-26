@@ -4,7 +4,7 @@ namespace Lunar\Core\Base;
 
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Base\Traits\HasModelExtending;
+use Lunar\Core\Concerns\HasModelExtending;
 
 abstract class BaseModel extends Model
 {

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\Traits\HasMacros;
-use Lunar\Core\Base\Traits\HasMedia;
-use Lunar\Core\Base\Traits\HasTranslations;
+use Lunar\Core\Concerns\HasMacros;
+use Lunar\Core\Concerns\HasMedia;
+use Lunar\Core\Concerns\HasTranslations;
 use Lunar\Core\Database\Factories\ProductOptionValueFactory;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 

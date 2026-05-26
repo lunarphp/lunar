@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Concerns\Searchable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\ProductVariant;
