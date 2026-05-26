@@ -111,6 +111,8 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
 
     public function getPrices(): Collection
     {
+        $this->loadMissing(['prices.currency', 'prices.priceable']);
+
         return $this->prices;
     }
 
@@ -128,6 +130,8 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
     public function getTaxClass(): TaxClass
     {
         return Blink::once("tax_class_{$this->tax_class_id}", function () {
+            $this->loadMissing('taxClass');
+
             return $this->taxClass;
         });
     }
@@ -174,6 +178,8 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
      */
     public function getOptions(): Collection
     {
+        $this->loadMissing('values');
+
         return $this->values->map(fn ($value) => $value->translate('name'));
     }
 
@@ -197,6 +203,8 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
 
     public function getThumbnail(): ?Media
     {
+        $this->loadMissing(['images', 'product']);
+
         return $this->images->first(function ($media) {
             return (bool) $media->pivot?->primary;
         }) ?: $this->product->thumbnail;

@@ -39,8 +39,23 @@ class Price implements CastsAttributes
         return new PriceDataType(
             (int) $value,
             $currency,
-            $model->priceable->unit_quantity ?? $model->unit_quantity ?? 1,
+            $this->resolveUnitQuantity($model),
         );
+    }
+
+    protected function resolveUnitQuantity(Model $model): int
+    {
+        if ($model->relationLoaded('priceable')) {
+            $priceable = $model->getRelation('priceable');
+
+            if ($priceable !== null && isset($priceable->unit_quantity)) {
+                return (int) $priceable->unit_quantity;
+            }
+        }
+
+        $attributes = $model->getAttributes();
+
+        return (int) ($attributes['unit_quantity'] ?? 1);
     }
 
     /**

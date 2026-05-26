@@ -516,6 +516,8 @@ class Cart extends BaseModel implements Contracts\Cart
 
     public function setShippingOption(ShippingOption $option, bool $refresh = true): Cart
     {
+        $this->loadMissing('shippingAddress');
+
         foreach (config('lunar.cart.validators.set_shipping_option', []) as $action) {
             app($action)->using(
                 cart: $this,
@@ -546,6 +548,8 @@ class Cart extends BaseModel implements Contracts\Cart
         ?int $orderIdToUpdate = null
     ): Order {
         $cart = $this->refresh()->recalculate();
+
+        $cart->loadMissing('completedOrder');
 
         foreach (config('lunar.cart.validators.order_create', [
             ValidateCartForOrderCreation::class,

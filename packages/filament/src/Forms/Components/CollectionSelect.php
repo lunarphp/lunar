@@ -27,10 +27,11 @@ class CollectionSelect extends Select
         $this->label(__('lunar-filament::forms/selectors.collection.label'));
         $this->placeholder(__('lunar-filament::forms/selectors.collection.placeholder'));
         $this->searchable();
+        $this->modifyOptionsQueryUsing(fn ($query) => method_exists($query, 'with') ? $query->with('ancestors') : $query);
         $this->getSearchResultsUsing(fn (string $search): array => $this->searchLunarRecords($search));
         $this->getOptionLabelUsing(function ($value): ?string {
             $model = $this->lunarModel();
-            $record = $model::find($value);
+            $record = $model::with('ancestors')->find($value);
 
             return $record ? $this->optionLabel($record) : null;
         });

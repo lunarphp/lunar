@@ -7,24 +7,24 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 ## Outstanding
 
 - Support `Model::preventLazyLoading()`
-- Ensure all service-layer classes are DI'd
-- Add events, including specific events for cache invalidation
-- Add `public_id` (ULID) to externally-addressable models
-- Add `name` and `description` dedicated fields
-- Change `compare_price` to `list_price`
 - Price data type performance changes
+- Ensure all service-layer classes are DI'd
+- Add `name` and `description` dedicated fields
 - Attributes remodel to simplify data and allow for re-use
+- Change `compare_price` to `list_price`
 - Implement state machines, replacing soft-deletes
     - Specifically, products (draft, published, archived) & orders (payment, fulfilment and order status)
 - `StorefrontContext` for CartSessionManager and other services
 - Region concept to define channel, currency, language, tax_zone, countries and price display
 - Add Vendors concept to support marketplace developments
 - Make order line purchasables optional
+- Add events, including specific events for cache invalidation
 - Stop storing shipping options as polymorphic purchasables on cart/order lines
     - Currently `ShippingOption` is a non-Eloquent value object from `ShippingManifest`, yet lines morph to it via a hardcoded `purchasable_id => 1` (see `CreateShippingLine`)
     - Drop the fake morph: rely on the existing `type = 'shipping'` column and store the option `identifier` + a snapshot of name/price/meta directly on the line
     - Make `purchasable_type`/`purchasable_id` nullable (ties in with "Make order line purchasables optional")
     - Resolve the live `ShippingOption` from `ShippingManifest` by identifier when needed, rather than via the polymorphic relation
+- Add `public_id` (ULID) to externally-addressable models
 - Cart/order line grouping
 - Split out Promotions concept from Discounts
 - Add cart totals caching in the database

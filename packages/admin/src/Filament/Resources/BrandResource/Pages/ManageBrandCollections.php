@@ -7,6 +7,7 @@ use Filament\Actions\DetachAction;
 use Filament\Forms\Components\Select;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Core\Models\Collection;
@@ -42,7 +43,9 @@ class ManageBrandCollections extends BaseManageRelatedRecords
 
     protected function getDefaultTable(Table $table): Table
     {
-        return $table->columns([
+        return $table->modifyQueryUsing(
+            fn (Builder $query): Builder => $query->with('ancestors')
+        )->columns([
             TranslatedTextColumn::make('attribute_data.name')
                 ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
                 ->attributeData()

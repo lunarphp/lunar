@@ -2,11 +2,11 @@
 
 Brainstorm of additions to `lunarphp/filament` that would make it more useful to Filament developers. Not specs, not commitments — a parking lot. Promote an item to `specs/NNNN-…md` when work starts.
 
-Last updated: 2026-05-23. Spec 0009 (items #2 + #4) shipped.
+Last updated: 2026-05-23. Spec 0009 (items #2 + #4) shipped. Spec 0010 (item #1) shipped; items #11, #12, #16 dropped as superseded.
 
 ## High-value, idiomatic-Filament additions
 
-1. **`LunarPlugin::make()` installation** — Filament v5 devs expect `$panel->plugin(LunarPlugin::make()->widgets()->resources())`. We register via service provider today; a real plugin object makes opt-in granular and matches what every other Filament package does.
+1. **`LunarPlugin::make()` installation** — Filament v5 devs expect `$panel->plugin(LunarPlugin::make()->widgets()->resources())`. We register via service provider today; a real plugin object makes opt-in granular and matches what every other Filament package does. _(Shipped in spec 0010 — covers widgets, global search, actions, Livewire components. No `resources()` method; resources are admin's concern, see spec 0010.)_
 2. **Filament Actions library** — `RefundOrderAction`, `CapturePaymentAction`, `MarkAsShippedAction`, `FulfilLineAction`, `DuplicateProductAction`, `BulkPublishProductsAction`, `AdjustStockAction`. Likely the single biggest gap — commerce is verb-heavy and Filament's action system is where that belongs. _(Shipped in spec 0009.)_
 3. **Importer/Exporter classes** — pre-built `ProductImporter`, `CustomerImporter`, `OrderExporter` using Filament's `Importer`/`Exporter` (translated columns, attribute mapping, channel scoping). Very common ask.
 4. **Global Search providers** — register Product/Order/Customer/Collection as Filament global search results, respecting Scout when available. Small wiring, big UX. _(Shipped in spec 0009.)_
@@ -22,15 +22,15 @@ Last updated: 2026-05-23. Spec 0009 (items #2 + #4) shipped.
 
 ## Filament v5 ergonomics we're missing
 
-11. **Standalone resource pages** — `Lunar\Filament\Pages\Products\ListProducts`, etc., so a Filament dev can register them in their own resource without our admin shell. `getXxxFormComponent` covers schema but not pages.
-12. **Policies + permission mapping** — default policies that read from `Staff` permissions, opt-in via the plugin. Today downstream apps wire authorization themselves.
+11. ~~**Standalone resource pages**~~ — _Dropped in spec 0010._ Superseded by the publishable-admin approach: consumers run `php artisan lunar:admin:publish {resource}` to take ownership of the full resource (pages included) rather than re-registering bridge-owned pages.
+12. ~~**Policies + permission mapping**~~ — _Dropped in spec 0010._ Staff and its permission infrastructure moved to `lunarphp/core`, so authorization is a core concern, not a bridge concern. Published resources own their own policies.
 13. **Tenancy hooks** — channel-as-tenant support (Filament v5 tenancy contracts), so multi-store SaaS builds don't need to fork.
 14. **Table preset filters** — `OrderStatusFilter`, `OrderDateRangeFilter`, `ProductStatusFilter`, `LowStockFilter` as reusable filter classes, not only baked into our tables.
 15. **Slideover quick-edit actions** — `EditProductSlideoverAction`, etc. Idiomatic-Filament, currently absent.
 
 ## Developer experience
 
-16. **`php artisan lunar:filament:make-resource {Model}`** — scaffold a resource that wires our schemas/tables in the recommended pattern. Lowers the barrier for "use Lunar inside my existing panel."
+16. ~~**`php artisan lunar:filament:make-resource {Model}`**~~ — _Dropped in spec 0010._ Superseded by `php artisan lunar:admin:publish {resource}`, which copies admin's real resource into the consumer's namespace rather than scaffolding a subclass of bridge internals.
 17. **Extension recipes doc/section** — end-to-end examples of the three customisation strategies ("add a custom tab to the product page", "swap the order table"). README mentions the strategies but doesn't show recipes.
 18. **Boost/MCP guidelines for the package** — already on the global TODO ("Add Boost guidelines to packages"); document which Boost tools matter for Filament work (search-docs scoped to filament, etc.).
 
@@ -42,4 +42,4 @@ Last updated: 2026-05-23. Spec 0009 (items #2 + #4) shipped.
 
 ## Suggested next spec
 
-**#3 (Importer/Exporter classes)** — pre-built `ProductImporter`, `CustomerImporter`, `OrderExporter` using Filament's `Importer`/`Exporter` machinery. With actions and global search shipped (spec 0009), the import/export gap is the next-largest "this should already exist" item.
+**#3 (Importer/Exporter classes)** — pre-built `ProductImporter`, `CustomerImporter`, `OrderExporter` using Filament's `Importer`/`Exporter` machinery. With the plugin object, actions, and global search now shipped (specs 0009 + 0010), and the v3 migration path established via publishable admin resources, the import/export gap is the next-largest "this should already exist" item.

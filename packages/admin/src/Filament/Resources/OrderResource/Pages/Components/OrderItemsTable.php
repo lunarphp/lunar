@@ -125,7 +125,7 @@ class OrderItemsTable extends TableComponent
     {
         return $table
             ->query($this->record->lines()->getQuery()
-                ->with(['purchasable'])
+                ->with(['purchasable', 'currency'])
                 ->wherein('type', ['physical', 'digital']))
             ->columns(static::getOrderLinesTableColumns())
             ->toolbarActions([

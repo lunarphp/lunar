@@ -17,7 +17,7 @@ class SortProductsByPrice
     {
         /** @var Collection $products */
         // Load up our products and prices.
-        $products = $products->load('variants.basePrices');
+        $products = $products->load('variants.basePrices.currency');
 
         return $products->sort(function ($current, $next) use ($currency, $direction) {
             $currentPrice = $this->getMinPrice($current, $currency);

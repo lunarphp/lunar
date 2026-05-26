@@ -96,6 +96,7 @@ class DiscountTargetSelect extends MorphToSelect
                 $productIds = RecordSearch::for($productClass, $search)->take(50)->get()->pluck('id');
 
                 return $variantClass::query()
+                    ->with('product')
                     ->where(function ($q) use ($search, $productIds): void {
                         $q->where('sku', 'like', "%{$search}%");
                         if ($productIds->isNotEmpty()) {
@@ -125,6 +126,7 @@ class DiscountTargetSelect extends MorphToSelect
         return Type::make($modelClass)
             ->titleAttribute('name')
             ->getSearchResultsUsing(static fn (string $search): array => RecordSearch::for($modelClass, $search)
+                ->with('ancestors')
                 ->take(50)
                 ->get()
                 ->mapWithKeys(fn (Model $record): array => [
@@ -132,7 +134,7 @@ class DiscountTargetSelect extends MorphToSelect
                 ])
                 ->all())
             ->getOptionLabelUsing(static function ($value) use ($modelClass): ?string {
-                $record = $modelClass::find($value);
+                $record = $modelClass::with('ancestors')->find($value);
 
                 return $record?->breadcrumb->push($record->translateAttribute('name'))->filter()->implode(' > ');
             });

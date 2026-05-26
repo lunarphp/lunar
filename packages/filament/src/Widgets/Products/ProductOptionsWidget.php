@@ -255,7 +255,13 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     )]
             )->toArray();
 
-        $variants = $this->record->variants->load(['basePrices.currency', 'basePrices.priceable', 'values.option'])->map(function ($variant) {
+        $this->record->loadMissing([
+            'variants.basePrices.currency',
+            'variants.basePrices.priceable',
+            'variants.values.option',
+        ]);
+
+        $variants = $this->record->variants->map(function ($variant) {
             return [
                 'id' => $variant->id,
                 'sku' => $variant->sku,

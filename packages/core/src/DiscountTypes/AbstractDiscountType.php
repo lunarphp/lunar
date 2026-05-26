@@ -28,6 +28,16 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         /** @var Discount $discount */
         $this->discount = $discount;
 
+        $this->discount->loadMissing([
+            'customers',
+            'collections',
+            'brands',
+            'discountableLimitations.discountable',
+            'discountableExclusions.discountable',
+            'discountableConditions.discountable',
+            'discountableRewards.discountable',
+        ]);
+
         return $this;
     }
 
@@ -63,6 +73,7 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
     protected function checkDiscountConditions(CartContract $cart): bool
     {
         /** @var Cart $cart */
+        $cart->loadMissing('currency');
         $data = $this->discount->data;
 
         $customerIds = $this->discount->customers->pluck('id');

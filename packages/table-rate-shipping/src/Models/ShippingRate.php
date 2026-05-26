@@ -62,6 +62,8 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
 
     public function getPrices(): Collection
     {
+        $this->loadMissing(['prices.currency', 'prices.priceable']);
+
         return $this->prices;
     }
 
@@ -152,6 +154,8 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
             $this->resolvedTaxClass = $this->resolveHighestTaxRateInCart($cart);
         }
 
+        $this->loadMissing('shippingMethod');
+
         return $this->shippingMethod->driver()->resolve(
             new ShippingOptionRequest(
                 shippingRate: $this,
@@ -179,6 +183,8 @@ class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasa
     {
         $highestRate = false;
         $highestTaxClass = null;
+
+        $cart->loadMissing('lines.purchasable.taxClass.taxRateAmounts');
 
         foreach ($cart->lines as $cartLine) {
             if ($cartLine->purchasable->taxClass) {

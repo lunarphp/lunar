@@ -16,8 +16,7 @@ class CountrySelect extends Select
 
         $this->label(__('lunar-filament::forms/selectors.country.label'));
         $this->placeholder(__('lunar-filament::forms/selectors.country.placeholder'));
-        $this->relationship('country', 'name');
-        $this->getOptionLabelFromRecordUsing(fn (Model $record): string => static::formatCountryLabel($record));
+        $this->options(fn (): array => $this->loadOptions('id'));
         $this->searchable();
         $this->preload();
     }
@@ -32,19 +31,26 @@ class CountrySelect extends Select
         $this->useIso3 = $condition;
 
         if ($condition) {
-            $modelClass = $this->lunarModel();
-
-            $this->relationship(null);
-            $this->options(fn (): array => $modelClass::query()
-                ->orderBy('name')
-                ->get()
-                ->mapWithKeys(fn (Model $record): array => [
-                    $record->iso3 => static::formatCountryLabel($record),
-                ])
-                ->all());
+            $this->options(fn (): array => $this->loadOptions('iso3'));
         }
 
         return $this;
+    }
+
+    /**
+     * @return array<int|string, string>
+     */
+    protected function loadOptions(string $keyAttribute): array
+    {
+        $modelClass = $this->lunarModel();
+
+        return $modelClass::query()
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(fn (Model $record): array => [
+                $record->{$keyAttribute} => static::formatCountryLabel($record),
+            ])
+            ->all();
     }
 
     public static function formatCountryLabel(Model $record): string

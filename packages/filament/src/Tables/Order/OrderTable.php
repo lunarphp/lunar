@@ -30,7 +30,7 @@ class OrderTable
                 ->columns(static::getColumns())
                 ->filters(static::getFilters())
                 ->modifyQueryUsing(
-                    fn (Builder $query): Builder => $query->with(['currency'])
+                    fn (Builder $query): Builder => $query->with(['currency', 'billingAddress', 'tags'])
                 )
                 ->persistFiltersInSession()
                 ->recordActions([

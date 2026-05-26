@@ -49,6 +49,8 @@ class CollectionResource extends BaseResource
 
     public static function getCollectionBreadcrumbs(CollectionContract $collection): array
     {
+        $collection->loadMissing('group');
+
         $crumbs = [
             CollectionGroupResource::getUrl('index') => CollectionGroupResource::getPluralLabel(),
             CollectionGroupResource::getUrl('edit', [

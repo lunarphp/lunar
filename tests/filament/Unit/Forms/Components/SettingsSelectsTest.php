@@ -55,12 +55,12 @@ it('instantiates TaxZoneSelect against the taxZone relationship', function () {
         ->and($component->lunarModel())->toBe(TaxZone::modelClass());
 });
 
-it('instantiates CountrySelect with default relationship mode', function () {
+it('instantiates CountrySelect tied to the Country model', function () {
     $component = CountrySelect::make('country_id');
 
     expect($component)->toBeInstanceOf(CountrySelect::class)
         ->and($component->lunarModel())->toBe(Country::modelClass())
-        ->and($component->getRelationshipName())->toBe('country');
+        ->and($component->getRelationshipName())->toBeNull();
 });
 
 it('switches CountrySelect to iso3 mode', function () {
