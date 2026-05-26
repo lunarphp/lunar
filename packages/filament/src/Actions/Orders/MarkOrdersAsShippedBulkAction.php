@@ -4,7 +4,7 @@ namespace Lunar\Filament\Actions\Orders;
 
 use Filament\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
-use Lunar\Core\Actions\Orders\MarkOrderAsShipped;
+use Lunar\Core\Contracts\Actions\Orders\MarksOrderAsShipped;
 use Lunar\Core\Facades\DB;
 
 class MarkOrdersAsShippedBulkAction extends BulkAction
@@ -26,7 +26,7 @@ class MarkOrdersAsShippedBulkAction extends BulkAction
                 DB::beginTransaction();
 
                 foreach ($records as $record) {
-                    MarkOrderAsShipped::run($record);
+                    app(MarksOrderAsShipped::class)->execute($record);
                 }
 
                 DB::commit();

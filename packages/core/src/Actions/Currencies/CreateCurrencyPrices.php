@@ -3,11 +3,12 @@
 namespace Lunar\Core\Actions\Currencies;
 
 use Illuminate\Support\Facades\DB;
+use Lunar\Core\Contracts\Actions\Currencies\CreatesCurrencyPrices;
 use Lunar\Core\Models\Contracts\Currency;
 
-class CreateCurrencyPrices
+class CreateCurrencyPrices implements CreatesCurrencyPrices
 {
-    public function handle(Currency $incomingCurrency, Currency $baseCurrency)
+    public function execute(Currency $incomingCurrency, Currency $baseCurrency): void
     {
         $tablePrefix = config('lunar.database.table_prefix');
 

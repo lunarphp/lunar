@@ -4,10 +4,11 @@ namespace Lunar\Filament\Actions\Collections;
 
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
-use Lunar\Core\Actions\Collections\CreateChildCollection;
+use Lunar\Core\Contracts\Actions\Collections\CreatesChildCollection;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
 use Lunar\Filament\Forms\Components\TranslatedText;
+use Lunar\Filament\Tables\Actions\Collections\CreateChildCollection;
 
 /**
  * Creates a child collection from an explicit `id` argument supplied by the
@@ -15,7 +16,7 @@ use Lunar\Filament\Forms\Components\TranslatedText;
  * Filament table relationship and resolve the parent collection themselves.
  *
  * For the in-table-relationship variant used by Filament resource pages,
- * see {@see \Lunar\Filament\Tables\Actions\Collections\CreateChildCollection}.
+ * see {@see CreateChildCollection}.
  */
 class CreateChildCollectionAction extends CreateAction
 {
@@ -31,7 +32,7 @@ class CreateChildCollectionAction extends CreateAction
         $this->action(function (array $arguments, array $data): void {
             $parent = Collection::find($arguments['id']);
 
-            CreateChildCollection::run(parent: $parent, name: $data['name']);
+            app(CreatesChildCollection::class)->execute(parent: $parent, name: $data['name']);
 
             $this->success();
         });

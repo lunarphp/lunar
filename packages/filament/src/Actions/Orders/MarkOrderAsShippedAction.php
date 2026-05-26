@@ -3,7 +3,7 @@
 namespace Lunar\Filament\Actions\Orders;
 
 use Filament\Actions\Action;
-use Lunar\Core\Actions\Orders\MarkOrderAsShipped;
+use Lunar\Core\Contracts\Actions\Orders\MarksOrderAsShipped;
 use Lunar\Core\Models\Order;
 
 class MarkOrderAsShippedAction extends Action
@@ -21,7 +21,7 @@ class MarkOrderAsShippedAction extends Action
             ->label(__('lunar-filament::actions.orders.mark_as_shipped.label'))
             ->icon('heroicon-o-truck')
             ->color('success')
-            ->action(fn (Order $record) => MarkOrderAsShipped::run($record))
+            ->action(fn (Order $record) => app(MarksOrderAsShipped::class)->execute($record))
             ->successNotificationTitle(__('lunar-filament::actions.orders.mark_as_shipped.notification.success'));
     }
 }

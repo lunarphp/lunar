@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Lunar\Core\Contracts\Actions\Currencies\CreatesCurrencyPrices;
 use Lunar\Core\Models\Contracts\Currency;
 
 class CreateCurrencyPrices implements ShouldQueue
@@ -43,6 +44,6 @@ class CreateCurrencyPrices implements ShouldQueue
             return;
         }
 
-        (new \Lunar\Core\Actions\Currencies\CreateCurrencyPrices)->handle($this->currency, $default);
+        app(CreatesCurrencyPrices::class)->execute($this->currency, $default);
     }
 }

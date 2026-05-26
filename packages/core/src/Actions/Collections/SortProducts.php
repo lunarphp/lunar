@@ -2,41 +2,38 @@
 
 namespace Lunar\Core\Actions\Collections;
 
+use Illuminate\Support\Collection as SupportCollection;
+use Lunar\Core\Contracts\Actions\Collections\SortsProducts;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 use Lunar\Core\Models\Currency;
 
-class SortProducts
+class SortProducts implements SortsProducts
 {
+    public function __construct(
+        protected SortProductsByPrice $sortProductsByPrice,
+        protected SortProductsBySku $sortProductsBySku,
+    ) {}
+
     /**
      * Execute the action.
-     *
-     * @return void
      */
-    public function execute(CollectionContract $collection)
+    public function execute(CollectionContract $collection): SupportCollection
     {
         /** @var Collection $collection */
         [$sort, $direction] = explode(':', $collection->sort);
 
-        switch ($sort) {
-            case 'min_price':
-                $products = app(SortProductsByPrice::class)->execute(
-                    $collection->products,
-                    Currency::getDefault(),
-                    $direction
-                );
-                break;
-            case 'sku':
-                $products = app(SortProductsBySku::class)->execute(
-                    $collection->products,
-                    $direction
-                );
-                break;
-            default:
-                $products = $collection->products;
-                break;
-        }
-
-        return $products;
+        return match ($sort) {
+            'min_price' => $this->sortProductsByPrice->execute(
+                $collection->products,
+                Currency::getDefault(),
+                $direction
+            ),
+            'sku' => $this->sortProductsBySku->execute(
+                $collection->products,
+                $direction
+            ),
+            default => $collection->products->toBase(),
+        };
     }
 }

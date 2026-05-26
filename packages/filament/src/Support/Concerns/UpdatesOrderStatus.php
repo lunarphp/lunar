@@ -12,7 +12,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Lunar\Core\Actions\Orders\UpdateOrderStatus;
+use Lunar\Core\Contracts\Actions\Orders\UpdatesOrderStatus as UpdatesOrderStatusContract;
 use Lunar\Core\Models\Order;
 
 trait UpdatesOrderStatus
@@ -126,7 +126,7 @@ trait UpdatesOrderStatus
 
     protected function updateStatus(Order $record, array $data)
     {
-        UpdateOrderStatus::run($record, $data['status']);
+        app(UpdatesOrderStatusContract::class)->execute($record, $data['status']);
 
         if (isset($data['send_notifications']) && ! $data['send_notifications']) {
             Notification::make()->title(

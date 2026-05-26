@@ -2,21 +2,27 @@
 
 namespace Lunar\Core\Drivers;
 
-use Lunar\Core\Actions\Taxes\GetTaxZone;
+use Lunar\Core\Contracts\Actions\Taxes\GetsTaxZone;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
-use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Contracts\CartLine;
 use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Models\TaxZone;
+use Lunar\Core\Pricing\PriceCalculatorInterface;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
-use Spatie\LaravelBlink\BlinkFacade as Blink;
+use Spatie\Blink\Blink;
 
 class SystemTaxDriver implements TaxDriver
 {
+    public function __construct(
+        protected GetsTaxZone $getsTaxZone,
+        protected PriceCalculatorInterface $priceCalculator,
+        protected Blink $blink,
+    ) {}
+
     /**
      * The taxable shipping address.
      */
@@ -113,16 +119,16 @@ class SystemTaxDriver implements TaxDriver
      */
     public function getBreakdown($subTotal): TaxBreakdown
     {
-        $taxZone = $this->taxZone ?? app(GetTaxZone::class)->execute($this->shippingAddress);
+        $taxZone = $this->taxZone ?? $this->getsTaxZone->execute($this->shippingAddress);
         $taxClass = $this->purchasable->getTaxClass();
 
-        $taxAmounts = Blink::once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone) {
+        $taxAmounts = $this->blink->once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone) {
             return $taxZone->taxAmounts()->with('taxRate')->whereTaxClassId($taxClass->id)->get();
         });
 
         if (prices_inc_tax()) {
             $totalTaxPercentage = (float) $taxAmounts->sum('percentage') / 100;
-            $priceExTax = PriceCalculator::withoutTax((int) $subTotal, $totalTaxPercentage, $this->currency);
+            $priceExTax = $this->priceCalculator->withoutTax((int) $subTotal, $totalTaxPercentage, $this->currency);
 
             if ($this->defaultTaxZone()->id === $taxZone->id) {
                 $expectedTax = (int) $subTotal - $priceExTax;
@@ -130,7 +136,7 @@ class SystemTaxDriver implements TaxDriver
                     ->mapWithKeys(fn ($amount, $key) => [$key => (int) round((float) $amount->percentage * 10000)])
                     ->all();
 
-                $allocations = PriceCalculator::distribute($expectedTax, $weights, $this->currency);
+                $allocations = $this->priceCalculator->distribute($expectedTax, $weights, $this->currency);
 
                 $breakdown = new TaxBreakdown;
 
@@ -152,7 +158,7 @@ class SystemTaxDriver implements TaxDriver
         $breakdown = new TaxBreakdown;
 
         foreach ($taxAmounts as $amount) {
-            $result = PriceCalculator::percentage((int) $subTotal, (float) $amount->percentage / 100, $this->currency);
+            $result = $this->priceCalculator->percentage((int) $subTotal, (float) $amount->percentage / 100, $this->currency);
 
             $breakdown->addAmount(new TaxBreakdownAmount(
                 price: new PriceValue($result, $this->currency),

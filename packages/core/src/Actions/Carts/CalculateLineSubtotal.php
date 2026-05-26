@@ -4,24 +4,28 @@ namespace Lunar\Core\Actions\Carts;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Carts\CalculatesLineSubtotal;
+use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\DataObjects\PriceValue;
-use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Core\Modifiers\CartLineModifiers;
 
-class CalculateLineSubtotal
+class CalculateLineSubtotal implements CalculatesLineSubtotal
 {
+    public function __construct(
+        protected PricingManager $pricing,
+    ) {}
+
     /**
      * Execute the action.
      *
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return CartLine
      */
     public function execute(
         CartLineContract $cartLine,
         Collection $customerGroups
-    ) {
+    ): CartLineContract {
         /** @var CartLine $cartLine */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
@@ -32,7 +36,7 @@ class CalculateLineSubtotal
 
         // we check if any cart line modifiers have already specified a unit price in their calculating() method
         if (! $price instanceof PriceValue) {
-            $priceResponse = Pricing::currency($cart->currency)
+            $priceResponse = $this->pricing->currency($cart->currency)
                 ->qty($cartLine->quantity)
                 ->currency($cart->currency)
                 ->customerGroups($customerGroups)

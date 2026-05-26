@@ -22,7 +22,7 @@ test('marks the order as shipped using the configured status', function () {
 
     $order = Order::factory()->create(['status' => 'payment-received']);
 
-    MarkOrderAsShipped::run($order);
+    app(MarkOrderAsShipped::class)->execute($order);
 
     expect($order->fresh()->status)->toBe('dispatched');
 
@@ -34,7 +34,7 @@ test('respects the configured shipped_status override', function () {
 
     $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
-    MarkOrderAsShipped::run($order);
+    app(MarkOrderAsShipped::class)->execute($order);
 
     expect($order->fresh()->status)->toBe('payment-offline');
 });

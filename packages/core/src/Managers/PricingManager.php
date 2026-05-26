@@ -3,9 +3,9 @@
 namespace Lunar\Core\Managers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Lunar\Core\Contracts\PricingManager as PricingManagerContract;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PricingResponse;
@@ -47,12 +47,14 @@ class PricingManager implements PricingManagerContract
      */
     public ?Collection $customerGroups = null;
 
-    public function __construct()
-    {
-        if (Auth::check() && is_lunar_user(Auth::user())) {
-            $this->user = Auth::user();
-        }
-    }
+    /**
+     * Whether the user has been resolved (explicitly or from auth).
+     */
+    protected bool $userResolved = false;
+
+    public function __construct(
+        protected AuthFactory $auth,
+    ) {}
 
     /**
      * Set the purchasable property.
@@ -74,6 +76,7 @@ class PricingManager implements PricingManagerContract
     public function user(?Authenticatable $user)
     {
         $this->user = $user;
+        $this->userResolved = true;
 
         return $this;
     }
@@ -86,6 +89,7 @@ class PricingManager implements PricingManagerContract
     public function guest()
     {
         $this->user = null;
+        $this->userResolved = true;
 
         return $this;
     }
@@ -150,6 +154,8 @@ class PricingManager implements PricingManagerContract
         if (! $this->purchasable) {
             throw new \ErrorException('No purchasable set.');
         }
+
+        $this->resolveUser();
 
         if (! $this->currency) {
             $this->currency = Currency::getDefault();
@@ -227,6 +233,26 @@ class PricingManager implements PricingManagerContract
         $this->reset();
 
         return $response;
+    }
+
+    /**
+     * Resolve the user from auth on first use, unless one has been set
+     * explicitly via user()/guest(). Reads on demand rather than at
+     * construction so a manager built before login still sees the user.
+     */
+    private function resolveUser(): void
+    {
+        if ($this->userResolved) {
+            return;
+        }
+
+        $this->userResolved = true;
+
+        $user = $this->auth->guard()->user();
+
+        if ($user && is_lunar_user($user)) {
+            $this->user = $user;
+        }
     }
 
     /**

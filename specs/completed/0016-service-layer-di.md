@@ -1,6 +1,6 @@
 # 0016 — Service-layer dependency injection
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-05-26
 - TODO item: "Ensure all service-layer classes are DI'd"
@@ -262,6 +262,19 @@ A one-paragraph rationale follows the bullet, pointing at this spec (`specs/comp
 This spec lands **after** [[0013-base-directory-reorganisation]] (already drafted), because the action interface namespace in §C.1 (`Contracts/Actions/`) is the post-relocation shape. Lands **after** [[0014-price-calculator]] because the SystemTaxDriver migration in §C.4 depends on the `PriceCalculatorInterface` binding existing.
 
 No ordering constraint relative to other outstanding TODO items.
+
+## Implementation notes
+
+Shipped across nine commits on `feature/0016-service-layer-di`. Deviations from the proposal above, with rationale:
+
+- **Sub-strategy/sub-lookup actions stayed concrete.** `SortProductsByPrice` / `SortProductsBySku` (resolving the §C.1 open question) and `GetTaxZoneCountry` / `GetTaxZonePostcode` / `GetTaxZoneState` did **not** get their own interfaces. They are injected as concretes into the public dispatchers (`SortProducts` → `SortsProducts`, `GetTaxZone` → `GetsTaxZone`), which keeps one swap seam per dispatcher instead of an interface per internal helper. The table in §C.1 over-listed these.
+- **`UrlGenerator` is not container-bound as a singleton.** §C.3 suggested a singleton; the generator is stateful (mutates `$this->model` per call), so a shared singleton would be a footgun. It resolves fresh via the existing `app(config('lunar.urls.generator'))` path — the substantive fix was deferring `Language::getDefault()` out of the constructor. The `lunar.urls.generator` config key stays because `null` is a meaningful "disable URL generation" value, not a class swap.
+- **`SystemTaxDriver` Blink injection is a fresh per-driver store, not the global `'blink'` singleton.** Aliasing `Blink::class` to the `'blink'` binding created a container resolution cycle (`'blink'`'s concrete is `Blink::class`). `Blink` autowires a fresh instance; because the driver is cached in the singleton `TaxManager`, per-request memoisation is preserved.
+- **`CreateCurrencyPrices` keeps `handle()`.** The contract declares `handle()` rather than `execute()` to match the queued-job caller; noted in the CLAUDE.md convention as the one exception.
+- **Config-key deprecation Rector rule descoped.** §"Migration impact" floated a second Rector rule warning on removed config keys (`lunar.cart.actions.*`, etc.). A config-array Rector rule is fragile for marginal benefit; the removed keys are covered by this spec's documented migration and the removed-class catalogue instead. The `Action::run()` → `app(Contract::class)->execute()` rule (`RewriteActionRunCallRector`) shipped with a fixture test.
+- **Convention enforcement (added in review).** Removing `AbstractAction` left nothing anchoring the action layer, so `tests/core/Unit/ArchitectureTest.php` asserts every `Actions/` class implements a contract (excluding the five deliberately-concrete internal helpers), exposes `execute()`, and imports no Lunar service facades. To make those rules exceptionless: `CreateCurrencyPrices::handle()` was renamed to `execute()` (dropping the one method-name carve-out); `CalculateLine` / `CalculateLineSubtotal` / `RefundOrder` — which still reached for the `Taxes` / `Pricing` / `PriceCalculator` facades — now constructor-inject those collaborators; and `Managers\TaxManager` was made to actually `implement Contracts\TaxManager` (its `buildProvider()` signature realigned) so the contract can be type-hint-injected and the configured singleton is shared.
+- **Action bindings extracted to their own provider (added in review).** §D put the action map in `LunarServiceProvider::registerActions()`. That pulled ~60 action `use` statements into the main provider and would grow with every new action, so the map moved to a dedicated `ActionServiceProvider` (registered by `LunarServiceProvider`), keeping its `$actions` catalogue and imports self-contained. Managers/services stayed in `LunarServiceProvider` (small, stable). Auto-discovery / attribute binding was considered and rejected for the same reasons the spec gives: the contract names aren't mechanically derivable from the action names, and it adds boot-time discovery cost for marginal benefit.
+- **Verification.** Each test suite passes standalone (core 610, filament 40, admin 188, upgrade 29, stripe 40). The full-`pest` run shows 20 pre-existing cross-suite DB-pollution failures (identical count on the base `2.x` branch); this spec adds passing tests and zero new failures. phpstan level 0 clean; pint clean on all changed files.
 
 ## References
 

@@ -2,29 +2,27 @@
 
 namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Carts\RemovesPurchasable;
 use Lunar\Core\Exceptions\CartLineIdMismatchException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
-class RemovePurchasable extends AbstractAction
+class RemovePurchasable implements RemovesPurchasable
 {
     /**
-     * Execute the action
-     *
-     * @return bool
+     * Execute the action.
      *
      * @throws CartLineIdMismatchException
      */
     public function execute(
         CartContract $cart,
         int $cartLineId
-    ): self {
+    ): void {
         /** @var Cart $cart */
         DB::transaction(function () use ($cart, $cartLineId) {
-            /** @var CartLine $line */
+            /** @var CartLine|null $line */
             $line = $cart->lines()->whereId($cartLineId)->first();
 
             if (! $line) {
@@ -37,7 +35,5 @@ class RemovePurchasable extends AbstractAction
 
             $line->delete();
         });
-
-        return $this;
     }
 }

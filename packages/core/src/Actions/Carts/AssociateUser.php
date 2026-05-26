@@ -2,31 +2,34 @@
 
 namespace Lunar\Core\Actions\Carts;
 
-use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Carts\AssociatesUser;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
-class AssociateUser extends AbstractAction
+class AssociateUser implements AssociatesUser
 {
+    public function __construct(
+        protected MergeCart $mergeCart,
+    ) {}
+
     /**
-     * Execute the action
-     *
-     * @param  string  $policy
+     * Execute the action.
      */
-    public function execute(CartContract $cart, LunarUser $user, $policy = 'merge'): self
+    public function execute(CartContract $cart, LunarUser $user, string $policy = 'merge'): void
     {
-        /** @var Cart $userCart */
-        if ($policy == 'merge') {
+        if ($policy === 'merge') {
             $userCart = Cart::whereUserId($user->getKey())->active()->unMerged()->latest()->first();
+
             if ($userCart) {
-                app(MergeCart::class)->execute($cart, $userCart);
+                $this->mergeCart->execute($cart, $userCart);
             }
         }
 
-        if ($policy == 'override') {
+        if ($policy === 'override') {
             $userCart = Cart::whereUserId($user->getKey())->active()->unMerged()->latest()->first();
-            if ($userCart && $userCart->id != $cart->id) {
+
+            if ($userCart && $userCart->id !== $cart->id) {
                 $userCart->update([
                     'merged_id' => $userCart->id,
                 ]);
@@ -37,7 +40,5 @@ class AssociateUser extends AbstractAction
             'user_id' => $user->getKey(),
             'customer_id' => $user->latestCustomer()?->getKey(),
         ]);
-
-        return $this;
     }
 }

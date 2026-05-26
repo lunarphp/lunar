@@ -2,14 +2,15 @@
 
 namespace Lunar\Core\Actions\Carts;
 
+use Lunar\Core\Contracts\Actions\Carts\GeneratesFingerprint;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 
-class GenerateFingerprint
+class GenerateFingerprint implements GeneratesFingerprint
 {
-    public function execute(CartContract $cart)
+    public function execute(CartContract $cart): string
     {
         /** @var Cart $cart */
         $value = $cart->lines->reduce(function (?string $carry, CartLineContract $line) {

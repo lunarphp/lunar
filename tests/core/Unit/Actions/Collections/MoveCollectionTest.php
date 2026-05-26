@@ -23,7 +23,7 @@ test('re-parents a collection under a target', function () {
     $a = Collection::factory()->create(['collection_group_id' => $this->group->id]);
     $b = Collection::factory()->create(['collection_group_id' => $this->group->id]);
 
-    MoveCollection::run($a, $b);
+    app(MoveCollection::class)->execute($a, $b);
 
     expect($a->fresh()->parent_id)->toBe($b->id);
 });
@@ -33,7 +33,7 @@ test('makes a collection a root when target is null', function () {
     $child = Collection::factory()->create(['collection_group_id' => $this->group->id]);
     $parent->appendNode($child);
 
-    MoveCollection::run($child->fresh(), null);
+    app(MoveCollection::class)->execute($child->fresh(), null);
 
     expect($child->fresh()->parent_id)->toBeNull();
 });
@@ -41,7 +41,7 @@ test('makes a collection a root when target is null', function () {
 test('rejects moving a collection into itself', function () {
     $a = Collection::factory()->create(['collection_group_id' => $this->group->id]);
 
-    MoveCollection::run($a, $a);
+    app(MoveCollection::class)->execute($a, $a);
 })->throws(CollectionActionException::class);
 
 test('rejects moving a collection into one of its descendants', function () {
@@ -49,5 +49,5 @@ test('rejects moving a collection into one of its descendants', function () {
     $child = Collection::factory()->create(['collection_group_id' => $this->group->id]);
     $parent->appendNode($child);
 
-    MoveCollection::run($parent->fresh(), $child->fresh());
+    app(MoveCollection::class)->execute($parent->fresh(), $child->fresh());
 })->throws(CollectionActionException::class);

@@ -37,7 +37,7 @@ it('captures a successful intent within the transaction amount', function () {
         'amount' => 10_000,
     ]);
 
-    $result = CaptureOrder::run($order, $intent->id, '50.00');
+    $result = app(CaptureOrder::class)->execute($order, $intent->id, '50.00');
 
     expect($result)->toBeInstanceOf(PaymentCapture::class);
     expect($result->success)->toBeTrue();
@@ -54,7 +54,7 @@ it('rejects capturing more than the intent amount', function () {
         'amount' => 5_000,
     ]);
 
-    CaptureOrder::run($order, $intent->id, '75.00');
+    app(CaptureOrder::class)->execute($order, $intent->id, '75.00');
 })->throws(OrderActionException::class, 'Capture amount exceeds the transaction amount.');
 
 it('rejects capturing against a non-intent transaction', function () {
@@ -68,7 +68,7 @@ it('rejects capturing against a non-intent transaction', function () {
         'amount' => 5_000,
     ]);
 
-    CaptureOrder::run($order, $capture->id, '10.00');
+    app(CaptureOrder::class)->execute($order, $capture->id, '10.00');
 })->throws(OrderActionException::class);
 
 it('reports canRun false when a capture already exists', function () {

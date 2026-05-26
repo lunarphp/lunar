@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Lunar\Upgrade\Rector\Actions\RewriteActionRunCallRector;
 use Lunar\Upgrade\Rector\LunarSetList;
 use Lunar\Upgrade\Rector\Price\DropPriceValueAccessRector;
 use Lunar\Upgrade\Rector\Price\RewritePriceDecimalCallRector;
@@ -30,4 +31,5 @@ return RectorConfig::configure()
     ->withConfiguredRule(RewritePriceDecimalCallRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
     ->withConfiguredRule(RewritePriceFormattedCallRector::class, LunarSetList::V1_TO_V2_MONEY_ATTRIBUTES)
     ->withConfiguredRule(RewriteUnitPriceFormatterCallRector::class, LunarSetList::V1_TO_V2_UNIT_AWARE_ATTRIBUTES)
+    ->withConfiguredRule(RewriteActionRunCallRector::class, LunarSetList::V1_TO_V2_ACTION_CONTRACTS)
     ->withRules(LunarSetList::V1_TO_V2);

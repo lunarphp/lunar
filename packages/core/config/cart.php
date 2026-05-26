@@ -1,13 +1,5 @@
 <?php
 
-use Lunar\Core\Actions\Carts\AddAddress;
-use Lunar\Core\Actions\Carts\AddOrUpdatePurchasable;
-use Lunar\Core\Actions\Carts\CreateOrder;
-use Lunar\Core\Actions\Carts\GenerateFingerprint;
-use Lunar\Core\Actions\Carts\GetExistingCartLine;
-use Lunar\Core\Actions\Carts\RemovePurchasable;
-use Lunar\Core\Actions\Carts\SetShippingOption;
-use Lunar\Core\Actions\Carts\UpdateCartLine;
 use Lunar\Core\Pipelines\Cart\ApplyDiscounts;
 use Lunar\Core\Pipelines\Cart\ApplyShipping;
 use Lunar\Core\Pipelines\Cart\Calculate;
@@ -25,16 +17,6 @@ use Lunar\Core\Validation\CartLine\CartLineQuantity;
 use Lunar\Core\Validation\CartLine\CartLineStock;
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Fingerprint Generator
-    |--------------------------------------------------------------------------
-    |
-    | Specify which class should be used when generating a cart fingerprint.
-    |
-    */
-    'fingerprint_generator' => GenerateFingerprint::class,
-
     /*
     |--------------------------------------------------------------------------
     | Authentication policy
@@ -78,25 +60,6 @@ return [
         'cart_lines' => [
             GetUnitPrice::class,
         ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cart Actions
-    |--------------------------------------------------------------------------
-    |
-    | Here you can decide what action should be run during a Carts lifecycle.
-    | The default actions should be fine for most cases.
-    |
-    */
-    'actions' => [
-        'add_to_cart' => AddOrUpdatePurchasable::class,
-        'get_existing_cart_line' => GetExistingCartLine::class,
-        'update_cart_line' => UpdateCartLine::class,
-        'remove_from_cart' => RemovePurchasable::class,
-        'add_address' => AddAddress::class,
-        'set_shipping_option' => SetShippingOption::class,
-        'order_create' => CreateOrder::class,
     ],
 
     /*

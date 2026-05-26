@@ -68,9 +68,7 @@ test('can create order if multiple enabled', function () {
         'placed_at' => now(),
     ]);
 
-    $newOrder = (new CreateOrder)->execute($cart, allowMultipleOrders: true)->then(
-        fn ($order) => $order->refresh()
-    );
+    $newOrder = app(CreateOrder::class)->execute($cart, allowMultipleOrders: true)->refresh();
 
     $this->assertNotSame($newOrder->id, $order->id);
 });
@@ -103,9 +101,7 @@ function can_update_draft_order()
         'updated_at' => $updatedAt,
     ]);
 
-    $updatedOrder = (new CreateOrder)->execute($cart, allowMultipleOrders: true)->then(
-        fn ($order) => $order->refresh()
-    );
+    $updatedOrder = app(CreateOrder::class)->execute($cart, allowMultipleOrders: true)->refresh();
 
     expect($orderB->id)->toBe($updatedOrder->id);
     expect($orderB->updated_at->eq($updatedOrder->updated_at))->toBeFalse();

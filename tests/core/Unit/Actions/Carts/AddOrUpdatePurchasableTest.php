@@ -33,7 +33,7 @@ test('can add cart lines', function () {
 
     expect($cart->lines)->toHaveCount(0);
 
-    $action = new AddOrUpdatePurchasable;
+    $action = app(AddOrUpdatePurchasable::class);
 
     $action->execute($cart, $purchasable, 1);
 
@@ -61,7 +61,7 @@ test('cannot add zero quantity line', function () {
 
     $this->expectException(InvalidCartLineQuantityException::class);
 
-    $action = new AddOrUpdatePurchasable;
+    $action = app(AddOrUpdatePurchasable::class);
 
     $action->execute($cart, $purchasable, 0);
 });
@@ -83,7 +83,7 @@ test('can update existing cart line', function () {
         'priceable_id' => $purchasable->id,
     ]);
 
-    $action = new AddOrUpdatePurchasable;
+    $action = app(AddOrUpdatePurchasable::class);
 
     expect($cart->lines)->toHaveCount(0);
 

@@ -18,11 +18,11 @@ uses(TestCase::class);
 uses(RefreshDatabase::class);
 
 test('can initialise the manager', function () {
-    expect(new PricingManager)->toBeInstanceOf(PricingManager::class);
+    expect(app(PricingManager::class))->toBeInstanceOf(PricingManager::class);
 });
 
 test('can set up available guest pricing', function () {
-    $manager = new PricingManager;
+    $manager = app(PricingManager::class);
 
     $currency = Currency::factory()->create([
         'default' => true,
@@ -72,7 +72,7 @@ test('can set up available guest pricing', function () {
 });
 
 test('can get purchasable price with defaults', function () {
-    $manager = new PricingManager;
+    $manager = app(PricingManager::class);
 
     $currency = Currency::factory()->create([
         'default' => true,
@@ -103,7 +103,7 @@ test('can get purchasable price with defaults', function () {
 });
 
 test('can fetch customer group price', function () {
-    $manager = new PricingManager;
+    $manager = app(PricingManager::class);
 
     $customerGroups = CustomerGroup::factory(5)->create();
 
@@ -155,7 +155,7 @@ test('can fetch customer group price', function () {
 });
 
 test('can fetch quantity break price', function () {
-    $manager = new PricingManager;
+    $manager = app(PricingManager::class);
 
     $currency = Currency::factory()->create([
         'default' => true,
@@ -244,7 +244,7 @@ test('can fetch quantity break price', function () {
 });
 
 test('can match based on currency', function () {
-    $manager = new PricingManager;
+    $manager = app(PricingManager::class);
 
     $defaultCurrency = Currency::factory()->create([
         'default' => true,
@@ -294,7 +294,7 @@ test('can match based on currency', function () {
 /** @test  */
 function can_fetch_correct_price_for_user()
 {
-    $manager = new PricingManager;
+    $manager = app(PricingManager::class);
 
     $user = User::factory()->create();
 
@@ -354,7 +354,7 @@ function can_fetch_correct_price_for_user()
 }
 
 test('can pipeline purchasable price', function () {
-    $manager = new PricingManager;
+    $manager = app(PricingManager::class);
 
     $currency = Currency::factory()->create([
         'default' => true,

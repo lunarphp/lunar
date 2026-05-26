@@ -23,7 +23,7 @@ test('updates the product status and fires an event', function () {
 
     $product = Product::factory()->create(['status' => 'draft']);
 
-    UpdateProductStatus::run($product, 'published');
+    app(UpdateProductStatus::class)->execute($product, 'published');
 
     expect($product->fresh()->status)->toBe('published');
 
@@ -35,7 +35,7 @@ test('does not fire an event when status is unchanged', function () {
 
     $product = Product::factory()->create(['status' => 'published']);
 
-    UpdateProductStatus::run($product, 'published');
+    app(UpdateProductStatus::class)->execute($product, 'published');
 
     Event::assertNotDispatched(ProductStatusUpdated::class);
 });
@@ -43,5 +43,5 @@ test('does not fire an event when status is unchanged', function () {
 test('throws on unknown status', function () {
     $product = Product::factory()->create(['status' => 'draft']);
 
-    UpdateProductStatus::run($product, 'not-a-real-status');
+    app(UpdateProductStatus::class)->execute($product, 'not-a-real-status');
 })->throws(ProductActionException::class);

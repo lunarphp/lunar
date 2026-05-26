@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Lunar\Core\Actions\Collections\SortProducts;
+use Lunar\Core\Contracts\Actions\Collections\SortsProducts;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Contracts\Collection as CollectionContract;
@@ -41,7 +41,7 @@ class UpdateProductPositions implements ShouldQueue
         }
 
         DB::transaction(function () {
-            $products = app(SortProducts::class)->execute($this->collection);
+            $products = app(SortsProducts::class)->execute($this->collection);
             $productSync = $products->values()->mapWithKeys(function ($product, $index) {
                 return [
                     $product->id => [

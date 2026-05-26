@@ -20,7 +20,6 @@ final class LunarSetList
      * @var array<string, string>
      */
     public const V1_TO_V2_CLASS_RENAMES = [
-        'Lunar\\Actions\\AbstractAction' => 'Lunar\\Core\\Actions\\AbstractAction',
         'Lunar\\Actions\\Carts\\AddAddress' => 'Lunar\\Core\\Actions\\Carts\\AddAddress',
         'Lunar\\Actions\\Carts\\AddOrUpdatePurchasable' => 'Lunar\\Core\\Actions\\Carts\\AddOrUpdatePurchasable',
         'Lunar\\Actions\\Carts\\AssociateUser' => 'Lunar\\Core\\Actions\\Carts\\AssociateUser',
@@ -597,6 +596,12 @@ final class LunarSetList
      * @var array<int, class-string>
      */
     public const V1_TO_V2_REMOVED_CLASSES = [
+        // Spec 0016 removed the action base class; actions now implement a
+        // contract and are resolved from the container. A consumer that
+        // extended AbstractAction should implement the relevant
+        // `Lunar\Core\Contracts\Actions\…` interface instead.
+        'Lunar\\Actions\\AbstractAction',
+        'Lunar\\Core\\Actions\\AbstractAction',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsFooterWidgets',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsFormActions',
         'Lunar\\Admin\\Support\\Pages\\Concerns\\ExtendsForms',
@@ -622,5 +627,44 @@ final class LunarSetList
     public const V1_TO_V2_METHOD_RENAMES = [
         ['Lunar\\Admin\\Support\\Resources\\BaseResource', 'getDefaultForm', 'form'],
         ['Lunar\\Admin\\Support\\Resources\\BaseResource', 'getDefaultTable', 'table'],
+    ];
+
+    /**
+     * Maps each concrete action (post-rename, v2 namespace) to the contract a
+     * caller should resolve from the container. Drives
+     * `RewriteActionRunCallRector`, which rewrites `Action::run(...)` to
+     * `app(Contract::class)->execute(...)` after spec 0016 removed the
+     * `AbstractAction::run()` / `::make()` shortcuts.
+     *
+     * @var array<class-string, class-string>
+     */
+    public const V1_TO_V2_ACTION_CONTRACTS = [
+        'Lunar\\Core\\Actions\\Carts\\AddAddress' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AddsAddress',
+        'Lunar\\Core\\Actions\\Carts\\AddOrUpdatePurchasable' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AddsOrUpdatesPurchasable',
+        'Lunar\\Core\\Actions\\Carts\\AssociateUser' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\AssociatesUser',
+        'Lunar\\Core\\Actions\\Carts\\CalculateLine' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CalculatesLine',
+        'Lunar\\Core\\Actions\\Carts\\CalculateLineSubtotal' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CalculatesLineSubtotal',
+        'Lunar\\Core\\Actions\\Carts\\CreateOrder' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\CreatesOrder',
+        'Lunar\\Core\\Actions\\Carts\\GenerateFingerprint' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\GeneratesFingerprint',
+        'Lunar\\Core\\Actions\\Carts\\GetExistingCartLine' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\GetsExistingCartLine',
+        'Lunar\\Core\\Actions\\Carts\\MergeCart' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\MergesCart',
+        'Lunar\\Core\\Actions\\Carts\\RemovePurchasable' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\RemovesPurchasable',
+        'Lunar\\Core\\Actions\\Carts\\SetShippingOption' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\SetsShippingOption',
+        'Lunar\\Core\\Actions\\Carts\\UpdateCartLine' => 'Lunar\\Core\\Contracts\\Actions\\Carts\\UpdatesCartLine',
+        'Lunar\\Core\\Actions\\Collections\\CreateChildCollection' => 'Lunar\\Core\\Contracts\\Actions\\Collections\\CreatesChildCollection',
+        'Lunar\\Core\\Actions\\Collections\\CreateRootCollection' => 'Lunar\\Core\\Contracts\\Actions\\Collections\\CreatesRootCollection',
+        'Lunar\\Core\\Actions\\Collections\\DeleteCollection' => 'Lunar\\Core\\Contracts\\Actions\\Collections\\DeletesCollection',
+        'Lunar\\Core\\Actions\\Collections\\MoveCollection' => 'Lunar\\Core\\Contracts\\Actions\\Collections\\MovesCollection',
+        'Lunar\\Core\\Actions\\Collections\\SortProducts' => 'Lunar\\Core\\Contracts\\Actions\\Collections\\SortsProducts',
+        'Lunar\\Core\\Actions\\Orders\\CaptureOrder' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\CapturesOrder',
+        'Lunar\\Core\\Actions\\Orders\\GenerateOrderReference' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\GeneratesOrderReference',
+        'Lunar\\Core\\Actions\\Orders\\MarkOrderAsShipped' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\MarksOrderAsShipped',
+        'Lunar\\Core\\Actions\\Orders\\RefundOrder' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\RefundsOrder',
+        'Lunar\\Core\\Actions\\Orders\\UpdateOrderStatus' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\UpdatesOrderStatus',
+        'Lunar\\Core\\Actions\\Products\\AdjustStock' => 'Lunar\\Core\\Contracts\\Actions\\Products\\AdjustsStock',
+        'Lunar\\Core\\Actions\\Products\\DuplicateProduct' => 'Lunar\\Core\\Contracts\\Actions\\Products\\DuplicatesProduct',
+        'Lunar\\Core\\Actions\\Products\\MapVariantsToProductOptions' => 'Lunar\\Core\\Contracts\\Actions\\Products\\MapsVariantsToProductOptions',
+        'Lunar\\Core\\Actions\\Products\\UpdateProductStatus' => 'Lunar\\Core\\Contracts\\Actions\\Products\\UpdatesProductStatus',
+        'Lunar\\Core\\Actions\\Taxes\\GetTaxZone' => 'Lunar\\Core\\Contracts\\Actions\\Taxes\\GetsTaxZone',
     ];
 }

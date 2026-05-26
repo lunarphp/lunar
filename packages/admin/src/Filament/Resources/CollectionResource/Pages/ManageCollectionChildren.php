@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\ChildCollectionCreated;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Core\Actions\Collections\CreateChildCollection;
+use Lunar\Core\Contracts\Actions\Collections\CreatesChildCollection;
 use Lunar\Filament\Forms\Components\TranslatedText;
 
 class ManageCollectionChildren extends BaseManageRelatedRecords
@@ -88,7 +88,7 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
                 ->schema([
                     TranslatedText::make('name')->required(),
                 ])
-                ->action(fn (array $data, Table $table) => CreateChildCollection::run(
+                ->action(fn (array $data, Table $table) => app(CreatesChildCollection::class)->execute(
                     parent: $table->getRelationship()->getParent(),
                     name: $data['name'],
                 ))

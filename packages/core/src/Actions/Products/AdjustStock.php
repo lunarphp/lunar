@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Actions\Products;
 
-use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Products\AdjustsStock;
 use Lunar\Core\Exceptions\ProductActionException;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\ProductVariant;
@@ -14,7 +14,7 @@ use Lunar\Core\Models\ProductVariant;
  * Will be superseded by the upcoming Inventory subsystem; until then this
  * is the canonical seam for editing the `stock` column.
  */
-final class AdjustStock extends AbstractAction
+final class AdjustStock implements AdjustsStock
 {
     public function execute(ProductVariantContract $variant, int $delta, ?string $reason = null): ProductVariant
     {

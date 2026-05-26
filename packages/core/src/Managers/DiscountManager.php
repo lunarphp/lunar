@@ -4,6 +4,7 @@ namespace Lunar\Core\Managers;
 
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
+use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DiscountManager as DiscountManagerContract;
 use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\DiscountTypes\AmountOff;
@@ -14,7 +15,6 @@ use Lunar\Core\Models\Contracts\Channel as ChannelContract;
 use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
-use Lunar\Core\Validation\CouponValidator;
 
 class DiscountManager implements DiscountManagerContract
 {
@@ -55,8 +55,9 @@ class DiscountManager implements DiscountManagerContract
     /**
      * Instantiate the class.
      */
-    public function __construct()
-    {
+    public function __construct(
+        protected CouponValidator $couponValidator,
+    ) {
         $this->applied = collect();
         $this->channels = collect();
         $this->customerGroups = collect();
@@ -246,8 +247,6 @@ class DiscountManager implements DiscountManagerContract
 
     public function validateCoupon(string $coupon): bool
     {
-        return app(
-            config('lunar.discounts.coupon_validator', CouponValidator::class)
-        )->validate($coupon);
+        return $this->couponValidator->validate($coupon);
     }
 }

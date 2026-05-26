@@ -14,15 +14,15 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use Lunar\Core\Actions\Carts\AddAddress;
-use Lunar\Core\Actions\Carts\AddOrUpdatePurchasable;
-use Lunar\Core\Actions\Carts\AssociateUser;
-use Lunar\Core\Actions\Carts\CreateOrder;
-use Lunar\Core\Actions\Carts\GenerateFingerprint;
-use Lunar\Core\Actions\Carts\RemovePurchasable;
-use Lunar\Core\Actions\Carts\SetShippingOption;
-use Lunar\Core\Actions\Carts\UpdateCartLine;
 use Lunar\Core\Casts\CouponString;
+use Lunar\Core\Contracts\Actions\Carts\AddsAddress;
+use Lunar\Core\Contracts\Actions\Carts\AddsOrUpdatesPurchasable;
+use Lunar\Core\Contracts\Actions\Carts\AssociatesUser;
+use Lunar\Core\Contracts\Actions\Carts\CreatesOrder;
+use Lunar\Core\Contracts\Actions\Carts\GeneratesFingerprint;
+use Lunar\Core\Contracts\Actions\Carts\RemovesPurchasable;
+use Lunar\Core\Contracts\Actions\Carts\SetsShippingOption;
+use Lunar\Core\Contracts\Actions\Carts\UpdatesCartLine;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Contracts\Purchasable;
@@ -367,10 +367,9 @@ class Cart extends Base implements Contracts\Cart
             )->validate();
         }
 
-        return app(
-            config('lunar.cart.actions.add_to_cart', AddOrUpdatePurchasable::class)
-        )->execute($this, $purchasable, $quantity, $meta)
-            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
+        app(AddsOrUpdatesPurchasable::class)->execute($this, $purchasable, $quantity, $meta);
+
+        return $refresh ? $this->refresh()->recalculate() : $this;
     }
 
     public function addLines(iterable $lines): Cart
@@ -398,10 +397,9 @@ class Cart extends Base implements Contracts\Cart
             )->validate();
         }
 
-        return app(
-            config('lunar.cart.actions.remove_from_cart', RemovePurchasable::class)
-        )->execute($this, $cartLineId)
-            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
+        app(RemovesPurchasable::class)->execute($this, $cartLineId);
+
+        return $refresh ? $this->refresh()->recalculate() : $this;
     }
 
     /**
@@ -418,10 +416,9 @@ class Cart extends Base implements Contracts\Cart
             )->validate();
         }
 
-        return app(
-            config('lunar.cart.actions.update_cart_line', UpdateCartLine::class)
-        )->execute($cartLineId, $quantity, $meta)
-            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
+        app(UpdatesCartLine::class)->execute($cartLineId, $quantity, $meta);
+
+        return $refresh ? $this->refresh()->recalculate() : $this;
     }
 
     public function updateLines(Collection $lines): Cart
@@ -462,10 +459,9 @@ class Cart extends Base implements Contracts\Cart
             }
         }
 
-        return app(
-            config('lunar.cart.actions.associate_user', AssociateUser::class)
-        )->execute($this, $user, $policy)
-            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
+        app(AssociatesUser::class)->execute($this, $user, $policy);
+
+        return $refresh ? $this->refresh()->recalculate() : $this;
     }
 
     public function setCustomer(Customer $customer): Cart
@@ -493,10 +489,9 @@ class Cart extends Base implements Contracts\Cart
             )->validate();
         }
 
-        return app(
-            config('lunar.cart.actions.add_address', AddAddress::class)
-        )->execute($this, $address, $type)
-            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
+        app(AddsAddress::class)->execute($this, $address, $type);
+
+        return $refresh ? $this->refresh()->recalculate() : $this;
     }
 
     public function setShippingAddress(array|Addressable $address, bool $clearTaxZone = true): Cart
@@ -524,10 +519,9 @@ class Cart extends Base implements Contracts\Cart
             )->validate();
         }
 
-        return app(
-            config('lunar.cart.actions.set_shipping_option', SetShippingOption::class)
-        )->execute($this, $option)
-            ->then(fn () => $refresh ? $this->refresh()->recalculate() : $this);
+        app(SetsShippingOption::class)->execute($this, $option);
+
+        return $refresh ? $this->refresh()->recalculate() : $this;
     }
 
     public function getShippingOption(): ?ShippingOption
@@ -558,13 +552,9 @@ class Cart extends Base implements Contracts\Cart
             )->validate();
         }
 
-        return app(
-            config('lunar.cart.actions.order_create', CreateOrder::class)
-        )->execute(
-            $cart,
-            $allowMultipleOrders,
-            $orderIdToUpdate
-        )->then(fn ($order) => $order->refresh());
+        $order = app(CreatesOrder::class)->execute($cart, $allowMultipleOrders, $orderIdToUpdate);
+
+        return $order->refresh();
     }
 
     /**
@@ -607,9 +597,7 @@ class Cart extends Base implements Contracts\Cart
      */
     public function fingerprint(): string
     {
-        $generator = config('lunar.cart.fingerprint_generator', GenerateFingerprint::class);
-
-        return (new $generator)->execute($this);
+        return app(GeneratesFingerprint::class)->execute($this);
     }
 
     public function checkFingerprint(string $fingerprint): bool
