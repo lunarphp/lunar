@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Core\Models\Contracts\Cart;
 
 class ShippingManifest implements ShippingManifestInterface

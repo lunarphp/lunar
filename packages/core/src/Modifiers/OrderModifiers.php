@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Modifiers;
 
 use Illuminate\Support\Collection;
 

@@ -4,11 +4,11 @@ namespace Lunar\Core\Actions\Carts;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\CartLineModifiers;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Modifiers\CartLineModifiers;
 
 class CalculateLineSubtotal
 {
