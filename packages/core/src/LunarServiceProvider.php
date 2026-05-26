@@ -83,6 +83,7 @@ use Lunar\Core\Contracts\Actions\Products\UpdatesProductStatus;
 use Lunar\Core\Contracts\Actions\Taxes\GetsTaxZone;
 use Lunar\Core\Contracts\AttributeManifest;
 use Lunar\Core\Contracts\CartSession;
+use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
 use Lunar\Core\Contracts\ModelManifest;
@@ -158,6 +159,7 @@ use Lunar\Core\Pricing\PriceFormatterInterface;
 use Lunar\Core\Telemetry\Insights as TelemetryInsights;
 use Lunar\Core\Telemetry\TelemetryService as TelemetryServiceImpl;
 use Lunar\Core\Utils\MeasurementConverter;
+use Lunar\Core\Validation\CouponValidator as CouponValidatorImpl;
 
 class LunarServiceProvider extends ServiceProvider
 {
@@ -264,6 +266,8 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->singleton(DiscountManager::class, function ($app) {
             return $app->make(DiscountManagerImpl::class);
         });
+
+        $this->app->bind(CouponValidator::class, CouponValidatorImpl::class);
 
         $this->app->singleton(ProvidesTelemetryInsights::class, function ($app) {
             return $app->make(TelemetryInsights::class);
