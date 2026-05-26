@@ -4,7 +4,6 @@ namespace Lunar\Core\FieldTypes;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
-use Lunar\Core\Base\FieldType;
 use Lunar\Core\Exceptions\FieldTypeException;
 
 class TranslatedText implements FieldType, JsonSerializable

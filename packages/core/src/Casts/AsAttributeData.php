@@ -5,8 +5,8 @@ namespace Lunar\Core\Casts;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\FieldType;
 use Lunar\Core\Exceptions\FieldTypeException;
+use Lunar\Core\FieldTypes\FieldType;
 
 class AsAttributeData implements Castable
 {

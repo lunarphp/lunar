@@ -3,7 +3,6 @@
 namespace Lunar\Core\FieldTypes;
 
 use JsonSerializable;
-use Lunar\Core\Base\FieldType;
 
 class File implements FieldType, JsonSerializable
 {

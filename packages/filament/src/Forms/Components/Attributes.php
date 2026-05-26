@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
-use Lunar\Core\Base\FieldType;
+use Lunar\Core\FieldTypes\FieldType;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Product;

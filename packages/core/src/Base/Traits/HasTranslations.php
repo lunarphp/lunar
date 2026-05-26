@@ -3,7 +3,7 @@
 namespace Lunar\Core\Base\Traits;
 
 use Illuminate\Support\Arr;
-use Lunar\Core\Base\FieldType;
+use Lunar\Core\FieldTypes\FieldType;
 
 trait HasTranslations
 {

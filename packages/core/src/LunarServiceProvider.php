@@ -24,8 +24,6 @@ use Lunar\Core\Base\CartLineModifiers;
 use Lunar\Core\Base\CartModifiers;
 use Lunar\Core\Base\CartSessionInterface;
 use Lunar\Core\Base\DiscountManagerInterface;
-use Lunar\Core\Base\FieldTypeManifest;
-use Lunar\Core\Base\FieldTypeManifestInterface;
 use Lunar\Core\Base\ModelManifest;
 use Lunar\Core\Base\ModelManifestInterface;
 use Lunar\Core\Base\OrderModifiers;
@@ -49,9 +47,11 @@ use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
+use Lunar\Core\Contracts\FieldTypeManifest;
 use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
+use Lunar\Core\FieldTypes\Manifest as FieldTypeManifestImpl;
 use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Managers\CartSessionManager;
 use Lunar\Core\Managers\DiscountManager;
@@ -175,8 +175,8 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(AttributeManifest::class);
         });
 
-        $this->app->singleton(FieldTypeManifestInterface::class, function ($app) {
-            return $app->make(FieldTypeManifest::class);
+        $this->app->singleton(FieldTypeManifest::class, function ($app) {
+            return $app->make(FieldTypeManifestImpl::class);
         });
 
         $this->app->singleton(ModelManifestInterface::class, function ($app) {
