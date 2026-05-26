@@ -28,7 +28,15 @@ abstract class AbstractDiscountType implements DiscountTypeInterface
         /** @var Discount $discount */
         $this->discount = $discount;
 
-        $this->discount->loadMissing('customers');
+        $this->discount->loadMissing([
+            'customers',
+            'collections',
+            'brands',
+            'discountableLimitations.discountable',
+            'discountableExclusions.discountable',
+            'discountableConditions.discountable',
+            'discountableRewards.discountable',
+        ]);
 
         return $this;
     }

@@ -117,7 +117,7 @@ class SystemTaxDriver implements TaxDriver
         $taxClass = $this->purchasable->getTaxClass();
 
         $taxAmounts = Blink::once('tax_zone_rates_'.$taxZone->id.'_'.$taxClass->id, function () use ($taxClass, $taxZone) {
-            return $taxZone->taxAmounts()->whereTaxClassId($taxClass->id)->get();
+            return $taxZone->taxAmounts()->with('taxRate')->whereTaxClassId($taxClass->id)->get();
         });
 
         if (prices_inc_tax()) {

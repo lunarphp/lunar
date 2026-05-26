@@ -122,6 +122,7 @@ class TestTaxDriver implements TaxDriver
             if ($this->taxZone) {
                 $taxAmounts = $this->taxZone->taxAmounts()->whereTaxClassId($taxClass->id)->get();
             } else {
+                $taxClass->loadMissing('taxRateAmounts');
                 $taxAmounts = $taxClass->taxRateAmounts;
             }
         } else {

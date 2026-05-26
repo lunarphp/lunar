@@ -19,7 +19,11 @@ class CalculateLines
     {
         /** @var Cart $cart */
         $cart->loadMissing([
-            'lines.purchasable',
+            'lines.purchasable.prices.currency',
+            'lines.purchasable.prices.priceable',
+            'lines.purchasable.product.collections',
+            'lines.purchasable.product.brand',
+            'lines.purchasable.taxClass',
             'currency',
             'taxZone',
             'shippingAddress',

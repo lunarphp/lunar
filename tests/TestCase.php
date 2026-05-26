@@ -2,6 +2,7 @@
 
 namespace Lunar\Tests;
 
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Facades\ModelManifest;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Spatie\StructureDiscoverer\Discover;
@@ -21,6 +22,8 @@ class TestCase extends BaseTestCase
     protected function getEnvironmentSetUp($app)
     {
         $this->replaceModelsForTesting();
+
+        Model::preventLazyLoading();
 
         match (env('DB_DRIVER', 'sqlite')) {
             'mysql' => $this->configureMysql($app),

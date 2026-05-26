@@ -56,7 +56,13 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
     public static function mapCollections($collections)
     {
-        return collect($collections)->map(
+        $collections = collect($collections);
+
+        if ($collections->isNotEmpty() && $collections->first() instanceof Model) {
+            $collections->first()->newCollection($collections->all())->loadMissing('thumbnail');
+        }
+
+        return $collections->map(
             fn ($collection) => [
                 'id' => $collection->id,
                 'parent_id' => $collection->parent_id,
@@ -120,7 +126,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
 
         if (! count($nodes) || $keepOpen) {
             $childNodes = static::mapCollections(
-                Collection::whereParentId($nodeId)->withCount('children')->defaultOrder()->get()
+                Collection::whereParentId($nodeId)->with('thumbnail')->withCount('children')->defaultOrder()->get()
             );
         }
 

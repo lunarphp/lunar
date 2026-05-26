@@ -142,6 +142,9 @@ class Price extends BaseModel implements Contracts\Price
 
         return Blink::once($cacheKey, function () use ($taxClass, $taxZone) {
             if ($taxZone && $taxClass) {
+                $taxClass->loadMissing('taxRateAmounts');
+                $taxZone->loadMissing('taxRates');
+
                 return $taxClass->taxRateAmounts
                     ->whereIn('tax_rate_id', $taxZone->taxRates->pluck('id'))
                     ->sum('percentage') / 100;
