@@ -33,20 +33,20 @@ class CalculateLine
             $cartLine->discountTotal = new PriceValue(0, $cart->currency);
         }
 
-        $subTotal = $cartLine->subTotal->value - $cartLine->discountTotal->value;
+        $subTotal = $cartLine->subTotal->subtract($cartLine->discountTotal);
 
         $taxBreakDown = Taxes::setShippingAddress($shippingAddress)
             ->setBillingAddress($billingAddress)
             ->setCurrency($cart->currency)
             ->setPurchasable($purchasable)
             ->setCartLine($cartLine)
-            ->getBreakdown($subTotal);
+            ->getBreakdown($subTotal->value);
 
-        $taxTotal = $taxBreakDown->amounts->sum('price.value');
+        $taxAmount = PriceValue::sum($taxBreakDown->amounts->pluck('price'), $cart->currency);
 
         $cartLine->taxBreakdown = $taxBreakDown;
-        $cartLine->taxAmount = new PriceValue($taxTotal, $cart->currency);
-        $cartLine->total = new PriceValue($subTotal + $taxTotal, $cart->currency);
+        $cartLine->taxAmount = $taxAmount;
+        $cartLine->total = $subTotal->add($taxAmount);
 
         return $cartLine;
     }

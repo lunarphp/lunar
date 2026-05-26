@@ -38,3 +38,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0012 | Price data type / cast refactor | completed   |
 | 0013 | `Base/` directory reorganisation | draft       |
 | 0014 | Price calculator service | draft       |
+| 0015 | PriceValue arithmetic | implemented |
