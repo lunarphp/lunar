@@ -36,3 +36,5 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0010 | Publishable admin resources (and Staff to core) | completed   |
 | 0011 | Support `Model::preventLazyLoading()` | completed   |
 | 0012 | Price data type / cast refactor | completed   |
+| 0013 | `Base/` directory reorganisation | draft       |
+| 0014 | Price calculator service | draft       |

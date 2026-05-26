@@ -6,6 +6,8 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 
 ## Outstanding
 
+- Drain `Base/` directory in `lunarphp/core` — relocate every class to a semantic home (`Concerns/`, `Contracts/`, `Casts/`, `Modifiers/`, `Manifests/`, etc.) and delete the `Base/` namespace (spec 0013)
+- Introduce `PriceCalculatorInterface` to consolidate money arithmetic (rounding, tax round-trip, fixed-value distribution, major↔minor conversion) — follow-up to spec 0012, lands after spec 0013 (spec 0014)
 - Ensure all service-layer classes are DI'd
 - Add `name` and `description` dedicated fields
 - Attributes remodel to simplify data and allow for re-use
