@@ -96,6 +96,7 @@ class DiscountTargetSelect extends MorphToSelect
                 $productIds = RecordSearch::for($productClass, $search)->take(50)->get()->pluck('id');
 
                 return $variantClass::query()
+                    ->with('product')
                     ->where(function ($q) use ($search, $productIds): void {
                         $q->where('sku', 'like', "%{$search}%");
                         if ($productIds->isNotEmpty()) {
