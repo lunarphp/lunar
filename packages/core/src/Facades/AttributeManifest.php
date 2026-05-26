@@ -11,7 +11,7 @@ use Lunar\Core\Base\AttributeManifestInterface;
  * @method static void getType(void $key)
  * @method static \Illuminate\Support\Collection getSearchableAttributes(string $attributeType)
  *
- * @see \Lunar\Core\Base\AttributeManifest
+ * @see \Lunar\Core\Manifests\AttributeManifest
  */
 class AttributeManifest extends Facade
 {

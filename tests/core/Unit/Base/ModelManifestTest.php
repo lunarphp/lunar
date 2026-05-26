@@ -14,7 +14,7 @@ uses(RefreshDatabase::class);
 test('can instantiate class', function () {
     $manifest = app(ModelManifestInterface::class);
 
-    expect($manifest)->toBeInstanceOf(Lunar\Core\Base\ModelManifest::class);
+    expect($manifest)->toBeInstanceOf(Lunar\Core\Manifests\ModelManifest::class);
 });
 
 test('can add model', function () {

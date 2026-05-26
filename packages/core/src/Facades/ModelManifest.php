@@ -18,7 +18,7 @@ use Lunar\Core\Base\ModelManifestInterface;
  * @method static void morphMap()
  * @method static string getMorphMapKey(void $className)
  *
- * @see \Lunar\Core\Base\ModelManifest
+ * @see \Lunar\Core\Manifests\ModelManifest
  */
 class ModelManifest extends Facade
 {

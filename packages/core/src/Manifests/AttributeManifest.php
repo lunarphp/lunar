@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Manifests;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;

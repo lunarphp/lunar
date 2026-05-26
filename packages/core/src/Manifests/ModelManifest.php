@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Manifests;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Base\ModelManifestInterface;
 use Spatie\StructureDiscoverer\Discover;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
