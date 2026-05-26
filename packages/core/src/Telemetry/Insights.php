@@ -1,16 +1,17 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Telemetry;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\ProvidesTelemetryInsights;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 
-class TelemetryInsights implements ProvidesTelemetryInsights
+class Insights implements ProvidesTelemetryInsights
 {
     public function domainHash(): string
     {

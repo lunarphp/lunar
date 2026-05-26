@@ -1,12 +1,14 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Telemetry;
 
 use Illuminate\Cache\NullStore;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Lunar\Core\Contracts\ProvidesTelemetryInsights;
+use Lunar\Core\Contracts\TelemetryService as TelemetryServiceContract;
 
-class TelemetryService implements TelemetryServiceInterface
+class TelemetryService implements TelemetryServiceContract
 {
     /**
      * Whether we should be running telemetry

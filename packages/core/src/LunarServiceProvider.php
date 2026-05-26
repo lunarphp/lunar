@@ -26,13 +26,9 @@ use Lunar\Core\Base\OrderReferenceGenerator;
 use Lunar\Core\Base\OrderReferenceGeneratorInterface;
 use Lunar\Core\Base\PaymentManagerInterface;
 use Lunar\Core\Base\PricingManagerInterface;
-use Lunar\Core\Base\ProvidesTelemetryInsights;
 use Lunar\Core\Base\ShippingManifestInterface;
 use Lunar\Core\Base\StorefrontSessionInterface;
 use Lunar\Core\Base\TaxManagerInterface;
-use Lunar\Core\Base\TelemetryInsights;
-use Lunar\Core\Base\TelemetryService;
-use Lunar\Core\Base\TelemetryServiceInterface;
 use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\MigrateGetCandy;
@@ -41,6 +37,8 @@ use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\FieldTypeManifest;
+use Lunar\Core\Contracts\ProvidesTelemetryInsights;
+use Lunar\Core\Contracts\TelemetryService;
 use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
@@ -99,6 +97,8 @@ use Lunar\Core\Observers\TransactionObserver;
 use Lunar\Core\Observers\UrlObserver;
 use Lunar\Core\Pricing\DefaultPriceFormatter;
 use Lunar\Core\Pricing\PriceFormatterInterface;
+use Lunar\Core\Telemetry\Insights as TelemetryInsights;
+use Lunar\Core\Telemetry\TelemetryService as TelemetryServiceImpl;
 use Lunar\Core\Utils\MeasurementConverter;
 
 class LunarServiceProvider extends ServiceProvider
@@ -209,8 +209,8 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(TelemetryInsights::class);
         });
 
-        $this->app->singleton(TelemetryServiceInterface::class, function ($app) {
-            return $app->make(TelemetryService::class);
+        $this->app->singleton(TelemetryService::class, function ($app) {
+            return $app->make(TelemetryServiceImpl::class);
         });
 
         $this->app->terminating(function () {
