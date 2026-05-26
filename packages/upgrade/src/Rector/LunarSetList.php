@@ -543,6 +543,28 @@ final class LunarSetList
     public const V1_TO_V2 = [];
 
     /**
+     * Money attribute columns per model, contributed by spec 0012.
+     *
+     * Drives the four price-rewrite rules under
+     * `Lunar\Upgrade\Rector\Price\*`. Both v1 (`Lunar\Models\*`) and v2
+     * (`Lunar\Core\Models\*`) class strings are listed so the rules apply
+     * whether or not `RenameClassRector` has already rewritten the
+     * surrounding type information by the time they fire.
+     *
+     * @var array<class-string, list<string>>
+     */
+    public const V1_TO_V2_MONEY_ATTRIBUTES = [
+        'Lunar\\Core\\Models\\Order' => ['sub_total', 'discount_total', 'tax_total', 'total', 'shipping_total'],
+        'Lunar\\Models\\Order' => ['sub_total', 'discount_total', 'tax_total', 'total', 'shipping_total'],
+        'Lunar\\Core\\Models\\OrderLine' => ['unit_price', 'sub_total', 'tax_total', 'discount_total', 'total'],
+        'Lunar\\Models\\OrderLine' => ['unit_price', 'sub_total', 'tax_total', 'discount_total', 'total'],
+        'Lunar\\Core\\Models\\Transaction' => ['amount'],
+        'Lunar\\Models\\Transaction' => ['amount'],
+        'Lunar\\Core\\Models\\Price' => ['price'],
+        'Lunar\\Models\\Price' => ['price'],
+    ];
+
+    /**
      * Classes/traits removed in v2 with no replacement target.
      *
      * Spec 0007 inlined the ten page-extension traits under
