@@ -7,15 +7,9 @@ namespace Lunar\Upgrade\Rector\Price;
 use Lunar\Core\Models\OrderLine;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\ArrayItem;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\Cast\Int_;
-use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
@@ -24,19 +18,23 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * Rewrites `$model->col->unitDecimal(...args)` / `unitFormatted(...args)`
- * on migrated money attributes (spec 0012) into an explicit container
- * resolution of `PriceFormatterInterface`. The per-attribute value object
- * is gone, and the new `FormatsPrices` trait deliberately does not expose
- * unit helpers — unit pricing is a formatter concern, not a model concern.
+ * Rewrites `$model->col->unitDecimal(...)` / `unitFormatted(...)` on
+ * migrated money attributes (spec 0012) to the new `unitDecimal('col', ...)`
+ * / `unitFormat('col', ...)` helpers contributed by the `FormatsPrices`
+ * trait. The trait reads `unit_quantity` from the model (or its loaded
+ * `priceable` relation) and forwards it to the formatter, restoring the
+ * v1 ergonomics without per-attribute value objects.
  *
- * Dynamic property accesses (`$model->{$column}->unitDecimal(...)`) and
+ * Dynamic property accesses (`$model->{$col}->unitDecimal(...)`) and
  * non-Lunar receivers are left untouched; downstream owners need to swap
  * them by hand. The upgrade docs flag this as a manual step.
  */
 final class RewriteUnitPriceFormatterCallRector extends AbstractRector implements ConfigurableRectorInterface
 {
-    private const FORMATTER_INTERFACE = 'Lunar\\Core\\Pricing\\PriceFormatterInterface';
+    private const METHOD_MAP = [
+        'unitDecimal' => 'unitDecimal',
+        'unitFormatted' => 'unitFormat',
+    ];
 
     /**
      * @var array<class-string, list<string>>
@@ -50,16 +48,15 @@ final class RewriteUnitPriceFormatterCallRector extends AbstractRector implement
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Rewrites `$model->col->unitDecimal(...)` / `unitFormatted(...)` to an explicit `PriceFormatterInterface` resolution.',
+            'Rewrites `$model->col->unitDecimal(...)` / `unitFormatted(...)` to the `FormatsPrices` `unitDecimal(\'col\', ...)` / `unitFormat(\'col\', ...)` helpers.',
             [new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
-$unit = $line->unit_price->unitDecimal($line->unit_quantity);
+$unit = $line->unit_price->unitDecimal();
+$display = $line->unit_price->unitFormatted();
 CODE_SAMPLE,
                 <<<'CODE_SAMPLE'
-$unit = app(\Lunar\Core\Pricing\PriceFormatterInterface::class, [
-    'value' => (int) $line->unit_price,
-    'currency' => $line->resolveCurrency(),
-])->unitDecimal($line->unit_quantity);
+$unit = $line->unitDecimal('unit_price');
+$display = $line->unitFormat('unit_price');
 CODE_SAMPLE,
                 [OrderLine::class => ['unit_price']],
             )],
@@ -87,9 +84,9 @@ CODE_SAMPLE,
             return null;
         }
 
-        $method = $node->name->toString();
+        $sourceMethod = $node->name->toString();
 
-        if ($method !== 'unitDecimal' && $method !== 'unitFormatted') {
+        if (! isset(self::METHOD_MAP[$sourceMethod])) {
             return null;
         }
 
@@ -103,23 +100,11 @@ CODE_SAMPLE,
             return null;
         }
 
-        $receiver = $node->var->var;
-
-        $factory = new FuncCall(
-            new FullyQualified('app'),
-            [
-                new Arg(new ClassConstFetch(new FullyQualified(self::FORMATTER_INTERFACE), 'class')),
-                new Arg(new Array_([
-                    new ArrayItem(new Int_($node->var), new String_('value')),
-                    new ArrayItem(
-                        new MethodCall($receiver, new Identifier('resolveCurrency')),
-                        new String_('currency'),
-                    ),
-                ])),
-            ],
+        return new MethodCall(
+            $node->var->var,
+            new Identifier(self::METHOD_MAP[$sourceMethod]),
+            [new Arg(new String_($column)), ...$node->getArgs()],
         );
-
-        return new MethodCall($factory, new Identifier($method), $node->getArgs());
     }
 
     /**
