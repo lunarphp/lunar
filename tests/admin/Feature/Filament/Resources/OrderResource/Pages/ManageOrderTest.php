@@ -7,7 +7,7 @@ use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Livewire\Components\ActivityLogFeed as ActivityLogFeedComponent;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
@@ -67,17 +67,14 @@ it('can render order manage page', function () {
         $quantity = rand(1, 5);
 
         $pricing = Pricing::for($variant, $quantity)->get();
-        $price = $pricing->matched->price->value;
+        $price = $pricing->matched->price;
         $subTotal = $price * $quantity;
         $tax = (int) ($subTotal * .2);
         $options = $variant->values->map(fn ($value) => $value->translate('name'));
 
         $itemTax = (new TaxBreakdown);
         $itemTax->addAmount(new TaxBreakdownAmount(
-            price: new Price(
-                value: $tax,
-                currency: $currency
-            ),
+            price: new PriceValue(value: $tax, currency: $currency),
             identifier: $currency->code,
             description: 'VAT',
             percentage: 20,
@@ -123,15 +120,15 @@ it('can render order manage page', function () {
         ->assertSee($this->order->tags)
         ->assertSee($this->order->shippingAddress->line_one)
         ->assertSee($this->order->shippingAddress->line_one)
-        ->assertSee($this->order->total->formatted)
+        ->assertSee($this->order->format('total'))
         ->assertSee($this->order->customer->fullName)
         ->assertSee(CustomerResource::getUrl('edit', ['record' => $this->order->customer->id]))
         ->assertSee(__('lunarpanel::order.transactions.capture'))
-        ->assertSee($this->order->captures->first()->amount->formatted)
+        ->assertSee($this->order->captures->first()->format('amount'))
         ->assertSee($this->order->meta['additional_info'])
-        ->assertSee($firstItem->total->formatted)
-        ->assertSee($firstItem->sub_total->formatted)
-        ->assertSee($secondItem->total->formatted)
+        ->assertSee($firstItem->format('total'))
+        ->assertSee($firstItem->format('sub_total'))
+        ->assertSee($secondItem->format('total'))
         ->assertSee($this->order->reference);
 });
 

@@ -4,7 +4,7 @@ namespace Lunar\Core\Actions\Carts;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\Base\Addressable;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\Taxes;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
@@ -26,12 +26,11 @@ class CalculateLine
         /** @var CartLine $cartLine */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;
-        $unitQuantity = $purchasable->getUnitQuantity();
 
         $cartLine = app(CalculateLineSubtotal::class)->execute($cartLine, $customerGroups);
 
         if (! $cartLine->discountTotal) {
-            $cartLine->discountTotal = new Price(0, $cart->currency, $unitQuantity);
+            $cartLine->discountTotal = new PriceValue(0, $cart->currency);
         }
 
         $subTotal = $cartLine->subTotal->value - $cartLine->discountTotal->value;
@@ -46,8 +45,8 @@ class CalculateLine
         $taxTotal = $taxBreakDown->amounts->sum('price.value');
 
         $cartLine->taxBreakdown = $taxBreakDown;
-        $cartLine->taxAmount = new Price($taxTotal, $cart->currency, $unitQuantity);
-        $cartLine->total = new Price($subTotal + $taxTotal, $cart->currency, $unitQuantity);
+        $cartLine->taxAmount = new PriceValue($taxTotal, $cart->currency);
+        $cartLine->total = new PriceValue($subTotal + $taxTotal, $cart->currency);
 
         return $cartLine;
     }

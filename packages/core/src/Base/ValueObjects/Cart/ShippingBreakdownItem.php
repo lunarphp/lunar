@@ -2,14 +2,14 @@
 
 namespace Lunar\Core\Base\ValueObjects\Cart;
 
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 
 class ShippingBreakdownItem
 {
     public function __construct(
         public string $name,
         public string $identifier,
-        public Price $price
+        public PriceValue $price
     ) {
         //
     }

@@ -48,7 +48,7 @@ class RefundOrderAction extends Action
         return [
             $this->transactionSelect(
                 $charges,
-                fn ($charge) => "{$charge->amount->formatted} - {$charge->driver} // {$charge->reference}",
+                fn ($charge) => "{$charge->format('amount')} - {$charge->driver} // {$charge->reference}",
             ),
             $this->amountInput($availableMajor, $record),
             $this->notesInput(),

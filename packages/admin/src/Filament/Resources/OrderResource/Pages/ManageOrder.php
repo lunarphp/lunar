@@ -299,7 +299,7 @@ class ManageOrder extends BaseViewRecord
     {
         return $this->transactions->filter(function ($transaction) {
             return $transaction->type == 'capture' && $transaction->success;
-        })->sum('amount.value');
+        })->sum('amount');
     }
 
     /**
@@ -310,7 +310,7 @@ class ManageOrder extends BaseViewRecord
     {
         return $this->transactions->filter(function ($transaction) {
             return $transaction->type == 'refund' && $transaction->success;
-        })->sum('amount.value');
+        })->sum('amount');
     }
 
     /**
@@ -321,7 +321,7 @@ class ManageOrder extends BaseViewRecord
     {
         return $this->transactions->filter(function ($transaction) {
             return $transaction->type == 'intent' && $transaction->success;
-        })->sum('amount.value');
+        })->sum('amount');
     }
 
     public static function getEditTagsActions(): Action

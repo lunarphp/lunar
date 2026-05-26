@@ -11,7 +11,7 @@ class TestPricingPipeline
     {
         $matchedPrice = $pricingManager->pricing->matched;
 
-        $matchedPrice->price->value = 200;
+        $matchedPrice->price = 200;
 
         $pricingManager->pricing->matched = $matchedPrice;
 

@@ -101,7 +101,7 @@ class OrderTable
             TextColumn::make('total')
                 ->label(__('lunar-filament::order.table.total.label'))
                 ->toggleable()
-                ->formatStateUsing(fn ($state): string => $state->formatted),
+                ->formatStateUsing(fn ($state, $record): string => $record->format('total')),
             TextColumn::make('placed_at')
                 ->label(__('lunar-filament::order.table.date.label'))
                 ->toggleable()

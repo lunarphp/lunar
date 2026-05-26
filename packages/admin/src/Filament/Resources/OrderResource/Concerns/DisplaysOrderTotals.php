@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\HtmlString;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 
 trait DisplaysOrderTotals
 {
@@ -51,7 +51,7 @@ trait DisplaysOrderTotals
             ->label(__('lunarpanel::order.infolist.sub_total.label'))
             ->inlineLabel()
             ->alignEnd()
-            ->formatStateUsing(fn ($state) => $state->formatted);
+            ->formatStateUsing(fn ($state, $record) => $record->format('sub_total'));
     }
 
     public static function getSubTotalEntry(): TextEntry
@@ -65,7 +65,7 @@ trait DisplaysOrderTotals
             ->label(__('lunarpanel::order.infolist.discount_total.label'))
             ->inlineLabel()
             ->alignEnd()
-            ->formatStateUsing(fn ($state) => $state->formatted);
+            ->formatStateUsing(fn ($state, $record) => $record->format('discount_total'));
     }
 
     public static function getDiscountTotalEntry(): TextEntry
@@ -84,7 +84,7 @@ trait DisplaysOrderTotals
                         ->label(fn () => $shippingItem->name)
                         ->inlineLabel()
                         ->alignEnd()
-                        ->state(fn () => $shippingItem->price->formatted);
+                        ->state(fn () => $shippingItem->price->format());
                 }
 
                 return $shipping;
@@ -107,7 +107,7 @@ trait DisplaysOrderTotals
                         ->label(fn () => $tax->description)
                         ->inlineLabel()
                         ->alignEnd()
-                        ->state(fn () => $tax->price->formatted);
+                        ->state(fn () => $tax->price->format());
                 }
 
                 return $taxes;
@@ -126,7 +126,7 @@ trait DisplaysOrderTotals
             ->inlineLabel()
             ->alignEnd()
             ->weight(FontWeight::Bold)
-            ->formatStateUsing(fn ($state) => $state->formatted);
+            ->formatStateUsing(fn ($state, $record) => $record->format('total'));
     }
 
     public static function getTotalEntry(): TextEntry
@@ -146,9 +146,9 @@ trait DisplaysOrderTotals
                     ->whereType('capture')
                     ->whereSuccess(true)
                     ->get()
-                    ->sum('amount.value');
+                    ->sum('amount');
 
-                return (new Price($paid, $record->currency))->formatted;
+                return (new PriceValue((int) $paid, $record->currency))->format();
             });
     }
 
@@ -169,9 +169,9 @@ trait DisplaysOrderTotals
                 $paid = $record->transactions()
                     ->whereType('refund')
                     ->get()
-                    ->sum('amount.value');
+                    ->sum('amount');
 
-                return (new Price($paid, $record->currency))->formatted;
+                return (new PriceValue((int) $paid, $record->currency))->format();
             });
     }
 

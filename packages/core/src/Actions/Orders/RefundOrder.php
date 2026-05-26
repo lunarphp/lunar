@@ -70,7 +70,7 @@ final class RefundOrder extends AbstractAction
     public static function availableToRefund(OrderContract $order): int
     {
         /** @var Order $order */
-        return (int) (self::charges($order)->sum('amount.value') - self::refunds($order)->sum('amount.value'));
+        return (int) (self::charges($order)->sum('amount') - self::refunds($order)->sum('amount'));
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Lunar\Shipping\Drivers\ShippingMethods;
 
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\MissingCurrencyPriceException;
 use Lunar\Core\Facades\Pricing;
@@ -102,13 +103,11 @@ class ShipBy implements ShippingRateInterface
             return null;
         }
 
-        $price = $matched->price;
-
         return new ShippingOption(
             name: $shippingMethod->name,
             description: $shippingMethod->description,
             identifier: $shippingRate->getIdentifier(),
-            price: $price,
+            price: new PriceValue((int) $matched->price, $matched->currency),
             taxClass: $shippingRate->getTaxClass(),
             taxReference: $shippingRate->getTaxReference(),
             option: $shippingZone->name,

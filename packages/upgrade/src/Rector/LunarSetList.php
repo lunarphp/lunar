@@ -197,7 +197,6 @@ final class LunarSetList
         'Lunar\\Exceptions\\FieldTypes\\InvalidFieldTypeException' => 'Lunar\\Core\\Exceptions\\FieldTypes\\InvalidFieldTypeException',
         'Lunar\\Exceptions\\FingerprintMismatchException' => 'Lunar\\Core\\Exceptions\\FingerprintMismatchException',
         'Lunar\\Exceptions\\InvalidCartLineQuantityException' => 'Lunar\\Core\\Exceptions\\InvalidCartLineQuantityException',
-        'Lunar\\Exceptions\\InvalidDataTypeValueException' => 'Lunar\\Core\\Exceptions\\InvalidDataTypeValueException',
         'Lunar\\Exceptions\\InvalidPaymentTypeException' => 'Lunar\\Core\\Exceptions\\InvalidPaymentTypeException',
         'Lunar\\Exceptions\\LunarException' => 'Lunar\\Core\\Exceptions\\LunarException',
         'Lunar\\Exceptions\\MaximumCartLineQuantityException' => 'Lunar\\Core\\Exceptions\\MaximumCartLineQuantityException',
@@ -542,6 +541,49 @@ final class LunarSetList
      * @var array<int, class-string>
      */
     public const V1_TO_V2 = [];
+
+    /**
+     * Money attribute columns per model, contributed by spec 0012.
+     *
+     * Drives the four price-rewrite rules under
+     * `Lunar\Upgrade\Rector\Price\*`. Both v1 (`Lunar\Models\*`) and v2
+     * (`Lunar\Core\Models\*`) class strings are listed so the rules apply
+     * whether or not `RenameClassRector` has already rewritten the
+     * surrounding type information by the time they fire.
+     *
+     * @var array<class-string, list<string>>
+     */
+    public const V1_TO_V2_MONEY_ATTRIBUTES = [
+        'Lunar\\Core\\Models\\Order' => ['sub_total', 'discount_total', 'tax_total', 'total', 'shipping_total'],
+        'Lunar\\Models\\Order' => ['sub_total', 'discount_total', 'tax_total', 'total', 'shipping_total'],
+        'Lunar\\Core\\Models\\OrderLine' => ['unit_price', 'sub_total', 'tax_total', 'discount_total', 'total'],
+        'Lunar\\Models\\OrderLine' => ['unit_price', 'sub_total', 'tax_total', 'discount_total', 'total'],
+        'Lunar\\Core\\Models\\Transaction' => ['amount'],
+        'Lunar\\Models\\Transaction' => ['amount'],
+        'Lunar\\Core\\Models\\Price' => ['price', 'compare_price'],
+        'Lunar\\Models\\Price' => ['price', 'compare_price'],
+    ];
+
+    /**
+     * Money attribute columns that carry a unit-quantity semantic,
+     * contributed by spec 0012.
+     *
+     * Only the catalogue `Price` model (`lunar_prices.price` /
+     * `compare_price`) stores a raw per-pack price that requires
+     * division by `priceable->unit_quantity` to display per-single-unit.
+     * `OrderLine.unit_price` is persisted *already divided* to per-
+     * single-unit by `CalculateLineSubtotal`, so `unitDecimal` /
+     * `unitFormatted` calls on order lines were a latent v1 bug (double
+     * division when `unit_quantity > 1`). The unit-rewrite rule only
+     * touches the catalogue Price model; `unit*` calls on other models
+     * are left alone for manual review (the upgrade docs flag this).
+     *
+     * @var array<class-string, list<string>>
+     */
+    public const V1_TO_V2_UNIT_AWARE_ATTRIBUTES = [
+        'Lunar\\Core\\Models\\Price' => ['price', 'compare_price'],
+        'Lunar\\Models\\Price' => ['price', 'compare_price'],
+    ];
 
     /**
      * Classes/traits removed in v2 with no replacement target.

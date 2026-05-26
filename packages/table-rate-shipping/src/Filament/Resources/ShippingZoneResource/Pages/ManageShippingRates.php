@@ -80,7 +80,7 @@ class ManageShippingRates extends ManageRelatedRecords
                     ->afterStateHydrated(static function (Forms\Components\TextInput $component, ?Model $record = null) use ($currency): void {
                         if ($record) {
                             if ($basePrice = $record->basePrices->first(fn ($p) => $p->currency_id == $currency->id)) {
-                                $component->state($basePrice->price->decimal);
+                                $component->state($basePrice->decimal('price'));
                             }
                         }
                     })
@@ -139,7 +139,7 @@ class ManageShippingRates extends ManageRelatedRecords
 
                                     return [
                                         'customer_group_id' => $price->customer_group_id,
-                                        'price' => $price->price->decimal,
+                                        'price' => $price->decimal('price'),
                                         'currency_id' => $price->currency_id,
                                         'min_quantity' => $chargeBy == 'cart_total' ? $price->min_quantity / $currency->factor : $price->min_quantity,
                                     ];
@@ -164,7 +164,7 @@ class ManageShippingRates extends ManageRelatedRecords
                 ->color('warning')
                 ->label(''),
             TextColumn::make('shippingMethod.id')->formatStateUsing(
-                fn (Model $record) => $record->basePrices->first(fn ($p) => $p->currency_id == $baseCurrency->id)?->price->formatted ?? '-',
+                fn (Model $record) => $record->basePrices->first(fn ($p) => $p->currency_id == $baseCurrency->id)?->format('price') ?? '-',
             )->label(
                 __('lunarpanel.shipping::relationmanagers.shipping_rates.table.price.label')
             ),

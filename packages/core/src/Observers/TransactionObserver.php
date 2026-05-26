@@ -20,7 +20,7 @@ class TransactionObserver
             ->performedOn($transaction->order)
             ->event($transaction->type)
             ->withProperties([
-                'amount' => $transaction->amount->value,
+                'amount' => $transaction->amount,
                 'type' => $transaction->type,
                 'status' => $transaction->status,
                 'card_type' => $transaction->card_type,

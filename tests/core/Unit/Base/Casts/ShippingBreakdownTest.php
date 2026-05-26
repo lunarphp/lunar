@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Base\Casts\ShippingBreakdown as ShippingBreakdownCasts;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 use Lunar\Tests\Core\TestCase;
@@ -23,7 +23,7 @@ test('can set from value object', function () {
         new ShippingBreakdownItem(
             name: 'Basic Delivery',
             identifier: 'DELIV',
-            price: new Price(700, $currency, 1),
+            price: new PriceValue(700, $currency),
         )
     );
 
@@ -45,7 +45,7 @@ test('can cast to and from model', function () {
         new ShippingBreakdownItem(
             name: 'Basic Delivery',
             identifier: 'DELIV',
-            price: new Price(700, $currency, 1),
+            price: new PriceValue(700, $currency),
         )
     );
 

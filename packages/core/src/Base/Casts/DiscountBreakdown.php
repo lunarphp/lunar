@@ -5,7 +5,7 @@ namespace Lunar\Core\Base\Casts;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\OrderLine;
 
@@ -27,7 +27,7 @@ class DiscountBreakdown implements CastsAttributes
         return collect(
             json_decode($value, false)
         )->map(function ($breakdown) use ($currency) {
-            $breakdown->total = new Price($breakdown->total, $currency, 1);
+            $breakdown->total = new PriceValue((int) $breakdown->total, $currency);
             $breakdown->lines = collect($breakdown->lines)->map(function ($line) {
                 return (object) [
                     'quantity' => $line->qty,

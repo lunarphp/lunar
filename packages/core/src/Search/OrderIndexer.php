@@ -75,8 +75,8 @@ class OrderIndexer extends ScoutIndexer
             'status' => $model->status,
             'placed_at' => optional($model->placed_at)->timestamp,
             'created_at' => (int) $model->created_at->timestamp,
-            'sub_total' => $model->sub_total->value,
-            'total' => $model->total->value,
+            'sub_total' => $model->sub_total,
+            'total' => $model->total,
             'currency_code' => $model->currency_code,
             'charges' => $model->transactions->map(function ($transaction) {
                 return [

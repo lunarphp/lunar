@@ -10,14 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Base\Casts\DiscountBreakdown;
-use Lunar\Core\Base\Casts\Price;
 use Lunar\Core\Base\Casts\ShippingBreakdown;
 use Lunar\Core\Base\Casts\TaxBreakdown;
 use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Base\Traits\HasTags;
 use Lunar\Core\Base\Traits\LogsActivity;
 use Lunar\Core\Base\Traits\Searchable;
+use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderFactory;
+use Lunar\Core\Models\Concerns\FormatsPrices;
+use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**
  * @property int $id
@@ -44,13 +46,14 @@ use Lunar\Core\Database\Factories\OrderFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Order extends BaseModel implements Contracts\Order
+class Order extends BaseModel implements Contracts\Order, HasCurrency
 {
-    use HasFactory,
-        HasMacros,
-        HasTags,
-        LogsActivity,
-        Searchable;
+    use FormatsPrices;
+    use HasFactory;
+    use HasMacros;
+    use HasTags;
+    use LogsActivity;
+    use Searchable;
 
     /**
      * {@inheritDoc}
@@ -59,15 +62,22 @@ class Order extends BaseModel implements Contracts\Order
         'tax_breakdown' => TaxBreakdown::class,
         'meta' => AsArrayObject::class,
         'placed_at' => 'datetime',
-        'sub_total' => Price::class,
-        'discount_total' => Price::class,
+        'sub_total' => 'integer',
+        'discount_total' => 'integer',
         'discount_breakdown' => DiscountBreakdown::class,
         'shipping_breakdown' => ShippingBreakdown::class,
-        'tax_total' => Price::class,
-        'total' => Price::class,
-        'shipping_total' => Price::class,
+        'tax_total' => 'integer',
+        'total' => 'integer',
+        'shipping_total' => 'integer',
         'new_customer' => 'boolean',
     ];
+
+    public function resolveCurrency(): CurrencyContract
+    {
+        $this->loadMissing('currency');
+
+        return $this->currency ?? Currency::getDefault();
+    }
 
     /**
      * {@inheritDoc}

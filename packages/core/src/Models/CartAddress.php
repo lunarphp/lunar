@@ -13,7 +13,7 @@ use Lunar\Core\Base\Traits\HasMacros;
 use Lunar\Core\Base\Traits\LogsActivity;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Database\Factories\CartAddressFactory;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 
 /**
@@ -68,17 +68,17 @@ class CartAddress extends BaseModel implements Addressable, Contracts\CartAddres
     /**
      * The shipping sub total.
      */
-    public ?Price $shippingSubTotal = null;
+    public ?PriceValue $shippingSubTotal = null;
 
     /**
      * The shipping tax total.
      */
-    public ?Price $shippingTaxTotal = null;
+    public ?PriceValue $shippingTaxTotal = null;
 
     /**
      * The shipping total.
      */
-    public ?Price $shippingTotal = null;
+    public ?PriceValue $shippingTotal = null;
 
     /**
      * The tax breakdown.

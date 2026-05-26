@@ -66,7 +66,7 @@ class OrdersSalesChart extends LineChartWidget
         foreach ($orders as $order) {
             $labels[] = $order->date;
             $ordersData[] = $order->count;
-            $salesData[] = $order->sub_total->decimal;
+            $salesData[] = $order->decimal('sub_total');
         }
 
         [$orders, $sales] = [$this->chartColor(0), $this->chartColor(1)];

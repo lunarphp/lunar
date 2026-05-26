@@ -71,19 +71,22 @@ class OrderStatsOverview extends BaseWidget
 
     protected function getStatTotal($currentDate, $previousDate, $reference): Stat
     {
-        $currentSubTotal = $currentDate->with(['currency'])->select(
+        $currentRecord = $currentDate->with(['currency'])->select(
             DB::RAW('MAX(currency_code) as currency_code'),
             DB::RAW('sum(sub_total) as sub_total'),
-        )->first()->sub_total;
+        )->first();
 
-        $previousSubTotal = $previousDate->with(['currency'])->select(
+        $previousRecord = $previousDate->with(['currency'])->select(
             DB::RAW('MAX(currency_code) as currency_code'),
             DB::RAW('sum(sub_total) as sub_total')
-        )->first()->sub_total;
+        )->first();
 
-        $percentage = $previousSubTotal->value ?
-            round((($currentSubTotal->value - $previousSubTotal->value) / $previousSubTotal->value) * 100) :
-            ($currentSubTotal->value ? 100 : 0);
+        $currentValue = (int) $currentRecord->sub_total;
+        $previousValue = (int) $previousRecord->sub_total;
+
+        $percentage = $previousValue ?
+            round((($currentValue - $previousValue) / $previousValue) * 100) :
+            ($currentValue ? 100 : 0);
 
         $increase = $percentage > 0;
         $neutral = $percentage === 0;
@@ -91,11 +94,11 @@ class OrderStatsOverview extends BaseWidget
 
         return Stat::make(
             label: __('lunar-filament::widgets.dashboard.orders.order_stats_overview.'.$reference.'.label'),
-            value: $currentSubTotal->formatted,
+            value: $currentRecord->format('sub_total'),
         )->description(
             __('lunar-filament::widgets.dashboard.orders.order_stats_overview.'.$reference.'.'.$trend, [
                 'percentage' => abs($percentage),
-                'total' => $previousSubTotal->formatted,
+                'total' => $previousRecord->format('sub_total'),
             ])
         )->descriptionIcon(
             FilamentIcon::resolve(

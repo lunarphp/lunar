@@ -5,7 +5,7 @@ namespace Lunar\Core\Pipelines\Cart;
 use Closure;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Facades\Taxes;
 use Lunar\Core\Models\Cart;
@@ -25,8 +25,6 @@ class CalculateTax
 
         foreach ($cart->lines as $cartLine) {
             $subTotal = $cartLine->subTotal?->value;
-
-            $unitQuantity = $cartLine->purchasable->getUnitQuantity();
 
             if (! is_null($cartLine->subTotalDiscounted?->value)) {
                 $subTotal = $cartLine->subTotalDiscounted?->value;
@@ -48,13 +46,13 @@ class CalculateTax
 
             $cartLine->taxBreakdown = $taxBreakDownResult;
 
-            $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);
-            $cartLine->taxAmount = new Price($taxTotal, $cart->currency, $unitQuantity);
+            $cart->taxTotal = new PriceValue($taxTotal, $cart->currency);
+            $cartLine->taxAmount = new PriceValue($taxTotal, $cart->currency);
 
             if (prices_inc_tax()) {
-                $cartLine->total = new Price($subTotal, $cart->currency, $unitQuantity);
+                $cartLine->total = new PriceValue($subTotal, $cart->currency);
             } else {
-                $cartLine->total = new Price($subTotal + $taxTotal, $cart->currency, $unitQuantity);
+                $cartLine->total = new PriceValue($subTotal + $taxTotal, $cart->currency);
             }
         }
 
@@ -74,26 +72,21 @@ class CalculateTax
                 ->setTaxZone($cart->taxZone)
                 ->getBreakdown($shippingSubTotal);
 
-            $shippingTaxTotal = $shippingTax->amounts->sum('price.value');
-            $shippingTaxTotal = new Price($shippingTaxTotal, $cart->currency, 1);
+            $shippingTaxTotal = new PriceValue($shippingTax->amounts->sum('price.value'), $cart->currency);
 
             $cart->shippingTaxTotal = $shippingTaxTotal;
-            $taxTotal += $shippingTaxTotal?->value;
+            $taxTotal += $shippingTaxTotal->value;
 
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $shippingTax->amounts
             );
 
-            $shippingTotal = $shippingSubTotal;
+            $shippingTotalValue = $shippingSubTotal;
             if (! prices_inc_tax()) {
-                $shippingTotal += $shippingTaxTotal?->value;
+                $shippingTotalValue += $shippingTaxTotal->value;
             }
 
-            $shippingTotal = new Price(
-                $shippingTotal,
-                $cart->currency,
-                1
-            );
+            $shippingTotal = new PriceValue($shippingTotalValue, $cart->currency);
 
             $cart->shippingTotal = $shippingTotal;
 
@@ -104,13 +97,13 @@ class CalculateTax
             }
         }
 
-        $cart->taxTotal = new Price($taxTotal, $cart->currency, 1);
+        $cart->taxTotal = new PriceValue($taxTotal, $cart->currency);
 
         // Need to include shipping tax breakdown...
         $cart->taxBreakdown = new TaxBreakdown(
             $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) use ($cart) {
                 return new TaxBreakdownAmount(
-                    price: new Price($amounts->sum('price.value'), $cart->currency, 1),
+                    price: new PriceValue($amounts->sum('price.value'), $cart->currency),
                     percentage: $amounts->first()->percentage,
                     description: $amounts->first()->description,
                     identifier: $amounts->first()->identifier

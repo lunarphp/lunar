@@ -119,13 +119,13 @@ class OrderTotalsChart extends LineChartWidget
                 return $month->monthstamp == $date->format('Ym');
             });
             $currentPeriod->push((object) [
-                'order_total' => $report?->total->decimal ?: 0,
-                'shipping_total' => $report?->shipping_total->decimal ?: 0,
-                'discount_total' => $report?->discount_total->decimal ?: 0,
-                'sub_total' => $report?->sub_total->decimal ?: 0,
+                'order_total' => $report?->decimal('total') ?: 0,
+                'shipping_total' => $report?->decimal('shipping_total') ?: 0,
+                'discount_total' => $report?->decimal('discount_total') ?: 0,
+                'sub_total' => $report?->decimal('sub_total') ?: 0,
                 'month' => $date->format('F'),
                 'year' => $date->format('Y'),
-                'tax_total' => $report?->tax_total->decimal ?: 0,
+                'tax_total' => $report?->decimal('tax_total') ?: 0,
             ]);
         }
 

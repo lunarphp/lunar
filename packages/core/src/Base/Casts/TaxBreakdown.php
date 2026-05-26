@@ -6,7 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 use Spatie\LaravelBlink\BlinkFacade;
 
@@ -34,7 +34,7 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
 
             return [
                 $key => new TaxBreakdownAmount(
-                    price: new Price($amount->value, $currency),
+                    price: new PriceValue((int) $amount->value, $currency),
                     identifier: $amount->identifier,
                     description: $amount->description,
                     percentage: $amount->percentage,
@@ -50,7 +50,7 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
      *
      * @param  Model  $model
      * @param  string  $key
-     * @param  Price  $value
+     * @param  \Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown  $value
      * @param  array  $attributes
      * @return array
      *
@@ -73,7 +73,7 @@ class TaxBreakdown implements CastsAttributes, SerializesCastableAttributes
                     'identifier' => $item->identifier,
                     'percentage' => $item->percentage,
                     'value' => $item->price->value,
-                    'currency_code' => $item->price->currency->code,
+                    'currency_code' => $item->price->resolveCurrency()->code,
                 ];
             })->toJson(),
         ];

@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Carts\CalculateLine;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
-use Lunar\Core\DataTypes\Price as DataTypesPrice;
+use Lunar\Core\DataObjects\PriceValue as DataTypesPrice;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
