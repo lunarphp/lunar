@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Contracts\HasCurrency;
@@ -34,7 +33,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Transaction extends BaseModel implements Contracts\Transaction, HasCurrency
+class Transaction extends Base implements Contracts\Transaction, HasCurrency
 {
     use FormatsPrices;
     use HasFactory;

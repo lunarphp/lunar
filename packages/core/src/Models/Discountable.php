@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Database\Factories\DiscountableFactory;
 
 /**
@@ -19,7 +18,7 @@ use Lunar\Core\Database\Factories\DiscountableFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Discountable extends BaseModel implements Contracts\Discountable
+class Discountable extends Base implements Contracts\Discountable
 {
     use HasFactory;
 

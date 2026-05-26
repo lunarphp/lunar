@@ -9,7 +9,7 @@ use Lunar\Admin\Support\ActivityLog\Orders\EmailNotification;
 use Lunar\Admin\Support\ActivityLog\Orders\Intent;
 use Lunar\Admin\Support\ActivityLog\Orders\Refund;
 use Lunar\Admin\Support\ActivityLog\Orders\StatusUpdate;
-use Lunar\Core\Base\BaseModel;
+use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
@@ -45,7 +45,7 @@ class Manifest
      */
     public function addRender(string $subject, string $renderer): self
     {
-        if (class_exists($subject) && new $subject instanceof BaseModel) {
+        if (class_exists($subject) && new $subject instanceof Base) {
             $subject = $subject::morphName();
         }
 
@@ -63,7 +63,7 @@ class Manifest
      */
     public function getItems(string $subject): Collection
     {
-        if (class_exists($subject) && new $subject instanceof BaseModel) {
+        if (class_exists($subject) && new $subject instanceof Base) {
             $subject = $subject::morphName();
         }
 

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\CachesProperties;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Concerns\LogsActivity;
@@ -27,7 +26,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CartLine extends BaseModel implements Contracts\CartLine
+class CartLine extends Base implements Contracts\CartLine
 {
     use CachesProperties;
     use HasFactory;

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Concerns\HasAttributes;
 use Lunar\Core\Concerns\HasMacros;
@@ -26,7 +25,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Brand extends BaseModel implements Contracts\Brand, SpatieHasMedia
+class Brand extends Base implements Contracts\Brand, SpatieHasMedia
 {
     use HasAttributes;
     use HasFactory;

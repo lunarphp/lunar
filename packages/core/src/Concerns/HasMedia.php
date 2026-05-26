@@ -5,7 +5,7 @@ namespace Lunar\Core\Concerns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
-use Lunar\Core\Base\StandardMediaDefinitions;
+use Lunar\Core\Media\StandardDefinitions;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -69,6 +69,6 @@ trait HasMedia
         return $conversionClasses[$alias]
             ?? $conversionClasses[static::class] // fallback for published config
             ?? $conversionClasses[get_parent_class(static::class)] // fallback use parent class
-            ?? StandardMediaDefinitions::class;
+            ?? StandardDefinitions::class;
     }
 }

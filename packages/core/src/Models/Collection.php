@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
 use Kalnoy\Nestedset\QueryBuilder;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Concerns\HasChannels;
 use Lunar\Core\Concerns\HasCustomerGroups;
@@ -35,7 +34,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Collection extends BaseModel implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
+class Collection extends Base implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
 {
     use HasChannels,
         HasCustomerGroups,

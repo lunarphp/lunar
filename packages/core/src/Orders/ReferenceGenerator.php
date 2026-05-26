@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Orders;
 
 use Lunar\Core\Contracts\OrderReferenceGenerator as OrderReferenceGeneratorContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 
-class OrderReferenceGenerator implements OrderReferenceGeneratorContract
+class ReferenceGenerator implements OrderReferenceGeneratorContract
 {
     /**
      * {@inheritDoc}

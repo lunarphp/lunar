@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Concerns\HasTranslations;
 use Lunar\Core\Database\Factories\AttributeFactory;
@@ -33,7 +32,7 @@ use Lunar\Core\Facades\DB;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Attribute extends BaseModel implements Contracts\Attribute
+class Attribute extends Base implements Contracts\Attribute
 {
     use HasFactory;
     use HasMacros;

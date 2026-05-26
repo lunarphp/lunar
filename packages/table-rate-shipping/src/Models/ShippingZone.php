@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\LogsActivity;
+use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\State;
 use Lunar\Shipping\Database\Factories\ShippingZoneFactory;
 
-class ShippingZone extends BaseModel implements Contracts\ShippingZone
+class ShippingZone extends Base implements Contracts\ShippingZone
 {
     use HasFactory;
     use LogsActivity;

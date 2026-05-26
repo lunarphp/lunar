@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Concerns\HasAttributes;
 use Lunar\Core\Concerns\HasMacros;
@@ -31,7 +30,7 @@ use Lunar\Core\Database\Factories\CustomerFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Customer extends BaseModel implements Contracts\Customer
+class Customer extends Base implements Contracts\Customer
 {
     use HasAttributes;
     use HasFactory;

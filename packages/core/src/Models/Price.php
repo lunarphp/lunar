@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\PriceFactory;
@@ -29,7 +28,7 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Price extends BaseModel implements Contracts\Price, HasCurrency
+class Price extends Base implements Contracts\Price, HasCurrency
 {
     use FormatsPrices;
     use HasFactory;

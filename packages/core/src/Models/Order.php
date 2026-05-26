@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Casts\DiscountBreakdown;
 use Lunar\Core\Casts\ShippingBreakdown;
 use Lunar\Core\Casts\TaxBreakdown;
@@ -46,7 +45,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Order extends BaseModel implements Contracts\Order, HasCurrency
+class Order extends Base implements Contracts\Order, HasCurrency
 {
     use FormatsPrices;
     use HasFactory;

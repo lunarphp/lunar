@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Concerns\HasAttributes;
 use Lunar\Core\Concerns\HasDimensions;
@@ -53,7 +52,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
+class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
 {
     use HasAttributes;
     use HasDimensions;

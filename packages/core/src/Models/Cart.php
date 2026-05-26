@@ -22,7 +22,6 @@ use Lunar\Core\Actions\Carts\GenerateFingerprint;
 use Lunar\Core\Actions\Carts\RemovePurchasable;
 use Lunar\Core\Actions\Carts\SetShippingOption;
 use Lunar\Core\Actions\Carts\UpdateCartLine;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Casts\CouponString;
 use Lunar\Core\Concerns\CachesProperties;
 use Lunar\Core\Concerns\HasMacros;
@@ -62,7 +61,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Cart extends BaseModel implements Contracts\Cart
+class Cart extends Base implements Contracts\Cart
 {
     use CachesProperties;
     use HasFactory;

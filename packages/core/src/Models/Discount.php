@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Casts\CouponString;
 use Lunar\Core\Concerns\HasChannels;
 use Lunar\Core\Concerns\HasCustomerGroups;
@@ -32,7 +31,7 @@ use Lunar\Core\DiscountTypes\AbstractDiscountType;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Discount extends BaseModel implements Contracts\Discount
+class Discount extends Base implements Contracts\Discount
 {
     use HasChannels,
         HasCustomerGroups,

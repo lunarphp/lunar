@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasDefaultRecord;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Concerns\LogsActivity;
@@ -24,7 +23,7 @@ use Lunar\Core\Database\Factories\ChannelFactory;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Channel extends BaseModel implements Contracts\Channel
+class Channel extends Base implements Contracts\Channel
 {
     use HasDefaultRecord;
     use HasFactory;

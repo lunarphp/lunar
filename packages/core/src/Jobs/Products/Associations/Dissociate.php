@@ -8,9 +8,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Core\Facades\DB;
+use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
 
@@ -45,7 +45,7 @@ class Dissociate implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(ProductContract $product, Collection|BaseModel|array $targets, ProvidesProductAssociationType|string|null $type = null)
+    public function __construct(ProductContract $product, Collection|Base|array $targets, ProvidesProductAssociationType|string|null $type = null)
     {
         if (is_array($targets)) {
             $targets = collect($targets);

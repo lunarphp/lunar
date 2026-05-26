@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Models\Base;
 use ReflectionClass;
 
 trait HasModelExtending
@@ -20,7 +20,7 @@ trait HasModelExtending
 
         // If they are both the same class i.e. they haven't changed
         // then just call the parent method.
-        if ($parentClass == BaseModel::class || $this instanceof $concreteClass) {
+        if ($parentClass == Base::class || $this instanceof $concreteClass) {
             return parent::newModelQuery();
         }
 
@@ -60,7 +60,7 @@ trait HasModelExtending
     {
         $parentClass = get_parent_class($this);
 
-        return $parentClass == BaseModel::class ? parent::getForeignKey() : Str::snake(class_basename($parentClass)).'_'.$this->getKeyName();
+        return $parentClass == Base::class ? parent::getForeignKey() : Str::snake(class_basename($parentClass)).'_'.$this->getKeyName();
 
     }
 
@@ -68,7 +68,7 @@ trait HasModelExtending
     {
         $parentClass = get_parent_class($this);
 
-        if ($parentClass === BaseModel::class) {
+        if ($parentClass === Base::class) {
             return parent::getTable();
         }
 
@@ -85,7 +85,7 @@ trait HasModelExtending
     {
         $parentClass = get_parent_class($childClass);
 
-        while ($parentClass && $parentClass !== BaseModel::class) {
+        while ($parentClass && $parentClass !== Base::class) {
             $childClass = $parentClass;
             $parentClass = get_parent_class($parentClass);
         }

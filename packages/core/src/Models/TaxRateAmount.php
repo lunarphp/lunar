@@ -5,7 +5,6 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Database\Factories\TaxRateAmountFactory;
 
@@ -17,7 +16,7 @@ use Lunar\Core\Database\Factories\TaxRateAmountFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxRateAmount extends BaseModel implements Contracts\TaxRateAmount
+class TaxRateAmount extends Base implements Contracts\TaxRateAmount
 {
     use HasFactory;
     use HasMacros;

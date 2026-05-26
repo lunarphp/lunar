@@ -3,8 +3,8 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
-use Lunar\Core\Base\StandardMediaDefinitions;
 use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Media\StandardDefinitions as StandardMediaDefinitions;
 use Lunar\Core\Models\Product;
 use Lunar\Tests\Core\Stubs\TestStandardMediaDefinitions;
 use Lunar\Tests\Core\TestCase;

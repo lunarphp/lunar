@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Concerns\HasMedia;
 use Lunar\Core\Concerns\HasTranslations;
@@ -28,7 +27,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductOption extends BaseModel implements Contracts\ProductOption, SpatieHasMedia
+class ProductOption extends Base implements Contracts\ProductOption, SpatieHasMedia
 {
     use HasFactory;
     use HasMacros;

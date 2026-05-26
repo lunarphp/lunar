@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\CachesProperties;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Concerns\LogsActivity;
@@ -40,7 +39,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CartAddress extends BaseModel implements Addressable, Contracts\CartAddress
+class CartAddress extends Base implements Addressable, Contracts\CartAddress
 {
     use CachesProperties;
     use HasFactory;

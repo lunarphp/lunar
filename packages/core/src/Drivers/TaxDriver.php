@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Drivers;
 
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\Purchasable;

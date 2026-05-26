@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Contracts\ModelManifest as ModelManifestContract;
+use Lunar\Core\Models\Base;
 use Spatie\StructureDiscoverer\Discover;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
@@ -28,7 +28,7 @@ class ModelManifest implements ModelManifestContract
         // Discover models
         $modelClasses = Discover::in(__DIR__.'/../Models')
             ->classes()
-            ->extending(BaseModel::class)
+            ->extending(Base::class)
             ->get();
 
         foreach ($modelClasses as $modelClass) {
@@ -46,7 +46,7 @@ class ModelManifest implements ModelManifestContract
         try {
             $modelClasses = Discover::in($dir)
                 ->classes()
-                ->extending(BaseModel::class)
+                ->extending(Base::class)
                 ->get();
 
             foreach ($modelClasses as $modelClass) {
@@ -153,7 +153,7 @@ class ModelManifest implements ModelManifestContract
         return 'Lunar\\Core\\Models\\'.$shortName;
     }
 
-    public function findLunarModel(string|BaseModel $model): ?string
+    public function findLunarModel(string|Base $model): ?string
     {
         $class = (new \ReflectionClass($model))->getName();
 
@@ -166,7 +166,7 @@ class ModelManifest implements ModelManifestContract
         return null;
     }
 
-    public function isLunarModel(string|BaseModel $model): bool
+    public function isLunarModel(string|Base $model): bool
     {
         $class = (new \ReflectionClass($model));
 
@@ -178,7 +178,7 @@ class ModelManifest implements ModelManifestContract
         $modelClasses = collect(
             Discover::in(__DIR__.'/../Models')
                 ->classes()
-                ->extending(BaseModel::class)
+                ->extending(Base::class)
                 ->get()
         )->mapWithKeys(
             fn ($class) => [

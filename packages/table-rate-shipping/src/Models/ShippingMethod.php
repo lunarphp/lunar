@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasCustomerGroups;
 use Lunar\Core\Concerns\LogsActivity;
+use Lunar\Core\Models\Base;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 
-class ShippingMethod extends BaseModel implements Contracts\ShippingMethod
+class ShippingMethod extends Base implements Contracts\ShippingMethod
 {
     use HasCustomerGroups;
     use HasFactory;

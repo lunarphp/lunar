@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
-use Lunar\Core\Base\Migration;
+use Lunar\Core\Database\Migration;
 use Lunar\Upgrade\Rector\LunarSetList;
 use Lunar\Upgrade\Support\ClassStringRewriter;
 

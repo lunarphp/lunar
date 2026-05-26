@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Media;
 
 use Lunar\Core\Contracts\MediaDefinitions;
 use Spatie\Image\Enums\BorderType;
@@ -9,7 +9,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class StandardMediaDefinitions implements MediaDefinitions
+class StandardDefinitions implements MediaDefinitions
 {
     public function registerMediaConversions(HasMedia $model, ?Media $media = null): void
     {

@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasPrices;
 use Lunar\Core\Concerns\LogsActivity;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataTypes\ShippingOption;
+use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\TaxClass as TaxClassContract;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\Database\Factories\ShippingRateFactory;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 
-class ShippingRate extends BaseModel implements Contracts\ShippingRate, Purchasable
+class ShippingRate extends Base implements Contracts\ShippingRate, Purchasable
 {
     use HasFactory;
     use HasPrices;

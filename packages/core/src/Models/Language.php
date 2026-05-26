@@ -5,7 +5,6 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasDefaultRecord;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Database\Factories\LanguageFactory;
@@ -18,7 +17,7 @@ use Lunar\Core\Database\Factories\LanguageFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Language extends BaseModel implements Contracts\Language
+class Language extends Base implements Contracts\Language
 {
     use HasDefaultRecord;
     use HasFactory;

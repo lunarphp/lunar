@@ -5,7 +5,6 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Database\Factories\TaxZonePostcodeFactory;
 
@@ -17,7 +16,7 @@ use Lunar\Core\Database\Factories\TaxZonePostcodeFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxZonePostcode extends BaseModel implements Contracts\TaxZonePostcode
+class TaxZonePostcode extends Base implements Contracts\TaxZonePostcode
 {
     use HasFactory;
     use HasMacros;

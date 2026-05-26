@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Lunar\Core\Base\BaseModel;
 use Lunar\Core\Concerns\HasDefaultRecord;
 use Lunar\Core\Concerns\HasMacros;
 use Lunar\Core\Concerns\LogsActivity;
@@ -23,7 +22,7 @@ use Lunar\Core\Database\Factories\TaxZoneFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxZone extends BaseModel implements Contracts\TaxZone
+class TaxZone extends Base implements Contracts\TaxZone
 {
     use HasDefaultRecord;
     use HasFactory;
