@@ -3,7 +3,6 @@
 namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
-use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
@@ -35,8 +34,8 @@ final class ApplyShipping
             );
 
             if ($cart->shippingAddress && ! $cart->shippingBreakdown) {
-                $cart->shippingAddress->shippingTotal = new PriceValue($shippingOption->price->value, $cart->currency);
-                $cart->shippingAddress->shippingSubTotal = new PriceValue($shippingOption->price->value, $cart->currency);
+                $cart->shippingAddress->shippingTotal = $shippingOption->price;
+                $cart->shippingAddress->shippingSubTotal = $shippingOption->price;
             }
         }
 

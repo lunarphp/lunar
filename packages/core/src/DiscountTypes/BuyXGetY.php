@@ -193,16 +193,13 @@ class BuyXGetY extends AbstractDiscountType
 
             $remainingRewardQty -= $qtyToAllocate;
 
-            $subTotal = $rewardLine->subTotal->value;
+            $lineDiscount = $rewardLine->unitPrice->multiply($qtyToAllocate);
 
-            $unitPrice = $rewardLine->unitPrice->value;
+            $discountTotal += $lineDiscount->value;
 
-            $lineDiscountTotal = $unitPrice * $qtyToAllocate;
-            $discountTotal += $lineDiscountTotal;
+            $rewardLine->discountTotal = $lineDiscount;
 
-            $rewardLine->discountTotal = new PriceValue($lineDiscountTotal, $cart->currency);
-
-            $rewardLine->subTotalDiscounted = new PriceValue($subTotal - $lineDiscountTotal, $cart->currency);
+            $rewardLine->subTotalDiscounted = $rewardLine->subTotal->subtract($lineDiscount);
 
             if (! $cart->freeItems) {
                 $cart->freeItems = collect();
@@ -324,10 +321,9 @@ class BuyXGetY extends AbstractDiscountType
 
                 $rewardLine->discountTotal = new PriceValue($discountTotal, $cart->currency);
 
-                $rewardLine->subTotalDiscounted = new PriceValue(
-                    max(0, $rewardLine->subTotal->value - $rewardLine->discountTotal->value),
-                    $cart->currency,
-                );
+                $rewardLine->subTotalDiscounted = $rewardLine->subTotal
+                    ->subtract($rewardLine->discountTotal)
+                    ->clampToZero();
 
                 $rewardLine->meta = $meta;
                 $rewardLine->save();

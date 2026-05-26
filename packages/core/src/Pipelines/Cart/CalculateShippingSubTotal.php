@@ -21,10 +21,9 @@ final class CalculateShippingSubTotal
     public function handle(CartContract $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
-        $cart->shippingSubTotal = new PriceValue(
-            $cart->shippingBreakdown?->items->sum('price.value') ?? 0,
-            $cart->currency,
-        );
+        $cart->shippingSubTotal = $cart->shippingBreakdown
+            ? PriceValue::sum($cart->shippingBreakdown->items->pluck('price'), $cart->currency)
+            : new PriceValue(0, $cart->currency);
 
         return $next($cart);
     }

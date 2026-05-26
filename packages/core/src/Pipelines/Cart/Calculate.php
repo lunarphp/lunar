@@ -17,22 +17,19 @@ class Calculate
     public function handle(CartContract $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
-        $discountTotal = $cart->lines->sum('discountTotal.value');
+        $currency = $cart->currency;
 
-        $subTotal = $cart->lines->sum('subTotal.value');
+        $cart->subTotal = PriceValue::sum($cart->lines->pluck('subTotal'), $currency);
+        $cart->subTotalDiscounted = PriceValue::sum(
+            $cart->lines->map(fn ($line) => $line->subTotalDiscounted ?: $line->subTotal),
+            $currency,
+        );
+        $cart->discountTotal = PriceValue::sum($cart->lines->pluck('discountTotal'), $currency);
 
-        $total = $cart->lines->sum('total.value') + $cart->shippingTotal?->value;
-
-        $subTotalDiscounted = $cart->lines->sum(function ($line) {
-            return $line->subTotalDiscounted ?
-                $line->subTotalDiscounted->value :
-                $line->subTotal->value;
-        });
-
-        $cart->subTotal = new PriceValue($subTotal, $cart->currency);
-        $cart->subTotalDiscounted = new PriceValue($subTotalDiscounted, $cart->currency);
-        $cart->discountTotal = new PriceValue($discountTotal, $cart->currency);
-        $cart->total = new PriceValue($total, $cart->currency);
+        $linesTotal = PriceValue::sum($cart->lines->pluck('total'), $currency);
+        $cart->total = $cart->shippingTotal
+            ? $linesTotal->add($cart->shippingTotal)
+            : $linesTotal;
 
         return $next($cart);
     }

@@ -24,11 +24,7 @@ class CalculateTax
         $taxBreakDownAmounts = collect();
 
         foreach ($cart->lines as $cartLine) {
-            $subTotal = $cartLine->subTotal?->value;
-
-            if (! is_null($cartLine->subTotalDiscounted?->value)) {
-                $subTotal = $cartLine->subTotalDiscounted?->value;
-            }
+            $subTotal = $cartLine->subTotalDiscounted ?: $cartLine->subTotal;
 
             $taxBreakDownResult = Taxes::setShippingAddress($cart->shippingAddress)
                 ->setBillingAddress($cart->billingAddress)
@@ -36,57 +32,52 @@ class CalculateTax
                 ->setPurchasable($cartLine->purchasable)
                 ->setCartLine($cartLine)
                 ->setTaxZone($cart->taxZone)
-                ->getBreakdown($subTotal);
+                ->getBreakdown($subTotal->value);
 
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $taxBreakDownResult->amounts
             );
 
-            $taxTotal = $taxBreakDownResult->amounts->sum('price.value');
+            $taxAmount = PriceValue::sum($taxBreakDownResult->amounts->pluck('price'), $cart->currency);
 
             $cartLine->taxBreakdown = $taxBreakDownResult;
 
-            $cart->taxTotal = new PriceValue($taxTotal, $cart->currency);
-            $cartLine->taxAmount = new PriceValue($taxTotal, $cart->currency);
+            $cart->taxTotal = $taxAmount;
+            $cartLine->taxAmount = $taxAmount;
 
-            if (prices_inc_tax()) {
-                $cartLine->total = new PriceValue($subTotal, $cart->currency);
-            } else {
-                $cartLine->total = new PriceValue($subTotal + $taxTotal, $cart->currency);
-            }
+            $cartLine->total = prices_inc_tax()
+                ? $subTotal
+                : $subTotal->add($taxAmount);
         }
 
         $taxBreakDown = new TaxBreakdown($taxBreakDownAmounts);
 
-        $taxTotal = $cart->lines->sum('taxAmount.value');
+        $taxTotal = PriceValue::sum($cart->lines->pluck('taxAmount'), $cart->currency);
         $taxBreakDownAmounts = $taxBreakDown->amounts->filter()->flatten();
 
         $shippingOption = $cart->shippingOptionOverride ?: ShippingManifest::getShippingOption($cart);
 
         if ($shippingOption) {
-            $shippingSubTotal = $cart->shippingBreakdown->items->sum('price.value');
+            $shippingSubTotal = PriceValue::sum($cart->shippingBreakdown->items->pluck('price'), $cart->currency);
 
             $shippingTax = Taxes::setShippingAddress($cart->shippingAddress)
                 ->setCurrency($cart->currency)
                 ->setPurchasable($shippingOption)
                 ->setTaxZone($cart->taxZone)
-                ->getBreakdown($shippingSubTotal);
+                ->getBreakdown($shippingSubTotal->value);
 
-            $shippingTaxTotal = new PriceValue($shippingTax->amounts->sum('price.value'), $cart->currency);
+            $shippingTaxTotal = PriceValue::sum($shippingTax->amounts->pluck('price'), $cart->currency);
 
             $cart->shippingTaxTotal = $shippingTaxTotal;
-            $taxTotal += $shippingTaxTotal->value;
+            $taxTotal = $taxTotal->add($shippingTaxTotal);
 
             $taxBreakDownAmounts = $taxBreakDownAmounts->merge(
                 $shippingTax->amounts
             );
 
-            $shippingTotalValue = $shippingSubTotal;
-            if (! prices_inc_tax()) {
-                $shippingTotalValue += $shippingTaxTotal->value;
-            }
-
-            $shippingTotal = new PriceValue($shippingTotalValue, $cart->currency);
+            $shippingTotal = prices_inc_tax()
+                ? $shippingSubTotal
+                : $shippingSubTotal->add($shippingTaxTotal);
 
             $cart->shippingTotal = $shippingTotal;
 
@@ -97,13 +88,13 @@ class CalculateTax
             }
         }
 
-        $cart->taxTotal = new PriceValue($taxTotal, $cart->currency);
+        $cart->taxTotal = $taxTotal;
 
         // Need to include shipping tax breakdown...
         $cart->taxBreakdown = new TaxBreakdown(
             $taxBreakDownAmounts->groupBy('identifier')->map(function ($amounts) use ($cart) {
                 return new TaxBreakdownAmount(
-                    price: new PriceValue($amounts->sum('price.value'), $cart->currency),
+                    price: PriceValue::sum($amounts->pluck('price'), $cart->currency),
                     percentage: $amounts->first()->percentage,
                     description: $amounts->first()->description,
                     identifier: $amounts->first()->identifier
