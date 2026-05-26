@@ -1,6 +1,6 @@
 # 0014 — Price calculator service
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-05-26
 - TODO item: (follow-up to 0012)

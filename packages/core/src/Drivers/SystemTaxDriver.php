@@ -6,6 +6,7 @@ use Lunar\Core\Actions\Taxes\GetTaxZone;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Contracts\CartLine;
 use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
@@ -120,55 +121,45 @@ class SystemTaxDriver implements TaxDriver
         });
 
         if (prices_inc_tax()) {
-            // Remove tax from price
-            $totalTaxPercentage = $taxAmounts->sum('percentage') / 100; // E.g. 0.2 for 20%
-            $priceExTax = round($subTotal / (1 + $totalTaxPercentage));
+            $totalTaxPercentage = (float) $taxAmounts->sum('percentage') / 100;
+            $priceExTax = PriceCalculator::withoutTax((int) $subTotal, $totalTaxPercentage, $this->currency);
 
-            // Check to see if the included tax uses the same tax zone
             if ($this->defaultTaxZone()->id === $taxZone->id) {
-                // Manually return the tax breakdown
+                $expectedTax = (int) $subTotal - $priceExTax;
+                $weights = $taxAmounts
+                    ->mapWithKeys(fn ($amount, $key) => [$key => (int) round((float) $amount->percentage * 10000)])
+                    ->all();
+
+                $allocations = PriceCalculator::distribute($expectedTax, $weights, $this->currency);
+
                 $breakdown = new TaxBreakdown;
 
-                $taxTally = 0;
-
                 foreach ($taxAmounts as $key => $amount) {
-                    if ($taxAmounts->keys()->last() == $key) {
-                        // Ensure the final tax amount adds up to the original price
-                        $result = $subTotal - $priceExTax - $taxTally;
-                    } else {
-                        $result = round($priceExTax * ($amount->percentage / 100));
-                    }
-
-                    $taxTally += $result;
-
-                    $amount = new TaxBreakdownAmount(
-                        price: new PriceValue((int) $result, $this->currency),
+                    $breakdown->addAmount(new TaxBreakdownAmount(
+                        price: new PriceValue($allocations[$key], $this->currency),
                         identifier: "tax_rate_{$amount->taxRate->id}",
                         description: $amount->taxRate->name,
-                        percentage: $amount->percentage
-                    );
-                    $breakdown->addAmount($amount);
+                        percentage: $amount->percentage,
+                    ));
                 }
 
                 return $breakdown;
             }
 
-            // Set subTotal to ex. tax price
             $subTotal = $priceExTax;
         }
 
         $breakdown = new TaxBreakdown;
 
         foreach ($taxAmounts as $amount) {
-            $result = round($subTotal * ($amount->percentage / 100));
+            $result = PriceCalculator::percentage((int) $subTotal, (float) $amount->percentage / 100, $this->currency);
 
-            $amount = new TaxBreakdownAmount(
-                price: new PriceValue((int) $result, $this->currency),
+            $breakdown->addAmount(new TaxBreakdownAmount(
+                price: new PriceValue($result, $this->currency),
                 identifier: "tax_rate_{$amount->taxRate->id}",
                 description: $amount->taxRate->name,
-                percentage: $amount->percentage
-            );
-            $breakdown->addAmount($amount);
+                percentage: $amount->percentage,
+            ));
         }
 
         return $breakdown;

@@ -11,6 +11,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Price;
 use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
@@ -65,24 +66,32 @@ trait ManagesProductPricing
         unset($data['basePrices']);
         $variant->update($data);
 
+        $currencies = Currency::whereIn('id', $prices->pluck('currency_id')->filter()->unique())->get()->keyBy('id');
+
         $prices->filter(
             fn ($price) => ! ($price['id'] ?? null) && isset($price['value']) && isset($price['currency_id'])
-        )->each(fn ($price) => $variant->prices()->create([
-            'currency_id' => $price['currency_id'],
-            'price' => (int) round((float) ($price['value'] * ($price['factor'] ?? 1))),
-            'compare_price' => (int) round((float) (($price['compare_price'] ?? 0) * ($price['factor'] ?? 1))),
-            'min_quantity' => 1,
-            'customer_group_id' => null,
-        ])
-        );
+        )->each(function ($price) use ($variant, $currencies) {
+            $currency = $currencies->get($price['currency_id']);
+
+            $variant->prices()->create([
+                'currency_id' => $price['currency_id'],
+                'price' => PriceCalculator::toMinor((float) $price['value'], $currency),
+                'compare_price' => PriceCalculator::toMinor((float) ($price['compare_price'] ?? 0), $currency),
+                'min_quantity' => 1,
+                'customer_group_id' => null,
+            ]);
+        });
 
         $prices->filter(
             fn ($price) => ($price['id'] ?? null) && isset($price['value']) && ($price['value'] != $price['original_value'] || $price['compare_price'] != $price['original_compare_price'])
-        )->each(fn ($price) => Price::find($price['id'])->update([
-            'price' => (int) round((float) ($price['value'] * $price['factor'])),
-            'compare_price' => (int) round((float) ($price['compare_price'] * $price['factor'])),
-        ])
-        );
+        )->each(function ($price) use ($currencies) {
+            $currency = $currencies->get($price['currency_id']);
+
+            Price::find($price['id'])->update([
+                'price' => PriceCalculator::toMinor((float) $price['value'], $currency),
+                'compare_price' => PriceCalculator::toMinor((float) $price['compare_price'], $currency),
+            ]);
+        });
 
         $this->basePrices = $this->getBasePrices();
 

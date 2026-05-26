@@ -17,6 +17,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Events\ModelPricesUpdated;
 use Lunar\Core\Facades\DB;
+use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Price;
@@ -164,7 +165,7 @@ class PriceRelationManager extends BaseRelationManager
                 CreateAction::make()->mutateDataUsing(function (array $data) {
                     $currencyModel = Currency::find($data['currency_id']);
 
-                    $data['price'] = (int) ($data['price'] * $currencyModel->factor);
+                    $data['price'] = PriceCalculator::toMinor((float) $data['price'], $currencyModel);
 
                     return $data;
                 })->label(
@@ -181,7 +182,7 @@ class PriceRelationManager extends BaseRelationManager
                     ->mutateDataUsing(function (array $data): array {
                         $currencyModel = Currency::find($data['currency_id']);
 
-                        $data['price'] = (int) ($data['price'] * $currencyModel->factor);
+                        $data['price'] = PriceCalculator::toMinor((float) $data['price'], $currencyModel);
 
                         return $data;
                     })->after(
@@ -207,7 +208,7 @@ class PriceRelationManager extends BaseRelationManager
                 continue;
             }
 
-            $data[$key] = ((int) $data[$key]) / $currency->factor;
+            $data[$key] = PriceCalculator::toMajor((int) $data[$key], $currency);
         }
 
         return $data;

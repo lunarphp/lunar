@@ -17,6 +17,7 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Concerns\Products\ManagesProductPricing;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
+use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Price;
 use Lunar\Filament\RelationManagers\Product\CustomerGroupPricingRelationManager;
@@ -121,7 +122,7 @@ class ManageProductPricing extends BaseEditRecord
                 CreateAction::make()->mutateDataUsing(function (array $data) {
                     $currencyModel = Currency::find($data['currency_id']);
 
-                    $data['price'] = (int) ($data['price'] * $currencyModel->factor);
+                    $data['price'] = PriceCalculator::toMinor((float) $data['price'], $currencyModel);
 
                     return $data;
                 }),
@@ -130,7 +131,7 @@ class ManageProductPricing extends BaseEditRecord
                 EditAction::make()->mutateDataUsing(function (array $data): array {
                     $currencyModel = Currency::find($data['currency_id']);
 
-                    $data['price'] = (int) ($data['price'] * $currencyModel->factor);
+                    $data['price'] = PriceCalculator::toMinor((float) $data['price'], $currencyModel);
 
                     return $data;
                 }),

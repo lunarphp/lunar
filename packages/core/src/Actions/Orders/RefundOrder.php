@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Actions\AbstractAction;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Exceptions\OrderActionException;
+use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Core\Models\Order;
@@ -38,7 +39,7 @@ final class RefundOrder extends AbstractAction
             throw new OrderActionException('Transaction is not a successful capture and cannot be refunded.');
         }
 
-        $minorAmount = (int) bcmul((string) $amount, (string) $order->currency->factor);
+        $minorAmount = PriceCalculator::toMinor($amount, $order->currency);
 
         if ($minorAmount <= 0) {
             throw new OrderActionException('Refund amount must be greater than zero.');

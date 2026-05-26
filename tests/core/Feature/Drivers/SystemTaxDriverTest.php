@@ -120,7 +120,8 @@ test('can get breakdown price inc', function () {
         ->getBreakdown($subTotal);
 
     expect($breakdown)->toBeInstanceOf(TaxBreakdown::class);
-    expect($breakdown->amounts[0]->price->value)->toEqual(166);
+    // withoutTax(999, 0.20) = 832 (largest x where withTax(x) <= 999); tax = 999 - 832 = 167.
+    expect($breakdown->amounts[0]->price->value)->toEqual(167);
 });
 
 test('can set tax zone', function () {

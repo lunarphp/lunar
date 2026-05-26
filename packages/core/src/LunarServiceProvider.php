@@ -95,7 +95,9 @@ use Lunar\Core\Observers\ProductVariantObserver;
 use Lunar\Core\Observers\TransactionObserver;
 use Lunar\Core\Observers\UrlObserver;
 use Lunar\Core\Orders\ReferenceGenerator as OrderReferenceGeneratorImpl;
+use Lunar\Core\Pricing\DefaultPriceCalculator;
 use Lunar\Core\Pricing\DefaultPriceFormatter;
+use Lunar\Core\Pricing\PriceCalculatorInterface;
 use Lunar\Core\Pricing\PriceFormatterInterface;
 use Lunar\Core\Telemetry\Insights as TelemetryInsights;
 use Lunar\Core\Telemetry\TelemetryService as TelemetryServiceImpl;
@@ -192,6 +194,8 @@ class LunarServiceProvider extends ServiceProvider
 
             return $app->make($concrete, $parameters);
         });
+
+        $this->app->singleton(PriceCalculatorInterface::class, DefaultPriceCalculator::class);
 
         $this->app->singleton(TaxManager::class, function ($app) {
             return $app->make(TaxManagerImpl::class);

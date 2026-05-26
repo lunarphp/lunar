@@ -1694,11 +1694,14 @@ test('fixed amount discount distributes across cart lines with different values'
     expect($fourthLine->subTotalDiscounted->value)->toBeGreaterThanOrEqual(0);
     expect($lastLine->subTotalDiscounted->value)->toBeGreaterThanOrEqual(0);
 
-    expect($firstLine->discountTotal->value)->toEqual(150);
+    // Largest-remainder allocation: subtotals 150/200/400/400/360, total 1510,
+    // discount 1500. Floors 148/198/397/397/357 sum to 1497; +1 goes to the
+    // three lines with the largest fractional remainders (A, B, E).
+    expect($firstLine->discountTotal->value)->toEqual(149);
     expect($secondLine->discountTotal->value)->toEqual(199);
     expect($thirdLine->discountTotal->value)->toEqual(397);
     expect($fourthLine->discountTotal->value)->toEqual(397);
-    expect($lastLine->discountTotal->value)->toEqual(357);
+    expect($lastLine->discountTotal->value)->toEqual(358);
     expect($cart->discountTotal->value)->toEqual(1500);
 });
 

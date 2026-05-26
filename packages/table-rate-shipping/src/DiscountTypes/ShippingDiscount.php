@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
+use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
@@ -81,8 +82,8 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
 
             if ($type === 'percentage') {
                 $percentage = (float) ($rule['percentage'] ?? 0);
-                $discountedPrice = (int) round($item->price->value * (1 - $percentage / 100));
-                $discountedPrice = max(0, $discountedPrice);
+                $saving = PriceCalculator::percentage($item->price->value, $percentage / 100, $currency);
+                $discountedPrice = max(0, $item->price->value - $saving);
             } else {
                 if (! isset($rule['prices'][$currency->code])) {
                     $newTotal += $item->price->value;
@@ -210,7 +211,7 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
         foreach ($currencies as $currency) {
             $minPrice = $data['data']['min_prices'][$currency->code] ?? null;
             if ($minPrice !== null) {
-                $data['data']['min_prices'][$currency->code] = (int) round($minPrice * $currency->factor);
+                $data['data']['min_prices'][$currency->code] = PriceCalculator::toMinor($minPrice, $currency);
             }
         }
 
@@ -221,7 +222,7 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
             foreach ($currencies as $currency) {
                 $price = $method['prices'][$currency->code] ?? null;
                 if ($price !== null) {
-                    $data['data']['methods'][$i]['prices'][$currency->code] = (int) round($price * $currency->factor);
+                    $data['data']['methods'][$i]['prices'][$currency->code] = PriceCalculator::toMinor($price, $currency);
                 }
             }
         }
