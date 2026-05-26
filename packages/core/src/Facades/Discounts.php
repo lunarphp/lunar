@@ -3,8 +3,7 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\DiscountManagerInterface;
-use Lunar\Core\Managers\DiscountManager;
+use Lunar\Core\Contracts\DiscountManager;
 
 /**
  * @method static \Lunar\Core\Managers\DiscountManager channel(\Lunar\Core\Models\Contracts\Channel|\Traversable|array $channel)
@@ -29,6 +28,6 @@ class Discounts extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return DiscountManagerInterface::class;
+        return DiscountManager::class;
     }
 }

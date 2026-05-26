@@ -3,7 +3,6 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\AttributeManifestInterface;
 
 /**
  * @method static void addType(void $type, void $key = null)
@@ -20,6 +19,6 @@ class AttributeManifest extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return AttributeManifestInterface::class;
+        return \Lunar\Core\Contracts\AttributeManifest::class;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
@@ -8,7 +8,7 @@ use Lunar\Core\DataObjects\PricingResponse;
 use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\CustomerGroup;
 
-interface PricingManagerInterface
+interface PricingManager
 {
     /**
      * Set the user property.

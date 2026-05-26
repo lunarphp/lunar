@@ -4,8 +4,8 @@ namespace Lunar\Core\Validation\CartLine;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\Purchasable;
 use Lunar\Core\Base\Traits\HasCustomerGroups;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\Channel as ChannelContract;

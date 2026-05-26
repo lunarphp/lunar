@@ -3,8 +3,7 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\PaymentManagerInterface;
-use Lunar\Core\Managers\PaymentManager;
+use Lunar\Core\Contracts\PaymentManager;
 
 /**
  * @method static void createOfflineDriver()
@@ -23,6 +22,6 @@ class Payments extends Facade
 {
     public static function getFacadeAccessor()
     {
-        return PaymentManagerInterface::class;
+        return PaymentManager::class;
     }
 }

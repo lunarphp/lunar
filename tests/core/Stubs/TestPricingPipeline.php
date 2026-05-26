@@ -3,11 +3,11 @@
 namespace Lunar\Tests\Core\Stubs;
 
 use Closure;
-use Lunar\Core\Base\PricingManagerInterface;
+use Lunar\Core\Contracts\PricingManager;
 
 class TestPricingPipeline
 {
-    public function handle(PricingManagerInterface $pricingManager, Closure $next)
+    public function handle(PricingManager $pricingManager, Closure $next)
     {
         $matchedPrice = $pricingManager->pricing->matched;
 

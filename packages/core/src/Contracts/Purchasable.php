@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\Models\Contracts\TaxClass;

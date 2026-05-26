@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
-interface ModelManifestInterface
+interface ModelManifest
 {
     public function register(): void;
 

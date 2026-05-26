@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Closure;
 use Illuminate\Support\Collection;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Contracts\Cart;
 
-interface ShippingManifestInterface
+interface ShippingManifest
 {
     /**
      * Add a shipping option to the manifest.

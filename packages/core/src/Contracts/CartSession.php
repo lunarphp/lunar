@@ -1,13 +1,13 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Lunar\Core\Models\Contracts\Cart;
 use Lunar\Core\Models\Contracts\Channel;
 use Lunar\Core\Models\Contracts\Currency;
 
-interface CartSessionInterface
+interface CartSession
 {
     /**
      * Return the current cart.

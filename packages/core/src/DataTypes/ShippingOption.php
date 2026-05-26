@@ -3,7 +3,7 @@
 namespace Lunar\Core\DataTypes;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\TaxClass;
 

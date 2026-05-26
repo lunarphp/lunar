@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
-use Lunar\Core\Base\StorefrontSessionInterface;
+use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Core\Managers\StorefrontSessionManager;
 use Lunar\Core\Models\Channel;
@@ -36,7 +36,7 @@ beforeEach(function (): void {
 
 test('can instantiate the manager', function (): void {
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     expect($manager)->toBeInstanceOf(StorefrontSessionManager::class);
 });
@@ -45,7 +45,7 @@ test('can initialise the channel', function (): void {
     $defaultChannel = Channel::getDefault();
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     expect($manager->getChannel()->id)->toBe($defaultChannel->id);
 });
@@ -54,7 +54,7 @@ test('can initialise the customer groups', function (): void {
     $defaultCustomerGroup = CustomerGroup::getDefault();
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     expect($manager->getCustomerGroups())
         ->toBeInstanceOf(Collection::class)
@@ -67,14 +67,14 @@ test('can initialise the currency', function (): void {
     $currency = Currency::getDefault();
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     expect($manager->getCurrency()->id)->toBe($currency->id);
 });
 
 test('can initialise the customer without authenticated user', function (): void {
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     expect($manager->getCustomer())->toBeNull();
 });
@@ -92,7 +92,7 @@ test('can initialise the latest customer for the authenticated user', function (
     actingAs($user);
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     expect($manager->getCustomer()->id)->toBe($customers->last()->id);
 });
@@ -106,7 +106,7 @@ test('can set channel', function (): void {
     ]);
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     $sessionKey = $manager->getSessionKey().'_channel';
 
@@ -128,7 +128,7 @@ test('can set multiple customer group', function (): void {
     ]);
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     $sessionKey = $manager->getSessionKey().'_customer_groups';
 
@@ -152,7 +152,7 @@ test('can set a single customer group', function (): void {
     ]);
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     $sessionKey = $manager->getSessionKey().'_customer_groups';
 
@@ -176,7 +176,7 @@ test('can set currency', function (): void {
     ]);
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     $sessionKey = $manager->getSessionKey().'_currency';
 
@@ -197,7 +197,7 @@ test('can set customer', function (): void {
     $user->customers()->sync($customers->pluck('id'));
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     $sessionKey = $manager->getSessionKey().'_customer';
 
@@ -222,7 +222,7 @@ test('ensure customer belongs to user', function (): void {
     actingAs($user);
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     /** @var Customer */
     $unrelatedCustomer = $customers->first();
@@ -242,7 +242,7 @@ test('can forget all values', function (): void {
     actingAs($user);
 
     /** @var StorefrontSessionManager */
-    $manager = app(StorefrontSessionInterface::class);
+    $manager = app(StorefrontSession::class);
 
     $sessionKey = $manager->getSessionKey();
 

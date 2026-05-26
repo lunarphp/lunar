@@ -3,7 +3,7 @@
 namespace Lunar\Core\Actions\Carts;
 
 use Lunar\Core\Actions\AbstractAction;
-use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Exceptions\InvalidCartLineQuantityException;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;

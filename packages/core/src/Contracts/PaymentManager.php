@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
-interface PaymentManagerInterface
+interface PaymentManager
 {
     /**
      * Return the default driver reference.

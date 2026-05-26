@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\Models\Contracts\Cart;
 
-interface DiscountManagerInterface
+interface DiscountManager
 {
     /**
      * Add a discount type by classname

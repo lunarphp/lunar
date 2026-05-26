@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Lunar\Core\Base\BaseModel;
-use Lunar\Core\Base\ModelManifestInterface;
+use Lunar\Core\Contracts\ModelManifest as ModelManifestContract;
 use Spatie\StructureDiscoverer\Discover;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
-class ModelManifest implements ModelManifestInterface
+class ModelManifest implements ModelManifestContract
 {
     /**
      * The collection of models to register to this manifest.

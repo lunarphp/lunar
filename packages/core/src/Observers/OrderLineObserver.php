@@ -3,7 +3,7 @@
 namespace Lunar\Core\Observers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Exceptions\NonPurchasableItemException;
 use Lunar\Core\Models\Contracts\OrderLine as OrderLineContract;
 use Lunar\Core\Models\OrderLine;

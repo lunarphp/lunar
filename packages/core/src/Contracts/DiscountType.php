@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Lunar\Core\Models\Contracts\Cart;
 
-interface DiscountTypeInterface
+interface DiscountType
 {
     /**
      * Return the name of the discount type.

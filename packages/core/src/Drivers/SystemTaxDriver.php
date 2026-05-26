@@ -3,9 +3,9 @@
 namespace Lunar\Core\Drivers;
 
 use Lunar\Core\Actions\Taxes\GetTaxZone;
-use Lunar\Core\Base\Addressable;
-use Lunar\Core\Base\Purchasable;
 use Lunar\Core\Base\TaxDriver;
+use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Contracts\CartLine;
 use Lunar\Core\Models\Contracts\Currency;

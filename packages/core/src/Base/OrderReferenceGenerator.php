@@ -2,9 +2,10 @@
 
 namespace Lunar\Core\Base;
 
+use Lunar\Core\Contracts\OrderReferenceGenerator as OrderReferenceGeneratorContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 
-class OrderReferenceGenerator implements OrderReferenceGeneratorInterface
+class OrderReferenceGenerator implements OrderReferenceGeneratorContract
 {
     /**
      * {@inheritDoc}

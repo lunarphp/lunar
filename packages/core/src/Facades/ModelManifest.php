@@ -3,7 +3,6 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\ModelManifestInterface;
 
 /**
  * @method static void register()
@@ -27,6 +26,6 @@ class ModelManifest extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return ModelManifestInterface::class;
+        return \Lunar\Core\Contracts\ModelManifest::class;
     }
 }

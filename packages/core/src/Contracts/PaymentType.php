@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
@@ -9,7 +9,7 @@ use Lunar\Core\Models\Contracts\Cart;
 use Lunar\Core\Models\Contracts\Order;
 use Lunar\Core\Models\Contracts\Transaction;
 
-interface PaymentTypeInterface
+interface PaymentType
 {
     /**
      * Set the cart.

@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Lunar\Core\Drivers\SystemTaxDriver;
 
-interface TaxManagerInterface
+interface TaxManager
 {
     /**
      * Create the system driver.

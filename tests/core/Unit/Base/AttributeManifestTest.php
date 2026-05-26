@@ -2,9 +2,9 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\AttributeManifestInterface;
+use Lunar\Core\Contracts\AttributeManifest;
 use Lunar\Core\FieldTypes\TranslatedText;
-use Lunar\Core\Manifests\AttributeManifest;
+use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Channel;
 use Lunar\Tests\Core\TestCase;
@@ -14,19 +14,19 @@ uses(TestCase::class);
 uses(RefreshDatabase::class);
 
 test('can instantiate class', function () {
-    $manifest = app(AttributeManifestInterface::class);
+    $manifest = app(AttributeManifest::class);
 
-    expect($manifest)->toBeInstanceOf(AttributeManifest::class);
+    expect($manifest)->toBeInstanceOf(AttributeManifestImpl::class);
 });
 
 test('can return types', function () {
-    $manifest = app(AttributeManifestInterface::class);
+    $manifest = app(AttributeManifest::class);
 
     expect($manifest->getTypes())->toBeInstanceOf(Collection::class);
 });
 
 test('has base types set', function () {
-    $manifest = app(AttributeManifestInterface::class);
+    $manifest = app(AttributeManifest::class);
 
     expect($manifest->getTypes())->toBeInstanceOf(Collection::class);
 
@@ -34,7 +34,7 @@ test('has base types set', function () {
 });
 
 test('can add type', function () {
-    $manifest = app(AttributeManifestInterface::class);
+    $manifest = app(AttributeManifest::class);
 
     $manifest->addType(Channel::class);
 
@@ -60,7 +60,7 @@ test('can get searchable attributes', function () {
         'searchable' => true,
     ]);
 
-    $manifest = app(AttributeManifestInterface::class);
+    $manifest = app(AttributeManifest::class);
 
     $productAttributes = $manifest->getSearchableAttributes('product');
     $collectionAttributes = $manifest->getSearchableAttributes('collection');

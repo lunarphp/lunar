@@ -3,8 +3,7 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\TaxManagerInterface;
-use Lunar\Core\Managers\TaxManager;
+use Lunar\Core\Contracts\TaxManager;
 
 /**
  * @method static void createSystemDriver()
@@ -23,6 +22,6 @@ class Taxes extends Facade
 {
     public static function getFacadeAccessor()
     {
-        return TaxManagerInterface::class;
+        return TaxManager::class;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Observers;
 
-use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Exceptions\NonPurchasableItemException;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;

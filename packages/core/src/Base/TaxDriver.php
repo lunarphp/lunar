@@ -2,6 +2,8 @@
 
 namespace Lunar\Core\Base;
 
+use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Models\Contracts\CartLine;
 use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\TaxZone;

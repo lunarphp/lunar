@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lunar\Core\Base\Traits\LunarUser;
 
-class User extends Authenticatable implements \Lunar\Core\Base\LunarUser
+class User extends Authenticatable implements \Lunar\Core\Contracts\LunarUser
 {
     use HasFactory;
     use LunarUser;

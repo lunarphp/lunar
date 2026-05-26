@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Illuminate\Support\Collection;
 
-interface AttributeManifestInterface
+interface AttributeManifest
 {
     /**
      * Add an attribute type.

@@ -6,7 +6,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\CartSessionInterface;
+use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
@@ -16,7 +16,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 
-class CartSessionManager implements CartSessionInterface
+class CartSessionManager implements CartSession
 {
     public function __construct(
         protected SessionManager $sessionManager,

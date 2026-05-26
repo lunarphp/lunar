@@ -4,14 +4,14 @@ namespace Lunar\Core\DiscountTypes;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\DiscountTypeInterface;
+use Lunar\Core\Contracts\DiscountType;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\Discount as DiscountContract;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
 
-abstract class AbstractDiscountType implements DiscountTypeInterface
+abstract class AbstractDiscountType implements DiscountType
 {
     /**
      * The instance of the discount.

@@ -6,7 +6,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\StorefrontSessionInterface;
+use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Contracts\Channel as ChannelContract;
@@ -17,7 +17,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 
-class StorefrontSessionManager implements StorefrontSessionInterface
+class StorefrontSessionManager implements StorefrontSession
 {
     protected ?ChannelContract $channel = null;
 

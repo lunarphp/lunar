@@ -6,8 +6,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Lunar\Core\Base\PricingManagerInterface;
-use Lunar\Core\Base\Purchasable;
+use Lunar\Core\Contracts\PricingManager as PricingManagerContract;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PricingResponse;
 use Lunar\Core\Exceptions\MissingCurrencyPriceException;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
@@ -15,7 +15,7 @@ use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 
-class PricingManager implements PricingManagerInterface
+class PricingManager implements PricingManagerContract
 {
     /**
      * The DTO of the pricing.

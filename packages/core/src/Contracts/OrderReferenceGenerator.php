@@ -1,10 +1,10 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Lunar\Core\Models\Contracts\Order;
 
-interface OrderReferenceGeneratorInterface
+interface OrderReferenceGenerator
 {
     /**
      * Generate a reference for the order.

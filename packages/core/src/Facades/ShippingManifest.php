@@ -3,7 +3,6 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Base\ShippingManifestInterface;
 
 /**
  * @method static void addOption(\Lunar\Core\DataTypes\ShippingOption $option)
@@ -23,6 +22,6 @@ class ShippingManifest extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return ShippingManifestInterface::class;
+        return \Lunar\Core\Contracts\ShippingManifest::class;
     }
 }

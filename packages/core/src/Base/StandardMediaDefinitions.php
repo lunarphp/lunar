@@ -2,13 +2,14 @@
 
 namespace Lunar\Core\Base;
 
+use Lunar\Core\Contracts\MediaDefinitions;
 use Spatie\Image\Enums\BorderType;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class StandardMediaDefinitions implements MediaDefinitionsInterface
+class StandardMediaDefinitions implements MediaDefinitions
 {
     public function registerMediaConversions(HasMedia $model, ?Media $media = null): void
     {

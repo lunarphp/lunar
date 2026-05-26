@@ -5,12 +5,12 @@ namespace Lunar\Core\Manifests;
 use Closure;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\ShippingManifestInterface;
+use Lunar\Core\Contracts\ShippingManifest as ShippingManifestContract;
 use Lunar\Core\DataTypes\ShippingOption;
-use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Core\Models\Contracts\Cart;
+use Lunar\Core\Modifiers\ShippingModifiers;
 
-class ShippingManifest implements ShippingManifestInterface
+class ShippingManifest implements ShippingManifestContract
 {
     /**
      * The collection of available shipping options.

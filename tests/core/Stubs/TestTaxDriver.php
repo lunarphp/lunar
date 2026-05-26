@@ -2,9 +2,9 @@
 
 namespace Lunar\Tests\Core\Stubs;
 
-use Lunar\Core\Base\Addressable;
-use Lunar\Core\Base\Purchasable;
 use Lunar\Core\Base\TaxDriver;
+use Lunar\Core\Contracts\Addressable;
+use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;

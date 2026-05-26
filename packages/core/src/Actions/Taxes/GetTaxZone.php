@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Actions\Taxes;
 
-use Lunar\Core\Base\Addressable;
+use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Models\TaxZone;
 
 class GetTaxZone

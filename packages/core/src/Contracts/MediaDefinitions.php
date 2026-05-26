@@ -1,11 +1,11 @@
 <?php
 
-namespace Lunar\Core\Base;
+namespace Lunar\Core\Contracts;
 
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-interface MediaDefinitionsInterface
+interface MediaDefinitions
 {
     public function registerMediaConversions(HasMedia $model, ?Media $media = null): void;
 
