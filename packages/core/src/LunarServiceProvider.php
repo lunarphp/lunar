@@ -16,6 +16,15 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Lunar\Core\Actions\Carts\AddAddress;
+use Lunar\Core\Actions\Carts\AddOrUpdatePurchasable;
+use Lunar\Core\Actions\Carts\AssociateUser;
+use Lunar\Core\Actions\Carts\CreateOrder;
+use Lunar\Core\Actions\Carts\GenerateFingerprint;
+use Lunar\Core\Actions\Carts\GetExistingCartLine;
+use Lunar\Core\Actions\Carts\RemovePurchasable;
+use Lunar\Core\Actions\Carts\SetShippingOption;
+use Lunar\Core\Actions\Carts\UpdateCartLine;
 use Lunar\Core\Addons\Manifest;
 use Lunar\Core\Auth\Manifest as AccessControlManifest;
 use Lunar\Core\Console\Commands\AddonsDiscover;
@@ -25,6 +34,15 @@ use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
+use Lunar\Core\Contracts\Actions\Carts\AddsAddress;
+use Lunar\Core\Contracts\Actions\Carts\AddsOrUpdatesPurchasable;
+use Lunar\Core\Contracts\Actions\Carts\AssociatesUser;
+use Lunar\Core\Contracts\Actions\Carts\CreatesOrder;
+use Lunar\Core\Contracts\Actions\Carts\GeneratesFingerprint;
+use Lunar\Core\Contracts\Actions\Carts\GetsExistingCartLine;
+use Lunar\Core\Contracts\Actions\Carts\RemovesPurchasable;
+use Lunar\Core\Contracts\Actions\Carts\SetsShippingOption;
+use Lunar\Core\Contracts\Actions\Carts\UpdatesCartLine;
 use Lunar\Core\Contracts\AttributeManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\DiscountManager;
@@ -217,6 +235,8 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(TelemetryServiceImpl::class);
         });
 
+        $this->registerActions();
+
         $this->app->terminating(function () {
             if (! app()->runningInConsole()) {
                 Telemetry::run();
@@ -353,6 +373,32 @@ class LunarServiceProvider extends ServiceProvider
                 [MigrationsEnded::class, NoPendingMigrations::class],
                 [$class, 'run']
             );
+        }
+    }
+
+    /**
+     * Bind action contracts to their default implementations.
+     *
+     * Consumers swap an action by binding the same contract in their own
+     * service provider — config-string substitution is intentionally not
+     * supported (see spec 0016).
+     */
+    protected function registerActions(): void
+    {
+        $bindings = [
+            AddsAddress::class => AddAddress::class,
+            AddsOrUpdatesPurchasable::class => AddOrUpdatePurchasable::class,
+            AssociatesUser::class => AssociateUser::class,
+            CreatesOrder::class => CreateOrder::class,
+            GeneratesFingerprint::class => GenerateFingerprint::class,
+            GetsExistingCartLine::class => GetExistingCartLine::class,
+            RemovesPurchasable::class => RemovePurchasable::class,
+            SetsShippingOption::class => SetShippingOption::class,
+            UpdatesCartLine::class => UpdateCartLine::class,
+        ];
+
+        foreach ($bindings as $contract => $concrete) {
+            $this->app->bind($contract, $concrete);
         }
     }
 

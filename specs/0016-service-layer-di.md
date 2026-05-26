@@ -1,6 +1,6 @@
 # 0016 — Service-layer dependency injection
 
-- Status: draft
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-05-26
 - TODO item: "Ensure all service-layer classes are DI'd"

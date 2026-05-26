@@ -26,7 +26,7 @@ test('can associate a user', function () {
         'merged_id' => null,
     ]);
 
-    $action = new AssociateUser;
+    $action = app(AssociateUser::class);
 
     $user = User::factory()->create();
     $action->execute($cart, $user);
@@ -51,7 +51,7 @@ test('can associate a user with a customer', function () {
         'merged_id' => null,
     ]);
 
-    $action = new AssociateUser;
+    $action = app(AssociateUser::class);
 
     $user = User::factory()->create();
     $customer = Customer::factory()->create();
@@ -98,7 +98,7 @@ test('cant associate user to cart with order', function () {
         'merged_id' => null,
     ]);
 
-    $action = new AssociateUser;
+    $action = app(AssociateUser::class);
 
     $action->execute($cart, $user);
 
