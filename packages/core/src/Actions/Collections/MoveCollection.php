@@ -3,6 +3,7 @@
 namespace Lunar\Core\Actions\Collections;
 
 use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Collections\MovesCollection;
 use Lunar\Core\Exceptions\CollectionActionException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
@@ -13,7 +14,7 @@ use Lunar\Core\Models\Contracts\Collection as CollectionContract;
  * itself (or one of its descendants — which would create a cycle) and lets
  * the nested-set trait recompute `_lft`/`_rgt` for the moved subtree.
  */
-final class MoveCollection extends AbstractAction
+final class MoveCollection extends AbstractAction implements MovesCollection
 {
     public function execute(CollectionContract $collection, ?CollectionContract $target = null): Collection
     {

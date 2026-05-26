@@ -3,6 +3,7 @@
 namespace Lunar\Core\Actions\Products;
 
 use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Products\UpdatesProductStatus;
 use Lunar\Core\Events\Products\ProductStatusUpdated;
 use Lunar\Core\Exceptions\ProductActionException;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
@@ -15,7 +16,7 @@ use Lunar\Core\Models\Product;
  * becomes a state-machine transition once that subsystem lands without
  * changing this signature.
  */
-final class UpdateProductStatus extends AbstractAction
+final class UpdateProductStatus extends AbstractAction implements UpdatesProductStatus
 {
     /**
      * Statuses recognised by Lunar's stock admin views.

@@ -2,16 +2,15 @@
 
 namespace Lunar\Core\Actions\Orders;
 
+use Lunar\Core\Contracts\Actions\Orders\GeneratesOrderReference;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 
-class GenerateOrderReference
+class GenerateOrderReference implements GeneratesOrderReference
 {
     /**
      * Execute the action.
-     *
-     * @return string
      */
-    public function execute(OrderContract $order)
+    public function execute(OrderContract $order): ?string
     {
         $generator = config('lunar.orders.reference_generator');
 

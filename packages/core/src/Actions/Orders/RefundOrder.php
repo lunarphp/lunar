@@ -4,6 +4,7 @@ namespace Lunar\Core\Actions\Orders;
 
 use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Facades\PriceCalculator;
@@ -19,7 +20,7 @@ use Lunar\Core\Models\Transaction;
  * total, then dispatches the refund through the underlying transaction's
  * payment driver. Returns the driver's `PaymentRefund` result unchanged.
  */
-final class RefundOrder extends AbstractAction
+final class RefundOrder extends AbstractAction implements RefundsOrder
 {
     /**
      * Major-unit amount (decimal) to refund. Converted to minor units using

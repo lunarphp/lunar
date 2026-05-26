@@ -3,6 +3,8 @@
 namespace Lunar\Core\Actions\Orders;
 
 use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Orders\MarksOrderAsShipped;
+use Lunar\Core\Contracts\Actions\Orders\UpdatesOrderStatus;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
@@ -14,12 +16,16 @@ use Lunar\Core\Models\Order;
  * `shipped_at` column or a state-machine subsystem lands, the body changes
  * without altering this public signature.
  */
-final class MarkOrderAsShipped extends AbstractAction
+final class MarkOrderAsShipped extends AbstractAction implements MarksOrderAsShipped
 {
+    public function __construct(
+        protected UpdatesOrderStatus $updatesOrderStatus,
+    ) {}
+
     public function execute(OrderContract $order): Order
     {
         $status = (string) config('lunar.orders.shipped_status', 'dispatched');
 
-        return UpdateOrderStatus::run($order, $status);
+        return $this->updatesOrderStatus->execute($order, $status);
     }
 }

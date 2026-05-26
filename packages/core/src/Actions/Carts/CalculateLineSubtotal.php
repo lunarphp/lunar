@@ -4,24 +4,24 @@ namespace Lunar\Core\Actions\Carts;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Carts\CalculatesLineSubtotal;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Core\Modifiers\CartLineModifiers;
 
-class CalculateLineSubtotal
+class CalculateLineSubtotal implements CalculatesLineSubtotal
 {
     /**
      * Execute the action.
      *
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
-     * @return CartLine
      */
     public function execute(
         CartLineContract $cartLine,
         Collection $customerGroups
-    ) {
+    ): CartLineContract {
         /** @var CartLine $cartLine */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;

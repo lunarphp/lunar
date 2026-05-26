@@ -4,6 +4,7 @@ namespace Lunar\Core\Actions\Products;
 
 use Illuminate\Support\Str;
 use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Products\MapsVariantsToProductOptions;
 use Lunar\Core\Utils\Arr;
 
 /**
@@ -15,7 +16,7 @@ use Lunar\Core\Utils\Arr;
  * @phpstan-type Variant array{id?: int|null, sku?: string|null, price?: float|int, stock?: int, values: array<string, string>}
  * @phpstan-type VariantPermutation array{key: string, variant_id: int|null, copied_id: int|null, sku: string|null, price: float|int, stock: int, values: array<string, string>}
  */
-final class MapVariantsToProductOptions extends AbstractAction
+final class MapVariantsToProductOptions extends AbstractAction implements MapsVariantsToProductOptions
 {
     /**
      * @param  array<string, array<int, string>>  $options
@@ -102,6 +103,6 @@ final class MapVariantsToProductOptions extends AbstractAction
      */
     public static function map(array $options, array $variants, bool $fillMissing = true): array
     {
-        return self::run($options, $variants, $fillMissing);
+        return app(MapsVariantsToProductOptions::class)->execute($options, $variants, $fillMissing);
     }
 }

@@ -3,6 +3,7 @@
 namespace Lunar\Core\Actions\Products;
 
 use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Products\DuplicatesProduct;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
@@ -15,7 +16,7 @@ use Lunar\Core\Models\ProductVariant;
  * and attribute data. Names are suffixed to avoid collisions; the duplicate
  * starts life as a draft.
  */
-final class DuplicateProduct extends AbstractAction
+final class DuplicateProduct extends AbstractAction implements DuplicatesProduct
 {
     public function execute(ProductContract $source, ?string $nameSuffix = null): Product
     {

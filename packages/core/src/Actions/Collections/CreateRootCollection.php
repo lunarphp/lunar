@@ -3,6 +3,7 @@
 namespace Lunar\Core\Actions\Collections;
 
 use Lunar\Core\Actions\AbstractAction;
+use Lunar\Core\Contracts\Actions\Collections\CreatesRootCollection;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
@@ -13,7 +14,7 @@ use Lunar\Core\Models\Collection;
  * (TranslatedText vs plain text) so consumers do not need to inspect the
  * Attribute model themselves.
  */
-final class CreateRootCollection extends AbstractAction
+final class CreateRootCollection extends AbstractAction implements CreatesRootCollection
 {
     public function execute(int $collectionGroupId, string|array $name): Collection
     {
