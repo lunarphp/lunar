@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base\DataTransferObjects;
+namespace Lunar\Core\DataObjects;
 
 use Lunar\Core\Models\Contracts\Cart;
 use Lunar\Core\Models\Contracts\CartLine;

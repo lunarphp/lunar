@@ -3,7 +3,7 @@
 namespace Lunar\Core\Base;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\DataTransferObjects\CartDiscount;
+use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\Models\Contracts\Cart;
 
 interface DiscountManagerInterface

@@ -2,7 +2,7 @@
 
 namespace Lunar\Opayo\Responses;
 
-use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize as GcPaymentAuthorize;
+use Lunar\Core\DataObjects\PaymentAuthorize as GcPaymentAuthorize;
 
 class PaymentAuthorize extends GcPaymentAuthorize
 {

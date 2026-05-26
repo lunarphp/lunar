@@ -2,7 +2,7 @@
 
 namespace Lunar\Opayo\Responses;
 
-use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Core\DataObjects\PaymentAuthorize;
 
 class ThreeDSecureResponse extends PaymentAuthorize
 {

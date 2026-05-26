@@ -4,9 +4,9 @@ namespace Lunar\Core\Managers;
 
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Lunar\Core\Base\DataTransferObjects\CartDiscount;
 use Lunar\Core\Base\DiscountManagerInterface;
 use Lunar\Core\Base\Validation\CouponValidator;
+use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\Models\Channel;

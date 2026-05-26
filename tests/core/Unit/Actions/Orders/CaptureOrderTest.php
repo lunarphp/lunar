@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Orders\CaptureOrder;
-use Lunar\Core\Base\DataTransferObjects\PaymentCapture;
+use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Currency;

@@ -2,8 +2,8 @@
 
 namespace Lunar\Core\PaymentTypes;
 
-use Lunar\Core\Base\DataTransferObjects\PaymentChecks;
 use Lunar\Core\Base\PaymentTypeInterface;
+use Lunar\Core\DataObjects\PaymentChecks;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;

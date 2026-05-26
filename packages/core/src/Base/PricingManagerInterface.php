@@ -4,7 +4,7 @@ namespace Lunar\Core\Base;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\DataTransferObjects\PricingResponse;
+use Lunar\Core\DataObjects\PricingResponse;
 use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\CustomerGroup;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace Lunar\Core\Base\DataTransferObjects;
+namespace Lunar\Core\DataObjects;
 
-class PaymentCapture
+class PaymentRefund
 {
     public function __construct(
         public bool $success = false,
-        public string $message = ''
+        public ?string $message = null
     ) {
         //
     }

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
-use Lunar\Core\Base\DataTransferObjects\PaymentAuthorize;
+use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Transaction;
 use Lunar\Stripe\Events\OrphanedPaymentIntentDetected;

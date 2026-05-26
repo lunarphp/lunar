@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunar\Core\Base\DataTransferObjects;
+namespace Lunar\Core\DataObjects;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\Models\Contracts\Price;

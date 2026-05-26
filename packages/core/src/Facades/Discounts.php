@@ -14,7 +14,7 @@ use Lunar\Core\Managers\DiscountManager;
  * @method static \Illuminate\Support\Collection getCustomerGroups()
  * @method static \Lunar\Core\Managers\DiscountManager addType(string $classname)
  * @method static \Illuminate\Support\Collection getTypes()
- * @method static \Lunar\Core\Managers\DiscountManager addApplied(\Lunar\Core\Base\DataTransferObjects\CartDiscount $cartDiscount)
+ * @method static \Lunar\Core\Managers\DiscountManager addApplied(\Lunar\Core\DataObjects\CartDiscount $cartDiscount)
  * @method static \Illuminate\Support\Collection getApplied()
  * @method static \Lunar\Core\Models\Contracts\Cart apply(\Lunar\Core\Models\Contracts\Cart $cart)
  * @method static \Lunar\Core\Managers\DiscountManager resetDiscounts()

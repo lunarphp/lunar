@@ -14,7 +14,7 @@ use Lunar\Core\Managers\PricingManager;
  * @method static \Lunar\Core\Managers\PricingManager qty(int $qty)
  * @method static \Lunar\Core\Managers\PricingManager customerGroups(\Illuminate\Support\Collection|null $customerGroups)
  * @method static \Lunar\Core\Managers\PricingManager customerGroup(\Lunar\Core\Models\Contracts\CustomerGroup|null $customerGroup)
- * @method static \Lunar\Core\Base\DataTransferObjects\PricingResponse get()
+ * @method static \Lunar\Core\DataObjects\PricingResponse get()
  *
  * @see PricingManager
  */

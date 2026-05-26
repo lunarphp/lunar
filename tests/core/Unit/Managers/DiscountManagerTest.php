@@ -2,8 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Core\Base\DataTransferObjects\CartDiscount;
 use Lunar\Core\Base\DiscountManagerInterface;
+use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Managers\DiscountManager;
