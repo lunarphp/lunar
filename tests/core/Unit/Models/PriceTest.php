@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\Core\DataTypes\Price as DataTypesPrice;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
@@ -39,7 +39,7 @@ test('can create a price', function () {
     $this->assertDatabaseHas((new Price)->getTable(), $data);
 });
 
-test('price is cast to a datatype', function () {
+test('price is cast as integer', function () {
     $variant = ProductVariant::factory()->create();
 
     $currency = Currency::factory()->create([
@@ -54,12 +54,10 @@ test('price is cast to a datatype', function () {
         'min_quantity' => 1,
     ]);
 
-    expect($price->price)->toBeInstanceOf(DataTypesPrice::class);
+    expect($price->price)->toBe(123);
 });
 
-/** @test  */
-function can_handle_non_int_values()
-{
+test('format and decimal helpers expose currency-aware values', function () {
     $variant = ProductVariant::factory()->create();
 
     $currencyGBP = Currency::factory()->create([
@@ -71,74 +69,16 @@ function can_handle_non_int_values()
         'currency_id' => $currencyGBP->id,
         'priceable_id' => $variant->id,
         'priceable_type' => $variant->getMorphClass(),
-        'price' => 12.99,
-        'min_quantity' => 1,
-    ]);
-
-    expect($price->price->value)->toEqual(1299);
-    expect($price->price->decimal)->toEqual(12.99);
-    expect($price->price->formatted('en-gb'))->toEqual('£12.99');
-
-    $currencyUSD = Currency::factory()->create([
-        'decimal_places' => 3,
-        'code' => 'USD',
-    ]);
-
-    $price = Price::factory()->create([
-        'currency_id' => $currencyUSD->id,
-        'priceable_id' => $variant->id,
-        'priceable_type' => $variant->getMorphClass(),
-        'price' => 12.995,
-        'min_quantity' => 1,
-    ]);
-
-    expect($price->price->value)->toEqual(12995);
-    expect($price->price->decimal)->toEqual(12.995);
-    expect($price->price->formatted('en-us'))->toEqual('$12.995');
-
-    $price = Price::factory()->create([
-        'currency_id' => $currencyGBP->id,
-        'priceable_id' => $variant->id,
-        'priceable_type' => $variant->getMorphClass(),
         'price' => 1299,
         'min_quantity' => 1,
     ]);
 
-    expect($price->price->value)->toEqual(1299);
-    expect($price->price->decimal)->toEqual(12.99);
-    expect($price->price->formatted('en-gb'))->toEqual('£12.99');
+    expect($price->price)->toBe(1299);
+    expect($price->decimal('price'))->toEqual(12.99);
+    expect($price->format('price', 'en-gb'))->toEqual('£12.99');
+});
 
-    $currencyEUR = Currency::factory()->create([
-        'decimal_places' => 3,
-        'code' => 'EUR',
-    ]);
-
-    $price = Price::factory()->create([
-        'currency_id' => $currencyEUR->id,
-        'priceable_id' => $variant->id,
-        'priceable_type' => $variant->getMorphClass(),
-        'price' => '1,250.950',
-        'min_quantity' => 1,
-    ]);
-
-    expect($price->price->value)->toEqual(1250950);
-    expect($price->price->decimal)->toEqual(1250.95);
-    expect($price->price->formatted('en_gb'))->toEqual('€1,250.950');
-
-    $price = Price::factory()->create([
-        'currency_id' => $currencyEUR->id,
-        'priceable_id' => $variant->id,
-        'priceable_type' => $variant->getMorphClass(),
-        'price' => '1,250.955',
-        'min_quantity' => 1,
-    ]);
-
-    expect($price->price->value)->toEqual(1250955);
-    expect($price->price->decimal)->toEqual(1250.955);
-    expect($price->price->formatted('en_gb'))->toEqual('€1,250.955');
-}
-
-test('compare price is cast correctly', function () {
+test('compare price is cast as integer', function () {
     $variant = ProductVariant::factory()->create();
 
     $currency = Currency::factory()->create([
@@ -150,16 +90,14 @@ test('compare price is cast correctly', function () {
         'currency_id' => $currency->id,
         'priceable_id' => $variant->id,
         'priceable_type' => $variant->getMorphClass(),
-        'price' => 12.99,
-        'compare_price' => 13.99,
+        'price' => 1299,
+        'compare_price' => 1399,
         'min_quantity' => 1,
     ]);
 
-    expect($price->compare_price)->toBeInstanceOf(DataTypesPrice::class);
-
-    expect($price->compare_price->value)->toEqual(1399);
-    expect($price->compare_price->decimal)->toEqual(13.99);
-    expect($price->compare_price->formatted('en_gb'))->toEqual('£13.99');
+    expect($price->compare_price)->toBe(1399);
+    expect($price->decimal('compare_price'))->toEqual(13.99);
+    expect($price->format('compare_price', 'en_gb'))->toEqual('£13.99');
 });
 
 test('can get a price', function () {
@@ -215,15 +153,15 @@ test('can get a price', function () {
 
     // Check we get the default currency price
     $price = $variant->pricing()->get();
-    expect($price->matched->price->decimal)->toEqual(1.23);
+    expect($price->matched->decimal('price'))->toEqual(1.23);
 
     // Check we get a tier price
     $price = $variant->pricing()->qty(6)->guest()->get();
-    expect($price->matched->price->decimal)->toEqual(1.01);
+    expect($price->matched->decimal('price'))->toEqual(1.01);
 
     // Check we get a price for GBP
     $price = $variant->pricing()->qty(6)->currency($currencyGBP)->get();
-    expect($price->matched->price->decimal)->toEqual(0.99);
+    expect($price->matched->decimal('price'))->toEqual(0.99);
 
     // Check we get a price for a customer group
     $price = $variant->pricing()
@@ -231,7 +169,7 @@ test('can get a price', function () {
         ->currency(null)
         ->customerGroup($customerGroup)
         ->get();
-    expect($price->matched->price->decimal)->toEqual(0.75);
+    expect($price->matched->decimal('price'))->toEqual(0.75);
 });
 
 test('can get a price ex tax', function () {
@@ -253,6 +191,7 @@ test('can get a price ex tax', function () {
         'min_quantity' => 1,
     ]);
 
+    expect($price->priceExTax())->toBeInstanceOf(PriceValue::class);
     expect($price->priceExTax()->value)->toEqual(833);
 });
 

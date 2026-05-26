@@ -4,6 +4,7 @@ namespace Lunar\Core\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Lunar\Core\DataObjects\PriceValue;
 
 interface Price
 {
@@ -25,15 +26,15 @@ interface Price
     /**
      * Return the price exclusive of tax.
      */
-    public function priceExTax(?TaxZone $taxZone = null): \Lunar\Core\DataTypes\Price;
+    public function priceExTax(?TaxZone $taxZone = null): PriceValue;
 
     /**
      * Return the price inclusive of tax.
      */
-    public function priceIncTax(?TaxZone $taxZone = null): int|\Lunar\Core\DataTypes\Price;
+    public function priceIncTax(?TaxZone $taxZone = null): PriceValue;
 
     /**
      * Return the compare price inclusive of tax.
      */
-    public function comparePriceIncTax(?TaxZone $taxZone = null): int|\Lunar\Core\DataTypes\Price;
+    public function comparePriceIncTax(?TaxZone $taxZone = null): PriceValue;
 }

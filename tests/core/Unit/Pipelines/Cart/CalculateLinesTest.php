@@ -43,7 +43,7 @@ test('can calculate lines', function ($expectedUnitPrice, $incomingUnitPrice, $u
 
     $cartLine = $cart->lines->first();
 
-    expect($expectedUnitPrice)->toEqual($cartLine->subTotal->unitDecimal);
+    expect($expectedUnitPrice)->toEqual(number_format($cartLine->subTotal->decimal(), 2, '.', ''));
 })->with('providePurchasableData');
 
 dataset('providePurchasableData', function () {

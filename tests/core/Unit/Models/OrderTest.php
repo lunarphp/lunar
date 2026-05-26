@@ -6,7 +6,7 @@ use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
@@ -232,7 +232,7 @@ test('can cast and store shipping breakdown', function () {
             new ShippingBreakdownItem(
                 name: 'Breakdown A',
                 identifier: 'BA',
-                price: $shippingPrice = new Price(123, $currency = Currency::getDefault(), 1)
+                price: $shippingPrice = new PriceValue(123, $currency = Currency::getDefault(), 1)
             ),
         ])
     );
@@ -249,7 +249,7 @@ test('can cast and store shipping breakdown', function () {
 
     expect($breakdownItem->name)->toEqual('Breakdown A');
     expect($breakdownItem->identifier)->toEqual('BA');
-    expect($breakdownItem->price)->toBeInstanceOf(Price::class);
+    expect($breakdownItem->price)->toBeInstanceOf(PriceValue::class);
     expect($breakdownItem->price->value)->toEqual(123);
 });
 
@@ -270,7 +270,7 @@ test('can delete an order', function () {
         'order_id' => $order->id,
         'tax_breakdown' => new TaxBreakdown(collect([
             new TaxBreakdownAmount(
-                price: new Price(10, $currency),
+                price: new PriceValue(10, $currency),
                 identifier: 'VAT',
                 description: 'VAT',
                 percentage: 20

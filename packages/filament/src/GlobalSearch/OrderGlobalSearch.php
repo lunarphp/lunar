@@ -50,7 +50,7 @@ class OrderGlobalSearch extends GlobalSearchDescriptor
         /** @var Order $record */
         $details = [
             __('lunar-filament::global-search.orders.details.status') => $record->getStatusLabelAttribute(),
-            __('lunar-filament::global-search.orders.details.total') => $record->total?->formatted,
+            __('lunar-filament::global-search.orders.details.total') => $record->format('total'),
             __('lunar-filament::global-search.orders.details.customer') => $record->billingAddress?->fullName,
         ];
 

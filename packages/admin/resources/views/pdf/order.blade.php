@@ -189,20 +189,20 @@
                         {{ $line->quantity }}
                       </td>
                       <td>
-                        {{ $line->unit_price->formatted }}
+                        {{ $line->format('unit_price') }}
                       </td>
                       <td>
-                        {{ $line->discount_total->formatted }}
+                        {{ $line->format('discount_total') }}
                       </td>
                       <td>
                         {{ $line->tax_breakdown->amounts->sum('percentage') }}%
                       </td>
                       <td>
-                        {{ $line->tax_total->formatted }}
+                        {{ $line->format('tax_total') }}
                       </td>
 
                       <td>
-                        {{ $line->sub_total->formatted }}
+                        {{ $line->format('sub_total') }}
                       </td>
                     </tr>
                   @endforeach
@@ -211,7 +211,7 @@
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>Sub Total</strong></td>
-                        <td>{{ $record->sub_total->formatted }}</td>
+                        <td>{{ $record->format('sub_total') }}</td>
                     </tr>
                     @foreach($record->shippingLines as $line)
                       <tr>
@@ -220,18 +220,18 @@
                           <strong>Shipping</strong><br>
                           <small>{{ strip_tags($line->description) }}</small>
                         </td>
-                        <td>{{ $line->sub_total->formatted }}</td>
+                        <td>{{ $line->format('sub_total') }}</td>
                       </tr>
                     @endforeach
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>Tax</strong></td>
-                        <td>{{ $record->tax_total->formatted }}</td>
+                        <td>{{ $record->format('tax_total') }}</td>
                     </tr>
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>Total</strong></td>
-                        <td>{{ $record->total->formatted }}</td>
+                        <td>{{ $record->format('total') }}</td>
                     </tr>
                 </tfoot>
             </table>

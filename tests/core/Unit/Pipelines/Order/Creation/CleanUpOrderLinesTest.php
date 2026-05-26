@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
@@ -9,6 +9,7 @@ use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Models\Price;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Pipelines\Order\Creation\CleanUpOrderLines;
@@ -33,7 +34,7 @@ test('can run pipeline', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $cart->currency, 1),
+            price: new PriceValue(500, $cart->currency),
             taxClass: TaxClass::factory()->create()
         )
     );
@@ -51,7 +52,7 @@ test('can run pipeline', function () {
     $purchasable = ProductVariant::factory()->create();
     $purchasableB = ProductVariant::factory()->create();
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
@@ -59,7 +60,7 @@ test('can run pipeline', function () {
         'priceable_id' => $purchasable->id,
     ]);
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
@@ -121,7 +122,7 @@ test('will remove lines with same purchasable ids when different', function () {
             name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
-            price: new Price(500, $cart->currency, 1),
+            price: new PriceValue(500, $cart->currency),
             taxClass: TaxClass::factory()->create()
         )
     );
@@ -139,7 +140,7 @@ test('will remove lines with same purchasable ids when different', function () {
     $purchasable = ProductVariant::factory()->create();
     $purchasableB = ProductVariant::factory()->create();
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,
@@ -147,7 +148,7 @@ test('will remove lines with same purchasable ids when different', function () {
         'priceable_id' => $purchasable->id,
     ]);
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'price' => 100,
         'min_quantity' => 1,
         'currency_id' => $currency->id,

@@ -6,7 +6,7 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdownLine;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Collection as LunarCollection;
@@ -200,17 +200,9 @@ class BuyXGetY extends AbstractDiscountType
             $lineDiscountTotal = $unitPrice * $qtyToAllocate;
             $discountTotal += $lineDiscountTotal;
 
-            $rewardLine->discountTotal = new Price(
-                $lineDiscountTotal,
-                $cart->currency,
-                1
-            );
+            $rewardLine->discountTotal = new PriceValue($lineDiscountTotal, $cart->currency);
 
-            $rewardLine->subTotalDiscounted = new Price(
-                $subTotal - $lineDiscountTotal,
-                $cart->currency,
-                1
-            );
+            $rewardLine->subTotalDiscounted = new PriceValue($subTotal - $lineDiscountTotal, $cart->currency);
 
             if (! $cart->freeItems) {
                 $cart->freeItems = collect();
@@ -224,7 +216,7 @@ class BuyXGetY extends AbstractDiscountType
         }
 
         $this->addDiscountBreakdown($cart, new DiscountBreakdown(
-            price: new Price($discountTotal, $cart->currency, 1),
+            price: new PriceValue($discountTotal, $cart->currency),
             lines: $affectedLines,
             discount: $this->discount,
         ));
@@ -293,9 +285,9 @@ class BuyXGetY extends AbstractDiscountType
 
                     $unitQuantity = $purchasable->getUnitQuantity();
 
-                    $rewardLine->subTotal = new Price($rewardLine->unitPrice->value, $cart->currency, $unitQuantity);
-                    $rewardLine->taxAmount = new Price(0, $cart->currency, $unitQuantity);
-                    $rewardLine->total = new Price($rewardLine->unitPrice->value, $cart->currency, $unitQuantity);
+                    $rewardLine->subTotal = new PriceValue($rewardLine->unitPrice->value, $cart->currency);
+                    $rewardLine->taxAmount = new PriceValue(0, $cart->currency);
+                    $rewardLine->total = new PriceValue($rewardLine->unitPrice->value, $cart->currency);
                 }
 
                 $meta = $rewardLine->meta ?? json_decode('{}');
@@ -330,16 +322,11 @@ class BuyXGetY extends AbstractDiscountType
                     $discountTotal = $rewardLine->subTotal->value;
                 }
 
-                $rewardLine->discountTotal = new Price(
-                    $discountTotal,
-                    $cart->currency,
-                    1
-                );
+                $rewardLine->discountTotal = new PriceValue($discountTotal, $cart->currency);
 
-                $rewardLine->subTotalDiscounted = new Price(
+                $rewardLine->subTotalDiscounted = new PriceValue(
                     max(0, $rewardLine->subTotal->value - $rewardLine->discountTotal->value),
                     $cart->currency,
-                    1
                 );
 
                 $rewardLine->meta = $meta;

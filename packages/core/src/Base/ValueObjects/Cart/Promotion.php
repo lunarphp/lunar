@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Base\ValueObjects\Cart;
 
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 
 class Promotion
 {
@@ -19,5 +19,5 @@ class Promotion
     /**
      * Discount amount
      */
-    public Price $amount;
+    public PriceValue $amount;
 }

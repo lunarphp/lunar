@@ -2,12 +2,12 @@
 
 namespace Lunar\Core\Base\ValueObjects\Cart;
 
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 
 class TaxBreakdownAmount
 {
     public function __construct(
-        public Price $price,
+        public PriceValue $price,
         public string $identifier,
         public string $description,
         public float $percentage,

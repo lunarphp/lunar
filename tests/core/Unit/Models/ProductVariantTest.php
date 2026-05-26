@@ -99,11 +99,11 @@ test('can get correct price', function () {
 
     $variant = $variant->load('prices');
 
-    expect(90)->toEqual(Pricing::for($variant)->get()->matched->price->value);
-    expect(60)->toEqual(Pricing::qty(5)->for($variant)->get()->matched->price->value);
-    expect(30)->toEqual(Pricing::qty(5)->customerGroup($groupB)->for($variant)->get()->matched->price->value);
-    expect(80)->toEqual(Pricing::customerGroup($groupB)->for($variant)->get()->matched->price->value);
-    expect(90)->toEqual(Pricing::customerGroup($groupA)->for($variant)->get()->matched->price->value);
+    expect(90)->toEqual(Pricing::for($variant)->get()->matched->price);
+    expect(60)->toEqual(Pricing::qty(5)->for($variant)->get()->matched->price);
+    expect(30)->toEqual(Pricing::qty(5)->customerGroup($groupB)->for($variant)->get()->matched->price);
+    expect(80)->toEqual(Pricing::customerGroup($groupB)->for($variant)->get()->matched->price);
+    expect(90)->toEqual(Pricing::customerGroup($groupA)->for($variant)->get()->matched->price);
 });
 
 test('can get correct price based on currency', function () {
@@ -142,11 +142,11 @@ test('can get correct price based on currency', function () {
 
     $variant = $variant->load('prices');
 
-    expect(100)->toEqual(Pricing::currency($currencyA)->for($variant)->get()->matched->price->value);
-    expect(200)->toEqual(Pricing::currency($currencyB)->for($variant)->get()->matched->price->value);
+    expect(100)->toEqual(Pricing::currency($currencyA)->for($variant)->get()->matched->price);
+    expect(200)->toEqual(Pricing::currency($currencyB)->for($variant)->get()->matched->price);
 
     $this->expectException(MissingCurrencyPriceException::class);
-    expect(200)->toEqual(Pricing::currency($currencyC)->for($variant)->get()->matched->price->value);
+    expect(200)->toEqual(Pricing::currency($currencyC)->for($variant)->get()->matched->price);
 });
 
 test('can get correct price inc tax based on tax class', function () {

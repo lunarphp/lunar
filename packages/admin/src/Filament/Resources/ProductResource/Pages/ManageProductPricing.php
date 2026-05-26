@@ -94,7 +94,7 @@ class ManageProductPricing extends BaseEditRecord
                     ->label(
                         __('lunarpanel::relationmanagers.pricing.table.price.label')
                     )->formatStateUsing(
-                        fn ($state) => $state->formatted,
+                        fn ($state, $record) => $record->format('price'),
                     ),
                 TextColumn::make('currency.code')->label(
                     __('lunarpanel::relationmanagers.pricing.table.currency.label')

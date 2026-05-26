@@ -3,15 +3,15 @@
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Base\Traits\Searchable;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Forms\Components\Support\RecordSearch;
 
 if (! function_exists('price')) {
-    function price($value, $currency, $unitQty = 1)
+    function price($value, $currency)
     {
-        return new Price($value, $currency, $unitQty);
+        return new PriceValue((int) $value, $currency);
     }
 }
 

@@ -2,7 +2,7 @@
 
 namespace Lunar\Shipping\Drivers\ShippingMethods;
 
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Product;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
@@ -74,7 +74,7 @@ class FreeShipping implements ShippingRateInterface
             name: $shippingMethod->name,
             description: $shippingMethod->description,
             identifier: $shippingRate->getIdentifier(),
-            price: new Price(0, $cart->currency, 1),
+            price: new PriceValue(0, $cart->currency),
             taxClass: $shippingRate->getTaxClass(),
             option: $shippingZone->name,
             meta: ['shipping_zone' => $shippingZone->name]

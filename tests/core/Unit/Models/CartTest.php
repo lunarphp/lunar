@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Lunar\Core\DataTypes\Price as DataTypesPrice;
+use Lunar\Core\DataObjects\PriceValue as DataTypesPrice;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\Exceptions\Carts\CartException;
@@ -454,13 +454,8 @@ test('can calculate the cart', function () {
 
     expect($cart->isCalculated())->toEqual(true);
     expect($cart->lines[0]->unitPrice->value)->toEqual(100);
-    expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$1.00');
-    expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$1.000000');
     expect($cart->lines[1]->unitPrice->value)->toEqual(158);
-    expect($cart->lines[1]->unitPrice->unitDecimal(false))->toEqual(0.0158);
     expect($cart->lines[1]->unitPriceInclTax->value)->toEqual(190);
-    expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$0.0158');
-    expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$0.015800');
     expect($cart->subTotal->value)->toEqual(103);
     expect($cart->total->value)->toEqual(124);
     expect($cart->taxBreakdown->amounts)->toHaveCount(2);
@@ -525,12 +520,7 @@ test('can calculate the cart inc vat', function () {
     $cart->calculate();
 
     expect($cart->lines[0]->unitPrice->value)->toEqual(100);
-    expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$1.00');
-    expect($cart->lines[0]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$1.000000');
     expect($cart->lines[1]->unitPrice->value)->toEqual(158);
-    expect($cart->lines[1]->unitPrice->unitDecimal(false))->toEqual(0.0158);
-    expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6))->toEqual('$0.0158');
-    expect($cart->lines[1]->unitPrice->unitFormatted(null, NumberFormatter::CURRENCY, 6, false))->toEqual('$0.015800');
     expect($cart->subTotal->value)->toEqual(103);
     expect($cart->total->value)->toEqual(103);
     expect($cart->taxBreakdown->amounts)->toHaveCount(2);

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\NonPurchasableItemException;
 use Lunar\Core\Models\CartLine;
@@ -69,9 +69,7 @@ test('check unit price casts correctly', function () {
         $data
     );
 
-    expect($orderLine->unit_price->decimal)->toEqual(5.07);
-    expect($orderLine->unit_price->unitDecimal)->toEqual(0.05);
-    expect($orderLine->unit_price->unitDecimal(false))->toEqual(0.0507);
+    expect($orderLine->decimal('unit_price'))->toEqual(5.07);
 });
 
 test('only purchasables can be added to an order', function () {
@@ -106,7 +104,7 @@ test('non eloquent models can be added to an order', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new Price(500, $currency, 1),
+        price: new PriceValue(500, $currency),
         taxClass: $taxClass
     );
 
@@ -127,14 +125,13 @@ test('non eloquent models can be added to an order', function () {
         $data
     );
 
-    expect($orderLine->unit_price->decimal)->toEqual(5.0)
-        ->and($orderLine->unit_price->unitDecimal)->toEqual(5.0);
+    expect($orderLine->decimal('unit_price'))->toEqual(5.0);
 
     $testPurchasable = new TestPurchasable(
         name: 'Test Purchasable',
         description: 'Test Purchasable',
         identifier: 'TESTPUR',
-        price: new Price(650, $currency, 1),
+        price: new PriceValue(650, $currency),
         taxClass: $taxClass
     );
 
@@ -155,7 +152,5 @@ test('non eloquent models can be added to an order', function () {
         $data
     );
 
-    expect($orderLine->unit_price->decimal)->toEqual(6.5)
-        ->and($orderLine->unit_price->unitDecimal)
-        ->toEqual(6.5);
+    expect($orderLine->decimal('unit_price'))->toEqual(6.5);
 });

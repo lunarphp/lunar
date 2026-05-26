@@ -64,7 +64,7 @@
                     },
                 ])
             >
-                @if($transaction->type == 'refund')-@endif{{ $transaction->amount->formatted }}
+                @if($transaction->type == 'refund')-@endif{{ $transaction->format("amount") }}
             </strong>
         </div>
 

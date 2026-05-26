@@ -24,7 +24,7 @@ trait InteractsWithTransactions
      */
     protected function transactionSelect(Collection $transactions, ?\Closure $optionFormatter = null): Select
     {
-        $optionFormatter ??= fn ($transaction) => "{$transaction->amount->formatted} - {$transaction->driver}".(
+        $optionFormatter ??= fn ($transaction) => "{$transaction->format('amount')} - {$transaction->driver}".(
             $transaction->reference ? " // {$transaction->reference}" : ''
         );
 

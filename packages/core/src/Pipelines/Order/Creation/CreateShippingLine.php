@@ -43,7 +43,7 @@ class CreateShippingLine
                 'unit_quantity' => $shippingOption->getUnitQuantity(),
                 'quantity' => 1,
                 'sub_total' => $shippingAddress->shippingSubTotal->value,
-                'discount_total' => $shippingAddress->shippingSubTotal->discountTotal?->value ?: 0,
+                'discount_total' => 0,
                 'tax_breakdown' => $shippingAddress->taxBreakdown,
                 'tax_total' => $shippingAddress->shippingTaxTotal->value,
                 'total' => $shippingAddress->shippingTotal->value,

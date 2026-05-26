@@ -3,7 +3,7 @@
 namespace Lunar\Core\Pipelines\CartLine;
 
 use Closure;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
@@ -41,16 +41,14 @@ class GetUnitPrice
             ->for($purchasable)
             ->get();
 
-        $cartLine->unitPrice = new Price(
-            $priceResponse->matched->price->value,
+        $cartLine->unitPrice = new PriceValue(
+            (int) $priceResponse->matched->price,
             $cart->currency,
-            $purchasable->getUnitQuantity()
         );
 
-        $cartLine->unitPriceInclTax = new Price(
+        $cartLine->unitPriceInclTax = new PriceValue(
             $priceResponse->matched->priceIncTax($cart->taxZone)->value,
             $cart->currency,
-            $purchasable->getUnitQuantity()
         );
 
         return $next($cartLine);

@@ -197,7 +197,6 @@ final class LunarSetList
         'Lunar\\Exceptions\\FieldTypes\\InvalidFieldTypeException' => 'Lunar\\Core\\Exceptions\\FieldTypes\\InvalidFieldTypeException',
         'Lunar\\Exceptions\\FingerprintMismatchException' => 'Lunar\\Core\\Exceptions\\FingerprintMismatchException',
         'Lunar\\Exceptions\\InvalidCartLineQuantityException' => 'Lunar\\Core\\Exceptions\\InvalidCartLineQuantityException',
-        'Lunar\\Exceptions\\InvalidDataTypeValueException' => 'Lunar\\Core\\Exceptions\\InvalidDataTypeValueException',
         'Lunar\\Exceptions\\InvalidPaymentTypeException' => 'Lunar\\Core\\Exceptions\\InvalidPaymentTypeException',
         'Lunar\\Exceptions\\LunarException' => 'Lunar\\Core\\Exceptions\\LunarException',
         'Lunar\\Exceptions\\MaximumCartLineQuantityException' => 'Lunar\\Core\\Exceptions\\MaximumCartLineQuantityException',

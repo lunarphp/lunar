@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
@@ -101,7 +102,7 @@ test('can validate missing shipping option', function () {
         'shippable' => true,
     ]);
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -139,7 +140,7 @@ test('can validate collection with partial shipping address', function () {
         'shippable' => true,
     ]);
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -156,7 +157,7 @@ test('can validate collection with partial shipping address', function () {
         name: 'Collection',
         description: 'Collection',
         identifier: 'COLLECT',
-        price: new Price(0, $cart->currency, 1),
+        price: new PriceValue(0, $cart->currency),
         taxClass: $taxClass,
         collect: true
     );
@@ -198,7 +199,7 @@ test('can validate delivery with partial shipping address', function () {
         'shippable' => true,
     ]);
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -215,7 +216,7 @@ test('can validate delivery with partial shipping address', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new Price(500, $cart->currency, 1),
+        price: new PriceValue(500, $cart->currency),
         taxClass: $taxClass
     );
 
@@ -268,7 +269,7 @@ test('fails when a cart line points at a soft-deleted purchasable', function () 
         'shippable' => false,
     ]);
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -314,7 +315,7 @@ test('fails when a cart line points at a draft product', function () {
         'shippable' => false,
     ]);
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -358,7 +359,7 @@ test('can validate delivery with populated shipping address', function () {
         'shippable' => true,
     ]);
 
-    Lunar\Core\Models\Price::factory()->create([
+    Price::factory()->create([
         'currency_id' => $currency->id,
         'priceable_id' => $purchasable->id,
         'priceable_type' => $purchasable->getMorphClass(),
@@ -375,7 +376,7 @@ test('can validate delivery with populated shipping address', function () {
         name: 'Basic Delivery',
         description: 'Basic Delivery',
         identifier: 'BASDEL',
-        price: new Price(500, $cart->currency, 1),
+        price: new PriceValue(500, $cart->currency),
         taxClass: $taxClass
     );
 

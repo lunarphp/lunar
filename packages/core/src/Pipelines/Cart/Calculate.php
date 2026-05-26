@@ -3,7 +3,7 @@
 namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
@@ -29,10 +29,10 @@ class Calculate
                 $line->subTotal->value;
         });
 
-        $cart->subTotal = new Price($subTotal, $cart->currency, 1);
-        $cart->subTotalDiscounted = new Price($subTotalDiscounted, $cart->currency, 1);
-        $cart->discountTotal = new Price($discountTotal, $cart->currency, 1);
-        $cart->total = new Price($total, $cart->currency, 1);
+        $cart->subTotal = new PriceValue($subTotal, $cart->currency);
+        $cart->subTotalDiscounted = new PriceValue($subTotalDiscounted, $cart->currency);
+        $cart->discountTotal = new PriceValue($discountTotal, $cart->currency);
+        $cart->total = new PriceValue($total, $cart->currency);
 
         return $next($cart);
     }

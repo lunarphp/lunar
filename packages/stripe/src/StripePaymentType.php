@@ -195,7 +195,7 @@ class StripePaymentType extends AbstractPayment
         }
 
         if ($this->order) {
-            $expectedAmount = $this->order->total->value;
+            $expectedAmount = $this->order->total;
             $expectedCurrency = $this->order->currency_code;
         } else {
             $calculated = $this->cart->calculate();

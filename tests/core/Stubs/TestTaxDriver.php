@@ -7,7 +7,7 @@ use Lunar\Core\Base\Purchasable;
 use Lunar\Core\Base\TaxDriver;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
@@ -143,7 +143,7 @@ class TestTaxDriver implements TaxDriver
             $result = round($subTotal * ($amount->percentage / 100));
 
             $amount = new TaxBreakdownAmount(
-                price: new Price((int) $result, $this->currency, $this->purchasable->getUnitQuantity()),
+                price: new PriceValue((int) $result, $this->currency),
                 identifier: "tax_rate_{$amount->taxRate->id}",
                 description: $amount->taxRate->name,
                 percentage: $amount->percentage

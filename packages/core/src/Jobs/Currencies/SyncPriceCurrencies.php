@@ -46,8 +46,8 @@ class SyncPriceCurrencies implements ShouldQueue
                 $priceCounterpart = (new \Lunar\Core\Models\Price)->forceFill([
                     ...Arr::except($this->price->getAttributes(), ['id']),
                     'currency_id' => $currency->id,
-                    'price' => $this->price->price->value * $currency->exchange_rate,
-                    'compare_price' => $this->price->compare_price->value * $currency->exchange_rate,
+                    'price' => $this->price->price * $currency->exchange_rate,
+                    'compare_price' => $this->price->compare_price * $currency->exchange_rate,
                 ]);
 
                 $priceCounterpart->saveQuietly();
@@ -55,8 +55,8 @@ class SyncPriceCurrencies implements ShouldQueue
                 continue;
             }
 
-            $priceCounterpart->price = $this->price->price->value * $currency->exchange_rate;
-            $priceCounterpart->compare_price = $this->price->compare_price->value * $currency->exchange_rate;
+            $priceCounterpart->price = $this->price->price * $currency->exchange_rate;
+            $priceCounterpart->compare_price = $this->price->compare_price * $currency->exchange_rate;
             $priceCounterpart->saveQuietly();
         }
     }

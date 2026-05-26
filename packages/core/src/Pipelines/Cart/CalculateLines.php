@@ -4,7 +4,7 @@ namespace Lunar\Core\Pipelines\Cart;
 
 use Closure;
 use Illuminate\Pipeline\Pipeline;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
@@ -45,15 +45,15 @@ class CalculateLines
                     return $cartLine;
                 });
 
-            $unitPrice = $cartLine->unitPrice->unitDecimal(false) * $cart->currency->factor;
+            $unitQuantity = $cartLine->purchasable->getUnitQuantity();
 
-            $subTotal = (int) round($unitPrice * $cartLine->quantity, $cart->currency->decimal_places);
+            $subTotal = (int) round(($cartLine->unitPrice->value * $cartLine->quantity) / $unitQuantity);
 
-            $cartLine->subTotal = new Price($subTotal, $cart->currency, 1);
-            $cartLine->taxAmount = new Price(0, $cart->currency, 1);
-            $cartLine->total = new Price($subTotal, $cart->currency, 1);
-            $cartLine->subTotalDiscounted = new Price($subTotal, $cart->currency, 1);
-            $cartLine->discountTotal = new Price(0, $cart->currency, 1);
+            $cartLine->subTotal = new PriceValue($subTotal, $cart->currency);
+            $cartLine->taxAmount = new PriceValue(0, $cart->currency);
+            $cartLine->total = new PriceValue($subTotal, $cart->currency);
+            $cartLine->subTotalDiscounted = new PriceValue($subTotal, $cart->currency);
+            $cartLine->discountTotal = new PriceValue(0, $cart->currency);
         }
 
         return $next($cart);

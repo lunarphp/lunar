@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Base\Casts\TaxBreakdown as TaxBreakdownCasts;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\TaxBreakdownAmount;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 use Lunar\Tests\Core\TestCase;
@@ -21,7 +21,7 @@ test('can set from value object', function () {
 
     $taxBreakdownValueObject->addAmount(
         new TaxBreakdownAmount(
-            price: new Price(100, $currency),
+            price: new PriceValue(100, $currency),
             identifier: 'TAX_AMOUNT_1',
             description: 'Test Tax Breakdown Amount',
             percentage: 20
@@ -44,7 +44,7 @@ test('can cast to and from model', function () {
 
     $taxBreakdownValueObject->addAmount(
         new TaxBreakdownAmount(
-            price: new Price(100, $currency),
+            price: new PriceValue(100, $currency),
             identifier: 'TAX_AMOUNT_1',
             description: 'Test Tax Breakdown Amount',
             percentage: 20

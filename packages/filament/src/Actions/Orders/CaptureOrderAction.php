@@ -47,9 +47,9 @@ class CaptureOrderAction extends Action
         return [
             $this->transactionSelect(
                 $intents,
-                fn ($intent) => "{$intent->amount->formatted} - {$intent->driver}",
+                fn ($intent) => "{$intent->format('amount')} - {$intent->driver}",
             ),
-            $this->amountInput($record->total->decimal, $record),
+            $this->amountInput($record->decimal('total'), $record),
             $this->confirmToggle(__('lunar-filament::actions.orders.capture.confirm.helper_text')),
         ];
     }

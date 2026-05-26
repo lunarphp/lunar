@@ -4,6 +4,7 @@ namespace Lunar\Core\DataTypes;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\Base\Purchasable;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\TaxClass;
 
 class ShippingOption implements Purchasable
@@ -12,7 +13,7 @@ class ShippingOption implements Purchasable
         public string $name,
         public ?string $description,
         public string $identifier,
-        public Price $price,
+        public PriceValue $price,
         public TaxClass $taxClass,
         public ?string $taxReference = null,
         public ?string $option = null,
@@ -24,10 +25,8 @@ class ShippingOption implements Purchasable
 
     /**
      * Get the price for the purchasable item.
-     *
-     * @return Price
      */
-    public function getPrice()
+    public function getPrice(): PriceValue
     {
         return $this->price;
     }

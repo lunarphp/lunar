@@ -63,7 +63,7 @@ test('can return correct searchable data', function () {
 
     expect($data['currency_code'])->toEqual('GBP');
     expect($data['channel'])->toEqual($order->channel->name);
-    expect($data['total'])->toEqual($order->total->value);
+    expect($data['total'])->toEqual($order->total);
     expect($data['charges']->pluck('reference')->all())->toBe([$transaction->reference]);
     expect($data['lines'])->toEqual([[
         'description' => $line->description,

@@ -10,7 +10,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Core\Base\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Core\Base\ValueObjects\Cart\ShippingBreakdownItem;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Currency;
@@ -95,7 +95,7 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
             $breakdown->items->put($identifier, new ShippingBreakdownItem(
                 name: $item->name,
                 identifier: $identifier,
-                price: new Price($discountedPrice, $currency, 1),
+                price: new PriceValue($discountedPrice, $currency),
             ));
 
             $newTotal += $discountedPrice;
@@ -107,7 +107,7 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
         }
 
         $cart->shippingBreakdown = $breakdown;
-        $cart->shippingSubTotal = new Price($newTotal, $currency, 1);
+        $cart->shippingSubTotal = new PriceValue($newTotal, $currency);
 
         if (! $cart->discounts) {
             $cart->discounts = collect();
@@ -119,7 +119,7 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
 
         if ($savingAmount > 0) {
             $this->addDiscountBreakdown($cart, new DiscountBreakdown(
-                price: new Price($savingAmount, $currency, 1),
+                price: new PriceValue($savingAmount, $currency),
                 lines: collect(),
                 discount: $this->discount,
             ));

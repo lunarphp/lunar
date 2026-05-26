@@ -6,8 +6,6 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 
 ## Outstanding
 
-- Support `Model::preventLazyLoading()`
-- Price data type performance changes
 - Ensure all service-layer classes are DI'd
 - Add `name` and `description` dedicated fields
 - Attributes remodel to simplify data and allow for re-use
@@ -52,3 +50,5 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Reusable Filament entity-selector components — 16 selector classes in `lunarphp/filament` replacing 17+ duplicated implementations across admin and filament (spec 0008)
 - Filament-native verbs and discoverability — first-party actions library (refund, capture, fulfilment status, duplicate product, bulk publish/unpublish/archive, stock adjust) + Filament global search descriptors lifted into the bridge package (spec 0009)
 - Publishable admin resources + Staff to core (spec 0010) — `lunar:admin:publish` command + `LunarPanel::excludeResources()` give consumers a real migration path off `lunarphp/admin`; Staff (model, migrations, factory, `Auth\Manifest`, lang, DTOs) moves into `lunarphp/core` so non-Filament panels can share it; `LunarPlugin::make()` wires bridge widgets/global-search/actions onto any Filament v5 panel
+- Support `Model::preventLazyLoading()`
+- Price data type / cast refactor — replace per-attribute `DataTypes\Price` cast with plain `integer` cast + `FormatsPrices` trait; new `PriceValue` data object for non-Eloquent currency-aware values (spec 0012)

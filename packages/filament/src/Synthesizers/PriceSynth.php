@@ -3,7 +3,7 @@
 namespace Lunar\Filament\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
-use Lunar\Core\DataTypes\Price;
+use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 
 final class PriceSynth extends Synth
@@ -12,15 +12,14 @@ final class PriceSynth extends Synth
 
     public static function match($target)
     {
-        return $target instanceof Price;
+        return $target instanceof PriceValue;
     }
 
     public function dehydrate($target)
     {
         return [[
             'value' => $target->value,
-            'currency' => $target->currency->code,
-            'unitQty' => $target->unitQty,
+            'currency' => $target->resolveCurrency()->code,
         ], []];
     }
 
@@ -28,6 +27,6 @@ final class PriceSynth extends Synth
     {
         $currency = Currency::where('code', $value['currency'])->first();
 
-        return new Price($value['value'], $currency, $value['unitQty']);
+        return new PriceValue($value['value'], $currency);
     }
 }
