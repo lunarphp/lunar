@@ -1,6 +1,6 @@
 # 0011 — Make Lunar safe under `Model::preventLazyLoading()`
 
-- Status: draft
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-23
 - TODO item: "Support `Model::preventLazyLoading()`"

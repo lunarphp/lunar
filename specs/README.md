@@ -34,4 +34,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0008 | Reusable Filament entity-selector components | implemented |
 | 0009 | Filament-native verbs and discoverability (actions library + global search) | completed   |
 | 0010 | Publishable admin resources (and Staff to core) | completed   |
-| 0011 | Support `Model::preventLazyLoading()` | draft       |
+| 0011 | Support `Model::preventLazyLoading()` | completed   |
