@@ -63,10 +63,10 @@ class ManageProductAssociations extends BaseManageRelatedRecords
             ->inverseRelationship('parent')
             ->columns([
                 TextColumn::make('target_name')
-                    ->state(fn (ProductAssociationContract $record): ?string => $record->target?->translateAttribute('name'))
+                    ->state(fn (ProductAssociationContract $record): ?string => $record->target?->translate('name'))
                     ->limit(50)
                     ->tooltip(function (TextColumn $column, ProductAssociationContract $record): ?string {
-                        $name = $record->target?->translateAttribute('name');
+                        $name = $record->target?->translate('name');
 
                         if ($name === null || strlen($name) <= $column->getCharacterLimit()) {
                             return null;

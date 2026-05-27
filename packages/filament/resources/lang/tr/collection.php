@@ -4,6 +4,14 @@ return [
     'label' => 'Koleksiyon',
     'plural_label' => 'Koleksiyonlar',
     'form' => [
+
+        'description' => [
+            'label' => 'Description',
+        ],
+
+        'short_description' => [
+            'label' => 'Short Description',
+        ],
         'name' => [
             'label' => 'Ad',
         ],

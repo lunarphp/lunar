@@ -542,6 +542,22 @@ final class LunarSetList
     public const V1_TO_V2 = [];
 
     /**
+     * Catalogue fields promoted from `attribute_data` to dedicated translatable
+     * columns in spec 0018. Drives `RewriteTranslatedFieldCallRector`, which
+     * rewrites `translateAttribute('name')` / `attr('name')` reads to
+     * `translate('name')`. Brand's `name` stays a plain (non-translatable)
+     * string column, so it needs no read rewrite — only `description` /
+     * `short_description` moved for Brand, and those were never attribute-backed
+     * reads in v1.
+     *
+     * @var list<string>
+     */
+    public const V1_TO_V2_TRANSLATED_FIELDS = [
+        'name',
+        'description',
+    ];
+
+    /**
      * Money attribute columns per model, contributed by spec 0012.
      *
      * Drives the four price-rewrite rules under

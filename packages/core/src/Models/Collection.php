@@ -3,6 +3,7 @@
 namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -28,7 +29,10 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property-read  int $_rgt
  * @property ?int $parent_id
  * @property string $type
- * @property ?array $attribute_data
+ * @property \Illuminate\Support\Collection $name
+ * @property ?\Illuminate\Support\Collection $description
+ * @property ?\Illuminate\Support\Collection $short_description
+ * @property ?\Illuminate\Support\Collection $attribute_data
  * @property string $sort
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -54,6 +58,9 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
      * @var array
      */
     protected $casts = [
+        'name' => AsCollection::class,
+        'description' => AsCollection::class,
+        'short_description' => AsCollection::class,
         'attribute_data' => AsAttributeData::class,
     ];
 
@@ -106,7 +113,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
     public function getBreadcrumbAttribute(): \Illuminate\Support\Collection
     {
         return $this->ancestors->map(function ($ancestor) {
-            return $ancestor->translateAttribute('name');
+            return $ancestor->translate('name');
         });
     }
 

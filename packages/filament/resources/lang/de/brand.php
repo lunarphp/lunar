@@ -12,6 +12,14 @@ return [
         ],
     ],
     'form' => [
+
+        'description' => [
+            'label' => 'Description',
+        ],
+
+        'short_description' => [
+            'label' => 'Short Description',
+        ],
         'name' => [
             'label' => 'Name',
         ],

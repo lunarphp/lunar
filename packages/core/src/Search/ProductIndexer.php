@@ -46,7 +46,10 @@ class ProductIndexer extends ScoutIndexer
             'product_type' => $model->productType->name,
             'brand' => $model->brand?->name,
             'created_at' => (int) $model->created_at->timestamp,
-        ], $this->mapSearchableAttributes($model));
+        ],
+            $this->mapTranslatableFields($model, ['name', 'description', 'short_description']),
+            $this->mapSearchableAttributes($model),
+        );
 
         if ($thumbnail = $model->thumbnail) {
             $data['thumbnail'] = $thumbnail->getUrl('small');

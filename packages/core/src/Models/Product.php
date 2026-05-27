@@ -3,6 +3,7 @@
 namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,6 +37,9 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?int $brand_id
  * @property int $product_type_id
  * @property string $status
+ * @property \Illuminate\Support\Collection $name
+ * @property ?\Illuminate\Support\Collection $description
+ * @property ?\Illuminate\Support\Collection $short_description
  * @property ?\Illuminate\Support\Collection $attribute_data
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -74,6 +78,9 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
         'product_type_id',
         'status',
         'brand_id',
+        'name',
+        'description',
+        'short_description',
     ];
 
     /**
@@ -82,6 +89,9 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
      * @var array
      */
     protected $casts = [
+        'name' => AsCollection::class,
+        'description' => AsCollection::class,
+        'short_description' => AsCollection::class,
         'attribute_data' => AsAttributeData::class,
     ];
 
@@ -91,7 +101,7 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
     protected function recordTitle(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value) => $this->translateAttribute('name'),
+            get: fn (mixed $value) => $this->translate('name'),
         );
     }
 

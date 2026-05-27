@@ -110,7 +110,7 @@ class ProductSelect extends Select
 
     public function optionLabel(Model $record): string
     {
-        $name = $record->translateAttribute('name');
+        $name = $record->translate('name');
 
         if ($this->showSku) {
             $sku = optional($record->variants()->first())->sku;

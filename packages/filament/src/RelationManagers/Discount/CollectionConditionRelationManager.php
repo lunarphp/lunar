@@ -64,7 +64,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
                         __('lunar-filament::discount.relationmanagers.collection_conditions.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->discountable?->attr('name')
+                        fn (Model $record) => $record->discountable?->translate('name')
                     ),
             ])->recordActions([
                 DeleteAction::make(),

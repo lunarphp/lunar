@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create($this->prefix.'brands', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->jsonb('description')->nullable();
+            $table->jsonb('short_description')->nullable();
             $table->timestamps();
             $table->jsonb('attribute_data')->nullable();
         });

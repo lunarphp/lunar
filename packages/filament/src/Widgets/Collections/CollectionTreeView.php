@@ -66,7 +66,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
             fn ($collection) => [
                 'id' => $collection->id,
                 'parent_id' => $collection->parent_id,
-                'name' => $collection->attr('name'),
+                'name' => $collection->translate('name'),
                 'edit_url' => RecordUrls::for('collection_edit', $collection),
                 'thumbnail' => $collection->thumbnail?->getUrl('small'),
                 'children' => [],
@@ -202,7 +202,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
                         return get_search_builder(Collection::modelClass(), $search)
                             ->with('ancestors')
                             ->get()
-                            ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->join(' > ')])
+                            ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translate('name'))->join(' > ')])
                             ->all();
                     }),
             ])->after(

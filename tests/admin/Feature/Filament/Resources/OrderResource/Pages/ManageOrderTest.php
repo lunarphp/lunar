@@ -85,7 +85,7 @@ it('can render order manage page', function () {
             'purchasable_type' => $variant->getMorphClass(),
             'purchasable_id' => $variant->id,
             'type' => 'physical',
-            'description' => $variant->product->translateAttribute('name'),
+            'description' => $variant->product->translate('name'),
             'identifier' => $variant->sku,
             'option' => $options->join(', '),
             'unit_price' => $price,

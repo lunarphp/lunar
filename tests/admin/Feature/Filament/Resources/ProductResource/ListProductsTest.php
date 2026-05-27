@@ -2,8 +2,6 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ListProducts;
-use Lunar\Core\FieldTypes\TranslatedText;
-use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Price;
@@ -17,17 +15,6 @@ uses(TestCase::class)
     ->group('resource.product');
 
 it('can create product', function () {
-    Attribute::factory()->create([
-        'type' => TranslatedText::class,
-        'attribute_type' => 'product',
-        'handle' => 'name',
-        'name' => [
-            'en' => 'Name',
-        ],
-        'description' => [
-            'en' => 'Description',
-        ],
-    ]);
     TaxClass::factory()->create([
         'default' => true,
     ]);
@@ -54,13 +41,8 @@ it('can create product', function () {
     \Pest\Laravel\assertDatabaseHas((new Product)->getTable(), [
         'product_type_id' => $productType->id,
         'status' => 'draft',
-        'attribute_data' => json_encode([
-            'name' => [
-                'field_type' => TranslatedText::class,
-                'value' => [
-                    $language->code => 'Foo Bar',
-                ],
-            ],
+        'name' => json_encode([
+            $language->code => 'Foo Bar',
         ]),
     ]);
 

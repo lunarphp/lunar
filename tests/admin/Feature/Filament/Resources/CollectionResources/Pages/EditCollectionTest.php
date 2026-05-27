@@ -62,3 +62,29 @@ it('can save attributes', function () {
 
     expect($record->refresh()->attr('name'))->toBe('New Collection Name');
 });
+
+it('persists the dedicated name and description columns', function () {
+    $language = Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
+    ]);
+
+    $record = Collection::factory()->create();
+
+    $this->asStaff(admin: true);
+
+    Livewire::test(EditCollection::class, [
+        'record' => $record->getRouteKey(),
+        'pageClass' => 'collectionEdit',
+    ])->fillForm([
+        'name' => [$language->code => 'Outerwear'],
+        'short_description' => [$language->code => 'Coats and jackets'],
+        'description' => [$language->code => 'All of our outerwear'],
+    ])->call('save')->assertHasNoFormErrors();
+
+    $record->refresh();
+
+    expect($record->translate('name'))->toBe('Outerwear');
+    expect($record->translate('short_description'))->toBe('Coats and jackets');
+    expect($record->translate('description'))->toBe('All of our outerwear');
+});

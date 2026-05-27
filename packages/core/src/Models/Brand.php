@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +22,8 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 /**
  * @property int $id
  * @property string $name
+ * @property ?\Illuminate\Support\Collection $description
+ * @property ?\Illuminate\Support\Collection $short_description
  * @property ?array $attribute_data
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -45,6 +48,8 @@ class Brand extends Base implements Contracts\Brand, SpatieHasMedia
      * {@inheritDoc}
      */
     protected $casts = [
+        'description' => AsCollection::class,
+        'short_description' => AsCollection::class,
         'attribute_data' => AsAttributeData::class,
     ];
 

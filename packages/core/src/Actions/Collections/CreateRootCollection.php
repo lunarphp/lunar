@@ -4,39 +4,39 @@ namespace Lunar\Core\Actions\Collections;
 
 use Lunar\Core\Contracts\Actions\Collections\CreatesRootCollection;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Language;
 
 /**
- * Create a root-level collection under a collection group. Builds the
- * attribute_data bag from the configured `name` attribute type
- * (TranslatedText vs plain text) so consumers do not need to inspect the
- * Attribute model themselves.
+ * Create a root-level collection under a collection group. The collection
+ * `name` is a dedicated translatable column (spec 0018); a plain string is
+ * stored under the default locale.
  */
 final class CreateRootCollection implements CreatesRootCollection
 {
     public function execute(int $collectionGroupId, string|array $name): Collection
     {
         return DB::transaction(function () use ($collectionGroupId, $name): Collection {
-            $type = $this->resolveNameType();
-
             /** @var Collection $collection */
             $collection = Collection::create([
                 'collection_group_id' => $collectionGroupId,
-                'attribute_data' => [
-                    'name' => new $type($name),
-                ],
+                'name' => $this->localiseName($name),
             ]);
 
             return $collection;
         });
     }
 
-    protected function resolveNameType(): string
+    /**
+     * @param  string|array<string, string>  $name
+     * @return array<string, string>
+     */
+    protected function localiseName(string|array $name): array
     {
-        return (string) Attribute::whereHandle('name')
-            ->whereAttributeType(Collection::morphName())
-            ->firstOrFail()
-            ->type;
+        if (is_array($name)) {
+            return $name;
+        }
+
+        return [Language::getDefault()?->code ?? config('app.locale') => $name];
     }
 }

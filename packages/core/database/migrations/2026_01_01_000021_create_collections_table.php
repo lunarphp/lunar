@@ -13,7 +13,10 @@ return new class extends Migration
             $table->foreignId('collection_group_id')->constrained($this->prefix.'collection_groups');
             $table->nestedSet();
             $table->string('type')->default('static')->index();
-            $table->jsonb('attribute_data');
+            $table->jsonb('name');
+            $table->jsonb('description')->nullable();
+            $table->jsonb('short_description')->nullable();
+            $table->jsonb('attribute_data')->nullable();
             $table->string('sort')->default('custom')->index();
             $table->timestamps();
             $table->softDeletes();

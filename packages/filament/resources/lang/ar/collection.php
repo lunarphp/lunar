@@ -4,6 +4,14 @@ return [
     'label' => 'تشكيلة',
     'plural_label' => 'التشكيلات',
     'form' => [
+
+        'description' => [
+            'label' => 'Description',
+        ],
+
+        'short_description' => [
+            'label' => 'Short Description',
+        ],
         'name' => [
             'label' => 'الاسم',
         ],

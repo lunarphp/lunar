@@ -7,6 +7,14 @@ return [
     'plural_label' => 'Collections',
 
     'form' => [
+
+        'description' => [
+            'label' => 'Description',
+        ],
+
+        'short_description' => [
+            'label' => 'Short Description',
+        ],
         'name' => [
             'label' => 'Name',
         ],

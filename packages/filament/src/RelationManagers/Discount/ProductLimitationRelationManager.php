@@ -57,12 +57,12 @@ class ProductLimitationRelationManager extends BaseRelationManager
                     ->limit(1)
                     ->square()
                     ->label(''),
-                TextColumn::make('discountable.attribute_data.name')
+                TextColumn::make('discountable.name')
                     ->label(
                         __('lunar-filament::discount.relationmanagers.products.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->discountable->attr('name')
+                        fn (Model $record) => $record->discountable->translate('name')
                     ),
             ])->recordActions([
                 DeleteAction::make(),

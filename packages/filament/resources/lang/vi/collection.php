@@ -4,6 +4,14 @@ return [
     'label' => 'Bộ sưu tập',
     'plural_label' => 'Bộ sưu tập',
     'form' => [
+
+        'description' => [
+            'label' => 'Description',
+        ],
+
+        'short_description' => [
+            'label' => 'Short Description',
+        ],
         'name' => [
             'label' => 'Tên',
         ],

@@ -33,8 +33,10 @@ class BrandIndexer extends ScoutIndexer
     {
         return array_merge([
             'id' => (string) $model->id,
-            'name' => $model->name,
             'created_at' => (int) $model->created_at->timestamp,
-        ], $this->mapSearchableAttributes($model));
+        ],
+            $this->mapTranslatableFields($model, ['name', 'description', 'short_description']),
+            $this->mapSearchableAttributes($model),
+        );
     }
 }

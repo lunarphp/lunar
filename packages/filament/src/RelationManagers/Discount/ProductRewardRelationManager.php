@@ -70,10 +70,10 @@ class ProductRewardRelationManager extends BaseRelationManager
                     )
                     ->formatStateUsing(function (Model $record) {
                         if ($record->discountable instanceof ProductVariantContract) {
-                            return $record->discountable->product->attr('name').' - '.$record->discountable->sku;
+                            return $record->discountable->product->translate('name').' - '.$record->discountable->sku;
                         }
 
-                        return $record->discountable?->attr('name');
+                        return $record->discountable?->translate('name');
                     }),
 
                 TextColumn::make('discountable_type')

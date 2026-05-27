@@ -64,7 +64,7 @@ class ProductVariantSelect extends Select
 
     public function optionLabel(Model $record): string
     {
-        $productName = $record->product?->translateAttribute('name') ?? '—';
+        $productName = $record->product?->translate('name') ?? '—';
 
         return $record->sku
             ? "{$productName} — {$record->sku}"

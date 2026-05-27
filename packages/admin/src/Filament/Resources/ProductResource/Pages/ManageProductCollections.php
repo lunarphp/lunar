@@ -46,15 +46,15 @@ class ManageProductCollections extends BaseManageRelatedRecords
     protected function getDefaultTable(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
+            ->recordTitle(fn (CollectionContract $record): ?string => $record->translate('name'))
             ->reorderable('position')
             ->modifyQueryUsing(
                 fn (Builder $query): Builder => $query->with('ancestors')
             )
             ->columns([
-                TranslatedTextColumn::make('attribute_data.name')
+                TranslatedTextColumn::make('name')
                     ->description(fn (CollectionContract $record): string => $record->breadcrumb->implode(' > '))
-                    ->attributeData()
+                    ->fieldHydrated('name')
                     ->limitedTooltip()
                     ->limit(50)
                     ->label(__('lunarpanel::product.table.name.label')),

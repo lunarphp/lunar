@@ -34,6 +34,9 @@ class CollectionIndexer extends ScoutIndexer
         return array_merge([
             'id' => (string) $model->id,
             'created_at' => (int) $model->created_at->timestamp,
-        ], $this->mapSearchableAttributes($model));
+        ],
+            $this->mapTranslatableFields($model, ['name', 'description', 'short_description']),
+            $this->mapSearchableAttributes($model),
+        );
     }
 }

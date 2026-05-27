@@ -8,9 +8,6 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\FieldTypes\Text;
-use Lunar\Core\FieldTypes\TranslatedText;
-use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
@@ -45,6 +42,9 @@ class ProductForm
     public static function getMainComponents(): array
     {
         return [
+            static::getBaseNameComponent(),
+            static::getShortDescriptionComponent(),
+            static::getDescriptionComponent(),
             static::getBrandComponent(),
             static::getProductTypeComponent(),
             static::getTagsComponent(),
@@ -123,21 +123,22 @@ class ProductForm
 
     public static function getBaseNameComponent(): Component
     {
-        $model = app()->get(ProductContract::class)::class;
-
-        $nameType = Attribute::whereHandle('name')
-            ->whereAttributeType($model::morphName())
-            ->first()?->type ?: TranslatedText::class;
-
-        $component = TranslatedTextInput::make('name');
-
-        if ($nameType == Text::class) {
-            $component = TextInput::make('name');
-        }
-
-        return $component
+        return TranslatedTextInput::make('name')
             ->label(__('lunar-filament::product.form.name.label'))
             ->required();
+    }
+
+    public static function getShortDescriptionComponent(): Component
+    {
+        return TranslatedTextInput::make('short_description')
+            ->label(__('lunar-filament::product.form.short_description.label'));
+    }
+
+    public static function getDescriptionComponent(): Component
+    {
+        return TranslatedTextInput::make('description')
+            ->label(__('lunar-filament::product.form.description.label'))
+            ->optionRichtext(true);
     }
 
     public static function getBrandComponent(): Component
