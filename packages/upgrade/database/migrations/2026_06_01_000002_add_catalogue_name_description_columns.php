@@ -4,7 +4,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Database\Migration;
-use Lunar\Core\FieldTypes\TranslatedText;
 
 /**
  * v1 → v2 upgrade data step (spec 0018): promote the catalogue `name`,
@@ -20,7 +19,9 @@ use Lunar\Core\FieldTypes\TranslatedText;
  *   backfilled from `attribute_data` when a v1 brand description attribute was
  *   present).
  *
- * Guarded so re-runs and already-v2 databases are no-ops.
+ * Guarded so re-runs and already-v2 databases are no-ops. There is no `down()`:
+ * upgrade-package data migrations are one-way — recover from a backup if an
+ * upgrade fails rather than attempting to reverse a destructive data move.
  */
 return new class extends Migration
 {
@@ -55,35 +56,6 @@ return new class extends Migration
                 ->whereIn('handle', ['name', 'description'])
                 ->delete();
         }
-    }
-
-    public function down(): void
-    {
-        foreach ($this->translatableTables as $name) {
-            $table = $this->prefix.$name;
-
-            if (! Schema::hasColumn($table, 'name')) {
-                continue;
-            }
-
-            $this->renest($table, withName: true);
-
-            Schema::table($table, function (Blueprint $table) {
-                $table->dropColumn(['name', 'description', 'short_description']);
-            });
-        }
-
-        $brands = $this->prefix.'brands';
-
-        if (Schema::hasColumn($brands, 'description')) {
-            $this->renest($brands, withName: false);
-
-            Schema::table($brands, function (Blueprint $table) {
-                $table->dropColumn(['description', 'short_description']);
-            });
-        }
-
-        $this->recreateSystemAttributes();
     }
 
     protected function addColumns(string $table, bool $withName): void
@@ -133,77 +105,5 @@ return new class extends Migration
 
             DB::table($table)->where('id', $row->id)->update($update);
         });
-    }
-
-    protected function renest(string $table, bool $withName): void
-    {
-        $handles = $withName ? ['name', 'description'] : ['description'];
-
-        DB::table($table)->orderBy('id')->each(function ($row) use ($table, $handles) {
-            $data = json_decode($row->attribute_data ?? 'null', true);
-            $data = is_array($data) ? $data : [];
-
-            foreach ($handles as $handle) {
-                $value = json_decode($row->{$handle} ?? 'null', true);
-
-                if ($value === null) {
-                    continue;
-                }
-
-                $data[$handle] = [
-                    'field_type' => TranslatedText::class,
-                    'value' => $value,
-                ];
-            }
-
-            DB::table($table)->where('id', $row->id)->update([
-                'attribute_data' => $data ? json_encode($data) : null,
-            ]);
-        });
-    }
-
-    protected function recreateSystemAttributes(): void
-    {
-        $attributes = $this->prefix.'attributes';
-        $groups = $this->prefix.'attribute_groups';
-
-        if (! Schema::hasTable($attributes)) {
-            return;
-        }
-
-        foreach (['product', 'collection'] as $type) {
-            $groupId = DB::table($groups)->value('id');
-
-            foreach ([
-                ['handle' => 'name', 'position' => 1, 'required' => true, 'system' => true, 'richtext' => false],
-                ['handle' => 'description', 'position' => 2, 'required' => false, 'system' => false, 'richtext' => true],
-            ] as $definition) {
-                $exists = DB::table($attributes)
-                    ->where('attribute_type', $type)
-                    ->where('handle', $definition['handle'])
-                    ->exists();
-
-                if ($exists) {
-                    continue;
-                }
-
-                DB::table($attributes)->insert([
-                    'attribute_type' => $type,
-                    'attribute_group_id' => $groupId,
-                    'position' => $definition['position'],
-                    'name' => json_encode(['en' => ucfirst($definition['handle'])]),
-                    'handle' => $definition['handle'],
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => $definition['required'],
-                    'default_value' => null,
-                    'configuration' => json_encode(['richtext' => $definition['richtext']]),
-                    'system' => $definition['system'],
-                    'description' => json_encode(['en' => '']),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        }
     }
 };

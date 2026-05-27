@@ -153,23 +153,3 @@ test('it backfills the dedicated columns from attribute_data', function () {
     // The backing system attribute rows are removed.
     expect(DB::table(SPEC0018_PREFIX.'attributes')->whereIn('handle', ['name', 'description'])->count())->toBe(0);
 });
-
-test('the migration round-trips back into attribute_data', function () {
-    simulateV1Products();
-
-    $migration = catalogueMigration();
-    $migration->up();
-    $migration->down();
-
-    $product = DB::table(SPEC0018_PREFIX.'products')->find(1);
-
-    expect(Schema::hasColumn(SPEC0018_PREFIX.'products', 'name'))->toBeFalse();
-
-    $attributeData = json_decode($product->attribute_data, true);
-    expect($attributeData['name']['value'])->toBe(['en' => 'Trainers', 'fr' => 'Baskets']);
-    expect($attributeData['description']['value'])->toBe(['en' => 'Comfy']);
-    expect($attributeData)->toHaveKey('meta_title');
-
-    // System attribute rows are recreated on the way down.
-    expect(DB::table(SPEC0018_PREFIX.'attributes')->where('handle', 'name')->where('attribute_type', 'product')->count())->toBe(1);
-});
