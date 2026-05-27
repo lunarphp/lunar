@@ -1,6 +1,6 @@
 # 0018 — Dedicated `name`, `description` and `short_description` fields
 
-- Status: implemented
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-26
 - TODO item: Add `name` and `description` dedicated fields

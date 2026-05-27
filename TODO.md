@@ -6,9 +6,7 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 
 ## Outstanding
 
-- Add `name` and `description` dedicated fields
 - Attributes remodel to simplify data and allow for re-use
-- Change `compare_price` to `list_price`
 - Implement state machines, replacing soft-deletes
     - Specifically, products (draft, published, archived) & orders (payment, fulfilment and order status)
 - `StorefrontContext` for CartSessionManager and other services
@@ -54,3 +52,5 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - `Base/` directory reorganisation — every class drained into a semantic home (`Casts/`, `Concerns/`, `Contracts/`, `DataObjects/`, `Enums/`, `FieldTypes/`, `Manifests/`, `Media/`, `Models/`, `Modifiers/`, `Orders/`, `Telemetry/`, `ValueObjects/`); `*Interface` suffix dropped on contracts; `BaseModel` renamed to `Models\Base`; `Base/` namespace deleted (spec 0013)
 - `PriceCalculatorInterface` consolidates money arithmetic — half-up `percentage`, strict-inverse `withTax`/`withoutTax`, largest-remainder `distribute`, bc-aware `toMinor`/`toMajor`; routed through every previously inline rounding site; new `PriceCalculator` facade (spec 0014)
 - Ensure all service-layer classes are DI'd — actions/managers/drivers/generators constructor-inject collaborators and bind to `Contracts\Actions\…` interfaces in `LunarServiceProvider`; `AbstractAction` and the `lunar.cart.actions.*` / `fingerprint_generator` / `discounts.coupon_validator` config-string swaps removed; `RewriteActionRunCallRector` migrates `Action::run()` callers (spec 0016)
+- Change `compare_price` to `list_price`
+- Add dedicated `name` / `description` / `short_description` fields — promote Product/Collection name + description out of `attribute_data` into translatable columns and add a translatable `short_description`; Brand gains translatable description/short_description but keeps a plain string name; reads route through `translate()`, search indexes per locale, Filament binds explicit fields; one-way v1→v2 backfill migration + `translateAttribute`→`translate` Rector rule (spec 0018)

@@ -41,3 +41,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0015 | PriceValue arithmetic | implemented |
 | 0016 | Service-layer dependency injection | implemented |
 | 0017 | Rename `compare_price` to `list_price` | completed   |
+| 0018 | Dedicated `name` / `description` / `short_description` fields | completed   |
