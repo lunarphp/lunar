@@ -161,7 +161,7 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
      */
     public function getDescription(): string
     {
-        return $this->product->translateAttribute('name');
+        return $this->product->translate('name');
     }
 
     /**

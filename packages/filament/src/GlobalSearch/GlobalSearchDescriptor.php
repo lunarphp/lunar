@@ -69,8 +69,8 @@ abstract class GlobalSearchDescriptor
      */
     public static function getResultTitle(Model $record): string|Htmlable
     {
-        if (method_exists($record, 'translateAttribute')) {
-            $value = $record->translateAttribute('name');
+        if (method_exists($record, 'translate')) {
+            $value = $record->translate('name');
 
             if (filled($value)) {
                 return (string) $value;

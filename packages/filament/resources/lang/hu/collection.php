@@ -4,6 +4,14 @@ return [
     'label' => 'Gyűjtemény',
     'plural_label' => 'Gyűjtemények',
     'form' => [
+
+        'description' => [
+            'label' => 'Description',
+        ],
+
+        'short_description' => [
+            'label' => 'Short Description',
+        ],
         'name' => [
             'label' => 'Név',
         ],

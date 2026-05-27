@@ -98,8 +98,8 @@ class ProductTable
 
     public static function getNameColumn(): Column
     {
-        return TranslatedTextColumn::make('attribute_data.name')
-            ->attributeData()
+        return TranslatedTextColumn::make('name')
+            ->fieldHydrated('name')
             ->limitedTooltip()
             ->limit(50)
             ->label(__('lunar-filament::product.table.name.label'))

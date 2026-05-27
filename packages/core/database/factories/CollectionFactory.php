@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Database\Factories;
 
-use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 
@@ -14,9 +13,10 @@ class CollectionFactory extends BaseFactory
     {
         return [
             'collection_group_id' => CollectionGroup::factory(),
-            'attribute_data' => collect([
-                'name' => new Text($this->faker->name),
-            ]),
+            'name' => collect(['en' => $this->faker->words(3, true)]),
+            'description' => collect(['en' => $this->faker->paragraph]),
+            'short_description' => collect(['en' => $this->faker->sentence]),
+            'attribute_data' => collect(),
         ];
     }
 }

@@ -48,7 +48,7 @@ class ProductVariantResource extends BaseResource
         return [
             ProductResource::getUrl('edit', [
                 'record' => $productVariant->product,
-            ]) => $productVariant->product->attr('name'),
+            ]) => $productVariant->product->translate('name'),
             ProductResource::getUrl('variants', [
                 'record' => $productVariant->product,
             ]) => 'Variants',

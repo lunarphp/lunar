@@ -44,6 +44,10 @@ test('can return correct searchable data', function () {
     ]);
 
     $product = Product::factory()->create([
+        'name' => collect([
+            'en' => 'Trainers',
+            'dk' => 'Løbesko',
+        ]),
         'attribute_data' => collect([
             $attributeA->handle => new Text('Attribute A'),
             $attributeB->handle => new Text('Attribute B'),
@@ -71,4 +75,8 @@ test('can return correct searchable data', function () {
     $this->assertArrayNotHasKey($attributeC->handle, $data);
     expect($data)->toHaveKey($attributeD->handle.'_en');
     expect($data)->toHaveKey($attributeD->handle.'_dk');
+
+    // Dedicated translatable columns are indexed per locale.
+    expect($data['name_en'])->toBe('Trainers');
+    expect($data['name_dk'])->toBe('Løbesko');
 });

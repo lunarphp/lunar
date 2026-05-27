@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property \Illuminate\Support\Collection $name
+ * @property ?\Illuminate\Support\Collection $description
+ * @property ?\Illuminate\Support\Collection $short_description
+ */
 interface Collection
 {
     /**

@@ -83,8 +83,8 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
                 ->limit(1)
                 ->square()
                 ->label(''),
-            TextColumn::make('attribute_data.name')
-                ->formatStateUsing(fn (Model $record): string => $record->translateAttribute('name'))
+            TextColumn::make('name')
+                ->formatStateUsing(fn (Model $record): string => $record->translate('name'))
                 ->label(__('lunarpanel::product.table.name.label')),
         ])->recordActions([
             DetachAction::make()->after(

@@ -13,7 +13,10 @@ return new class extends Migration
             $table->foreignId('product_type_id')->constrained($this->prefix.'product_types');
             $table->foreignId('brand_id')->nullable()->constrained($this->prefix.'brands');
             $table->string('status')->index();
-            $table->jsonb('attribute_data');
+            $table->jsonb('name');
+            $table->jsonb('description')->nullable();
+            $table->jsonb('short_description')->nullable();
+            $table->jsonb('attribute_data')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->index('deleted_at');

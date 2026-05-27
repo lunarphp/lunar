@@ -12,6 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 
+/**
+ * @property \Illuminate\Support\Collection $name
+ * @property ?\Illuminate\Support\Collection $description
+ * @property ?\Illuminate\Support\Collection $short_description
+ */
 interface Product
 {
     /**

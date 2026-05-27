@@ -43,7 +43,7 @@ class UrlGenerator
         $this->model = $model;
 
         if (! $model->urls->count() &&
-            $name = $model->name ?: $model->attr('name')
+            $name = $model->translate('name')
         ) {
             $this->createUrl(
                 $name

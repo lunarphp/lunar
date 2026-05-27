@@ -7,6 +7,7 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Lunar\Filament\Forms\Components\Attributes;
+use Lunar\Filament\Forms\Components\TranslatedText;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class BrandForm
@@ -30,6 +31,8 @@ class BrandForm
     {
         return [
             static::getNameComponent(),
+            static::getShortDescriptionComponent(),
+            static::getDescriptionComponent(),
         ];
     }
 
@@ -40,6 +43,19 @@ class BrandForm
             ->required()
             ->maxLength(255)
             ->autofocus();
+    }
+
+    public static function getShortDescriptionComponent(): Component
+    {
+        return TranslatedText::make('short_description')
+            ->label(__('lunar-filament::brand.form.short_description.label'));
+    }
+
+    public static function getDescriptionComponent(): Component
+    {
+        return TranslatedText::make('description')
+            ->label(__('lunar-filament::brand.form.description.label'))
+            ->optionRichtext(true);
     }
 
     public static function getAttributeDataComponent(): Component

@@ -80,9 +80,9 @@ class DiscountTargetSelect extends MorphToSelect
             ->getSearchResultsUsing(static fn (string $search): array => RecordSearch::for($modelClass, $search)
                 ->take(50)
                 ->get()
-                ->mapWithKeys(fn (Model $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                ->mapWithKeys(fn (Model $record): array => [$record->getKey() => $record->translate('name')])
                 ->all())
-            ->getOptionLabelUsing(static fn ($value): ?string => $modelClass::find($value)?->translateAttribute('name'));
+            ->getOptionLabelUsing(static fn ($value): ?string => $modelClass::find($value)?->translate('name'));
     }
 
     protected function productVariantType(): Type
@@ -106,7 +106,7 @@ class DiscountTargetSelect extends MorphToSelect
                     ->take(50)
                     ->get()
                     ->mapWithKeys(fn (Model $record): array => [
-                        $record->getKey() => trim(($record->product?->translateAttribute('name') ?? '—').' — '.($record->sku ?? '')),
+                        $record->getKey() => trim(($record->product?->translate('name') ?? '—').' — '.($record->sku ?? '')),
                     ])
                     ->all();
             })
@@ -114,7 +114,7 @@ class DiscountTargetSelect extends MorphToSelect
                 $variant = $variantClass::with('product')->find($value);
 
                 return $variant
-                    ? trim(($variant->product?->translateAttribute('name') ?? '—').' — '.($variant->sku ?? ''))
+                    ? trim(($variant->product?->translate('name') ?? '—').' — '.($variant->sku ?? ''))
                     : null;
             });
     }
@@ -130,13 +130,13 @@ class DiscountTargetSelect extends MorphToSelect
                 ->take(50)
                 ->get()
                 ->mapWithKeys(fn (Model $record): array => [
-                    $record->getKey() => $record->breadcrumb->push($record->translateAttribute('name'))->filter()->implode(' > '),
+                    $record->getKey() => $record->breadcrumb->push($record->translate('name'))->filter()->implode(' > '),
                 ])
                 ->all())
             ->getOptionLabelUsing(static function ($value) use ($modelClass): ?string {
                 $record = $modelClass::with('ancestors')->find($value);
 
-                return $record?->breadcrumb->push($record->translateAttribute('name'))->filter()->implode(' > ');
+                return $record?->breadcrumb->push($record->translate('name'))->filter()->implode(' > ');
             });
     }
 

@@ -46,9 +46,9 @@ class ManageBrandCollections extends BaseManageRelatedRecords
         return $table->modifyQueryUsing(
             fn (Builder $query): Builder => $query->with('ancestors')
         )->columns([
-            TranslatedTextColumn::make('attribute_data.name')
+            TranslatedTextColumn::make('name')
                 ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
-                ->attributeData()
+                ->fieldHydrated('name')
                 ->limitedTooltip()
                 ->limit(50)
                 ->label(__('lunarpanel::product.table.name.label')),

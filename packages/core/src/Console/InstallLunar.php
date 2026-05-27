@@ -5,7 +5,6 @@ namespace Lunar\Core\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Channel;
@@ -154,10 +153,10 @@ class InstallLunar extends Command
                 );
             }
 
-            if (! Attribute::count()) {
-                $this->components->info('Setting up initial attributes');
+            if (! AttributeGroup::count()) {
+                $this->components->info('Setting up initial attribute groups');
 
-                $group = AttributeGroup::create([
+                AttributeGroup::create([
                     'attributable_type' => Product::morphName(),
                     'name' => collect([
                         'en' => 'Details',
@@ -166,97 +165,13 @@ class InstallLunar extends Command
                     'position' => 1,
                 ]);
 
-                $collectionGroup = AttributeGroup::create([
+                AttributeGroup::create([
                     'attributable_type' => Collection::morphName(),
                     'name' => collect([
                         'en' => 'Details',
                     ]),
                     'handle' => 'collection_details',
                     'position' => 1,
-                ]);
-
-                Attribute::create([
-                    'attribute_type' => 'product',
-                    'attribute_group_id' => $group->id,
-                    'position' => 1,
-                    'name' => [
-                        'en' => 'Name',
-                    ],
-                    'handle' => 'name',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => true,
-                    'default_value' => null,
-                    'configuration' => [
-                        'richtext' => false,
-                    ],
-                    'system' => true,
-                    'description' => [
-                        'en' => '',
-                    ],
-                ]);
-
-                Attribute::create([
-                    'attribute_type' => 'collection',
-                    'attribute_group_id' => $collectionGroup->id,
-                    'position' => 1,
-                    'name' => [
-                        'en' => 'Name',
-                    ],
-                    'handle' => 'name',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => true,
-                    'default_value' => null,
-                    'configuration' => [
-                        'richtext' => false,
-                    ],
-                    'system' => true,
-                    'description' => [
-                        'en' => '',
-                    ],
-                ]);
-
-                Attribute::create([
-                    'attribute_type' => 'product',
-                    'attribute_group_id' => $group->id,
-                    'position' => 2,
-                    'name' => [
-                        'en' => 'Description',
-                    ],
-                    'handle' => 'description',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => false,
-                    'default_value' => null,
-                    'configuration' => [
-                        'richtext' => true,
-                    ],
-                    'system' => false,
-                    'description' => [
-                        'en' => '',
-                    ],
-                ]);
-
-                Attribute::create([
-                    'attribute_type' => 'collection',
-                    'attribute_group_id' => $collectionGroup->id,
-                    'position' => 2,
-                    'name' => [
-                        'en' => 'Description',
-                    ],
-                    'handle' => 'description',
-                    'section' => 'main',
-                    'type' => TranslatedText::class,
-                    'required' => false,
-                    'default_value' => null,
-                    'configuration' => [
-                        'richtext' => true,
-                    ],
-                    'system' => false,
-                    'description' => [
-                        'en' => '',
-                    ],
                 ]);
             }
 

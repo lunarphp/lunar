@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Products\DuplicateProduct;
-use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
@@ -20,9 +19,7 @@ beforeEach(function () {
 test('duplicates a product as a draft', function () {
     $product = Product::factory()->create([
         'status' => 'published',
-        'attribute_data' => collect([
-            'name' => new Text('Widget'),
-        ]),
+        'name' => collect(['en' => 'Widget', 'fr' => 'Bidule']),
     ]);
 
     ProductVariant::factory()->create(['product_id' => $product->id, 'sku' => 'WIDGET-1']);
@@ -34,4 +31,9 @@ test('duplicates a product as a draft', function () {
     expect($duplicate->status)->toBe('draft');
     expect($duplicate->variants)->toHaveCount(1);
     expect($duplicate->variants->first()->sku)->toBe('WIDGET-1-copy');
+
+    $suffix = trim((string) __('lunar::products.duplicate.name_suffix'));
+
+    expect($duplicate->translate('name'))->toBe("Widget {$suffix}");
+    expect($duplicate->name->get('fr'))->toBe("Bidule {$suffix}");
 });

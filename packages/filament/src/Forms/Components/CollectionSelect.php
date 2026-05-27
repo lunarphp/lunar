@@ -88,10 +88,10 @@ class CollectionSelect extends Select
     {
         $breadcrumb = $record->breadcrumb ?? collect();
 
-        $trail = $breadcrumb->push($record->translateAttribute('name'))
+        $trail = $breadcrumb->push($record->translate('name'))
             ->filter()
             ->implode(' > ');
 
-        return $trail !== '' ? $trail : $record->translateAttribute('name');
+        return $trail !== '' ? $trail : $record->translate('name');
     }
 }

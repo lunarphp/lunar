@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\TaxClass;
@@ -52,20 +51,11 @@ class ListProducts extends BaseListRecords
     {
         $currency = Currency::getDefault();
 
-        $nameAttribute = Attribute::whereAttributeType(
-            $model::morphName()
-        )
-            ->whereHandle('name')
-            ->first()
-            ->type;
-
         DB::beginTransaction();
         $product = $model::create([
             'status' => 'draft',
             'product_type_id' => $data['product_type_id'],
-            'attribute_data' => [
-                'name' => new $nameAttribute($data['name']),
-            ],
+            'name' => $data['name'],
         ]);
         $variant = $product->variants()->create([
             'tax_class_id' => TaxClass::getDefault()->id,

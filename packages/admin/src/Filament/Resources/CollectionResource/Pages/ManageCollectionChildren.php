@@ -68,11 +68,11 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
         $record = $this->getOwnerRecord();
 
         return $table->columns([
-            TextColumn::make('attribute_data.name')
+            TextColumn::make('name')
                 ->label(
                     __('lunarpanel::collection.pages.children.table.name.label')
                 )
-                ->formatStateUsing(fn (Model $record): string => $record->attr('name')),
+                ->formatStateUsing(fn (Model $record): string => $record->translate('name')),
             TextColumn::make('children_count')->counts('children')
                 ->label(
                     __('lunarpanel::collection.pages.children.table.children_count.label')

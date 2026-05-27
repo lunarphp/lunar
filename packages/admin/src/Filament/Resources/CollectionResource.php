@@ -63,13 +63,13 @@ class CollectionResource extends BaseResource
             CollectionResource::getUrl('edit', [
                 'record' => $childCollection,
             ])
-            ] = $childCollection->attr('name');
+            ] = $childCollection->translate('name');
         }
 
         $crumbs[
         static::getUrl('edit', [
             'record' => $collection,
-        ])] = $collection->attr('name');
+        ])] = $collection->translate('name');
 
         return $crumbs;
     }

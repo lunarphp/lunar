@@ -37,12 +37,12 @@ class ShippingExclusionRelationManager extends RelationManager
                         Forms\Components\MorphToSelect\Type::make(Product::modelClass())
                             ->titleAttribute('name')
                             ->getOptionLabelUsing(
-                                fn (string $value): ?string => Product::modelClass()::find($value)?->translateAttribute('name')
+                                fn (string $value): ?string => Product::modelClass()::find($value)?->translate('name')
                             )
                             ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
                                 return get_search_builder(Product::modelClass(), $search)
                                     ->get()
-                                    ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
+                                    ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translate('name')])
                                     ->all();
                             }),
                     ])
@@ -66,7 +66,7 @@ class ShippingExclusionRelationManager extends RelationManager
                     ->label(''),
                 TextColumn::make('purchasable')
                     ->formatStateUsing(
-                        fn ($state) => $state->attr('name')
+                        fn ($state) => $state->translate('name')
                     )
                     ->limit(50)
                     ->label(__('lunarpanel::product.table.name.label')),

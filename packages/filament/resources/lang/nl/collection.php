@@ -4,6 +4,14 @@ return [
     'label' => 'Collectie',
     'plural_label' => 'Collecties',
     'form' => [
+
+        'description' => [
+            'label' => 'Description',
+        ],
+
+        'short_description' => [
+            'label' => 'Short Description',
+        ],
         'name' => [
             'label' => 'Naam',
         ],

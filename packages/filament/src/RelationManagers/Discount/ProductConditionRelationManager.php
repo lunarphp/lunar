@@ -69,7 +69,7 @@ class ProductConditionRelationManager extends BaseRelationManager
                         __('lunar-filament::discount.relationmanagers.conditions.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->product->attr('name').' - '.$record->discountable->sku : $record->discountable->attr('name')
+                        fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->product->translate('name').' - '.$record->discountable->sku : $record->discountable->translate('name')
                     ),
 
                 TextColumn::make('discountable_type')

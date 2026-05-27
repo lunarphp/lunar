@@ -36,7 +36,7 @@ class CollectionGlobalSearch extends GlobalSearchDescriptor
         /** @var Collection $record */
         return array_filter([
             __('lunar-filament::global-search.collections.details.group') => $record->group?->name,
-            __('lunar-filament::global-search.collections.details.parent') => $record->parent?->translateAttribute('name'),
+            __('lunar-filament::global-search.collections.details.parent') => $record->parent?->translate('name'),
         ], fn ($value) => filled($value));
     }
 }

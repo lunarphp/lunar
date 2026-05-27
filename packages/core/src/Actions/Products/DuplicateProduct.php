@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Products;
 
 use Lunar\Core\Contracts\Actions\Products\DuplicatesProduct;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
@@ -26,7 +25,7 @@ final class DuplicateProduct implements DuplicatesProduct
             /** @var Product $duplicate */
             $duplicate = $source->replicate();
             $duplicate->status = 'draft';
-            $duplicate->attribute_data = $this->suffixTranslatedName($source->attribute_data, $suffix);
+            $duplicate->name = $this->suffixName($source->name, $suffix);
             $duplicate->save();
 
             foreach ($source->variants as $variant) {
@@ -61,35 +60,20 @@ final class DuplicateProduct implements DuplicatesProduct
     }
 
     /**
-     * Suffix every translated `name` entry in an attribute_data bag so the
-     * duplicate is distinguishable from the source without losing other
-     * translations.
+     * Suffix every locale of the translatable `name` column so the duplicate is
+     * distinguishable from the source without losing other translations.
      *
-     * @param  mixed  $attributeData
+     * @param  mixed  $name
      * @return mixed
      */
-    protected function suffixTranslatedName($attributeData, string $suffix)
+    protected function suffixName($name, string $suffix)
     {
-        if ($attributeData === null) {
-            return null;
+        if (blank($name)) {
+            return $name;
         }
 
-        $bag = collect($attributeData);
-
-        if (! $bag->has('name')) {
-            return $attributeData;
-        }
-
-        $name = $bag->get('name');
-
-        if ($name instanceof TranslatedText) {
-            $values = collect($name->getValue())
-                ->map(fn ($value) => trim((string) $value).' '.$suffix)
-                ->all();
-
-            $bag->put('name', new TranslatedText($values));
-        }
-
-        return $bag;
+        return collect($name)
+            ->map(fn ($value) => trim((string) $value).' '.$suffix)
+            ->all();
     }
 }

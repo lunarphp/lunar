@@ -34,7 +34,7 @@ it('keeps the default relation page table intact when no extension is registered
 
     Livewire::test(ManageCollectionProducts::class, [
         'record' => $collection->getRouteKey(),
-    ])->assertTableColumnExists('attribute_data.name');
+    ])->assertTableColumnExists('name');
 });
 
 it('can extend relation page table columns', function () {

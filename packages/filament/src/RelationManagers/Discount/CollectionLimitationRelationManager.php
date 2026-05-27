@@ -56,19 +56,19 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                                 ]
                             )->default('limitation'),
                     ])
-                    ->recordTitle(fn ($record) => $record->attr('name'))
+                    ->recordTitle(fn ($record) => $record->translate('name'))
                     ->preloadRecordSelect()
                     ->label(
                         __('lunar-filament::discount.relationmanagers.collections.actions.attach.label')
                     ),
             ])->columns([
-                TextColumn::make('attribute_data.name')
+                TextColumn::make('name')
                     ->label(
                         __('lunar-filament::discount.relationmanagers.collections.table.name.label')
                     )
                     ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
                     ->formatStateUsing(
-                        fn (Model $record) => $record->attr('name')
+                        fn (Model $record) => $record->translate('name')
                     ),
                 TextColumn::make('pivot.type')
                     ->label(
