@@ -235,4 +235,20 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
     {
         return $this->thumbnail?->getUrl('small') ?? '';
     }
+
+    /**
+     * Whether any of this product's variants appear on any historical order line.
+     * Used to gate hard deletion in the admin — products with order history
+     * should be archived, not deleted, so the merchant can still drill into
+     * old orders.
+     */
+    public function hasOrderHistory(): bool
+    {
+        $variantClass = ProductVariant::modelClass();
+
+        return OrderLine::query()
+            ->where('purchasable_type', (new $variantClass)->getMorphClass())
+            ->whereIn('purchasable_id', $this->variants()->select('id'))
+            ->exists();
+    }
 }

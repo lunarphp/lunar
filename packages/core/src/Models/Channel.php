@@ -106,4 +106,14 @@ class Channel extends Base implements Contracts\Channel
             "{$prefix}channelables"
         );
     }
+
+    /**
+     * Whether any order has been placed against this channel. Used to gate
+     * hard deletion in the admin — channels with order history should be
+     * marked Inactive, not deleted, so historical orders keep their context.
+     */
+    public function hasOrderHistory(): bool
+    {
+        return Order::query()->where('channel_id', $this->id)->exists();
+    }
 }

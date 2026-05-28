@@ -44,7 +44,14 @@ class EditProduct extends BaseEditRecord
                         ->descriptions(fn (Product $record) => static::statusDescriptionsFor($record))
                         ->live(),
                 ]),
-            DeleteAction::make(),
+            DeleteAction::make()
+                ->modalDescription(fn (Product $record): string => $record->hasOrderHistory()
+                    ? __('lunarpanel::product.actions.delete.blocked')
+                    : __('lunarpanel::product.actions.delete.confirm'))
+                ->disabled(fn (Product $record): bool => $record->hasOrderHistory())
+                ->tooltip(fn (Product $record): ?string => $record->hasOrderHistory()
+                    ? __('lunarpanel::product.actions.delete.disabled_tooltip')
+                    : null),
         ];
     }
 
