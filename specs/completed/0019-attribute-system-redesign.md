@@ -1,6 +1,6 @@
 # 0019 — Attribute system redesign
 
-- Status: accepted
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-27
 - TODO item: "Rework the custom attribute system"
