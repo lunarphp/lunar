@@ -68,4 +68,13 @@ interface OrderStateConfig
      * @return class-string<OrderState>
      */
     public function resolveOrderState(PaymentState $payment, FulfilmentState $fulfilment): string;
+
+    /**
+     * Notification classes to dispatch when an order transitions into the
+     * given order_status. Each class is instantiated with the order and
+     * delivered via `$order->notify()`.
+     *
+     * @return array<class-string>
+     */
+    public function notificationsFor(OrderState $state): array;
 }

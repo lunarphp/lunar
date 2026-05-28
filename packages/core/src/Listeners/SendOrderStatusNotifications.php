@@ -2,19 +2,18 @@
 
 namespace Lunar\Core\Listeners;
 
+use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Events\Orders\OrderStatusUpdated;
 
 class SendOrderStatusNotifications
 {
+    public function __construct(
+        protected OrderStateConfig $stateConfig,
+    ) {}
+
     public function handle(OrderStatusUpdated $event): void
     {
-        /** @var array<class-string> $notifications */
-        $notifications = config(
-            "lunar.sales.orders.statuses.{$event->newStatus}.notifications",
-            []
-        );
-
-        foreach ($notifications as $class) {
+        foreach ($this->stateConfig->notificationsFor($event->order->order_status) as $class) {
             $event->order->notify(new $class($event->order));
         }
     }

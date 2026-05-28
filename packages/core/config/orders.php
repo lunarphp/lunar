@@ -56,6 +56,26 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Order Status Notifications
+    |--------------------------------------------------------------------------
+    |
+    | Notifications to dispatch when an order transitions into a given
+    | order_status. Keyed by the OrderState $name (e.g. 'shipped'), each
+    | entry is a list of notification class names. Each notification is
+    | instantiated with the Order and delivered via `$order->notify()`.
+    |
+    | Read by DefaultOrderStateConfig::notificationsFor(); swap that binding
+    | to source notifications from anywhere else.
+    |
+    */
+    'notifications' => [
+        // 'shipped' => [
+        //     App\Notifications\OrderShipped::class,
+        // ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Order Pipelines
     |--------------------------------------------------------------------------
     |

@@ -434,26 +434,35 @@ class OrderStatusUpdated
 ### I. `Listeners\SendOrderStatusNotifications`
 
 ```php
+public function __construct(
+    protected OrderStateConfig $stateConfig,
+) {}
+
 public function handle(OrderStatusUpdated $event): void
 {
-    $notifications = config(
-        "lunar.sales.orders.statuses.{$event->newStatus}.notifications",
-        []
-    );
-
-    foreach ($notifications as $class) {
+    foreach ($this->stateConfig->notificationsFor($event->order->order_status) as $class) {
         $event->order->notify(new $class($event->order));
     }
 }
 ```
 
-Wired in `LunarServiceProvider::bootingPackage()`:
+The listener resolves notifications through `OrderStateConfig::notificationsFor()` rather than reading `config()` directly — this keeps the binding the single seam for "everything about order states" and lets consumers move notification resolution out of config entirely by overriding the method (e.g. fetching from the database or from a feature-flagged map).
+
+`DefaultOrderStateConfig::notificationsFor()` reads `lunar.orders.notifications.{$state::$name}` so the common case stays a flat config key:
+
+```php
+// config/orders.php
+'notifications' => [
+    'shipped' => [App\Notifications\OrderShipped::class],
+    'complete' => [App\Notifications\OrderComplete::class],
+],
+```
+
+`Order` uses `Illuminate\Notifications\Notifiable` so `$order->notify(...)` works directly. Wired in `LunarServiceProvider::bootingPackage()`:
 
 ```php
 Event::listen(OrderStatusUpdated::class, SendOrderStatusNotifications::class);
 ```
-
-The listener has no collaborators today; if it grows (e.g. resolving the notifiable from the customer rather than the order), it gains them via constructor injection per spec 0016.
 
 ### J. Retiring soft-deletes
 
@@ -504,7 +513,7 @@ Per the v2 baseline rule (pre-release), the relevant baseline migrations are edi
   - `Models\Product`, `ProductVariant`, `Channel`, `Collection` lose `SoftDeletes`; any caller using `withTrashed()` / `onlyTrashed()` / `restore()` breaks. Rector rule: replace `->onlyTrashed()` with `->where('status', Archived::$name)` where the intent is "show archived". `->restore()` becomes `->status->transitionTo(Draft::class)` (or `Active::class` for channels).
   - `Models\Channel` loses the `enabled` boolean cast.
   - `Models\Order::statusLabel()` becomes `$order->order_status->label()`. Add a Rector rule for the rename.
-  - `config('lunar.orders.statuses')` is no longer the source of truth for available statuses (the state classes are); notification configuration moves to `lunar.sales.orders.statuses.{name}.notifications`. Document the relocation.
+  - `config('lunar.orders.statuses')` is no longer the source of truth for available statuses (the state classes are); notification configuration moves to `lunar.orders.notifications.{name}` and is resolved through `OrderStateConfig::notificationsFor()`.
   - These are listed under §J of the `LunarSetList` in the `upgrade` package.
 - **Upgrade path for v1.x consumers (stage 3).** Rector rules cover the renames/removals above. Data migration covers the column changes. Soft-delete removal is one-way — restoring trashed rows must happen *before* the v2 upgrade runs.
 - **Translation / locale impact.** Each state's `label()` returns a translation key (e.g. `lunar::states.product.published`). New keys land in all 16 locales under each package's `resources/lang/` — English first, mirrored placeholders for the other 15. Affected keys:

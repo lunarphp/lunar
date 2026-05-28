@@ -97,6 +97,14 @@ class DefaultOrderStateConfig implements OrderStateConfig
         return AwaitingPayment::class;
     }
 
+    public function notificationsFor(OrderState $state): array
+    {
+        /** @var array<class-string> $notifications */
+        $notifications = (array) config('lunar.orders.notifications.'.$state::$name, []);
+
+        return $notifications;
+    }
+
     public function fulfilmentTransitions(): array
     {
         return [
