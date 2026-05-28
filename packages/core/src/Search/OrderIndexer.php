@@ -24,11 +24,12 @@ class OrderIndexer extends ScoutIndexer
         return [
             'customer_id',
             'user_id',
-            'status',
+            'payment_status',
+            'fulfilment_status',
+            'order_status',
             'placed_at',
             'channel_id',
             'tags',
-            '__soft_deleted',
         ];
     }
 

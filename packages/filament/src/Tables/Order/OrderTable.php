@@ -12,6 +12,9 @@ use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Lunar\Core\Contracts\OrderStateConfig;
+use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\OrderState;
 use Lunar\Filament\Actions\Orders\UpdateOrderStatusBulkAction;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Support\CustomerStatus;
@@ -54,11 +57,11 @@ class OrderTable
     public static function getColumns(): array
     {
         return [
-            TextColumn::make('status')
+            TextColumn::make('order_status')
                 ->label(__('lunar-filament::order.table.status.label'))
                 ->toggleable()
-                ->formatStateUsing(fn (string $state) => OrderStatus::getLabel($state))
-                ->color(fn (string $state) => OrderStatus::getColor($state))
+                ->formatStateUsing(fn ($state) => OrderStatus::getLabel((string) $state))
+                ->color(fn ($state) => OrderStatus::getColor((string) $state))
                 ->badge(),
             TextColumn::make('reference')
                 ->label(__('lunar-filament::order.table.reference.label'))
@@ -112,10 +115,13 @@ class OrderTable
     public static function getFilters(): array
     {
         return [
-            SelectFilter::make('status')
+            SelectFilter::make('order_status')
                 ->label(__('lunar-filament::order.table.status.label'))
-                ->options(collect(config('lunar.orders.statuses', []))
-                    ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
+                ->options(
+                    collect(app(OrderStateConfig::class)->orderStates())
+                        /** @var class-string<OrderState> $class */
+                        ->mapWithKeys(fn (string $class) => [$class::$name => (new $class(new Order))->label()])
+                )
                 ->multiple(),
             Filter::make('placed_at')
                 ->schema([

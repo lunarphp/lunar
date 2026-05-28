@@ -41,7 +41,7 @@ class ProductGlobalSearch extends GlobalSearchDescriptor
 
         return [
             __('lunar-filament::global-search.products.details.sku') => $variant?->getIdentifier(),
-            __('lunar-filament::global-search.products.details.status') => $record->status,
+            __('lunar-filament::global-search.products.details.status') => $record->status->label(),
             __('lunar-filament::global-search.products.details.brand') => $record->brand?->name,
         ];
     }

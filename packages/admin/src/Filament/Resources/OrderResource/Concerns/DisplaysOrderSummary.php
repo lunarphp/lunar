@@ -25,11 +25,11 @@ trait DisplaysOrderSummary
 
     public static function getDefaultOrderSummaryStatusEntry(): TextEntry
     {
-        return TextEntry::make('status')
+        return TextEntry::make('order_status')
             ->label(__('lunarpanel::order.infolist.status.label'))
-            ->formatStateUsing(fn ($state) => OrderStatus::getLabel($state))
+            ->formatStateUsing(fn ($state) => OrderStatus::getLabel((string) $state))
             ->alignEnd()
-            ->color(fn ($state) => OrderStatus::getColor($state))
+            ->color(fn ($state) => OrderStatus::getColor((string) $state))
             ->badge();
     }
 

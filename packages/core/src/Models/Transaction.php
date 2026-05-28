@@ -31,7 +31,6 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property ?array $meta
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
- * @property ?Carbon $deleted_at
  */
 class Transaction extends Base implements Contracts\Transaction, HasCurrency
 {
