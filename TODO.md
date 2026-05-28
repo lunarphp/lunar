@@ -9,8 +9,8 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Attributes remodel to simplify data and allow for re-use
 - Implement state machines, replacing soft-deletes
     - Specifically, products (draft, published, archived) & orders (payment, fulfilment and order status)
-- `StorefrontContext` for CartSessionManager and other services
 - Region concept to define channel, currency, language, tax_zone, countries and price display
+- `StorefrontContext` for CartSessionManager and other services
 - Add Vendors concept to support marketplace developments
 - Make order line purchasables optional
 - Add events, including specific events for cache invalidation
