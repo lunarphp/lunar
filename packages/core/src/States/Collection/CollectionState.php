@@ -11,11 +11,15 @@ abstract class CollectionState extends State
 
     public static function config(): StateConfig
     {
+        // Collection lifecycle has no domain rule against any transition,
+        // same as Product (see ProductState::config()). Full mesh.
         return parent::config()
             ->default(Draft::class)
             ->allowTransition(Draft::class, Published::class)
-            ->allowTransition(Published::class, Archived::class)
+            ->allowTransition(Draft::class, Archived::class)
             ->allowTransition(Published::class, Draft::class)
-            ->allowTransition(Archived::class, Draft::class);
+            ->allowTransition(Published::class, Archived::class)
+            ->allowTransition(Archived::class, Draft::class)
+            ->allowTransition(Archived::class, Published::class);
     }
 }

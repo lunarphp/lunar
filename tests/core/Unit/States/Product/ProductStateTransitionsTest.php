@@ -49,17 +49,22 @@ test('Archived → Draft', function () {
     expect($product->fresh()->status)->toBeInstanceOf(Draft::class);
 });
 
-test('Draft cannot transition directly to Archived', function () {
+test('Draft → Archived', function () {
     $product = Product::factory()->create(['status' => Draft::$name]);
-
-    expect(fn () => $product->status->transitionTo(Archived::class))
-        ->toThrow(CouldNotPerformTransition::class);
+    $product->status->transitionTo(Archived::class);
+    expect($product->fresh()->status)->toBeInstanceOf(Archived::class);
 });
 
-test('Archived cannot transition directly to Published', function () {
+test('Archived → Published', function () {
     $product = Product::factory()->create(['status' => Archived::$name]);
+    $product->status->transitionTo(Published::class);
+    expect($product->fresh()->status)->toBeInstanceOf(Published::class);
+});
 
-    expect(fn () => $product->status->transitionTo(Published::class))
+test('transitioning to the same state is not allowed', function () {
+    $product = Product::factory()->create(['status' => Draft::$name]);
+
+    expect(fn () => $product->status->transitionTo(Draft::class))
         ->toThrow(CouldNotPerformTransition::class);
 });
 

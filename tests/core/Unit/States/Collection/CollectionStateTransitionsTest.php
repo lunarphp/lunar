@@ -30,10 +30,16 @@ test('Published → Archived', function () {
     expect($collection->fresh()->status)->toBeInstanceOf(Archived::class);
 });
 
-test('Draft cannot transition directly to Archived', function () {
+test('Draft → Archived', function () {
+    $collection = Collection::factory()->create(['status' => Draft::$name]);
+    $collection->status->transitionTo(Archived::class);
+    expect($collection->fresh()->status)->toBeInstanceOf(Archived::class);
+});
+
+test('transitioning to the same state is not allowed', function () {
     $collection = Collection::factory()->create(['status' => Draft::$name]);
 
-    expect(fn () => $collection->status->transitionTo(Archived::class))
+    expect(fn () => $collection->status->transitionTo(Draft::class))
         ->toThrow(CouldNotPerformTransition::class);
 });
 
