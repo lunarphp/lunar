@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Jelenleg vázlat státuszban van, ez a termék egyik csatornán és vásárlói csoportban sem érhető el.',
-        ],
         'availability' => [
             'customer_groups' => 'Ez a termék jelenleg nem elérhető egyik vásárlói csoport számára sem.',
             'channels' => 'Ez a termék jelenleg nem elérhető egyik csatornán sem.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Státusz frissítése',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Státusz frissítése',
         ],
         'delete' => [

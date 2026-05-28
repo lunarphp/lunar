@@ -14,9 +14,6 @@ return [
     ],
 
     'status' => [
-        'unpublished' => [
-            'content' => 'Currently in draft status, this product is unavailable across all channels and customer groups.',
-        ],
         'availability' => [
             'customer_groups' => 'This product is currently unavailable for all customer groups.',
             'channels' => 'This product is currently unavailable for all channels.',
@@ -54,6 +51,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Update Status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Update Status',
         ],
         'delete' => [

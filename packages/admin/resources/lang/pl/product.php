@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Produkt jest obecnie w trybie szkicu i jest niedostępny we wszystkich kanałach i grupach klientów.',
-        ],
         'availability' => [
             'customer_groups' => 'Produkt jest obecnie niedostępny dla wszystkich grup klientów.',
             'channels' => 'Produkt jest obecnie niedostępny dla wszystkich kanałów.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Edytuj status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Edytuj status produktu',
         ],
         'delete' => [

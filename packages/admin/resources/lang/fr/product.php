@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Actuellement en statut de brouillon, ce produit est indisponible sur tous les canaux et groupes de clients.',
-        ],
         'availability' => [
             'customer_groups' => 'Ce produit est actuellement indisponible pour tous les groupes de clients.',
             'channels' => 'Ce produit est actuellement indisponible pour tous les canaux.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Mettre à jour le statut',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Mettre à jour le statut',
         ],
         'delete' => [

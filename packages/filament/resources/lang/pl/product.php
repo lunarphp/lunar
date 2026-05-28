@@ -9,8 +9,11 @@ return [
         'draft' => 'Draft',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Produkt jest obecnie w trybie szkicu i jest niedostępny we wszystkich kanałach i grupach klientów.',
+        'draft' => [
+            'content' => 'Currently in draft, this product is hidden from all channels and customer groups.',
+        ],
+        'archived' => [
+            'content' => 'This product is archived — it is hidden from the storefront, but kept on record so historical orders keep their reference. Move it back to Draft to revive it.',
         ],
         'availability' => [
             'customer_groups' => 'Produkt jest obecnie niedostępny dla wszystkich grup klientów.',

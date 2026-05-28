@@ -378,9 +378,9 @@ it('suppresses availability warnings when product is in draft', function () {
 
     Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
         ->assertSuccessful()
-        ->assertSee(__('lunarpanel::product.status.unpublished.content'))
-        ->assertDontSee(__('lunarpanel::product.status.availability.customer_groups'))
-        ->assertDontSee(__('lunarpanel::product.status.availability.channels'))
-        ->assertDontSee(__('lunarpanel::product.status.availability.hidden_from_guests'))
-        ->assertDontSee(__('lunarpanel::product.status.availability.no_default_customer_group'));
+        ->assertSee(__('lunar-filament::product.status.draft.content'))
+        ->assertDontSee(__('lunar-filament::product.status.availability.customer_groups'))
+        ->assertDontSee(__('lunar-filament::product.status.availability.channels'))
+        ->assertDontSee(__('lunar-filament::product.status.availability.hidden_from_guests'))
+        ->assertDontSee(__('lunar-filament::product.status.availability.no_default_customer_group'));
 });

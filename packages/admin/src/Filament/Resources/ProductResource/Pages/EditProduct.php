@@ -35,7 +35,14 @@ class EditProduct extends BaseEditRecord
     {
         return [
             EditAction::make('update_status')
-                ->label(__('lunarpanel::product.actions.edit_status.label'))
+                ->label(fn (Product $record) => __('lunarpanel::product.actions.edit_status.label_with_state', [
+                    'state' => $record->status->label(),
+                ]))
+                ->color(fn (Product $record) => match ((string) $record->status) {
+                    'published' => 'success',
+                    'archived' => 'gray',
+                    default => 'warning',
+                })
                 ->modalHeading(__('lunarpanel::product.actions.edit_status.heading'))
                 ->record($this->record)
                 ->schema([

@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Momenteel in conceptstatus, dit product is niet beschikbaar op alle kanalen en klantgroepen.',
-        ],
         'availability' => [
             'customer_groups' => 'Dit product is momenteel niet beschikbaar voor alle klantgroepen.',
             'channels' => 'Dit product is momenteel niet beschikbaar voor alle kanalen.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Status Bijwerken',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Status Bijwerken',
         ],
         'delete' => [

@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'În prezent în stadiu de ciornă, acest produs este indisponibil în toate canalele și grupurile de clienți.',
-        ],
         'availability' => [
             'customer_groups' => 'Acest produs nu este disponibil momentan pentru niciun grup de clienți.',
             'channels' => 'Acest produs nu este disponibil momentan în niciun canal.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Actualizează starea',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Actualizează starea',
         ],
         'delete' => [

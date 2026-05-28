@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Trenutno u statusu skice, ovaj proizvod nije dostupan ni u jednom kanalu ni u jednoj grupi kupaca.',
-        ],
         'availability' => [
             'customer_groups' => 'Ovaj proizvod trenutno nije dostupan nijednoj grupi kupaca.',
             'channels' => 'Ovaj proizvod trenutno nije dostupan nijednom kanalu.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Ažuriraj status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Ažuriraj status',
         ],
         'delete' => [

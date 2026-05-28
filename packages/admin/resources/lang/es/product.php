@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Actualmente en estado de borrador, este producto no está disponible en todos los canales y grupos de clientes.',
-        ],
         'availability' => [
             'customer_groups' => 'Este producto actualmente no está disponible para todos los grupos de clientes.',
             'channels' => 'Este producto actualmente no está disponible para todos los canales.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Actualizar Estado',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Actualizar Estado',
         ],
         'delete' => [

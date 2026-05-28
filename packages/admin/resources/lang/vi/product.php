@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Hiện đang ở trạng thái nháp, sản phẩm này không khả dụng trên tất cả các kênh và nhóm khách hàng.',
-        ],
         'availability' => [
             'customer_groups' => 'Sản phẩm này hiện không có sẵn cho tất cả các nhóm khách hàng.',
             'channels' => 'Sản phẩm này hiện không có sẵn trên tất cả các kênh.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Cập nhật trạng thái',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Cập nhật trạng thái',
         ],
         'delete' => [

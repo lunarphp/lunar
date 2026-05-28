@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Derzeit im Entwurfsstatus, dieses Produkt ist in allen Kanälen und Kundengruppen nicht verfügbar.',
-        ],
         'availability' => [
             'customer_groups' => 'Dieses Produkt ist derzeit für alle Kundengruppen nicht verfügbar.',
             'channels' => 'Dieses Produkt ist derzeit für alle Kanäle nicht verfügbar.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Status aktualisieren',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Status aktualisieren',
         ],
         'delete' => [

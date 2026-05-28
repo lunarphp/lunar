@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'در حال حاضر در وضعیت پیش‌نویس، این محصول در همه کانال‌ها و گروه‌های مشتری در دسترس نیست.',
-        ],
         'availability' => [
             'customer_groups' => 'این محصول در حال حاضر برای همه گروه‌های مشتری در دسترس نیست.',
             'channels' => 'این محصول در حال حاضر برای همه کانال‌ها در دسترس نیست.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Update Status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Update Status',
         ],
         'delete' => [

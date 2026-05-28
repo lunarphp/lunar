@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Şu anda taslak durumunda olan bu ürün, tüm kanallarda ve müşteri gruplarında kullanılamaz.',
-        ],
         'availability' => [
             'customer_groups' => 'Bu ürün şu anda tüm müşteri grupları için mevcut değil.',
             'channels' => 'Bu ürün şu anda tüm kanallar için mevcut değil.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Durumu Güncelle',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Durumu Güncelle',
         ],
         'delete' => [

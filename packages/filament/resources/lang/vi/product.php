@@ -9,8 +9,11 @@ return [
         'draft' => 'Draft',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Hiện đang ở trạng thái nháp, sản phẩm này không khả dụng trên tất cả các kênh và nhóm khách hàng.',
+        'draft' => [
+            'content' => 'Currently in draft, this product is hidden from all channels and customer groups.',
+        ],
+        'archived' => [
+            'content' => 'This product is archived — it is hidden from the storefront, but kept on record so historical orders keep their reference. Move it back to Draft to revive it.',
         ],
         'availability' => [
             'customer_groups' => 'Sản phẩm này hiện không có sẵn cho tất cả các nhóm khách hàng.',

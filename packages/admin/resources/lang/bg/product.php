@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'В чернова, този продукт е недостъпен във всички канали и клиентски групи.',
-        ],
         'availability' => [
             'customer_groups' => 'Този продукт не е наличен за всички клиентски групи.',
             'channels' => 'Този продукт не е наличен във всички канали.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Актуализиране на статус',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Актуализиране на статус',
         ],
         'delete' => [

@@ -9,8 +9,11 @@ return [
         'draft' => 'Чернови',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'В чернова, този продукт е недостъпен във всички канали и клиентски групи.',
+        'draft' => [
+            'content' => 'Currently in draft, this product is hidden from all channels and customer groups.',
+        ],
+        'archived' => [
+            'content' => 'This product is archived — it is hidden from the storefront, but kept on record so historical orders keep their reference. Move it back to Draft to revive it.',
         ],
         'availability' => [
             'customer_groups' => 'Този продукт не е наличен за всички клиентски групи.',

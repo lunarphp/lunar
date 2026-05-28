@@ -9,8 +9,11 @@ return [
         'draft' => 'مسودة',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'حالياً في حالة مسودة، هذا المنتج غير متاح في جميع واجهات البيع ومجموعات العملاء.',
+        'draft' => [
+            'content' => 'Currently in draft, this product is hidden from all channels and customer groups.',
+        ],
+        'archived' => [
+            'content' => 'This product is archived — it is hidden from the storefront, but kept on record so historical orders keep their reference. Move it back to Draft to revive it.',
         ],
         'availability' => [
             'customer_groups' => 'هذا المنتج غير متاح حالياً لجميع مجموعات العملاء.',

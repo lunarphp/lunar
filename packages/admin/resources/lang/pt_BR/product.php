@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Atualmente em rascunho, este produto está indisponível em todos os canais e grupos de clientes.',
-        ],
         'availability' => [
             'customer_groups' => 'Este produto está indisponível para todos os grupos de clientes.',
             'channels' => 'Este produto está indisponível para todos os canais.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Atualizar status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Atualizar status',
         ],
         'delete' => [

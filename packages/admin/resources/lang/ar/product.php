@@ -10,9 +10,6 @@ return [
         'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'حالياً في حالة مسودة، هذا المنتج غير متاح في جميع واجهات البيع ومجموعات العملاء.',
-        ],
         'availability' => [
             'customer_groups' => 'هذا المنتج غير متاح حالياً لجميع مجموعات العملاء.',
             'channels' => 'هذا المنتج غير متاح حالياً لجميع واجهات البيع.',
@@ -48,6 +45,7 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'تحديث الحالة',
+            'label_with_state' => 'Status: :state',
             'heading' => 'تحديث الحالة',
         ],
         'delete' => [
