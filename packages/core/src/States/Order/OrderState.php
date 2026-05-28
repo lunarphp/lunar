@@ -2,17 +2,7 @@
 
 namespace Lunar\Core\States\Order;
 
-use Lunar\Core\States\Order\Order\AwaitingPayment;
-use Lunar\Core\States\Order\Order\Backordered;
-use Lunar\Core\States\Order\Order\Cancelled;
-use Lunar\Core\States\Order\Order\Complete;
-use Lunar\Core\States\Order\Order\InProcess;
-use Lunar\Core\States\Order\Order\OnHold;
-use Lunar\Core\States\Order\Order\PartiallyShipped;
-use Lunar\Core\States\Order\Order\PaymentFailed;
-use Lunar\Core\States\Order\Order\Refunded;
-use Lunar\Core\States\Order\Order\Returned;
-use Lunar\Core\States\Order\Order\Shipped;
+use Lunar\Core\Contracts\OrderStateConfig;
 use Spatie\ModelStates\State;
 use Spatie\ModelStates\StateConfig;
 
@@ -27,20 +17,12 @@ abstract class OrderState extends State
 
     public static function config(): StateConfig
     {
+        $config = app(OrderStateConfig::class);
+
+        // No transitions are registered — the resolver writes order_status
+        // directly via saveQuietly() / forceFill().
         return parent::config()
-            ->default(AwaitingPayment::class)
-            ->registerState([
-                AwaitingPayment::class,
-                PaymentFailed::class,
-                Backordered::class,
-                InProcess::class,
-                PartiallyShipped::class,
-                Shipped::class,
-                Complete::class,
-                Returned::class,
-                Refunded::class,
-                OnHold::class,
-                Cancelled::class,
-            ]);
+            ->default($config->defaultOrderState())
+            ->registerState($config->orderStates());
     }
 }

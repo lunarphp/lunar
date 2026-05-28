@@ -212,10 +212,10 @@ public function isManualOverride(): bool { return false; }
 
 `OrderState` registers **no** transitions — the resolver writes it directly and `saveQuietly()` bypasses the model-states transition guard. Default: `AwaitingPayment`. `isManualOverride()` returning `true` parks the order: see §F.
 
-### E. `Contracts\Orders\OrderStateConfig`
+### E. `Contracts\OrderStateConfig`
 
 ```php
-namespace Lunar\Core\Contracts\Orders;
+namespace Lunar\Core\Contracts;
 
 use Lunar\Core\States\Order\FulfilmentState;
 use Lunar\Core\States\Order\OrderState;
@@ -238,10 +238,49 @@ interface OrderStateConfig
     /** @return array<class-string<FulfilmentState>, list<class-string<FulfilmentState>>> */
     public function fulfilmentTransitions(): array;
 
+    /** @return class-string<PaymentState> */
+    public function defaultPaymentState(): string;
+
+    /** @return class-string<FulfilmentState> */
+    public function defaultFulfilmentState(): string;
+
+    /** @return class-string<OrderState> */
+    public function defaultOrderState(): string;
+
     /** @return class-string<OrderState> */
     public function resolveOrderState(PaymentState $payment, FulfilmentState $fulfilment): string;
 }
 ```
+
+The abstract State base classes (`PaymentState`, `FulfilmentState`, `OrderState`) read from the bound `OrderStateConfig` to register their states and transitions. This is the **single seam** for adding bespoke order states: a downstream consumer extends `DefaultOrderStateConfig`, adds states + transitions, and binds the subclass in their service provider. The state machine and the resolver matrix both pick up the new states without any core change.
+
+```php
+class MyOrderStateConfig extends DefaultOrderStateConfig
+{
+    public function paymentStates(): array
+    {
+        return [...parent::paymentStates(), PartiallyCaptured::class];
+    }
+
+    public function paymentTransitions(): array
+    {
+        return [
+            ...parent::paymentTransitions(),
+            Captured::class => [PartiallyCaptured::class, ...parent::paymentTransitions()[Captured::class]],
+            PartiallyCaptured::class => [Captured::class],
+        ];
+    }
+
+    public function resolveOrderState(PaymentState $payment, FulfilmentState $fulfilment): string
+    {
+        // Map the new payment state into an existing order state, or add an
+        // override before delegating.
+        return parent::resolveOrderState($payment, $fulfilment);
+    }
+}
+```
+
+Bind in a service provider's `register()` (not `boot()`) so the catalogue is in place before any model uses the state casts. Spatie's `State` base caches the resolved state mapping per class for the lifetime of the process — under Laravel Octane this cache survives between requests, so runtime rebinding is not supported. Sub-states aren't modelled hierarchically: `StateCategory` (`Pending / Active / Complete / Blocked / Failed`) is the grouping mechanism, and new states classify themselves into an existing category via `category()`.
 
 `DefaultOrderStateConfig` implements the contract. Resolution rules, in order:
 

@@ -82,6 +82,21 @@ class DefaultOrderStateConfig implements OrderStateConfig
         ];
     }
 
+    public function defaultPaymentState(): string
+    {
+        return Pending::class;
+    }
+
+    public function defaultFulfilmentState(): string
+    {
+        return Unfulfilled::class;
+    }
+
+    public function defaultOrderState(): string
+    {
+        return AwaitingPayment::class;
+    }
+
     public function fulfilmentTransitions(): array
     {
         return [

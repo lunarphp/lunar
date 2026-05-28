@@ -2,12 +2,8 @@
 
 namespace Lunar\Core\States\Order;
 
+use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Enums\StateCategory;
-use Lunar\Core\States\Order\Payment\Authorized;
-use Lunar\Core\States\Order\Payment\Captured;
-use Lunar\Core\States\Order\Payment\Failed;
-use Lunar\Core\States\Order\Payment\Pending;
-use Lunar\Core\States\Order\Payment\Refunded;
 use Spatie\ModelStates\State;
 use Spatie\ModelStates\StateConfig;
 
@@ -19,21 +15,18 @@ abstract class PaymentState extends State
 
     public static function config(): StateConfig
     {
-        return parent::config()
-            ->default(Pending::class)
-            ->registerState([
-                Pending::class,
-                Authorized::class,
-                Captured::class,
-                Failed::class,
-                Refunded::class,
-            ])
-            ->allowTransition(Pending::class, Authorized::class)
-            ->allowTransition(Pending::class, Captured::class)
-            ->allowTransition(Pending::class, Failed::class)
-            ->allowTransition(Authorized::class, Captured::class)
-            ->allowTransition(Authorized::class, Failed::class)
-            ->allowTransition(Captured::class, Refunded::class)
-            ->allowTransition(Failed::class, Pending::class);
+        $config = app(OrderStateConfig::class);
+
+        $stateConfig = parent::config()
+            ->default($config->defaultPaymentState())
+            ->registerState($config->paymentStates());
+
+        foreach ($config->paymentTransitions() as $from => $tos) {
+            foreach ($tos as $to) {
+                $stateConfig->allowTransition($from, $to);
+            }
+        }
+
+        return $stateConfig;
     }
 }
