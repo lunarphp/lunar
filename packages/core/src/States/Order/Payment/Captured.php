@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\States\Order\Payment;
 
-use Lunar\Core\Enums\StateCategory;
+use Lunar\Core\Enums\OrderStateCategory;
 use Lunar\Core\States\Order\PaymentState;
 
 class Captured extends PaymentState
@@ -14,8 +14,8 @@ class Captured extends PaymentState
         return __('lunar::states.payment.captured');
     }
 
-    public function category(): StateCategory
+    public function category(): OrderStateCategory
     {
-        return StateCategory::Complete;
+        return OrderStateCategory::Complete;
     }
 }

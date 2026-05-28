@@ -3,7 +3,7 @@
 namespace Lunar\Core\States\Order;
 
 use Lunar\Core\Contracts\OrderStateConfig;
-use Lunar\Core\Enums\StateCategory;
+use Lunar\Core\Enums\OrderStateCategory;
 use Lunar\Core\States\Order\Fulfilment\Backordered as FulfilmentBackordered;
 use Lunar\Core\States\Order\Fulfilment\Delivered as FulfilmentDelivered;
 use Lunar\Core\States\Order\Fulfilment\PartiallyShipped as FulfilmentPartiallyShipped;
@@ -132,14 +132,14 @@ class DefaultOrderStateConfig implements OrderStateConfig
         }
 
         return match ($payment->category()) {
-            StateCategory::Failed => OrderPaymentFailed::class,
-            StateCategory::Pending => AwaitingPayment::class,
-            StateCategory::Active, StateCategory::Complete => match ($fulfilment->category()) {
-                StateCategory::Blocked => OrderBackordered::class,
-                StateCategory::Pending => InProcess::class,
-                StateCategory::Active => OrderShipped::class,
-                StateCategory::Complete => OrderComplete::class,
-                StateCategory::Failed => OrderReturned::class,
+            OrderStateCategory::Failed => OrderPaymentFailed::class,
+            OrderStateCategory::Pending => AwaitingPayment::class,
+            OrderStateCategory::Active, OrderStateCategory::Complete => match ($fulfilment->category()) {
+                OrderStateCategory::Blocked => OrderBackordered::class,
+                OrderStateCategory::Pending => InProcess::class,
+                OrderStateCategory::Active => OrderShipped::class,
+                OrderStateCategory::Complete => OrderComplete::class,
+                OrderStateCategory::Failed => OrderReturned::class,
             },
             default => AwaitingPayment::class,
         };

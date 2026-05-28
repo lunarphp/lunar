@@ -29,7 +29,7 @@ Add `spatie/laravel-model-states: ^2` to `packages/core/composer.json`. Pinned t
 
 ```
 Enums/
-└── StateCategory.php
+└── OrderStateCategory.php
 States/
 ├── Channel/
 │   ├── ChannelState.php
@@ -139,14 +139,14 @@ Baseline migration `2026_01_01_000028_create_orders_table.php` is edited in plac
 
 Factories under `packages/core/src/Database/Factories/OrderFactory.php` emit the three new columns; the old single-column states (`payment-received`, `dispatched`, etc.) are deleted from any factory state methods.
 
-#### `Enums\StateCategory`
+#### `Enums\OrderStateCategory`
 
 Categorises a payment or fulfilment state for the resolver matrix:
 
 ```php
 namespace Lunar\Core\Enums;
 
-enum StateCategory
+enum OrderStateCategory
 {
     case Pending;
     case Active;
@@ -160,7 +160,7 @@ enum StateCategory
 
 ```php
 abstract public function label(): string;
-abstract public function category(): StateCategory;
+abstract public function category(): OrderStateCategory;
 ```
 
 | State        | `$name`      | `category()`            |
@@ -280,7 +280,7 @@ class MyOrderStateConfig extends DefaultOrderStateConfig
 }
 ```
 
-Bind in a service provider's `register()` (not `boot()`) so the catalogue is in place before any model uses the state casts. Spatie's `State` base caches the resolved state mapping per class for the lifetime of the process — under Laravel Octane this cache survives between requests, so runtime rebinding is not supported. Sub-states aren't modelled hierarchically: `StateCategory` (`Pending / Active / Complete / Blocked / Failed`) is the grouping mechanism, and new states classify themselves into an existing category via `category()`.
+Bind in a service provider's `register()` (not `boot()`) so the catalogue is in place before any model uses the state casts. Spatie's `State` base caches the resolved state mapping per class for the lifetime of the process — under Laravel Octane this cache survives between requests, so runtime rebinding is not supported. Sub-states aren't modelled hierarchically: `OrderStateCategory` (`Pending / Active / Complete / Blocked / Failed`) is the grouping mechanism, and new states classify themselves into an existing category via `category()`.
 
 `DefaultOrderStateConfig` implements the contract. Resolution rules, in order:
 
@@ -301,14 +301,14 @@ public function resolveOrderState(PaymentState $payment, FulfilmentState $fulfil
     }
 
     return match ($payment->category()) {
-        StateCategory::Failed  => OrderPaymentFailed::class,
-        StateCategory::Pending => AwaitingPayment::class,
-        StateCategory::Active, StateCategory::Complete => match ($fulfilment->category()) {
-            StateCategory::Blocked  => OrderBackordered::class,
-            StateCategory::Pending  => InProcess::class,
-            StateCategory::Active   => OrderShipped::class,
-            StateCategory::Complete => OrderComplete::class,
-            StateCategory::Failed   => OrderReturned::class,
+        OrderStateCategory::Failed  => OrderPaymentFailed::class,
+        OrderStateCategory::Pending => AwaitingPayment::class,
+        OrderStateCategory::Active, OrderStateCategory::Complete => match ($fulfilment->category()) {
+            OrderStateCategory::Blocked  => OrderBackordered::class,
+            OrderStateCategory::Pending  => InProcess::class,
+            OrderStateCategory::Active   => OrderShipped::class,
+            OrderStateCategory::Complete => OrderComplete::class,
+            OrderStateCategory::Failed   => OrderReturned::class,
         },
         default => AwaitingPayment::class,
     };

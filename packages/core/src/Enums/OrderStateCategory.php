@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Enums;
 
-enum StateCategory
+enum OrderStateCategory
 {
     case Pending;
     case Active;

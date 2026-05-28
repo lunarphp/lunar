@@ -1,6 +1,6 @@
 <?php
 
-use Lunar\Core\Enums\StateCategory;
+use Lunar\Core\Enums\OrderStateCategory;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\DefaultOrderStateConfig;
 use Lunar\Core\States\Order\Fulfilment\Backordered as FulfilmentBackordered;
@@ -67,20 +67,20 @@ foreach ($cases as [$paymentClass, $fulfilmentClass, $expectedOrderClass]) {
     });
 }
 
-test('every payment state declares a StateCategory', function () {
+test('every payment state declares a OrderStateCategory', function () {
     $config = new DefaultOrderStateConfig;
 
     foreach ($config->paymentStates() as $class) {
         $state = payment($class);
-        expect($state->category())->toBeInstanceOf(StateCategory::class);
+        expect($state->category())->toBeInstanceOf(OrderStateCategory::class);
     }
 });
 
-test('every fulfilment state declares a StateCategory', function () {
+test('every fulfilment state declares a OrderStateCategory', function () {
     $config = new DefaultOrderStateConfig;
 
     foreach ($config->fulfilmentStates() as $class) {
         $state = fulfilment($class);
-        expect($state->category())->toBeInstanceOf(StateCategory::class);
+        expect($state->category())->toBeInstanceOf(OrderStateCategory::class);
     }
 });

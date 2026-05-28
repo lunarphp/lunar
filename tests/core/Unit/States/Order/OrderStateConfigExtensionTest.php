@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\OrderStateConfig;
-use Lunar\Core\Enums\StateCategory;
+use Lunar\Core\Enums\OrderStateCategory;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
@@ -45,9 +45,9 @@ class PartiallyCaptured extends PaymentState
         return 'Partially Captured';
     }
 
-    public function category(): StateCategory
+    public function category(): OrderStateCategory
     {
-        return StateCategory::Active;
+        return OrderStateCategory::Active;
     }
 }
 

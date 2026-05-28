@@ -3,7 +3,7 @@
 namespace Lunar\Core\States\Order;
 
 use Lunar\Core\Contracts\OrderStateConfig;
-use Lunar\Core\Enums\StateCategory;
+use Lunar\Core\Enums\OrderStateCategory;
 use Spatie\ModelStates\State;
 use Spatie\ModelStates\StateConfig;
 
@@ -11,7 +11,7 @@ abstract class FulfilmentState extends State
 {
     abstract public function label(): string;
 
-    abstract public function category(): StateCategory;
+    abstract public function category(): OrderStateCategory;
 
     public static function config(): StateConfig
     {

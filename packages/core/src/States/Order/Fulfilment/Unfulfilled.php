@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\States\Order\Fulfilment;
 
-use Lunar\Core\Enums\StateCategory;
+use Lunar\Core\Enums\OrderStateCategory;
 use Lunar\Core\States\Order\FulfilmentState;
 
 class Unfulfilled extends FulfilmentState
@@ -14,8 +14,8 @@ class Unfulfilled extends FulfilmentState
         return __('lunar::states.fulfilment.unfulfilled');
     }
 
-    public function category(): StateCategory
+    public function category(): OrderStateCategory
     {
-        return StateCategory::Pending;
+        return OrderStateCategory::Pending;
     }
 }

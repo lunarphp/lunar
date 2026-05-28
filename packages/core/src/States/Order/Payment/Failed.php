@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\States\Order\Payment;
 
-use Lunar\Core\Enums\StateCategory;
+use Lunar\Core\Enums\OrderStateCategory;
 use Lunar\Core\States\Order\PaymentState;
 
 class Failed extends PaymentState
@@ -14,8 +14,8 @@ class Failed extends PaymentState
         return __('lunar::states.payment.failed');
     }
 
-    public function category(): StateCategory
+    public function category(): OrderStateCategory
     {
-        return StateCategory::Failed;
+        return OrderStateCategory::Failed;
     }
 }
