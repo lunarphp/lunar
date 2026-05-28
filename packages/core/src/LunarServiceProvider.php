@@ -21,7 +21,6 @@ use Lunar\Core\Auth\Manifest as AccessControlManifest;
 use Lunar\Core\Cache\AttributeCache as AttributeCacheImpl;
 use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\Import\AddressData;
-use Lunar\Core\Console\Commands\MigrateGetCandy;
 use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
@@ -198,7 +197,6 @@ class LunarServiceProvider extends ServiceProvider
                 AddonsDiscover::class,
                 AddressData::class,
                 ScoutIndexerCommand::class,
-                MigrateGetCandy::class,
                 SyncNewCustomerOrders::class,
                 PruneCarts::class,
             ]);

@@ -127,7 +127,6 @@ final class LunarSetList
         'Lunar\\Base\\ValueObjects\\Cart\\TaxBreakdownAmount' => 'Lunar\\Core\\ValueObjects\\Cart\\TaxBreakdownAmount',
         'Lunar\\Console\\Commands\\AddonsDiscover' => 'Lunar\\Core\\Console\\Commands\\AddonsDiscover',
         'Lunar\\Console\\Commands\\Import\\AddressData' => 'Lunar\\Core\\Console\\Commands\\Import\\AddressData',
-        'Lunar\\Console\\Commands\\MigrateGetCandy' => 'Lunar\\Core\\Console\\Commands\\MigrateGetCandy',
         'Lunar\\Console\\Commands\\Orders\\SyncNewCustomerOrders' => 'Lunar\\Core\\Console\\Commands\\Orders\\SyncNewCustomerOrders',
         'Lunar\\Console\\Commands\\PruneCarts' => 'Lunar\\Core\\Console\\Commands\\PruneCarts',
         'Lunar\\Console\\Commands\\ScoutIndexerCommand' => 'Lunar\\Core\\Console\\Commands\\ScoutIndexerCommand',
