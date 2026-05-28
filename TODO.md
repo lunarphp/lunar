@@ -6,8 +6,6 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 
 ## Outstanding
 
-- Implement state machines, replacing soft-deletes
-    - Specifically, products (draft, published, archived) & orders (payment, fulfilment and order status)
 - Region concept to define channel, currency, language, tax_zone, countries and price display
 - `StorefrontContext` for CartSessionManager and other services
 - Add Vendors concept to support marketplace developments
@@ -54,3 +52,4 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Change `compare_price` to `list_price`
 - Add dedicated `name` / `description` / `short_description` fields — promote Product/Collection name + description out of `attribute_data` into translatable columns and add a translatable `short_description`; Brand gains translatable description/short_description but keeps a plain string name; reads route through `translate()`, search indexes per locale, Filament binds explicit fields; one-way v1→v2 backfill migration + `translateAttribute`→`translate` Rector rule (spec 0018)
 - Attribute system redesign — id-keyed raw `attribute_data` JSON on disk + handle-keyed `FieldType` collection in memory; drop the morph columns on `Attribute` / `AttributeGroup` for a nullable group FK + typed `attribute_models` join + renamed `product_type_attribute` pivot; shared `AbstractFieldType` base + `FieldTypeEnum` + relocated `Manifests\FieldTypeManifest`; `AttributeCache` + observer + `PurgeAttributeData` job keep the new shape consistent; one-way v1→v2 data migration + Rector renames in the upgrade package (spec 0019)
+- State machines — `spatie/laravel-model-states` v2 across core. Channel (Active/Inactive), Product/Collection (Draft/Published/Archived), Order's three coordinated machines (Payment, Fulfilment, Order) with `OnHold`/`Cancelled` manual overrides. `OrderStateConfig` contract is the single seam for adding bespoke states, transitions, notifications and resolver overrides. `SoftDeletes` retired from Product/ProductVariant/Channel/Collection; baseline migrations edited in place. PHP minimum bumped to 8.4 due to upstream `spatie/laravel-model-states` PHP/Laravel matrix split (spec 0021)

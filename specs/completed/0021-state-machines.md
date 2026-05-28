@@ -1,6 +1,6 @@
 # 0021 — State machines (and retiring soft-deletes)
 
-- Status: implemented
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-28
 - TODO item: "Implement state machines, replacing soft-deletes — products (draft, published, archived) & orders (payment, fulfilment and order status)"
