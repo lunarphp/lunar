@@ -51,7 +51,7 @@ class OrderResource extends BaseResource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::whereIn('status', config('lunar.panel.order_count_statuses', 'payment-received'))->count();
+        return static::getModel()::whereIn('order_status', config('lunar.panel.order_count_statuses', ['in-process']))->count();
     }
 
     public static function table(Table $table): Table
