@@ -76,29 +76,34 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
-        'update_status' => [
-            'label' => 'Update Status',
-            'wizard' => [
-                'step_one' => [
-                    'label' => 'Status',
-                ],
-                'step_two' => [
-                    'label' => 'Mailers & Notifications',
-                    'no_mailers' => 'There are no mailers available for this status.',
-                ],
-                'step_three' => [
-                    'label' => 'Preview & Save',
-                    'no_mailers' => 'No mailers have been chosen for preview.',
-                ],
+        'update_fulfilment_status' => [
+            'label' => 'Update Fulfilment',
+            'field' => [
+                'label' => 'Fulfilment status',
             ],
             'notification' => [
-                'label' => 'Order status updated',
+                'success' => 'Fulfilment status updated.',
             ],
-            'billing_email' => [
-                'label' => 'Billing Email',
+        ],
+        'place_on_hold' => [
+            'label' => 'Place on Hold',
+            'confirm' => 'Putting the order on hold pauses automatic status recomputation. Payment and fulfilment changes will not move the order status until you resume.',
+            'notification' => [
+                'success' => 'Order placed on hold.',
             ],
-            'shipping_email' => [
-                'label' => 'Shipping Email',
+        ],
+        'cancel_order' => [
+            'label' => 'Cancel Order',
+            'confirm' => 'Cancelling the order pauses automatic status recomputation and marks the order as cancelled. You can resume later, but downstream listeners may have already reacted.',
+            'notification' => [
+                'success' => 'Order cancelled.',
+            ],
+        ],
+        'resume_order' => [
+            'label' => 'Resume Order',
+            'confirm' => 'Resuming the order lets payment and fulfilment changes drive the order status again. The status will be recomputed from the current payment and fulfilment values.',
+            'notification' => [
+                'success' => 'Order resumed.',
             ],
         ],
         'mark_as_shipped' => [

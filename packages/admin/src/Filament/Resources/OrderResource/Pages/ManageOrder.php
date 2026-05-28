@@ -33,10 +33,13 @@ use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
 use Lunar\Admin\Support\Pages\BaseViewRecord;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
+use Lunar\Filament\Actions\Orders\CancelOrderAction;
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
 use Lunar\Filament\Actions\Orders\DownloadOrderPdfAction;
+use Lunar\Filament\Actions\Orders\PlaceOrderOnHoldAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
-use Lunar\Filament\Actions\Orders\UpdateOrderStatusAction;
+use Lunar\Filament\Actions\Orders\ResumeOrderAction;
+use Lunar\Filament\Actions\Orders\UpdateFulfilmentStatusAction;
 use Lunar\Filament\Forms\Components\Tags as TagsComponent;
 use Lunar\Filament\Infolists\Components\Tags;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -349,13 +352,15 @@ class ManageOrder extends BaseViewRecord
 
     protected function getDefaultHeaderActions(): array
     {
+        $bumpActivity = fn () => $this->dispatchActivityUpdated();
+
         return [
             CaptureOrderAction::make(),
             RefundOrderAction::make(),
-            UpdateOrderStatusAction::make()
-                ->after(function () {
-                    $this->dispatchActivityUpdated();
-                }),
+            UpdateFulfilmentStatusAction::make()->after($bumpActivity),
+            PlaceOrderOnHoldAction::make()->after($bumpActivity),
+            ResumeOrderAction::make()->after($bumpActivity),
+            CancelOrderAction::make()->after($bumpActivity),
             DownloadOrderPdfAction::make(),
         ];
     }
