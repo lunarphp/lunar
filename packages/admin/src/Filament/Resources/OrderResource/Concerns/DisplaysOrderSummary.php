@@ -7,6 +7,8 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\IconPosition;
 use Lunar\Admin\Support\OrderStatus;
+use Lunar\Core\States\Order\FulfilmentState;
+use Lunar\Core\States\Order\PaymentState;
 
 trait DisplaysOrderSummary
 {
@@ -23,10 +25,54 @@ trait DisplaysOrderSummary
         return self::callStaticLunarHook('extendOrderSummaryNewCustomerEntry', static::getDefaultOrderSummaryNewCustomerEntry());
     }
 
+    public static function getDefaultOrderSummaryPaymentStatusEntry(): TextEntry
+    {
+        return TextEntry::make('payment_status')
+            ->label(__('lunarpanel::order.infolist.payment_status.label'))
+            ->formatStateUsing(fn ($state) => $state instanceof PaymentState ? $state->label() : (string) $state)
+            ->alignEnd()
+            ->color(fn ($state) => match ((string) $state) {
+                'captured', 'refunded' => 'success',
+                'authorized' => 'info',
+                'failed' => 'danger',
+                default => 'gray',
+            })
+            ->badge();
+    }
+
+    public static function getOrderSummaryPaymentStatusEntry(): Entry
+    {
+        return self::callStaticLunarHook('extendOrderSummaryPaymentStatusEntry', static::getDefaultOrderSummaryPaymentStatusEntry());
+    }
+
+    public static function getDefaultOrderSummaryFulfilmentStatusEntry(): TextEntry
+    {
+        return TextEntry::make('fulfilment_status')
+            ->label(__('lunarpanel::order.infolist.fulfilment_status.label'))
+            ->formatStateUsing(fn ($state) => $state instanceof FulfilmentState ? $state->label() : (string) $state)
+            ->alignEnd()
+            ->color(fn ($state) => match ((string) $state) {
+                'delivered' => 'success',
+                'shipped', 'partially-shipped' => 'info',
+                'returned' => 'danger',
+                'backordered' => 'warning',
+                default => 'gray',
+            })
+            ->badge();
+    }
+
+    public static function getOrderSummaryFulfilmentStatusEntry(): Entry
+    {
+        return self::callStaticLunarHook('extendOrderSummaryFulfilmentStatusEntry', static::getDefaultOrderSummaryFulfilmentStatusEntry());
+    }
+
     public static function getDefaultOrderSummaryStatusEntry(): TextEntry
     {
         return TextEntry::make('order_status')
             ->label(__('lunarpanel::order.infolist.status.label'))
+            ->helperText(fn ($record) => $record->order_status->isManualOverride()
+                ? __('lunarpanel::order.infolist.status.manual_override')
+                : __('lunarpanel::order.infolist.status.computed'))
             ->formatStateUsing(fn ($state) => OrderStatus::getLabel((string) $state))
             ->alignEnd()
             ->color(fn ($state) => OrderStatus::getColor((string) $state))
@@ -112,6 +158,8 @@ trait DisplaysOrderSummary
     {
         return self::callStaticLunarHook('extendOrderSummarySchema', [
             static::getOrderSummaryNewCustomerEntry(),
+            static::getOrderSummaryPaymentStatusEntry(),
+            static::getOrderSummaryFulfilmentStatusEntry(),
             static::getOrderSummaryStatusEntry(),
             static::getOrderSummaryReferenceEntry(),
             static::getOrderSummaryCustomerReferenceEntry(),
