@@ -20,8 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # PRs run a slimmed matrix; push and the schedule run the full one.
-        php: ${{ fromJSON(github.event_name == 'pull_request' && '["8.4"]' || '["8.3","8.4"]') }}
+        php: ["8.4"]
         laravel: ["12.*", "13.*"]
         dependency-version: [prefer-stable]
         testsuite: [core, admin, filament, shipping, stripe, search, upgrade]

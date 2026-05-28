@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-      "php": "^8.3",
+      "php": "^8.4",
       "lunarphp/core": "self.version"
   },
   "autoload": {
