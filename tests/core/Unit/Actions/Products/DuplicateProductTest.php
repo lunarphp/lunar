@@ -28,7 +28,7 @@ test('duplicates a product as a draft', function () {
 
     expect($duplicate)->toBeInstanceOf(Product::class);
     expect($duplicate->id)->not->toBe($product->id);
-    expect($duplicate->status)->toBe('draft');
+    expect((string) $duplicate->status)->toBe('draft');
     expect($duplicate->variants)->toHaveCount(1);
     expect($duplicate->variants->first()->sku)->toBe('WIDGET-1-copy');
 

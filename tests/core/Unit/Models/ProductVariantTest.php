@@ -246,16 +246,6 @@ test('can get correct price inc tax based on tax class', function () {
     expect($genericProductVariant->pricing()->qty(20)->currency($currency)->get()->matched->priceIncTax()->value)->toEqual(9760);
 });
 
-test('reports unpurchasable when soft-deleted', function () {
-    $variant = ProductVariant::factory()->create();
-
-    expect($variant->isPurchasable())->toBeTrue();
-
-    $variant->delete();
-
-    expect($variant->fresh()->isPurchasable())->toBeFalse();
-});
-
 test('reports unpurchasable when the parent product is draft', function () {
     $product = Product::factory()->create(['status' => 'draft']);
     $variant = ProductVariant::factory()->create(['product_id' => $product->id]);
@@ -267,13 +257,13 @@ test('reports unpurchasable when the parent product is draft', function () {
     expect($variant->fresh()->isPurchasable())->toBeTrue();
 });
 
-test('reports unpurchasable when the parent product is soft-deleted', function () {
+test('reports unpurchasable when the parent product is archived', function () {
     $product = Product::factory()->create(['status' => 'published']);
     $variant = ProductVariant::factory()->create(['product_id' => $product->id]);
 
     expect($variant->isPurchasable())->toBeTrue();
 
-    $product->delete();
+    $product->update(['status' => 'archived']);
 
     expect($variant->fresh()->isPurchasable())->toBeFalse();
 });

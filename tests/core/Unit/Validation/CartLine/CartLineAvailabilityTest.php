@@ -146,10 +146,10 @@ test('fails when the channel pivot has ended', function () {
     expect(fn () => $validator->validate())->toThrow(CartException::class);
 });
 
-test('fails when the parent product is soft-deleted', function () {
+test('fails when the parent product is archived', function () {
     $variant = ProductVariant::factory()->create();
 
-    $variant->product->delete();
+    $variant->product->update(['status' => 'archived']);
 
     $validator = (new CartLineAvailability)->using(
         cart: $this->cart,

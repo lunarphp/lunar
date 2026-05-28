@@ -147,6 +147,6 @@ class CartLine extends Base implements Contracts\CartLine
 
     public function purchasable(): MorphTo
     {
-        return $this->morphTo()->withTrashed();
+        return $this->morphTo();
     }
 }

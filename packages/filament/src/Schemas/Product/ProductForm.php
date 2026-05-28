@@ -179,7 +179,7 @@ class ProductForm
 
     protected static function isPublished(?Model $record): bool
     {
-        return $record?->status === 'published';
+        return $record !== null && (string) $record->status === 'published';
     }
 
     protected static function hasEnabledCustomerGroup(Model $record): bool

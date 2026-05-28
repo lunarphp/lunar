@@ -33,6 +33,7 @@ use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
 use Lunar\Core\Contracts\ModelManifest;
 use Lunar\Core\Contracts\OrderReferenceGenerator;
+use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Contracts\PaymentManager;
 use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\Contracts\ProvidesTelemetryInsights;
@@ -41,9 +42,11 @@ use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\Contracts\TelemetryService;
 use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
+use Lunar\Core\Events\Orders\OrderStatusUpdated;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
 use Lunar\Core\Listeners\CartSessionAuthListener;
+use Lunar\Core\Listeners\SendOrderStatusNotifications;
 use Lunar\Core\Managers\CartSessionManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
 use Lunar\Core\Managers\PaymentManager as PaymentManagerImpl;
@@ -103,6 +106,7 @@ use Lunar\Core\Pricing\DefaultPriceCalculator;
 use Lunar\Core\Pricing\DefaultPriceFormatter;
 use Lunar\Core\Pricing\PriceCalculatorInterface;
 use Lunar\Core\Pricing\PriceFormatterInterface;
+use Lunar\Core\States\Order\DefaultOrderStateConfig;
 use Lunar\Core\Telemetry\Insights as TelemetryInsights;
 use Lunar\Core\Telemetry\TelemetryService as TelemetryServiceImpl;
 use Lunar\Core\Utils\MeasurementConverter;
@@ -229,6 +233,8 @@ class LunarServiceProvider extends ServiceProvider
             [CartSessionAuthListener::class, 'logout']
         );
 
+        Event::listen(OrderStatusUpdated::class, SendOrderStatusNotifications::class);
+
         $this->registerStaffAuthGuard();
         $this->registerStaffStateListeners();
 
@@ -332,6 +338,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(OrderReferenceGenerator::class, function ($app) {
             return $app->make(OrderReferenceGeneratorImpl::class);
+        });
+
+        $this->app->singleton(OrderStateConfig::class, function ($app) {
+            return $app->make(DefaultOrderStateConfig::class);
         });
 
         $this->app->bind(PriceFormatterInterface::class, function ($app, array $parameters = []) {

@@ -25,7 +25,7 @@ test('updates the product status and fires an event', function () {
 
     app(UpdateProductStatus::class)->execute($product, 'published');
 
-    expect($product->fresh()->status)->toBe('published');
+    expect((string) $product->fresh()->status)->toBe('published');
 
     Event::assertDispatched(ProductStatusUpdated::class);
 });

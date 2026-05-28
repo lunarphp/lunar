@@ -14,8 +14,8 @@ return new class extends Migration
             $table->string('handle')->unique();
             $table->boolean('default')->default(false)->index();
             $table->string('url')->nullable();
+            $table->string('status')->default('active')->index();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

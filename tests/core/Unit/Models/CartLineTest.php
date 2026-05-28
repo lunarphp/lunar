@@ -32,7 +32,7 @@ test('can make a cart line', function () {
     $this->assertDatabaseHas((new CartLine)->getTable(), $data);
 });
 
-test('resolves a soft-deleted purchasable through the relation', function () {
+test('returns null when the purchasable has been hard-deleted', function () {
     $cart = Cart::factory()->create([
         'user_id' => User::factory(),
     ]);
@@ -48,11 +48,7 @@ test('resolves a soft-deleted purchasable through the relation', function () {
 
     $variant->delete();
 
-    $line = $line->fresh();
-
-    expect($line->purchasable)->not->toBeNull();
-    expect($line->purchasable->id)->toBe($variant->id);
-    expect($line->purchasable->trashed())->toBeTrue();
+    expect($line->fresh()->purchasable)->toBeNull();
 });
 
 test('only purchasables can be added to a cart', function () {

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Lunar\Core\Contracts\Actions\Orders\UpdatesOrderStatus as UpdatesOrderStatusContract;
+use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Models\Order;
 
 trait UpdatesOrderStatus
@@ -32,9 +33,9 @@ trait UpdatesOrderStatus
     {
         return Select::make('status')
             ->label(__('lunar-filament::order.action.update_status.new_status.label'))
-            ->default(fn ($record) => $record?->status)
-            ->options(fn () => collect(config('lunar.orders.statuses', []))
-                ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
+            ->default(fn ($record) => $record ? (string) $record->order_status : null)
+            ->options(fn ($record) => collect(app(OrderStateConfig::class)->orderStates())
+                ->mapWithKeys(fn (string $class) => [$class::$name => (new $class($record ?? new Order))->label()]))
             ->required()
             ->live();
     }

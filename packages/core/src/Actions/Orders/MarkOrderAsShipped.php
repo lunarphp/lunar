@@ -3,28 +3,22 @@
 namespace Lunar\Core\Actions\Orders;
 
 use Lunar\Core\Contracts\Actions\Orders\MarksOrderAsShipped;
-use Lunar\Core\Contracts\Actions\Orders\UpdatesOrderStatus;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\Fulfilment\Shipped;
 
 /**
- * Convenience wrapper that transitions an order into the configured
- * "shipped" status (defaults to `dispatched`).
- *
- * Today this is `UpdateOrderStatus` with a fixed status string; once a
- * `shipped_at` column or a state-machine subsystem lands, the body changes
- * without altering this public signature.
+ * Convenience wrapper that transitions an order's fulfilment_status into
+ * Shipped. The OrderObserver recomputes order_status from the new
+ * fulfilment_status + current payment_status.
  */
 final class MarkOrderAsShipped implements MarksOrderAsShipped
 {
-    public function __construct(
-        protected UpdatesOrderStatus $updatesOrderStatus,
-    ) {}
-
     public function execute(OrderContract $order): Order
     {
-        $status = (string) config('lunar.orders.shipped_status', 'dispatched');
+        /** @var Order $order */
+        $order->fulfilment_status->transitionTo(Shipped::class);
 
-        return $this->updatesOrderStatus->execute($order, $status);
+        return $order->refresh();
     }
 }

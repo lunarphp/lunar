@@ -18,8 +18,8 @@ return new class extends Migration
             $table->jsonb('short_description')->nullable();
             $table->jsonb('attribute_data')->nullable();
             $table->string('sort')->default('custom')->index();
+            $table->string('status')->default('draft')->index();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

@@ -35,7 +35,7 @@ final class UpdateProductStatus implements UpdatesProductStatus
             );
         }
 
-        $previous = $product->status;
+        $previous = (string) $product->status;
 
         if ($previous === $status) {
             return $product;

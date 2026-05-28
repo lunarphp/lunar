@@ -5,13 +5,14 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Lunar\Core\Database\Factories\ChannelFactory;
 use Lunar\Core\Models\Concerns\HasDefaultRecord;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\States\Channel\ChannelState;
+use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
@@ -19,20 +20,20 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property string $handle
  * @property bool $default
  * @property ?string $url
+ * @property ChannelState $status
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
- * @property ?Carbon $deleted_at
  */
 class Channel extends Base implements Contracts\Channel
 {
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use HasStates;
     use LogsActivity;
-    use SoftDeletes;
 
     public $casts = [
-        'enabled' => 'boolean',
+        'status' => ChannelState::class,
     ];
 
     /**

@@ -72,7 +72,7 @@ class ProductAssociation extends Base implements Contracts\ProductAssociation
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Product::modelClass(), 'product_parent_id')->withTrashed();
+        return $this->belongsTo(Product::modelClass(), 'product_parent_id');
     }
 
     /**
@@ -80,7 +80,7 @@ class ProductAssociation extends Base implements Contracts\ProductAssociation
      */
     public function target(): BelongsTo
     {
-        return $this->belongsTo(Product::modelClass(), 'product_target_id')->withTrashed();
+        return $this->belongsTo(Product::modelClass(), 'product_target_id');
     }
 
     /**

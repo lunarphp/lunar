@@ -142,10 +142,7 @@ it('can download order pdf', function () {
 });
 
 it('can update order status', function () {
-    $status = collect(config('lunar.orders.statuses', []))
-        ->keys()
-        ->reject(fn ($status) => $status == $this->order->status)
-        ->random();
+    $status = 'on-hold';
 
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
@@ -155,6 +152,5 @@ it('can update order status', function () {
             'status' => $status,
         ]);
 
-    expect($this->order->refresh())
-        ->status->toBe($status);
+    expect((string) $this->order->refresh()->order_status)->toBe($status);
 });

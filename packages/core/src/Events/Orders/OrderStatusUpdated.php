@@ -14,6 +14,6 @@ class OrderStatusUpdated
     public function __construct(
         public Order $order,
         public ?string $previousStatus,
-        public string $status,
+        public string $newStatus,
     ) {}
 }

@@ -3,7 +3,6 @@
 namespace Lunar\Admin\Support\Pages;
 
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Support\Htmlable;
@@ -98,14 +97,7 @@ abstract class BaseListRecords extends ListRecords
             $scoutEnabled &&
             $isScoutSearchable
         ) {
-            $trashedFilter = collect($this->getTable()->getFilters())
-                ->firstWhere(fn ($filter) => $filter instanceof TrashedFilter);
-
             $scoutQuery = static::getModel()::search($search);
-
-            if (filled($state = $trashedFilter?->getState()['value'] ?? null)) {
-                $state ? $scoutQuery->withTrashed() : $scoutQuery->onlyTrashed();
-            }
 
             $ids = collect($scoutQuery->take(100)->keys())->map(
                 fn ($result) => str_replace(static::getModel().'::', '', $result)
