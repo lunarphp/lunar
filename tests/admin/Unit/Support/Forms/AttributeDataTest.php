@@ -6,13 +6,11 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Lunar\Admin\Support\Facades\AttributeData;
-use Lunar\Core\FieldTypes\Dropdown;
-use Lunar\Core\FieldTypes\ListField;
-use Lunar\Core\FieldTypes\Number;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\FieldTypes\Text;
-use Lunar\Core\FieldTypes\YouTube;
 use Lunar\Core\Models\Attribute;
 use Lunar\Filament\FieldTypes\TextField;
+use Lunar\Filament\Forms\Components\YouTube;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
 
 uses(TestCase::class)
@@ -34,20 +32,20 @@ describe('attribute data test', function () {
         expect($inputComponent)->toBeInstanceOf($expectedComponent);
 
     })->with([
-        [Text::class, TextInput::class],
-        [Text::class, RichEditor::class, ['richtext' => true]],
-        [Dropdown::class, Select::class],
-        [ListField::class, KeyValue::class],
-        [YouTube::class, Lunar\Filament\Forms\Components\YouTube::class],
-        [Number::class, TextInput::class],
+        [FieldTypeEnum::Text->value, TextInput::class],
+        [FieldTypeEnum::Text->value, RichEditor::class, ['richtext' => true]],
+        [FieldTypeEnum::Dropdown->value, Select::class],
+        [FieldTypeEnum::ListField->value, KeyValue::class],
+        [FieldTypeEnum::YouTube->value, YouTube::class],
+        [FieldTypeEnum::Number->value, TextInput::class],
     ]);
 
     test('can extend converters', function () {
         $attribute = Attribute::factory()->create([
-            'type' => TestFieldType::class,
+            'type' => 'test_field',
         ]);
 
-        AttributeData::registerFieldType(TestFieldType::class, TestFieldConverter::class);
+        AttributeData::registerFieldType('test_field', TestFieldConverter::class);
 
         $inputComponent = AttributeData::getFilamentComponent($attribute);
         expect($inputComponent)->toBeInstanceOf(RichEditor::class);

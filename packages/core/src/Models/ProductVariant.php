@@ -8,11 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Database\Factories\ProductVariantFactory;
-use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasDimensions;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPrices;
@@ -54,7 +53,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  */
 class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
 {
-    use HasAttributes;
+    use HasAttributeData;
     use HasDimensions;
     use HasFactory;
     use HasMacros;
@@ -75,7 +74,6 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
      */
     protected $casts = [
         'shippable' => 'bool',
-        'attribute_data' => AsAttributeData::class,
     ];
 
     /**

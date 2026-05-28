@@ -63,11 +63,11 @@ class TextInputSelectAffix extends TextInput
         }
     }
 
-    public function hydrateState(?array &$hydratedDefaultState, bool $andCallHydrationHooks = true): void
+    public function hydrateState(?array &$hydratedDefaultState, bool $shouldCallHydrationHooks = true, bool $shouldApplyStateCasts = true, array &$appliedStateCastPaths = []): void
     {
-        parent::hydrateState($hydratedDefaultState, $andCallHydrationHooks);
+        parent::hydrateState($hydratedDefaultState, $shouldCallHydrationHooks, $shouldApplyStateCasts, $appliedStateCastPaths);
         if ($this->hasSelect()) {
-            $this->getSelectComponent()->hydrateState($hydratedDefaultState, $andCallHydrationHooks);
+            $this->getSelectComponent()->hydrateState($hydratedDefaultState, $shouldCallHydrationHooks, $shouldApplyStateCasts, $appliedStateCastPaths);
         }
     }
 

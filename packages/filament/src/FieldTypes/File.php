@@ -8,8 +8,8 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
-use Lunar\Filament\Synthesizers\FileSynth;
 use Lunar\Core\Models\Attribute;
+use Lunar\Filament\Synthesizers\FileSynth;
 
 class File extends BaseFieldType
 {
@@ -27,7 +27,7 @@ class File extends BaseFieldType
         $input = FileUpload::make($attribute->handle)
             ->when(filled($attribute->validation_rules), fn (FileUpload $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
-            ->helperText($attribute->translate('description'));
+            ->helperText(null);
 
         if (! blank($file_types) && is_array($file_types)) {
             $input->acceptedFileTypes($file_types);

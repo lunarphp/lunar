@@ -2,75 +2,23 @@
 
 namespace Lunar\Core\FieldTypes;
 
-use JsonSerializable;
 use Lunar\Core\Exceptions\FieldTypeException;
 
-class Toggle implements FieldType, JsonSerializable
+class Toggle extends AbstractFieldType
 {
-    /**
-     * @var bool
-     */
-    protected $value;
+    protected mixed $value = false;
 
-    /**
-     * Serialize the class.
-     *
-     * @return string
-     */
-    public function jsonSerialize(): mixed
+    public function __toString(): string
     {
-        return $this->value;
+        return (string) (int) ($this->value ?? false);
     }
 
-    /**
-     * Create a new instance of Toggle field type.
-     *
-     * @param  bool|string  $value
-     */
-    public function __construct($value = false)
-    {
-        $this->setValue($value);
-    }
-
-    /**
-     * Returns the value when accessed as a string.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return (int) ($this->getValue() ?? false);
-    }
-
-    /**
-     * Return the value of this field.
-     *
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * Set the value of this field.
-     *
-     * @param  string  $value
-     */
-    public function setValue($value)
+    public function setValue(mixed $value): void
     {
         if ($value && is_array($value)) {
             throw new FieldTypeException(self::class.' value must be a string or boolean.');
         }
 
         $this->value = $value ?: false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConfig(): array
-    {
-        return [];
     }
 }

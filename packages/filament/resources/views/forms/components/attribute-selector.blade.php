@@ -5,7 +5,7 @@
 
     @forelse($getAttributeGroups() as $group)
         <x-filament::fieldset
-                :label="$group->translate('name')"
+                :label="$group->name"
         >
             <div class="space-y-2">
                 @forelse($getAttributes($group->id) as $attribute)
@@ -15,7 +15,7 @@
                                     wire:model="{{ $getStatePath() }}"
                                     value="{{ $attribute->id }}"
                             />
-                            <span class="ml-2">{{ $attribute->translate('name') }}</span>
+                            <span class="ml-2">{{ $attribute->name }}</span>
                         </x-filament::section>
                     </label>
                 @empty

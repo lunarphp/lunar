@@ -5,52 +5,74 @@ namespace Lunar\Core\Casts;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Collection;
-use Lunar\Core\Exceptions\FieldTypeException;
-use Lunar\Core\FieldTypes\FieldType;
+use Lunar\Core\Contracts\AttributeCache;
+use Lunar\Core\Contracts\FieldType;
 
 class AsAttributeData implements Castable
 {
     /**
      * Get the caster class to use when casting from / to this cast target.
      *
-     * @return object|string
+     * @param  array<int, mixed>  $arguments
      */
-    public static function castUsing(array $arguments)
+    public static function castUsing(array $arguments): CastsAttributes
     {
         return new class implements CastsAttributes
         {
-            public function get($model, $key, $value, $attributes)
+            protected function cache(): AttributeCache
+            {
+                return app(AttributeCache::class);
+            }
+
+            /**
+             * Hydrate the id-keyed raw JSON into a handle-keyed collection of FieldType instances.
+             */
+            public function get($model, $key, $value, $attributes): ?Collection
             {
                 if (! isset($attributes[$key])) {
                     return null;
                 }
 
-                $data = json_decode($attributes[$key], true);
+                $data = json_decode($attributes[$key], true) ?: [];
 
+                $cache = $this->cache();
                 $returnData = new Collection;
 
-                foreach ($data as $key => $item) {
-                    if (! class_exists($item['field_type'])) {
+                foreach ($data as $id => $rawValue) {
+                    $id = (int) $id;
+                    $handle = $cache->getHandleForId($id);
+                    $fieldTypeClass = $cache->getFieldTypeClassForId($id);
+
+                    if (! $handle || ! $fieldTypeClass) {
                         continue;
                     }
-                    if (! in_array(FieldType::class, class_implements($item['field_type']))) {
-                        throw new FieldTypeException('This field type is not supported.');
-                    }
-                    $returnData->put($key, new $item['field_type']($item['value']));
+
+                    $returnData->put($handle, new $fieldTypeClass($rawValue));
                 }
 
                 return $returnData;
             }
 
-            public function set($model, $key, $value, $attributes)
+            /**
+             * Serialize a handle/id-keyed collection of FieldType instances into id-keyed raw JSON.
+             *
+             * @return array<string, string>
+             */
+            public function set($model, $key, $value, $attributes): array
             {
+                $cache = $this->cache();
                 $data = [];
 
-                foreach ($value ?? [] as $handle => $item) {
-                    $data[$handle] = [
-                        'field_type' => get_class($item),
-                        'value' => $item->getValue(),
-                    ];
+                foreach ($value ?? [] as $reference => $item) {
+                    $id = is_numeric($reference)
+                        ? (int) $reference
+                        : $cache->getIdForHandle((string) $reference);
+
+                    if (! $id) {
+                        continue;
+                    }
+
+                    $data[(string) $id] = $item instanceof FieldType ? $item->jsonSerialize() : $item;
                 }
 
                 return [$key => json_encode($data)];

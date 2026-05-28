@@ -22,6 +22,10 @@ return [
     ],
 
     'form' => [
+        'model_types' => [
+            'label' => 'Applies to',
+            'product_and_variant_invalid' => 'An attribute cannot apply to both Product and Product Variant.',
+        ],
         'attributable_type' => [
             'label' => 'Type',
         ],

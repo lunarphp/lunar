@@ -4,8 +4,8 @@ namespace Lunar\Filament\FieldTypes;
 
 use Filament\Forms\Components\KeyValue;
 use Filament\Schemas\Components\Component;
-use Lunar\Filament\Synthesizers\ListSynth;
 use Lunar\Core\Models\Attribute;
+use Lunar\Filament\Synthesizers\ListSynth;
 
 class ListField extends BaseFieldType
 {
@@ -20,6 +20,6 @@ class ListField extends BaseFieldType
             })
             ->when(filled($attribute->validation_rules), fn (KeyValue $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
-            ->helperText($attribute->translate('description'));
+            ->helperText(null);
     }
 }

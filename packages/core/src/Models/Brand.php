@@ -7,10 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Database\Factories\BrandFactory;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
 use Lunar\Core\Models\Concerns\HasTranslations;
@@ -30,7 +29,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Brand extends Base implements Contracts\Brand, SpatieHasMedia
 {
-    use HasAttributes;
+    use HasAttributeData;
     use HasFactory;
     use HasMacros;
     use HasMedia;
@@ -50,7 +49,6 @@ class Brand extends Base implements Contracts\Brand, SpatieHasMedia
     protected $casts = [
         'description' => AsCollection::class,
         'short_description' => AsCollection::class,
-        'attribute_data' => AsAttributeData::class,
     ];
 
     /**

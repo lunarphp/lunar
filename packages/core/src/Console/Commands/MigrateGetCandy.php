@@ -69,21 +69,22 @@ class MigrateGetCandy extends Command
                 'purchasable_type',
             ],
             "{$prefix}attributes" => [
-                'attribute_type',
                 'type',
-            ],
-            "{$prefix}attribute_groups" => [
-                'attributable_type',
-            ],
-            "{$prefix}attributables" => [
-                'attributable_type',
             ],
         ];
 
         foreach ($tables as $table => $rows) {
+            if (! Schema::hasTable($table)) {
+                continue;
+            }
+
             $this->components->info("Updating {$table}");
             DB::transaction(function () use ($table, $rows) {
                 foreach ($rows as $row) {
+                    if (! Schema::hasColumn($table, $row)) {
+                        continue;
+                    }
+
                     DB::table($table)->update([
                         $row => DB::RAW(
                             "REPLACE({$row}, 'GetCandy', 'Lunar')"

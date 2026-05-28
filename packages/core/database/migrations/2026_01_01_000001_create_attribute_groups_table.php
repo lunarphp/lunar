@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'attribute_groups', function (Blueprint $table) {
             $table->id();
-            $table->string('attributable_type')->index();
-            $table->jsonb('name');
+            $table->string('name');
             $table->string('handle')->unique();
-            $table->integer('position')->index();
+            $table->integer('position')->default(1)->index();
+            $table->boolean('system')->default(false);
             $table->timestamps();
         });
     }

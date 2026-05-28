@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Database\Factories\CustomerGroupFactory;
-use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasDefaultRecord;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
@@ -24,7 +23,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  */
 class CustomerGroup extends Base implements Contracts\CustomerGroup
 {
-    use HasAttributes;
+    use HasAttributeData;
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
@@ -34,7 +33,6 @@ class CustomerGroup extends Base implements Contracts\CustomerGroup
      * {@inheritDoc}
      */
     protected $casts = [
-        'attribute_data' => AsAttributeData::class,
     ];
 
     /**

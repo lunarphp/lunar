@@ -2,52 +2,11 @@
 
 namespace Lunar\Core\FieldTypes;
 
-use JsonSerializable;
 use Lunar\Core\Exceptions\FieldTypeException;
 
-class Dropdown implements FieldType, JsonSerializable
+class Dropdown extends AbstractFieldType
 {
-    /**
-     * @var string|int
-     */
-    protected $value;
-
-    /**
-     * Create a new instance of List field type.
-     *
-     * @param  string|int  $value
-     */
-    public function __construct($value = '')
-    {
-        $this->setValue($value);
-    }
-
-    /**
-     * Serialize the class.
-     *
-     * @return string
-     */
-    public function jsonSerialize(): mixed
-    {
-        return $this->value;
-    }
-
-    /**
-     * Return the value of this field.
-     *
-     * @return string|int
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * Set the value of this field.
-     *
-     * @param  string|int  $value
-     */
-    public function setValue($value)
+    public function setValue(mixed $value): void
     {
         if ($value && ! is_string($value)) {
             throw new FieldTypeException(self::class.' value must be a string.');

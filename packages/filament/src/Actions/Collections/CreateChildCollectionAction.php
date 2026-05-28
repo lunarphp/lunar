@@ -3,9 +3,7 @@
 namespace Lunar\Filament\Actions\Collections;
 
 use Filament\Actions\CreateAction;
-use Filament\Forms\Components\TextInput;
 use Lunar\Core\Contracts\Actions\Collections\CreatesChildCollection;
-use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
 use Lunar\Filament\Forms\Components\TranslatedText;
 use Lunar\Filament\Tables\Actions\Collections\CreateChildCollection;
@@ -37,17 +35,8 @@ class CreateChildCollectionAction extends CreateAction
             $this->success();
         });
 
-        $attribute = Attribute::where('attribute_type', '=', Collection::morphName())
-            ->where('handle', '=', 'name')->first();
-
-        $formInput = TextInput::class;
-
-        if ($attribute?->type === \Lunar\Core\FieldTypes\TranslatedText::class) {
-            $formInput = TranslatedText::class;
-        }
-
         $this->schema([
-            $formInput::make('name')->required(),
+            TranslatedText::make('name')->required(),
         ]);
 
         $this->label(__('lunar-filament::actions.collections.create_child.label'));

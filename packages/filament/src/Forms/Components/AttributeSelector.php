@@ -4,7 +4,6 @@ namespace Lunar\Filament\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\CheckboxList;
-use Lunar\Core\Facades\ModelManifest;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Product;
@@ -36,7 +35,10 @@ class AttributeSelector extends CheckboxList
 
         parent::relationship($name, $titleAttribute ?? 'name', $modifyQueryUsing ?? static function ($query) use ($attributableType) {
             if ($attributableType) {
-                return Attribute::query()->where('attribute_type', $attributableType);
+                return Attribute::query()->whereHas(
+                    'models',
+                    fn ($query) => $query->where('model_type', $attributableType)
+                );
             }
 
             return $query;
@@ -46,12 +48,11 @@ class AttributeSelector extends CheckboxList
 
         $this->saveRelationshipsUsing(static function (CheckboxList $component, ?array $state) use ($type) {
             // Get all current mapped attributes
-            $existing = $component->getRelationship()->get();
+            $existing = $component->getRelationship()->with('models')->get();
 
-            $actualClass = ModelManifest::guessModelClass($type);
-            // Filter out any that match this attribute type but are not in the saved state.
+            // Keep mapped attributes that belong to a different type, and merge in this type's selection.
             $attributes = $existing->reject(
-                fn ($attribute) => ! in_array($attribute->id, $state ?? []) && $attribute->attribute_type == $type
+                fn ($attribute) => ! in_array($attribute->id, $state ?? []) && $attribute->models->contains('model_type', $type)
             )->pluck('id')->unique()->merge($state)->toArray();
 
             $component->getRelationship()->sync($attributes);
@@ -62,19 +63,12 @@ class AttributeSelector extends CheckboxList
 
     public function getAttributeGroups()
     {
-        $type = get_class(
-            $this->getRelationship()->getParent()
-        );
+        $type = $this->resolveAttributableType();
 
-        if ($type === ProductType::morphName()) {
-            $type = Product::morphName();
-        }
-
-        if ($this->attributableType) {
-            $type = $this->attributableType;
-        }
-
-        return AttributeGroup::whereAttributableType($type)->orderBy('position')->get();
+        return AttributeGroup::whereHas(
+            'attributes.models',
+            fn ($query) => $query->where('model_type', $type)
+        )->orderBy('position')->get();
     }
 
     public function getSelectedAttributes($groupId)
@@ -84,7 +78,27 @@ class AttributeSelector extends CheckboxList
 
     public function getAttributes($groupId)
     {
-        return Attribute::where('attribute_group_id', $groupId)->orderBy('position')->get();
+        $type = $this->resolveAttributableType();
+
+        return Attribute::where('attribute_group_id', $groupId)
+            ->whereHas('models', fn ($query) => $query->where('model_type', $type))
+            ->orderBy('position')
+            ->get();
+    }
+
+    protected function resolveAttributableType(): string
+    {
+        if ($this->attributableType) {
+            return $this->attributableType;
+        }
+
+        $type = $this->getRelationship()->getParent()->getMorphClass();
+
+        if ($type === ProductType::morphName()) {
+            return Product::morphName();
+        }
+
+        return $type;
     }
 
     /**

@@ -11,7 +11,7 @@ return [
             ],
         ],
     ],
-    'listfield' => [
+    'list' => [
         'label' => 'Trường danh sách',
     ],
     'text' => [
@@ -22,7 +22,7 @@ return [
             ],
         ],
     ],
-    'translatedtext' => [
+    'translated_text' => [
         'label' => 'Văn bản đã dịch',
         'form' => [
             'richtext' => [

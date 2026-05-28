@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\FieldTypes\Dropdown;
 use Lunar\Core\FieldTypes\ListField;
 use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\FieldTypes\TranslatedText;
-use Lunar\Core\Models\AttributeGroup;
+use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductOption;
 use Lunar\Tests\Core\TestCase;
@@ -14,26 +15,27 @@ uses(TestCase::class);
 
 uses(RefreshDatabase::class);
 
-test('can translate attributes', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
+/**
+ * Seed the attribute definitions a product's attribute_data refers to, so the
+ * cast can resolve each handle to a stable attribute id.
+ *
+ * @param  array<string, FieldTypeEnum>  $handles
+ */
+function seedAttributes(array $handles): void
+{
+    foreach ($handles as $handle => $type) {
+        Attribute::factory()->create([
+            'handle' => $handle,
+            'type' => $type->value,
+        ]);
+    }
+}
+
+test('can translate attribute data', function () {
+    seedAttributes([
+        'name' => FieldTypeEnum::TranslatedText,
+        'description' => FieldTypeEnum::TranslatedText,
     ]);
-
-    $productOption = ProductOption::factory()->create([
-        'name' => [
-            'en' => 'English Option',
-            'fr' => 'French Option',
-        ],
-    ]);
-
-    expect($attributeGroup->translate('name', 'en'))->toEqual('English');
-    expect($attributeGroup->translate('name', 'fr'))->toEqual('French');
-
-    expect($productOption->translate('name', 'en'))->toEqual('English Option');
-    expect($productOption->translate('name', 'fr'))->toEqual('French Option');
 
     $product = Product::factory()->create([
         'attribute_data' => [
@@ -55,25 +57,26 @@ test('can translate attributes', function () {
     expect($product->translateAttribute('description', 'fr'))->toEqual('French Description');
 });
 
-test('can fallback when translation not present', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
+test('can translate a translatable column', function () {
+    $productOption = ProductOption::factory()->create([
         'name' => [
-            'en' => 'English',
-            'fr' => 'French',
+            'en' => 'English Option',
+            'fr' => 'French Option',
         ],
     ]);
 
-    expect($attributeGroup->translate('name', 'dk'))->toEqual('English');
+    expect($productOption->translate('name', 'en'))->toEqual('English Option');
+    expect($productOption->translate('name', 'fr'))->toEqual('French Option');
+});
+
+test('can fallback when translation not present', function () {
+    seedAttributes(['name' => FieldTypeEnum::TranslatedText]);
 
     $product = Product::factory()->create([
         'attribute_data' => [
             'name' => new TranslatedText(collect([
                 'en' => new Text('English Name'),
                 'fr' => new Text('French Name'),
-            ])),
-            'description' => new TranslatedText(collect([
-                'en' => new Text('English Description'),
-                'fr' => new Text('French Description'),
             ])),
         ],
     ]);
@@ -82,23 +85,12 @@ test('can fallback when translation not present', function () {
 });
 
 test('can fallback to existing translation when current is missing', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => '',
-        ],
-    ]);
-
-    expect($attributeGroup->translate('name', 'fr'))->toEqual('English');
+    seedAttributes(['name' => FieldTypeEnum::TranslatedText]);
 
     $product = Product::factory()->create([
         'attribute_data' => [
             'name' => new TranslatedText(collect([
                 'en' => new Text('English Name'),
-                'fr' => new Text(''),
-            ])),
-            'description' => new TranslatedText(collect([
-                'en' => new Text('English Description'),
                 'fr' => new Text(''),
             ])),
         ],
@@ -108,14 +100,10 @@ test('can fallback to existing translation when current is missing', function ()
 });
 
 test('can handle null values', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
+    seedAttributes([
+        'name' => FieldTypeEnum::TranslatedText,
+        'description' => FieldTypeEnum::TranslatedText,
     ]);
-
-    expect($attributeGroup->translate('name', 'dk'))->toEqual('English');
 
     $product = Product::factory()->create([
         'attribute_data' => [
@@ -133,19 +121,7 @@ test('can handle null values', function () {
 });
 
 test('will translate based on locale by default', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
-    ]);
-
-    $productOption = ProductOption::factory()->create([
-        'name' => [
-            'en' => 'English Option',
-            'fr' => 'French Option',
-        ],
-    ]);
+    seedAttributes(['name' => FieldTypeEnum::TranslatedText]);
 
     $product = Product::factory()->create([
         'attribute_data' => [
@@ -158,31 +134,15 @@ test('will translate based on locale by default', function () {
 
     app()->setLocale('fr');
 
-    expect($attributeGroup->translate('name'))->toEqual('French');
     expect($product->translateAttribute('name'))->toEqual('French Name');
-    expect($productOption->translate('name'))->toEqual('French Option');
 
     app()->setLocale('en');
 
-    expect($attributeGroup->translate('name'))->toEqual('English');
     expect($product->translateAttribute('name'))->toEqual('English Name');
-    expect($productOption->translate('name'))->toEqual('English Option');
 });
 
 test('will fallback to first translation if nothing exists', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
-    ]);
-
-    $productOption = ProductOption::factory()->create([
-        'name' => [
-            'en' => 'English Option',
-            'fr' => 'French Option',
-        ],
-    ]);
+    seedAttributes(['name' => FieldTypeEnum::TranslatedText]);
 
     $product = Product::factory()->create([
         'attribute_data' => [
@@ -195,19 +155,11 @@ test('will fallback to first translation if nothing exists', function () {
 
     app()->setLocale('dk');
 
-    expect($attributeGroup->translate('name'))->toEqual('English');
-    expect($productOption->translate('name'))->toEqual('English Option');
     expect($product->translateAttribute('name'))->toEqual('English Name');
 });
 
 test('will use fieldtype value if it doesnt have translations', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
-        'handle' => 'some-handle',
-    ]);
+    seedAttributes(['name' => FieldTypeEnum::Text]);
 
     $product = Product::factory()->create([
         'attribute_data' => [
@@ -215,17 +167,11 @@ test('will use fieldtype value if it doesnt have translations', function () {
         ],
     ]);
 
-    expect($attributeGroup->translate('handle'))->toEqual('some-handle');
     expect($product->translateAttribute('name'))->toEqual('English Name');
 });
 
 test('will return null if attribute doesnt exist', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
-    ]);
+    seedAttributes(['name' => FieldTypeEnum::Text]);
 
     $product = Product::factory()->create([
         'attribute_data' => [
@@ -233,16 +179,13 @@ test('will return null if attribute doesnt exist', function () {
         ],
     ]);
 
-    expect($attributeGroup->translate('foobar'))->toBeNull();
     expect($product->translateAttribute('foobar'))->toBeNull();
 });
 
 test('will return null if attribute value is null', function () {
-    AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
+    seedAttributes([
+        'name' => FieldTypeEnum::Text,
+        'description' => FieldTypeEnum::Text,
     ]);
 
     $product = Product::factory()->create([
@@ -256,11 +199,10 @@ test('will return null if attribute value is null', function () {
 });
 
 test('handle if we try and translate a non translatable attribute', function () {
-    AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
+    seedAttributes([
+        'name' => FieldTypeEnum::Text,
+        'list' => FieldTypeEnum::ListField,
+        'dropdown' => FieldTypeEnum::Dropdown,
     ]);
 
     $product = Product::factory()->create([
@@ -281,25 +223,10 @@ test('handle if we try and translate a non translatable attribute', function () 
 });
 
 test('can use shorthand function to translate attributes', function () {
-    $attributeGroup = AttributeGroup::factory()->create([
-        'name' => [
-            'en' => 'English',
-            'fr' => 'French',
-        ],
+    seedAttributes([
+        'name' => FieldTypeEnum::TranslatedText,
+        'description' => FieldTypeEnum::TranslatedText,
     ]);
-
-    $productOption = ProductOption::factory()->create([
-        'name' => [
-            'en' => 'English Option',
-            'fr' => 'French Option',
-        ],
-    ]);
-
-    expect($attributeGroup->translate('name', 'en'))->toEqual('English');
-    expect($attributeGroup->translate('name', 'fr'))->toEqual('French');
-
-    expect($productOption->translate('name', 'en'))->toEqual('English Option');
-    expect($productOption->translate('name', 'fr'))->toEqual('French Option');
 
     $product = Product::factory()->create([
         'attribute_data' => [

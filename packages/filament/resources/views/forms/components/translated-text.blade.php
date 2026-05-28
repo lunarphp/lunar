@@ -44,7 +44,7 @@
                     @class(['w-3.5 h-3.5 inline-flex'])
                 />
                 <span class="ml-2">
-                    {{ __('lunar-filament::fieldtypes.translatedtext.form.locales') }}
+                    {{ __('lunar-filament::fieldtypes.translated_text.form.locales') }}
                 </span>
             </x-filament::button>
             </button>

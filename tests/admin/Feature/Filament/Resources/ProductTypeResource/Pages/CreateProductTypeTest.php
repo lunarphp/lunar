@@ -34,13 +34,8 @@ it('can create product type', function () {
 it('can associate attributes', function () {
     $productType = ProductType::factory()->make();
 
-    $attributeA = Attribute::factory()->create([
-        'attribute_type' => 'product',
-    ]);
-
-    $attributeB = Attribute::factory()->create([
-        'attribute_type' => 'product',
-    ]);
+    $attributeA = Attribute::factory()->modelType('product')->create();
+    $attributeB = Attribute::factory()->modelType('product')->create();
 
     $formData = [
         'name' => $productType->name,
@@ -56,7 +51,7 @@ it('can associate attributes', function () {
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::morphName(),
-        'attributable_id' => $component->get('record')->id,
+        'product_type_id' => $component->get('record')->id,
+        'attribute_id' => $attributeA->id,
     ]);
 });

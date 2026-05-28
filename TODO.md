@@ -6,11 +6,10 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 
 ## Outstanding
 
-- Attributes remodel to simplify data and allow for re-use
 - Implement state machines, replacing soft-deletes
     - Specifically, products (draft, published, archived) & orders (payment, fulfilment and order status)
-- `StorefrontContext` for CartSessionManager and other services
 - Region concept to define channel, currency, language, tax_zone, countries and price display
+- `StorefrontContext` for CartSessionManager and other services
 - Add Vendors concept to support marketplace developments
 - Make order line purchasables optional
 - Add events, including specific events for cache invalidation
@@ -54,3 +53,4 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Ensure all service-layer classes are DI'd — actions/managers/drivers/generators constructor-inject collaborators and bind to `Contracts\Actions\…` interfaces in `LunarServiceProvider`; `AbstractAction` and the `lunar.cart.actions.*` / `fingerprint_generator` / `discounts.coupon_validator` config-string swaps removed; `RewriteActionRunCallRector` migrates `Action::run()` callers (spec 0016)
 - Change `compare_price` to `list_price`
 - Add dedicated `name` / `description` / `short_description` fields — promote Product/Collection name + description out of `attribute_data` into translatable columns and add a translatable `short_description`; Brand gains translatable description/short_description but keeps a plain string name; reads route through `translate()`, search indexes per locale, Filament binds explicit fields; one-way v1→v2 backfill migration + `translateAttribute`→`translate` Rector rule (spec 0018)
+- Attribute system redesign — id-keyed raw `attribute_data` JSON on disk + handle-keyed `FieldType` collection in memory; drop the morph columns on `Attribute` / `AttributeGroup` for a nullable group FK + typed `attribute_models` join + renamed `product_type_attribute` pivot; shared `AbstractFieldType` base + `FieldTypeEnum` + relocated `Manifests\FieldTypeManifest`; `AttributeCache` + observer + `PurgeAttributeData` job keep the new shape consistent; one-way v1→v2 data migration + Rector renames in the upgrade package (spec 0019)

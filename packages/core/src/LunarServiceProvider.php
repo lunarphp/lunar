@@ -18,6 +18,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Lunar\Core\Addons\Manifest;
 use Lunar\Core\Auth\Manifest as AccessControlManifest;
+use Lunar\Core\Cache\AttributeCache as AttributeCacheImpl;
 use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\MigrateGetCandy;
@@ -25,6 +26,7 @@ use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
+use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
@@ -42,7 +44,6 @@ use Lunar\Core\Contracts\TelemetryService;
 use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
-use Lunar\Core\FieldTypes\Manifest as FieldTypeManifestImpl;
 use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Managers\CartSessionManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
@@ -51,9 +52,11 @@ use Lunar\Core\Managers\PricingManager as PricingManagerImpl;
 use Lunar\Core\Managers\StorefrontSessionManager;
 use Lunar\Core\Managers\TaxManager as TaxManagerImpl;
 use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
+use Lunar\Core\Manifests\FieldTypeManifest as FieldTypeManifestImpl;
 use Lunar\Core\Manifests\ModelManifest as ModelManifestImpl;
 use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
 use Lunar\Core\Models\Address;
+use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Collection;
@@ -77,6 +80,7 @@ use Lunar\Core\Modifiers\CartModifiers;
 use Lunar\Core\Modifiers\OrderModifiers;
 use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Core\Observers\AddressObserver;
+use Lunar\Core\Observers\AttributeObserver;
 use Lunar\Core\Observers\CartLineObserver;
 use Lunar\Core\Observers\ChannelObserver;
 use Lunar\Core\Observers\CollectionObserver;
@@ -320,6 +324,10 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(FieldTypeManifestImpl::class);
         });
 
+        $this->app->singleton(AttributeCache::class, function ($app) {
+            return $app->make(AttributeCacheImpl::class);
+        });
+
         $this->app->singleton(ModelManifest::class, function ($app) {
             return $app->make(ModelManifestImpl::class);
         });
@@ -392,6 +400,7 @@ class LunarServiceProvider extends ServiceProvider
     protected function registerObservers(): void
     {
         Address::observe(AddressObserver::class);
+        Attribute::observe(AttributeObserver::class);
         CartLine::observe(CartLineObserver::class);
         Channel::observe(ChannelObserver::class);
         Collection::observe(CollectionObserver::class);

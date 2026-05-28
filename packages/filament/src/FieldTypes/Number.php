@@ -5,8 +5,8 @@ namespace Lunar\Filament\FieldTypes;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
-use Lunar\Filament\Synthesizers\NumberSynth;
 use Lunar\Core\Models\Attribute;
+use Lunar\Filament\Synthesizers\NumberSynth;
 
 class Number extends BaseFieldType
 {
@@ -21,7 +21,7 @@ class Number extends BaseFieldType
             ->numeric()
             ->when(filled($attribute->validation_rules), fn (TextInput $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
-            ->helperText($attribute->translate('description'));
+            ->helperText(null);
 
         if ($min) {
             $input->minValue($min);

@@ -6,29 +6,27 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Lunar\Core\Contracts\FieldType;
 use Lunar\Core\Database\Factories\AttributeFactory;
-use Lunar\Core\Facades\DB;
+use Lunar\Core\Facades\FieldTypeManifest;
 use Lunar\Core\Models\Concerns\HasMacros;
-use Lunar\Core\Models\Concerns\HasTranslations;
 
 /**
  * @property int $id
- * @property string $attribute_type
- * @property int $attribute_group_id
- * @property int $position
+ * @property ?int $attribute_group_id
  * @property string $name
  * @property string $handle
- * @property string $section
  * @property string $type
+ * @property ?Collection $configuration
+ * @property int $position
  * @property bool $required
- * @property ?string $default_value
- * @property string $configuration
- * @property bool $system
- * @property string $validation_rules
- * @property bool $filterable
  * @property bool $searchable
+ * @property bool $filterable
+ * @property bool $system
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
@@ -36,17 +34,18 @@ class Attribute extends Base implements Contracts\Attribute
 {
     use HasFactory;
     use HasMacros;
-    use HasTranslations;
 
     protected static function booted(): void
     {
         static::deleting(function (self $attribute) {
-            $connection = DB::connection();
-            $connection->beginTransaction();
-            $connection->table(
-                config('lunar.database.table_prefix').'attributables'
-            )->where('attribute_id', '=', $attribute->id)->delete();
-            $connection->commit();
+            $prefix = config('lunar.database.table_prefix');
+
+            $attribute->models()->delete();
+
+            $attribute->getConnection()
+                ->table($prefix.'product_type_attribute')
+                ->where('attribute_id', $attribute->id)
+                ->delete();
         });
     }
 
@@ -72,23 +71,40 @@ class Attribute extends Base implements Contracts\Attribute
      * @var array
      */
     protected $casts = [
-        'name' => AsCollection::class,
-        'description' => AsCollection::class,
         'configuration' => AsCollection::class,
+        'required' => 'bool',
+        'searchable' => 'bool',
+        'filterable' => 'bool',
+        'system' => 'bool',
     ];
 
-    public function attributable(): MorphTo
+    public function setHandleAttribute(string $value): void
     {
-        return $this->morphTo();
+        $this->attributes['handle'] = Str::slug($value, '_');
     }
 
-    public function attributeGroup(): BelongsTo
+    public function group(): BelongsTo
     {
-        return $this->belongsTo(AttributeGroup::modelClass());
+        return $this->belongsTo(AttributeGroup::modelClass(), 'attribute_group_id');
     }
 
-    public function scopeSystem(Builder $query, $type): Builder
+    public function models(): HasMany
     {
-        return $query->whereAttributeType($type)->whereSystem(true);
+        return $this->hasMany(AttributeModel::modelClass());
+    }
+
+    /**
+     * Resolve the field type instance for this attribute.
+     */
+    public function fieldType(): FieldType
+    {
+        $class = FieldTypeManifest::getType($this->type);
+
+        return new $class;
+    }
+
+    public function scopeSystem(Builder $query): Builder
+    {
+        return $query->where('system', true);
     }
 }

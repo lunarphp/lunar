@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\AttributeManifest;
-use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Channel;
@@ -12,6 +12,18 @@ use Lunar\Tests\Core\TestCase;
 uses(TestCase::class);
 
 uses(RefreshDatabase::class);
+
+function createAttributeForType(string $modelType, bool $searchable, ?string $type = null): Attribute
+{
+    $attribute = Attribute::factory()->create(array_filter([
+        'searchable' => $searchable,
+        'type' => $type,
+    ], fn ($value) => $value !== null));
+
+    $attribute->models()->create(['model_type' => $modelType]);
+
+    return $attribute;
+}
 
 test('can instantiate class', function () {
     $manifest = app(AttributeManifest::class);
@@ -42,23 +54,10 @@ test('can add type', function () {
 });
 
 test('can get searchable attributes', function () {
-    $attributeA = Attribute::factory()->create([
-        'attribute_type' => 'product',
-        'searchable' => true,
-    ]);
-    $attributeB = Attribute::factory()->create([
-        'attribute_type' => 'product',
-        'searchable' => true,
-    ]);
-    Attribute::factory()->create([
-        'attribute_type' => 'collection',
-        'searchable' => false,
-    ]);
-    $attributeD = Attribute::factory()->create([
-        'attribute_type' => 'collection',
-        'type' => TranslatedText::class,
-        'searchable' => true,
-    ]);
+    $attributeA = createAttributeForType('product', searchable: true);
+    $attributeB = createAttributeForType('product', searchable: true);
+    createAttributeForType('collection', searchable: false);
+    $attributeD = createAttributeForType('collection', searchable: true, type: FieldTypeEnum::TranslatedText->value);
 
     $manifest = app(AttributeManifest::class);
 

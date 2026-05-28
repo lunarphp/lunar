@@ -3,9 +3,9 @@
 namespace Lunar\Filament\FieldTypes;
 
 use Filament\Schemas\Components\Component;
+use Lunar\Core\Models\Attribute;
 use Lunar\Filament\Forms\Components\TranslatedText as TranslatedTextComponent;
 use Lunar\Filament\Synthesizers\TranslatedTextSynth;
-use Lunar\Core\Models\Attribute;
 
 class TranslatedText extends BaseFieldType
 {
@@ -22,6 +22,6 @@ class TranslatedText extends BaseFieldType
             ->optionRichtext((bool) $attribute->configuration->get('richtext'))
             ->when(filled($attribute->validation_rules), fn (TranslatedTextComponent $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
-            ->helperText($attribute->translate('description'));
+            ->helperText(null);
     }
 }

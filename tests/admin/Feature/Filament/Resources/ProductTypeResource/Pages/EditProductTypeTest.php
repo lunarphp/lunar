@@ -12,13 +12,8 @@ uses(TestCase::class)
 it('can associate attributes', function () {
     $productType = ProductType::factory()->create();
 
-    $attributeA = Attribute::factory()->create([
-        'attribute_type' => 'product',
-    ]);
-
-    $attributeB = Attribute::factory()->create([
-        'attribute_type' => 'product',
-    ]);
+    $attributeA = Attribute::factory()->modelType('product')->create();
+    $attributeB = Attribute::factory()->modelType('product')->create();
 
     $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')->test(EditProductType::class, [
         'record' => $productType->getRouteKey(),
@@ -29,14 +24,12 @@ it('can associate attributes', function () {
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::morphName(),
-        'attributable_id' => $component->get('record')->id,
+        'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeA->id,
     ]);
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::morphName(),
-        'attributable_id' => $component->get('record')->id,
+        'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeB->id,
     ]);
 
@@ -49,14 +42,12 @@ it('can associate attributes', function () {
         ->assertHasNoFormErrors();
 
     $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::morphName(),
-        'attributable_id' => $component->get('record')->id,
+        'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeA->id,
     ]);
 
     $this->assertDatabaseMissing((new ProductType)->mappedAttributes()->getTable(), [
-        'attributable_type' => ProductType::morphName(),
-        'attributable_id' => $component->get('record')->id,
+        'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeB->id,
     ]);
 });

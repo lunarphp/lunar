@@ -36,6 +36,6 @@ it('can retrieve attribute group data', function () {
         'record' => $attributeGroup->getRouteKey(),
     ])
         ->assertFormSet([
-            'name.'.$lang->code => $attributeGroup->translate('name', $lang->code),
+            'name' => $attributeGroup->name,
         ]);
 });

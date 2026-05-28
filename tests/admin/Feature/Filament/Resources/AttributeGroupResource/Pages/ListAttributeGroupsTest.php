@@ -19,7 +19,7 @@ it('shows translated attribute group names as a single state', function () {
     $this->asStaff();
 
     $attributeGroup = AttributeGroup::factory()->create([
-        'name' => ['en' => 'Details'],
+        'name' => 'Details',
     ]);
 
     Livewire::test(ListAttributeGroups::class)

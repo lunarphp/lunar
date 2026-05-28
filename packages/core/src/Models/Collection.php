@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
 use Kalnoy\Nestedset\QueryBuilder;
-use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\CollectionFactory;
+use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasChannels;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
 use Lunar\Core\Models\Concerns\HasMacros;
@@ -40,7 +40,8 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Collection extends Base implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
 {
-    use HasChannels,
+    use HasAttributeData,
+        HasChannels,
         HasCustomerGroups,
         HasFactory,
         HasMacros,
@@ -61,7 +62,6 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         'name' => AsCollection::class,
         'description' => AsCollection::class,
         'short_description' => AsCollection::class,
-        'attribute_data' => AsAttributeData::class,
     ];
 
     protected $guarded = [];

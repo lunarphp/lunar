@@ -11,7 +11,7 @@ return [
             ],
         ],
     ],
-    'listfield' => [
+    'list' => [
         'label' => 'Campo de Lista',
     ],
     'text' => [
@@ -22,7 +22,7 @@ return [
             ],
         ],
     ],
-    'translatedtext' => [
+    'translated_text' => [
         'label' => 'Texto Traducido',
         'form' => [
             'richtext' => [

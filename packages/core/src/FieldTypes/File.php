@@ -2,76 +2,20 @@
 
 namespace Lunar\Core\FieldTypes;
 
-use JsonSerializable;
-
-class File implements FieldType, JsonSerializable
+class File extends AbstractFieldType
 {
-    /**
-     * @var string|array|null
-     */
-    protected $value;
-
-    /**
-     * The config to use.
-     */
-    protected array $config = [];
-
-    /**
-     * Serialize the class.
-     *
-     * @return string
-     */
-    public function jsonSerialize(): mixed
+    public function __toString(): string
     {
-        return $this->value;
-    }
-
-    /**
-     * Create a new instance of File field type.
-     *
-     * @param  string|array|null  $value
-     */
-    public function __construct($value = null)
-    {
-        $this->setValue($value);
-    }
-
-    /**
-     * Returns the value when accessed as a string.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        if (is_array($this->getValue())) {
-            return implode(', ', $this->getValue());
+        if (is_array($this->value)) {
+            return implode(', ', $this->value);
         }
 
-        return $this->getValue() ?? '';
+        return (string) ($this->value ?? '');
     }
 
-    /**
-     * Return the value of this field.
-     *
-     * @return string|array|null
-     */
-    public function getValue()
+    public function setValue(mixed $value): void
     {
-        return $this->value;
-    }
-
-    /**
-     * Set the value of this field.
-     *
-     * @param  string|array|null  $value
-     */
-    public function setValue($value)
-    {
-        if (blank($value)) {
-            $value = null;
-        }
-
-        $this->value = $value;
+        $this->value = blank($value) ? null : $value;
     }
 
     /**

@@ -10,23 +10,17 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'attributes', function (Blueprint $table) {
             $table->id();
-            $table->string('attribute_type')->index();
-            $table->foreignId('attribute_group_id')->constrained($this->prefix.'attribute_groups');
-            $table->integer('position')->index();
-            $table->jsonb('name');
-            $table->string('handle');
-            $table->string('section')->nullable();
+            $table->foreignId('attribute_group_id')->nullable()->constrained($this->prefix.'attribute_groups')->nullOnDelete();
+            $table->string('name');
+            $table->string('handle')->unique();
             $table->string('type')->index();
-            $table->boolean('required');
-            $table->string('default_value')->nullable();
-            $table->jsonb('configuration');
-            $table->boolean('system');
-            $table->timestamps();
-            $table->unique(['attribute_type', 'handle']);
-            $table->boolean('searchable')->default(true)->index();
+            $table->json('configuration')->nullable();
+            $table->integer('position')->default(1)->index();
+            $table->boolean('required')->default(false);
+            $table->boolean('searchable')->default(false)->index();
             $table->boolean('filterable')->default(false)->index();
-            $table->string('validation_rules')->nullable();
-            $table->jsonb('description')->nullable();
+            $table->boolean('system')->default(false);
+            $table->timestamps();
         });
     }
 

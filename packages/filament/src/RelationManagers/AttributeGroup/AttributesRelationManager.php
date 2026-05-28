@@ -2,6 +2,7 @@
 
 namespace Lunar\Filament\RelationManagers\AttributeGroup;
 
+use Closure;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -19,12 +20,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Unique;
-use Lunar\Core\Models\Language;
-use Lunar\Filament\Forms\Components\TranslatedText;
+use Lunar\Core\Facades\AttributeManifest;
+use Lunar\Core\Facades\ModelManifest;
+use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 use Lunar\Filament\Support\Facades\AttributeData;
-use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class AttributesRelationManager extends BaseRelationManager
 {
@@ -35,13 +36,13 @@ class AttributesRelationManager extends BaseRelationManager
         return __('lunar-filament::attribute.plural_label');
     }
 
-    protected static ?string $recordTitleAttribute = 'name.en';  // TODO: localise somehow
+    protected static ?string $recordTitleAttribute = 'name';
 
     public function getDefaultForm(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TranslatedText::make('name')
+                TextInput::make('name')
                     ->label(
                         __('lunar-filament::attribute.form.name.label')
                     )
@@ -52,17 +53,8 @@ class AttributesRelationManager extends BaseRelationManager
                         if ($operation !== 'create') {
                             return;
                         }
-                        $set('handle', Str::slug($state[Language::getDefault()->code]));
+                        $set('handle', Str::slug($state, '_'));
                     }),
-                TranslatedText::make('description')
-                    ->label(
-                        __('lunar-filament::attribute.form.description.label')
-                    )
-                    ->helperText(
-                        __('lunar-filament::attribute.form.description.helper')
-                    )
-                    ->afterStateHydrated(fn ($state, $component) => $state ?: $component->state([Language::getDefault()->code => null]))
-                    ->maxLength(255),
                 TextInput::make('handle')
                     ->label(
                         __('lunar-filament::attribute.form.handle.label')
@@ -75,11 +67,31 @@ class AttributesRelationManager extends BaseRelationManager
 
                         $set('handle', Str::snake(Str::lower($state)));
                     })
-                    ->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule, RelationManager $livewire) {
-                        return $rule->where('attribute_type', $livewire->ownerRecord->attributable_type);
-                    })->disabled(
+                    ->unique(ignoreRecord: true)
+                    ->disabled(
                         fn (?Model $record) => (bool) $record
                     )
+                    ->required(),
+                Select::make('model_types')
+                    ->label(
+                        __('lunar-filament::attribute.form.model_types.label')
+                    )
+                    ->multiple()
+                    ->options(
+                        AttributeManifest::getTypes()->mapWithKeys(
+                            fn ($type) => [ModelManifest::getMorphMapKey($type) => class_basename($type)]
+                        )->toArray()
+                    )
+                    ->rules([
+                        fn () => function (string $attribute, $value, Closure $fail): void {
+                            $values = (array) $value;
+
+                            if (in_array(Product::morphName(), $values, true)
+                                && in_array(ProductVariant::morphName(), $values, true)) {
+                                $fail(__('lunar-filament::attribute.form.model_types.product_and_variant_invalid'));
+                            }
+                        },
+                    ])
                     ->required(),
                 Grid::make(3)->schema([
                     Toggle::make('searchable')
@@ -100,29 +112,17 @@ class AttributesRelationManager extends BaseRelationManager
                 )->disabled(
                     fn (?Model $record) => (bool) $record
                 )->options(
-                    AttributeData::getFieldTypes()->mapWithKeys(function ($fieldType) {
-                        $langKey = strtolower(
-                            class_basename($fieldType)
-                        );
-
+                    AttributeData::getFieldTypes()->mapWithKeys(function ($type) {
                         return [
-                            $fieldType => __("lunar-filament::fieldtypes.{$langKey}.label"),
+                            $type => __("lunar-filament::fieldtypes.{$type}.label"),
                         ];
-                    })->toArray()
+                    })->sort()->toArray()
                 )->required()->live()->afterStateUpdated(fn (Select $component) => $component
                     ->getContainer()
                     ->getComponent('configuration')
                     ->getChildComponentContainer()
 
                     ->fill()),
-                TextInput::make('validation_rules')->label(
-                    __('lunar-filament::attribute.form.validation_rules.label')
-                )
-                    ->string()
-                    ->nullable()
-                    ->helperText(
-                        __('lunar-filament::attribute.form.validation_rules.helper')
-                    ),
                 Grid::make(1)
                     ->schema(function (Get $get) {
                         return AttributeData::getConfigurationFields($get('type'));
@@ -136,11 +136,8 @@ class AttributesRelationManager extends BaseRelationManager
     {
         return $table
             ->columns([
-                TranslatedTextColumn::make('name')->label(
+                TextColumn::make('name')->label(
                     __('lunar-filament::attribute.table.name.label')
-                ),
-                TextColumn::make('description.en')->label(
-                    __('lunar-filament::attribute.table.description.label')
                 ),
                 TextColumn::make('handle')
                     ->label(
@@ -154,24 +151,52 @@ class AttributesRelationManager extends BaseRelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make()->mutateDataUsing(function (array $data, RelationManager $livewire) {
+                CreateAction::make()->using(function (array $data, RelationManager $livewire) {
+                    $modelTypes = (array) ($data['model_types'] ?? []);
+                    unset($data['model_types']);
+
                     $data['configuration'] = $data['configuration'] ?? [];
                     $data['system'] = false;
-                    $data['attribute_type'] = $livewire->ownerRecord->attributable_type;
                     $data['position'] = $livewire->ownerRecord->attributes()->count() + 1;
 
-                    return $data;
+                    $attribute = $livewire->ownerRecord->attributes()->create($data);
+
+                    foreach (array_unique($modelTypes) as $modelType) {
+                        $attribute->models()->create(['model_type' => $modelType]);
+                    }
+
+                    return $attribute;
                 }),
             ])
             ->recordActions([
                 EditAction::make()
-                    ->mutateRecordDataUsing(function (array $data): array {
+                    ->mutateRecordDataUsing(function (array $data, Model $record): array {
                         $data['configuration'] = AttributeData::mutateConfigurationForForm(
                             $data['type'] ?? null,
                             $data['configuration'] ?? [],
                         );
 
+                        $data['model_types'] = $record->models()->pluck('model_type')->all();
+
                         return $data;
+                    })
+                    ->using(function (Model $record, array $data): Model {
+                        $modelTypes = array_key_exists('model_types', $data)
+                            ? array_unique((array) $data['model_types'])
+                            : null;
+                        unset($data['model_types']);
+
+                        $record->update($data);
+
+                        if ($modelTypes !== null) {
+                            $record->models()->delete();
+
+                            foreach ($modelTypes as $modelType) {
+                                $record->models()->create(['model_type' => $modelType]);
+                            }
+                        }
+
+                        return $record;
                     }),
                 DeleteAction::make(),
             ])

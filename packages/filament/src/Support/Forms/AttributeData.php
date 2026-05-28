@@ -5,16 +5,10 @@ namespace Lunar\Filament\Support\Forms;
 use Filament\Schemas\Components\Component;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
-use Lunar\Core\FieldTypes\Dropdown as DrodownFieldType;
-use Lunar\Core\FieldTypes\FieldType;
-use Lunar\Core\FieldTypes\File as FileFieldType;
-use Lunar\Core\FieldTypes\ListField as ListFieldFieldType;
-use Lunar\Core\FieldTypes\Number as NumberFieldType;
+use Lunar\Core\Contracts\FieldType;
+use Lunar\Core\Enums\FieldTypeEnum;
+use Lunar\Core\Facades\FieldTypeManifest;
 use Lunar\Core\FieldTypes\Text as TextFieldType;
-use Lunar\Core\FieldTypes\Toggle as ToggleFieldType;
-use Lunar\Core\FieldTypes\TranslatedText as TranslatedTextFieldType;
-use Lunar\Core\FieldTypes\Vimeo as VimeoFieldType;
-use Lunar\Core\FieldTypes\YouTube as YouTubeFieldType;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Language;
 use Lunar\Filament\FieldTypes\Dropdown;
@@ -31,38 +25,38 @@ use Tiptap\Editor;
 class AttributeData
 {
     protected array $fieldTypes = [
-        DrodownFieldType::class => Dropdown::class,
-        ListFieldFieldType::class => ListField::class,
-        TextFieldType::class => TextField::class,
-        TranslatedTextFieldType::class => TranslatedText::class,
-        ToggleFieldType::class => Toggle::class,
-        YouTubeFieldType::class => YouTube::class,
-        VimeoFieldType::class => Vimeo::class,
-        NumberFieldType::class => Number::class,
-        FileFieldType::class => File::class,
+        FieldTypeEnum::Dropdown->value => Dropdown::class,
+        FieldTypeEnum::ListField->value => ListField::class,
+        FieldTypeEnum::Text->value => TextField::class,
+        FieldTypeEnum::TranslatedText->value => TranslatedText::class,
+        FieldTypeEnum::Toggle->value => Toggle::class,
+        FieldTypeEnum::YouTube->value => YouTube::class,
+        FieldTypeEnum::Vimeo->value => Vimeo::class,
+        FieldTypeEnum::Number->value => Number::class,
+        FieldTypeEnum::File->value => File::class,
     ];
 
     public function getFilamentComponent(Attribute $attribute): Component
     {
-        $fieldType = $this->fieldTypes[
-        $attribute->type
-        ] ?? TextField::class;
+        $fieldType = $this->fieldTypes[$attribute->type] ?? TextField::class;
+
+        $coreFieldType = FieldTypeManifest::getType($attribute->type) ?? TextFieldType::class;
 
         /** @var Component $component */
         $component = $fieldType::getFilamentComponent($attribute);
 
         return $component
             ->label(
-                $attribute->translate('name')
+                $attribute->name
             )
-            ->formatStateUsing(function ($state) use ($attribute) {
+            ->formatStateUsing(function ($state) use ($attribute, $coreFieldType) {
                 $value = $this->unwrapFieldValue($state);
 
                 if ($value === null) {
-                    $value = $this->unwrapFieldValue((new $attribute->type)->getValue());
+                    $value = $this->unwrapFieldValue((new $coreFieldType)->getValue());
                 }
 
-                if ($attribute->type === TranslatedTextFieldType::class) {
+                if ($attribute->type === FieldTypeEnum::TranslatedText->value) {
                     return $this->normalizeTranslatedTextValue($value);
                 }
 
@@ -71,16 +65,16 @@ class AttributeData
             ->mutateStateForValidationUsing(function ($state) {
                 return $this->unwrapFieldValue($state);
             })
-            ->mutateDehydratedStateUsing(function ($state) use ($attribute) {
+            ->mutateDehydratedStateUsing(function ($state) use ($attribute, $coreFieldType) {
                 if ($state instanceof FieldType) {
                     return $state;
                 }
 
-                if ($attribute->type === TranslatedTextFieldType::class) {
+                if ($attribute->type === FieldTypeEnum::TranslatedText->value) {
                     $state = $this->normalizeTranslatedTextValueForStorage($state);
                 }
 
-                $instance = new $attribute->type;
+                $instance = new $coreFieldType;
 
                 if (! blank($state)) {
                     $instance->setValue($state);
@@ -88,13 +82,12 @@ class AttributeData
 
                 return $instance;
             })
-            ->required($attribute->required)
-            ->default($attribute->default_value);
+            ->required($attribute->required);
     }
 
-    public function registerFieldType(string $coreFieldType, string $panelFieldType): static
+    public function registerFieldType(string $type, string $panelFieldType): static
     {
-        $this->fieldTypes[$coreFieldType] = $panelFieldType;
+        $this->fieldTypes[$type] = $panelFieldType;
 
         return $this;
     }

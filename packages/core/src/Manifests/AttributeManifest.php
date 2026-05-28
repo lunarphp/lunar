@@ -75,8 +75,9 @@ class AttributeManifest
             return $attributes;
         }
 
-        $attributes = Attribute::whereAttributeType($attributeType)
-            ->whereSearchable(true)
+        $attributes = Attribute::query()
+            ->whereHas('models', fn ($query) => $query->where('model_type', $attributeType))
+            ->where('searchable', true)
             ->get();
 
         $this->searchableAttributes->put(

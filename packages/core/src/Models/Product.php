@@ -15,12 +15,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\ProductFactory;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Core\Jobs\Products\Associations\Associate;
 use Lunar\Core\Jobs\Products\Associations\Dissociate;
+use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasChannels;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
 use Lunar\Core\Models\Concerns\HasMacros;
@@ -47,6 +47,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  */
 class Product extends Base implements Contracts\Product, HasThumbnailImage, SpatieHasMedia
 {
+    use HasAttributeData;
     use HasChannels;
     use HasCustomerGroups;
     use HasFactory;
@@ -92,7 +93,6 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
         'name' => AsCollection::class,
         'description' => AsCollection::class,
         'short_description' => AsCollection::class,
-        'attribute_data' => AsAttributeData::class,
     ];
 
     /**

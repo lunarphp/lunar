@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component as Livewire;
-use Lunar\Core\FieldTypes\FieldType;
+use Lunar\Core\Contracts\FieldType;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Product;
@@ -71,13 +71,13 @@ class Attributes extends Group
         $this->rawState($data);
     }
 
-    public function hydrateState(?array &$hydratedDefaultState, bool $shouldCallHydrationHooks = true): void
+    public function hydrateState(?array &$hydratedDefaultState, bool $shouldCallHydrationHooks = true, bool $shouldApplyStateCasts = true, array &$appliedStateCastPaths = []): void
     {
         if ($hydratedDefaultState === null) {
             $this->unwrapFieldTypeState();
         }
 
-        parent::hydrateState($hydratedDefaultState, $shouldCallHydrationHooks);
+        parent::hydrateState($hydratedDefaultState, $shouldCallHydrationHooks, $shouldApplyStateCasts, $appliedStateCastPaths);
     }
 
     public function hydrateStatePartially(array $statePaths, bool $shouldCallHydrationHooks = true): void
@@ -115,7 +115,10 @@ class Attributes extends Group
 
                 $morphMap = $modelClass::morphName();
 
-                $attributeQuery = Attribute::where('attribute_type', $morphMap);
+                $attributeQuery = Attribute::whereHas(
+                    'models',
+                    fn ($query) => $query->where('model_type', $morphMap)
+                );
 
                 // Products are unique in that they use product types to map attributes, so we need
                 // to try and find the product type ID
@@ -143,10 +146,7 @@ class Attributes extends Group
 
                 $attributes = $attributeQuery->orderBy('position')->get();
 
-                $groups = AttributeGroup::where(
-                    'attributable_type',
-                    $morphMap
-                )->orderBy('position', 'asc')
+                $groups = AttributeGroup::orderBy('position', 'asc')
                     ->get()
                     ->map(function ($group) use ($attributes) {
                         return [
@@ -164,8 +164,7 @@ class Attributes extends Group
                     foreach ($group['fields'] as $field) {
                         $sectionFields[] = AttributeData::getFilamentComponent($field);
                     }
-                    $groupComponents[] = Section::make($group['model']
-                        ->translate('name'))
+                    $groupComponents[] = Section::make($group['model']->name)
                         ->schema($sectionFields);
                 }
 
