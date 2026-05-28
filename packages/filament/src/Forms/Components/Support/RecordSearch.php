@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
-use Lunar\Core\FieldTypes\TranslatedText;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\Models\Attribute;
 
 use function Filament\Support\generate_search_column_expression;
@@ -79,11 +79,11 @@ class RecordSearch
     public static function globallySearchableAttributes(string $model, array $resourceAttributes): array
     {
         $translated = Attribute::query()
-            ->whereAttributeType($model::morphName())
-            ->whereSearchable(true)
+            ->whereHas('models', fn ($query) => $query->where('model_type', $model::morphName()))
+            ->where('searchable', true)
             ->get()
-            ->filter(fn (Attribute $attribute): bool => $attribute->type === TranslatedText::class)
-            ->map(fn (Attribute $attribute): string => 'attribute_data->'.$attribute->handle.'->value')
+            ->filter(fn (Attribute $attribute): bool => $attribute->type === FieldTypeEnum::TranslatedText->value)
+            ->map(fn (Attribute $attribute): string => 'attribute_data->'.$attribute->id)
             ->values()
             ->all();
 
@@ -140,11 +140,11 @@ class RecordSearch
     protected static function searchableTranslatedColumns(string $model): array
     {
         $columns = Attribute::query()
-            ->whereAttributeType($model::morphName())
-            ->whereSearchable(true)
+            ->whereHas('models', fn ($query) => $query->where('model_type', $model::morphName()))
+            ->where('searchable', true)
             ->get()
-            ->filter(fn (Attribute $attribute): bool => $attribute->type === TranslatedText::class)
-            ->map(fn (Attribute $attribute): string => 'attribute_data->'.$attribute->handle.'->value')
+            ->filter(fn (Attribute $attribute): bool => $attribute->type === FieldTypeEnum::TranslatedText->value)
+            ->map(fn (Attribute $attribute): string => 'attribute_data->'.$attribute->id)
             ->values()
             ->all();
 

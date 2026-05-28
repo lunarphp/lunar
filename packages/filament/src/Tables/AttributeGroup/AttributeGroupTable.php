@@ -8,7 +8,6 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Lunar\Filament\Support\Concerns\CallsHooks;
-use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
 class AttributeGroupTable
 {
@@ -37,9 +36,7 @@ class AttributeGroupTable
     public static function getColumns(): array
     {
         return [
-            TextColumn::make('attributable_type')
-                ->label(__('lunar-filament::attributegroup.table.attributable_type.label')),
-            TranslatedTextColumn::make('name')
+            TextColumn::make('name')
                 ->label(__('lunar-filament::attributegroup.table.name.label')),
             TextColumn::make('handle')
                 ->label(__('lunar-filament::attributegroup.table.handle.label')),

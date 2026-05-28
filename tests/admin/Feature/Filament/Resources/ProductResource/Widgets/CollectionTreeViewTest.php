@@ -2,8 +2,6 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource\Widgets\CollectionTreeView;
-use Lunar\Core\FieldTypes\TranslatedText;
-use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\Language;
@@ -40,12 +38,6 @@ it('can render collection tree', function () {
 
 it('can create root collection', function () {
     $group = CollectionGroup::factory()->create();
-
-    Attribute::factory()->create([
-        'handle' => 'name',
-        'type' => TranslatedText::class,
-        'attribute_type' => 'collection',
-    ]);
 
     $language = Language::factory()->create([
         'default' => true,
@@ -91,12 +83,6 @@ it('can toggle collection children', function () {
 it('can create child collection', function () {
     $group = CollectionGroup::factory()->create();
 
-    Attribute::factory()->create([
-        'handle' => 'name',
-        'type' => TranslatedText::class,
-        'attribute_type' => 'collection',
-    ]);
-
     $language = Language::factory()->create([
         'default' => true,
     ]);
@@ -125,12 +111,6 @@ it('can create child collection', function () {
 
 it('can set child collection as root', function () {
     $group = CollectionGroup::factory()->create();
-
-    Attribute::factory()->create([
-        'handle' => 'name',
-        'type' => TranslatedText::class,
-        'attribute_type' => 'collection',
-    ]);
 
     $language = Language::factory()->create([
         'default' => true,

@@ -2,17 +2,12 @@
 
 namespace Lunar\Filament\Schemas\AttributeGroup;
 
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
-use Lunar\Core\Facades\AttributeManifest;
-use Lunar\Core\Facades\ModelManifest;
-use Lunar\Core\Models\Language;
-use Lunar\Filament\Forms\Components\TranslatedText;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class AttributeGroupForm
@@ -32,31 +27,15 @@ class AttributeGroupForm
     public static function getMainComponents(): array
     {
         return [
-            static::getAttributableTypeComponent(),
             static::getNameComponent(),
             static::getHandleComponent(),
             static::getPositionComponent(),
         ];
     }
 
-    public static function getAttributableTypeComponent(): Component
-    {
-        return Select::make('attributable_type')
-            ->label(__('lunar-filament::attributegroup.form.attributable_type.label'))
-            ->options(function () {
-                return AttributeManifest::getTypes()->mapWithKeys(
-                    fn ($type) => [
-                        ModelManifest::getMorphMapKey($type) => class_basename($type),
-                    ]
-                );
-            })
-            ->required()
-            ->autofocus();
-    }
-
     public static function getNameComponent(): Component
     {
-        return TranslatedText::make('name')
+        return TextInput::make('name')
             ->label(__('lunar-filament::attributegroup.form.name.label'))
             ->required()
             ->maxLength(255)
@@ -64,7 +43,7 @@ class AttributeGroupForm
                 if ($operation !== 'create') {
                     return;
                 }
-                $set('handle', Str::slug($state[Language::getDefault()->code]));
+                $set('handle', Str::slug($state));
             })
             ->live(onBlur: true)
             ->autofocus();

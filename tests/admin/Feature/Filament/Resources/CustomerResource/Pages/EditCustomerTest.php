@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
@@ -62,32 +61,19 @@ it('can save attributes', function () {
     $record = Customer::factory()->create();
 
     $group = AttributeGroup::factory()->create([
-        'attributable_type' => 'customer',
-        'name' => [
-            'en' => 'Details',
-        ],
+        'name' => 'Details',
         'handle' => 'details',
         'position' => 1,
     ]);
 
-    $attribute = Attribute::factory()->create([
-        'attribute_type' => 'customer',
+    Attribute::factory()->modelType('customer')->create([
         'attribute_group_id' => $group->id,
         'position' => 1,
-        'name' => [
-            'en' => 'Name',
-        ],
+        'name' => 'Name',
         'handle' => 'name',
-        'section' => 'main',
         'required' => false,
         'system' => false,
         'searchable' => false,
-    ]);
-
-    DB::table('lunar_attributables')->insert([
-        'attribute_id' => $attribute->id,
-        'attributable_type' => 'customer',
-        'attributable_id' => $record->id,
     ]);
 
     $this->asStaff(admin: true);

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\EditCollection;
 use Lunar\Core\FieldTypes\Text;
@@ -21,32 +20,19 @@ it('can save attributes', function () {
     $record = Collection::factory()->create();
 
     $group = AttributeGroup::factory()->create([
-        'attributable_type' => 'collection',
-        'name' => [
-            'en' => 'Collection Details',
-        ],
+        'name' => 'Collection Details',
         'handle' => 'collection_details',
         'position' => 1,
     ]);
 
-    $attribute = Attribute::factory()->create([
-        'attribute_type' => 'collection',
+    Attribute::factory()->modelType('collection')->create([
         'attribute_group_id' => $group->id,
         'position' => 1,
-        'name' => [
-            'en' => 'Name',
-        ],
+        'name' => 'Name',
         'handle' => 'name',
-        'section' => 'main',
         'required' => false,
         'system' => false,
         'searchable' => false,
-    ]);
-
-    DB::table('lunar_attributables')->insert([
-        'attribute_id' => $attribute->id,
-        'attributable_type' => 'product_type',
-        'attributable_id' => $record->id,
     ]);
 
     $this->asStaff(admin: true);

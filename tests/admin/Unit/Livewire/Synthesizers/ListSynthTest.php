@@ -21,7 +21,7 @@ describe('list field synthesizer', function () {
 
         $result = $this->listField->getValue();
 
-        expect($result)->toBeObject()
+        expect($result)->toBeArray()
             ->and($result)->toHaveKey($key, $value);
     });
 
@@ -66,7 +66,7 @@ describe('list field synthesizer', function () {
 
         $result = $this->listField->getValue();
 
-        expect($result)->toBeObject()
+        expect($result)->toBeArray()
             ->and($result)->toHaveKey($key, $value);
 
         $this->listSynth->unset($this->listField, $key);
@@ -85,7 +85,7 @@ describe('list field synthesizer', function () {
 
         $result = $this->listField->getValue();
 
-        expect($result)->toBeObject()
+        expect($result)->toBeArray()
             ->and($result)->toHaveKey($key, $value);
 
         $this->listSynth->unset($this->listField, $key);

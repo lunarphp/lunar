@@ -3,8 +3,6 @@
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionChildren;
-use Lunar\Core\FieldTypes\TranslatedText;
-use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Language;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
@@ -32,18 +30,6 @@ it('can create child categories', function () {
     ]);
 
     $record = Collection::factory()->create();
-
-    Attribute::factory()->create([
-        'name' => [
-            'en' => 'Name',
-        ],
-        'description' => [
-            'en' => 'Description',
-        ],
-        'handle' => 'name',
-        'type' => TranslatedText::class,
-        'attribute_type' => 'collection',
-    ]);
 
     $this->asStaff();
 

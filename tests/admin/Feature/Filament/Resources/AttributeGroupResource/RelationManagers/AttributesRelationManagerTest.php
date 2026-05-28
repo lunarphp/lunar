@@ -4,9 +4,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
-use Lunar\Core\FieldTypes\Dropdown;
-use Lunar\Core\FieldTypes\Number;
-use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Language;
@@ -28,14 +26,14 @@ it('can render relation manager', function () {
     ])->assertSuccessful();
 });
 
-it('shows translated attribute names as a single state', function () {
+it('shows attribute names', function () {
     $this->asStaff();
 
     $attributeGroup = AttributeGroup::factory()->create();
 
     $attribute = Attribute::factory()->create([
         'attribute_group_id' => $attributeGroup->id,
-        'name' => ['en' => 'Details'],
+        'name' => 'Details',
     ]);
 
     Livewire::test(AttributesRelationManager::class, [
@@ -48,7 +46,7 @@ it('shows translated attribute names as a single state', function () {
 
 it('can create attributes', function ($type, $configuration = [], $expectedData = []) {
 
-    $lang = Language::factory()->create([
+    Language::factory()->create([
         'default' => true,
         'code' => 'en',
     ]);
@@ -61,52 +59,57 @@ it('can create attributes', function ($type, $configuration = [], $expectedData 
         'ownerRecord' => $attributeGroup,
         'pageClass' => EditAttributeGroup::class,
     ])->callTableAction(CreateAction::class, data: [
-        'name.'.$lang->code => 'Foobar',
+        'name' => 'Foobar',
         'type' => $type,
+        'model_types' => ['product'],
         'handle' => 'foobar',
         'configuration' => $configuration,
     ])->assertHasNoTableActionErrors();
 
     $this->assertDatabaseHas((new Attribute)->getTable(), [
         'attribute_group_id' => $attributeGroup->id,
-        'name' => '{"en":"Foobar"}',
+        'name' => 'Foobar',
         'handle' => 'foobar',
         'configuration' => $expectedData,
     ]);
+
+    $this->assertDatabaseHas('lunar_attribute_models', [
+        'model_type' => 'product',
+    ]);
 })->with([
     'text' => [
-        Text::class,
+        FieldTypeEnum::Text->value,
         ['richtext' => false],
         '{"richtext":false}',
     ],
     'richtext' => [
-        Text::class,
+        FieldTypeEnum::Text->value,
         ['richtext' => true],
         '{"richtext":true}',
     ],
     'dropdown' => [
-        Dropdown::class,
+        FieldTypeEnum::Dropdown->value,
         [],
         '{"lookups":[]}',
     ],
     'dropdown-with-lookups' => [
-        Dropdown::class,
+        FieldTypeEnum::Dropdown->value,
         ['lookups' => ['Foo' => 'foo', 'Bar' => 'bar']],
         '{"lookups":[{"label":"Foo","value":"foo"},{"label":"Bar","value":"bar"}]}',
     ],
     'number' => [
-        Number::class,
+        FieldTypeEnum::Number->value,
         [],
         '{"min":null,"max":null}',
     ],
     'number-with-min-max' => [
-        Number::class,
+        FieldTypeEnum::Number->value,
         ['min' => 5, 'max' => 10],
         '{"min":5,"max":10}',
     ],
 ]);
 
-it('rejects duplicate handles across groups of the same attribute type', function () {
+it('rejects an attribute mapped to both product and product variant', function () {
     Language::factory()->create([
         'default' => true,
         'code' => 'en',
@@ -114,17 +117,33 @@ it('rejects duplicate handles across groups of the same attribute type', functio
 
     $this->asStaff();
 
-    $groupOne = AttributeGroup::factory()->create([
-        'attributable_type' => 'product',
+    $attributeGroup = AttributeGroup::factory()->create();
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $attributeGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableAction(CreateAction::class, data: [
+        'name' => 'Size',
+        'type' => FieldTypeEnum::Text->value,
+        'model_types' => ['product', 'product_variant'],
+        'handle' => 'size',
+        'configuration' => ['richtext' => false],
+    ])->assertHasTableActionErrors(['model_types']);
+});
+
+it('rejects duplicate handles', function () {
+    Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
     ]);
 
-    $groupTwo = AttributeGroup::factory()->create([
-        'attributable_type' => 'product',
-    ]);
+    $this->asStaff();
+
+    $groupOne = AttributeGroup::factory()->create();
+    $groupTwo = AttributeGroup::factory()->create();
 
     Attribute::factory()->create([
         'attribute_group_id' => $groupOne->id,
-        'attribute_type' => 'product',
         'handle' => 'size',
     ]);
 
@@ -132,44 +151,12 @@ it('rejects duplicate handles across groups of the same attribute type', functio
         'ownerRecord' => $groupTwo,
         'pageClass' => EditAttributeGroup::class,
     ])->callTableAction(CreateAction::class, data: [
-        'name.en' => 'Size',
-        'type' => Text::class,
+        'name' => 'Size',
+        'type' => FieldTypeEnum::Text->value,
+        'model_type' => 'collection',
         'handle' => 'size',
         'configuration' => ['richtext' => false],
     ])->assertHasTableActionErrors(['handle']);
-});
-
-it('allows duplicate handles across groups of different attribute types', function () {
-    Language::factory()->create([
-        'default' => true,
-        'code' => 'en',
-    ]);
-
-    $this->asStaff();
-
-    $productGroup = AttributeGroup::factory()->create([
-        'attributable_type' => 'product',
-    ]);
-
-    $collectionGroup = AttributeGroup::factory()->create([
-        'attributable_type' => 'collection',
-    ]);
-
-    Attribute::factory()->create([
-        'attribute_group_id' => $productGroup->id,
-        'attribute_type' => 'product',
-        'handle' => 'size',
-    ]);
-
-    Livewire::test(AttributesRelationManager::class, [
-        'ownerRecord' => $collectionGroup,
-        'pageClass' => EditAttributeGroup::class,
-    ])->callTableAction(CreateAction::class, data: [
-        'name.en' => 'Size',
-        'type' => Text::class,
-        'handle' => 'size',
-        'configuration' => ['richtext' => false],
-    ])->assertHasNoTableActionErrors();
 });
 
 it('hydrates dropdown lookups when editing attributes', function () {
@@ -184,7 +171,7 @@ it('hydrates dropdown lookups when editing attributes', function () {
 
     $attribute = Attribute::factory()->create([
         'attribute_group_id' => $attributeGroup->id,
-        'type' => Dropdown::class,
+        'type' => FieldTypeEnum::Dropdown->value,
         'configuration' => [
             'lookups' => [
                 ['label' => 'aaaa', 'value' => 'bbbb'],

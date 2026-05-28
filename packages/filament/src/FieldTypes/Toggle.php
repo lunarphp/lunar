@@ -4,8 +4,8 @@ namespace Lunar\Filament\FieldTypes;
 
 use Filament\Forms\Components\Toggle as ToggleInput;
 use Filament\Schemas\Components\Component;
-use Lunar\Filament\Synthesizers\ToggleSynth;
 use Lunar\Core\Models\Attribute;
+use Lunar\Filament\Synthesizers\ToggleSynth;
 
 class Toggle extends BaseFieldType
 {
@@ -15,7 +15,7 @@ class Toggle extends BaseFieldType
     {
         return ToggleInput::make($attribute->handle)
             ->helperText(
-                $attribute->translate('description')
+                null
             )
             ->default(false)
             ->when(filled($attribute->validation_rules), fn (Toggle $component) => $component->rules($attribute->validation_rules))

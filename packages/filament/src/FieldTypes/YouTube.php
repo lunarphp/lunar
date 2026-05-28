@@ -18,7 +18,7 @@ class YouTube extends BaseFieldType
             ->when(filled($attribute->validation_rules), fn (YouTubeInput $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
             ->helperText(
-                $attribute->translate('description') ?? __('lunar-filament::components.forms.youtube.helperText')
+                null ?? __('lunar-filament::components.forms.youtube.helperText')
             );
     }
 }

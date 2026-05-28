@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\EditBrand;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
@@ -21,32 +21,20 @@ it('can save attributes', function () {
     $record = Brand::factory()->create();
 
     $group = AttributeGroup::factory()->create([
-        'attributable_type' => 'brand',
-        'name' => [
-            'en' => 'Details',
-        ],
+        'name' => 'Details',
         'handle' => 'details',
         'position' => 1,
     ]);
 
-    $attribute = Attribute::factory()->create([
-        'attribute_type' => 'brand',
+    Attribute::factory()->modelType('brand')->create([
         'attribute_group_id' => $group->id,
         'position' => 1,
-        'name' => [
-            'en' => 'Name',
-        ],
+        'name' => 'Name',
         'handle' => 'name',
-        'section' => 'main',
+        'type' => FieldTypeEnum::Text->value,
         'required' => false,
         'system' => false,
         'searchable' => false,
-    ]);
-
-    DB::table('lunar_attributables')->insert([
-        'attribute_id' => $attribute->id,
-        'attributable_type' => 'brand',
-        'attributable_id' => $record->id,
     ]);
 
     $this->asStaff(admin: true);

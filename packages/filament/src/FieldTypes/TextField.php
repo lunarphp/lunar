@@ -6,8 +6,8 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
-use Lunar\Filament\Synthesizers\TextSynth;
 use Lunar\Core\Models\Attribute;
+use Lunar\Filament\Synthesizers\TextSynth;
 
 class TextField extends BaseFieldType
 {
@@ -28,12 +28,12 @@ class TextField extends BaseFieldType
             return RichEditor::make($attribute->handle)
                 ->when(filled($attribute->validation_rules), fn (RichEditor $component) => $component->rules($attribute->validation_rules))
                 ->required((bool) $attribute->required)
-                ->helperText($attribute->translate('description'));
+                ->helperText(null);
         }
 
         return TextInput::make($attribute->handle)
             ->when(filled($attribute->validation_rules), fn (TextInput $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
-            ->helperText($attribute->translate('description'));
+            ->helperText(null);
     }
 }

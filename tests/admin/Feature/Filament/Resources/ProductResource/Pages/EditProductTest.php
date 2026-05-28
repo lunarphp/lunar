@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\FieldTypes\Number;
 use Lunar\Core\FieldTypes\Text;
-use Lunar\Core\FieldTypes\Toggle;
 use Lunar\Core\FieldTypes\TranslatedText as TranslatedTextField;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
@@ -34,34 +33,23 @@ it('can edit variant attributes', function ($attributeType, $attributeValue) {
     ]);
 
     $group = AttributeGroup::factory()->create([
-        'attributable_type' => 'product_variant',
-        'name' => [
-            'en' => 'Variant Details',
-        ],
+        'name' => 'Variant Details',
         'handle' => 'variant_details',
         'position' => 1,
     ]);
 
-    $attribute = Attribute::factory()->create([
-        'attribute_type' => 'product_variant',
+    $attribute = Attribute::factory()->modelType('product_variant')->create([
         'attribute_group_id' => $group->id,
         'position' => 1,
-        'name' => [
-            'en' => 'Test Attribute',
-        ],
-        'handle' => 'test-attribute',
-        'section' => 'main',
+        'name' => 'Test Attribute',
+        'handle' => 'test_attribute',
         'type' => $attributeType,
         'required' => false,
         'system' => false,
         'searchable' => false,
     ]);
 
-    DB::table('lunar_attributables')->insert([
-        'attribute_id' => $attribute->id,
-        'attributable_type' => 'product_type',
-        'attributable_id' => $product->productType->id,
-    ]);
+    $product->productType->mappedAttributes()->attach($attribute->id);
 
     $this->asStaff(admin: true);
 
@@ -81,9 +69,9 @@ it('can edit variant attributes', function ($attributeType, $attributeValue) {
 
     expect($variant->refresh()->attr($attribute->handle))->toBe($attributeValue);
 })->with([
-    [Text::class, 'Hello'],
-    [Toggle::class, true],
-    [Number::class, 100],
+    [FieldTypeEnum::Text->value, 'Hello'],
+    [FieldTypeEnum::Toggle->value, true],
+    [FieldTypeEnum::Number->value, 100],
 ]);
 
 it('can load edit page with existing number attribute', function () {
@@ -97,30 +85,23 @@ it('can load edit page with existing number attribute', function () {
     ]);
 
     $group = AttributeGroup::factory()->create([
-        'attributable_type' => 'product',
-        'name' => ['en' => 'Details'],
+        'name' => 'Details',
         'handle' => 'details',
         'position' => 1,
     ]);
 
-    $attribute = Attribute::factory()->create([
-        'attribute_type' => 'product',
+    $attribute = Attribute::factory()->modelType('product')->create([
         'attribute_group_id' => $group->id,
         'position' => 1,
-        'name' => ['en' => 'Quantity'],
+        'name' => 'Quantity',
         'handle' => 'quantity',
-        'section' => 'main',
-        'type' => Number::class,
+        'type' => FieldTypeEnum::Number->value,
         'required' => false,
         'system' => false,
         'searchable' => false,
     ]);
 
-    DB::table('lunar_attributables')->insert([
-        'attribute_id' => $attribute->id,
-        'attributable_type' => 'product_type',
-        'attributable_id' => $product->productType->id,
-    ]);
+    $product->productType->mappedAttributes()->attach($attribute->id);
 
     $product->update([
         'attribute_data' => collect([
@@ -151,33 +132,22 @@ it('can save attributes', function () {
     ]);
 
     $group = AttributeGroup::factory()->create([
-        'attributable_type' => 'product',
-        'name' => [
-            'en' => 'Details',
-        ],
+        'name' => 'Details',
         'handle' => 'details',
         'position' => 1,
     ]);
 
-    $attribute = Attribute::factory()->create([
-        'attribute_type' => 'product',
+    $attribute = Attribute::factory()->modelType('product')->create([
         'attribute_group_id' => $group->id,
         'position' => 1,
-        'name' => [
-            'en' => 'Name',
-        ],
+        'name' => 'Name',
         'handle' => 'name',
-        'section' => 'main',
         'required' => false,
         'system' => false,
         'searchable' => false,
     ]);
 
-    DB::table('lunar_attributables')->insert([
-        'attribute_id' => $attribute->id,
-        'attributable_type' => 'product_type',
-        'attributable_id' => $record->productType->id,
-    ]);
+    $record->productType->mappedAttributes()->attach($attribute->id);
 
     $this->asStaff(admin: true);
 
@@ -212,17 +182,19 @@ it('hydrates translated rich text fields with all locale keys', function () {
         'default' => true,
     ]);
 
-    $product = Product::factory()->create([
-        'attribute_data' => collect([
-            'description' => new TranslatedTextField(collect()),
-        ]),
-    ]);
+    $product = Product::factory()->create();
 
     ProductVariant::factory()->create([
         'product_id' => $product->id,
     ]);
 
     createTranslatedRichTextProductAttribute($product, 'description');
+
+    $product->update([
+        'attribute_data' => collect([
+            'description' => new TranslatedTextField(collect()),
+        ]),
+    ]);
 
     $this->asStaff(admin: true);
 
@@ -254,17 +226,19 @@ it('saves translated rich text fields from rich editor document payloads', funct
         'default' => true,
     ]);
 
-    $product = Product::factory()->create([
-        'attribute_data' => collect([
-            'description' => new TranslatedTextField(collect()),
-        ]),
-    ]);
+    $product = Product::factory()->create();
 
     ProductVariant::factory()->create([
         'product_id' => $product->id,
     ]);
 
     createTranslatedRichTextProductAttribute($product, 'description');
+
+    $product->update([
+        'attribute_data' => collect([
+            'description' => new TranslatedTextField(collect()),
+        ]),
+    ]);
 
     $this->asStaff(admin: true);
 
@@ -302,24 +276,17 @@ it('saves translated rich text fields from rich editor document payloads', funct
 function createTranslatedRichTextProductAttribute(Product $product, string $handle): void
 {
     $group = AttributeGroup::factory()->create([
-        'attributable_type' => 'product',
-        'name' => [
-            'en' => 'Details',
-        ],
+        'name' => 'Details',
         'handle' => 'details',
         'position' => 1,
     ]);
 
-    $attribute = Attribute::factory()->create([
-        'attribute_type' => 'product',
+    $attribute = Attribute::factory()->modelType('product')->create([
         'attribute_group_id' => $group->id,
         'position' => 1,
-        'name' => [
-            'en' => 'Description',
-        ],
+        'name' => 'Description',
         'handle' => $handle,
-        'section' => 'main',
-        'type' => TranslatedTextField::class,
+        'type' => FieldTypeEnum::TranslatedText->value,
         'required' => false,
         'system' => false,
         'searchable' => false,
@@ -328,11 +295,7 @@ function createTranslatedRichTextProductAttribute(Product $product, string $hand
         ],
     ]);
 
-    DB::table('lunar_attributables')->insert([
-        'attribute_id' => $attribute->id,
-        'attributable_type' => 'product_type',
-        'attributable_id' => $product->productType->id,
-    ]);
+    $product->productType->mappedAttributes()->attach($attribute->id);
 }
 
 it('warns when the product is hidden from guests but visible to other groups', function () {

@@ -5,8 +5,8 @@ namespace Lunar\Filament\FieldTypes;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Component;
-use Lunar\Filament\Synthesizers\DropdownSynth;
 use Lunar\Core\Models\Attribute;
+use Lunar\Filament\Synthesizers\DropdownSynth;
 
 class Dropdown extends BaseFieldType
 {
@@ -54,7 +54,7 @@ class Dropdown extends BaseFieldType
             )
             ->when(filled($attribute->validation_rules), fn (Select $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
-            ->helperText($attribute->translate('description'));
+            ->helperText(null);
     }
 
     public static function getConfigurationFields(): array
