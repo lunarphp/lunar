@@ -5,7 +5,7 @@ on:
     paths-ignore:
       - "**/*.md"
   push:
-    branches: [1.x]
+    branches: [2.x]
   schedule:
     # Daily full-matrix sweep to catch dependency drift on the lower combos.
     - cron: "0 6 * * *"
