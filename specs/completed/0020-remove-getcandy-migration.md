@@ -1,6 +1,6 @@
 # 0020 — Remove GetCandy migration command
 
-- Status: proposed
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-28
 - TODO item: (not previously tracked)
