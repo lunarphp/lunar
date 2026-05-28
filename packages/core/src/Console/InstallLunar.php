@@ -5,16 +5,12 @@ namespace Lunar\Core\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Attribute;
-use Lunar\Core\Models\AttributeGroup;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
-use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductType;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\TaxClass;
@@ -153,40 +149,12 @@ class InstallLunar extends Command
                 );
             }
 
-            if (! AttributeGroup::count()) {
-                $this->components->info('Setting up initial attribute groups');
-
-                AttributeGroup::create([
-                    'attributable_type' => Product::morphName(),
-                    'name' => collect([
-                        'en' => 'Details',
-                    ]),
-                    'handle' => 'details',
-                    'position' => 1,
-                ]);
-
-                AttributeGroup::create([
-                    'attributable_type' => Collection::morphName(),
-                    'name' => collect([
-                        'en' => 'Details',
-                    ]),
-                    'handle' => 'collection_details',
-                    'position' => 1,
-                ]);
-            }
-
             if (! ProductType::count()) {
                 $this->components->info('Adding a product type.');
 
-                $type = ProductType::create([
+                ProductType::create([
                     'name' => 'Stock',
                 ]);
-
-                $type->mappedAttributes()->attach(
-                    Attribute::whereAttributeType(
-                        Product::morphName()
-                    )->get()->pluck('id')
-                );
             }
         });
 

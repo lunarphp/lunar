@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
-use Lunar\Core\Casts\AsAttributeData;
 use Lunar\Core\Database\Factories\CustomerFactory;
-use Lunar\Core\Models\Concerns\HasAttributes;
+use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPersonalDetails;
 use Lunar\Core\Models\Concerns\HasTranslations;
@@ -32,7 +31,7 @@ use Lunar\Core\Models\Concerns\Searchable;
  */
 class Customer extends Base implements Contracts\Customer
 {
-    use HasAttributes;
+    use HasAttributeData;
     use HasFactory;
     use HasMacros;
     use HasPersonalDetails;
@@ -51,7 +50,6 @@ class Customer extends Base implements Contracts\Customer
      * {@inheritDoc}
      */
     protected $casts = [
-        'attribute_data' => AsAttributeData::class,
         'meta' => AsArrayObject::class,
     ];
 

@@ -2,62 +2,11 @@
 
 namespace Lunar\Core\FieldTypes;
 
-use JsonSerializable;
 use Lunar\Core\Exceptions\FieldTypeException;
 
-class Text implements FieldType, JsonSerializable
+class Text extends AbstractFieldType
 {
-    /**
-     * @var string
-     */
-    protected $value;
-
-    /**
-     * Serialize the class.
-     *
-     * @return string
-     */
-    public function jsonSerialize(): mixed
-    {
-        return $this->value;
-    }
-
-    /**
-     * Create a new instance of Text field type.
-     *
-     * @param  string  $value
-     */
-    public function __construct($value = '')
-    {
-        $this->setValue($value);
-    }
-
-    /**
-     * Returns the value when accessed as a string.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getValue() ?? '';
-    }
-
-    /**
-     * Return the value of this field.
-     *
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * Set the value of this field.
-     *
-     * @param  string  $value
-     */
-    public function setValue($value)
+    public function setValue(mixed $value): void
     {
         if ($value && (! is_string($value) && ! is_numeric($value) && ! is_bool($value))) {
             throw new FieldTypeException(self::class.' value must be a string.');

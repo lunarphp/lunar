@@ -13,7 +13,7 @@ uses(RefreshDatabase::class);
 test('can make a product type', function () {
     $productType = ProductType::factory()
         ->has(
-            Attribute::factory()->for(AttributeGroup::factory())->count(1),
+            Attribute::factory()->for(AttributeGroup::factory(), 'group')->count(1),
             'mappedAttributes',
         )
         ->create([

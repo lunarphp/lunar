@@ -3,13 +3,15 @@
 namespace Lunar\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\FieldTypes\Manifest;
+use Lunar\Core\Manifests\FieldTypeManifest as FieldTypeManifestImpl;
 
 /**
- * @method static void add(string $classname)
+ * @method static void add(string $type, string $class)
+ * @method static void remove(string $type)
+ * @method static string|null getType(string $type)
  * @method static \Illuminate\Support\Collection getTypes()
  *
- * @see Manifest
+ * @see FieldTypeManifestImpl
  */
 class FieldTypeManifest extends Facade
 {

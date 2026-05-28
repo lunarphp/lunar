@@ -4,22 +4,28 @@ namespace Lunar\Core\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lunar\Core\Contracts\FieldType;
 
 interface Attribute
 {
     /**
-     * Return the attributable relation.
+     * Return the attribute group relation.
      */
-    public function attributable(): MorphTo;
+    public function group(): BelongsTo;
 
     /**
-     * Returns the attribute group relation.
+     * Return the model-type applicability relation.
      */
-    public function attributeGroup(): BelongsTo;
+    public function models(): HasMany;
 
     /**
-     * Apply the system scope to the query.
+     * Resolve the field type instance for this attribute.
      */
-    public function scopeSystem(Builder $query, $type): Builder;
+    public function fieldType(): FieldType;
+
+    /**
+     * Scope the query to system attributes.
+     */
+    public function scopeSystem(Builder $query): Builder;
 }

@@ -3,11 +3,10 @@
 namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\ProductTypeFactory;
-use Lunar\Core\Models\Concerns\HasAttributes;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
@@ -19,7 +18,6 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  */
 class ProductType extends Base implements Contracts\ProductType
 {
-    use HasAttributes;
     use HasFactory;
     use HasMacros;
     use LogsActivity;
@@ -40,28 +38,29 @@ class ProductType extends Base implements Contracts\ProductType
      */
     protected $guarded = [];
 
-    public function mappedAttributes(): MorphToMany
+    public function mappedAttributes(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return $this->morphToMany(
+        return $this->belongsToMany(
             Attribute::modelClass(),
-            'attributable',
-            "{$prefix}attributables"
+            "{$prefix}product_type_attribute",
         )->withTimestamps();
     }
 
-    public function productAttributes(): MorphToMany
+    public function productAttributes(): BelongsToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(
-            Product::morphName()
+        return $this->mappedAttributes()->whereHas(
+            'models',
+            fn ($query) => $query->where('model_type', Product::morphName())
         );
     }
 
-    public function variantAttributes(): MorphToMany
+    public function variantAttributes(): BelongsToMany
     {
-        return $this->mappedAttributes()->whereAttributeType(
-            ProductVariant::morphName()
+        return $this->mappedAttributes()->whereHas(
+            'models',
+            fn ($query) => $query->where('model_type', ProductVariant::morphName())
         );
     }
 

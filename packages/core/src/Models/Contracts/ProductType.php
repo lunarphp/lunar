@@ -2,25 +2,25 @@
 
 namespace Lunar\Core\Models\Contracts;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 interface ProductType
 {
     /**
      * Get the mapped attributes relation.
      */
-    public function mappedAttributes(): MorphToMany;
+    public function mappedAttributes(): BelongsToMany;
 
     /**
      * Return the product attributes relationship.
      */
-    public function productAttributes(): MorphToMany;
+    public function productAttributes(): BelongsToMany;
 
     /**
      * Return the variant attributes relationship.
      */
-    public function variantAttributes(): MorphToMany;
+    public function variantAttributes(): BelongsToMany;
 
     /**
      * Get the products relation.

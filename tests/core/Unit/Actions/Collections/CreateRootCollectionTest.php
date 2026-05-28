@@ -3,8 +3,6 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Collections\CreateChildCollection;
 use Lunar\Core\Actions\Collections\CreateRootCollection;
-use Lunar\Core\FieldTypes\Text;
-use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\Currency;
@@ -17,12 +15,6 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     Language::factory()->create(['default' => true, 'code' => 'en']);
     Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
-
-    Attribute::factory()->create([
-        'handle' => 'name',
-        'attribute_type' => Collection::morphName(),
-        'type' => Text::class,
-    ]);
 });
 
 test('creates a root collection inside a group', function () {

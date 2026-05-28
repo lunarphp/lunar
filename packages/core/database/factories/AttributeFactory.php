@@ -2,8 +2,7 @@
 
 namespace Lunar\Core\Database\Factories;
 
-use Illuminate\Support\Str;
-use Lunar\Core\FieldTypes\Text;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
 
@@ -17,27 +16,25 @@ class AttributeFactory extends BaseFactory
     {
         return [
             'attribute_group_id' => AttributeGroup::factory(),
-            'attribute_type' => 'product',
             'position' => self::$position++,
-            'name' => [
-                'en' => $this->faker->name(),
-            ],
-            'description' => [
-                'en' => Str::limit($this->faker->text(), 100),
-            ],
-            'handle' => Str::slug($this->faker->name()),
-            'section' => $this->faker->name(),
-            'type' => Text::class,
+            'name' => $this->faker->words(2, true),
+            'handle' => $this->faker->unique()->slug(),
+            'type' => FieldTypeEnum::Text->value,
+            'configuration' => [],
             'required' => false,
-            'default_value' => '',
-            'configuration' => [
-                'options' => [
-                    $this->faker->name(),
-                    $this->faker->name(),
-                    $this->faker->name(),
-                ],
-            ],
+            'searchable' => false,
+            'filterable' => false,
             'system' => false,
         ];
+    }
+
+    /**
+     * Attach the attribute to a model type via the attribute_models table.
+     */
+    public function modelType(string $morph): static
+    {
+        return $this->afterCreating(function (Attribute $attribute) use ($morph) {
+            $attribute->models()->create(['model_type' => $morph]);
+        });
     }
 }

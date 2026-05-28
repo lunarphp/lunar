@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Models\Attribute;
@@ -25,21 +26,17 @@ test('can return correct searchable data', function () {
         'default' => false,
     ]);
 
-    $attributeA = Attribute::factory()->create([
-        'attribute_type' => 'product',
+    $attributeA = Attribute::factory()->modelType('product')->create([
         'searchable' => true,
     ]);
-    $attributeB = Attribute::factory()->create([
-        'attribute_type' => 'product',
+    $attributeB = Attribute::factory()->modelType('product')->create([
         'searchable' => true,
     ]);
-    $attributeC = Attribute::factory()->create([
-        'attribute_type' => 'product',
+    $attributeC = Attribute::factory()->modelType('product')->create([
         'searchable' => false,
     ]);
-    $attributeD = Attribute::factory()->create([
-        'attribute_type' => 'product',
-        'type' => TranslatedText::class,
+    $attributeD = Attribute::factory()->modelType('product')->create([
+        'type' => FieldTypeEnum::TranslatedText->value,
         'searchable' => true,
     ]);
 

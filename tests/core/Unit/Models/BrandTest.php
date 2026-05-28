@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Core\Generators\UrlGenerator;
 use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\AttributeModel;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Discount;
@@ -77,9 +78,10 @@ test('generates unique urls', function () {
 });
 
 test('can return mapped attributes', function () {
-    Attribute::factory()->create([
-        'attribute_type' => 'brand',
-    ]);
+    Attribute::factory()
+        ->has(AttributeModel::factory()->state(['model_type' => 'brand']), 'models')
+        ->create();
+
     $brand = Brand::factory()->create([
         'name' => 'Test Brand',
     ]);

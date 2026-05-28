@@ -2,52 +2,13 @@
 
 namespace Lunar\Core\FieldTypes;
 
-use JsonSerializable;
 use Lunar\Core\Exceptions\FieldTypeException;
 
-class Number implements FieldType, JsonSerializable
+class Number extends AbstractFieldType
 {
-    /**
-     * @var int|float
-     */
-    protected $value;
+    protected mixed $value = 0;
 
-    /**
-     * Create a new instance of Number field type.
-     *
-     * @param  int|float  $value
-     */
-    public function __construct($value = 0)
-    {
-        $this->setValue($value);
-    }
-
-    /**
-     * Serialize the class.
-     *
-     * @return string
-     */
-    public function jsonSerialize(): mixed
-    {
-        return $this->value;
-    }
-
-    /**
-     * Return the value of this field.
-     *
-     * @return int|float
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * Set the value of this field.
-     *
-     * @param  string|int|float|null  $value
-     */
-    public function setValue($value)
+    public function setValue(mixed $value): void
     {
         if (! blank($value) && ! is_numeric($value)) {
             throw new FieldTypeException(self::class.' value must be numeric.');
