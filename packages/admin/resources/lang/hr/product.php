@@ -7,6 +7,7 @@ return [
         'all' => 'All',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
         'unpublished' => [
@@ -73,6 +74,10 @@ return [
                 'draft' => [
                     'label' => 'Skica',
                     'description' => 'Ovaj proizvod bit će skriven u svim kanalima i grupama kupaca',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

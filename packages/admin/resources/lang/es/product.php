@@ -7,6 +7,7 @@ return [
         'all' => 'Todo',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
         'unpublished' => [
@@ -73,6 +74,10 @@ return [
                 'draft' => [
                     'label' => 'Borrador',
                     'description' => 'Este producto estará oculto en todos los canales y grupos de clientes',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

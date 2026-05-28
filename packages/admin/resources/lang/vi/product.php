@@ -7,6 +7,7 @@ return [
         'all' => 'Tất cả',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
         'unpublished' => [
@@ -73,6 +74,10 @@ return [
                 'draft' => [
                     'label' => 'Bản nháp',
                     'description' => 'Sản phẩm này sẽ bị ẩn trên tất cả các kênh và nhóm khách hàng',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

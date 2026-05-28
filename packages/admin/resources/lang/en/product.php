@@ -10,6 +10,7 @@ return [
         'all' => 'All',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
 
     'status' => [
@@ -80,6 +81,10 @@ return [
                 'draft' => [
                     'label' => 'Draft',
                     'description' => 'This product will be hidden across all channels and customer groups',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

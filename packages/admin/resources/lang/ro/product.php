@@ -7,6 +7,7 @@ return [
         'all' => 'Toate',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
         'unpublished' => [
@@ -73,6 +74,10 @@ return [
                 'draft' => [
                     'label' => 'Ciornă',
                     'description' => 'Acest produs va fi ascuns în toate canalele și grupurile de clienți',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

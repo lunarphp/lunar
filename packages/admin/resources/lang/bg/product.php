@@ -7,6 +7,7 @@ return [
         'all' => 'Всички',
         'published' => 'Публикувани',
         'draft' => 'Чернови',
+        'archived' => 'Archived',
     ],
     'status' => [
         'unpublished' => [
@@ -73,6 +74,10 @@ return [
                 'draft' => [
                     'label' => 'Чернова',
                     'description' => 'Този продукт ще бъде скрит във всички канали и клиентски групи.',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

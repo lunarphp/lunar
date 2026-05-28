@@ -7,6 +7,7 @@ return [
         'all' => 'Бүгд',
         'published' => 'Нийтлэгдсэн',
         'draft' => 'Ноорог',
+        'archived' => 'Archived',
     ],
     'status' => [
         'unpublished' => [
@@ -73,6 +74,10 @@ return [
                 'draft' => [
                     'label' => 'Ноорог',
                     'description' => 'Энэ бүтээгдэхүүн бүх сувгууд болон харилцагчийн бүлгүүдэд нуугдсан байна',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

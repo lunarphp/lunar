@@ -7,6 +7,7 @@ return [
         'all' => 'الكل',
         'published' => 'منشور',
         'draft' => 'مسودة',
+        'archived' => 'Archived',
     ],
     'status' => [
         'unpublished' => [
@@ -73,6 +74,10 @@ return [
                 'draft' => [
                     'label' => 'Draft',
                     'description' => 'سيكون هذا المنتج مخفيًا في جميع القنوات ومجموعات العملاء',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],
