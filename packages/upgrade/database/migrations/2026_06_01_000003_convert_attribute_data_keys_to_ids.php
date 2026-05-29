@@ -265,23 +265,39 @@ return new class extends Migration
                 continue;
             }
 
-            DB::table($name)->orderBy('id')->each(function ($row) use ($name) {
-                $value = $row->name;
-                $decoded = is_string($value) ? json_decode($value, true) : null;
+            $flattened = DB::table($name)
+                ->orderBy('id')
+                ->pluck('name', 'id')
+                ->map(fn ($value): ?string => $this->flattenName($value))
+                ->filter(fn (?string $value): bool => $value !== null);
 
-                if (! is_array($decoded)) {
-                    return;
-                }
-
-                $flattened = $decoded['en'] ?? reset($decoded);
-
-                if (! is_string($flattened)) {
-                    $flattened = (string) ($flattened ?? '');
-                }
-
-                DB::table($name)->where('id', $row->id)->update(['name' => $flattened]);
+            // v1 stored `name` as JSON. Switch to the v2 string column before
+            // writing plain values — MySQL otherwise rejects bare strings.
+            Schema::table($name, function (Blueprint $blueprint) {
+                $blueprint->string('name')->change();
             });
+
+            foreach ($flattened as $id => $value) {
+                DB::table($name)->where('id', $id)->update(['name' => $value]);
+            }
         }
+    }
+
+    protected function flattenName(mixed $value): ?string
+    {
+        $decoded = is_string($value) ? json_decode($value, true) : null;
+
+        if (! is_array($decoded)) {
+            return null;
+        }
+
+        $flattened = $decoded['en'] ?? reset($decoded);
+
+        if (! is_string($flattened)) {
+            $flattened = (string) ($flattened ?? '');
+        }
+
+        return $flattened;
     }
 
     protected function reshapeAttributeGroupsSchema(): void
