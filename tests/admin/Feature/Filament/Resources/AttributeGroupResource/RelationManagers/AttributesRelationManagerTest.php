@@ -172,6 +172,63 @@ it('allows duplicate handles across groups of different attribute types', functi
     ])->assertHasNoTableActionErrors();
 });
 
+it('can create an attribute with a default value', function () {
+    $lang = Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
+    ]);
+
+    $this->asStaff();
+
+    $attributeGroup = AttributeGroup::factory()->create();
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $attributeGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableAction(CreateAction::class, data: [
+        'name.'.$lang->code => 'Price',
+        'type' => Number::class,
+        'handle' => 'price',
+        'default_value' => '99',
+        'configuration' => [],
+    ])->assertHasNoTableActionErrors();
+
+    $this->assertDatabaseHas((new Attribute)->getTable(), [
+        'attribute_group_id' => $attributeGroup->id,
+        'handle' => 'price',
+        'default_value' => '99',
+    ]);
+});
+
+it('can edit an attribute default value', function () {
+    Language::factory()->create([
+        'default' => true,
+        'code' => 'en',
+    ]);
+
+    $this->asStaff();
+
+    $attributeGroup = AttributeGroup::factory()->create();
+
+    $attribute = Attribute::factory()->create([
+        'attribute_group_id' => $attributeGroup->id,
+        'type' => Number::class,
+        'default_value' => null,
+    ]);
+
+    Livewire::test(AttributesRelationManager::class, [
+        'ownerRecord' => $attributeGroup,
+        'pageClass' => EditAttributeGroup::class,
+    ])->callTableAction(EditAction::class, $attribute, data: [
+        'default_value' => '42',
+    ])->assertHasNoTableActionErrors();
+
+    $this->assertDatabaseHas((new Attribute)->getTable(), [
+        'id' => $attribute->id,
+        'default_value' => '42',
+    ]);
+});
+
 it('hydrates dropdown lookups when editing attributes', function () {
     Language::factory()->create([
         'default' => true,

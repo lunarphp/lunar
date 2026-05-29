@@ -59,7 +59,11 @@ class AttributeData
                 $value = $this->unwrapFieldValue($state);
 
                 if ($value === null) {
-                    $value = $this->unwrapFieldValue((new $attribute->type)->getValue());
+                    if (filled($attribute->default_value)) {
+                        $value = $attribute->default_value;
+                    } else {
+                        $value = $this->unwrapFieldValue((new $attribute->type)->getValue());
+                    }
                 }
 
                 if ($attribute->type === TranslatedTextFieldType::class) {

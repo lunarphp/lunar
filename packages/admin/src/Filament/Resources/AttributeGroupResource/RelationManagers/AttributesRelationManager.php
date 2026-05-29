@@ -123,6 +123,14 @@ class AttributesRelationManager extends BaseRelationManager
                     ->helperText(
                         __('lunarpanel::attribute.form.validation_rules.helper')
                     ),
+                TextInput::make('default_value')->label(
+                    __('lunarpanel::attribute.form.default_value.label')
+                )
+                    ->string()
+                    ->nullable()
+                    ->helperText(
+                        __('lunarpanel::attribute.form.default_value.helper')
+                    ),
                 Grid::make(1)
                     ->schema(function (Get $get) {
                         return AttributeData::getConfigurationFields($get('type'));

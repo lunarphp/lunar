@@ -51,5 +51,9 @@ return [
             'label' => 'Règles de validation',
             'helper' => 'Règles pour le champ attribut, exemple : min:1|max:10|...',
         ],
+        'default_value' => [
+            'label' => 'Valeur par défaut',
+            'helper' => 'Appliquée comme valeur initiale lors de la création d\'un nouvel enregistrement avec cet attribut.',
+        ],
     ],
 ];
