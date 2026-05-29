@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Lunar\Base\BaseModel;
 use Lunar\Base\Traits\HasModelExtending;
 use Lunar\Models\Collection as ModelsCollection;
+use Lunar\Models\CustomerGroup;
 use Lunar\Models\Product;
 use Lunar\Models\Url;
 use Lunar\Tests\Core\TestCase;
@@ -68,4 +69,12 @@ test('macros are scoped to the correct model', function () {
 test('base model includes trait', function () {
     $uses = class_uses_recursive(BaseModel::class);
     expect(in_array(HasModelExtending::class, $uses))->toBeTrue();
+});
+
+test('trims leading and trailing whitespace from string attributes', function () {
+    $group = CustomerGroup::factory()->create([
+        'handle' => '  my-group  ',
+    ]);
+
+    expect($group->handle)->toBe('my-group');
 });

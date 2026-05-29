@@ -24,6 +24,11 @@ abstract class BaseModel extends Model
         }
     }
 
+    public function setAttribute($key, $value): mixed
+    {
+        return parent::setAttribute($key, is_string($value) ? trim($value) : $value);
+    }
+
     /**
      * {@inheritdoc}
      */
