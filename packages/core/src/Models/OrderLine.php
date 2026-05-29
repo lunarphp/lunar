@@ -14,6 +14,8 @@ use Lunar\Base\Casts\TaxBreakdown;
 use Lunar\Base\Traits\HasMacros;
 use Lunar\Base\Traits\LogsActivity;
 use Lunar\Database\Factories\OrderLineFactory;
+use Lunar\DataTypes\ShippingOption;
+use Lunar\Models\TaxClass;
 
 /**
  * @property int $id
@@ -79,6 +81,23 @@ class OrderLine extends BaseModel implements Contracts\OrderLine
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::modelClass());
+    }
+
+    public function getPurchasableAttribute(): mixed
+    {
+        if ($this->purchasable_type === ShippingOption::class) {
+            return new ShippingOption(
+                name: (string) $this->description,
+                description: (string) $this->description,
+                identifier: (string) $this->identifier,
+                price: $this->unit_price,
+                taxClass: TaxClass::getDefault(),
+                option: $this->option,
+                meta: $this->meta ? (array) $this->meta : null,
+            );
+        }
+
+        return $this->getRelationValue('purchasable');
     }
 
     public function purchasable(): MorphTo

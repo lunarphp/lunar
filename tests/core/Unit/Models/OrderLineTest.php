@@ -159,3 +159,35 @@ test('non eloquent models can be added to an order', function () {
         ->and($orderLine->unit_price->unitDecimal)
         ->toEqual(6.5);
 });
+
+test('can access purchasable on a shipping order line', function () {
+    $order = Order::factory()->create();
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    TaxClass::factory()->create([
+        'default' => true,
+    ]);
+
+    $orderLine = OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'quantity' => 1,
+        'type' => 'shipping',
+        'description' => 'Basic Delivery',
+        'identifier' => 'BASDEL',
+        'option' => 'standard',
+        'purchasable_type' => ShippingOption::class,
+        'purchasable_id' => 1,
+        'unit_price' => 500,
+        'unit_quantity' => 1,
+    ]);
+
+    $purchasable = $orderLine->purchasable;
+
+    expect($purchasable)->toBeInstanceOf(ShippingOption::class)
+        ->and($purchasable->getIdentifier())->toBe('BASDEL')
+        ->and($purchasable->getName())->toBe('Basic Delivery')
+        ->and($purchasable->getOption())->toBe('standard');
+});
