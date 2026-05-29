@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\CheckboxList;
@@ -232,6 +233,7 @@ class CustomerResource extends BaseResource
             ])
             ->recordActions([
                 ViewAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
