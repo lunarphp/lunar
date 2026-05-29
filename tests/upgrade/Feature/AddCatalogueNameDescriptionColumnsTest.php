@@ -23,7 +23,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    foreach (['products', 'product_types', 'attributes', 'attribute_groups'] as $table) {
+    foreach (['attributables', 'products', 'product_types', 'attributes', 'attribute_groups'] as $table) {
         Schema::dropIfExists(SPEC0018_PREFIX.$table);
     }
 });
@@ -132,6 +132,59 @@ function simulateV1Products(): void
         ]);
     }
 }
+
+test('it relaxes a v1 NOT NULL attribute_data column before backfilling', function () {
+    Schema::create(SPEC0018_PREFIX.'collections', function (Blueprint $table) {
+        $table->id();
+        $table->json('attribute_data');
+        $table->timestamps();
+    });
+
+    DB::table(SPEC0018_PREFIX.'collections')->insert([
+        'id' => 1,
+        'attribute_data' => json_encode([
+            'name' => [
+                'field_type' => TranslatedText::class,
+                'value' => ['en' => 'Puzzle'],
+            ],
+        ]),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    catalogueMigration()->up();
+
+    $collection = DB::table(SPEC0018_PREFIX.'collections')->find(1);
+
+    expect(json_decode($collection->name, true))->toBe(['en' => 'Puzzle']);
+    expect($collection->attribute_data)->toBeNull();
+
+    Schema::drop(SPEC0018_PREFIX.'collections');
+});
+
+test('it clears attributables pivot rows before deleting the system attributes', function () {
+    simulateV1Products();
+
+    Schema::create(SPEC0018_PREFIX.'attributables', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('attribute_id')->constrained(SPEC0018_PREFIX.'attributes');
+        $table->string('attributable_type');
+        $table->unsignedBigInteger('attributable_id');
+    });
+
+    $nameAttributeId = DB::table(SPEC0018_PREFIX.'attributes')->where('handle', 'name')->value('id');
+    $descAttributeId = DB::table(SPEC0018_PREFIX.'attributes')->where('handle', 'description')->value('id');
+
+    DB::table(SPEC0018_PREFIX.'attributables')->insert([
+        ['attribute_id' => $nameAttributeId, 'attributable_type' => 'product_type', 'attributable_id' => 1],
+        ['attribute_id' => $descAttributeId, 'attributable_type' => 'product_type', 'attributable_id' => 1],
+    ]);
+
+    catalogueMigration()->up();
+
+    expect(DB::table(SPEC0018_PREFIX.'attributables')->count())->toBe(0);
+    expect(DB::table(SPEC0018_PREFIX.'attributes')->whereIn('handle', ['name', 'description'])->count())->toBe(0);
+});
 
 test('it backfills the dedicated columns from attribute_data', function () {
     simulateV1Products();

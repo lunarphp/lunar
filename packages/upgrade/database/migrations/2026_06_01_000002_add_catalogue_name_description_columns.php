@@ -30,8 +30,27 @@ return new class extends Migration
      */
     protected array $translatableTables = ['products', 'collections'];
 
+    /**
+     * Every v1 attributable table whose `attribute_data` column may be written
+     * NULL by this migration or by spec 0019's id-key conversion. v1 created
+     * the column as `NOT NULL`; v2 treats it as nullable. Align the constraint
+     * before any backfill runs.
+     *
+     * @var list<string>
+     */
+    protected array $attributableTables = [
+        'products',
+        'product_variants',
+        'brands',
+        'collections',
+        'customers',
+        'customer_groups',
+    ];
+
     public function up(): void
     {
+        $this->relaxAttributeDataConstraint();
+
         foreach ($this->translatableTables as $name) {
             $table = $this->prefix.$name;
 
@@ -51,10 +70,35 @@ return new class extends Migration
         }
 
         if (Schema::hasTable($this->prefix.'attributes')) {
-            DB::table($this->prefix.'attributes')
+            $orphanIds = DB::table($this->prefix.'attributes')
                 ->whereIn('attribute_type', ['product', 'collection'])
                 ->whereIn('handle', ['name', 'description'])
+                ->pluck('id');
+
+            if ($orphanIds->isNotEmpty() && Schema::hasTable($this->prefix.'attributables')) {
+                DB::table($this->prefix.'attributables')
+                    ->whereIn('attribute_id', $orphanIds)
+                    ->delete();
+            }
+
+            DB::table($this->prefix.'attributes')
+                ->whereIn('id', $orphanIds)
                 ->delete();
+        }
+    }
+
+    protected function relaxAttributeDataConstraint(): void
+    {
+        foreach ($this->attributableTables as $name) {
+            $table = $this->prefix.$name;
+
+            if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'attribute_data')) {
+                continue;
+            }
+
+            Schema::table($table, function (Blueprint $blueprint) {
+                $blueprint->jsonb('attribute_data')->nullable()->change();
+            });
         }
     }
 
