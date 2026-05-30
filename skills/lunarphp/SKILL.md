@@ -111,7 +111,7 @@ The database uses a `lunar_` table prefix (configurable in `config/lunar/databas
 1. Install via Composer:
 
 ```bash
-vendor/bin/sail composer require lunarphp/lunar:"^1.0" -W
+composer require lunarphp/lunar:"^1.0" -W
 ```
 
 2. Add `LunarUser` trait and interface to the `User` model:
@@ -140,7 +140,7 @@ public function register(): void
 4. Run the installer:
 
 ```bash
-vendor/bin/sail artisan lunar:install
+php artisan lunar:install
 ```
 
 The installer publishes configs, runs migrations, creates an admin user, and seeds default data (channel, language, currency, customer group, etc.).
@@ -152,7 +152,7 @@ The installer publishes configs, runs migrations, creates an admin user, and see
 Publish configs before installing to customize settings:
 
 ```bash
-vendor/bin/sail artisan vendor:publish --tag=lunar
+php artisan vendor:publish --tag=lunar
 ```
 
 Key config values to check:
@@ -839,15 +839,15 @@ Requires `soft_delete: true` in `config/scout.php`.
 ### Indexing
 
 ```bash
-vendor/bin/sail artisan lunar:search:index
-vendor/bin/sail artisan lunar:search:index "Lunar\Models\Product" --refresh
-vendor/bin/sail artisan lunar:search:index "Lunar\Models\Order" --flush
+php artisan lunar:search:index
+php artisan lunar:search:index "Lunar\Models\Product" --refresh
+php artisan lunar:search:index "Lunar\Models\Order" --flush
 ```
 
 For Meilisearch, run setup to configure filterable/sortable attributes:
 
 ```bash
-vendor/bin/sail artisan lunar:meilisearch:setup
+php artisan lunar:meilisearch:setup
 ```
 
 ### Storefront Search Add-on
@@ -855,7 +855,7 @@ vendor/bin/sail artisan lunar:meilisearch:setup
 For faceted search with consistent API across engines:
 
 ```bash
-vendor/bin/sail composer require lunarphp/search
+composer require lunarphp/search
 ```
 
 ```php
