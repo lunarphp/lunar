@@ -1736,6 +1736,311 @@ test('can store an automatically added reward line using the morph map', functio
     expect($rewardLine->purchasable_type)->toEqual($purchasableB->getMorphClass());
 });
 
+test('does not automatically add reward when product variant has no stock', function () {
+    $customerGroup = CustomerGroup::factory()->create(['default' => true]);
+    $channel = Channel::factory()->create(['default' => true]);
+    $currency = Currency::factory()->create(['code' => 'GBP']);
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+        'purchasable' => 'in_stock',
+        'stock' => 0,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    foreach ([$purchasableA, $purchasableB] as $purchasable) {
+        Price::factory()->create([
+            'price' => 1000,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Automatic Reward Out Of Stock',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 1,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'starts_at' => now()],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => ['enabled' => true, 'starts_at' => now()->subHour()],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $productB->getMorphClass(),
+        'discountable_id' => $productB->id,
+        'type' => 'reward',
+    ]);
+
+    $cart = $cart->calculate();
+
+    expect($cart->freeItems)->toBeNull();
+});
+
+test('does not automatically add collection reward when all products are out of stock', function () {
+    $customerGroup = CustomerGroup::factory()->create(['default' => true]);
+    $channel = Channel::factory()->create(['default' => true]);
+    $currency = Currency::factory()->create(['code' => 'GBP']);
+
+    $collection = Collection::factory()->create();
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create();
+
+    $productB->collections()->sync($collection);
+
+    $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+        'purchasable' => 'in_stock',
+        'stock' => 0,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    foreach ([$purchasableA, $purchasableB] as $purchasable) {
+        Price::factory()->create([
+            'price' => 1000,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Automatic Collection Reward Out Of Stock',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 1,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'starts_at' => now()],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => ['enabled' => true, 'starts_at' => now()->subHour()],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $collection->getMorphClass(),
+        'discountable_id' => $collection->id,
+        'type' => 'reward',
+    ]);
+
+    $cart = $cart->calculate();
+
+    expect($cart->freeItems)->toBeNull();
+});
+
+test('automatically adds collection reward selecting in-stock product when others are out of stock', function () {
+    $customerGroup = CustomerGroup::factory()->create(['default' => true]);
+    $channel = Channel::factory()->create(['default' => true]);
+    $currency = Currency::factory()->create(['code' => 'GBP']);
+
+    $collection = Collection::factory()->create();
+
+    $productA = Product::factory()->create();
+    $productB = Product::factory()->create(); // out of stock
+    $productC = Product::factory()->create(); // in stock
+
+    $productB->collections()->sync($collection);
+    $productC->collections()->sync($collection);
+
+    $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+        'purchasable' => 'in_stock',
+        'stock' => 0,
+    ]);
+    $purchasableC = ProductVariant::factory()->create([
+        'product_id' => $productC->id,
+        'purchasable' => 'in_stock',
+        'stock' => 5,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    foreach ([$purchasableA, $purchasableB, $purchasableC] as $purchasable) {
+        Price::factory()->create([
+            'price' => 1000,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Automatic Collection Reward Mixed Stock',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 1,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'starts_at' => now()],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => ['enabled' => true, 'starts_at' => now()->subHour()],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    $discount->discountableRewards()->create([
+        'discountable_type' => $collection->getMorphClass(),
+        'discountable_id' => $collection->id,
+        'type' => 'reward',
+    ]);
+
+    $cart = $cart->calculate();
+
+    // Only the in-stock product (C) should be added as a free item
+    expect($cart->freeItems)->toHaveCount(1);
+    expect($cart->freeItems->first()->id)->toEqual($productC->id);
+});
+
+test('automatically adds in-stock product reward when another reward product is out of stock', function () {
+    $customerGroup = CustomerGroup::factory()->create(['default' => true]);
+    $channel = Channel::factory()->create(['default' => true]);
+    $currency = Currency::factory()->create(['code' => 'GBP']);
+
+    $productA = Product::factory()->create(); // condition
+    $productB = Product::factory()->create(); // reward — out of stock
+    $productC = Product::factory()->create(); // reward — in stock
+
+    $purchasableA = ProductVariant::factory()->create(['product_id' => $productA->id]);
+    $purchasableB = ProductVariant::factory()->create([
+        'product_id' => $productB->id,
+        'purchasable' => 'in_stock',
+        'stock' => 0,
+    ]);
+    $purchasableC = ProductVariant::factory()->create([
+        'product_id' => $productC->id,
+        'purchasable' => 'in_stock',
+        'stock' => 5,
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+    ]);
+
+    foreach ([$purchasableA, $purchasableB, $purchasableC] as $purchasable) {
+        Price::factory()->create([
+            'price' => 1000,
+            'min_quantity' => 1,
+            'currency_id' => $currency->id,
+            'priceable_type' => $purchasable->getMorphClass(),
+            'priceable_id' => $purchasable->id,
+        ]);
+    }
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasableA->getMorphClass(),
+        'purchasable_id' => $purchasableA->id,
+        'quantity' => 1,
+    ]);
+
+    $discount = Discount::factory()->create([
+        'type' => BuyXGetY::class,
+        'name' => 'Test Automatic Reward Mixed Stock',
+        'data' => [
+            'min_qty' => 1,
+            'reward_qty' => 1,
+            'automatically_add_rewards' => true,
+        ],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'starts_at' => now()],
+    ]);
+
+    $discount->channels()->sync([
+        $channel->id => ['enabled' => true, 'starts_at' => now()->subHour()],
+    ]);
+
+    $discount->discountableConditions()->create([
+        'discountable_type' => $productA->getMorphClass(),
+        'discountable_id' => $productA->id,
+    ]);
+
+    // Both B (no stock) and C (in stock) are rewards
+    $discount->discountableRewards()->createMany([
+        ['discountable_type' => $productB->getMorphClass(), 'discountable_id' => $productB->id, 'type' => 'reward'],
+        ['discountable_type' => $productC->getMorphClass(), 'discountable_id' => $productC->id, 'type' => 'reward'],
+    ]);
+
+    $cart = $cart->calculate();
+
+    // Product C (in stock) must be added; product B (out of stock) must never be added
+    expect($cart->freeItems)->toHaveCount(1);
+    expect($cart->freeItems->first()->id)->toEqual($productC->id);
+});
+
 test('can add a multi quantity reward as a single line', function () {
     $customerGroup = CustomerGroup::factory()->create([
         'default' => true,

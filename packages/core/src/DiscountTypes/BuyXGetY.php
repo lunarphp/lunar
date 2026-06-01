@@ -249,18 +249,37 @@ class BuyXGetY extends AbstractDiscountType
 
         // we have lines to add
         if ($remainingRewardQty > 0) {
-            while ($remainingRewardQty > 0) {
-                $selectedRewardItem = $this->discount->discountableRewards->random()->discountable;
+            $fulfillableRewards = $this->discount->discountableRewards->filter(function ($discountableReward) {
+                $rewardItem = $discountableReward->discountable;
 
-                if (! $selectedRewardItem) {
-                    $remainingRewardQty--;
-
-                    continue;
+                if (! $rewardItem) {
+                    return false;
                 }
 
+                if ($rewardItem instanceof LunarCollection) {
+                    return $rewardItem->products()
+                        ->with('variants')
+                        ->get()
+                        ->some(fn ($p) => $p->variants->first()?->canBeFulfilledAtQuantity(1));
+                }
+
+                return (bool) $rewardItem->variants->first()?->canBeFulfilledAtQuantity(1);
+            });
+
+            if ($fulfillableRewards->isEmpty()) {
+                return [$affectedLines, $discountTotal];
+            }
+
+            while ($remainingRewardQty > 0) {
+                $selectedRewardItem = $fulfillableRewards->random()->discountable;
+
                 if ($selectedRewardItem instanceof LunarCollection) {
-                    $product = $selectedRewardItem->products()->inRandomOrder()->first();
-                    $purchasable = $product?->variants()->first();
+                    $product = $selectedRewardItem->products()
+                        ->inRandomOrder()
+                        ->with('variants')
+                        ->get()
+                        ->first(fn ($p) => $p->variants->first()?->canBeFulfilledAtQuantity(1));
+                    $purchasable = $product?->variants->first();
                     $selectedRewardItem = $product;
                 } elseif ($selectedRewardItem instanceof Purchasable) {
                     $purchasable = $selectedRewardItem;
@@ -269,6 +288,12 @@ class BuyXGetY extends AbstractDiscountType
                 }
 
                 if (! $purchasable) {
+                    $remainingRewardQty--;
+
+                    continue;
+                }
+
+                if (! $purchasable->canBeFulfilledAtQuantity(1)) {
                     $remainingRewardQty--;
 
                     continue;
