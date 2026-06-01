@@ -12,9 +12,4 @@ class Cancelled extends OrderState
     {
         return __('lunar::states.order.cancelled');
     }
-
-    public function isManualOverride(): bool
-    {
-        return true;
-    }
 }

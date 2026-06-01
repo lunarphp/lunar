@@ -7,7 +7,7 @@ use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
-use Lunar\Core\States\Order\Payment\Captured;
+use Lunar\Core\States\Order\Order\InProcess;
 
 class OfflinePayment extends AbstractPayment
 {
@@ -26,12 +26,12 @@ class OfflinePayment extends AbstractPayment
             $this->data['meta'] ?? []
         );
 
-        $paymentStatus = $this->data['authorized']
+        $status = $this->data['authorized']
             ?? $this->config['authorized']
-            ?? Captured::$name;
+            ?? InProcess::$name;
 
         $this->order->update([
-            'payment_status' => $paymentStatus,
+            'status' => $status,
             'meta' => $orderMeta,
             'placed_at' => now(),
         ]);

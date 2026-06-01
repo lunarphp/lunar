@@ -164,16 +164,8 @@ return [
         'purchase_stock_level' => [
             'message' => 'sipariş anında: :count',
         ],
-        'payment_status' => [
-            'label' => 'Payment',
-        ],
-        'fulfilment_status' => [
-            'label' => 'Fulfilment',
-        ],
         'status' => [
             'label' => 'Order',
-            'computed' => 'Computed from payment + fulfilment.',
-            'manual_override' => 'Manual override — automatic recomputation is paused until this status moves back to a non-override state.',
         ],
         'reference' => [
             'label' => 'Referans',

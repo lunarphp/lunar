@@ -18,7 +18,7 @@ test('can authorize payment', function () {
     $cart = Cart::factory()->create();
 
     Config::set('lunar.payments.types.offline', [
-        'authorized' => 'captured',
+        'authorized' => 'in-process',
     ]);
 
     CartAddress::factory()->create([
@@ -53,7 +53,7 @@ test('can override status', function () {
     $cart = Cart::factory()->create();
 
     Config::set('lunar.payments.types.offline', [
-        'authorized' => 'captured',
+        'authorized' => 'in-process',
     ]);
 
     CartAddress::factory()->create([
@@ -77,19 +77,19 @@ test('can override status', function () {
     ]);
 
     Payments::driver('offline')->cart($cart->refresh())->withData([
-        'authorized' => 'authorized',
+        'authorized' => 'in-process',
     ])->authorize();
 
     $order = $cart->refresh()->completedOrder;
 
-    expect((string) $order->payment_status)->toBe('authorized');
+    expect((string) $order->status)->toBe('in-process');
 });
 
 test('can set additional meta', function () {
     $cart = Cart::factory()->create();
 
     Config::set('lunar.payments.types.offline', [
-        'authorized' => 'captured',
+        'authorized' => 'in-process',
     ]);
 
     CartAddress::factory()->create([

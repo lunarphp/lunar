@@ -3,93 +3,52 @@
 namespace Lunar\Core\States\Order;
 
 use Lunar\Core\Contracts\OrderStateConfig;
-use Lunar\Core\Enums\OrderStateCategory;
-use Lunar\Core\States\Order\Fulfilment\Backordered as FulfilmentBackordered;
-use Lunar\Core\States\Order\Fulfilment\Delivered as FulfilmentDelivered;
-use Lunar\Core\States\Order\Fulfilment\PartiallyShipped as FulfilmentPartiallyShipped;
-use Lunar\Core\States\Order\Fulfilment\Processing as FulfilmentProcessing;
-use Lunar\Core\States\Order\Fulfilment\Returned as FulfilmentReturned;
-use Lunar\Core\States\Order\Fulfilment\Shipped as FulfilmentShipped;
-use Lunar\Core\States\Order\Fulfilment\Unfulfilled;
 use Lunar\Core\States\Order\Order\AwaitingPayment;
-use Lunar\Core\States\Order\Order\Backordered as OrderBackordered;
+use Lunar\Core\States\Order\Order\Backordered;
 use Lunar\Core\States\Order\Order\Cancelled;
-use Lunar\Core\States\Order\Order\Complete as OrderComplete;
+use Lunar\Core\States\Order\Order\Complete;
 use Lunar\Core\States\Order\Order\InProcess;
 use Lunar\Core\States\Order\Order\OnHold;
-use Lunar\Core\States\Order\Order\PartiallyShipped as OrderPartiallyShipped;
-use Lunar\Core\States\Order\Order\PaymentFailed as OrderPaymentFailed;
-use Lunar\Core\States\Order\Order\Refunded as OrderRefunded;
-use Lunar\Core\States\Order\Order\Returned as OrderReturned;
-use Lunar\Core\States\Order\Order\Shipped as OrderShipped;
-use Lunar\Core\States\Order\Payment\Authorized;
-use Lunar\Core\States\Order\Payment\Captured;
-use Lunar\Core\States\Order\Payment\Failed as PaymentFailed;
-use Lunar\Core\States\Order\Payment\Pending;
-use Lunar\Core\States\Order\Payment\Refunded as PaymentRefunded;
+use Lunar\Core\States\Order\Order\PartiallyShipped;
+use Lunar\Core\States\Order\Order\PaymentFailed;
+use Lunar\Core\States\Order\Order\Refunded;
+use Lunar\Core\States\Order\Order\Returned;
+use Lunar\Core\States\Order\Order\Shipped;
 
 class DefaultOrderStateConfig implements OrderStateConfig
 {
-    public function paymentStates(): array
-    {
-        return [
-            Pending::class,
-            Authorized::class,
-            Captured::class,
-            PaymentFailed::class,
-            PaymentRefunded::class,
-        ];
-    }
-
-    public function fulfilmentStates(): array
-    {
-        return [
-            Unfulfilled::class,
-            FulfilmentBackordered::class,
-            FulfilmentProcessing::class,
-            FulfilmentPartiallyShipped::class,
-            FulfilmentShipped::class,
-            FulfilmentDelivered::class,
-            FulfilmentReturned::class,
-        ];
-    }
-
     public function orderStates(): array
     {
         return [
             AwaitingPayment::class,
-            OrderPaymentFailed::class,
-            OrderBackordered::class,
+            PaymentFailed::class,
+            Backordered::class,
             InProcess::class,
-            OrderPartiallyShipped::class,
-            OrderShipped::class,
-            OrderComplete::class,
-            OrderReturned::class,
-            OrderRefunded::class,
+            PartiallyShipped::class,
+            Shipped::class,
+            Complete::class,
+            Returned::class,
+            Refunded::class,
             OnHold::class,
             Cancelled::class,
         ];
     }
 
-    public function paymentTransitions(): array
+    public function orderTransitions(): array
     {
         return [
-            Pending::class => [Authorized::class, Captured::class, PaymentFailed::class],
-            Authorized::class => [Captured::class, PaymentFailed::class],
-            Captured::class => [PaymentRefunded::class],
-            PaymentFailed::class => [Pending::class],
-            PaymentRefunded::class => [],
+            AwaitingPayment::class => [InProcess::class, PaymentFailed::class, Backordered::class, OnHold::class, Cancelled::class],
+            PaymentFailed::class => [AwaitingPayment::class, Cancelled::class],
+            Backordered::class => [InProcess::class, OnHold::class, Cancelled::class],
+            InProcess::class => [PartiallyShipped::class, Shipped::class, OnHold::class, Cancelled::class],
+            PartiallyShipped::class => [Shipped::class, Returned::class, Cancelled::class],
+            Shipped::class => [Complete::class, Returned::class],
+            Complete::class => [Returned::class, Refunded::class],
+            Returned::class => [Refunded::class],
+            OnHold::class => [AwaitingPayment::class, InProcess::class, Cancelled::class],
+            Cancelled::class => [Refunded::class],
+            Refunded::class => [],
         ];
-    }
-
-    public function defaultPaymentState(): string
-    {
-        return Pending::class;
-    }
-
-    public function defaultFulfilmentState(): string
-    {
-        return Unfulfilled::class;
     }
 
     public function defaultOrderState(): string
@@ -103,56 +62,5 @@ class DefaultOrderStateConfig implements OrderStateConfig
         $notifications = (array) config('lunar.orders.notifications.'.$state::$name, []);
 
         return $notifications;
-    }
-
-    public function fulfilmentTransitions(): array
-    {
-        return [
-            Unfulfilled::class => [FulfilmentProcessing::class, FulfilmentBackordered::class],
-            FulfilmentBackordered::class => [FulfilmentProcessing::class],
-            FulfilmentProcessing::class => [FulfilmentShipped::class, FulfilmentPartiallyShipped::class],
-            FulfilmentPartiallyShipped::class => [FulfilmentShipped::class],
-            FulfilmentShipped::class => [FulfilmentDelivered::class, FulfilmentReturned::class],
-            FulfilmentDelivered::class => [FulfilmentReturned::class],
-            FulfilmentReturned::class => [],
-        ];
-    }
-
-    public function resolveOrderState(PaymentState $payment, FulfilmentState $fulfilment): string
-    {
-        if ($payment instanceof PaymentRefunded) {
-            return OrderRefunded::class;
-        }
-
-        $key = $payment::class.'|'.$fulfilment::class;
-        $overrides = $this->overrides();
-
-        if (isset($overrides[$key])) {
-            return $overrides[$key];
-        }
-
-        return match ($payment->category()) {
-            OrderStateCategory::Failed => OrderPaymentFailed::class,
-            OrderStateCategory::Pending => AwaitingPayment::class,
-            OrderStateCategory::Active, OrderStateCategory::Complete => match ($fulfilment->category()) {
-                OrderStateCategory::Blocked => OrderBackordered::class,
-                OrderStateCategory::Pending => InProcess::class,
-                OrderStateCategory::Active => OrderShipped::class,
-                OrderStateCategory::Complete => OrderComplete::class,
-                OrderStateCategory::Failed => OrderReturned::class,
-            },
-            default => AwaitingPayment::class,
-        };
-    }
-
-    /**
-     * @return array<string, class-string<OrderState>>
-     */
-    protected function overrides(): array
-    {
-        return [
-            Captured::class.'|'.FulfilmentPartiallyShipped::class => OrderPartiallyShipped::class,
-            Authorized::class.'|'.FulfilmentPartiallyShipped::class => OrderPartiallyShipped::class,
-        ];
     }
 }

@@ -60,7 +60,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Notifications to dispatch when an order transitions into a given
-    | order_status. Keyed by the OrderState $name (e.g. 'shipped'), each
+    | status. Keyed by the OrderState $name (e.g. 'shipped'), each
     | entry is a list of notification class names. Each notification is
     | instantiated with the Order and delivered via `$order->notify()`.
     |

@@ -12,9 +12,4 @@ class OnHold extends OrderState
     {
         return __('lunar::states.order.on-hold');
     }
-
-    public function isManualOverride(): bool
-    {
-        return true;
-    }
 }

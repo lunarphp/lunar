@@ -13,7 +13,7 @@ class SendOrderStatusNotifications
 
     public function handle(OrderStatusUpdated $event): void
     {
-        foreach ($this->stateConfig->notificationsFor($event->order->order_status) as $class) {
+        foreach ($this->stateConfig->notificationsFor($event->newStatus) as $class) {
             $event->order->notify(new $class($event->order));
         }
     }

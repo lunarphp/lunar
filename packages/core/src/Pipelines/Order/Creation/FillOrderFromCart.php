@@ -23,8 +23,8 @@ class FillOrderFromCart
             'user_id' => $cart->user_id,
             'customer_id' => $cart->customer_id,
             'channel_id' => $cart->channel_id,
-            // payment_status / fulfilment_status / order_status default via the
-            // HasStates initializer and the migration column defaults.
+            // status defaults via the HasStates initializer and the migration
+            // column default.
             'reference' => null,
             'customer_reference' => null,
             'sub_total' => $cart->subTotal->value,

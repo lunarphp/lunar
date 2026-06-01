@@ -18,24 +18,6 @@ return [
         'archived' => 'Archived',
     ],
 
-    'payment' => [
-        'pending' => 'Pending',
-        'authorized' => 'Authorized',
-        'captured' => 'Captured',
-        'failed' => 'Failed',
-        'refunded' => 'Refunded',
-    ],
-
-    'fulfilment' => [
-        'unfulfilled' => 'Unfulfilled',
-        'backordered' => 'Backordered',
-        'processing' => 'Processing',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'delivered' => 'Delivered',
-        'returned' => 'Returned',
-    ],
-
     'order' => [
         'awaiting-payment' => 'Awaiting Payment',
         'payment-failed' => 'Payment Failed',

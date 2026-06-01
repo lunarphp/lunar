@@ -19,9 +19,7 @@ class OrderFactory extends BaseFactory
             'channel_id' => Channel::factory(),
             'new_customer' => $this->faker->boolean,
             'user_id' => null,
-            'payment_status' => 'pending',
-            'fulfilment_status' => 'unfulfilled',
-            'order_status' => 'awaiting-payment',
+            'status' => 'awaiting-payment',
             'reference' => $this->faker->unique()->regexify('[A-Z]{8}'),
             'sub_total' => $total - $taxTotal,
             'discount_total' => 0,
@@ -35,5 +33,30 @@ class OrderFactory extends BaseFactory
             'exchange_rate' => 1,
             'meta' => ['foo' => 'bar'],
         ];
+    }
+
+    public function awaitingPayment(): static
+    {
+        return $this->state(fn () => ['status' => 'awaiting-payment']);
+    }
+
+    public function inProcess(): static
+    {
+        return $this->state(fn () => ['status' => 'in-process']);
+    }
+
+    public function shipped(): static
+    {
+        return $this->state(fn () => ['status' => 'shipped']);
+    }
+
+    public function complete(): static
+    {
+        return $this->state(fn () => ['status' => 'complete']);
+    }
+
+    public function cancelled(): static
+    {
+        return $this->state(fn () => ['status' => 'cancelled']);
     }
 }

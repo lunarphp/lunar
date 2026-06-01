@@ -13,18 +13,14 @@ use Lunar\Core\Casts\DiscountBreakdown;
 use Lunar\Core\Casts\ShippingBreakdown;
 use Lunar\Core\Casts\TaxBreakdown;
 use Lunar\Core\Contracts\HasCurrency;
-use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Database\Factories\OrderFactory;
-use Lunar\Core\Events\Orders\OrderStatusUpdated;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasTags;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\States\Order\FulfilmentState;
 use Lunar\Core\States\Order\OrderState;
-use Lunar\Core\States\Order\PaymentState;
 use Spatie\ModelStates\HasStates;
 
 /**
@@ -33,9 +29,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?int $user_id
  * @property int $channel_id
  * @property bool $new_customer
- * @property PaymentState $payment_status
- * @property FulfilmentState $fulfilment_status
- * @property OrderState $order_status
+ * @property OrderState $status
  * @property ?string $reference
  * @property ?string $customer_reference
  * @property int $sub_total
@@ -80,9 +74,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'total' => 'integer',
         'shipping_total' => 'integer',
         'new_customer' => 'boolean',
-        'payment_status' => PaymentState::class,
-        'fulfilment_status' => FulfilmentState::class,
-        'order_status' => OrderState::class,
+        'status' => OrderState::class,
     ];
 
     public function resolveCurrency(): CurrencyContract
@@ -102,29 +94,9 @@ class Order extends Base implements Contracts\Order, HasCurrency
         return OrderFactory::new();
     }
 
-    public function computeOrderStatus(): void
+    public function statusLabel(): string
     {
-        if ($this->order_status->isManualOverride()) {
-            return;
-        }
-
-        $config = app(OrderStateConfig::class);
-        $newStateClass = $config->resolveOrderState($this->payment_status, $this->fulfilment_status);
-
-        $previousValue = $this->getRawOriginal('order_status');
-        $newValue = $newStateClass::getMorphClass();
-
-        if ($previousValue === $newValue) {
-            return;
-        }
-
-        // saveQuietly() bypasses the observer; syncOriginal() has not yet run
-        // when updated() fires, so a nested save() would see payment_status /
-        // fulfilment_status as still dirty and recurse indefinitely.
-        $this->forceFill(['order_status' => $newStateClass]);
-        $this->saveQuietly();
-
-        OrderStatusUpdated::dispatch($this, $previousValue, $this->order_status->getValue());
+        return $this->status->label();
     }
 
     public function channel(): BelongsTo
@@ -227,9 +199,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
     public static function getDefaultLogExcept(): array
     {
         return [
-            'payment_status',
-            'fulfilment_status',
-            'order_status',
+            'status',
         ];
     }
 }

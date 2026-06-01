@@ -4,12 +4,12 @@ namespace Lunar\Filament\Actions\Orders;
 
 use Filament\Actions\Action;
 use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\Order\Cancelled;
 use Lunar\Core\States\Order\Order\OnHold;
 
 /**
- * Park an order in the OnHold manual-override state. While the order_status
- * is OnHold, payment / fulfilment changes no longer recompute order_status.
- * Use Resume (or any direct order_status edit out of OnHold) to leave.
+ * Park an order in the OnHold state. Use Resume to move it back into the
+ * active lifecycle.
  */
 class PlaceOrderOnHoldAction extends Action
 {
@@ -28,8 +28,8 @@ class PlaceOrderOnHoldAction extends Action
             ->color('warning')
             ->requiresConfirmation()
             ->modalDescription(__('lunar-filament::actions.orders.place_on_hold.confirm'))
-            ->visible(fn (Order $record) => ! $record->order_status->isManualOverride())
-            ->action(fn (Order $record) => $record->forceFill(['order_status' => OnHold::$name])->save())
+            ->visible(fn (Order $record) => ! in_array((string) $record->status, [OnHold::$name, Cancelled::$name], true))
+            ->action(fn (Order $record) => $record->forceFill(['status' => OnHold::$name])->save())
             ->successNotificationTitle(__('lunar-filament::actions.orders.place_on_hold.notification.success'));
     }
 }

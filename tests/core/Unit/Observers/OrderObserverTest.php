@@ -25,7 +25,7 @@ beforeEach(function () {
     ]);
 });
 
-test('activity is logged when order_status changes', function () {
+test('activity is logged when status changes', function () {
     activity()->enableLogging();
 
     $order = Order::factory()->create();
@@ -35,7 +35,7 @@ test('activity is logged when order_status changes', function () {
         'event' => 'status-update',
     ]);
 
-    $order->forceFill(['order_status' => OnHold::$name])->save();
+    $order->forceFill(['status' => OnHold::$name])->save();
 
     $this->assertDatabaseHas((new Activity)->getTable(), [
         'subject_id' => $order->id,
@@ -46,7 +46,7 @@ test('activity is logged when order_status changes', function () {
         ]),
     ]);
 
-    $order->forceFill(['order_status' => OnHold::$name])->save();
+    $order->forceFill(['status' => OnHold::$name])->save();
 
     $this->assertDatabaseMissing((new Activity)->getTable(), [
         'subject_id' => $order->id,
@@ -57,7 +57,7 @@ test('activity is logged when order_status changes', function () {
         ]),
     ]);
 
-    $order->forceFill(['order_status' => Cancelled::$name])->save();
+    $order->forceFill(['status' => Cancelled::$name])->save();
 
     $this->assertDatabaseHas((new Activity)->getTable(), [
         'subject_id' => $order->id,

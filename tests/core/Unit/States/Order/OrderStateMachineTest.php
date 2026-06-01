@@ -6,12 +6,13 @@ use Lunar\Core\Events\Orders\OrderStatusUpdated;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
-use Lunar\Core\States\Order\Fulfilment\Processing;
-use Lunar\Core\States\Order\Fulfilment\Shipped as FulfilmentShipped;
+use Lunar\Core\States\Order\Order\AwaitingPayment;
 use Lunar\Core\States\Order\Order\Cancelled;
-use Lunar\Core\States\Order\Order\OnHold;
-use Lunar\Core\States\Order\Payment\Captured;
+use Lunar\Core\States\Order\Order\Complete;
+use Lunar\Core\States\Order\Order\InProcess;
+use Lunar\Core\States\Order\Order\Shipped;
 use Lunar\Tests\Core\TestCase;
+use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
 uses(TestCase::class);
 uses(RefreshDatabase::class);
@@ -21,77 +22,69 @@ beforeEach(function () {
     Currency::factory()->create(['default' => true]);
 });
 
-test('changing payment_status recomputes order_status', function () {
-    $order = Order::factory()->create([
-        'payment_status' => 'pending',
-        'fulfilment_status' => 'unfulfilled',
-        'order_status' => 'awaiting-payment',
-    ]);
+test('a new order defaults to awaiting payment', function () {
+    $order = Order::factory()->create();
 
-    $order->payment_status->transitionTo(Captured::class);
-
-    expect((string) $order->fresh()->order_status)->toBe('in-process');
+    expect($order->status)->toBeInstanceOf(AwaitingPayment::class);
 });
 
-test('changing fulfilment_status recomputes order_status', function () {
-    $order = Order::factory()->create([
-        'payment_status' => 'captured',
-        'fulfilment_status' => 'processing',
-        'order_status' => 'in-process',
-    ]);
+test('an order transitions through the lifecycle', function () {
+    $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
-    $order->fulfilment_status->transitionTo(FulfilmentShipped::class);
+    $order->status->transitionTo(InProcess::class);
+    expect((string) $order->fresh()->status)->toBe('in-process');
 
-    expect((string) $order->fresh()->order_status)->toBe('shipped');
+    $order->refresh()->status->transitionTo(Shipped::class);
+    expect((string) $order->fresh()->status)->toBe('shipped');
+
+    $order->refresh()->status->transitionTo(Complete::class);
+    expect((string) $order->fresh()->status)->toBe('complete');
 });
 
-test('dispatches OrderStatusUpdated exactly once when both columns change', function () {
-    $order = Order::factory()->create([
-        'payment_status' => 'pending',
-        'fulfilment_status' => 'unfulfilled',
-        'order_status' => 'awaiting-payment',
-    ]);
+test('an illegal transition throws and leaves the status unchanged', function () {
+    $order = Order::factory()->create(['status' => 'cancelled']);
+
+    expect(fn () => $order->status->transitionTo(AwaitingPayment::class))
+        ->toThrow(CouldNotPerformTransition::class);
+
+    expect((string) $order->fresh()->status)->toBe('cancelled');
+});
+
+test('refunded is terminal', function () {
+    $order = Order::factory()->create(['status' => 'refunded']);
+
+    expect(fn () => $order->status->transitionTo(Complete::class))
+        ->toThrow(CouldNotPerformTransition::class);
+});
+
+test('changing status dispatches OrderStatusUpdated exactly once', function () {
+    $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
     Event::fake([OrderStatusUpdated::class]);
 
-    $order->payment_status->transitionTo(Captured::class);
+    $order->status->transitionTo(InProcess::class);
 
     Event::assertDispatchedTimes(OrderStatusUpdated::class, 1);
+    Event::assertDispatched(OrderStatusUpdated::class, function (OrderStatusUpdated $event) {
+        return $event->previousStatus instanceof AwaitingPayment
+            && $event->newStatus instanceof InProcess;
+    });
 });
 
-test('OnHold blocks recomputation', function () {
-    $order = Order::factory()->create([
-        'payment_status' => 'pending',
-        'fulfilment_status' => 'unfulfilled',
-        'order_status' => OnHold::$name,
-    ]);
+test('a save that does not change status dispatches nothing', function () {
+    $order = Order::factory()->create(['status' => 'in-process']);
 
-    $order->payment_status->transitionTo(Captured::class);
+    Event::fake([OrderStatusUpdated::class]);
 
-    expect((string) $order->fresh()->order_status)->toBe('on-hold');
+    $order->update(['notes' => 'updated note']);
+
+    Event::assertNotDispatched(OrderStatusUpdated::class);
 });
 
-test('Cancelled blocks recomputation', function () {
-    $order = Order::factory()->create([
-        'payment_status' => 'pending',
-        'fulfilment_status' => 'unfulfilled',
-        'order_status' => Cancelled::$name,
-    ]);
+test('cancelling an order is reflected in its status', function () {
+    $order = Order::factory()->create(['status' => 'in-process']);
 
-    $order->fulfilment_status->transitionTo(Processing::class);
+    $order->status->transitionTo(Cancelled::class);
 
-    expect((string) $order->fresh()->order_status)->toBe('cancelled');
-});
-
-test('transitioning out of OnHold resumes computation', function () {
-    $order = Order::factory()->create([
-        'payment_status' => 'captured',
-        'fulfilment_status' => 'shipped',
-        'order_status' => OnHold::$name,
-    ]);
-
-    // Manually transition order_status out of the override
-    $order->forceFill(['order_status' => 'awaiting-payment'])->save();
-
-    expect((string) $order->fresh()->order_status)->toBe('shipped');
+    expect((string) $order->fresh()->status)->toBe('cancelled');
 });

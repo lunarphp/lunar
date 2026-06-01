@@ -26,7 +26,7 @@ class EditOrder extends BaseEditRecord
                 ->schema([
                     Select::make('status')
                         ->label(__('lunarpanel::order.form.status.label'))
-                        ->default((string) $this->record->order_status)
+                        ->default((string) $this->record->status)
                         ->options(fn () => collect(app(OrderStateConfig::class)->orderStates())
                             ->mapWithKeys(fn (string $class) => [$class::$name => (new $class($this->record))->label()]))
                         ->required(),
@@ -36,7 +36,7 @@ class EditOrder extends BaseEditRecord
                 ->slideOver()
                 ->action(fn ($record, $data) => $record
                     ->update([
-                        'order_status' => $data['status'],
+                        'status' => $data['status'],
                     ]))
                 ->after(fn () => Notification::make()->title(__('lunarpanel::order.action.update_status.notification'))->success()->send()),
             Action::make('download_pdf')

@@ -33,7 +33,7 @@ trait UpdatesOrderStatus
     {
         return Select::make('status')
             ->label(__('lunar-filament::order.action.update_status.new_status.label'))
-            ->default(fn ($record) => $record ? (string) $record->order_status : null)
+            ->default(fn ($record) => $record ? (string) $record->status : null)
             ->options(fn ($record) => collect(app(OrderStateConfig::class)->orderStates())
                 ->mapWithKeys(fn (string $class) => [$class::$name => (new $class($record ?? new Order))->label()]))
             ->required()

@@ -2,13 +2,14 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\OrderStateConfig;
-use Lunar\Core\Enums\OrderStateCategory;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\DefaultOrderStateConfig;
-use Lunar\Core\States\Order\Payment\Captured;
-use Lunar\Core\States\Order\PaymentState;
+use Lunar\Core\States\Order\Order\AwaitingPayment;
+use Lunar\Core\States\Order\Order\Cancelled;
+use Lunar\Core\States\Order\Order\InProcess;
+use Lunar\Core\States\Order\OrderState;
 use Lunar\Tests\Core\TestCase;
 use Spatie\ModelStates\State;
 
@@ -36,57 +37,52 @@ function flushSpatieStateMapping(): void
     $property->setValue(null, []);
 }
 
-class PartiallyCaptured extends PaymentState
+class AwaitingStock extends OrderState
 {
-    public static string $name = 'partially-captured';
+    public static string $name = 'awaiting-stock';
 
     public function label(): string
     {
-        return 'Partially Captured';
-    }
-
-    public function category(): OrderStateCategory
-    {
-        return OrderStateCategory::Active;
+        return 'Awaiting Stock';
     }
 }
 
 class CustomOrderStateConfig extends DefaultOrderStateConfig
 {
-    public function paymentStates(): array
+    public function orderStates(): array
     {
-        return [...parent::paymentStates(), PartiallyCaptured::class];
+        return [...parent::orderStates(), AwaitingStock::class];
     }
 
-    public function paymentTransitions(): array
+    public function orderTransitions(): array
     {
         return [
-            ...parent::paymentTransitions(),
-            Captured::class => [PartiallyCaptured::class, ...parent::paymentTransitions()[Captured::class]],
-            PartiallyCaptured::class => [Captured::class],
+            ...parent::orderTransitions(),
+            AwaitingPayment::class => [AwaitingStock::class, ...parent::orderTransitions()[AwaitingPayment::class]],
+            AwaitingStock::class => [InProcess::class, Cancelled::class],
         ];
     }
 }
 
-test('binding a custom OrderStateConfig adds a new payment state to the machine', function () {
+test('binding a custom OrderStateConfig adds a new order state to the machine', function () {
     app()->bind(OrderStateConfig::class, CustomOrderStateConfig::class);
     flushSpatieStateMapping();
 
-    $order = Order::factory()->create(['payment_status' => 'captured']);
+    $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
-    // The dev's new state is now an instantiable target — without changing
-    // any core code or swapping the Order model.
-    $order->payment_status->transitionTo(PartiallyCaptured::class);
+    // The dev's new state is now an instantiable transition target — without
+    // changing any core code or swapping the Order model.
+    $order->status->transitionTo(AwaitingStock::class);
 
-    expect($order->fresh()->payment_status)->toBeInstanceOf(PartiallyCaptured::class);
+    expect($order->fresh()->status)->toBeInstanceOf(AwaitingStock::class);
 });
 
 test('a state from the custom catalog round-trips through the cast', function () {
     app()->bind(OrderStateConfig::class, CustomOrderStateConfig::class);
     flushSpatieStateMapping();
 
-    $order = Order::factory()->create(['payment_status' => PartiallyCaptured::$name]);
+    $order = Order::factory()->create(['status' => AwaitingStock::$name]);
 
-    expect($order->fresh()->payment_status)->toBeInstanceOf(PartiallyCaptured::class)
-        ->and((string) $order->fresh()->payment_status)->toBe('partially-captured');
+    expect($order->fresh()->status)->toBeInstanceOf(AwaitingStock::class)
+        ->and((string) $order->fresh()->status)->toBe('awaiting-stock');
 });

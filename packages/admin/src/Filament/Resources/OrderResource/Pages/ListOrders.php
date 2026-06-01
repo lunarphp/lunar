@@ -32,7 +32,7 @@ class ListOrders extends BaseListRecords
                 /** @param class-string<OrderState> $class */
                 fn (string $class) => [
                     $class::$name => Tab::make((new $class(new Order))->label())
-                        ->modifyQueryUsing(fn (Builder $query) => $query->where('order_status', $class::$name)),
+                        ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $class::$name)),
                 ]
             ),
         ];

@@ -57,7 +57,7 @@ class OrderTable
     public static function getColumns(): array
     {
         return [
-            TextColumn::make('order_status')
+            TextColumn::make('status')
                 ->label(__('lunar-filament::order.table.status.label'))
                 ->toggleable()
                 ->formatStateUsing(fn ($state) => OrderStatus::getLabel((string) $state))
@@ -115,7 +115,7 @@ class OrderTable
     public static function getFilters(): array
     {
         return [
-            SelectFilter::make('order_status')
+            SelectFilter::make('status')
                 ->label(__('lunar-filament::order.table.status.label'))
                 ->options(
                     collect(app(OrderStateConfig::class)->orderStates())

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
-use Lunar\Core\States\Order\Payment\Captured;
+use Lunar\Core\States\Order\Order\InProcess;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -27,7 +27,7 @@ class FakeShippedNotification extends Notification
     }
 }
 
-test('notifications configured for an order_status are dispatched when the order enters that state', function () {
+test('notifications configured for a status are dispatched when the order enters that state', function () {
     config([
         'lunar.orders.notifications' => [
             'in-process' => [FakeShippedNotification::class],
@@ -36,13 +36,9 @@ test('notifications configured for an order_status are dispatched when the order
 
     NotificationFacade::fake();
 
-    $order = Order::factory()->create([
-        'payment_status' => 'pending',
-        'fulfilment_status' => 'unfulfilled',
-        'order_status' => 'awaiting-payment',
-    ]);
+    $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
-    $order->payment_status->transitionTo(Captured::class);
+    $order->status->transitionTo(InProcess::class);
 
     NotificationFacade::assertSentTo($order->fresh(), FakeShippedNotification::class);
 });
@@ -52,13 +48,9 @@ test('no notifications are dispatched when none are configured', function () {
 
     NotificationFacade::fake();
 
-    $order = Order::factory()->create([
-        'payment_status' => 'pending',
-        'fulfilment_status' => 'unfulfilled',
-        'order_status' => 'awaiting-payment',
-    ]);
+    $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
-    $order->payment_status->transitionTo(Captured::class);
+    $order->status->transitionTo(InProcess::class);
 
     NotificationFacade::assertNothingSent();
 });

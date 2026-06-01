@@ -7,6 +7,7 @@ use Lunar\Core\Events\Orders\OrderStatusUpdated;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\Order\Shipped;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -17,19 +18,14 @@ beforeEach(function () {
     Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
 });
 
-test('transitions fulfilment to shipped and recomputes order_status', function () {
-    $order = Order::factory()->create([
-        'payment_status' => 'captured',
-        'fulfilment_status' => 'processing',
-        'order_status' => 'in-process',
-    ]);
+test('transitions the order status to shipped', function () {
+    $order = Order::factory()->create(['status' => 'in-process']);
 
     Event::fake([OrderStatusUpdated::class]);
 
     app(MarkOrderAsShipped::class)->execute($order);
 
-    expect((string) $order->fresh()->fulfilment_status)->toBe('shipped')
-        ->and((string) $order->fresh()->order_status)->toBe('shipped');
+    expect((string) $order->fresh()->status)->toBe('shipped');
 
-    Event::assertDispatched(OrderStatusUpdated::class, fn (OrderStatusUpdated $event) => $event->newStatus === 'shipped');
+    Event::assertDispatched(OrderStatusUpdated::class, fn (OrderStatusUpdated $event) => $event->newStatus instanceof Shipped);
 });

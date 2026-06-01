@@ -12,9 +12,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->userForeignKey(nullable: true);
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
-            $table->string('payment_status')->default('pending')->index();
-            $table->string('fulfilment_status')->default('unfulfilled')->index();
-            $table->string('order_status')->default('awaiting-payment')->index();
+            $table->string('status')->default('awaiting-payment')->index();
             $table->string('reference')->nullable()->unique();
             $table->string('customer_reference')->nullable();
             $table->unsignedBigInteger('sub_total');

@@ -148,11 +148,11 @@ it('can place an order on hold', function () {
         ->assertActionExists('place_on_hold')
         ->callAction('place_on_hold');
 
-    expect((string) $this->order->refresh()->order_status)->toBe('on-hold');
+    expect((string) $this->order->refresh()->status)->toBe('on-hold');
 });
 
 it('can resume an order from on-hold', function () {
-    $this->order->forceFill(['order_status' => 'on-hold'])->save();
+    $this->order->forceFill(['status' => 'on-hold'])->save();
 
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
@@ -160,24 +160,5 @@ it('can resume an order from on-hold', function () {
         ->assertActionExists('resume_order')
         ->callAction('resume_order');
 
-    expect($this->order->refresh()->order_status->isManualOverride())->toBeFalse();
-});
-
-it('can transition fulfilment status from the order page', function () {
-    $this->order->forceFill([
-        'payment_status' => 'captured',
-        'fulfilment_status' => 'processing',
-        'order_status' => 'in-process',
-    ])->save();
-
-    Livewire::test(ManageOrder::class, [
-        'record' => $this->order->getRouteKey(),
-    ])
-        ->assertActionExists('update_fulfilment_status')
-        ->callAction('update_fulfilment_status', [
-            'fulfilment_status' => 'shipped',
-        ]);
-
-    expect((string) $this->order->refresh()->fulfilment_status)->toBe('shipped')
-        ->and((string) $this->order->refresh()->order_status)->toBe('shipped');
+    expect((string) $this->order->refresh()->status)->toBe('awaiting-payment');
 });

@@ -2,19 +2,15 @@
 
 namespace Lunar\Core\Contracts;
 
-use Lunar\Core\States\Order\FulfilmentState;
 use Lunar\Core\States\Order\OrderState;
-use Lunar\Core\States\Order\PaymentState;
 
 /**
- * Catalogue + transition table + resolver for the three order-state machines.
+ * Catalogue + transition table for the order lifecycle machine.
  *
- * Implementations declare which payment / fulfilment / order states exist,
- * which transitions are legal, and how a (payment, fulfilment) pair resolves
- * to an order_status. The abstract State base classes (`PaymentState`,
- * `FulfilmentState`, `OrderState`) read from the bound implementation to
- * register their states and transitions — so swapping this contract is the
- * single seam for adding bespoke order states.
+ * Implementations declare which order states exist, which transitions are
+ * legal, and the default state. The abstract `OrderState` base reads from the
+ * bound implementation to register its states and transitions — so swapping
+ * this contract is the single seam for reshaping the order lifecycle.
  *
  * Spatie's State base caches the resolved state mapping per class for the
  * lifetime of the process. Bind your implementation during service-provider
@@ -25,39 +21,14 @@ use Lunar\Core\States\Order\PaymentState;
 interface OrderStateConfig
 {
     /**
-     * @return array<class-string<PaymentState>>
-     */
-    public function paymentStates(): array;
-
-    /**
-     * @return array<class-string<FulfilmentState>>
-     */
-    public function fulfilmentStates(): array;
-
-    /**
      * @return array<class-string<OrderState>>
      */
     public function orderStates(): array;
 
     /**
-     * @return array<class-string<PaymentState>, list<class-string<PaymentState>>>
+     * @return array<class-string<OrderState>, list<class-string<OrderState>>>
      */
-    public function paymentTransitions(): array;
-
-    /**
-     * @return array<class-string<FulfilmentState>, list<class-string<FulfilmentState>>>
-     */
-    public function fulfilmentTransitions(): array;
-
-    /**
-     * @return class-string<PaymentState>
-     */
-    public function defaultPaymentState(): string;
-
-    /**
-     * @return class-string<FulfilmentState>
-     */
-    public function defaultFulfilmentState(): string;
+    public function orderTransitions(): array;
 
     /**
      * @return class-string<OrderState>
@@ -65,14 +36,9 @@ interface OrderStateConfig
     public function defaultOrderState(): string;
 
     /**
-     * @return class-string<OrderState>
-     */
-    public function resolveOrderState(PaymentState $payment, FulfilmentState $fulfilment): string;
-
-    /**
      * Notification classes to dispatch when an order transitions into the
-     * given order_status. Each class is instantiated with the order and
-     * delivered via `$order->notify()`.
+     * given status. Each class is instantiated with the order and delivered
+     * via `$order->notify()`.
      *
      * @return array<class-string>
      */

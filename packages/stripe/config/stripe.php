@@ -66,13 +66,13 @@ return [
     | Reference: https://stripe.com/docs/api/charges/object
     */
     'status_mapping' => [
-        PaymentIntent::STATUS_REQUIRES_CAPTURE => 'authorized',
-        PaymentIntent::STATUS_CANCELED => 'failed',
-        PaymentIntent::STATUS_PROCESSING => 'pending',
-        PaymentIntent::STATUS_REQUIRES_ACTION => 'pending',
-        PaymentIntent::STATUS_REQUIRES_CONFIRMATION => 'pending',
-        PaymentIntent::STATUS_REQUIRES_PAYMENT_METHOD => 'failed',
-        PaymentIntent::STATUS_SUCCEEDED => 'captured',
+        PaymentIntent::STATUS_REQUIRES_CAPTURE => 'awaiting-payment',
+        PaymentIntent::STATUS_CANCELED => 'payment-failed',
+        PaymentIntent::STATUS_PROCESSING => 'awaiting-payment',
+        PaymentIntent::STATUS_REQUIRES_ACTION => 'awaiting-payment',
+        PaymentIntent::STATUS_REQUIRES_CONFIRMATION => 'awaiting-payment',
+        PaymentIntent::STATUS_REQUIRES_PAYMENT_METHOD => 'payment-failed',
+        PaymentIntent::STATUS_SUCCEEDED => 'in-process',
     ],
 
     'actions' => [

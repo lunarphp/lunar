@@ -76,32 +76,23 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
-        'update_fulfilment_status' => [
-            'label' => 'Update Fulfilment',
-            'field' => [
-                'label' => 'Fulfilment status',
-            ],
-            'notification' => [
-                'success' => 'Fulfilment status updated.',
-            ],
-        ],
         'place_on_hold' => [
             'label' => 'Place on Hold',
-            'confirm' => 'Putting the order on hold pauses automatic status recomputation. Payment and fulfilment changes will not move the order status until you resume.',
+            'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',
             'notification' => [
                 'success' => 'Order placed on hold.',
             ],
         ],
         'cancel_order' => [
             'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order pauses automatic status recomputation and marks the order as cancelled. You can resume later, but downstream listeners may have already reacted.',
+            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
             'notification' => [
                 'success' => 'Order cancelled.',
             ],
         ],
         'resume_order' => [
             'label' => 'Resume Order',
-            'confirm' => 'Resuming the order lets payment and fulfilment changes drive the order status again. The status will be recomputed from the current payment and fulfilment values.',
+            'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
             ],

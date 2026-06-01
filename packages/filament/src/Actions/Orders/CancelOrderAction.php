@@ -7,9 +7,8 @@ use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\Order\Cancelled;
 
 /**
- * Move the order into the Cancelled manual-override state. Unlike OnHold,
- * Cancelled implies a final-ish disposition — automatic recomputation stays
- * paused, and downstream notifications / refund flows can key off the state.
+ * Move the order into the Cancelled state. Downstream notifications / refund
+ * flows can key off the state.
  */
 class CancelOrderAction extends Action
 {
@@ -28,8 +27,8 @@ class CancelOrderAction extends Action
             ->color('danger')
             ->requiresConfirmation()
             ->modalDescription(__('lunar-filament::actions.orders.cancel_order.confirm'))
-            ->visible(fn (Order $record) => (string) $record->order_status !== Cancelled::$name)
-            ->action(fn (Order $record) => $record->forceFill(['order_status' => Cancelled::$name])->save())
+            ->visible(fn (Order $record) => (string) $record->status !== Cancelled::$name)
+            ->action(fn (Order $record) => $record->forceFill(['status' => Cancelled::$name])->save())
             ->successNotificationTitle(__('lunar-filament::actions.orders.cancel_order.notification.success'));
     }
 }

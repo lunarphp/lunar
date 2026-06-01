@@ -39,7 +39,6 @@ use Lunar\Filament\Actions\Orders\DownloadOrderPdfAction;
 use Lunar\Filament\Actions\Orders\PlaceOrderOnHoldAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
 use Lunar\Filament\Actions\Orders\ResumeOrderAction;
-use Lunar\Filament\Actions\Orders\UpdateFulfilmentStatusAction;
 use Lunar\Filament\Forms\Components\Tags as TagsComponent;
 use Lunar\Filament\Infolists\Components\Tags;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -357,7 +356,6 @@ class ManageOrder extends BaseViewRecord
         return [
             CaptureOrderAction::make(),
             RefundOrderAction::make(),
-            UpdateFulfilmentStatusAction::make()->after($bumpActivity),
             PlaceOrderOnHoldAction::make()->after($bumpActivity),
             ResumeOrderAction::make()->after($bumpActivity),
             CancelOrderAction::make()->after($bumpActivity),

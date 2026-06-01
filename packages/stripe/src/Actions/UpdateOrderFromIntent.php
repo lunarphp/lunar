@@ -39,7 +39,7 @@ class UpdateOrderFromIntent
             }
 
             $order->update([
-                'payment_status' => $statuses[$paymentIntent->status] ?? $paymentIntent->status,
+                'status' => $statuses[$paymentIntent->status] ?? $paymentIntent->status,
                 'placed_at' => $order->placed_at ?: $placedAt,
             ]);
 
