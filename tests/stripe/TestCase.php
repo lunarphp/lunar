@@ -3,7 +3,7 @@
 namespace Lunar\Tests\Stripe;
 
 use Illuminate\Support\Facades\Config;
-use Kalnoy\Nestedset\NestedSetServiceProvider;
+use Lunar\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Stripe\Facades\Stripe;

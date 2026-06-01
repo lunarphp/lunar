@@ -3,7 +3,7 @@
 namespace Lunar\Tests\Core;
 
 use Illuminate\Support\Facades\Config;
-use Kalnoy\Nestedset\NestedSetServiceProvider;
+use Lunar\Nestedset\NestedSetServiceProvider;
 use Lunar\Facades\Taxes;
 use Lunar\LunarServiceProvider;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;

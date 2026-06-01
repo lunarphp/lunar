@@ -4,7 +4,7 @@ namespace Lunar\Tests\Opayo;
 
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
-use Kalnoy\Nestedset\NestedSetServiceProvider;
+use Lunar\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Lunar\LunarServiceProvider;
 use Lunar\Opayo\OpayoServiceProvider;

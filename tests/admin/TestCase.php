@@ -15,7 +15,7 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kalnoy\Nestedset\NestedSetServiceProvider;
+use Lunar\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Lunar\Admin\LunarPanelProvider;
 use Lunar\Admin\Models\Staff;
