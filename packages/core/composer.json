@@ -46,7 +46,7 @@
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-activitylog": "^4.10.1",
         "laravel/scout": "^10.13.1",
-        "kalnoy/nestedset": "^v6.0.5|^v7.0.1",
+        "lunarphp/nestedset": "^1.0",
         "lukascivil/treewalker": "0.9.1",
         "spatie/php-structure-discoverer": "^2.3.1",
         "spatie/laravel-blink": "^1.7.1"
