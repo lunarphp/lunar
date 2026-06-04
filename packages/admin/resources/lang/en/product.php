@@ -10,12 +10,10 @@ return [
         'all' => 'All',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
 
     'status' => [
-        'unpublished' => [
-            'content' => 'Currently in draft status, this product is unavailable across all channels and customer groups.',
-        ],
         'availability' => [
             'customer_groups' => 'This product is currently unavailable for all customer groups.',
             'channels' => 'This product is currently unavailable for all channels.',
@@ -53,7 +51,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Update Status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Update Status',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
 
@@ -80,6 +84,10 @@ return [
                 'draft' => [
                     'label' => 'Draft',
                     'description' => 'This product will be hidden across all channels and customer groups',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

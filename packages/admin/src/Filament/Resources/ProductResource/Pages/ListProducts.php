@@ -80,6 +80,8 @@ class ListProducts extends BaseListRecords
             'draft' => Tab::make(__('lunarpanel::product.tabs.draft'))
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'draft'))
                 ->badge(Product::query()->where('status', 'draft')->count()),
+            'archived' => Tab::make(__('lunarpanel::product.tabs.archived'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'archived')),
         ];
     }
 

@@ -7,11 +7,9 @@ return [
         'all' => 'Allemaal',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Momenteel in conceptstatus, dit product is niet beschikbaar op alle kanalen en klantgroepen.',
-        ],
         'availability' => [
             'customer_groups' => 'Dit product is momenteel niet beschikbaar voor alle klantgroepen.',
             'channels' => 'Dit product is momenteel niet beschikbaar voor alle kanalen.',
@@ -47,7 +45,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Status Bijwerken',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Status Bijwerken',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
     'form' => [
@@ -73,6 +77,10 @@ return [
                 'draft' => [
                     'label' => 'Concept',
                     'description' => 'Dit product zal verborgen zijn op alle kanalen en klantgroepen',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

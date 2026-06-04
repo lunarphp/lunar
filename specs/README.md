@@ -44,3 +44,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0018 | Dedicated `name` / `description` / `short_description` fields | completed   |
 | 0019 | Attribute system redesign | completed   |
 | 0020 | Remove GetCandy migration command | completed   |
+| 0021 | State machines (and retiring soft-deletes) | completed   |

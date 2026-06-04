@@ -9,7 +9,6 @@ use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +32,13 @@ class ProductTable
                     SelectFilter::make('brand')
                         ->label(__('lunar-filament::product.table.brand.label'))
                         ->relationship('brand', 'name'),
-                    TrashedFilter::make(),
+                    SelectFilter::make('status')
+                        ->label(__('lunar-filament::product.table.status.label'))
+                        ->options([
+                            'draft' => __('lunar-filament::product.table.status.states.draft'),
+                            'published' => __('lunar-filament::product.table.status.states.published'),
+                            'archived' => __('lunar-filament::product.table.status.states.archived'),
+                        ]),
                 ])
                 ->recordActions([
                     EditAction::make(),
@@ -55,13 +60,13 @@ class ProductTable
                 ->label(__('lunar-filament::product.table.status.label'))
                 ->badge()
                 ->getStateUsing(
-                    fn (Model $record) => $record->deleted_at ? 'deleted' : $record->status
+                    fn (Model $record) => (string) $record->status
                 )
                 ->formatStateUsing(fn ($state) => __('lunar-filament::product.table.status.states.'.$state))
                 ->color(fn (string $state): string => match ($state) {
                     'draft' => 'warning',
                     'published' => 'success',
-                    'deleted' => 'danger',
+                    'archived' => 'danger',
                     default => 'primary',
                 }),
             SpatieMediaLibraryImageColumn::make('thumbnail')

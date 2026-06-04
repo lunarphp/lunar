@@ -9,8 +9,11 @@ return [
         'draft' => 'Draft',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Şu anda taslak durumunda olan bu ürün, tüm kanallarda ve müşteri gruplarında kullanılamaz.',
+        'draft' => [
+            'content' => 'Currently in draft, this product is hidden from all channels and customer groups.',
+        ],
+        'archived' => [
+            'content' => 'This product is archived — it is hidden from the storefront, but kept on record so historical orders keep their reference. Move it back to Draft to revive it.',
         ],
         'availability' => [
             'customer_groups' => 'Bu ürün şu anda tüm müşteri grupları için mevcut değil.',

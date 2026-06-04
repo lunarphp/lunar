@@ -7,11 +7,9 @@ return [
         'all' => 'Tất cả',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Hiện đang ở trạng thái nháp, sản phẩm này không khả dụng trên tất cả các kênh và nhóm khách hàng.',
-        ],
         'availability' => [
             'customer_groups' => 'Sản phẩm này hiện không có sẵn cho tất cả các nhóm khách hàng.',
             'channels' => 'Sản phẩm này hiện không có sẵn trên tất cả các kênh.',
@@ -47,7 +45,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Cập nhật trạng thái',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Cập nhật trạng thái',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
     'form' => [
@@ -73,6 +77,10 @@ return [
                 'draft' => [
                     'label' => 'Bản nháp',
                     'description' => 'Sản phẩm này sẽ bị ẩn trên tất cả các kênh và nhóm khách hàng',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

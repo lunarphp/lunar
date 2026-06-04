@@ -7,11 +7,9 @@ return [
         'all' => 'All',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Trenutno u statusu skice, ovaj proizvod nije dostupan ni u jednom kanalu ni u jednoj grupi kupaca.',
-        ],
         'availability' => [
             'customer_groups' => 'Ovaj proizvod trenutno nije dostupan nijednoj grupi kupaca.',
             'channels' => 'Ovaj proizvod trenutno nije dostupan nijednom kanalu.',
@@ -47,7 +45,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Ažuriraj status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Ažuriraj status',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
     'form' => [
@@ -73,6 +77,10 @@ return [
                 'draft' => [
                     'label' => 'Skica',
                     'description' => 'Ovaj proizvod bit će skriven u svim kanalima i grupama kupaca',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

@@ -13,6 +13,7 @@ use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Product;
+use Lunar\Core\States\Product\Published;
 use Lunar\Core\Validation\BaseValidator;
 
 class CartLineAvailability extends BaseValidator
@@ -68,6 +69,7 @@ class CartLineAvailability extends BaseValidator
 
         return $productClass::query()
             ->where('id', $productId)
+            ->where('status', Published::$name)
             ->channel($channel)
             ->whereHas('customerGroups', $this->purchasableForGroups($groups))
             ->exists();

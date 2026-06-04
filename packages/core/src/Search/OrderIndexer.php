@@ -28,7 +28,6 @@ class OrderIndexer extends ScoutIndexer
             'placed_at',
             'channel_id',
             'tags',
-            '__soft_deleted',
         ];
     }
 
@@ -72,7 +71,7 @@ class OrderIndexer extends ScoutIndexer
             'channel' => $model->channel->name,
             'reference' => $model->reference,
             'customer_reference' => $model->customer_reference,
-            'status' => $model->status,
+            'status' => (string) $model->status,
             'placed_at' => optional($model->placed_at)->timestamp,
             'created_at' => (int) $model->created_at->timestamp,
             'sub_total' => $model->sub_total,

@@ -76,29 +76,25 @@ return [
                 'error' => 'Capture failed.',
             ],
         ],
-        'update_status' => [
-            'label' => 'Update Status',
-            'wizard' => [
-                'step_one' => [
-                    'label' => 'Status',
-                ],
-                'step_two' => [
-                    'label' => 'Mailers & Notifications',
-                    'no_mailers' => 'There are no mailers available for this status.',
-                ],
-                'step_three' => [
-                    'label' => 'Preview & Save',
-                    'no_mailers' => 'No mailers have been chosen for preview.',
-                ],
-            ],
+        'place_on_hold' => [
+            'label' => 'Place on Hold',
+            'confirm' => 'Placing the order on hold pauses it in your workflow until you resume it.',
             'notification' => [
-                'label' => 'Order status updated',
+                'success' => 'Order placed on hold.',
             ],
-            'billing_email' => [
-                'label' => 'Billing Email',
+        ],
+        'cancel_order' => [
+            'label' => 'Cancel Order',
+            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'notification' => [
+                'success' => 'Order cancelled.',
             ],
-            'shipping_email' => [
-                'label' => 'Shipping Email',
+        ],
+        'resume_order' => [
+            'label' => 'Resume Order',
+            'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
+            'notification' => [
+                'success' => 'Order resumed.',
             ],
         ],
         'mark_as_shipped' => [

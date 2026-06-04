@@ -103,7 +103,7 @@ return [
             'label' => 'Референция',
         ],
         'status' => [
-            'label' => 'Статус',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'Транзакция',
@@ -165,7 +165,7 @@ return [
             'message' => 'по време на поръчката: :count',
         ],
         'status' => [
-            'label' => 'Статус',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Референция',

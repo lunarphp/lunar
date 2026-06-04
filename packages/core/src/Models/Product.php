@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\ProductFactory;
@@ -30,20 +29,22 @@ use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
+use Lunar\Core\States\Product\ProductState;
+use Lunar\Core\States\Product\Published;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
+use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
  * @property ?int $brand_id
  * @property int $product_type_id
- * @property string $status
+ * @property ProductState $status
  * @property \Illuminate\Support\Collection $name
  * @property ?\Illuminate\Support\Collection $description
  * @property ?\Illuminate\Support\Collection $short_description
  * @property ?\Illuminate\Support\Collection $attribute_data
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
- * @property ?Carbon $deleted_at
  */
 class Product extends Base implements Contracts\Product, HasThumbnailImage, SpatieHasMedia
 {
@@ -53,12 +54,12 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
     use HasFactory;
     use HasMacros;
     use HasMedia;
+    use HasStates;
     use HasTags;
     use HasTranslations;
     use HasUrls;
     use LogsActivity;
     use Searchable;
-    use SoftDeletes;
 
     /**
      * Return a new factory instance for the model.
@@ -93,6 +94,7 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
         'name' => AsCollection::class,
         'description' => AsCollection::class,
         'short_description' => AsCollection::class,
+        'status' => ProductState::class,
     ];
 
     /**
@@ -204,6 +206,11 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
         return $query->whereStatus($status);
     }
 
+    public function scopeWhereVisible(Builder $query): Builder
+    {
+        return $query->where('status', Published::$name);
+    }
+
     public function prices(): HasManyThrough
     {
         return $this->hasManyThrough(
@@ -227,5 +234,21 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
     public function getThumbnailImage(): string
     {
         return $this->thumbnail?->getUrl('small') ?? '';
+    }
+
+    /**
+     * Whether any of this product's variants appear on any historical order line.
+     * Used to gate hard deletion in the admin — products with order history
+     * should be archived, not deleted, so the merchant can still drill into
+     * old orders.
+     */
+    public function hasOrderHistory(): bool
+    {
+        $variantClass = ProductVariant::modelClass();
+
+        return OrderLine::query()
+            ->where('purchasable_type', (new $variantClass)->getMorphClass())
+            ->whereIn('purchasable_id', $this->variants()->select('id'))
+            ->exists();
     }
 }

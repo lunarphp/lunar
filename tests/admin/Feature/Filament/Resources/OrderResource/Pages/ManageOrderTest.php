@@ -141,20 +141,24 @@ it('can download order pdf', function () {
         ->assertFileDownloaded("Order-{$this->order->reference}.pdf");
 });
 
-it('can update order status', function () {
-    $status = collect(config('lunar.orders.statuses', []))
-        ->keys()
-        ->reject(fn ($status) => $status == $this->order->status)
-        ->random();
+it('can place an order on hold', function () {
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])
+        ->assertActionExists('place_on_hold')
+        ->callAction('place_on_hold');
+
+    expect((string) $this->order->refresh()->status)->toBe('on-hold');
+});
+
+it('can resume an order from on-hold', function () {
+    $this->order->forceFill(['status' => 'on-hold'])->save();
 
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
     ])
-        ->assertActionExists('update_status')
-        ->callAction('update_status', [
-            'status' => $status,
-        ]);
+        ->assertActionExists('resume_order')
+        ->callAction('resume_order');
 
-    expect($this->order->refresh())
-        ->status->toBe($status);
+    expect((string) $this->order->refresh()->status)->toBe('awaiting-payment');
 });

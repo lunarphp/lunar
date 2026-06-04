@@ -103,7 +103,7 @@ return [
             'label' => 'Лавлагаа',
         ],
         'status' => [
-            'label' => 'Статус',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'Гүйлгээ',
@@ -165,7 +165,7 @@ return [
             'message' => 'захиалга өгсөн үед: :count',
         ],
         'status' => [
-            'label' => 'Статус',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Лавлагаа',

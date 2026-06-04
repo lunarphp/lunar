@@ -7,6 +7,7 @@ use Lunar\Core\Events\Orders\OrderStatusUpdated;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\Order\Shipped;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -17,24 +18,14 @@ beforeEach(function () {
     Currency::factory()->create(['default' => true, 'decimal_places' => 2]);
 });
 
-test('marks the order as shipped using the configured status', function () {
-    Event::fake();
+test('transitions the order status to shipped', function () {
+    $order = Order::factory()->create(['status' => 'in-process']);
 
-    $order = Order::factory()->create(['status' => 'payment-received']);
-
-    app(MarkOrderAsShipped::class)->execute($order);
-
-    expect($order->fresh()->status)->toBe('dispatched');
-
-    Event::assertDispatched(OrderStatusUpdated::class, fn (OrderStatusUpdated $event) => $event->status === 'dispatched');
-});
-
-test('respects the configured shipped_status override', function () {
-    config(['lunar.orders.shipped_status' => 'payment-offline']);
-
-    $order = Order::factory()->create(['status' => 'awaiting-payment']);
+    Event::fake([OrderStatusUpdated::class]);
 
     app(MarkOrderAsShipped::class)->execute($order);
 
-    expect($order->fresh()->status)->toBe('payment-offline');
+    expect((string) $order->fresh()->status)->toBe('shipped');
+
+    Event::assertDispatched(OrderStatusUpdated::class, fn (OrderStatusUpdated $event) => $event->newStatus instanceof Shipped);
 });

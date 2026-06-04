@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Core\Contracts\OrderStateConfig;
 
 class EditOrder extends BaseEditRecord
 {
@@ -25,9 +26,9 @@ class EditOrder extends BaseEditRecord
                 ->schema([
                     Select::make('status')
                         ->label(__('lunarpanel::order.form.status.label'))
-                        ->default($this->record->status)
-                        ->options(fn () => collect(config('lunar.orders.statuses', []))
-                            ->mapWithKeys(fn ($data, $status) => [$status => $data['label']]))
+                        ->default((string) $this->record->status)
+                        ->options(fn () => collect(app(OrderStateConfig::class)->orderStates())
+                            ->mapWithKeys(fn (string $class) => [$class::$name => (new $class($this->record))->label()]))
                         ->required(),
                     Placeholder::make('additional content and mailer'),
                 ])

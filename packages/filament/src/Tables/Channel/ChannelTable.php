@@ -6,7 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -22,7 +22,11 @@ class ChannelTable
             $table
                 ->columns(static::getColumns())
                 ->filters([
-                    TrashedFilter::make(),
+                    SelectFilter::make('status')
+                        ->options([
+                            'active' => __('lunar::states.channel.active'),
+                            'inactive' => __('lunar::states.channel.inactive'),
+                        ]),
                 ])
                 ->recordActions([
                     EditAction::make(),

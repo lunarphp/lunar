@@ -27,8 +27,6 @@ return new class extends Migration
             $table->integer('min_quantity')->unsigned()->default(1)->index();
             $table->jsonb('attribute_data')->nullable();
             $table->timestamps();
-            $table->softDeletes();
-            $table->index('deleted_at');
         });
     }
 

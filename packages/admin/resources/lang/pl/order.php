@@ -103,7 +103,7 @@ return [
             'label' => 'Numer zamówienia',
         ],
         'status' => [
-            'label' => 'Status',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'Transakcja',
@@ -165,7 +165,7 @@ return [
             'message' => 'w momencie zamówienia: :count',
         ],
         'status' => [
-            'label' => 'Status',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Numer zamówienia',

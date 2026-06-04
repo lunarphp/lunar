@@ -7,11 +7,9 @@ return [
         'all' => 'Mind',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Jelenleg vázlat státuszban van, ez a termék egyik csatornán és vásárlói csoportban sem érhető el.',
-        ],
         'availability' => [
             'customer_groups' => 'Ez a termék jelenleg nem elérhető egyik vásárlói csoport számára sem.',
             'channels' => 'Ez a termék jelenleg nem elérhető egyik csatornán sem.',
@@ -47,7 +45,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Státusz frissítése',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Státusz frissítése',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
     'form' => [
@@ -73,6 +77,10 @@ return [
                 'draft' => [
                     'label' => 'Vázlat',
                     'description' => 'Ez a termék rejtett lesz minden csatornán és vásárlói csoportban',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

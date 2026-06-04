@@ -103,7 +103,7 @@ return [
             'label' => 'Hivatkozás',
         ],
         'status' => [
-            'label' => 'Státusz',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'Tranzakció',
@@ -165,7 +165,7 @@ return [
             'message' => 'rendelés idején: :count',
         ],
         'status' => [
-            'label' => 'Státusz',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Hivatkozás',

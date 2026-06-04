@@ -56,49 +56,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Draft Status
+    | Order Status Notifications
     |--------------------------------------------------------------------------
     |
-    | When a draft order is created from a cart, we need an initial status for
-    | the order that's created. Define that here, it can be anything that would
-    | make sense for the store you're building.
+    | Notifications to dispatch when an order transitions into a given
+    | status. Keyed by the OrderState $name (e.g. 'shipped'), each
+    | entry is a list of notification class names. Each notification is
+    | instantiated with the Order and delivered via `$order->notify()`.
+    |
+    | Read by DefaultOrderStateConfig::notificationsFor(); swap that binding
+    | to source notifications from anywhere else.
     |
     */
-    'draft_status' => 'awaiting-payment',
-
-    'statuses' => [
-
-        'awaiting-payment' => [
-            'label' => 'Awaiting Payment',
-            'color' => '#848a8c',
-            'mailers' => [],
-            'notifications' => [],
-            'favourite' => true,
-        ],
-
-        'payment-offline' => [
-            'label' => 'Payment Offline',
-            'color' => '#0A81D7',
-            'mailers' => [],
-            'notifications' => [],
-            'favourite' => true,
-        ],
-
-        'payment-received' => [
-            'label' => 'Payment Received',
-            'color' => '#6a67ce',
-            'mailers' => [],
-            'notifications' => [],
-            'favourite' => true,
-        ],
-
-        'dispatched' => [
-            'label' => 'Dispatched',
-            'mailers' => [],
-            'notifications' => [],
-            'favourite' => true,
-        ],
-
+    'notifications' => [
+        // 'shipped' => [
+        //     App\Notifications\OrderShipped::class,
+        // ],
     ],
 
     /*

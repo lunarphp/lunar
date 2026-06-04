@@ -7,11 +7,9 @@ return [
         'all' => 'Wszystkie',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Produkt jest obecnie w trybie szkicu i jest niedostępny we wszystkich kanałach i grupach klientów.',
-        ],
         'availability' => [
             'customer_groups' => 'Produkt jest obecnie niedostępny dla wszystkich grup klientów.',
             'channels' => 'Produkt jest obecnie niedostępny dla wszystkich kanałów.',
@@ -47,7 +45,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Edytuj status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Edytuj status produktu',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
     'form' => [
@@ -73,6 +77,10 @@ return [
                 'draft' => [
                     'label' => 'Szkic',
                     'description' => 'Ten produkt jest ukryty we wszystkich kanałach i grupach klientów',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

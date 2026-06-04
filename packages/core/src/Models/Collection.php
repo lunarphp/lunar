@@ -20,7 +20,10 @@ use Lunar\Core\Models\Concerns\HasMedia;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
 use Lunar\Core\Models\Concerns\Searchable;
+use Lunar\Core\States\Collection\CollectionState;
+use Lunar\Core\States\Collection\Published;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
+use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
@@ -34,9 +37,9 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?\Illuminate\Support\Collection $short_description
  * @property ?\Illuminate\Support\Collection $attribute_data
  * @property string $sort
+ * @property CollectionState $status
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
- * @property ?Carbon $deleted_at
  */
 class Collection extends Base implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
 {
@@ -46,6 +49,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         HasFactory,
         HasMacros,
         HasMedia,
+        HasStates,
         HasTranslations,
         HasUrls,
         NodeTrait,
@@ -62,6 +66,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         'name' => AsCollection::class,
         'description' => AsCollection::class,
         'short_description' => AsCollection::class,
+        'status' => CollectionState::class,
     ];
 
     protected $guarded = [];
@@ -90,6 +95,11 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
     public function scopeInGroup(Builder $builder, int $id): Builder
     {
         return $builder->where('collection_group_id', $id);
+    }
+
+    public function scopeWhereVisible(Builder $builder): Builder
+    {
+        return $builder->where('status', Published::$name);
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace Lunar\Filament\Support;
 
 use Filament\Support\Colors\Color;
+use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\OrderState;
 
 class OrderStatus
 {
@@ -10,13 +12,31 @@ class OrderStatus
 
     protected static array $cachedStatusLabel = [];
 
-    public static function getLabel($status): string
+    public static function getLabel(?string $status): string
     {
-        return static::$cachedStatusLabel[$status] ??= filled($label = config('lunar.orders.statuses.'.$status.'.label')) ? $label : (filled($status) ? $status : 'N/A');
+        if (! filled($status)) {
+            return 'N/A';
+        }
+
+        return static::$cachedStatusLabel[$status] ??= static::resolveLabel($status);
     }
 
-    public static function getColor($status): array
+    public static function getColor(?string $status): array
     {
-        return static::$cachedStatusColor[$status] ??= Color::generateV3Palette(filled($color = config('lunar.orders.statuses.'.$status.'.color')) ? $color : '#7C7C7C');
+        return static::$cachedStatusColor[$status] ??= Color::generateV3Palette(
+            (string) config('lunar-filament.order.status_colors.'.$status, '#7C7C7C')
+        );
+    }
+
+    protected static function resolveLabel(string $status): string
+    {
+        /** @var class-string<OrderState>|null $class */
+        $class = OrderState::resolveStateClass($status);
+
+        if ($class && class_exists($class)) {
+            return (new $class(new Order))->label();
+        }
+
+        return $status;
     }
 }

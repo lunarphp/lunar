@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Casts\DiscountBreakdown;
 use Lunar\Core\Casts\ShippingBreakdown;
@@ -19,6 +20,8 @@ use Lunar\Core\Models\Concerns\HasTags;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\States\Order\OrderState;
+use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
@@ -26,7 +29,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property ?int $user_id
  * @property int $channel_id
  * @property bool $new_customer
- * @property string $status
+ * @property OrderState $status
  * @property ?string $reference
  * @property ?string $customer_reference
  * @property int $sub_total
@@ -50,8 +53,10 @@ class Order extends Base implements Contracts\Order, HasCurrency
     use FormatsPrices;
     use HasFactory;
     use HasMacros;
+    use HasStates;
     use HasTags;
     use LogsActivity;
+    use Notifiable;
     use Searchable;
 
     /**
@@ -69,6 +74,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'total' => 'integer',
         'shipping_total' => 'integer',
         'new_customer' => 'boolean',
+        'status' => OrderState::class,
     ];
 
     public function resolveCurrency(): CurrencyContract
@@ -88,11 +94,9 @@ class Order extends Base implements Contracts\Order, HasCurrency
         return OrderFactory::new();
     }
 
-    public function getStatusLabelAttribute(): string
+    public function statusLabel(): string
     {
-        $statuses = config('lunar.orders.statuses');
-
-        return $statuses[$this->status]['label'] ?? $this->status;
+        return $this->status->label();
     }
 
     public function channel(): BelongsTo

@@ -64,7 +64,7 @@ test('can return correct searchable data', function () {
 
     expect($data)->toHaveKey('id');
     expect($data['skus'])->toBe([$variant->sku]);
-    expect($data['status'])->toEqual($product->status);
+    expect($data['status'])->toEqual((string) $product->status);
     expect($data['product_type'])->toEqual($product->productType->name);
     expect($data['brand'])->toEqual($product->brand?->name);
     expect($data)->toHaveKey($attributeA->handle);

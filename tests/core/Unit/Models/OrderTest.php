@@ -11,6 +11,7 @@ use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Transaction;
+use Lunar\Core\States\Order\Order\InProcess;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
@@ -64,7 +65,7 @@ test('can make an order', function () {
     $this->assertDatabaseHas((new Order)->getTable(), [
         'id' => $order->id,
         'reference' => $order->reference,
-        'status' => $order->status,
+        'status' => (string) $order->status,
         'sub_total' => $order->sub_total,
         'tax_total' => $order->tax_total,
         'total' => $order->total,
@@ -119,16 +120,14 @@ test('can create lines', function () {
 test('can update status', function () {
     $order = Order::factory()->create([
         'user_id' => null,
-        'status' => 'status_a',
+        'status' => 'awaiting-payment',
     ]);
 
-    expect($order->status)->toEqual('status_a');
+    expect((string) $order->status)->toEqual('awaiting-payment');
 
-    $order->update([
-        'status' => 'status_b',
-    ]);
+    $order->status->transitionTo(InProcess::class);
 
-    expect($order->status)->toEqual('status_b');
+    expect((string) $order->fresh()->status)->toEqual('in-process');
 });
 
 test('can create transaction for order', function () {
@@ -138,7 +137,7 @@ test('can create transaction for order', function () {
 
     $order = Order::factory()->create([
         'user_id' => null,
-        'status' => 'status_a',
+
     ]);
 
     expect($order->transactions)->toHaveCount(0);
@@ -159,7 +158,7 @@ test('can retrieve different transaction types for order', function () {
 
     $order = Order::factory()->create([
         'user_id' => null,
-        'status' => 'status_a',
+
     ]);
 
     expect($order->transactions)->toHaveCount(0);

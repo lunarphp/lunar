@@ -3,40 +3,38 @@
 namespace Lunar\Core\Actions\Orders;
 
 use Lunar\Core\Contracts\Actions\Orders\UpdatesOrderStatus;
-use Lunar\Core\Events\Orders\OrderStatusUpdated;
+use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 /**
- * Apply a status change to an order.
- *
- * Deliberately thin in v2 — the canonical entry point for status mutation so
- * callers (Filament actions, the API, the CLI) all go through one seam.
- * When the state-machines TODO item lands, the body is re-implemented as a
- * transition without changing this signature.
+ * Apply a status change to an order, respecting the OrderState transition graph.
  */
 final class UpdateOrderStatus implements UpdatesOrderStatus
 {
+    public function __construct(
+        private OrderStateConfig $stateConfig,
+    ) {}
+
     public function execute(OrderContract $order, string $status): Order
     {
         /** @var Order $order */
-        if (! array_key_exists($status, config('lunar.orders.statuses', []))) {
+        $target = collect($this->stateConfig->orderStates())
+            ->first(fn (string $class) => $class::getMorphClass() === $status);
+
+        if (! $target) {
             throw new OrderActionException(
-                "Status [{$status}] is not configured under lunar.orders.statuses."
+                "Status [{$status}] is not a registered OrderState."
             );
         }
 
-        $previous = $order->status;
-
-        if ($previous === $status) {
+        if ((string) $order->status === $status) {
             return $order;
         }
 
-        $order->forceFill(['status' => $status])->save();
+        $order->status->transitionTo($target);
 
-        OrderStatusUpdated::dispatch($order, $previous, $status);
-
-        return $order;
+        return $order->refresh();
     }
 }

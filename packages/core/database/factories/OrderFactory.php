@@ -34,4 +34,29 @@ class OrderFactory extends BaseFactory
             'meta' => ['foo' => 'bar'],
         ];
     }
+
+    public function awaitingPayment(): static
+    {
+        return $this->state(fn () => ['status' => 'awaiting-payment']);
+    }
+
+    public function inProcess(): static
+    {
+        return $this->state(fn () => ['status' => 'in-process']);
+    }
+
+    public function shipped(): static
+    {
+        return $this->state(fn () => ['status' => 'shipped']);
+    }
+
+    public function complete(): static
+    {
+        return $this->state(fn () => ['status' => 'complete']);
+    }
+
+    public function cancelled(): static
+    {
+        return $this->state(fn () => ['status' => 'cancelled']);
+    }
 }

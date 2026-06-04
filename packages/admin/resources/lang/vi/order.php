@@ -103,7 +103,7 @@ return [
             'label' => 'Mã tham chiếu',
         ],
         'status' => [
-            'label' => 'Trạng thái',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'Giao dịch',
@@ -165,7 +165,7 @@ return [
             'message' => 'tại thời điểm đặt hàng: :count',
         ],
         'status' => [
-            'label' => 'Trạng thái',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Mã tham chiếu',

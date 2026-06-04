@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\States\Channel\Inactive;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('models');
@@ -56,13 +57,13 @@ test('can return associated discounts', function () {
     expect($channel->refresh()->discounts)->toHaveCount(1);
 });
 
-test('can soft delete a channel', function () {
+test('can mark a channel as inactive', function () {
     $channel = Channel::factory()->create();
 
-    $channel->delete();
+    $channel->status->transitionTo(Inactive::class);
 
     \Pest\Laravel\assertDatabaseHas(Channel::class, [
         'id' => $channel->id,
-        'deleted_at' => now(),
+        'status' => 'inactive',
     ]);
 });

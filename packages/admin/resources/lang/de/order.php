@@ -103,7 +103,7 @@ return [
             'label' => 'Referenz',
         ],
         'status' => [
-            'label' => 'Status',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'Transaktion',
@@ -165,7 +165,7 @@ return [
             'message' => 'Zum Zeitpunkt der Bestellung: :count',
         ],
         'status' => [
-            'label' => 'Status',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Referenz',

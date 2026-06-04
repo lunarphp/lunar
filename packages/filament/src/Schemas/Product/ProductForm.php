@@ -55,9 +55,13 @@ class ProductForm
     {
         return [
             Callout::make()
-                ->heading(__('lunar-filament::product.status.unpublished.content'))
+                ->heading(__('lunar-filament::product.status.draft.content'))
                 ->status('info')
-                ->hidden(fn (Model $record) => static::isPublished($record)),
+                ->hidden(fn (Model $record) => ! static::isDraft($record)),
+            Callout::make()
+                ->heading(__('lunar-filament::product.status.archived.content'))
+                ->status('warning')
+                ->hidden(fn (Model $record) => ! static::isArchived($record)),
             Callout::make()
                 ->heading(__('lunar-filament::product.status.availability.customer_groups'))
                 ->status('warning')
@@ -179,7 +183,17 @@ class ProductForm
 
     protected static function isPublished(?Model $record): bool
     {
-        return $record?->status === 'published';
+        return $record !== null && (string) $record->status === 'published';
+    }
+
+    protected static function isDraft(?Model $record): bool
+    {
+        return $record !== null && (string) $record->status === 'draft';
+    }
+
+    protected static function isArchived(?Model $record): bool
+    {
+        return $record !== null && (string) $record->status === 'archived';
     }
 
     protected static function hasEnabledCustomerGroup(Model $record): bool

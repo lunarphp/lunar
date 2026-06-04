@@ -8,6 +8,8 @@ use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\Order\AwaitingPayment;
+use Lunar\Core\States\Order\Order\OnHold;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -19,30 +21,30 @@ beforeEach(function () {
 });
 
 test('updates the order status and fires an event', function () {
-    Event::fake();
-
     $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
-    app(UpdateOrderStatus::class)->execute($order, 'payment-received');
+    Event::fake([OrderStatusUpdated::class]);
 
-    expect($order->fresh()->status)->toBe('payment-received');
+    app(UpdateOrderStatus::class)->execute($order, 'on-hold');
+
+    expect((string) $order->fresh()->status)->toBe('on-hold');
 
     Event::assertDispatched(OrderStatusUpdated::class, fn (OrderStatusUpdated $event) => $event->order->is($order)
-        && $event->previousStatus === 'awaiting-payment'
-        && $event->status === 'payment-received');
+        && $event->previousStatus instanceof AwaitingPayment
+        && $event->newStatus instanceof OnHold);
 });
 
 test('does not fire an event when status is unchanged', function () {
-    Event::fake();
+    $order = Order::factory()->create(['status' => 'on-hold']);
 
-    $order = Order::factory()->create(['status' => 'payment-received']);
+    Event::fake([OrderStatusUpdated::class]);
 
-    app(UpdateOrderStatus::class)->execute($order, 'payment-received');
+    app(UpdateOrderStatus::class)->execute($order, 'on-hold');
 
     Event::assertNotDispatched(OrderStatusUpdated::class);
 });
 
-test('throws when the status is not configured', function () {
+test('throws when the status is not a registered OrderState', function () {
     $order = Order::factory()->create(['status' => 'awaiting-payment']);
 
     app(UpdateOrderStatus::class)->execute($order, 'not-a-real-status');

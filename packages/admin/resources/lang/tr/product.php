@@ -7,11 +7,9 @@ return [
         'all' => 'Tümü',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Şu anda taslak durumunda olan bu ürün, tüm kanallarda ve müşteri gruplarında kullanılamaz.',
-        ],
         'availability' => [
             'customer_groups' => 'Bu ürün şu anda tüm müşteri grupları için mevcut değil.',
             'channels' => 'Bu ürün şu anda tüm kanallar için mevcut değil.',
@@ -47,7 +45,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Durumu Güncelle',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Durumu Güncelle',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
     'form' => [
@@ -73,6 +77,10 @@ return [
                 'draft' => [
                     'label' => 'Taslak',
                     'description' => 'Bu ürün tüm kanallarda ve müşteri gruplarında gizlenecek',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

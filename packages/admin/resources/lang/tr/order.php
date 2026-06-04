@@ -103,7 +103,7 @@ return [
             'label' => 'Referans',
         ],
         'status' => [
-            'label' => 'Durum',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'İşlem',
@@ -165,7 +165,7 @@ return [
             'message' => 'sipariş anında: :count',
         ],
         'status' => [
-            'label' => 'Durum',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Referans',

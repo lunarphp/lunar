@@ -7,11 +7,9 @@ return [
         'all' => 'Todos',
         'published' => 'Published',
         'draft' => 'Draft',
+        'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Atualmente em rascunho, este produto está indisponível em todos os canais e grupos de clientes.',
-        ],
         'availability' => [
             'customer_groups' => 'Este produto está indisponível para todos os grupos de clientes.',
             'channels' => 'Este produto está indisponível para todos os canais.',
@@ -47,7 +45,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Atualizar status',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Atualizar status',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
     'form' => [
@@ -73,6 +77,10 @@ return [
                 'draft' => [
                     'label' => 'Rascunho',
                     'description' => 'Este produto ficará oculto em todos os canais e grupos de clientes',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

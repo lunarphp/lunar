@@ -5,7 +5,6 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\HasThumbnailImage;
@@ -49,7 +48,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $purchasable
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
- * @property ?Carbon $deleted_at
  */
 class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
 {
@@ -60,7 +58,6 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
     use HasPrices;
     use HasTranslations;
     use LogsActivity;
-    use SoftDeletes;
 
     /**
      * Define the guarded attributes.
@@ -86,7 +83,7 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::modelClass())->withTrashed();
+        return $this->belongsTo(Product::modelClass());
     }
 
     public function taxClass(): BelongsTo
@@ -218,10 +215,8 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
 
     public function isPurchasable(): bool
     {
-        return ! $this->trashed()
-            && $this->product
-            && ! $this->product->trashed()
-            && $this->product->status === 'published';
+        return $this->product
+            && (string) $this->product->status === 'published';
     }
 
     public function getTotalInventory(): int

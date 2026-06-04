@@ -209,7 +209,7 @@ test('can create order', function () {
     $datacheck = [
         'user_id' => $cart->user_id,
         'channel_id' => $cart->channel_id,
-        'status' => config('lunar.orders.draft_status'),
+        'status' => 'awaiting-payment',
         'customer_reference' => null,
         'sub_total' => $cart->subTotal->value,
         'total' => $cart->total->value,
@@ -342,7 +342,7 @@ test('can create order with customer', function () {
         'user_id' => $cart->user_id,
         'customer_id' => $cart->customer_id,
         'channel_id' => $cart->channel_id,
-        'status' => config('lunar.orders.draft_status'),
+        'status' => 'awaiting-payment',
         'customer_reference' => null,
         'sub_total' => $cart->subTotal->value,
         'total' => $cart->total->value,

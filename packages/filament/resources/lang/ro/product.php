@@ -9,8 +9,11 @@ return [
         'draft' => 'Draft',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'În prezent în stadiu de ciornă, acest produs este indisponibil în toate canalele și grupurile de clienți.',
+        'draft' => [
+            'content' => 'Currently in draft, this product is hidden from all channels and customer groups.',
+        ],
+        'archived' => [
+            'content' => 'This product is archived — it is hidden from the storefront, but kept on record so historical orders keep their reference. Move it back to Draft to revive it.',
         ],
         'availability' => [
             'customer_groups' => 'Acest produs nu este disponibil momentan pentru niciun grup de clienți.',

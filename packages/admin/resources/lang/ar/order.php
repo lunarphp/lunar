@@ -103,7 +103,7 @@ return [
             'label' => 'الرقم المرجعي',
         ],
         'status' => [
-            'label' => 'الحالة',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'المعاملة',
@@ -165,7 +165,7 @@ return [
             'message' => 'وقت الطلب: :count',
         ],
         'status' => [
-            'label' => 'الحالة',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'الرقم المرجعي',

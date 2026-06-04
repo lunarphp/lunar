@@ -4,6 +4,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\Order\Cancelled;
+use Lunar\Core\States\Order\Order\OnHold;
 use Lunar\Tests\Core\TestCase;
 use Spatie\Activitylog\Models\Activity;
 
@@ -26,50 +28,43 @@ beforeEach(function () {
 test('activity is logged when status changes', function () {
     activity()->enableLogging();
 
-    $order = Order::factory()->create([
-        'status' => 'status-a',
-    ]);
+    $order = Order::factory()->create();
 
     $this->assertDatabaseMissing((new Activity)->getTable(), [
         'subject_id' => $order->id,
         'event' => 'status-update',
     ]);
 
-    $order->update([
-        'status' => 'status-b',
-    ]);
+    $order->forceFill(['status' => OnHold::$name])->save();
 
     $this->assertDatabaseHas((new Activity)->getTable(), [
         'subject_id' => $order->id,
         'event' => 'status-update',
         'properties' => json_encode([
-            'new' => 'status-b',
-            'previous' => 'status-a',
+            'new' => 'on-hold',
+            'previous' => 'awaiting-payment',
         ]),
     ]);
 
-    $order->update([
-        'status' => 'status-b',
-    ]);
+    $order->forceFill(['status' => OnHold::$name])->save();
 
     $this->assertDatabaseMissing((new Activity)->getTable(), [
         'subject_id' => $order->id,
         'event' => 'status-update',
         'properties' => json_encode([
-            'new' => 'status-b',
-            'previous' => 'status-b',
+            'new' => 'on-hold',
+            'previous' => 'on-hold',
         ]),
     ]);
 
-    $order->status = 'status-c';
-    $order->save();
+    $order->forceFill(['status' => Cancelled::$name])->save();
 
     $this->assertDatabaseHas((new Activity)->getTable(), [
         'subject_id' => $order->id,
         'event' => 'status-update',
         'properties' => json_encode([
-            'new' => 'status-c',
-            'previous' => 'status-b',
+            'new' => 'cancelled',
+            'previous' => 'on-hold',
         ]),
     ]);
 });

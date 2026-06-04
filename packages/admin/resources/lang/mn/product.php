@@ -7,11 +7,9 @@ return [
         'all' => 'Бүгд',
         'published' => 'Нийтлэгдсэн',
         'draft' => 'Ноорог',
+        'archived' => 'Archived',
     ],
     'status' => [
-        'unpublished' => [
-            'content' => 'Одоогоор ноорог статустай, энэ бүтээгдэхүүн бүх сувгууд болон харилцагчийн бүлгүүдэд боломжгүй байна.',
-        ],
         'availability' => [
             'customer_groups' => 'Энэ бүтээгдэхүүн одоогоор бүх харилцагчийн бүлгүүдэд боломжгүй байна.',
             'channels' => 'Энэ бүтээгдэхүүн одоогоор бүх сувгууд боломжгүй байна.',
@@ -47,7 +45,13 @@ return [
     'actions' => [
         'edit_status' => [
             'label' => 'Статус шинэчлэх',
+            'label_with_state' => 'Status: :state',
             'heading' => 'Статус шинэчлэх',
+        ],
+        'delete' => [
+            'confirm' => 'This permanently deletes the product and cannot be undone. If you want to hide it from the storefront without losing it, archive it instead.',
+            'blocked' => 'This product has appeared on past orders and cannot be deleted — archive it instead so historical orders keep their reference.',
+            'disabled_tooltip' => 'Products with order history can\'t be deleted. Archive instead.',
         ],
     ],
     'form' => [
@@ -73,6 +77,10 @@ return [
                 'draft' => [
                     'label' => 'Ноорог',
                     'description' => 'Энэ бүтээгдэхүүн бүх сувгууд болон харилцагчийн бүлгүүдэд нуугдсан байна',
+                ],
+                'archived' => [
+                    'label' => 'Archived',
+                    'description' => 'This product is retired but still referenced by historical orders. Move back to Draft to revive it.',
                 ],
             ],
         ],

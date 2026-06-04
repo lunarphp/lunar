@@ -25,9 +25,7 @@ trait HasUrls
         });
 
         static::deleted(function (Model $model) {
-            if (! $model->deleted_at) {
-                $model->urls()->delete();
-            }
+            $model->urls()->delete();
         });
     }
 

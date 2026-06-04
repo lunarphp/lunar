@@ -103,7 +103,7 @@ return [
             'label' => 'Referință',
         ],
         'status' => [
-            'label' => 'Stare',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'Tranzacție',
@@ -165,7 +165,7 @@ return [
             'message' => 'la momentul comenzii: :count',
         ],
         'status' => [
-            'label' => 'Stare',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Referință',

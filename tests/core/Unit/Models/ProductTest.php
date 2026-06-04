@@ -402,25 +402,6 @@ test('soft deleting a product cleans up its associations', function () {
     expect(ProductAssociation::query()->where('product_parent_id', $target->id)->count())->toBe(0);
 });
 
-test('association target resolves a soft-deleted product', function () {
-    $parent = Product::factory()->create();
-    $target = Product::factory()->create();
-
-    $association = ProductAssociation::factory()->create([
-        'product_parent_id' => $parent,
-        'product_target_id' => $target,
-        'type' => 'cross-sell',
-    ]);
-
-    DB::table((new ProductAssociation)->getTable())
-        ->where('id', $association->id)
-        ->update(['updated_at' => now()]);
-    Product::withoutEvents(fn () => $target->delete());
-
-    expect($association->fresh()->target)->not->toBeNull();
-    expect($association->fresh()->target->trashed())->toBeTrue();
-});
-
 test('product can have custom association types', function () {
     $parent = Product::factory()->create();
     $target = Product::factory()->create();

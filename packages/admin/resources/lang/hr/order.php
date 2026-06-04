@@ -103,7 +103,7 @@ return [
             'label' => 'Referenca',
         ],
         'status' => [
-            'label' => 'Status',
+            'label' => 'Order',
         ],
         'transaction' => [
             'label' => 'Transakcija',
@@ -165,7 +165,7 @@ return [
             'message' => 'U trenutku narudžbe: :count',
         ],
         'status' => [
-            'label' => 'Status',
+            'label' => 'Order',
         ],
         'reference' => [
             'label' => 'Referenca',

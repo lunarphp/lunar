@@ -257,7 +257,7 @@ test('can validate delivery with partial shipping address', function () {
     }
 });
 
-test('fails when a cart line points at a soft-deleted purchasable', function () {
+test('fails when a cart line points at a deleted purchasable', function () {
     $currency = Currency::factory()->create();
     $taxClass = TaxClass::factory()->create();
 
@@ -289,13 +289,15 @@ test('fails when a cart line points at a soft-deleted purchasable', function () 
 
     $purchasable->delete();
 
+    $line = $cart->lines()->first();
+
     $validator = (new ValidateCartForOrderCreation)->using(
         cart: $cart->fresh()
     );
 
     $this->expectException(CartException::class);
     $this->expectExceptionMessage(__('lunar::exceptions.carts.line_unavailable', [
-        'identifier' => $purchasable->getIdentifier(),
+        'identifier' => "#{$line->id}",
     ]));
 
     $validator->validate();
