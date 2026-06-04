@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\OrderStateConfig;
+use Lunar\Core\Enums\OrderStateCategory;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
@@ -44,6 +45,11 @@ class AwaitingStock extends OrderState
     public function label(): string
     {
         return 'Awaiting Stock';
+    }
+
+    public function category(): OrderStateCategory
+    {
+        return OrderStateCategory::Processing;
     }
 }
 

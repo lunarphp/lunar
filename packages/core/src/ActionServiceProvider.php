@@ -40,8 +40,19 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Orders\CapturesOrder::class => Actions\Orders\CaptureOrder::class,
         Contracts\Orders\GeneratesOrderReference::class => Actions\Orders\GenerateOrderReference::class,
         Contracts\Orders\MarksOrderAsShipped::class => Actions\Orders\MarkOrderAsShipped::class,
+        Contracts\Orders\RecomputesOrderStatus::class => Actions\Orders\RecomputeOrderStatus::class,
         Contracts\Orders\RefundsOrder::class => Actions\Orders\RefundOrder::class,
+        Contracts\Orders\ResolvesFulfilmentStatus::class => Actions\Orders\ResolveFulfilmentStatus::class,
+        Contracts\Orders\ResolvesPaymentStatus::class => Actions\Orders\ResolvePaymentStatus::class,
         Contracts\Orders\UpdatesOrderStatus::class => Actions\Orders\UpdateOrderStatus::class,
+
+        // Fulfilment
+        Contracts\Fulfilment\CancelsFulfilment::class => Actions\Fulfilment\CancelFulfilment::class,
+        Contracts\Fulfilment\CreatesFulfilment::class => Actions\Fulfilment\CreateFulfilment::class,
+        Contracts\Fulfilment\MergesFulfilments::class => Actions\Fulfilment\MergeFulfilments::class,
+        Contracts\Fulfilment\ReturnsFulfilment::class => Actions\Fulfilment\ReturnFulfilment::class,
+        Contracts\Fulfilment\ShipsFulfilment::class => Actions\Fulfilment\ShipFulfilment::class,
+        Contracts\Fulfilment\SplitsFulfilment::class => Actions\Fulfilment\SplitFulfilment::class,
 
         // Products
         Contracts\Products\AdjustsStock::class => Actions\Products\AdjustStock::class,

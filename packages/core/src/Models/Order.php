@@ -20,7 +20,9 @@ use Lunar\Core\Models\Concerns\HasTags;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
 use Lunar\Core\States\Order\OrderState;
+use Lunar\Core\States\Order\Payment\PaymentState;
 use Spatie\ModelStates\HasStates;
 
 /**
@@ -30,6 +32,8 @@ use Spatie\ModelStates\HasStates;
  * @property int $channel_id
  * @property bool $new_customer
  * @property OrderState $status
+ * @property PaymentState $payment_status
+ * @property FulfilmentStatus $fulfilment_status
  * @property ?string $reference
  * @property ?string $customer_reference
  * @property int $sub_total
@@ -75,6 +79,8 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'shipping_total' => 'integer',
         'new_customer' => 'boolean',
         'status' => OrderState::class,
+        'payment_status' => PaymentState::class,
+        'fulfilment_status' => FulfilmentStatus::class,
     ];
 
     public function resolveCurrency(): CurrencyContract
@@ -112,6 +118,11 @@ class Order extends Base implements Contracts\Order, HasCurrency
     public function lines(): HasMany
     {
         return $this->hasMany(OrderLine::modelClass());
+    }
+
+    public function fulfilments(): HasMany
+    {
+        return $this->hasMany(Fulfilment::modelClass());
     }
 
     public function physicalLines(): HasMany
@@ -200,6 +211,8 @@ class Order extends Base implements Contracts\Order, HasCurrency
     {
         return [
             'status',
+            'payment_status',
+            'fulfilment_status',
         ];
     }
 }

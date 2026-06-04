@@ -74,7 +74,6 @@ return [
         'status_colors' => [
             'awaiting-payment' => '#848a8c',
             'payment-failed' => '#dc2626',
-            'backordered' => '#f59e0b',
             'in-process' => '#6a67ce',
             'partially-shipped' => '#0ea5e9',
             'shipped' => '#0a81d7',

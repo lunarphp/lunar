@@ -24,6 +24,11 @@ interface Order
     public function lines(): HasMany;
 
     /**
+     * Return the fulfilments relationship.
+     */
+    public function fulfilments(): HasMany;
+
+    /**
      * Return physical product lines relationship.
      */
     public function physicalLines(): HasMany;

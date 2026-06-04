@@ -59,18 +59,31 @@ return [
     | Order Status Notifications
     |--------------------------------------------------------------------------
     |
-    | Notifications to dispatch when an order transitions into a given
-    | status. Keyed by the OrderState $name (e.g. 'shipped'), each
-    | entry is a list of notification class names. Each notification is
-    | instantiated with the Order and delivered via `$order->notify()`.
+    | Notifications to dispatch when a state machine transitions into a given
+    | state. Keyed by the state $name, each entry is a list of notification
+    | class names. Each notification is instantiated with the model and
+    | delivered via `notify()`.
     |
-    | Read by DefaultOrderStateConfig::notificationsFor(); swap that binding
+    | The same flat-key lookup covers every machine, keyed by $name:
+    |   - headline order status (e.g. 'shipped', 'complete')
+    |   - derived payment_status (e.g. 'paid', 'refunded')
+    |   - derived fulfilment_status (e.g. 'fulfilled')
+    |   - per-parcel fulfilment state (e.g. 'shipped')
+    |
+    | Read by DefaultOrderStateConfig::notificationsFor() and
+    | DefaultFulfilmentStateConfig::notificationsFor(); swap those bindings
     | to source notifications from anywhere else.
     |
     */
     'notifications' => [
         // 'shipped' => [
-        //     App\Notifications\OrderShipped::class,
+        //     App\Notifications\OrderShipped::class,       // order status (0021)
+        // ],
+        // 'paid' => [
+        //     App\Notifications\PaymentReceived::class,     // payment_status
+        // ],
+        // 'fulfilled' => [
+        //     App\Notifications\OrderFulfilled::class,      // fulfilment_status
         // ],
     ],
 

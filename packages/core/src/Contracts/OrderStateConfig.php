@@ -2,7 +2,9 @@
 
 namespace Lunar\Core\Contracts;
 
+use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
 use Lunar\Core\States\Order\OrderState;
+use Lunar\Core\States\Order\Payment\PaymentState;
 
 /**
  * Catalogue + transition table for the order lifecycle machine.
@@ -43,4 +45,21 @@ interface OrderStateConfig
      * @return array<class-string>
      */
     public function notificationsFor(OrderState $state): array;
+
+    /**
+     * Headline states the merchant sets by hand. While the order is in one of
+     * these, derivation from payment × fulfilment is suppressed and the state
+     * persists until the merchant transitions out.
+     *
+     * @return list<class-string<OrderState>>
+     */
+    public function overrideStates(): array;
+
+    /**
+     * Derive the headline order status from the two derived rollups. Never
+     * called while the order is in an override state.
+     *
+     * @return class-string<OrderState>
+     */
+    public function computeOrderStatus(PaymentState $payment, FulfilmentStatus $fulfilment): string;
 }

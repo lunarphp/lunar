@@ -1,6 +1,6 @@
 # 0021 — State machines (and retiring soft-deletes)
 
-- Status: accepted
+- Status: completed
 - Author: Glenn Jacobs
 - Created: 2026-05-28
 - Revised: 2026-06-01

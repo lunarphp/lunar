@@ -14,7 +14,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Models\Order;
+use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
 use Lunar\Core\States\Order\OrderState;
+use Lunar\Core\States\Order\Payment\PaymentState;
 use Lunar\Filament\Actions\Orders\UpdateOrderStatusBulkAction;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Support\CustomerStatus;
@@ -62,6 +64,16 @@ class OrderTable
                 ->toggleable()
                 ->formatStateUsing(fn ($state) => OrderStatus::getLabel((string) $state))
                 ->color(fn ($state) => OrderStatus::getColor((string) $state))
+                ->badge(),
+            TextColumn::make('payment_status')
+                ->label(__('lunar-filament::order.table.payment_status.label'))
+                ->toggleable()
+                ->formatStateUsing(fn ($state) => $state instanceof PaymentState ? $state->label() : (string) $state)
+                ->badge(),
+            TextColumn::make('fulfilment_status')
+                ->label(__('lunar-filament::order.table.fulfilment_status.label'))
+                ->toggleable()
+                ->formatStateUsing(fn ($state) => $state instanceof FulfilmentStatus ? $state->label() : (string) $state)
                 ->badge(),
             TextColumn::make('reference')
                 ->label(__('lunar-filament::order.table.reference.label'))
@@ -122,6 +134,28 @@ class OrderTable
                         /** @var class-string<OrderState> $class */
                         ->mapWithKeys(fn (string $class) => [$class::$name => (new $class(new Order))->label()])
                 )
+                ->multiple(),
+            SelectFilter::make('payment_status')
+                ->label(__('lunar-filament::order.table.payment_status.label'))
+                ->options([
+                    'pending' => __('lunar::states.payment.pending'),
+                    'authorized' => __('lunar::states.payment.authorized'),
+                    'partially-paid' => __('lunar::states.payment.partially-paid'),
+                    'paid' => __('lunar::states.payment.paid'),
+                    'partially-refunded' => __('lunar::states.payment.partially-refunded'),
+                    'refunded' => __('lunar::states.payment.refunded'),
+                    'voided' => __('lunar::states.payment.voided'),
+                ])
+                ->multiple(),
+            SelectFilter::make('fulfilment_status')
+                ->label(__('lunar-filament::order.table.fulfilment_status.label'))
+                ->options([
+                    'unfulfilled' => __('lunar::states.fulfilment-status.unfulfilled'),
+                    'partially-fulfilled' => __('lunar::states.fulfilment-status.partially-fulfilled'),
+                    'fulfilled' => __('lunar::states.fulfilment-status.fulfilled'),
+                    'partially-returned' => __('lunar::states.fulfilment-status.partially-returned'),
+                    'returned' => __('lunar::states.fulfilment-status.returned'),
+                ])
                 ->multiple(),
             Filter::make('placed_at')
                 ->schema([

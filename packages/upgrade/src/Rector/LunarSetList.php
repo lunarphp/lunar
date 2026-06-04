@@ -531,6 +531,11 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\DataTransferObjects\\Role' => 'Lunar\\Core\\Support\\DataTransferObjects\\Role',
         'Lunar\\Admin\\Support\\Facades\\LunarAccessControl' => 'Lunar\\Core\\Support\\Facades\\LunarAccessControl',
 
+        // Spec 0022: the Backordered headline order state is dropped (a real
+        // backorder is a stock concept, reintroduced by a future stock spec).
+        // References map to OnHold — the nearest "blocked" override state.
+        'Lunar\\Core\\States\\Order\\Order\\Backordered' => 'Lunar\\Core\\States\\Order\\Order\\OnHold',
+
     ];
 
     /**

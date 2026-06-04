@@ -31,6 +31,8 @@ use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
+use Lunar\Core\Contracts\FulfilmentManager;
+use Lunar\Core\Contracts\FulfilmentStateConfig;
 use Lunar\Core\Contracts\ModelManifest;
 use Lunar\Core\Contracts\OrderReferenceGenerator;
 use Lunar\Core\Contracts\OrderStateConfig;
@@ -49,6 +51,7 @@ use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Listeners\SendOrderStatusNotifications;
 use Lunar\Core\Managers\CartSessionManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
+use Lunar\Core\Managers\FulfilmentManager as FulfilmentManagerImpl;
 use Lunar\Core\Managers\PaymentManager as PaymentManagerImpl;
 use Lunar\Core\Managers\PricingManager as PricingManagerImpl;
 use Lunar\Core\Managers\StorefrontSessionManager;
@@ -66,6 +69,8 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
+use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
@@ -90,6 +95,8 @@ use Lunar\Core\Observers\CurrencyObserver;
 use Lunar\Core\Observers\CustomerGroupObserver;
 use Lunar\Core\Observers\CustomerObserver;
 use Lunar\Core\Observers\DiscountObserver;
+use Lunar\Core\Observers\FulfilmentLineObserver;
+use Lunar\Core\Observers\FulfilmentObserver;
 use Lunar\Core\Observers\LanguageObserver;
 use Lunar\Core\Observers\MediaObserver;
 use Lunar\Core\Observers\OrderLineObserver;
@@ -106,6 +113,7 @@ use Lunar\Core\Pricing\DefaultPriceCalculator;
 use Lunar\Core\Pricing\DefaultPriceFormatter;
 use Lunar\Core\Pricing\PriceCalculatorInterface;
 use Lunar\Core\Pricing\PriceFormatterInterface;
+use Lunar\Core\States\Fulfilment\DefaultFulfilmentStateConfig;
 use Lunar\Core\States\Order\DefaultOrderStateConfig;
 use Lunar\Core\Telemetry\Insights as TelemetryInsights;
 use Lunar\Core\Telemetry\TelemetryService as TelemetryServiceImpl;
@@ -344,6 +352,10 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(DefaultOrderStateConfig::class);
         });
 
+        $this->app->singleton(FulfilmentStateConfig::class, function ($app) {
+            return $app->make(DefaultFulfilmentStateConfig::class);
+        });
+
         $this->app->bind(PriceFormatterInterface::class, function ($app, array $parameters = []) {
             $concrete = config('lunar.pricing.formatter', DefaultPriceFormatter::class);
 
@@ -391,6 +403,10 @@ class LunarServiceProvider extends ServiceProvider
         $this->app->singleton(DiscountManager::class, function ($app) {
             return $app->make(DiscountManagerImpl::class);
         });
+
+        $this->app->singleton(FulfilmentManager::class, function ($app) {
+            return $app->make(FulfilmentManagerImpl::class);
+        });
     }
 
     protected function registerAddonManifest()
@@ -416,6 +432,8 @@ class LunarServiceProvider extends ServiceProvider
         Customer::observe(CustomerObserver::class);
         CustomerGroup::observe(CustomerGroupObserver::class);
         Discount::observe(DiscountObserver::class);
+        Fulfilment::observe(FulfilmentObserver::class);
+        FulfilmentLine::observe(FulfilmentLineObserver::class);
         Language::observe(LanguageObserver::class);
         Order::observe(OrderObserver::class);
         OrderLine::observe(OrderLineObserver::class);
