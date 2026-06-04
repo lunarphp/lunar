@@ -59,3 +59,8 @@ PHPStan (via Larastan, level 0) is part of the test pipeline and **must pass bef
 ## Reviewing changes
 
 Run the `lunar:pr-review` skill (or `/lunar:pr-review`) before opening a PR — it checks translation completeness across the 16 locales, missing tests/factories, migration safety, Filament contract usage, and breaking-change risk on the public surface.
+
+## Merging
+
+- **Never merge a branch or PR automatically.** Do not run `gh pr merge`, `git merge`, or push to a shared branch (`1.x`, `2.x`, …) on your own. Merging is always the human's call. You may open/update PRs, run checks, and report status — but stop short of merging and let the maintainer click the button.
+- PRs target the relevant version line: v2 work merges into `2.x`, not `1.x`.
