@@ -3,8 +3,8 @@
 namespace Lunar\Tests\Shipping;
 
 use Illuminate\Support\Facades\Config;
-use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\LunarServiceProvider;
+use Lunar\Nestedset\NestedSetServiceProvider;
 use Lunar\Shipping\ShippingServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
 use Lunar\Tests\TestCase as BaseTestCase;
