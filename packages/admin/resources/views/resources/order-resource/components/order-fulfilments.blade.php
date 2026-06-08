@@ -64,26 +64,39 @@
                                 </x-filament::button>
                             @endif
 
-                            @if (\Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
-                                <x-filament::button
-                                    size="sm"
-                                    color="gray"
-                                    icon="heroicon-m-scissors"
-                                    wire:click="startSplit({{ $fulfilment->id }})"
-                                >
-                                    {{ __('lunarpanel::order.fulfilments.actions.split.label') }}
-                                </x-filament::button>
-                            @endif
+                            @php($canSplit = \Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
+                            @php($canMerge = $isPreShip && $this->mergeableCount > 1)
+                            @if ($canSplit || $canMerge)
+                                <x-filament::dropdown placement="bottom-end">
+                                    <x-slot name="trigger">
+                                        <x-filament::icon-button
+                                            icon="heroicon-m-ellipsis-vertical"
+                                            color="gray"
+                                            size="sm"
+                                            :label="__('lunarpanel::order.fulfilments.actions.more')"
+                                        />
+                                    </x-slot>
 
-                            @if ($isPreShip && $this->mergeableCount > 1)
-                                <x-filament::button
-                                    size="sm"
-                                    color="gray"
-                                    icon="heroicon-m-arrows-pointing-in"
-                                    wire:click="mountAction('merge', { fulfilment: {{ $fulfilment->id }} })"
-                                >
-                                    {{ __('lunarpanel::order.fulfilments.actions.merge.label') }}
-                                </x-filament::button>
+                                    <x-filament::dropdown.list>
+                                        @if ($canSplit)
+                                            <x-filament::dropdown.list.item
+                                                icon="heroicon-m-scissors"
+                                                wire:click="startSplit({{ $fulfilment->id }})"
+                                            >
+                                                {{ __('lunarpanel::order.fulfilments.actions.split.label') }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
+
+                                        @if ($canMerge)
+                                            <x-filament::dropdown.list.item
+                                                icon="heroicon-m-arrows-pointing-in"
+                                                wire:click="mountAction('merge', { fulfilment: {{ $fulfilment->id }} })"
+                                            >
+                                                {{ __('lunarpanel::order.fulfilments.actions.merge.label') }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
+                                    </x-filament::dropdown.list>
+                                </x-filament::dropdown>
                             @endif
 
                             @if (\Lunar\Core\Actions\Fulfilment\ReturnFulfilment::canRun($fulfilment))

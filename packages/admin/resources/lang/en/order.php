@@ -315,6 +315,7 @@ return [
             'shipped_at' => 'Shipped at',
         ],
         'actions' => [
+            'more' => 'More actions',
             'create' => [
                 'label' => 'Create fulfilment',
                 'modal_heading' => 'Create fulfilment',
