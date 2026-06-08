@@ -16,6 +16,7 @@ use Spatie\ModelStates\HasStates;
 /**
  * @property int $id
  * @property int $order_id
+ * @property ?int $location_id
  * @property string $reference
  * @property FulfilmentState $state
  * @property ?string $shipping_method
@@ -62,6 +63,14 @@ class Fulfilment extends Base implements Contracts\Fulfilment
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::modelClass());
+    }
+
+    /**
+     * Return the location relationship.
+     */
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Location::modelClass());
     }
 
     /**

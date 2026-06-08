@@ -7,6 +7,7 @@ use Lunar\Core\Events\Fulfilment\FulfilmentCreated;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Validation\Fulfilment\FulfilmentQuantity;
 
@@ -32,6 +33,7 @@ final class CreateFulfilment implements CreatesFulfilment
             /** @var Fulfilment $fulfilment */
             $fulfilment = $order->fulfilments()->create([
                 'reference' => $attributes['reference'] ?? $this->generateReference($order),
+                'location_id' => $attributes['location_id'] ?? Location::getDefault()?->id,
                 'state' => 'pending',
                 'shipping_method' => $attributes['shipping_method'] ?? null,
                 'tracking_number' => $attributes['tracking_number'] ?? null,

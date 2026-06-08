@@ -75,21 +75,9 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     public function fulfilments(): Collection
     {
         return $this->record->fulfilments()
-            ->with('lines.orderLine.purchasable')
+            ->with(['location', 'lines.orderLine.purchasable'])
             ->orderBy('id')
             ->get();
-    }
-
-    /**
-     * Number of pre-ship parcels — merge is only offered when there is more
-     * than one to combine.
-     */
-    #[Computed]
-    public function mergeableCount(): int
-    {
-        return $this->fulfilments
-            ->filter(fn (Fulfilment $f) => in_array($f->state::$name, MergeFulfilments::MERGEABLE_STATES, true))
-            ->count();
     }
 
     protected function findFulfilment(array $arguments): Fulfilment
@@ -181,6 +169,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     {
         return $this->fulfilments
             ->filter(fn (Fulfilment $f) => $f->getKey() !== $source->getKey()
+                && $f->location_id === $source->location_id
                 && in_array($f->state::$name, MergeFulfilments::MERGEABLE_STATES, true))
             ->values();
     }

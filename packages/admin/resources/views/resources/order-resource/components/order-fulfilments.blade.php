@@ -26,6 +26,12 @@
                         <x-filament::badge :color="$stateColors[$stateName] ?? 'gray'" size="sm">
                             {{ $fulfilment->state->label() }}
                         </x-filament::badge>
+                        @if ($fulfilment->location)
+                            <span class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                                <x-filament::icon icon="heroicon-m-map-pin" class="h-3.5 w-3.5" />
+                                {{ $fulfilment->location->name }}
+                            </span>
+                        @endif
                         @if ($fulfilment->shipped_at)
                             <span class="text-xs text-gray-500 dark:text-gray-400">
                                 {{ __('lunarpanel::order.fulfilments.columns.shipped_at') }}
@@ -82,7 +88,7 @@
                             @endif
 
                             @php($canSplit = \Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
-                            @php($canMerge = $isPreShip && $this->mergeableCount > 1)
+                            @php($canMerge = $isPreShip && $this->mergeTargets($fulfilment)->isNotEmpty())
                             @if ($canSplit || $canMerge)
                                 <x-filament::dropdown placement="bottom-end">
                                     <x-slot name="trigger">

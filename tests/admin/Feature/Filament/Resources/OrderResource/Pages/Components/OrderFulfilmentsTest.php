@@ -5,6 +5,7 @@ use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderFulfilmen
 use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Filament\Support\Facades\LunarFilament;
@@ -17,6 +18,7 @@ beforeEach(function () {
 
     $currency = Currency::factory()->create(['default' => true]);
     Language::factory()->create(['default' => true, 'code' => 'en']);
+    Location::factory()->default()->create();
 
     $this->order = Order::factory()->create(['currency_code' => $currency->code]);
     $this->line = OrderLine::factory()->create([

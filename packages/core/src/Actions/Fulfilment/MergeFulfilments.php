@@ -96,6 +96,10 @@ final class MergeFulfilments implements MergesFulfilments
                 return 'lunar::exceptions.fulfilment_merge_different_orders';
             }
 
+            if ($source->location_id !== $target->location_id) {
+                return 'lunar::exceptions.fulfilment_merge_different_locations';
+            }
+
             if (! in_array($source->state::$name, self::MERGEABLE_STATES, true)) {
                 return 'lunar::exceptions.fulfilment_not_mergeable';
             }

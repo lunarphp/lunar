@@ -11,6 +11,7 @@ use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\ProductType;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\TaxClass;
@@ -78,6 +79,16 @@ class InstallLunar extends Command
                     'handle' => 'webstore',
                     'default' => true,
                     'url' => 'http://localhost',
+                ]);
+            }
+
+            if (! Location::whereDefault(true)->exists()) {
+                $this->components->info('Setting up default location');
+
+                Location::create([
+                    'name' => 'Default',
+                    'handle' => 'default',
+                    'default' => true,
                 ]);
             }
 
