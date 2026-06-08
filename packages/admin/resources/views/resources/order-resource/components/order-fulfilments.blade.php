@@ -18,7 +18,7 @@
 
             <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-gray-900">
                 {{-- Header --}}
-                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-3 dark:border-white/5">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 dark:border-white/10">
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-semibold text-gray-950 dark:text-white">
                             {{ $fulfilment->reference }}
@@ -131,14 +131,17 @@
                 </div>
 
                 {{-- Lines --}}
-                <ul role="list" class="divide-y divide-gray-100 dark:divide-white/5">
+                <ul role="list">
                     @foreach ($fulfilment->lines as $line)
                         @php($orderLine = $line->orderLine)
                         @php($splitting = $this->splittingId === $fulfilment->id)
                         @php($merging = $this->mergingId === $fulfilment->id)
                         @php($editing = $splitting || $merging)
                         @php($qtyModel = $splitting ? 'splitQuantities' : 'mergeQuantities')
-                        <li x-data="{ open: false }">
+                        <li
+                            x-data="{ open: false }"
+                            @class(['border-t border-gray-200 dark:border-white/10' => ! $loop->first])
+                        >
                             <div
                                 @unless ($editing) role="button" @click="open = ! open" @endunless
                                 style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; @unless ($editing) cursor:pointer; @endunless"
@@ -251,7 +254,7 @@
 
                 {{-- Tracking --}}
                 @if ($fulfilment->tracking_number)
-                    <div class="flex items-center gap-1.5 border-t border-gray-100 px-4 py-2 text-xs text-gray-500 dark:border-white/5 dark:text-gray-400">
+                    <div class="flex items-center gap-1.5 border-t border-gray-200 px-4 py-2 text-xs text-gray-500 dark:border-white/10 dark:text-gray-400">
                         <x-filament::icon icon="heroicon-m-truck" class="h-4 w-4" />
                         @if ($fulfilment->tracking_url)
                             <a href="{{ $fulfilment->tracking_url }}" target="_blank" class="text-primary-600 hover:underline dark:text-primary-400">
