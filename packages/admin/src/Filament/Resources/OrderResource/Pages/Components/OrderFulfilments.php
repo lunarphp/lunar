@@ -212,8 +212,10 @@ class OrderFulfilments extends Component implements HasActions, HasForms
         }
 
         $rows = [
-            ['label' => __('lunarpanel::order.fulfilments.fields.unit_price'), 'value' => $orderLine->format('unit_price', decimalPlaces: 4)],
-            ['label' => __('lunarpanel::order.fulfilments.fields.quantity'), 'value' => (string) $line->quantity],
+            ['label' => __('lunarpanel::order.fulfilments.fields.unit_price'), 'value' => $orderLine->format('unit_price')],
+            ['label' => __('lunarpanel::order.fulfilments.fields.quantity'), 'value' => (string) $orderLine->quantity],
+            ['label' => __('lunarpanel::order.fulfilments.fields.sub_total'), 'value' => $orderLine->format('sub_total')],
+            ['label' => __('lunarpanel::order.fulfilments.fields.discount_total'), 'value' => $orderLine->format('discount_total')],
         ];
 
         foreach ($orderLine->tax_breakdown?->amounts ?? [] as $tax) {

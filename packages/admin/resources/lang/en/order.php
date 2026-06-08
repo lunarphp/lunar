@@ -365,8 +365,11 @@ return [
         ],
         'fields' => [
             'quantity' => 'Quantity',
-            'unit_price' => 'Unit price',
-            'total' => 'Line total',
+            'unit_price' => 'Unit Price',
+            'sub_total' => 'Sub Total',
+            'discount_total' => 'Discount Total',
+            'total' => 'Total',
+            'stock_level' => 'Current Stock Level: :count',
             'outstanding' => 'Outstanding: :count',
             'tracking_number' => 'Tracking number',
             'tracking_url' => 'Tracking URL',

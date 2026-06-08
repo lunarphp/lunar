@@ -109,18 +109,25 @@
                                             {{ $orderLine->identifier }}
                                         </p>
                                     @endif
-                                </div>
-
-                                <div style="flex:none; text-align:right; white-space:nowrap;">
-                                    <span class="text-sm text-gray-500 dark:text-gray-400">&times; {{ $line->quantity }}</span>
-                                    @if ($orderLine)
-                                        <p class="text-sm font-medium text-gray-950 dark:text-white">{{ $orderLine->format('unit_price') }}</p>
+                                    @php($options = $orderLine?->purchasable?->getOptions())
+                                    @if (filled($options))
+                                        <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.25rem;">
+                                            @foreach ($options as $option)
+                                                <x-filament::badge color="info" size="sm">{{ $option }}</x-filament::badge>
+                                            @endforeach
+                                        </div>
                                     @endif
                                 </div>
 
+                                @if ($orderLine)
+                                    <div style="flex:none; text-align:right; white-space:nowrap;" class="text-sm font-medium text-gray-950 dark:text-white">
+                                        {{ $line->quantity }} @ {{ $orderLine->format('sub_total') }}
+                                    </div>
+                                @endif
+
                                 <x-filament::icon
                                     icon="heroicon-m-chevron-down"
-                                    class="h-4 w-4 text-gray-400"
+                                    class="h-5 w-5 text-gray-400"
                                     style="flex:none; transition:transform .2s ease;"
                                     x-bind:style="open && 'transform: rotate(180deg)'"
                                 />
@@ -128,26 +135,28 @@
 
                             @php($details = $this->lineDetails($line))
                             @if ($details)
-                                <div x-show="open" x-collapse style="display:none;" class="text-sm">
-                                    <dl style="padding:0 1rem 0.75rem 4rem;" class="text-gray-600 dark:text-gray-400">
-                                        @foreach ($details as $row)
-                                            <div
-                                                @class([
-                                                    'border-t border-gray-100 dark:border-white/5' => $row['highlight'] ?? false,
-                                                ])
-                                                style="display:flex; justify-content:space-between; padding:0.25rem 0; @if ($row['highlight'] ?? false) margin-top:0.375rem; @endif"
-                                            >
-                                                <dt @class(['font-semibold text-gray-950 dark:text-white' => $row['highlight'] ?? false])>
-                                                    {{ $row['label'] }}
-                                                </dt>
-                                                <dd class="font-medium text-gray-950 dark:text-white">{{ $row['value'] }}</dd>
-                                            </div>
-                                        @endforeach
+                                <div x-show="open" x-collapse style="display:none;">
+                                    <div style="margin:0 1rem 1rem 4rem; padding:1rem; border-radius:0.75rem; background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08);">
+                                        @php($stock = $orderLine?->purchasable?->stock)
+                                        @if (! is_null($stock))
+                                            <p style="margin-bottom:0.75rem; color:#16a34a; font-weight:600;">
+                                                {{ __('lunarpanel::order.fulfilments.fields.stock_level', ['count' => $stock]) }}
+                                            </p>
+                                        @endif
+
+                                        <div style="border-radius:0.5rem; overflow:hidden; border:1px solid rgba(0,0,0,0.08);">
+                                            @foreach ($details as $row)
+                                                <div style="display:flex; justify-content:space-between; padding:0.5rem 0.75rem; @unless ($loop->last) border-bottom:1px solid rgba(0,0,0,0.06); @endunless">
+                                                    <span @class(['font-semibold' => $row['highlight'] ?? false]) class="text-gray-700 dark:text-gray-300">{{ $row['label'] }}</span>
+                                                    <span @class(['font-semibold' => $row['highlight'] ?? false, 'font-medium' => ! ($row['highlight'] ?? false)]) class="text-gray-950 dark:text-white">{{ $row['value'] }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
 
                                         @if (filled($orderLine?->notes))
-                                            <p style="margin-top:0.5rem;" class="text-xs italic text-gray-500 dark:text-gray-400">{{ $orderLine->notes }}</p>
+                                            <p style="margin-top:0.75rem;" class="text-xs italic text-gray-500 dark:text-gray-400">{{ $orderLine->notes }}</p>
                                         @endif
-                                    </dl>
+                                    </div>
                                 </div>
                             @endif
                         </li>
