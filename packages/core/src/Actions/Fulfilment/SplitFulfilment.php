@@ -46,10 +46,13 @@ final class SplitFulfilment implements SplitsFulfilment
                 }
             }
 
+            // The split-off parcel inherits the source's state — splitting only
+            // reorganises outstanding quantities, so a parcel that was already
+            // being prepared (`in-progress`) shouldn't drop back to `pending`.
             /** @var Fulfilment $new */
             $new = $fulfilment->order->fulfilments()->create([
                 'location_id' => $fulfilment->location_id,
-                'state' => 'pending',
+                'state' => $fulfilment->state::$name,
             ]);
 
             foreach ($moves as $orderLineId => $quantity) {

@@ -9,6 +9,7 @@ use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\States\Fulfilment\Cancelled;
+use Lunar\Core\States\Fulfilment\InProgress;
 use Lunar\Core\States\Fulfilment\Returned;
 use Lunar\Core\States\Fulfilment\Shipped;
 use Lunar\Tests\Core\TestCase;
@@ -97,6 +98,16 @@ test('split moves outstanding quantity into a new parcel', function () {
     expect($new->lines->first()->quantity)->toBe(4)
         ->and($source->fresh()->lines->first()->quantity)->toBe(6)
         ->and($order->fulfilments()->count())->toBe(2);
+});
+
+test('split inherits the source parcel state', function () {
+    [$order, $line] = orderWithLine(10);
+    $source = Fulfilments::create($order, [$line->id => 10]);
+    Fulfilments::transition($source, InProgress::class);
+
+    $new = Fulfilments::split($source->fresh(), [$line->id => 4]);
+
+    expect($new->state::$name)->toBe('in-progress');
 });
 
 test('a shipped fulfilment cannot be split', function () {
