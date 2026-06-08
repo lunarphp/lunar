@@ -13,6 +13,7 @@ use Lunar\Core\Contracts\FulfilmentManager;
  * @method static \Lunar\Core\Models\Fulfilment ship(\Lunar\Core\Models\Contracts\Fulfilment $fulfilment, array $tracking = [])
  * @method static \Lunar\Core\Models\Fulfilment cancel(\Lunar\Core\Models\Contracts\Fulfilment $fulfilment)
  * @method static \Lunar\Core\Models\Fulfilment return(\Lunar\Core\Models\Contracts\Fulfilment $fulfilment)
+ * @method static \Lunar\Core\Models\Fulfilment changeLocation(\Lunar\Core\Models\Contracts\Fulfilment $fulfilment, int $locationId)
  *
  * @see FulfilmentManager
  */

@@ -128,6 +128,17 @@ it('lets developers extend the expanded line details', function () {
         ->and($labels)->toContain(__('lunarpanel::order.fulfilments.fields.unit_price'));
 });
 
+it('changes a fulfilment location', function () {
+    $other = Location::factory()->create();
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('changeLocation', data: ['location' => $other->id], arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    expect($fulfilment->refresh()->location_id)->toBe($other->id);
+});
+
 it('returns a shipped fulfilment', function () {
     $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
 

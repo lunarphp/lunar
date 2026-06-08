@@ -28,6 +28,8 @@ return [
     'fulfilment_not_mergeable' => 'Only pending or in-progress fulfilments can be merged.',
     'fulfilment_merge_different_orders' => 'Fulfilments must belong to the same order to be merged.',
     'fulfilment_merge_different_locations' => 'Fulfilments must be at the same location to be merged.',
+    'fulfilment_not_relocatable' => 'Only pending or in-progress fulfilments can be moved to another location.',
+    'fulfilment_location_not_found' => 'The selected location could not be found.',
     'fulfilment_merge_tracking_conflict' => 'A source fulfilment carries tracking that would be lost; resolve it before merging.',
     'order_line_below_fulfilled' => 'Order line quantity (:requested) cannot be below the :fulfilled already fulfilled.',
     'fulfilment_merge_no_sources' => 'Select at least one fulfilment to merge.',

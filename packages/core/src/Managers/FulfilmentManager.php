@@ -4,6 +4,7 @@ namespace Lunar\Core\Managers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Contracts\Actions\Fulfilment\CancelsFulfilment;
+use Lunar\Core\Contracts\Actions\Fulfilment\ChangesFulfilmentLocation;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\MergesFulfilments;
 use Lunar\Core\Contracts\Actions\Fulfilment\MovesFulfilmentLines;
@@ -30,6 +31,7 @@ class FulfilmentManager implements FulfilmentManagerContract
         protected ShipsFulfilment $ship,
         protected CancelsFulfilment $cancel,
         protected ReturnsFulfilment $return,
+        protected ChangesFulfilmentLocation $changeLocation,
     ) {}
 
     public function create(OrderContract $order, array $lines, array $attributes = []): Fulfilment
@@ -65,5 +67,10 @@ class FulfilmentManager implements FulfilmentManagerContract
     public function return(FulfilmentContract $fulfilment): Fulfilment
     {
         return $this->return->execute($fulfilment);
+    }
+
+    public function changeLocation(FulfilmentContract $fulfilment, int $locationId): Fulfilment
+    {
+        return $this->changeLocation->execute($fulfilment, $locationId);
     }
 }

@@ -45,4 +45,9 @@ interface FulfilmentManager
     public function cancel(FulfilmentContract $fulfilment): Fulfilment;
 
     public function return(FulfilmentContract $fulfilment): Fulfilment;
+
+    /**
+     * Reassign a pre-ship fulfilment to a different location.
+     */
+    public function changeLocation(FulfilmentContract $fulfilment, int $locationId): Fulfilment;
 }

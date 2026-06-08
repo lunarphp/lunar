@@ -89,3 +89,24 @@ test('fulfilments at the same location merge normally', function () {
     expect($order->fulfilments()->count())->toBe(1)
         ->and($target->refresh()->lines()->first()->quantity)->toBe(5);
 });
+
+test('a pre-ship fulfilment can be moved to another location', function () {
+    Location::factory()->default()->create();
+    $other = Location::factory()->create();
+    [$order, $line] = locationOrderLine();
+    $fulfilment = Fulfilments::create($order, [$line->id => 2]);
+
+    Fulfilments::changeLocation($fulfilment, $other->id);
+
+    expect($fulfilment->refresh()->location_id)->toBe($other->id);
+});
+
+test('a shipped fulfilment cannot change location', function () {
+    Location::factory()->default()->create();
+    $other = Location::factory()->create();
+    [$order, $line] = locationOrderLine();
+    $fulfilment = Fulfilments::ship(Fulfilments::create($order, [$line->id => 2]));
+
+    expect(fn () => Fulfilments::changeLocation($fulfilment->fresh(), $other->id))
+        ->toThrow(FulfilmentException::class);
+});

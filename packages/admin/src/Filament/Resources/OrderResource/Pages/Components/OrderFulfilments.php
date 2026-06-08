@@ -5,6 +5,7 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages\Components;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -19,6 +20,7 @@ use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
@@ -78,6 +80,17 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->with(['location', 'lines.orderLine.purchasable'])
             ->orderBy('id')
             ->get();
+    }
+
+    /**
+     * All locations, for the "change location" picker and gating.
+     *
+     * @return \Illuminate\Support\Collection<int, Location>
+     */
+    #[Computed]
+    public function locations(): \Illuminate\Support\Collection
+    {
+        return Location::query()->orderBy('name')->get();
     }
 
     protected function findFulfilment(array $arguments): Fulfilment
@@ -234,6 +247,26 @@ class OrderFulfilments extends Component implements HasActions, HasForms
         if ($this->run(fn () => Fulfilments::move($source, $target, $moves), 'merge')) {
             $this->cancelMerge();
         }
+    }
+
+    public function changeLocationAction(): Action
+    {
+        return Action::make('changeLocation')
+            ->label(__('lunarpanel::order.fulfilments.actions.change_location.label'))
+            ->modalHeading(__('lunarpanel::order.fulfilments.actions.change_location.modal_heading'))
+            ->icon('heroicon-o-map-pin')
+            ->schema(fn (array $arguments) => [
+                Select::make('location')
+                    ->label(__('lunarpanel::order.fulfilments.actions.change_location.field'))
+                    ->options($this->locations->mapWithKeys(fn (Location $location) => [$location->id => $location->name])->all())
+                    ->default($this->findFulfilment($arguments)->location_id)
+                    ->selectablePlaceholder(false)
+                    ->required(),
+            ])
+            ->action(fn (array $arguments, array $data) => $this->run(
+                fn () => Fulfilments::changeLocation($this->findFulfilment($arguments), (int) $data['location']),
+                'change_location',
+            ));
     }
 
     public function returnAction(): Action

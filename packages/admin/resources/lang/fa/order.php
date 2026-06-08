@@ -321,6 +321,15 @@ return [
                     'error' => 'Could not cancel fulfilment.',
                 ],
             ],
+            'change_location' => [
+                'label' => 'Change location',
+                'modal_heading' => 'Change fulfilment location',
+                'field' => 'Location',
+                'notification' => [
+                    'success' => 'Fulfilment location updated.',
+                    'error' => 'Could not change the fulfilment location.',
+                ],
+            ],
             'return' => [
                 'label' => 'Return',
                 'notification' => [

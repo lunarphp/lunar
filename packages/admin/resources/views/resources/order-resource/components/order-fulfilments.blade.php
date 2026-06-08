@@ -89,7 +89,8 @@
 
                             @php($canSplit = \Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
                             @php($canMerge = $isPreShip && $this->mergeTargets($fulfilment)->isNotEmpty())
-                            @if ($canSplit || $canMerge)
+                            @php($canChangeLocation = \Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation::canRun($fulfilment) && $this->locations->count() > 1)
+                            @if ($canSplit || $canMerge || $canChangeLocation)
                                 <x-filament::dropdown placement="bottom-end">
                                     <x-slot name="trigger">
                                         <x-filament::icon-button
@@ -116,6 +117,15 @@
                                                 wire:click="startMerge({{ $fulfilment->id }})"
                                             >
                                                 {{ __('lunarpanel::order.fulfilments.actions.merge.label') }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
+
+                                        @if ($canChangeLocation)
+                                            <x-filament::dropdown.list.item
+                                                icon="heroicon-m-map-pin"
+                                                wire:click="mountAction('changeLocation', { fulfilment: {{ $fulfilment->id }} })"
+                                            >
+                                                {{ __('lunarpanel::order.fulfilments.actions.change_location.label') }}
                                             </x-filament::dropdown.list.item>
                                         @endif
                                     </x-filament::dropdown.list>
