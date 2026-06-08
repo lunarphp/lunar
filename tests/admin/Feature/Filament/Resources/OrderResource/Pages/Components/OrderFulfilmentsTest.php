@@ -7,6 +7,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
+use Lunar\Filament\Support\Facades\LunarFilament;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)->group('resource.order');
@@ -65,6 +66,31 @@ it('merges selected parcels into the target', function () {
 
     expect($this->order->fulfilments()->count())->toBe(1)
         ->and($target->refresh()->lines()->first()->quantity)->toBe(5);
+});
+
+it('lets developers extend the expanded line details', function () {
+    LunarFilament::extensions([
+        OrderFulfilments::class => new class
+        {
+            public function extendFulfilmentLineDetails(array $rows, $line): array
+            {
+                $rows[] = ['label' => 'Warehouse', 'value' => 'Bay 12'];
+
+                return $rows;
+            }
+        },
+    ]);
+
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $line = $fulfilment->lines()->with('orderLine')->first();
+
+    $component = new OrderFulfilments;
+    $component->record = $this->order;
+
+    $labels = collect($component->lineDetails($line))->pluck('label');
+
+    expect($labels)->toContain('Warehouse')
+        ->and($labels)->toContain(__('lunarpanel::order.fulfilments.fields.unit_price'));
 });
 
 it('returns a shipped fulfilment', function () {

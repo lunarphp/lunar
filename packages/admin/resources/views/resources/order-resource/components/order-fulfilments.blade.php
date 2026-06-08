@@ -126,33 +126,25 @@
                                 />
                             </div>
 
-                            @if ($orderLine)
+                            @php($details = $this->lineDetails($line))
+                            @if ($details)
                                 <div x-show="open" x-collapse style="display:none;" class="text-sm">
                                     <dl style="padding:0 1rem 0.75rem 4rem;" class="text-gray-600 dark:text-gray-400">
-                                        @php($rows = [
-                                            __('lunarpanel::order.fulfilments.fields.unit_price') => $orderLine->format('unit_price', decimalPlaces: 4),
-                                            __('lunarpanel::order.fulfilments.fields.quantity') => $line->quantity,
-                                        ])
-                                        @foreach ($rows as $label => $value)
-                                            <div style="display:flex; justify-content:space-between; padding:0.125rem 0;">
-                                                <dt>{{ $label }}</dt>
-                                                <dd class="font-medium text-gray-950 dark:text-white">{{ $value }}</dd>
+                                        @foreach ($details as $row)
+                                            <div
+                                                @class([
+                                                    'border-t border-gray-100 dark:border-white/5' => $row['highlight'] ?? false,
+                                                ])
+                                                style="display:flex; justify-content:space-between; padding:0.25rem 0; @if ($row['highlight'] ?? false) margin-top:0.375rem; @endif"
+                                            >
+                                                <dt @class(['font-semibold text-gray-950 dark:text-white' => $row['highlight'] ?? false])>
+                                                    {{ $row['label'] }}
+                                                </dt>
+                                                <dd class="font-medium text-gray-950 dark:text-white">{{ $row['value'] }}</dd>
                                             </div>
                                         @endforeach
 
-                                        @foreach ($orderLine->tax_breakdown?->amounts ?? [] as $tax)
-                                            <div style="display:flex; justify-content:space-between; padding:0.125rem 0;">
-                                                <dt>{{ $tax->description }}</dt>
-                                                <dd class="font-medium text-gray-950 dark:text-white">{{ $tax->price->format() }}</dd>
-                                            </div>
-                                        @endforeach
-
-                                        <div style="display:flex; justify-content:space-between; padding:0.375rem 0 0; margin-top:0.375rem;" class="border-t border-gray-100 dark:border-white/5">
-                                            <dt class="font-semibold text-gray-950 dark:text-white">{{ __('lunarpanel::order.fulfilments.fields.total') }}</dt>
-                                            <dd class="font-semibold text-gray-950 dark:text-white">{{ $orderLine->format('total') }}</dd>
-                                        </div>
-
-                                        @if (filled($orderLine->notes))
+                                        @if (filled($orderLine?->notes))
                                             <p style="margin-top:0.5rem;" class="text-xs italic text-gray-500 dark:text-gray-400">{{ $orderLine->notes }}</p>
                                         @endif
                                     </dl>

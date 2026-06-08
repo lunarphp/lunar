@@ -18,7 +18,9 @@ use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
+use Lunar\Filament\Support\Concerns\CallsHooks;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
 /**
@@ -28,6 +30,7 @@ use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
  */
 class OrderFulfilments extends Component implements HasActions, HasForms
 {
+    use CallsHooks;
     use InteractsWithActions;
     use InteractsWithForms;
 
@@ -183,6 +186,43 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
         unset($this->fulfilments, $this->mergeableCount);
         $this->dispatch('fulfilments-updated');
+    }
+
+    /**
+     * The rows shown in a line's expandable detail panel. Developers can add,
+     * remove, or reshape rows via the `extendFulfilmentLineDetails` hook:
+     *
+     *   LunarPanel::extensions([
+     *       OrderFulfilments::class => new class {
+     *           public function extendFulfilmentLineDetails(array $rows, FulfilmentLine $line): array {
+     *               $rows[] = ['label' => 'SKU', 'value' => $line->orderLine?->identifier];
+     *               return $rows;
+     *           }
+     *       },
+     *   ]);
+     *
+     * @return list<array{label: string, value: string, highlight?: bool}>
+     */
+    public function lineDetails(FulfilmentLine $line): array
+    {
+        $orderLine = $line->orderLine;
+
+        if (! $orderLine) {
+            return [];
+        }
+
+        $rows = [
+            ['label' => __('lunarpanel::order.fulfilments.fields.unit_price'), 'value' => $orderLine->format('unit_price', decimalPlaces: 4)],
+            ['label' => __('lunarpanel::order.fulfilments.fields.quantity'), 'value' => (string) $line->quantity],
+        ];
+
+        foreach ($orderLine->tax_breakdown?->amounts ?? [] as $tax) {
+            $rows[] = ['label' => $tax->description, 'value' => $tax->price->format()];
+        }
+
+        $rows[] = ['label' => __('lunarpanel::order.fulfilments.fields.total'), 'value' => $orderLine->format('total'), 'highlight' => true];
+
+        return $this->callLunarHook('extendFulfilmentLineDetails', $rows, $line);
     }
 
     public function render()
