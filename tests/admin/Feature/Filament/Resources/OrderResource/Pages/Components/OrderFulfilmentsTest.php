@@ -175,6 +175,38 @@ it('changes a fulfilment location', function () {
     expect($fulfilment->refresh()->location_id)->toBe($other->id);
 });
 
+it('lists the states a pending fulfilment can move to', function () {
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+
+    $component = new OrderFulfilments;
+    $component->record = $this->order;
+
+    $names = $component->statusTransitions($fulfilment->load('lines'))->pluck('name');
+
+    expect($names)->toContain('in-progress', 'shipped', 'cancelled')
+        ->and($names)->not->toContain('returned');
+});
+
+it('moves a fulfilment to a new state via the transition action', function () {
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('transition', arguments: ['fulfilment' => $fulfilment->id, 'state' => 'in-progress'])
+        ->assertHasNoActionErrors();
+
+    expect((string) $fulfilment->refresh()->state)->toBe('in-progress');
+});
+
+it('cancels a fulfilment via the dedicated cancel action', function () {
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('cancel', arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    expect((string) $fulfilment->refresh()->state)->toBe('cancelled');
+});
+
 it('returns a shipped fulfilment', function () {
     $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
 

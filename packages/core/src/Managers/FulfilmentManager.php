@@ -12,6 +12,7 @@ use Lunar\Core\Contracts\Actions\Fulfilment\MovesFulfilmentLines;
 use Lunar\Core\Contracts\Actions\Fulfilment\ReturnsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ShipsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\SplitsFulfilment;
+use Lunar\Core\Contracts\Actions\Fulfilment\TransitionsFulfilment;
 use Lunar\Core\Contracts\FulfilmentManager as FulfilmentManagerContract;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
@@ -33,6 +34,7 @@ class FulfilmentManager implements FulfilmentManagerContract
         protected ShipsFulfilment $ship,
         protected CancelsFulfilment $cancel,
         protected ReturnsFulfilment $return,
+        protected TransitionsFulfilment $transition,
         protected ChangesFulfilmentLocation $changeLocation,
         protected AddsFulfilmentTracking $addTracking,
     ) {}
@@ -70,6 +72,11 @@ class FulfilmentManager implements FulfilmentManagerContract
     public function return(FulfilmentContract $fulfilment): Fulfilment
     {
         return $this->return->execute($fulfilment);
+    }
+
+    public function transition(FulfilmentContract $fulfilment, string $state): Fulfilment
+    {
+        return $this->transition->execute($fulfilment, $state);
     }
 
     public function changeLocation(FulfilmentContract $fulfilment, int $locationId): Fulfilment

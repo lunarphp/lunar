@@ -7,6 +7,20 @@
             'cancelled' => 'danger',
             'returned' => 'danger',
         ];
+        $stateIcons = [
+            'pending' => 'heroicon-m-clock',
+            'in-progress' => 'heroicon-m-cog-6-tooth',
+            'shipped' => 'heroicon-m-truck',
+            'cancelled' => 'heroicon-m-x-circle',
+            'returned' => 'heroicon-m-arrow-uturn-left',
+        ];
+        // States with a dedicated, form/side-effect-bearing action. Everything
+        // else goes through the generic "transition" confirmation.
+        $statusActions = [
+            'shipped' => 'ship',
+            'cancelled' => 'cancel',
+            'returned' => 'return',
+        ];
     @endphp
 
     <div class="space-y-4">
@@ -76,15 +90,36 @@
                                 {{ __('lunarpanel::order.fulfilments.actions.merge.cancel') }}
                             </x-filament::button>
                         @elseif ($this->splittingId === null && $this->mergingId === null)
-                            @if (\Lunar\Core\Actions\Fulfilment\ShipFulfilment::canRun($fulfilment))
-                                <x-filament::button
-                                    size="sm"
-                                    color="success"
-                                    icon="heroicon-m-truck"
-                                    wire:click="mountAction('ship', { fulfilment: {{ $fulfilment->id }} })"
-                                >
-                                    {{ __('lunarpanel::order.fulfilments.actions.ship.label') }}
-                                </x-filament::button>
+                            @php($transitions = $this->statusTransitions($fulfilment))
+                            @if ($transitions->isNotEmpty())
+                                <x-filament::dropdown placement="bottom-end">
+                                    <x-slot name="trigger">
+                                        <x-filament::button
+                                            size="sm"
+                                            color="primary"
+                                            icon="heroicon-m-chevron-down"
+                                            icon-position="after"
+                                        >
+                                            {{ __('lunarpanel::order.fulfilments.actions.update_status.label') }}
+                                        </x-filament::button>
+                                    </x-slot>
+
+                                    <x-filament::dropdown.list>
+                                        @foreach ($transitions as $transition)
+                                            @php($actionName = $statusActions[$transition['name']] ?? null)
+                                            @php($mountArgs = $actionName
+                                                ? "mountAction('{$actionName}', { fulfilment: {$fulfilment->id} })"
+                                                : "mountAction('transition', { fulfilment: {$fulfilment->id}, state: '{$transition['name']}' })")
+                                            <x-filament::dropdown.list.item
+                                                :icon="$stateIcons[$transition['name']] ?? 'heroicon-m-arrow-right'"
+                                                :color="$transition['name'] === 'cancelled' ? 'danger' : null"
+                                                wire:click="{{ $mountArgs }}"
+                                            >
+                                                {{ $transition['label'] }}
+                                            </x-filament::dropdown.list.item>
+                                        @endforeach
+                                    </x-filament::dropdown.list>
+                                </x-filament::dropdown>
                             @endif
 
                             @php($canSplit = \Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
@@ -140,17 +175,6 @@
                                         @endif
                                     </x-filament::dropdown.list>
                                 </x-filament::dropdown>
-                            @endif
-
-                            @if (\Lunar\Core\Actions\Fulfilment\ReturnFulfilment::canRun($fulfilment))
-                                <x-filament::button
-                                    size="sm"
-                                    color="warning"
-                                    icon="heroicon-m-arrow-uturn-left"
-                                    wire:click="mountAction('return', { fulfilment: {{ $fulfilment->id }} })"
-                                >
-                                    {{ __('lunarpanel::order.fulfilments.actions.return.label') }}
-                                </x-filament::button>
                             @endif
                         @endif
                     </div>

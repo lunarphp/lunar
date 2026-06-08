@@ -58,6 +58,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Fulfilment\ReturnsFulfilment::class => Actions\Fulfilment\ReturnFulfilment::class,
         Contracts\Fulfilment\ShipsFulfilment::class => Actions\Fulfilment\ShipFulfilment::class,
         Contracts\Fulfilment\SplitsFulfilment::class => Actions\Fulfilment\SplitFulfilment::class,
+        Contracts\Fulfilment\TransitionsFulfilment::class => Actions\Fulfilment\TransitionFulfilment::class,
 
         // Products
         Contracts\Products\AdjustsStock::class => Actions\Products\AdjustStock::class,

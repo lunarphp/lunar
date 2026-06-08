@@ -27,6 +27,7 @@ use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
+use Lunar\Core\States\Fulfilment\FulfilmentState;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
@@ -344,6 +345,75 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                 fn () => Fulfilments::return($this->findFulfilment($arguments)),
                 'return',
             ));
+    }
+
+    public function cancelAction(): Action
+    {
+        return Action::make('cancel')
+            ->label(__('lunarpanel::order.fulfilments.actions.cancel.label'))
+            ->icon('heroicon-o-x-circle')
+            ->color('danger')
+            ->requiresConfirmation()
+            ->action(fn (array $arguments) => $this->run(
+                fn () => Fulfilments::cancel($this->findFulfilment($arguments)),
+                'cancel',
+            ));
+    }
+
+    /**
+     * The states the given fulfilment can currently move to, used to build the
+     * "Update status" menu. `Shipped` opens the ship form; the rest go through
+     * the generic transition confirmation.
+     *
+     * @return \Illuminate\Support\Collection<int, array{name: string, state: class-string<FulfilmentState>, label: string}>
+     */
+    public function statusTransitions(Fulfilment $fulfilment): \Illuminate\Support\Collection
+    {
+        return collect($fulfilment->state->transitionableStateInstances())
+            ->map(fn (FulfilmentState $state) => [
+                'name' => $state::$name,
+                'state' => $state::class,
+                'label' => $state->label(),
+            ])
+            ->values();
+    }
+
+    /**
+     * Generic "move to state X" confirmation, used for every transition that
+     * isn't `Shipped` (which has its own form-bearing action). The target state
+     * is validated against what the fulfilment can currently transition to.
+     */
+    public function transitionAction(): Action
+    {
+        return Action::make('transition')
+            ->requiresConfirmation()
+            ->modalHeading(fn (array $arguments) => __('lunarpanel::order.fulfilments.actions.transition.modal_heading', [
+                'status' => $this->resolveTransition($arguments)?->label() ?? '',
+            ]))
+            ->modalSubmitActionLabel(fn (array $arguments) => $this->resolveTransition($arguments)?->label())
+            ->color(fn (array $arguments) => ($arguments['state'] ?? null) === 'cancelled' ? 'danger' : 'primary')
+            ->action(function (array $arguments) {
+                $target = $this->resolveTransition($arguments);
+
+                if (! $target) {
+                    return;
+                }
+
+                $this->run(
+                    fn () => Fulfilments::transition($this->findFulfilment($arguments), $target::class),
+                    'transition',
+                );
+            });
+    }
+
+    /**
+     * Resolve the target state instance for a transition action from its
+     * arguments, only matching states the fulfilment may currently move to.
+     */
+    protected function resolveTransition(array $arguments): ?FulfilmentState
+    {
+        return collect($this->findFulfilment($arguments)->state->transitionableStateInstances())
+            ->first(fn (FulfilmentState $state) => $state::$name === ($arguments['state'] ?? null));
     }
 
     /**

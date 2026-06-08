@@ -7,6 +7,7 @@ use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentTracking;
+use Lunar\Core\States\Fulfilment\FulfilmentState;
 
 /**
  * Ergonomic entry point onto the fulfilment domain. Delegates to the swappable
@@ -46,6 +47,14 @@ interface FulfilmentManager
     public function cancel(FulfilmentContract $fulfilment): Fulfilment;
 
     public function return(FulfilmentContract $fulfilment): Fulfilment;
+
+    /**
+     * Move a fulfilment to an arbitrary target state, guarded by the
+     * `FulfilmentState` graph.
+     *
+     * @param  class-string<FulfilmentState>  $state
+     */
+    public function transition(FulfilmentContract $fulfilment, string $state): Fulfilment;
 
     /**
      * Reassign a pre-ship fulfilment to a different location.

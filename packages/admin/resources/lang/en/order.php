@@ -365,6 +365,16 @@ return [
                     'error' => 'Could not return fulfilment.',
                 ],
             ],
+            'update_status' => [
+                'label' => 'Update status',
+            ],
+            'transition' => [
+                'modal_heading' => 'Mark fulfilment as :status?',
+                'notification' => [
+                    'success' => 'Fulfilment status updated.',
+                    'error' => 'Could not update the fulfilment status.',
+                ],
+            ],
             'split' => [
                 'label' => 'Split',
                 'confirm' => 'Split fulfilment',
