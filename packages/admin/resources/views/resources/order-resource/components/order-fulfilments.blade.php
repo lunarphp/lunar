@@ -35,48 +35,67 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        @if (\Lunar\Core\Actions\Fulfilment\ShipFulfilment::canRun($fulfilment))
+                        @if ($this->splittingId === $fulfilment->id)
+                            {{-- Split mode: confirm / cancel --}}
                             <x-filament::button
                                 size="sm"
-                                color="success"
-                                icon="heroicon-m-truck"
-                                wire:click="mountAction('ship', { fulfilment: {{ $fulfilment->id }} })"
-                            >
-                                {{ __('lunarpanel::order.fulfilments.actions.ship.label') }}
-                            </x-filament::button>
-                        @endif
-
-                        @if (\Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
-                            <x-filament::button
-                                size="sm"
-                                color="gray"
+                                color="primary"
                                 icon="heroicon-m-scissors"
-                                wire:click="mountAction('split', { fulfilment: {{ $fulfilment->id }} })"
+                                wire:click="confirmSplit"
                             >
-                                {{ __('lunarpanel::order.fulfilments.actions.split.label') }}
+                                {{ __('lunarpanel::order.fulfilments.actions.split.confirm') }}
                             </x-filament::button>
-                        @endif
-
-                        @if ($isPreShip && $this->mergeableCount > 1)
                             <x-filament::button
                                 size="sm"
                                 color="gray"
-                                icon="heroicon-m-arrows-pointing-in"
-                                wire:click="mountAction('merge', { fulfilment: {{ $fulfilment->id }} })"
+                                wire:click="cancelSplit"
                             >
-                                {{ __('lunarpanel::order.fulfilments.actions.merge.label') }}
+                                {{ __('lunarpanel::order.fulfilments.actions.split.cancel') }}
                             </x-filament::button>
-                        @endif
+                        @elseif ($this->splittingId === null)
+                            @if (\Lunar\Core\Actions\Fulfilment\ShipFulfilment::canRun($fulfilment))
+                                <x-filament::button
+                                    size="sm"
+                                    color="success"
+                                    icon="heroicon-m-truck"
+                                    wire:click="mountAction('ship', { fulfilment: {{ $fulfilment->id }} })"
+                                >
+                                    {{ __('lunarpanel::order.fulfilments.actions.ship.label') }}
+                                </x-filament::button>
+                            @endif
 
-                        @if (\Lunar\Core\Actions\Fulfilment\ReturnFulfilment::canRun($fulfilment))
-                            <x-filament::button
-                                size="sm"
-                                color="warning"
-                                icon="heroicon-m-arrow-uturn-left"
-                                wire:click="mountAction('return', { fulfilment: {{ $fulfilment->id }} })"
-                            >
-                                {{ __('lunarpanel::order.fulfilments.actions.return.label') }}
-                            </x-filament::button>
+                            @if (\Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
+                                <x-filament::button
+                                    size="sm"
+                                    color="gray"
+                                    icon="heroicon-m-scissors"
+                                    wire:click="startSplit({{ $fulfilment->id }})"
+                                >
+                                    {{ __('lunarpanel::order.fulfilments.actions.split.label') }}
+                                </x-filament::button>
+                            @endif
+
+                            @if ($isPreShip && $this->mergeableCount > 1)
+                                <x-filament::button
+                                    size="sm"
+                                    color="gray"
+                                    icon="heroicon-m-arrows-pointing-in"
+                                    wire:click="mountAction('merge', { fulfilment: {{ $fulfilment->id }} })"
+                                >
+                                    {{ __('lunarpanel::order.fulfilments.actions.merge.label') }}
+                                </x-filament::button>
+                            @endif
+
+                            @if (\Lunar\Core\Actions\Fulfilment\ReturnFulfilment::canRun($fulfilment))
+                                <x-filament::button
+                                    size="sm"
+                                    color="warning"
+                                    icon="heroicon-m-arrow-uturn-left"
+                                    wire:click="mountAction('return', { fulfilment: {{ $fulfilment->id }} })"
+                                >
+                                    {{ __('lunarpanel::order.fulfilments.actions.return.label') }}
+                                </x-filament::button>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -85,11 +104,11 @@
                 <ul role="list" class="divide-y divide-gray-100 dark:divide-white/5">
                     @foreach ($fulfilment->lines as $line)
                         @php($orderLine = $line->orderLine)
+                        @php($splitting = $this->splittingId === $fulfilment->id)
                         <li x-data="{ open: false }">
                             <div
-                                role="button"
-                                @click="open = ! open"
-                                style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; cursor:pointer;"
+                                @unless ($splitting) role="button" @click="open = ! open" @endunless
+                                style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; @unless ($splitting) cursor:pointer; @endunless"
                             >
                                 @php($thumbnail = $orderLine?->purchasable?->getThumbnail()?->getUrl('small'))
                                 @if ($thumbnail)
@@ -119,21 +138,37 @@
                                     @endif
                                 </div>
 
-                                @if ($orderLine)
+                                @if ($splitting)
+                                    <div style="flex:none; display:flex; align-items:center; gap:0.5rem;">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="{{ $line->quantity }}"
+                                            wire:model="splitQuantities.{{ $line->order_line_id }}"
+                                            style="width:4.5rem; text-align:center; padding:0.3rem 0.5rem; border-radius:0.5rem; border:1px solid rgba(0,0,0,0.15); background:transparent;"
+                                            class="text-gray-950 dark:text-white"
+                                        />
+                                        <span class="text-xs text-gray-500 dark:text-gray-400" style="white-space:nowrap;">
+                                            {{ __('lunarpanel::order.fulfilments.fields.of', ['count' => $line->quantity]) }}
+                                        </span>
+                                    </div>
+                                @elseif ($orderLine)
                                     <div style="flex:none; text-align:right; white-space:nowrap;" class="text-sm font-medium text-gray-950 dark:text-white">
                                         {{ $line->quantity }} @ {{ $orderLine->format('sub_total') }}
                                     </div>
                                 @endif
 
-                                <x-filament::icon
-                                    icon="heroicon-m-chevron-down"
-                                    class="h-5 w-5 text-gray-400"
-                                    style="flex:none; transition:transform .2s ease;"
-                                    x-bind:style="open && 'transform: rotate(180deg)'"
-                                />
+                                @unless ($splitting)
+                                    <x-filament::icon
+                                        icon="heroicon-m-chevron-down"
+                                        class="h-5 w-5 text-gray-400"
+                                        style="flex:none; transition:transform .2s ease;"
+                                        x-bind:style="open && 'transform: rotate(180deg)'"
+                                    />
+                                @endunless
                             </div>
 
-                            @php($details = $this->lineDetails($line))
+                            @php($details = $splitting ? [] : $this->lineDetails($line))
                             @if ($details)
                                 <div x-show="open" x-collapse style="display:none;">
                                     <div style="margin:0 1rem 1rem 4rem; padding:1rem; border-radius:0.75rem; background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08);">

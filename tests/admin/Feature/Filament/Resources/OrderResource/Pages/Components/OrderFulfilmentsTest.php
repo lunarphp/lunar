@@ -45,15 +45,29 @@ it('ships a fulfilment and records tracking', function () {
         ->and($fulfilment->tracking_number)->toBe('TRK-1');
 });
 
-it('splits a pre-ship parcel into a new one', function () {
+it('splits a pre-ship parcel into a new one via inline mode', function () {
     $source = Fulfilments::create($this->order, [$this->line->id => 4]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
-        ->callAction('split', data: ['qty_'.$this->line->id => 1], arguments: ['fulfilment' => $source->id])
-        ->assertHasNoActionErrors();
+        ->call('startSplit', $source->id)
+        ->assertSet('splitQuantities', [$this->line->id => 0])
+        ->set('splitQuantities.'.$this->line->id, 1)
+        ->call('confirmSplit')
+        ->assertSet('splittingId', null);
 
     expect($this->order->fulfilments()->count())->toBe(2)
         ->and($source->refresh()->lines()->first()->quantity)->toBe(3);
+});
+
+it('keeps split mode open and creates nothing when no quantity is chosen', function () {
+    $source = Fulfilments::create($this->order, [$this->line->id => 4]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->call('startSplit', $source->id)
+        ->call('confirmSplit')
+        ->assertSet('splittingId', $source->id);
+
+    expect($this->order->fulfilments()->count())->toBe(1);
 });
 
 it('merges selected parcels into the target', function () {

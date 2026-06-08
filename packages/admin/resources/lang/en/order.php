@@ -348,6 +348,9 @@ return [
             ],
             'split' => [
                 'label' => 'Split',
+                'confirm' => 'Split fulfilment',
+                'cancel' => 'Cancel',
+                'empty' => 'Select a quantity to split out.',
                 'modal_heading' => 'Split fulfilment',
                 'notification' => [
                     'success' => 'Fulfilment split.',
@@ -370,6 +373,7 @@ return [
             'discount_total' => 'Discount Total',
             'total' => 'Total',
             'stock_level' => 'Current Stock Level: :count',
+            'of' => 'of :count',
             'outstanding' => 'Outstanding: :count',
             'tracking_number' => 'Tracking number',
             'tracking_url' => 'Tracking URL',

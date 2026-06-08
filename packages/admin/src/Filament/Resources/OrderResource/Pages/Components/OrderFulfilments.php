@@ -15,6 +15,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
+use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Fulfilment;
@@ -36,6 +37,19 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
     #[Locked]
     public Order $record;
+
+    /**
+     * The fulfilment currently in inline "split" mode, if any.
+     */
+    public ?int $splittingId = null;
+
+    /**
+     * Quantity to move out per order line while splitting, keyed by
+     * order_line_id.
+     *
+     * @var array<int, int>
+     */
+    public array $splitQuantities = [];
 
     /**
      * @return Collection<int, Fulfilment>
@@ -89,29 +103,55 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ));
     }
 
-    public function splitAction(): Action
+    /**
+     * Enter inline split mode for a parcel: each line gets a "move out"
+     * quantity input and the card's actions become Split / Cancel.
+     */
+    public function startSplit(int $fulfilmentId): void
     {
-        return Action::make('split')
-            ->label(__('lunarpanel::order.fulfilments.actions.split.label'))
-            ->modalHeading(__('lunarpanel::order.fulfilments.actions.split.modal_heading'))
-            ->icon('heroicon-o-scissors')
-            ->schema(fn (array $arguments) => $this->findFulfilment($arguments)->lines->map(
-                fn ($line) => TextInput::make('qty_'.$line->order_line_id)
-                    ->label($line->orderLine?->description ?? '#'.$line->order_line_id)
-                    ->helperText(__('lunarpanel::order.fulfilments.fields.outstanding', ['count' => $line->quantity]))
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue($line->quantity)
-                    ->default(0),
-            )->all())
-            ->action(function (array $arguments, array $data) {
-                $moves = collect($data)
-                    ->filter(fn ($qty) => (int) $qty > 0)
-                    ->mapWithKeys(fn ($qty, $key) => [(int) str_replace('qty_', '', $key) => (int) $qty])
-                    ->all();
+        $fulfilment = $this->findFulfilment(['fulfilment' => $fulfilmentId]);
 
-                $this->run(fn () => Fulfilments::split($this->findFulfilment($arguments), $moves), 'split');
-            });
+        if (! SplitFulfilment::canRun($fulfilment)) {
+            return;
+        }
+
+        $this->splittingId = $fulfilmentId;
+        $this->splitQuantities = $fulfilment->lines
+            ->mapWithKeys(fn ($line) => [$line->order_line_id => 0])
+            ->all();
+    }
+
+    public function cancelSplit(): void
+    {
+        $this->splittingId = null;
+        $this->splitQuantities = [];
+    }
+
+    public function confirmSplit(): void
+    {
+        if (! $this->splittingId) {
+            return;
+        }
+
+        $fulfilment = $this->findFulfilment(['fulfilment' => $this->splittingId]);
+
+        $moves = collect($this->splitQuantities)
+            ->map(fn ($qty) => (int) $qty)
+            ->filter(fn ($qty) => $qty > 0)
+            ->all();
+
+        if ($moves === []) {
+            Notification::make()
+                ->danger()
+                ->title(__('lunarpanel::order.fulfilments.actions.split.empty'))
+                ->send();
+
+            return;
+        }
+
+        if ($this->run(fn () => Fulfilments::split($fulfilment, $moves), 'split')) {
+            $this->cancelSplit();
+        }
     }
 
     public function mergeAction(): Action
@@ -166,7 +206,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
      * Run a fulfilment operation, surfacing domain/transition failures as a
      * notification rather than an unhandled exception, and refreshing the list.
      */
-    protected function run(callable $callback, string $key): void
+    protected function run(callable $callback, string $key): bool
     {
         try {
             $callback();
@@ -176,7 +216,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                 ->title($e->getMessage() ?: __('lunarpanel::order.fulfilments.actions.'.$key.'.notification.error'))
                 ->send();
 
-            return;
+            return false;
         }
 
         Notification::make()
@@ -186,6 +226,8 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
         unset($this->fulfilments, $this->mergeableCount);
         $this->dispatch('fulfilments-updated');
+
+        return true;
     }
 
     /**
