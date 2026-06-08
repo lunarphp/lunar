@@ -9,6 +9,7 @@ use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\States\Fulfilment\Cancelled;
 use Lunar\Core\States\Fulfilment\InProgress;
+use Lunar\Core\States\Fulfilment\Pending;
 use Lunar\Core\States\Fulfilment\Returned;
 use Lunar\Tests\Core\TestCase;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
@@ -35,6 +36,15 @@ it('transitions a pending fulfilment to in progress', function () {
     Fulfilments::transition($fulfilment, InProgress::class);
 
     expect((string) $fulfilment->refresh()->state)->toBe('in-progress');
+});
+
+it('transitions an in-progress fulfilment back to pending', function () {
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    Fulfilments::transition($fulfilment, InProgress::class);
+
+    Fulfilments::transition($fulfilment->refresh(), Pending::class);
+
+    expect((string) $fulfilment->refresh()->state)->toBe('pending');
 });
 
 it('transitions a pending fulfilment to cancelled', function () {

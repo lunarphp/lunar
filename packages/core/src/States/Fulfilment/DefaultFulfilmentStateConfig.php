@@ -21,7 +21,7 @@ class DefaultFulfilmentStateConfig implements FulfilmentStateConfig
     {
         return [
             Pending::class => [InProgress::class, Shipped::class, Cancelled::class],
-            InProgress::class => [Shipped::class, Cancelled::class],
+            InProgress::class => [Pending::class, Shipped::class, Cancelled::class],
             Shipped::class => [Returned::class],
             Cancelled::class => [],
             Returned::class => [],
