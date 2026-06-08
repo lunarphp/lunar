@@ -5,7 +5,6 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages\Components;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -50,6 +49,24 @@ class OrderFulfilments extends Component implements HasActions, HasForms
      * @var array<int, int>
      */
     public array $splitQuantities = [];
+
+    /**
+     * The fulfilment currently in inline "merge" mode, if any.
+     */
+    public ?int $mergingId = null;
+
+    /**
+     * Quantity to merge out per order line, keyed by order_line_id.
+     *
+     * @var array<int, int>
+     */
+    public array $mergeQuantities = [];
+
+    /**
+     * Chosen destination fulfilment while merging (auto-set when there is only
+     * one candidate).
+     */
+    public ?int $mergeTargetId = null;
 
     /**
      * @return Collection<int, Fulfilment>
@@ -156,11 +173,11 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
     /**
      * Other pre-ship fulfilments on the order that the given one could merge
-     * into.
+     * into. Public so the view can list the destination options.
      *
      * @return \Illuminate\Support\Collection<int, Fulfilment>
      */
-    protected function mergeTargets(Fulfilment $source): \Illuminate\Support\Collection
+    public function mergeTargets(Fulfilment $source): \Illuminate\Support\Collection
     {
         return $this->fulfilments
             ->filter(fn (Fulfilment $f) => $f->getKey() !== $source->getKey()
@@ -168,67 +185,66 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->values();
     }
 
-    public function mergeAction(): Action
+    /**
+     * Enter inline merge mode: pick the items (and quantities) to move out,
+     * and — when there's more than one candidate — which parcel to merge into.
+     */
+    public function startMerge(int $fulfilmentId): void
     {
-        return Action::make('merge')
-            ->label(__('lunarpanel::order.fulfilments.actions.merge.label'))
-            ->modalHeading(__('lunarpanel::order.fulfilments.actions.merge.modal_heading'))
-            ->modalDescription(__('lunarpanel::order.fulfilments.actions.merge.description'))
-            ->modalSubmitActionLabel(__('lunarpanel::order.fulfilments.actions.merge.label'))
-            ->icon('heroicon-o-arrows-pointing-in')
-            ->schema(function (array $arguments) {
-                $source = $this->findFulfilment($arguments);
-                $targets = $this->mergeTargets($source);
+        $fulfilment = $this->findFulfilment(['fulfilment' => $fulfilmentId]);
+        $targets = $this->mergeTargets($fulfilment);
 
-                // Which items (and how many) to move out of this parcel.
-                $schema = $source->lines->map(
-                    fn ($line) => TextInput::make('qty_'.$line->order_line_id)
-                        ->label($line->orderLine?->description ?? '#'.$line->order_line_id)
-                        ->helperText(__('lunarpanel::order.fulfilments.fields.of', ['count' => $line->quantity]))
-                        ->numeric()
-                        ->minValue(0)
-                        ->maxValue($line->quantity)
-                        ->default($line->quantity),
-                )->all();
+        if ($targets->isEmpty()) {
+            return;
+        }
 
-                // Only ask which fulfilment to merge into when there's a choice.
-                if ($targets->count() > 1) {
-                    $schema[] = Select::make('target')
-                        ->label(__('lunarpanel::order.fulfilments.actions.merge.target'))
-                        ->options($targets->mapWithKeys(fn (Fulfilment $f) => [$f->id => $f->reference])->all())
-                        ->default($targets->first()->id)
-                        ->selectablePlaceholder(false)
-                        ->required();
-                }
+        $this->mergingId = $fulfilmentId;
+        $this->mergeQuantities = $fulfilment->lines
+            ->mapWithKeys(fn ($line) => [$line->order_line_id => $line->quantity])
+            ->all();
+        // Default to the first candidate; the destination picker is only shown
+        // when there's more than one to choose between.
+        $this->mergeTargetId = $targets->first()->id;
+    }
 
-                return $schema;
-            })
-            ->action(function (array $arguments, array $data) {
-                $source = $this->findFulfilment($arguments);
-                $targets = $this->mergeTargets($source);
+    public function cancelMerge(): void
+    {
+        $this->mergingId = null;
+        $this->mergeQuantities = [];
+        $this->mergeTargetId = null;
+    }
 
-                $targetId = $data['target'] ?? $targets->first()?->id;
-                $target = $targetId
-                    ? $this->record->fulfilments()->with('lines')->find($targetId)
-                    : null;
+    public function confirmMerge(): void
+    {
+        if (! $this->mergingId) {
+            return;
+        }
 
-                $moves = collect($data)
-                    ->filter(fn ($value, $key) => str_starts_with((string) $key, 'qty_'))
-                    ->mapWithKeys(fn ($qty, $key) => [(int) str_replace('qty_', '', $key) => (int) $qty])
-                    ->filter(fn ($qty) => $qty > 0)
-                    ->all();
+        $source = $this->findFulfilment(['fulfilment' => $this->mergingId]);
+        $targets = $this->mergeTargets($source);
 
-                if (! $target || $moves === []) {
-                    Notification::make()
-                        ->danger()
-                        ->title(__('lunarpanel::order.fulfilments.actions.merge.empty'))
-                        ->send();
+        $targetId = $this->mergeTargetId ?? $targets->first()?->id;
+        $target = $targetId
+            ? $this->record->fulfilments()->with('lines')->find($targetId)
+            : null;
 
-                    return;
-                }
+        $moves = collect($this->mergeQuantities)
+            ->map(fn ($qty) => (int) $qty)
+            ->filter(fn ($qty) => $qty > 0)
+            ->all();
 
-                $this->run(fn () => Fulfilments::move($source, $target, $moves), 'merge');
-            });
+        if (! $target || $moves === []) {
+            Notification::make()
+                ->danger()
+                ->title(__('lunarpanel::order.fulfilments.actions.merge.empty'))
+                ->send();
+
+            return;
+        }
+
+        if ($this->run(fn () => Fulfilments::move($source, $target, $moves), 'merge')) {
+            $this->cancelMerge();
+        }
     }
 
     public function returnAction(): Action

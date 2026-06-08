@@ -341,6 +341,8 @@ return [
             ],
             'merge' => [
                 'label' => 'Merge',
+                'confirm' => 'Merge fulfilment',
+                'cancel' => 'Cancel',
                 'modal_heading' => 'Merge fulfilment',
                 'description' => 'Select the items you would like to merge.',
                 'target' => 'Merge with',

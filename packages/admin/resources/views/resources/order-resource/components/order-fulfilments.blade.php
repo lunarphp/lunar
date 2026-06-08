@@ -52,7 +52,24 @@
                             >
                                 {{ __('lunarpanel::order.fulfilments.actions.split.cancel') }}
                             </x-filament::button>
-                        @elseif ($this->splittingId === null)
+                        @elseif ($this->mergingId === $fulfilment->id)
+                            {{-- Merge mode: confirm / cancel --}}
+                            <x-filament::button
+                                size="sm"
+                                color="primary"
+                                icon="heroicon-m-arrows-pointing-in"
+                                wire:click="confirmMerge"
+                            >
+                                {{ __('lunarpanel::order.fulfilments.actions.merge.confirm') }}
+                            </x-filament::button>
+                            <x-filament::button
+                                size="sm"
+                                color="gray"
+                                wire:click="cancelMerge"
+                            >
+                                {{ __('lunarpanel::order.fulfilments.actions.merge.cancel') }}
+                            </x-filament::button>
+                        @elseif ($this->splittingId === null && $this->mergingId === null)
                             @if (\Lunar\Core\Actions\Fulfilment\ShipFulfilment::canRun($fulfilment))
                                 <x-filament::button
                                     size="sm"
@@ -90,7 +107,7 @@
                                         @if ($canMerge)
                                             <x-filament::dropdown.list.item
                                                 icon="heroicon-m-arrows-pointing-in"
-                                                wire:click="mountAction('merge', { fulfilment: {{ $fulfilment->id }} })"
+                                                wire:click="startMerge({{ $fulfilment->id }})"
                                             >
                                                 {{ __('lunarpanel::order.fulfilments.actions.merge.label') }}
                                             </x-filament::dropdown.list.item>
@@ -118,10 +135,13 @@
                     @foreach ($fulfilment->lines as $line)
                         @php($orderLine = $line->orderLine)
                         @php($splitting = $this->splittingId === $fulfilment->id)
+                        @php($merging = $this->mergingId === $fulfilment->id)
+                        @php($editing = $splitting || $merging)
+                        @php($qtyModel = $splitting ? 'splitQuantities' : 'mergeQuantities')
                         <li x-data="{ open: false }">
                             <div
-                                @unless ($splitting) role="button" @click="open = ! open" @endunless
-                                style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; @unless ($splitting) cursor:pointer; @endunless"
+                                @unless ($editing) role="button" @click="open = ! open" @endunless
+                                style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; @unless ($editing) cursor:pointer; @endunless"
                             >
                                 @php($thumbnail = $orderLine?->purchasable?->getThumbnail()?->getUrl('small'))
                                 @if ($thumbnail)
@@ -151,13 +171,13 @@
                                     @endif
                                 </div>
 
-                                @if ($splitting)
+                                @if ($editing)
                                     <div style="flex:none; display:flex; align-items:center; gap:0.5rem;">
                                         <input
                                             type="number"
                                             min="0"
                                             max="{{ $line->quantity }}"
-                                            wire:model="splitQuantities.{{ $line->order_line_id }}"
+                                            wire:model="{{ $qtyModel }}.{{ $line->order_line_id }}"
                                             style="width:4.5rem; text-align:center; padding:0.3rem 0.5rem; border-radius:0.5rem; border:1px solid rgba(0,0,0,0.15); background:transparent;"
                                             class="text-gray-950 dark:text-white"
                                         />
@@ -171,7 +191,7 @@
                                     </div>
                                 @endif
 
-                                @unless ($splitting)
+                                @unless ($editing)
                                     <x-filament::icon
                                         icon="heroicon-m-chevron-down"
                                         class="h-5 w-5 text-gray-400"
@@ -181,7 +201,7 @@
                                 @endunless
                             </div>
 
-                            @php($details = $splitting ? [] : $this->lineDetails($line))
+                            @php($details = $editing ? [] : $this->lineDetails($line))
                             @if ($details)
                                 <div x-show="open" x-collapse style="display:none;">
                                     <div style="margin:0 1rem 1rem 4rem; padding:1rem; border-radius:0.75rem; background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08);">
@@ -210,6 +230,24 @@
                         </li>
                     @endforeach
                 </ul>
+
+                {{-- Merge destination picker (only when there's a choice) --}}
+                @if ($this->mergingId === $fulfilment->id && $this->mergeTargets($fulfilment)->count() > 1)
+                    <div style="display:flex; align-items:center; gap:0.5rem; padding:0.75rem 1rem; border-top:1px solid rgba(0,0,0,0.06);">
+                        <span class="text-sm text-gray-700 dark:text-gray-300" style="white-space:nowrap;">
+                            {{ __('lunarpanel::order.fulfilments.actions.merge.target') }}
+                        </span>
+                        <select
+                            wire:model="mergeTargetId"
+                            style="padding:0.3rem 0.5rem; border-radius:0.5rem; border:1px solid rgba(0,0,0,0.15); background:transparent;"
+                            class="text-sm text-gray-950 dark:text-white"
+                        >
+                            @foreach ($this->mergeTargets($fulfilment) as $target)
+                                <option value="{{ $target->id }}">{{ $target->reference }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
 
                 {{-- Tracking --}}
                 @if ($fulfilment->tracking_number)
