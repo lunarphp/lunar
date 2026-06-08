@@ -5,6 +5,7 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages\Components;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -78,7 +79,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     public function fulfilments(): Collection
     {
         return $this->record->fulfilments()
-            ->with(['location', 'lines.orderLine.purchasable'])
+            ->with(['location', 'trackings', 'lines.orderLine.purchasable'])
             ->orderBy('id')
             ->get();
     }
@@ -108,18 +109,50 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->icon('heroicon-o-truck')
             ->color('success')
             ->schema([
-                TextInput::make('tracking_number')
-                    ->label(__('lunarpanel::order.fulfilments.fields.tracking_number')),
-                TextInput::make('tracking_url')
-                    ->label(__('lunarpanel::order.fulfilments.fields.tracking_url'))
-                    ->url(),
-                TextInput::make('shipping_method')
-                    ->label(__('lunarpanel::order.fulfilments.fields.shipping_method')),
+                Repeater::make('tracking')
+                    ->label(__('lunarpanel::order.fulfilments.fields.tracking'))
+                    ->addActionLabel(__('lunarpanel::order.fulfilments.actions.add_tracking.label'))
+                    ->schema($this->trackingFields())
+                    ->default([])
+                    ->reorderable(false),
             ])
             ->action(fn (array $arguments, array $data) => $this->run(
-                fn () => Fulfilments::ship($this->findFulfilment($arguments), array_filter($data)),
+                fn () => Fulfilments::ship($this->findFulfilment($arguments), $data['tracking'] ?? []),
                 'ship',
             ));
+    }
+
+    public function addTrackingAction(): Action
+    {
+        return Action::make('addTracking')
+            ->label(__('lunarpanel::order.fulfilments.actions.add_tracking.label'))
+            ->modalHeading(__('lunarpanel::order.fulfilments.actions.add_tracking.modal_heading'))
+            ->modalWidth(Width::Medium)
+            ->icon('heroicon-o-plus')
+            ->schema($this->trackingFields())
+            ->action(fn (array $arguments, array $data) => $this->run(
+                fn () => Fulfilments::addTracking($this->findFulfilment($arguments), $data),
+                'add_tracking',
+            ));
+    }
+
+    /**
+     * The fields describing a single tracking reference, shared by the ship
+     * repeater and the add-tracking modal.
+     *
+     * @return array<int, TextInput>
+     */
+    protected function trackingFields(): array
+    {
+        return [
+            TextInput::make('tracking_number')
+                ->label(__('lunarpanel::order.fulfilments.fields.tracking_number')),
+            TextInput::make('tracking_url')
+                ->label(__('lunarpanel::order.fulfilments.fields.tracking_url'))
+                ->url(),
+            TextInput::make('shipping_method')
+                ->label(__('lunarpanel::order.fulfilments.fields.shipping_method')),
+        ];
     }
 
     /**

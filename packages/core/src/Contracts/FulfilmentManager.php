@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\FulfilmentTracking;
 
 /**
  * Ergonomic entry point onto the fulfilment domain. Delegates to the swappable
@@ -50,4 +51,11 @@ interface FulfilmentManager
      * Reassign a pre-ship fulfilment to a different location.
      */
     public function changeLocation(FulfilmentContract $fulfilment, int $locationId): Fulfilment;
+
+    /**
+     * Add a tracking reference to a fulfilment.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public function addTracking(FulfilmentContract $fulfilment, array $attributes): FulfilmentTracking;
 }

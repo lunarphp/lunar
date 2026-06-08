@@ -1,0 +1,34 @@
+<?php
+
+namespace Lunar\Core\Actions\Fulfilment;
+
+use Lunar\Core\Contracts\Actions\Fulfilment\AddsFulfilmentTracking;
+use Lunar\Core\Exceptions\FulfilmentException;
+use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
+use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\FulfilmentTracking;
+
+/**
+ * Add a tracking reference to a fulfilment. A parcel can carry several, added
+ * at ship time or afterwards as carrier details come through.
+ */
+final class AddFulfilmentTracking implements AddsFulfilmentTracking
+{
+    public function execute(FulfilmentContract $fulfilment, array $attributes): FulfilmentTracking
+    {
+        /** @var Fulfilment $fulfilment */
+        $attributes = array_intersect_key(
+            $attributes,
+            array_flip(['tracking_number', 'tracking_url', 'shipping_method']),
+        );
+
+        if (! filled($attributes['tracking_number'] ?? null)
+            && ! filled($attributes['tracking_url'] ?? null)
+            && ! filled($attributes['shipping_method'] ?? null)) {
+            throw new FulfilmentException(__('lunar::exceptions.fulfilment_tracking_empty'));
+        }
+
+        /** @var FulfilmentTracking */
+        return $fulfilment->trackings()->create($attributes);
+    }
+}

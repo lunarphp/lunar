@@ -19,9 +19,6 @@ use Spatie\ModelStates\HasStates;
  * @property int $location_id
  * @property ?string $reference
  * @property FulfilmentState $state
- * @property ?string $shipping_method
- * @property ?string $tracking_number
- * @property ?string $tracking_url
  * @property ?string $notes
  * @property ?array $meta
  * @property ?Carbon $shipped_at
@@ -79,5 +76,13 @@ class Fulfilment extends Base implements Contracts\Fulfilment
     public function lines(): HasMany
     {
         return $this->hasMany(FulfilmentLine::modelClass());
+    }
+
+    /**
+     * Return the tracking references relationship.
+     */
+    public function trackings(): HasMany
+    {
+        return $this->hasMany(FulfilmentTracking::modelClass());
     }
 }

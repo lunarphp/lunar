@@ -3,6 +3,7 @@
 namespace Lunar\Core\Managers;
 
 use Illuminate\Database\Eloquent\Collection;
+use Lunar\Core\Contracts\Actions\Fulfilment\AddsFulfilmentTracking;
 use Lunar\Core\Contracts\Actions\Fulfilment\CancelsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ChangesFulfilmentLocation;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
@@ -15,6 +16,7 @@ use Lunar\Core\Contracts\FulfilmentManager as FulfilmentManagerContract;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\FulfilmentTracking;
 
 /**
  * Thin facade over the fulfilment actions. It carries no logic of its own —
@@ -32,6 +34,7 @@ class FulfilmentManager implements FulfilmentManagerContract
         protected CancelsFulfilment $cancel,
         protected ReturnsFulfilment $return,
         protected ChangesFulfilmentLocation $changeLocation,
+        protected AddsFulfilmentTracking $addTracking,
     ) {}
 
     public function create(OrderContract $order, array $lines, array $attributes = []): Fulfilment
@@ -72,5 +75,10 @@ class FulfilmentManager implements FulfilmentManagerContract
     public function changeLocation(FulfilmentContract $fulfilment, int $locationId): Fulfilment
     {
         return $this->changeLocation->execute($fulfilment, $locationId);
+    }
+
+    public function addTracking(FulfilmentContract $fulfilment, array $attributes): FulfilmentTracking
+    {
+        return $this->addTracking->execute($fulfilment, $attributes);
     }
 }

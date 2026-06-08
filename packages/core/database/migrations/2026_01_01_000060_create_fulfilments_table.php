@@ -13,9 +13,6 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained($this->prefix.'orders')->cascadeOnDelete();
             $table->string('reference')->nullable()->index();
             $table->string('state')->default('pending')->index();
-            $table->string('shipping_method')->nullable();
-            $table->string('tracking_number')->nullable();
-            $table->string('tracking_url')->nullable();
             $table->text('notes')->nullable();
             $table->jsonb('meta')->nullable();
             $table->dateTime('shipped_at')->nullable()->index();

@@ -298,6 +298,14 @@ return [
         ],
         'actions' => [
             'more' => 'More actions',
+            'add_tracking' => [
+                'label' => 'Add tracking',
+                'modal_heading' => 'Add tracking',
+                'notification' => [
+                    'success' => 'Tracking added.',
+                    'error' => 'Could not add tracking.',
+                ],
+            ],
             'create' => [
                 'label' => 'Create fulfilment',
                 'modal_heading' => 'Create fulfilment',

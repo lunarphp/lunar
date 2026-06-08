@@ -90,7 +90,8 @@
                             @php($canSplit = \Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
                             @php($canMerge = $isPreShip && $this->mergeTargets($fulfilment)->isNotEmpty())
                             @php($canChangeLocation = \Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation::canRun($fulfilment) && $this->locations->count() > 1)
-                            @if ($canSplit || $canMerge || $canChangeLocation)
+                            @php($canAddTracking = $stateName === 'shipped')
+                            @if ($canSplit || $canMerge || $canChangeLocation || $canAddTracking)
                                 <x-filament::dropdown placement="bottom-end">
                                     <x-slot name="trigger">
                                         <x-filament::icon-button
@@ -126,6 +127,15 @@
                                                 wire:click="mountAction('changeLocation', { fulfilment: {{ $fulfilment->id }} })"
                                             >
                                                 {{ __('lunarpanel::order.fulfilments.actions.change_location.label') }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
+
+                                        @if ($canAddTracking)
+                                            <x-filament::dropdown.list.item
+                                                icon="heroicon-m-truck"
+                                                wire:click="mountAction('addTracking', { fulfilment: {{ $fulfilment->id }} })"
+                                            >
+                                                {{ __('lunarpanel::order.fulfilments.actions.add_tracking.label') }}
                                             </x-filament::dropdown.list.item>
                                         @endif
                                     </x-filament::dropdown.list>
@@ -268,20 +278,24 @@
                     </div>
                 @endif
 
-                {{-- Tracking --}}
-                @if ($fulfilment->tracking_number)
-                    <div class="flex items-center gap-1.5 border-t border-gray-200 px-4 py-2 text-xs text-gray-500 dark:border-white/10 dark:text-gray-400">
-                        <x-filament::icon icon="heroicon-m-truck" class="h-4 w-4" />
-                        @if ($fulfilment->tracking_url)
-                            <a href="{{ $fulfilment->tracking_url }}" target="_blank" class="text-primary-600 hover:underline dark:text-primary-400">
-                                {{ $fulfilment->tracking_number }}
-                            </a>
-                        @else
-                            <span>{{ $fulfilment->tracking_number }}</span>
-                        @endif
-                        @if ($fulfilment->shipping_method)
-                            <span>&middot; {{ $fulfilment->shipping_method }}</span>
-                        @endif
+                {{-- Tracking references --}}
+                @if ($fulfilment->trackings->isNotEmpty())
+                    <div class="border-t border-gray-200 dark:border-white/10">
+                        @foreach ($fulfilment->trackings as $tracking)
+                            <div class="flex items-center gap-1.5 px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
+                                <x-filament::icon icon="heroicon-m-truck" class="h-4 w-4 shrink-0" />
+                                @if ($tracking->tracking_url)
+                                    <a href="{{ $tracking->tracking_url }}" target="_blank" class="text-primary-600 hover:underline dark:text-primary-400">
+                                        {{ $tracking->tracking_number ?: $tracking->tracking_url }}
+                                    </a>
+                                @elseif ($tracking->tracking_number)
+                                    <span>{{ $tracking->tracking_number }}</span>
+                                @endif
+                                @if ($tracking->shipping_method)
+                                    <span>&middot; {{ $tracking->shipping_method }}</span>
+                                @endif
+                            </div>
+                        @endforeach
                     </div>
                 @endif
             </div>

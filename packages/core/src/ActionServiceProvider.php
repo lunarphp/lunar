@@ -48,6 +48,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Orders\UpdatesOrderStatus::class => Actions\Orders\UpdateOrderStatus::class,
 
         // Fulfilment
+        Contracts\Fulfilment\AddsFulfilmentTracking::class => Actions\Fulfilment\AddFulfilmentTracking::class,
         Contracts\Fulfilment\CancelsFulfilment::class => Actions\Fulfilment\CancelFulfilment::class,
         Contracts\Fulfilment\ChangesFulfilmentLocation::class => Actions\Fulfilment\ChangeFulfilmentLocation::class,
         Contracts\Fulfilment\CreatesFulfilment::class => Actions\Fulfilment\CreateFulfilment::class,

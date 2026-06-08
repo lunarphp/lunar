@@ -54,19 +54,38 @@ test('create fulfilment rejects exceeding the outstanding quantity across parcel
         ->toThrow(FulfilmentException::class);
 });
 
-test('ship fulfilment stamps shipped_at and records tracking', function () {
+test('ship fulfilment stamps shipped_at and records multiple trackings', function () {
     [$order, $line] = orderWithLine(10);
     $fulfilment = Fulfilments::create($order, [$line->id => 4]);
 
     $shipped = Fulfilments::ship($fulfilment, [
-        'tracking_number' => 'TRACK123',
-        'shipping_method' => 'Royal Mail',
+        ['tracking_number' => 'TRACK123', 'shipping_method' => 'Royal Mail'],
+        ['tracking_number' => 'TRACK456', 'shipping_method' => 'DPD'],
     ]);
 
     expect($shipped->state)->toBeInstanceOf(Shipped::class)
         ->and($shipped->shipped_at)->not->toBeNull()
-        ->and($shipped->tracking_number)->toBe('TRACK123')
-        ->and($shipped->shipping_method)->toBe('Royal Mail');
+        ->and($shipped->trackings)->toHaveCount(2)
+        ->and($shipped->trackings->pluck('tracking_number')->all())->toBe(['TRACK123', 'TRACK456']);
+});
+
+test('ship accepts a single tracking entry', function () {
+    [$order, $line] = orderWithLine(10);
+    $shipped = Fulfilments::ship(Fulfilments::create($order, [$line->id => 4]), [
+        'tracking_number' => 'SINGLE-1',
+    ]);
+
+    expect($shipped->trackings)->toHaveCount(1)
+        ->and($shipped->trackings->first()->tracking_number)->toBe('SINGLE-1');
+});
+
+test('add tracking appends a tracking reference to a fulfilment', function () {
+    [$order, $line] = orderWithLine(10);
+    $fulfilment = Fulfilments::ship(Fulfilments::create($order, [$line->id => 4]), ['tracking_number' => 'A']);
+
+    Fulfilments::addTracking($fulfilment, ['tracking_number' => 'B', 'shipping_method' => 'Express']);
+
+    expect($fulfilment->fresh()->trackings)->toHaveCount(2);
 });
 
 test('split moves outstanding quantity into a new parcel', function () {
@@ -98,15 +117,6 @@ test('merge folds source parcels into the target', function () {
 
     expect($merged->fresh()->lines->first()->quantity)->toBe(5)
         ->and($order->fulfilments()->count())->toBe(1);
-});
-
-test('merge errors on conflicting tracking', function () {
-    [$order, $line] = orderWithLine(10);
-    $target = Fulfilments::create($order, [$line->id => 3], ['tracking_number' => 'AAA']);
-    $source = Fulfilments::create($order, [$line->id => 2], ['tracking_number' => 'BBB']);
-
-    expect(fn () => Fulfilments::merge($target, Fulfilment::whereKey($source->id)->get()))
-        ->toThrow(FulfilmentException::class);
 });
 
 test('cancel returns quantities to the unfulfilled pool', function () {

@@ -103,27 +103,8 @@ final class MergeFulfilments implements MergesFulfilments
             if (! in_array($source->state::$name, self::MERGEABLE_STATES, true)) {
                 return 'lunar::exceptions.fulfilment_not_mergeable';
             }
-
-            if (self::hasConflictingTracking($target, $source)) {
-                return 'lunar::exceptions.fulfilment_merge_tracking_conflict';
-            }
         }
 
         return null;
-    }
-
-    /**
-     * Whether a source carries tracking that differs from the target and
-     * would be silently lost on merge.
-     */
-    protected static function hasConflictingTracking(Fulfilment $target, Fulfilment $source): bool
-    {
-        foreach (['tracking_number', 'tracking_url', 'shipping_method'] as $field) {
-            if (filled($source->{$field}) && $source->{$field} !== $target->{$field}) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

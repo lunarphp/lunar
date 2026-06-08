@@ -37,15 +37,32 @@ it('renders the fulfilments panel', function () {
         ->assertSee('Fulfilment #'.$fulfilment->id);
 });
 
-it('ships a fulfilment and records tracking', function () {
+it('ships a fulfilment and records multiple trackings', function () {
     $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
-        ->callAction('ship', data: ['tracking_number' => 'TRK-1'], arguments: ['fulfilment' => $fulfilment->id])
+        ->callAction('ship', data: [
+            'tracking' => [
+                ['tracking_number' => 'TRK-1', 'shipping_method' => 'Standard'],
+                ['tracking_number' => 'TRK-2'],
+            ],
+        ], arguments: ['fulfilment' => $fulfilment->id])
         ->assertHasNoActionErrors();
 
     expect((string) $fulfilment->refresh()->state)->toBe('shipped')
-        ->and($fulfilment->tracking_number)->toBe('TRK-1');
+        ->and($fulfilment->trackings)->toHaveCount(2);
+});
+
+it('adds a tracking reference to a shipped fulfilment', function () {
+    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]), [
+        ['tracking_number' => 'TRK-1'],
+    ]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('addTracking', data: ['tracking_number' => 'TRK-2'], arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    expect($fulfilment->refresh()->trackings)->toHaveCount(2);
 });
 
 it('splits a pre-ship parcel into a new one via inline mode', function () {

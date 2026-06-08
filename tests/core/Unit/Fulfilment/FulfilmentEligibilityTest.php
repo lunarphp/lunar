@@ -89,14 +89,6 @@ test('merge eligibility is false when a source has shipped', function () {
     expect(MergeFulfilments::canRun($target, Fulfilment::whereKey($source->id)->get()))->toBeFalse();
 });
 
-test('merge eligibility is false on conflicting tracking', function () {
-    [$order, $line] = eligibilityOrderLine(10);
-    $target = Fulfilments::create($order, [$line->id => 3], ['tracking_number' => 'AAA']);
-    $source = Fulfilments::create($order, [$line->id => 2], ['tracking_number' => 'BBB']);
-
-    expect(MergeFulfilments::canRun($target, Fulfilment::whereKey($source->id)->get()))->toBeFalse();
-});
-
 test('create eligibility reflects outstanding quantity', function () {
     [$order, $line] = eligibilityOrderLine(5);
 

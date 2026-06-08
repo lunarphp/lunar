@@ -38,12 +38,18 @@ fulfilments
 ├── location_id         FK → locations, nullOnDelete  (the place it ships from)
 ├── reference           string, nullable, indexed   (optional human/carrier ref; not auto-generated)
 ├── state               string, indexed   (FulfilmentState $name; default 'pending')
-├── shipping_method     string, nullable  (carrier / service name snapshot)
-├── tracking_number     string, nullable
-├── tracking_url        string, nullable
 ├── notes               text, nullable
 ├── meta                jsonb, nullable
 ├── shipped_at          datetime, nullable, indexed
+└── timestamps
+
+fulfilment_trackings
+├── id
+├── fulfilment_id       FK → fulfilments, cascadeOnDelete
+├── tracking_number     string, nullable
+├── tracking_url        string, nullable
+├── shipping_method     string, nullable  (carrier / service)
+├── meta                jsonb, nullable
 └── timestamps
 
 fulfilment_lines
@@ -55,7 +61,9 @@ fulfilment_lines
         UNIQUE (fulfilment_id, order_line_id)
 ```
 
-`Fulfilment` extends `Models\Base`, implements `Contracts\Fulfilment`, uses `HasFactory` / `HasMacros` / `LogsActivity`. Relations: `order()` (BelongsTo), `location()` (BelongsTo), `lines()` (HasMany `FulfilmentLine`). `FulfilmentLine` has `fulfilment()` and `orderLine()` BelongsTo. `Order` gains `fulfilments(): HasMany`.
+`Fulfilment` extends `Models\Base`, implements `Contracts\Fulfilment`, uses `HasFactory` / `HasMacros` / `LogsActivity`. Relations: `order()` (BelongsTo), `location()` (BelongsTo), `lines()` (HasMany `FulfilmentLine`), `trackings()` (HasMany `FulfilmentTracking`). `FulfilmentLine` has `fulfilment()` and `orderLine()` BelongsTo. `Order` gains `fulfilments(): HasMany`.
+
+**Tracking is one-to-many.** A parcel can carry several tracking references (a shipment split across boxes or carriers), so tracking lives in `fulfilment_trackings` rather than columns on the fulfilment. `ShipFulfilment` accepts a list of tracking entries (or a single one) and records them on ship; `AddFulfilmentTracking` (`Fulfilments::addTracking()`) appends more afterwards as carrier details arrive.
 
 #### Locations
 

@@ -35,9 +35,6 @@ final class CreateFulfilment implements CreatesFulfilment
                 'reference' => $attributes['reference'] ?? null,
                 'location_id' => $attributes['location_id'] ?? $this->defaultLocationId(),
                 'state' => 'pending',
-                'shipping_method' => $attributes['shipping_method'] ?? null,
-                'tracking_number' => $attributes['tracking_number'] ?? null,
-                'tracking_url' => $attributes['tracking_url'] ?? null,
                 'notes' => $attributes['notes'] ?? null,
                 'meta' => $attributes['meta'] ?? null,
             ]);
