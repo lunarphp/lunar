@@ -9,10 +9,8 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Collection;
 use Lunar\Admin\Livewire\Components\TableComponent;
 use Lunar\Core\Actions\Fulfilment\CancelFulfilment;
-use Lunar\Core\Actions\Fulfilment\CreateFulfilment;
 use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Actions\Fulfilment\ReturnFulfilment;
 use Lunar\Core\Actions\Fulfilment\ShipFulfilment;
@@ -20,8 +18,6 @@ use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Fulfilment;
-use Lunar\Core\Models\OrderLine;
-use Lunar\Core\Validation\Fulfilment\FulfilmentQuantity;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
@@ -69,9 +65,6 @@ class FulfilmentsTable extends TableComponent
                     ->dateTime()
                     ->placeholder('—'),
             ])
-            ->headerActions([
-                $this->getCreateAction(),
-            ])
             ->recordActions([
                 $this->getShipAction(),
                 $this->getSplitAction(),
@@ -87,60 +80,6 @@ class FulfilmentsTable extends TableComponent
     public function table(Table $table): Table
     {
         return self::callStaticLunarHook('extendTable', $this->getDefaultTable($table));
-    }
-
-    /**
-     * Outstanding (unfulfilled) quantity per physical order line.
-     *
-     * @return Collection<int, array{line: OrderLine, outstanding: int}>
-     */
-    protected function outstandingLines(): Collection
-    {
-        $quantity = new FulfilmentQuantity;
-
-        return $this->record->physicalLines()->get()
-            ->map(fn ($line) => [
-                'line' => $line,
-                'outstanding' => $line->quantity - $quantity->coveredQuantity($this->record, $line->id),
-            ])
-            ->filter(fn ($row) => $row['outstanding'] > 0)
-            ->values();
-    }
-
-    protected function getCreateAction(): Action
-    {
-        return Action::make('create_fulfilment')
-            ->label(__('lunarpanel::order.fulfilments.actions.create.label'))
-            ->modalHeading(__('lunarpanel::order.fulfilments.actions.create.modal_heading'))
-            ->icon('heroicon-o-plus')
-            ->visible(fn () => CreateFulfilment::canRun($this->record))
-            ->schema(function () {
-                $lines = $this->outstandingLines();
-
-                if ($lines->isEmpty()) {
-                    return [];
-                }
-
-                return $lines->map(fn ($row) => TextInput::make('qty_'.$row['line']->id)
-                    ->label($row['line']->description)
-                    ->helperText(__('lunarpanel::order.fulfilments.fields.outstanding', ['count' => $row['outstanding']]))
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue($row['outstanding'])
-                    ->default(0)
-                )->all();
-            })
-            ->action(function (array $data) {
-                $lines = collect($data)
-                    ->filter(fn ($qty) => (int) $qty > 0)
-                    ->mapWithKeys(fn ($qty, $key) => [(int) str_replace('qty_', '', $key) => (int) $qty])
-                    ->all();
-
-                $this->runFulfilmentAction(
-                    fn () => Fulfilments::create($this->record, $lines),
-                    'create',
-                );
-            });
     }
 
     protected function getShipAction(): Action

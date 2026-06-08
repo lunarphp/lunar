@@ -25,20 +25,10 @@ beforeEach(function () {
     ]);
 });
 
-it('renders the fulfilments table', function () {
+it('renders the fulfilments table without a create action', function () {
     Livewire::test(FulfilmentsTable::class, ['record' => $this->order])
-        ->assertOk();
-});
-
-it('creates a fulfilment from the header action', function () {
-    Livewire::test(FulfilmentsTable::class, ['record' => $this->order])
-        ->callTableAction('create_fulfilment', data: [
-            'qty_'.$this->line->id => 2,
-        ])
-        ->assertHasNoTableActionErrors();
-
-    expect($this->order->fulfilments()->count())->toBe(1)
-        ->and($this->order->fulfilments()->first()->lines()->first()->quantity)->toBe(2);
+        ->assertOk()
+        ->assertActionDoesNotExist('create_fulfilment');
 });
 
 it('ships a fulfilment and records tracking', function () {
