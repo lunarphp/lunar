@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Observers;
 
+use Lunar\Core\Contracts\Actions\Fulfilment\EnsuresInitialFulfilment;
 use Lunar\Core\Contracts\Actions\Orders\RecomputesOrderStatus;
 use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Events\Orders\OrderStatusUpdated;
@@ -13,6 +14,7 @@ class OrderObserver
 {
     public function __construct(
         protected RecomputesOrderStatus $recomputeOrderStatus,
+        protected EnsuresInitialFulfilment $ensureInitialFulfilment,
         protected OrderStateConfig $config,
     ) {}
 
@@ -32,9 +34,24 @@ class OrderObserver
         }
     }
 
+    public function created(OrderContract $order): void
+    {
+        /** @var Order $order */
+        if ($order->isPlaced()) {
+            $this->ensureInitialFulfilment->execute($order);
+        }
+    }
+
     public function updated(OrderContract $order): void
     {
         /** @var Order $order */
+
+        // The moment an order is placed it gets its initial fulfilment — one
+        // parcel covering every physical line (the merchant splits from there).
+        if ($order->wasChanged('placed_at') && $order->isPlaced()) {
+            $this->ensureInitialFulfilment->execute($order);
+        }
+
         if (! $order->wasChanged('status')) {
             return;
         }
