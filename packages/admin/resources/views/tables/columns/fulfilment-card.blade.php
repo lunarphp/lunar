@@ -56,6 +56,11 @@
                     <span class="text-sm font-medium text-gray-950 dark:text-white">
                         &times; {{ $line->quantity }}
                     </span>
+                    @if ($line->orderLine)
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            {{ $line->orderLine->format('unit_price') }}
+                        </p>
+                    @endif
                 </div>
             </div>
         @endforeach

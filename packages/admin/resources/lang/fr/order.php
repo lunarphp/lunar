@@ -353,4 +353,8 @@ return [
             'move_quantity' => 'Quantity to move out',
         ],
     ],
+
+    'other_items' => [
+        'heading' => 'Other items',
+    ],
 ];

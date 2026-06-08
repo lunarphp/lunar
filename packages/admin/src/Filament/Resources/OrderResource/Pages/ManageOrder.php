@@ -32,6 +32,7 @@ use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysTransactions;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
 use Lunar\Admin\Support\Pages\BaseViewRecord;
+use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
 use Lunar\Filament\Actions\Orders\CancelOrderAction;
@@ -92,12 +93,37 @@ class ManageOrder extends BaseViewRecord
         )->key('lunar_livewire_order_lines');
     }
 
+    /**
+     * Lines not covered by any fulfilment (digital, draft, or otherwise
+     * uncovered) — covered physical lines live in their fulfilment card.
+     * Hidden entirely when every line is accounted for by a fulfilment.
+     */
+    public static function getOtherItemsSection(): Component
+    {
+        return Section::make('other_items')
+            ->heading(__('lunarpanel::order.other_items.heading'))
+            ->compact()
+            ->visible(function ($record) {
+                $covered = FulfilmentLine::query()
+                    ->whereIn('fulfilment_id', $record->fulfilments()->pluck('id'))
+                    ->pluck('order_line_id');
+
+                return $record->lines()
+                    ->whereIn('type', ['physical', 'digital'])
+                    ->whereNotIn('id', $covered)
+                    ->exists();
+            })
+            ->schema([
+                static::getOrderLinesTable(),
+            ]);
+    }
+
     public static function getInfolistSchema(): array
     {
         return self::callStaticLunarHook('extendInfolistSchema', [
             static::getShippingInfolist(),
-            static::getOrderLinesTable(),
             static::getFulfilmentsInfolist(),
+            static::getOtherItemsSection(),
             static::getOrderTotalsInfolist(),
             static::getTransactionsInfolist(),
             static::getTimelineInfolist(),
