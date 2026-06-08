@@ -5,14 +5,14 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
-use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\FulfilmentsTable;
+use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderFulfilments;
 
 trait DisplaysFulfilments
 {
     public static function getFulfilmentsTable(): Livewire
     {
         return Livewire::make(
-            FulfilmentsTable::class,
+            OrderFulfilments::class,
             fn ($record) => ['record' => $record],
         )->key('lunar_livewire_fulfilments');
     }
