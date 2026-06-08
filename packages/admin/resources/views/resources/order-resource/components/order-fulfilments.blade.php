@@ -9,6 +9,10 @@
         ];
     @endphp
 
+    <h3 class="text-base font-semibold text-gray-950 dark:text-white" style="margin-bottom:0.75rem;">
+        {{ __('lunarpanel::order.fulfilments.heading') }}
+    </h3>
+
     <div class="space-y-4">
         @forelse ($this->fulfilments as $fulfilment)
             @php

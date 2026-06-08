@@ -4,7 +4,6 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Concerns;
 
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Livewire;
-use Filament\Schemas\Components\Section;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderFulfilments;
 
 trait DisplaysFulfilments
@@ -19,12 +18,9 @@ trait DisplaysFulfilments
 
     public static function getDefaultFulfilmentsInfolist(): Component
     {
-        return Section::make('fulfilments')
-            ->heading(__('lunarpanel::order.fulfilments.heading'))
-            ->compact()
-            ->schema([
-                static::getFulfilmentsTable(),
-            ]);
+        // Rendered without a wrapping Section — each fulfilment is already its
+        // own card, so the outer container is redundant.
+        return static::getFulfilmentsTable();
     }
 
     public static function getFulfilmentsInfolist(): Component
