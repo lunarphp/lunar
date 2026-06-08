@@ -84,35 +84,80 @@
                 {{-- Lines --}}
                 <ul role="list" class="divide-y divide-gray-100 dark:divide-white/5">
                     @foreach ($fulfilment->lines as $line)
-                        <li class="flex items-center gap-3 px-4 py-3">
-                            @php($thumbnail = $line->orderLine?->purchasable?->getThumbnail()?->getUrl('small'))
-                            @if ($thumbnail)
-                                <img src="{{ $thumbnail }}" alt="" class="h-10 w-10 shrink-0 rounded-md object-cover" />
-                            @else
-                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-gray-100 dark:bg-white/5">
-                                    <x-filament::icon icon="heroicon-o-photo" class="h-5 w-5 text-gray-400" />
+                        @php($orderLine = $line->orderLine)
+                        <li x-data="{ open: false }">
+                            <div
+                                role="button"
+                                @click="open = ! open"
+                                style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; cursor:pointer;"
+                            >
+                                @php($thumbnail = $orderLine?->purchasable?->getThumbnail()?->getUrl('small'))
+                                @if ($thumbnail)
+                                    <img src="{{ $thumbnail }}" alt="" style="height:2.5rem; width:2.5rem; flex:none; border-radius:0.375rem; object-fit:cover;" />
+                                @else
+                                    <div style="display:flex; height:2.5rem; width:2.5rem; flex:none; align-items:center; justify-content:center; border-radius:0.375rem;" class="bg-gray-100 dark:bg-white/5">
+                                        <x-filament::icon icon="heroicon-o-photo" class="h-5 w-5 text-gray-400" />
+                                    </div>
+                                @endif
+
+                                <div style="flex:1 1 0%; min-width:0;">
+                                    <p class="text-sm font-medium text-gray-950 dark:text-white" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                        {{ $orderLine?->description ?? '#'.$line->order_line_id }}
+                                    </p>
+                                    @if ($orderLine?->identifier)
+                                        <p class="text-xs text-gray-500 dark:text-gray-400" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                            {{ $orderLine->identifier }}
+                                        </p>
+                                    @endif
+                                </div>
+
+                                <div style="flex:none; text-align:right; white-space:nowrap;">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400">&times; {{ $line->quantity }}</span>
+                                    @if ($orderLine)
+                                        <p class="text-sm font-medium text-gray-950 dark:text-white">{{ $orderLine->format('unit_price') }}</p>
+                                    @endif
+                                </div>
+
+                                <x-filament::icon
+                                    icon="heroicon-m-chevron-down"
+                                    class="h-4 w-4 text-gray-400"
+                                    style="flex:none; transition:transform .2s ease;"
+                                    x-bind:style="open && 'transform: rotate(180deg)'"
+                                />
+                            </div>
+
+                            @if ($orderLine)
+                                <div x-show="open" x-collapse style="display:none;" class="text-sm">
+                                    <dl style="padding:0 1rem 0.75rem 4rem;" class="text-gray-600 dark:text-gray-400">
+                                        @php($rows = [
+                                            __('lunarpanel::order.fulfilments.fields.unit_price') => $orderLine->format('unit_price', decimalPlaces: 4),
+                                            __('lunarpanel::order.fulfilments.fields.quantity') => $line->quantity,
+                                        ])
+                                        @foreach ($rows as $label => $value)
+                                            <div style="display:flex; justify-content:space-between; padding:0.125rem 0;">
+                                                <dt>{{ $label }}</dt>
+                                                <dd class="font-medium text-gray-950 dark:text-white">{{ $value }}</dd>
+                                            </div>
+                                        @endforeach
+
+                                        @foreach ($orderLine->tax_breakdown?->amounts ?? [] as $tax)
+                                            <div style="display:flex; justify-content:space-between; padding:0.125rem 0;">
+                                                <dt>{{ $tax->description }}</dt>
+                                                <dd class="font-medium text-gray-950 dark:text-white">{{ $tax->price->format() }}</dd>
+                                            </div>
+                                        @endforeach
+
+                                        <div style="display:flex; justify-content:space-between; padding:0.375rem 0 0; margin-top:0.375rem;" class="border-t border-gray-100 dark:border-white/5">
+                                            <dt class="font-semibold text-gray-950 dark:text-white">{{ __('lunarpanel::order.fulfilments.fields.total') }}</dt>
+                                            <dd class="font-semibold text-gray-950 dark:text-white">{{ $orderLine->format('total') }}</dd>
+                                        </div>
+
+                                        @if (filled($orderLine->notes))
+                                            <p style="margin-top:0.5rem;" class="text-xs italic text-gray-500 dark:text-gray-400">{{ $orderLine->notes }}</p>
+                                        @endif
+                                    </dl>
                                 </div>
                             @endif
-
-                            <div class="min-w-0 flex-1">
-                                <p class="truncate text-sm font-medium text-gray-950 dark:text-white">
-                                    {{ $line->orderLine?->description ?? '#'.$line->order_line_id }}
-                                </p>
-                                @if ($line->orderLine?->identifier)
-                                    <p class="truncate text-xs text-gray-500 dark:text-gray-400">
-                                        {{ $line->orderLine->identifier }}
-                                    </p>
-                                @endif
-                            </div>
-
-                            <div class="shrink-0 text-right">
-                                <span class="text-sm text-gray-500 dark:text-gray-400">&times; {{ $line->quantity }}</span>
-                                @if ($line->orderLine)
-                                    <p class="text-sm font-medium text-gray-950 dark:text-white">
-                                        {{ $line->orderLine->format('unit_price') }}
-                                    </p>
-                                @endif
-                            </div>
                         </li>
                     @endforeach
                 </ul>

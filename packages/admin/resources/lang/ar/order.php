@@ -346,6 +346,8 @@ return [
         ],
         'fields' => [
             'quantity' => 'Quantity',
+            'unit_price' => 'Unit price',
+            'total' => 'Line total',
             'outstanding' => 'Outstanding: :count',
             'tracking_number' => 'Tracking number',
             'tracking_url' => 'Tracking URL',
