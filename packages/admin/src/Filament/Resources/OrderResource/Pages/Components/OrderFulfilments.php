@@ -113,9 +113,12 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->color('success')
             ->schema([
                 Repeater::make('tracking')
-                    ->label(__('lunarpanel::order.fulfilments.fields.tracking'))
+                    ->hiddenLabel()
                     ->addActionLabel(__('lunarpanel::order.fulfilments.actions.add_tracking.label'))
                     ->schema($this->trackingFields())
+                    ->itemLabel(fn (?int $index): string => __('lunarpanel::order.fulfilments.fields.tracking_item', [
+                        'number' => ($index ?? 0) + 1,
+                    ]))
                     ->defaultItems(1)
                     ->reorderable(false),
             ])

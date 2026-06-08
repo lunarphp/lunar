@@ -393,6 +393,7 @@ return [
         'fields' => [
             'quantity' => 'Quantity',
             'tracking' => 'Tracking',
+            'tracking_item' => 'Tracking #:number',
             'unit_price' => 'Unit Price',
             'sub_total' => 'Sub Total',
             'discount_total' => 'Discount Total',
