@@ -5,13 +5,13 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages\Components;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Collection;
@@ -116,7 +116,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                     ->label(__('lunarpanel::order.fulfilments.fields.tracking'))
                     ->addActionLabel(__('lunarpanel::order.fulfilments.actions.add_tracking.label'))
                     ->schema($this->trackingFields())
-                    ->default([])
+                    ->defaultItems(1)
                     ->reorderable(false),
             ])
             ->action(fn (array $arguments, array $data) => $this->run(
@@ -143,35 +143,41 @@ class OrderFulfilments extends Component implements HasActions, HasForms
      * The fields describing a single tracking reference, shared by the ship
      * repeater and the add-tracking modal. Picking a registered carrier drives
      * the shipping method options and derives the tracking URL, so the URL only
-     * needs entering by hand for the "custom" (no carrier) case.
+     * needs entering by hand for the "custom" (no carrier) case. Laid out two
+     * to a row to keep the form compact — the carrier and tracking number span
+     * the full width when their paired field is hidden.
      *
-     * @return array<int, Field>
+     * @return array<int, Grid>
      */
     protected function trackingFields(): array
     {
         return [
-            Select::make('carrier')
-                ->label(__('lunarpanel::order.fulfilments.fields.carrier'))
-                ->placeholder(__('lunarpanel::order.fulfilments.fields.carrier_custom'))
-                ->options(Carriers::all()->mapWithKeys(
-                    fn ($carrier) => [$carrier->getKey() => $carrier->getName()]
-                )->all())
-                ->native(false)
-                ->live(),
-            Select::make('shipping_method')
-                ->label(__('lunarpanel::order.fulfilments.fields.shipping_method'))
-                ->options(fn (Get $get) => collect(Carriers::get($get('carrier'))?->getServices() ?? [])
-                    ->mapWithKeys(fn (string $service) => [$service => $service])
-                    ->all())
-                ->native(false)
-                ->visible(fn (Get $get) => filled($get('carrier'))),
-            TextInput::make('tracking_number')
-                ->label(__('lunarpanel::order.fulfilments.fields.tracking_number')),
-            TextInput::make('tracking_url')
-                ->label(__('lunarpanel::order.fulfilments.fields.tracking_url'))
-                ->helperText(__('lunarpanel::order.fulfilments.fields.tracking_url_help'))
-                ->url()
-                ->visible(fn (Get $get) => blank($get('carrier'))),
+            Grid::make(2)->schema([
+                Select::make('carrier')
+                    ->label(__('lunarpanel::order.fulfilments.fields.carrier'))
+                    ->placeholder(__('lunarpanel::order.fulfilments.fields.carrier_custom'))
+                    ->options(Carriers::all()->mapWithKeys(
+                        fn ($carrier) => [$carrier->getKey() => $carrier->getName()]
+                    )->all())
+                    ->native(false)
+                    ->live()
+                    ->columnSpan(fn (Get $get) => filled($get('carrier')) ? 1 : 2),
+                Select::make('shipping_method')
+                    ->label(__('lunarpanel::order.fulfilments.fields.shipping_method'))
+                    ->options(fn (Get $get) => collect(Carriers::get($get('carrier'))?->getServices() ?? [])
+                        ->mapWithKeys(fn (string $service) => [$service => $service])
+                        ->all())
+                    ->native(false)
+                    ->visible(fn (Get $get) => filled($get('carrier'))),
+                TextInput::make('tracking_number')
+                    ->label(__('lunarpanel::order.fulfilments.fields.tracking_number'))
+                    ->columnSpan(fn (Get $get) => filled($get('carrier')) ? 2 : 1),
+                TextInput::make('tracking_url')
+                    ->label(__('lunarpanel::order.fulfilments.fields.tracking_url'))
+                    ->helperText(__('lunarpanel::order.fulfilments.fields.tracking_url_help'))
+                    ->url()
+                    ->visible(fn (Get $get) => blank($get('carrier'))),
+            ]),
         ];
     }
 
