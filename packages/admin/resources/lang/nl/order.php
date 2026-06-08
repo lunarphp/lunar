@@ -284,4 +284,73 @@ return [
             ],
         ],
     ],
+
+    'fulfilments' => [
+        'heading' => 'Fulfilments',
+        'empty' => 'No fulfilments yet.',
+        'columns' => [
+            'reference' => 'Reference',
+            'state' => 'State',
+            'items' => 'Items',
+            'tracking' => 'Tracking',
+            'shipped_at' => 'Shipped at',
+        ],
+        'actions' => [
+            'create' => [
+                'label' => 'Create fulfilment',
+                'modal_heading' => 'Create fulfilment',
+                'empty' => 'Every line is already fulfilled.',
+                'notification' => [
+                    'success' => 'Fulfilment created.',
+                    'error' => 'Could not create fulfilment.',
+                ],
+            ],
+            'ship' => [
+                'label' => 'Mark shipped',
+                'modal_heading' => 'Mark fulfilment as shipped',
+                'notification' => [
+                    'success' => 'Fulfilment marked as shipped.',
+                    'error' => 'Could not ship fulfilment.',
+                ],
+            ],
+            'cancel' => [
+                'label' => 'Cancel',
+                'notification' => [
+                    'success' => 'Fulfilment cancelled.',
+                    'error' => 'Could not cancel fulfilment.',
+                ],
+            ],
+            'return' => [
+                'label' => 'Return',
+                'notification' => [
+                    'success' => 'Fulfilment returned.',
+                    'error' => 'Could not return fulfilment.',
+                ],
+            ],
+            'split' => [
+                'label' => 'Split',
+                'modal_heading' => 'Split fulfilment',
+                'notification' => [
+                    'success' => 'Fulfilment split.',
+                    'error' => 'Could not split fulfilment.',
+                ],
+            ],
+            'merge' => [
+                'label' => 'Merge selected',
+                'modal_heading' => 'Merge fulfilments',
+                'notification' => [
+                    'success' => 'Fulfilments merged.',
+                    'error' => 'Could not merge fulfilments.',
+                ],
+            ],
+        ],
+        'fields' => [
+            'quantity' => 'Quantity',
+            'outstanding' => 'Outstanding: :count',
+            'tracking_number' => 'Tracking number',
+            'tracking_url' => 'Tracking URL',
+            'shipping_method' => 'Shipping method',
+            'move_quantity' => 'Quantity to move out',
+        ],
+    ],
 ];

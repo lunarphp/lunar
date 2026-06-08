@@ -97,6 +97,12 @@ return [
                 'success' => 'Order resumed.',
             ],
         ],
+        'mark_as_complete' => [
+            'label' => 'Mark as Complete',
+            'notification' => [
+                'success' => 'Order marked as complete.',
+            ],
+        ],
         'mark_as_shipped' => [
             'label' => 'Mark as Shipped',
             'bulk_label' => 'Mark selected as Shipped',

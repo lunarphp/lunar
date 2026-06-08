@@ -310,6 +310,7 @@ First-class Filament `Action` / `BulkAction` classes for every commerce verb the
 | `Orders\CaptureOrderAction` | `Core\Actions\Orders\CaptureOrder` | Order header / detail page |
 | `Orders\UpdateOrderStatusAction` / `UpdateOrderStatusBulkAction` | `Core\Actions\Orders\UpdateOrderStatus` | Order header + order table bulk |
 | `Orders\MarkOrderAsShippedAction` / `MarkOrdersAsShippedBulkAction` | `Core\Actions\Orders\MarkOrderAsShipped` | Order header + order table bulk |
+| `Orders\MarkOrderAsCompleteAction` | `Core\Actions\Orders\MarkOrderAsComplete` | Order header (manual `Shipped → Complete` close) |
 | `Orders\AddOrderNoteAction` | — (Filament-only single-field write) | Order header |
 | `Orders\DownloadOrderPdfAction` | — (Filament-only, subclass of `Support\DownloadPdfAction`) | Order header |
 | `Products\DuplicateProductAction` | `Core\Actions\Products\DuplicateProduct` | Product row / header |

@@ -22,6 +22,7 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource;
+use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysFulfilments;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysOrderAddresses;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysOrderSummary;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysOrderTimeline;
@@ -36,6 +37,7 @@ use Lunar\Core\Models\Tag;
 use Lunar\Filament\Actions\Orders\CancelOrderAction;
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
 use Lunar\Filament\Actions\Orders\DownloadOrderPdfAction;
+use Lunar\Filament\Actions\Orders\MarkOrderAsCompleteAction;
 use Lunar\Filament\Actions\Orders\PlaceOrderOnHoldAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
 use Lunar\Filament\Actions\Orders\ResumeOrderAction;
@@ -56,6 +58,7 @@ class ManageOrder extends BaseViewRecord
 {
     use CallsHooks;
     use CanDispatchActivityUpdated;
+    use DisplaysFulfilments;
     use DisplaysOrderAddresses;
     use DisplaysOrderSummary;
     use DisplaysOrderTimeline;
@@ -95,6 +98,7 @@ class ManageOrder extends BaseViewRecord
             static::getShippingInfolist(),
             static::getOrderLinesTable(),
             static::getOrderTotalsInfolist(),
+            static::getFulfilmentsInfolist(),
             static::getTransactionsInfolist(),
             static::getTimelineInfolist(),
         ]);
@@ -356,6 +360,7 @@ class ManageOrder extends BaseViewRecord
         return [
             CaptureOrderAction::make(),
             RefundOrderAction::make(),
+            MarkOrderAsCompleteAction::make()->after($bumpActivity),
             PlaceOrderOnHoldAction::make()->after($bumpActivity),
             ResumeOrderAction::make()->after($bumpActivity),
             CancelOrderAction::make()->after($bumpActivity),
