@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -254,6 +255,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
         return Action::make('changeLocation')
             ->label(__('lunarpanel::order.fulfilments.actions.change_location.label'))
             ->modalHeading(__('lunarpanel::order.fulfilments.actions.change_location.modal_heading'))
+            ->modalWidth(Width::Medium)
             ->icon('heroicon-o-map-pin')
             ->schema(fn (array $arguments) => [
                 Select::make('location')
