@@ -231,28 +231,30 @@ class ManageOrder extends BaseViewRecord
             ->components([
                 Group::make()
                     ->schema([
-                        Group::make()->key('shouts')->schema([
-                            Callout::make()
-                                ->status('danger')
-                                ->heading(__('lunarpanel::order.infolist.alert.requires_capture'))
-                                ->visible(fn () => $this->requiresCapture),
-                            Callout::make()
-                                ->key('partially_refunded_notice')
-                                ->icon(fn () => match ($this->paymentStatus) {
-                                    'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
-                                    default => null
-                                })
-                                ->status(fn () => match ($this->paymentStatus) {
-                                    'partial-refund' => 'info',
-                                    'refunded' => 'danger',
-                                    default => null
-                                })->heading(fn () => match ($this->paymentStatus) {
-                                    'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
-                                    'refunded' => __('lunarpanel::order.infolist.alert.refunded'),
-                                    default => null
-                                })
-                                ->visible(fn () => in_array($this->paymentStatus, ['partial-refund', 'refunded'])),
-                        ]),
+                        Group::make()->key('shouts')
+                            ->visible(fn () => $this->requiresCapture || in_array($this->paymentStatus, ['partial-refund', 'refunded']))
+                            ->schema([
+                                Callout::make()
+                                    ->status('danger')
+                                    ->heading(__('lunarpanel::order.infolist.alert.requires_capture'))
+                                    ->visible(fn () => $this->requiresCapture),
+                                Callout::make()
+                                    ->key('partially_refunded_notice')
+                                    ->icon(fn () => match ($this->paymentStatus) {
+                                        'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
+                                        default => null
+                                    })
+                                    ->status(fn () => match ($this->paymentStatus) {
+                                        'partial-refund' => 'info',
+                                        'refunded' => 'danger',
+                                        default => null
+                                    })->heading(fn () => match ($this->paymentStatus) {
+                                        'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
+                                        'refunded' => __('lunarpanel::order.infolist.alert.refunded'),
+                                        default => null
+                                    })
+                                    ->visible(fn () => in_array($this->paymentStatus, ['partial-refund', 'refunded'])),
+                            ]),
                         ...static::getInfolistSchema(),
                     ])
                     ->columnSpan(['lg' => 2]),
