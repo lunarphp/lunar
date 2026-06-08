@@ -29,11 +29,12 @@ beforeEach(function () {
 });
 
 it('renders the fulfilments panel', function () {
-    Fulfilments::create($this->order, [$this->line->id => 5]);
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 5]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->assertOk()
-        ->assertSee($this->order->fulfilments()->first()->reference);
+        // No reference set, so the card falls back to the id-based label.
+        ->assertSee('Fulfilment #'.$fulfilment->id);
 });
 
 it('ships a fulfilment and records tracking', function () {

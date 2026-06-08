@@ -32,7 +32,7 @@ final class CreateFulfilment implements CreatesFulfilment
         $fulfilment = DB::transaction(function () use ($order, $lines, $attributes) {
             /** @var Fulfilment $fulfilment */
             $fulfilment = $order->fulfilments()->create([
-                'reference' => $attributes['reference'] ?? $this->generateReference($order),
+                'reference' => $attributes['reference'] ?? null,
                 'location_id' => $attributes['location_id'] ?? $this->defaultLocationId(),
                 'state' => 'pending',
                 'shipping_method' => $attributes['shipping_method'] ?? null,
@@ -85,13 +85,5 @@ final class CreateFulfilment implements CreatesFulfilment
         return Location::query()->where('default', true)->value('id')
             ?? Location::query()->orderBy('id')->value('id')
             ?? Location::query()->create(['name' => 'Default', 'handle' => 'default', 'default' => true])->id;
-    }
-
-    protected function generateReference(Order $order): string
-    {
-        $sequence = $order->fulfilments()->count() + 1;
-        $prefix = $order->reference ?: 'ORDER-'.$order->id;
-
-        return $prefix.'-'.str_pad((string) $sequence, 2, '0', STR_PAD_LEFT);
     }
 }

@@ -287,6 +287,7 @@ return [
 
     'fulfilments' => [
         'heading' => 'Fulfilments',
+        'unreferenced' => 'Fulfilment #:id',
         'empty' => 'No fulfilments yet.',
         'columns' => [
             'reference' => 'Reference',

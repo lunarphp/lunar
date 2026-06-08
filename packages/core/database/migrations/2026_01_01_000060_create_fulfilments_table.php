@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create($this->prefix.'fulfilments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('order_id')->constrained($this->prefix.'orders')->cascadeOnDelete();
-            $table->string('reference')->index();
+            $table->string('reference')->nullable()->index();
             $table->string('state')->default('pending')->index();
             $table->string('shipping_method')->nullable();
             $table->string('tracking_number')->nullable();

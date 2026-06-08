@@ -48,7 +48,6 @@ final class SplitFulfilment implements SplitsFulfilment
 
             /** @var Fulfilment $new */
             $new = $fulfilment->order->fulfilments()->create([
-                'reference' => $fulfilment->reference.'-S',
                 'location_id' => $fulfilment->location_id,
                 'state' => 'pending',
             ]);

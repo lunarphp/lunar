@@ -36,7 +36,7 @@ fulfilments
 ├── id
 ├── order_id            FK → orders, cascadeOnDelete
 ├── location_id         FK → locations, nullOnDelete  (the place it ships from)
-├── reference           string, indexed   (human-facing parcel ref)
+├── reference           string, nullable, indexed   (optional human/carrier ref; not auto-generated)
 ├── state               string, indexed   (FulfilmentState $name; default 'pending')
 ├── shipping_method     string, nullable  (carrier / service name snapshot)
 ├── tracking_number     string, nullable
