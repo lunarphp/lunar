@@ -3,6 +3,7 @@
 namespace Lunar\Core\Database\Factories;
 
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 
 class FulfilmentFactory extends BaseFactory
@@ -13,6 +14,7 @@ class FulfilmentFactory extends BaseFactory
     {
         return [
             'order_id' => Order::factory(),
+            'location_id' => Location::factory(),
             'reference' => $this->faker->unique()->regexify('[A-Z]{10}'),
             'state' => 'pending',
             'shipping_method' => null,

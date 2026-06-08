@@ -42,6 +42,7 @@ use Lunar\Admin\Filament\Resources\CustomerGroupResource;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\DiscountResource;
 use Lunar\Admin\Filament\Resources\LanguageResource;
+use Lunar\Admin\Filament\Resources\LocationResource;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
 use Lunar\Admin\Filament\Resources\ProductOptionResource;
@@ -87,6 +88,7 @@ class LunarPanelManager
         CustomerResource::class,
         DiscountResource::class,
         LanguageResource::class,
+        LocationResource::class,
         OrderResource::class,
         ProductOptionResource::class,
         ProductResource::class,

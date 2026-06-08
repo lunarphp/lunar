@@ -16,7 +16,7 @@ use Spatie\ModelStates\HasStates;
 /**
  * @property int $id
  * @property int $order_id
- * @property ?int $location_id
+ * @property int $location_id
  * @property string $reference
  * @property FulfilmentState $state
  * @property ?string $shipping_method
