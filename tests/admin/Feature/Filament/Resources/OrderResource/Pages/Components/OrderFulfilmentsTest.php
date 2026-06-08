@@ -53,6 +53,24 @@ it('ships a fulfilment and records multiple trackings', function () {
         ->and($fulfilment->trackings)->toHaveCount(2);
 });
 
+it('ships with a registered carrier and derives the tracking url', function () {
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 1]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('ship', data: [
+            'tracking' => [
+                ['carrier' => 'royal-mail', 'shipping_method' => 'Tracked 24', 'tracking_number' => 'RM123456789GB'],
+            ],
+        ], arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    $tracking = $fulfilment->refresh()->trackings->first();
+
+    expect($tracking->carrier)->toBe('royal-mail')
+        ->and($tracking->shipping_method)->toBe('Tracked 24')
+        ->and($tracking->url)->toContain('RM123456789GB');
+});
+
 it('adds a tracking reference to a shipped fulfilment', function () {
     $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]), [
         ['tracking_number' => 'TRK-1'],

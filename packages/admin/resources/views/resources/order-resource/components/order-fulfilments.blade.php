@@ -282,11 +282,16 @@
                 @if ($fulfilment->trackings->isNotEmpty())
                     <div class="border-t border-gray-200 dark:border-white/10">
                         @foreach ($fulfilment->trackings as $tracking)
+                            @php($carrier = $tracking->carrier())
+                            @php($trackingUrl = $tracking->url)
                             <div class="flex items-center gap-1.5 px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
                                 <x-filament::icon icon="heroicon-m-truck" class="h-4 w-4 shrink-0" />
-                                @if ($tracking->tracking_url)
-                                    <a href="{{ $tracking->tracking_url }}" target="_blank" class="text-primary-600 hover:underline dark:text-primary-400">
-                                        {{ $tracking->tracking_number ?: $tracking->tracking_url }}
+                                @if ($carrier)
+                                    <span class="font-medium text-gray-700 dark:text-gray-300">{{ $carrier->getName() }}</span>
+                                @endif
+                                @if ($trackingUrl)
+                                    <a href="{{ $trackingUrl }}" target="_blank" class="text-primary-600 hover:underline dark:text-primary-400">
+                                        {{ $tracking->tracking_number ?: $trackingUrl }}
                                     </a>
                                 @elseif ($tracking->tracking_number)
                                     <span>{{ $tracking->tracking_number }}</span>

@@ -3,6 +3,8 @@
 namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\ShipsFulfilment;
+use Lunar\Core\Exceptions\FulfilmentException;
+use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
@@ -62,12 +64,31 @@ final class ShipFulfilment implements ShipsFulfilment
         return collect($entries)
             ->map(fn (array $entry) => array_intersect_key(
                 $entry,
-                array_flip(['tracking_number', 'tracking_url', 'shipping_method']),
+                array_flip(['carrier', 'tracking_number', 'tracking_url', 'shipping_method']),
             ))
             ->filter(fn (array $entry) => filled($entry['tracking_number'] ?? null)
                 || filled($entry['tracking_url'] ?? null)
                 || filled($entry['shipping_method'] ?? null))
+            ->each(fn (array $entry) => $this->validateTrackingNumber($entry))
             ->values()
             ->all();
+    }
+
+    /**
+     * Reject a tracking number that does not match the carrier's expected
+     * format, when both a carrier and a number are present.
+     *
+     * @param  array<string, mixed>  $entry
+     */
+    protected function validateTrackingNumber(array $entry): void
+    {
+        $number = $entry['tracking_number'] ?? null;
+        $carrier = Carriers::get($entry['carrier'] ?? null);
+
+        if (filled($number) && $carrier && ! $carrier->validateTrackingNumber($number)) {
+            throw new FulfilmentException(__('lunar::exceptions.fulfilment_tracking_invalid_number', [
+                'carrier' => $carrier->getName(),
+            ]));
+        }
     }
 }

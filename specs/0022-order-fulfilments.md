@@ -46,9 +46,10 @@ fulfilments
 fulfilment_trackings
 ├── id
 ├── fulfilment_id       FK → fulfilments, cascadeOnDelete
+├── carrier             string, nullable  (registered carrier key — see spec 0024)
+├── shipping_method     string, nullable  (carrier service / method)
 ├── tracking_number     string, nullable
-├── tracking_url        string, nullable
-├── shipping_method     string, nullable  (carrier / service)
+├── tracking_url        string, nullable  (explicit override; otherwise derived from carrier + number)
 ├── meta                jsonb, nullable
 └── timestamps
 
@@ -63,7 +64,7 @@ fulfilment_lines
 
 `Fulfilment` extends `Models\Base`, implements `Contracts\Fulfilment`, uses `HasFactory` / `HasMacros` / `LogsActivity`. Relations: `order()` (BelongsTo), `location()` (BelongsTo), `lines()` (HasMany `FulfilmentLine`), `trackings()` (HasMany `FulfilmentTracking`). `FulfilmentLine` has `fulfilment()` and `orderLine()` BelongsTo. `Order` gains `fulfilments(): HasMany`.
 
-**Tracking is one-to-many.** A parcel can carry several tracking references (a shipment split across boxes or carriers), so tracking lives in `fulfilment_trackings` rather than columns on the fulfilment. `ShipFulfilment` accepts a list of tracking entries (or a single one) and records them on ship; `AddFulfilmentTracking` (`Fulfilments::addTracking()`) appends more afterwards as carrier details arrive.
+**Tracking is one-to-many.** A parcel can carry several tracking references (a shipment split across boxes or carriers), so tracking lives in `fulfilment_trackings` rather than columns on the fulfilment. `ShipFulfilment` accepts a list of tracking entries (or a single one) and records them on ship; `AddFulfilmentTracking` (`Fulfilments::addTracking()`) appends more afterwards as carrier details arrive. A tracking row may reference a **registered shipping carrier** (`carrier` key) which supplies the service options and derives the public tracking URL from the number — see **spec 0024 (Shipping carriers)**. `tracking_url` is only stored when a carrier can't resolve one (the "custom" case).
 
 #### Locations
 

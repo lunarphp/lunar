@@ -27,6 +27,7 @@ use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
+use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DiscountManager;
@@ -57,6 +58,7 @@ use Lunar\Core\Managers\PricingManager as PricingManagerImpl;
 use Lunar\Core\Managers\StorefrontSessionManager;
 use Lunar\Core\Managers\TaxManager as TaxManagerImpl;
 use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
+use Lunar\Core\Manifests\CarrierManifest as CarrierManifestImpl;
 use Lunar\Core\Manifests\FieldTypeManifest as FieldTypeManifestImpl;
 use Lunar\Core\Manifests\ModelManifest as ModelManifestImpl;
 use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
@@ -326,6 +328,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(ShippingManifest::class, function ($app) {
             return $app->make(ShippingManifestImpl::class);
+        });
+
+        $this->app->singleton(CarrierManifest::class, function ($app) {
+            return $app->make(CarrierManifestImpl::class);
         });
 
         $this->app->singleton(AttributeManifest::class, function ($app) {
