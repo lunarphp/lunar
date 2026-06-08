@@ -12,7 +12,8 @@
   ],
   "require": {
       "php": "^8.4",
-      "lunarphp/core": "self.version"
+      "lunarphp/core": "self.version",
+      "inertiajs/inertia-laravel": "^2.0|^3.0"
   },
   "autoload": {
       "psr-4": {
