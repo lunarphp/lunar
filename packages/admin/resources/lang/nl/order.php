@@ -340,8 +340,11 @@ return [
                 ],
             ],
             'merge' => [
-                'label' => 'Merge selected',
-                'modal_heading' => 'Merge fulfilments',
+                'label' => 'Merge',
+                'modal_heading' => 'Merge fulfilment',
+                'description' => 'Select the items you would like to merge.',
+                'target' => 'Merge with',
+                'empty' => 'Select items and a destination to merge.',
                 'notification' => [
                     'success' => 'Fulfilments merged.',
                     'error' => 'Could not merge fulfilments.',

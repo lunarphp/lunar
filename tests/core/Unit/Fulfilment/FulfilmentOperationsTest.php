@@ -131,3 +131,36 @@ test('return marks a shipped fulfilment as returned', function () {
 
     expect($returned->state)->toBeInstanceOf(Returned::class);
 });
+
+test('move transfers selected line quantities into another parcel', function () {
+    [$order, $line] = orderWithLine(10);
+    $from = Fulfilments::create($order, [$line->id => 6]);
+    $to = Fulfilments::create($order, [$line->id => 4]);
+
+    Fulfilments::move($from, $to, [$line->id => 2]);
+
+    expect($from->fresh()->lines()->first()->quantity)->toBe(4)
+        ->and($to->fresh()->lines()->first()->quantity)->toBe(6)
+        ->and($order->fulfilments()->count())->toBe(2);
+});
+
+test('moving every line removes the now-empty source parcel', function () {
+    [$order, $line] = orderWithLine(10);
+    $from = Fulfilments::create($order, [$line->id => 3]);
+    $to = Fulfilments::create($order, [$line->id => 7]);
+
+    Fulfilments::move($from, $to, [$line->id => 3]);
+
+    expect($order->fulfilments()->count())->toBe(1)
+        ->and($to->fresh()->lines()->first()->quantity)->toBe(10)
+        ->and(Fulfilment::find($from->id))->toBeNull();
+});
+
+test('move rejects more than the source line carries', function () {
+    [$order, $line] = orderWithLine(10);
+    $from = Fulfilments::create($order, [$line->id => 2]);
+    $to = Fulfilments::create($order, [$line->id => 2]);
+
+    expect(fn () => Fulfilments::move($from, $to, [$line->id => 5]))
+        ->toThrow(FulfilmentException::class);
+});

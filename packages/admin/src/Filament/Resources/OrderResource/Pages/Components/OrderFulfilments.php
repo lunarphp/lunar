@@ -5,7 +5,7 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages\Components;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -154,38 +154,80 @@ class OrderFulfilments extends Component implements HasActions, HasForms
         }
     }
 
+    /**
+     * Other pre-ship fulfilments on the order that the given one could merge
+     * into.
+     *
+     * @return \Illuminate\Support\Collection<int, Fulfilment>
+     */
+    protected function mergeTargets(Fulfilment $source): \Illuminate\Support\Collection
+    {
+        return $this->fulfilments
+            ->filter(fn (Fulfilment $f) => $f->getKey() !== $source->getKey()
+                && in_array($f->state::$name, MergeFulfilments::MERGEABLE_STATES, true))
+            ->values();
+    }
+
     public function mergeAction(): Action
     {
         return Action::make('merge')
             ->label(__('lunarpanel::order.fulfilments.actions.merge.label'))
             ->modalHeading(__('lunarpanel::order.fulfilments.actions.merge.modal_heading'))
+            ->modalDescription(__('lunarpanel::order.fulfilments.actions.merge.description'))
+            ->modalSubmitActionLabel(__('lunarpanel::order.fulfilments.actions.merge.label'))
             ->icon('heroicon-o-arrows-pointing-in')
             ->schema(function (array $arguments) {
-                $target = $this->findFulfilment($arguments);
+                $source = $this->findFulfilment($arguments);
+                $targets = $this->mergeTargets($source);
 
-                $options = $this->fulfilments
-                    ->filter(fn (Fulfilment $f) => $f->getKey() !== $target->getKey()
-                        && in_array($f->state::$name, MergeFulfilments::MERGEABLE_STATES, true))
-                    ->mapWithKeys(fn (Fulfilment $f) => [$f->id => $f->reference])
-                    ->all();
+                // Which items (and how many) to move out of this parcel.
+                $schema = $source->lines->map(
+                    fn ($line) => TextInput::make('qty_'.$line->order_line_id)
+                        ->label($line->orderLine?->description ?? '#'.$line->order_line_id)
+                        ->helperText(__('lunarpanel::order.fulfilments.fields.of', ['count' => $line->quantity]))
+                        ->numeric()
+                        ->minValue(0)
+                        ->maxValue($line->quantity)
+                        ->default($line->quantity),
+                )->all();
 
-                return [
-                    CheckboxList::make('sources')
-                        ->label(__('lunarpanel::order.fulfilments.actions.merge.label'))
-                        ->options($options)
-                        ->required(),
-                ];
+                // Only ask which fulfilment to merge into when there's a choice.
+                if ($targets->count() > 1) {
+                    $schema[] = Select::make('target')
+                        ->label(__('lunarpanel::order.fulfilments.actions.merge.target'))
+                        ->options($targets->mapWithKeys(fn (Fulfilment $f) => [$f->id => $f->reference])->all())
+                        ->default($targets->first()->id)
+                        ->selectablePlaceholder(false)
+                        ->required();
+                }
+
+                return $schema;
             })
             ->action(function (array $arguments, array $data) {
-                $target = $this->findFulfilment($arguments);
+                $source = $this->findFulfilment($arguments);
+                $targets = $this->mergeTargets($source);
 
-                /** @var Collection<int, Fulfilment> $sources */
-                $sources = $this->record->fulfilments()
-                    ->with('lines')
-                    ->whereIn('id', $data['sources'] ?? [])
-                    ->get();
+                $targetId = $data['target'] ?? $targets->first()?->id;
+                $target = $targetId
+                    ? $this->record->fulfilments()->with('lines')->find($targetId)
+                    : null;
 
-                $this->run(fn () => Fulfilments::merge($target, $sources), 'merge');
+                $moves = collect($data)
+                    ->filter(fn ($value, $key) => str_starts_with((string) $key, 'qty_'))
+                    ->mapWithKeys(fn ($qty, $key) => [(int) str_replace('qty_', '', $key) => (int) $qty])
+                    ->filter(fn ($qty) => $qty > 0)
+                    ->all();
+
+                if (! $target || $moves === []) {
+                    Notification::make()
+                        ->danger()
+                        ->title(__('lunarpanel::order.fulfilments.actions.merge.empty'))
+                        ->send();
+
+                    return;
+                }
+
+                $this->run(fn () => Fulfilments::move($source, $target, $moves), 'merge');
             });
     }
 

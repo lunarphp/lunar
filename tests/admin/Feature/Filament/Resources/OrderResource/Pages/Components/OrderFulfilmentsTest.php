@@ -70,16 +70,34 @@ it('keeps split mode open and creates nothing when no quantity is chosen', funct
     expect($this->order->fulfilments()->count())->toBe(1);
 });
 
-it('merges selected parcels into the target', function () {
-    $target = Fulfilments::create($this->order, [$this->line->id => 3]);
+it('merges a parcel into the only other one without asking for a target', function () {
     $source = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $target = Fulfilments::create($this->order, [$this->line->id => 3]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
-        ->callAction('merge', data: ['sources' => [$source->id]], arguments: ['fulfilment' => $target->id])
+        // No 'target' supplied: the single other parcel is used automatically.
+        ->callAction('merge', data: ['qty_'.$this->line->id => 2], arguments: ['fulfilment' => $source->id])
         ->assertHasNoActionErrors();
 
     expect($this->order->fulfilments()->count())->toBe(1)
         ->and($target->refresh()->lines()->first()->quantity)->toBe(5);
+});
+
+it('merges selected quantities into a chosen target when several exist', function () {
+    $source = Fulfilments::create($this->order, [$this->line->id => 3]);
+    $targetA = Fulfilments::create($this->order, [$this->line->id => 1]);
+    $targetB = Fulfilments::create($this->order, [$this->line->id => 1]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('merge', data: [
+            'qty_'.$this->line->id => 2,
+            'target' => $targetB->id,
+        ], arguments: ['fulfilment' => $source->id])
+        ->assertHasNoActionErrors();
+
+    expect($this->order->fulfilments()->count())->toBe(3)
+        ->and($source->refresh()->lines()->first()->quantity)->toBe(1)
+        ->and($targetB->refresh()->lines()->first()->quantity)->toBe(3);
 });
 
 it('lets developers extend the expanded line details', function () {

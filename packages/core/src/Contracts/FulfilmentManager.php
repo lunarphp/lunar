@@ -31,6 +31,13 @@ interface FulfilmentManager
     public function merge(FulfilmentContract $target, Collection $sources): Fulfilment;
 
     /**
+     * Move selected line quantities from one pre-ship fulfilment into another.
+     *
+     * @param  array<int|string, int>  $moves  [order_line_id => quantity to move]
+     */
+    public function move(FulfilmentContract $from, FulfilmentContract $to, array $moves): Fulfilment;
+
+    /**
      * @param  array<string, mixed>  $tracking
      */
     public function ship(FulfilmentContract $fulfilment, array $tracking = []): Fulfilment;

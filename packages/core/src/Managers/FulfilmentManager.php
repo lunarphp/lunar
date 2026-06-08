@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Contracts\Actions\Fulfilment\CancelsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\MergesFulfilments;
+use Lunar\Core\Contracts\Actions\Fulfilment\MovesFulfilmentLines;
 use Lunar\Core\Contracts\Actions\Fulfilment\ReturnsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ShipsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\SplitsFulfilment;
@@ -25,6 +26,7 @@ class FulfilmentManager implements FulfilmentManagerContract
         protected CreatesFulfilment $create,
         protected SplitsFulfilment $split,
         protected MergesFulfilments $merge,
+        protected MovesFulfilmentLines $move,
         protected ShipsFulfilment $ship,
         protected CancelsFulfilment $cancel,
         protected ReturnsFulfilment $return,
@@ -43,6 +45,11 @@ class FulfilmentManager implements FulfilmentManagerContract
     public function merge(FulfilmentContract $target, Collection $sources): Fulfilment
     {
         return $this->merge->execute($target, $sources);
+    }
+
+    public function move(FulfilmentContract $from, FulfilmentContract $to, array $moves): Fulfilment
+    {
+        return $this->move->execute($from, $to, $moves);
     }
 
     public function ship(FulfilmentContract $fulfilment, array $tracking = []): Fulfilment
