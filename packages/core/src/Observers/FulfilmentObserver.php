@@ -23,7 +23,7 @@ class FulfilmentObserver
         if ($fulfilment->isDirty('state')) {
             activity()
                 ->causedBy(auth()->user())
-                ->performedOn($fulfilment->order)
+                ->performedOn($fulfilment->order()->first())
                 ->event('fulfilment-state-update')
                 ->withProperties([
                     'fulfilment_id' => $fulfilment->id,
@@ -75,7 +75,7 @@ class FulfilmentObserver
     protected function recompute(FulfilmentContract $fulfilment): void
     {
         /** @var Fulfilment $fulfilment */
-        if ($order = $fulfilment->order) {
+        if ($order = $fulfilment->order()->first()) {
             $this->recomputeOrderStatus->execute($order);
         }
     }

@@ -97,8 +97,8 @@ class ManageOrder extends BaseViewRecord
         return self::callStaticLunarHook('extendInfolistSchema', [
             static::getShippingInfolist(),
             static::getOrderLinesTable(),
-            static::getOrderTotalsInfolist(),
             static::getFulfilmentsInfolist(),
+            static::getOrderTotalsInfolist(),
             static::getTransactionsInfolist(),
             static::getTimelineInfolist(),
         ]);

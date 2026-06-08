@@ -20,7 +20,7 @@ class TransactionObserver
         /** @var Transaction $transaction */
         activity()
             ->causedBy(auth()->user())
-            ->performedOn($transaction->order)
+            ->performedOn($transaction->order()->first())
             ->event($transaction->type)
             ->withProperties([
                 'amount' => $transaction->amount,
@@ -57,7 +57,7 @@ class TransactionObserver
     protected function recompute(TransactionContract $transaction): void
     {
         /** @var Transaction $transaction */
-        if ($order = $transaction->order) {
+        if ($order = $transaction->order()->first()) {
             $this->recomputeOrderStatus->execute($order);
         }
     }

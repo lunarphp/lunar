@@ -6,11 +6,10 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Lunar\Admin\Livewire\Components\TableComponent;
-use Lunar\Core\Actions\Fulfilment\CancelFulfilment;
 use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Actions\Fulfilment\ReturnFulfilment;
 use Lunar\Core\Actions\Fulfilment\ShipFulfilment;
@@ -25,50 +24,18 @@ class FulfilmentsTable extends TableComponent
 {
     use CallsHooks;
 
-    /**
-     * Filament-compatible badge colour per fulfilment state name.
-     */
-    protected static function stateColor(string $name): string
-    {
-        return match ($name) {
-            'pending' => 'gray',
-            'in-progress' => 'warning',
-            'shipped' => 'success',
-            'cancelled', 'returned' => 'danger',
-            default => 'gray',
-        };
-    }
-
     public function getDefaultTable(Table $table): Table
     {
         return $table
-            ->query($this->record->fulfilments()->getQuery()->with('lines.orderLine'))
+            ->query($this->record->fulfilments()->getQuery()->with('lines.orderLine.purchasable'))
             ->columns([
-                TextColumn::make('reference')
-                    ->label(__('lunarpanel::order.fulfilments.columns.reference')),
-                TextColumn::make('state')
-                    ->label(__('lunarpanel::order.fulfilments.columns.state'))
-                    ->badge()
-                    ->formatStateUsing(fn ($state) => $state->label())
-                    ->color(fn ($state) => static::stateColor((string) $state)),
-                TextColumn::make('items')
-                    ->label(__('lunarpanel::order.fulfilments.columns.items'))
-                    ->getStateUsing(fn (Fulfilment $record) => $record->lines
-                        ->map(fn ($line) => $line->quantity.' × '.($line->orderLine?->description ?? '#'.$line->order_line_id))
-                        ->implode(', ')),
-                TextColumn::make('tracking_number')
-                    ->label(__('lunarpanel::order.fulfilments.columns.tracking'))
-                    ->placeholder('—')
-                    ->url(fn (Fulfilment $record) => $record->tracking_url, shouldOpenInNewTab: true),
-                TextColumn::make('shipped_at')
-                    ->label(__('lunarpanel::order.fulfilments.columns.shipped_at'))
-                    ->dateTime()
-                    ->placeholder('—'),
+                ViewColumn::make('card')
+                    ->label('')
+                    ->view('lunarpanel::tables.columns.fulfilment-card'),
             ])
             ->recordActions([
                 $this->getShipAction(),
                 $this->getSplitAction(),
-                $this->getCancelAction(),
                 $this->getReturnAction(),
             ])
             ->toolbarActions([
@@ -132,20 +99,6 @@ class FulfilmentsTable extends TableComponent
                     'split',
                 );
             });
-    }
-
-    protected function getCancelAction(): Action
-    {
-        return Action::make('cancel')
-            ->label(__('lunarpanel::order.fulfilments.actions.cancel.label'))
-            ->icon('heroicon-o-x-circle')
-            ->color('danger')
-            ->requiresConfirmation()
-            ->visible(fn (Fulfilment $record) => CancelFulfilment::canRun($record))
-            ->action(fn (Fulfilment $record) => $this->runFulfilmentAction(
-                fn () => Fulfilments::cancel($record),
-                'cancel',
-            ));
     }
 
     protected function getReturnAction(): Action

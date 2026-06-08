@@ -1,9 +1,11 @@
 <?php
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Fulfilment\EnsureInitialFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\EnsuresInitialFulfilment;
+use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
@@ -63,4 +65,24 @@ test('ensure is a no-op when a fulfilment already exists', function () {
     app(EnsuresInitialFulfilment::class)->execute($order);
 
     expect($order->fulfilments()->count())->toBe(1);
+});
+
+test('the fulfilment observers do not lazy-load when prevention is on', function () {
+    $order = Order::factory()->create(['placed_at' => null]);
+    $line = OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'physical', 'quantity' => 4]);
+
+    Model::preventLazyLoading(true);
+
+    try {
+        // Placement (auto-create), then a split + ship — each fires the
+        // recompute observers, which must not lazy-load the parent order.
+        $order->update(['placed_at' => now()]);
+        $initial = $order->fulfilments()->first();
+        $new = Fulfilments::split($initial, [$line->id => 1]);
+        Fulfilments::ship($new);
+    } finally {
+        Model::preventLazyLoading(false);
+    }
+
+    expect($order->fresh()->fulfilments()->count())->toBe(2);
 });

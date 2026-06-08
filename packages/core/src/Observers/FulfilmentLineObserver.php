@@ -28,7 +28,11 @@ class FulfilmentLineObserver
     protected function recompute(FulfilmentLineContract $fulfilmentLine): void
     {
         /** @var FulfilmentLine $fulfilmentLine */
-        if ($order = $fulfilmentLine->fulfilment?->order) {
+        // Load explicitly (relation method, not lazy property access) so this
+        // is safe under Model::preventLazyLoading().
+        $order = $fulfilmentLine->fulfilment()->with('order')->first()?->order;
+
+        if ($order) {
             $this->recomputeOrderStatus->execute($order);
         }
     }

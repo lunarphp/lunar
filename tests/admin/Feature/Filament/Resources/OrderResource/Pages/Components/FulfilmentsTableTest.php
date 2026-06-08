@@ -42,18 +42,16 @@ it('ships a fulfilment and records tracking', function () {
         ->and($fulfilment->tracking_number)->toBe('TRK-1');
 });
 
-it('only offers ship/cancel/split on a pending parcel and return on a shipped one', function () {
+it('only offers ship/split on a pending parcel and return on a shipped one', function () {
     $pending = Fulfilments::create($this->order, [$this->line->id => 2]);
     $shipped = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 1]));
 
     Livewire::test(FulfilmentsTable::class, ['record' => $this->order])
         ->assertTableActionVisible('ship', $pending)
-        ->assertTableActionVisible('cancel', $pending)
         ->assertTableActionVisible('split', $pending)
         ->assertTableActionHidden('return', $pending)
         ->assertTableActionVisible('return', $shipped)
-        ->assertTableActionHidden('ship', $shipped)
-        ->assertTableActionHidden('cancel', $shipped);
+        ->assertTableActionHidden('ship', $shipped);
 });
 
 it('splits a pre-ship parcel into a new one', function () {
