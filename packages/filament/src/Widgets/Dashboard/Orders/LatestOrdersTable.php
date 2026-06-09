@@ -4,8 +4,8 @@ namespace Lunar\Filament\Widgets\Dashboard\Orders;
 
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
-use Lunar\Filament\Tables\Order\OrderTable;
 use Lunar\Core\Models\Order;
+use Lunar\Filament\Tables\Order\OrderTable;
 
 class LatestOrdersTable extends TableWidget
 {

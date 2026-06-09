@@ -26,7 +26,7 @@ Each item below should have a written spec in `specs/` (alongside this file in t
 - Split out Promotions concept from Discounts
 - Add cart totals caching in the database
 - Add Boost guidelines to packages
-- Order fulfilments & derived order status — line-item `Fulfilment` records (own `pending → shipped → delivered` lifecycle), `payment_status` derived from `transactions` (Shopify `financial_status` set), `fulfilment_status` rolled up from fulfilments, and the headline `Order::$status` derived from payment × fulfilment with `OnHold`/`Cancelled`/`Refunded` manual overrides; reintroduces the `OrderStateConfig` resolver + `OrderStateCategory` deferred from 0021 (spec 0022)
+- Order fulfilments & order lifecycle — line-item `Fulfilment` records with a guarded per-parcel lifecycle (`pending → in-progress → shipped`, plus `cancelled`/`returned`, reversible un-ship/undo-return, and on-hold); split-down model with Locations; `payment_status` + `fulfilment_status` derived rollups on the order; the hand-driven headline `Order::$status` is **removed** in favour of an open/closed (`closed_at`) archive; shipping-carrier registry + one-to-many tracking; order cancellation (`cancelled_at`). Reverses the derived-headline design 0021 deferred. (specs 0022, 0024, 0025; demo-data 0023 drafted)
 
 
 ## Ideas
