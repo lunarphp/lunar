@@ -6,7 +6,7 @@ use Filament\Infolists\Components\Entry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\IconPosition;
-use Lunar\Admin\Support\OrderStatus;
+use Lunar\Core\Models\Order;
 
 trait DisplaysOrderSummary
 {
@@ -25,11 +25,13 @@ trait DisplaysOrderSummary
 
     public static function getDefaultOrderSummaryStatusEntry(): TextEntry
     {
-        return TextEntry::make('status')
+        return TextEntry::make('closed_at')
             ->label(__('lunarpanel::order.infolist.status.label'))
-            ->formatStateUsing(fn ($state) => OrderStatus::getLabel((string) $state))
+            ->state(fn (Order $record): string => $record->isClosed()
+                ? __('lunar::states.order.closed')
+                : __('lunar::states.order.open'))
             ->alignEnd()
-            ->color(fn ($state) => OrderStatus::getColor((string) $state))
+            ->color(fn (Order $record): string => $record->isClosed() ? 'gray' : 'success')
             ->badge();
     }
 

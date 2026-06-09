@@ -38,14 +38,13 @@ class ActionServiceProvider extends ServiceProvider
 
         // Orders
         Contracts\Orders\CapturesOrder::class => Actions\Orders\CaptureOrder::class,
+        Contracts\Orders\ClosesOrder::class => Actions\Orders\CloseOrder::class,
         Contracts\Orders\GeneratesOrderReference::class => Actions\Orders\GenerateOrderReference::class,
-        Contracts\Orders\MarksOrderAsComplete::class => Actions\Orders\MarkOrderAsComplete::class,
-        Contracts\Orders\MarksOrderAsShipped::class => Actions\Orders\MarkOrderAsShipped::class,
         Contracts\Orders\RecomputesOrderStatus::class => Actions\Orders\RecomputeOrderStatus::class,
         Contracts\Orders\RefundsOrder::class => Actions\Orders\RefundOrder::class,
+        Contracts\Orders\ReopensOrder::class => Actions\Orders\ReopenOrder::class,
         Contracts\Orders\ResolvesFulfilmentStatus::class => Actions\Orders\ResolveFulfilmentStatus::class,
         Contracts\Orders\ResolvesPaymentStatus::class => Actions\Orders\ResolvePaymentStatus::class,
-        Contracts\Orders\UpdatesOrderStatus::class => Actions\Orders\UpdateOrderStatus::class,
 
         // Fulfilment
         Contracts\Fulfilment\AddsFulfilmentTracking::class => Actions\Fulfilment\AddFulfilmentTracking::class,

@@ -27,7 +27,6 @@ it('can handle a successful payment', function () {
     expect($response->success)->toBe(true)
         ->and($response->status)->toEqual(Opayo::AUTH_SUCCESSFUL)
         ->and($order)->toBeInstanceOf(Order::class)
-        ->and($order->status)->toBe('payment-received')
         ->and($order->placed_at)->not->toBeNull();
 
     assertDatabaseHas(Transaction::class, [
@@ -129,7 +128,6 @@ it('can process a successful 3DSv2 response', function () {
     expect($response->success)->toBe(true)
         ->and($response->status)->toEqual(Opayo::AUTH_SUCCESSFUL)
         ->and($order)->toBeInstanceOf(Order::class)
-        ->and($order->status)->toBe('payment-received')
         ->and($order->placed_at)->not->toBeNull();
 
     assertDatabaseHas(Transaction::class, [

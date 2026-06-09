@@ -22,8 +22,6 @@ class UpdateOrderFromIntent
             $order = app(StoreCharges::class)->store($order, $charges);
             $requiresCapture = $paymentIntent->status === PaymentIntent::STATUS_REQUIRES_CAPTURE;
 
-            $statuses = config('lunar.stripe.status_mapping', []);
-
             $placedAt = null;
 
             if ($paymentIntent->status === PaymentIntent::STATUS_SUCCEEDED) {
@@ -39,7 +37,6 @@ class UpdateOrderFromIntent
             }
 
             $order->update([
-                'status' => $statuses[$paymentIntent->status] ?? $paymentIntent->status,
                 'placed_at' => $order->placed_at ?: $placedAt,
             ]);
 

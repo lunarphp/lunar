@@ -7,6 +7,8 @@ return [
         'manage' => 'Удирдах',
     ],
     'tabs' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
         'all' => 'Бүгд',
     ],
     'transactions' => [

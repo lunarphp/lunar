@@ -12,7 +12,6 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->userForeignKey(nullable: true);
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
-            $table->string('status')->default('awaiting-payment')->index();
             $table->string('payment_status')->default('pending')->index();
             $table->string('fulfilment_status')->default('unfulfilled')->index();
             $table->string('reference')->nullable()->unique();
@@ -28,6 +27,7 @@ return new class extends Migration
             $table->string('compare_currency_code', 3)->nullable();
             $table->decimal('exchange_rate', 10, 4)->default(1);
             $table->dateTime('placed_at')->nullable()->index();
+            $table->dateTime('closed_at')->nullable()->index();
             $table->jsonb('meta')->nullable();
             $table->timestamps();
             $table->foreignId('customer_id')->nullable()->constrained($this->prefix.'customers');

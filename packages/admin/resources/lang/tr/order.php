@@ -7,6 +7,8 @@ return [
         'manage' => 'Yönet',
     ],
     'tabs' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
         'all' => 'Tümü',
     ],
     'transactions' => [

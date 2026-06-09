@@ -1,11 +1,13 @@
-# 0022 — Order fulfilments & derived order status
+# 0022 — Order fulfilments, derived statuses & open/closed lifecycle
 
 - Status: draft
 - Author: Glenn Jacobs
 - Created: 2026-06-04
 - TODO item: "Implement state machines, replacing soft-deletes — products & orders" (the payment/fulfilment half deferred from spec 0021)
 
-> **Handover from [[0021-state-machines]].** Spec 0021 deliberately shipped the order as a **single** hand-driven `OrderState` machine and deferred the payment/fulfilment decomposition to "the next spec, which can design them once with every source record on the table." This is that spec. It introduces the order-fulfilment concept, derives **payment status** from `transactions` (already on the table) and **fulfilment status** from the new `Fulfilment` records, and converts the headline `Order::$status` from hand-driven into a value **derived** from those two — keeping `OnHold` / `Cancelled` / `Refunded` as manual overrides that take precedence. The items 0021 explicitly dropped — `States/Order/Payment/*`, `States/Order/Fulfilment/*`, `OrderStateCategory`, `OrderStateConfig`'s resolver, and `computeOrderStatus()` — are reintroduced here, now backed by real source records.
+> **Amendment — the headline `OrderState` is removed (open/closed lifecycle).** As originally written this spec kept a derived headline `Order::$status` (§D) computed from payment × fulfilment with `OnHold` / `Cancelled` / `Refunded` overrides. In review that third status proved confusing alongside the two rollups it derived from, so it was **dropped entirely**. An order now carries only the two derived rollups (`payment_status`, `fulfilment_status`) plus a Shopify-style **open/closed archive**: a nullable `closed_at` timestamp (null = open, set = closed/archived), with `Order::isOpen()/isClosed()`, `scopeOpen()/scopeClosed()`, and `CloseOrder` / `ReopenOrder` actions (`OrderClosed` / `OrderReopened` events). This **supersedes §D in full** and amends §E/§F/§G: there is no `OrderState` machine, no `OrderStateConfig`, no `computeOrderStatus()`/`overrideStates()`, and no `OrderStatusUpdated`/headline notifications. `OrderStateCategory`, `States/Order/Order/*`, and the order-status-tied actions (`MarkOrderAsComplete/Shipped`, `UpdateOrderStatus`) and Filament actions (Cancel/Hold/Resume/MarkComplete/MarkShipped/UpdateStatus) are removed. Order-level notifications are sent off `payment_status` / `fulfilment_status` changes (`SendOrderPaymentStatusNotifications` / `SendOrderFulfilmentStatusNotifications`) instead. **`States/Order/Payment/*` and `States/Order/Fulfilment/*` (the two derived rollups in §B/§C) are unaffected and remain.** The fulfilment model (§A) and operations (§G) are likewise unaffected.
+
+> **Handover from [[0021-state-machines]].** Spec 0021 deliberately shipped the order as a **single** hand-driven `OrderState` machine and deferred the payment/fulfilment decomposition to "the next spec, which can design them once with every source record on the table." This is that spec. It introduces the order-fulfilment concept, derives **payment status** from `transactions` (already on the table) and **fulfilment status** from the new `Fulfilment` records. (It originally also re-derived the headline `Order::$status`; per the amendment above that headline has since been removed in favour of the open/closed archive.) The items 0021 explicitly dropped — `States/Order/Payment/*`, `States/Order/Fulfilment/*` — are reintroduced here, now backed by real source records.
 
 ## Problem
 
@@ -211,26 +213,29 @@ interface OrderStateConfig   // extends the 0021 contract
 
 Baseline migration `2026_01_01_000028_create_orders_table.php` is edited in place (v2 pre-release; same rule as 0017–0021):
 
-- Keep `status` (headline `OrderState`, default `awaiting-payment`).
+- **Drop `status`** (the headline `OrderState` column — removed per the amendment).
 - Add `payment_status` string, indexed, default `pending`.
 - Add `fulfilment_status` string, indexed, default `unfulfilled`.
+- Add `closed_at` datetime, nullable, indexed (the open/closed archive flag; null = open).
 
 ```php
 // Models/Order.php casts()
-'status'            => OrderState::class,
 'payment_status'    => PaymentState::class,
 'fulfilment_status' => FulfilmentStatus::class,
+'closed_at'         => 'datetime',
 ```
 
-PHPDoc: `@property PaymentState $payment_status`, `@property FulfilmentStatus $fulfilment_status`. `payment_status` / `fulfilment_status` are **stored** (so they are queryable/filterable/indexable) and kept fresh by the recompute observers (§F) — not computed on every read.
+PHPDoc: `@property PaymentState $payment_status`, `@property FulfilmentStatus $fulfilment_status`, `@property ?Carbon $closed_at`. `payment_status` / `fulfilment_status` are **stored** (so they are queryable/filterable/indexable) and kept fresh by the recompute observers (§F) — not computed on every read. `closed_at` is set/cleared by `CloseOrder` / `ReopenOrder`.
 
 ### F. Recompute observers
 
-- **`TransactionObserver`** (new) — on `created`/`updated`/`deleted` of a `Transaction`, recompute the parent order's `payment_status` via `ResolvePaymentStatus`, then recompute `status` (§D). Writes use `saveQuietly()` to avoid loops; the `status` change still flows through `OrderObserver` so `OrderStatusUpdated` fires.
-- **`FulfilmentObserver`** (new) — on any `Fulfilment` / `FulfilmentLine` change, recompute the order's `fulfilment_status` via `ResolveFulfilmentStatus`, then recompute `status`.
-- **`OrderObserver`** (from 0021) — unchanged in spirit: logs the `status` change and dispatches `OrderStatusUpdated`. Extended to **suppress** the derived recompute while `status` ∈ `overrideStates()`, and to run a recompute when the merchant transitions *out* of an override (e.g. `OnHold → InProcess` via the resume action re-derives rather than trusting the literal target).
+> Amended per the open/closed change: `RecomputeOrderStatus` now only recomputes the two rollups (there is no headline to derive). When a rollup value changes it fires `OrderPaymentStatusUpdated` / `OrderFulfilmentStatusUpdated`, which the notification listeners consume.
 
-A single private `recomputeOrderStatus(Order $order)` helper (on a shared concern or the config) centralises: if in override → return; else `status = computeOrderStatus(payment_status, fulfilment_status)`, guarded-transition if legal.
+- **`TransactionObserver`** (new) — on `created`/`updated`/`deleted` of a `Transaction`, recompute the parent order's `payment_status` via `ResolvePaymentStatus`. Writes use `saveQuietly()` to avoid loops.
+- **`FulfilmentObserver`** (new) — on any `Fulfilment` / `FulfilmentLine` change, recompute the order's `fulfilment_status` via `ResolveFulfilmentStatus`.
+- **`OrderObserver`** — creates the initial fulfilment on placement (`placed_at` set). It no longer logs a status change or dispatches a headline event (the headline is gone).
+
+`RecomputeOrderStatus::execute(Order $order)` centralises both rollups: resolve `payment_status` + `fulfilment_status`, `saveQuietly()`, and dispatch the per-rollup events on change.
 
 Registration alongside the existing `Order::observe(...)` in `LunarServiceProvider::bootingPackage()`.
 
@@ -346,8 +351,10 @@ Like split, merge preserves total fulfilled quantity, so the rollups are untouch
 
 ## Migration impact
 
+> **Open/closed amendment.** The headline `OrderState` removal changes the migration impact below: the `orders.status` column is **dropped** (not kept), a nullable indexed `closed_at` is **added**, and all `OrderState` / `OrderStateConfig` / order-status-action surface is **removed** rather than extended. v1 → v2: a v1 order's headline maps to open/closed — historically "complete"/"cancelled"/"refunded" orders backfill as **closed** (`closed_at` = the order's updated/placed time), everything else **open**; the merchant re-derives money/fulfilment from the rollups. `States\Order\Order\*`, `OrderStateCategory`, `OrderStateConfig`, `MarkOrderAsComplete/Shipped`, `UpdateOrderStatus`, and the Filament Cancel/Hold/Resume/MarkComplete/MarkShipped/UpdateStatus actions are removed (no Rector target — flagged for manual migration); `states.order.*` collapses to `{open,closed}`.
+
 - **Baseline migrations edited in place** (v2 pre-release):
-  - `..._create_orders_table.php` — add `payment_status` (default `pending`, indexed) and `fulfilment_status` (default `unfulfilled`, indexed).
+  - `..._create_orders_table.php` — **drop `status`**; add `payment_status` (default `pending`, indexed), `fulfilment_status` (default `unfulfilled`, indexed), and `closed_at` (nullable, indexed).
   - **New** baseline migrations `..._create_fulfilments_table.php` and `..._create_fulfilment_lines_table.php` (§A). New tables, so genuinely new files even under the in-place rule.
   - **New** baseline migrations `..._create_locations_table.php` and `..._add_location_id_to_fulfilments_table.php` (§A Locations). `location_id` is a separate add-column migration (rather than in the fulfilments baseline) so it orders after the locations table for the FK.
 - **No core data migration.** v2 has no live data. `InstallLunar` seeds the `Default` location.

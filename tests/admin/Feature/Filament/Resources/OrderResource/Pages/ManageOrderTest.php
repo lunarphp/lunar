@@ -141,24 +141,24 @@ it('can download order pdf', function () {
         ->assertFileDownloaded("Order-{$this->order->reference}.pdf");
 });
 
-it('can place an order on hold', function () {
+it('can close an order', function () {
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
     ])
-        ->assertActionExists('place_on_hold')
-        ->callAction('place_on_hold');
+        ->assertActionExists('close_order')
+        ->callAction('close_order');
 
-    expect((string) $this->order->refresh()->status)->toBe('on-hold');
+    expect($this->order->refresh()->isClosed())->toBeTrue();
 });
 
-it('can resume an order from on-hold', function () {
-    $this->order->forceFill(['status' => 'on-hold'])->save();
+it('can reopen a closed order', function () {
+    $this->order->forceFill(['closed_at' => now()])->save();
 
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
     ])
-        ->assertActionExists('resume_order')
-        ->callAction('resume_order');
+        ->assertActionExists('reopen_order')
+        ->callAction('reopen_order');
 
-    expect((string) $this->order->refresh()->status)->toBe('awaiting-payment');
+    expect($this->order->refresh()->isOpen())->toBeTrue();
 });

@@ -7,10 +7,10 @@ use Lunar\Core\States\Fulfilment\FulfilmentState;
 /**
  * Catalogue + transition table for the per-parcel fulfilment lifecycle.
  *
- * Mirrors `OrderStateConfig`: implementations declare which fulfilment states
- * exist, which transitions are legal, and the default state. The abstract
- * `FulfilmentState` base reads from the bound implementation — so swapping
- * this contract is the single seam for reshaping the parcel lifecycle.
+ * Implementations declare which fulfilment states exist, which transitions are
+ * legal, and the default state. The abstract `FulfilmentState` base reads from
+ * the bound implementation — so swapping this contract is the single seam for
+ * reshaping the parcel lifecycle.
  *
  * Bind your implementation during service-provider `register()` so the
  * catalogue is in place before any model uses the cast (Spatie caches the

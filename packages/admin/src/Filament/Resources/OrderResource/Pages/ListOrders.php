@@ -7,9 +7,6 @@ use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseListRecords;
-use Lunar\Core\Contracts\OrderStateConfig;
-use Lunar\Core\Models\Order;
-use Lunar\Core\States\Order\OrderState;
 
 class ListOrders extends BaseListRecords
 {
@@ -24,17 +21,12 @@ class ListOrders extends BaseListRecords
 
     public function getDefaultTabs(): array
     {
-        $orderStates = app(OrderStateConfig::class)->orderStates();
-
         return [
+            'open' => Tab::make(__('lunarpanel::order.tabs.open'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereNull('closed_at')),
+            'closed' => Tab::make(__('lunarpanel::order.tabs.closed'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereNotNull('closed_at')),
             'all' => Tab::make(__('lunarpanel::order.tabs.all')),
-            ...collect($orderStates)->mapWithKeys(
-                /** @param class-string<OrderState> $class */
-                fn (string $class) => [
-                    $class::$name => Tab::make((new $class(new Order))->label())
-                        ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $class::$name)),
-                ]
-            ),
         ];
     }
 

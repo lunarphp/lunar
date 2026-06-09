@@ -7,6 +7,8 @@ return [
         'manage' => 'Zarządzanie zamówieniami',
     ],
     'tabs' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
         'all' => 'Wszelkie',
     ],
     'transactions' => [

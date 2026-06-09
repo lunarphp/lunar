@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
-use Lunar\Core\States\Order\Order\InProcess;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -17,7 +16,7 @@ beforeEach(function () {
     Currency::factory()->create(['default' => true]);
 });
 
-class FakeShippedNotification extends Notification
+class FakePaidNotification extends Notification
 {
     public function __construct(public Order $order) {}
 
@@ -27,20 +26,23 @@ class FakeShippedNotification extends Notification
     }
 }
 
-test('notifications configured for a status are dispatched when the order enters that state', function () {
+test('notifications configured for a payment status are dispatched when the order reaches it', function () {
     config([
         'lunar.orders.notifications' => [
-            'in-process' => [FakeShippedNotification::class],
+            'paid' => [FakePaidNotification::class],
         ],
     ]);
 
     NotificationFacade::fake();
 
-    $order = Order::factory()->create(['status' => 'awaiting-payment']);
+    $order = Order::factory()->create();
 
-    $order->status->transitionTo(InProcess::class);
+    $order->transactions()->create([
+        'type' => 'capture', 'success' => true, 'amount' => $order->total,
+        'driver' => 'lunar', 'reference' => uniqid(), 'status' => 'settled',
+    ]);
 
-    NotificationFacade::assertSentTo($order->fresh(), FakeShippedNotification::class);
+    NotificationFacade::assertSentTo($order->fresh(), FakePaidNotification::class);
 });
 
 test('no notifications are dispatched when none are configured', function () {
@@ -48,9 +50,12 @@ test('no notifications are dispatched when none are configured', function () {
 
     NotificationFacade::fake();
 
-    $order = Order::factory()->create(['status' => 'awaiting-payment']);
+    $order = Order::factory()->create();
 
-    $order->status->transitionTo(InProcess::class);
+    $order->transactions()->create([
+        'type' => 'capture', 'success' => true, 'amount' => $order->total,
+        'driver' => 'lunar', 'reference' => uniqid(), 'status' => 'settled',
+    ]);
 
     NotificationFacade::assertNothingSent();
 });

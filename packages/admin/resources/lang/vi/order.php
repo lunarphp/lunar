@@ -7,6 +7,8 @@ return [
         'manage' => 'Quản lý',
     ],
     'tabs' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
         'all' => 'Tất cả',
     ],
     'transactions' => [

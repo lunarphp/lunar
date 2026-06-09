@@ -7,6 +7,8 @@ return [
         'manage' => 'Kezelés',
     ],
     'tabs' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
         'all' => 'Mind',
     ],
     'transactions' => [

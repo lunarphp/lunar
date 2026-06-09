@@ -36,7 +36,6 @@ use Lunar\Core\Contracts\FulfilmentManager;
 use Lunar\Core\Contracts\FulfilmentStateConfig;
 use Lunar\Core\Contracts\ModelManifest;
 use Lunar\Core\Contracts\OrderReferenceGenerator;
-use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Contracts\PaymentManager;
 use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\Contracts\ProvidesTelemetryInsights;
@@ -45,11 +44,13 @@ use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\Contracts\TelemetryService;
 use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
-use Lunar\Core\Events\Orders\OrderStatusUpdated;
+use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
+use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
 use Lunar\Core\Listeners\CartSessionAuthListener;
-use Lunar\Core\Listeners\SendOrderStatusNotifications;
+use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
+use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
 use Lunar\Core\Managers\CartSessionManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
 use Lunar\Core\Managers\FulfilmentManager as FulfilmentManagerImpl;
@@ -116,7 +117,6 @@ use Lunar\Core\Pricing\DefaultPriceFormatter;
 use Lunar\Core\Pricing\PriceCalculatorInterface;
 use Lunar\Core\Pricing\PriceFormatterInterface;
 use Lunar\Core\States\Fulfilment\DefaultFulfilmentStateConfig;
-use Lunar\Core\States\Order\DefaultOrderStateConfig;
 use Lunar\Core\Telemetry\Insights as TelemetryInsights;
 use Lunar\Core\Telemetry\TelemetryService as TelemetryServiceImpl;
 use Lunar\Core\Utils\MeasurementConverter;
@@ -243,7 +243,8 @@ class LunarServiceProvider extends ServiceProvider
             [CartSessionAuthListener::class, 'logout']
         );
 
-        Event::listen(OrderStatusUpdated::class, SendOrderStatusNotifications::class);
+        Event::listen(OrderPaymentStatusUpdated::class, SendOrderPaymentStatusNotifications::class);
+        Event::listen(OrderFulfilmentStatusUpdated::class, SendOrderFulfilmentStatusNotifications::class);
 
         $this->registerStaffAuthGuard();
         $this->registerStaffStateListeners();
@@ -352,10 +353,6 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(OrderReferenceGenerator::class, function ($app) {
             return $app->make(OrderReferenceGeneratorImpl::class);
-        });
-
-        $this->app->singleton(OrderStateConfig::class, function ($app) {
-            return $app->make(DefaultOrderStateConfig::class);
         });
 
         $this->app->singleton(FulfilmentStateConfig::class, function ($app) {

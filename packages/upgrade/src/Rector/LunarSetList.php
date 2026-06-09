@@ -496,8 +496,6 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\OrderStatus' => 'Lunar\\Filament\\Support\\OrderStatus',
         'Lunar\\Admin\\Support\\CustomerStatus' => 'Lunar\\Filament\\Support\\CustomerStatus',
         'Lunar\\Admin\\Support\\Actions\\Traits\\CreatesChildCollections' => 'Lunar\\Filament\\Support\\Concerns\\CreatesChildCollections',
-        'Lunar\\Admin\\Support\\Actions\\Traits\\UpdatesOrderStatus' => 'Lunar\\Filament\\Support\\Concerns\\UpdatesOrderStatus',
-        'Lunar\\Admin\\Support\\Actions\\Orders\\UpdateStatusBulkAction' => 'Lunar\\Filament\\Tables\\Actions\\Orders\\UpdateStatusBulkAction',
         'Lunar\\Admin\\Base\\LunarPanelDiscountInterface' => 'Lunar\\Filament\\Contracts\\DiscountFormType',
         'Lunar\\Admin\\Events\\ChildCollectionCreated' => 'Lunar\\Filament\\Events\\ChildCollectionCreated',
         'Lunar\\Admin\\Events\\CollectionProductAttached' => 'Lunar\\Filament\\Events\\CollectionProductAttached',
@@ -530,11 +528,6 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\DataTransferObjects\\Permission' => 'Lunar\\Core\\Support\\DataTransferObjects\\Permission',
         'Lunar\\Admin\\Support\\DataTransferObjects\\Role' => 'Lunar\\Core\\Support\\DataTransferObjects\\Role',
         'Lunar\\Admin\\Support\\Facades\\LunarAccessControl' => 'Lunar\\Core\\Support\\Facades\\LunarAccessControl',
-
-        // Spec 0022: the Backordered headline order state is dropped (a real
-        // backorder is a stock concept, reintroduced by a future stock spec).
-        // References map to OnHold — the nearest "blocked" override state.
-        'Lunar\\Core\\States\\Order\\Order\\Backordered' => 'Lunar\\Core\\States\\Order\\Order\\OnHold',
 
     ];
 
@@ -699,9 +692,7 @@ final class LunarSetList
         'Lunar\\Core\\Actions\\Collections\\SortProducts' => 'Lunar\\Core\\Contracts\\Actions\\Collections\\SortsProducts',
         'Lunar\\Core\\Actions\\Orders\\CaptureOrder' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\CapturesOrder',
         'Lunar\\Core\\Actions\\Orders\\GenerateOrderReference' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\GeneratesOrderReference',
-        'Lunar\\Core\\Actions\\Orders\\MarkOrderAsShipped' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\MarksOrderAsShipped',
         'Lunar\\Core\\Actions\\Orders\\RefundOrder' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\RefundsOrder',
-        'Lunar\\Core\\Actions\\Orders\\UpdateOrderStatus' => 'Lunar\\Core\\Contracts\\Actions\\Orders\\UpdatesOrderStatus',
         'Lunar\\Core\\Actions\\Products\\AdjustStock' => 'Lunar\\Core\\Contracts\\Actions\\Products\\AdjustsStock',
         'Lunar\\Core\\Actions\\Products\\DuplicateProduct' => 'Lunar\\Core\\Contracts\\Actions\\Products\\DuplicatesProduct',
         'Lunar\\Core\\Actions\\Products\\MapVariantsToProductOptions' => 'Lunar\\Core\\Contracts\\Actions\\Products\\MapsVariantsToProductOptions',

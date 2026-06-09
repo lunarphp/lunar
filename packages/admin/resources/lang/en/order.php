@@ -11,6 +11,8 @@ return [
     ],
 
     'tabs' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
         'all' => 'All',
     ],
 

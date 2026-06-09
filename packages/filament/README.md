@@ -308,9 +308,8 @@ First-class Filament `Action` / `BulkAction` classes for every commerce verb the
 | --- | --- | --- |
 | `Orders\RefundOrderAction` | `Core\Actions\Orders\RefundOrder` | Order header / detail page |
 | `Orders\CaptureOrderAction` | `Core\Actions\Orders\CaptureOrder` | Order header / detail page |
-| `Orders\UpdateOrderStatusAction` / `UpdateOrderStatusBulkAction` | `Core\Actions\Orders\UpdateOrderStatus` | Order header + order table bulk |
-| `Orders\MarkOrderAsShippedAction` / `MarkOrdersAsShippedBulkAction` | `Core\Actions\Orders\MarkOrderAsShipped` | Order header + order table bulk |
-| `Orders\MarkOrderAsCompleteAction` | `Core\Actions\Orders\MarkOrderAsComplete` | Order header (manual `Shipped → Complete` close) |
+| `Orders\CloseOrderAction` | `Core\Actions\Orders\CloseOrder` | Order header (archive a dealt-with order) |
+| `Orders\ReopenOrderAction` | `Core\Actions\Orders\ReopenOrder` | Order header (un-archive a closed order) |
 | `Orders\AddOrderNoteAction` | — (Filament-only single-field write) | Order header |
 | `Orders\DownloadOrderPdfAction` | — (Filament-only, subclass of `Support\DownloadPdfAction`) | Order header |
 | `Products\DuplicateProductAction` | `Core\Actions\Products\DuplicateProduct` | Product row / header |
@@ -323,15 +322,15 @@ Drop into any header/row/bulk action array — they work like any Filament actio
 
 ```php
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
+use Lunar\Filament\Actions\Orders\CloseOrderAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
-use Lunar\Filament\Actions\Orders\UpdateOrderStatusAction;
 
 protected function getDefaultHeaderActions(): array
 {
     return [
         CaptureOrderAction::make(),
         RefundOrderAction::make(),
-        UpdateOrderStatusAction::make(),
+        CloseOrderAction::make(),
     ];
 }
 ```

@@ -35,13 +35,11 @@ use Lunar\Admin\Support\Pages\BaseViewRecord;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
-use Lunar\Filament\Actions\Orders\CancelOrderAction;
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
+use Lunar\Filament\Actions\Orders\CloseOrderAction;
 use Lunar\Filament\Actions\Orders\DownloadOrderPdfAction;
-use Lunar\Filament\Actions\Orders\MarkOrderAsCompleteAction;
-use Lunar\Filament\Actions\Orders\PlaceOrderOnHoldAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
-use Lunar\Filament\Actions\Orders\ResumeOrderAction;
+use Lunar\Filament\Actions\Orders\ReopenOrderAction;
 use Lunar\Filament\Forms\Components\Tags as TagsComponent;
 use Lunar\Filament\Infolists\Components\Tags;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -388,10 +386,8 @@ class ManageOrder extends BaseViewRecord
         return [
             CaptureOrderAction::make(),
             RefundOrderAction::make(),
-            MarkOrderAsCompleteAction::make()->after($bumpActivity),
-            PlaceOrderOnHoldAction::make()->after($bumpActivity),
-            ResumeOrderAction::make()->after($bumpActivity),
-            CancelOrderAction::make()->after($bumpActivity),
+            CloseOrderAction::make()->after($bumpActivity),
+            ReopenOrderAction::make()->after($bumpActivity),
             DownloadOrderPdfAction::make(),
         ];
     }

@@ -3,24 +3,20 @@
 namespace Lunar\Filament\Tables\Order;
 
 use Carbon\Carbon;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
-use Lunar\Core\States\Order\OrderState;
 use Lunar\Core\States\Order\Payment\PaymentState;
-use Lunar\Filament\Actions\Orders\UpdateOrderStatusBulkAction;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Support\CustomerStatus;
-use Lunar\Filament\Support\OrderStatus;
 use Lunar\Filament\Support\RecordUrls;
 
 class OrderTable
@@ -43,12 +39,6 @@ class OrderTable
                         ->url(fn ($record) => RecordUrls::for('order', $record)),
                 ])
                 ->recordUrl(fn ($record) => RecordUrls::for('order', $record))
-                ->toolbarActions([
-                    BulkActionGroup::make([
-                        UpdateOrderStatusBulkAction::make()
-                            ->deselectRecordsAfterCompletion(),
-                    ]),
-                ])
                 ->defaultSort('id', 'DESC')
                 ->selectCurrentPageOnly()
                 ->deferLoading()
@@ -59,11 +49,13 @@ class OrderTable
     public static function getColumns(): array
     {
         return [
-            TextColumn::make('status')
+            TextColumn::make('closed_at')
                 ->label(__('lunar-filament::order.table.status.label'))
                 ->toggleable()
-                ->formatStateUsing(fn ($state) => OrderStatus::getLabel((string) $state))
-                ->color(fn ($state) => OrderStatus::getColor((string) $state))
+                ->state(fn (Order $record): string => $record->isClosed()
+                    ? __('lunar::states.order.closed')
+                    : __('lunar::states.order.open'))
+                ->color(fn (Order $record): string => $record->isClosed() ? 'gray' : 'success')
                 ->badge(),
             TextColumn::make('payment_status')
                 ->label(__('lunar-filament::order.table.payment_status.label'))
@@ -127,14 +119,15 @@ class OrderTable
     public static function getFilters(): array
     {
         return [
-            SelectFilter::make('status')
+            TernaryFilter::make('closed_at')
                 ->label(__('lunar-filament::order.table.status.label'))
-                ->options(
-                    collect(app(OrderStateConfig::class)->orderStates())
-                        /** @var class-string<OrderState> $class */
-                        ->mapWithKeys(fn (string $class) => [$class::$name => (new $class(new Order))->label()])
-                )
-                ->multiple(),
+                ->trueLabel(__('lunar::states.order.closed'))
+                ->falseLabel(__('lunar::states.order.open'))
+                ->queries(
+                    true: fn (Builder $query) => $query->whereNotNull('closed_at'),
+                    false: fn (Builder $query) => $query->whereNull('closed_at'),
+                    blank: fn (Builder $query) => $query,
+                ),
             SelectFilter::make('payment_status')
                 ->label(__('lunar-filament::order.table.payment_status.label'))
                 ->options([

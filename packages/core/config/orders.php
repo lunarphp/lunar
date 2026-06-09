@@ -65,20 +65,16 @@ return [
     | delivered via `notify()`.
     |
     | The same flat-key lookup covers every machine, keyed by $name:
-    |   - headline order status (e.g. 'shipped', 'complete')
     |   - derived payment_status (e.g. 'paid', 'refunded')
     |   - derived fulfilment_status (e.g. 'fulfilled')
     |   - per-parcel fulfilment state (e.g. 'shipped')
     |
-    | Read by DefaultOrderStateConfig::notificationsFor() and
-    | DefaultFulfilmentStateConfig::notificationsFor(); swap those bindings
-    | to source notifications from anywhere else.
+    | Order-level notifications are sent by SendOrderPaymentStatusNotifications
+    | and SendOrderFulfilmentStatusNotifications; per-parcel fulfilment
+    | notifications by DefaultFulfilmentStateConfig::notificationsFor().
     |
     */
     'notifications' => [
-        // 'shipped' => [
-        //     App\Notifications\OrderShipped::class,       // order status (0021)
-        // ],
         // 'paid' => [
         //     App\Notifications\PaymentReceived::class,     // payment_status
         // ],

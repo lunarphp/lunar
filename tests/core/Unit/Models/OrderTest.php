@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Lunar\Core\Contracts\Actions\Orders\ClosesOrder;
+use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
@@ -11,7 +13,6 @@ use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Transaction;
-use Lunar\Core\States\Order\Order\InProcess;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
@@ -65,7 +66,7 @@ test('can make an order', function () {
     $this->assertDatabaseHas((new Order)->getTable(), [
         'id' => $order->id,
         'reference' => $order->reference,
-        'status' => (string) $order->status,
+        'payment_status' => (string) $order->payment_status,
         'sub_total' => $order->sub_total,
         'tax_total' => $order->tax_total,
         'total' => $order->total,
@@ -117,17 +118,29 @@ test('can create lines', function () {
     expect($order->refresh()->lines)->toHaveCount(1);
 });
 
-test('can update status', function () {
-    $order = Order::factory()->create([
-        'user_id' => null,
-        'status' => 'awaiting-payment',
-    ]);
+test('can close and reopen an order', function () {
+    $order = Order::factory()->create(['user_id' => null]);
 
-    expect((string) $order->status)->toEqual('awaiting-payment');
+    expect($order->isOpen())->toBeTrue()
+        ->and($order->isClosed())->toBeFalse();
 
-    $order->status->transitionTo(InProcess::class);
+    app(ClosesOrder::class)->execute($order);
 
-    expect((string) $order->fresh()->status)->toEqual('in-process');
+    expect($order->fresh()->isClosed())->toBeTrue()
+        ->and($order->fresh()->closed_at)->not->toBeNull();
+
+    app(ReopensOrder::class)->execute($order);
+
+    expect($order->fresh()->isOpen())->toBeTrue()
+        ->and($order->fresh()->closed_at)->toBeNull();
+});
+
+test('open and closed scopes filter by archive state', function () {
+    Order::factory()->create();
+    Order::factory()->closed()->create();
+
+    expect(Order::open()->count())->toBe(1)
+        ->and(Order::closed()->count())->toBe(1);
 });
 
 test('can create transaction for order', function () {

@@ -7,6 +7,8 @@ return [
         'manage' => 'Verwalten',
     ],
     'tabs' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
         'all' => 'All',
     ],
     'transactions' => [

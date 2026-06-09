@@ -8,7 +8,6 @@ use Lunar\Admin\Support\ActivityLog\Orders\Capture;
 use Lunar\Admin\Support\ActivityLog\Orders\EmailNotification;
 use Lunar\Admin\Support\ActivityLog\Orders\Intent;
 use Lunar\Admin\Support\ActivityLog\Orders\Refund;
-use Lunar\Admin\Support\ActivityLog\Orders\StatusUpdate;
 use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
@@ -23,7 +22,6 @@ class Manifest
         $this->events = [
             Order::morphName() => [
                 Comment::class,
-                StatusUpdate::class,
                 Capture::class,
                 Intent::class,
                 Refund::class,

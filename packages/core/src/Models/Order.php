@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,7 +22,6 @@ use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
-use Lunar\Core\States\Order\OrderState;
 use Lunar\Core\States\Order\Payment\PaymentState;
 use Spatie\ModelStates\HasStates;
 
@@ -31,7 +31,6 @@ use Spatie\ModelStates\HasStates;
  * @property ?int $user_id
  * @property int $channel_id
  * @property bool $new_customer
- * @property OrderState $status
  * @property PaymentState $payment_status
  * @property FulfilmentStatus $fulfilment_status
  * @property ?string $reference
@@ -48,6 +47,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?string $compare_currency_code
  * @property float $exchange_rate
  * @property ?Carbon $placed_at
+ * @property ?Carbon $closed_at
  * @property ?array $meta
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -70,6 +70,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'tax_breakdown' => TaxBreakdown::class,
         'meta' => AsArrayObject::class,
         'placed_at' => 'datetime',
+        'closed_at' => 'datetime',
         'sub_total' => 'integer',
         'discount_total' => 'integer',
         'discount_breakdown' => DiscountBreakdown::class,
@@ -78,7 +79,6 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'total' => 'integer',
         'shipping_total' => 'integer',
         'new_customer' => 'boolean',
-        'status' => OrderState::class,
         'payment_status' => PaymentState::class,
         'fulfilment_status' => FulfilmentStatus::class,
     ];
@@ -100,9 +100,36 @@ class Order extends Base implements Contracts\Order, HasCurrency
         return OrderFactory::new();
     }
 
-    public function statusLabel(): string
+    /**
+     * Whether the order is still open (not archived).
+     */
+    public function isOpen(): bool
     {
-        return $this->status->label();
+        return blank($this->closed_at);
+    }
+
+    /**
+     * Whether the order has been closed (archived / dealt with).
+     */
+    public function isClosed(): bool
+    {
+        return ! $this->isOpen();
+    }
+
+    /**
+     * Limit the query to open (un-archived) orders.
+     */
+    public function scopeOpen(Builder $query): Builder
+    {
+        return $query->whereNull('closed_at');
+    }
+
+    /**
+     * Limit the query to closed (archived) orders.
+     */
+    public function scopeClosed(Builder $query): Builder
+    {
+        return $query->whereNotNull('closed_at');
     }
 
     public function channel(): BelongsTo
@@ -210,7 +237,6 @@ class Order extends Base implements Contracts\Order, HasCurrency
     public static function getDefaultLogExcept(): array
     {
         return [
-            'status',
             'payment_status',
             'fulfilment_status',
         ];

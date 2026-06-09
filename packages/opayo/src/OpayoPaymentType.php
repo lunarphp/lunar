@@ -125,11 +125,8 @@ class OpayoPaymentType extends AbstractPayment
             );
         }
 
-        $status = $this->data['status'] ?? null;
-
         if ($successful) {
             $this->order->update([
-                'status' => $status ?? ($this->config['authorized'] ?? null),
                 'placed_at' => now(),
             ]);
         }
@@ -322,11 +319,8 @@ class OpayoPaymentType extends AbstractPayment
             success: $successful
         );
 
-        $status = $this->data['status'] ?? null;
-
         if ($successful) {
             $this->order->update([
-                'status' => $status ?? ($this->config['authorized'] ?? null),
                 'placed_at' => now(),
             ]);
         }

@@ -4,12 +4,9 @@ namespace Lunar\Admin\Filament\Resources\OrderResource\Pages;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\OrderResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Core\Contracts\OrderStateConfig;
 
 class EditOrder extends BaseEditRecord
 {
@@ -21,24 +18,6 @@ class EditOrder extends BaseEditRecord
             Action::make('payment related actions')
                 ->color('gray')
                 ->url('#'),
-            Action::make('update_status')
-                ->label(__('lunarpanel::order.action.update_status.label'))
-                ->schema([
-                    Select::make('status')
-                        ->label(__('lunarpanel::order.form.status.label'))
-                        ->default((string) $this->record->status)
-                        ->options(fn () => collect(app(OrderStateConfig::class)->orderStates())
-                            ->mapWithKeys(fn (string $class) => [$class::$name => (new $class($this->record))->label()]))
-                        ->required(),
-                    Placeholder::make('additional content and mailer'),
-                ])
-                ->modalWidth('md')
-                ->slideOver()
-                ->action(fn ($record, $data) => $record
-                    ->update([
-                        'status' => $data['status'],
-                    ]))
-                ->after(fn () => Notification::make()->title(__('lunarpanel::order.action.update_status.notification'))->success()->send()),
             Action::make('download_pdf')
                 ->label(__('lunarpanel::order.action.download_order_pdf.label'))
                 ->action(function () {

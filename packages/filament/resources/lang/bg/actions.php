@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Close order',
+            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'notification' => [
+                'success' => 'Order closed.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Reopen order',
+            'confirm' => 'Reopening returns the order to your open work queue.',
+            'notification' => [
+                'success' => 'Order reopened.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',

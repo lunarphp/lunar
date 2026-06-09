@@ -2,18 +2,13 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
 use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
 use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
-use Lunar\Core\States\Order\Order\AwaitingPayment;
-use Lunar\Core\States\Order\Order\InProcess;
-use Lunar\Core\States\Order\Order\OnHold;
-use Lunar\Core\States\Order\Order\PartiallyShipped;
-use Lunar\Core\States\Order\Order\Refunded as OrderRefunded;
-use Lunar\Core\States\Order\Order\Shipped;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -26,7 +21,7 @@ beforeEach(function () {
 
 function placedOrder(int $quantity, int $total = 1000): array
 {
-    $order = Order::factory()->create(['status' => 'awaiting-payment', 'total' => $total]);
+    $order = Order::factory()->create(['total' => $total]);
     $line = OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'physical', 'quantity' => $quantity]);
 
     return [$order, $line];
@@ -40,40 +35,33 @@ function capture(Order $order, int $amount): void
     ]);
 }
 
-test('a fresh order is awaiting payment, pending and unfulfilled', function () {
+test('a fresh order is pending and unfulfilled', function () {
     [$order] = placedOrder(2);
 
-    expect($order->status)->toBeInstanceOf(AwaitingPayment::class)
-        ->and((string) $order->payment_status)->toBe('pending')
+    expect((string) $order->payment_status)->toBe('pending')
         ->and((string) $order->fulfilment_status)->toBe('unfulfilled');
 });
 
-test('capturing payment derives in-process', function () {
+test('capturing payment derives the paid payment status', function () {
     [$order] = placedOrder(2);
 
     capture($order, 1000);
 
-    $order->refresh();
-    expect((string) $order->payment_status)->toBe('paid')
-        ->and($order->status)->toBeInstanceOf(InProcess::class);
+    expect((string) $order->refresh()->payment_status)->toBe('paid');
 });
 
-test('shipping part then all of an order derives partially-shipped then shipped', function () {
+test('shipping part then all of an order derives partially-fulfilled then fulfilled', function () {
     [$order, $line] = placedOrder(2);
     capture($order, 1000);
 
     Fulfilments::ship(Fulfilments::create($order, [$line->id => 1]));
-    $order->refresh();
-    expect((string) $order->fulfilment_status)->toBe('partially-fulfilled')
-        ->and($order->status)->toBeInstanceOf(PartiallyShipped::class);
+    expect((string) $order->refresh()->fulfilment_status)->toBe('partially-fulfilled');
 
     Fulfilments::ship(Fulfilments::create($order, [$line->id => 1]));
-    $order->refresh();
-    expect((string) $order->fulfilment_status)->toBe('fulfilled')
-        ->and($order->status)->toBeInstanceOf(Shipped::class);
+    expect((string) $order->refresh()->fulfilment_status)->toBe('fulfilled');
 });
 
-test('a full refund derives the refunded override', function () {
+test('a full refund derives the refunded payment status', function () {
     [$order] = placedOrder(1);
     capture($order, 1000);
 
@@ -82,28 +70,7 @@ test('a full refund derives the refunded override', function () {
         'driver' => 'lunar', 'reference' => uniqid(), 'status' => 'refunded',
     ]);
 
-    $order->refresh();
-    expect((string) $order->payment_status)->toBe('refunded')
-        ->and($order->status)->toBeInstanceOf(OrderRefunded::class);
-});
-
-test('a manual override suppresses derivation until resumed', function () {
-    [$order, $line] = placedOrder(1);
-    capture($order, 1000);
-
-    $order->refresh()->status->transitionTo(OnHold::class);
-    expect($order->fresh()->status)->toBeInstanceOf(OnHold::class);
-
-    // Ship everything while on hold — the headline stays put, but the derived
-    // fulfilment column still tracks reality.
-    Fulfilments::ship(Fulfilments::create($order, [$line->id => 1]));
-    $order->refresh();
-    expect($order->status)->toBeInstanceOf(OnHold::class)
-        ->and((string) $order->fulfilment_status)->toBe('fulfilled');
-
-    // Resuming re-derives from the rollups rather than trusting the literal target.
-    $order->status->transitionTo(InProcess::class);
-    expect($order->fresh()->status)->toBeInstanceOf(Shipped::class);
+    expect((string) $order->refresh()->payment_status)->toBe('refunded');
 });
 
 test('payment status change dispatches OrderPaymentStatusUpdated', function () {
@@ -113,7 +80,21 @@ test('payment status change dispatches OrderPaymentStatusUpdated', function () {
 
     capture($order, 1000);
 
-    Event::assertDispatched(OrderPaymentStatusUpdated::class, function (OrderPaymentStatusUpdated $event) {
-        return (string) $event->newStatus === 'paid';
-    });
+    Event::assertDispatched(
+        OrderPaymentStatusUpdated::class,
+        fn (OrderPaymentStatusUpdated $event) => (string) $event->newStatus === 'paid',
+    );
+});
+
+test('fulfilment status change dispatches OrderFulfilmentStatusUpdated', function () {
+    [$order, $line] = placedOrder(1);
+
+    Event::fake([OrderFulfilmentStatusUpdated::class]);
+
+    Fulfilments::ship(Fulfilments::create($order, [$line->id => 1]));
+
+    Event::assertDispatched(
+        OrderFulfilmentStatusUpdated::class,
+        fn (OrderFulfilmentStatusUpdated $event) => (string) $event->newStatus === 'fulfilled',
+    );
 });
