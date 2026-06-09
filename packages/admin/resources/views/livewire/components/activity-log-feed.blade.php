@@ -43,9 +43,16 @@
                                         '-left-[calc(0.5rem_-_1px)]' => !$item['log']->causer,
                                     ])>
                                         @if ($email = $item['log']->causer?->email)
+                                            @php($ringColor = match($item['log']->event){
+                                                'order-cancelled' => '#ef4444',
+                                                'order-closed', 'order-reopened' => '#14b8a6',
+                                                'fulfilment-update' => '#6366f1',
+                                                default => null,
+                                            })
                                             <img
                                                 src="{{ $this->getAvatarUrl($email) }}"
                                                 class="w-6 h-6 rounded-full ring-4 ring-gray-200 dark:ring-gray-600"
+                                                @if ($ringColor) style="--tw-ring-color: {{ $ringColor }}" @endif
                                                 alt="{{ $logUserName }}"
                                             />
                                         @else
