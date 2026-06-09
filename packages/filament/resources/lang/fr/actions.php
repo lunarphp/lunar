@@ -98,10 +98,15 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Cancel order',
+            'reason' => 'Reason for cancellation',
+            'note' => 'Staff note',
+            'note_help' => 'Only you and other staff can see this note.',
+            'notify' => 'Send a notification to the customer',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Could not cancel the order.',
             ],
         ],
         'resume_order' => [
