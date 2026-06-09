@@ -16,6 +16,11 @@ Each item below should have a written spec in `specs/` (alongside this file in t
     - Drop the fake morph: rely on the existing `type = 'shipping'` column and store the option `identifier` + a snapshot of name/price/meta directly on the line
     - Make `purchasable_type`/`purchasable_id` nullable (ties in with "Make order line purchasables optional")
     - Resolve the live `ShippingOption` from `ShippingManifest` by identifier when needed, rather than via the polymorphic relation
+- Ship default professional customer notifications for the order lifecycle
+    - The system already *expects* notifications (e.g. order cancellation dispatches `OrderCancelled` with a "notify the customer" toggle, and `lunar.orders.notifications` keys off `cancelled` / `paid` / `fulfilled` / per-parcel `shipped`), but core ships **none** — every key is an empty/commented example, so out of the box a customer is never emailed and a developer must hand-roll each notification + template
+    - Provide a set of sensible, branded-but-overridable default `Notification` classes + mail templates for the key events: order confirmation (placed), payment received, fulfilment shipped (with tracking), order cancelled, refund issued
+    - Wire them as the defaults under `lunar.orders.notifications` (and the per-parcel fulfilment config) so the admin toggles actually send something; keep them publishable/swappable and respect the existing notify flags
+    - Consider a shared mailable layout + a way to disable per-event; ties into the storefront/branding work
 - Add `public_id` (ULID) to externally-addressable models
 - Cart/order line grouping
 - Split out Promotions concept from Discounts
