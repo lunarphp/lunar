@@ -356,7 +356,7 @@
                         @foreach ($fulfilment->trackings as $tracking)
                             @php($carrier = $tracking->carrier())
                             @php($trackingUrl = $tracking->url)
-                            <div class="flex items-center gap-1.5 px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
+                            <div class="flex items-center px-4 py-2 text-xs text-gray-500 dark:text-gray-400" style="gap:0.375rem;">
                                 <x-filament::icon icon="heroicon-m-truck" class="h-4 w-4 shrink-0" />
                                 @if ($carrier)
                                     <span class="font-medium text-gray-700 dark:text-gray-300">{{ $carrier->getName() }}</span>
