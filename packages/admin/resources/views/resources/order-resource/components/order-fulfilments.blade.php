@@ -369,7 +369,7 @@
                                     <span>{{ $tracking->tracking_number }}</span>
                                 @endif
                                 @if ($tracking->shipping_method)
-                                    <span>&middot; {{ $tracking->shipping_method }}</span>
+                                    <span>{{ $tracking->shipping_method }}</span>
                                 @endif
                                 <div class="-my-1 ml-auto shrink-0">
                                     <x-filament::icon-button
