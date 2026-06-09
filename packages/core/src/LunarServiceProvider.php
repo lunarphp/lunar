@@ -44,11 +44,13 @@ use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\Contracts\TelemetryService;
 use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
+use Lunar\Core\Events\Orders\OrderCancelled;
 use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
 use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
 use Lunar\Core\Listeners\CartSessionAuthListener;
+use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
 use Lunar\Core\Managers\CartSessionManager;
@@ -246,6 +248,7 @@ class LunarServiceProvider extends ServiceProvider
 
         Event::listen(OrderPaymentStatusUpdated::class, SendOrderPaymentStatusNotifications::class);
         Event::listen(OrderFulfilmentStatusUpdated::class, SendOrderFulfilmentStatusNotifications::class);
+        Event::listen(OrderCancelled::class, SendOrderCancelledNotifications::class);
 
         $this->registerStaffAuthGuard();
         $this->registerStaffStateListeners();

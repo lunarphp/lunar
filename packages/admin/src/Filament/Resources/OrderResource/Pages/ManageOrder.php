@@ -35,6 +35,7 @@ use Lunar\Admin\Support\Pages\BaseViewRecord;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
+use Lunar\Filament\Actions\Orders\CancelOrderAction;
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
 use Lunar\Filament\Actions\Orders\CloseOrderAction;
 use Lunar\Filament\Actions\Orders\DownloadOrderPdfAction;
@@ -388,6 +389,7 @@ class ManageOrder extends BaseViewRecord
             RefundOrderAction::make(),
             CloseOrderAction::make()->after($bumpActivity),
             ReopenOrderAction::make()->after($bumpActivity),
+            CancelOrderAction::make()->after($bumpActivity),
             DownloadOrderPdfAction::make(),
         ];
     }

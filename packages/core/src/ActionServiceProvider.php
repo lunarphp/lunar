@@ -37,6 +37,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\UpdatesCartLine::class => Actions\Carts\UpdateCartLine::class,
 
         // Orders
+        Contracts\Orders\CancelsOrder::class => Actions\Orders\CancelOrder::class,
         Contracts\Orders\CapturesOrder::class => Actions\Orders\CaptureOrder::class,
         Contracts\Orders\ClosesOrder::class => Actions\Orders\CloseOrder::class,
         Contracts\Orders\GeneratesOrderReference::class => Actions\Orders\GenerateOrderReference::class,

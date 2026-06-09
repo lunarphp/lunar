@@ -27,11 +27,13 @@ trait DisplaysOrderSummary
     {
         return TextEntry::make('closed_at')
             ->label(__('lunarpanel::order.infolist.status.label'))
-            ->state(fn (Order $record): string => $record->isClosed()
-                ? __('lunar::states.order.closed')
-                : __('lunar::states.order.open'))
+            ->state(fn (Order $record): string => __('lunar::states.order.'.$record->lifecycleStatus()))
             ->alignEnd()
-            ->color(fn (Order $record): string => $record->isClosed() ? 'gray' : 'success')
+            ->color(fn (Order $record): string => match ($record->lifecycleStatus()) {
+                'cancelled' => 'danger',
+                'closed' => 'gray',
+                default => 'success',
+            })
             ->badge();
     }
 

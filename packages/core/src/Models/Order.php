@@ -48,6 +48,9 @@ use Spatie\ModelStates\HasStates;
  * @property float $exchange_rate
  * @property ?Carbon $placed_at
  * @property ?Carbon $closed_at
+ * @property ?Carbon $cancelled_at
+ * @property ?string $cancel_reason
+ * @property ?string $cancel_note
  * @property ?array $meta
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -71,6 +74,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'meta' => AsArrayObject::class,
         'placed_at' => 'datetime',
         'closed_at' => 'datetime',
+        'cancelled_at' => 'datetime',
         'sub_total' => 'integer',
         'discount_total' => 'integer',
         'discount_breakdown' => DiscountBreakdown::class,
@@ -130,6 +134,50 @@ class Order extends Base implements Contracts\Order, HasCurrency
     public function scopeClosed(Builder $query): Builder
     {
         return $query->whereNotNull('closed_at');
+    }
+
+    /**
+     * Whether the order has been cancelled.
+     */
+    public function isCancelled(): bool
+    {
+        return ! blank($this->cancelled_at);
+    }
+
+    /**
+     * The headline lifecycle key for display — cancelled takes precedence over
+     * the open/closed archive state. Maps to `lunar::states.order.*`.
+     *
+     * @return 'cancelled'|'closed'|'open'
+     */
+    public function lifecycleStatus(): string
+    {
+        return match (true) {
+            $this->isCancelled() => 'cancelled',
+            $this->isClosed() => 'closed',
+            default => 'open',
+        };
+    }
+
+    /**
+     * Limit the query to cancelled orders.
+     */
+    public function scopeCancelled(Builder $query): Builder
+    {
+        return $query->whereNotNull('cancelled_at');
+    }
+
+    /**
+     * The human-readable label for the cancellation reason, resolved from the
+     * configured reason list (falls back to the stored key).
+     */
+    public function cancelReasonLabel(): ?string
+    {
+        if (blank($this->cancel_reason)) {
+            return null;
+        }
+
+        return config('lunar.orders.cancel_reasons.'.$this->cancel_reason, $this->cancel_reason);
     }
 
     public function channel(): BelongsTo

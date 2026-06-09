@@ -31,6 +31,7 @@ return [
     'fulfilment_not_relocatable' => 'Only pending or in-progress fulfilments can be moved to another location.',
     'fulfilment_location_not_found' => 'The selected location could not be found.',
     'fulfilment_on_hold' => 'This fulfilment is on hold and cannot be shipped until released.',
+    'order_not_cancellable' => 'This order cannot be cancelled once it has been fulfilled.',
     'fulfilment_tracking_empty' => 'A tracking reference needs a number, URL, or shipping method.',
     'fulfilment_tracking_invalid_number' => 'The tracking number is not valid for :carrier.',
     'fulfilment_merge_tracking_conflict' => 'A source fulfilment carries tracking that would be lost; resolve it before merging.',

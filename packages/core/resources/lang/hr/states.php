@@ -21,6 +21,7 @@ return [
     'order' => [
         'open' => 'Open',
         'closed' => 'Closed',
+        'cancelled' => 'Cancelled',
     ],
 
     'payment' => [

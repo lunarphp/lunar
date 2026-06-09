@@ -33,6 +33,8 @@ final class ReopenOrder implements ReopensOrder
     public static function canRun(OrderContract $order): bool
     {
         /** @var Order $order */
-        return $order->isClosed();
+        // A cancelled order is closed but must not be reopened (cancellation is
+        // one-way).
+        return $order->isClosed() && ! $order->isCancelled();
     }
 }

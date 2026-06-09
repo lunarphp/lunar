@@ -49,9 +49,7 @@ class OrderGlobalSearch extends GlobalSearchDescriptor
     {
         /** @var Order $record */
         $details = [
-            __('lunar-filament::global-search.orders.details.status') => $record->isClosed()
-                ? __('lunar::states.order.closed')
-                : __('lunar::states.order.open'),
+            __('lunar-filament::global-search.orders.details.status') => __('lunar::states.order.'.$record->lifecycleStatus()),
             __('lunar-filament::global-search.orders.details.total') => $record->format('total'),
             __('lunar-filament::global-search.orders.details.customer') => $record->billingAddress?->fullName,
         ];

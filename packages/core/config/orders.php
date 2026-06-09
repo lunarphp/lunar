@@ -11,6 +11,24 @@ use Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown;
 return [
     /*
     |--------------------------------------------------------------------------
+    | Cancellation reasons
+    |--------------------------------------------------------------------------
+    |
+    | The reasons an order can be cancelled, keyed by a stable identifier. The
+    | label is shown in the cancel form and on the order timeline. The stored
+    | key is what persists against the order.
+    |
+    */
+    'cancel_reasons' => [
+        'customer' => 'Customer changed/cancelled order',
+        'items-unavailable' => 'Items unavailable',
+        'fraud' => 'Fraudulent order',
+        'declined' => 'Payment declined',
+        'other' => 'Other',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Order Reference Format
     |--------------------------------------------------------------------------
     |

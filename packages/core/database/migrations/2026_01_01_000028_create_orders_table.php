@@ -28,6 +28,9 @@ return new class extends Migration
             $table->decimal('exchange_rate', 10, 4)->default(1);
             $table->dateTime('placed_at')->nullable()->index();
             $table->dateTime('closed_at')->nullable()->index();
+            $table->dateTime('cancelled_at')->nullable()->index();
+            $table->string('cancel_reason')->nullable();
+            $table->text('cancel_note')->nullable();
             $table->jsonb('meta')->nullable();
             $table->timestamps();
             $table->foreignId('customer_id')->nullable()->constrained($this->prefix.'customers');

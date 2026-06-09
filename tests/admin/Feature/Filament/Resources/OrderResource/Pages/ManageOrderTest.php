@@ -151,6 +151,20 @@ it('can close an order', function () {
     expect($this->order->refresh()->isClosed())->toBeTrue();
 });
 
+it('can cancel an unfulfilled order', function () {
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])
+        ->assertActionExists('cancel_order')
+        ->callAction('cancel_order', data: ['reason' => 'items-unavailable', 'note' => 'No stock', 'notify' => false]);
+
+    $this->order->refresh();
+
+    expect($this->order->isCancelled())->toBeTrue()
+        ->and($this->order->cancel_reason)->toBe('items-unavailable')
+        ->and($this->order->isClosed())->toBeTrue();
+});
+
 it('can reopen a closed order', function () {
     $this->order->forceFill(['closed_at' => now()])->save();
 

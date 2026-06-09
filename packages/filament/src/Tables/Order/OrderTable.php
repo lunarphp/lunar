@@ -52,10 +52,12 @@ class OrderTable
             TextColumn::make('closed_at')
                 ->label(__('lunar-filament::order.table.status.label'))
                 ->toggleable()
-                ->state(fn (Order $record): string => $record->isClosed()
-                    ? __('lunar::states.order.closed')
-                    : __('lunar::states.order.open'))
-                ->color(fn (Order $record): string => $record->isClosed() ? 'gray' : 'success')
+                ->state(fn (Order $record): string => __('lunar::states.order.'.$record->lifecycleStatus()))
+                ->color(fn (Order $record): string => match ($record->lifecycleStatus()) {
+                    'cancelled' => 'danger',
+                    'closed' => 'gray',
+                    default => 'success',
+                })
                 ->badge(),
             TextColumn::make('payment_status')
                 ->label(__('lunar-filament::order.table.payment_status.label'))
