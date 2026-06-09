@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Zarządzanie zamówieniami',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'Wszelkie',
-    ],
     'transactions' => [
         'capture' => 'Przechwycona',
         'intent' => 'Rozpoczęta',

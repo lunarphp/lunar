@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Удирдах',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'Бүгд',
-    ],
     'transactions' => [
         'capture' => 'Төлсөн',
         'intent' => 'Нөөц',

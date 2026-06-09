@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Yönet',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'Tümü',
-    ],
     'transactions' => [
         'capture' => 'Tahsil Edildi',
         'intent' => 'Ödeme Niyeti',

@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Upravljanje',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'All',
-    ],
     'transactions' => [
         'capture' => 'Naplaćeno',
         'intent' => 'Namjera',

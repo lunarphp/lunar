@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Kezelés',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'Mind',
-    ],
     'transactions' => [
         'capture' => 'Lekönyvelve',
         'intent' => 'Fizetési szándék',

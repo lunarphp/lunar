@@ -123,6 +123,8 @@ class OrderTable
                 ->label(__('lunar-filament::order.table.status.label'))
                 ->trueLabel(__('lunar::states.order.closed'))
                 ->falseLabel(__('lunar::states.order.open'))
+                // Default to the "open" work queue — the inbox-zero landing view.
+                ->default(false)
                 ->queries(
                     true: fn (Builder $query) => $query->whereNotNull('closed_at'),
                     false: fn (Builder $query) => $query->whereNull('closed_at'),

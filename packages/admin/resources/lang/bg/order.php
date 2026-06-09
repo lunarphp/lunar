@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Управление',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'Всички',
-    ],
     'transactions' => [
         'capture' => 'Каптурирано',
         'intent' => 'Очакващо',

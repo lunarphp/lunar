@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Quản lý',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'Tất cả',
-    ],
     'transactions' => [
         'capture' => 'Đã thu tiền',
         'intent' => 'Chờ thanh toán',

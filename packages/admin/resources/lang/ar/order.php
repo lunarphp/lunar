@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'إدارة',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'الكل',
-    ],
     'transactions' => [
         'capture' => 'تم الاستلام',
         'intent' => 'نية الدفع',

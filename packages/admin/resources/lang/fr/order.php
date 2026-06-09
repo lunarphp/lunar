@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Gérer',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'Toutes',
-    ],
     'transactions' => [
         'capture' => 'Capturé',
         'intent' => 'Intention',

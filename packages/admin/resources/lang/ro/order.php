@@ -6,11 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Gestionează',
     ],
-    'tabs' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
-        'all' => 'Toate',
-    ],
     'transactions' => [
         'capture' => 'Capturat',
         'intent' => 'Intenție',
