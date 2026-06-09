@@ -4,6 +4,7 @@ namespace Lunar\Core\Contracts;
 
 use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
+use Lunar\Core\Models\Contracts\FulfilmentTracking as FulfilmentTrackingContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentTracking;
@@ -67,4 +68,9 @@ interface FulfilmentManager
      * @param  array<string, mixed>  $attributes
      */
     public function addTracking(FulfilmentContract $fulfilment, array $attributes): FulfilmentTracking;
+
+    /**
+     * Remove a tracking reference from its fulfilment.
+     */
+    public function removeTracking(FulfilmentTrackingContract $tracking): void;
 }

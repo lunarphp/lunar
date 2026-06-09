@@ -321,6 +321,13 @@ return [
                     'error' => 'Could not add tracking.',
                 ],
             ],
+            'remove_tracking' => [
+                'label' => 'Remove tracking',
+                'notification' => [
+                    'success' => 'Tracking removed.',
+                    'error' => 'Could not remove tracking.',
+                ],
+            ],
             'create' => [
                 'label' => 'Create fulfilment',
                 'modal_heading' => 'Create fulfilment',

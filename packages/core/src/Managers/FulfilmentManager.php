@@ -9,12 +9,14 @@ use Lunar\Core\Contracts\Actions\Fulfilment\ChangesFulfilmentLocation;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\MergesFulfilments;
 use Lunar\Core\Contracts\Actions\Fulfilment\MovesFulfilmentLines;
+use Lunar\Core\Contracts\Actions\Fulfilment\RemovesFulfilmentTracking;
 use Lunar\Core\Contracts\Actions\Fulfilment\ReturnsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ShipsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\SplitsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\TransitionsFulfilment;
 use Lunar\Core\Contracts\FulfilmentManager as FulfilmentManagerContract;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
+use Lunar\Core\Models\Contracts\FulfilmentTracking as FulfilmentTrackingContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentTracking;
@@ -37,6 +39,7 @@ class FulfilmentManager implements FulfilmentManagerContract
         protected TransitionsFulfilment $transition,
         protected ChangesFulfilmentLocation $changeLocation,
         protected AddsFulfilmentTracking $addTracking,
+        protected RemovesFulfilmentTracking $removeTracking,
     ) {}
 
     public function create(OrderContract $order, array $lines, array $attributes = []): Fulfilment
@@ -87,5 +90,10 @@ class FulfilmentManager implements FulfilmentManagerContract
     public function addTracking(FulfilmentContract $fulfilment, array $attributes): FulfilmentTracking
     {
         return $this->addTracking->execute($fulfilment, $attributes);
+    }
+
+    public function removeTracking(FulfilmentTrackingContract $tracking): void
+    {
+        $this->removeTracking->execute($tracking);
     }
 }

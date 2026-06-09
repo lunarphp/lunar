@@ -74,3 +74,17 @@ it('rejects an invalid carrier tracking number at ship time', function () {
 
     Fulfilments::ship($fulfilment, [['carrier' => 'acme', 'tracking_number' => 'nope']]);
 })->throws(FulfilmentException::class);
+
+it('removes a tracking reference', function () {
+    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 1]), [
+        ['tracking_number' => 'TRK-1'],
+        ['tracking_number' => 'TRK-2'],
+    ]);
+
+    $tracking = $fulfilment->trackings()->first();
+
+    Fulfilments::removeTracking($tracking);
+
+    expect($fulfilment->refresh()->trackings)->toHaveCount(1)
+        ->and($fulfilment->trackings->pluck('tracking_number'))->not->toContain('TRK-1');
+});

@@ -323,6 +323,15 @@
                                 @if ($tracking->shipping_method)
                                     <span>&middot; {{ $tracking->shipping_method }}</span>
                                 @endif
+                                <div class="ml-auto shrink-0">
+                                    <x-filament::icon-button
+                                        icon="heroicon-m-trash"
+                                        color="gray"
+                                        size="sm"
+                                        :label="__('lunarpanel::order.fulfilments.actions.remove_tracking.label')"
+                                        wire:click="mountAction('removeTracking', { tracking: {{ $tracking->id }} })"
+                                    />
+                                </div>
                             </div>
                         @endforeach
                     </div>

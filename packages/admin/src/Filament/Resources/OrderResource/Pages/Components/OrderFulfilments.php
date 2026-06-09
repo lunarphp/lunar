@@ -25,6 +25,7 @@ use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
+use Lunar\Core\Models\FulfilmentTracking;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
@@ -141,6 +142,31 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                 fn () => Fulfilments::addTracking($this->findFulfilment($arguments), $data),
                 'add_tracking',
             ));
+    }
+
+    public function removeTrackingAction(): Action
+    {
+        return Action::make('removeTracking')
+            ->label(__('lunarpanel::order.fulfilments.actions.remove_tracking.label'))
+            ->icon('heroicon-o-trash')
+            ->color('danger')
+            ->requiresConfirmation()
+            ->action(fn (array $arguments) => $this->run(
+                fn () => Fulfilments::removeTracking($this->findTracking($arguments)),
+                'remove_tracking',
+            ));
+    }
+
+    /**
+     * Resolve a tracking row, scoped to this order's fulfilments so it can't
+     * be addressed across orders.
+     */
+    protected function findTracking(array $arguments): FulfilmentTracking
+    {
+        /** @var FulfilmentTracking */
+        return FulfilmentTracking::query()
+            ->whereHas('fulfilment', fn ($query) => $query->where('order_id', $this->record->id))
+            ->findOrFail($arguments['tracking']);
     }
 
     /**
