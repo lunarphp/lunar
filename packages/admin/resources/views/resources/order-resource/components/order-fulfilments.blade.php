@@ -136,7 +136,8 @@
                             @php($canCancel = in_array($stateName, ['in-progress', 'shipped'], true))
                             @php($canHold = \Lunar\Core\Actions\Fulfilment\HoldFulfilment::canRun($fulfilment))
                             @php($canRelease = \Lunar\Core\Actions\Fulfilment\ReleaseFulfilment::canRun($fulfilment))
-                            @if ($canSplit || $canMerge || $canChangeLocation || $canAddTracking || $canCancel || $canHold || $canRelease)
+                            @php($canUndoReturn = $stateName === 'returned')
+                            @if ($canSplit || $canMerge || $canChangeLocation || $canAddTracking || $canCancel || $canHold || $canRelease || $canUndoReturn)
                                 <x-filament::dropdown placement="bottom-end">
                                     <x-slot name="trigger">
                                         <x-filament::icon-button
@@ -181,6 +182,15 @@
                                                 wire:click="mountAction('addTracking', { fulfilment: {{ $fulfilment->id }} })"
                                             >
                                                 {{ __('lunarpanel::order.fulfilments.actions.add_tracking.label') }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
+
+                                        @if ($canUndoReturn)
+                                            <x-filament::dropdown.list.item
+                                                icon="heroicon-m-arrow-uturn-right"
+                                                wire:click="mountAction('undoReturn', { fulfilment: {{ $fulfilment->id }} })"
+                                            >
+                                                {{ __('lunarpanel::order.fulfilments.actions.undo_return.label') }}
                                             </x-filament::dropdown.list.item>
                                         @endif
 

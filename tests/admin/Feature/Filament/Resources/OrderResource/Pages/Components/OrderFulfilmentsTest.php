@@ -267,6 +267,16 @@ it('omits shipped from the update-status menu while held', function () {
         ->and($names)->toContain('in-progress');
 });
 
+it('undoes a return back to shipped via the action', function () {
+    $fulfilment = Fulfilments::return(Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2])));
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('undoReturn', arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    expect((string) $fulfilment->refresh()->state)->toBe('shipped');
+});
+
 it('returns a shipped fulfilment', function () {
     $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
 

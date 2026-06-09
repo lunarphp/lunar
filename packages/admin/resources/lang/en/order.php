@@ -381,6 +381,13 @@ return [
                     'error' => 'Could not update the fulfilment status.',
                 ],
             ],
+            'undo_return' => [
+                'label' => 'Undo return',
+                'notification' => [
+                    'success' => 'Return undone.',
+                    'error' => 'Could not undo the return.',
+                ],
+            ],
             'hold' => [
                 'label' => 'Hold fulfilment',
                 'modal_heading' => 'Hold fulfilment',

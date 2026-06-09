@@ -27,7 +27,9 @@ class DefaultFulfilmentStateConfig implements FulfilmentStateConfig
             // pool and the parcel becomes re-shippable) or marked `Returned`.
             Shipped::class => [Pending::class, Returned::class],
             Cancelled::class => [],
-            Returned::class => [],
+            // A return can be undone back to `Shipped` (the parcel did ship —
+            // only the return was a mistake), restoring the shipment.
+            Returned::class => [Shipped::class],
         ];
     }
 

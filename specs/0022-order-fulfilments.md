@@ -108,7 +108,9 @@ Default `Pending`. Graph (declared in `FulfilmentStateConfig`):
 - `InProgress → Pending, Shipped, Cancelled`
 - `Shipped → Pending, Returned`
 - `Cancelled` — terminal
-- `Returned` — terminal
+- `Returned → Shipped` (undo a mistaken return)
+
+`Returned → Shipped` is an **undo return**: a mistaken return is reversed back to `Shipped`, keeping the shipment (`shipped_at` + tracking) intact and the items counting as fulfilled again — surfaced as a dedicated "Undo return" ⋮ action (via `TransitionFulfilment`, which only clears `shipped_at` for *pre-ship* targets, so `Shipped` is untouched).
 
 `Shipped → Pending` (and `InProgress → Pending`) is an **un-ship / cancel**: a mistaken progression can be reverted, which clears `shipped_at` and returns the parcel's items to the unfulfilled pool (the parcel becomes re-shippable). This is *not* surfaced as a normal step in the admin "Update status" menu — that menu is forward-only (`pending` and `cancelled` are excluded from it). Instead it is a deliberate, destructive **"Cancel fulfilment"** action (danger) in the parcel's ⋮ menu, shown for `in-progress` / `shipped` parcels, implemented via `TransitionFulfilment` (which un-stamps `shipped_at` when moving to a pre-ship state). A shipped parcel is reverted rather than terminally cancelled, since the split-down model has no manual "create fulfilment" to re-fulfil orphaned items; the terminal `Cancelled` state remains in core for programmatic use but is not surfaced in the admin.
 

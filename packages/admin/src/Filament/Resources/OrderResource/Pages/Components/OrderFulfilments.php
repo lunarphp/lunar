@@ -31,6 +31,7 @@ use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
 use Lunar\Core\States\Fulfilment\Pending;
+use Lunar\Core\States\Fulfilment\Shipped;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
@@ -372,6 +373,23 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->action(fn (array $arguments) => $this->run(
                 fn () => Fulfilments::return($this->findFulfilment($arguments)),
                 'return',
+            ));
+    }
+
+    /**
+     * Undo a mistaken return — moves the parcel back to `Shipped`, keeping its
+     * shipment (shipped_at + tracking) intact. Only the return is reversed.
+     */
+    public function undoReturnAction(): Action
+    {
+        return Action::make('undoReturn')
+            ->label(__('lunarpanel::order.fulfilments.actions.undo_return.label'))
+            ->icon('heroicon-o-arrow-uturn-right')
+            ->color('warning')
+            ->requiresConfirmation()
+            ->action(fn (array $arguments) => $this->run(
+                fn () => Fulfilments::transition($this->findFulfilment($arguments), Shipped::class),
+                'undo_return',
             ));
     }
 

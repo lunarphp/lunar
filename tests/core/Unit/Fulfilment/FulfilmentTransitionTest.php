@@ -11,6 +11,7 @@ use Lunar\Core\States\Fulfilment\Cancelled;
 use Lunar\Core\States\Fulfilment\InProgress;
 use Lunar\Core\States\Fulfilment\Pending;
 use Lunar\Core\States\Fulfilment\Returned;
+use Lunar\Core\States\Fulfilment\Shipped;
 use Lunar\Tests\Core\TestCase;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
@@ -70,6 +71,23 @@ it('reverts a shipped fulfilment to pending, clearing the shipment and its track
         ->and($fulfilment->shipped_at)->toBeNull()
         ->and($fulfilment->trackings)->toHaveCount(0)
         ->and((string) $this->order->refresh()->fulfilment_status)->toBe('unfulfilled');
+});
+
+it('undoes a return back to shipped, keeping the shipment', function () {
+    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]), [
+        ['tracking_number' => 'TRK-1'],
+    ]);
+    $shippedAt = $fulfilment->shipped_at;
+    Fulfilments::return($fulfilment->refresh());
+
+    expect((string) $fulfilment->refresh()->state)->toBe('returned');
+
+    Fulfilments::transition($fulfilment, Shipped::class);
+
+    expect((string) $fulfilment->refresh()->state)->toBe('shipped')
+        ->and($fulfilment->shipped_at?->equalTo($shippedAt))->toBeTrue()
+        ->and($fulfilment->trackings)->toHaveCount(1)
+        ->and((string) $this->order->refresh()->fulfilment_status)->toBe('fulfilled');
 });
 
 it('rejects an illegal transition', function () {
