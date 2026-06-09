@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'Comandă creată',
                 'status_change' => 'Stare actualizată',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => 'Plată de :amount pe cardul care se termină cu :last_four',
                 'authorized' => 'Autorizare de :amount pe cardul care se termină cu :last_four',
                 'refund' => 'Rambursare de :amount pe cardul care se termină cu :last_four',

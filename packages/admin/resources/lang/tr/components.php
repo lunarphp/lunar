@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'Sipariş Oluşturuldu',
                 'status_change' => 'Durum güncellendi',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => ':last_four ile biten kart üzerinde :amount ödeme',
                 'authorized' => ':last_four ile biten kart üzerinde :amount yetkilendirildi',
                 'refund' => ':last_four ile biten kart üzerinde :amount iade',

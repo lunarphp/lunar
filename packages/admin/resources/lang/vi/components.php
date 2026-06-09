@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'Đã tạo đơn hàng',
                 'status_change' => 'Đã cập nhật trạng thái',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => 'Thanh toán :amount bằng thẻ có số cuối :last_four',
                 'authorized' => 'Đã xác thực :amount bằng thẻ có số cuối :last_four',
                 'refund' => 'Hoàn tiền :amount cho thẻ có số cuối :last_four',

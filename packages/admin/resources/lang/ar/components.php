@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'تم إنشاء الطلب',
                 'status_change' => 'تم تحديث الحالة',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => 'تم سحب :amount من البطاقة المنتهية بـ :last_four',
                 'authorized' => 'تم التفويض بمبلغ :amount على البطاقة المنتهية بـ :last_four',
                 'refund' => 'تم رد :amount على البطاقة المنتهية بـ :last_four',

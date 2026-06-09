@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Lunar\Admin\Support\ActivityLog\Orders\Address;
 use Lunar\Admin\Support\ActivityLog\Orders\Capture;
 use Lunar\Admin\Support\ActivityLog\Orders\EmailNotification;
+use Lunar\Admin\Support\ActivityLog\Orders\FulfilmentUpdate;
 use Lunar\Admin\Support\ActivityLog\Orders\Intent;
 use Lunar\Admin\Support\ActivityLog\Orders\Refund;
 use Lunar\Core\Models\Base;
@@ -28,6 +29,7 @@ class Manifest
                 EmailNotification::class,
                 Address::class,
                 TagsUpdate::class,
+                FulfilmentUpdate::class,
             ],
             Product::morphName() => [
                 Comment::class,

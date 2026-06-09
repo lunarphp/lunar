@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'Rendelés létrehozva',
                 'status_change' => 'Státusz frissítve',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => 'Fizetés: :amount, kártya utolsó négy számjegye: :last_four',
                 'authorized' => 'Engedélyezve: :amount, kártya utolsó négy számjegye: :last_four',
                 'refund' => 'Visszatérítés: :amount, kártya utolsó négy számjegye: :last_four',

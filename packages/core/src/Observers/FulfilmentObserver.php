@@ -15,23 +15,51 @@ class FulfilmentObserver
     ) {}
 
     /**
-     * Handle the Fulfilment "updating" event — log a state change.
+     * Handle the Fulfilment "updating" event — log meaningful fulfilment
+     * changes (state transitions, holds) against the parent order so they read
+     * clearly in the timeline.
      */
     public function updating(FulfilmentContract $fulfilment): void
     {
         /** @var Fulfilment $fulfilment */
         if ($fulfilment->isDirty('state')) {
-            activity()
-                ->causedBy(auth()->user())
-                ->performedOn($fulfilment->order()->first())
-                ->event('fulfilment-state-update')
-                ->withProperties([
-                    'fulfilment_id' => $fulfilment->id,
-                    'new' => (string) $fulfilment->state,
-                    'previous' => (string) $fulfilment->getOriginal('state'),
-                ])
-                ->log('fulfilment-state-update');
+            $this->logFulfilmentUpdate($fulfilment, [
+                'type' => 'state',
+                'from' => (string) $fulfilment->getOriginal('state'),
+                'to' => (string) $fulfilment->state,
+            ]);
         }
+
+        if ($fulfilment->isDirty('held_at')) {
+            $this->logFulfilmentUpdate($fulfilment, $fulfilment->held_at ? [
+                'type' => 'held',
+                'reason' => $fulfilment->hold_reason,
+            ] : [
+                'type' => 'released',
+            ]);
+        }
+    }
+
+    /**
+     * Record a fulfilment change against its order's activity timeline.
+     *
+     * @param  array<string, mixed>  $properties
+     */
+    protected function logFulfilmentUpdate(Fulfilment $fulfilment, array $properties): void
+    {
+        if (! $order = $fulfilment->order()->first()) {
+            return;
+        }
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($order)
+            ->event('fulfilment-update')
+            ->withProperties(array_merge([
+                'fulfilment_id' => $fulfilment->id,
+                'reference' => $fulfilment->reference,
+            ], $properties))
+            ->log('fulfilment-update');
     }
 
     /**

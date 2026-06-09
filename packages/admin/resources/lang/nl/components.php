@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'Bestelling aangemaakt',
                 'status_change' => 'Status bijgewerkt',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => 'Betaling van :amount op kaart eindigend op :last_four',
                 'authorized' => 'Geautoriseerd bedrag van :amount op kaart eindigend op :last_four',
                 'refund' => 'Terugbetaling van :amount op kaart eindigend op :last_four',

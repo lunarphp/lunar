@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'Narudžba izrađena',
                 'status_change' => 'Status ažuriran',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => 'Naplata od :amount na kartici sa završnim znamenkama :last_four',
                 'authorized' => 'Autorizacija od :amount na kartici sa završnim znamenkama :last_four',
                 'refund' => 'Povrat od :amount na kartici sa završnim znamenkama :last_four',

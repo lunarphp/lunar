@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'Zamówienie utworzone',
                 'status_change' => 'Status zaktualizowany',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => 'Płatność w wysokości :amount na karcie kończącej się na :last_four',
                 'authorized' => 'Autoryzacja płatności w wysokości :amount na karcie kończącej się na :last_four',
                 'refund' => 'Zwrot płatności w wysokości :amount na karcie kończącej się na :last_four',

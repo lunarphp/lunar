@@ -18,6 +18,11 @@ return [
             'orders' => [
                 'order_created' => 'Захиалга үүсгэсэн',
                 'status_change' => 'Статус шинэчлэгдсэн',
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => ':last_four дугаартай картаас :amount төлсөн',
                 'authorized' => ':last_four дугаартай картаар :amount баталгаажсан',
                 'refund' => ':last_four дугаартай картаас :amount буцаасан',
