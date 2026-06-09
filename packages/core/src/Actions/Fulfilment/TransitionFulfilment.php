@@ -31,9 +31,10 @@ final class TransitionFulfilment implements TransitionsFulfilment
         return DB::transaction(function () use ($fulfilment, $state) {
             $fulfilment->state->transitionTo($state);
 
-            // Reverting a shipped parcel to a pre-ship state un-ships it, so the
-            // shipment timestamp no longer applies.
+            // Reverting a shipped parcel to a pre-ship state un-ships it, so its
+            // shipment details (timestamp + tracking) no longer apply.
             if (in_array($state::$name, self::PRE_SHIP_STATES, true) && $fulfilment->shipped_at) {
+                $fulfilment->trackings()->delete();
                 $fulfilment->forceFill(['shipped_at' => null])->save();
             }
 

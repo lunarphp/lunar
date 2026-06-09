@@ -55,16 +55,20 @@ it('transitions a pending fulfilment to cancelled', function () {
     expect((string) $fulfilment->refresh()->state)->toBe('cancelled');
 });
 
-it('reverts a shipped fulfilment to pending, un-ships it and frees its items', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
+it('reverts a shipped fulfilment to pending, clearing the shipment and its tracking', function () {
+    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]), [
+        ['tracking_number' => 'TRK-1'],
+    ]);
 
     expect((string) $fulfilment->state)->toBe('shipped')
+        ->and($fulfilment->trackings)->toHaveCount(1)
         ->and((string) $this->order->refresh()->fulfilment_status)->toBe('fulfilled');
 
     Fulfilments::transition($fulfilment, Pending::class);
 
     expect((string) $fulfilment->refresh()->state)->toBe('pending')
         ->and($fulfilment->shipped_at)->toBeNull()
+        ->and($fulfilment->trackings)->toHaveCount(0)
         ->and((string) $this->order->refresh()->fulfilment_status)->toBe('unfulfilled');
 });
 
