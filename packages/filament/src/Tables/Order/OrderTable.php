@@ -153,8 +153,7 @@ class OrderTable
             Filter::make('placed_at')
                 ->schema([
                     DatePicker::make('placed_after')
-                        ->label(__('lunar-filament::order.table.placed_after.label'))
-                        ->default(Carbon::now()->subMonths(6)),
+                        ->label(__('lunar-filament::order.table.placed_after.label')),
                     DatePicker::make('placed_before')
                         ->label(__('lunar-filament::order.table.placed_before.label')),
                 ])
