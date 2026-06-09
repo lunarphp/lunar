@@ -20,7 +20,13 @@ final class ReopenOrder implements ReopensOrder
             return $order;
         }
 
-        $order->forceFill(['closed_at' => null])->save();
+        $order->forceFill(['closed_at' => null])->saveQuietly();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($order)
+            ->event('order-reopened')
+            ->log('order-reopened');
 
         OrderReopened::dispatch($order);
 

@@ -8,6 +8,9 @@ use Lunar\Admin\Support\ActivityLog\Orders\Capture;
 use Lunar\Admin\Support\ActivityLog\Orders\EmailNotification;
 use Lunar\Admin\Support\ActivityLog\Orders\FulfilmentUpdate;
 use Lunar\Admin\Support\ActivityLog\Orders\Intent;
+use Lunar\Admin\Support\ActivityLog\Orders\OrderCancelled;
+use Lunar\Admin\Support\ActivityLog\Orders\OrderClosed;
+use Lunar\Admin\Support\ActivityLog\Orders\OrderReopened;
 use Lunar\Admin\Support\ActivityLog\Orders\Refund;
 use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Order;
@@ -30,6 +33,9 @@ class Manifest
                 Address::class,
                 TagsUpdate::class,
                 FulfilmentUpdate::class,
+                OrderClosed::class,
+                OrderReopened::class,
+                OrderCancelled::class,
             ],
             Product::morphName() => [
                 Comment::class,

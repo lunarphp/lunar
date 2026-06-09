@@ -31,6 +31,14 @@ return [
 
                 'status_change' => 'Status updated',
 
+                'order_closed' => 'Order closed',
+
+                'order_reopened' => 'Order reopened',
+
+                'order_cancelled' => 'Order cancelled (:reason)',
+
+                'order_cancelled_no_reason' => 'Order cancelled',
+
                 'fulfilment_state' => 'Fulfilment #:id marked as :state',
 
                 'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',

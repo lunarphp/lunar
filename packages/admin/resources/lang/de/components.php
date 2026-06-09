@@ -18,6 +18,10 @@ return [
             'orders' => [
                 'order_created' => 'Bestellung erstellt',
                 'status_change' => 'Status aktualisiert',
+                'order_closed' => 'Order closed',
+                'order_reopened' => 'Order reopened',
+                'order_cancelled' => 'Order cancelled (:reason)',
+                'order_cancelled_no_reason' => 'Order cancelled',
                 'fulfilment_state' => 'Fulfilment #:id marked as :state',
                 'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
                 'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',

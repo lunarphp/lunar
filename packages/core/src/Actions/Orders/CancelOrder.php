@@ -48,7 +48,14 @@ final class CancelOrder implements CancelsOrder
                 'cancel_reason' => $reason,
                 'cancel_note' => $note,
                 'closed_at' => $order->closed_at ?? now(),
-            ])->save();
+            ])->saveQuietly();
+
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($order)
+                ->event('order-cancelled')
+                ->withProperties(['reason' => $reason, 'note' => $note])
+                ->log('order-cancelled');
 
             OrderCancelled::dispatch($order, $notify);
 

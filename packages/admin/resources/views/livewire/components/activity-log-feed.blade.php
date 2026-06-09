@@ -56,6 +56,8 @@
                                                     'updated' => 'bg-teal-500 ring-teal-100 dark:ring-teal-800',
                                                     'status-update' => 'bg-purple-500 ring-purple-100 dark:ring-purple-800',
                                                     'fulfilment-update' => 'bg-indigo-500 ring-indigo-100 dark:ring-indigo-800',
+                                                    'order-closed', 'order-reopened' => 'bg-teal-500 ring-teal-100 dark:ring-teal-800',
+                                                    'order-cancelled' => 'bg-red-500 ring-red-100 dark:ring-red-800',
                                                     default => 'bg-gray-300 ring-gray-200 dark:ring-gray-600',
                                                 },
                                             ])>

@@ -22,7 +22,15 @@ final class CloseOrder implements ClosesOrder
             return $order;
         }
 
-        $order->forceFill(['closed_at' => now()])->save();
+        // Quiet write + an explicit timeline entry, so this reads as
+        // "Order closed" rather than a generic "Order updated".
+        $order->forceFill(['closed_at' => now()])->saveQuietly();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($order)
+            ->event('order-closed')
+            ->log('order-closed');
 
         OrderClosed::dispatch($order);
 
