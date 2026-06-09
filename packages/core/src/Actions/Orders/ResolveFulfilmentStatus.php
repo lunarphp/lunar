@@ -17,7 +17,7 @@ use Lunar\Core\States\Order\Fulfilment\Unfulfilled;
  * status. Only fulfilments in `shipped` / `returned` count as dispatched.
  * Digital-only orders (no physical lines) resolve to `Fulfilled`.
  */
-final class ResolveFulfilmentStatus implements ResolvesFulfilmentStatus
+class ResolveFulfilmentStatus implements ResolvesFulfilmentStatus
 {
     public function execute(OrderContract $order): string
     {

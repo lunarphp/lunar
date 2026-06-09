@@ -7,7 +7,7 @@ use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
-final class ApplyDiscounts
+class ApplyDiscounts
 {
     /**
      * Called just before cart totals are calculated.

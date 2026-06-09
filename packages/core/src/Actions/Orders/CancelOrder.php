@@ -20,7 +20,7 @@ use Lunar\Core\Models\Order;
  * `OrderCancelled` event (carrying the `notify` flag) is the seam a consumer
  * hooks to email the customer.
  */
-final class CancelOrder implements CancelsOrder
+class CancelOrder implements CancelsOrder
 {
     public function __construct(
         protected CancelsFulfilment $cancelFulfilment,

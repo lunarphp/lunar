@@ -16,7 +16,7 @@ use Lunar\Core\States\Fulfilment\Shipped;
  * routed through the guarded `FulfilmentState` graph — an illegal transition
  * throws and the action is a no-op.
  */
-final class ShipFulfilment implements ShipsFulfilment
+class ShipFulfilment implements ShipsFulfilment
 {
     /**
      * @param  array<string, mixed>|array<int, array<string, mixed>>  $tracking

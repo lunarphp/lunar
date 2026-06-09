@@ -9,7 +9,7 @@ use Stripe\PaymentIntent;
 
 class UpdateOrderFromIntent
 {
-    final public static function execute(
+    public static function execute(
         OrderContract $order,
         PaymentIntent $paymentIntent,
         string $successStatus = 'paid',

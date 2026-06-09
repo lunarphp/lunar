@@ -13,7 +13,7 @@ use Lunar\Core\States\Fulfilment\Returned;
  * `Returned` at the order level. Independent of refunds: returning never
  * issues a refund and a refund never marks a return.
  */
-final class ReturnFulfilment implements ReturnsFulfilment
+class ReturnFulfilment implements ReturnsFulfilment
 {
     public function execute(FulfilmentContract $fulfilment): Fulfilment
     {

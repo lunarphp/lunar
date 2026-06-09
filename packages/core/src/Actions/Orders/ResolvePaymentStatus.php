@@ -21,7 +21,7 @@ use Lunar\Core\States\Order\Payment\Voided;
  *   refunded  = Σ successful refunds
  *   authorized = a successful payment intent exists
  */
-final class ResolvePaymentStatus implements ResolvesPaymentStatus
+class ResolvePaymentStatus implements ResolvesPaymentStatus
 {
     public function execute(OrderContract $order): string
     {

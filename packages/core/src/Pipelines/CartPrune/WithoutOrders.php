@@ -5,7 +5,7 @@ namespace Lunar\Core\Pipelines\CartPrune;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
-final class WithoutOrders
+class WithoutOrders
 {
     public function handle(Builder $query, Closure $next)
     {

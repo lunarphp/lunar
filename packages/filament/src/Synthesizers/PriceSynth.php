@@ -6,7 +6,7 @@ use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Currency;
 
-final class PriceSynth extends Synth
+class PriceSynth extends Synth
 {
     public static $key = 'lunar_price';
 

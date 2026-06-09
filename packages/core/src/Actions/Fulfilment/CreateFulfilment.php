@@ -18,7 +18,7 @@ use Lunar\Core\Validation\Fulfilment\FulfilmentQuantity;
  * fulfilment and its lines in a transaction and fires `FulfilmentCreated`.
  * The fulfilment observer recomputes the order's `fulfilment_status`.
  */
-final class CreateFulfilment implements CreatesFulfilment
+class CreateFulfilment implements CreatesFulfilment
 {
     public function __construct(
         protected FulfilmentQuantity $fulfilmentQuantity,

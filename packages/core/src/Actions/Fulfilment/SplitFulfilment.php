@@ -14,7 +14,7 @@ use Lunar\Core\Models\Fulfilment;
  * parcel. Never changes how much is fulfilled — only how the outstanding
  * quantities are parcelled — so the rollups and headline are unaffected.
  */
-final class SplitFulfilment implements SplitsFulfilment
+class SplitFulfilment implements SplitsFulfilment
 {
     /**
      * Fulfilment states that may be split — only outstanding (pre-ship)

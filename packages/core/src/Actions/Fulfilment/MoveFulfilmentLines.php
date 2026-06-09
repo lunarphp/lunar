@@ -14,7 +14,7 @@ use Lunar\Core\Models\Fulfilment;
  * operation). Preserves total fulfilled quantity, so the rollups are
  * untouched; the source is deleted if it ends up empty.
  */
-final class MoveFulfilmentLines implements MovesFulfilmentLines
+class MoveFulfilmentLines implements MovesFulfilmentLines
 {
     public function execute(FulfilmentContract $from, FulfilmentContract $to, array $moves): Fulfilment
     {

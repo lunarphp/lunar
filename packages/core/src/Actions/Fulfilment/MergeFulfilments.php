@@ -15,7 +15,7 @@ use Lunar\Core\Models\Fulfilment;
  * wins; the action errors rather than silently discarding conflicting
  * tracking carried by a source.
  */
-final class MergeFulfilments implements MergesFulfilments
+class MergeFulfilments implements MergesFulfilments
 {
     /**
      * Fulfilment states that may take part in a merge.

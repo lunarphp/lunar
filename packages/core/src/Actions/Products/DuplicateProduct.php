@@ -14,7 +14,7 @@ use Lunar\Core\Models\ProductVariant;
  * and attribute data. Names are suffixed to avoid collisions; the duplicate
  * starts life as a draft.
  */
-final class DuplicateProduct implements DuplicatesProduct
+class DuplicateProduct implements DuplicatesProduct
 {
     public function execute(ProductContract $source, ?string $nameSuffix = null): Product
     {

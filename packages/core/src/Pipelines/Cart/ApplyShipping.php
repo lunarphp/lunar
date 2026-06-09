@@ -9,7 +9,7 @@ use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
 
-final class ApplyShipping
+class ApplyShipping
 {
     /**
      * Called just before cart totals are calculated.

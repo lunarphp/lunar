@@ -12,7 +12,7 @@ use Lunar\Core\Models\Fulfilment;
  * parcel is blocked from shipping until released. The hold is orthogonal to the
  * `FulfilmentState` graph — the parcel keeps its current state.
  */
-final class HoldFulfilment implements HoldsFulfilment
+class HoldFulfilment implements HoldsFulfilment
 {
     /**
      * Fulfilment states that may be held — only a parcel that hasn't shipped.

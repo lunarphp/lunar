@@ -13,7 +13,7 @@ use Lunar\Core\Models\FulfilmentTracking;
  * Add a tracking reference to a fulfilment. A parcel can carry several, added
  * at ship time or afterwards as carrier details come through.
  */
-final class AddFulfilmentTracking implements AddsFulfilmentTracking
+class AddFulfilmentTracking implements AddsFulfilmentTracking
 {
     public function execute(FulfilmentContract $fulfilment, array $attributes): FulfilmentTracking
     {

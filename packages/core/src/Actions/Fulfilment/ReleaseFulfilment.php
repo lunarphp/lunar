@@ -11,7 +11,7 @@ use Lunar\Core\Models\Fulfilment;
  * Release a held fulfilment, clearing the hold (timestamp, reason and note) so
  * it can be shipped again.
  */
-final class ReleaseFulfilment implements ReleasesFulfilment
+class ReleaseFulfilment implements ReleasesFulfilment
 {
     public function execute(FulfilmentContract $fulfilment): Fulfilment
     {

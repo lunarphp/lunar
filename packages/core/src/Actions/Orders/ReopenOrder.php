@@ -11,7 +11,7 @@ use Lunar\Core\Models\Order;
  * Reopen (un-archive) a closed order, clearing `closed_at` so it returns to
  * the open work queue. Idempotent — reopening an open order is a no-op.
  */
-final class ReopenOrder implements ReopensOrder
+class ReopenOrder implements ReopensOrder
 {
     public function execute(OrderContract $order): Order
     {

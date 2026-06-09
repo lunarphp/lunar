@@ -13,7 +13,7 @@ use Lunar\Core\States\Fulfilment\Cancelled;
  * fulfilment, so its quantities return to the order's unfulfilled pool. The
  * state change is routed through the guarded `FulfilmentState` graph.
  */
-final class CancelFulfilment implements CancelsFulfilment
+class CancelFulfilment implements CancelsFulfilment
 {
     public function execute(FulfilmentContract $fulfilment): Fulfilment
     {

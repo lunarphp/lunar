@@ -38,7 +38,7 @@ note:        ?string
 notify:      bool = true
 ```
 
-`RefundsOrder::execute(Order $order, RefundRequest $request): PaymentRefund`:
+`RefundsOrder::execute(Order $order, RefundRequest $request): PaymentRefund` (concrete `RefundOrder` implements the contract; swap by binding `RefundsOrder`, not by subclassing):
 
 1. Resolve the capture transaction; assert it's a successful capture (existing `canRunForTransaction`).
 2. Compute the refund amount = `Σ(line unit_price × quantity)` (tax-inclusive, drawn from the order line) + shipping + adjustment, in minor units via `PriceCalculatorInterface`.

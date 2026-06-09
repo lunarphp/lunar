@@ -13,7 +13,7 @@ use Lunar\Core\Models\Contracts\Collection as CollectionContract;
  * pass a `target` to re-parent them under; otherwise the descendants stay
  * in place and the delete is rejected.
  */
-final class DeleteCollection implements DeletesCollection
+class DeleteCollection implements DeletesCollection
 {
     public function execute(CollectionContract $collection, ?CollectionContract $reparentTo = null): bool
     {

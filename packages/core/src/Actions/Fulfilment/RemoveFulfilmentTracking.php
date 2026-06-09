@@ -10,7 +10,7 @@ use Lunar\Core\Models\FulfilmentTracking;
  * Remove a single tracking reference from a fulfilment. Tracking does not feed
  * the fulfilment rollup, so deleting one leaves the parcel's state untouched.
  */
-final class RemoveFulfilmentTracking implements RemovesFulfilmentTracking
+class RemoveFulfilmentTracking implements RemovesFulfilmentTracking
 {
     public function execute(FulfilmentTrackingContract $tracking): void
     {

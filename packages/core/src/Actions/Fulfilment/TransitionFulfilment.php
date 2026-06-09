@@ -15,7 +15,7 @@ use Lunar\Core\States\Fulfilment\FulfilmentState;
  * recording tracking); this is the plain transition used for the remaining
  * moves (e.g. `Pending` → `InProgress`). An illegal transition throws.
  */
-final class TransitionFulfilment implements TransitionsFulfilment
+class TransitionFulfilment implements TransitionsFulfilment
 {
     /**
      * @param  class-string<FulfilmentState>  $state

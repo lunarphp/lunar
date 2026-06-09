@@ -21,7 +21,7 @@ use Lunar\Core\Models\Order;
  * order's lifecycle is read directly from these two rollups plus its open /
  * closed (`closed_at`) archive state.
  */
-final class RecomputeOrderStatus implements RecomputesOrderStatus
+class RecomputeOrderStatus implements RecomputesOrderStatus
 {
     public function __construct(
         protected ResolvesPaymentStatus $resolvePaymentStatus,

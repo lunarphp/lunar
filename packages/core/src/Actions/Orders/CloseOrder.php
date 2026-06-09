@@ -13,7 +13,7 @@ use Lunar\Core\Models\Order;
  * fully dealt with (inbox-zero). Idempotent — closing a closed order is a
  * no-op that preserves the original `closed_at`.
  */
-final class CloseOrder implements ClosesOrder
+class CloseOrder implements ClosesOrder
 {
     public function execute(OrderContract $order): Order
     {

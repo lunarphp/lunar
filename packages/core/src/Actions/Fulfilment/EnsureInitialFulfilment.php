@@ -16,7 +16,7 @@ use Lunar\Core\Models\Order;
  * physical lines (digital-only orders have nothing to ship). The merchant
  * never creates fulfilments by hand; they split this one or merge back.
  */
-final class EnsureInitialFulfilment implements EnsuresInitialFulfilment
+class EnsureInitialFulfilment implements EnsuresInitialFulfilment
 {
     public function __construct(
         protected CreatesFulfilment $createFulfilment,
