@@ -237,6 +237,36 @@ it('cancels an in-progress fulfilment back to pending', function () {
     expect((string) $fulfilment->refresh()->state)->toBe('pending');
 });
 
+it('holds and releases a fulfilment via the actions', function () {
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('hold', data: ['reason' => 'out-of-stock', 'note' => 'Restock Friday'], arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    expect($fulfilment->refresh()->isOnHold())->toBeTrue()
+        ->and($fulfilment->hold_reason)->toBe('out-of-stock');
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('release', arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    expect($fulfilment->refresh()->isOnHold())->toBeFalse();
+});
+
+it('omits shipped from the update-status menu while held', function () {
+    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    Fulfilments::hold($fulfilment);
+
+    $component = new OrderFulfilments;
+    $component->record = $this->order;
+
+    $names = $component->statusTransitions($fulfilment->refresh()->load('lines'))->pluck('name');
+
+    expect($names)->not->toContain('shipped')
+        ->and($names)->toContain('in-progress');
+});
+
 it('returns a shipped fulfilment', function () {
     $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
 

@@ -73,4 +73,15 @@ interface FulfilmentManager
      * Remove a tracking reference from its fulfilment.
      */
     public function removeTracking(FulfilmentTrackingContract $tracking): void;
+
+    /**
+     * Place a fulfilment on hold (blocking shipping) with an optional reason
+     * and note.
+     */
+    public function hold(FulfilmentContract $fulfilment, ?string $reason = null, ?string $note = null): Fulfilment;
+
+    /**
+     * Release a held fulfilment so it can ship again.
+     */
+    public function release(FulfilmentContract $fulfilment): Fulfilment;
 }

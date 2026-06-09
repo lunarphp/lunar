@@ -30,6 +30,7 @@ return [
     'fulfilment_merge_different_locations' => 'Fulfilments must be at the same location to be merged.',
     'fulfilment_not_relocatable' => 'Only pending or in-progress fulfilments can be moved to another location.',
     'fulfilment_location_not_found' => 'The selected location could not be found.',
+    'fulfilment_on_hold' => 'This fulfilment is on hold and cannot be shipped until released.',
     'fulfilment_tracking_empty' => 'A tracking reference needs a number, URL, or shipping method.',
     'fulfilment_tracking_invalid_number' => 'The tracking number is not valid for :carrier.',
     'fulfilment_merge_tracking_conflict' => 'A source fulfilment carries tracking that would be lost; resolve it before merging.',

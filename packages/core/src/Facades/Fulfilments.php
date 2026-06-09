@@ -17,6 +17,8 @@ use Lunar\Core\Contracts\FulfilmentManager;
  * @method static \Lunar\Core\Models\Fulfilment changeLocation(\Lunar\Core\Models\Contracts\Fulfilment $fulfilment, int $locationId)
  * @method static \Lunar\Core\Models\FulfilmentTracking addTracking(\Lunar\Core\Models\Contracts\Fulfilment $fulfilment, array $attributes)
  * @method static void removeTracking(\Lunar\Core\Models\Contracts\FulfilmentTracking $tracking)
+ * @method static \Lunar\Core\Models\Fulfilment hold(\Lunar\Core\Models\Contracts\Fulfilment $fulfilment, ?string $reason = null, ?string $note = null)
+ * @method static \Lunar\Core\Models\Fulfilment release(\Lunar\Core\Models\Contracts\Fulfilment $fulfilment)
  *
  * @see FulfilmentManager
  */

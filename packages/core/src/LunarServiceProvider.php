@@ -129,6 +129,7 @@ class LunarServiceProvider extends ServiceProvider
         'cart_session',
         'database',
         'discounts',
+        'fulfilment',
         'media',
         'orders',
         'payments',

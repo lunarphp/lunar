@@ -25,6 +25,10 @@ final class ShipFulfilment implements ShipsFulfilment
     public function execute(FulfilmentContract $fulfilment, array $tracking = []): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
+        if ($fulfilment->isOnHold()) {
+            throw new FulfilmentException(__('lunar::exceptions.fulfilment_on_hold'));
+        }
+
         return DB::transaction(function () use ($fulfilment, $tracking) {
             $fulfilment->state->transitionTo(Shipped::class);
 
@@ -44,7 +48,8 @@ final class ShipFulfilment implements ShipsFulfilment
     public static function canRun(FulfilmentContract $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
-        return $fulfilment->state->canTransitionTo(Shipped::class);
+        return ! $fulfilment->isOnHold()
+            && $fulfilment->state->canTransitionTo(Shipped::class);
     }
 
     /**

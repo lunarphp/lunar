@@ -7,8 +7,10 @@ use Lunar\Core\Contracts\Actions\Fulfilment\AddsFulfilmentTracking;
 use Lunar\Core\Contracts\Actions\Fulfilment\CancelsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ChangesFulfilmentLocation;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
+use Lunar\Core\Contracts\Actions\Fulfilment\HoldsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\MergesFulfilments;
 use Lunar\Core\Contracts\Actions\Fulfilment\MovesFulfilmentLines;
+use Lunar\Core\Contracts\Actions\Fulfilment\ReleasesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\RemovesFulfilmentTracking;
 use Lunar\Core\Contracts\Actions\Fulfilment\ReturnsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ShipsFulfilment;
@@ -40,6 +42,8 @@ class FulfilmentManager implements FulfilmentManagerContract
         protected ChangesFulfilmentLocation $changeLocation,
         protected AddsFulfilmentTracking $addTracking,
         protected RemovesFulfilmentTracking $removeTracking,
+        protected HoldsFulfilment $hold,
+        protected ReleasesFulfilment $release,
     ) {}
 
     public function create(OrderContract $order, array $lines, array $attributes = []): Fulfilment
@@ -95,5 +99,15 @@ class FulfilmentManager implements FulfilmentManagerContract
     public function removeTracking(FulfilmentTrackingContract $tracking): void
     {
         $this->removeTracking->execute($tracking);
+    }
+
+    public function hold(FulfilmentContract $fulfilment, ?string $reason = null, ?string $note = null): Fulfilment
+    {
+        return $this->hold->execute($fulfilment, $reason, $note);
+    }
+
+    public function release(FulfilmentContract $fulfilment): Fulfilment
+    {
+        return $this->release->execute($fulfilment);
     }
 }

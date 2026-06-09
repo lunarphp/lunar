@@ -7,6 +7,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -374,6 +375,41 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ));
     }
 
+    public function holdAction(): Action
+    {
+        return Action::make('hold')
+            ->label(__('lunarpanel::order.fulfilments.actions.hold.label'))
+            ->modalHeading(__('lunarpanel::order.fulfilments.actions.hold.modal_heading'))
+            ->modalWidth(Width::Medium)
+            ->icon('heroicon-o-pause-circle')
+            ->color('warning')
+            ->schema([
+                Select::make('reason')
+                    ->label(__('lunarpanel::order.fulfilments.actions.hold.reason'))
+                    ->options(config('lunar.fulfilment.hold_reasons', []))
+                    ->native(false),
+                Textarea::make('note')
+                    ->label(__('lunarpanel::order.fulfilments.actions.hold.note')),
+            ])
+            ->action(fn (array $arguments, array $data) => $this->run(
+                fn () => Fulfilments::hold($this->findFulfilment($arguments), $data['reason'] ?? null, $data['note'] ?? null),
+                'hold',
+            ));
+    }
+
+    public function releaseAction(): Action
+    {
+        return Action::make('release')
+            ->label(__('lunarpanel::order.fulfilments.actions.release.label'))
+            ->icon('heroicon-o-play-circle')
+            ->color('success')
+            ->requiresConfirmation()
+            ->action(fn (array $arguments) => $this->run(
+                fn () => Fulfilments::release($this->findFulfilment($arguments)),
+                'release',
+            ));
+    }
+
     /**
      * Cancel a progressed fulfilment — reverts it to `Pending` so it returns to
      * the unfulfilled pool and can be progressed again (e.g. the wrong parcel
@@ -411,7 +447,9 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     public function statusTransitions(Fulfilment $fulfilment): \Illuminate\Support\Collection
     {
         return collect($fulfilment->state->transitionableStateInstances())
-            ->reject(fn (FulfilmentState $state) => in_array($state::$name, self::MENU_EXCLUDED_STATES, true))
+            ->reject(fn (FulfilmentState $state) => in_array($state::$name, self::MENU_EXCLUDED_STATES, true)
+                // A held parcel can't ship until released.
+                || ($fulfilment->isOnHold() && $state::$name === 'shipped'))
             ->map(fn (FulfilmentState $state) => [
                 'name' => $state::$name,
                 'state' => $state::class,

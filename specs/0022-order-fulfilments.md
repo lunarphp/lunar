@@ -114,6 +114,8 @@ Default `Pending`. Graph (declared in `FulfilmentStateConfig`):
 
 `shipped_at` is stamped by `ShipFulfilment`, not by the state class (states stay model-coupling-free, per 0021's handover constraint); `TransitionFulfilment` clears it on an un-ship.
 
+**Holds (Shopify-style).** A parcel can be put **on hold** — a flag (`held_at` + `hold_reason` + `hold_note`), *orthogonal* to the state graph rather than a state of its own, so a `Pending` or `InProgress` parcel can be held without losing its progress and releasing restores nothing (the state never moved). A held parcel is blocked from shipping (`ShipFulfilment::canRun()` is false and `execute()` throws `fulfilment_on_hold`); the admin hides "Shipped" from its menu while held. `HoldFulfilment` / `ReleaseFulfilment` (`Fulfilments::hold($f, $reason, $note)` / `Fulfilments::release($f)`, `FulfilmentHeld` / `FulfilmentReleased` events) toggle it. Reasons come from a configurable list in `config/fulfilment.php` (`hold_reasons`, key ⇒ label) shown as a dropdown plus a free-text note. The hold does **not** affect the order-level `fulfilment_status` rollup — a held parcel is simply still unfulfilled.
+
 > **No `Delivered`.** The per-parcel lifecycle stops at `Shipped` — core has no delivery signal (carrier-tracking ingestion is a later concern). A `Delivered` state and `delivered_at` are deliberately omitted; reintroduce them when tracking ingestion is designed. The knock-on for the headline is in §D: `Complete` is a **manual** close, not an auto-derived "all delivered".
 
 ### B. Derived `payment_status` — rollup of `transactions`

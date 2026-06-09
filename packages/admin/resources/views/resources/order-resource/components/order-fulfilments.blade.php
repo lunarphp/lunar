@@ -39,6 +39,13 @@
                         <x-filament::badge :color="$stateColors[$stateName] ?? 'gray'" size="sm">
                             {{ $fulfilment->state->label() }}
                         </x-filament::badge>
+                        @if ($fulfilment->isOnHold())
+                            <span @if ($fulfilment->hold_note) title="{{ $fulfilment->hold_note }}" @endif>
+                                <x-filament::badge color="warning" size="sm" icon="heroicon-m-pause-circle">
+                                    {{ __('lunarpanel::order.fulfilments.on_hold') }}@if ($fulfilment->holdReasonLabel()): {{ $fulfilment->holdReasonLabel() }}@endif
+                                </x-filament::badge>
+                            </span>
+                        @endif
                         @if ($fulfilment->location)
                             <span class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                                 <x-filament::icon icon="heroicon-m-map-pin" class="h-3.5 w-3.5" />
@@ -127,7 +134,9 @@
                             @php($canAddTracking = $stateName === 'shipped')
                             {{-- "Cancel" = revert a progressed parcel back to pending so it can be re-progressed. --}}
                             @php($canCancel = in_array($stateName, ['in-progress', 'shipped'], true))
-                            @if ($canSplit || $canMerge || $canChangeLocation || $canAddTracking || $canCancel)
+                            @php($canHold = \Lunar\Core\Actions\Fulfilment\HoldFulfilment::canRun($fulfilment))
+                            @php($canRelease = \Lunar\Core\Actions\Fulfilment\ReleaseFulfilment::canRun($fulfilment))
+                            @if ($canSplit || $canMerge || $canChangeLocation || $canAddTracking || $canCancel || $canHold || $canRelease)
                                 <x-filament::dropdown placement="bottom-end">
                                     <x-slot name="trigger">
                                         <x-filament::icon-button
@@ -172,6 +181,24 @@
                                                 wire:click="mountAction('addTracking', { fulfilment: {{ $fulfilment->id }} })"
                                             >
                                                 {{ __('lunarpanel::order.fulfilments.actions.add_tracking.label') }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
+
+                                        @if ($canHold)
+                                            <x-filament::dropdown.list.item
+                                                icon="heroicon-m-pause-circle"
+                                                wire:click="mountAction('hold', { fulfilment: {{ $fulfilment->id }} })"
+                                            >
+                                                {{ __('lunarpanel::order.fulfilments.actions.hold.label') }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
+
+                                        @if ($canRelease)
+                                            <x-filament::dropdown.list.item
+                                                icon="heroicon-m-play-circle"
+                                                wire:click="mountAction('release', { fulfilment: {{ $fulfilment->id }} })"
+                                            >
+                                                {{ __('lunarpanel::order.fulfilments.actions.release.label') }}
                                             </x-filament::dropdown.list.item>
                                         @endif
 

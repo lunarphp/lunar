@@ -303,6 +303,7 @@ return [
     'fulfilments' => [
         'heading' => 'Fulfilments',
         'unreferenced' => 'Fulfilment #:id',
+        'on_hold' => 'On hold',
         'empty' => 'No fulfilments yet.',
         'columns' => [
             'reference' => 'Reference',
@@ -378,6 +379,23 @@ return [
                 'notification' => [
                     'success' => 'Fulfilment status updated.',
                     'error' => 'Could not update the fulfilment status.',
+                ],
+            ],
+            'hold' => [
+                'label' => 'Hold fulfilment',
+                'modal_heading' => 'Hold fulfilment',
+                'reason' => 'Reason',
+                'note' => 'Note',
+                'notification' => [
+                    'success' => 'Fulfilment placed on hold.',
+                    'error' => 'Could not hold the fulfilment.',
+                ],
+            ],
+            'release' => [
+                'label' => 'Release hold',
+                'notification' => [
+                    'success' => 'Fulfilment released.',
+                    'error' => 'Could not release the fulfilment.',
                 ],
             ],
             'split' => [

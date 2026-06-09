@@ -16,6 +16,9 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->jsonb('meta')->nullable();
             $table->dateTime('shipped_at')->nullable()->index();
+            $table->dateTime('held_at')->nullable()->index();
+            $table->string('hold_reason')->nullable();
+            $table->text('hold_note')->nullable();
             $table->timestamps();
         });
     }
