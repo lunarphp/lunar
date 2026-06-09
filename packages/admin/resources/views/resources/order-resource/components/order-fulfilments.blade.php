@@ -18,7 +18,6 @@
         // else goes through the generic "transition" confirmation.
         $statusActions = [
             'shipped' => 'ship',
-            'cancelled' => 'cancel',
             'returned' => 'return',
         ];
     @endphp
@@ -126,7 +125,9 @@
                             @php($canMerge = $isPreShip && $this->mergeTargets($fulfilment)->isNotEmpty())
                             @php($canChangeLocation = \Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation::canRun($fulfilment) && $this->locations->count() > 1)
                             @php($canAddTracking = $stateName === 'shipped')
-                            @if ($canSplit || $canMerge || $canChangeLocation || $canAddTracking)
+                            {{-- "Cancel" = revert a progressed parcel back to pending so it can be re-progressed. --}}
+                            @php($canCancel = in_array($stateName, ['in-progress', 'shipped'], true))
+                            @if ($canSplit || $canMerge || $canChangeLocation || $canAddTracking || $canCancel)
                                 <x-filament::dropdown placement="bottom-end">
                                     <x-slot name="trigger">
                                         <x-filament::icon-button
@@ -171,6 +172,16 @@
                                                 wire:click="mountAction('addTracking', { fulfilment: {{ $fulfilment->id }} })"
                                             >
                                                 {{ __('lunarpanel::order.fulfilments.actions.add_tracking.label') }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
+
+                                        @if ($canCancel)
+                                            <x-filament::dropdown.list.item
+                                                icon="heroicon-m-x-circle"
+                                                color="danger"
+                                                wire:click="mountAction('cancelFulfilment', { fulfilment: {{ $fulfilment->id }} })"
+                                            >
+                                                {{ __('lunarpanel::order.fulfilments.actions.cancel.label') }}
                                             </x-filament::dropdown.list.item>
                                         @endif
                                     </x-filament::dropdown.list>

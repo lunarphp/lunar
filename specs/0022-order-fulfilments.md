@@ -110,7 +110,7 @@ Default `Pending`. Graph (declared in `FulfilmentStateConfig`):
 - `Cancelled` — terminal
 - `Returned` — terminal
 
-`Shipped → Pending` is an **un-ship**: a mistaken dispatch can be reverted, which clears `shipped_at` and returns the parcel's items to the unfulfilled pool (the parcel becomes re-shippable). Implemented via the generic `TransitionFulfilment`, which un-stamps `shipped_at` when moving to a pre-ship state. (Cancellation stays a pre-ship action — a shipped parcel is reverted rather than terminally cancelled, since the split-down model has no manual "create fulfilment" to re-fulfil orphaned items.)
+`Shipped → Pending` (and `InProgress → Pending`) is an **un-ship / cancel**: a mistaken progression can be reverted, which clears `shipped_at` and returns the parcel's items to the unfulfilled pool (the parcel becomes re-shippable). This is *not* surfaced as a normal step in the admin "Update status" menu — that menu is forward-only (`pending` and `cancelled` are excluded from it). Instead it is a deliberate, destructive **"Cancel fulfilment"** action (danger) in the parcel's ⋮ menu, shown for `in-progress` / `shipped` parcels, implemented via `TransitionFulfilment` (which un-stamps `shipped_at` when moving to a pre-ship state). A shipped parcel is reverted rather than terminally cancelled, since the split-down model has no manual "create fulfilment" to re-fulfil orphaned items; the terminal `Cancelled` state remains in core for programmatic use but is not surfaced in the admin.
 
 `shipped_at` is stamped by `ShipFulfilment`, not by the state class (states stay model-coupling-free, per 0021's handover constraint); `TransitionFulfilment` clears it on an un-ship.
 

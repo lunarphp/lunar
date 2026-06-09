@@ -8,6 +8,7 @@ use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
+use Lunar\Core\States\Fulfilment\InProgress;
 use Lunar\Filament\Support\Facades\LunarFilament;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
@@ -197,7 +198,10 @@ it('lists the states a pending fulfilment can move to', function () {
 
     $names = $component->statusTransitions($fulfilment->load('lines'))->pluck('name');
 
-    expect($names)->toContain('in-progress', 'shipped', 'cancelled')
+    // Forward steps only — reverting (pending) / cancelling are not menu moves.
+    expect($names)->toContain('in-progress', 'shipped')
+        ->and($names)->not->toContain('pending')
+        ->and($names)->not->toContain('cancelled')
         ->and($names)->not->toContain('returned');
 });
 
@@ -211,25 +215,26 @@ it('moves a fulfilment to a new state via the transition action', function () {
     expect((string) $fulfilment->refresh()->state)->toBe('in-progress');
 });
 
-it('reverts a shipped fulfilment back to pending via the transition action', function () {
+it('cancels a shipped fulfilment back to pending via the cancel action', function () {
     $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
-        ->callAction('transition', arguments: ['fulfilment' => $fulfilment->id, 'state' => 'pending'])
+        ->callAction('cancelFulfilment', arguments: ['fulfilment' => $fulfilment->id])
         ->assertHasNoActionErrors();
 
     expect((string) $fulfilment->refresh()->state)->toBe('pending')
         ->and($fulfilment->shipped_at)->toBeNull();
 });
 
-it('cancels a fulfilment via the dedicated cancel action', function () {
+it('cancels an in-progress fulfilment back to pending', function () {
     $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    Fulfilments::transition($fulfilment, InProgress::class);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
-        ->callAction('cancel', arguments: ['fulfilment' => $fulfilment->id])
+        ->callAction('cancelFulfilment', arguments: ['fulfilment' => $fulfilment->id])
         ->assertHasNoActionErrors();
 
-    expect((string) $fulfilment->refresh()->state)->toBe('cancelled');
+    expect((string) $fulfilment->refresh()->state)->toBe('pending');
 });
 
 it('returns a shipped fulfilment', function () {

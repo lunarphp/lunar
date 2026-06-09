@@ -346,7 +346,9 @@ return [
                 ],
             ],
             'cancel' => [
-                'label' => 'Cancel',
+                'label' => 'Cancel fulfilment',
+                'modal_heading' => 'Cancel fulfilment',
+                'description' => 'This returns the fulfilment to pending so it can be progressed again. Any shipment details are cleared.',
                 'notification' => [
                     'success' => 'Fulfilment cancelled.',
                     'error' => 'Could not cancel fulfilment.',

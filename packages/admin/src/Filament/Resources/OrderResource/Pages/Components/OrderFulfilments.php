@@ -29,6 +29,7 @@ use Lunar\Core\Models\FulfilmentTracking;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
+use Lunar\Core\States\Fulfilment\Pending;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
@@ -373,15 +374,22 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ));
     }
 
-    public function cancelAction(): Action
+    /**
+     * Cancel a progressed fulfilment — reverts it to `Pending` so it returns to
+     * the unfulfilled pool and can be progressed again (e.g. the wrong parcel
+     * was shipped). A deliberate, destructive correction, not a menu step.
+     */
+    public function cancelFulfilmentAction(): Action
     {
-        return Action::make('cancel')
+        return Action::make('cancelFulfilment')
             ->label(__('lunarpanel::order.fulfilments.actions.cancel.label'))
+            ->modalHeading(__('lunarpanel::order.fulfilments.actions.cancel.modal_heading'))
+            ->modalDescription(__('lunarpanel::order.fulfilments.actions.cancel.description'))
             ->icon('heroicon-o-x-circle')
             ->color('danger')
             ->requiresConfirmation()
             ->action(fn (array $arguments) => $this->run(
-                fn () => Fulfilments::cancel($this->findFulfilment($arguments)),
+                fn () => Fulfilments::transition($this->findFulfilment($arguments), Pending::class),
                 'cancel',
             ));
     }
@@ -393,9 +401,17 @@ class OrderFulfilments extends Component implements HasActions, HasForms
      *
      * @return \Illuminate\Support\Collection<int, array{name: string, state: class-string<FulfilmentState>, label: string}>
      */
+    /**
+     * Target states whose move is offered as a "normal" forward step in the
+     * Update-status menu. Reverting to `pending` (undo) is deliberately not a
+     * menu transition — it is the dangerous "Cancel fulfilment" action.
+     */
+    private const MENU_EXCLUDED_STATES = ['pending', 'cancelled'];
+
     public function statusTransitions(Fulfilment $fulfilment): \Illuminate\Support\Collection
     {
         return collect($fulfilment->state->transitionableStateInstances())
+            ->reject(fn (FulfilmentState $state) => in_array($state::$name, self::MENU_EXCLUDED_STATES, true))
             ->map(fn (FulfilmentState $state) => [
                 'name' => $state::$name,
                 'state' => $state::class,
