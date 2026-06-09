@@ -89,7 +89,9 @@ return [
     |
     | Order-level notifications are sent by SendOrderPaymentStatusNotifications
     | and SendOrderFulfilmentStatusNotifications; per-parcel fulfilment
-    | notifications by DefaultFulfilmentStateConfig::notificationsFor().
+    | notifications by DefaultFulfilmentStateConfig::notificationsFor(). The
+    | 'cancelled' key is sent by SendOrderCancelledNotifications when an order
+    | is cancelled with "notify the customer" enabled.
     |
     */
     'notifications' => [
@@ -98,6 +100,9 @@ return [
         // ],
         // 'fulfilled' => [
         //     App\Notifications\OrderFulfilled::class,      // fulfilment_status
+        // ],
+        // 'cancelled' => [
+        //     App\Notifications\OrderCancelled::class,      // order cancellation
         // ],
     ],
 
