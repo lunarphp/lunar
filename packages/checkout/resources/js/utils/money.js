@@ -5,8 +5,8 @@
  * @param {number} minor
  * @param {string} currency ISO 4217 code
  */
-export function money(minor, currency = 'USD') {
-  return new Intl.NumberFormat('en-US', {
+export function money(minor, currency = 'GBP', locale = 'en-GB') {
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
   }).format((minor || 0) / 100)

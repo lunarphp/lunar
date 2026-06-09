@@ -55,7 +55,8 @@
 
   --fg-primary: var(--slate-900);
   --fg-secondary: var(--slate-600);
-  --fg-tertiary: var(--slate-400);
+  /* slate-500 (not 400) for WCAG AA on white — Tender v2 fix. */
+  --fg-tertiary: var(--slate-500);
   --fg-on-accent: var(--slate-0);
   --fg-link: var(--indigo-600);
 

@@ -2,8 +2,12 @@
 
 namespace Lunar\Checkout;
 
+use Illuminate\Contracts\Session\Session as LaravelSession;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Checkout\Contracts\CheckoutSession as CheckoutSessionContract;
+use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Session\CheckoutSession;
 
 class CheckoutServiceProvider extends ServiceProvider
 {
@@ -12,6 +16,18 @@ class CheckoutServiceProvider extends ServiceProvider
         // Default theme. A consumer re-brands the checkout by binding their own
         // CheckoutTheme in a service provider — config never selects the theme.
         $this->app->bind(CheckoutTheme::class, fn () => CheckoutTheme::tender());
+
+        // Element registry — a single build-time instance consumers register
+        // elements onto (via the Checkout facade). The container is the swap
+        // seam; rebind the contract to substitute the implementation.
+        $this->app->singleton(ElementRegistryContract::class, fn ($app) => new ElementRegistry($app));
+
+        // Checkout session (prototype) — request-scoped value store backing the
+        // data elements capture. Swapped for the spec 0004 model by rebinding.
+        $this->app->scoped(
+            CheckoutSessionContract::class,
+            fn ($app) => new CheckoutSession($app->make(LaravelSession::class)),
+        );
     }
 
     public function boot(): void
