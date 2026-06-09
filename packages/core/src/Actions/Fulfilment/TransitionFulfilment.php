@@ -20,11 +20,22 @@ final class TransitionFulfilment implements TransitionsFulfilment
     /**
      * @param  class-string<FulfilmentState>  $state
      */
+    /**
+     * States that precede dispatch — reverting to one un-stamps `shipped_at`.
+     */
+    private const PRE_SHIP_STATES = ['pending', 'in-progress'];
+
     public function execute(FulfilmentContract $fulfilment, string $state): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         return DB::transaction(function () use ($fulfilment, $state) {
             $fulfilment->state->transitionTo($state);
+
+            // Reverting a shipped parcel to a pre-ship state un-ships it, so the
+            // shipment timestamp no longer applies.
+            if (in_array($state::$name, self::PRE_SHIP_STATES, true) && $fulfilment->shipped_at) {
+                $fulfilment->forceFill(['shipped_at' => null])->save();
+            }
 
             return $fulfilment->refresh();
         });

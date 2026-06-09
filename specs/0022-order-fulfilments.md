@@ -104,13 +104,15 @@ States/Fulfilment/
 
 Default `Pending`. Graph (declared in `FulfilmentStateConfig`):
 
-- `Pending → InProgress, Cancelled`
-- `InProgress → Shipped, Cancelled`
-- `Shipped → Returned`
+- `Pending → InProgress, Shipped, Cancelled`
+- `InProgress → Pending, Shipped, Cancelled`
+- `Shipped → Pending, Returned`
 - `Cancelled` — terminal
 - `Returned` — terminal
 
-`shipped_at` is stamped by `ShipFulfilment`, not by the state class (states stay model-coupling-free, per 0021's handover constraint).
+`Shipped → Pending` is an **un-ship**: a mistaken dispatch can be reverted, which clears `shipped_at` and returns the parcel's items to the unfulfilled pool (the parcel becomes re-shippable). Implemented via the generic `TransitionFulfilment`, which un-stamps `shipped_at` when moving to a pre-ship state. (Cancellation stays a pre-ship action — a shipped parcel is reverted rather than terminally cancelled, since the split-down model has no manual "create fulfilment" to re-fulfil orphaned items.)
+
+`shipped_at` is stamped by `ShipFulfilment`, not by the state class (states stay model-coupling-free, per 0021's handover constraint); `TransitionFulfilment` clears it on an un-ship.
 
 > **No `Delivered`.** The per-parcel lifecycle stops at `Shipped` — core has no delivery signal (carrier-tracking ingestion is a later concern). A `Delivered` state and `delivered_at` are deliberately omitted; reintroduce them when tracking ingestion is designed. The knock-on for the headline is in §D: `Complete` is a **manual** close, not an auto-derived "all delivered".
 

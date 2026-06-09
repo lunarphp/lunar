@@ -22,7 +22,10 @@ class DefaultFulfilmentStateConfig implements FulfilmentStateConfig
         return [
             Pending::class => [InProgress::class, Shipped::class, Cancelled::class],
             InProgress::class => [Pending::class, Shipped::class, Cancelled::class],
-            Shipped::class => [Returned::class],
+            // A shipped parcel can be reverted to `Pending` (an "un-ship" to
+            // correct a mistaken dispatch — the items return to the unfulfilled
+            // pool and the parcel becomes re-shippable) or marked `Returned`.
+            Shipped::class => [Pending::class, Returned::class],
             Cancelled::class => [],
             Returned::class => [],
         ];

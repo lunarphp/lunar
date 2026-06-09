@@ -211,6 +211,17 @@ it('moves a fulfilment to a new state via the transition action', function () {
     expect((string) $fulfilment->refresh()->state)->toBe('in-progress');
 });
 
+it('reverts a shipped fulfilment back to pending via the transition action', function () {
+    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('transition', arguments: ['fulfilment' => $fulfilment->id, 'state' => 'pending'])
+        ->assertHasNoActionErrors();
+
+    expect((string) $fulfilment->refresh()->state)->toBe('pending')
+        ->and($fulfilment->shipped_at)->toBeNull();
+});
+
 it('cancels a fulfilment via the dedicated cancel action', function () {
     $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
 
