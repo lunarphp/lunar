@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lunar\Checkout\Contracts\CheckoutAssets;
 use Lunar\Checkout\Contracts\CheckoutElement;
 use Lunar\Checkout\Contracts\CheckoutSession;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Support\CheckoutBundle;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CheckoutController extends Controller
 {
@@ -25,21 +28,58 @@ class CheckoutController extends Controller
     ) {}
 
     /**
-     * Render the checkout page as an Inertia response.
+     * Render the checkout against the package's OWN Inertia root view — the
+     * checkout is a self-contained app, not a guest in the consumer's Inertia
+     * setup (spec 0008 §A). Data arrives as no-store props, so no PII is baked
+     * into cacheable HTML.
      *
-     * The Vue components are transport-neutral: they take the `checkout`
-     * payload and the resolved `theme` token map as props. Until the element
-     * model + checkout session land (specs 0001/0004), the order body is a
-     * static placeholder fixture; registered custom elements (§ registry) are
-     * projected alongside it so a consumer can extend the checkout today.
+     * Until the element model + checkout session land (specs 0001/0004), the
+     * order body is a static placeholder fixture; registered custom elements
+     * (§ registry) are projected alongside it.
      */
     public function show(CheckoutTheme $theme): Response
     {
-        return Inertia::render('checkout/Show', [
+        Inertia::setRootView('lunar-checkout::app');
+
+        return Inertia::render('Show', [
             'checkout' => array_merge($this->placeholderCheckout(), [
                 'elements' => $this->projectElements(),
             ]),
             'theme' => $theme->tokens(),
+        ]);
+    }
+
+    /**
+     * Stream a file from the checkout app's own prebuilt dist/ (spec 0008 §B).
+     * Same-origin, far-future immutable cache. Only files inside dist/ resolve.
+     */
+    public function build(string $file, CheckoutBundle $bundle): BinaryFileResponse
+    {
+        $path = $bundle->file($file);
+
+        abort_if($path === null, 404);
+
+        return $this->serve($path, $file);
+    }
+
+    /**
+     * Stream a registered contributed chunk (spec 0009 §C.1). Only registered
+     * package + filename pairs resolve — never an arbitrary request path.
+     */
+    public function asset(string $package, string $file, CheckoutAssets $assets): BinaryFileResponse
+    {
+        $path = $assets->path($package, $file);
+
+        abort_if($path === null, 404);
+
+        return $this->serve($path, $file);
+    }
+
+    private function serve(string $path, string $file): BinaryFileResponse
+    {
+        return response()->file($path, [
+            'Content-Type' => str_ends_with($file, '.css') ? 'text/css' : 'text/javascript',
+            'Cache-Control' => 'public, max-age=31536000, immutable',
         ]);
     }
 
