@@ -7,14 +7,43 @@ return [
     | Checkout route
     |--------------------------------------------------------------------------
     |
-    | The URI the checkout page is served from and the middleware applied to
-    | the checkout route group. This is the mount point a consuming storefront
-    | drops the checkout onto.
+    | The URI the self-contained checkout app is served from and the middleware
+    | applied to its route group. A consuming storefront (any stack) links or
+    | redirects a customer here.
     |
     */
 
     'path' => 'checkout',
 
     'middleware' => ['web'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Package routes
+    |--------------------------------------------------------------------------
+    |
+    | When true, the package registers its own checkout, element-store, app-
+    | bundle and contributed-chunk routes. Set to false only for the
+    | publish-and-own tier (spec 0008 §C): you publish the app source, register
+    | your own route + controller, and serve the build yourself.
+    |
+    */
+
+    'routes' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Checkout driver
+    |--------------------------------------------------------------------------
+    |
+    | The active checkout driver (spec 0004): turns a cart into a checkout
+    | session and a session into an order. The default `lunar` driver targets
+    | Lunar's cart + order. A non-Lunar backend registers its own driver and
+    | selects it here BY NAME (a value — not a class swap; bindings stay in the
+    | container per the Lunar convention).
+    |
+    */
+
+    'driver' => 'lunar',
 
 ];

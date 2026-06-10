@@ -4,10 +4,13 @@ namespace Lunar\Checkout;
 
 use Illuminate\Contracts\Session\Session as LaravelSession;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Checkout\Contracts\CheckoutAssets as CheckoutAssetsContract;
 use Lunar\Checkout\Contracts\CheckoutSession as CheckoutSessionContract;
 use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
 use Lunar\Checkout\Session\CheckoutSession;
+use Lunar\Checkout\Support\CheckoutAssets;
+use Lunar\Checkout\Support\CheckoutBundle;
 
 class CheckoutServiceProvider extends ServiceProvider
 {
@@ -22,6 +25,15 @@ class CheckoutServiceProvider extends ServiceProvider
         // seam; rebind the contract to substitute the implementation.
         $this->app->singleton(ElementRegistryContract::class, fn ($app) => new ElementRegistry($app));
 
+        // Contributed-asset registry (spec 0009). Build-time + Octane-safe like
+        // the element registry: packages call CheckoutAssets::register() in their
+        // own provider to contribute an element/gateway chunk into the prebuilt
+        // app at runtime — no fork, no rebuild, no publish of the app's assets.
+        $this->app->singleton(CheckoutAssetsContract::class, fn () => new CheckoutAssets);
+
+        // Resolves the checkout app's own prebuilt bundle from the package dist/.
+        $this->app->singleton(CheckoutBundle::class, fn () => new CheckoutBundle(__DIR__.'/../dist'));
+
         // Checkout session (prototype) — request-scoped value store backing the
         // data elements capture. Swapped for the spec 0004 model by rebinding.
         $this->app->scoped(
@@ -32,30 +44,40 @@ class CheckoutServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');
-
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-
         $this->mergeConfigFrom(__DIR__.'/../config/checkout.php', 'lunar.checkout');
 
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');
+
+        // Package routes are opt-out: a publish-and-own consumer disables them
+        // (config lunar.checkout.routes => false) and registers their own.
+        if (config('lunar.checkout.routes', true)) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        }
+
+        $this->registerPublishing();
+    }
+
+    private function registerPublishing(): void
+    {
         $this->publishes([
             __DIR__.'/../config/checkout.php' => config_path('lunar/checkout.php'),
         ], 'lunar.checkout.config');
 
+        // The Inertia ROOT view (spec 0008 §C). Publish to customise the shell
+        // (meta, fonts) without owning the whole app.
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/lunar-checkout'),
         ], 'lunar.checkout.views');
 
-        // The Vue component source — the consumer's Vite compiles it and Inertia
-        // resolves the page. Re-run with --force on upgrade.
+        // Publish-and-own (spec 0008 §C): the whole self-contained app — Vue
+        // source, CSS, AND its own build toolchain. The consumer disables the
+        // package route, registers their own, edits the components, and runs the
+        // app's OWN Vite (`npm run build`) — not their storefront's bundler.
         $this->publishes([
-            __DIR__.'/../resources/js' => resource_path('js/vendor/lunar-checkout'),
+            __DIR__.'/../resources/js' => resource_path('vendor/lunar-checkout/resources/js'),
+            __DIR__.'/../resources/css' => resource_path('vendor/lunar-checkout/resources/css'),
+            __DIR__.'/../package.json' => resource_path('vendor/lunar-checkout/package.json'),
+            __DIR__.'/../vite.config.js' => resource_path('vendor/lunar-checkout/vite.config.js'),
         ], 'lunar.checkout.source');
-
-        // Prebuilt, plain (sandboxed) CSS. No build step — the consumer imports
-        // and their Vite fingerprints it.
-        $this->publishes([
-            __DIR__.'/../resources/css' => resource_path('css/vendor/lunar-checkout'),
-        ], 'lunar.checkout.styles');
     }
 }
