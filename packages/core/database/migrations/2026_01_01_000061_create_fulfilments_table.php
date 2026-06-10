@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create($this->prefix.'fulfilments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('order_id')->constrained($this->prefix.'orders')->cascadeOnDelete();
+            // Required: a fulfilment always ships from a location.
+            $table->foreignId('location_id')->constrained($this->prefix.'locations')->restrictOnDelete();
             $table->string('reference')->nullable()->index();
             $table->string('state')->default('pending')->index();
             $table->text('notes')->nullable();

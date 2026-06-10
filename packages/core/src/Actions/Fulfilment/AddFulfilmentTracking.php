@@ -3,8 +3,8 @@
 namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\AddsFulfilmentTracking;
+use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentTracking;
@@ -15,6 +15,10 @@ use Lunar\Core\Models\FulfilmentTracking;
  */
 class AddFulfilmentTracking implements AddsFulfilmentTracking
 {
+    public function __construct(
+        protected CarrierManifest $carriers,
+    ) {}
+
     public function execute(FulfilmentContract $fulfilment, array $attributes): FulfilmentTracking
     {
         /** @var Fulfilment $fulfilment */
@@ -29,7 +33,7 @@ class AddFulfilmentTracking implements AddsFulfilmentTracking
             throw new FulfilmentException(__('lunar::exceptions.fulfilment_tracking_empty'));
         }
 
-        $carrier = Carriers::get($attributes['carrier'] ?? null);
+        $carrier = $this->carriers->get($attributes['carrier'] ?? null);
 
         if (filled($attributes['tracking_number'] ?? null) && $carrier
             && ! $carrier->validateTrackingNumber($attributes['tracking_number'])) {

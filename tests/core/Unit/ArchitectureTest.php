@@ -6,6 +6,7 @@ use Lunar\Core\Actions\Collections\SortProductsBySku;
 use Lunar\Core\Actions\Taxes\GetTaxZoneCountry;
 use Lunar\Core\Actions\Taxes\GetTaxZonePostcode;
 use Lunar\Core\Actions\Taxes\GetTaxZoneState;
+use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Facades\PriceCalculator;
@@ -54,4 +55,5 @@ arch('actions do not depend on Lunar service facades')
         Payments::class,
         Discounts::class,
         PriceCalculator::class,
+        Carriers::class,
     ]);

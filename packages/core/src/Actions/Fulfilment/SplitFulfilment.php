@@ -22,6 +22,9 @@ class SplitFulfilment implements SplitsFulfilment
      */
     public const SPLITTABLE_STATES = ['pending', 'in-progress'];
 
+    /**
+     * @param  array<int|string, int>  $moves  [order_line_id => quantity]
+     */
     public function execute(FulfilmentContract $fulfilment, array $moves): Fulfilment
     {
         /** @var Fulfilment $fulfilment */

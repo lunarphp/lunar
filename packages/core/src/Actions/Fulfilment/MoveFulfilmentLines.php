@@ -16,6 +16,9 @@ use Lunar\Core\Models\Fulfilment;
  */
 class MoveFulfilmentLines implements MovesFulfilmentLines
 {
+    /**
+     * @param  array<int|string, int>  $moves  [order_line_id => quantity]
+     */
     public function execute(FulfilmentContract $from, FulfilmentContract $to, array $moves): Fulfilment
     {
         /** @var Fulfilment $from */

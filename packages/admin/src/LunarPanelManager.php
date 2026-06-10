@@ -148,6 +148,7 @@ class LunarPanelManager
             'lunar::discount-limitations' => 'lucide-list-x',
             'lunar::info' => 'lucide-info',
             'lunar::languages' => 'lucide-languages',
+            'lunar::locations' => 'lucide-warehouse',
             'lunar::media' => 'lucide-image',
             'lunar::orders' => 'lucide-inbox',
             'lunar::product-pricing' => 'lucide-coins',

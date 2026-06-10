@@ -11,9 +11,7 @@ class UpdateOrderFromIntent
 {
     public static function execute(
         OrderContract $order,
-        PaymentIntent $paymentIntent,
-        string $successStatus = 'paid',
-        string $failStatus = 'failed'
+        PaymentIntent $paymentIntent
     ): OrderContract {
         return DB::transaction(function () use ($order, $paymentIntent) {
 

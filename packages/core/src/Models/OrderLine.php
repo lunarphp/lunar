@@ -2,9 +2,11 @@
 
 namespace Lunar\Core\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
@@ -88,6 +90,19 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::modelClass());
+    }
+
+    public function fulfilmentLines(): HasMany
+    {
+        return $this->hasMany(FulfilmentLine::modelClass());
+    }
+
+    /**
+     * Limit the query to order lines not yet covered by any fulfilment.
+     */
+    public function scopeUncovered(Builder $query): Builder
+    {
+        return $query->whereDoesntHave('fulfilmentLines');
     }
 
     public function purchasable(): MorphTo

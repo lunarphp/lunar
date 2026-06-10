@@ -3,6 +3,7 @@
 namespace Lunar\Admin\Filament\Resources;
 
 use Filament\Schemas\Schema;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Filament\Resources\LocationResource\Pages\CreateLocation;
 use Lunar\Admin\Filament\Resources\LocationResource\Pages\EditLocation;
@@ -33,7 +34,7 @@ class LocationResource extends BaseResource
 
     public static function getNavigationIcon(): ?string
     {
-        return 'heroicon-o-building-storefront';
+        return FilamentIcon::resolve('lunar::locations');
     }
 
     public static function getNavigationGroup(): ?string

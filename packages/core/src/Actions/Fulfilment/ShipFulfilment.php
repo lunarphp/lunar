@@ -3,8 +3,8 @@
 namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\ShipsFulfilment;
+use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
@@ -18,6 +18,10 @@ use Lunar\Core\States\Fulfilment\Shipped;
  */
 class ShipFulfilment implements ShipsFulfilment
 {
+    public function __construct(
+        protected CarrierManifest $carriers,
+    ) {}
+
     /**
      * @param  array<string, mixed>|array<int, array<string, mixed>>  $tracking
      *                                                                           a single tracking entry, or a list of them
@@ -88,7 +92,7 @@ class ShipFulfilment implements ShipsFulfilment
     protected function validateTrackingNumber(array $entry): void
     {
         $number = $entry['tracking_number'] ?? null;
-        $carrier = Carriers::get($entry['carrier'] ?? null);
+        $carrier = $this->carriers->get($entry['carrier'] ?? null);
 
         if (filled($number) && $carrier && ! $carrier->validateTrackingNumber($number)) {
             throw new FulfilmentException(__('lunar::exceptions.fulfilment_tracking_invalid_number', [

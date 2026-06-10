@@ -18,13 +18,13 @@ use Lunar\Core\States\Fulfilment\FulfilmentState;
 class TransitionFulfilment implements TransitionsFulfilment
 {
     /**
-     * @param  class-string<FulfilmentState>  $state
-     */
-    /**
      * States that precede dispatch — reverting to one un-stamps `shipped_at`.
      */
     private const PRE_SHIP_STATES = ['pending', 'in-progress'];
 
+    /**
+     * @param  class-string<FulfilmentState>  $state
+     */
     public function execute(FulfilmentContract $fulfilment, string $state): Fulfilment
     {
         /** @var Fulfilment $fulfilment */

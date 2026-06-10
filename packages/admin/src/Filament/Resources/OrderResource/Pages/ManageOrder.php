@@ -32,7 +32,6 @@ use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysTransactions;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderItemsTable;
 use Lunar\Admin\Support\ActivityLog\Concerns\CanDispatchActivityUpdated;
 use Lunar\Admin\Support\Pages\BaseViewRecord;
-use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
 use Lunar\Filament\Actions\Orders\CancelOrderAction;
@@ -103,13 +102,9 @@ class ManageOrder extends BaseViewRecord
             ->heading(__('lunarpanel::order.other_items.heading'))
             ->compact()
             ->visible(function ($record) {
-                $covered = FulfilmentLine::query()
-                    ->whereIn('fulfilment_id', $record->fulfilments()->pluck('id'))
-                    ->pluck('order_line_id');
-
                 return $record->lines()
                     ->whereIn('type', ['physical', 'digital'])
-                    ->whereNotIn('id', $covered)
+                    ->uncovered()
                     ->exists();
             })
             ->schema([

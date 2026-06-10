@@ -23,7 +23,6 @@ use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Computed;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
 use Lunar\Admin\Livewire\Components\TableComponent;
-use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Transaction;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -130,24 +129,11 @@ class OrderItemsTable extends TableComponent
                 ->wherein('type', ['physical', 'digital'])
                 // Lines covered by a fulfilment are shown in their fulfilment
                 // card instead; only uncovered + digital lines list here.
-                ->whereNotIn('id', $this->coveredLineIds()))
+                ->uncovered())
             ->columns(static::getOrderLinesTableColumns())
             ->toolbarActions([
                 $this->getBulkRefundAction(),
             ]);
-    }
-
-    /**
-     * IDs of order lines already covered by one of the order's fulfilments.
-     *
-     * @return array<int, int>
-     */
-    public function coveredLineIds(): array
-    {
-        return FulfilmentLine::query()
-            ->whereIn('fulfilment_id', $this->record->fulfilments()->pluck('id'))
-            ->pluck('order_line_id')
-            ->all();
     }
 
     public function table(Table $table): Table

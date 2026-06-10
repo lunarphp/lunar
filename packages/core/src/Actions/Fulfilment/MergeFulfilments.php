@@ -22,6 +22,9 @@ class MergeFulfilments implements MergesFulfilments
      */
     public const MERGEABLE_STATES = ['pending', 'in-progress'];
 
+    /**
+     * @param  Collection<int, FulfilmentContract>  $sources
+     */
     public function execute(FulfilmentContract $target, Collection $sources): Fulfilment
     {
         /** @var Fulfilment $target */

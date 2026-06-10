@@ -15,6 +15,7 @@ class OrderIndexer extends ScoutIndexer
             'channel_id',
             'created_at',
             'updated_at',
+            'closed_at',
             'total',
         ];
     }
@@ -24,7 +25,9 @@ class OrderIndexer extends ScoutIndexer
         return [
             'customer_id',
             'user_id',
-            'status',
+            'payment_status',
+            'fulfilment_status',
+            'closed',
             'placed_at',
             'channel_id',
             'tags',

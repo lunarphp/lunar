@@ -107,4 +107,33 @@ interface Order
      * Determines if this is a placed order.
      */
     public function isPlaced(): bool;
+
+    /**
+     * Whether the order is still open (not archived).
+     */
+    public function isOpen(): bool;
+
+    /**
+     * Whether the order has been closed (archived / dealt with).
+     */
+    public function isClosed(): bool;
+
+    /**
+     * Whether the order has been cancelled.
+     */
+    public function isCancelled(): bool;
+
+    /**
+     * The headline lifecycle key for display — cancelled takes precedence over
+     * the open/closed archive state. Maps to `lunar::states.order.*`.
+     *
+     * @return 'cancelled'|'closed'|'open'
+     */
+    public function lifecycleStatus(): string;
+
+    /**
+     * The human-readable label for the cancellation reason, resolved from the
+     * configured reason list (falls back to the stored key).
+     */
+    public function cancelReasonLabel(): ?string;
 }
