@@ -10,10 +10,26 @@ use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
 use Lunar\Checkout\Session\CheckoutSession;
 use Lunar\Checkout\Support\CheckoutAssets;
-use Lunar\Checkout\Support\CheckoutBundle;
 
 class CheckoutServiceProvider extends ServiceProvider
 {
+    /**
+     * Absolute path to the checkout app's Vite dev hot file. The package's own
+     * `npm run dev` writes it here; it is symlinked into the consumer's vendor/
+     * dir, so the root view can read it directly. Present → Laravel's Vite class
+     * serves the app from the dev server (HMR); absent → the published build.
+     */
+    public static function appHotFile(): string
+    {
+        return __DIR__.'/../resources/dist/hot';
+    }
+
+    /** Public build dir (relative to public/) the app is published to. */
+    public static function appBuildDirectory(): string
+    {
+        return 'vendor/lunarphp/checkout/build';
+    }
+
     public function register(): void
     {
         // Default theme. A consumer re-brands the checkout by binding their own
@@ -30,9 +46,6 @@ class CheckoutServiceProvider extends ServiceProvider
         // own provider to contribute an element/gateway chunk into the prebuilt
         // app at runtime — no fork, no rebuild, no publish of the app's assets.
         $this->app->singleton(CheckoutAssetsContract::class, fn () => new CheckoutAssets);
-
-        // Resolves the checkout app's own prebuilt bundle from the package dist/.
-        $this->app->singleton(CheckoutBundle::class, fn () => new CheckoutBundle(__DIR__.'/../dist'));
 
         // Checkout session (prototype) — request-scoped value store backing the
         // data elements capture. Swapped for the spec 0004 model by rebinding.
@@ -62,6 +75,14 @@ class CheckoutServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/checkout.php' => config_path('lunar/checkout.php'),
         ], 'lunar.checkout.config');
+
+        // The checkout app's prebuilt bundle. Published to the host's public/
+        // so Laravel's Vite class serves it same-origin (spec 0008 §B) — the
+        // same publish-to-public model addons use. Re-run with --force after a
+        // package upgrade. `php artisan vendor:publish --tag=lunar-checkout-assets`.
+        $this->publishes([
+            __DIR__.'/../resources/dist' => public_path('vendor/lunarphp/checkout'),
+        ], 'lunar-checkout-assets');
 
         // The Inertia ROOT view (spec 0008 §C). Publish to customise the shell
         // (meta, fonts) without owning the whole app.

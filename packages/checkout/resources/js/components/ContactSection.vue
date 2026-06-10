@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import {ref} from 'vue'
 import Icon from './primitives/Icon.vue'
 import FloatingField from './primitives/FloatingField.vue'
 
@@ -20,7 +20,7 @@ const news = ref(false)
       <label class="check">
         <input type="checkbox" v-model="news" />
         <span class="box ico"><Icon name="check" /></span>
-        <span class="txt">Email me with order updates and occasional offers.</span>
+        <span class="txt">Email me with order updates and offers.</span>
       </label>
     </div>
   </section>

@@ -1,11 +1,12 @@
 @php
     /**
      * The self-contained checkout app's Inertia ROOT view (spec 0008 §A).
-     * Lunar owns it end-to-end. The app's own prebuilt bundle and every
-     * contributed chunk load SAME-ORIGIN from package routes, so a strict
-     * `script-src 'self'` holds and install-and-go needs no vendor:publish.
+     * Lunar owns it end-to-end. The app's prebuilt bundle and every contributed
+     * element/gateway chunk (spec 0009) are rendered with Laravel's own Vite
+     * class — one mechanism, dev hot file vs build manifest handled for us,
+     * exactly like a Statamic addon.
      */
-    $bundle = app(\Lunar\Checkout\Support\CheckoutBundle::class)->entry();
+    use Illuminate\Support\Facades\Vite;
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="lunar-checkout">
@@ -14,33 +15,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Checkout</title>
 
-    @foreach ($bundle['css'] as $file)
-        <link rel="stylesheet" href="{{ route('lunar.checkout.build', $file) }}">
-    @endforeach
-
     @inertiaHead
+
+    {{-- The checkout app itself. Dev (package `npm run dev`) → its hot file in
+         the symlinked vendor dir; otherwise the published build in public/
+         (tag lunar-checkout-assets). Laravel's Vite class makes the switch. --}}
+    {{
+        Vite::useHotFile(\Lunar\Checkout\CheckoutServiceProvider::appHotFile())
+            ->useBuildDirectory(\Lunar\Checkout\CheckoutServiceProvider::appBuildDirectory())
+            ->withEntryPoints(['resources/js/app.js'])
+    }}
+
+    {{-- Contributed element/gateway chunks (spec 0009). Each is a self-
+         registering ES module that calls Lunar.registerCheckoutElement(...); the
+         shared runtime (window.Vue / window.Lunar) already exists by the time it
+         runs, and the registry is reactive, so a chunk that registers late
+         re-renders its element in place. --}}
+    @foreach (\Lunar\Checkout\Facades\CheckoutAssets::all() as $vite)
+        {{
+            Vite::useHotFile($vite['hotFile'])
+                ->useBuildDirectory($vite['buildDirectory'])
+                ->withEntryPoints($vite['input'])
+        }}
+    @endforeach
 </head>
 <body>
-    @if (empty($bundle['js']))
-        {{-- dist/ not built yet. Install-and-go ships a prebuilt dist/; in local
-             development of the package itself, run `npm install && npm run build`. --}}
-        <p style="font-family: system-ui; padding: 2rem; color: #71717a;">
-            Checkout assets not built. Run <code>npm run build</code> in
-            <code>packages/checkout</code>.
-        </p>
-    @else
-        @inertia
-
-        {{-- Contributed element/gateway chunks (spec 0009). Each is a self-
-             registering ES module that calls Lunar.registerCheckoutElement(...).
-             Loaded after the app bundle so the shared runtime (window.Vue /
-             window.Lunar) already exists; the registry is reactive, so a chunk
-             that registers late re-renders its element in place. --}}
-        <script type="module" src="{{ route('lunar.checkout.build', $bundle['js'][0]) }}"></script>
-
-        @foreach (\Lunar\Checkout\Facades\CheckoutAssets::all() as $asset)
-            <script type="module" src="{{ $asset['url'] }}" data-checkout-chunk="{{ $asset['package'] }}"></script>
-        @endforeach
-    @endif
+    @inertia
 </body>
 </html>

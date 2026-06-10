@@ -7,13 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
-use Lunar\Checkout\Contracts\CheckoutAssets;
 use Lunar\Checkout\Contracts\CheckoutElement;
 use Lunar\Checkout\Contracts\CheckoutSession;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
-use Lunar\Checkout\Support\CheckoutBundle;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CheckoutController extends Controller
 {
@@ -46,40 +43,6 @@ class CheckoutController extends Controller
                 'elements' => $this->projectElements(),
             ]),
             'theme' => $theme->tokens(),
-        ]);
-    }
-
-    /**
-     * Stream a file from the checkout app's own prebuilt dist/ (spec 0008 §B).
-     * Same-origin, far-future immutable cache. Only files inside dist/ resolve.
-     */
-    public function build(string $file, CheckoutBundle $bundle): BinaryFileResponse
-    {
-        $path = $bundle->file($file);
-
-        abort_if($path === null, 404);
-
-        return $this->serve($path, $file);
-    }
-
-    /**
-     * Stream a registered contributed chunk (spec 0009 §C.1). Only registered
-     * package + filename pairs resolve — never an arbitrary request path.
-     */
-    public function asset(string $package, string $file, CheckoutAssets $assets): BinaryFileResponse
-    {
-        $path = $assets->path($package, $file);
-
-        abort_if($path === null, 404);
-
-        return $this->serve($path, $file);
-    }
-
-    private function serve(string $path, string $file): BinaryFileResponse
-    {
-        return response()->file($path, [
-            'Content-Type' => str_ends_with($file, '.css') ? 'text/css' : 'text/javascript',
-            'Cache-Control' => 'public, max-age=31536000, immutable',
         ]);
     }
 

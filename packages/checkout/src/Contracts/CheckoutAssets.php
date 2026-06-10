@@ -5,29 +5,25 @@ namespace Lunar\Checkout\Contracts;
 interface CheckoutAssets
 {
     /**
-     * Register a contributed element/gateway chunk (spec 0009 §C). One call is
-     * the whole job: the chunk becomes servable same-origin and its module
-     * <script> is emitted by the checkout root view. The contributor never
-     * publishes the checkout app itself.
+     * Register a contributed element/gateway chunk (spec 0009 §C). The chunk is
+     * built with the Lunar checkout element preset (vendored Vue externals) +
+     * the Laravel Vite plugin, into the host app's public/ dir; the checkout
+     * root view renders it with Laravel's Vite class, which handles the dev
+     * (hot file) vs build (manifest) switch — same as a Statamic addon.
      *
-     * @param  string  $package  unique key (e.g. "lunar-stripe"); also the URL segment
-     * @param  string  $source   absolute path to the package's prebuilt chunk dir
-     * @param  string  $entry     the self-registering ES module filename in $source
-     * @param  string|null  $compat  SDK semver range the chunk was built against
+     * The contributor never publishes the checkout app itself; one call wires
+     * the chunk into the page.
+     *
+     * @param  string  $package  unique key (e.g. "lunar-stripe")
+     * @param  array{buildDirectory?: string, hotFile?: string, input: array<int, string>}  $config
+     *                                                                                               Vite config: public build dir, dev hot file, entry point(s).
      */
-    public function register(string $package, string $source, string $entry = 'checkout.js', ?string $compat = null): void;
+    public function register(string $package, array $config): void;
 
     /**
-     * Every registered chunk, shaped for the root view's <script> loop.
+     * Every registered chunk's Vite config, keyed by package, for the root view.
      *
-     * @return array<int, array{package: string, url: string, compat: string|null}>
+     * @return array<string, array{buildDirectory: string, hotFile: string, input: array<int, string>}>
      */
     public function all(): array;
-
-    /**
-     * Traversal-safe absolute path to a registered chunk file, or null when the
-     * package is not registered or the file escapes its source dir. Backs the
-     * same-origin asset route.
-     */
-    public function path(string $package, string $file): ?string;
 }

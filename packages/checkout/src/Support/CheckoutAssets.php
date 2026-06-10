@@ -5,58 +5,38 @@ namespace Lunar\Checkout\Support;
 use Lunar\Checkout\Contracts\CheckoutAssets as CheckoutAssetsContract;
 
 /**
- * Build-time registry of contributed element/gateway chunks (spec 0009).
+ * Registry of contributed element/gateway chunks (spec 0009).
+ *
+ * A thin store of Vite configs, one per contributing package — the checkout
+ * root view renders each with Laravel's own Vite class, which already handles
+ * the dev (hot file → dev server + HMR) vs build (manifest → hashed files)
+ * switch. This is exactly Statamic's addon model (Statamic::vite() +
+ * availableVites()); we add nothing on top.
  *
  * Bound as a singleton in the service provider's register() and populated from
- * other providers — same Octane-safe rule as the element registry: registration
- * is static, never per-request. Mirrors Statamic's Statamic::script()/registerVite
- * "publish + register in one call" ergonomics.
+ * other providers in boot() — registration is static, never per-request
+ * (Octane-safe), same rule as the element registry.
  */
 class CheckoutAssets implements CheckoutAssetsContract
 {
-    /** @var array<string, array{source: string, entry: string, compat: string|null}> */
+    /** @var array<string, array{buildDirectory: string, hotFile: string, input: array<int, string>}> */
     private array $packages = [];
 
-    public function register(string $package, string $source, string $entry = 'checkout.js', ?string $compat = null): void
+    public function register(string $package, array $config): void
     {
-        $this->packages[$package] = [
-            'source' => rtrim($source, '/'),
-            'entry' => $entry,
-            'compat' => $compat,
-        ];
+        $this->packages[$package] = array_merge([
+            // Public build dir (relative to public/) the chunk was built into,
+            // its dev hot file, and the entry point(s) to load. Defaults follow
+            // Laravel Vite; the hot file is namespaced so it never collides with
+            // the host app's own `public/hot`.
+            'buildDirectory' => 'build',
+            'hotFile' => public_path($package.'.hot'),
+            'input' => [],
+        ], $config);
     }
 
     public function all(): array
     {
-        return array_values(array_map(fn (array $meta, string $package): array => [
-            'package' => $package,
-            // Default to the same-origin asset route (spec 0009 §C.1) — no
-            // vendor:publish required. A merchant who publishes to public/ can
-            // front it with a CDN instead; the route stays the no-publish default.
-            'url' => route('lunar.checkout.assets', [$package, $meta['entry']]),
-            'compat' => $meta['compat'],
-        ], $this->packages, array_keys($this->packages)));
-    }
-
-    public function path(string $package, string $file): ?string
-    {
-        if (! isset($this->packages[$package])) {
-            return null;
-        }
-
-        $base = realpath($this->packages[$package]['source']);
-
-        if ($base === false) {
-            return null;
-        }
-
-        $full = realpath($base.'/'.$file);
-
-        // Refuse anything that resolves outside the registered source dir.
-        if ($full === false || ! str_starts_with($full, $base.DIRECTORY_SEPARATOR)) {
-            return null;
-        }
-
-        return $full;
+        return $this->packages;
     }
 }
