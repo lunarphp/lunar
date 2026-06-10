@@ -11,7 +11,138 @@
    from it.
    ===================================================================== */
 
+/* Webfonts first — @import must precede every other rule (CSS spec). */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Tailwind v4 layer order. Preflight (base) is deliberately OMITTED: the
+   checkout is sandboxed under .lunar-checkout (spec 0008 §B) and a global reset
+   would leak into the host page. We pull in only the theme + utilities layers. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
 @import './tokens.css';
+
+/* Scan the checkout app's templates so the JIT engine emits the used utilities. */
+@source '../js';
+
+/* =====================================================================
+   TOKENS → TAILWIND THEME
+
+   Every utility points back at a design token from tokens.css. `inline` is
+   load-bearing: it strips the theme variable from the output and substitutes
+   `var(--token)` straight into each utility, so the value resolves against the
+   token declared on .lunar-checkout — NOT :root. That keeps the sandbox intact
+   AND lets the CheckoutTheme DTO re-skin at runtime by overriding a single
+   token on the wrapper (change --accent, every accent utility follows).
+   ===================================================================== */
+@theme inline {
+  /* COLOR — raw palette. */
+  --color-indigo-50: var(--indigo-50);
+  --color-indigo-100: var(--indigo-100);
+  --color-indigo-200: var(--indigo-200);
+  --color-indigo-300: var(--indigo-300);
+  --color-indigo-400: var(--indigo-400);
+  --color-indigo-500: var(--indigo-500);
+  --color-indigo-600: var(--indigo-600);
+  --color-indigo-700: var(--indigo-700);
+  --color-indigo-800: var(--indigo-800);
+  --color-indigo-900: var(--indigo-900);
+  --color-indigo-950: var(--indigo-950);
+
+  --color-slate-0: var(--slate-0);
+  --color-slate-50: var(--slate-50);
+  --color-slate-100: var(--slate-100);
+  --color-slate-200: var(--slate-200);
+  --color-slate-300: var(--slate-300);
+  --color-slate-400: var(--slate-400);
+  --color-slate-500: var(--slate-500);
+  --color-slate-600: var(--slate-600);
+  --color-slate-700: var(--slate-700);
+  --color-slate-800: var(--slate-800);
+  --color-slate-900: var(--slate-900);
+  --color-slate-950: var(--slate-950);
+
+  /* COLOR — semantic. */
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-700: var(--success-700);
+  --color-error: var(--error);
+  --color-error-soft: var(--error-soft);
+  --color-error-700: var(--error-700);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  /* COLOR — semantic roles (the themable surface). */
+  --color-bg-page: var(--bg-page);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-inverse: var(--bg-inverse);
+
+  --color-fg-primary: var(--fg-primary);
+  --color-fg-secondary: var(--fg-secondary);
+  --color-fg-tertiary: var(--fg-tertiary);
+  --color-fg-on-accent: var(--fg-on-accent);
+  --color-fg-link: var(--fg-link);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-border-focus: var(--border-focus);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-press: var(--accent-press);
+
+  /* TYPE — families. */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* TYPE — size scale. */
+  --text-xs: var(--text-xs);
+  --text-sm: var(--text-sm);
+  --text-base: var(--text-base);
+  --text-lg: var(--text-lg);
+  --text-xl: var(--text-xl);
+  --text-2xl: var(--text-2xl);
+  --text-3xl: var(--text-3xl);
+  --text-4xl: var(--text-4xl);
+
+  /* TYPE — weights. */
+  --font-weight-regular: var(--weight-regular);
+  --font-weight-medium: var(--weight-medium);
+  --font-weight-semibold: var(--weight-semibold);
+  --font-weight-bold: var(--weight-bold);
+  --font-weight-extra: var(--weight-extra);
+
+  /* TYPE — leading + tracking. */
+  --leading-tight: var(--leading-tight);
+  --leading-snug: var(--leading-snug);
+  --leading-normal: var(--leading-normal);
+
+  --tracking-tight: var(--tracking-tight);
+  --tracking-snug: var(--tracking-snug);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: var(--tracking-wide);
+
+  /* RADII. */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
+
+  /* SHADOWS. */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-card: var(--shadow-card);
+
+  /* MOTION. */
+  --ease-out: var(--ease-out);
+  --ease-in-out: var(--ease-in-out);
+}
 
 .lunar-checkout {
   /* Pin inherited properties so the host <body> cannot bleed in. */

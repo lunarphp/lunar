@@ -2,10 +2,10 @@
    TENDER CHECKOUT — Design Tokens (sandboxed)
    Ported from the Tender design system's colors_and_type.css.
    Tokens live on the .lunar-checkout wrapper (NOT :root) so they do not
-   exist for the rest of the host document. Fonts load from Google Fonts.
+   exist for the rest of the host document. The Google Fonts @import is hoisted
+   to the top of checkout.css so it precedes all other rules (CSS requires
+   @import to come first; Tailwind's layers would otherwise push it out of place).
    ===================================================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 .lunar-checkout {
   /* COLOR — Primary (Indigo). 600 = canonical action, 700 hover, 800 press. */
