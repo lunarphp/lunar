@@ -493,7 +493,6 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\Concerns\\RelationManagers\\ExtendsForms' => 'Lunar\\Filament\\Support\\Concerns\\RelationManagers\\ExtendsForms',
         'Lunar\\Admin\\Support\\Concerns\\RelationManagers\\ExtendsTables' => 'Lunar\\Filament\\Support\\Concerns\\RelationManagers\\ExtendsTables',
         'Lunar\\Admin\\Support\\RelationManagers\\BaseRelationManager' => 'Lunar\\Filament\\RelationManagers\\BaseRelationManager',
-        'Lunar\\Admin\\Support\\OrderStatus' => 'Lunar\\Filament\\Support\\OrderStatus',
         'Lunar\\Admin\\Support\\CustomerStatus' => 'Lunar\\Filament\\Support\\CustomerStatus',
         'Lunar\\Admin\\Support\\Actions\\Traits\\CreatesChildCollections' => 'Lunar\\Filament\\Support\\Concerns\\CreatesChildCollections',
         'Lunar\\Admin\\Base\\LunarPanelDiscountInterface' => 'Lunar\\Filament\\Contracts\\DiscountFormType',
