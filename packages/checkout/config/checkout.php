@@ -46,4 +46,20 @@ return [
 
     'driver' => 'lunar',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Checkout session
+    |--------------------------------------------------------------------------
+    |
+    | `expires_after` is the window (in hours) a newly created checkout session
+    | stays Open before it is eligible for expiry (spec 0004, Stripe-aligned at
+    | 24h). The `lunar:checkout:expire-sessions` command transitions stale Open
+    | sessions to Expired.
+    |
+    */
+
+    'session' => [
+        'expires_after' => 24,
+    ],
+
 ];

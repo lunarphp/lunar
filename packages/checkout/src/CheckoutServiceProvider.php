@@ -2,13 +2,19 @@
 
 namespace Lunar\Checkout;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Session\Session as LaravelSession;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Checkout\Console\Commands\ExpireCheckoutSessions;
 use Lunar\Checkout\Contracts\CheckoutAssets as CheckoutAssetsContract;
+use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutSession as CheckoutSessionContract;
+use Lunar\Checkout\Contracts\CheckoutSessionStateConfig;
 use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Managers\CheckoutSessionManager;
 use Lunar\Checkout\Session\CheckoutSession;
+use Lunar\Checkout\States\CheckoutSession\DefaultCheckoutSessionStateConfig;
 use Lunar\Checkout\Support\CheckoutAssets;
 
 class CheckoutServiceProvider extends ServiceProvider
@@ -53,6 +59,21 @@ class CheckoutServiceProvider extends ServiceProvider
             CheckoutSessionContract::class,
             fn ($app) => new CheckoutSession($app->make(LaravelSession::class)),
         );
+
+        // Checkout-session state machine catalogue (spec 0004 §C). Bound in
+        // register() so the machine is configured before any model casts the
+        // status — Octane-safe, no runtime rebind.
+        $this->app->bind(CheckoutSessionStateConfig::class, DefaultCheckoutSessionStateConfig::class);
+
+        // The checkout driver (spec 0004): the Manager resolves the active
+        // driver by name from config('lunar.checkout.driver'); the contract
+        // resolves to that driver. Swap by config value or extend() — not a
+        // class-swap config key (Lunar convention).
+        $this->app->singleton(CheckoutSessionManager::class);
+        $this->app->bind(
+            CheckoutDriver::class,
+            fn ($app) => $app->make(CheckoutSessionManager::class)->driver(),
+        );
     }
 
     public function boot(): void
@@ -60,6 +81,22 @@ class CheckoutServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/checkout.php', 'lunar.checkout');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');
+
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar-checkout');
+
+        if (! config('lunar.database.disable_migrations', false)) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                ExpireCheckoutSessions::class,
+            ]);
+
+            $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
+                $schedule->command('lunar:checkout:expire-sessions')->hourly();
+            });
+        }
 
         // Package routes are opt-out: a publish-and-own consumer disables them
         // (config lunar.checkout.routes => false) and registers their own.
