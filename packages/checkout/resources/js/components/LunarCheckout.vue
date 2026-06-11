@@ -19,6 +19,8 @@ const props = defineProps({
   checkout: { type: Object, required: true },
   // Validated CheckoutTheme token map ({ '--accent': '#…' }).
   theme: { type: Object, default: () => ({}) },
+  // Non-CSS brand assets ({ logo, logoAlt }) from CheckoutTheme::branding().
+  branding: { type: Object, default: () => ({}) },
 })
 
 const store = createCheckout(props.checkout)
@@ -59,7 +61,7 @@ const mSummaryOpen = ref(false)
       <!-- Left · form -->
       <div class="form-side">
         <div class="form-col">
-          <BrandHead :merchant="checkout.merchant" />
+          <BrandHead :merchant="checkout.merchant" :logo="branding.logo" :logo-alt="branding.logoAlt" />
           <FulfilmentToggle />
           <ExpressWallets />
 

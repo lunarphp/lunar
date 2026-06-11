@@ -38,6 +38,14 @@
                 ->withEntryPoints($vite['input'])
         }}
     @endforeach
+
+    {{-- Consumer override stylesheet (CheckoutTheme::stylesheet). Loaded LAST,
+         after the checkout's own CSS, so a vanilla file can override any token
+         (--accent, --radius-md, …) or rule (.brand-head, .block, …). The URL is
+         server-validated in CheckoutTheme; needs a matching style-src under CSP. --}}
+    @if (! empty($page['props']['stylesheet']))
+        <link rel="stylesheet" href="{{ $page['props']['stylesheet'] }}">
+    @endif
 </head>
 <body>
     @inertia

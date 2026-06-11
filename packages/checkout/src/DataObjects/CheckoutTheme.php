@@ -10,7 +10,8 @@ use InvalidArgumentException;
  * Carries only *overrides* of the design-system's semantic tokens — the shipped
  * `checkout.css` is the single source of truth for default values, so every
  * property defaults to null ("use the CSS default"). {@see tokens()} emits only
- * the tokens that were explicitly set.
+ * the CSS custom properties that were explicitly set; {@see branding()} carries
+ * the non-CSS brand assets (the header logo) as plain props.
  *
  * Bound in the container ({@see \Lunar\Checkout\CheckoutServiceProvider}); a
  * consumer re-brands by binding their own instance in a service provider. Never
@@ -54,6 +55,15 @@ final class CheckoutTheme
         public readonly ?string $radiusLg = null,
         public readonly ?string $fontSans = null,
         public readonly ?string $fontMono = null,
+        // Brand logo shown in the checkout header. Not a CSS token — an image
+        // URL/path rendered as <img>, validated by {@see branding()}. Null keeps
+        // the shipped default mark.
+        public readonly ?string $logo = null,
+        public readonly ?string $logoAlt = null,
+        // Optional consumer stylesheet (URL/path). Loaded after the checkout's
+        // own CSS so it can override any var OR rule the token allowlist does not
+        // cover — the full vanilla-CSS escape hatch. Validated by {@see stylesheet()}.
+        public readonly ?string $stylesheet = null,
     ) {}
 
     /**
@@ -81,6 +91,9 @@ final class CheckoutTheme
         ?string $radiusLg = null,
         ?string $fontSans = null,
         ?string $fontMono = null,
+        ?string $logo = null,
+        ?string $logoAlt = null,
+        ?string $stylesheet = null,
     ): self {
         return new self(
             accent: $accent ?? $this->accent,
@@ -95,6 +108,9 @@ final class CheckoutTheme
             radiusLg: $radiusLg ?? $this->radiusLg,
             fontSans: $fontSans ?? $this->fontSans,
             fontMono: $fontMono ?? $this->fontMono,
+            logo: $logo ?? $this->logo,
+            logoAlt: $logoAlt ?? $this->logoAlt,
+            stylesheet: $stylesheet ?? $this->stylesheet,
         );
     }
 
@@ -120,6 +136,50 @@ final class CheckoutTheme
         }
 
         return $out;
+    }
+
+    /**
+     * Non-CSS brand assets passed to the client as plain props (the logo is an
+     * <img src>, not a custom property). Both keys are always present; a null
+     * logo tells the header to keep its shipped default mark.
+     *
+     * @return array{logo: string|null, logoAlt: string|null}
+     */
+    public function branding(): array
+    {
+        return [
+            'logo' => $this->logo === null ? null : $this->sanitiseUrl($this->logo),
+            'logoAlt' => $this->logoAlt === null ? null : trim(strip_tags($this->logoAlt)),
+        ];
+    }
+
+    /**
+     * Validated URL of the consumer's override stylesheet, or null. Injected as
+     * a <link> after the checkout's own CSS so it can override any var or rule.
+     */
+    public function stylesheet(): ?string
+    {
+        return $this->stylesheet === null ? null : $this->sanitiseUrl($this->stylesheet);
+    }
+
+    /**
+     * An asset URL must be an absolute http(s) URL or a root-relative path, with
+     * no characters that could break out of the attribute or inject a script
+     * handler. Anything else throws here rather than reaching the DOM.
+     */
+    private function sanitiseUrl(string $value): string
+    {
+        $value = trim($value);
+
+        if (preg_match('/[\s"\'<>`]|javascript:/i', $value)) {
+            throw new InvalidArgumentException('Illegal character in checkout asset URL.');
+        }
+
+        if (! preg_match('#^(https?://|/)#', $value)) {
+            throw new InvalidArgumentException('Checkout asset URL must be an absolute URL or a root-relative path.');
+        }
+
+        return $value;
     }
 
     /**

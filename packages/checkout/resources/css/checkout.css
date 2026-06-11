@@ -259,6 +259,13 @@
     gap: 2px;
     min-width: 0;
   }
+  /* Consumer logo (CheckoutTheme::branding) — replaces the default mark. */
+  .brand-logo {
+    height: 32px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+  }
   .brand-name {
     font-size: 18px;
     font-weight: var(--weight-extra);

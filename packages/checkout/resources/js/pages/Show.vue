@@ -5,9 +5,10 @@ import LunarCheckout from '../components/LunarCheckout.vue'
 defineProps({
   checkout: { type: Object, required: true },
   theme: { type: Object, default: () => ({}) },
+  branding: { type: Object, default: () => ({}) },
 })
 </script>
 
 <template>
-  <LunarCheckout :checkout="checkout" :theme="theme" />
+  <LunarCheckout :checkout="checkout" :theme="theme" :branding="branding" />
 </template>

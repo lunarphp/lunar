@@ -43,6 +43,10 @@ class CheckoutController extends Controller
                 'elements' => $this->projectElements(),
             ]),
             'theme' => $theme->tokens(),
+            'branding' => $theme->branding(),
+            // Consumer override stylesheet; the root view injects it as a <link>
+            // after the checkout's own CSS (see lunar-checkout::app).
+            'stylesheet' => $theme->stylesheet(),
         ]);
     }
 
