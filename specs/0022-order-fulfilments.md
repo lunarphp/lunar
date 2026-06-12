@@ -266,6 +266,8 @@ All state-changing actions are transaction-wrapped and route their state change 
 
 #### Manager & facade
 
+> **Amendment — the manager and facade are retired by [[0029-entry-point-conventions]].** `FulfilmentManager` / `Facades\Fulfilments` shipped as described below, but 0029 established that managers are reserved for state, context, drivers and registries — not stateless routing of model-first calls. The ergonomic entry points are now verb methods on `Order` (`createFulfilment()`, `cancel()`, `close()`, `reopen()`, `capture()`, `refund()`) and `Fulfilment` (`ship()`, `split()`, `merge()`, `moveLinesTo()`, `cancel()`, `markReturned()`, `transition()`, `hold()`, `release()`, `changeLocation()`, `addTracking()`), each delegating to the same action contracts — so the swappable seams below are unchanged. The section is kept for the action design it documents.
+
 ```php
 namespace Lunar\Core\Managers;
 
