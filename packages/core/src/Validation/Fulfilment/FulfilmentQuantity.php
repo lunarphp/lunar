@@ -17,6 +17,12 @@ class FulfilmentQuantity
      * Assert that covering the given quantities is within the outstanding
      * quantity of each order line.
      *
+     * The order-line row is read with `lockForUpdate()` — it acts as the mutex
+     * for the line's coverage, so concurrent fulfilment writes validating the
+     * same line serialise rather than both passing a stale covered total. The
+     * lock only holds if the caller wraps validate-plus-write in a transaction
+     * (the fulfilment actions do).
+     *
      * @param  array<int|string, int>  $lines  [order_line_id => quantity]
      * @param  int|null  $ignoreFulfilmentId  exclude this fulfilment's lines
      *                                        from the already-covered total
@@ -33,7 +39,7 @@ class FulfilmentQuantity
                 );
             }
 
-            $orderLine = $order->lines()->whereKey($orderLineId)->first();
+            $orderLine = $order->lines()->whereKey($orderLineId)->lockForUpdate()->first();
 
             if (! $orderLine) {
                 throw new FulfilmentException(

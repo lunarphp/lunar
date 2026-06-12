@@ -14,8 +14,9 @@ use Lunar\Core\Validation\Fulfilment\FulfilmentQuantity;
 /**
  * Create a `Fulfilment` (default `Pending`) covering specific order lines.
  *
- * Validates the §A quantity invariant before writing, then creates the
- * fulfilment and its lines in a transaction and fires `FulfilmentCreated`.
+ * Validates the §A quantity invariant and creates the fulfilment and its
+ * lines in one transaction (the rule locks the order-line rows, serialising
+ * concurrent writes against the same lines), then fires `FulfilmentCreated`.
  * The fulfilment observer recomputes the order's `fulfilment_status`.
  */
 class CreateFulfilment implements CreatesFulfilment
@@ -27,9 +28,12 @@ class CreateFulfilment implements CreatesFulfilment
     public function execute(OrderContract $order, array $lines, array $attributes = []): Fulfilment
     {
         /** @var Order $order */
-        $this->fulfilmentQuantity->validate($order, $lines);
-
         $fulfilment = DB::transaction(function () use ($order, $lines, $attributes) {
+            // Validate inside the transaction: the rule locks each order-line
+            // row, so a concurrent create against the same lines waits here
+            // rather than both reading the same covered total and over-fulfilling.
+            $this->fulfilmentQuantity->validate($order, $lines);
+
             /** @var Fulfilment $fulfilment */
             $fulfilment = $order->fulfilments()->create([
                 'reference' => $attributes['reference'] ?? null,

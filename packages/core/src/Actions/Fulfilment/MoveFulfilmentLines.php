@@ -33,7 +33,9 @@ class MoveFulfilmentLines implements MovesFulfilmentLines
                     continue;
                 }
 
-                $sourceLine = $from->lines()->where('order_line_id', $orderLineId)->first();
+                // Locked reads: both sides are read-modify-write, so concurrent
+                // moves touching the same lines must serialise.
+                $sourceLine = $from->lines()->where('order_line_id', $orderLineId)->lockForUpdate()->first();
 
                 if (! $sourceLine || $quantity > $sourceLine->quantity) {
                     throw new FulfilmentException(
@@ -49,7 +51,7 @@ class MoveFulfilmentLines implements MovesFulfilmentLines
                     $sourceLine->update(['quantity' => $remaining]);
                 }
 
-                $targetLine = $to->lines()->where('order_line_id', $orderLineId)->first();
+                $targetLine = $to->lines()->where('order_line_id', $orderLineId)->lockForUpdate()->first();
 
                 if ($targetLine) {
                     $targetLine->update(['quantity' => $targetLine->quantity + $quantity]);

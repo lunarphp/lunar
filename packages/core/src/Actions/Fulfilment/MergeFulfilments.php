@@ -35,9 +35,13 @@ class MergeFulfilments implements MergesFulfilments
         return DB::transaction(function () use ($target, $sources) {
             foreach ($sources as $source) {
                 /** @var Fulfilment $source */
-                foreach ($source->lines as $sourceLine) {
+                // Locked re-read (not the relation's cached collection) so a
+                // concurrent split/move of a source serialises with the merge
+                // rather than the merge absorbing stale quantities.
+                foreach ($source->lines()->lockForUpdate()->get() as $sourceLine) {
                     $targetLine = $target->lines()
                         ->where('order_line_id', $sourceLine->order_line_id)
+                        ->lockForUpdate()
                         ->first();
 
                     if ($targetLine) {

@@ -29,6 +29,11 @@ class OrderLineQuantity
             return;
         }
 
+        // Acquire the same order-line row lock the fulfilment writes take, so
+        // an in-flight fulfilment transaction commits before we read the
+        // covered total — a reduce can't slip under a concurrent create.
+        $orderLine->newQuery()->whereKey($orderLine->getKey())->lockForUpdate()->value('id');
+
         $covered = $this->fulfilmentQuantity->coveredQuantity($order, $orderLine->id);
 
         if ($quantity < $covered) {

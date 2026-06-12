@@ -35,7 +35,10 @@ class SplitFulfilment implements SplitsFulfilment
         }
 
         return DB::transaction(function () use ($fulfilment, $moves) {
-            $sourceLines = $fulfilment->lines()->get()->keyBy('order_line_id');
+            // Lock the source lines so concurrent splits of the same parcel
+            // serialise — otherwise both could read the same quantity and
+            // together move out more than the line carries.
+            $sourceLines = $fulfilment->lines()->lockForUpdate()->get()->keyBy('order_line_id');
 
             foreach ($moves as $orderLineId => $quantity) {
                 $sourceLine = $sourceLines->get($orderLineId);
