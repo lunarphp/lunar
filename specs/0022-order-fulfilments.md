@@ -37,7 +37,7 @@ A `Fulfilment` belongs to an order and covers one-or-more `order_lines` with a q
 fulfilments
 ├── id
 ├── order_id            FK → orders, cascadeOnDelete
-├── location_id         FK → locations, nullOnDelete  (the place it ships from)
+├── location_id         FK → locations, required, restrictOnDelete  (the place it ships from)
 ├── reference           string, nullable, indexed   (optional human/carrier ref; not auto-generated)
 ├── state               string, indexed   (FulfilmentState $name; default 'pending')
 ├── notes               text, nullable
@@ -84,7 +84,7 @@ locations
 
 `Location` extends `Models\Base`, implements `Contracts\Location`, uses `HasDefaultRecord` (so `Location::getDefault()` mirrors `Channel`/`Currency`) / `HasFactory` / `HasMacros` / `LogsActivity`. `InstallLunar` seeds a `Default` location, the same way it seeds the default channel and currency.
 
-`CreateFulfilment` stamps the fulfilment's `location_id` from the passed attributes, defaulting to `Location::getDefault()`; `SplitFulfilment` propagates the source's location to the new parcel. Crucially, **fulfilments at different locations cannot be combined** — both `MergeFulfilments` and `MoveFulfilmentLines` (§G) guard that target and sources share a `location_id`, throwing `FulfilmentException` otherwise. The admin only offers same-location parcels as merge targets.
+`location_id` is **required** — a fulfilment always ships from a location. `CreateFulfilment` stamps it from the passed attributes, defaulting to the default location (falling back to any existing location, then to creating the `Default` one, so the column is always resolvable); `SplitFulfilment` propagates the source's location to the new parcel. A location with fulfilments cannot be deleted (`restrictOnDelete`). Crucially, **fulfilments at different locations cannot be combined** — both `MergeFulfilments` and `MoveFulfilmentLines` (§G) guard that target and sources share a `location_id`, throwing `FulfilmentException` otherwise. The admin only offers same-location parcels as merge targets.
 
 **Quantity invariant.** The sum of `fulfilment_lines.quantity` for a given `order_line` may never exceed that line's `quantity`. Enforced by a `Validation/Fulfilment/FulfilmentQuantity` rule used by `CreateFulfilment` / `SplitFulfilment` (§G), not by a DB constraint (cross-row sum). The invariant is protected from **both** sides: a fulfilment cannot cover more than the line carries, and — symmetrically — an order line's `quantity` **cannot be reduced below the total already covered by fulfilments**. The latter is a `Validation/Order/OrderLineQuantity` rule on order-line updates, so the invariant always holds rather than only being checked at fulfilment-creation time. Reducing a line is otherwise allowed down to its fulfilled floor. Because the check is a cross-row sum in PHP, concurrent writes serialise on the **order-line row** as a mutex: every coverage-changing write (`CreateFulfilment`, `SplitFulfilment`, `MergeFulfilments`, `MoveFulfilmentLines`) and both validation rules take `lockForUpdate()` on the rows they reason over, inside the action's transaction, so two concurrent requests cannot both pass validation against the same stale total.
 
@@ -362,7 +362,7 @@ Like split, merge preserves total fulfilled quantity, so the rollups are untouch
 - **Baseline migrations edited in place** (v2 pre-release):
   - `..._create_orders_table.php` — **drop `status`**; add `payment_status` (default `pending`, indexed), `fulfilment_status` (default `unfulfilled`, indexed), and `closed_at` (nullable, indexed).
   - **New** baseline migrations `..._create_fulfilments_table.php` and `..._create_fulfilment_lines_table.php` (§A). New tables, so genuinely new files even under the in-place rule.
-  - **New** baseline migrations `..._create_locations_table.php` and `..._add_location_id_to_fulfilments_table.php` (§A Locations). `location_id` is a separate add-column migration (rather than in the fulfilments baseline) so it orders after the locations table for the FK.
+  - **New** baseline migration `..._create_locations_table.php` (§A Locations), numbered before the fulfilments baseline so `location_id` is declared inline in `..._create_fulfilments_table.php` with its FK resolvable — no separate add-column migration needed.
 - **No core data migration.** v2 has no live data. `InstallLunar` seeds the `Default` location.
 - **Data migration (stage 3, `packages/upgrade`):**
   - Derive v1 orders' `payment_status` from their transaction ledger using the §B logic (one-way; [[feedback-upgrade-migrations-no-down]]).
@@ -371,7 +371,7 @@ Like split, merge preserves total fulfilled quantity, so the rollups are untouch
   - `Order::$status` is now **derived** (system-set via observers) rather than freely hand-set. Direct `$order->status->transitionTo(Shipped::class)` still works for override states but a derived state set by hand may be overwritten on the next recompute. Documented; Rector note in `LunarSetList`.
   - **`Backordered` `OrderState` removed.** The `States\Order\Order\Backordered` class shipped in 0021 is deleted along with its transitions in `DefaultOrderStateConfig`; reintroduced by a future stock spec. Consumers transitioning to it break — Rector rule maps `Backordered::class` references to `OnHold::class` (the nearest "blocked" override) with a note. The `states.order.backordered` translation key is removed from all 16 locales.
   - New `payment_status` / `fulfilment_status` properties + casts on `Order`.
-  - New `Location` model + `Models\Contracts\Location` + `location_id` on `Fulfilment` (nullable FK, `nullOnDelete`). Additive. Fulfilment operations are now location-aware: `Fulfilments::move()` is a new manager/facade verb, and merge/move refuse to combine fulfilments from different locations.
+  - New `Location` model + `Models\Contracts\Location` + `location_id` on `Fulfilment` (required FK, `restrictOnDelete` — a location with fulfilments cannot be deleted). Additive. Fulfilment operations are now location-aware: `Fulfilments::move()` is a new manager/facade verb, and merge/move refuse to combine fulfilments from different locations.
   - New `Contracts\Fulfilment`, `Contracts\FulfilmentManager`, `Managers\FulfilmentManager`, `Facades\Fulfilments`, `Contracts\FulfilmentStateConfig`, the `Actions/Fulfilment/*` set + their contracts, `Contracts\Orders\ResolvePaymentStatus`, `Contracts\Orders\ResolveFulfilmentStatus`, and the extended `OrderStateConfig` (adds `overrideStates()` + `computeOrderStatus()`). All additive except the `OrderStateConfig` extension: consumers who implemented it directly (rather than extending `DefaultOrderStateConfig`) must add the two methods — call out in the upgrade guide.
   - `config('lunar.orders.notifications.*')` now also keys off payment/fulfilment `$name`s.
 - **Translation / locale impact (16 locales).** New keys, English first then mirrored placeholders across the other 15:
