@@ -13,8 +13,16 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Casts\DiscountBreakdown;
 use Lunar\Core\Casts\ShippingBreakdown;
 use Lunar\Core\Casts\TaxBreakdown;
+use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
+use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
+use Lunar\Core\Contracts\Actions\Orders\CapturesOrder;
+use Lunar\Core\Contracts\Actions\Orders\ClosesOrder;
+use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
+use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderFactory;
+use Lunar\Core\DataObjects\PaymentCapture;
+use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasTags;
@@ -280,6 +288,57 @@ class Order extends Base implements Contracts\Order, HasCurrency
     public function isPlaced(): bool
     {
         return ! blank($this->placed_at);
+    }
+
+    /**
+     * Create a fulfilment covering specific order lines (spec 0029 verb for
+     * `CreateFulfilment`).
+     *
+     * @param  array<int|string, int>  $lines  [order_line_id => quantity]
+     */
+    public function createFulfilment(array $lines, array $attributes = []): Fulfilment
+    {
+        return app(CreatesFulfilment::class)->execute($this, $lines, $attributes);
+    }
+
+    /**
+     * Cancel the order (unfulfilled orders only).
+     */
+    public function cancel(?string $reason = null, ?string $note = null, bool $notify = true): Order
+    {
+        return app(CancelsOrder::class)->execute($this, $reason, $note, $notify);
+    }
+
+    /**
+     * Close (archive) the order.
+     */
+    public function close(): Order
+    {
+        return app(ClosesOrder::class)->execute($this);
+    }
+
+    /**
+     * Reopen a closed order.
+     */
+    public function reopen(): Order
+    {
+        return app(ReopensOrder::class)->execute($this);
+    }
+
+    /**
+     * Capture an amount against a successful payment intent transaction.
+     */
+    public function capture(int|string $transactionId, float|int|string $amount): PaymentCapture
+    {
+        return app(CapturesOrder::class)->execute($this, $transactionId, $amount);
+    }
+
+    /**
+     * Refund an amount against a captured transaction.
+     */
+    public function refund(int|string $transactionId, float|int|string $amount, ?string $notes = null): PaymentRefund
+    {
+        return app(RefundsOrder::class)->execute($this, $transactionId, $amount, $notes);
     }
 
     public static function getDefaultLogExcept(): array

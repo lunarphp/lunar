@@ -4,7 +4,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
 use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
@@ -54,10 +53,10 @@ test('shipping part then all of an order derives partially-fulfilled then fulfil
     [$order, $line] = placedOrder(2);
     capture($order, 1000);
 
-    Fulfilments::ship(Fulfilments::create($order, [$line->id => 1]));
+    $order->createFulfilment([$line->id => 1])->ship();
     expect((string) $order->refresh()->fulfilment_status)->toBe('partially-fulfilled');
 
-    Fulfilments::ship(Fulfilments::create($order, [$line->id => 1]));
+    $order->createFulfilment([$line->id => 1])->ship();
     expect((string) $order->refresh()->fulfilment_status)->toBe('fulfilled');
 });
 
@@ -91,7 +90,7 @@ test('fulfilment status change dispatches OrderFulfilmentStatusUpdated', functio
 
     Event::fake([OrderFulfilmentStatusUpdated::class]);
 
-    Fulfilments::ship(Fulfilments::create($order, [$line->id => 1]));
+    $order->createFulfilment([$line->id => 1])->ship();
 
     Event::assertDispatched(
         OrderFulfilmentStatusUpdated::class,

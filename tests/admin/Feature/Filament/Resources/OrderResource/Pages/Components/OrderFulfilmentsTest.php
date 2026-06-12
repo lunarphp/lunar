@@ -2,7 +2,6 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderFulfilments;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -30,7 +29,7 @@ beforeEach(function () {
 });
 
 it('renders the fulfilments panel', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 5]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 5]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->assertOk()
@@ -39,7 +38,7 @@ it('renders the fulfilments panel', function () {
 });
 
 it('ships a fulfilment and records multiple trackings', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('ship', data: [
@@ -55,7 +54,7 @@ it('ships a fulfilment and records multiple trackings', function () {
 });
 
 it('ships with a registered carrier and derives the tracking url', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 1]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('ship', data: [
@@ -73,7 +72,7 @@ it('ships with a registered carrier and derives the tracking url', function () {
 });
 
 it('removes a tracking reference', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]), [
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2])->ship([
         ['tracking_number' => 'TRK-1'],
         ['tracking_number' => 'TRK-2'],
     ]);
@@ -87,7 +86,7 @@ it('removes a tracking reference', function () {
 });
 
 it('adds a tracking reference to a shipped fulfilment', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]), [
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2])->ship([
         ['tracking_number' => 'TRK-1'],
     ]);
 
@@ -99,7 +98,7 @@ it('adds a tracking reference to a shipped fulfilment', function () {
 });
 
 it('splits a pre-ship parcel into a new one via inline mode', function () {
-    $source = Fulfilments::create($this->order, [$this->line->id => 4]);
+    $source = $this->order->createFulfilment([$this->line->id => 4]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->call('startSplit', $source->id)
@@ -113,7 +112,7 @@ it('splits a pre-ship parcel into a new one via inline mode', function () {
 });
 
 it('keeps split mode open and creates nothing when no quantity is chosen', function () {
-    $source = Fulfilments::create($this->order, [$this->line->id => 4]);
+    $source = $this->order->createFulfilment([$this->line->id => 4]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->call('startSplit', $source->id)
@@ -124,8 +123,8 @@ it('keeps split mode open and creates nothing when no quantity is chosen', funct
 });
 
 it('merges a parcel into the only other one, auto-selecting the target', function () {
-    $source = Fulfilments::create($this->order, [$this->line->id => 2]);
-    $target = Fulfilments::create($this->order, [$this->line->id => 3]);
+    $source = $this->order->createFulfilment([$this->line->id => 2]);
+    $target = $this->order->createFulfilment([$this->line->id => 3]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->call('startMerge', $source->id)
@@ -139,9 +138,9 @@ it('merges a parcel into the only other one, auto-selecting the target', functio
 });
 
 it('merges selected quantities into a chosen target when several exist', function () {
-    $source = Fulfilments::create($this->order, [$this->line->id => 3]);
-    $targetA = Fulfilments::create($this->order, [$this->line->id => 1]);
-    $targetB = Fulfilments::create($this->order, [$this->line->id => 1]);
+    $source = $this->order->createFulfilment([$this->line->id => 3]);
+    $targetA = $this->order->createFulfilment([$this->line->id => 1]);
+    $targetB = $this->order->createFulfilment([$this->line->id => 1]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->call('startMerge', $source->id)
@@ -167,7 +166,7 @@ it('lets developers extend the expanded line details', function () {
         },
     ]);
 
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
     $line = $fulfilment->lines()->with('orderLine')->first();
 
     $component = new OrderFulfilments;
@@ -181,7 +180,7 @@ it('lets developers extend the expanded line details', function () {
 
 it('changes a fulfilment location', function () {
     $other = Location::factory()->create();
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('changeLocation', data: ['location' => $other->id], arguments: ['fulfilment' => $fulfilment->id])
@@ -191,7 +190,7 @@ it('changes a fulfilment location', function () {
 });
 
 it('lists the states a pending fulfilment can move to', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
     $component = new OrderFulfilments;
     $component->record = $this->order;
@@ -206,7 +205,7 @@ it('lists the states a pending fulfilment can move to', function () {
 });
 
 it('moves a fulfilment to a new state via the transition action', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('transition', arguments: ['fulfilment' => $fulfilment->id, 'state' => 'in-progress'])
@@ -216,7 +215,7 @@ it('moves a fulfilment to a new state via the transition action', function () {
 });
 
 it('cancels a shipped fulfilment back to pending via the cancel action', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2])->ship();
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('cancelFulfilment', arguments: ['fulfilment' => $fulfilment->id])
@@ -227,8 +226,8 @@ it('cancels a shipped fulfilment back to pending via the cancel action', functio
 });
 
 it('cancels an in-progress fulfilment back to pending', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
-    Fulfilments::transition($fulfilment, InProgress::class);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
+    $fulfilment->transition(InProgress::class);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('cancelFulfilment', arguments: ['fulfilment' => $fulfilment->id])
@@ -238,7 +237,7 @@ it('cancels an in-progress fulfilment back to pending', function () {
 });
 
 it('holds and releases a fulfilment via the actions', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('hold', data: ['reason' => 'out-of-stock', 'note' => 'Restock Friday'], arguments: ['fulfilment' => $fulfilment->id])
@@ -255,8 +254,8 @@ it('holds and releases a fulfilment via the actions', function () {
 });
 
 it('omits shipped from the update-status menu while held', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
-    Fulfilments::hold($fulfilment);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
+    $fulfilment->hold();
 
     $component = new OrderFulfilments;
     $component->record = $this->order;
@@ -268,7 +267,7 @@ it('omits shipped from the update-status menu while held', function () {
 });
 
 it('undoes a return back to shipped via the action', function () {
-    $fulfilment = Fulfilments::return(Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2])));
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2])->ship()->markReturned();
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('undoReturn', arguments: ['fulfilment' => $fulfilment->id])
@@ -278,7 +277,7 @@ it('undoes a return back to shipped via the action', function () {
 });
 
 it('returns a shipped fulfilment', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2])->ship();
 
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('return', arguments: ['fulfilment' => $fulfilment->id])

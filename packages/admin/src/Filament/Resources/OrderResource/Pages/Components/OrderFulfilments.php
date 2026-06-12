@@ -23,7 +23,6 @@ use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Carriers;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\FulfilmentTracking;
@@ -128,7 +127,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                     ->reorderable(false),
             ])
             ->action(fn (array $arguments, array $data) => $this->run(
-                fn () => Fulfilments::ship($this->findFulfilment($arguments), $data['tracking'] ?? []),
+                fn () => $this->findFulfilment($arguments)->ship($data['tracking'] ?? []),
                 'ship',
             ));
     }
@@ -142,7 +141,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->icon('heroicon-o-plus')
             ->schema($this->trackingFields())
             ->action(fn (array $arguments, array $data) => $this->run(
-                fn () => Fulfilments::addTracking($this->findFulfilment($arguments), $data),
+                fn () => $this->findFulfilment($arguments)->addTracking($data),
                 'add_tracking',
             ));
     }
@@ -155,7 +154,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->color('danger')
             ->requiresConfirmation()
             ->action(fn (array $arguments) => $this->run(
-                fn () => Fulfilments::removeTracking($this->findTracking($arguments)),
+                fn () => $this->findTracking($arguments)->remove(),
                 'remove_tracking',
             ));
     }
@@ -260,7 +259,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             return;
         }
 
-        if ($this->run(fn () => Fulfilments::split($fulfilment, $moves), 'split')) {
+        if ($this->run(fn () => $fulfilment->split($moves), 'split')) {
             $this->cancelSplit();
         }
     }
@@ -337,7 +336,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             return;
         }
 
-        if ($this->run(fn () => Fulfilments::move($source, $target, $moves), 'merge')) {
+        if ($this->run(fn () => $source->moveLinesTo($target, $moves), 'merge')) {
             $this->cancelMerge();
         }
     }
@@ -358,7 +357,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                     ->required(),
             ])
             ->action(fn (array $arguments, array $data) => $this->run(
-                fn () => Fulfilments::changeLocation($this->findFulfilment($arguments), (int) $data['location']),
+                fn () => $this->findFulfilment($arguments)->changeLocation((int) $data['location']),
                 'change_location',
             ));
     }
@@ -371,7 +370,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->color('warning')
             ->requiresConfirmation()
             ->action(fn (array $arguments) => $this->run(
-                fn () => Fulfilments::return($this->findFulfilment($arguments)),
+                fn () => $this->findFulfilment($arguments)->markReturned(),
                 'return',
             ));
     }
@@ -388,7 +387,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->color('warning')
             ->requiresConfirmation()
             ->action(fn (array $arguments) => $this->run(
-                fn () => Fulfilments::transition($this->findFulfilment($arguments), Shipped::class),
+                fn () => $this->findFulfilment($arguments)->transition(Shipped::class),
                 'undo_return',
             ));
     }
@@ -410,7 +409,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                     ->label(__('lunarpanel::order.fulfilments.actions.hold.note')),
             ])
             ->action(fn (array $arguments, array $data) => $this->run(
-                fn () => Fulfilments::hold($this->findFulfilment($arguments), $data['reason'] ?? null, $data['note'] ?? null),
+                fn () => $this->findFulfilment($arguments)->hold($data['reason'] ?? null, $data['note'] ?? null),
                 'hold',
             ));
     }
@@ -423,7 +422,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->color('success')
             ->requiresConfirmation()
             ->action(fn (array $arguments) => $this->run(
-                fn () => Fulfilments::release($this->findFulfilment($arguments)),
+                fn () => $this->findFulfilment($arguments)->release(),
                 'release',
             ));
     }
@@ -443,7 +442,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->color('danger')
             ->requiresConfirmation()
             ->action(fn (array $arguments) => $this->run(
-                fn () => Fulfilments::transition($this->findFulfilment($arguments), Pending::class),
+                fn () => $this->findFulfilment($arguments)->transition(Pending::class),
                 'cancel',
             ));
     }
@@ -498,7 +497,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                 }
 
                 $this->run(
-                    fn () => Fulfilments::transition($this->findFulfilment($arguments), $target::class),
+                    fn () => $this->findFulfilment($arguments)->transition($target::class),
                     'transition',
                 );
             });

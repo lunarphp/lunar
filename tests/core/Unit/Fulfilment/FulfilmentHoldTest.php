@@ -4,7 +4,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Fulfilment\HoldFulfilment;
 use Lunar\Core\Actions\Fulfilment\ShipFulfilment;
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -29,9 +28,9 @@ beforeEach(function () {
 });
 
 it('places a fulfilment on hold with a reason and note', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
-    Fulfilments::hold($fulfilment, 'out-of-stock', 'Restock due Friday');
+    $fulfilment->hold('out-of-stock', 'Restock due Friday');
 
     $fulfilment->refresh();
     expect($fulfilment->isOnHold())->toBeTrue()
@@ -42,31 +41,31 @@ it('places a fulfilment on hold with a reason and note', function () {
 });
 
 it('blocks shipping while on hold', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
-    Fulfilments::hold($fulfilment);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
+    $fulfilment->hold();
 
     expect(ShipFulfilment::canRun($fulfilment->refresh()))->toBeFalse();
 
-    Fulfilments::ship($fulfilment);
+    $fulfilment->ship();
 })->throws(FulfilmentException::class);
 
 it('ships once released', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
-    Fulfilments::hold($fulfilment, 'awaiting-payment');
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
+    $fulfilment->hold('awaiting-payment');
 
-    Fulfilments::release($fulfilment->refresh());
+    $fulfilment->refresh()->release();
 
     $fulfilment->refresh();
     expect($fulfilment->isOnHold())->toBeFalse()
         ->and($fulfilment->hold_reason)->toBeNull()
         ->and(ShipFulfilment::canRun($fulfilment))->toBeTrue();
 
-    Fulfilments::ship($fulfilment);
+    $fulfilment->ship();
     expect((string) $fulfilment->refresh()->state)->toBe('shipped');
 });
 
 it('cannot hold a shipped fulfilment', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2])->ship();
 
     expect(HoldFulfilment::canRun($fulfilment))->toBeFalse();
 });

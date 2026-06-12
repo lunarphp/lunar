@@ -32,7 +32,6 @@ use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
-use Lunar\Core\Contracts\FulfilmentManager;
 use Lunar\Core\Contracts\FulfilmentStateConfig;
 use Lunar\Core\Contracts\ModelManifest;
 use Lunar\Core\Contracts\OrderReferenceGenerator;
@@ -55,7 +54,6 @@ use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
 use Lunar\Core\Managers\CartSessionManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
-use Lunar\Core\Managers\FulfilmentManager as FulfilmentManagerImpl;
 use Lunar\Core\Managers\PaymentManager as PaymentManagerImpl;
 use Lunar\Core\Managers\PricingManager as PricingManagerImpl;
 use Lunar\Core\Managers\StorefrontSessionManager;
@@ -409,10 +407,6 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(DiscountManager::class, function ($app) {
             return $app->make(DiscountManagerImpl::class);
-        });
-
-        $this->app->singleton(FulfilmentManager::class, function ($app) {
-            return $app->make(FulfilmentManagerImpl::class);
         });
     }
 

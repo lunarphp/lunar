@@ -5,7 +5,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Fulfilment\EnsureInitialFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\EnsuresInitialFulfilment;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
@@ -78,8 +77,8 @@ test('the fulfilment observers do not lazy-load when prevention is on', function
         // recompute observers, which must not lazy-load the parent order.
         $order->update(['placed_at' => now()]);
         $initial = $order->fulfilments()->first();
-        $new = Fulfilments::split($initial, [$line->id => 1]);
-        Fulfilments::ship($new);
+        $new = $initial->split([$line->id => 1]);
+        $new->ship();
     } finally {
         Model::preventLazyLoading(false);
     }

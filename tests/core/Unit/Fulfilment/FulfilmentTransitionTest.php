@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -32,32 +31,32 @@ beforeEach(function () {
 });
 
 it('transitions a pending fulfilment to in progress', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
-    Fulfilments::transition($fulfilment, InProgress::class);
+    $fulfilment->transition(InProgress::class);
 
     expect((string) $fulfilment->refresh()->state)->toBe('in-progress');
 });
 
 it('transitions an in-progress fulfilment back to pending', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
-    Fulfilments::transition($fulfilment, InProgress::class);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
+    $fulfilment->transition(InProgress::class);
 
-    Fulfilments::transition($fulfilment->refresh(), Pending::class);
+    $fulfilment->refresh()->transition(Pending::class);
 
     expect((string) $fulfilment->refresh()->state)->toBe('pending');
 });
 
 it('transitions a pending fulfilment to cancelled', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
-    Fulfilments::transition($fulfilment, Cancelled::class);
+    $fulfilment->transition(Cancelled::class);
 
     expect((string) $fulfilment->refresh()->state)->toBe('cancelled');
 });
 
 it('reverts a shipped fulfilment to pending, clearing the shipment and its tracking', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]), [
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2])->ship([
         ['tracking_number' => 'TRK-1'],
     ]);
 
@@ -65,7 +64,7 @@ it('reverts a shipped fulfilment to pending, clearing the shipment and its track
         ->and($fulfilment->trackings)->toHaveCount(1)
         ->and((string) $this->order->refresh()->fulfilment_status)->toBe('fulfilled');
 
-    Fulfilments::transition($fulfilment, Pending::class);
+    $fulfilment->transition(Pending::class);
 
     expect((string) $fulfilment->refresh()->state)->toBe('pending')
         ->and($fulfilment->shipped_at)->toBeNull()
@@ -74,15 +73,15 @@ it('reverts a shipped fulfilment to pending, clearing the shipment and its track
 });
 
 it('undoes a return back to shipped, keeping the shipment', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]), [
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2])->ship([
         ['tracking_number' => 'TRK-1'],
     ]);
     $shippedAt = $fulfilment->shipped_at;
-    Fulfilments::return($fulfilment->refresh());
+    $fulfilment->refresh()->markReturned();
 
     expect((string) $fulfilment->refresh()->state)->toBe('returned');
 
-    Fulfilments::transition($fulfilment, Shipped::class);
+    $fulfilment->transition(Shipped::class);
 
     expect((string) $fulfilment->refresh()->state)->toBe('shipped')
         ->and($fulfilment->shipped_at?->equalTo($shippedAt))->toBeTrue()
@@ -91,13 +90,13 @@ it('undoes a return back to shipped, keeping the shipment', function () {
 });
 
 it('rejects an illegal transition', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
-    Fulfilments::transition($fulfilment, Returned::class);
+    $fulfilment->transition(Returned::class);
 })->throws(CouldNotPerformTransition::class);
 
 it('exposes the states a fulfilment can move to', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
     $names = collect($fulfilment->state->transitionableStateInstances())
         ->map(fn ($state) => $state::$name);

@@ -3,10 +3,8 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Lunar\Core\Actions\Orders\CancelOrder;
-use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
 use Lunar\Core\Events\Orders\OrderCancelled;
 use Lunar\Core\Exceptions\OrderActionException;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -32,11 +30,11 @@ beforeEach(function () {
 
 function cancel(Order $order, ?string $reason = null, ?string $note = null, bool $notify = true): Order
 {
-    return app(CancelsOrder::class)->execute($order, $reason, $note, $notify);
+    return $order->cancel($reason, $note, $notify);
 }
 
 it('cancels an unfulfilled order, closing it and voiding its parcels', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
     cancel($this->order, 'items-unavailable', 'Out of stock');
 
@@ -50,7 +48,7 @@ it('cancels an unfulfilled order, closing it and voiding its parcels', function 
 });
 
 it('dispatches OrderCancelled with the notify flag', function () {
-    Fulfilments::create($this->order, [$this->line->id => 2]);
+    $this->order->createFulfilment([$this->line->id => 2]);
     Event::fake([OrderCancelled::class]);
 
     cancel($this->order, notify: false);
@@ -59,7 +57,7 @@ it('dispatches OrderCancelled with the notify flag', function () {
 });
 
 it('cannot cancel an order that has shipped', function () {
-    Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 2]));
+    $this->order->createFulfilment([$this->line->id => 2])->ship();
 
     expect(CancelOrder::canRun($this->order))->toBeFalse();
 
@@ -67,7 +65,7 @@ it('cannot cancel an order that has shipped', function () {
 })->throws(OrderActionException::class);
 
 it('cannot cancel an already-cancelled order', function () {
-    Fulfilments::create($this->order, [$this->line->id => 2]);
+    $this->order->createFulfilment([$this->line->id => 2]);
     cancel($this->order);
 
     expect(CancelOrder::canRun($this->order->refresh()))->toBeFalse();

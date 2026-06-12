@@ -5,7 +5,6 @@ namespace Lunar\Filament\Actions\Orders;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Lunar\Core\Actions\Orders\RefundOrder;
-use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Order;
 use Lunar\Filament\Actions\Concerns\ConfirmsDestructiveAction;
@@ -60,8 +59,7 @@ class RefundOrderAction extends Action
     protected function performRefund(array $data, Order $record): void
     {
         try {
-            $result = app(RefundsOrder::class)->execute(
-                order: $record,
+            $result = $record->refund(
                 transactionId: $data['transaction'],
                 amount: $data['amount'],
                 notes: $data['notes'] ?? null,

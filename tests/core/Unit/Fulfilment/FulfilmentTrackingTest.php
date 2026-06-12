@@ -4,7 +4,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Carriers;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -39,9 +38,7 @@ beforeEach(function () {
 });
 
 it('derives the tracking url from the carrier when none is stored', function () {
-    $fulfilment = Fulfilments::ship(
-        Fulfilments::create($this->order, [$this->line->id => 1]),
-        [['carrier' => 'acme', 'tracking_number' => 'AB123456', 'shipping_method' => 'Next Day']],
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1])->ship([['carrier' => 'acme', 'tracking_number' => 'AB123456', 'shipping_method' => 'Next Day']],
     );
 
     $tracking = $fulfilment->trackings()->first();
@@ -52,9 +49,9 @@ it('derives the tracking url from the carrier when none is stored', function () 
 });
 
 it('prefers a stored tracking url over the derived one', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 1]));
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1])->ship();
 
-    $tracking = Fulfilments::addTracking($fulfilment, [
+    $tracking = $fulfilment->addTracking([
         'carrier' => 'acme',
         'tracking_number' => 'AB123456',
         'tracking_url' => 'https://custom.test/override',
@@ -64,26 +61,26 @@ it('prefers a stored tracking url over the derived one', function () {
 });
 
 it('rejects a tracking number that does not match the carrier format', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 1]));
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1])->ship();
 
-    Fulfilments::addTracking($fulfilment, ['carrier' => 'acme', 'tracking_number' => 'nope']);
+    $fulfilment->addTracking(['carrier' => 'acme', 'tracking_number' => 'nope']);
 })->throws(FulfilmentException::class);
 
 it('rejects an invalid carrier tracking number at ship time', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 1]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 
-    Fulfilments::ship($fulfilment, [['carrier' => 'acme', 'tracking_number' => 'nope']]);
+    $fulfilment->ship([['carrier' => 'acme', 'tracking_number' => 'nope']]);
 })->throws(FulfilmentException::class);
 
 it('removes a tracking reference', function () {
-    $fulfilment = Fulfilments::ship(Fulfilments::create($this->order, [$this->line->id => 1]), [
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1])->ship([
         ['tracking_number' => 'TRK-1'],
         ['tracking_number' => 'TRK-2'],
     ]);
 
     $tracking = $fulfilment->trackings()->first();
 
-    Fulfilments::removeTracking($tracking);
+    $tracking->remove();
 
     expect($fulfilment->refresh()->trackings)->toHaveCount(1)
         ->and($fulfilment->trackings->pluck('tracking_number'))->not->toContain('TRK-1');

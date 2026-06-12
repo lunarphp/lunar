@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
@@ -33,7 +32,7 @@ function orderWithLine(int $quantity = 10): array
 test('create fulfilment writes lines and defaults to pending', function () {
     [$order, $line] = orderWithLine(10);
 
-    $fulfilment = Fulfilments::create($order, [$line->id => 4]);
+    $fulfilment = $order->createFulfilment([$line->id => 4]);
 
     expect($fulfilment->state::$name)->toBe('pending')
         ->and($fulfilment->lines)->toHaveCount(1)
@@ -43,23 +42,23 @@ test('create fulfilment writes lines and defaults to pending', function () {
 test('create fulfilment rejects more than the line quantity', function () {
     [$order, $line] = orderWithLine(3);
 
-    expect(fn () => Fulfilments::create($order, [$line->id => 4]))
+    expect(fn () => $order->createFulfilment([$line->id => 4]))
         ->toThrow(FulfilmentException::class);
 });
 
 test('create fulfilment rejects exceeding the outstanding quantity across parcels', function () {
     [$order, $line] = orderWithLine(5);
-    Fulfilments::create($order, [$line->id => 3]);
+    $order->createFulfilment([$line->id => 3]);
 
-    expect(fn () => Fulfilments::create($order, [$line->id => 3]))
+    expect(fn () => $order->createFulfilment([$line->id => 3]))
         ->toThrow(FulfilmentException::class);
 });
 
 test('ship fulfilment stamps shipped_at and records multiple trackings', function () {
     [$order, $line] = orderWithLine(10);
-    $fulfilment = Fulfilments::create($order, [$line->id => 4]);
+    $fulfilment = $order->createFulfilment([$line->id => 4]);
 
-    $shipped = Fulfilments::ship($fulfilment, [
+    $shipped = $fulfilment->ship([
         ['tracking_number' => 'TRACK123', 'shipping_method' => 'Royal Mail'],
         ['tracking_number' => 'TRACK456', 'shipping_method' => 'DPD'],
     ]);
@@ -72,7 +71,7 @@ test('ship fulfilment stamps shipped_at and records multiple trackings', functio
 
 test('ship accepts a single tracking entry', function () {
     [$order, $line] = orderWithLine(10);
-    $shipped = Fulfilments::ship(Fulfilments::create($order, [$line->id => 4]), [
+    $shipped = $order->createFulfilment([$line->id => 4])->ship([
         'tracking_number' => 'SINGLE-1',
     ]);
 
@@ -82,18 +81,18 @@ test('ship accepts a single tracking entry', function () {
 
 test('add tracking appends a tracking reference to a fulfilment', function () {
     [$order, $line] = orderWithLine(10);
-    $fulfilment = Fulfilments::ship(Fulfilments::create($order, [$line->id => 4]), ['tracking_number' => 'A']);
+    $fulfilment = $order->createFulfilment([$line->id => 4])->ship(['tracking_number' => 'A']);
 
-    Fulfilments::addTracking($fulfilment, ['tracking_number' => 'B', 'shipping_method' => 'Express']);
+    $fulfilment->addTracking(['tracking_number' => 'B', 'shipping_method' => 'Express']);
 
     expect($fulfilment->fresh()->trackings)->toHaveCount(2);
 });
 
 test('split moves outstanding quantity into a new parcel', function () {
     [$order, $line] = orderWithLine(10);
-    $source = Fulfilments::create($order, [$line->id => 10]);
+    $source = $order->createFulfilment([$line->id => 10]);
 
-    $new = Fulfilments::split($source, [$line->id => 4]);
+    $new = $source->split([$line->id => 4]);
 
     expect($new->lines->first()->quantity)->toBe(4)
         ->and($source->fresh()->lines->first()->quantity)->toBe(6)
@@ -102,29 +101,29 @@ test('split moves outstanding quantity into a new parcel', function () {
 
 test('split inherits the source parcel state', function () {
     [$order, $line] = orderWithLine(10);
-    $source = Fulfilments::create($order, [$line->id => 10]);
-    Fulfilments::transition($source, InProgress::class);
+    $source = $order->createFulfilment([$line->id => 10]);
+    $source->transition(InProgress::class);
 
-    $new = Fulfilments::split($source->fresh(), [$line->id => 4]);
+    $new = $source->fresh()->split([$line->id => 4]);
 
     expect($new->state::$name)->toBe('in-progress');
 });
 
 test('a shipped fulfilment cannot be split', function () {
     [$order, $line] = orderWithLine(10);
-    $source = Fulfilments::create($order, [$line->id => 10]);
-    Fulfilments::ship($source);
+    $source = $order->createFulfilment([$line->id => 10]);
+    $source->ship();
 
-    expect(fn () => Fulfilments::split($source->fresh(), [$line->id => 4]))
+    expect(fn () => $source->fresh()->split([$line->id => 4]))
         ->toThrow(FulfilmentException::class);
 });
 
 test('merge folds source parcels into the target', function () {
     [$order, $line] = orderWithLine(10);
-    $target = Fulfilments::create($order, [$line->id => 3]);
-    $source = Fulfilments::create($order, [$line->id => 2]);
+    $target = $order->createFulfilment([$line->id => 3]);
+    $source = $order->createFulfilment([$line->id => 2]);
 
-    $merged = Fulfilments::merge($target, Fulfilment::whereKey($source->id)->get());
+    $merged = $target->merge(Fulfilment::whereKey($source->id)->get());
 
     expect($merged->fresh()->lines->first()->quantity)->toBe(5)
         ->and($order->fulfilments()->count())->toBe(1);
@@ -132,33 +131,33 @@ test('merge folds source parcels into the target', function () {
 
 test('cancel returns quantities to the unfulfilled pool', function () {
     [$order, $line] = orderWithLine(5);
-    $fulfilment = Fulfilments::create($order, [$line->id => 5]);
+    $fulfilment = $order->createFulfilment([$line->id => 5]);
 
-    $cancelled = Fulfilments::cancel($fulfilment);
+    $cancelled = $fulfilment->cancel();
 
     expect($cancelled->state)->toBeInstanceOf(Cancelled::class);
 
     // The cancelled parcel no longer counts, so the full quantity is fulfillable again.
-    $replacement = Fulfilments::create($order, [$line->id => 5]);
+    $replacement = $order->createFulfilment([$line->id => 5]);
     expect($replacement->lines->first()->quantity)->toBe(5);
 });
 
 test('return marks a shipped fulfilment as returned', function () {
     [$order, $line] = orderWithLine(5);
-    $fulfilment = Fulfilments::create($order, [$line->id => 5]);
-    Fulfilments::ship($fulfilment);
+    $fulfilment = $order->createFulfilment([$line->id => 5]);
+    $fulfilment->ship();
 
-    $returned = Fulfilments::return($fulfilment->fresh());
+    $returned = $fulfilment->fresh()->markReturned();
 
     expect($returned->state)->toBeInstanceOf(Returned::class);
 });
 
 test('move transfers selected line quantities into another parcel', function () {
     [$order, $line] = orderWithLine(10);
-    $from = Fulfilments::create($order, [$line->id => 6]);
-    $to = Fulfilments::create($order, [$line->id => 4]);
+    $from = $order->createFulfilment([$line->id => 6]);
+    $to = $order->createFulfilment([$line->id => 4]);
 
-    Fulfilments::move($from, $to, [$line->id => 2]);
+    $from->moveLinesTo($to, [$line->id => 2]);
 
     expect($from->fresh()->lines()->first()->quantity)->toBe(4)
         ->and($to->fresh()->lines()->first()->quantity)->toBe(6)
@@ -167,10 +166,10 @@ test('move transfers selected line quantities into another parcel', function () 
 
 test('moving every line removes the now-empty source parcel', function () {
     [$order, $line] = orderWithLine(10);
-    $from = Fulfilments::create($order, [$line->id => 3]);
-    $to = Fulfilments::create($order, [$line->id => 7]);
+    $from = $order->createFulfilment([$line->id => 3]);
+    $to = $order->createFulfilment([$line->id => 7]);
 
-    Fulfilments::move($from, $to, [$line->id => 3]);
+    $from->moveLinesTo($to, [$line->id => 3]);
 
     expect($order->fulfilments()->count())->toBe(1)
         ->and($to->fresh()->lines()->first()->quantity)->toBe(10)
@@ -179,9 +178,9 @@ test('moving every line removes the now-empty source parcel', function () {
 
 test('move rejects more than the source line carries', function () {
     [$order, $line] = orderWithLine(10);
-    $from = Fulfilments::create($order, [$line->id => 2]);
-    $to = Fulfilments::create($order, [$line->id => 2]);
+    $from = $order->createFulfilment([$line->id => 2]);
+    $to = $order->createFulfilment([$line->id => 2]);
 
-    expect(fn () => Fulfilments::move($from, $to, [$line->id => 5]))
+    expect(fn () => $from->moveLinesTo($to, [$line->id => 5]))
         ->toThrow(FulfilmentException::class);
 });

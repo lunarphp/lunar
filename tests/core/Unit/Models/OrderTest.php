@@ -2,8 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Lunar\Core\Contracts\Actions\Orders\ClosesOrder;
-use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
@@ -124,12 +122,12 @@ test('can close and reopen an order', function () {
     expect($order->isOpen())->toBeTrue()
         ->and($order->isClosed())->toBeFalse();
 
-    app(ClosesOrder::class)->execute($order);
+    $order->close();
 
     expect($order->fresh()->isClosed())->toBeTrue()
         ->and($order->fresh()->closed_at)->not->toBeNull();
 
-    app(ReopensOrder::class)->execute($order);
+    $order->reopen();
 
     expect($order->fresh()->isOpen())->toBeTrue()
         ->and($order->fresh()->closed_at)->toBeNull();

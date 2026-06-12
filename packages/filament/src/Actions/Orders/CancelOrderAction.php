@@ -7,7 +7,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Lunar\Core\Actions\Orders\CancelOrder;
-use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
 use Lunar\Core\Models\Order;
 
 /**
@@ -43,8 +42,7 @@ class CancelOrderAction extends Action
                     ->label(__('lunar-filament::actions.orders.cancel_order.notify'))
                     ->default(true),
             ])
-            ->action(fn (Order $record, array $data) => app(CancelsOrder::class)->execute(
-                $record,
+            ->action(fn (Order $record, array $data) => $record->cancel(
                 $data['reason'] ?? null,
                 $data['note'] ?? null,
                 (bool) ($data['notify'] ?? true),

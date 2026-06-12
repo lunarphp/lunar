@@ -7,7 +7,6 @@ use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Actions\Fulfilment\ReturnFulfilment;
 use Lunar\Core\Actions\Fulfilment\ShipFulfilment;
 use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
@@ -51,22 +50,22 @@ test('split eligibility is limited to pre-ship fulfilments', function () {
 
 test('merge eligibility requires pre-ship parcels on the same order', function () {
     [$order, $line] = eligibilityOrderLine(10);
-    $target = Fulfilments::create($order, [$line->id => 3]);
-    $source = Fulfilments::create($order, [$line->id => 2]);
+    $target = $order->createFulfilment([$line->id => 3]);
+    $source = $order->createFulfilment([$line->id => 2]);
 
     expect(MergeFulfilments::canRun($target, Fulfilment::whereKey($source->id)->get()))->toBeTrue();
 });
 
 test('merge eligibility is false for an empty source set', function () {
     [$order, $line] = eligibilityOrderLine(10);
-    $target = Fulfilments::create($order, [$line->id => 3]);
+    $target = $order->createFulfilment([$line->id => 3]);
 
     expect(MergeFulfilments::canRun($target, Fulfilment::whereKey(-1)->get()))->toBeFalse();
 });
 
 test('merge eligibility is false when the target is among the sources', function () {
     [$order, $line] = eligibilityOrderLine(10);
-    $target = Fulfilments::create($order, [$line->id => 3]);
+    $target = $order->createFulfilment([$line->id => 3]);
 
     expect(MergeFulfilments::canRun($target, Fulfilment::whereKey($target->id)->get()))->toBeFalse();
 });
@@ -74,17 +73,17 @@ test('merge eligibility is false when the target is among the sources', function
 test('merge eligibility is false across different orders', function () {
     [$orderA, $lineA] = eligibilityOrderLine(10);
     [$orderB, $lineB] = eligibilityOrderLine(10);
-    $target = Fulfilments::create($orderA, [$lineA->id => 3]);
-    $source = Fulfilments::create($orderB, [$lineB->id => 2]);
+    $target = $orderA->createFulfilment([$lineA->id => 3]);
+    $source = $orderB->createFulfilment([$lineB->id => 2]);
 
     expect(MergeFulfilments::canRun($target, Fulfilment::whereKey($source->id)->get()))->toBeFalse();
 });
 
 test('merge eligibility is false when a source has shipped', function () {
     [$order, $line] = eligibilityOrderLine(10);
-    $target = Fulfilments::create($order, [$line->id => 3]);
-    $source = Fulfilments::create($order, [$line->id => 2]);
-    Fulfilments::ship($source);
+    $target = $order->createFulfilment([$line->id => 3]);
+    $source = $order->createFulfilment([$line->id => 2]);
+    $source->ship();
 
     expect(MergeFulfilments::canRun($target, Fulfilment::whereKey($source->id)->get()))->toBeFalse();
 });
@@ -94,7 +93,7 @@ test('create eligibility reflects outstanding quantity', function () {
 
     expect(CreateFulfilment::canRun($order))->toBeTrue();
 
-    Fulfilments::create($order, [$line->id => 5]);
+    $order->createFulfilment([$line->id => 5]);
 
     expect(CreateFulfilment::canRun($order->refresh()))->toBeFalse();
 });

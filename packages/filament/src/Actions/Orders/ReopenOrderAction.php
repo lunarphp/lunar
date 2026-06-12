@@ -4,7 +4,6 @@ namespace Lunar\Filament\Actions\Orders;
 
 use Filament\Actions\Action;
 use Lunar\Core\Actions\Orders\ReopenOrder;
-use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\Models\Order;
 
 class ReopenOrderAction extends Action
@@ -23,7 +22,7 @@ class ReopenOrderAction extends Action
             ->icon('heroicon-o-archive-box-arrow-down')
             ->color('gray')
             ->requiresConfirmation()
-            ->action(fn (Order $record) => app(ReopensOrder::class)->execute($record))
+            ->action(fn (Order $record) => $record->reopen())
             ->visible(fn (?Order $record = null) => $record !== null && ReopenOrder::canRun($record))
             ->successNotificationTitle(__('lunar-filament::actions.orders.reopen.notification.success'));
     }

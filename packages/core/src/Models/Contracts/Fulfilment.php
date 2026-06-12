@@ -2,8 +2,10 @@
 
 namespace Lunar\Core\Models\Contracts;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lunar\Core\Models\FulfilmentTracking;
 
 interface Fulfilment
 {
@@ -37,4 +39,77 @@ interface Fulfilment
      * configured reason list (falls back to the stored key).
      */
     public function holdReasonLabel(): ?string;
+
+    /**
+     * Mark the fulfilment shipped, stamping `shipped_at` and recording the
+     * given tracking entries.
+     *
+     * @param  array<int|string, mixed>  $tracking  a single tracking entry or a list of them
+     */
+    public function ship(array $tracking = []): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Split quantities out of this pre-ship fulfilment into a new parcel.
+     * Returns the new fulfilment.
+     *
+     * @param  array<int|string, int>  $moves  [order_line_id => quantity to move out]
+     */
+    public function split(array $moves): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Absorb the given pre-ship fulfilments into this one. Returns this
+     * fulfilment (the target), refreshed.
+     *
+     * @param  Collection<int, Fulfilment>  $sources
+     */
+    public function merge(Collection $sources): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Move selected line quantities from this pre-ship fulfilment into
+     * another on the same order. Returns the target.
+     *
+     * @param  array<int|string, int>  $moves  [order_line_id => quantity]
+     */
+    public function moveLinesTo(Fulfilment $to, array $moves): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Cancel the fulfilment, returning its quantities to the order's
+     * unfulfilled pool.
+     */
+    public function cancel(): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Mark a shipped fulfilment as returned.
+     */
+    public function markReturned(): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Perform a plain guarded state transition (moves that carry no extra
+     * behaviour — use the dedicated verbs for ship/cancel/return).
+     *
+     * @param  class-string  $state
+     */
+    public function transition(string $state): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Put the fulfilment on hold, blocking it from shipping.
+     */
+    public function hold(?string $reason = null, ?string $note = null): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Release the fulfilment from hold.
+     */
+    public function release(): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Move the fulfilment to another location.
+     */
+    public function changeLocation(int $locationId): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Append a tracking reference to the fulfilment.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public function addTracking(array $attributes): FulfilmentTracking;
 }

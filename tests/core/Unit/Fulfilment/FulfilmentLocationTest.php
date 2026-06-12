@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
@@ -31,7 +30,7 @@ test('a created fulfilment is assigned the default location', function () {
     $location = Location::factory()->default()->create();
     [$order, $line] = locationOrderLine();
 
-    $fulfilment = Fulfilments::create($order, [$line->id => 2]);
+    $fulfilment = $order->createFulfilment([$line->id => 2]);
 
     expect($fulfilment->location_id)->toBe($location->id);
 });
@@ -41,7 +40,7 @@ test('an explicit location overrides the default', function () {
     $other = Location::factory()->create();
     [$order, $line] = locationOrderLine();
 
-    $fulfilment = Fulfilments::create($order, [$line->id => 2], ['location_id' => $other->id]);
+    $fulfilment = $order->createFulfilment([$line->id => 2], ['location_id' => $other->id]);
 
     expect($fulfilment->location_id)->toBe($other->id);
 });
@@ -49,9 +48,9 @@ test('an explicit location overrides the default', function () {
 test('a split parcel inherits the source location', function () {
     $location = Location::factory()->default()->create();
     [$order, $line] = locationOrderLine();
-    $source = Fulfilments::create($order, [$line->id => 4]);
+    $source = $order->createFulfilment([$line->id => 4]);
 
-    $new = Fulfilments::split($source, [$line->id => 1]);
+    $new = $source->split([$line->id => 1]);
 
     expect($new->location_id)->toBe($location->id);
 });
@@ -60,10 +59,10 @@ test('fulfilments at different locations cannot be merged', function () {
     $a = Location::factory()->create();
     $b = Location::factory()->create();
     [$order, $line] = locationOrderLine();
-    $target = Fulfilments::create($order, [$line->id => 3], ['location_id' => $a->id]);
-    $source = Fulfilments::create($order, [$line->id => 2], ['location_id' => $b->id]);
+    $target = $order->createFulfilment([$line->id => 3], ['location_id' => $a->id]);
+    $source = $order->createFulfilment([$line->id => 2], ['location_id' => $b->id]);
 
-    expect(fn () => Fulfilments::merge($target, Fulfilment::whereKey($source->id)->get()))
+    expect(fn () => $target->merge(Fulfilment::whereKey($source->id)->get()))
         ->toThrow(FulfilmentException::class);
 });
 
@@ -71,20 +70,20 @@ test('fulfilments at different locations cannot have lines moved between them', 
     $a = Location::factory()->create();
     $b = Location::factory()->create();
     [$order, $line] = locationOrderLine();
-    $from = Fulfilments::create($order, [$line->id => 3], ['location_id' => $a->id]);
-    $to = Fulfilments::create($order, [$line->id => 2], ['location_id' => $b->id]);
+    $from = $order->createFulfilment([$line->id => 3], ['location_id' => $a->id]);
+    $to = $order->createFulfilment([$line->id => 2], ['location_id' => $b->id]);
 
-    expect(fn () => Fulfilments::move($from, $to, [$line->id => 1]))
+    expect(fn () => $from->moveLinesTo($to, [$line->id => 1]))
         ->toThrow(FulfilmentException::class);
 });
 
 test('fulfilments at the same location merge normally', function () {
     $location = Location::factory()->default()->create();
     [$order, $line] = locationOrderLine();
-    $target = Fulfilments::create($order, [$line->id => 3]);
-    $source = Fulfilments::create($order, [$line->id => 2]);
+    $target = $order->createFulfilment([$line->id => 3]);
+    $source = $order->createFulfilment([$line->id => 2]);
 
-    Fulfilments::merge($target, Fulfilment::whereKey($source->id)->get());
+    $target->merge(Fulfilment::whereKey($source->id)->get());
 
     expect($order->fulfilments()->count())->toBe(1)
         ->and($target->refresh()->lines()->first()->quantity)->toBe(5);
@@ -94,9 +93,9 @@ test('a pre-ship fulfilment can be moved to another location', function () {
     Location::factory()->default()->create();
     $other = Location::factory()->create();
     [$order, $line] = locationOrderLine();
-    $fulfilment = Fulfilments::create($order, [$line->id => 2]);
+    $fulfilment = $order->createFulfilment([$line->id => 2]);
 
-    Fulfilments::changeLocation($fulfilment, $other->id);
+    $fulfilment->changeLocation($other->id);
 
     expect($fulfilment->refresh()->location_id)->toBe($other->id);
 });
@@ -105,8 +104,8 @@ test('a shipped fulfilment cannot change location', function () {
     Location::factory()->default()->create();
     $other = Location::factory()->create();
     [$order, $line] = locationOrderLine();
-    $fulfilment = Fulfilments::ship(Fulfilments::create($order, [$line->id => 2]));
+    $fulfilment = $order->createFulfilment([$line->id => 2])->ship();
 
-    expect(fn () => Fulfilments::changeLocation($fulfilment->fresh(), $other->id))
+    expect(fn () => $fulfilment->fresh()->changeLocation($other->id))
         ->toThrow(FulfilmentException::class);
 });

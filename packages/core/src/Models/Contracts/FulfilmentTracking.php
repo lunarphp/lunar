@@ -16,4 +16,9 @@ interface FulfilmentTracking
      * Resolve the registered carrier for this tracking, if any.
      */
     public function carrier(): ?ShippingCarrier;
+
+    /**
+     * Remove this tracking reference from its fulfilment.
+     */
+    public function remove(): void;
 }

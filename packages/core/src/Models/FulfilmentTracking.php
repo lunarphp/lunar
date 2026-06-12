@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Lunar\Core\Contracts\Actions\Fulfilment\RemovesFulfilmentTracking;
 use Lunar\Core\Contracts\ShippingCarrier;
 use Lunar\Core\Database\Factories\FulfilmentTrackingFactory;
 use Lunar\Core\Facades\Carriers;
@@ -68,6 +69,16 @@ class FulfilmentTracking extends Base implements Contracts\FulfilmentTracking
     public function carrier(): ?ShippingCarrier
     {
         return Carriers::get($this->carrier);
+    }
+
+    /**
+     * Remove this tracking reference from its fulfilment (spec 0029 verb for
+     * `RemoveFulfilmentTracking` — the swappable seam, unlike a bare
+     * `delete()`).
+     */
+    public function remove(): void
+    {
+        app(RemovesFulfilmentTracking::class)->execute($this);
     }
 
     /**

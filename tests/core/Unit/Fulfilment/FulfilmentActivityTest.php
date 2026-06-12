@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -33,8 +32,8 @@ function latestFulfilmentActivity(): ?Activity
 }
 
 it('logs a fulfilment state change against the order', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
-    Fulfilments::ship($fulfilment);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
+    $fulfilment->ship();
 
     $log = latestFulfilmentActivity();
 
@@ -47,12 +46,12 @@ it('logs a fulfilment state change against the order', function () {
 });
 
 it('logs a hold with its reason and a release', function () {
-    $fulfilment = Fulfilments::create($this->order, [$this->line->id => 2]);
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
 
-    Fulfilments::hold($fulfilment, 'out-of-stock');
+    $fulfilment->hold('out-of-stock');
     expect(latestFulfilmentActivity()->getExtraProperty('type'))->toBe('held')
         ->and(latestFulfilmentActivity()->getExtraProperty('reason'))->toBe('out-of-stock');
 
-    Fulfilments::release($fulfilment->refresh());
+    $fulfilment->refresh()->release();
     expect(latestFulfilmentActivity()->getExtraProperty('type'))->toBe('released');
 });

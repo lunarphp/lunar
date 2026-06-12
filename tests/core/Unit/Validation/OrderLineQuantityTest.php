@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Facades\Fulfilments;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
@@ -21,7 +20,7 @@ test('an order line cannot be reduced below the fulfilled quantity', function ()
     $order = Order::factory()->create();
     $line = OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'physical', 'quantity' => 10]);
 
-    Fulfilments::ship(Fulfilments::create($order, [$line->id => 6]));
+    $order->createFulfilment([$line->id => 6])->ship();
 
     expect(fn () => $line->update(['quantity' => 4]))
         ->toThrow(FulfilmentException::class);
@@ -31,7 +30,7 @@ test('an order line can be reduced down to the fulfilled floor', function () {
     $order = Order::factory()->create();
     $line = OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'physical', 'quantity' => 10]);
 
-    Fulfilments::ship(Fulfilments::create($order, [$line->id => 6]));
+    $order->createFulfilment([$line->id => 6])->ship();
 
     $line->update(['quantity' => 6]);
 

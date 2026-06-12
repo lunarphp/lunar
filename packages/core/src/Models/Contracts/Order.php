@@ -5,6 +5,9 @@ namespace Lunar\Core\Models\Contracts;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Lunar\Core\DataObjects\PaymentCapture;
+use Lunar\Core\DataObjects\PaymentRefund;
+use Lunar\Core\Models\Fulfilment;
 
 interface Order
 {
@@ -136,4 +139,36 @@ interface Order
      * configured reason list (falls back to the stored key).
      */
     public function cancelReasonLabel(): ?string;
+
+    /**
+     * Create a fulfilment covering specific order lines.
+     *
+     * @param  array<int|string, int>  $lines  [order_line_id => quantity]
+     */
+    public function createFulfilment(array $lines, array $attributes = []): Fulfilment;
+
+    /**
+     * Cancel the order (unfulfilled orders only).
+     */
+    public function cancel(?string $reason = null, ?string $note = null, bool $notify = true): \Lunar\Core\Models\Order;
+
+    /**
+     * Close (archive) the order.
+     */
+    public function close(): \Lunar\Core\Models\Order;
+
+    /**
+     * Reopen a closed order.
+     */
+    public function reopen(): \Lunar\Core\Models\Order;
+
+    /**
+     * Capture an amount against a successful payment intent transaction.
+     */
+    public function capture(int|string $transactionId, float|int|string $amount): PaymentCapture;
+
+    /**
+     * Refund an amount against a captured transaction.
+     */
+    public function refund(int|string $transactionId, float|int|string $amount, ?string $notes = null): PaymentRefund;
 }
