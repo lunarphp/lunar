@@ -180,16 +180,129 @@ You now own those files; package upgrades no longer touch them.
 
 ---
 
-## 7. Checkout is driver-based (spec 0004)
+## 7. The checkout session (spec 0004)
 
-The session is created and finalised by a swappable **checkout driver**: it turns
-a cart into a checkout session and a session into an order. The default `lunar`
-driver targets Lunar's cart + order. A non-Lunar backend (e.g. a Statamic basket)
-registers its own driver and selects it by name in `config/lunar/checkout.php`:
+A **checkout session** is the addressable record of an in-progress checkout. It is
+created from a cart by a swappable **checkout driver**, carries a public UUID, and
+**pins a snapshot** of the cart's currency, channel and totals at the moment
+checkout begins — so the amount a customer pays can't drift if the cart changes
+underneath them. The default `lunar` driver targets Lunar's cart + order.
+
+You don't build any of this yourself — your storefront just creates a session and
+sends the customer to it.
+
+### 7a. Start a checkout (the common case)
+
+Resolve the driver and hand it the current cart. You get back a session with a
+`url` — redirect the customer there and the hosted checkout takes over.
 
 ```php
-'driver' => 'lunar',
+use Lunar\Checkout\Contracts\CheckoutDriver;
+use Lunar\Core\Facades\CartSession;
+
+class CheckoutController
+{
+    public function __invoke(CheckoutDriver $checkout)
+    {
+        $session = $checkout->createSession(CartSession::current());
+
+        return redirect($session->url); // → /checkout/{uuid}
+    }
+}
 ```
+
+`createSession()` snapshots the cart **once**. From here the session owns its
+amounts (`amount_subtotal`, `amount_total`, in minor units), `currency_code`,
+`channel_id` and `locale`; later edits to the shopper's cart never move them. A
+re-checkout makes a fresh session (a cart can have many).
+
+### 7b. The session is the integrity anchor
+
+When you take payment, verify the gateway intent against the **session's** pinned
+total — never the live cart:
+
+```php
+$session = CheckoutSession::where('uuid', $uuid)->firstOrFail();
+
+abort_unless(
+    $intent->amount === $session->amount_total,   // pinned minor-unit total
+    422,
+    'Payment amount no longer matches the checkout.'
+);
+```
+
+### 7c. Resume a session by its UUID
+
+The `uuid` is the route key — a bearer capability token, unguessable and never the
+database `id`. Bind it straight into a route to resume or render a checkout:
+
+```php
+use Lunar\Checkout\Models\CheckoutSession;
+
+Route::get('/checkout/{checkoutSession}', function (CheckoutSession $session) {
+    abort_if($session->isExpired(), 410);          // terminal sessions aren't operable
+
+    return view('checkout', [
+        'total'    => $session->amount_total,
+        'currency' => $session->currency_code,
+        'status'   => $session->status->label(),   // Open / Completed / Expired …
+    ]);
+});
+```
+
+### 7d. Expiry is the session's own clock
+
+Each session gets an `expires_at` (default 24h — `config('lunar.checkout.session.expires_after')`)
+and a lifecycle state. Check it on read with `isExpired()`; a scheduled command
+flips stale **Open** sessions to **Expired** (it deliberately leaves
+`PaymentProcessing` alone — payment may still be confirming):
+
+```php
+$session->isExpired();      // bool — past expires_at, or a terminal Expired state
+
+// runs hourly out of the box; or invoke directly:
+php artisan lunar:checkout:expire-sessions
+```
+
+### 7e. Pass return URLs & metadata
+
+For hosted flows that bounce back to your storefront, or to stamp your own
+correlation data, drive the create-action directly — it accepts caller extras and
+echoes them back on the session:
+
+```php
+use Lunar\Checkout\Contracts\Actions\CreatesCheckoutSession;
+
+$session = app(CreatesCheckoutSession::class)->execute(CartSession::current(), [
+    'success_url'         => route('orders.thanks'),
+    'cancel_url'          => route('cart.index'),
+    'client_reference_id' => $yourOrderRef,
+    'metadata'            => ['gift' => true, 'source' => 'mobile-app'],
+]);
+```
+
+### 7f. Front a non-Lunar backend
+
+The session, UUID and state machine are backend-neutral; only the driver knows
+your cart and order shapes. Register your own and select it by name — no
+`config(...class)` swap, the standard Manager `extend()` seam:
+
+```php
+// YourServiceProvider::register()
+use Lunar\Checkout\Managers\CheckoutSessionManager;
+
+$this->app->make(CheckoutSessionManager::class)
+    ->extend('statamic', fn ($app) => new StatamicCheckoutDriver(/* … */));
+```
+
+```php
+// config/lunar/checkout.php
+'driver' => 'statamic',
+```
+
+Your driver's `createSession()` ingests whatever you call a cart and `complete()`
+finalises it into your own order model (linked via the session's `order` morph) —
+everything in between behaves identically.
 
 ---
 

@@ -3,6 +3,7 @@
 namespace Lunar\Checkout\DataObjects;
 
 use InvalidArgumentException;
+use Lunar\Checkout\CheckoutServiceProvider;
 
 /**
  * Swappable checkout theme.
@@ -13,7 +14,7 @@ use InvalidArgumentException;
  * the CSS custom properties that were explicitly set; {@see branding()} carries
  * the non-CSS brand assets (the header logo) as plain props.
  *
- * Bound in the container ({@see \Lunar\Checkout\CheckoutServiceProvider}); a
+ * Bound in the container ({@see CheckoutServiceProvider}); a
  * consumer re-brands by binding their own instance in a service provider. Never
  * driven by config — config is for values, the container is for substitutions.
  */

@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Session\Session as LaravelSession;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Checkout\Console\Commands\ExpireCheckoutSessions;
+use Lunar\Checkout\Console\Commands\ReconcileCheckoutSessions;
 use Lunar\Checkout\Contracts\CheckoutAssets as CheckoutAssetsContract;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutSession as CheckoutSessionContract;
@@ -38,6 +39,9 @@ class CheckoutServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        // Action contract bindings (spec 0016): the canonical swappable seams.
+        $this->app->register(ActionServiceProvider::class);
+
         // Default theme. A consumer re-brands the checkout by binding their own
         // CheckoutTheme in a service provider — config never selects the theme.
         $this->app->bind(CheckoutTheme::class, fn () => CheckoutTheme::tender());
@@ -91,10 +95,16 @@ class CheckoutServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 ExpireCheckoutSessions::class,
+                ReconcileCheckoutSessions::class,
             ]);
 
             $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
                 $schedule->command('lunar:checkout:expire-sessions')->hourly();
+
+                // Bounded PaymentProcessing reconciliation (spec 0010 §F).
+                $schedule->command('lunar:checkout:reconcile')
+                    ->everyFifteenMinutes()
+                    ->withoutOverlapping();
             });
         }
 
