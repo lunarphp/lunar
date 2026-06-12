@@ -176,6 +176,8 @@ States/Order/Fulfilment/
 
 `Actions/Orders/ResolveFulfilmentStatus` computes it from `fulfilment_lines` quantities (counting only fulfilments in `Shipped`/`Returned`) against the order's physical-line quantities. Digital-only orders with no physical lines resolve to `Fulfilled` (nothing to ship).
 
+> **Amendment — fulfillability is no longer keyed on the `type` string.** [[0030-fulfillable-order-lines]] stamps `order_lines.requires_shipping` from `Purchasable::isShippable()` at creation; the rollup, initial fulfilment and quantity validation operate on `Order::fulfillableLines()` instead of `physicalLines()`. Read "physical lines" throughout this spec as "fulfillable lines".
+
 > **Naming.** The order-level rollup is `FulfilmentStatus` (under `States/Order/Fulfilment/`); the per-parcel lifecycle is `FulfilmentState` (under `States/Fulfilment/`). Distinct machines, distinct folders — the rollup is derived and unguarded, the lifecycle is hand-driven and guarded.
 
 ### D. Headline `Order::$status` — derived, with manual overrides
