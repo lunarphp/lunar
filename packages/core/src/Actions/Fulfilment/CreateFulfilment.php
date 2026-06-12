@@ -59,7 +59,7 @@ class CreateFulfilment implements CreatesFulfilment
     }
 
     /**
-     * Whether there is any outstanding physical quantity left to fulfil — used
+     * Whether there is any outstanding fulfillable quantity left to fulfil — used
      * to gate the "create fulfilment" action in the UI.
      */
     public static function canRun(OrderContract $order): bool
@@ -67,7 +67,7 @@ class CreateFulfilment implements CreatesFulfilment
         /** @var Order $order */
         $fulfilmentQuantity = new FulfilmentQuantity;
 
-        foreach ($order->physicalLines()->get() as $line) {
+        foreach ($order->fulfillableLines()->get() as $line) {
             if ($fulfilmentQuantity->coveredQuantity($order, $line->id) < $line->quantity) {
                 return true;
             }

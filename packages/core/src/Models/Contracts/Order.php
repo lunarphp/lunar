@@ -37,6 +37,12 @@ interface Order
     public function physicalLines(): HasMany;
 
     /**
+     * Return the lines that need a fulfilment (stamped from the purchasable's
+     * `isShippable()` at order creation).
+     */
+    public function fulfillableLines(): HasMany;
+
+    /**
      * Return digital product lines relationship.
      */
     public function digitalLines(): HasMany;

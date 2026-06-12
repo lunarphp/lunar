@@ -10,10 +10,10 @@ use Lunar\Core\Models\Order;
 
 /**
  * Give an order its initial fulfilment: a single parcel covering every
- * physical line at full quantity (the Shopify "split-down" starting point).
+ * fulfillable line at full quantity (the Shopify "split-down" starting point).
  *
  * Idempotent — a no-op if the order already has any fulfilment, or has no
- * physical lines (digital-only orders have nothing to ship). The merchant
+ * fulfillable lines (orders with nothing to ship get no parcel). The merchant
  * never creates fulfilments by hand; they split this one or merge back.
  */
 class EnsureInitialFulfilment implements EnsuresInitialFulfilment
@@ -29,7 +29,7 @@ class EnsureInitialFulfilment implements EnsuresInitialFulfilment
             return null;
         }
 
-        $lines = $order->physicalLines()->get()
+        $lines = $order->fulfillableLines()->get()
             ->mapWithKeys(fn ($line) => [$line->id => $line->quantity])
             ->all();
 

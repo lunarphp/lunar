@@ -19,6 +19,7 @@ class OrderLineFactory extends BaseFactory
             'purchasable_type' => ProductVariant::morphName(),
             'purchasable_id' => ProductVariant::factory(),
             'type' => 'physical',
+            'requires_shipping' => fn (array $attributes) => ($attributes['type'] ?? 'physical') === 'physical',
             'description' => $this->faker->sentence,
             'option' => $this->faker->word,
             'identifier' => Str::random(),

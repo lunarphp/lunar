@@ -34,6 +34,21 @@ test('placing an order creates one fulfilment covering all physical lines', func
         ->and((int) $fulfilment->lines()->sum('quantity'))->toBe(5);
 });
 
+test('the initial fulfilment covers a shippable line regardless of its type', function () {
+    $order = Order::factory()->create(['placed_at' => null]);
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'giftcard',
+        'requires_shipping' => true,
+        'quantity' => 2,
+    ]);
+
+    $order->update(['placed_at' => now()]);
+
+    expect($order->fulfilments()->count())->toBe(1)
+        ->and((int) $order->fulfilments()->first()->lines()->sum('quantity'))->toBe(2);
+});
+
 test('a digital-only order gets no fulfilment', function () {
     $order = Order::factory()->create(['placed_at' => null]);
     OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'digital', 'quantity' => 1]);

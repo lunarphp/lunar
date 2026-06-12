@@ -36,6 +36,7 @@ class CreateShippingLine
                 'purchasable_type' => ShippingOption::class,
                 'purchasable_id' => 1,
                 'type' => 'shipping',
+                'requires_shipping' => false,
                 'description' => $shippingOption->getName(),
                 'option' => $shippingOption->getOption(),
                 'identifier' => $shippingOption->getIdentifier(),

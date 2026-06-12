@@ -49,6 +49,14 @@ class FulfilmentQuantity
                 );
             }
 
+            if (! $orderLine->requires_shipping) {
+                throw new FulfilmentException(
+                    __('lunar::exceptions.fulfilment_line_not_fulfillable', [
+                        'line' => $orderLineId,
+                    ])
+                );
+            }
+
             $alreadyCovered = $this->coveredQuantity($order, (int) $orderLineId, $ignoreFulfilmentId);
 
             if (($alreadyCovered + $quantity) > $orderLine->quantity) {

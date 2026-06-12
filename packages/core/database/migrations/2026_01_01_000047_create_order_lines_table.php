@@ -13,6 +13,9 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained($this->prefix.'orders');
             $table->morphs('purchasable');
             $table->string('type')->index();
+            // Whether the line needs a fulfilment — stamped from the
+            // purchasable's isShippable(); `type` is open-set display only.
+            $table->boolean('requires_shipping')->default(false)->index();
             $table->string('description');
             $table->string('option')->nullable();
             $table->string('identifier')->index();

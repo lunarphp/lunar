@@ -43,6 +43,7 @@ class CreateOrderLines
                 'purchasable_type' => $cartLine->purchasable_type,
                 'purchasable_id' => $cartLine->purchasable_id,
                 'type' => $cartLine->purchasable->getType(),
+                'requires_shipping' => $cartLine->purchasable->isShippable(),
                 'description' => $cartLine->purchasable->getDescription(),
                 'option' => $cartLine->purchasable->getOption(),
                 'identifier' => $cartLine->purchasable->getIdentifier(),

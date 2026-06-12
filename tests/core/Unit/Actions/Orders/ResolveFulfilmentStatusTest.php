@@ -49,6 +49,22 @@ test('a digital-only order with no physical lines is fulfilled', function () {
     expect(resolveFulfilment($order))->toBe(Fulfilled::class);
 });
 
+test('a shippable line counts as fulfillable regardless of its type', function () {
+    $order = Order::factory()->create();
+    $line = OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'giftcard',
+        'requires_shipping' => true,
+        'quantity' => 2,
+    ]);
+
+    expect(resolveFulfilment($order))->toBe(Unfulfilled::class);
+
+    fulfilmentWith($order, $line, 2, 'shipped');
+
+    expect(resolveFulfilment($order))->toBe(Fulfilled::class);
+});
+
 test('an order with nothing shipped is unfulfilled', function () {
     $order = Order::factory()->create();
     OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'physical', 'quantity' => 3]);

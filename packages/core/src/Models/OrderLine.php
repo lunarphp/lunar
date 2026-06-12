@@ -24,6 +24,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property string $purchasable_type
  * @property int $purchasable_id
  * @property string $type
+ * @property bool $requires_shipping
  * @property string $description
  * @property ?string $option
  * @property string $identifier
@@ -69,6 +70,7 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
      * @var array
      */
     protected $casts = [
+        'requires_shipping' => 'boolean',
         'unit_quantity' => 'integer',
         'quantity' => 'integer',
         'meta' => AsArrayObject::class,

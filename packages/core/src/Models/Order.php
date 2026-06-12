@@ -213,6 +213,16 @@ class Order extends Base implements Contracts\Order, HasCurrency
         return $this->lines()->whereType('physical');
     }
 
+    /**
+     * Lines that need a fulfilment — stamped from the purchasable's
+     * `isShippable()` at order creation. The fulfilment system keys off this,
+     * not the open-set `type` string.
+     */
+    public function fulfillableLines(): HasMany
+    {
+        return $this->lines()->where('requires_shipping', true);
+    }
+
     public function digitalLines(): HasMany
     {
         return $this->lines()->whereType('digital');

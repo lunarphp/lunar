@@ -15,21 +15,21 @@ use Lunar\Core\States\Order\Fulfilment\Unfulfilled;
 /**
  * Roll the order's `Fulfilment` records up into an order-level fulfilment
  * status. Only fulfilments in `shipped` / `returned` count as dispatched.
- * Digital-only orders (no physical lines) resolve to `Fulfilled`.
+ * Orders with no fulfillable lines resolve to `Fulfilled`.
  */
 class ResolveFulfilmentStatus implements ResolvesFulfilmentStatus
 {
     public function execute(OrderContract $order): string
     {
         /** @var Order $order */
-        $physicalLineIds = $order->physicalLines()->pluck('id');
+        $fulfillableLineIds = $order->fulfillableLines()->pluck('id');
 
-        // Nothing physical to ship — settled by definition.
-        if ($physicalLineIds->isEmpty()) {
+        // Nothing to ship — settled by definition.
+        if ($fulfillableLineIds->isEmpty()) {
             return Fulfilled::class;
         }
 
-        $totalQuantity = (int) $order->physicalLines()->sum('quantity');
+        $totalQuantity = (int) $order->fulfillableLines()->sum('quantity');
 
         $shippedFulfilmentIds = $order->fulfilments()
             ->whereIn('state', ['shipped', 'returned'])
@@ -41,12 +41,12 @@ class ResolveFulfilmentStatus implements ResolvesFulfilmentStatus
 
         $shippedQuantity = (int) FulfilmentLine::query()
             ->whereIn('fulfilment_id', $shippedFulfilmentIds)
-            ->whereIn('order_line_id', $physicalLineIds)
+            ->whereIn('order_line_id', $fulfillableLineIds)
             ->sum('quantity');
 
         $returnedQuantity = (int) FulfilmentLine::query()
             ->whereIn('fulfilment_id', $returnedFulfilmentIds)
-            ->whereIn('order_line_id', $physicalLineIds)
+            ->whereIn('order_line_id', $fulfillableLineIds)
             ->sum('quantity');
 
         return match (true) {

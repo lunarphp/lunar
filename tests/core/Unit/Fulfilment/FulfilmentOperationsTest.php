@@ -39,6 +39,14 @@ test('create fulfilment writes lines and defaults to pending', function () {
         ->and($fulfilment->lines->first()->quantity)->toBe(4);
 });
 
+test('a line that does not require shipping cannot be fulfilled', function () {
+    $order = Order::factory()->create();
+    $line = OrderLine::factory()->create(['order_id' => $order->id, 'type' => 'digital', 'quantity' => 2]);
+
+    expect(fn () => $order->createFulfilment([$line->id => 1]))
+        ->toThrow(FulfilmentException::class);
+});
+
 test('create fulfilment rejects more than the line quantity', function () {
     [$order, $line] = orderWithLine(3);
 

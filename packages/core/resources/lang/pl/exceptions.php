@@ -23,6 +23,7 @@ return [
     'fulfilment_quantity_minimum' => 'Fulfilment quantity must be at least 1.',
     'fulfilment_order_line_not_found' => 'Order line ":id" does not belong to this order.',
     'fulfilment_quantity_exceeded' => 'Cannot fulfil :requested of order line :line; only :available remaining.',
+    'fulfilment_line_not_fulfillable' => 'Order line :line does not require shipping and cannot be fulfilled.',
     'fulfilment_not_splittable' => 'Only pending or in-progress fulfilments can be split.',
     'fulfilment_split_quantity' => 'Invalid split quantity for order line :line.',
     'fulfilment_not_mergeable' => 'Only pending or in-progress fulfilments can be merged.',
