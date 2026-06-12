@@ -72,9 +72,8 @@ class FulfilmentTracking extends Base implements Contracts\FulfilmentTracking
     }
 
     /**
-     * Remove this tracking reference from its fulfilment (spec 0029 verb for
-     * `RemoveFulfilmentTracking` — the swappable seam, unlike a bare
-     * `delete()`).
+     * Remove this tracking reference from its fulfilment — the swappable
+     * seam, unlike a bare `delete()`.
      */
     public function remove(): void
     {

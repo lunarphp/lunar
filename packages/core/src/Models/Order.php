@@ -291,8 +291,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
     }
 
     /**
-     * Create a fulfilment covering specific order lines (spec 0029 verb for
-     * `CreateFulfilment`).
+     * Create a fulfilment covering specific order lines.
      *
      * @param  array<int|string, int>  $lines  [order_line_id => quantity]
      */

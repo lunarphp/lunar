@@ -134,7 +134,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
 
     /**
      * Mark the fulfilment shipped, stamping `shipped_at` and recording the
-     * given tracking entries (spec 0029 verb for `ShipFulfilment`).
+     * given tracking entries.
      *
      * @param  array<int|string, mixed>  $tracking  a single tracking entry or a list of them
      */
