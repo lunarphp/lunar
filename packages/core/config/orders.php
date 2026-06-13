@@ -29,6 +29,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Auto-close settled orders
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, an order is automatically closed (archived — dropping out
+    | of the open work queue) the moment it becomes fully paid AND fully
+    | fulfilled, reusing the CloseOrder action. It is close-only: a later
+    | return or refund does not reopen it. Disabled by default, so closing
+    | stays a deliberate action unless you opt in.
+    |
+    */
+    'auto_close' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Order Reference Format
     |--------------------------------------------------------------------------
     |

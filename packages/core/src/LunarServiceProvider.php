@@ -50,6 +50,7 @@ use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
 use Lunar\Core\Listeners\CartSessionAuthListener;
+use Lunar\Core\Listeners\CloseSettledOrder;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
@@ -249,6 +250,10 @@ class LunarServiceProvider extends ServiceProvider
         Event::listen(OrderPaymentStatusUpdated::class, SendOrderPaymentStatusNotifications::class);
         Event::listen(OrderFulfilmentStatusUpdated::class, SendOrderFulfilmentStatusNotifications::class);
         Event::listen(OrderCancelled::class, SendOrderCancelledNotifications::class);
+
+        // Optionally archive a fully paid + fulfilled order (config-gated).
+        Event::listen(OrderPaymentStatusUpdated::class, CloseSettledOrder::class);
+        Event::listen(OrderFulfilmentStatusUpdated::class, CloseSettledOrder::class);
 
         $this->registerStaffAuthGuard();
         $this->registerStaffStateListeners();
