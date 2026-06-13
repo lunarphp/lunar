@@ -26,38 +26,47 @@
             <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-gray-900">
                 {{-- Header --}}
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 dark:border-white/10">
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-semibold text-gray-950 dark:text-white">
-                            {{ $fulfilment->reference ?: __('lunarpanel::order.fulfilments.unreferenced', ['id' => $fulfilment->id]) }}
-                        </span>
-                        <x-filament::badge :color="$categoryColors[$category] ?? 'gray'" :icon="$categoryIcons[$category] ?? null" size="sm">
-                            {{ $fulfilment->state->label() }}
-                        </x-filament::badge>
-                        <x-filament::badge color="gray" size="sm">
-                            {{ $fulfilment->method()->getLabel() }}
-                        </x-filament::badge>
-                        @if ($fulfilment->isOnHold())
-                            <span @if ($fulfilment->hold_note) title="{{ $fulfilment->hold_note }}" @endif>
-                                <x-filament::badge color="warning" size="sm" icon="heroicon-m-pause-circle">
-                                    {{ __('lunarpanel::order.fulfilments.on_hold') }}@if ($fulfilment->holdReasonLabel()): {{ $fulfilment->holdReasonLabel() }}@endif
-                                </x-filament::badge>
+                    <div style="min-width:0;">
+                        {{-- Primary: reference + status + method (+ hold) --}}
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-sm font-semibold text-gray-950 dark:text-white">
+                                {{ $fulfilment->reference ?: __('lunarpanel::order.fulfilments.unreferenced', ['id' => $fulfilment->id]) }}
                             </span>
-                        @endif
-                        @if ($fulfilment->location)
-                            <span class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                                <x-filament::icon icon="heroicon-m-map-pin" class="h-3.5 w-3.5" />
-                                {{ $fulfilment->location->name }}
-                            </span>
-                        @endif
-                        @if ($fulfilment->shipped_at)
-                            <span class="text-xs text-gray-500 dark:text-gray-400">
-                                {{ $this->handedOverLabel($fulfilment) }}
-                                {{ $fulfilment->shipped_at->format('j M Y, H:i') }}
-                            </span>
+                            <x-filament::badge :color="$categoryColors[$category] ?? 'gray'" :icon="$categoryIcons[$category] ?? null" size="sm">
+                                {{ $fulfilment->state->label() }}
+                            </x-filament::badge>
+                            <x-filament::badge color="gray" size="sm">
+                                {{ $fulfilment->method()->getLabel() }}
+                            </x-filament::badge>
+                            @if ($fulfilment->isOnHold())
+                                <span @if ($fulfilment->hold_note) title="{{ $fulfilment->hold_note }}" @endif>
+                                    <x-filament::badge color="warning" size="sm" icon="heroicon-m-pause-circle">
+                                        {{ __('lunarpanel::order.fulfilments.on_hold') }}@if ($fulfilment->holdReasonLabel()): {{ $fulfilment->holdReasonLabel() }}@endif
+                                    </x-filament::badge>
+                                </span>
+                            @endif
+                        </div>
+
+                        {{-- Secondary, muted: location · handed-over timestamp --}}
+                        @if ($fulfilment->location || $fulfilment->shipped_at)
+                            <div class="flex flex-wrap items-center text-xs text-gray-500 dark:text-gray-400" style="margin-top:0.25rem; gap:0.125rem 0.75rem;">
+                                @if ($fulfilment->location)
+                                    <span class="flex items-center gap-1">
+                                        <x-filament::icon icon="heroicon-m-map-pin" class="h-3.5 w-3.5" />
+                                        {{ $fulfilment->location->name }}
+                                    </span>
+                                @endif
+                                @if ($fulfilment->shipped_at)
+                                    <span>
+                                        {{ $this->handedOverLabel($fulfilment) }}
+                                        {{ $fulfilment->shipped_at->format('j M Y, H:i') }}
+                                    </span>
+                                @endif
+                            </div>
                         @endif
                     </div>
 
-                    <div class="flex items-center gap-2">
+                    <div class="flex shrink-0 items-center gap-2">
                         @if ($this->splittingId === $fulfilment->id)
                             {{-- Split mode: confirm / cancel --}}
                             <x-filament::button
