@@ -428,8 +428,8 @@ test('pricing manager resolves correct tier for weight-based shipping using raw 
 
     $shippingRate->prices()->createMany([
         ['price' => 1000, 'min_quantity' => 1,  'currency_id' => $currency->id],
-        ['price' => 600,  'min_quantity' => 5,  'currency_id' => $currency->id],
-        ['price' => 200,  'min_quantity' => 10, 'currency_id' => $currency->id],
+        ['price' => 600,  'min_quantity' => 500, 'currency_id' => $currency->id],
+        ['price' => 200,  'min_quantity' => 1000, 'currency_id' => $currency->id],
     ]);
 
     $makeWeightCart = function (float $weightKg) use ($currency): Cart {
@@ -497,7 +497,7 @@ test('weight in grams is converted to kg when evaluating weight-based shipping b
 
     $shippingRate->prices()->createMany([
         ['price' => 1000, 'min_quantity' => 1, 'currency_id' => $currency->id],
-        ['price' => 500,  'min_quantity' => 5, 'currency_id' => $currency->id],
+        ['price' => 500,  'min_quantity' => 500, 'currency_id' => $currency->id],
     ]);
 
     $variant = ProductVariant::factory()->create([
@@ -549,7 +549,7 @@ test('total cart weight across multiple lines with different units is summed in 
 
     $shippingRate->prices()->createMany([
         ['price' => 1000, 'min_quantity' => 1, 'currency_id' => $currency->id],
-        ['price' => 400,  'min_quantity' => 5, 'currency_id' => $currency->id],
+        ['price' => 400,  'min_quantity' => 500, 'currency_id' => $currency->id],
     ]);
 
     $variantKg = ProductVariant::factory()->create(['weight_value' => 2.0, 'weight_unit' => 'kg']);

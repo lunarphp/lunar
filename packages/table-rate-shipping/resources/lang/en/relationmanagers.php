@@ -38,8 +38,8 @@ return [
                         'label' => 'Min. Spend',
                     ],
                     'min_weight' => [
-                        'label' => 'Min. Weight',
-                        'helper_text' => 'Enter weight in kilograms',
+                        'label' => 'Min. Weight (:unit)',
+                        'helper_text' => 'Enter weight in :unit',
                     ],
                     'price' => [
                         'label' => 'Price',
