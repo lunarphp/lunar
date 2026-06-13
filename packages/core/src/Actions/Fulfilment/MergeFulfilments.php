@@ -4,23 +4,30 @@ namespace Lunar\Core\Actions\Fulfilment;
 
 use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Contracts\Actions\Fulfilment\MergesFulfilments;
+use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 /**
- * Consolidate pre-ship source fulfilments into the target. Preserves total
+ * Consolidate outstanding source fulfilments into the target. Preserves total
  * fulfilled quantity, so the rollups are untouched. The target's tracking
  * wins; the action errors rather than silently discarding conflicting
- * tracking carried by a source.
+ * tracking carried by a source. Source and target must share a method — you
+ * can't fold a shipping parcel into a collection one.
  */
 class MergeFulfilments implements MergesFulfilments
 {
     /**
-     * Fulfilment states that may take part in a merge.
+     * Whether a fulfilment may take part in a merge — only outstanding
+     * (un-handed-over) parcels can be merged.
      */
-    public const MERGEABLE_STATES = ['pending', 'in-progress'];
+    public static function isMergeable(FulfilmentContract $fulfilment): bool
+    {
+        /** @var Fulfilment $fulfilment */
+        return $fulfilment->state->category() === FulfilmentStateCategory::Outstanding;
+    }
 
     /**
      * @param  Collection<int, FulfilmentContract>  $sources
@@ -89,7 +96,7 @@ class MergeFulfilments implements MergesFulfilments
             return 'lunar::exceptions.fulfilment_merge_no_sources';
         }
 
-        if (! in_array($target->state::$name, self::MERGEABLE_STATES, true)) {
+        if (! self::isMergeable($target)) {
             return 'lunar::exceptions.fulfilment_not_mergeable';
         }
 
@@ -107,7 +114,11 @@ class MergeFulfilments implements MergesFulfilments
                 return 'lunar::exceptions.fulfilment_merge_different_locations';
             }
 
-            if (! in_array($source->state::$name, self::MERGEABLE_STATES, true)) {
+            if ($source->method !== $target->method) {
+                return 'lunar::exceptions.fulfilment_method_mismatch';
+            }
+
+            if (! self::isMergeable($source)) {
                 return 'lunar::exceptions.fulfilment_not_mergeable';
             }
         }

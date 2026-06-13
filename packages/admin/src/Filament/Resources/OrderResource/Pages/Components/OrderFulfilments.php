@@ -16,11 +16,16 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Lang;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
+use Lunar\Core\Actions\Fulfilment\HoldFulfilment;
 use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
+use Lunar\Core\Actions\Fulfilment\ReleaseFulfilment;
 use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
+use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Models\Fulfilment;
@@ -29,8 +34,6 @@ use Lunar\Core\Models\FulfilmentTracking;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
-use Lunar\Core\States\Fulfilment\Pending;
-use Lunar\Core\States\Fulfilment\Shipped;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
@@ -130,6 +133,52 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                 fn () => $this->findFulfilment($arguments)->ship($data['tracking'] ?? []),
                 'ship',
             ));
+    }
+
+    /**
+     * The no-tracking terminal action for methods that don't carry tracking
+     * (collection → "Mark collected", digital → "Mark fulfilled"). Routes
+     * through the `fulfil()` verb, so the agent/API path is identical.
+     */
+    public function fulfilAction(): Action
+    {
+        return Action::make('fulfil')
+            ->label(fn (array $arguments) => $this->fulfilLabel($this->findFulfilment($arguments)))
+            ->modalHeading(fn (array $arguments) => $this->fulfilLabel($this->findFulfilment($arguments)))
+            ->icon('heroicon-o-check-circle')
+            ->color('success')
+            ->requiresConfirmation()
+            ->action(fn (array $arguments) => $this->run(
+                fn () => $this->findFulfilment($arguments)->fulfil(),
+                'fulfil',
+            ));
+    }
+
+    /**
+     * The terminal action label for a method — a per-method override (e.g.
+     * collection → "Mark collected") falling back to the generic label.
+     */
+    protected function fulfilLabel(Fulfilment $fulfilment): string
+    {
+        $key = 'lunarpanel::order.fulfilments.actions.fulfil.labels.'.$fulfilment->method;
+
+        return Lang::has($key)
+            ? __($key)
+            : __('lunarpanel::order.fulfilments.actions.fulfil.label');
+    }
+
+    /**
+     * The handed-over timestamp label for a parcel — a per-method override
+     * (shipped at / collected at / provisioned at) falling back to a generic
+     * "fulfilled at". Public so the card can render it off `shipped_at`.
+     */
+    public function handedOverLabel(Fulfilment $fulfilment): string
+    {
+        $key = 'lunarpanel::order.fulfilments.columns.handed_over.'.$fulfilment->method;
+
+        return Lang::has($key)
+            ? __($key)
+            : __('lunarpanel::order.fulfilments.columns.handed_over_default');
     }
 
     public function addTrackingAction(): Action
@@ -275,7 +324,8 @@ class OrderFulfilments extends Component implements HasActions, HasForms
         return $this->fulfilments
             ->filter(fn (Fulfilment $f) => $f->getKey() !== $source->getKey()
                 && $f->location_id === $source->location_id
-                && in_array($f->state::$name, MergeFulfilments::MERGEABLE_STATES, true))
+                && $f->method === $source->method
+                && MergeFulfilments::isMergeable($f))
             ->values();
     }
 
@@ -376,8 +426,9 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     }
 
     /**
-     * Undo a mistaken return — moves the parcel back to `Shipped`, keeping its
-     * shipment (shipped_at + tracking) intact. Only the return is reversed.
+     * Undo a mistaken return — moves the parcel back to its method's fulfilled
+     * state (shipped / collected), keeping the handover (shipped_at + tracking)
+     * intact. Only the return is reversed.
      */
     public function undoReturnAction(): Action
     {
@@ -387,7 +438,11 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->color('warning')
             ->requiresConfirmation()
             ->action(fn (array $arguments) => $this->run(
-                fn () => $this->findFulfilment($arguments)->transition(Shipped::class),
+                function () use ($arguments) {
+                    $fulfilment = $this->findFulfilment($arguments);
+
+                    return $fulfilment->transition($fulfilment->method()->fulfilledState());
+                },
                 'undo_return',
             ));
     }
@@ -428,9 +483,10 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     }
 
     /**
-     * Cancel a progressed fulfilment — reverts it to `Pending` so it returns to
-     * the unfulfilled pool and can be progressed again (e.g. the wrong parcel
-     * was shipped). A deliberate, destructive correction, not a menu step.
+     * Cancel a progressed fulfilment — reverts it to its method's default state
+     * so it returns to the unfulfilled pool and can be progressed again (e.g.
+     * the wrong parcel was shipped). A deliberate, destructive correction, not a
+     * menu step.
      */
     public function cancelFulfilmentAction(): Action
     {
@@ -442,37 +498,148 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->color('danger')
             ->requiresConfirmation()
             ->action(fn (array $arguments) => $this->run(
-                fn () => $this->findFulfilment($arguments)->transition(Pending::class),
+                function () use ($arguments) {
+                    $fulfilment = $this->findFulfilment($arguments);
+
+                    return $fulfilment->transition($fulfilment->method()->defaultState());
+                },
                 'cancel',
             ));
     }
 
     /**
-     * The states the given fulfilment can currently move to, used to build the
-     * "Update status" menu. `Shipped` opens the ship form; the rest go through
-     * the generic transition confirmation.
+     * The states the given fulfilment can currently move to (already filtered to
+     * the parcel's method by the guarded graph), used to build the "Update
+     * status" menu, with the action each target routes to precomputed. Excludes
+     * reverting to the method's default state (that is the destructive "Cancel
+     * fulfilment" action), any `Cancelled`-category target (programmatic only),
+     * and — while on hold — any `Fulfilled`-category target.
      *
-     * @return \Illuminate\Support\Collection<int, array{name: string, state: class-string<FulfilmentState>, label: string}>
+     * @return \Illuminate\Support\Collection<int, array{name: string, state: class-string<FulfilmentState>, label: string, category: string, action: string}>
      */
-    /**
-     * Target states whose move is offered as a "normal" forward step in the
-     * Update-status menu. Reverting to `pending` (undo) is deliberately not a
-     * menu transition — it is the dangerous "Cancel fulfilment" action.
-     */
-    private const MENU_EXCLUDED_STATES = ['pending', 'cancelled'];
-
     public function statusTransitions(Fulfilment $fulfilment): \Illuminate\Support\Collection
     {
+        $method = $fulfilment->method();
+        $fulfilledState = $method->fulfilledState();
+        $defaultState = $method->defaultState();
+
         return collect($fulfilment->state->transitionableStateInstances())
-            ->reject(fn (FulfilmentState $state) => in_array($state::$name, self::MENU_EXCLUDED_STATES, true)
-                // A held parcel can't ship until released.
-                || ($fulfilment->isOnHold() && $state::$name === 'shipped'))
+            ->reject(function (FulfilmentState $state) use ($fulfilment, $defaultState) {
+                $category = $state->category();
+
+                return $state::class === $defaultState
+                    || $category === FulfilmentStateCategory::Cancelled
+                    || ($fulfilment->isOnHold() && $category === FulfilmentStateCategory::Fulfilled);
+            })
             ->map(fn (FulfilmentState $state) => [
                 'name' => $state::$name,
                 'state' => $state::class,
                 'label' => $state->label(),
+                'category' => $state->category()->name,
+                'action' => match (true) {
+                    $state::class === $fulfilledState => $method->usesTracking() ? 'ship' : 'fulfil',
+                    $state->category() === FulfilmentStateCategory::Returned => 'return',
+                    default => 'transition',
+                },
             ])
             ->values();
+    }
+
+    /**
+     * The "More actions" dropdown descriptors for a parcel — the built-in set
+     * (split / merge / change location / add tracking / undo return / hold /
+     * release / cancel), already gated for this parcel's method and state.
+     *
+     * Consumers reshape it (add a bespoke action, remove one that doesn't apply,
+     * relabel) through the `extendFulfilmentActions` hook — every built-in
+     * routes through a core verb, so an agent/API consumer and the admin share
+     * one path. A consumer's action descriptor `wire`s to a Livewire/mounted
+     * action they register on the component via the same extension mechanism.
+     *
+     * @return array<string, array{label: string, icon: string, color: ?string, wire: string}>
+     */
+    public function moreActions(Fulfilment $fulfilment): array
+    {
+        $id = $fulfilment->id;
+        $method = $fulfilment->method();
+        $category = $fulfilment->state->category();
+        $actions = [];
+
+        if (SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1) {
+            $actions['split'] = [
+                'label' => __('lunarpanel::order.fulfilments.actions.split.label'),
+                'icon' => 'heroicon-m-scissors',
+                'color' => null,
+                'wire' => "startSplit({$id})",
+            ];
+        }
+
+        if (MergeFulfilments::isMergeable($fulfilment) && $this->mergeTargets($fulfilment)->isNotEmpty()) {
+            $actions['merge'] = [
+                'label' => __('lunarpanel::order.fulfilments.actions.merge.label'),
+                'icon' => 'heroicon-m-arrows-pointing-in',
+                'color' => null,
+                'wire' => "startMerge({$id})",
+            ];
+        }
+
+        if (ChangeFulfilmentLocation::canRun($fulfilment) && $this->locations->count() > 1) {
+            $actions['changeLocation'] = [
+                'label' => __('lunarpanel::order.fulfilments.actions.change_location.label'),
+                'icon' => 'heroicon-m-map-pin',
+                'color' => null,
+                'wire' => "mountAction('changeLocation', { fulfilment: {$id} })",
+            ];
+        }
+
+        if ($method->usesTracking() && $category === FulfilmentStateCategory::Fulfilled) {
+            $actions['addTracking'] = [
+                'label' => __('lunarpanel::order.fulfilments.actions.add_tracking.label'),
+                'icon' => 'heroicon-m-truck',
+                'color' => null,
+                'wire' => "mountAction('addTracking', { fulfilment: {$id} })",
+            ];
+        }
+
+        if ($category === FulfilmentStateCategory::Returned
+            && $fulfilment->state->canTransitionTo($method->fulfilledState())) {
+            $actions['undoReturn'] = [
+                'label' => __('lunarpanel::order.fulfilments.actions.undo_return.label'),
+                'icon' => 'heroicon-m-arrow-uturn-right',
+                'color' => null,
+                'wire' => "mountAction('undoReturn', { fulfilment: {$id} })",
+            ];
+        }
+
+        if (HoldFulfilment::canRun($fulfilment)) {
+            $actions['hold'] = [
+                'label' => __('lunarpanel::order.fulfilments.actions.hold.label'),
+                'icon' => 'heroicon-m-pause-circle',
+                'color' => null,
+                'wire' => "mountAction('hold', { fulfilment: {$id} })",
+            ];
+        }
+
+        if (ReleaseFulfilment::canRun($fulfilment)) {
+            $actions['release'] = [
+                'label' => __('lunarpanel::order.fulfilments.actions.release.label'),
+                'icon' => 'heroicon-m-play-circle',
+                'color' => null,
+                'wire' => "mountAction('release', { fulfilment: {$id} })",
+            ];
+        }
+
+        // "Cancel" = revert a progressed parcel back to its default state.
+        if ($fulfilment->state->canTransitionTo($method->defaultState())) {
+            $actions['cancel'] = [
+                'label' => __('lunarpanel::order.fulfilments.actions.cancel.label'),
+                'icon' => 'heroicon-m-x-circle',
+                'color' => 'danger',
+                'wire' => "mountAction('cancelFulfilment', { fulfilment: {$id} })",
+            ];
+        }
+
+        return $this->callLunarHook('extendFulfilmentActions', $actions, $fulfilment);
     }
 
     /**

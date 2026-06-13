@@ -107,6 +107,14 @@ class ShippingRate extends Base implements Contracts\ShippingRate, Purchasable
     /**
      * {@inheritDoc}
      */
+    public function requiresFulfilment(): bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getDescription(): ?string
     {
         return $this->shippingMethod->name ?: $this->driver()->name();

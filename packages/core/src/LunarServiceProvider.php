@@ -32,6 +32,7 @@ use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
+use Lunar\Core\Contracts\FulfilmentMethodManifest;
 use Lunar\Core\Contracts\FulfilmentStateConfig;
 use Lunar\Core\Contracts\ModelManifest;
 use Lunar\Core\Contracts\OrderReferenceGenerator;
@@ -61,6 +62,7 @@ use Lunar\Core\Managers\TaxManager as TaxManagerImpl;
 use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
 use Lunar\Core\Manifests\CarrierManifest as CarrierManifestImpl;
 use Lunar\Core\Manifests\FieldTypeManifest as FieldTypeManifestImpl;
+use Lunar\Core\Manifests\FulfilmentMethodManifest as FulfilmentMethodManifestImpl;
 use Lunar\Core\Manifests\ModelManifest as ModelManifestImpl;
 use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
 use Lunar\Core\Models\Address;
@@ -335,6 +337,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(CarrierManifest::class, function ($app) {
             return $app->make(CarrierManifestImpl::class);
+        });
+
+        $this->app->singleton(FulfilmentMethodManifest::class, function ($app) {
+            return $app->make(FulfilmentMethodManifestImpl::class);
         });
 
         $this->app->singleton(AttributeManifest::class, function ($app) {

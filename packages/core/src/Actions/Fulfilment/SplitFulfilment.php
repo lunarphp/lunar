@@ -3,6 +3,7 @@
 namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\SplitsFulfilment;
+use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Events\Fulfilment\FulfilmentCreated;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\DB;
@@ -10,18 +11,12 @@ use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 /**
- * Reorganise outstanding quantities of a pre-ship fulfilment into a new
- * parcel. Never changes how much is fulfilled — only how the outstanding
- * quantities are parcelled — so the rollups and headline are unaffected.
+ * Reorganise outstanding quantities of a fulfilment into a new parcel. Never
+ * changes how much is fulfilled — only how the outstanding quantities are
+ * parcelled — so the rollups and headline are unaffected.
  */
 class SplitFulfilment implements SplitsFulfilment
 {
-    /**
-     * Fulfilment states that may be split — only outstanding (pre-ship)
-     * quantity can be re-parcelled.
-     */
-    public const SPLITTABLE_STATES = ['pending', 'in-progress'];
-
     /**
      * @param  array<int|string, int>  $moves  [order_line_id => quantity]
      */
@@ -52,12 +47,14 @@ class SplitFulfilment implements SplitsFulfilment
                 }
             }
 
-            // The split-off parcel inherits the source's state — splitting only
-            // reorganises outstanding quantities, so a parcel that was already
-            // being prepared (`in-progress`) shouldn't drop back to `pending`.
+            // The split-off parcel inherits the source's method and state —
+            // splitting only reorganises outstanding quantities, so a parcel
+            // already being prepared shouldn't drop back to its default state,
+            // and a collection/digital parcel must stay that method.
             /** @var Fulfilment $new */
             $new = $fulfilment->order->fulfilments()->create([
                 'location_id' => $fulfilment->location_id,
+                'method' => $fulfilment->method,
                 'state' => $fulfilment->state::$name,
             ]);
 
@@ -85,12 +82,13 @@ class SplitFulfilment implements SplitsFulfilment
     }
 
     /**
-     * Whether the fulfilment can be split — i.e. it is still pre-ship. Used to
-     * gate the split action in the UI without catching an exception.
+     * Whether the fulfilment can be split — i.e. it still has outstanding
+     * (un-handed-over) quantity. Used to gate the split action in the UI
+     * without catching an exception.
      */
     public static function canRun(FulfilmentContract $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
-        return in_array($fulfilment->state::$name, self::SPLITTABLE_STATES, true);
+        return $fulfilment->state->category() === FulfilmentStateCategory::Outstanding;
     }
 }

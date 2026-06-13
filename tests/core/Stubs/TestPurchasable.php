@@ -137,6 +137,11 @@ class TestPurchasable implements Purchasable
         return false;
     }
 
+    public function requiresFulfilment(): bool
+    {
+        return $this->isShippable();
+    }
+
     /**
      * {@inheritDoc}
      */

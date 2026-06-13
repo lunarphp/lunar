@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Actions\Orders\ResolveFulfilmentStatus;
+use Lunar\Core\Contracts\Actions\Orders\ResolvesFulfilmentStatus;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
@@ -24,7 +24,7 @@ beforeEach(function () {
 
 function resolveFulfilment(Order $order): string
 {
-    return (new ResolveFulfilmentStatus)->execute($order);
+    return app(ResolvesFulfilmentStatus::class)->execute($order);
 }
 
 function fulfilmentWith(Order $order, OrderLine $line, int $quantity, string $state): Fulfilment

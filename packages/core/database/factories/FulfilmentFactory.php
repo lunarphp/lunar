@@ -16,6 +16,7 @@ class FulfilmentFactory extends BaseFactory
             'order_id' => Order::factory(),
             'location_id' => Location::factory(),
             'reference' => $this->faker->unique()->regexify('[A-Z]{10}'),
+            'method' => 'shipping',
             'state' => 'pending',
             'notes' => null,
             'meta' => null,
@@ -35,6 +36,34 @@ class FulfilmentFactory extends BaseFactory
     {
         return $this->state(fn () => [
             'state' => 'returned',
+            'shipped_at' => now(),
+        ]);
+    }
+
+    public function collection(): static
+    {
+        return $this->state(fn () => ['method' => 'collection']);
+    }
+
+    public function collected(): static
+    {
+        return $this->state(fn () => [
+            'method' => 'collection',
+            'state' => 'collected',
+            'shipped_at' => now(),
+        ]);
+    }
+
+    public function digital(): static
+    {
+        return $this->state(fn () => ['method' => 'digital']);
+    }
+
+    public function provisioned(): static
+    {
+        return $this->state(fn () => [
+            'method' => 'digital',
+            'state' => 'provisioned',
             'shipped_at' => now(),
         ]);
     }

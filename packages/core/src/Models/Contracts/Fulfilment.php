@@ -5,10 +5,16 @@ namespace Lunar\Core\Models\Contracts;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Models\FulfilmentTracking;
 
 interface Fulfilment
 {
+    /**
+     * Resolve the registered fulfilment method that owns this parcel's flow.
+     */
+    public function method(): FulfilmentMethod;
+
     /**
      * Return the order relationship.
      */
@@ -47,6 +53,12 @@ interface Fulfilment
      * @param  array<int|string, mixed>  $tracking  a single tracking entry or a list of them
      */
     public function ship(array $tracking = []): \Lunar\Core\Models\Fulfilment;
+
+    /**
+     * Advance the fulfilment to its method's canonical "done" state with no
+     * tracking (collection → collected, digital → provisioned, …).
+     */
+    public function fulfil(): \Lunar\Core\Models\Fulfilment;
 
     /**
      * Split quantities out of this pre-ship fulfilment into a new parcel.

@@ -2,8 +2,6 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Actions\Fulfilment\EnsureInitialFulfilment;
-use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\EnsuresInitialFulfilment;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
@@ -64,7 +62,7 @@ test('the initial fulfilment is created once and is idempotent', function () {
 
     $order->update(['placed_at' => now()]);
     $order->update(['notes' => 'touch']);
-    (new EnsureInitialFulfilment(app(CreatesFulfilment::class)))->execute($order);
+    app(EnsuresInitialFulfilment::class)->execute($order);
 
     expect($order->fulfilments()->count())->toBe(1);
 });

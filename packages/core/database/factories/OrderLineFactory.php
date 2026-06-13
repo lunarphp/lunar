@@ -20,6 +20,9 @@ class OrderLineFactory extends BaseFactory
             'purchasable_id' => ProductVariant::factory(),
             'type' => 'physical',
             'requires_shipping' => fn (array $attributes) => ($attributes['type'] ?? 'physical') === 'physical',
+            // Defaults to its requires_shipping value so existing tests (and an
+            // explicit requires_shipping override) keep behaving as before.
+            'requires_fulfilment' => fn (array $attributes) => $attributes['requires_shipping'] ?? (($attributes['type'] ?? 'physical') === 'physical'),
             'description' => $this->faker->sentence,
             'option' => $this->faker->word,
             'identifier' => Str::random(),

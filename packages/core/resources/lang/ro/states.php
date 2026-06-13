@@ -45,7 +45,10 @@ return [
     'fulfilment' => [
         'pending' => 'Pending',
         'in-progress' => 'In Progress',
+        'ready-for-collection' => 'Ready for Collection',
         'shipped' => 'Shipped',
+        'collected' => 'Collected',
+        'provisioned' => 'Provisioned',
         'cancelled' => 'Cancelled',
         'returned' => 'Returned',
     ],

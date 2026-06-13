@@ -3,23 +3,29 @@
 namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\ShipsFulfilment;
+use Lunar\Core\Contracts\Actions\Fulfilment\TransitionsFulfilment;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
-use Lunar\Core\States\Fulfilment\Shipped;
 
 /**
- * Transition a `Pending` / `InProgress` fulfilment to `Shipped`, stamping
- * `shipped_at` and recording any tracking references. The state change is
- * routed through the guarded `FulfilmentState` graph — an illegal transition
- * throws and the action is a no-op.
+ * Mark a fulfilment shipped: advance it to its method's `fulfilledState()`,
+ * stamping the handed-over timestamp and recording any tracking references.
+ *
+ * The tracking-bearing terminal — only valid for methods that carry tracking;
+ * collection/digital use `fulfil()` instead, and calling `ship()` on a
+ * non-tracking method throws. The transition is delegated to
+ * `TransitionFulfilment` (so it routes through the guarded, per-method
+ * `FulfilmentState` graph and the timestamp is stamped by category); an illegal
+ * transition throws and the action is a no-op.
  */
 class ShipFulfilment implements ShipsFulfilment
 {
     public function __construct(
         protected CarrierManifest $carriers,
+        protected TransitionsFulfilment $transitionFulfilment,
     ) {}
 
     /**
@@ -33,12 +39,20 @@ class ShipFulfilment implements ShipsFulfilment
             throw new FulfilmentException(__('lunar::exceptions.fulfilment_on_hold'));
         }
 
+        if (! $fulfilment->method()->usesTracking()) {
+            throw new FulfilmentException(__('lunar::exceptions.fulfilment_method_no_tracking', [
+                'method' => $fulfilment->method()->getLabel(),
+            ]));
+        }
+
         return DB::transaction(function () use ($fulfilment, $tracking) {
-            $fulfilment->state->transitionTo(Shipped::class);
+            // Validate tracking first so a bad number aborts before the
+            // transition; the surrounding transaction rolls it all back.
+            $entries = $this->normaliseTracking($tracking);
 
-            $fulfilment->forceFill(['shipped_at' => now()])->save();
+            $this->transitionFulfilment->execute($fulfilment, $fulfilment->method()->fulfilledState());
 
-            foreach ($this->normaliseTracking($tracking) as $entry) {
+            foreach ($entries as $entry) {
                 $fulfilment->trackings()->create($entry);
             }
 
@@ -47,13 +61,15 @@ class ShipFulfilment implements ShipsFulfilment
     }
 
     /**
-     * Whether the fulfilment can be shipped, per the `FulfilmentState` graph.
+     * Whether the fulfilment can be shipped — its method carries tracking and
+     * its state can advance to that method's fulfilled state.
      */
     public static function canRun(FulfilmentContract $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
         return ! $fulfilment->isOnHold()
-            && $fulfilment->state->canTransitionTo(Shipped::class);
+            && $fulfilment->method()->usesTracking()
+            && $fulfilment->state->canTransitionTo($fulfilment->method()->fulfilledState());
     }
 
     /**

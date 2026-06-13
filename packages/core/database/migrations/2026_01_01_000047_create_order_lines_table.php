@@ -13,9 +13,15 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained($this->prefix.'orders');
             $table->morphs('purchasable');
             $table->string('type')->index();
-            // Whether the line needs a fulfilment — stamped from the
-            // purchasable's isShippable(); `type` is open-set display only.
+            // Whether the line needs physical delivery — stamped from the
+            // purchasable's isShippable(); routes a line to a physical
+            // fulfilment method. `type` is open-set display only.
             $table->boolean('requires_shipping')->default(false)->index();
+            // Whether the line needs a fulfilment at all — stamped from the
+            // purchasable's requiresFulfilment() (defaults to isShippable()).
+            // The fulfilment rollup denominator; a superset of requires_shipping
+            // (provisionable digital goods need fulfilling without shipping).
+            $table->boolean('requires_fulfilment')->default(false)->index();
             $table->string('description');
             $table->string('option')->nullable();
             $table->string('identifier')->index();

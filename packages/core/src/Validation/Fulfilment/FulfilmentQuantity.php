@@ -49,7 +49,7 @@ class FulfilmentQuantity
                 );
             }
 
-            if (! $orderLine->requires_shipping) {
+            if (! $orderLine->requires_fulfilment) {
                 throw new FulfilmentException(
                     __('lunar::exceptions.fulfilment_line_not_fulfillable', [
                         'line' => $orderLineId,

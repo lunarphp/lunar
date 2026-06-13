@@ -3,6 +3,8 @@
 namespace Lunar\Core\Actions\Orders;
 
 use Lunar\Core\Contracts\Actions\Orders\ResolvesFulfilmentStatus;
+use Lunar\Core\Contracts\FulfilmentMethodManifest;
+use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
@@ -14,29 +16,42 @@ use Lunar\Core\States\Order\Fulfilment\Unfulfilled;
 
 /**
  * Roll the order's `Fulfilment` records up into an order-level fulfilment
- * status. Only fulfilments in `shipped` / `returned` count as dispatched.
- * Orders with no fulfillable lines resolve to `Fulfilled`.
+ * status. Method-agnostic: a parcel counts as dispatched when its state is in
+ * the `Fulfilled` or `Returned` category (per the manifest), so collection and
+ * digital parcels — and any consumer method's terminal states — count exactly
+ * like a shipped one. Orders with no fulfillable lines resolve to `Fulfilled`.
  */
 class ResolveFulfilmentStatus implements ResolvesFulfilmentStatus
 {
+    public function __construct(
+        protected FulfilmentMethodManifest $methods,
+    ) {}
+
     public function execute(OrderContract $order): string
     {
         /** @var Order $order */
         $fulfillableLineIds = $order->fulfillableLines()->pluck('id');
 
-        // Nothing to ship — settled by definition.
+        // Nothing to fulfil — settled by definition.
         if ($fulfillableLineIds->isEmpty()) {
             return Fulfilled::class;
         }
 
         $totalQuantity = (int) $order->fulfillableLines()->sum('quantity');
 
+        $dispatchedStates = array_merge(
+            $this->methods->stateNamesIn(FulfilmentStateCategory::Fulfilled),
+            $this->methods->stateNamesIn(FulfilmentStateCategory::Returned),
+        );
+
+        $returnedStates = $this->methods->stateNamesIn(FulfilmentStateCategory::Returned);
+
         $shippedFulfilmentIds = $order->fulfilments()
-            ->whereIn('state', ['shipped', 'returned'])
+            ->whereIn('state', $dispatchedStates)
             ->pluck('id');
 
         $returnedFulfilmentIds = $order->fulfilments()
-            ->where('state', 'returned')
+            ->whereIn('state', $returnedStates)
             ->pluck('id');
 
         $shippedQuantity = (int) FulfilmentLine::query()

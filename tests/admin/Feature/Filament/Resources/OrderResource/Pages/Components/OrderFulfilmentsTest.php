@@ -178,6 +178,36 @@ it('lets developers extend the expanded line details', function () {
         ->and($labels)->toContain(__('lunarpanel::order.fulfilments.fields.unit_price'));
 });
 
+it('lets developers reshape the more-actions menu per method', function () {
+    LunarFilament::extensions([
+        OrderFulfilments::class => new class
+        {
+            public function extendFulfilmentActions(array $actions, $fulfilment): array
+            {
+                // Digital parcels don't move between physical locations.
+                if ($fulfilment->method === 'digital') {
+                    unset($actions['changeLocation']);
+                }
+
+                $actions['verify'] = ['label' => 'Verify', 'icon' => 'heroicon-m-check', 'color' => null, 'wire' => 'noop'];
+
+                return $actions;
+            }
+        },
+    ]);
+
+    Location::factory()->create();
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 2], ['method' => 'digital']);
+
+    $component = new OrderFulfilments;
+    $component->record = $this->order;
+
+    $actions = $component->moreActions($fulfilment->refresh()->load('lines'));
+
+    expect($actions)->toHaveKey('verify')
+        ->and($actions)->not->toHaveKey('changeLocation');
+});
+
 it('changes a fulfilment location', function () {
     $other = Location::factory()->create();
     $fulfilment = $this->order->createFulfilment([$this->line->id => 2]);
@@ -284,4 +314,29 @@ it('returns a shipped fulfilment', function () {
         ->assertHasNoActionErrors();
 
     expect((string) $fulfilment->refresh()->state)->toBe('returned');
+});
+
+it('fulfils a collection parcel via the no-tracking fulfil action', function () {
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 5], ['method' => 'collection']);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('fulfil', arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    expect((string) $fulfilment->refresh()->state)->toBe('collected')
+        ->and($fulfilment->shipped_at)->not->toBeNull();
+});
+
+it('routes the terminal status to fulfil for collection and ship for shipping', function () {
+    $component = Livewire::test(OrderFulfilments::class, ['record' => $this->order])->instance();
+
+    $collection = $this->order->createFulfilment([$this->line->id => 2], ['method' => 'collection']);
+    $shipping = $this->order->createFulfilment([$this->line->id => 2]);
+
+    $collectionTransitions = $component->statusTransitions($collection->refresh()->load('lines'));
+    $shippingTransitions = $component->statusTransitions($shipping->refresh()->load('lines'));
+
+    expect($collectionTransitions->firstWhere('name', 'collected')['action'])->toBe('fulfil')
+        ->and($collectionTransitions->pluck('name'))->not->toContain('shipped')
+        ->and($shippingTransitions->firstWhere('name', 'shipped')['action'])->toBe('ship');
 });

@@ -25,6 +25,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property int $purchasable_id
  * @property string $type
  * @property bool $requires_shipping
+ * @property bool $requires_fulfilment
  * @property string $description
  * @property ?string $option
  * @property string $identifier

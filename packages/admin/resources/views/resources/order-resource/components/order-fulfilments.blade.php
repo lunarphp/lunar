@@ -1,32 +1,26 @@
 <div>
     @php
-        $stateColors = [
-            'pending' => 'gray',
-            'in-progress' => 'warning',
-            'shipped' => 'success',
-            'cancelled' => 'danger',
-            'returned' => 'danger',
+        // The state badge derives its colour and icon from the state's fixed
+        // category, not a per-state-name map — so a consumer's custom states
+        // render sensibly with no blade change.
+        $categoryColors = [
+            'Outstanding' => 'warning',
+            'Fulfilled' => 'success',
+            'Returned' => 'danger',
+            'Cancelled' => 'gray',
         ];
-        $stateIcons = [
-            'pending' => 'heroicon-m-clock',
-            'in-progress' => 'heroicon-m-cog-6-tooth',
-            'shipped' => 'heroicon-m-truck',
-            'cancelled' => 'heroicon-m-x-circle',
-            'returned' => 'heroicon-m-arrow-uturn-left',
-        ];
-        // States with a dedicated, form/side-effect-bearing action. Everything
-        // else goes through the generic "transition" confirmation.
-        $statusActions = [
-            'shipped' => 'ship',
-            'returned' => 'return',
+        $categoryIcons = [
+            'Outstanding' => 'heroicon-m-clock',
+            'Fulfilled' => 'heroicon-m-check-circle',
+            'Returned' => 'heroicon-m-arrow-uturn-left',
+            'Cancelled' => 'heroicon-m-x-circle',
         ];
     @endphp
 
     <div class="space-y-4">
         @forelse ($this->fulfilments as $fulfilment)
             @php
-                $stateName = (string) $fulfilment->state;
-                $isPreShip = in_array($stateName, ['pending', 'in-progress'], true);
+                $category = $fulfilment->state->category()->name;
             @endphp
 
             <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-gray-900">
@@ -36,8 +30,11 @@
                         <span class="text-sm font-semibold text-gray-950 dark:text-white">
                             {{ $fulfilment->reference ?: __('lunarpanel::order.fulfilments.unreferenced', ['id' => $fulfilment->id]) }}
                         </span>
-                        <x-filament::badge :color="$stateColors[$stateName] ?? 'gray'" size="sm">
+                        <x-filament::badge :color="$categoryColors[$category] ?? 'gray'" :icon="$categoryIcons[$category] ?? null" size="sm">
                             {{ $fulfilment->state->label() }}
+                        </x-filament::badge>
+                        <x-filament::badge color="gray" size="sm">
+                            {{ $fulfilment->method()->getLabel() }}
                         </x-filament::badge>
                         @if ($fulfilment->isOnHold())
                             <span @if ($fulfilment->hold_note) title="{{ $fulfilment->hold_note }}" @endif>
@@ -54,7 +51,7 @@
                         @endif
                         @if ($fulfilment->shipped_at)
                             <span class="text-xs text-gray-500 dark:text-gray-400">
-                                {{ __('lunarpanel::order.fulfilments.columns.shipped_at') }}
+                                {{ $this->handedOverLabel($fulfilment) }}
                                 {{ $fulfilment->shipped_at->format('j M Y, H:i') }}
                             </span>
                         @endif
@@ -112,13 +109,11 @@
 
                                     <x-filament::dropdown.list>
                                         @foreach ($transitions as $transition)
-                                            @php($actionName = $statusActions[$transition['name']] ?? null)
-                                            @php($mountArgs = $actionName
-                                                ? "mountAction('{$actionName}', { fulfilment: {$fulfilment->id} })"
-                                                : "mountAction('transition', { fulfilment: {$fulfilment->id}, state: '{$transition['name']}' })")
+                                            @php($mountArgs = $transition['action'] === 'transition'
+                                                ? "mountAction('transition', { fulfilment: {$fulfilment->id}, state: '{$transition['name']}' })"
+                                                : "mountAction('{$transition['action']}', { fulfilment: {$fulfilment->id} })")
                                             <x-filament::dropdown.list.item
-                                                :icon="$stateIcons[$transition['name']] ?? 'heroicon-m-arrow-right'"
-                                                :color="$transition['name'] === 'cancelled' ? 'danger' : null"
+                                                :icon="$categoryIcons[$transition['category']] ?? 'heroicon-m-arrow-right'"
                                                 wire:click="{{ $mountArgs }}"
                                             >
                                                 {{ $transition['label'] }}
@@ -128,16 +123,8 @@
                                 </x-filament::dropdown>
                             @endif
 
-                            @php($canSplit = \Lunar\Core\Actions\Fulfilment\SplitFulfilment::canRun($fulfilment) && $fulfilment->lines->sum('quantity') > 1)
-                            @php($canMerge = $isPreShip && $this->mergeTargets($fulfilment)->isNotEmpty())
-                            @php($canChangeLocation = \Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation::canRun($fulfilment) && $this->locations->count() > 1)
-                            @php($canAddTracking = $stateName === 'shipped')
-                            {{-- "Cancel" = revert a progressed parcel back to pending so it can be re-progressed. --}}
-                            @php($canCancel = in_array($stateName, ['in-progress', 'shipped'], true))
-                            @php($canHold = \Lunar\Core\Actions\Fulfilment\HoldFulfilment::canRun($fulfilment))
-                            @php($canRelease = \Lunar\Core\Actions\Fulfilment\ReleaseFulfilment::canRun($fulfilment))
-                            @php($canUndoReturn = $stateName === 'returned')
-                            @if ($canSplit || $canMerge || $canChangeLocation || $canAddTracking || $canCancel || $canHold || $canRelease || $canUndoReturn)
+                            @php($moreActions = $this->moreActions($fulfilment))
+                            @if (filled($moreActions))
                                 <x-filament::dropdown placement="bottom-end">
                                     <x-slot name="trigger">
                                         <x-filament::icon-button
@@ -149,78 +136,15 @@
                                     </x-slot>
 
                                     <x-filament::dropdown.list>
-                                        @if ($canSplit)
+                                        @foreach ($moreActions as $action)
                                             <x-filament::dropdown.list.item
-                                                icon="heroicon-m-scissors"
-                                                wire:click="startSplit({{ $fulfilment->id }})"
+                                                :icon="$action['icon'] ?? 'heroicon-m-arrow-right'"
+                                                :color="$action['color'] ?? null"
+                                                wire:click="{{ $action['wire'] }}"
                                             >
-                                                {{ __('lunarpanel::order.fulfilments.actions.split.label') }}
+                                                {{ $action['label'] }}
                                             </x-filament::dropdown.list.item>
-                                        @endif
-
-                                        @if ($canMerge)
-                                            <x-filament::dropdown.list.item
-                                                icon="heroicon-m-arrows-pointing-in"
-                                                wire:click="startMerge({{ $fulfilment->id }})"
-                                            >
-                                                {{ __('lunarpanel::order.fulfilments.actions.merge.label') }}
-                                            </x-filament::dropdown.list.item>
-                                        @endif
-
-                                        @if ($canChangeLocation)
-                                            <x-filament::dropdown.list.item
-                                                icon="heroicon-m-map-pin"
-                                                wire:click="mountAction('changeLocation', { fulfilment: {{ $fulfilment->id }} })"
-                                            >
-                                                {{ __('lunarpanel::order.fulfilments.actions.change_location.label') }}
-                                            </x-filament::dropdown.list.item>
-                                        @endif
-
-                                        @if ($canAddTracking)
-                                            <x-filament::dropdown.list.item
-                                                icon="heroicon-m-truck"
-                                                wire:click="mountAction('addTracking', { fulfilment: {{ $fulfilment->id }} })"
-                                            >
-                                                {{ __('lunarpanel::order.fulfilments.actions.add_tracking.label') }}
-                                            </x-filament::dropdown.list.item>
-                                        @endif
-
-                                        @if ($canUndoReturn)
-                                            <x-filament::dropdown.list.item
-                                                icon="heroicon-m-arrow-uturn-right"
-                                                wire:click="mountAction('undoReturn', { fulfilment: {{ $fulfilment->id }} })"
-                                            >
-                                                {{ __('lunarpanel::order.fulfilments.actions.undo_return.label') }}
-                                            </x-filament::dropdown.list.item>
-                                        @endif
-
-                                        @if ($canHold)
-                                            <x-filament::dropdown.list.item
-                                                icon="heroicon-m-pause-circle"
-                                                wire:click="mountAction('hold', { fulfilment: {{ $fulfilment->id }} })"
-                                            >
-                                                {{ __('lunarpanel::order.fulfilments.actions.hold.label') }}
-                                            </x-filament::dropdown.list.item>
-                                        @endif
-
-                                        @if ($canRelease)
-                                            <x-filament::dropdown.list.item
-                                                icon="heroicon-m-play-circle"
-                                                wire:click="mountAction('release', { fulfilment: {{ $fulfilment->id }} })"
-                                            >
-                                                {{ __('lunarpanel::order.fulfilments.actions.release.label') }}
-                                            </x-filament::dropdown.list.item>
-                                        @endif
-
-                                        @if ($canCancel)
-                                            <x-filament::dropdown.list.item
-                                                icon="heroicon-m-x-circle"
-                                                color="danger"
-                                                wire:click="mountAction('cancelFulfilment', { fulfilment: {{ $fulfilment->id }} })"
-                                            >
-                                                {{ __('lunarpanel::order.fulfilments.actions.cancel.label') }}
-                                            </x-filament::dropdown.list.item>
-                                        @endif
+                                        @endforeach
                                     </x-filament::dropdown.list>
                                 </x-filament::dropdown>
                             @endif

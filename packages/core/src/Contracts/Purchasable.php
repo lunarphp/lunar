@@ -74,6 +74,17 @@ interface Purchasable
     public function isShippable();
 
     /**
+     * Returns whether the purchasable item needs a fulfilment — physical
+     * delivery, or any other provisioning a human must record (a licence key,
+     * an access grant). Defaults to {@see isShippable()} on the shipped
+     * purchasable base, so physical goods need fulfilment and other goods do
+     * not; a digital good that must be provisioned overrides this to `true`.
+     *
+     * The invariant is `isShippable() ⟹ requiresFulfilment()`.
+     */
+    public function requiresFulfilment(): bool;
+
+    /**
      * Return the thumbnail for the purchasable item.
      *
      * @return string

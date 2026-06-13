@@ -2,39 +2,40 @@
 
 namespace Lunar\Core\States\Fulfilment;
 
+use Lunar\Core\Contracts\FulfilmentMethodManifest;
 use Lunar\Core\Contracts\FulfilmentStateConfig;
 
+/**
+ * Derives the per-parcel state catalogue from the registered fulfilment
+ * methods. Spatie sees the *union* of every method's states and transitions —
+ * not only for breadth, but because Spatie auto-discovers state classes by
+ * scanning the base class's own directory, so a consumer's states in their own
+ * namespace are invisible unless the manifest union registers them. The
+ * per-method graph is then enforced at runtime by {@see MethodAwareTransition}.
+ *
+ * Replacing this contract wholesale still swaps the entire catalogue; reshaping
+ * a *single* flow is "register/replace a FulfilmentMethod" instead.
+ */
 class DefaultFulfilmentStateConfig implements FulfilmentStateConfig
 {
+    public function __construct(
+        protected FulfilmentMethodManifest $methods,
+    ) {}
+
     public function fulfilmentStates(): array
     {
-        return [
-            Pending::class,
-            InProgress::class,
-            Shipped::class,
-            Cancelled::class,
-            Returned::class,
-        ];
+        return $this->methods->states();
     }
 
     public function fulfilmentTransitions(): array
     {
-        return [
-            Pending::class => [InProgress::class, Shipped::class, Cancelled::class],
-            InProgress::class => [Pending::class, Shipped::class, Cancelled::class],
-            // A shipped parcel can be reverted to `Pending` (an "un-ship" to
-            // correct a mistaken dispatch — the items return to the unfulfilled
-            // pool and the parcel becomes re-shippable) or marked `Returned`.
-            Shipped::class => [Pending::class, Returned::class],
-            Cancelled::class => [],
-            // A return can be undone back to `Shipped` (the parcel did ship —
-            // only the return was a mistake), restoring the shipment.
-            Returned::class => [Shipped::class],
-        ];
+        return $this->methods->transitions();
     }
 
     public function defaultFulfilmentState(): string
     {
+        // The global fallback for the unblessed path; CreateFulfilment stamps
+        // the method's own defaultState() explicitly.
         return Pending::class;
     }
 

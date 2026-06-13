@@ -53,6 +53,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Fulfilment\ChangesFulfilmentLocation::class => Actions\Fulfilment\ChangeFulfilmentLocation::class,
         Contracts\Fulfilment\CreatesFulfilment::class => Actions\Fulfilment\CreateFulfilment::class,
         Contracts\Fulfilment\EnsuresInitialFulfilment::class => Actions\Fulfilment\EnsureInitialFulfilment::class,
+        Contracts\Fulfilment\FulfilsFulfilment::class => Actions\Fulfilment\FulfilFulfilment::class,
         Contracts\Fulfilment\HoldsFulfilment::class => Actions\Fulfilment\HoldFulfilment::class,
         Contracts\Fulfilment\MergesFulfilments::class => Actions\Fulfilment\MergeFulfilments::class,
         Contracts\Fulfilment\MovesFulfilmentLines::class => Actions\Fulfilment\MoveFulfilmentLines::class,

@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Contracts\Actions\Fulfilment\AddsFulfilmentTracking;
 use Lunar\Core\Contracts\Actions\Fulfilment\CancelsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ChangesFulfilmentLocation;
+use Lunar\Core\Contracts\Actions\Fulfilment\FulfilsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\HoldsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\MergesFulfilments;
 use Lunar\Core\Contracts\Actions\Fulfilment\MovesFulfilmentLines;
@@ -20,7 +21,10 @@ use Lunar\Core\Contracts\Actions\Fulfilment\ReturnsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ShipsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\SplitsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\TransitionsFulfilment;
+use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Database\Factories\FulfilmentFactory;
+use Lunar\Core\Drivers\FulfilmentMethods\Shipping;
+use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
@@ -31,6 +35,7 @@ use Spatie\ModelStates\HasStates;
  * @property int $order_id
  * @property int $location_id
  * @property ?string $reference
+ * @property string $method
  * @property FulfilmentState $state
  * @property ?string $notes
  * @property ?array $meta
@@ -133,14 +138,37 @@ class Fulfilment extends Base implements Contracts\Fulfilment
     }
 
     /**
-     * Mark the fulfilment shipped, stamping `shipped_at` and recording the
-     * given tracking entries.
+     * Resolve the registered fulfilment method that owns this parcel's flow,
+     * from the manifest — like {@see FulfilmentTracking::carrier()}. Falls back
+     * to `shipping` (always registered) for the default/unblessed path.
+     */
+    public function method(): FulfilmentMethod
+    {
+        return FulfilmentMethods::get($this->method ?: Shipping::KEY)
+            ?? throw new \RuntimeException("Fulfilment method [{$this->method}] is not registered.");
+    }
+
+    /**
+     * Mark the fulfilment shipped, stamping the handed-over timestamp and
+     * recording the given tracking entries. The tracking-bearing specialisation
+     * — throws if the parcel's method does not carry tracking ({@see fulfil()}).
      *
      * @param  array<int|string, mixed>  $tracking  a single tracking entry or a list of them
      */
     public function ship(array $tracking = []): Fulfilment
     {
         return app(ShipsFulfilment::class)->execute($this, $tracking);
+    }
+
+    /**
+     * Advance the fulfilment to its method's canonical "done" state with no
+     * tracking — collection → `Collected`, digital → `Provisioned`, a custom
+     * method → its terminal. The generic terminal verb; `ship()` is the
+     * tracking-bearing specialisation for methods that carry tracking.
+     */
+    public function fulfil(): Fulfilment
+    {
+        return app(FulfilsFulfilment::class)->execute($this);
     }
 
     /**

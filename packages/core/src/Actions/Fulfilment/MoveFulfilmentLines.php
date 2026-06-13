@@ -86,8 +86,12 @@ class MoveFulfilmentLines implements MovesFulfilmentLines
             throw new FulfilmentException(__('lunar::exceptions.fulfilment_merge_different_locations'));
         }
 
+        if ($from->method !== $to->method) {
+            throw new FulfilmentException(__('lunar::exceptions.fulfilment_method_mismatch'));
+        }
+
         foreach ([$from, $to] as $fulfilment) {
-            if (! in_array($fulfilment->state::$name, MergeFulfilments::MERGEABLE_STATES, true)) {
+            if (! MergeFulfilments::isMergeable($fulfilment)) {
                 throw new FulfilmentException(__('lunar::exceptions.fulfilment_not_mergeable'));
             }
         }

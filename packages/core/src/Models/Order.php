@@ -215,12 +215,13 @@ class Order extends Base implements Contracts\Order, HasCurrency
 
     /**
      * Lines that need a fulfilment — stamped from the purchasable's
-     * `isShippable()` at order creation. The fulfilment system keys off this,
-     * not the open-set `type` string.
+     * `requiresFulfilment()` at order creation. The fulfilment rollup keys off
+     * this (a superset of `requires_shipping`: physical goods plus any that
+     * need provisioning), not the open-set `type` string.
      */
     public function fulfillableLines(): HasMany
     {
-        return $this->lines()->where('requires_shipping', true);
+        return $this->lines()->where('requires_fulfilment', true);
     }
 
     public function digitalLines(): HasMany

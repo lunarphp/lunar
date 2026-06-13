@@ -293,6 +293,12 @@ return [
             'items' => 'Items',
             'tracking' => 'Tracking',
             'shipped_at' => 'Shipped at',
+            'handed_over' => [
+                'shipping' => 'Shipped at',
+                'collection' => 'Collected at',
+                'digital' => 'Provisioned at',
+            ],
+            'handed_over_default' => 'Fulfilled at',
         ],
         'actions' => [
             'more' => 'More actions',
@@ -326,6 +332,17 @@ return [
                 'notification' => [
                     'success' => 'Fulfilment marked as shipped.',
                     'error' => 'Could not ship fulfilment.',
+                ],
+            ],
+            'fulfil' => [
+                'label' => 'Mark fulfilled',
+                'modal_heading' => 'Mark fulfilment as fulfilled',
+                'labels' => [
+                    'collection' => 'Mark collected',
+                ],
+                'notification' => [
+                    'success' => 'Fulfilment marked as fulfilled.',
+                    'error' => 'Could not fulfil fulfilment.',
                 ],
             ],
             'cancel' => [

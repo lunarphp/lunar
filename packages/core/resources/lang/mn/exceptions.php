@@ -23,7 +23,7 @@ return [
     'fulfilment_quantity_minimum' => 'Fulfilment quantity must be at least 1.',
     'fulfilment_order_line_not_found' => 'Order line ":id" does not belong to this order.',
     'fulfilment_quantity_exceeded' => 'Cannot fulfil :requested of order line :line; only :available remaining.',
-    'fulfilment_line_not_fulfillable' => 'Order line :line does not require shipping and cannot be fulfilled.',
+    'fulfilment_line_not_fulfillable' => 'Order line :line does not require fulfilment and cannot be fulfilled.',
     'fulfilment_not_splittable' => 'Only pending or in-progress fulfilments can be split.',
     'fulfilment_split_quantity' => 'Invalid split quantity for order line :line.',
     'fulfilment_not_mergeable' => 'Only pending or in-progress fulfilments can be merged.',
@@ -39,4 +39,6 @@ return [
     'order_line_below_fulfilled' => 'Order line quantity (:requested) cannot be below the :fulfilled already fulfilled.',
     'fulfilment_merge_no_sources' => 'Select at least one fulfilment to merge.',
     'fulfilment_merge_target_in_sources' => 'A fulfilment cannot be merged into itself.',
+    'fulfilment_method_mismatch' => 'Fulfilments must use the same fulfilment method to be merged or moved together.',
+    'fulfilment_method_no_tracking' => 'Tracking cannot be added to a :method fulfilment.',
 ];
