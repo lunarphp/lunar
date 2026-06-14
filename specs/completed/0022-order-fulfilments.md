@@ -1,6 +1,6 @@
 # 0022 — Order fulfilments, derived statuses & open/closed lifecycle
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-04
 - TODO item: "Implement state machines, replacing soft-deletes — products & orders" (the payment/fulfilment half deferred from spec 0021)

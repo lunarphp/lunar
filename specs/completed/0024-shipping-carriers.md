@@ -1,6 +1,6 @@
 # 0024 — Shipping carriers (tracking service registry)
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-08
 - TODO item: Order fulfilments follow-up — shipping service registry

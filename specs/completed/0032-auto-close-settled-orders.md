@@ -1,6 +1,6 @@
 # 0032 — Auto-close settled orders
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-13
 - TODO item: "Auto-close settled orders — optionally close an order once it is fully paid and fully fulfilled"

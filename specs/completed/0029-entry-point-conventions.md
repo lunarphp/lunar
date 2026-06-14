@@ -1,6 +1,6 @@
 # 0029 — Entry-point conventions: actions, model verbs, managers
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-12
 - TODO item: consistency follow-up surfaced in spec 0022 review

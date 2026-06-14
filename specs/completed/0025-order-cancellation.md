@@ -1,6 +1,6 @@
 # 0025 — Order cancellation
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-09
 - TODO item: Order fulfilments follow-up — cancel an unfulfilled order

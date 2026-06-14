@@ -1,6 +1,6 @@
 # 0030 — Fulfillable order lines: decouple fulfilment from the line `type` string
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-12
 - TODO item: robustness follow-up surfaced reviewing spec 0022

@@ -1,6 +1,6 @@
 # 0031 — Fulfilment methods: pluggable fulfilment flows
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-13
 - TODO item: "Fulfilment methods — collection / digital / custom fulfilment flows" (follow-up surfaced implementing spec 0022)
