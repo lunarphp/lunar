@@ -5,7 +5,10 @@ namespace Lunar\Core\Manifests;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\CarrierManifest as CarrierManifestContract;
 use Lunar\Core\Contracts\ShippingCarrier;
-use Lunar\Core\Shipping\GenericCarrier;
+use Lunar\Core\Shipping\Carriers\Dpd;
+use Lunar\Core\Shipping\Carriers\FedEx;
+use Lunar\Core\Shipping\Carriers\RoyalMail;
+use Lunar\Core\Shipping\Carriers\Ups;
 
 class CarrierManifest implements CarrierManifestContract
 {
@@ -20,13 +23,13 @@ class CarrierManifest implements CarrierManifestContract
     {
         $this->carriers = collect();
 
-        $this->registerConfiguredCarriers();
+        $this->registerCoreCarriers();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function register(ShippingCarrier|string|array $carrier)
+    public function register(ShippingCarrier|string $carrier)
     {
         $carrier = $this->resolve($carrier);
 
@@ -56,30 +59,26 @@ class CarrierManifest implements CarrierManifestContract
     }
 
     /**
-     * Register every carrier defined in the shipping config.
+     * Register the batteries-included core carriers. A consumer adds or
+     * overrides one by registering it from their own service provider.
      */
-    protected function registerConfiguredCarriers(): void
+    protected function registerCoreCarriers(): void
     {
-        foreach (config('lunar.shipping.carriers', []) as $key => $config) {
-            $this->register(GenericCarrier::fromConfig($key, $config));
-        }
+        $this->register(app(RoyalMail::class));
+        $this->register(app(Dpd::class));
+        $this->register(app(Ups::class));
+        $this->register(app(FedEx::class));
     }
 
     /**
-     * Normalise the supported registration shapes into a carrier instance.
+     * Normalise a registration into a carrier instance.
      *
-     * @param  ShippingCarrier|class-string<ShippingCarrier>|array<string, mixed>  $carrier
+     * @param  ShippingCarrier|class-string<ShippingCarrier>  $carrier
      */
-    protected function resolve(ShippingCarrier|string|array $carrier): ShippingCarrier
+    protected function resolve(ShippingCarrier|string $carrier): ShippingCarrier
     {
         if ($carrier instanceof ShippingCarrier) {
             return $carrier;
-        }
-
-        if (is_array($carrier)) {
-            $key = $carrier['key'] ?? throw new \InvalidArgumentException('A carrier config array must include a "key".');
-
-            return GenericCarrier::fromConfig($key, $carrier);
         }
 
         return app($carrier);

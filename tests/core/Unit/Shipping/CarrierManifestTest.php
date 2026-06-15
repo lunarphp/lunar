@@ -1,70 +1,85 @@
 <?php
 
-use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\ShippingCarrier;
 use Lunar\Core\Facades\Carriers;
-use Lunar\Core\Shipping\GenericCarrier;
+use Lunar\Core\Shipping\Carriers\Carrier;
+use Lunar\Core\Shipping\Carriers\RoyalMail;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class)->group('shipping.carriers');
 
-it('registers carriers from config', function () {
-    config()->set('lunar.shipping.carriers', [
-        'acme' => [
-            'name' => 'ACME Couriers',
-            'tracking_url' => 'https://acme.test/track/{tracking_number}',
-            'services' => ['Next Day', 'Economy'],
-        ],
-    ]);
+/**
+ * A configurable carrier double for exercising the shared base mechanics.
+ */
+function testCarrier(?string $trackingUrl = null, ?string $pattern = null): ShippingCarrier
+{
+    return new class($trackingUrl, $pattern) extends Carrier
+    {
+        public function __construct(
+            protected ?string $trackingUrl,
+            protected ?string $pattern,
+        ) {}
 
-    // Rebind so the manifest re-reads config.
-    app()->forgetInstance(CarrierManifest::class);
+        public function getKey(): string
+        {
+            return 'acme';
+        }
 
-    $carrier = Carriers::get('acme');
+        public function getName(): string
+        {
+            return 'ACME Couriers';
+        }
 
-    expect($carrier)->toBeInstanceOf(ShippingCarrier::class)
-        ->and($carrier->getName())->toBe('ACME Couriers')
-        ->and($carrier->getServices())->toBe(['Next Day', 'Economy']);
+        public function getServices(): array
+        {
+            return ['Next Day', 'Economy'];
+        }
+
+        protected function trackingUrlTemplate(): ?string
+        {
+            return $this->trackingUrl;
+        }
+
+        protected function trackingNumberPattern(): ?string
+        {
+            return $this->pattern;
+        }
+    };
+}
+
+it('registers the batteries-included core carriers', function () {
+    $carrier = Carriers::get('royal-mail');
+
+    expect($carrier)->toBeInstanceOf(RoyalMail::class)
+        ->and($carrier->getName())->toBe('Royal Mail')
+        ->and($carrier->getServices())->toContain('Tracked 24')
+        ->and(Carriers::all()->keys()->all())->toContain('dpd', 'ups', 'fedex');
 });
 
 it('builds a tracking url from the template', function () {
-    $carrier = new GenericCarrier(
-        key: 'acme',
-        name: 'ACME',
-        trackingUrl: 'https://acme.test/track/{tracking_number}',
-    );
+    $carrier = testCarrier(trackingUrl: 'https://acme.test/track/{tracking_number}');
 
     expect($carrier->getTrackingUrl('AB 12'))->toBe('https://acme.test/track/AB%2012');
 });
 
 it('returns null tracking url when no template is set', function () {
-    $carrier = new GenericCarrier(key: 'acme', name: 'ACME');
-
-    expect($carrier->getTrackingUrl('ABC123'))->toBeNull();
+    expect(testCarrier()->getTrackingUrl('ABC123'))->toBeNull();
 });
 
 it('validates tracking numbers against an optional pattern', function () {
-    $carrier = new GenericCarrier(
-        key: 'acme',
-        name: 'ACME',
-        trackingNumberPattern: '/^[A-Z]{2}\d{6}$/',
-    );
+    $carrier = testCarrier(pattern: '/^[A-Z]{2}\d{6}$/');
 
     expect($carrier->validateTrackingNumber('AB123456'))->toBeTrue()
         ->and($carrier->validateTrackingNumber('nope'))->toBeFalse();
 });
 
 it('always passes validation without a pattern', function () {
-    $carrier = new GenericCarrier(key: 'acme', name: 'ACME');
-
-    expect($carrier->validateTrackingNumber('anything'))->toBeTrue();
+    expect(testCarrier()->validateTrackingNumber('anything'))->toBeTrue();
 });
 
 it('registers a custom carrier instance', function () {
-    app()->forgetInstance(CarrierManifest::class);
+    Carriers::register(testCarrier());
 
-    Carriers::register(new GenericCarrier(key: 'custom', name: 'Custom Carrier'));
-
-    expect(Carriers::get('custom')?->getName())->toBe('Custom Carrier')
+    expect(Carriers::get('acme')?->getName())->toBe('ACME Couriers')
         ->and(Carriers::get(null))->toBeNull();
 });

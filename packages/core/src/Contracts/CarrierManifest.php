@@ -7,13 +7,13 @@ use Illuminate\Support\Collection;
 interface CarrierManifest
 {
     /**
-     * Register a shipping carrier. Accepts a carrier instance, the class name
-     * of a carrier, or a config array shape understood by the generic carrier.
+     * Register a shipping carrier. Accepts a carrier instance or the class name
+     * of a carrier (resolved from the container).
      *
-     * @param  ShippingCarrier|class-string<ShippingCarrier>|array<string, mixed>  $carrier
+     * @param  ShippingCarrier|class-string<ShippingCarrier>  $carrier
      * @return self
      */
-    public function register(ShippingCarrier|string|array $carrier);
+    public function register(ShippingCarrier|string $carrier);
 
     /**
      * Get all registered carriers, keyed by their carrier key.

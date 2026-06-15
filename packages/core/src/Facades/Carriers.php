@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Facade;
 use Lunar\Core\Manifests\CarrierManifest;
 
 /**
- * @method static \Lunar\Core\Contracts\CarrierManifest register(\Lunar\Core\Contracts\ShippingCarrier|string|array $carrier)
+ * @method static \Lunar\Core\Contracts\CarrierManifest register(\Lunar\Core\Contracts\ShippingCarrier|string $carrier)
  * @method static \Illuminate\Support\Collection all()
  * @method static \Lunar\Core\Contracts\ShippingCarrier|null get(?string $key)
  *

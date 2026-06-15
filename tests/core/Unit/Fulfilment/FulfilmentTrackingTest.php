@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Models\Currency;
@@ -9,7 +8,7 @@ use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
-use Lunar\Core\Shipping\GenericCarrier;
+use Lunar\Core\Shipping\Carriers\Carrier;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -20,14 +19,33 @@ beforeEach(function () {
     Currency::factory()->create(['default' => true]);
     Location::factory()->default()->create();
 
-    app()->forgetInstance(CarrierManifest::class);
-    Carriers::register(new GenericCarrier(
-        key: 'acme',
-        name: 'ACME',
-        trackingUrl: 'https://acme.test/track/{tracking_number}',
-        services: ['Next Day'],
-        trackingNumberPattern: '/^[A-Z]{2}\d{6}$/',
-    ));
+    Carriers::register(new class extends Carrier
+    {
+        public function getKey(): string
+        {
+            return 'acme';
+        }
+
+        public function getName(): string
+        {
+            return 'ACME';
+        }
+
+        public function getServices(): array
+        {
+            return ['Next Day'];
+        }
+
+        protected function trackingUrlTemplate(): ?string
+        {
+            return 'https://acme.test/track/{tracking_number}';
+        }
+
+        protected function trackingNumberPattern(): ?string
+        {
+            return '/^[A-Z]{2}\d{6}$/';
+        }
+    });
 
     $this->order = Order::factory()->create();
     $this->line = OrderLine::factory()->create([

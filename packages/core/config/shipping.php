@@ -4,64 +4,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Carriers
-    |--------------------------------------------------------------------------
-    |
-    | The shipping carriers available when recording fulfilment tracking. Each
-    | carrier defines a tracking URL template (the "{tracking_number}"
-    | placeholder is substituted in), the services it offers (used to populate
-    | the shipping method options) and an optional tracking number pattern used
-    | to validate the entered reference. Carriers needing custom logic can
-    | implement Lunar\Core\Contracts\ShippingCarrier and be registered with the
-    | CarrierManifest instead.
-    |
-    */
-    'carriers' => [
-
-        'royal-mail' => [
-            'name' => 'Royal Mail',
-            'tracking_url' => 'https://www.royalmail.com/track-your-item#/tracking-results/{tracking_number}',
-            'services' => [
-                'Tracked 24',
-                'Tracked 48',
-                'Special Delivery Guaranteed',
-                'International Tracked',
-            ],
-        ],
-
-        'dpd' => [
-            'name' => 'DPD',
-            'tracking_url' => 'https://track.dpd.co.uk/parcels/{tracking_number}',
-            'services' => [
-                'Next Day',
-                'Two Day',
-                'Classic (Europe)',
-            ],
-        ],
-
-        'ups' => [
-            'name' => 'UPS',
-            'tracking_url' => 'https://www.ups.com/track?tracknum={tracking_number}',
-            'services' => [
-                'Standard',
-                'Express',
-                'Express Saver',
-            ],
-        ],
-
-        'fedex' => [
-            'name' => 'FedEx',
-            'tracking_url' => 'https://www.fedex.com/fedextrack/?trknbr={tracking_number}',
-            'services' => [
-                'Priority',
-                'Economy',
-            ],
-        ],
-
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Measurements
     |--------------------------------------------------------------------------
     |
