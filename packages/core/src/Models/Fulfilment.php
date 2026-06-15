@@ -25,6 +25,7 @@ use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Database\Factories\FulfilmentFactory;
 use Lunar\Core\Drivers\FulfilmentMethods\Shipping;
 use Lunar\Core\Facades\FulfilmentMethods;
+use Lunar\Core\Facades\HoldReasons;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
@@ -78,15 +79,11 @@ class Fulfilment extends Base implements Contracts\Fulfilment
 
     /**
      * The human-readable label for the current hold reason, resolved from the
-     * configured reason list (falls back to the stored key).
+     * hold-reason set (falls back to the stored key).
      */
     public function holdReasonLabel(): ?string
     {
-        if (blank($this->hold_reason)) {
-            return null;
-        }
-
-        return config('lunar.fulfilment.hold_reasons.'.$this->hold_reason, $this->hold_reason);
+        return HoldReasons::label($this->hold_reason);
     }
 
     /**

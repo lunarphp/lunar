@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Lunar\Core\Actions\Orders\CancelOrder;
+use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Models\Order;
 
 /**
@@ -33,7 +34,7 @@ class CancelOrderAction extends Action
             ->schema([
                 Select::make('reason')
                     ->label(__('lunar-filament::actions.orders.cancel_order.reason'))
-                    ->options(config('lunar.orders.cancel_reasons', []))
+                    ->options(CancelReasons::all())
                     ->native(false),
                 Textarea::make('note')
                     ->label(__('lunar-filament::actions.orders.cancel_order.note'))

@@ -28,6 +28,7 @@ use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Carriers;
+use Lunar\Core\Facades\HoldReasons;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\FulfilmentTracking;
@@ -458,7 +459,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->schema([
                 Select::make('reason')
                     ->label(__('lunarpanel::order.fulfilments.actions.hold.reason'))
-                    ->options(config('lunar.fulfilment.hold_reasons', []))
+                    ->options(HoldReasons::all())
                     ->native(false),
                 Textarea::make('note')
                     ->label(__('lunarpanel::order.fulfilments.actions.hold.note')),

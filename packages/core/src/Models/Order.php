@@ -23,6 +23,7 @@ use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderFactory;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
+use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasTags;
@@ -177,15 +178,11 @@ class Order extends Base implements Contracts\Order, HasCurrency
 
     /**
      * The human-readable label for the cancellation reason, resolved from the
-     * configured reason list (falls back to the stored key).
+     * cancel-reason set (falls back to the stored key).
      */
     public function cancelReasonLabel(): ?string
     {
-        if (blank($this->cancel_reason)) {
-            return null;
-        }
-
-        return config('lunar.orders.cancel_reasons.'.$this->cancel_reason, $this->cancel_reason);
+        return CancelReasons::label($this->cancel_reason);
     }
 
     public function channel(): BelongsTo

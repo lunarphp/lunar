@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Core\Contracts\OrderSettings;
+use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
@@ -31,8 +33,23 @@ function autoCloseCapture(Order $order, int $amount): void
     ]);
 }
 
+/**
+ * Opt in to auto-close by binding an OrderSettings override — the seam that
+ * replaces the old `lunar.orders.auto_close` config flag.
+ */
+function enableAutoClose(): void
+{
+    app()->instance(OrderSettings::class, new class implements OrderSettings
+    {
+        public function autoClosesSettledOrders(OrderContract $order): bool
+        {
+            return true;
+        }
+    });
+}
+
 test('it auto-closes an order once fully paid and fulfilled when enabled', function () {
-    config(['lunar.orders.auto_close' => true]);
+    enableAutoClose();
     [$order, $line] = autoCloseOrder();
 
     autoCloseCapture($order, 1000);
@@ -57,7 +74,7 @@ test('it leaves a settled order open when the preference is off (default)', func
 });
 
 test('it does not close a paid order that is not yet fulfilled', function () {
-    config(['lunar.orders.auto_close' => true]);
+    enableAutoClose();
     [$order] = autoCloseOrder();
 
     autoCloseCapture($order, 1000);
@@ -68,7 +85,7 @@ test('it does not close a paid order that is not yet fulfilled', function () {
 });
 
 test('it does not close a fulfilled order that is not yet paid', function () {
-    config(['lunar.orders.auto_close' => true]);
+    enableAutoClose();
     [$order, $line] = autoCloseOrder();
 
     $order->createFulfilment([$line->id => 1])->ship();
@@ -79,7 +96,7 @@ test('it does not close a fulfilled order that is not yet paid', function () {
 });
 
 test('it does not reopen an auto-closed order that is later returned', function () {
-    config(['lunar.orders.auto_close' => true]);
+    enableAutoClose();
     [$order, $line] = autoCloseOrder();
 
     autoCloseCapture($order, 1000);

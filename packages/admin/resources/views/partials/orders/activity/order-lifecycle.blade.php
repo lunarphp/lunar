@@ -11,7 +11,7 @@
         @php($reason = $log->getExtraProperty('reason'))
         @if ($reason)
             {{ __('lunarpanel::components.activity-log.partials.orders.order_cancelled', [
-                'reason' => config('lunar.orders.cancel_reasons.'.$reason, $reason),
+                'reason' => \Lunar\Core\Facades\CancelReasons::label($reason),
             ]) }}
         @else
             {{ __('lunarpanel::components.activity-log.partials.orders.order_cancelled_no_reason') }}

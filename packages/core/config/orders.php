@@ -11,38 +11,6 @@ use Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown;
 return [
     /*
     |--------------------------------------------------------------------------
-    | Cancellation reasons
-    |--------------------------------------------------------------------------
-    |
-    | The reasons an order can be cancelled, keyed by a stable identifier. The
-    | label is shown in the cancel form and on the order timeline. The stored
-    | key is what persists against the order.
-    |
-    */
-    'cancel_reasons' => [
-        'customer' => 'Customer changed/cancelled order',
-        'items-unavailable' => 'Items unavailable',
-        'fraud' => 'Fraudulent order',
-        'declined' => 'Payment declined',
-        'other' => 'Other',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Auto-close settled orders
-    |--------------------------------------------------------------------------
-    |
-    | When enabled, an order is automatically closed (archived — dropping out
-    | of the open work queue) the moment it becomes fully paid AND fully
-    | fulfilled, reusing the CloseOrder action. It is close-only: a later
-    | return or refund does not reopen it. Disabled by default, so closing
-    | stays a deliberate action unless you opt in.
-    |
-    */
-    'auto_close' => false,
-
-    /*
-    |--------------------------------------------------------------------------
     | Order Reference Format
     |--------------------------------------------------------------------------
     |

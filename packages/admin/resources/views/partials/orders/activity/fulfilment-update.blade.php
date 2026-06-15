@@ -16,7 +16,7 @@
         @if ($reason)
             {{ __('lunarpanel::components.activity-log.partials.orders.fulfilment_held', [
                 'id' => $id,
-                'reason' => config('lunar.fulfilment.hold_reasons.'.$reason, $reason),
+                'reason' => \Lunar\Core\Facades\HoldReasons::label($reason),
             ]) }}
         @else
             {{ __('lunarpanel::components.activity-log.partials.orders.fulfilment_held_no_reason', ['id' => $id]) }}

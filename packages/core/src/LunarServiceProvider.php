@@ -27,6 +27,7 @@ use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
+use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
@@ -34,8 +35,10 @@ use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
 use Lunar\Core\Contracts\FulfilmentMethodManifest;
 use Lunar\Core\Contracts\FulfilmentStateConfig;
+use Lunar\Core\Contracts\HoldReasonManifest;
 use Lunar\Core\Contracts\ModelManifest;
 use Lunar\Core\Contracts\OrderReferenceGenerator;
+use Lunar\Core\Contracts\OrderSettings;
 use Lunar\Core\Contracts\PaymentManager;
 use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\Contracts\ProvidesTelemetryInsights;
@@ -61,9 +64,11 @@ use Lunar\Core\Managers\PricingManager as PricingManagerImpl;
 use Lunar\Core\Managers\StorefrontSessionManager;
 use Lunar\Core\Managers\TaxManager as TaxManagerImpl;
 use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
+use Lunar\Core\Manifests\CancelReasonManifest as CancelReasonManifestImpl;
 use Lunar\Core\Manifests\CarrierManifest as CarrierManifestImpl;
 use Lunar\Core\Manifests\FieldTypeManifest as FieldTypeManifestImpl;
 use Lunar\Core\Manifests\FulfilmentMethodManifest as FulfilmentMethodManifestImpl;
+use Lunar\Core\Manifests\HoldReasonManifest as HoldReasonManifestImpl;
 use Lunar\Core\Manifests\ModelManifest as ModelManifestImpl;
 use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
 use Lunar\Core\Models\Address;
@@ -114,6 +119,7 @@ use Lunar\Core\Observers\ProductOptionValueObserver;
 use Lunar\Core\Observers\ProductVariantObserver;
 use Lunar\Core\Observers\TransactionObserver;
 use Lunar\Core\Observers\UrlObserver;
+use Lunar\Core\Orders\OrderSettings as OrderSettingsImpl;
 use Lunar\Core\Orders\ReferenceGenerator as OrderReferenceGeneratorImpl;
 use Lunar\Core\Pricing\DefaultPriceCalculator;
 use Lunar\Core\Pricing\DefaultPriceFormatter;
@@ -132,7 +138,6 @@ class LunarServiceProvider extends ServiceProvider
         'cart_session',
         'database',
         'discounts',
-        'fulfilment',
         'media',
         'orders',
         'payments',
@@ -348,6 +353,14 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(FulfilmentMethodManifestImpl::class);
         });
 
+        $this->app->singleton(HoldReasonManifest::class, function ($app) {
+            return $app->make(HoldReasonManifestImpl::class);
+        });
+
+        $this->app->singleton(CancelReasonManifest::class, function ($app) {
+            return $app->make(CancelReasonManifestImpl::class);
+        });
+
         $this->app->singleton(AttributeManifest::class, function ($app) {
             return $app->make(AttributeManifestImpl::class);
         });
@@ -366,6 +379,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(OrderReferenceGenerator::class, function ($app) {
             return $app->make(OrderReferenceGeneratorImpl::class);
+        });
+
+        $this->app->singleton(OrderSettings::class, function ($app) {
+            return $app->make(OrderSettingsImpl::class);
         });
 
         $this->app->singleton(FulfilmentStateConfig::class, function ($app) {
