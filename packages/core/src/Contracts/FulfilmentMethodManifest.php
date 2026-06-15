@@ -8,21 +8,21 @@ use Lunar\Core\States\Fulfilment\FulfilmentState;
 
 /**
  * The registry of fulfilment methods, mirroring {@see CarrierManifest}. Seeded
- * on construction from `config('lunar.fulfilment.methods')` and then the core
- * three. It also assembles the union of every registered method's states and
- * transitions (so Spatie can cast every flow's states) and the category map the
- * order rollup queries.
+ * on construction with the core three; a consumer registers their own from a
+ * service provider. It also assembles the union of every registered method's
+ * states and transitions (so Spatie can cast every flow's states) and the
+ * category map the order rollup queries.
  */
 interface FulfilmentMethodManifest
 {
     /**
-     * Register a fulfilment method. Accepts a method instance, the class name
-     * of a method, or a config array shape understood by the generic method.
+     * Register a fulfilment method. Accepts a method instance or the class name
+     * of a method (resolved from the container).
      *
-     * @param  FulfilmentMethod|class-string<FulfilmentMethod>|array<string, mixed>  $method
+     * @param  FulfilmentMethod|class-string<FulfilmentMethod>  $method
      * @return self
      */
-    public function register(FulfilmentMethod|string|array $method);
+    public function register(FulfilmentMethod|string $method);
 
     /**
      * Get all registered methods, keyed by key, in priority order (ascending).

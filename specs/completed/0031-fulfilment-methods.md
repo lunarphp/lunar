@@ -5,6 +5,11 @@
 - Created: 2026-06-13
 - TODO item: "Fulfilment methods — collection / digital / custom fulfilment flows" (follow-up surfaced implementing spec 0022)
 
+> **Amendment (2026-06-15):** the config-driven `GenericFulfilmentMethod` and
+> `config('lunar.fulfilment.methods')` seam (§A, §I, and the "New surface" list)
+> was removed before release — a fulfilment method now registers only as a class
+> against `FulfilmentMethodManifest`. See [[0033-reduce-config-surface]].
+
 ## Problem
 
 Spec [[0022-order-fulfilments]] models a `Fulfilment` as, implicitly, **a shipment**. The vocabulary is hardwired to posting a parcel through a carrier:

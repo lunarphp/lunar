@@ -7,7 +7,6 @@ use Lunar\Core\Contracts\FulfilmentMethod;
 use Lunar\Core\Contracts\FulfilmentMethodManifest as FulfilmentMethodManifestContract;
 use Lunar\Core\Drivers\FulfilmentMethods\Collection as CollectionMethod;
 use Lunar\Core\Drivers\FulfilmentMethods\Digital;
-use Lunar\Core\Drivers\FulfilmentMethods\GenericFulfilmentMethod;
 use Lunar\Core\Drivers\FulfilmentMethods\Shipping;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
@@ -47,14 +46,13 @@ class FulfilmentMethodManifest implements FulfilmentMethodManifestContract
     {
         $this->methods = collect();
 
-        $this->registerConfiguredMethods();
         $this->registerCoreMethods();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function register(FulfilmentMethod|string|array $method)
+    public function register(FulfilmentMethod|string $method)
     {
         $method = $this->resolve($method);
 
@@ -158,19 +156,8 @@ class FulfilmentMethodManifest implements FulfilmentMethodManifestContract
     }
 
     /**
-     * Register every method declared in the fulfilment config.
-     */
-    protected function registerConfiguredMethods(): void
-    {
-        foreach (config('lunar.fulfilment.methods', []) as $key => $config) {
-            $this->register(GenericFulfilmentMethod::fromConfig($key, $config));
-        }
-    }
-
-    /**
-     * Register the batteries-included core methods. Registered after the
-     * config methods so a core key always resolves to its driver; a consumer
-     * overrides one by re-registering from their own service provider.
+     * Register the batteries-included core methods. A consumer overrides one by
+     * re-registering it from their own service provider.
      */
     protected function registerCoreMethods(): void
     {
@@ -180,20 +167,14 @@ class FulfilmentMethodManifest implements FulfilmentMethodManifestContract
     }
 
     /**
-     * Normalise the supported registration shapes into a method instance.
+     * Normalise a registration into a method instance.
      *
-     * @param  FulfilmentMethod|class-string<FulfilmentMethod>|array<string, mixed>  $method
+     * @param  FulfilmentMethod|class-string<FulfilmentMethod>  $method
      */
-    protected function resolve(FulfilmentMethod|string|array $method): FulfilmentMethod
+    protected function resolve(FulfilmentMethod|string $method): FulfilmentMethod
     {
         if ($method instanceof FulfilmentMethod) {
             return $method;
-        }
-
-        if (is_array($method)) {
-            $key = $method['key'] ?? throw new \InvalidArgumentException('A fulfilment method config array must include a "key".');
-
-            return GenericFulfilmentMethod::fromConfig($key, $method);
         }
 
         return app($method);
