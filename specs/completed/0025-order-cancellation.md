@@ -5,6 +5,11 @@
 - Created: 2026-06-09
 - TODO item: Order fulfilments follow-up — cancel an unfulfilled order
 
+> **Amendment (2026-06-15):** `config('lunar.orders.cancel_reasons')` was removed
+> before release — cancellation reasons now come from the `CancelReasons` manifest
+> (code defaults + an override seam), ahead of a store-scoped set. See
+> [[0033-reduce-config-surface]].
+
 ## Problem
 
 After [[0022-order-fulfilments]] an order's lifecycle is its derived `payment_status` / `fulfilment_status` plus an open/closed (`closed_at`) archive. There is no way to **cancel** an order — Shopify lets an admin cancel an order that hasn't been fulfilled (with a reason, staff note and optional customer notification). We want the equivalent, scoped to the **status** side only.

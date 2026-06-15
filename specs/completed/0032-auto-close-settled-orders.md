@@ -5,6 +5,11 @@
 - Created: 2026-06-13
 - TODO item: "Auto-close settled orders — optionally close an order once it is fully paid and fully fulfilled"
 
+> **Amendment (2026-06-15):** `config('lunar.orders.auto_close')` was removed
+> before release — the preference is now read from the `OrderSettings` seam
+> (default off; bind a custom implementation to opt in or vary it per store).
+> See [[0033-reduce-config-surface]].
+
 ## Problem
 
 Spec [[0022-order-fulfilments]] replaced the headline order status with two derived rollups (`payment_status`, `fulfilment_status`) plus an **open / closed** archive: `closed_at` is the inbox-zero flag, and the order list defaults to the **Open** work queue. Closing is a deliberate `CloseOrder` action — and today it is *only* manual (the admin "Close" button, or `$order->close()`).

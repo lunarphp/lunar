@@ -5,6 +5,12 @@
 - Created: 2026-06-08
 - TODO item: Order fulfilments follow-up — shipping service registry
 
+> **Amendment (2026-06-15):** the config-driven `Lunar\Core\Shipping\GenericCarrier`
+> and `config('lunar.shipping.carriers')` were removed before release — a carrier
+> now registers only as a class against `CarrierManifest`, and core's default
+> carriers (Royal Mail, DPD, UPS, FedEx) ship as classes registered from the
+> service provider. See [[0033-reduce-config-surface]].
+
 ## Problem
 
 Spec [[0022-order-fulfilments]] gives fulfilments one-to-many tracking, but each tracking row only stores free-text `tracking_number`, `tracking_url` and `shipping_method`. That means:
