@@ -41,6 +41,30 @@ class CarrierManifest implements CarrierManifestContract
     /**
      * {@inheritDoc}
      */
+    public function set(iterable $carriers)
+    {
+        $this->carriers = collect();
+
+        foreach ($carriers as $carrier) {
+            $this->register($carrier);
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function forget(string ...$keys)
+    {
+        $this->carriers->forget($keys);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function all(): Collection
     {
         return $this->carriers;

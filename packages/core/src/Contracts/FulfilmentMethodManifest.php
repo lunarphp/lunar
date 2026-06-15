@@ -25,6 +25,22 @@ interface FulfilmentMethodManifest
     public function register(FulfilmentMethod|string $method);
 
     /**
+     * Replace the entire method set — e.g. to drop the batteries-included
+     * methods and register your own from a service provider.
+     *
+     * @param  iterable<FulfilmentMethod|class-string<FulfilmentMethod>>  $methods
+     * @return self
+     */
+    public function set(iterable $methods);
+
+    /**
+     * Remove one or more registered methods by key.
+     *
+     * @return self
+     */
+    public function forget(string ...$keys);
+
+    /**
      * Get all registered methods, keyed by key, in priority order (ascending).
      *
      * @return Collection<string, FulfilmentMethod>

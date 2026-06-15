@@ -47,6 +47,20 @@ test('the manifest registers the three core methods in priority order', function
         ->and(FulfilmentMethods::get('nope'))->toBeNull();
 });
 
+test('the manifest can replace the core methods with a custom set', function () {
+    FulfilmentMethods::set([Digital::class]);
+
+    expect(FulfilmentMethods::all()->keys()->all())->toBe(['digital'])
+        ->and(FulfilmentMethods::get('shipping'))->toBeNull();
+});
+
+test('the manifest forgets methods by key', function () {
+    FulfilmentMethods::forget('collection', 'digital');
+
+    expect(FulfilmentMethods::all()->keys()->all())->toBe(['shipping'])
+        ->and(FulfilmentMethods::get('collection'))->toBeNull();
+});
+
 test('the manifest groups state names by category across every method', function () {
     expect(FulfilmentMethods::stateNamesIn(FulfilmentStateCategory::Fulfilled))
         ->toContain('shipped', 'collected', 'provisioned')

@@ -83,3 +83,19 @@ it('registers a custom carrier instance', function () {
     expect(Carriers::get('acme')?->getName())->toBe('ACME Couriers')
         ->and(Carriers::get(null))->toBeNull();
 });
+
+it('replaces the whole carrier set via set()', function () {
+    Carriers::set([testCarrier()]);
+
+    expect(Carriers::all()->keys()->all())->toBe(['acme'])
+        ->and(Carriers::get('royal-mail'))->toBeNull();
+});
+
+it('forgets carriers by key', function () {
+    Carriers::forget('royal-mail', 'dpd');
+
+    expect(Carriers::get('royal-mail'))->toBeNull()
+        ->and(Carriers::get('dpd'))->toBeNull()
+        ->and(Carriers::get('ups'))->not->toBeNull()
+        ->and(Carriers::get('fedex'))->not->toBeNull();
+});

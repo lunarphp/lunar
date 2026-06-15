@@ -66,6 +66,34 @@ class FulfilmentMethodManifest implements FulfilmentMethodManifestContract
     /**
      * {@inheritDoc}
      */
+    public function set(iterable $methods)
+    {
+        $this->methods = collect();
+
+        foreach ($methods as $method) {
+            $this->register($method);
+        }
+
+        $this->flush();
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function forget(string ...$keys)
+    {
+        $this->methods->forget($keys);
+
+        $this->flush();
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function all(): Collection
     {
         return $this->methods->sortBy(fn (FulfilmentMethod $method) => $method->priority());
