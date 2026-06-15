@@ -30,7 +30,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
-use Lunar\Core\States\Order\Payment\PaymentState;
+use Lunar\Core\States\Order\Payment\PaymentStatus;
 use Spatie\ModelStates\HasStates;
 
 /**
@@ -39,7 +39,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?int $user_id
  * @property int $channel_id
  * @property bool $new_customer
- * @property PaymentState $payment_status
+ * @property PaymentStatus $payment_status
  * @property FulfilmentStatus $fulfilment_status
  * @property ?string $reference
  * @property ?string $customer_reference
@@ -91,7 +91,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'total' => 'integer',
         'shipping_total' => 'integer',
         'new_customer' => 'boolean',
-        'payment_status' => PaymentState::class,
+        'payment_status' => PaymentStatus::class,
         'fulfilment_status' => FulfilmentStatus::class,
     ];
 

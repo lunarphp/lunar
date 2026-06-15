@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\States\Order\Payment;
 
-class Voided extends PaymentState
+class Voided extends PaymentStatus
 {
     public static string $name = 'voided';
 

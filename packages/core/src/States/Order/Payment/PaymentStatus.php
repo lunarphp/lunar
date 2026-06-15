@@ -13,8 +13,12 @@ use Spatie\ModelStates\StateConfig;
  * assigned directly by the resolver whenever the ledger changes, so any
  * value may follow any other. All states are registered so the cast resolves
  * regardless of which one the resolver produces.
+ *
+ * Named a `*Status` (not `*State`) by convention: a derived rollup is a
+ * `*Status` and matches its `*_status` column, while a hand-driven, guarded
+ * lifecycle machine is a `*State` (cf. the per-parcel `Fulfilment\FulfilmentState`).
  */
-abstract class PaymentState extends State
+abstract class PaymentStatus extends State
 {
     abstract public function label(): string;
 

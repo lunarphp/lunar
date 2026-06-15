@@ -11,7 +11,7 @@ use Lunar\Core\States\Order\Payment\Authorized;
 use Lunar\Core\States\Order\Payment\Paid;
 use Lunar\Core\States\Order\Payment\PartiallyPaid;
 use Lunar\Core\States\Order\Payment\PartiallyRefunded;
-use Lunar\Core\States\Order\Payment\PaymentState;
+use Lunar\Core\States\Order\Payment\PaymentStatus;
 use Lunar\Core\States\Order\Payment\Pending;
 use Lunar\Core\States\Order\Payment\Refunded as PaymentRefunded;
 use Lunar\Core\States\Order\Payment\Voided;
@@ -20,7 +20,7 @@ use Lunar\Tests\Core\TestCase;
 uses(TestCase::class);
 
 test('the payment status registry pins its default and registered states', function () {
-    $config = PaymentState::config();
+    $config = PaymentStatus::config();
 
     expect($config->defaultStateClass)->toBe(Pending::class)
         ->and($config->registeredStates)->toEqualCanonicalizing([
@@ -51,7 +51,7 @@ test('every derived order status exposes a name and a label', function () {
     $order = new Order;
 
     $states = [
-        ...PaymentState::config()->registeredStates,
+        ...PaymentStatus::config()->registeredStates,
         ...FulfilmentStatus::config()->registeredStates,
     ];
 

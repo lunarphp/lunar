@@ -12,7 +12,9 @@ use Spatie\ModelStates\StateConfig;
  *
  * Distinct from the per-parcel `States\Fulfilment\FulfilmentState`: this is
  * derived and unguarded (assigned directly by the resolver), where the
- * lifecycle machine is hand-driven and guarded.
+ * lifecycle machine is hand-driven and guarded. Hence the suffix — a derived
+ * rollup is a `*Status` (matching its `*_status` column); a hand-driven,
+ * guarded lifecycle machine is a `*State`.
  */
 abstract class FulfilmentStatus extends State
 {

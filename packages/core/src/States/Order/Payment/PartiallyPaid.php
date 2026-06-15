@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\States\Order\Payment;
 
-class PartiallyPaid extends PaymentState
+class PartiallyPaid extends PaymentStatus
 {
     public static string $name = 'partially-paid';
 

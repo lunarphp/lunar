@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\States\Order\Payment;
 
-class Paid extends PaymentState
+class Paid extends PaymentStatus
 {
     public static string $name = 'paid';
 

@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\States\Order\Payment;
 
-class PartiallyRefunded extends PaymentState
+class PartiallyRefunded extends PaymentStatus
 {
     public static string $name = 'partially-refunded';
 
