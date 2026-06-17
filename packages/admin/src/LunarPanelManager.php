@@ -19,6 +19,7 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Filament\Widgets\Widget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -129,6 +130,10 @@ class LunarPanelManager
             'actions::edit-action' => 'lucide-edit',
             'actions::delete-action' => 'lucide-trash-2',
             'actions::make-collection-root-action' => 'lucide-corner-left-up',
+            // Collapsible table panels default to a chevron that points the
+            // opposite way to collapsible sections; align it so the order line
+            // panels open "down to expand, up to collapse" like everything else.
+            'tables::columns.collapse-button' => Heroicon::ChevronUp,
 
             // Lunar
             'lunar::activity' => 'lucide-activity',
