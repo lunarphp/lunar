@@ -45,8 +45,9 @@ class FulfilmentObserver
      *
      * @param  array<string, mixed>  $properties
      */
-    protected function logFulfilmentUpdate(Fulfilment $fulfilment, array $properties): void
+    protected function logFulfilmentUpdate(FulfilmentContract $fulfilment, array $properties): void
     {
+        /** @var Fulfilment $fulfilment */
         if (! $order = $fulfilment->order()->first()) {
             return;
         }
