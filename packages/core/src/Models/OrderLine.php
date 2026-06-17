@@ -72,6 +72,7 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
      */
     protected $casts = [
         'requires_shipping' => 'boolean',
+        'requires_fulfilment' => 'boolean',
         'unit_quantity' => 'integer',
         'quantity' => 'integer',
         'meta' => AsArrayObject::class,
