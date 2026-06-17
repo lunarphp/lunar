@@ -101,9 +101,9 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
     }
 
     /**
-     * Limit the query to order lines not yet covered by any fulfilment.
+     * Limit the query to order lines not yet allocated to any fulfilment.
      */
-    public function scopeUncovered(Builder $query): Builder
+    public function scopeWithoutFulfilment(Builder $query): Builder
     {
         return $query->whereDoesntHave('fulfilmentLines');
     }

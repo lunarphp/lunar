@@ -126,10 +126,11 @@ class OrderItemsTable extends TableComponent
         return $table
             ->query($this->record->lines()->getQuery()
                 ->with(['purchasable', 'currency'])
-                ->wherein('type', ['physical', 'digital'])
-                // Lines covered by a fulfilment are shown in their fulfilment
-                // card instead; only uncovered + digital lines list here.
-                ->uncovered())
+                // Shipping has its own section; lines allocated to a fulfilment
+                // show in their fulfilment card. Everything else lists here
+                // regardless of type (digital, service, custom purchasables).
+                ->where('type', '!=', 'shipping')
+                ->withoutFulfilment())
             ->columns(static::getOrderLinesTableColumns())
             ->toolbarActions([
                 $this->getBulkRefundAction(),

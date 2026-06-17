@@ -92,9 +92,11 @@ class ManageOrder extends BaseViewRecord
     }
 
     /**
-     * Lines not covered by any fulfilment (digital, draft, or otherwise
-     * uncovered) — covered physical lines live in their fulfilment card.
-     * Hidden entirely when every line is accounted for by a fulfilment.
+     * Non-shipping lines not yet allocated to a fulfilment (shipping has its
+     * own section; allocated lines live in their fulfilment card). Shown
+     * regardless of type, so non-fulfillable service / custom-purchasable lines
+     * still render. Hidden when every line is either shipping or allocated to a
+     * fulfilment.
      */
     public static function getOtherItemsSection(): Component
     {
@@ -103,8 +105,8 @@ class ManageOrder extends BaseViewRecord
             ->compact()
             ->visible(function ($record) {
                 return $record->lines()
-                    ->whereIn('type', ['physical', 'digital'])
-                    ->uncovered()
+                    ->where('type', '!=', 'shipping')
+                    ->withoutFulfilment()
                     ->exists();
             })
             ->schema([
