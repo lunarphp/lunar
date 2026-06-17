@@ -12,11 +12,11 @@ class HoldReasonManifest extends ReasonManifest implements HoldReasonManifestCon
     protected function defaults(): array
     {
         return [
-            'awaiting-payment' => 'Awaiting payment',
-            'out-of-stock' => 'Inventory out of stock',
-            'incorrect-address' => 'Incorrect address',
-            'high-risk' => 'High risk of fraud',
-            'other' => 'Other',
+            'awaiting-payment' => 'lunar::reasons.hold.awaiting-payment',
+            'out-of-stock' => 'lunar::reasons.hold.out-of-stock',
+            'incorrect-address' => 'lunar::reasons.hold.incorrect-address',
+            'high-risk' => 'lunar::reasons.hold.high-risk',
+            'other' => 'lunar::reasons.hold.other',
         ];
     }
 }

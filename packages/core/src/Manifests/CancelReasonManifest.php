@@ -12,11 +12,11 @@ class CancelReasonManifest extends ReasonManifest implements CancelReasonManifes
     protected function defaults(): array
     {
         return [
-            'customer' => 'Customer changed/cancelled order',
-            'items-unavailable' => 'Items unavailable',
-            'fraud' => 'Fraudulent order',
-            'declined' => 'Payment declined',
-            'other' => 'Other',
+            'customer' => 'lunar::reasons.cancel.customer',
+            'items-unavailable' => 'lunar::reasons.cancel.items-unavailable',
+            'fraud' => 'lunar::reasons.cancel.fraud',
+            'declined' => 'lunar::reasons.cancel.declined',
+            'other' => 'lunar::reasons.cancel.other',
         ];
     }
 }

@@ -7,7 +7,8 @@ use Lunar\Core\Contracts\ReasonManifest as ReasonManifestContract;
 abstract class ReasonManifest implements ReasonManifestContract
 {
     /**
-     * The current key => label reason set.
+     * The current key => label reason set. Core seeds translation keys, which
+     * are resolved through `__()` on read; a consumer may set plain labels.
      *
      * @var array<string, string>
      */
@@ -30,7 +31,7 @@ abstract class ReasonManifest implements ReasonManifestContract
      */
     public function all(): array
     {
-        return $this->reasons;
+        return array_map(fn (string $label): string => (string) __($label), $this->reasons);
     }
 
     public function label(?string $key): ?string
@@ -39,7 +40,7 @@ abstract class ReasonManifest implements ReasonManifestContract
             return null;
         }
 
-        return $this->reasons[$key] ?? $key;
+        return isset($this->reasons[$key]) ? (string) __($this->reasons[$key]) : $key;
     }
 
     /**
