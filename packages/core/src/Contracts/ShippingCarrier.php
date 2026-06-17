@@ -15,10 +15,12 @@ interface ShippingCarrier
     public function getName(): string;
 
     /**
-     * The shipping services this carrier offers, used to populate the
-     * shipping method options when recording tracking.
+     * The shipping services this carrier offers, keyed by a stable service
+     * identifier (the value stored against the tracking) with a translation
+     * key or plain label as the value — used to populate the shipping method
+     * options when recording tracking.
      *
-     * @return array<int, string>
+     * @return array<string, string>
      */
     public function getServices(): array;
 

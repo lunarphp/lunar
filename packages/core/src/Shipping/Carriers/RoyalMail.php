@@ -20,10 +20,10 @@ class RoyalMail extends Carrier
     public function getServices(): array
     {
         return [
-            'Tracked 24',
-            'Tracked 48',
-            'Special Delivery Guaranteed',
-            'International Tracked',
+            'tracked-24' => 'lunar::shipping.services.royal-mail.tracked-24',
+            'tracked-48' => 'lunar::shipping.services.royal-mail.tracked-48',
+            'special-delivery-guaranteed' => 'lunar::shipping.services.royal-mail.special-delivery-guaranteed',
+            'international-tracked' => 'lunar::shipping.services.royal-mail.international-tracked',
         ];
     }
 

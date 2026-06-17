@@ -301,8 +301,8 @@
                                 @elseif ($tracking->tracking_number)
                                     <span>{{ $tracking->tracking_number }}</span>
                                 @endif
-                                @if ($tracking->shipping_method)
-                                    <span>{{ $tracking->shipping_method }}</span>
+                                @if ($tracking->shippingMethodLabel())
+                                    <span>{{ $tracking->shippingMethodLabel() }}</span>
                                 @endif
                                 <div class="-my-1 ml-auto shrink-0">
                                     <x-filament::icon-button

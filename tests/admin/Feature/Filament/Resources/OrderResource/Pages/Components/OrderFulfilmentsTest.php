@@ -59,7 +59,7 @@ it('ships with a registered carrier and derives the tracking url', function () {
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->callAction('ship', data: [
             'tracking' => [
-                ['carrier' => 'royal-mail', 'shipping_method' => 'Tracked 24', 'tracking_number' => 'RM123456789GB'],
+                ['carrier' => 'royal-mail', 'shipping_method' => 'tracked-24', 'tracking_number' => 'RM123456789GB'],
             ],
         ], arguments: ['fulfilment' => $fulfilment->id])
         ->assertHasNoActionErrors();
@@ -67,7 +67,8 @@ it('ships with a registered carrier and derives the tracking url', function () {
     $tracking = $fulfilment->refresh()->trackings->first();
 
     expect($tracking->carrier)->toBe('royal-mail')
-        ->and($tracking->shipping_method)->toBe('Tracked 24')
+        ->and($tracking->shipping_method)->toBe('tracked-24')
+        ->and($tracking->shippingMethodLabel())->toBe('Tracked 24')
         ->and($tracking->url)->toContain('RM123456789GB');
 });
 

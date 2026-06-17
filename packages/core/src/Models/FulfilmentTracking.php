@@ -72,6 +72,22 @@ class FulfilmentTracking extends Base implements Contracts\FulfilmentTracking
     }
 
     /**
+     * The translated label for the selected shipping method, resolved through
+     * the carrier's service catalogue and falling back to the stored value for
+     * a custom (carrier-less) tracking reference.
+     */
+    public function shippingMethodLabel(): ?string
+    {
+        if (! $this->shipping_method) {
+            return null;
+        }
+
+        $services = $this->carrier()?->getServices() ?? [];
+
+        return (string) __($services[$this->shipping_method] ?? $this->shipping_method);
+    }
+
+    /**
      * Remove this tracking reference from its fulfilment — the swappable
      * seam, unlike a bare `delete()`.
      */

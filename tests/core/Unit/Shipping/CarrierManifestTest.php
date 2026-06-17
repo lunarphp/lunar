@@ -32,7 +32,7 @@ function testCarrier(?string $trackingUrl = null, ?string $pattern = null): Ship
 
         public function getServices(): array
         {
-            return ['Next Day', 'Economy'];
+            return ['next-day' => 'Next Day', 'economy' => 'Economy'];
         }
 
         protected function trackingUrlTemplate(): ?string
@@ -52,7 +52,8 @@ it('registers the batteries-included core carriers', function () {
 
     expect($carrier)->toBeInstanceOf(RoyalMail::class)
         ->and($carrier->getName())->toBe('Royal Mail')
-        ->and($carrier->getServices())->toContain('Tracked 24')
+        ->and($carrier->getServices())->toHaveKey('tracked-24')
+        ->and(__($carrier->getServices()['tracked-24']))->toBe('Tracked 24')
         ->and(Carriers::all()->keys()->all())->toContain('dpd', 'ups', 'fedex');
 });
 

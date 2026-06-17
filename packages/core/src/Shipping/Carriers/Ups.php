@@ -20,9 +20,9 @@ class Ups extends Carrier
     public function getServices(): array
     {
         return [
-            'Standard',
-            'Express',
-            'Express Saver',
+            'standard' => 'lunar::shipping.services.ups.standard',
+            'express' => 'lunar::shipping.services.ups.express',
+            'express-saver' => 'lunar::shipping.services.ups.express-saver',
         ];
     }
 

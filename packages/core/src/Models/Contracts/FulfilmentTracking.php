@@ -18,6 +18,11 @@ interface FulfilmentTracking
     public function carrier(): ?ShippingCarrier;
 
     /**
+     * The translated label for the selected shipping method, if any.
+     */
+    public function shippingMethodLabel(): ?string;
+
+    /**
      * Remove this tracking reference from its fulfilment.
      */
     public function remove(): void;

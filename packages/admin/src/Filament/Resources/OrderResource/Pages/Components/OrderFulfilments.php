@@ -247,7 +247,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                 Select::make('shipping_method')
                     ->label(__('lunarpanel::order.fulfilments.fields.shipping_method'))
                     ->options(fn (Get $get) => collect(Carriers::get($get('carrier'))?->getServices() ?? [])
-                        ->mapWithKeys(fn (string $service) => [$service => $service])
+                        ->map(fn (string $label) => __($label))
                         ->all())
                     ->native(false)
                     ->visible(fn (Get $get) => filled($get('carrier'))),

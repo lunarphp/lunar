@@ -20,9 +20,9 @@ class Dpd extends Carrier
     public function getServices(): array
     {
         return [
-            'Next Day',
-            'Two Day',
-            'Classic (Europe)',
+            'next-day' => 'lunar::shipping.services.dpd.next-day',
+            'two-day' => 'lunar::shipping.services.dpd.two-day',
+            'classic-europe' => 'lunar::shipping.services.dpd.classic-europe',
         ];
     }
 

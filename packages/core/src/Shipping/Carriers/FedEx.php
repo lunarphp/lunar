@@ -20,8 +20,8 @@ class FedEx extends Carrier
     public function getServices(): array
     {
         return [
-            'Priority',
-            'Economy',
+            'priority' => 'lunar::shipping.services.fedex.priority',
+            'economy' => 'lunar::shipping.services.fedex.economy',
         ];
     }
 
