@@ -703,7 +703,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->title(__('lunarpanel::order.fulfilments.actions.'.$key.'.notification.success'))
             ->send();
 
-        unset($this->fulfilments, $this->mergeableCount);
+        unset($this->fulfilments);
         $this->dispatch('fulfilments-updated');
 
         return true;
