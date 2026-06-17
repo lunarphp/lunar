@@ -39,3 +39,12 @@ it('adds or relabels a single reason while retaining the defaults', function () 
     expect(HoldReasons::label('weather'))->toBe('Severe weather delay')
         ->and(HoldReasons::all())->toHaveKey('out-of-stock');
 });
+
+it('forgets reasons by key', function () {
+    HoldReasons::forget('out-of-stock', 'high-risk');
+
+    expect(HoldReasons::all())
+        ->not->toHaveKey('out-of-stock')
+        ->not->toHaveKey('high-risk')
+        ->toHaveKey('awaiting-payment');
+});

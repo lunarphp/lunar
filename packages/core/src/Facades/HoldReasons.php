@@ -10,6 +10,7 @@ use Lunar\Core\Contracts\HoldReasonManifest;
  * @method static string|null label(?string $key)
  * @method static HoldReasonManifest set(array<string, string> $reasons)
  * @method static HoldReasonManifest add(string $key, string $label)
+ * @method static HoldReasonManifest forget(string ...$keys)
  *
  * @see HoldReasonManifest
  */

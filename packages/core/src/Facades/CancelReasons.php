@@ -10,6 +10,7 @@ use Lunar\Core\Contracts\CancelReasonManifest;
  * @method static string|null label(?string $key)
  * @method static CancelReasonManifest set(array<string, string> $reasons)
  * @method static CancelReasonManifest add(string $key, string $label)
+ * @method static CancelReasonManifest forget(string ...$keys)
  *
  * @see CancelReasonManifest
  */

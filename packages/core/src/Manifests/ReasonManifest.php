@@ -58,4 +58,13 @@ abstract class ReasonManifest implements ReasonManifestContract
 
         return $this;
     }
+
+    public function forget(string ...$keys): static
+    {
+        foreach ($keys as $key) {
+            unset($this->reasons[$key]);
+        }
+
+        return $this;
+    }
 }

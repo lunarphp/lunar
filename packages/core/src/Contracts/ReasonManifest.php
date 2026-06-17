@@ -35,4 +35,9 @@ interface ReasonManifest
      * Add or relabel a single reason.
      */
     public function add(string $key, string $label): static;
+
+    /**
+     * Remove one or more reasons by key — e.g. a default you don't offer.
+     */
+    public function forget(string ...$keys): static;
 }
