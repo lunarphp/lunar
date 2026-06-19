@@ -37,7 +37,7 @@ A publishable markdown mail layout (`resources/views/mail/…`) all the defaults
 
 ### Wiring the defaults
 
-- Register the lifecycle defaults (`paid` => `PaymentReceived`, `fulfilled`/`shipped` => `OrderShipped`, `cancelled` => `OrderCancelled`) so the existing listeners and notify toggles send something. These land in the `LifecycleNotifications` manifest's `defaults()` ([[0037-lifecycle-notification-manifest]]) — not a config stub — assuming that seam migration lands first. Respect the existing `notify` flags — a quiet ship / cancel still suppresses the send.
+- Register the lifecycle defaults so the existing listeners and notify toggles send something — the Order-payload sends (`paid` => `PaymentReceived`, `fulfilled` => `OrderFulfilled`, `cancelled` => `OrderCancelled`) in the `OrderStatusNotifications` manifest's `defaults()`, and the Fulfilment-payload `shipped` => `OrderShipped` in the `FulfilmentNotifications` manifest's `defaults()` ([[0037-notification-manifests]]) — not config stubs — assuming that seam split lands first. Respect the existing `notify` flags — a quiet ship / cancel still suppresses the send.
 - Register the relevant variants in the `CustomerNotifications` catalogue ([[0035-notify-customer-action]]) so an admin can also send them on demand.
 - Order confirmation fires on order placed (new listener or the existing placement path).
 
@@ -71,4 +71,4 @@ Every default stays swappable: re-bind the notification, re-register the catalog
 - [[0034-fulfilment-notifications]] — per-parcel shipped notification wiring + the method-aware seam `OrderShipped` plugs into.
 - [[0025-order-cancellation]] — the cancellation notify toggle `OrderCancelled` fills in.
 - [[0033-reduce-config-surface]] — the manifest pattern the catalogue mirrors.
-- [[0037-lifecycle-notification-manifest]] — moves the automatic notifications onto a manifest; this spec's defaults register there.
+- [[0037-notification-manifests]] — moves the automatic notifications onto payload-split manifests; this spec's defaults register there.
