@@ -56,19 +56,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Order Notifications
-    |--------------------------------------------------------------------------
-    |
-    | Customer notifications no longer live in config. Register them on the
-    | OrderNotifications manifest from a service provider — each entry declares
-    | the states that auto-fire it ($on), whether it is manually sendable, and
-    | its scope (Order or Fulfilment, which decides the payload). See the
-    | Lunar\Core\Facades\OrderNotifications facade.
-    |
-    */
-
-    /*
-    |--------------------------------------------------------------------------
     | Order Pipelines
     |--------------------------------------------------------------------------
     |
