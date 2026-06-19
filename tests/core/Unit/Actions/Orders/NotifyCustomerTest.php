@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Lunar\Core\Contracts\Notifications\AcceptsCustomerMessage;
 use Lunar\Core\Events\Orders\OrderCustomerNotified;
 use Lunar\Core\Exceptions\OrderActionException;
-use Lunar\Core\Facades\CustomerNotifications;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -36,7 +36,7 @@ beforeEach(function () {
     Currency::factory()->create(['default' => true]);
     Location::factory()->default()->create();
 
-    CustomerNotifications::register('order-update', FakeOrderUpdateNotification::class, 'Order update');
+    OrderNotifications::register('order-update', FakeOrderUpdateNotification::class, 'Order update');
 
     $this->order = Order::factory()->create();
     $this->order->addresses()->create(OrderAddress::factory()->raw([
@@ -50,7 +50,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    CustomerNotifications::forget('order-update');
+    OrderNotifications::forget('order-update');
 });
 
 test('sends the chosen notification to the order contacts and logs each send', function () {

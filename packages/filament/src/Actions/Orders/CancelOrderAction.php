@@ -7,7 +7,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Lunar\Core\Actions\Orders\CancelOrder;
+use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Facades\CancelReasons;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Order;
 
 /**
@@ -45,7 +47,7 @@ class CancelOrderAction extends Action
                     // Only meaningful when a cancellation notification is wired
                     // up; its presence is the cue the action will email the
                     // customer.
-                    ->visible(fn (): bool => filled(config('lunar.orders.notifications.cancelled'))),
+                    ->visible(fn (): bool => OrderNotifications::triggeredBy('cancelled', NotificationScope::Order) !== []),
             ])
             ->action(fn (Order $record, array $data) => $record->cancel(
                 $data['reason'] ?? null,

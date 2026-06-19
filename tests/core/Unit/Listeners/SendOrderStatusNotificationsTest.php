@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -49,12 +50,8 @@ class FakeCancelledNotification extends Notification
     }
 }
 
-test('notifications configured for a payment status are dispatched when the order reaches it', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'paid' => [FakePaidNotification::class],
-        ],
-    ]);
+test('notifications registered for a payment status are dispatched when the order reaches it', function () {
+    OrderNotifications::register('paid', FakePaidNotification::class, on: ['paid']);
 
     NotificationFacade::fake();
 
@@ -68,9 +65,7 @@ test('notifications configured for a payment status are dispatched when the orde
     NotificationFacade::assertSentTo($order->fresh(), FakePaidNotification::class);
 });
 
-test('no notifications are dispatched when none are configured', function () {
-    config(['lunar.orders.notifications' => []]);
-
+test('no notifications are dispatched when none are registered for the status', function () {
     NotificationFacade::fake();
 
     $order = Order::factory()->create();
@@ -83,12 +78,8 @@ test('no notifications are dispatched when none are configured', function () {
     NotificationFacade::assertNothingSent();
 });
 
-test('notifications configured for a fulfilment status are dispatched when the order reaches it', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'fulfilled' => [FakeFulfilledNotification::class],
-        ],
-    ]);
+test('notifications registered for a fulfilment status are dispatched when the order reaches it', function () {
+    OrderNotifications::register('fulfilled', FakeFulfilledNotification::class, on: ['fulfilled']);
 
     NotificationFacade::fake();
 
@@ -105,11 +96,7 @@ test('notifications configured for a fulfilment status are dispatched when the o
 });
 
 test('a cancelled notification is dispatched when the order is cancelled with notify', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'cancelled' => [FakeCancelledNotification::class],
-        ],
-    ]);
+    OrderNotifications::register('cancelled', FakeCancelledNotification::class, on: ['cancelled']);
 
     NotificationFacade::fake();
 
@@ -126,11 +113,7 @@ test('a cancelled notification is dispatched when the order is cancelled with no
 });
 
 test('a cancelled notification is suppressed when the order is cancelled without notify', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'cancelled' => [FakeCancelledNotification::class],
-        ],
-    ]);
+    OrderNotifications::register('cancelled', FakeCancelledNotification::class, on: ['cancelled']);
 
     NotificationFacade::fake();
 

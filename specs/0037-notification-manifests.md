@@ -1,9 +1,11 @@
 # 0037 — Move automatic notifications onto manifests (split by payload)
 
-- Status: draft
+- Status: superseded by [[0035-notify-customer-action]]
 - Author: Glenn Jacobs
 - Created: 2026-06-19
 - TODO item: Reduce config surface follow-up — the order/fulfilment notification registry is the last class-list still living in config
+
+> **Superseded.** This spec proposed two payload-split manifests for the *automatic* notifications, kept separate from 0035's *manual* catalogue. That separation was then dropped entirely: an automatic notification (e.g. order confirmation) must be manually resendable, so the manual and automatic sets overlap and belong in **one** registry. The outcome — a single `OrderNotifications` manifest whose entries carry `on` (auto-trigger), `manual`, and `scope` (Order / Fulfilment) — is implemented under [[0035-notify-customer-action]], which also retires `lunar.orders.notifications`. The payload distinction this spec was built around survives as the `NotificationScope` enum on each entry, not as a separate manifest. Retained for the design trail.
 
 ## Problem
 

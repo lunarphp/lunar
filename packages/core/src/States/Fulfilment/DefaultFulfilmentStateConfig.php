@@ -4,6 +4,8 @@ namespace Lunar\Core\States\Fulfilment;
 
 use Lunar\Core\Contracts\FulfilmentMethodManifest;
 use Lunar\Core\Contracts\FulfilmentStateConfig;
+use Lunar\Core\Contracts\OrderNotificationManifest;
+use Lunar\Core\Enums\NotificationScope;
 
 /**
  * Derives the per-fulfilment state catalogue from the registered fulfilment
@@ -20,6 +22,7 @@ class DefaultFulfilmentStateConfig implements FulfilmentStateConfig
 {
     public function __construct(
         protected FulfilmentMethodManifest $methods,
+        protected OrderNotificationManifest $notifications,
     ) {}
 
     public function fulfilmentStates(): array
@@ -41,9 +44,8 @@ class DefaultFulfilmentStateConfig implements FulfilmentStateConfig
 
     public function notificationsFor(FulfilmentState $state): array
     {
-        /** @var array<class-string> $notifications */
-        $notifications = (array) config('lunar.orders.notifications.'.$state::$name, []);
-
-        return $notifications;
+        // Fulfilment-scoped sends, looked up by the state name; constructed with
+        // the Fulfilment by SendFulfilmentStatusNotifications.
+        return $this->notifications->triggeredBy($state::$name, NotificationScope::Fulfilment);
     }
 }

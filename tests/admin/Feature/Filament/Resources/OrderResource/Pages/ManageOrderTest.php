@@ -8,7 +8,7 @@ use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Livewire\Components\ActivityLogFeed as ActivityLogFeedComponent;
 use Lunar\Core\DataObjects\PriceValue;
-use Lunar\Core\Facades\CustomerNotifications;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
@@ -203,7 +203,7 @@ it('renders the order page when an address has no country', function () {
 });
 
 it('hides the notify customer action while no notifications are registered', function () {
-    CustomerNotifications::forget('order-update');
+    OrderNotifications::forget('order-update');
 
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
@@ -212,7 +212,7 @@ it('hides the notify customer action while no notifications are registered', fun
 
 it('can notify the customer with a chosen notification', function () {
     activity()->enableLogging();
-    CustomerNotifications::register('order-update', FakeAdminOrderUpdateNotification::class, 'Order update');
+    OrderNotifications::register('order-update', FakeAdminOrderUpdateNotification::class, 'Order update');
     NotificationFacade::fake();
 
     $this->order->billingAddress->update(['contact_email' => 'buyer@example.com']);
@@ -229,5 +229,5 @@ it('can notify the customer with a chosen notification', function () {
 
     NotificationFacade::assertSentOnDemand(FakeAdminOrderUpdateNotification::class);
 
-    CustomerNotifications::forget('order-update');
+    OrderNotifications::forget('order-update');
 });

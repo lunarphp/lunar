@@ -12,7 +12,7 @@ interface NotifiesCustomer
      * to each recipient, log an `email-notification` activity per recipient, and
      * dispatch OrderCustomerNotified.
      *
-     * @param  string  $notification  A key from the CustomerNotifications catalogue.
+     * @param  string  $notification  A key from the OrderNotifications catalogue.
      * @param  string|null  $message  Optional free text included in the email.
      * @param  array<int, string>  $recipients  Explicit recipient emails; defaults to
      *                                          the order's billing + shipping contacts.

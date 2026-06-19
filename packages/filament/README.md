@@ -310,7 +310,7 @@ First-class Filament `Action` / `BulkAction` classes for every commerce verb the
 | `Orders\CaptureOrderAction` | `Core\Actions\Orders\CaptureOrder` | Order header / detail page |
 | `Orders\CloseOrderAction` | `Core\Actions\Orders\CloseOrder` | Order header (archive a dealt-with order) |
 | `Orders\ReopenOrderAction` | `Core\Actions\Orders\ReopenOrder` | Order header (un-archive a closed order) |
-| `Orders\NotifyCustomerAction` | `Core\Actions\Orders\NotifyCustomer` | Order header (compose + send a customer notification from the `CustomerNotifications` catalogue; hidden only if that catalogue is emptied) |
+| `Orders\NotifyCustomerAction` | `Core\Actions\Orders\NotifyCustomer` | Order header (compose + send a customer notification from the order-scoped, sendable entries of the `OrderNotifications` catalogue; hidden when none are sendable) |
 | `Orders\AddOrderNoteAction` | — (Filament-only single-field write) | Order header |
 | `Orders\DownloadOrderPdfAction` | — (Filament-only, subclass of `Support\DownloadPdfAction`) | Order header |
 | `Products\DuplicateProductAction` | `Core\Actions\Products\DuplicateProduct` | Product row / header |

@@ -12,7 +12,7 @@ class OrderCustomerNotified
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * @param  string  $notification  The CustomerNotifications key that was sent.
+     * @param  string  $notification  The OrderNotifications key that was sent.
      * @param  array<int, string>  $recipients  The email addresses it was sent to.
      */
     public function __construct(

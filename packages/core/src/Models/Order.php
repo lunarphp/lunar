@@ -361,7 +361,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
      * Compose and send a chosen customer notification on demand, logging it on
      * the order timeline.
      *
-     * @param  string  $notification  A key from the CustomerNotifications catalogue.
+     * @param  string  $notification  A key from the OrderNotifications catalogue.
      * @param  array<int, string>  $recipients  Defaults to the order's billing + shipping contacts.
      */
     public function notifyCustomer(string $notification, ?string $message = null, array $recipients = []): Order

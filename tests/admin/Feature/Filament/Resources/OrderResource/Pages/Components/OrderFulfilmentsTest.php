@@ -4,6 +4,8 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderFulfilments;
+use Lunar\Core\Enums\NotificationScope;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
@@ -358,21 +360,20 @@ it('routes the terminal status to fulfil for collection and ship for shipping', 
 it('shows the notify toggle on the ship modal only when a shipped notification is configured', function () {
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
 
-    // Nothing configured for the shipped state — progressive disclosure hides it.
-    config(['lunar.orders.notifications' => []]);
+    // Nothing registered for the shipped state — progressive disclosure hides it.
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->mountAction('ship', arguments: ['fulfilment' => $fulfilment->id])
         ->assertSchemaComponentDoesNotExist('notify');
 
     // Configure one and the toggle appears.
-    config(['lunar.orders.notifications' => ['shipped' => [AdminShipNotification::class]]]);
+    OrderNotifications::register('shipped', AdminShipNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
     Livewire::test(OrderFulfilments::class, ['record' => $this->order])
         ->mountAction('ship', arguments: ['fulfilment' => $fulfilment->id])
         ->assertSchemaComponentExists('notify');
 });
 
 it('sends the per-parcel notification when shipping with the notify toggle on', function () {
-    config(['lunar.orders.notifications' => ['shipped' => [AdminShipNotification::class]]]);
+    OrderNotifications::register('shipped', AdminShipNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
     NotificationFacade::fake();
 
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
@@ -388,7 +389,7 @@ it('sends the per-parcel notification when shipping with the notify toggle on', 
 });
 
 it('suppresses the per-parcel notification when the ship notify toggle is unticked', function () {
-    config(['lunar.orders.notifications' => ['shipped' => [AdminShipNotification::class]]]);
+    OrderNotifications::register('shipped', AdminShipNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
     NotificationFacade::fake();
 
     $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);

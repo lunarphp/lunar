@@ -2,24 +2,29 @@
 
 namespace Lunar\Core\Listeners;
 
+use Lunar\Core\Contracts\OrderNotificationManifest;
+use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
 
 /**
- * Dispatch any notifications configured for the order's new derived fulfilment
- * status, when the operation that changed it asked for the customer to be
- * notified. Keyed by the state `$name` under `lunar.orders.notifications`.
+ * Dispatch any notifications registered to fire when the order enters its new
+ * derived fulfilment status, when the operation that changed it asked for the
+ * customer to be notified. Looked up by the state `$name` in the order-scoped
+ * {@see OrderNotificationManifest}.
  */
 class SendOrderFulfilmentStatusNotifications
 {
+    public function __construct(
+        protected OrderNotificationManifest $notifications,
+    ) {}
+
     public function handle(OrderFulfilmentStatusUpdated $event): void
     {
         if (! $event->notify) {
             return;
         }
 
-        $notifications = (array) config('lunar.orders.notifications.'.$event->newStatus::$name, []);
-
-        foreach ($notifications as $class) {
+        foreach ($this->notifications->triggeredBy($event->newStatus::$name, NotificationScope::Order) as $class) {
             $event->order->notify(new $class($event->order));
         }
     }

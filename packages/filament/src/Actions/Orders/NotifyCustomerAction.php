@@ -7,17 +7,18 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Lunar\Core\Facades\CustomerNotifications;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Order;
 
 /**
  * Compose and send a customer notification on demand: pick a variant from the
- * CustomerNotifications catalogue, optionally attach a one-off message, and
- * choose recipients (the order contacts plus an ad-hoc address). Delegates the
- * send and the timeline log to the core NotifyCustomer action.
+ * order-scoped, manually-sendable entries in the OrderNotifications catalogue,
+ * optionally attach a one-off message, and choose recipients (the order
+ * contacts plus an ad-hoc address). Delegates the send and the timeline log to
+ * the core NotifyCustomer action. The same catalogue feeds the automatic sends,
+ * so a notification that fires on a lifecycle event can also be resent here.
  *
- * Hidden while the catalogue is empty — there is nothing to send until the
- * default lifecycle notifications are registered.
+ * Hidden while no order-scoped notification is manually sendable.
  */
 class NotifyCustomerAction extends Action
 {
@@ -37,7 +38,7 @@ class NotifyCustomerAction extends Action
             ->schema([
                 Select::make('notification')
                     ->label(__('lunar-filament::actions.orders.notify_customer.variant'))
-                    ->options(CustomerNotifications::all())
+                    ->options(OrderNotifications::sendable())
                     ->required()
                     ->native(false),
                 Textarea::make('message')
@@ -63,7 +64,7 @@ class NotifyCustomerAction extends Action
                     $recipients,
                 );
             })
-            ->visible(fn (?Order $record = null): bool => $record !== null && ! CustomerNotifications::isEmpty())
+            ->visible(fn (?Order $record = null): bool => $record !== null && OrderNotifications::sendable() !== [])
             ->successNotificationTitle(__('lunar-filament::actions.orders.notify_customer.notification.success'));
     }
 

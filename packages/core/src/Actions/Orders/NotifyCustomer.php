@@ -5,7 +5,7 @@ namespace Lunar\Core\Actions\Orders;
 use Illuminate\Contracts\Notifications\Dispatcher;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Lunar\Core\Contracts\Actions\Orders\NotifiesCustomer;
-use Lunar\Core\Contracts\CustomerNotificationManifest;
+use Lunar\Core\Contracts\OrderNotificationManifest;
 use Lunar\Core\Events\Orders\OrderCustomerNotified;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
@@ -13,18 +13,20 @@ use Lunar\Core\Models\Order;
 
 /**
  * Compose and send a chosen customer notification on demand — the interactive
- * counterpart to the automatic, event-driven lifecycle notifications. Resolves
- * the variant from the CustomerNotifications catalogue, delivers it to each
- * recipient, records an `email-notification` activity per recipient, and
- * dispatches OrderCustomerNotified.
+ * counterpart to the automatic, event-driven sends. Resolves the variant from
+ * the OrderNotifications catalogue, delivers it to each recipient, records an
+ * `email-notification` activity per recipient, and dispatches
+ * OrderCustomerNotified.
  *
- * The send + audit log live here (not the admin layer) so an API caller leaves
- * the same trail as the admin screen.
+ * Order-scoped: the notification is constructed with the Order, so this handles
+ * the order-level variants (a fulfilment-scoped resend belongs on the parcel,
+ * which carries the tracking context). The send + audit log live here (not the
+ * admin layer) so an API caller leaves the same trail as the admin screen.
  */
 class NotifyCustomer implements NotifiesCustomer
 {
     public function __construct(
-        protected CustomerNotificationManifest $catalogue,
+        protected OrderNotificationManifest $catalogue,
         protected Dispatcher $dispatcher,
     ) {}
 

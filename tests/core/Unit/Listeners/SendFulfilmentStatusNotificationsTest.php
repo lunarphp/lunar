@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
+use Lunar\Core\Enums\NotificationScope;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
@@ -73,11 +75,7 @@ function shippableOrder(): Order
 }
 
 test('a per-parcel notification configured for the shipped state is dispatched, carrying the fulfilment', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'shipped' => [FakeShippedNotification::class],
-        ],
-    ]);
+    OrderNotifications::register('shipped', FakeShippedNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
 
     NotificationFacade::fake();
 
@@ -92,11 +90,7 @@ test('a per-parcel notification configured for the shipped state is dispatched, 
 });
 
 test('the per-parcel notification is suppressed when the ship asks not to notify', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'shipped' => [FakeShippedNotification::class],
-        ],
-    ]);
+    OrderNotifications::register('shipped', FakeShippedNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
 
     NotificationFacade::fake();
 
@@ -107,12 +101,8 @@ test('the per-parcel notification is suppressed when the ship asks not to notify
 });
 
 test('suppressing notify on the final ship suppresses both the per-parcel and the order rollup email', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'shipped' => [FakeShippedNotification::class],
-            'fulfilled' => [FakeOrderFulfilledNotification::class],
-        ],
-    ]);
+    OrderNotifications::register('shipped', FakeShippedNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
+    OrderNotifications::register('fulfilled', FakeOrderFulfilledNotification::class, on: ['fulfilled']);
 
     NotificationFacade::fake();
 
@@ -124,12 +114,8 @@ test('suppressing notify on the final ship suppresses both the per-parcel and th
 });
 
 test('both the per-parcel and the order rollup email fire when notify is left on', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'shipped' => [FakeShippedNotification::class],
-            'fulfilled' => [FakeOrderFulfilledNotification::class],
-        ],
-    ]);
+    OrderNotifications::register('shipped', FakeShippedNotification::class, on: ['shipped'], scope: NotificationScope::Fulfilment);
+    OrderNotifications::register('fulfilled', FakeOrderFulfilledNotification::class, on: ['fulfilled']);
 
     NotificationFacade::fake();
 
@@ -141,11 +127,7 @@ test('both the per-parcel and the order rollup email fire when notify is left on
 });
 
 test('a per-parcel notification configured for the returned state fires on markReturned, carrying the fulfilment', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'returned' => [FakeReturnedNotification::class],
-        ],
-    ]);
+    OrderNotifications::register('returned', FakeReturnedNotification::class, on: ['returned'], scope: NotificationScope::Fulfilment);
 
     NotificationFacade::fake();
 
@@ -168,11 +150,7 @@ test('a per-parcel notification configured for the returned state fires on markR
 });
 
 test('markReturned suppresses the returned notification when asked not to notify', function () {
-    config([
-        'lunar.orders.notifications' => [
-            'returned' => [FakeReturnedNotification::class],
-        ],
-    ]);
+    OrderNotifications::register('returned', FakeReturnedNotification::class, on: ['returned'], scope: NotificationScope::Fulfilment);
 
     NotificationFacade::fake();
 
@@ -183,14 +161,10 @@ test('markReturned suppresses the returned notification when asked not to notify
 });
 
 test('cancelling an order does not fire the per-parcel cancelled notification when voiding its parcels', function () {
-    config([
-        'lunar.orders.notifications' => [
-            // Shares its $name with the per-parcel Cancelled state — the void
-            // path must not route it through the per-parcel listener (which
-            // would construct it with a Fulfilment and double-send).
-            'cancelled' => [FakeParcelCancelledNotification::class],
-        ],
-    ]);
+    // Shares its name with the per-parcel Cancelled state, but registered
+    // order-scoped: the scope guard keeps the void path from routing it
+    // through the per-parcel listener (which would double-send).
+    OrderNotifications::register('cancelled', FakeParcelCancelledNotification::class, on: ['cancelled'], scope: NotificationScope::Order);
 
     NotificationFacade::fake();
 

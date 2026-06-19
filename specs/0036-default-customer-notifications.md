@@ -11,7 +11,7 @@ The system already *expects* lifecycle notifications but core ships almost none:
 
 - `lunar.orders.notifications` keys off `paid` / `fulfilled` / `cancelled`, and the per-parcel fulfilment config keys off `shipped`, but every entry is an empty/commented example. Out of the box a customer is never emailed and a developer must hand-roll each `Notification` class plus its mail template.
 - [[0025-order-cancellation]] dispatches `OrderCancelled` with a "notify" toggle, [[0034-fulfilment-notifications]] wires + gates the per-parcel `shipped` send, and [[0035-notify-customer-action]] adds the interactive "Notify customer" action — all three are plumbing waiting on notification *content*.
-- [[0035-notify-customer-action]] ships exactly one stop-gap default in the `CustomerNotifications` catalogue: a general-purpose `OrderUpdate` (built on `MailMessage`, renders the admin's free-text message) so the interactive action is usable. There is still no order-confirmation, payment-received, shipped-with-tracking, cancelled, or refunded email.
+- [[0035-notify-customer-action]] ships exactly one stop-gap default in the `OrderNotifications` catalogue: a general-purpose `OrderUpdate` (built on `MailMessage`, renders the admin's free-text message) so the interactive action is usable. There is still no order-confirmation, payment-received, shipped-with-tracking, cancelled, or refunded email.
 
 The result: the toggles and actions exist, but flipping them sends nothing professional, and there is no shared, branded mail layout to build on.
 
@@ -37,8 +37,8 @@ A publishable markdown mail layout (`resources/views/mail/…`) all the defaults
 
 ### Wiring the defaults
 
-- Register the lifecycle defaults so the existing listeners and notify toggles send something — the Order-payload sends (`paid` => `PaymentReceived`, `fulfilled` => `OrderFulfilled`, `cancelled` => `OrderCancelled`) in the `OrderStatusNotifications` manifest's `defaults()`, and the Fulfilment-payload `shipped` => `OrderShipped` in the `FulfilmentNotifications` manifest's `defaults()` ([[0037-notification-manifests]]) — not config stubs — assuming that seam split lands first. Respect the existing `notify` flags — a quiet ship / cancel still suppresses the send.
-- Register the relevant variants in the `CustomerNotifications` catalogue ([[0035-notify-customer-action]]) so an admin can also send them on demand.
+- Register the lifecycle defaults in the single `OrderNotifications` manifest's `defaults()` ([[0035-notify-customer-action]]) so the existing listeners and notify toggles send something — each entry carrying its auto-trigger states and scope: `order-confirmation` (`on: ['placed']`, Order), `payment-received` (`on: ['paid']`, Order), `order-cancelled` (`on: ['cancelled']`, Order), and `order-shipped` (`on: ['shipped']`, Fulfilment — carries tracking). All ship `manual: true`, so each is also resendable from the admin. Respect the existing `notify` flags — a quiet ship / cancel still suppresses the send.
+- Register the relevant variants in the `OrderNotifications` catalogue ([[0035-notify-customer-action]]) so an admin can also send them on demand.
 - Order confirmation fires on order placed (new listener or the existing placement path).
 
 ### Overridability
@@ -48,14 +48,14 @@ Every default stays swappable: re-bind the notification, re-register the catalog
 ## Alternatives considered
 
 - **Leave it to consumers (status quo).** Rejected: the toggles/actions look functional but do nothing; "works out of the box" is a project principle (sensible defaults over subclassing).
-- **One mega-notification keyed by event.** Rejected: a class per event is clearer to override, test, and translate, and matches how the config/registry already key by event.
+- **One mega-notification keyed by event.** Rejected: a class per event is clearer to override, test, and translate, and matches how the `OrderNotifications` registry already keys entries.
 - **Build only the interactive `OrderUpdate` (done in 0035) and stop.** Rejected: that covers ad-hoc sends but leaves every automatic lifecycle email empty.
 
 ## Migration impact
 
 - **No database migration.**
-- **Additive public surface:** new `Notifications\…` classes, a shared mail layout, default config entries, default `CustomerNotifications` registrations. Re-binding / re-registering / publishing are the override seams.
-- **Behavioural shift:** apps that left `lunar.orders.notifications` at the defaults will *start* sending customer emails once defaults are populated. Call this out prominently; gate behind a clear opt-out and document it in the upgrade notes.
+- **Additive public surface:** new `Notifications\…` classes, a shared mail layout, default config entries, default `OrderNotifications` registrations. Re-binding / re-registering / publishing are the override seams.
+- **Behavioural shift:** apps on the default `OrderNotifications` registry will *start* sending customer emails once these defaults are registered. Call this out prominently; gate behind a clear opt-out and document it in the upgrade notes.
 - **Translations (16 locales):** subject / greeting / body lines per notification under `lunar::notifications.*`, English first then mirrored.
 - **Filament / admin impact:** the catalogue gains the new variants in the "Notify customer" modal; the automatic notify toggles ([[0025-order-cancellation]], [[0034-fulfilment-notifications]]) become meaningful. Verify at `https://lunar-v2.test`.
 
@@ -67,8 +67,8 @@ Every default stays swappable: re-bind the notification, re-register the catalog
 
 ## References
 
-- [[0035-notify-customer-action]] — interactive send + the `CustomerNotifications` catalogue + the stop-gap `OrderUpdate` default this set extends.
+- [[0035-notify-customer-action]] — interactive send + the `OrderNotifications` catalogue + the stop-gap `OrderUpdate` default this set extends.
 - [[0034-fulfilment-notifications]] — per-parcel shipped notification wiring + the method-aware seam `OrderShipped` plugs into.
 - [[0025-order-cancellation]] — the cancellation notify toggle `OrderCancelled` fills in.
 - [[0033-reduce-config-surface]] — the manifest pattern the catalogue mirrors.
-- [[0037-notification-manifests]] — moves the automatic notifications onto payload-split manifests; this spec's defaults register there.
+- [[0037-notification-manifests]] — superseded; the registry it described is the single `OrderNotifications` manifest this spec's defaults register into.

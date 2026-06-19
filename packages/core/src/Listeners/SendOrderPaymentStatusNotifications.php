@@ -2,19 +2,24 @@
 
 namespace Lunar\Core\Listeners;
 
+use Lunar\Core\Contracts\OrderNotificationManifest;
+use Lunar\Core\Enums\NotificationScope;
 use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
 
 /**
- * Dispatch any notifications configured for the order's new derived payment
- * status. Keyed by the state `$name` under `lunar.orders.notifications`.
+ * Dispatch any notifications registered to fire when the order enters its new
+ * derived payment status, looked up by the state `$name` in the order-scoped
+ * {@see OrderNotificationManifest}.
  */
 class SendOrderPaymentStatusNotifications
 {
+    public function __construct(
+        protected OrderNotificationManifest $notifications,
+    ) {}
+
     public function handle(OrderPaymentStatusUpdated $event): void
     {
-        $notifications = (array) config('lunar.orders.notifications.'.$event->newStatus::$name, []);
-
-        foreach ($notifications as $class) {
+        foreach ($this->notifications->triggeredBy($event->newStatus::$name, NotificationScope::Order) as $class) {
             $event->order->notify(new $class($event->order));
         }
     }
