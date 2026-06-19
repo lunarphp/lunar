@@ -1,6 +1,6 @@
 # 0033 — Multi-tenant homes for this branch's new config
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-15
 - TODO item: "Multi-tenancy: relocate the config this branch adds (fulfilment, carriers, order lifecycle) off global config" (surfaced reviewing the fulfilment-methods config seam, [[0031-fulfilment-methods]])

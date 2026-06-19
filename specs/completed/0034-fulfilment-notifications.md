@@ -1,6 +1,6 @@
 # 0034 — Wire and gate fulfilment notifications
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-17
 - TODO item: Order fulfilments follow-up — connect the per-parcel notification path and gate automatic sends
