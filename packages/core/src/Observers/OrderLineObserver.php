@@ -32,7 +32,7 @@ class OrderLineObserver
         $this->assertPurchasable($orderLine);
 
         // The line's quantity may not drop below what fulfilments already
-        // cover (the §A invariant, protected from the order-line side).
+        // cover (the section A invariant, protected from the order-line side).
         if ($orderLine->isDirty('quantity')) {
             $this->orderLineQuantity->validate($orderLine, (int) $orderLine->quantity);
         }

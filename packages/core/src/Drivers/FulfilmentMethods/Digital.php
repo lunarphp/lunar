@@ -12,7 +12,7 @@ use Lunar\Core\States\Fulfilment\Provisioned;
 /**
  * Manual digital provisioning — a licence key, an access grant, a voucher. The
  * good is not shippable (`requires_shipping = false`) but does need a human to
- * provision it (`requires_fulfilment = true`), so it gets a parcel that runs
+ * provision it (`requires_fulfilment = true`), so it gets a fulfilment that runs
  * `Pending → Provisioned`. No return, no tracking.
  */
 class Digital implements FulfilmentMethod
@@ -48,7 +48,7 @@ class Digital implements FulfilmentMethod
     {
         return [
             Pending::class => [Provisioned::class, Cancelled::class],
-            // A provisioned parcel can be reverted to `Pending` (un-provision).
+            // A provisioned fulfilment can be reverted to `Pending` (un-provision).
             Provisioned::class => [Pending::class],
             Cancelled::class => [],
         ];

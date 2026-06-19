@@ -10,7 +10,7 @@ use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentTracking;
 
 /**
- * Add a tracking reference to a fulfilment. A parcel can carry several, added
+ * Add a tracking reference to a fulfilment. A fulfilment can carry several, added
  * at ship time or afterwards as carrier details come through.
  */
 class AddFulfilmentTracking implements AddsFulfilmentTracking

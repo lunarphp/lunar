@@ -77,6 +77,11 @@ class FulfilmentObserver
     public function updated(FulfilmentContract $fulfilment): void
     {
         /** @var Fulfilment $fulfilment */
+        // The verb that drove this state change stamped its "notify the
+        // customer" intent on the instance; carry it onto the (queue-safe)
+        // event and into the order-status recompute.
+        $notify = $fulfilment->notifyOnStatusChange;
+
         if ($fulfilment->wasChanged('state')) {
             $previous = $fulfilment->getOriginal('state');
 
@@ -84,10 +89,11 @@ class FulfilmentObserver
                 $fulfilment,
                 $previous instanceof FulfilmentState ? $previous : null,
                 $fulfilment->state,
+                $notify,
             );
         }
 
-        $this->recompute($fulfilment);
+        $this->recompute($fulfilment, $notify);
     }
 
     /**
@@ -99,13 +105,14 @@ class FulfilmentObserver
     }
 
     /**
-     * Recompute the parent order's derived fulfilment status.
+     * Recompute the parent order's derived fulfilment status, carrying the
+     * "notify the customer" intent of the change that triggered it.
      */
-    protected function recompute(FulfilmentContract $fulfilment): void
+    protected function recompute(FulfilmentContract $fulfilment, bool $notify = true): void
     {
         /** @var Fulfilment $fulfilment */
         if ($order = $fulfilment->order()->first()) {
-            $this->recomputeOrderStatus->execute($order);
+            $this->recomputeOrderStatus->execute($order, $notify);
         }
     }
 }

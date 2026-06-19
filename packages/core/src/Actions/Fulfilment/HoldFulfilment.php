@@ -9,13 +9,13 @@ use Lunar\Core\Models\Fulfilment;
 
 /**
  * Place a pre-ship fulfilment on hold with an optional reason and note. A held
- * parcel is blocked from shipping until released. The hold is orthogonal to the
- * `FulfilmentState` graph — the parcel keeps its current state.
+ * fulfilment is blocked from shipping until released. The hold is orthogonal to the
+ * `FulfilmentState` graph — the fulfilment keeps its current state.
  */
 class HoldFulfilment implements HoldsFulfilment
 {
     /**
-     * Fulfilment states that may be held — only a parcel that hasn't shipped.
+     * Fulfilment states that may be held — only a fulfilment that hasn't shipped.
      */
     public const HOLDABLE_STATES = ['pending', 'in-progress'];
 

@@ -41,7 +41,11 @@ class CancelOrderAction extends Action
                     ->helperText(__('lunar-filament::actions.orders.cancel_order.note_help')),
                 Toggle::make('notify')
                     ->label(__('lunar-filament::actions.orders.cancel_order.notify'))
-                    ->default(true),
+                    ->default(true)
+                    // Only meaningful when a cancellation notification is wired
+                    // up; its presence is the cue the action will email the
+                    // customer.
+                    ->visible(fn (): bool => filled(config('lunar.orders.notifications.cancelled'))),
             ])
             ->action(fn (Order $record, array $data) => $record->cancel(
                 $data['reason'] ?? null,

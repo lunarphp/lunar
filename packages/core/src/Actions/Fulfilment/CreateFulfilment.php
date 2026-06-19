@@ -18,7 +18,7 @@ use Lunar\Core\Validation\Fulfilment\FulfilmentQuantity;
  * method (defaulting to `shipping`). It stamps the method and that method's
  * `defaultState()` as the initial state.
  *
- * Validates the §A quantity invariant and creates the fulfilment and its
+ * Validates the section A quantity invariant and creates the fulfilment and its
  * lines in one transaction (the rule locks the order-line rows, serialising
  * concurrent writes against the same lines), then fires `FulfilmentCreated`.
  * The fulfilment observer recomputes the order's `fulfilment_status`.

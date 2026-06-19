@@ -1,8 +1,11 @@
 <?php
 
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\Components\OrderFulfilments;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
@@ -10,6 +13,16 @@ use Lunar\Core\Models\OrderLine;
 use Lunar\Core\States\Fulfilment\InProgress;
 use Lunar\Filament\Support\Facades\LunarFilament;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
+
+class AdminShipNotification extends Notification
+{
+    public function __construct(public Fulfilment $fulfilment) {}
+
+    public function via(): array
+    {
+        return ['mail'];
+    }
+}
 
 uses(TestCase::class)->group('resource.order');
 
@@ -340,4 +353,52 @@ it('routes the terminal status to fulfil for collection and ship for shipping', 
     expect($collectionTransitions->firstWhere('name', 'collected')['action'])->toBe('fulfil')
         ->and($collectionTransitions->pluck('name'))->not->toContain('shipped')
         ->and($shippingTransitions->firstWhere('name', 'shipped')['action'])->toBe('ship');
+});
+
+it('shows the notify toggle on the ship modal only when a shipped notification is configured', function () {
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
+
+    // Nothing configured for the shipped state — progressive disclosure hides it.
+    config(['lunar.orders.notifications' => []]);
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->mountAction('ship', arguments: ['fulfilment' => $fulfilment->id])
+        ->assertSchemaComponentDoesNotExist('notify');
+
+    // Configure one and the toggle appears.
+    config(['lunar.orders.notifications' => ['shipped' => [AdminShipNotification::class]]]);
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->mountAction('ship', arguments: ['fulfilment' => $fulfilment->id])
+        ->assertSchemaComponentExists('notify');
+});
+
+it('sends the per-parcel notification when shipping with the notify toggle on', function () {
+    config(['lunar.orders.notifications' => ['shipped' => [AdminShipNotification::class]]]);
+    NotificationFacade::fake();
+
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('ship', data: [
+            'tracking' => [['tracking_number' => 'TRK-1']],
+            'notify' => true,
+        ], arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    NotificationFacade::assertSentTo($this->order->fresh(), AdminShipNotification::class);
+});
+
+it('suppresses the per-parcel notification when the ship notify toggle is unticked', function () {
+    config(['lunar.orders.notifications' => ['shipped' => [AdminShipNotification::class]]]);
+    NotificationFacade::fake();
+
+    $fulfilment = $this->order->createFulfilment([$this->line->id => 1]);
+
+    Livewire::test(OrderFulfilments::class, ['record' => $this->order])
+        ->callAction('ship', data: [
+            'tracking' => [['tracking_number' => 'TRK-1']],
+            'notify' => false,
+        ], arguments: ['fulfilment' => $fulfilment->id])
+        ->assertHasNoActionErrors();
+
+    NotificationFacade::assertNotSentTo($this->order->fresh(), AdminShipNotification::class);
 });

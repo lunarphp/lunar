@@ -12,6 +12,11 @@ use Lunar\Core\States\Fulfilment\Cancelled;
  * Cancel a non-terminal fulfilment. The rollup stops counting a cancelled
  * fulfilment, so its quantities return to the order's unfulfilled pool. The
  * state change is routed through the guarded `FulfilmentState` graph.
+ *
+ * Voiding a fulfilment is plumbing, not a customer-facing milestone — and the
+ * `Cancelled` state shares its `$name` with the order-level cancellation
+ * notification key — so this never fires the per-fulfilment notification path. The
+ * customer-facing cancellation email is the order-level one ({@see CancelOrder}).
  */
 class CancelFulfilment implements CancelsFulfilment
 {
@@ -19,6 +24,10 @@ class CancelFulfilment implements CancelsFulfilment
     {
         /** @var Fulfilment $fulfilment */
         return DB::transaction(function () use ($fulfilment) {
+            // Suppress the per-fulfilment notification — fulfilment voids are never a
+            // customer milestone (see the class docblock).
+            $fulfilment->notifyOnStatusChange = false;
+
             $fulfilment->state->transitionTo(Cancelled::class);
 
             return $fulfilment->refresh();

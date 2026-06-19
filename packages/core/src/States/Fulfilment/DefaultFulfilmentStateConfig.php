@@ -6,7 +6,7 @@ use Lunar\Core\Contracts\FulfilmentMethodManifest;
 use Lunar\Core\Contracts\FulfilmentStateConfig;
 
 /**
- * Derives the per-parcel state catalogue from the registered fulfilment
+ * Derives the per-fulfilment state catalogue from the registered fulfilment
  * methods. Spatie sees the *union* of every method's states and transitions —
  * not only for breadth, but because Spatie auto-discovers state classes by
  * scanning the base class's own directory, so a consumer's states in their own

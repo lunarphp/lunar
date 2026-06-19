@@ -67,24 +67,34 @@ return [
     | The same flat-key lookup covers every machine, keyed by $name:
     |   - derived payment_status (e.g. 'paid', 'refunded')
     |   - derived fulfilment_status (e.g. 'fulfilled')
-    |   - per-parcel fulfilment state (e.g. 'shipped')
+    |   - per-fulfilment state (e.g. 'shipped')
     |
     | Order-level notifications are sent by SendOrderPaymentStatusNotifications
-    | and SendOrderFulfilmentStatusNotifications; per-parcel fulfilment
-    | notifications by DefaultFulfilmentStateConfig::notificationsFor(). The
-    | 'cancelled' key is sent by SendOrderCancelledNotifications when an order
-    | is cancelled with "notify the customer" enabled.
+    | and SendOrderFulfilmentStatusNotifications and receive the Order; per-fulfilment
+    | notifications are sent by SendFulfilmentStatusNotifications
+    | (resolved through FulfilmentStateConfig::notificationsFor(), so they stay
+    | method-aware) and receive the Fulfilment. The 'cancelled' key is sent by
+    | SendOrderCancelledNotifications when an order is cancelled with "notify the
+    | customer" enabled.
+    |
+    | Mail is delivered to the order's billing contact by default; a notification
+    | may implement Lunar\Core\Contracts\RoutesToOrderContact to target the
+    | shipping contact instead (e.g. a "your parcel has shipped" update), or
+    | Lunar\Core\Contracts\ResolvesOrderMailRoute to name its own recipient.
     |
     */
     'notifications' => [
         // 'paid' => [
-        //     App\Notifications\PaymentReceived::class,     // payment_status
+        //     App\Notifications\PaymentReceived::class,     // payment_status — receives the Order
+        // ],
+        // 'shipped' => [
+        //     App\Notifications\OrderShipped::class,        // per-fulfilment state — receives the Fulfilment
         // ],
         // 'fulfilled' => [
-        //     App\Notifications\OrderFulfilled::class,      // fulfilment_status
+        //     App\Notifications\OrderFulfilled::class,      // fulfilment_status — receives the Order
         // ],
         // 'cancelled' => [
-        //     App\Notifications\OrderCancelled::class,      // order cancellation
+        //     App\Notifications\OrderCancelled::class,      // order cancellation — receives the Order
         // ],
     ],
 

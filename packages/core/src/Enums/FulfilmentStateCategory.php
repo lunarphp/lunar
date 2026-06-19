@@ -3,7 +3,7 @@
 namespace Lunar\Core\Enums;
 
 /**
- * The fixed rollup vocabulary every per-parcel fulfilment state belongs to.
+ * The fixed rollup vocabulary every per-fulfilment state belongs to.
  *
  * Per-method state graphs are open — a flow can add whatever intermediate
  * steps it needs — but every state declares one of these four categories, and

@@ -11,7 +11,7 @@ use Lunar\Core\Models\Location;
 
 /**
  * Reassign a pre-ship fulfilment to a different location. A shipped or
- * returned parcel has already left a location, so its location is fixed.
+ * returned fulfilment has already left a location, so its location is fixed.
  */
 class ChangeFulfilmentLocation implements ChangesFulfilmentLocation
 {

@@ -8,7 +8,7 @@ use Lunar\Core\Models\Fulfilment;
 interface EnsuresInitialFulfilment
 {
     /**
-     * Ensure the order has its initial fulfilment — a single parcel covering
+     * Ensure the order has its initial fulfilment — a single fulfilment covering
      * every physical line at full quantity. Idempotent: a no-op when the order
      * already has any fulfilment, or has no physical lines.
      *

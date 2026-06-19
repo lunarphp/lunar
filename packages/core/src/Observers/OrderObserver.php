@@ -25,7 +25,7 @@ class OrderObserver
         /** @var Order $order */
 
         // The moment an order is placed it gets its initial fulfilment — one
-        // parcel covering every physical line (the merchant splits from there).
+        // fulfilment covering every physical line (the merchant splits from there).
         if ($order->wasChanged('placed_at') && $order->isPlaced()) {
             $this->ensureInitialFulfilment->execute($order);
         }

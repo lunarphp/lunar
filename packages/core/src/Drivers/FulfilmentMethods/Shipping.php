@@ -12,9 +12,9 @@ use Lunar\Core\States\Fulfilment\Returned;
 use Lunar\Core\States\Fulfilment\Shipped;
 
 /**
- * The post-a-parcel-through-a-carrier flow — today's behaviour (specs 0022 /
+ * The post-a-fulfilment-through-a-carrier flow — today's behaviour (specs 0022 /
  * 0024) expressed as a registered method. The catch-all: it claims every
- * remaining physical line, so an all-physical order gets exactly one parcel as
+ * remaining physical line, so an all-physical order gets exactly one fulfilment as
  * before. The only core method that carries tracking.
  *
  * Not to be confused with table-rate-shipping's `ShippingMethod` Eloquent model
@@ -56,7 +56,7 @@ class Shipping implements FulfilmentMethod
         return [
             Pending::class => [InProgress::class, Shipped::class, Cancelled::class],
             InProgress::class => [Pending::class, Shipped::class, Cancelled::class],
-            // A shipped parcel can be reverted to `Pending` (un-ship) or
+            // A shipped fulfilment can be reverted to `Pending` (un-ship) or
             // marked `Returned`.
             Shipped::class => [Pending::class, Returned::class],
             Cancelled::class => [],

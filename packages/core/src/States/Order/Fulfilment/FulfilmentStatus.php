@@ -10,7 +10,7 @@ use Spatie\ModelStates\StateConfig;
  * fulfillable physical lines and the quantities its `Fulfilment` records
  * cover (see `Actions\Orders\ResolveFulfilmentStatus`).
  *
- * Distinct from the per-parcel `States\Fulfilment\FulfilmentState`: this is
+ * Distinct from the per-fulfilment `States\Fulfilment\FulfilmentState`: this is
  * derived and unguarded (assigned directly by the resolver), where the
  * lifecycle machine is hand-driven and guarded. Hence the suffix — a derived
  * rollup is a `*Status` (matching its `*_status` column); a hand-driven,

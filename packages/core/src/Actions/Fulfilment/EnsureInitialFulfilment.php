@@ -12,13 +12,13 @@ use Lunar\Core\Models\Order;
 /**
  * Give an order its initial fulfilments. Walk the registered methods in
  * priority order, handing each the still-unclaimed fulfillable lines; each
- * claims a subset, and a method that claims ≥1 line gets one parcel (in its
+ * claims a subset, and a method that claims >= 1 line gets one fulfilment (in its
  * `defaultState()`) covering them at full quantity. One method, an all-physical
- * order → exactly one parcel (today's behaviour); a basket of a delivered good
- * + a licence key + a collection item → a parcel per claiming method.
+ * order → exactly one fulfilment (today's behaviour); a basket of a delivered good
+ * + a licence key + a collection item → a fulfilment per claiming method.
  *
  * Idempotent — a no-op if the order already has any fulfilment, or has no
- * fulfillable lines. Returns the first parcel created (or null). The merchant
+ * fulfillable lines. Returns the first fulfilment created (or null). The merchant
  * never creates fulfilments by hand; they split these or merge back.
  */
 class EnsureInitialFulfilment implements EnsuresInitialFulfilment

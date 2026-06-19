@@ -70,7 +70,7 @@ interface FulfilmentMethod
     public function priority(): int;
 
     /**
-     * Whether parcels of this method carry carrier tracking.
+     * Whether fulfilments of this method carry carrier tracking.
      */
     public function usesTracking(): bool;
 }

@@ -20,6 +20,8 @@ use Lunar\Core\Contracts\Actions\Orders\ClosesOrder;
 use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\Contracts\HasCurrency;
+use Lunar\Core\Contracts\ResolvesOrderMailRoute;
+use Lunar\Core\Contracts\RoutesToOrderContact;
 use Lunar\Core\Database\Factories\OrderFactory;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
@@ -254,6 +256,44 @@ class Order extends Base implements Contracts\Order, HasCurrency
     public function billingAddress(): HasOne
     {
         return $this->hasOne(OrderAddress::modelClass(), 'order_id')->whereType('billing');
+    }
+
+    /**
+     * Route mail-channel notifications to the order's contact email so customer
+     * notifications work without the consumer having to make the model routable.
+     *
+     * Defaults to the billing contact (the purchaser); a notification that
+     * implements {@see RoutesToOrderContact} can target the shipping contact
+     * instead — e.g. per-fulfilment "your parcel has shipped" updates — and one that
+     * implements {@see ResolvesOrderMailRoute} can name its own recipient
+     * entirely (an account email, an ops inbox, …). Falls back to the other
+     * contact when the chosen one has no email. Queried rather than lazy-read so
+     * it stays safe under `preventLazyLoading`. Override to change the policy.
+     */
+    public function routeNotificationForMail(?object $notification = null): string|array|null
+    {
+        // A notification may resolve its own recipient entirely (account email,
+        // ops inbox, …); anything falsy defers to the order-contact routing.
+        if ($notification instanceof ResolvesOrderMailRoute
+            && filled($route = $notification->mailRouteForOrder($this))) {
+            return $route;
+        }
+
+        $type = $notification instanceof RoutesToOrderContact
+            ? $notification->orderContactType()
+            : 'billing';
+
+        return $this->contactEmail($type)
+            ?? $this->contactEmail($type === 'billing' ? 'shipping' : 'billing');
+    }
+
+    /**
+     * The contact email stored on the order's address of the given type
+     * (`billing` / `shipping`), or null when absent.
+     */
+    protected function contactEmail(string $type): ?string
+    {
+        return $this->addresses()->whereType($type)->value('contact_email');
     }
 
     public function transactions(): HasMany

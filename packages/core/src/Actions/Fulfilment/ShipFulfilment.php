@@ -32,7 +32,7 @@ class ShipFulfilment implements ShipsFulfilment
      * @param  array<string, mixed>|array<int, array<string, mixed>>  $tracking
      *                                                                           a single tracking entry, or a list of them
      */
-    public function execute(FulfilmentContract $fulfilment, array $tracking = []): Fulfilment
+    public function execute(FulfilmentContract $fulfilment, array $tracking = [], bool $notify = true): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         if ($fulfilment->isOnHold()) {
@@ -45,12 +45,12 @@ class ShipFulfilment implements ShipsFulfilment
             ]));
         }
 
-        return DB::transaction(function () use ($fulfilment, $tracking) {
+        return DB::transaction(function () use ($fulfilment, $tracking, $notify) {
             // Validate tracking first so a bad number aborts before the
             // transition; the surrounding transaction rolls it all back.
             $entries = $this->normaliseTracking($tracking);
 
-            $this->transitionFulfilment->execute($fulfilment, $fulfilment->method()->fulfilledState());
+            $this->transitionFulfilment->execute($fulfilment, $fulfilment->method()->fulfilledState(), $notify);
 
             foreach ($entries as $entry) {
                 $fulfilment->trackings()->create($entry);

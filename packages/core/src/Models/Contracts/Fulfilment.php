@@ -11,7 +11,7 @@ use Lunar\Core\Models\FulfilmentTracking;
 interface Fulfilment
 {
     /**
-     * Resolve the registered fulfilment method that owns this parcel's flow.
+     * Resolve the registered fulfilment method that owns this fulfilment's flow.
      */
     public function method(): FulfilmentMethod;
 
@@ -48,20 +48,23 @@ interface Fulfilment
 
     /**
      * Mark the fulfilment shipped, stamping `shipped_at` and recording the
-     * given tracking entries.
+     * given tracking entries. Pass `$notify: false` to suppress the customer
+     * notification this state change would otherwise trigger.
      *
      * @param  array<int|string, mixed>  $tracking  a single tracking entry or a list of them
      */
-    public function ship(array $tracking = []): \Lunar\Core\Models\Fulfilment;
+    public function ship(array $tracking = [], bool $notify = true): \Lunar\Core\Models\Fulfilment;
 
     /**
      * Advance the fulfilment to its method's canonical "done" state with no
-     * tracking (collection → collected, digital → provisioned, …).
+     * tracking (collection → collected, digital → provisioned, …). Pass
+     * `$notify: false` to suppress the customer notification this state change
+     * would otherwise trigger.
      */
-    public function fulfil(): \Lunar\Core\Models\Fulfilment;
+    public function fulfil(bool $notify = true): \Lunar\Core\Models\Fulfilment;
 
     /**
-     * Split quantities out of this pre-ship fulfilment into a new parcel.
+     * Split quantities out of this pre-ship fulfilment into a new fulfilment.
      * Returns the new fulfilment.
      *
      * @param  array<int|string, int>  $moves  [order_line_id => quantity to move out]
@@ -91,17 +94,20 @@ interface Fulfilment
     public function cancel(): \Lunar\Core\Models\Fulfilment;
 
     /**
-     * Mark a shipped fulfilment as returned.
+     * Mark a shipped fulfilment as returned. Pass `$notify: false` to suppress
+     * the customer notification this state change would otherwise trigger.
      */
-    public function markReturned(): \Lunar\Core\Models\Fulfilment;
+    public function markReturned(bool $notify = true): \Lunar\Core\Models\Fulfilment;
 
     /**
      * Perform a plain guarded state transition (moves that carry no extra
-     * behaviour — use the dedicated verbs for ship/cancel/return).
+     * behaviour — use the dedicated verbs for ship/cancel/return). Pass
+     * `$notify: false` to suppress the customer notification this state change
+     * would otherwise trigger.
      *
      * @param  class-string  $state
      */
-    public function transition(string $state): \Lunar\Core\Models\Fulfilment;
+    public function transition(string $state, bool $notify = true): \Lunar\Core\Models\Fulfilment;
 
     /**
      * Put the fulfilment on hold, blocking it from shipping.

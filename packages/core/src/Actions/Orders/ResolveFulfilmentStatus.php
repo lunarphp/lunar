@@ -16,9 +16,9 @@ use Lunar\Core\States\Order\Fulfilment\Unfulfilled;
 
 /**
  * Roll the order's `Fulfilment` records up into an order-level fulfilment
- * status. Method-agnostic: a parcel counts as dispatched when its state is in
+ * status. Method-agnostic: a fulfilment counts as dispatched when its state is in
  * the `Fulfilled` or `Returned` category (per the manifest), so collection and
- * digital parcels — and any consumer method's terminal states — count exactly
+ * digital fulfilments — and any consumer method's terminal states — count exactly
  * like a shipped one. Orders with no fulfillable lines resolve to `Fulfilled`.
  */
 class ResolveFulfilmentStatus implements ResolvesFulfilmentStatus

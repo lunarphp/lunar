@@ -5,7 +5,7 @@ namespace Lunar\Core\States\Fulfilment;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 
 /**
- * A digital parcel has been provisioned — the licence key sent, the access
+ * A digital fulfilment has been provisioned — the licence key sent, the access
  * granted, the voucher issued. The `digital` method's `fulfilledState()`.
  */
 class Provisioned extends FulfilmentState

@@ -16,5 +16,6 @@ class OrderFulfilmentStatusUpdated
         public Order $order,
         public ?FulfilmentStatus $previousStatus,
         public FulfilmentStatus $newStatus,
+        public bool $notify = true,
     ) {}
 }

@@ -17,8 +17,8 @@ use Lunar\Core\States\Order\Payment\Voided;
  * Roll the transaction ledger up into a Shopify-style `financial_status`.
  *
  * Amounts are integer minor units compared against `order.total`:
- *   captured  = Σ successful captures
- *   refunded  = Σ successful refunds
+ *   captured  = sum of successful captures
+ *   refunded  = sum of successful refunds
  *   authorized = a successful payment intent exists
  */
 class ResolvePaymentStatus implements ResolvesPaymentStatus

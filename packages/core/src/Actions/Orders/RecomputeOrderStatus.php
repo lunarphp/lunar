@@ -28,7 +28,7 @@ class RecomputeOrderStatus implements RecomputesOrderStatus
         protected ResolvesFulfilmentStatus $resolveFulfilmentStatus,
     ) {}
 
-    public function execute(OrderContract $order): Order
+    public function execute(OrderContract $order, bool $notify = true): Order
     {
         /** @var Order $order */
         $previousPayment = $order->payment_status;
@@ -48,7 +48,7 @@ class RecomputeOrderStatus implements RecomputesOrderStatus
         }
 
         if ($previousFulfilment::class !== $fulfilmentClass) {
-            OrderFulfilmentStatusUpdated::dispatch($order, $previousFulfilment, $order->fulfilment_status);
+            OrderFulfilmentStatusUpdated::dispatch($order, $previousFulfilment, $order->fulfilment_status, $notify);
         }
 
         return $order;

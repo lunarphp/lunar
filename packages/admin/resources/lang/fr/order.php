@@ -302,6 +302,7 @@ return [
         ],
         'actions' => [
             'more' => 'More actions',
+            'notify' => 'Notify customer',
             'add_tracking' => [
                 'label' => 'Add tracking',
                 'modal_heading' => 'Add tracking',

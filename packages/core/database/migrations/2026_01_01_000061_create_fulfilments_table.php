@@ -14,7 +14,7 @@ return new class extends Migration
             // Required: a fulfilment always ships from a location.
             $table->foreignId('location_id')->constrained($this->prefix.'locations')->restrictOnDelete();
             $table->string('reference')->nullable()->index();
-            // The registered fulfilment method that owns this parcel's flow
+            // The registered fulfilment method that owns this fulfilment's flow
             // (state graph, line claim, tracking). Resolved via the
             // FulfilmentMethodManifest, like a carrier key.
             $table->string('method')->default('shipping')->index();

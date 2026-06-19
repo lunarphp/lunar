@@ -172,7 +172,7 @@ class InstallLunar extends Command
         $this->components->info('Publishing Filament assets');
         $this->call('filament:assets');
 
-        $this->components->info('Lunar is now installed 🚀');
+        $this->components->info('Lunar is now installed');
 
         if (confirm('Would you like to show some love by giving us a star on GitHub?')) {
             match (PHP_OS_FAMILY) {

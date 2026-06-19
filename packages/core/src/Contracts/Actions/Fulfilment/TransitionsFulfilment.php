@@ -10,9 +10,11 @@ interface TransitionsFulfilment
 {
     /**
      * Move a fulfilment to the given state, routed through the guarded
-     * `FulfilmentState` graph — an illegal transition throws.
+     * `FulfilmentState` graph — an illegal transition throws. Pass
+     * `$notify: false` to suppress the customer notification this state change
+     * would otherwise trigger.
      *
      * @param  class-string<FulfilmentState>  $state
      */
-    public function execute(FulfilmentContract $fulfilment, string $state): Fulfilment;
+    public function execute(FulfilmentContract $fulfilment, string $state, bool $notify = true): Fulfilment;
 }

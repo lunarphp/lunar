@@ -15,13 +15,13 @@ use Lunar\Core\Models\Fulfilment;
  * fulfilled quantity, so the rollups are untouched. The target's tracking
  * wins; the action errors rather than silently discarding conflicting
  * tracking carried by a source. Source and target must share a method — you
- * can't fold a shipping parcel into a collection one.
+ * can't fold a shipping fulfilment into a collection one.
  */
 class MergeFulfilments implements MergesFulfilments
 {
     /**
      * Whether a fulfilment may take part in a merge — only outstanding
-     * (un-handed-over) parcels can be merged.
+     * (un-handed-over) fulfilments can be merged.
      */
     public static function isMergeable(FulfilmentContract $fulfilment): bool
     {

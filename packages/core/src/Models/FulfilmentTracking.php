@@ -15,7 +15,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
- * A tracking reference against a fulfilment — a parcel can carry several
+ * A tracking reference against a fulfilment — a fulfilment can carry several
  * (e.g. a shipment split across multiple boxes or carriers).
  *
  * @property int $id

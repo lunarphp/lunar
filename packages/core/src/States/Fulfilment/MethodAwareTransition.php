@@ -11,11 +11,11 @@ use Spatie\ModelStates\DefaultTransition;
  * Spatie resolves one transition graph for the whole `FulfilmentState`
  * hierarchy (its `config()` is static and can't see the `method` column), so
  * `FulfilmentState::config()` registers the *union* of every method's
- * transitions — which would otherwise let a `collection` parcel move to
+ * transitions — which would otherwise let a `collection` fulfilment move to
  * `Shipped` (the `pending → shipped` key exists, contributed by `shipping`).
  *
  * This guard closes that: `State::transition()` invokes `canTransition()` (with
- * the model injected) before applying the change, and it consults the parcel's
+ * the model injected) before applying the change, and it consults the fulfilment's
  * *own* method graph. Because a union key is global (one transition class per
  * key), one generic guard reading the model's method handles every overlapping
  * key — so `transitionTo()`, `canTransitionTo()` and `transitionableStates()`

@@ -80,7 +80,7 @@ interface Purchasable
      * purchasable base, so physical goods need fulfilment and other goods do
      * not; a digital good that must be provisioned overrides this to `true`.
      *
-     * The invariant is `isShippable() ⟹ requiresFulfilment()`.
+     * The invariant is `isShippable() implies requiresFulfilment()`.
      */
     public function requiresFulfilment(): bool;
 

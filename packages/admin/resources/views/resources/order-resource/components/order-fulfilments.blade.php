@@ -47,7 +47,7 @@
                             @endif
                         </div>
 
-                        {{-- Secondary, muted: location · handed-over timestamp --}}
+                        {{-- Secondary, muted: location / handed-over timestamp --}}
                         @if ($fulfilment->location || $fulfilment->shipped_at)
                             <div class="flex flex-wrap items-center text-xs text-gray-500 dark:text-gray-400" style="margin-top:0.25rem; gap:0.125rem 0.75rem;">
                                 @if ($fulfilment->location)

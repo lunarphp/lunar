@@ -9,9 +9,10 @@ interface ShipsFulfilment
 {
     /**
      * Transition a fulfilment to shipped, stamping `shipped_at` and recording
-     * tracking details.
+     * tracking details. Pass `$notify: false` to suppress the customer
+     * notification this state change would otherwise trigger.
      *
      * @param  array<string, mixed>  $tracking  tracking_number / tracking_url / shipping_method
      */
-    public function execute(FulfilmentContract $fulfilment, array $tracking = []): Fulfilment;
+    public function execute(FulfilmentContract $fulfilment, array $tracking = [], bool $notify = true): Fulfilment;
 }

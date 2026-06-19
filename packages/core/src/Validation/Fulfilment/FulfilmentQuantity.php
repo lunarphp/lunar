@@ -7,7 +7,7 @@ use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\FulfilmentLine;
 
 /**
- * Protects the §A quantity invariant from the fulfilment side: the total
+ * Protects the section A quantity invariant from the fulfilment side: the total
  * quantity covered by (non-cancelled) fulfilments for a given order line may
  * never exceed that line's quantity.
  */

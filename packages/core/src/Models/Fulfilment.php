@@ -28,6 +28,7 @@ use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Facades\HoldReasons;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
+use Lunar\Core\Observers\FulfilmentObserver;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
 use Spatie\ModelStates\HasStates;
 
@@ -68,6 +69,15 @@ class Fulfilment extends Base implements Contracts\Fulfilment
         'held_at' => 'datetime',
         'meta' => AsArrayObject::class,
     ];
+
+    /**
+     * Transient (non-persisted) "notify the customer" intent for the verb
+     * currently advancing this fulfilment's state. The state-advancing actions
+     * stamp it before the write; {@see FulfilmentObserver}
+     * reads it to gate the `FulfilmentStatusUpdated` dispatch and the order
+     * recompute. Never stored — the queue-safe copy rides on the event.
+     */
+    public bool $notifyOnStatusChange = true;
 
     /**
      * Whether the fulfilment is currently on hold (blocked from shipping).
@@ -135,7 +145,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
     }
 
     /**
-     * Resolve the registered fulfilment method that owns this parcel's flow,
+     * Resolve the registered fulfilment method that owns this fulfilment's flow,
      * from the manifest — like {@see FulfilmentTracking::carrier()}. Falls back
      * to `shipping` (always registered) for the default/unblessed path.
      */
@@ -148,13 +158,13 @@ class Fulfilment extends Base implements Contracts\Fulfilment
     /**
      * Mark the fulfilment shipped, stamping the handed-over timestamp and
      * recording the given tracking entries. The tracking-bearing specialisation
-     * — throws if the parcel's method does not carry tracking ({@see fulfil()}).
+     * — throws if the fulfilment's method does not carry tracking ({@see fulfil()}).
      *
      * @param  array<int|string, mixed>  $tracking  a single tracking entry or a list of them
      */
-    public function ship(array $tracking = []): Fulfilment
+    public function ship(array $tracking = [], bool $notify = true): Fulfilment
     {
-        return app(ShipsFulfilment::class)->execute($this, $tracking);
+        return app(ShipsFulfilment::class)->execute($this, $tracking, $notify);
     }
 
     /**
@@ -163,13 +173,13 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      * method → its terminal. The generic terminal verb; `ship()` is the
      * tracking-bearing specialisation for methods that carry tracking.
      */
-    public function fulfil(): Fulfilment
+    public function fulfil(bool $notify = true): Fulfilment
     {
-        return app(FulfilsFulfilment::class)->execute($this);
+        return app(FulfilsFulfilment::class)->execute($this, $notify);
     }
 
     /**
-     * Split quantities out of this pre-ship fulfilment into a new parcel.
+     * Split quantities out of this pre-ship fulfilment into a new fulfilment.
      * Returns the new fulfilment.
      *
      * @param  array<int|string, int>  $moves  [order_line_id => quantity to move out]
@@ -213,9 +223,9 @@ class Fulfilment extends Base implements Contracts\Fulfilment
     /**
      * Mark a shipped fulfilment as returned.
      */
-    public function markReturned(): Fulfilment
+    public function markReturned(bool $notify = true): Fulfilment
     {
-        return app(ReturnsFulfilment::class)->execute($this);
+        return app(ReturnsFulfilment::class)->execute($this, $notify);
     }
 
     /**
@@ -224,9 +234,9 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      *
      * @param  class-string  $state
      */
-    public function transition(string $state): Fulfilment
+    public function transition(string $state, bool $notify = true): Fulfilment
     {
-        return app(TransitionsFulfilment::class)->execute($this, $state);
+        return app(TransitionsFulfilment::class)->execute($this, $state, $notify);
     }
 
     /**

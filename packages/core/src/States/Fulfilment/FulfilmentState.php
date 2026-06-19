@@ -8,9 +8,9 @@ use Spatie\ModelStates\State;
 use Spatie\ModelStates\StateConfig;
 
 /**
- * The per-parcel fulfilment lifecycle — a hand-driven machine a merchant
+ * The per-fulfilment lifecycle — a hand-driven machine a merchant
  * progresses (mark shipped, mark collected, mark provisioned). The state graph
- * itself is owned by the parcel's registered fulfilment method; this abstract
+ * itself is owned by the fulfilment's registered fulfilment method; this abstract
  * base reads the union catalogue from the bound `FulfilmentStateConfig`, and a
  * per-state {@see category()} keeps the order rollup method-agnostic.
  */
@@ -35,7 +35,7 @@ abstract class FulfilmentState extends State
 
         // Every transition is the union of all methods' transitions, so each is
         // registered with the one method-aware guard that restricts it to the
-        // parcel's own method graph at runtime (see MethodAwareTransition).
+        // fulfilment's own method graph at runtime (see MethodAwareTransition).
         foreach ($config->fulfilmentTransitions() as $from => $tos) {
             foreach ($tos as $to) {
                 $stateConfig->allowTransition($from, $to, MethodAwareTransition::class);

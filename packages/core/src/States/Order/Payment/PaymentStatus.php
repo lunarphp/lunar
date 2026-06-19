@@ -16,7 +16,7 @@ use Spatie\ModelStates\StateConfig;
  *
  * Named a `*Status` (not `*State`) by convention: a derived rollup is a
  * `*Status` and matches its `*_status` column, while a hand-driven, guarded
- * lifecycle machine is a `*State` (cf. the per-parcel `Fulfilment\FulfilmentState`).
+ * lifecycle machine is a `*State` (cf. the per-fulfilment `Fulfilment\FulfilmentState`).
  */
 abstract class PaymentStatus extends State
 {

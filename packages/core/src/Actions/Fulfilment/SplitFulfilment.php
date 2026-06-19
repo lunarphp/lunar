@@ -11,9 +11,9 @@ use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 /**
- * Reorganise outstanding quantities of a fulfilment into a new parcel. Never
+ * Reorganise outstanding quantities of a fulfilment into a new fulfilment. Never
  * changes how much is fulfilled — only how the outstanding quantities are
- * parcelled — so the rollups and headline are unaffected.
+ * split — so the rollups and headline are unaffected.
  */
 class SplitFulfilment implements SplitsFulfilment
 {
@@ -30,7 +30,7 @@ class SplitFulfilment implements SplitsFulfilment
         }
 
         return DB::transaction(function () use ($fulfilment, $moves) {
-            // Lock the source lines so concurrent splits of the same parcel
+            // Lock the source lines so concurrent splits of the same fulfilment
             // serialise — otherwise both could read the same quantity and
             // together move out more than the line carries.
             $sourceLines = $fulfilment->lines()->lockForUpdate()->get()->keyBy('order_line_id');
@@ -47,10 +47,10 @@ class SplitFulfilment implements SplitsFulfilment
                 }
             }
 
-            // The split-off parcel inherits the source's method and state —
-            // splitting only reorganises outstanding quantities, so a parcel
+            // The split-off fulfilment inherits the source's method and state —
+            // splitting only reorganises outstanding quantities, so a fulfilment
             // already being prepared shouldn't drop back to its default state,
-            // and a collection/digital parcel must stay that method.
+            // and a collection/digital fulfilment must stay that method.
             /** @var Fulfilment $new */
             $new = $fulfilment->order->fulfilments()->create([
                 'location_id' => $fulfilment->location_id,

@@ -14,7 +14,7 @@ use Lunar\Core\States\Fulfilment\Returned;
 /**
  * Click-and-collect / trade-counter pickup. Claims physical lines when the
  * order's chosen shipping option is a collection (`collect === true`, persisted
- * onto the shipping line at order creation), so the parcel presents "ready for
+ * onto the shipping line at order creation), so the fulfilment presents "ready for
  * collection → collected" instead of ship-and-track. No tracking.
  */
 class Collection implements FulfilmentMethod
@@ -53,7 +53,7 @@ class Collection implements FulfilmentMethod
         return [
             Pending::class => [ReadyForCollection::class, Collected::class, Cancelled::class],
             ReadyForCollection::class => [Pending::class, Collected::class, Cancelled::class],
-            // A collected parcel can be reverted to `Pending` (un-collect) or
+            // A collected fulfilment can be reverted to `Pending` (un-collect) or
             // marked `Returned` (the customer brings goods back).
             Collected::class => [Pending::class, Returned::class],
             Cancelled::class => [],

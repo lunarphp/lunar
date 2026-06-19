@@ -5,7 +5,7 @@ namespace Lunar\Core\States\Fulfilment;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 
 /**
- * The customer has picked up the collection parcel — the collection flow's
+ * The customer has picked up the collection fulfilment — the collection flow's
  * handed-over terminal (the `collection` method's `fulfilledState()`).
  */
 class Collected extends FulfilmentState

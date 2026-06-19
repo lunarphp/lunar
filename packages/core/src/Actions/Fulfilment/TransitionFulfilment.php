@@ -20,7 +20,7 @@ use Lunar\Core\States\Fulfilment\FulfilmentState;
  *    already set — so an undo-return back to a `Fulfilled` state keeps the
  *    original timestamp;
  *  - reverting from a `Fulfilled` state back to an `Outstanding` one un-stamps
- *    it and drops any tracking — the parcel was never really handed over.
+ *    it and drops any tracking — the fulfilment was never really handed over.
  *
  * The dedicated `ShipFulfilment` / `FulfilFulfilment` verbs delegate their
  * transition here (ship additionally records tracking). An illegal transition
@@ -31,11 +31,15 @@ class TransitionFulfilment implements TransitionsFulfilment
     /**
      * @param  class-string<FulfilmentState>  $state
      */
-    public function execute(FulfilmentContract $fulfilment, string $state): Fulfilment
+    public function execute(FulfilmentContract $fulfilment, string $state, bool $notify = true): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
-        return DB::transaction(function () use ($fulfilment, $state) {
+        return DB::transaction(function () use ($fulfilment, $state, $notify) {
             $fromCategory = $fulfilment->state->category();
+
+            // Carry the "notify the customer" intent into the observer, which
+            // reads it off the instance when it dispatches FulfilmentStatusUpdated.
+            $fulfilment->notifyOnStatusChange = $notify;
 
             $fulfilment->state->transitionTo($state);
 

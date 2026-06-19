@@ -15,10 +15,14 @@ use Lunar\Core\States\Fulfilment\Returned;
  */
 class ReturnFulfilment implements ReturnsFulfilment
 {
-    public function execute(FulfilmentContract $fulfilment): Fulfilment
+    public function execute(FulfilmentContract $fulfilment, bool $notify = true): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
-        return DB::transaction(function () use ($fulfilment) {
+        return DB::transaction(function () use ($fulfilment, $notify) {
+            // Carry the "notify the customer" intent into the observer, which
+            // reads it off the instance when it dispatches FulfilmentStatusUpdated.
+            $fulfilment->notifyOnStatusChange = $notify;
+
             $fulfilment->state->transitionTo(Returned::class);
 
             return $fulfilment->refresh();

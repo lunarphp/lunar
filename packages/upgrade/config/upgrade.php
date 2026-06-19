@@ -53,7 +53,7 @@ return [
     */
     'ledger' => [
         'v1_match' => [
-            // v1.x core/admin/shipping migrations span 2021–2026 by their
+            // v1.x core/admin/shipping migrations span 2021-2026 by their
             // original filename dates. The v2 flat baseline files use the
             // reserved `2026_01_01_*` prefix and are kept intact.
             '/^2021_/',

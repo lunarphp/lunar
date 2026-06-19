@@ -22,14 +22,14 @@ class FulfilFulfilment implements FulfilsFulfilment
         protected TransitionsFulfilment $transitionFulfilment,
     ) {}
 
-    public function execute(FulfilmentContract $fulfilment): Fulfilment
+    public function execute(FulfilmentContract $fulfilment, bool $notify = true): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         if ($fulfilment->isOnHold()) {
             throw new FulfilmentException(__('lunar::exceptions.fulfilment_on_hold'));
         }
 
-        return $this->transitionFulfilment->execute($fulfilment, $fulfilment->method()->fulfilledState());
+        return $this->transitionFulfilment->execute($fulfilment, $fulfilment->method()->fulfilledState(), $notify);
     }
 
     /**

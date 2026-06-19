@@ -5,7 +5,7 @@ namespace Lunar\Core\States\Fulfilment;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 
 /**
- * A collection parcel is picked, packed and waiting at the counter for the
+ * A collection fulfilment is picked, packed and waiting at the counter for the
  * customer to pick up — the collection flow's outstanding "in-progress" step.
  */
 class ReadyForCollection extends FulfilmentState

@@ -9,6 +9,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -25,6 +26,7 @@ use Lunar\Core\Actions\Fulfilment\HoldFulfilment;
 use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
 use Lunar\Core\Actions\Fulfilment\ReleaseFulfilment;
 use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
+use Lunar\Core\Contracts\FulfilmentStateConfig;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\Carriers;
@@ -35,13 +37,14 @@ use Lunar\Core\Models\FulfilmentTracking;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
+use Lunar\Core\States\Fulfilment\Returned;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
 /**
  * The fulfilments panel on the order screen — a bespoke card list (no table
  * chrome) with mounted Filament actions for the Shopify-style split-down
- * workflow: split / merge pre-ship parcels, ship, and return.
+ * workflow: split / merge pre-ship fulfilments, ship, and return.
  */
 class OrderFulfilments extends Component implements HasActions, HasForms
 {
@@ -112,6 +115,32 @@ class OrderFulfilments extends Component implements HasActions, HasForms
         return $this->record->fulfilments()->with('lines.orderLine')->findOrFail($arguments['fulfilment']);
     }
 
+    /**
+     * The "Notify customer" toggle for a status-change modal, shown only when a
+     * customer notification is actually configured for the destination state —
+     * so the control's presence is itself the cue that the action will email the
+     * customer. Returns an empty array (leaving a confirmation-only modal) when
+     * nothing is configured for that state.
+     *
+     * @param  class-string<FulfilmentState>  $targetState
+     * @return array<int, Toggle>
+     */
+    protected function notifyToggle(Fulfilment $fulfilment, string $targetState): array
+    {
+        $notifications = app(FulfilmentStateConfig::class)
+            ->notificationsFor(new $targetState($fulfilment));
+
+        if (blank($notifications)) {
+            return [];
+        }
+
+        return [
+            Toggle::make('notify')
+                ->label(__('lunarpanel::order.fulfilments.actions.notify'))
+                ->default(true),
+        ];
+    }
+
     public function shipAction(): Action
     {
         return Action::make('ship')
@@ -119,19 +148,27 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->modalHeading(__('lunarpanel::order.fulfilments.actions.ship.modal_heading'))
             ->icon('heroicon-o-truck')
             ->color('success')
-            ->schema([
-                Repeater::make('tracking')
-                    ->hiddenLabel()
-                    ->addActionLabel(__('lunarpanel::order.fulfilments.actions.add_tracking.label'))
-                    ->schema($this->trackingFields())
-                    ->itemLabel(fn (?int $index): string => __('lunarpanel::order.fulfilments.fields.tracking_item', [
-                        'number' => ($index ?? 0) + 1,
-                    ]))
-                    ->defaultItems(1)
-                    ->reorderable(false),
-            ])
+            ->schema(function (array $arguments) {
+                $fulfilment = $this->findFulfilment($arguments);
+
+                return [
+                    Repeater::make('tracking')
+                        ->hiddenLabel()
+                        ->addActionLabel(__('lunarpanel::order.fulfilments.actions.add_tracking.label'))
+                        ->schema($this->trackingFields())
+                        ->itemLabel(fn (?int $index): string => __('lunarpanel::order.fulfilments.fields.tracking_item', [
+                            'number' => ($index ?? 0) + 1,
+                        ]))
+                        ->defaultItems(1)
+                        ->reorderable(false),
+                    ...$this->notifyToggle($fulfilment, $fulfilment->method()->fulfilledState()),
+                ];
+            })
             ->action(fn (array $arguments, array $data) => $this->run(
-                fn () => $this->findFulfilment($arguments)->ship($data['tracking'] ?? []),
+                fn () => $this->findFulfilment($arguments)->ship(
+                    $data['tracking'] ?? [],
+                    notify: (bool) ($data['notify'] ?? true),
+                ),
                 'ship',
             ));
     }
@@ -149,8 +186,15 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->icon('heroicon-o-check-circle')
             ->color('success')
             ->requiresConfirmation()
-            ->action(fn (array $arguments) => $this->run(
-                fn () => $this->findFulfilment($arguments)->fulfil(),
+            ->schema(function (array $arguments) {
+                $fulfilment = $this->findFulfilment($arguments);
+
+                return $this->notifyToggle($fulfilment, $fulfilment->method()->fulfilledState());
+            })
+            ->action(fn (array $arguments, array $data) => $this->run(
+                fn () => $this->findFulfilment($arguments)->fulfil(
+                    notify: (bool) ($data['notify'] ?? true),
+                ),
                 'fulfil',
             ));
     }
@@ -169,7 +213,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     }
 
     /**
-     * The handed-over timestamp label for a parcel — a per-method override
+     * The handed-over timestamp label for a fulfilment — a per-method override
      * (shipped at / collected at / provisioned at) falling back to a generic
      * "fulfilled at". Public so the card can render it off `shipped_at`.
      */
@@ -264,7 +308,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     }
 
     /**
-     * Enter inline split mode for a parcel: each line gets a "move out"
+     * Enter inline split mode for a fulfilment: each line gets a "move out"
      * quantity input and the card's actions become Split / Cancel.
      */
     public function startSplit(int $fulfilmentId): void
@@ -332,7 +376,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
     /**
      * Enter inline merge mode: pick the items (and quantities) to move out,
-     * and — when there's more than one candidate — which parcel to merge into.
+     * and — when there's more than one candidate — which fulfilment to merge into.
      */
     public function startMerge(int $fulfilmentId): void
     {
@@ -420,14 +464,17 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ->icon('heroicon-o-arrow-uturn-left')
             ->color('warning')
             ->requiresConfirmation()
-            ->action(fn (array $arguments) => $this->run(
-                fn () => $this->findFulfilment($arguments)->markReturned(),
+            ->schema(fn (array $arguments) => $this->notifyToggle($this->findFulfilment($arguments), Returned::class))
+            ->action(fn (array $arguments, array $data) => $this->run(
+                fn () => $this->findFulfilment($arguments)->markReturned(
+                    notify: (bool) ($data['notify'] ?? true),
+                ),
                 'return',
             ));
     }
 
     /**
-     * Undo a mistaken return — moves the parcel back to its method's fulfilled
+     * Undo a mistaken return — moves the fulfilment back to its method's fulfilled
      * state (shipped / collected), keeping the handover (shipped_at + tracking)
      * intact. Only the return is reversed.
      */
@@ -486,7 +533,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     /**
      * Cancel a progressed fulfilment — reverts it to its method's default state
      * so it returns to the unfulfilled pool and can be progressed again (e.g.
-     * the wrong parcel was shipped). A deliberate, destructive correction, not a
+     * the wrong fulfilment was shipped). A deliberate, destructive correction, not a
      * menu step.
      */
     public function cancelFulfilmentAction(): Action
@@ -510,7 +557,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
 
     /**
      * The states the given fulfilment can currently move to (already filtered to
-     * the parcel's method by the guarded graph), used to build the "Update
+     * the fulfilment's method by the guarded graph), used to build the "Update
      * status" menu, with the action each target routes to precomputed. Excludes
      * reverting to the method's default state (that is the destructive "Cancel
      * fulfilment" action), any `Cancelled`-category target (programmatic only),
@@ -547,9 +594,9 @@ class OrderFulfilments extends Component implements HasActions, HasForms
     }
 
     /**
-     * The "More actions" dropdown descriptors for a parcel — the built-in set
+     * The "More actions" dropdown descriptors for a fulfilment — the built-in set
      * (split / merge / change location / add tracking / undo return / hold /
-     * release / cancel), already gated for this parcel's method and state.
+     * release / cancel), already gated for this fulfilment's method and state.
      *
      * Consumers reshape it (add a bespoke action, remove one that doesn't apply,
      * relabel) through the `extendFulfilmentActions` hook — every built-in
@@ -630,7 +677,7 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ];
         }
 
-        // "Cancel" = revert a progressed parcel back to its default state.
+        // "Cancel" = revert a progressed fulfilment back to its default state.
         if ($fulfilment->state->canTransitionTo($method->defaultState())) {
             $actions['cancel'] = [
                 'label' => __('lunarpanel::order.fulfilments.actions.cancel.label'),
@@ -657,7 +704,14 @@ class OrderFulfilments extends Component implements HasActions, HasForms
             ]))
             ->modalSubmitActionLabel(fn (array $arguments) => $this->resolveTransition($arguments)?->label())
             ->color(fn (array $arguments) => ($arguments['state'] ?? null) === 'cancelled' ? 'danger' : 'primary')
-            ->action(function (array $arguments) {
+            ->schema(function (array $arguments) {
+                $target = $this->resolveTransition($arguments);
+
+                return $target
+                    ? $this->notifyToggle($this->findFulfilment($arguments), $target::class)
+                    : [];
+            })
+            ->action(function (array $arguments, array $data) {
                 $target = $this->resolveTransition($arguments);
 
                 if (! $target) {
@@ -665,7 +719,10 @@ class OrderFulfilments extends Component implements HasActions, HasForms
                 }
 
                 $this->run(
-                    fn () => $this->findFulfilment($arguments)->transition($target::class),
+                    fn () => $this->findFulfilment($arguments)->transition(
+                        $target::class,
+                        notify: (bool) ($data['notify'] ?? true),
+                    ),
                     'transition',
                 );
             });

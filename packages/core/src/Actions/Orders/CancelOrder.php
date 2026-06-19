@@ -12,7 +12,7 @@ use Lunar\Core\Models\Order;
 
 /**
  * Cancel an order that has not been fulfilled. Voids the order's un-shipped
- * (pre-ship) parcels, stamps `cancelled_at` / reason / note, and closes the
+ * (pre-ship) fulfilments, stamps `cancelled_at` / reason / note, and closes the
  * order so it leaves the open work queue. Cancellation is one-way.
  *
  * Scope: this is the *status* side only — it does not issue a refund or
@@ -36,7 +36,7 @@ class CancelOrder implements CancelsOrder
         }
 
         return DB::transaction(function () use ($order, $reason, $note, $notify) {
-            // Void any un-shipped parcels — nothing has gone out, so they are
+            // Void any un-shipped fulfilments — nothing has gone out, so they are
             // cancelled rather than left dangling.
             $order->fulfilments()
                 ->whereIn('state', ['pending', 'in-progress'])
