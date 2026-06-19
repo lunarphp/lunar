@@ -10,13 +10,13 @@ return [
             'international-tracked' => 'International Tracked',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Доставка на следващия ден',
+            'two-day' => 'Доставка за два дни',
+            'classic-europe' => 'Classic (Европа)',
         ],
         'ups' => [
-            'standard' => 'Standard',
-            'express' => 'Express',
+            'standard' => 'Стандартна',
+            'express' => 'Експресна',
             'express-saver' => 'Express Saver',
         ],
         'fedex' => [

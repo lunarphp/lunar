@@ -3,9 +3,9 @@
 return [
 
     'methods' => [
-        'shipping' => 'Shipping',
-        'collection' => 'Collection',
-        'digital' => 'Digital',
+        'shipping' => 'ارسال',
+        'collection' => 'تحویل حضوری',
+        'digital' => 'دیجیتال',
     ],
 
 ];

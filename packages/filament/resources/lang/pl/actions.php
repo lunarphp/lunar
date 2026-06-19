@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Zamknij zamówienie',
+            'confirm' => 'Zamknięcie archiwizuje zamówienie po jego pełnym obsłużeniu. Możesz je później otworzyć ponownie.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Zamówienie zamknięte.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Otwórz zamówienie ponownie',
+            'confirm' => 'Ponowne otwarcie przywraca zamówienie do Twojej kolejki otwartych zadań.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Zamówienie otwarte ponownie.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Anuluj zamówienie',
+            'reason' => 'Powód anulowania',
+            'note' => 'Notatka personelu',
+            'note_help' => 'Tę notatkę widzisz tylko Ty i inni członkowie personelu.',
+            'notify' => 'Wyślij powiadomienie do klienta',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'Nie udało się anulować zamówienia.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Oznacz jako zrealizowane',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Zamówienie oznaczone jako zrealizowane.',
             ],
         ],
         'mark_as_shipped' => [

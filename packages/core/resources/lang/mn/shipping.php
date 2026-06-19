@@ -6,22 +6,22 @@ return [
         'royal-mail' => [
             'tracked-24' => 'Tracked 24',
             'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'special-delivery-guaranteed' => 'Баталгаат тусгай хүргэлт',
+            'international-tracked' => 'Олон улсын хяналттай',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Маргааш',
+            'two-day' => 'Хоёр хоног',
+            'classic-europe' => 'Сонгодог (Европ)',
         ],
         'ups' => [
-            'standard' => 'Standard',
-            'express' => 'Express',
-            'express-saver' => 'Express Saver',
+            'standard' => 'Стандарт',
+            'express' => 'Шуурхай',
+            'express-saver' => 'Хэмнэлттэй шуурхай',
         ],
         'fedex' => [
-            'priority' => 'Priority',
-            'economy' => 'Economy',
+            'priority' => 'Тэргүүлэх',
+            'economy' => 'Хэмнэлттэй',
         ],
     ],
 

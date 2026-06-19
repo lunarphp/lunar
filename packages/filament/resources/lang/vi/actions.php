@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Đóng đơn hàng',
+            'confirm' => 'Việc đóng sẽ lưu trữ đơn hàng sau khi đã xử lý xong hoàn toàn. Bạn có thể mở lại sau.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Đã đóng đơn hàng.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Mở lại đơn hàng',
+            'confirm' => 'Việc mở lại sẽ đưa đơn hàng trở lại hàng đợi công việc đang mở của bạn.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Đã mở lại đơn hàng.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Hủy đơn hàng',
+            'reason' => 'Lý do hủy',
+            'note' => 'Ghi chú nội bộ',
+            'note_help' => 'Chỉ bạn và nhân viên khác mới có thể xem ghi chú này.',
+            'notify' => 'Gửi thông báo cho khách hàng',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'Không thể hủy đơn hàng.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Đánh dấu hoàn tất',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Đã đánh dấu đơn hàng là hoàn tất.',
             ],
         ],
         'mark_as_shipped' => [

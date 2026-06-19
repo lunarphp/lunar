@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Rendelés lezárása',
+            'confirm' => 'A lezárás archiválja a rendelést, miután teljesen elintézted. Később újranyithatod.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Rendelés lezárva.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Rendelés újranyitása',
+            'confirm' => 'Az újranyitás visszahelyezi a rendelést a nyitott munkasorodba.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Rendelés újranyitva.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Rendelés törlése',
+            'reason' => 'A törlés indoka',
+            'note' => 'Munkatársi megjegyzés',
+            'note_help' => 'Ezt a megjegyzést csak te és a többi munkatárs láthatja.',
+            'notify' => 'Értesítés küldése a vásárlónak',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'A rendelést nem sikerült törölni.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Teljesítettnek jelölés',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Rendelés teljesítettként megjelölve.',
             ],
         ],
         'mark_as_shipped' => [

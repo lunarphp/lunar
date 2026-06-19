@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'Konum',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'Konumlar',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'Bu konuma atanmış karşılamalar bulunduğundan konum silinemez.',
             ],
         ],
     ],

@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'الموقع',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'المواقع',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'لا يمكن حذف هذا الموقع لوجود عمليات تنفيذ مرتبطة به.',
             ],
         ],
     ],

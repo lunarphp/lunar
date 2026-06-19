@@ -3,19 +3,19 @@
 return [
 
     'hold' => [
-        'awaiting-payment' => 'Awaiting payment',
-        'out-of-stock' => 'Inventory out of stock',
-        'incorrect-address' => 'Incorrect address',
-        'high-risk' => 'High risk of fraud',
-        'other' => 'Other',
+        'awaiting-payment' => 'Oczekiwanie na płatność',
+        'out-of-stock' => 'Brak na magazynie',
+        'incorrect-address' => 'Nieprawidłowy adres',
+        'high-risk' => 'Wysokie ryzyko oszustwa',
+        'other' => 'Inny',
     ],
 
     'cancel' => [
-        'customer' => 'Customer changed/cancelled order',
-        'items-unavailable' => 'Items unavailable',
-        'fraud' => 'Fraudulent order',
-        'declined' => 'Payment declined',
-        'other' => 'Other',
+        'customer' => 'Klient zmienił/anulował zamówienie',
+        'items-unavailable' => 'Produkty niedostępne',
+        'fraud' => 'Oszukańcze zamówienie',
+        'declined' => 'Płatność odrzucona',
+        'other' => 'Inny',
     ],
 
 ];

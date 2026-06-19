@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Tên',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Định danh',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Mặc định',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Tên',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Định danh',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Mặc định',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'Đơn giao hàng',
         ],
     ],
 ];

@@ -3,8 +3,8 @@
 return [
 
     'methods' => [
-        'shipping' => 'Shipping',
-        'collection' => 'Collection',
+        'shipping' => 'Versand',
+        'collection' => 'Abholung',
         'digital' => 'Digital',
     ],
 

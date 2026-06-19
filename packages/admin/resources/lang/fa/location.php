@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'موقعیت مکانی',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'موقعیت‌های مکانی',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'این موقعیت مکانی قابل حذف نیست زیرا تأمین‌های سفارشی به آن اختصاص داده شده‌اند.',
             ],
         ],
     ],

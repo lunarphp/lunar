@@ -17,10 +17,10 @@ return [
     ],
     'table' => [
         'payment_status' => [
-            'label' => 'Payment Status',
+            'label' => 'Status plaćanja',
         ],
         'fulfilment_status' => [
-            'label' => 'Fulfilment Status',
+            'label' => 'Status ispunjenja',
         ],
         'status' => [
             'label' => 'Status',

@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'الاسم',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'المعرّف',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'افتراضي',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'الاسم',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'المعرّف',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'افتراضي',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'عمليات التنفيذ',
         ],
     ],
 ];

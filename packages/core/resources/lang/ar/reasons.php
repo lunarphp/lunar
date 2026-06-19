@@ -3,19 +3,19 @@
 return [
 
     'hold' => [
-        'awaiting-payment' => 'Awaiting payment',
-        'out-of-stock' => 'Inventory out of stock',
-        'incorrect-address' => 'Incorrect address',
-        'high-risk' => 'High risk of fraud',
-        'other' => 'Other',
+        'awaiting-payment' => 'في انتظار الدفع',
+        'out-of-stock' => 'نفاد المخزون',
+        'incorrect-address' => 'عنوان غير صحيح',
+        'high-risk' => 'خطر احتيال مرتفع',
+        'other' => 'أخرى',
     ],
 
     'cancel' => [
-        'customer' => 'Customer changed/cancelled order',
-        'items-unavailable' => 'Items unavailable',
-        'fraud' => 'Fraudulent order',
-        'declined' => 'Payment declined',
-        'other' => 'Other',
+        'customer' => 'غيّر العميل الطلب أو ألغاه',
+        'items-unavailable' => 'العناصر غير متوفرة',
+        'fraud' => 'طلب احتيالي',
+        'declined' => 'تم رفض الدفع',
+        'other' => 'أخرى',
     ],
 
 ];

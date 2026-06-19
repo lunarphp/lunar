@@ -4,24 +4,24 @@ return [
 
     'services' => [
         'royal-mail' => [
-            'tracked-24' => 'Tracked 24',
-            'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'tracked-24' => 'Royal Mail متتبَّع 24',
+            'tracked-48' => 'Royal Mail متتبَّع 48',
+            'special-delivery-guaranteed' => 'توصيل خاص مضمون',
+            'international-tracked' => 'دولي متتبَّع',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'اليوم التالي',
+            'two-day' => 'يومان',
+            'classic-europe' => 'كلاسيكي (أوروبا)',
         ],
         'ups' => [
-            'standard' => 'Standard',
-            'express' => 'Express',
-            'express-saver' => 'Express Saver',
+            'standard' => 'قياسي',
+            'express' => 'سريع',
+            'express-saver' => 'سريع موفّر',
         ],
         'fedex' => [
-            'priority' => 'Priority',
-            'economy' => 'Economy',
+            'priority' => 'أولوية',
+            'economy' => 'اقتصادي',
         ],
     ],
 

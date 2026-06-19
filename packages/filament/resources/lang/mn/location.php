@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Нэр',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Танигч',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Үндсэн',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Нэр',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Танигч',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Үндсэн',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'Биелүүлэлтүүд',
         ],
     ],
 ];

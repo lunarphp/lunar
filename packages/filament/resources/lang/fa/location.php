@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'نام',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'شناسه',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'پیش‌فرض',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'نام',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'شناسه',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'پیش‌فرض',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'تأمین‌های سفارش',
         ],
     ],
 ];

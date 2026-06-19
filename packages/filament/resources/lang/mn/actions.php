@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Захиалга хаах',
+            'confirm' => 'Хаах нь захиалга бүрэн шийдвэрлэгдсэний дараа архивлана. Та дараа нь дахин нээх боломжтой.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Захиалга хаагдлаа.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Захиалга дахин нээх',
+            'confirm' => 'Дахин нээх нь захиалгыг таны нээлттэй ажлын жагсаалт руу буцаана.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Захиалга дахин нээгдлээ.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Захиалга цуцлах',
+            'reason' => 'Цуцлах шалтгаан',
+            'note' => 'Ажилтны тэмдэглэл',
+            'note_help' => 'Энэ тэмдэглэлийг зөвхөн та болон бусад ажилтнууд харах боломжтой.',
+            'notify' => 'Худалдан авагчид мэдэгдэл илгээх',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'Захиалгыг цуцалж чадсангүй.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Дууссан гэж тэмдэглэх',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Захиалгыг дууссан гэж тэмдэглэв.',
             ],
         ],
         'mark_as_shipped' => [

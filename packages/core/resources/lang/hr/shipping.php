@@ -6,22 +6,22 @@ return [
         'royal-mail' => [
             'tracked-24' => 'Tracked 24',
             'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'special-delivery-guaranteed' => 'Zajamčena posebna dostava',
+            'international-tracked' => 'Međunarodna dostava s praćenjem',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Sljedeći dan',
+            'two-day' => 'Dva dana',
+            'classic-europe' => 'Classic (Europa)',
         ],
         'ups' => [
-            'standard' => 'Standard',
+            'standard' => 'Standardno',
             'express' => 'Express',
             'express-saver' => 'Express Saver',
         ],
         'fedex' => [
-            'priority' => 'Priority',
-            'economy' => 'Economy',
+            'priority' => 'Prioritet',
+            'economy' => 'Ekonomično',
         ],
     ],
 

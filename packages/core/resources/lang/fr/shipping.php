@@ -4,15 +4,15 @@ return [
 
     'services' => [
         'royal-mail' => [
-            'tracked-24' => 'Tracked 24',
-            'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'tracked-24' => 'Suivi 24 h',
+            'tracked-48' => 'Suivi 48 h',
+            'special-delivery-guaranteed' => 'Livraison spéciale garantie',
+            'international-tracked' => 'Suivi international',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Lendemain',
+            'two-day' => 'Sous deux jours',
+            'classic-europe' => 'Classique (Europe)',
         ],
         'ups' => [
             'standard' => 'Standard',

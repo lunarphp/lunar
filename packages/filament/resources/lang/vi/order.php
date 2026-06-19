@@ -17,10 +17,10 @@ return [
     ],
     'table' => [
         'payment_status' => [
-            'label' => 'Payment Status',
+            'label' => 'Trạng thái thanh toán',
         ],
         'fulfilment_status' => [
-            'label' => 'Fulfilment Status',
+            'label' => 'Trạng thái giao hàng',
         ],
         'status' => [
             'label' => 'Trạng thái',

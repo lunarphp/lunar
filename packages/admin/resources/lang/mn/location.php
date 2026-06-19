@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'Байршил',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'Байршлууд',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'Энэ байршилд хуваарилагдсан биелүүлэлтүүд байгаа тул устгах боломжгүй.',
             ],
         ],
     ],

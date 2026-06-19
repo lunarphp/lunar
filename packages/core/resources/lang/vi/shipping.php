@@ -10,18 +10,18 @@ return [
             'international-tracked' => 'International Tracked',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Giao ngày hôm sau',
+            'two-day' => 'Giao trong hai ngày',
+            'classic-europe' => 'Classic (Châu Âu)',
         ],
         'ups' => [
-            'standard' => 'Standard',
-            'express' => 'Express',
-            'express-saver' => 'Express Saver',
+            'standard' => 'Tiêu chuẩn',
+            'express' => 'Hỏa tốc',
+            'express-saver' => 'Hỏa tốc tiết kiệm',
         ],
         'fedex' => [
-            'priority' => 'Priority',
-            'economy' => 'Economy',
+            'priority' => 'Ưu tiên',
+            'economy' => 'Tiết kiệm',
         ],
     ],
 

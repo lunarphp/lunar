@@ -4,24 +4,24 @@ return [
 
     'services' => [
         'royal-mail' => [
-            'tracked-24' => 'Tracked 24',
-            'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'tracked-24' => 'رهگیری‌شده ۲۴ ساعته',
+            'tracked-48' => 'رهگیری‌شده ۴۸ ساعته',
+            'special-delivery-guaranteed' => 'تحویل ویژه تضمینی',
+            'international-tracked' => 'رهگیری‌شده بین‌المللی',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'روز بعد',
+            'two-day' => 'دو روزه',
+            'classic-europe' => 'کلاسیک (اروپا)',
         ],
         'ups' => [
-            'standard' => 'Standard',
-            'express' => 'Express',
-            'express-saver' => 'Express Saver',
+            'standard' => 'استاندارد',
+            'express' => 'اکسپرس',
+            'express-saver' => 'اکسپرس اقتصادی',
         ],
         'fedex' => [
-            'priority' => 'Priority',
-            'economy' => 'Economy',
+            'priority' => 'فوری',
+            'economy' => 'اقتصادی',
         ],
     ],
 

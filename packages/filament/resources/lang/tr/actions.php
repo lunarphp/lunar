@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Siparişi kapat',
+            'confirm' => 'Kapatma, sipariş tamamen sonuçlandırıldıktan sonra onu arşivler. Daha sonra yeniden açabilirsiniz.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Sipariş kapatıldı.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Siparişi yeniden aç',
+            'confirm' => 'Yeniden açma, siparişi açık iş kuyruğunuza geri döndürür.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Sipariş yeniden açıldı.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Siparişi iptal et',
+            'reason' => 'İptal nedeni',
+            'note' => 'Personel notu',
+            'note_help' => 'Bu notu yalnızca siz ve diğer personel görebilir.',
+            'notify' => 'Müşteriye bir bildirim gönder',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'Sipariş iptal edilemedi.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Tamamlandı olarak işaretle',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Sipariş tamamlandı olarak işaretlendi.',
             ],
         ],
         'mark_as_shipped' => [

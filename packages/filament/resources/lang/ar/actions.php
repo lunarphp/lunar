@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'إغلاق الطلب',
+            'confirm' => 'يؤدي الإغلاق إلى أرشفة الطلب بعد التعامل معه بالكامل. يمكنك إعادة فتحه لاحقاً.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'تم إغلاق الطلب.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'إعادة فتح الطلب',
+            'confirm' => 'تؤدي إعادة الفتح إلى إعادة الطلب إلى قائمة عملك المفتوحة.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'تمت إعادة فتح الطلب.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'إلغاء الطلب',
+            'reason' => 'سبب الإلغاء',
+            'note' => 'ملاحظة الموظفين',
+            'note_help' => 'يمكنك أنت والموظفون الآخرون فقط رؤية هذه الملاحظة.',
+            'notify' => 'إرسال إشعار إلى العميل',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'تعذّر إلغاء الطلب.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'وضع علامة كمكتمل',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'تم وضع علامة على الطلب كمكتمل.',
             ],
         ],
         'mark_as_shipped' => [

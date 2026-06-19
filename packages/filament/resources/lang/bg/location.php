@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Име',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Идентификатор',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'По подразбиране',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Име',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Идентификатор',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'По подразбиране',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'Изпълнения',
         ],
     ],
 ];

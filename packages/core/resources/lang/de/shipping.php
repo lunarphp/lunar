@@ -10,9 +10,9 @@ return [
             'international-tracked' => 'International Tracked',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Nächster Tag',
+            'two-day' => 'Zwei Tage',
+            'classic-europe' => 'Classic (Europa)',
         ],
         'ups' => [
             'standard' => 'Standard',

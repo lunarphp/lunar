@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Затвори поръчката',
+            'confirm' => 'Затварянето архивира поръчката, след като е напълно обработена. Можете да я отворите отново по-късно.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Поръчката е затворена.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Отвори отново поръчката',
+            'confirm' => 'Повторното отваряне връща поръчката в опашката ви с активни задачи.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Поръчката е отворена отново.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Отмени поръчката',
+            'reason' => 'Причина за отмяна',
+            'note' => 'Бележка от персонала',
+            'note_help' => 'Само вие и останалите служители можете да виждате тази бележка.',
+            'notify' => 'Изпрати известие до клиента',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'Поръчката не може да бъде отменена.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Отбележи като завършена',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Поръчката е отбелязана като завършена.',
             ],
         ],
         'mark_as_shipped' => [

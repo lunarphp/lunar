@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'Lokalizacja',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'Lokalizacje',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'Nie można usunąć tej lokalizacji, ponieważ są do niej przypisane realizacje.',
             ],
         ],
     ],

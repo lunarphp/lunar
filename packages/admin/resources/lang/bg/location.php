@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'Локация',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'Локации',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'Тази локация не може да бъде изтрита, тъй като към нея има назначени изпълнения.',
             ],
         ],
     ],

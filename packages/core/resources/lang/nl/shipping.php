@@ -6,16 +6,16 @@ return [
         'royal-mail' => [
             'tracked-24' => 'Tracked 24',
             'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'special-delivery-guaranteed' => 'Special Delivery gegarandeerd',
+            'international-tracked' => 'Internationaal getrackt',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Volgende dag',
+            'two-day' => 'Twee dagen',
+            'classic-europe' => 'Classic (Europa)',
         ],
         'ups' => [
-            'standard' => 'Standard',
+            'standard' => 'Standaard',
             'express' => 'Express',
             'express-saver' => 'Express Saver',
         ],

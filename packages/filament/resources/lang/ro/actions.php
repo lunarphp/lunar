@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Închide comanda',
+            'confirm' => 'Închiderea arhivează comanda după ce a fost gestionată complet. O poți redeschide ulterior.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Comandă închisă.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Redeschide comanda',
+            'confirm' => 'Redeschiderea readuce comanda în coada ta de lucru deschisă.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Comandă redeschisă.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Anulează comanda',
+            'reason' => 'Motivul anulării',
+            'note' => 'Notă de personal',
+            'note_help' => 'Doar tu și ceilalți membri ai personalului puteți vedea această notă.',
+            'notify' => 'Trimite o notificare clientului',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'Nu s-a putut anula comanda.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Marchează ca finalizată',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Comandă marcată ca finalizată.',
             ],
         ],
         'mark_as_shipped' => [

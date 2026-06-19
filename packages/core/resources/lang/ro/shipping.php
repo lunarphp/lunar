@@ -6,13 +6,13 @@ return [
         'royal-mail' => [
             'tracked-24' => 'Tracked 24',
             'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'special-delivery-guaranteed' => 'Livrare specială garantată',
+            'international-tracked' => 'Urmărire internațională',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Ziua următoare',
+            'two-day' => 'Două zile',
+            'classic-europe' => 'Classic (Europa)',
         ],
         'ups' => [
             'standard' => 'Standard',

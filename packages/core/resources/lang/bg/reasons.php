@@ -3,19 +3,19 @@
 return [
 
     'hold' => [
-        'awaiting-payment' => 'Awaiting payment',
-        'out-of-stock' => 'Inventory out of stock',
-        'incorrect-address' => 'Incorrect address',
-        'high-risk' => 'High risk of fraud',
-        'other' => 'Other',
+        'awaiting-payment' => 'Очаква плащане',
+        'out-of-stock' => 'Изчерпана наличност',
+        'incorrect-address' => 'Некоректен адрес',
+        'high-risk' => 'Висок риск от измама',
+        'other' => 'Друго',
     ],
 
     'cancel' => [
-        'customer' => 'Customer changed/cancelled order',
-        'items-unavailable' => 'Items unavailable',
-        'fraud' => 'Fraudulent order',
-        'declined' => 'Payment declined',
-        'other' => 'Other',
+        'customer' => 'Клиентът промени/отмени поръчката',
+        'items-unavailable' => 'Артикулите не са налични',
+        'fraud' => 'Измамна поръчка',
+        'declined' => 'Плащането е отказано',
+        'other' => 'Друго',
     ],
 
 ];

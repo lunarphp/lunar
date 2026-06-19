@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Nazwa',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Identyfikator',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Domyślna',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Nazwa',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Identyfikator',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Domyślna',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'Realizacje',
         ],
     ],
 ];

@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Zatvori narudžbu',
+            'confirm' => 'Zatvaranjem se narudžba arhivira nakon što je u potpunosti obrađena. Možete je kasnije ponovno otvoriti.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Narudžba zatvorena.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Ponovno otvori narudžbu',
+            'confirm' => 'Ponovnim otvaranjem narudžba se vraća u vaš red otvorenih zadataka.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Narudžba ponovno otvorena.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Otkaži narudžbu',
+            'reason' => 'Razlog otkazivanja',
+            'note' => 'Napomena osoblja',
+            'note_help' => 'Ovu napomenu vidite samo vi i ostalo osoblje.',
+            'notify' => 'Pošalji obavijest kupcu',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'Nije moguće otkazati narudžbu.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Označi kao dovršeno',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Narudžba označena kao dovršena.',
             ],
         ],
         'mark_as_shipped' => [

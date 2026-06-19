@@ -6,22 +6,22 @@ return [
         'royal-mail' => [
             'tracked-24' => 'Tracked 24',
             'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'special-delivery-guaranteed' => 'Garantili Özel Teslimat',
+            'international-tracked' => 'Uluslararası Takipli',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Ertesi Gün',
+            'two-day' => 'İki Gün',
+            'classic-europe' => 'Classic (Avrupa)',
         ],
         'ups' => [
-            'standard' => 'Standard',
+            'standard' => 'Standart',
             'express' => 'Express',
             'express-saver' => 'Express Saver',
         ],
         'fedex' => [
-            'priority' => 'Priority',
-            'economy' => 'Economy',
+            'priority' => 'Öncelikli',
+            'economy' => 'Ekonomi',
         ],
     ],
 

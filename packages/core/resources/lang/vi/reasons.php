@@ -3,19 +3,19 @@
 return [
 
     'hold' => [
-        'awaiting-payment' => 'Awaiting payment',
-        'out-of-stock' => 'Inventory out of stock',
-        'incorrect-address' => 'Incorrect address',
-        'high-risk' => 'High risk of fraud',
-        'other' => 'Other',
+        'awaiting-payment' => 'Đang chờ thanh toán',
+        'out-of-stock' => 'Hết hàng trong kho',
+        'incorrect-address' => 'Địa chỉ không chính xác',
+        'high-risk' => 'Nguy cơ gian lận cao',
+        'other' => 'Khác',
     ],
 
     'cancel' => [
-        'customer' => 'Customer changed/cancelled order',
-        'items-unavailable' => 'Items unavailable',
-        'fraud' => 'Fraudulent order',
-        'declined' => 'Payment declined',
-        'other' => 'Other',
+        'customer' => 'Khách hàng thay đổi/hủy đơn hàng',
+        'items-unavailable' => 'Mặt hàng không có sẵn',
+        'fraud' => 'Đơn hàng gian lận',
+        'declined' => 'Thanh toán bị từ chối',
+        'other' => 'Khác',
     ],
 
 ];

@@ -6,22 +6,22 @@ return [
         'royal-mail' => [
             'tracked-24' => 'Tracked 24',
             'tracked-48' => 'Tracked 48',
-            'special-delivery-guaranteed' => 'Special Delivery Guaranteed',
-            'international-tracked' => 'International Tracked',
+            'special-delivery-guaranteed' => 'Garantált különszállítás',
+            'international-tracked' => 'Nemzetközi nyomon követett',
         ],
         'dpd' => [
-            'next-day' => 'Next Day',
-            'two-day' => 'Two Day',
-            'classic-europe' => 'Classic (Europe)',
+            'next-day' => 'Másnapi',
+            'two-day' => 'Kétnapos',
+            'classic-europe' => 'Klasszikus (Európa)',
         ],
         'ups' => [
-            'standard' => 'Standard',
-            'express' => 'Express',
-            'express-saver' => 'Express Saver',
+            'standard' => 'Normál',
+            'express' => 'Expressz',
+            'express-saver' => 'Expressz Saver',
         ],
         'fedex' => [
-            'priority' => 'Priority',
-            'economy' => 'Economy',
+            'priority' => 'Prioritásos',
+            'economy' => 'Gazdaságos',
         ],
     ],
 

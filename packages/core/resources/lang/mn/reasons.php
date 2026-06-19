@@ -3,19 +3,19 @@
 return [
 
     'hold' => [
-        'awaiting-payment' => 'Awaiting payment',
-        'out-of-stock' => 'Inventory out of stock',
-        'incorrect-address' => 'Incorrect address',
-        'high-risk' => 'High risk of fraud',
-        'other' => 'Other',
+        'awaiting-payment' => 'Төлбөр хүлээгдэж байна',
+        'out-of-stock' => 'Нөөц дууссан',
+        'incorrect-address' => 'Хаяг буруу',
+        'high-risk' => 'Залилангийн өндөр эрсдэлтэй',
+        'other' => 'Бусад',
     ],
 
     'cancel' => [
-        'customer' => 'Customer changed/cancelled order',
-        'items-unavailable' => 'Items unavailable',
-        'fraud' => 'Fraudulent order',
-        'declined' => 'Payment declined',
-        'other' => 'Other',
+        'customer' => 'Худалдан авагч захиалгаа өөрчилсөн/цуцалсан',
+        'items-unavailable' => 'Бараа байхгүй',
+        'fraud' => 'Залилан захиалга',
+        'declined' => 'Төлбөр татгалзагдсан',
+        'other' => 'Бусад',
     ],
 
 ];

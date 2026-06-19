@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naziv',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Identifikator',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Zadano',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naziv',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Identifikator',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Zadano',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'Ispunjenja',
         ],
     ],
 ];

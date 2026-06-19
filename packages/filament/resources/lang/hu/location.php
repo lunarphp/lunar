@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Név',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Azonosító',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Alapértelmezett',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Név',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Azonosító',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Alapértelmezett',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'Teljesítések',
         ],
     ],
 ];

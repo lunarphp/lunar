@@ -3,19 +3,19 @@
 return [
 
     'hold' => [
-        'awaiting-payment' => 'Awaiting payment',
-        'out-of-stock' => 'Inventory out of stock',
-        'incorrect-address' => 'Incorrect address',
-        'high-risk' => 'High risk of fraud',
-        'other' => 'Other',
+        'awaiting-payment' => 'Čeka se plaćanje',
+        'out-of-stock' => 'Nema na zalihi',
+        'incorrect-address' => 'Netočna adresa',
+        'high-risk' => 'Visok rizik od prijevare',
+        'other' => 'Ostalo',
     ],
 
     'cancel' => [
-        'customer' => 'Customer changed/cancelled order',
-        'items-unavailable' => 'Items unavailable',
-        'fraud' => 'Fraudulent order',
-        'declined' => 'Payment declined',
-        'other' => 'Other',
+        'customer' => 'Kupac je promijenio/otkazao narudžbu',
+        'items-unavailable' => 'Stavke nisu dostupne',
+        'fraud' => 'Prijevarna narudžba',
+        'declined' => 'Plaćanje odbijeno',
+        'other' => 'Ostalo',
     ],
 
 ];

@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'بستن سفارش',
+            'confirm' => 'بستن سفارش پس از رسیدگی کامل، آن را بایگانی می‌کند. می‌توانید بعداً دوباره آن را بازگشایی کنید.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'سفارش بسته شد.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'بازگشایی سفارش',
+            'confirm' => 'بازگشایی، سفارش را به صف کارهای باز شما بازمی‌گرداند.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'سفارش بازگشایی شد.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'لغو سفارش',
+            'reason' => 'دلیل لغو',
+            'note' => 'یادداشت کارکنان',
+            'note_help' => 'تنها شما و سایر کارکنان می‌توانید این یادداشت را ببینید.',
+            'notify' => 'ارسال اطلاع‌رسانی به مشتری',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'لغو سفارش ممکن نشد.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'علامت‌گذاری به‌عنوان تکمیل‌شده',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'سفارش به‌عنوان تکمیل‌شده علامت‌گذاری شد.',
             ],
         ],
         'mark_as_shipped' => [

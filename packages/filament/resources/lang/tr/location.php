@@ -3,28 +3,28 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Ad',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Tanımlayıcı',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Varsayılan',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Ad',
         ],
         'handle' => [
-            'label' => 'Handle',
+            'label' => 'Tanımlayıcı',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Varsayılan',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'Karşılamalar',
         ],
     ],
 ];

@@ -3,9 +3,9 @@
 return [
 
     'methods' => [
-        'shipping' => 'Shipping',
-        'collection' => 'Collection',
-        'digital' => 'Digital',
+        'shipping' => 'Vận chuyển',
+        'collection' => 'Nhận tại nơi',
+        'digital' => 'Kỹ thuật số',
     ],
 
 ];

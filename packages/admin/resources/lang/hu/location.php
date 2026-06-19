@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'Telephely',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'Telephelyek',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'Ez a telephely nem törölhető, mert teljesítések vannak hozzárendelve.',
             ],
         ],
     ],

@@ -41,17 +41,17 @@ return [
     ],
     'orders' => [
         'close' => [
-            'label' => 'Close order',
-            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'label' => 'Bestelling sluiten',
+            'confirm' => 'Bij sluiten wordt de bestelling gearchiveerd zodra deze volledig is afgehandeld. Je kunt deze later weer heropenen.',
             'notification' => [
-                'success' => 'Order closed.',
+                'success' => 'Bestelling gesloten.',
             ],
         ],
         'reopen' => [
-            'label' => 'Reopen order',
-            'confirm' => 'Reopening returns the order to your open work queue.',
+            'label' => 'Bestelling heropenen',
+            'confirm' => 'Bij heropenen wordt de bestelling teruggezet in je openstaande werkwachtrij.',
             'notification' => [
-                'success' => 'Order reopened.',
+                'success' => 'Bestelling heropend.',
             ],
         ],
         'shared' => [
@@ -99,14 +99,14 @@ return [
         ],
         'cancel_order' => [
             'label' => 'Cancel order',
-            'modal_heading' => 'Cancel order',
-            'reason' => 'Reason for cancellation',
-            'note' => 'Staff note',
-            'note_help' => 'Only you and other staff can see this note.',
-            'notify' => 'Send a notification to the customer',
+            'modal_heading' => 'Bestelling annuleren',
+            'reason' => 'Reden voor annulering',
+            'note' => 'Notitie voor personeel',
+            'note_help' => 'Alleen jij en ander personeel kunnen deze notitie zien.',
+            'notify' => 'Een melding naar de klant sturen',
             'notification' => [
                 'success' => 'Order cancelled.',
-                'error' => 'Could not cancel the order.',
+                'error' => 'De bestelling kon niet worden geannuleerd.',
             ],
         ],
         'resume_order' => [
@@ -117,9 +117,9 @@ return [
             ],
         ],
         'mark_as_complete' => [
-            'label' => 'Mark as Complete',
+            'label' => 'Markeren als voltooid',
             'notification' => [
-                'success' => 'Order marked as complete.',
+                'success' => 'Bestelling gemarkeerd als voltooid.',
             ],
         ],
         'mark_as_shipped' => [

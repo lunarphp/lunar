@@ -9,7 +9,7 @@ return [
             'label' => 'Handle',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standard',
         ],
     ],
 
@@ -21,10 +21,10 @@ return [
             'label' => 'Handle',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standard',
         ],
         'fulfilments' => [
-            'label' => 'Fulfilments',
+            'label' => 'Fulfillments',
         ],
     ],
 ];

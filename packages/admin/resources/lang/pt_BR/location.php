@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'Local',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'Locais',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'Este local não pode ser excluído porque há fulfillments atribuídos a ele.',
             ],
         ],
     ],

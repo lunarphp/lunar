@@ -3,25 +3,25 @@
 return [
     'form' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
             'label' => 'Handle',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
     ],
 
     'table' => [
         'name' => [
-            'label' => 'Name',
+            'label' => 'Naam',
         ],
         'handle' => [
             'label' => 'Handle',
         ],
         'default' => [
-            'label' => 'Default',
+            'label' => 'Standaard',
         ],
         'fulfilments' => [
             'label' => 'Fulfilments',

@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'label' => 'Location',
+    'label' => 'Locație',
 
-    'plural_label' => 'Locations',
+    'plural_label' => 'Locații',
 
     'action' => [
         'delete' => [
             'notification' => [
-                'error_protected' => 'This location can not be deleted as there are fulfilments assigned to it.',
+                'error_protected' => 'Această locație nu poate fi ștearsă deoarece există onorări atribuite ei.',
             ],
         ],
     ],

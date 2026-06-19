@@ -3,9 +3,9 @@
 return [
 
     'methods' => [
-        'shipping' => 'Shipping',
-        'collection' => 'Collection',
-        'digital' => 'Digital',
+        'shipping' => 'Wysyłka',
+        'collection' => 'Odbiór osobisty',
+        'digital' => 'Cyfrowa',
     ],
 
 ];
