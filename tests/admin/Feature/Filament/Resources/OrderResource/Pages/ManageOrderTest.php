@@ -231,3 +231,19 @@ it('can notify the customer with a chosen notification', function () {
 
     OrderNotifications::forget('order-update');
 });
+
+it('requires an additional email when the order has no contact to fall back on', function () {
+    NotificationFacade::fake();
+
+    $order = Order::factory()
+        ->for(Customer::factory())
+        ->create(['currency_code' => Currency::getDefault()->code]);
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $order->getRouteKey(),
+    ])
+        ->callAction('notify_customer', data: ['notification' => 'order-update'])
+        ->assertHasActionErrors(['additional_email']);
+
+    NotificationFacade::assertNothingSent();
+});
