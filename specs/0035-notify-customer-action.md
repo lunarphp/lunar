@@ -96,11 +96,11 @@ A **"Notify customer"** header action (`Filament\Actions\Orders\NotifyCustomerAc
 
 - **No database migration** — audit uses the existing activity log.
 - **Additive public surface:** `Contracts\Actions\Orders\NotifiesCustomer`, `Actions\Orders\NotifyCustomer`, `Order::notifyCustomer()` (+ the model contract), `Events\Orders\OrderCustomerNotified`, the `OrderNotifications` manifest + facade, the `NotificationScope` enum, an optional `AcceptsCustomerMessage` notification contract, and `Filament\Actions\Orders\NotifyCustomerAction`.
-- **Breaking:** the `OrderNotifications` registry replaces the `lunar.orders.notifications` config map (the automatic listeners read it now). In v2 that key only ever shipped commented-out examples, so the change is effectively additive for current installs; a consumer who set it moves the entries to `OrderNotifications::register(...)` in a service provider.
+- **Notification registration:** the automatic listeners resolve through the `OrderNotifications` registry, not config — a consumer registers a notification with `OrderNotifications::register(...)` in a service provider. There is no `lunar.orders.notifications` config key in v2.
 - **`EmailNotification` renderer** gains a producer; `email-notification.blade.php` is updated (reads `notification` / `email` / `message` instead of `template` / `mailer`).
 - **Translations (16 locales):** new `lunar-filament::actions.orders.notify_customer.*` (label, modal heading, field labels, success), English first then mirrored; plus any default registry labels, following the `CancelReasons` label convention.
 - **Filament / admin impact:** a new header action on the order page; verify at `https://lunar-v2.test`.
-- **Depends on** the "ship default customer notifications" TODO for the registry's default entries — until those land the action is present but hidden (empty registry).
+- **Default entry:** the registry ships one manual-only `OrderUpdate`, so the action is visible out of the box. The branded, auto-triggered lifecycle notifications are the "ship default customer notifications" TODO ([[0036-default-customer-notifications]]); the action hides only if every order-scoped notification is removed.
 
 ## Open questions
 
