@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Narudžba ponovno otvorena',
                 'order_cancelled' => 'Narudžba otkazana (:reason)',
                 'order_cancelled_no_reason' => 'Narudžba otkazana',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Ispunjenje #:id označeno kao :state',
                 'fulfilment_held' => 'Ispunjenje #:id stavljeno na čekanje (:reason)',
                 'fulfilment_held_no_reason' => 'Ispunjenje #:id stavljeno na čekanje',

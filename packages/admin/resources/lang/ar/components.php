@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'تمت إعادة فتح الطلب',
                 'order_cancelled' => 'تم إلغاء الطلب (:reason)',
                 'order_cancelled_no_reason' => 'تم إلغاء الطلب',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'تم وضع علامة على عملية التنفيذ #:id بأنها :state',
                 'fulfilment_held' => 'تم تعليق عملية التنفيذ #:id (:reason)',
                 'fulfilment_held_no_reason' => 'تم تعليق عملية التنفيذ #:id',

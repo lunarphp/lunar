@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Đã mở lại đơn hàng',
                 'order_cancelled' => 'Đã hủy đơn hàng (:reason)',
                 'order_cancelled_no_reason' => 'Đã hủy đơn hàng',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Đơn giao hàng #:id được đánh dấu là :state',
                 'fulfilment_held' => 'Đơn giao hàng #:id đã được tạm giữ (:reason)',
                 'fulfilment_held_no_reason' => 'Đơn giao hàng #:id đã được tạm giữ',

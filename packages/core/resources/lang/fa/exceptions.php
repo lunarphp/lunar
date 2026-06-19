@@ -41,4 +41,6 @@ return [
     'fulfilment_merge_target_in_sources' => 'یک تأمین سفارش را نمی‌توان در خودش ادغام کرد.',
     'fulfilment_method_mismatch' => 'برای ادغام یا انتقال هم‌زمان، تأمین‌ها باید از یک روش تأمین استفاده کنند.',
     'fulfilment_method_no_tracking' => 'رهگیری را نمی‌توان به تأمین سفارش از نوع :method افزود.',
+    'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
+    'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

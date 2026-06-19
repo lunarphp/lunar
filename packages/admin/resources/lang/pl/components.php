@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Zamówienie otwarte ponownie',
                 'order_cancelled' => 'Zamówienie anulowane (:reason)',
                 'order_cancelled_no_reason' => 'Zamówienie anulowane',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Realizacja #:id oznaczona jako :state',
                 'fulfilment_held' => 'Realizacja #:id wstrzymana (:reason)',
                 'fulfilment_held_no_reason' => 'Realizacja #:id wstrzymana',

@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Pedido reabierto',
                 'order_cancelled' => 'Pedido cancelado (:reason)',
                 'order_cancelled_no_reason' => 'Pedido cancelado',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Cumplimiento n.º :id marcado como :state',
                 'fulfilment_held' => 'Cumplimiento n.º :id puesto en espera (:reason)',
                 'fulfilment_held_no_reason' => 'Cumplimiento n.º :id puesto en espera',

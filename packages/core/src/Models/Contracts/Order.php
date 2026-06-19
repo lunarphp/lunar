@@ -159,6 +159,14 @@ interface Order
     public function cancel(?string $reason = null, ?string $note = null, bool $notify = true): \Lunar\Core\Models\Order;
 
     /**
+     * Compose and send a chosen customer notification on demand, logging it on
+     * the order timeline.
+     *
+     * @param  array<int, string>  $recipients  Defaults to the order's billing + shipping contacts.
+     */
+    public function notifyCustomer(string $notification, ?string $message = null, array $recipients = []): \Lunar\Core\Models\Order;
+
+    /**
      * Close (archive) the order.
      */
     public function close(): \Lunar\Core\Models\Order;

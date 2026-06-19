@@ -41,6 +41,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Orders\CapturesOrder::class => Actions\Orders\CaptureOrder::class,
         Contracts\Orders\ClosesOrder::class => Actions\Orders\CloseOrder::class,
         Contracts\Orders\GeneratesOrderReference::class => Actions\Orders\GenerateOrderReference::class,
+        Contracts\Orders\NotifiesCustomer::class => Actions\Orders\NotifyCustomer::class,
         Contracts\Orders\RecomputesOrderStatus::class => Actions\Orders\RecomputeOrderStatus::class,
         Contracts\Orders\RefundsOrder::class => Actions\Orders\RefundOrder::class,
         Contracts\Orders\ReopensOrder::class => Actions\Orders\ReopenOrder::class,

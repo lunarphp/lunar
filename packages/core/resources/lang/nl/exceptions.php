@@ -41,4 +41,6 @@ return [
     'fulfilment_merge_target_in_sources' => 'Een fulfilment kan niet met zichzelf worden samengevoegd.',
     'fulfilment_method_mismatch' => 'Fulfilments moeten dezelfde fulfilment-methode gebruiken om samen te worden gevoegd of verplaatst.',
     'fulfilment_method_no_tracking' => 'Tracking kan niet worden toegevoegd aan een :method-fulfilment.',
+    'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
+    'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

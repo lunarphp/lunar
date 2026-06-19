@@ -41,4 +41,6 @@ return [
     'fulfilment_merge_target_in_sources' => 'Một đơn giao hàng không thể được gộp vào chính nó.',
     'fulfilment_method_mismatch' => 'Các đơn giao hàng phải dùng cùng một phương thức giao hàng thì mới có thể gộp hoặc chuyển cùng nhau.',
     'fulfilment_method_no_tracking' => 'Không thể thêm theo dõi vận chuyển vào đơn giao hàng :method.',
+    'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
+    'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

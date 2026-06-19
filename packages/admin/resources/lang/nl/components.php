@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Bestelling heropend',
                 'order_cancelled' => 'Bestelling geannuleerd (:reason)',
                 'order_cancelled_no_reason' => 'Bestelling geannuleerd',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Fulfilment #:id gemarkeerd als :state',
                 'fulfilment_held' => 'Fulfilment #:id in de wacht gezet (:reason)',
                 'fulfilment_held_no_reason' => 'Fulfilment #:id in de wacht gezet',

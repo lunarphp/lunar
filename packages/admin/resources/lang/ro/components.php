@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Comandă redeschisă',
                 'order_cancelled' => 'Comandă anulată (:reason)',
                 'order_cancelled_no_reason' => 'Comandă anulată',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Onorarea #:id marcată ca :state',
                 'fulfilment_held' => 'Onorarea #:id pusă în așteptare (:reason)',
                 'fulfilment_held_no_reason' => 'Onorarea #:id pusă în așteptare',

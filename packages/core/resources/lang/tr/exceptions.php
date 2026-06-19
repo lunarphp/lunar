@@ -41,4 +41,6 @@ return [
     'fulfilment_merge_target_in_sources' => 'Bir karşılama kendisiyle birleştirilemez.',
     'fulfilment_method_mismatch' => 'Karşılamaların birlikte birleştirilebilmesi veya taşınabilmesi için aynı karşılama yöntemini kullanması gerekir.',
     'fulfilment_method_no_tracking' => ':method karşılamasına takip eklenemez.',
+    'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
+    'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

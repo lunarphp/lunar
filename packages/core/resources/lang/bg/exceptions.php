@@ -41,4 +41,6 @@ return [
     'fulfilment_merge_target_in_sources' => 'Изпълнение не може да бъде обединено със себе си.',
     'fulfilment_method_mismatch' => 'Изпълненията трябва да използват един и същ метод на изпълнение, за да бъдат обединени или преместени заедно.',
     'fulfilment_method_no_tracking' => 'Проследяване не може да бъде добавено към изпълнение от тип :method.',
+    'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
+    'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

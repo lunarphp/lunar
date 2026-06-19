@@ -151,7 +151,7 @@ trait DisplaysOrderAddresses
                                 'city' => $address->city,
                                 'state' => $address->state,
                                 'postcode' => $address->postcode,
-                                'country.name' => $address->country->name,
+                                'country.name' => $address->country?->name,
                             ])
                                 ->filter(fn ($value, $key) => filled($value) || in_array($key, [
                                     'fullName', 'line_one', 'postcode', 'country.name',

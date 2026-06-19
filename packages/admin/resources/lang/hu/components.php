@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Rendelés újranyitva',
                 'order_cancelled' => 'Rendelés törölve (:reason)',
                 'order_cancelled_no_reason' => 'Rendelés törölve',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => ':id. számú teljesítés megjelölve mint :state',
                 'fulfilment_held' => ':id. számú teljesítés felfüggesztve (:reason)',
                 'fulfilment_held_no_reason' => ':id. számú teljesítés felfüggesztve',

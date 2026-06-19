@@ -41,4 +41,6 @@ return [
     'fulfilment_merge_target_in_sources' => 'Un cumplimiento no se puede combinar consigo mismo.',
     'fulfilment_method_mismatch' => 'Los cumplimientos deben usar el mismo método de cumplimiento para poder combinarse o moverse juntos.',
     'fulfilment_method_no_tracking' => 'No se puede añadir seguimiento a un cumplimiento de tipo :method.',
+    'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
+    'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

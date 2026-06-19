@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Поръчката е отворена отново',
                 'order_cancelled' => 'Поръчката е отменена (:reason)',
                 'order_cancelled_no_reason' => 'Поръчката е отменена',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Изпълнение #:id е отбелязано като :state',
                 'fulfilment_held' => 'Изпълнение #:id е поставено на изчакване (:reason)',
                 'fulfilment_held_no_reason' => 'Изпълнение #:id е поставено на изчакване',

@@ -17,6 +17,7 @@ use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
 use Lunar\Core\Contracts\Actions\Orders\CapturesOrder;
 use Lunar\Core\Contracts\Actions\Orders\ClosesOrder;
+use Lunar\Core\Contracts\Actions\Orders\NotifiesCustomer;
 use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\Contracts\HasCurrency;
@@ -354,6 +355,18 @@ class Order extends Base implements Contracts\Order, HasCurrency
     public function cancel(?string $reason = null, ?string $note = null, bool $notify = true): Order
     {
         return app(CancelsOrder::class)->execute($this, $reason, $note, $notify);
+    }
+
+    /**
+     * Compose and send a chosen customer notification on demand, logging it on
+     * the order timeline.
+     *
+     * @param  string  $notification  A key from the CustomerNotifications catalogue.
+     * @param  array<int, string>  $recipients  Defaults to the order's billing + shipping contacts.
+     */
+    public function notifyCustomer(string $notification, ?string $message = null, array $recipients = []): Order
+    {
+        return app(NotifiesCustomer::class)->execute($this, $notification, $message, $recipients);
     }
 
     /**

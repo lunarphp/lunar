@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Commande rouverte',
                 'order_cancelled' => 'Commande annulée (:reason)',
                 'order_cancelled_no_reason' => 'Commande annulée',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Traitement #:id marqué comme :state',
                 'fulfilment_held' => 'Traitement #:id mis en attente (:reason)',
                 'fulfilment_held_no_reason' => 'Traitement #:id mis en attente',

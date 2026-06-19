@@ -109,6 +109,20 @@ return [
                 'error' => 'تعذّر إلغاء الطلب.',
             ],
         ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
+            ],
+        ],
         'resume_order' => [
             'label' => 'Resume Order',
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',

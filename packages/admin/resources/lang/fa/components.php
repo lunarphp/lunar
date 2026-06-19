@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'سفارش بازگشایی شد',
                 'order_cancelled' => 'سفارش لغو شد (:reason)',
                 'order_cancelled_no_reason' => 'سفارش لغو شد',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'تأمین سفارش #:id به‌عنوان :state علامت‌گذاری شد',
                 'fulfilment_held' => 'تأمین سفارش #:id در حالت تعلیق قرار گرفت (:reason)',
                 'fulfilment_held_no_reason' => 'تأمین سفارش #:id در حالت تعلیق قرار گرفت',

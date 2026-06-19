@@ -31,6 +31,7 @@ use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
+use Lunar\Core\Contracts\CustomerNotificationManifest;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
 use Lunar\Core\Contracts\FulfilmentMethodManifest;
@@ -68,6 +69,7 @@ use Lunar\Core\Managers\TaxManager as TaxManagerImpl;
 use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
 use Lunar\Core\Manifests\CancelReasonManifest as CancelReasonManifestImpl;
 use Lunar\Core\Manifests\CarrierManifest as CarrierManifestImpl;
+use Lunar\Core\Manifests\CustomerNotificationManifest as CustomerNotificationManifestImpl;
 use Lunar\Core\Manifests\FieldTypeManifest as FieldTypeManifestImpl;
 use Lunar\Core\Manifests\FulfilmentMethodManifest as FulfilmentMethodManifestImpl;
 use Lunar\Core\Manifests\HoldReasonManifest as HoldReasonManifestImpl;
@@ -362,6 +364,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(CancelReasonManifest::class, function ($app) {
             return $app->make(CancelReasonManifestImpl::class);
+        });
+
+        $this->app->singleton(CustomerNotificationManifest::class, function ($app) {
+            return $app->make(CustomerNotificationManifestImpl::class);
         });
 
         $this->app->singleton(AttributeManifest::class, function ($app) {

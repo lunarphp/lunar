@@ -41,4 +41,6 @@ return [
     'fulfilment_merge_target_in_sources' => 'Un traitement ne peut pas être fusionné avec lui-même.',
     'fulfilment_method_mismatch' => 'Les traitements doivent utiliser la même méthode de traitement pour être fusionnés ou déplacés ensemble.',
     'fulfilment_method_no_tracking' => 'Le suivi ne peut pas être ajouté à un traitement de type :method.',
+    'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
+    'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

@@ -39,6 +39,10 @@ return [
 
                 'order_cancelled_no_reason' => 'Order cancelled',
 
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+
                 'fulfilment_state' => 'Fulfilment #:id marked as :state',
 
                 'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',

@@ -41,4 +41,6 @@ return [
     'fulfilment_merge_target_in_sources' => 'Биелүүлэлтийг өөр лүүгээ нэгтгэх боломжгүй.',
     'fulfilment_method_mismatch' => 'Биелүүлэлтүүдийг хамт нэгтгэх эсвэл шилжүүлэхийн тулд тэдгээр нь нэг биелүүлэлтийн аргыг ашиглах ёстой.',
     'fulfilment_method_no_tracking' => ':method биелүүлэлтэд хяналт нэмэх боломжгүй.',
+    'notification_not_sendable' => 'The ":notification" notification cannot be sent to the customer.',
+    'notification_no_recipients' => 'No recipient email address is available for this notification.',
 ];

@@ -22,6 +22,10 @@ return [
                 'order_reopened' => 'Bestellung wieder geöffnet',
                 'order_cancelled' => 'Bestellung storniert (:reason)',
                 'order_cancelled_no_reason' => 'Bestellung storniert',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
                 'fulfilment_state' => 'Fulfillment #:id als :state markiert',
                 'fulfilment_held' => 'Fulfillment #:id angehalten (:reason)',
                 'fulfilment_held_no_reason' => 'Fulfillment #:id angehalten',
