@@ -106,7 +106,9 @@ class ProductVariant extends BaseModel implements Contracts\ProductVariant, HasT
             "{$prefix}product_option_value_product_variant",
             'variant_id',
             'value_id'
-        )->withTimestamps();
+        )->withTimestamps()
+            ->orderBy('position')
+            ->orderByPivot('id');
     }
 
     public function getPrices(): Collection

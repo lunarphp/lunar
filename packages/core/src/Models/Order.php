@@ -98,7 +98,7 @@ class Order extends BaseModel implements Contracts\Order
 
     public function lines(): HasMany
     {
-        return $this->hasMany(OrderLine::modelClass());
+        return $this->hasMany(OrderLine::modelClass())->orderBy('id');
     }
 
     public function physicalLines(): HasMany
