@@ -29,14 +29,15 @@
         "php": "^8.4",
         "spatie/laravel-activitylog": "^4.10.1",
         "spatie/laravel-blink": "^1.7.1",
-        "spatie/laravel-data": "^4.13.1",
+        "spatie/laravel-data": "^4.23",
         "spatie/laravel-medialibrary": "^11.12.7",
         "spatie/laravel-model-states": "^2.11",
         "spatie/laravel-permission": "^6.12",
         "spatie/php-structure-discoverer": "^2.3.1",
         "stripe/stripe-php": "^16.0",
         "mallardduck/blade-lucide-icons": "^1.26",
-        "typesense/typesense-php": "^4.9"
+        "typesense/typesense-php": "^4.9",
+        "inertiajs/inertia-laravel": "^2.0"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
@@ -58,6 +59,8 @@
         "psr-4": {
             "Lunar\\Core\\": "packages/core/src",
             "Lunar\\Admin\\": "packages/admin/src/",
+            "Lunar\\Checkout\\": "packages/checkout/src/",
+            "Lunar\\Checkout\\Database\\Factories\\": "packages/checkout/database/factories/",
             "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Core\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Core\\Database\\State\\": "packages/core/database/state",
@@ -77,6 +80,7 @@
         "psr-4": {
             "Lunar\\Tests\\": "tests",
             "Lunar\\Tests\\Admin\\": "tests/admin",
+            "Lunar\\Tests\\Checkout\\": "tests/checkout",
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\Filament\\": "tests/filament",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",

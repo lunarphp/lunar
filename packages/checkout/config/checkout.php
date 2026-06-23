@@ -60,6 +60,28 @@ return [
 
     'session' => [
         'expires_after' => 24,
+
+        // Grace window (minutes) re-armed onto expires_at when a session
+        // returns PaymentProcessing → Open after a refund/void (spec 0010 §F),
+        // so it never reopens pre-expired.
+        'reopen_grace_minutes' => 30,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Bounded reconciliation (spec 0010 §F)
+    |--------------------------------------------------------------------------
+    |
+    | PaymentProcessing sessions older than `after_minutes` are swept against
+    | the gateway's actual intent outcome. After `max_attempts` failed lookups
+    | the session is marked stalled (event fires once) and waits for the
+    | operator resolve command: lunar:checkout:reconcile {uuid} --resolve=…
+    |
+    */
+
+    'reconciliation' => [
+        'after_minutes' => 60,
+        'max_attempts' => 5,
     ],
 
 ];

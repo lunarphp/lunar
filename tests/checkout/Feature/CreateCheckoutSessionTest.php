@@ -82,6 +82,32 @@ it('supersedes a prior open session for the same cart', function () {
     Event::assertDispatched(CheckoutSessionSuperseded::class);
 });
 
+it('resumes the live open session instead of churning on resolve-or-create', function () {
+    Event::fake([CheckoutSessionSuperseded::class]);
+
+    $cart = makeCart();
+    $driver = app(CheckoutDriver::class);
+
+    $first = $driver->resolveOrCreateSession($cart);
+    $second = $driver->resolveOrCreateSession($cart);
+
+    expect($second->id)->toBe($first->id)
+        ->and($second->status)->toBeInstanceOf(Open::class)
+        ->and(CheckoutSession::query()->where('cart_reference', (string) $cart->id)->count())->toBe(1);
+
+    Event::assertNotDispatched(CheckoutSessionSuperseded::class);
+});
+
+it('creates a fresh session via resolve-or-create when none is open', function () {
+    $cart = makeCart();
+
+    $session = app(CheckoutDriver::class)->resolveOrCreateSession($cart);
+
+    expect($session)->toBeInstanceOf(CheckoutSession::class)
+        ->and($session->status)->toBeInstanceOf(Open::class)
+        ->and($session->active_cart_reference)->toBe((string) $cart->id);
+});
+
 it('refuses a create while a sibling is payment processing', function () {
     $cart = makeCart();
 

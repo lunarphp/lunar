@@ -40,6 +40,17 @@ interface CheckoutDriver
     public function createSession(mixed $source, array $attributes = []): CheckoutSession;
 
     /**
+     * Idempotent ingest for repeat renders (e.g. GET /checkout): return the
+     * source cart's live `Open` session when one exists, otherwise create one.
+     * A refresh must not churn or supersede a healthy in-progress session.
+     *
+     * @param  array<string, mixed>  $attributes
+     *
+     * @throws CheckoutSessionConflictException
+     */
+    public function resolveOrCreateSession(mixed $source, array $attributes = []): CheckoutSession;
+
+    /**
      * Finalise a session into an order in whatever system the backend owns,
      * writing the driver-opaque `order_reference`. Re-verifies the live cart
      * against the pinned fingerprint inside the order transaction (0010 §E.2).

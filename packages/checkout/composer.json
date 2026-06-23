@@ -1,6 +1,6 @@
 {
   "name": "lunarphp/checkout",
-  "type": "project",
+  "type": "library",
   "description": "Composable, provider-agnostic checkout building blocks for Lunar.",
   "keywords": ["lunarphp", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart", "checkout"],
   "license": "MIT",
@@ -13,11 +13,13 @@
   "require": {
       "php": "^8.4",
       "lunarphp/core": "self.version",
-      "inertiajs/inertia-laravel": "^2.0|^3.0"
+      "inertiajs/inertia-laravel": "^2.0|^3.0",
+      "spatie/laravel-data": "^4.23"
   },
   "autoload": {
       "psr-4": {
-          "Lunar\\Checkout\\": "src/"
+          "Lunar\\Checkout\\": "src/",
+          "Lunar\\Checkout\\Database\\Factories\\": "database/factories/"
       }
   },
   "extra": {

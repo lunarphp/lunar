@@ -66,6 +66,31 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
     }
 
     /**
+     * Resume the cart's live `Open` session if one exists and has not expired;
+     * otherwise fall through to {@see createSession} (which supersedes an
+     * expired `Open` sibling, or refuses if one is `PaymentProcessing`).
+     */
+    public function resolveOrCreateSession(mixed $source, array $attributes = []): CheckoutSession
+    {
+        if (! $source instanceof Cart) {
+            throw new \InvalidArgumentException(
+                'The lunar checkout driver expects a ['.Cart::class.'] source, ['.get_debug_type($source).'] given.'
+            );
+        }
+
+        $existing = CheckoutSession::query()
+            ->where('cart_reference', (string) $source->id)
+            ->where('status', Open::$name)
+            ->first();
+
+        if ($existing !== null && ! $existing->isExpired()) {
+            return $existing;
+        }
+
+        return $this->createSession($source, $attributes);
+    }
+
+    /**
      * Spec 0010 §E.2 — re-verify, then order; no charge without an order.
      * Synchronous path (`Open`): the pay gate runs here, in the same
      * transaction as order creation, against the submitted confirmation token.

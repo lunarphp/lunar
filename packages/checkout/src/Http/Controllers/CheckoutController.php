@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
 use Lunar\Checkout\Contracts\CheckoutSession;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
+use Lunar\Core\Facades\CartSession;
 
 class CheckoutController extends Controller
 {
@@ -30,24 +33,63 @@ class CheckoutController extends Controller
      * setup (spec 0008 §A). Data arrives as no-store props, so no PII is baked
      * into cacheable HTML.
      *
-     * Until the element model + checkout session land (specs 0001/0004), the
-     * order body is a static placeholder fixture; registered custom elements
-     * (§ registry) are projected alongside it.
+     * The current cart is ingested into its live `Open` checkout session
+     * (resolve-or-create, so a refresh resumes rather than churns), then the
+     * session is projected into the shape the Vue app consumes. Registered
+     * custom elements (§ registry) are projected alongside it.
      */
-    public function show(CheckoutTheme $theme): Response
+    public function show(CheckoutDriver $checkoutDriver, CheckoutTheme $theme): Response
     {
+        $session = $checkoutDriver->resolveOrCreateSession(
+            CartSession::current()
+        );
+
         Inertia::setRootView('lunar-checkout::app');
 
         return Inertia::render('Show', [
-            'checkout' => array_merge($this->placeholderCheckout(), [
-                'elements' => $this->projectElements(),
-            ]),
+            'checkout' => array_merge(
+                $this->projectCheckout($checkoutDriver, $session),
+                ['elements' => $this->projectElements()],
+            ),
             'theme' => $theme->tokens(),
             'branding' => $theme->branding(),
             // Consumer override stylesheet; the root view injects it as a <link>
             // after the checkout's own CSS (see lunar-checkout::app).
             'stylesheet' => $theme->stylesheet(),
         ]);
+    }
+
+    /**
+     * Project the live checkout session into the prop shape the Vue app
+     * consumes. Cart figures are read live (read verbs never persist); money
+     * values are minor units. The client pricing engine still derives the
+     * breakdown from these (spec 0004); a server-driven CheckoutData breakdown
+     * replaces it once spec 0001 lands.
+     *
+     * @return array<string, mixed>
+     */
+    private function projectCheckout(CheckoutDriver $driver, CheckoutSessionModel $session): array
+    {
+        $snapshot = $driver->snapshot($session);
+
+        return [
+            'uuid' => $session->uuid,
+            'currency' => $snapshot->currencyCode,
+            'items' => array_map(fn (array $line): array => [
+                'id' => $line['identifier'],
+                'title' => $line['description'],
+                'qty' => $line['quantity'],
+                'price' => $line['unit_price'] ?? 0,
+            ], $driver->getLines($session)),
+            'shippingMethods' => array_map(fn (array $option): array => [
+                'id' => $option['identifier'],
+                'name' => $option['name'],
+                'sub' => $option['description'],
+                'price' => $option['price'] ?? 0,
+            ], $driver->getShippingOptions($session)),
+            'shippingId' => $driver->getSelectedShippingOption($session),
+            'coupon' => $driver->getCoupon($session),
+        ];
     }
 
     /**
@@ -94,39 +136,5 @@ class CheckoutController extends Controller
                 'storeUrl' => route('lunar.checkout.elements.store', $element->handle()),
             ];
         }, $this->registry->all());
-    }
-
-    /**
-     * Placeholder order payload mirroring the shape the components consume.
-     * Prices are in minor units (pence). Replaced by the CheckoutData DTO
-     * (spec 0001) once it exists.
-     *
-     * @return array<string, mixed>
-     */
-    private function placeholderCheckout(): array
-    {
-        return [
-            'merchant' => 'Atelier Hudson',
-            'currency' => 'GBP',
-            'vatRate' => 0.20,
-            'items' => [
-                ['id' => 'knit', 'title' => 'Merino crew knit', 'variant' => 'Charcoal · M', 'sku' => 'AH-2241-CHM', 'qty' => 1, 'price' => 12800, 'icon' => 'shirt'],
-                ['id' => 'oxford', 'title' => 'Cotton oxford shirt', 'variant' => 'White · M', 'sku' => 'AH-1180-WHM', 'qty' => 2, 'price' => 5800, 'icon' => 'shirt'],
-                ['id' => 'card', 'title' => 'Leather card holder', 'variant' => 'Tan', 'sku' => 'AH-0563-TAN', 'qty' => 1, 'price' => 4500, 'icon' => 'wallet'],
-                ['id' => 'coat', 'title' => 'Wool overcoat', 'variant' => 'Camel · L', 'sku' => 'AH-3390-CAM', 'qty' => 1, 'price' => 32000, 'icon' => 'shirt'],
-                ['id' => 'watch', 'title' => 'Field watch', 'variant' => 'Stainless', 'sku' => 'AH-9001-STL', 'qty' => 1, 'price' => 18500, 'icon' => 'watch'],
-                ['id' => 'scarf', 'title' => 'Lambswool scarf', 'variant' => 'Forest', 'sku' => 'AH-0712-FOR', 'qty' => 1, 'price' => 6500, 'icon' => 'shirt'],
-            ],
-            'shippingMethods' => [
-                ['id' => 'standard', 'name' => 'Standard delivery', 'sub' => 'Free over £50 · 3–5 working days', 'price' => 0],
-                ['id' => 'express', 'name' => 'Express delivery', 'sub' => 'Next working day', 'price' => 695],
-                ['id' => 'nominated', 'name' => 'Nominated day', 'sub' => 'Choose a weekday', 'price' => 495],
-            ],
-            'validCodes' => [
-                'TEST10' => ['type' => 'pct', 'value' => 10, 'label' => '10% off'],
-                'FIXED10' => ['type' => 'fixed', 'value' => 1000, 'label' => '£10 off'],
-                'FREESHIP' => ['type' => 'freeship', 'label' => 'Free shipping'],
-            ],
-        ];
     }
 }
