@@ -16,12 +16,7 @@ use Spatie\ModelStates\StateConfig;
  */
 abstract class FulfilmentState extends State
 {
-    /**
-     * The state's slug. Spatie reads this for its morph mapping (falling back
-     * to the class name), but Lunar keys notification lookups on it directly,
-     * so every concrete state must set it. Declared without a default so a
-     * subclass that omits it fails loudly rather than keying on an empty value.
-     */
+    // Slug every concrete state must set; notification lookups key on it directly, so no default — an omission fails loudly.
     public static string $name;
 
     abstract public function label(): string;
