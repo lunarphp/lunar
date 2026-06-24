@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
+use Lunar\Core\States\Fulfilment\MethodAwareTransition;
 
 /**
  * A registered fulfilment method — the driver that owns a fulfilment's *flow*:
@@ -35,7 +36,13 @@ interface FulfilmentMethod
     public function states(): array;
 
     /**
-     * The legal transitions for this flow, as a from => [to, …] map.
+     * The legal transitions for this flow, as a from => [to, …] adjacency map.
+     *
+     * Declared as data rather than via spatie's `allowTransition()` builder: the
+     * graph varies per method, but spatie's `config()` is static across the whole
+     * FulfilmentState hierarchy. The union of every method's transitions is
+     * registered with spatie and the per-method subset is enforced at runtime —
+     * see {@see MethodAwareTransition}.
      *
      * @return array<class-string<FulfilmentState>, list<class-string<FulfilmentState>>>
      */
