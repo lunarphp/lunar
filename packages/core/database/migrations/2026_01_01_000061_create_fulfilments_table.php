@@ -11,13 +11,9 @@ return new class extends Migration
         Schema::create($this->prefix.'fulfilments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('order_id')->constrained($this->prefix.'orders')->cascadeOnDelete();
-            // Required: a fulfilment always ships from a location.
             $table->foreignId('location_id')->constrained($this->prefix.'locations')->restrictOnDelete();
             $table->string('reference')->nullable()->index();
-            // The registered fulfilment method that owns this fulfilment's flow
-            // (state graph, line claim, tracking). Resolved via the
-            // FulfilmentMethodManifest, like a carrier key.
-            $table->string('method')->default('shipping')->index();
+            $table->string('method')->default('shipping')->index()->comment('Fulfilment method key, resolved via FulfilmentMethodManifest');
             $table->string('state')->default('pending')->index();
             $table->text('notes')->nullable();
             $table->jsonb('meta')->nullable();
