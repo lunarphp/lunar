@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Contracts\TracksStock;
 use Lunar\Core\Database\Factories\ProductVariantFactory;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasDimensions;
@@ -56,7 +57,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
+class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable, TracksStock
 {
     use HasAttributeData;
     use HasDimensions;

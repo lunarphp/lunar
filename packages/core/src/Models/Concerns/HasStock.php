@@ -5,6 +5,7 @@ namespace Lunar\Core\Models\Concerns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Core\Contracts\Actions\Products\RecordsStockMovement;
+use Lunar\Core\Contracts\Actions\Products\SyncsStockCommitment;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\StockLevel;
@@ -41,5 +42,16 @@ trait HasStock
     public function adjustStock(Location $location, int $quantity, StockMovementType $type, ?Model $source = null, ?string $note = null): StockMovement
     {
         return app(RecordsStockMovement::class)->execute($this, $location, $quantity, $type, $source, $note);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * The built-in `TracksStock` implementation: recompute committed from the
+     * order book via the canonical predicate.
+     */
+    public function syncStockCommitment(): void
+    {
+        app(SyncsStockCommitment::class)->execute($this);
     }
 }

@@ -3,6 +3,7 @@
 namespace Lunar\Core\Observers;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\EnsuresInitialFulfilment;
+use Lunar\Core\Events\Orders\OrderPlaced;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
@@ -16,18 +17,26 @@ class OrderObserver
     {
         /** @var Order $order */
         if ($order->isPlaced()) {
-            $this->ensureInitialFulfilment->execute($order);
+            $this->onPlaced($order);
         }
     }
 
     public function updated(OrderContract $order): void
     {
         /** @var Order $order */
-
-        // The moment an order is placed it gets its initial fulfilment — one
-        // fulfilment covering every physical line (the merchant splits from there).
         if ($order->wasChanged('placed_at') && $order->isPlaced()) {
-            $this->ensureInitialFulfilment->execute($order);
+            $this->onPlaced($order);
         }
+    }
+
+    /**
+     * The moment an order is placed it commits its stock and gets its initial
+     * fulfilment — one fulfilment per claiming method (the merchant splits from there).
+     */
+    protected function onPlaced(Order $order): void
+    {
+        OrderPlaced::dispatch($order);
+
+        $this->ensureInitialFulfilment->execute($order);
     }
 }

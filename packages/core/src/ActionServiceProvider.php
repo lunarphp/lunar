@@ -70,6 +70,7 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Products\DuplicatesProduct::class => Actions\Products\DuplicateProduct::class,
         Contracts\Products\RecomputesStockRollup::class => Actions\Products\RecomputeStockRollup::class,
         Contracts\Products\RecordsStockMovement::class => Actions\Products\RecordStockMovement::class,
+        Contracts\Products\SyncsStockCommitment::class => Actions\Products\SyncStockCommitment::class,
         Contracts\Products\MapsVariantsToProductOptions::class => Actions\Products\MapVariantsToProductOptions::class,
         Contracts\Products\UpdatesProductStatus::class => Actions\Products\UpdateProductStatus::class,
 
