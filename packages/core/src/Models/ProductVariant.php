@@ -14,6 +14,7 @@ use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasDimensions;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPrices;
+use Lunar\Core\Models\Concerns\HasStock;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
@@ -46,6 +47,12 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property int $stock
  * @property int $backorder
  * @property string $purchasable
+ * @property int $stock_on_hand
+ * @property int $stock_incoming
+ * @property int $stock_committed
+ * @property int $stock_reserved
+ * @property int $stock_unavailable
+ * @property int $stock_available
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
@@ -56,6 +63,7 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
     use HasFactory;
     use HasMacros;
     use HasPrices;
+    use HasStock;
     use HasTranslations;
     use LogsActivity;
 
