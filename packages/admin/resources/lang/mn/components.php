@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Захиалга үүсгэсэн',
                 'status_change' => 'Статус шинэчлэгдсэн',
+                'order_closed' => 'Захиалга хаагдсан',
+                'order_reopened' => 'Захиалга дахин нээгдсэн',
+                'order_cancelled' => 'Захиалга цуцлагдсан (:reason)',
+                'order_cancelled_no_reason' => 'Захиалга цуцлагдсан',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'Биелүүлэлт #:id-г :state гэж тэмдэглэв',
+                'fulfilment_held' => 'Биелүүлэлт #:id түр зогсоогдов (:reason)',
+                'fulfilment_held_no_reason' => 'Биелүүлэлт #:id түр зогсоогдов',
+                'fulfilment_released' => 'Биелүүлэлт #:id түр зогсолтоос чөлөөлөгдөв',
+
                 'capture' => ':last_four дугаартай картаас :amount төлсөн',
                 'authorized' => ':last_four дугаартай картаар :amount баталгаажсан',
                 'refund' => ':last_four дугаартай картаас :amount буцаасан',

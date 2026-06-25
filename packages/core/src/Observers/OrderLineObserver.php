@@ -7,29 +7,43 @@ use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Exceptions\NonPurchasableItemException;
 use Lunar\Core\Models\Contracts\OrderLine as OrderLineContract;
 use Lunar\Core\Models\OrderLine;
+use Lunar\Core\Validation\Order\OrderLineQuantity;
 
 class OrderLineObserver
 {
+    public function __construct(
+        protected OrderLineQuantity $orderLineQuantity,
+    ) {}
+
     /**
      * Handle the OrderLine "creating" event.
      */
     public function creating(OrderLineContract $orderLine): void
     {
-        /** @var OrderLine $orderLine */
-        $purchasableModel = class_exists($orderLine->purchasable_type) ?
-            $orderLine->purchasable_type :
-            Relation::getMorphedModel($orderLine->purchasable_type);
+        $this->assertPurchasable($orderLine);
+    }
 
-        if (! $purchasableModel || ! in_array(Purchasable::class, class_implements($purchasableModel, true))) {
-            throw new NonPurchasableItemException($purchasableModel);
+    /**
+     * Handle the OrderLine "updating" event.
+     */
+    public function updating(OrderLineContract $orderLine): void
+    {
+        /** @var OrderLine $orderLine */
+        $this->assertPurchasable($orderLine);
+
+        // The line's quantity may not drop below what fulfilments already
+        // cover (the section A invariant, protected from the order-line side).
+        if ($orderLine->isDirty('quantity')) {
+            $this->orderLineQuantity->validate($orderLine, (int) $orderLine->quantity);
         }
     }
 
     /**
-     * Handle the OrderLine "updated" event.
+     * Ensure the order line references a purchasable model.
      */
-    public function updating(OrderLineContract $orderLine): void
+    protected function assertPurchasable(OrderLineContract $orderLine): void
     {
+        /** @var OrderLine $orderLine */
         $purchasableModel = class_exists($orderLine->purchasable_type) ?
             $orderLine->purchasable_type :
             Relation::getMorphedModel($orderLine->purchasable_type);

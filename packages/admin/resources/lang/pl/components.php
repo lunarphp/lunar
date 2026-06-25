@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Zamówienie utworzone',
                 'status_change' => 'Status zaktualizowany',
+                'order_closed' => 'Zamówienie zamknięte',
+                'order_reopened' => 'Zamówienie otwarte ponownie',
+                'order_cancelled' => 'Zamówienie anulowane (:reason)',
+                'order_cancelled_no_reason' => 'Zamówienie anulowane',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'Realizacja #:id oznaczona jako :state',
+                'fulfilment_held' => 'Realizacja #:id wstrzymana (:reason)',
+                'fulfilment_held_no_reason' => 'Realizacja #:id wstrzymana',
+                'fulfilment_released' => 'Realizacja #:id wznowiona po wstrzymaniu',
+
                 'capture' => 'Płatność w wysokości :amount na karcie kończącej się na :last_four',
                 'authorized' => 'Autoryzacja płatności w wysokości :amount na karcie kończącej się na :last_four',
                 'refund' => 'Zwrot płatności w wysokości :amount na karcie kończącej się na :last_four',

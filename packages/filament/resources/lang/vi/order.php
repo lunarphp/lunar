@@ -16,6 +16,12 @@ return [
         'failed' => 'Thất bại',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Trạng thái thanh toán',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Trạng thái giao hàng',
+        ],
         'status' => [
             'label' => 'Trạng thái',
         ],

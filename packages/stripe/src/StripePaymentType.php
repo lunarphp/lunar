@@ -56,7 +56,7 @@ class StripePaymentType extends AbstractPayment
     /**
      * Authorize the payment for processing.
      */
-    final public function authorize(): ?PaymentAuthorize
+    public function authorize(): ?PaymentAuthorize
     {
         $paymentIntentId = $this->data['payment_intent'];
 

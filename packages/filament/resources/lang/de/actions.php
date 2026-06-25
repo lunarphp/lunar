@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Bestellung abschließen',
+            'confirm' => 'Durch das Abschließen wird die Bestellung archiviert, sobald sie vollständig bearbeitet wurde. Sie können sie später wieder öffnen.',
+            'notification' => [
+                'success' => 'Bestellung abgeschlossen.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Bestellung wieder öffnen',
+            'confirm' => 'Durch das Wiederöffnen wird die Bestellung in Ihre offene Arbeitsliste zurückgestellt.',
+            'notification' => [
+                'success' => 'Bestellung wieder geöffnet.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Bestellung stornieren',
+            'reason' => 'Grund für die Stornierung',
+            'note' => 'Mitarbeiternotiz',
+            'note_help' => 'Nur Sie und andere Mitarbeiter können diese Notiz sehen.',
+            'notify' => 'Eine Benachrichtigung an den Kunden senden',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Die Bestellung konnte nicht storniert werden.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Als abgeschlossen markieren',
+            'notification' => [
+                'success' => 'Bestellung als abgeschlossen markiert.',
             ],
         ],
         'mark_as_shipped' => [

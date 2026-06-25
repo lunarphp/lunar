@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Database\Migration;
 
 /**
- * Closes the orders ↔ carts foreign-key cycle.
+ * Closes the orders <-> carts foreign-key cycle.
  *
  * Both tables reference each other (`orders.cart_id` → carts, `carts.order_id`
  * → orders), so one side can't be added inside its own create migration.

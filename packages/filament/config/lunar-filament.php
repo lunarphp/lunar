@@ -59,30 +59,4 @@ return [
         'order' => null,
         'product_variant' => null,
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Order status colours
-    |--------------------------------------------------------------------------
-    |
-    | Filament colour swatch (any CSS hex) per OrderState $name, used by
-    | `Lunar\Filament\Support\OrderStatus::getColor()` to badge / theme
-    | order status displays. Override or extend in your own panel config.
-    |
-    */
-    'order' => [
-        'status_colors' => [
-            'awaiting-payment' => '#848a8c',
-            'payment-failed' => '#dc2626',
-            'backordered' => '#f59e0b',
-            'in-process' => '#6a67ce',
-            'partially-shipped' => '#0ea5e9',
-            'shipped' => '#0a81d7',
-            'complete' => '#10b981',
-            'returned' => '#ef4444',
-            'refunded' => '#7c3aed',
-            'on-hold' => '#f97316',
-            'cancelled' => '#6b7280',
-        ],
-    ],
 ];

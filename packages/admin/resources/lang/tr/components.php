@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Sipariş Oluşturuldu',
                 'status_change' => 'Durum güncellendi',
+                'order_closed' => 'Sipariş kapatıldı',
+                'order_reopened' => 'Sipariş yeniden açıldı',
+                'order_cancelled' => 'Sipariş iptal edildi (:reason)',
+                'order_cancelled_no_reason' => 'Sipariş iptal edildi',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => '#:id numaralı karşılama :state olarak işaretlendi',
+                'fulfilment_held' => '#:id numaralı karşılama beklemeye alındı (:reason)',
+                'fulfilment_held_no_reason' => '#:id numaralı karşılama beklemeye alındı',
+                'fulfilment_released' => '#:id numaralı karşılamanın beklemesi kaldırıldı',
+
                 'capture' => ':last_four ile biten kart üzerinde :amount ödeme',
                 'authorized' => ':last_four ile biten kart üzerinde :amount yetkilendirildi',
                 'refund' => ':last_four ile biten kart üzerinde :amount iade',

@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Затвори поръчката',
+            'confirm' => 'Затварянето архивира поръчката, след като е напълно обработена. Можете да я отворите отново по-късно.',
+            'notification' => [
+                'success' => 'Поръчката е затворена.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Отвори отново поръчката',
+            'confirm' => 'Повторното отваряне връща поръчката в опашката ви с активни задачи.',
+            'notification' => [
+                'success' => 'Поръчката е отворена отново.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Отмени поръчката',
+            'reason' => 'Причина за отмяна',
+            'note' => 'Бележка от персонала',
+            'note_help' => 'Само вие и останалите служители можете да виждате тази бележка.',
+            'notify' => 'Изпрати известие до клиента',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Поръчката не може да бъде отменена.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Отбележи като завършена',
+            'notification' => [
+                'success' => 'Поръчката е отбелязана като завършена.',
             ],
         ],
         'mark_as_shipped' => [

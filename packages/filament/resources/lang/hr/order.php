@@ -16,6 +16,12 @@ return [
         'failed' => 'Neuspješno',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Status plaćanja',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Status ispunjenja',
+        ],
         'status' => [
             'label' => 'Status',
         ],

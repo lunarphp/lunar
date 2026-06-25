@@ -19,16 +19,37 @@ return [
     ],
 
     'order' => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'payment-failed' => 'Payment Failed',
-        'backordered' => 'Backordered',
-        'in-process' => 'In Process',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'complete' => 'Complete',
-        'returned' => 'Returned',
-        'refunded' => 'Refunded',
-        'on-hold' => 'On Hold',
+        'open' => 'باز',
+        'closed' => 'بسته',
         'cancelled' => 'Cancelled',
+    ],
+
+    'payment' => [
+        'pending' => 'در انتظار',
+        'authorized' => 'مجازشده',
+        'partially-paid' => 'پرداخت جزئی',
+        'paid' => 'پرداخت‌شده',
+        'partially-refunded' => 'بازپرداخت جزئی',
+        'refunded' => 'بازپرداخت‌شده',
+        'voided' => 'باطل‌شده',
+    ],
+
+    'fulfilment-status' => [
+        'unfulfilled' => 'تأمین‌نشده',
+        'partially-fulfilled' => 'تأمین جزئی',
+        'fulfilled' => 'تأمین‌شده',
+        'partially-returned' => 'بازگشت جزئی',
+        'returned' => 'بازگشت‌داده‌شده',
+    ],
+
+    'fulfilment' => [
+        'pending' => 'در انتظار',
+        'in-progress' => 'در حال انجام',
+        'ready-for-collection' => 'آماده تحویل حضوری',
+        'shipped' => 'ارسال‌شده',
+        'collected' => 'تحویل‌گرفته‌شده',
+        'provisioned' => 'تأمین‌شده دیجیتال',
+        'cancelled' => 'لغوشده',
+        'returned' => 'بازگشت‌داده‌شده',
     ],
 ];

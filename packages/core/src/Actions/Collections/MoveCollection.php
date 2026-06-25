@@ -13,7 +13,7 @@ use Lunar\Core\Models\Contracts\Collection as CollectionContract;
  * itself (or one of its descendants — which would create a cycle) and lets
  * the nested-set trait recompute `_lft`/`_rgt` for the moved subtree.
  */
-final class MoveCollection implements MovesCollection
+class MoveCollection implements MovesCollection
 {
     public function execute(CollectionContract $collection, ?CollectionContract $target = null): Collection
     {

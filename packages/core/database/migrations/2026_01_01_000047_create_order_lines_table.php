@@ -13,6 +13,8 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained($this->prefix.'orders');
             $table->morphs('purchasable');
             $table->string('type')->index();
+            $table->boolean('requires_shipping')->default(false)->index()->comment('Needs physical delivery; stamped from the purchasable isShippable()');
+            $table->boolean('requires_fulfilment')->default(false)->index()->comment('Needs fulfilling at all; superset of requires_shipping, drives the fulfilment rollup');
             $table->string('description');
             $table->string('option')->nullable();
             $table->string('identifier')->index();

@@ -3,13 +3,13 @@
 namespace Lunar\Tests\Upgrade\Unit\Rector\Actions\Fixture\RewriteActionRunCallRector;
 
 use Lunar\Core\Actions\Carts\CreateOrder;
-use Lunar\Core\Actions\Orders\UpdateOrderStatus;
+use Lunar\Core\Actions\Orders\CaptureOrder;
 
 function run(\Lunar\Core\Models\Cart $cart, \Lunar\Core\Models\Order $order): array
 {
     return [
         CreateOrder::run($cart),
-        UpdateOrderStatus::run($order, 'dispatched'),
+        CaptureOrder::run($order),
     ];
 }
 
@@ -20,13 +20,13 @@ function run(\Lunar\Core\Models\Cart $cart, \Lunar\Core\Models\Order $order): ar
 namespace Lunar\Tests\Upgrade\Unit\Rector\Actions\Fixture\RewriteActionRunCallRector;
 
 use Lunar\Core\Actions\Carts\CreateOrder;
-use Lunar\Core\Actions\Orders\UpdateOrderStatus;
+use Lunar\Core\Actions\Orders\CaptureOrder;
 
 function run(\Lunar\Core\Models\Cart $cart, \Lunar\Core\Models\Order $order): array
 {
     return [
         app(\Lunar\Core\Contracts\Actions\Carts\CreatesOrder::class)->execute($cart),
-        app(\Lunar\Core\Contracts\Actions\Orders\UpdatesOrderStatus::class)->execute($order, 'dispatched'),
+        app(\Lunar\Core\Contracts\Actions\Orders\CapturesOrder::class)->execute($order),
     ];
 }
 

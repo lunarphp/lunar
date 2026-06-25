@@ -6,9 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Verwalten',
     ],
-    'tabs' => [
-        'all' => 'All',
-    ],
     'transactions' => [
         'capture' => 'Erfasst',
         'intent' => 'Absicht',
@@ -283,5 +280,178 @@ return [
                 'success' => 'Rückerstattung erfolgreich',
             ],
         ],
+    ],
+
+    'fulfilments' => [
+        'heading' => 'Fulfillments',
+        'unreferenced' => 'Fulfillment #:id',
+        'on_hold' => 'Angehalten',
+        'empty' => 'Noch keine Fulfillments.',
+        'columns' => [
+            'reference' => 'Referenz',
+            'state' => 'Status',
+            'items' => 'Artikel',
+            'tracking' => 'Sendungsverfolgung',
+            'shipped_at' => 'Versendet am',
+            'handed_over' => [
+                'shipping' => 'Versendet am',
+                'collection' => 'Abgeholt am',
+                'digital' => 'Bereitgestellt am',
+            ],
+            'handed_over_default' => 'Erfüllt am',
+        ],
+        'actions' => [
+            'more' => 'Weitere Aktionen',
+            'notify' => 'Kunden benachrichtigen',
+            'add_tracking' => [
+                'label' => 'Sendungsverfolgung hinzufügen',
+                'modal_heading' => 'Sendungsverfolgung hinzufügen',
+                'notification' => [
+                    'success' => 'Sendungsverfolgung hinzugefügt.',
+                    'error' => 'Sendungsverfolgung konnte nicht hinzugefügt werden.',
+                ],
+            ],
+            'remove_tracking' => [
+                'label' => 'Sendungsverfolgung entfernen',
+                'notification' => [
+                    'success' => 'Sendungsverfolgung entfernt.',
+                    'error' => 'Sendungsverfolgung konnte nicht entfernt werden.',
+                ],
+            ],
+            'create' => [
+                'label' => 'Fulfillment erstellen',
+                'modal_heading' => 'Fulfillment erstellen',
+                'empty' => 'Jede Position ist bereits erfüllt.',
+                'notification' => [
+                    'success' => 'Fulfillment erstellt.',
+                    'error' => 'Fulfillment konnte nicht erstellt werden.',
+                ],
+            ],
+            'ship' => [
+                'label' => 'Als versendet markieren',
+                'modal_heading' => 'Fulfillment als versendet markieren',
+                'notification' => [
+                    'success' => 'Fulfillment als versendet markiert.',
+                    'error' => 'Fulfillment konnte nicht versendet werden.',
+                ],
+            ],
+            'fulfil' => [
+                'label' => 'Als erfüllt markieren',
+                'modal_heading' => 'Fulfillment als erfüllt markieren',
+                'labels' => [
+                    'collection' => 'Als abgeholt markieren',
+                ],
+                'notification' => [
+                    'success' => 'Fulfillment als erfüllt markiert.',
+                    'error' => 'Fulfillment konnte nicht erfüllt werden.',
+                ],
+            ],
+            'cancel' => [
+                'label' => 'Fulfillment stornieren',
+                'modal_heading' => 'Fulfillment stornieren',
+                'description' => 'Dadurch wird das Fulfillment wieder auf ausstehend gesetzt, sodass es erneut bearbeitet werden kann. Alle Versanddaten werden gelöscht.',
+                'notification' => [
+                    'success' => 'Fulfillment storniert.',
+                    'error' => 'Fulfillment konnte nicht storniert werden.',
+                ],
+            ],
+            'change_location' => [
+                'label' => 'Standort ändern',
+                'modal_heading' => 'Fulfillment-Standort ändern',
+                'field' => 'Standort',
+                'notification' => [
+                    'success' => 'Fulfillment-Standort aktualisiert.',
+                    'error' => 'Fulfillment-Standort konnte nicht geändert werden.',
+                ],
+            ],
+            'return' => [
+                'label' => 'Retoure',
+                'notification' => [
+                    'success' => 'Fulfillment retourniert.',
+                    'error' => 'Fulfillment konnte nicht retourniert werden.',
+                ],
+            ],
+            'update_status' => [
+                'label' => 'Status aktualisieren',
+            ],
+            'transition' => [
+                'modal_heading' => 'Fulfillment als :status markieren?',
+                'notification' => [
+                    'success' => 'Fulfillment-Status aktualisiert.',
+                    'error' => 'Fulfillment-Status konnte nicht aktualisiert werden.',
+                ],
+            ],
+            'undo_return' => [
+                'label' => 'Retoure rückgängig machen',
+                'notification' => [
+                    'success' => 'Retoure rückgängig gemacht.',
+                    'error' => 'Retoure konnte nicht rückgängig gemacht werden.',
+                ],
+            ],
+            'hold' => [
+                'label' => 'Fulfillment anhalten',
+                'modal_heading' => 'Fulfillment anhalten',
+                'reason' => 'Grund',
+                'note' => 'Notiz',
+                'notification' => [
+                    'success' => 'Fulfillment angehalten.',
+                    'error' => 'Fulfillment konnte nicht angehalten werden.',
+                ],
+            ],
+            'release' => [
+                'label' => 'Anhalten aufheben',
+                'notification' => [
+                    'success' => 'Fulfillment freigegeben.',
+                    'error' => 'Fulfillment konnte nicht freigegeben werden.',
+                ],
+            ],
+            'split' => [
+                'label' => 'Aufteilen',
+                'confirm' => 'Fulfillment aufteilen',
+                'cancel' => 'Abbrechen',
+                'empty' => 'Wählen Sie eine Menge zum Aufteilen aus.',
+                'modal_heading' => 'Fulfillment aufteilen',
+                'notification' => [
+                    'success' => 'Fulfillment aufgeteilt.',
+                    'error' => 'Fulfillment konnte nicht aufgeteilt werden.',
+                ],
+            ],
+            'merge' => [
+                'label' => 'Zusammenführen',
+                'confirm' => 'Fulfillment zusammenführen',
+                'cancel' => 'Abbrechen',
+                'modal_heading' => 'Fulfillment zusammenführen',
+                'description' => 'Wählen Sie die Artikel aus, die Sie zusammenführen möchten.',
+                'target' => 'Zusammenführen mit',
+                'empty' => 'Wählen Sie Artikel und ein Ziel zum Zusammenführen aus.',
+                'notification' => [
+                    'success' => 'Fulfillments zusammengeführt.',
+                    'error' => 'Fulfillments konnten nicht zusammengeführt werden.',
+                ],
+            ],
+        ],
+        'fields' => [
+            'quantity' => 'Menge',
+            'tracking' => 'Sendungsverfolgung',
+            'tracking_item' => 'Sendungsnummer #:number',
+            'unit_price' => 'Einzelpreis',
+            'sub_total' => 'Zwischensumme',
+            'discount_total' => 'Rabattsumme',
+            'total' => 'Gesamt',
+            'stock_level' => 'Aktueller Lagerbestand: :count',
+            'of' => 'von :count',
+            'outstanding' => 'Ausstehend: :count',
+            'tracking_number' => 'Sendungsnummer',
+            'tracking_url' => 'Sendungsverfolgungs-URL',
+            'carrier' => 'Versanddienstleister',
+            'carrier_custom' => 'Benutzerdefiniert / Sonstige',
+            'tracking_url_help' => 'Nur erforderlich für Versanddienstleister ohne automatischen Sendungsverfolgungslink.',
+            'shipping_method' => 'Versandart',
+            'move_quantity' => 'Auszulagernde Menge',
+        ],
+    ],
+
+    'other_items' => [
+        'heading' => 'Weitere Artikel',
     ],
 ];

@@ -19,16 +19,37 @@ return [
     ],
 
     'order' => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'payment-failed' => 'Payment Failed',
-        'backordered' => 'Backordered',
-        'in-process' => 'In Process',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'complete' => 'Complete',
-        'returned' => 'Returned',
-        'refunded' => 'Refunded',
-        'on-hold' => 'On Hold',
+        'open' => 'Ouverte',
+        'closed' => 'Clôturée',
         'cancelled' => 'Cancelled',
+    ],
+
+    'payment' => [
+        'pending' => 'En attente',
+        'authorized' => 'Autorisé',
+        'partially-paid' => 'Partiellement payé',
+        'paid' => 'Payé',
+        'partially-refunded' => 'Partiellement remboursé',
+        'refunded' => 'Remboursé',
+        'voided' => 'Annulé',
+    ],
+
+    'fulfilment-status' => [
+        'unfulfilled' => 'Non traité',
+        'partially-fulfilled' => 'Partiellement traité',
+        'fulfilled' => 'Traité',
+        'partially-returned' => 'Partiellement retourné',
+        'returned' => 'Retourné',
+    ],
+
+    'fulfilment' => [
+        'pending' => 'En attente',
+        'in-progress' => 'En cours',
+        'ready-for-collection' => 'Prêt pour le retrait',
+        'shipped' => 'Expédié',
+        'collected' => 'Retiré',
+        'provisioned' => 'Mis à disposition',
+        'cancelled' => 'Annulé',
+        'returned' => 'Retourné',
     ],
 ];

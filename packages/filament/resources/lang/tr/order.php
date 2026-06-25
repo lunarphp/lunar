@@ -16,6 +16,12 @@ return [
         'failed' => 'Başarısız',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Ödeme Durumu',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Karşılama Durumu',
+        ],
         'status' => [
             'label' => 'Durum',
         ],

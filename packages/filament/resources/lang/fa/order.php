@@ -16,6 +16,12 @@ return [
         'failed' => 'Failed',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'وضعیت پرداخت',
+        ],
+        'fulfilment_status' => [
+            'label' => 'وضعیت تأمین سفارش',
+        ],
         'status' => [
             'label' => 'Status',
         ],

@@ -19,7 +19,7 @@ use Lunar\Core\Pricing\PriceCalculatorInterface;
  * total, then dispatches the refund through the underlying transaction's
  * payment driver. Returns the driver's `PaymentRefund` result unchanged.
  */
-final class RefundOrder implements RefundsOrder
+class RefundOrder implements RefundsOrder
 {
     public function __construct(
         protected PriceCalculatorInterface $priceCalculator,

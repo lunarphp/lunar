@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Đã tạo đơn hàng',
                 'status_change' => 'Đã cập nhật trạng thái',
+                'order_closed' => 'Đã đóng đơn hàng',
+                'order_reopened' => 'Đã mở lại đơn hàng',
+                'order_cancelled' => 'Đã hủy đơn hàng (:reason)',
+                'order_cancelled_no_reason' => 'Đã hủy đơn hàng',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'Đơn giao hàng #:id được đánh dấu là :state',
+                'fulfilment_held' => 'Đơn giao hàng #:id đã được tạm giữ (:reason)',
+                'fulfilment_held_no_reason' => 'Đơn giao hàng #:id đã được tạm giữ',
+                'fulfilment_released' => 'Đơn giao hàng #:id đã được gỡ tạm giữ',
+
                 'capture' => 'Thanh toán :amount bằng thẻ có số cuối :last_four',
                 'authorized' => 'Đã xác thực :amount bằng thẻ có số cuối :last_four',
                 'refund' => 'Hoàn tiền :amount cho thẻ có số cuối :last_four',

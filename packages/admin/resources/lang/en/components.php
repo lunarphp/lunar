@@ -31,6 +31,26 @@ return [
 
                 'status_change' => 'Status updated',
 
+                'order_closed' => 'Order closed',
+
+                'order_reopened' => 'Order reopened',
+
+                'order_cancelled' => 'Order cancelled (:reason)',
+
+                'order_cancelled_no_reason' => 'Order cancelled',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+
+                'fulfilment_state' => 'Fulfilment #:id marked as :state',
+
+                'fulfilment_held' => 'Fulfilment #:id placed on hold (:reason)',
+
+                'fulfilment_held_no_reason' => 'Fulfilment #:id placed on hold',
+
+                'fulfilment_released' => 'Fulfilment #:id released from hold',
+
                 'capture' => 'Payment of :amount on card ending :last_four',
 
                 'authorized' => 'Authorized of :amount on card ending :last_four',

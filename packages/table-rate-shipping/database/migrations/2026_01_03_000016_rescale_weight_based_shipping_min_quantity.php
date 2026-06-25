@@ -28,7 +28,7 @@ return new class extends Migration
             return;
         }
 
-        // Only rescale rows that are still in legacy "kg × 100" storage. The
+        // Only rescale rows that are still in legacy "kg x 100" storage. The
         // `min_quantity % 100 = 0` guard makes a second run a no-op: already
         // rescaled values (5, 10, 25…) and any raw kg values entered via the
         // new UI are skipped. Legitimate breakpoints that happen to be a
@@ -48,7 +48,7 @@ return new class extends Migration
     {
         // Intentionally irreversible: the original value of an already-1 row
         // is indistinguishable from a rescaled-to-1 row, so we cannot restore
-        // the previous kg × 100 storage faithfully.
+        // the previous kg x 100 storage faithfully.
     }
 
     protected function tablesExist(): bool

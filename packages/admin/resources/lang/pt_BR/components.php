@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Pedido criado',
                 'status_change' => 'Status atualizado',
+                'order_closed' => 'Pedido fechado',
+                'order_reopened' => 'Pedido reaberto',
+                'order_cancelled' => 'Pedido cancelado (:reason)',
+                'order_cancelled_no_reason' => 'Pedido cancelado',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'Fulfillment #:id marcado como :state',
+                'fulfilment_held' => 'Fulfillment #:id colocado em espera (:reason)',
+                'fulfilment_held_no_reason' => 'Fulfillment #:id colocado em espera',
+                'fulfilment_released' => 'Fulfillment #:id liberado da espera',
+
                 'capture' => 'Pagamento de :amount no cartão com final :last_four',
                 'authorized' => 'Autorizado o valor de :amount no cartão com final :last_four',
                 'refund' => 'Reembolso de :amount no cartão com final :last_four',

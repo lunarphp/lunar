@@ -7,6 +7,7 @@ use Lunar\Core\Exceptions\NonPurchasableItemException;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\ProductVariant;
@@ -153,4 +154,35 @@ test('non eloquent models can be added to an order', function () {
     );
 
     expect($orderLine->decimal('unit_price'))->toEqual(6.5);
+});
+
+test('withoutFulfilment scope returns only lines not allocated to a fulfilment', function () {
+    $unallocated = OrderLine::factory()->create();
+
+    $allocated = OrderLine::factory()->create();
+    FulfilmentLine::factory()->create([
+        'order_line_id' => $allocated->id,
+    ]);
+
+    $results = OrderLine::withoutFulfilment()->pluck('id');
+
+    expect($results)
+        ->toContain($unallocated->id)
+        ->not->toContain($allocated->id);
+});
+
+test('withoutFulfilment scope excludes a partially allocated line', function () {
+    // The line is for 5 units but only 3 are allocated to a fulfilment. It
+    // still has a fulfilment line, so it counts as allocated and is excluded.
+    $line = OrderLine::factory()->create([
+        'quantity' => 5,
+    ]);
+
+    FulfilmentLine::factory()->create([
+        'order_line_id' => $line->id,
+        'quantity' => 3,
+    ]);
+
+    expect(OrderLine::withoutFulfilment()->pluck('id'))
+        ->not->toContain($line->id);
 });

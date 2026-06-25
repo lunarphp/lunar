@@ -3,22 +3,20 @@
 namespace Lunar\Filament\Tables\Order;
 
 use Carbon\Carbon;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Core\Contracts\OrderStateConfig;
 use Lunar\Core\Models\Order;
-use Lunar\Core\States\Order\OrderState;
-use Lunar\Filament\Actions\Orders\UpdateOrderStatusBulkAction;
+use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
+use Lunar\Core\States\Order\Payment\PaymentStatus;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 use Lunar\Filament\Support\CustomerStatus;
-use Lunar\Filament\Support\OrderStatus;
 use Lunar\Filament\Support\RecordUrls;
 
 class OrderTable
@@ -41,12 +39,6 @@ class OrderTable
                         ->url(fn ($record) => RecordUrls::for('order', $record)),
                 ])
                 ->recordUrl(fn ($record) => RecordUrls::for('order', $record))
-                ->toolbarActions([
-                    BulkActionGroup::make([
-                        UpdateOrderStatusBulkAction::make()
-                            ->deselectRecordsAfterCompletion(),
-                    ]),
-                ])
                 ->defaultSort('id', 'DESC')
                 ->selectCurrentPageOnly()
                 ->deferLoading()
@@ -57,11 +49,25 @@ class OrderTable
     public static function getColumns(): array
     {
         return [
-            TextColumn::make('status')
+            TextColumn::make('closed_at')
                 ->label(__('lunar-filament::order.table.status.label'))
                 ->toggleable()
-                ->formatStateUsing(fn ($state) => OrderStatus::getLabel((string) $state))
-                ->color(fn ($state) => OrderStatus::getColor((string) $state))
+                ->state(fn (Order $record): string => __('lunar::states.order.'.$record->lifecycleStatus()))
+                ->color(fn (Order $record): string => match ($record->lifecycleStatus()) {
+                    'cancelled' => 'danger',
+                    'closed' => 'gray',
+                    default => 'success',
+                })
+                ->badge(),
+            TextColumn::make('payment_status')
+                ->label(__('lunar-filament::order.table.payment_status.label'))
+                ->toggleable()
+                ->formatStateUsing(fn ($state) => $state instanceof PaymentStatus ? $state->label() : (string) $state)
+                ->badge(),
+            TextColumn::make('fulfilment_status')
+                ->label(__('lunar-filament::order.table.fulfilment_status.label'))
+                ->toggleable()
+                ->formatStateUsing(fn ($state) => $state instanceof FulfilmentStatus ? $state->label() : (string) $state)
                 ->badge(),
             TextColumn::make('reference')
                 ->label(__('lunar-filament::order.table.reference.label'))
@@ -115,19 +121,43 @@ class OrderTable
     public static function getFilters(): array
     {
         return [
-            SelectFilter::make('status')
+            TernaryFilter::make('closed_at')
                 ->label(__('lunar-filament::order.table.status.label'))
-                ->options(
-                    collect(app(OrderStateConfig::class)->orderStates())
-                        /** @var class-string<OrderState> $class */
-                        ->mapWithKeys(fn (string $class) => [$class::$name => (new $class(new Order))->label()])
-                )
+                ->trueLabel(__('lunar::states.order.closed'))
+                ->falseLabel(__('lunar::states.order.open'))
+                // Default to the "open" work queue — the inbox-zero landing view.
+                ->default(false)
+                ->queries(
+                    true: fn (Builder $query) => $query->whereNotNull('closed_at'),
+                    false: fn (Builder $query) => $query->whereNull('closed_at'),
+                    blank: fn (Builder $query) => $query,
+                ),
+            SelectFilter::make('payment_status')
+                ->label(__('lunar-filament::order.table.payment_status.label'))
+                ->options([
+                    'pending' => __('lunar::states.payment.pending'),
+                    'authorized' => __('lunar::states.payment.authorized'),
+                    'partially-paid' => __('lunar::states.payment.partially-paid'),
+                    'paid' => __('lunar::states.payment.paid'),
+                    'partially-refunded' => __('lunar::states.payment.partially-refunded'),
+                    'refunded' => __('lunar::states.payment.refunded'),
+                    'voided' => __('lunar::states.payment.voided'),
+                ])
+                ->multiple(),
+            SelectFilter::make('fulfilment_status')
+                ->label(__('lunar-filament::order.table.fulfilment_status.label'))
+                ->options([
+                    'unfulfilled' => __('lunar::states.fulfilment-status.unfulfilled'),
+                    'partially-fulfilled' => __('lunar::states.fulfilment-status.partially-fulfilled'),
+                    'fulfilled' => __('lunar::states.fulfilment-status.fulfilled'),
+                    'partially-returned' => __('lunar::states.fulfilment-status.partially-returned'),
+                    'returned' => __('lunar::states.fulfilment-status.returned'),
+                ])
                 ->multiple(),
             Filter::make('placed_at')
                 ->schema([
                     DatePicker::make('placed_after')
-                        ->label(__('lunar-filament::order.table.placed_after.label'))
-                        ->default(Carbon::now()->subMonths(6)),
+                        ->label(__('lunar-filament::order.table.placed_after.label')),
                     DatePicker::make('placed_before')
                         ->label(__('lunar-filament::order.table.placed_before.label')),
                 ])

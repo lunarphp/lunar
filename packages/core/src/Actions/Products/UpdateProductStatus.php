@@ -15,7 +15,7 @@ use Lunar\Core\Models\Product;
  * becomes a state-machine transition once that subsystem lands without
  * changing this signature.
  */
-final class UpdateProductStatus implements UpdatesProductStatus
+class UpdateProductStatus implements UpdatesProductStatus
 {
     /**
      * Statuses recognised by Lunar's stock admin views.

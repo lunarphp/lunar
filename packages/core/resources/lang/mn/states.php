@@ -19,16 +19,37 @@ return [
     ],
 
     'order' => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'payment-failed' => 'Payment Failed',
-        'backordered' => 'Backordered',
-        'in-process' => 'In Process',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'complete' => 'Complete',
-        'returned' => 'Returned',
-        'refunded' => 'Refunded',
-        'on-hold' => 'On Hold',
+        'open' => 'Нээлттэй',
+        'closed' => 'Хаагдсан',
         'cancelled' => 'Cancelled',
+    ],
+
+    'payment' => [
+        'pending' => 'Хүлээгдэж буй',
+        'authorized' => 'Зөвшөөрөгдсөн',
+        'partially-paid' => 'Хэсэгчлэн төлсөн',
+        'paid' => 'Төлсөн',
+        'partially-refunded' => 'Хэсэгчлэн буцаасан',
+        'refunded' => 'Буцаасан',
+        'voided' => 'Хүчингүй болсон',
+    ],
+
+    'fulfilment-status' => [
+        'unfulfilled' => 'Биелүүлээгүй',
+        'partially-fulfilled' => 'Хэсэгчлэн биелүүлсэн',
+        'fulfilled' => 'Биелүүлсэн',
+        'partially-returned' => 'Хэсэгчлэн буцаасан',
+        'returned' => 'Буцаасан',
+    ],
+
+    'fulfilment' => [
+        'pending' => 'Хүлээгдэж буй',
+        'in-progress' => 'Хийгдэж байгаа',
+        'ready-for-collection' => 'Очиж авахад бэлэн',
+        'shipped' => 'Илгээсэн',
+        'collected' => 'Хүлээн авсан',
+        'provisioned' => 'Нийлүүлсэн',
+        'cancelled' => 'Цуцлагдсан',
+        'returned' => 'Буцаасан',
     ],
 ];

@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Narudžba izrađena',
                 'status_change' => 'Status ažuriran',
+                'order_closed' => 'Narudžba zatvorena',
+                'order_reopened' => 'Narudžba ponovno otvorena',
+                'order_cancelled' => 'Narudžba otkazana (:reason)',
+                'order_cancelled_no_reason' => 'Narudžba otkazana',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'Ispunjenje #:id označeno kao :state',
+                'fulfilment_held' => 'Ispunjenje #:id stavljeno na čekanje (:reason)',
+                'fulfilment_held_no_reason' => 'Ispunjenje #:id stavljeno na čekanje',
+                'fulfilment_released' => 'Ispunjenje #:id oslobođeno s čekanja',
+
                 'capture' => 'Naplata od :amount na kartici sa završnim znamenkama :last_four',
                 'authorized' => 'Autorizacija od :amount na kartici sa završnim znamenkama :last_four',
                 'refund' => 'Povrat od :amount na kartici sa završnim znamenkama :last_four',

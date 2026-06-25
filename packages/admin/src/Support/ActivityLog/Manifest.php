@@ -6,9 +6,12 @@ use Illuminate\Support\Collection;
 use Lunar\Admin\Support\ActivityLog\Orders\Address;
 use Lunar\Admin\Support\ActivityLog\Orders\Capture;
 use Lunar\Admin\Support\ActivityLog\Orders\EmailNotification;
+use Lunar\Admin\Support\ActivityLog\Orders\FulfilmentUpdate;
 use Lunar\Admin\Support\ActivityLog\Orders\Intent;
+use Lunar\Admin\Support\ActivityLog\Orders\OrderCancelled;
+use Lunar\Admin\Support\ActivityLog\Orders\OrderClosed;
+use Lunar\Admin\Support\ActivityLog\Orders\OrderReopened;
 use Lunar\Admin\Support\ActivityLog\Orders\Refund;
-use Lunar\Admin\Support\ActivityLog\Orders\StatusUpdate;
 use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
@@ -23,13 +26,16 @@ class Manifest
         $this->events = [
             Order::morphName() => [
                 Comment::class,
-                StatusUpdate::class,
                 Capture::class,
                 Intent::class,
                 Refund::class,
                 EmailNotification::class,
                 Address::class,
                 TagsUpdate::class,
+                FulfilmentUpdate::class,
+                OrderClosed::class,
+                OrderReopened::class,
+                OrderCancelled::class,
             ],
             Product::morphName() => [
                 Comment::class,

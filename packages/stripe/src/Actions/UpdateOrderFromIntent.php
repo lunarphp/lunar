@@ -9,11 +9,9 @@ use Stripe\PaymentIntent;
 
 class UpdateOrderFromIntent
 {
-    final public static function execute(
+    public static function execute(
         OrderContract $order,
-        PaymentIntent $paymentIntent,
-        string $successStatus = 'paid',
-        string $failStatus = 'failed'
+        PaymentIntent $paymentIntent
     ): OrderContract {
         return DB::transaction(function () use ($order, $paymentIntent) {
 
@@ -21,8 +19,6 @@ class UpdateOrderFromIntent
 
             $order = app(StoreCharges::class)->store($order, $charges);
             $requiresCapture = $paymentIntent->status === PaymentIntent::STATUS_REQUIRES_CAPTURE;
-
-            $statuses = config('lunar.stripe.status_mapping', []);
 
             $placedAt = null;
 
@@ -39,7 +35,6 @@ class UpdateOrderFromIntent
             }
 
             $order->update([
-                'status' => $statuses[$paymentIntent->status] ?? $paymentIntent->status,
                 'placed_at' => $order->placed_at ?: $placedAt,
             ]);
 

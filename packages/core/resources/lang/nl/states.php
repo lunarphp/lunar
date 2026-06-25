@@ -19,16 +19,37 @@ return [
     ],
 
     'order' => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'payment-failed' => 'Payment Failed',
-        'backordered' => 'Backordered',
-        'in-process' => 'In Process',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'complete' => 'Complete',
-        'returned' => 'Returned',
-        'refunded' => 'Refunded',
-        'on-hold' => 'On Hold',
+        'open' => 'Open',
+        'closed' => 'Gesloten',
         'cancelled' => 'Cancelled',
+    ],
+
+    'payment' => [
+        'pending' => 'In afwachting',
+        'authorized' => 'Geautoriseerd',
+        'partially-paid' => 'Gedeeltelijk betaald',
+        'paid' => 'Betaald',
+        'partially-refunded' => 'Gedeeltelijk terugbetaald',
+        'refunded' => 'Terugbetaald',
+        'voided' => 'Geannuleerd',
+    ],
+
+    'fulfilment-status' => [
+        'unfulfilled' => 'Niet afgehandeld',
+        'partially-fulfilled' => 'Gedeeltelijk afgehandeld',
+        'fulfilled' => 'Afgehandeld',
+        'partially-returned' => 'Gedeeltelijk geretourneerd',
+        'returned' => 'Geretourneerd',
+    ],
+
+    'fulfilment' => [
+        'pending' => 'In afwachting',
+        'in-progress' => 'In behandeling',
+        'ready-for-collection' => 'Klaar om af te halen',
+        'shipped' => 'Verzonden',
+        'collected' => 'Afgehaald',
+        'provisioned' => 'Beschikbaar gesteld',
+        'cancelled' => 'Geannuleerd',
+        'returned' => 'Geretourneerd',
     ],
 ];

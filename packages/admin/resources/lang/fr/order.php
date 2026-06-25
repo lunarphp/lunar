@@ -6,9 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Gérer',
     ],
-    'tabs' => [
-        'all' => 'Toutes',
-    ],
     'transactions' => [
         'capture' => 'Capturé',
         'intent' => 'Intention',
@@ -283,5 +280,178 @@ return [
                 'success' => 'Remboursement réussi',
             ],
         ],
+    ],
+
+    'fulfilments' => [
+        'heading' => 'Traitements',
+        'unreferenced' => 'Traitement #:id',
+        'on_hold' => 'En attente',
+        'empty' => 'Aucun traitement pour le moment.',
+        'columns' => [
+            'reference' => 'Référence',
+            'state' => 'État',
+            'items' => 'Articles',
+            'tracking' => 'Suivi',
+            'shipped_at' => 'Expédié le',
+            'handed_over' => [
+                'shipping' => 'Expédié le',
+                'collection' => 'Retiré le',
+                'digital' => 'Mis à disposition le',
+            ],
+            'handed_over_default' => 'Traité le',
+        ],
+        'actions' => [
+            'more' => 'Plus d\'actions',
+            'notify' => 'Notifier le client',
+            'add_tracking' => [
+                'label' => 'Ajouter un suivi',
+                'modal_heading' => 'Ajouter un suivi',
+                'notification' => [
+                    'success' => 'Suivi ajouté.',
+                    'error' => 'Impossible d\'ajouter le suivi.',
+                ],
+            ],
+            'remove_tracking' => [
+                'label' => 'Supprimer le suivi',
+                'notification' => [
+                    'success' => 'Suivi supprimé.',
+                    'error' => 'Impossible de supprimer le suivi.',
+                ],
+            ],
+            'create' => [
+                'label' => 'Créer un traitement',
+                'modal_heading' => 'Créer un traitement',
+                'empty' => 'Chaque ligne est déjà traitée.',
+                'notification' => [
+                    'success' => 'Traitement créé.',
+                    'error' => 'Impossible de créer le traitement.',
+                ],
+            ],
+            'ship' => [
+                'label' => 'Marquer comme expédié',
+                'modal_heading' => 'Marquer le traitement comme expédié',
+                'notification' => [
+                    'success' => 'Traitement marqué comme expédié.',
+                    'error' => 'Impossible d\'expédier le traitement.',
+                ],
+            ],
+            'fulfil' => [
+                'label' => 'Marquer comme traité',
+                'modal_heading' => 'Marquer le traitement comme traité',
+                'labels' => [
+                    'collection' => 'Marquer comme retiré',
+                ],
+                'notification' => [
+                    'success' => 'Traitement marqué comme traité.',
+                    'error' => 'Impossible de traiter le traitement.',
+                ],
+            ],
+            'cancel' => [
+                'label' => 'Annuler le traitement',
+                'modal_heading' => 'Annuler le traitement',
+                'description' => 'Cela rétablit le traitement à l\'état en attente afin qu\'il puisse être repris. Les détails d\'expédition sont effacés.',
+                'notification' => [
+                    'success' => 'Traitement annulé.',
+                    'error' => 'Impossible d\'annuler le traitement.',
+                ],
+            ],
+            'change_location' => [
+                'label' => 'Changer d\'emplacement',
+                'modal_heading' => 'Changer l\'emplacement du traitement',
+                'field' => 'Emplacement',
+                'notification' => [
+                    'success' => 'Emplacement du traitement mis à jour.',
+                    'error' => 'Impossible de changer l\'emplacement du traitement.',
+                ],
+            ],
+            'return' => [
+                'label' => 'Retourner',
+                'notification' => [
+                    'success' => 'Traitement retourné.',
+                    'error' => 'Impossible de retourner le traitement.',
+                ],
+            ],
+            'update_status' => [
+                'label' => 'Mettre à jour le statut',
+            ],
+            'transition' => [
+                'modal_heading' => 'Marquer le traitement comme :status ?',
+                'notification' => [
+                    'success' => 'Statut du traitement mis à jour.',
+                    'error' => 'Impossible de mettre à jour le statut du traitement.',
+                ],
+            ],
+            'undo_return' => [
+                'label' => 'Annuler le retour',
+                'notification' => [
+                    'success' => 'Retour annulé.',
+                    'error' => 'Impossible d\'annuler le retour.',
+                ],
+            ],
+            'hold' => [
+                'label' => 'Mettre en attente le traitement',
+                'modal_heading' => 'Mettre en attente le traitement',
+                'reason' => 'Motif',
+                'note' => 'Note',
+                'notification' => [
+                    'success' => 'Traitement mis en attente.',
+                    'error' => 'Impossible de mettre en attente le traitement.',
+                ],
+            ],
+            'release' => [
+                'label' => 'Lever l\'attente',
+                'notification' => [
+                    'success' => 'Traitement sorti de l\'attente.',
+                    'error' => 'Impossible de sortir le traitement de l\'attente.',
+                ],
+            ],
+            'split' => [
+                'label' => 'Diviser',
+                'confirm' => 'Diviser le traitement',
+                'cancel' => 'Annuler',
+                'empty' => 'Sélectionnez une quantité à extraire.',
+                'modal_heading' => 'Diviser le traitement',
+                'notification' => [
+                    'success' => 'Traitement divisé.',
+                    'error' => 'Impossible de diviser le traitement.',
+                ],
+            ],
+            'merge' => [
+                'label' => 'Fusionner',
+                'confirm' => 'Fusionner le traitement',
+                'cancel' => 'Annuler',
+                'modal_heading' => 'Fusionner le traitement',
+                'description' => 'Sélectionnez les articles que vous souhaitez fusionner.',
+                'target' => 'Fusionner avec',
+                'empty' => 'Sélectionnez des articles et une destination pour fusionner.',
+                'notification' => [
+                    'success' => 'Traitements fusionnés.',
+                    'error' => 'Impossible de fusionner les traitements.',
+                ],
+            ],
+        ],
+        'fields' => [
+            'quantity' => 'Quantité',
+            'tracking' => 'Suivi',
+            'tracking_item' => 'Suivi #:number',
+            'unit_price' => 'Prix unitaire',
+            'sub_total' => 'Sous-total',
+            'discount_total' => 'Total des remises',
+            'total' => 'Total',
+            'stock_level' => 'Niveau de stock actuel : :count',
+            'of' => 'sur :count',
+            'outstanding' => 'Restant : :count',
+            'tracking_number' => 'Numéro de suivi',
+            'tracking_url' => 'URL de suivi',
+            'carrier' => 'Transporteur',
+            'carrier_custom' => 'Personnalisé / autre',
+            'tracking_url_help' => 'Nécessaire uniquement pour les transporteurs sans lien de suivi automatique.',
+            'shipping_method' => 'Méthode de livraison',
+            'move_quantity' => 'Quantité à déplacer',
+        ],
+    ],
+
+    'other_items' => [
+        'heading' => 'Autres articles',
     ],
 ];

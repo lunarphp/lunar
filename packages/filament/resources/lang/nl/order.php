@@ -16,6 +16,12 @@ return [
         'failed' => 'Mislukt',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Betaalstatus',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Fulfilment-status',
+        ],
         'status' => [
             'label' => 'Status',
         ],

@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Close order',
+            'confirm' => 'Closing archives the order once it has been fully dealt with. You can reopen it later.',
+            'notification' => [
+                'success' => 'Order closed.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Reopen order',
+            'confirm' => 'Reopening returns the order to your open work queue.',
+            'notification' => [
+                'success' => 'Order reopened.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Cancel order',
+            'reason' => 'Reason for cancellation',
+            'note' => 'Staff note',
+            'note_help' => 'Only you and other staff can see this note.',
+            'notify' => 'Send a notification to the customer',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Could not cancel the order.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Mark as Complete',
+            'notification' => [
+                'success' => 'Order marked as complete.',
             ],
         ],
         'mark_as_shipped' => [
