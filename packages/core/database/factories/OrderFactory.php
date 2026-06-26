@@ -19,7 +19,6 @@ class OrderFactory extends BaseFactory
             'channel_id' => Channel::factory(),
             'new_customer' => $this->faker->boolean,
             'user_id' => null,
-            'status' => 'awaiting-payment',
             'reference' => $this->faker->unique()->regexify('[A-Z]{8}'),
             'sub_total' => $total - $taxTotal,
             'discount_total' => 0,
@@ -35,28 +34,27 @@ class OrderFactory extends BaseFactory
         ];
     }
 
-    public function awaitingPayment(): static
+    /**
+     * A placed (live) order.
+     */
+    public function placed(): static
     {
-        return $this->state(fn () => ['status' => 'awaiting-payment']);
+        return $this->state(fn () => ['placed_at' => now()]);
     }
 
-    public function inProcess(): static
+    /**
+     * An open (un-archived) order — the default.
+     */
+    public function open(): static
     {
-        return $this->state(fn () => ['status' => 'in-process']);
+        return $this->state(fn () => ['closed_at' => null]);
     }
 
-    public function shipped(): static
+    /**
+     * A closed (archived) order.
+     */
+    public function closed(): static
     {
-        return $this->state(fn () => ['status' => 'shipped']);
-    }
-
-    public function complete(): static
-    {
-        return $this->state(fn () => ['status' => 'complete']);
-    }
-
-    public function cancelled(): static
-    {
-        return $this->state(fn () => ['status' => 'cancelled']);
+        return $this->state(fn () => ['closed_at' => now()]);
     }
 }

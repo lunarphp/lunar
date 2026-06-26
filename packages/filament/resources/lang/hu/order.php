@@ -16,6 +16,12 @@ return [
         'failed' => 'Sikertelen',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Fizetési állapot',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Teljesítési állapot',
+        ],
         'status' => [
             'label' => 'Státusz',
         ],

@@ -19,16 +19,37 @@ return [
     ],
 
     'order' => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'payment-failed' => 'Payment Failed',
-        'backordered' => 'Backordered',
-        'in-process' => 'In Process',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'complete' => 'Complete',
-        'returned' => 'Returned',
-        'refunded' => 'Refunded',
-        'on-hold' => 'On Hold',
+        'open' => 'مفتوح',
+        'closed' => 'مغلق',
         'cancelled' => 'Cancelled',
+    ],
+
+    'payment' => [
+        'pending' => 'قيد الانتظار',
+        'authorized' => 'مُصرَّح به',
+        'partially-paid' => 'مدفوع جزئياً',
+        'paid' => 'مدفوع',
+        'partially-refunded' => 'مُسترَد جزئياً',
+        'refunded' => 'مُسترَد',
+        'voided' => 'مُلغى',
+    ],
+
+    'fulfilment-status' => [
+        'unfulfilled' => 'غير منفّذ',
+        'partially-fulfilled' => 'منفّذ جزئياً',
+        'fulfilled' => 'منفّذ',
+        'partially-returned' => 'مُرتجَع جزئياً',
+        'returned' => 'مُرتجَع',
+    ],
+
+    'fulfilment' => [
+        'pending' => 'قيد الانتظار',
+        'in-progress' => 'قيد التنفيذ',
+        'ready-for-collection' => 'جاهز للاستلام',
+        'shipped' => 'تم الشحن',
+        'collected' => 'تم الاستلام',
+        'provisioned' => 'تم التوفير',
+        'cancelled' => 'مُلغى',
+        'returned' => 'مُرتجَع',
     ],
 ];

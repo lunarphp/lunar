@@ -7,7 +7,7 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Contracts\Cart as CartContract;
 
-final class CalculateShippingSubTotal
+class CalculateShippingSubTotal
 {
     /**
      * Sum the shipping breakdown into the cart's shipping sub total.

@@ -4,8 +4,8 @@ namespace Lunar\Filament\FieldTypes;
 
 use Filament\Schemas\Components\Component;
 use Livewire\Livewire;
-use Lunar\Filament\Synthesizers\TextSynth;
 use Lunar\Core\Models\Attribute;
+use Lunar\Filament\Synthesizers\TextSynth;
 
 abstract class BaseFieldType
 {

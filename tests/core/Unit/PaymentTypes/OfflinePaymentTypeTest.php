@@ -49,42 +49,6 @@ test('can authorize payment', function () {
     expect($cart->refresh()->completedOrder)->toBeInstanceOf(Order::class);
 });
 
-test('can override status', function () {
-    $cart = Cart::factory()->create();
-
-    Config::set('lunar.payments.types.offline', [
-        'authorized' => 'in-process',
-    ]);
-
-    CartAddress::factory()->create([
-        'cart_id' => $cart->id,
-        'type' => 'billing',
-        'country_id' => Country::factory(),
-        'first_name' => 'Santa',
-        'line_one' => '123 Elf Road',
-        'city' => 'Lapland',
-        'postcode' => 'BILL',
-    ]);
-
-    CartAddress::factory()->create([
-        'cart_id' => $cart->id,
-        'type' => 'shipping',
-        'country_id' => Country::factory(),
-        'first_name' => 'Santa',
-        'line_one' => '123 Elf Road',
-        'city' => 'Lapland',
-        'postcode' => 'SHIPP',
-    ]);
-
-    Payments::driver('offline')->cart($cart->refresh())->withData([
-        'authorized' => 'in-process',
-    ])->authorize();
-
-    $order = $cart->refresh()->completedOrder;
-
-    expect((string) $order->status)->toBe('in-process');
-});
-
 test('can set additional meta', function () {
     $cart = Cart::factory()->create();
 

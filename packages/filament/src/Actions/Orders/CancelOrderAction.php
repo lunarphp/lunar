@@ -3,12 +3,19 @@
 namespace Lunar\Filament\Actions\Orders;
 
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
+use Lunar\Core\Actions\Orders\CancelOrder;
+use Lunar\Core\Enums\NotificationScope;
+use Lunar\Core\Facades\CancelReasons;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Models\Order;
-use Lunar\Core\States\Order\Order\Cancelled;
 
 /**
- * Move the order into the Cancelled state. Downstream notifications / refund
- * flows can key off the state.
+ * Cancel an unfulfilled order. Covers the status side only — no refund is
+ * issued and no stock is restocked (future specs). The notification toggle
+ * gates the customer email via the OrderCancelled event.
  */
 class CancelOrderAction extends Action
 {
@@ -23,12 +30,31 @@ class CancelOrderAction extends Action
 
         $this
             ->label(__('lunar-filament::actions.orders.cancel_order.label'))
+            ->modalHeading(__('lunar-filament::actions.orders.cancel_order.modal_heading'))
             ->icon('heroicon-o-x-circle')
             ->color('danger')
-            ->requiresConfirmation()
-            ->modalDescription(__('lunar-filament::actions.orders.cancel_order.confirm'))
-            ->visible(fn (Order $record) => (string) $record->status !== Cancelled::$name)
-            ->action(fn (Order $record) => $record->forceFill(['status' => Cancelled::$name])->save())
+            ->schema([
+                Select::make('reason')
+                    ->label(__('lunar-filament::actions.orders.cancel_order.reason'))
+                    ->options(CancelReasons::all())
+                    ->native(false),
+                Textarea::make('note')
+                    ->label(__('lunar-filament::actions.orders.cancel_order.note'))
+                    ->helperText(__('lunar-filament::actions.orders.cancel_order.note_help')),
+                Toggle::make('notify')
+                    ->label(__('lunar-filament::actions.orders.cancel_order.notify'))
+                    ->default(true)
+                    // Only meaningful when a cancellation notification is wired
+                    // up; its presence is the cue the action will email the
+                    // customer.
+                    ->visible(fn (): bool => OrderNotifications::triggeredBy('cancelled', NotificationScope::Order) !== []),
+            ])
+            ->action(fn (Order $record, array $data) => $record->cancel(
+                $data['reason'] ?? null,
+                $data['note'] ?? null,
+                (bool) ($data['notify'] ?? true),
+            ))
+            ->visible(fn (?Order $record = null) => $record !== null && CancelOrder::canRun($record))
             ->successNotificationTitle(__('lunar-filament::actions.orders.cancel_order.notification.success'));
     }
 }

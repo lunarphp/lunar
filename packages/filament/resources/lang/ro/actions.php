@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Închide comanda',
+            'confirm' => 'Închiderea arhivează comanda după ce a fost gestionată complet. O poți redeschide ulterior.',
+            'notification' => [
+                'success' => 'Comandă închisă.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Redeschide comanda',
+            'confirm' => 'Redeschiderea readuce comanda în coada ta de lucru deschisă.',
+            'notification' => [
+                'success' => 'Comandă redeschisă.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Anulează comanda',
+            'reason' => 'Motivul anulării',
+            'note' => 'Notă de personal',
+            'note_help' => 'Doar tu și ceilalți membri ai personalului puteți vedea această notă.',
+            'notify' => 'Trimite o notificare clientului',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Nu s-a putut anula comanda.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Marchează ca finalizată',
+            'notification' => [
+                'success' => 'Comandă marcată ca finalizată.',
             ],
         ],
         'mark_as_shipped' => [

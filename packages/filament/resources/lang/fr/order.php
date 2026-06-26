@@ -16,6 +16,12 @@ return [
         'failed' => 'Échoué',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Statut du paiement',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Statut du traitement',
+        ],
         'status' => [
             'label' => 'Statut',
         ],

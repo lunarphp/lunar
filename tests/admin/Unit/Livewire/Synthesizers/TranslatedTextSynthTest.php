@@ -6,7 +6,6 @@ use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Core\Models\Language;
 use Lunar\Filament\Synthesizers\TranslatedTextSynth;
 use Lunar\Tests\Admin\Unit\Livewire\TestCase;
-use stdClass;
 
 uses(TestCase::class)
     ->group('support.synthesizers');

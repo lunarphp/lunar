@@ -17,7 +17,7 @@ use Lunar\Core\Models\Transaction;
  * underlying transaction's payment driver. Returns the driver's
  * `PaymentCapture` result unchanged.
  */
-final class CaptureOrder implements CapturesOrder
+class CaptureOrder implements CapturesOrder
 {
     /**
      * Major-unit amount (decimal) to capture. Converted to minor units using

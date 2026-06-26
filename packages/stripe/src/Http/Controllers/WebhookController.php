@@ -13,7 +13,7 @@ use Lunar\Stripe\Models\StripePaymentIntent;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Exception\UnexpectedValueException;
 
-final class WebhookController extends Controller
+class WebhookController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {

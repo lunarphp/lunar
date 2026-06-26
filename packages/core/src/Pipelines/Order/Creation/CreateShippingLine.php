@@ -36,6 +36,8 @@ class CreateShippingLine
                 'purchasable_type' => ShippingOption::class,
                 'purchasable_id' => 1,
                 'type' => 'shipping',
+                'requires_shipping' => false,
+                'requires_fulfilment' => false,
                 'description' => $shippingOption->getName(),
                 'option' => $shippingOption->getOption(),
                 'identifier' => $shippingOption->getIdentifier(),
@@ -48,7 +50,12 @@ class CreateShippingLine
                 'tax_total' => $shippingAddress->shippingTaxTotal->value,
                 'total' => $shippingAddress->shippingTotal->value,
                 'notes' => null,
-                'meta' => $shippingOption->meta,
+                // Persist the chosen option's `collect` flag onto the line
+                // snapshot so the `collection` fulfilment method can claim its
+                // lines without re-resolving the option at order time.
+                'meta' => array_merge($shippingOption->meta ?? [], [
+                    'collect' => $shippingOption->collect,
+                ]),
             ])->save();
         }
 

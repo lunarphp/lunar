@@ -37,11 +37,33 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\UpdatesCartLine::class => Actions\Carts\UpdateCartLine::class,
 
         // Orders
+        Contracts\Orders\CancelsOrder::class => Actions\Orders\CancelOrder::class,
         Contracts\Orders\CapturesOrder::class => Actions\Orders\CaptureOrder::class,
+        Contracts\Orders\ClosesOrder::class => Actions\Orders\CloseOrder::class,
         Contracts\Orders\GeneratesOrderReference::class => Actions\Orders\GenerateOrderReference::class,
-        Contracts\Orders\MarksOrderAsShipped::class => Actions\Orders\MarkOrderAsShipped::class,
+        Contracts\Orders\NotifiesCustomer::class => Actions\Orders\NotifyCustomer::class,
+        Contracts\Orders\RecomputesOrderStatus::class => Actions\Orders\RecomputeOrderStatus::class,
         Contracts\Orders\RefundsOrder::class => Actions\Orders\RefundOrder::class,
-        Contracts\Orders\UpdatesOrderStatus::class => Actions\Orders\UpdateOrderStatus::class,
+        Contracts\Orders\ReopensOrder::class => Actions\Orders\ReopenOrder::class,
+        Contracts\Orders\ResolvesFulfilmentStatus::class => Actions\Orders\ResolveFulfilmentStatus::class,
+        Contracts\Orders\ResolvesPaymentStatus::class => Actions\Orders\ResolvePaymentStatus::class,
+
+        // Fulfilment
+        Contracts\Fulfilment\AddsFulfilmentTracking::class => Actions\Fulfilment\AddFulfilmentTracking::class,
+        Contracts\Fulfilment\CancelsFulfilment::class => Actions\Fulfilment\CancelFulfilment::class,
+        Contracts\Fulfilment\ChangesFulfilmentLocation::class => Actions\Fulfilment\ChangeFulfilmentLocation::class,
+        Contracts\Fulfilment\CreatesFulfilment::class => Actions\Fulfilment\CreateFulfilment::class,
+        Contracts\Fulfilment\EnsuresInitialFulfilment::class => Actions\Fulfilment\EnsureInitialFulfilment::class,
+        Contracts\Fulfilment\FulfilsFulfilment::class => Actions\Fulfilment\FulfilFulfilment::class,
+        Contracts\Fulfilment\HoldsFulfilment::class => Actions\Fulfilment\HoldFulfilment::class,
+        Contracts\Fulfilment\MergesFulfilments::class => Actions\Fulfilment\MergeFulfilments::class,
+        Contracts\Fulfilment\MovesFulfilmentLines::class => Actions\Fulfilment\MoveFulfilmentLines::class,
+        Contracts\Fulfilment\ReleasesFulfilment::class => Actions\Fulfilment\ReleaseFulfilment::class,
+        Contracts\Fulfilment\RemovesFulfilmentTracking::class => Actions\Fulfilment\RemoveFulfilmentTracking::class,
+        Contracts\Fulfilment\ReturnsFulfilment::class => Actions\Fulfilment\ReturnFulfilment::class,
+        Contracts\Fulfilment\ShipsFulfilment::class => Actions\Fulfilment\ShipFulfilment::class,
+        Contracts\Fulfilment\SplitsFulfilment::class => Actions\Fulfilment\SplitFulfilment::class,
+        Contracts\Fulfilment\TransitionsFulfilment::class => Actions\Fulfilment\TransitionFulfilment::class,
 
         // Products
         Contracts\Products\AdjustsStock::class => Actions\Products\AdjustStock::class,

@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Đóng đơn hàng',
+            'confirm' => 'Việc đóng sẽ lưu trữ đơn hàng sau khi đã xử lý xong hoàn toàn. Bạn có thể mở lại sau.',
+            'notification' => [
+                'success' => 'Đã đóng đơn hàng.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Mở lại đơn hàng',
+            'confirm' => 'Việc mở lại sẽ đưa đơn hàng trở lại hàng đợi công việc đang mở của bạn.',
+            'notification' => [
+                'success' => 'Đã mở lại đơn hàng.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Hủy đơn hàng',
+            'reason' => 'Lý do hủy',
+            'note' => 'Ghi chú nội bộ',
+            'note_help' => 'Chỉ bạn và nhân viên khác mới có thể xem ghi chú này.',
+            'notify' => 'Gửi thông báo cho khách hàng',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Không thể hủy đơn hàng.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Đánh dấu hoàn tất',
+            'notification' => [
+                'success' => 'Đã đánh dấu đơn hàng là hoàn tất.',
             ],
         ],
         'mark_as_shipped' => [

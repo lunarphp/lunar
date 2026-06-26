@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Siparişi kapat',
+            'confirm' => 'Kapatma, sipariş tamamen sonuçlandırıldıktan sonra onu arşivler. Daha sonra yeniden açabilirsiniz.',
+            'notification' => [
+                'success' => 'Sipariş kapatıldı.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Siparişi yeniden aç',
+            'confirm' => 'Yeniden açma, siparişi açık iş kuyruğunuza geri döndürür.',
+            'notification' => [
+                'success' => 'Sipariş yeniden açıldı.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Siparişi iptal et',
+            'reason' => 'İptal nedeni',
+            'note' => 'Personel notu',
+            'note_help' => 'Bu notu yalnızca siz ve diğer personel görebilir.',
+            'notify' => 'Müşteriye bir bildirim gönder',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Sipariş iptal edilemedi.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Tamamlandı olarak işaretle',
+            'notification' => [
+                'success' => 'Sipariş tamamlandı olarak işaretlendi.',
             ],
         ],
         'mark_as_shipped' => [

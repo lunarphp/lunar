@@ -129,7 +129,10 @@ jobs:
           DB_DATABASE: lunar_test
           DB_USERNAME: root
           DB_PASSWORD: root
-        run: ./vendor/bin/pest --group=cross-db --parallel
+        # --do-not-fail-on-empty-test-suite: Pest 4's parallel runner miscounts a
+        # group-filtered suite as empty when a worker handles 2+ files, flipping the
+        # exit code to 1 despite all tests passing. The cross-db group is never empty.
+        run: ./vendor/bin/pest --group=cross-db --parallel --do-not-fail-on-empty-test-suite
 
       - name: Execute cross-db tests (pgsql)
         if: matrix.driver == 'pgsql'
@@ -142,4 +145,5 @@ jobs:
           DB_DATABASE: lunar_test
           DB_USERNAME: postgres
           DB_PASSWORD: postgres
-        run: ./vendor/bin/pest --group=cross-db --parallel
+        # See the mysql step above for why --do-not-fail-on-empty-test-suite is needed.
+        run: ./vendor/bin/pest --group=cross-db --parallel --do-not-fail-on-empty-test-suite

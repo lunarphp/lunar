@@ -2,9 +2,11 @@
 
 namespace Lunar\Core\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
@@ -22,6 +24,8 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property string $purchasable_type
  * @property int $purchasable_id
  * @property string $type
+ * @property bool $requires_shipping
+ * @property bool $requires_fulfilment
  * @property string $description
  * @property ?string $option
  * @property string $identifier
@@ -67,6 +71,8 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
      * @var array
      */
     protected $casts = [
+        'requires_shipping' => 'boolean',
+        'requires_fulfilment' => 'boolean',
         'unit_quantity' => 'integer',
         'quantity' => 'integer',
         'meta' => AsArrayObject::class,
@@ -88,6 +94,19 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::modelClass());
+    }
+
+    public function fulfilmentLines(): HasMany
+    {
+        return $this->hasMany(FulfilmentLine::modelClass());
+    }
+
+    /**
+     * Limit the query to order lines not yet allocated to any fulfilment.
+     */
+    public function scopeWithoutFulfilment(Builder $query): Builder
+    {
+        return $query->whereDoesntHave('fulfilmentLines');
     }
 
     public function purchasable(): MorphTo

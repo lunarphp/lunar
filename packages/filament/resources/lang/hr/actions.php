@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Zatvori narudžbu',
+            'confirm' => 'Zatvaranjem se narudžba arhivira nakon što je u potpunosti obrađena. Možete je kasnije ponovno otvoriti.',
+            'notification' => [
+                'success' => 'Narudžba zatvorena.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Ponovno otvori narudžbu',
+            'confirm' => 'Ponovnim otvaranjem narudžba se vraća u vaš red otvorenih zadataka.',
+            'notification' => [
+                'success' => 'Narudžba ponovno otvorena.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Otkaži narudžbu',
+            'reason' => 'Razlog otkazivanja',
+            'note' => 'Napomena osoblja',
+            'note_help' => 'Ovu napomenu vidite samo vi i ostalo osoblje.',
+            'notify' => 'Pošalji obavijest kupcu',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Nije moguće otkazati narudžbu.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Označi kao dovršeno',
+            'notification' => [
+                'success' => 'Narudžba označena kao dovršena.',
             ],
         ],
         'mark_as_shipped' => [

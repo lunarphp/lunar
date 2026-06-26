@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Rendelés lezárása',
+            'confirm' => 'A lezárás archiválja a rendelést, miután teljesen elintézted. Később újranyithatod.',
+            'notification' => [
+                'success' => 'Rendelés lezárva.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Rendelés újranyitása',
+            'confirm' => 'Az újranyitás visszahelyezi a rendelést a nyitott munkasorodba.',
+            'notification' => [
+                'success' => 'Rendelés újranyitva.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Rendelés törlése',
+            'reason' => 'A törlés indoka',
+            'note' => 'Munkatársi megjegyzés',
+            'note_help' => 'Ezt a megjegyzést csak te és a többi munkatárs láthatja.',
+            'notify' => 'Értesítés küldése a vásárlónak',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'A rendelést nem sikerült törölni.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Teljesítettnek jelölés',
+            'notification' => [
+                'success' => 'Rendelés teljesítettként megjelölve.',
             ],
         ],
         'mark_as_shipped' => [

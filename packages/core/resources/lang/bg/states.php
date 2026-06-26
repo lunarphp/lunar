@@ -19,16 +19,37 @@ return [
     ],
 
     'order' => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'payment-failed' => 'Payment Failed',
-        'backordered' => 'Backordered',
-        'in-process' => 'In Process',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'complete' => 'Complete',
-        'returned' => 'Returned',
-        'refunded' => 'Refunded',
-        'on-hold' => 'On Hold',
+        'open' => 'Отворена',
+        'closed' => 'Затворена',
         'cancelled' => 'Cancelled',
+    ],
+
+    'payment' => [
+        'pending' => 'Очаква',
+        'authorized' => 'Оторизирано',
+        'partially-paid' => 'Частично платено',
+        'paid' => 'Платено',
+        'partially-refunded' => 'Частично възстановено',
+        'refunded' => 'Възстановено',
+        'voided' => 'Анулирано',
+    ],
+
+    'fulfilment-status' => [
+        'unfulfilled' => 'Неизпълнено',
+        'partially-fulfilled' => 'Частично изпълнено',
+        'fulfilled' => 'Изпълнено',
+        'partially-returned' => 'Частично върнато',
+        'returned' => 'Върнато',
+    ],
+
+    'fulfilment' => [
+        'pending' => 'Изчакващо',
+        'in-progress' => 'В процес',
+        'ready-for-collection' => 'Готово за получаване',
+        'shipped' => 'Изпратено',
+        'collected' => 'Получено',
+        'provisioned' => 'Предоставено',
+        'cancelled' => 'Отменено',
+        'returned' => 'Върнато',
     ],
 ];

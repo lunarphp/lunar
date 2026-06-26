@@ -1,11 +1,14 @@
 <?php
 
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Livewire\Components\ActivityLogFeed as ActivityLogFeedComponent;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Facades\OrderNotifications;
 use Lunar\Core\Facades\Pricing;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
@@ -22,6 +25,16 @@ use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
 uses(TestCase::class)
     ->group('resource.order');
+
+class FakeAdminOrderUpdateNotification extends Notification
+{
+    public function __construct(public Order $order, public ?string $message = null) {}
+
+    public function via(): array
+    {
+        return ['mail'];
+    }
+}
 
 beforeEach(function () {
     $this->asStaff();
@@ -141,24 +154,96 @@ it('can download order pdf', function () {
         ->assertFileDownloaded("Order-{$this->order->reference}.pdf");
 });
 
-it('can place an order on hold', function () {
+it('can close an order', function () {
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
     ])
-        ->assertActionExists('place_on_hold')
-        ->callAction('place_on_hold');
+        ->assertActionExists('close_order')
+        ->callAction('close_order');
 
-    expect((string) $this->order->refresh()->status)->toBe('on-hold');
+    expect($this->order->refresh()->isClosed())->toBeTrue();
 });
 
-it('can resume an order from on-hold', function () {
-    $this->order->forceFill(['status' => 'on-hold'])->save();
+it('can cancel an unfulfilled order', function () {
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])
+        ->assertActionExists('cancel_order')
+        ->callAction('cancel_order', data: ['reason' => 'items-unavailable', 'note' => 'No stock', 'notify' => false]);
+
+    $this->order->refresh();
+
+    expect($this->order->isCancelled())->toBeTrue()
+        ->and($this->order->cancel_reason)->toBe('items-unavailable')
+        ->and($this->order->isClosed())->toBeTrue();
+});
+
+it('can reopen a closed order', function () {
+    $this->order->forceFill(['closed_at' => now()])->save();
 
     Livewire::test(ManageOrder::class, [
         'record' => $this->order->getRouteKey(),
     ])
-        ->assertActionExists('resume_order')
-        ->callAction('resume_order');
+        ->assertActionExists('reopen_order')
+        ->callAction('reopen_order');
 
-    expect((string) $this->order->refresh()->status)->toBe('awaiting-payment');
+    expect($this->order->refresh()->isOpen())->toBeTrue();
+});
+
+it('renders the order page when an address has no country', function () {
+    $order = Order::factory()
+        ->for(Customer::factory())
+        ->has(OrderAddress::factory()->state(['type' => 'shipping', 'country_id' => null]), 'shippingAddress')
+        ->has(OrderAddress::factory()->state(['type' => 'billing', 'country_id' => null]), 'billingAddress')
+        ->create(['currency_code' => Currency::getDefault()->code]);
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $order->getRouteKey(),
+    ])->assertSuccessful();
+});
+
+it('hides the notify customer action while no notifications are registered', function () {
+    OrderNotifications::forget('order-update');
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])->assertActionHidden('notify_customer');
+});
+
+it('can notify the customer with a chosen notification', function () {
+    activity()->enableLogging();
+    OrderNotifications::register('order-update', FakeAdminOrderUpdateNotification::class, 'Order update');
+    NotificationFacade::fake();
+
+    $this->order->billingAddress->update(['contact_email' => 'buyer@example.com']);
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $this->order->getRouteKey(),
+    ])
+        ->assertActionExists('notify_customer')
+        ->callAction('notify_customer', data: [
+            'notification' => 'order-update',
+            'message' => 'Sorry for the delay',
+            'recipients' => ['buyer@example.com'],
+        ]);
+
+    NotificationFacade::assertSentOnDemand(FakeAdminOrderUpdateNotification::class);
+
+    OrderNotifications::forget('order-update');
+});
+
+it('requires an additional email when the order has no contact to fall back on', function () {
+    NotificationFacade::fake();
+
+    $order = Order::factory()
+        ->for(Customer::factory())
+        ->create(['currency_code' => Currency::getDefault()->code]);
+
+    Livewire::test(ManageOrder::class, [
+        'record' => $order->getRouteKey(),
+    ])
+        ->callAction('notify_customer', data: ['notification' => 'order-update'])
+        ->assertHasActionErrors(['additional_email']);
+
+    NotificationFacade::assertNothingSent();
 });

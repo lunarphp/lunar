@@ -14,7 +14,7 @@ use Lunar\Core\Models\ProductVariant;
  * Will be superseded by the upcoming Inventory subsystem; until then this
  * is the canonical seam for editing the `stock` column.
  */
-final class AdjustStock implements AdjustsStock
+class AdjustStock implements AdjustsStock
 {
     public function execute(ProductVariantContract $variant, int $delta, ?string $reason = null): ProductVariant
     {

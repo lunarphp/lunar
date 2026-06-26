@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Order Created',
                 'status_change' => 'Status updated',
+                'order_closed' => 'سفارش بسته شد',
+                'order_reopened' => 'سفارش بازگشایی شد',
+                'order_cancelled' => 'سفارش لغو شد (:reason)',
+                'order_cancelled_no_reason' => 'سفارش لغو شد',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'تأمین سفارش #:id به‌عنوان :state علامت‌گذاری شد',
+                'fulfilment_held' => 'تأمین سفارش #:id در حالت تعلیق قرار گرفت (:reason)',
+                'fulfilment_held_no_reason' => 'تأمین سفارش #:id در حالت تعلیق قرار گرفت',
+                'fulfilment_released' => 'تعلیق تأمین سفارش #:id رفع شد',
+
                 'capture' => 'Payment of :amount on card ending :last_four',
                 'authorized' => 'Authorized of :amount on card ending :last_four',
                 'refund' => 'Refund of :amount on card ending :last_four',

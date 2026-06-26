@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Bestelling sluiten',
+            'confirm' => 'Bij sluiten wordt de bestelling gearchiveerd zodra deze volledig is afgehandeld. Je kunt deze later weer heropenen.',
+            'notification' => [
+                'success' => 'Bestelling gesloten.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Bestelling heropenen',
+            'confirm' => 'Bij heropenen wordt de bestelling teruggezet in je openstaande werkwachtrij.',
+            'notification' => [
+                'success' => 'Bestelling heropend.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Bestelling annuleren',
+            'reason' => 'Reden voor annulering',
+            'note' => 'Notitie voor personeel',
+            'note_help' => 'Alleen jij en ander personeel kunnen deze notitie zien.',
+            'notify' => 'Een melding naar de klant sturen',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'De bestelling kon niet worden geannuleerd.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Markeren als voltooid',
+            'notification' => [
+                'success' => 'Bestelling gemarkeerd als voltooid.',
             ],
         ],
         'mark_as_shipped' => [

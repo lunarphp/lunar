@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'إغلاق الطلب',
+            'confirm' => 'يؤدي الإغلاق إلى أرشفة الطلب بعد التعامل معه بالكامل. يمكنك إعادة فتحه لاحقاً.',
+            'notification' => [
+                'success' => 'تم إغلاق الطلب.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'إعادة فتح الطلب',
+            'confirm' => 'تؤدي إعادة الفتح إلى إعادة الطلب إلى قائمة عملك المفتوحة.',
+            'notification' => [
+                'success' => 'تمت إعادة فتح الطلب.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'إلغاء الطلب',
+            'reason' => 'سبب الإلغاء',
+            'note' => 'ملاحظة الموظفين',
+            'note_help' => 'يمكنك أنت والموظفون الآخرون فقط رؤية هذه الملاحظة.',
+            'notify' => 'إرسال إشعار إلى العميل',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'تعذّر إلغاء الطلب.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'وضع علامة كمكتمل',
+            'notification' => [
+                'success' => 'تم وضع علامة على الطلب كمكتمل.',
             ],
         ],
         'mark_as_shipped' => [

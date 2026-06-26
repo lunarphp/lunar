@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Comandă creată',
                 'status_change' => 'Stare actualizată',
+                'order_closed' => 'Comandă închisă',
+                'order_reopened' => 'Comandă redeschisă',
+                'order_cancelled' => 'Comandă anulată (:reason)',
+                'order_cancelled_no_reason' => 'Comandă anulată',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'Onorarea #:id marcată ca :state',
+                'fulfilment_held' => 'Onorarea #:id pusă în așteptare (:reason)',
+                'fulfilment_held_no_reason' => 'Onorarea #:id pusă în așteptare',
+                'fulfilment_released' => 'Onorarea #:id eliberată din așteptare',
+
                 'capture' => 'Plată de :amount pe cardul care se termină cu :last_four',
                 'authorized' => 'Autorizare de :amount pe cardul care se termină cu :last_four',
                 'refund' => 'Rambursare de :amount pe cardul care se termină cu :last_four',

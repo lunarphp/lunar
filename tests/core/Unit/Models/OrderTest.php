@@ -1,17 +1,20 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
+use Lunar\Core\Contracts\ResolvesOrderMailRoute;
+use Lunar\Core\Contracts\RoutesToOrderContact;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\OrderAddress;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Transaction;
-use Lunar\Core\States\Order\Order\InProcess;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
@@ -65,7 +68,7 @@ test('can make an order', function () {
     $this->assertDatabaseHas((new Order)->getTable(), [
         'id' => $order->id,
         'reference' => $order->reference,
-        'status' => (string) $order->status,
+        'payment_status' => (string) $order->payment_status,
         'sub_total' => $order->sub_total,
         'tax_total' => $order->tax_total,
         'total' => $order->total,
@@ -117,17 +120,29 @@ test('can create lines', function () {
     expect($order->refresh()->lines)->toHaveCount(1);
 });
 
-test('can update status', function () {
-    $order = Order::factory()->create([
-        'user_id' => null,
-        'status' => 'awaiting-payment',
-    ]);
+test('can close and reopen an order', function () {
+    $order = Order::factory()->create(['user_id' => null]);
 
-    expect((string) $order->status)->toEqual('awaiting-payment');
+    expect($order->isOpen())->toBeTrue()
+        ->and($order->isClosed())->toBeFalse();
 
-    $order->status->transitionTo(InProcess::class);
+    $order->close();
 
-    expect((string) $order->fresh()->status)->toEqual('in-process');
+    expect($order->fresh()->isClosed())->toBeTrue()
+        ->and($order->fresh()->closed_at)->not->toBeNull();
+
+    $order->reopen();
+
+    expect($order->fresh()->isOpen())->toBeTrue()
+        ->and($order->fresh()->closed_at)->toBeNull();
+});
+
+test('open and closed scopes filter by archive state', function () {
+    Order::factory()->create();
+    Order::factory()->closed()->create();
+
+    expect(Order::open()->count())->toBe(1)
+        ->and(Order::closed()->count())->toBe(1);
 });
 
 test('can create transaction for order', function () {
@@ -294,4 +309,116 @@ test('can delete an order', function () {
     assertDatabaseMissing(Order::class, [
         'id' => $order->id,
     ]);
+});
+
+test('routes mail notifications to the billing contact email, falling back to shipping', function () {
+    $order = Order::factory()->create();
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'billing',
+        'contact_email' => 'billing@example.com',
+    ]));
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'shipping',
+        'contact_email' => 'shipping@example.com',
+    ]));
+
+    expect($order->routeNotificationForMail())->toBe('billing@example.com');
+});
+
+test('falls back to the shipping contact email when billing has none', function () {
+    $order = Order::factory()->create();
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'billing',
+        'contact_email' => null,
+    ]));
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'shipping',
+        'contact_email' => 'shipping@example.com',
+    ]));
+
+    expect($order->routeNotificationForMail())->toBe('shipping@example.com');
+});
+
+test('has no mail route when no address carries a contact email', function () {
+    $order = Order::factory()->create();
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'billing',
+        'contact_email' => null,
+    ]));
+
+    expect($order->routeNotificationForMail())->toBeNull();
+});
+
+class OrderShippingContactNotification extends Notification implements RoutesToOrderContact
+{
+    public function orderContactType(): string
+    {
+        return 'shipping';
+    }
+}
+
+test('routes a shipping-preferring notification to the shipping contact', function () {
+    $order = Order::factory()->create();
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'billing',
+        'contact_email' => 'billing@example.com',
+    ]));
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'shipping',
+        'contact_email' => 'shipping@example.com',
+    ]));
+
+    expect($order->routeNotificationForMail(new OrderShippingContactNotification))->toBe('shipping@example.com');
+});
+
+test('a shipping-preferring notification falls back to billing when there is no shipping email', function () {
+    $order = Order::factory()->create();
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'billing',
+        'contact_email' => 'billing@example.com',
+    ]));
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'shipping',
+        'contact_email' => null,
+    ]));
+
+    expect($order->routeNotificationForMail(new OrderShippingContactNotification))->toBe('billing@example.com');
+});
+
+class SelfRoutingOrderNotification extends Notification implements ResolvesOrderMailRoute, RoutesToOrderContact
+{
+    public function __construct(public string|array|null $route) {}
+
+    public function mailRouteForOrder(Lunar\Core\Models\Contracts\Order $order): string|array|null
+    {
+        return $this->route;
+    }
+
+    public function orderContactType(): string
+    {
+        return 'shipping';
+    }
+}
+
+test('a notification can resolve its own mail recipient, taking precedence over the contact type', function () {
+    $order = Order::factory()->create();
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'shipping',
+        'contact_email' => 'shipping@example.com',
+    ]));
+
+    expect($order->routeNotificationForMail(new SelfRoutingOrderNotification('ops@example.com')))
+        ->toBe('ops@example.com');
+});
+
+test('a self-routing notification defers to the contact default when its route is empty', function () {
+    $order = Order::factory()->create();
+    $order->addresses()->create(OrderAddress::factory()->raw([
+        'type' => 'shipping',
+        'contact_email' => 'shipping@example.com',
+    ]));
+
+    // Empty route -> falls through to the RoutesToOrderContact preference (shipping).
+    expect($order->routeNotificationForMail(new SelfRoutingOrderNotification(null)))
+        ->toBe('shipping@example.com');
 });

@@ -15,6 +15,7 @@ class OrderIndexer extends ScoutIndexer
             'channel_id',
             'created_at',
             'updated_at',
+            'closed_at',
             'total',
         ];
     }
@@ -24,7 +25,9 @@ class OrderIndexer extends ScoutIndexer
         return [
             'customer_id',
             'user_id',
-            'status',
+            'payment_status',
+            'fulfilment_status',
+            'closed',
             'placed_at',
             'channel_id',
             'tags',
@@ -71,8 +74,11 @@ class OrderIndexer extends ScoutIndexer
             'channel' => $model->channel->name,
             'reference' => $model->reference,
             'customer_reference' => $model->customer_reference,
-            'status' => (string) $model->status,
+            'payment_status' => (string) $model->payment_status,
+            'fulfilment_status' => (string) $model->fulfilment_status,
+            'closed' => $model->isClosed(),
             'placed_at' => optional($model->placed_at)->timestamp,
+            'closed_at' => optional($model->closed_at)->timestamp,
             'created_at' => (int) $model->created_at->timestamp,
             'sub_total' => $model->sub_total,
             'total' => $model->total,

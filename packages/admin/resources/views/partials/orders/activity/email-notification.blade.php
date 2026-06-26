@@ -1,4 +1,12 @@
-<div>
-    Sent <strong>{{ $log->getExtraProperty('mailer') ?: 'Email notification' }} </strong> to {{ $log->getExtraProperty('email') }}
-    {{-- preview is not ported --}}
+<div class="space-y-1">
+    <span>
+        {{ __('lunarpanel::components.activity-log.partials.orders.email_notification', [
+            'notification' => $log->getExtraProperty('notification') ?: __('lunarpanel::components.activity-log.partials.orders.email_notification_fallback'),
+            'email' => $log->getExtraProperty('email'),
+        ]) }}
+    </span>
+
+    @if ($message = $log->getExtraProperty('message'))
+        <p class="text-xs italic">{{ $message }}</p>
+    @endif
 </div>

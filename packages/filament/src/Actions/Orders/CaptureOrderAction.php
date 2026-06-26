@@ -5,7 +5,6 @@ namespace Lunar\Filament\Actions\Orders;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Lunar\Core\Actions\Orders\CaptureOrder;
-use Lunar\Core\Contracts\Actions\Orders\CapturesOrder;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Models\Order;
 use Lunar\Filament\Actions\Concerns\ConfirmsDestructiveAction;
@@ -58,8 +57,7 @@ class CaptureOrderAction extends Action
     protected function performCapture(array $data, Order $record): void
     {
         try {
-            $result = app(CapturesOrder::class)->execute(
-                order: $record,
+            $result = $record->capture(
                 transactionId: $data['transaction'],
                 amount: $data['amount'],
             );

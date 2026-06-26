@@ -16,6 +16,12 @@ return [
         'failed' => 'Амжилтгүй',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Төлбөрийн төлөв',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Биелүүлэлтийн төлөв',
+        ],
         'status' => [
             'label' => 'Статус',
         ],

@@ -40,6 +40,20 @@ return [
         ],
     ],
     'orders' => [
+        'close' => [
+            'label' => 'Захиалга хаах',
+            'confirm' => 'Хаах нь захиалга бүрэн шийдвэрлэгдсэний дараа архивлана. Та дараа нь дахин нээх боломжтой.',
+            'notification' => [
+                'success' => 'Захиалга хаагдлаа.',
+            ],
+        ],
+        'reopen' => [
+            'label' => 'Захиалга дахин нээх',
+            'confirm' => 'Дахин нээх нь захиалгыг таны нээлттэй ажлын жагсаалт руу буцаана.',
+            'notification' => [
+                'success' => 'Захиалга дахин нээгдлээ.',
+            ],
+        ],
         'shared' => [
             'transaction' => [
                 'label' => 'Transaction',
@@ -84,10 +98,29 @@ return [
             ],
         ],
         'cancel_order' => [
-            'label' => 'Cancel Order',
-            'confirm' => 'Cancelling the order marks it as cancelled. Downstream listeners may have already reacted.',
+            'label' => 'Cancel order',
+            'modal_heading' => 'Захиалга цуцлах',
+            'reason' => 'Цуцлах шалтгаан',
+            'note' => 'Ажилтны тэмдэглэл',
+            'note_help' => 'Энэ тэмдэглэлийг зөвхөн та болон бусад ажилтнууд харах боломжтой.',
+            'notify' => 'Худалдан авагчид мэдэгдэл илгээх',
             'notification' => [
                 'success' => 'Order cancelled.',
+                'error' => 'Захиалгыг цуцалж чадсангүй.',
+            ],
+        ],
+        'notify_customer' => [
+            'label' => 'Notify customer',
+            'modal_heading' => 'Notify customer',
+            'variant' => 'Notification',
+            'message' => 'Message',
+            'message_help' => 'Optional. Included in the email sent to the customer.',
+            'recipients' => 'Recipients',
+            'recipients_billing' => 'Billing contact (:email)',
+            'recipients_shipping' => 'Shipping contact (:email)',
+            'additional_email' => 'Additional email',
+            'notification' => [
+                'success' => 'Notification sent.',
             ],
         ],
         'resume_order' => [
@@ -95,6 +128,12 @@ return [
             'confirm' => 'Resuming the order moves it back into the active workflow at awaiting payment.',
             'notification' => [
                 'success' => 'Order resumed.',
+            ],
+        ],
+        'mark_as_complete' => [
+            'label' => 'Дууссан гэж тэмдэглэх',
+            'notification' => [
+                'success' => 'Захиалгыг дууссан гэж тэмдэглэв.',
             ],
         ],
         'mark_as_shipped' => [

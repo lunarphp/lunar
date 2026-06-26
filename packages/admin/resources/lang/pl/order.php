@@ -6,9 +6,6 @@ return [
     'breadcrumb' => [
         'manage' => 'Zarządzanie zamówieniami',
     ],
-    'tabs' => [
-        'all' => 'Wszelkie',
-    ],
     'transactions' => [
         'capture' => 'Przechwycona',
         'intent' => 'Rozpoczęta',
@@ -283,5 +280,178 @@ return [
                 'success' => 'Płatność zwrócona',
             ],
         ],
+    ],
+
+    'fulfilments' => [
+        'heading' => 'Realizacje',
+        'unreferenced' => 'Realizacja #:id',
+        'on_hold' => 'Wstrzymana',
+        'empty' => 'Brak realizacji.',
+        'columns' => [
+            'reference' => 'Numer referencyjny',
+            'state' => 'Stan',
+            'items' => 'Pozycje',
+            'tracking' => 'Śledzenie',
+            'shipped_at' => 'Data wysyłki',
+            'handed_over' => [
+                'shipping' => 'Data wysyłki',
+                'collection' => 'Data odbioru',
+                'digital' => 'Data udostępnienia',
+            ],
+            'handed_over_default' => 'Data realizacji',
+        ],
+        'actions' => [
+            'more' => 'Więcej akcji',
+            'notify' => 'Powiadom klienta',
+            'add_tracking' => [
+                'label' => 'Dodaj śledzenie',
+                'modal_heading' => 'Dodaj śledzenie',
+                'notification' => [
+                    'success' => 'Śledzenie dodane.',
+                    'error' => 'Nie udało się dodać śledzenia.',
+                ],
+            ],
+            'remove_tracking' => [
+                'label' => 'Usuń śledzenie',
+                'notification' => [
+                    'success' => 'Śledzenie usunięte.',
+                    'error' => 'Nie udało się usunąć śledzenia.',
+                ],
+            ],
+            'create' => [
+                'label' => 'Utwórz realizację',
+                'modal_heading' => 'Utwórz realizację',
+                'empty' => 'Każda pozycja jest już zrealizowana.',
+                'notification' => [
+                    'success' => 'Realizacja utworzona.',
+                    'error' => 'Nie udało się utworzyć realizacji.',
+                ],
+            ],
+            'ship' => [
+                'label' => 'Oznacz jako wysłaną',
+                'modal_heading' => 'Oznacz realizację jako wysłaną',
+                'notification' => [
+                    'success' => 'Realizacja oznaczona jako wysłana.',
+                    'error' => 'Nie udało się wysłać realizacji.',
+                ],
+            ],
+            'fulfil' => [
+                'label' => 'Oznacz jako zrealizowaną',
+                'modal_heading' => 'Oznacz realizację jako zrealizowaną',
+                'labels' => [
+                    'collection' => 'Oznacz jako odebraną',
+                ],
+                'notification' => [
+                    'success' => 'Realizacja oznaczona jako zrealizowana.',
+                    'error' => 'Nie udało się zrealizować realizacji.',
+                ],
+            ],
+            'cancel' => [
+                'label' => 'Anuluj realizację',
+                'modal_heading' => 'Anuluj realizację',
+                'description' => 'Spowoduje to przywrócenie realizacji do stanu oczekującego, aby można ją było ponownie procesować. Wszelkie dane wysyłki zostaną wyczyszczone.',
+                'notification' => [
+                    'success' => 'Realizacja anulowana.',
+                    'error' => 'Nie udało się anulować realizacji.',
+                ],
+            ],
+            'change_location' => [
+                'label' => 'Zmień lokalizację',
+                'modal_heading' => 'Zmień lokalizację realizacji',
+                'field' => 'Lokalizacja',
+                'notification' => [
+                    'success' => 'Lokalizacja realizacji zaktualizowana.',
+                    'error' => 'Nie udało się zmienić lokalizacji realizacji.',
+                ],
+            ],
+            'return' => [
+                'label' => 'Zwróć',
+                'notification' => [
+                    'success' => 'Realizacja zwrócona.',
+                    'error' => 'Nie udało się zwrócić realizacji.',
+                ],
+            ],
+            'update_status' => [
+                'label' => 'Zaktualizuj status',
+            ],
+            'transition' => [
+                'modal_heading' => 'Oznaczyć realizację jako :status?',
+                'notification' => [
+                    'success' => 'Status realizacji zaktualizowany.',
+                    'error' => 'Nie udało się zaktualizować statusu realizacji.',
+                ],
+            ],
+            'undo_return' => [
+                'label' => 'Cofnij zwrot',
+                'notification' => [
+                    'success' => 'Zwrot cofnięty.',
+                    'error' => 'Nie udało się cofnąć zwrotu.',
+                ],
+            ],
+            'hold' => [
+                'label' => 'Wstrzymaj realizację',
+                'modal_heading' => 'Wstrzymaj realizację',
+                'reason' => 'Powód',
+                'note' => 'Notatka',
+                'notification' => [
+                    'success' => 'Realizacja wstrzymana.',
+                    'error' => 'Nie udało się wstrzymać realizacji.',
+                ],
+            ],
+            'release' => [
+                'label' => 'Wznów wstrzymaną',
+                'notification' => [
+                    'success' => 'Realizacja wznowiona.',
+                    'error' => 'Nie udało się wznowić realizacji.',
+                ],
+            ],
+            'split' => [
+                'label' => 'Podziel',
+                'confirm' => 'Podziel realizację',
+                'cancel' => 'Anuluj',
+                'empty' => 'Wybierz ilość do wydzielenia.',
+                'modal_heading' => 'Podziel realizację',
+                'notification' => [
+                    'success' => 'Realizacja podzielona.',
+                    'error' => 'Nie udało się podzielić realizacji.',
+                ],
+            ],
+            'merge' => [
+                'label' => 'Scal',
+                'confirm' => 'Scal realizację',
+                'cancel' => 'Anuluj',
+                'modal_heading' => 'Scal realizację',
+                'description' => 'Wybierz pozycje, które chcesz scalić.',
+                'target' => 'Scal z',
+                'empty' => 'Wybierz pozycje i miejsce docelowe do scalenia.',
+                'notification' => [
+                    'success' => 'Realizacje scalone.',
+                    'error' => 'Nie udało się scalić realizacji.',
+                ],
+            ],
+        ],
+        'fields' => [
+            'quantity' => 'Ilość',
+            'tracking' => 'Śledzenie',
+            'tracking_item' => 'Śledzenie #:number',
+            'unit_price' => 'Cena jednostkowa',
+            'sub_total' => 'Suma częściowa',
+            'discount_total' => 'Suma rabatów',
+            'total' => 'Suma',
+            'stock_level' => 'Aktualny stan magazynowy: :count',
+            'of' => 'z :count',
+            'outstanding' => 'Pozostało: :count',
+            'tracking_number' => 'Numer śledzenia',
+            'tracking_url' => 'Adres URL śledzenia',
+            'carrier' => 'Przewoźnik',
+            'carrier_custom' => 'Niestandardowy / inny',
+            'tracking_url_help' => 'Wymagane tylko dla przewoźników bez automatycznego linku do śledzenia.',
+            'shipping_method' => 'Metoda dostawy',
+            'move_quantity' => 'Ilość do przeniesienia',
+        ],
+    ],
+
+    'other_items' => [
+        'heading' => 'Pozostałe pozycje',
     ],
 ];

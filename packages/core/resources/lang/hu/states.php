@@ -19,16 +19,37 @@ return [
     ],
 
     'order' => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'payment-failed' => 'Payment Failed',
-        'backordered' => 'Backordered',
-        'in-process' => 'In Process',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'complete' => 'Complete',
-        'returned' => 'Returned',
-        'refunded' => 'Refunded',
-        'on-hold' => 'On Hold',
+        'open' => 'Nyitott',
+        'closed' => 'Lezárt',
         'cancelled' => 'Cancelled',
+    ],
+
+    'payment' => [
+        'pending' => 'Függőben',
+        'authorized' => 'Engedélyezve',
+        'partially-paid' => 'Részben fizetve',
+        'paid' => 'Fizetve',
+        'partially-refunded' => 'Részben visszatérítve',
+        'refunded' => 'Visszatérítve',
+        'voided' => 'Érvénytelenítve',
+    ],
+
+    'fulfilment-status' => [
+        'unfulfilled' => 'Nem teljesített',
+        'partially-fulfilled' => 'Részben teljesített',
+        'fulfilled' => 'Teljesített',
+        'partially-returned' => 'Részben visszaküldött',
+        'returned' => 'Visszaküldött',
+    ],
+
+    'fulfilment' => [
+        'pending' => 'Függőben',
+        'in-progress' => 'Folyamatban',
+        'ready-for-collection' => 'Átvételre kész',
+        'shipped' => 'Kiszállítva',
+        'collected' => 'Átvéve',
+        'provisioned' => 'Hozzáférhetővé téve',
+        'cancelled' => 'Visszavonva',
+        'returned' => 'Visszaküldve',
     ],
 ];

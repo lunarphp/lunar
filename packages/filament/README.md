@@ -35,7 +35,7 @@ php artisan migrate
 | Generic form components | `Lunar\Filament\Forms\Components\*` | `Attributes`, `TranslatedText`, `MediaSelect`, `Tags`, `Vimeo`, `YouTube` |
 | Table columns | `Lunar\Filament\Tables\Columns\*` | `TranslatedTextColumn`, `ThumbnailImageColumn` |
 | Infolist entries | `Lunar\Filament\Infolists\Components\*` | `Timeline`, `Tags`, `Transaction` |
-| Resource schemas | `Lunar\Filament\Schemas\{Model}\{Model}Form` | `ProductForm`, `OrderForm`, `BrandForm`, … (20 models) |
+| Resource schemas | `Lunar\Filament\Schemas\{Model}\{Model}Form` | `ProductForm`, `OrderForm`, `BrandForm`, `LocationForm`, … (21 models) |
 | Resource tables | `Lunar\Filament\Tables\{Model}\{Model}Table` | `ProductTable`, `OrderTable`, … |
 | Relation managers | `Lunar\Filament\RelationManagers\{Model}\*` | Customer addresses, Discount conditions, ProductOption values, … |
 | Actions | `Lunar\Filament\Actions\{Subject}\*Action` | `RefundOrderAction`, `CaptureOrderAction`, `DuplicateProductAction`, `PublishProductsBulkAction` |
@@ -308,8 +308,9 @@ First-class Filament `Action` / `BulkAction` classes for every commerce verb the
 | --- | --- | --- |
 | `Orders\RefundOrderAction` | `Core\Actions\Orders\RefundOrder` | Order header / detail page |
 | `Orders\CaptureOrderAction` | `Core\Actions\Orders\CaptureOrder` | Order header / detail page |
-| `Orders\UpdateOrderStatusAction` / `UpdateOrderStatusBulkAction` | `Core\Actions\Orders\UpdateOrderStatus` | Order header + order table bulk |
-| `Orders\MarkOrderAsShippedAction` / `MarkOrdersAsShippedBulkAction` | `Core\Actions\Orders\MarkOrderAsShipped` | Order header + order table bulk |
+| `Orders\CloseOrderAction` | `Core\Actions\Orders\CloseOrder` | Order header (archive a dealt-with order) |
+| `Orders\ReopenOrderAction` | `Core\Actions\Orders\ReopenOrder` | Order header (un-archive a closed order) |
+| `Orders\NotifyCustomerAction` | `Core\Actions\Orders\NotifyCustomer` | Order header (compose + send a customer notification from the order-scoped, sendable entries of the `OrderNotifications` catalogue; hidden when none are sendable) |
 | `Orders\AddOrderNoteAction` | — (Filament-only single-field write) | Order header |
 | `Orders\DownloadOrderPdfAction` | — (Filament-only, subclass of `Support\DownloadPdfAction`) | Order header |
 | `Products\DuplicateProductAction` | `Core\Actions\Products\DuplicateProduct` | Product row / header |
@@ -322,15 +323,15 @@ Drop into any header/row/bulk action array — they work like any Filament actio
 
 ```php
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
+use Lunar\Filament\Actions\Orders\CloseOrderAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
-use Lunar\Filament\Actions\Orders\UpdateOrderStatusAction;
 
 protected function getDefaultHeaderActions(): array
 {
     return [
         CaptureOrderAction::make(),
         RefundOrderAction::make(),
-        UpdateOrderStatusAction::make(),
+        CloseOrderAction::make(),
     ];
 }
 ```

@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'تم إنشاء الطلب',
                 'status_change' => 'تم تحديث الحالة',
+                'order_closed' => 'تم إغلاق الطلب',
+                'order_reopened' => 'تمت إعادة فتح الطلب',
+                'order_cancelled' => 'تم إلغاء الطلب (:reason)',
+                'order_cancelled_no_reason' => 'تم إلغاء الطلب',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'تم وضع علامة على عملية التنفيذ #:id بأنها :state',
+                'fulfilment_held' => 'تم تعليق عملية التنفيذ #:id (:reason)',
+                'fulfilment_held_no_reason' => 'تم تعليق عملية التنفيذ #:id',
+                'fulfilment_released' => 'تم رفع التعليق عن عملية التنفيذ #:id',
+
                 'capture' => 'تم سحب :amount من البطاقة المنتهية بـ :last_four',
                 'authorized' => 'تم التفويض بمبلغ :amount على البطاقة المنتهية بـ :last_four',
                 'refund' => 'تم رد :amount على البطاقة المنتهية بـ :last_four',

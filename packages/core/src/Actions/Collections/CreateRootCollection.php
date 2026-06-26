@@ -12,7 +12,7 @@ use Lunar\Core\Models\Language;
  * `name` is a dedicated translatable column (spec 0018); a plain string is
  * stored under the default locale.
  */
-final class CreateRootCollection implements CreatesRootCollection
+class CreateRootCollection implements CreatesRootCollection
 {
     public function execute(int $collectionGroupId, string|array $name): Collection
     {

@@ -154,6 +154,14 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
     /**
      * {@inheritDoc}
      */
+    public function requiresFulfilment(): bool
+    {
+        return $this->isShippable();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getDescription(): string
     {
         return $this->product->translate('name');

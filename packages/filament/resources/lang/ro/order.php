@@ -16,6 +16,12 @@ return [
         'failed' => 'Eșuat',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Stare plată',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Stare onorare',
+        ],
         'status' => [
             'label' => 'Stare',
         ],

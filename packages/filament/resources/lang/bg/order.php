@@ -16,6 +16,12 @@ return [
         'failed' => 'Неуспешно',
     ],
     'table' => [
+        'payment_status' => [
+            'label' => 'Статус на плащане',
+        ],
+        'fulfilment_status' => [
+            'label' => 'Статус на изпълнение',
+        ],
         'status' => [
             'label' => 'Статус',
         ],

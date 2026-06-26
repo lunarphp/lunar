@@ -22,6 +22,7 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Filament\Resources\OrderResource;
+use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysFulfilments;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysOrderAddresses;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysOrderSummary;
 use Lunar\Admin\Filament\Resources\OrderResource\Concerns\DisplaysOrderTimeline;
@@ -35,10 +36,11 @@ use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Tag;
 use Lunar\Filament\Actions\Orders\CancelOrderAction;
 use Lunar\Filament\Actions\Orders\CaptureOrderAction;
+use Lunar\Filament\Actions\Orders\CloseOrderAction;
 use Lunar\Filament\Actions\Orders\DownloadOrderPdfAction;
-use Lunar\Filament\Actions\Orders\PlaceOrderOnHoldAction;
+use Lunar\Filament\Actions\Orders\NotifyCustomerAction;
 use Lunar\Filament\Actions\Orders\RefundOrderAction;
-use Lunar\Filament\Actions\Orders\ResumeOrderAction;
+use Lunar\Filament\Actions\Orders\ReopenOrderAction;
 use Lunar\Filament\Forms\Components\Tags as TagsComponent;
 use Lunar\Filament\Infolists\Components\Tags;
 use Lunar\Filament\Support\Concerns\CallsHooks;
@@ -56,6 +58,7 @@ class ManageOrder extends BaseViewRecord
 {
     use CallsHooks;
     use CanDispatchActivityUpdated;
+    use DisplaysFulfilments;
     use DisplaysOrderAddresses;
     use DisplaysOrderSummary;
     use DisplaysOrderTimeline;
@@ -89,11 +92,35 @@ class ManageOrder extends BaseViewRecord
         )->key('lunar_livewire_order_lines');
     }
 
+    /**
+     * Non-shipping lines not yet allocated to a fulfilment (shipping has its
+     * own section; allocated lines live in their fulfilment card). Shown
+     * regardless of type, so non-fulfillable service / custom-purchasable lines
+     * still render. Hidden when every line is either shipping or allocated to a
+     * fulfilment.
+     */
+    public static function getOtherItemsSection(): Component
+    {
+        return Section::make('other_items')
+            ->heading(__('lunarpanel::order.other_items.heading'))
+            ->compact()
+            ->visible(function ($record) {
+                return $record->lines()
+                    ->where('type', '!=', 'shipping')
+                    ->withoutFulfilment()
+                    ->exists();
+            })
+            ->schema([
+                static::getOrderLinesTable(),
+            ]);
+    }
+
     public static function getInfolistSchema(): array
     {
         return self::callStaticLunarHook('extendInfolistSchema', [
             static::getShippingInfolist(),
-            static::getOrderLinesTable(),
+            static::getFulfilmentsInfolist(),
+            static::getOtherItemsSection(),
             static::getOrderTotalsInfolist(),
             static::getTransactionsInfolist(),
             static::getTimelineInfolist(),
@@ -201,28 +228,30 @@ class ManageOrder extends BaseViewRecord
             ->components([
                 Group::make()
                     ->schema([
-                        Group::make()->key('shouts')->schema([
-                            Callout::make()
-                                ->status('danger')
-                                ->heading(__('lunarpanel::order.infolist.alert.requires_capture'))
-                                ->visible(fn () => $this->requiresCapture),
-                            Callout::make()
-                                ->key('partially_refunded_notice')
-                                ->icon(fn () => match ($this->paymentStatus) {
-                                    'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
-                                    default => null
-                                })
-                                ->status(fn () => match ($this->paymentStatus) {
-                                    'partial-refund' => 'info',
-                                    'refunded' => 'danger',
-                                    default => null
-                                })->heading(fn () => match ($this->paymentStatus) {
-                                    'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
-                                    'refunded' => __('lunarpanel::order.infolist.alert.refunded'),
-                                    default => null
-                                })
-                                ->visible(fn () => in_array($this->paymentStatus, ['partial-refund', 'refunded'])),
-                        ]),
+                        Group::make()->key('shouts')
+                            ->visible(fn () => $this->requiresCapture || in_array($this->paymentStatus, ['partial-refund', 'refunded']))
+                            ->schema([
+                                Callout::make()
+                                    ->status('danger')
+                                    ->heading(__('lunarpanel::order.infolist.alert.requires_capture'))
+                                    ->visible(fn () => $this->requiresCapture),
+                                Callout::make()
+                                    ->key('partially_refunded_notice')
+                                    ->icon(fn () => match ($this->paymentStatus) {
+                                        'refunded' => FilamentIcon::resolve('lunar::exclamation-circle'),
+                                        default => null
+                                    })
+                                    ->status(fn () => match ($this->paymentStatus) {
+                                        'partial-refund' => 'info',
+                                        'refunded' => 'danger',
+                                        default => null
+                                    })->heading(fn () => match ($this->paymentStatus) {
+                                        'partial-refund' => __('lunarpanel::order.infolist.alert.partially_refunded'),
+                                        'refunded' => __('lunarpanel::order.infolist.alert.refunded'),
+                                        default => null
+                                    })
+                                    ->visible(fn () => in_array($this->paymentStatus, ['partial-refund', 'refunded'])),
+                            ]),
                         ...static::getInfolistSchema(),
                     ])
                     ->columnSpan(['lg' => 2]),
@@ -356,9 +385,10 @@ class ManageOrder extends BaseViewRecord
         return [
             CaptureOrderAction::make(),
             RefundOrderAction::make(),
-            PlaceOrderOnHoldAction::make()->after($bumpActivity),
-            ResumeOrderAction::make()->after($bumpActivity),
+            CloseOrderAction::make()->after($bumpActivity),
+            ReopenOrderAction::make()->after($bumpActivity),
             CancelOrderAction::make()->after($bumpActivity),
+            NotifyCustomerAction::make()->after($bumpActivity),
             DownloadOrderPdfAction::make(),
         ];
     }

@@ -19,16 +19,37 @@ return [
     ],
 
     'order' => [
-        'awaiting-payment' => 'Awaiting Payment',
-        'payment-failed' => 'Payment Failed',
-        'backordered' => 'Backordered',
-        'in-process' => 'In Process',
-        'partially-shipped' => 'Partially Shipped',
-        'shipped' => 'Shipped',
-        'complete' => 'Complete',
-        'returned' => 'Returned',
-        'refunded' => 'Refunded',
-        'on-hold' => 'On Hold',
+        'open' => 'Deschisă',
+        'closed' => 'Închisă',
         'cancelled' => 'Cancelled',
+    ],
+
+    'payment' => [
+        'pending' => 'În așteptare',
+        'authorized' => 'Autorizată',
+        'partially-paid' => 'Parțial plătită',
+        'paid' => 'Plătită',
+        'partially-refunded' => 'Parțial rambursată',
+        'refunded' => 'Rambursată',
+        'voided' => 'Anulată',
+    ],
+
+    'fulfilment-status' => [
+        'unfulfilled' => 'Neonorată',
+        'partially-fulfilled' => 'Parțial onorată',
+        'fulfilled' => 'Onorată',
+        'partially-returned' => 'Parțial returnată',
+        'returned' => 'Returnată',
+    ],
+
+    'fulfilment' => [
+        'pending' => 'În așteptare',
+        'in-progress' => 'În curs',
+        'ready-for-collection' => 'Gata de ridicare',
+        'shipped' => 'Expediată',
+        'collected' => 'Ridicată',
+        'provisioned' => 'Furnizată',
+        'cancelled' => 'Anulată',
+        'returned' => 'Returnată',
     ],
 ];

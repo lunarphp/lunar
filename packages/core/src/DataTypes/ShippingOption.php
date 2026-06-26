@@ -140,6 +140,14 @@ class ShippingOption implements Purchasable
     /**
      * {@inheritDoc}
      */
+    public function requiresFulfilment(): bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getThumbnail()
     {
         return null;

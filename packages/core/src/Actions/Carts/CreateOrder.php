@@ -13,7 +13,7 @@ use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
-final class CreateOrder implements CreatesOrder
+class CreateOrder implements CreatesOrder
 {
     /**
      * Execute the action.

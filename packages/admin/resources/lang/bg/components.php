@@ -18,6 +18,19 @@ return [
             'orders' => [
                 'order_created' => 'Поръчката е създадена',
                 'status_change' => 'Статусът е актуализиран',
+                'order_closed' => 'Поръчката е затворена',
+                'order_reopened' => 'Поръчката е отворена отново',
+                'order_cancelled' => 'Поръчката е отменена (:reason)',
+                'order_cancelled_no_reason' => 'Поръчката е отменена',
+
+                'email_notification' => 'Sent :notification to :email',
+
+                'email_notification_fallback' => 'a notification',
+                'fulfilment_state' => 'Изпълнение #:id е отбелязано като :state',
+                'fulfilment_held' => 'Изпълнение #:id е поставено на изчакване (:reason)',
+                'fulfilment_held_no_reason' => 'Изпълнение #:id е поставено на изчакване',
+                'fulfilment_released' => 'Изпълнение #:id е освободено от изчакване',
+
                 'capture' => 'Плащане от :amount с карта, завършваща на :last_four',
                 'authorized' => 'Удобрено плащане :amount с карта, завършваща на :last_four',
                 'refund' => 'Възстановяване на :amount с карта, завършваща на :last_four',
