@@ -9,6 +9,7 @@ Design documents for the work tracked in `packages/lunar/TODO.md`.
 - Use `0000-template.md` as the starting point for every new spec.
 - A spec should land (reviewed and merged) before its implementation work begins.
 - Keep specs in present tense, focused on the change being proposed, not the history of how we got here.
+- Every spec ends with an `## Implementation plan` section listing the slices the work ships in, each independently reviewable. Keep its statuses current as slices land — it is the running record of what has shipped and what remains.
 
 ## Status
 

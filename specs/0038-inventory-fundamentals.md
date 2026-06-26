@@ -326,3 +326,15 @@ A custom stock-tracked purchasable (event seats, a bundle resolving to component
 - [[0031-fulfilment-methods]] — `order_lines.requires_fulfilment`, the physical-line predicate committed keys off.
 - [[0009-filament-actions-and-global-search]] — `AdjustStock` / `AdjustStockAction` stop-gap, to be superseded.
 - `Contracts\Purchasable::getTotalInventory()` / `canBeFulfilledAtQuantity()` — the read seam this preserves.
+
+## Implementation plan
+
+Built on branch `feat/inventory-fundamentals`. The engine ships additive-first; the destructive column drop is split into its own atomic slice so each lands with the app working.
+
+- [x] **Slice 1 — substrate.** `StockLevel`, append-only `StockMovement` ledger, the `stock_*` rollup columns, `RecordStockMovement` + `RecomputeStockRollup`, `HasStock` on `ProductVariant`. Additive — keeps the old `stock` column.
+- [x] **Slice 2 — committed automation.** `TracksStock` capability; committed recomputed from the order book (`SyncStockCommitment`, the canonical predicate); lifecycle listeners (placed / cancelled / fulfilment create / ship / un-ship / return / undo-return); `lunar:stock:reconcile`.
+- [x] **Cutover.** `getTotalInventory()` reads `stock_available`; drop the `stock` column; `AdjustStock` records a movement; rewire every `->stock` reader across core, table-rate-shipping, admin and filament; migrate tests. _(Split out of slice 1 so the engine goes live atomically.)_
+- [x] **Admin messaging.** Hint-icon tooltips on the selling-policy fields, "Selling Policy" label, backorder shown only when the policy consults it. _(Emergent from review; not in the original cut.)_
+- [x] **Slice 3 — reservations.** `StockReservation` + `reserveStock` / release / commit seam; `stock_reserved` rollup; `lunar:stock:release-expired` scheduled by default. Substrate only — checkout wiring is a follow-on.
+- [ ] **Slice 4 — Filament inventory UI.** Per-location bucket editor, the movement-history relation, a reservations view. (The cutover left a working single-location stock field.)
+- [ ] **Slice 5 — upgrade package.** Backfill a `StockLevel` + `OpeningBalance` movement from each v1 variant's `stock` on v1 → v2; no `AdjustStock` Rector needed (the new `Location` parameter is nullable-last, so existing call sites stay valid).
