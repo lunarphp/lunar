@@ -35,6 +35,31 @@ it('can render product inventory page', function () {
         ->assertSuccessful();
 });
 
+it('shows the default location it is managing', function () {
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    Location::factory()->create(['default' => true, 'name' => 'Warehouse A']);
+
+    $record = Product::factory()->create();
+
+    ProductVariant::factory()->create([
+        'product_id' => $record->id,
+    ]);
+
+    $this->asStaff(admin: true)
+        ->get(ProductResource::getUrl('inventory', [
+            'record' => $record,
+        ]))
+        ->assertSuccessful()
+        ->assertSee('Warehouse A');
+});
+
 it('will show in navigation when only one variant exists', function () {
     Language::factory()->create([
         'default' => true,
@@ -123,14 +148,16 @@ it('mounts inventory page using the active variant when a trashed variant exists
 
     $record = Product::factory()->create();
 
-    $trashedVariant = ProductVariant::factory()->inStock(99)->create([
+    $trashedVariant = ProductVariant::factory()->create([
         'product_id' => $record->id,
+        'backorder' => 99,
     ]);
 
     $trashedVariant->delete();
 
-    $activeVariant = ProductVariant::factory()->inStock(42)->create([
+    $activeVariant = ProductVariant::factory()->create([
         'product_id' => $record->id,
+        'backorder' => 42,
     ]);
 
     $this->asStaff();
@@ -138,20 +165,18 @@ it('mounts inventory page using the active variant when a trashed variant exists
     Livewire::test(
         ManageProductInventory::class, [
             'record' => $record->getRouteKey(),
-        ])->assertSet('stock', $activeVariant->stock_on_hand);
+        ])->assertSet('backorder', $activeVariant->backorder);
 });
 
-it('can update variant stock figures', function () {
-    $language = Language::factory()->create([
+it('updates the variant selling policy', function () {
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $currency = Currency::factory()->create([
+    Currency::factory()->create([
         'default' => true,
         'decimal_places' => 2,
     ]);
-
-    Location::factory()->create(['default' => true]);
 
     $record = Product::factory()->create();
 
@@ -165,14 +190,12 @@ it('can update variant stock figures', function () {
         ManageProductInventory::class, [
             'record' => $record->getRouteKey(),
         ])->fillForm([
-            'stock' => 500,
             'backorder' => 50,
             'purchasable' => 'in_stock_or_on_backorder',
         ])->call('save')->assertHasNoErrors();
 
     $this->assertDatabaseHas((new ProductVariant)->getTable(), [
-        'stock_on_hand' => 500,
-        'stock_available' => 500,
+        'id' => $variant->id,
         'backorder' => 50,
         'purchasable' => 'in_stock_or_on_backorder',
     ]);

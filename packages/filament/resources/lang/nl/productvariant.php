@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Productvariant',
     'plural_label' => 'Productvarianten',
     'pages' => [

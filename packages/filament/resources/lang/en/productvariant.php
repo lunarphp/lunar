@@ -3,6 +3,16 @@
 return [
     'label' => 'Product Variant',
     'plural_label' => 'Product Variants',
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'pages' => [
         'edit' => [
             'title' => 'Basic Information',

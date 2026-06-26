@@ -67,15 +67,6 @@ class ProductVariantForm
         );
     }
 
-    public static function getStockComponent(): TextInput
-    {
-        return TextInput::make('stock')
-            ->label(__('lunar-filament::productvariant.form.stock.label'))
-            ->hintIcon('heroicon-m-question-mark-circle')
-            ->hintIconTooltip(__('lunar-filament::productvariant.form.stock.tooltip'))
-            ->numeric();
-    }
-
     public static function getBackorderComponent(): TextInput
     {
         return TextInput::make('backorder')
@@ -102,7 +93,8 @@ class ProductVariantForm
     {
         return TextInput::make('unit_quantity')
             ->label(__('lunar-filament::productvariant.form.unit_quantity.label'))
-            ->helperText(__('lunar-filament::productvariant.form.unit_quantity.helper_text'))
+            ->hintIcon('heroicon-m-question-mark-circle')
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.unit_quantity.helper_text'))
             ->numeric();
     }
 
@@ -110,7 +102,8 @@ class ProductVariantForm
     {
         return TextInput::make('quantity_increment')
             ->label(__('lunar-filament::productvariant.form.quantity_increment.label'))
-            ->helperText(__('lunar-filament::productvariant.form.quantity_increment.helper_text'))
+            ->hintIcon('heroicon-m-question-mark-circle')
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.quantity_increment.helper_text'))
             ->numeric();
     }
 
@@ -118,7 +111,8 @@ class ProductVariantForm
     {
         return TextInput::make('min_quantity')
             ->label(__('lunar-filament::productvariant.form.min_quantity.label'))
-            ->helperText(__('lunar-filament::productvariant.form.min_quantity.helper_text'))
+            ->hintIcon('heroicon-m-question-mark-circle')
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.min_quantity.helper_text'))
             ->numeric();
     }
 
