@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantInventory;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\Location;
 
 class ManageProductInventory extends BaseEditRecord
 {
@@ -63,7 +65,7 @@ class ManageProductInventory extends BaseEditRecord
 
         $variant = $this->getVariant();
 
-        $this->stock = $variant->stock;
+        $this->stock = $variant->stock_on_hand;
         $this->backorder = $variant->backorder;
         $this->purchasable = $variant->purchasable;
         $this->unit_quantity = $variant->unit_quantity;
@@ -75,7 +77,18 @@ class ManageProductInventory extends BaseEditRecord
     {
         $variant = $this->getVariant();
 
+        // Stock is ledger-derived — reconcile on_hand at the default location
+        // with a movement rather than writing a column.
+        $targetOnHand = (int) ($data['stock'] ?? $variant->stock_on_hand);
+        unset($data['stock']);
+
         $variant->update($data);
+
+        $delta = $targetOnHand - $variant->stock_on_hand;
+
+        if ($delta !== 0) {
+            $variant->adjustStock(Location::getDefault(), $delta, StockMovementType::Adjustment);
+        }
 
         return $record;
     }

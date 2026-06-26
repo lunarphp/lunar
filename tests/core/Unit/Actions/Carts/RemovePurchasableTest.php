@@ -19,9 +19,7 @@ test('can remove cart line', function () {
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create([
-        'stock' => 1,
-    ]);
+    $purchasable = ProductVariant::factory()->inStock(1)->create();
 
     Price::factory()->create([
         'price' => 100,

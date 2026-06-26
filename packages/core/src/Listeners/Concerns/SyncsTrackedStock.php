@@ -14,7 +14,9 @@ trait SyncsTrackedStock
      */
     protected function syncTrackedStockForOrder(OrderContract $order): void
     {
-        $order->lines()->with('purchasable')->get()
+        // Only fulfillable lines can hold stock; this also skips shipping lines,
+        // whose purchasable morph is a non-Eloquent value object.
+        $order->lines()->where('requires_fulfilment', true)->with('purchasable')->get()
             ->map(fn ($line) => $line->purchasable)
             ->filter(fn ($purchasable) => $purchasable instanceof TracksStock)
             ->unique(fn ($purchasable) => $purchasable::class.':'.$purchasable->getKey())

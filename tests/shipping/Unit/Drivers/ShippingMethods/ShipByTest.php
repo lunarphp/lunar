@@ -437,7 +437,6 @@ test('pricing manager resolves correct tier for weight-based shipping using raw 
             'weight_value' => $weightKg,
             'weight_unit' => 'kg',
         ]);
-        $variant->stock = 100;
 
         Price::factory()->create([
             'price' => 500,
@@ -504,7 +503,6 @@ test('weight in grams is converted to kg when evaluating weight-based shipping b
         'weight_value' => 5000.0,
         'weight_unit' => 'g',
     ]);
-    $variant->stock = 100;
 
     Price::factory()->create([
         'price' => 500,
@@ -553,14 +551,12 @@ test('total cart weight across multiple lines with different units is summed in 
     ]);
 
     $variantKg = ProductVariant::factory()->create(['weight_value' => 2.0, 'weight_unit' => 'kg']);
-    $variantKg->stock = 100;
     Price::factory()->create([
         'price' => 500, 'min_quantity' => 1, 'currency_id' => $currency->id,
         'priceable_type' => $variantKg->getMorphClass(), 'priceable_id' => $variantKg->id,
     ]);
 
     $variantG = ProductVariant::factory()->create(['weight_value' => 1500.0, 'weight_unit' => 'g']);
-    $variantG->stock = 100;
     Price::factory()->create([
         'price' => 500, 'min_quantity' => 1, 'currency_id' => $currency->id,
         'priceable_type' => $variantG->getMorphClass(), 'priceable_id' => $variantG->id,

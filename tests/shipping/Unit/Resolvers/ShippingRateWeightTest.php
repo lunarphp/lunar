@@ -64,7 +64,6 @@ function makeWeightScenario(
         'weight_value' => $lineWeight,
         'weight_unit' => $lineWeightUnit,
     ]);
-    $variant->stock = 100;
 
     Price::factory()->create([
         'price' => 1000,
@@ -345,13 +344,11 @@ test('sums weight across multiple lines with mixed units', function () {
 
     // Line 1: 2 × 1 kg = 2 kg
     $v1 = ProductVariant::factory()->create(['weight_value' => 1.0, 'weight_unit' => 'kg']);
-    $v1->stock = 100;
     Price::factory()->create(['price' => 500, 'min_quantity' => 1, 'currency_id' => $currency->id, 'priceable_type' => $v1->getMorphClass(), 'priceable_id' => $v1->id]);
     $cart->lines()->create(['purchasable_type' => $v1->getMorphClass(), 'purchasable_id' => $v1->id, 'quantity' => 2]);
 
     // Line 2: 1 × 1000 g = 1 kg → total 3 kg, exactly at minimum
     $v2 = ProductVariant::factory()->create(['weight_value' => 1000.0, 'weight_unit' => 'g']);
-    $v2->stock = 100;
     Price::factory()->create(['price' => 300, 'min_quantity' => 1, 'currency_id' => $currency->id, 'priceable_type' => $v2->getMorphClass(), 'priceable_id' => $v2->id]);
     $cart->lines()->create(['purchasable_type' => $v2->getMorphClass(), 'purchasable_id' => $v2->id, 'quantity' => 1]);
 

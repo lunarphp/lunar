@@ -5,6 +5,7 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductInventory;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
@@ -122,16 +123,14 @@ it('mounts inventory page using the active variant when a trashed variant exists
 
     $record = Product::factory()->create();
 
-    $trashedVariant = ProductVariant::factory()->create([
+    $trashedVariant = ProductVariant::factory()->inStock(99)->create([
         'product_id' => $record->id,
-        'stock' => 99,
     ]);
 
     $trashedVariant->delete();
 
-    $activeVariant = ProductVariant::factory()->create([
+    $activeVariant = ProductVariant::factory()->inStock(42)->create([
         'product_id' => $record->id,
-        'stock' => 42,
     ]);
 
     $this->asStaff();
@@ -139,7 +138,7 @@ it('mounts inventory page using the active variant when a trashed variant exists
     Livewire::test(
         ManageProductInventory::class, [
             'record' => $record->getRouteKey(),
-        ])->assertSet('stock', $activeVariant->stock);
+        ])->assertSet('stock', $activeVariant->stock_on_hand);
 });
 
 it('can update variant stock figures', function () {
@@ -151,6 +150,8 @@ it('can update variant stock figures', function () {
         'default' => true,
         'decimal_places' => 2,
     ]);
+
+    Location::factory()->create(['default' => true]);
 
     $record = Product::factory()->create();
 
@@ -170,7 +171,8 @@ it('can update variant stock figures', function () {
         ])->call('save')->assertHasNoErrors();
 
     $this->assertDatabaseHas((new ProductVariant)->getTable(), [
-        'stock' => 500,
+        'stock_on_hand' => 500,
+        'stock_available' => 500,
         'backorder' => 50,
         'purchasable' => 'in_stock_or_on_backorder',
     ]);

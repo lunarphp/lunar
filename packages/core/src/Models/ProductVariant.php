@@ -45,7 +45,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?float $volume_value
  * @property ?string $volume_unit
  * @property bool $shippable
- * @property int $stock
  * @property int $backorder
  * @property string $purchasable
  * @property int $stock_on_hand
@@ -239,10 +238,10 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
     public function getTotalInventory(): int
     {
         if ($this->purchasable == 'in_stock') {
-            return $this->stock;
+            return $this->stock_available;
         }
 
-        return $this->stock + $this->backorder;
+        return $this->stock_available + $this->backorder;
     }
 
     public function getThumbnailImage(): string
