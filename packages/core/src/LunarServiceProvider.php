@@ -62,6 +62,7 @@ use Lunar\Core\Listeners\AllocateStockForFulfilment;
 use Lunar\Core\Listeners\ApplyStockForFulfilmentTransition;
 use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Listeners\CloseSettledOrder;
+use Lunar\Core\Listeners\EnsureInitialFulfilmentForOrder;
 use Lunar\Core\Listeners\SendFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
@@ -280,6 +281,9 @@ class LunarServiceProvider extends ServiceProvider
         // Optionally archive a fully paid + fulfilled order (config-gated).
         Event::listen(OrderPaymentStatusUpdated::class, CloseSettledOrder::class);
         Event::listen(OrderFulfilmentStatusUpdated::class, CloseSettledOrder::class);
+
+        // A placed order gets its initial fulfilment.
+        Event::listen(OrderPlaced::class, EnsureInitialFulfilmentForOrder::class);
 
         // Keep stock commitment in step with the order/fulfilment lifecycle.
         Event::listen(OrderPlaced::class, SyncStockForOrder::class);
