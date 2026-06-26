@@ -20,6 +20,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 - `accepted` — agreed, implementation can start
 - `implemented` — work has shipped
 - `superseded` — replaced by a later spec (link to it)
+- `completed` — shipped and the spec moved to `specs/completed/`
 
 ## Index
 
@@ -27,22 +28,39 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | ---- | --------------------------- | ----------- |
 | 0001 | Upgrade package             | completed   |
 | 0002 | Core namespace change       | completed   |
-| 0003 | Flatten v1.x migrations     | completed   |
+| 0003 | Flatten v1.x migrations into a v2 baseline | completed   |
 | 0004 | Filament v5 upgrade         | completed   |
 | 0005 | Filament v5 schemas refactor | completed   |
-| 0006 | Extract `lunarphp/filament` bridge package and reshape the install model | implemented |
-| 0007 | Inline page-extension traits into base page classes | draft       |
-| 0008 | Reusable Filament entity-selector components | implemented |
+| 0006 | Extract `lunarphp/filament` bridge package and reshape the install model | completed   |
+| 0007 | Inline page-extension traits into base page classes | completed   |
+| 0008 | Reusable Filament entity-selector components | completed   |
 | 0009 | Filament-native verbs and discoverability (actions library + global search) | completed   |
 | 0010 | Publishable admin resources (and Staff to core) | completed   |
-| 0011 | Support `Model::preventLazyLoading()` | completed   |
+| 0011 | Make Lunar safe under `Model::preventLazyLoading()` | completed   |
 | 0012 | Price data type / cast refactor | completed   |
-| 0013 | `Base/` directory reorganisation | draft       |
-| 0014 | Price calculator service | draft       |
-| 0015 | PriceValue arithmetic | implemented |
-| 0016 | Service-layer dependency injection | implemented |
+| 0013 | `Base/` directory reorganisation | completed   |
+| 0014 | Price calculator service | completed   |
+| 0015 | PriceValue arithmetic | completed   |
+| 0016 | Service-layer dependency injection | completed   |
 | 0017 | Rename `compare_price` to `list_price` | completed   |
 | 0018 | Dedicated `name` / `description` / `short_description` fields | completed   |
 | 0019 | Attribute system redesign | completed   |
 | 0020 | Remove GetCandy migration command | completed   |
 | 0021 | State machines (and retiring soft-deletes) | completed   |
+| 0022 | Order fulfilments, derived statuses & open/closed lifecycle | completed   |
+| 0023 | Demo-data package | accepted    |
+| 0024 | Shipping carriers (tracking service registry) | completed   |
+| 0025 | Order cancellation | completed   |
+| 0026 | Bulk order operations | draft       |
+| 0027 | Order print templates | draft       |
+| 0028 | Line-item refunds | draft       |
+| 0029 | Entry-point conventions: actions, model verbs, managers | completed   |
+| 0030 | Fulfillable order lines: decouple fulfilment from the line `type` string | completed   |
+| 0031 | Fulfilment methods: pluggable fulfilment flows | completed   |
+| 0032 | Auto-close settled orders | completed   |
+| 0033 | Multi-tenant homes for this branch's new config | completed   |
+| 0034 | Wire and gate fulfilment notifications | completed   |
+| 0035 | Interactive "Notify customer" order action | proposed    |
+| 0036 | Default professional customer notifications for the order lifecycle | draft       |
+| 0037 | Move automatic notifications onto manifests (split by payload) | superseded  |
+| 0038 | Inventory fundamentals | completed   |
