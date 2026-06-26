@@ -82,9 +82,9 @@ class ProductTable
                 ->toggleable()
                 ->searchable(),
             static::getSkuColumn(),
-            TextColumn::make('variants_sum_stock')
+            TextColumn::make('variants_sum_stock_on_hand')
                 ->label(__('lunar-filament::product.table.stock.label'))
-                ->sum('variants', 'stock'),
+                ->sum('variants', 'stock_on_hand'),
             TextColumn::make('productType.name')
                 ->label(__('lunar-filament::product.table.producttype.label'))
                 ->limit(30)

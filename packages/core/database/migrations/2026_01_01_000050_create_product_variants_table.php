@@ -20,9 +20,17 @@ return new class extends Migration
             $table->string('ean')->nullable()->index();
             $table->dimensions();
             $table->boolean('shippable')->default(true)->index();
-            $table->integer('stock')->default(0)->index();
             $table->integer('backorder')->default(0)->index();
             $table->string('purchasable')->default('always')->index();
+            // Cached stock rollup, summed from the variant's stock levels (and the
+            // global committed/reserved counters). `stock_available` is the indexed
+            // sellable figure: on_hand - committed - reserved - unavailable.
+            $table->integer('stock_on_hand')->default(0);
+            $table->integer('stock_incoming')->default(0);
+            $table->integer('stock_committed')->default(0);
+            $table->integer('stock_reserved')->default(0);
+            $table->integer('stock_unavailable')->default(0);
+            $table->integer('stock_available')->default(0)->index();
             $table->integer('quantity_increment')->unsigned()->default(1)->index();
             $table->integer('min_quantity')->unsigned()->default(1)->index();
             $table->jsonb('attribute_data')->nullable();

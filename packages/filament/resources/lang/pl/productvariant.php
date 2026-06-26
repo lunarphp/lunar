@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Wariant produktu',
     'plural_label' => 'Warianty produktów',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'Dostępny',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Na zamówienie',
         ],
         'purchasable' => [
-            'label' => 'Możliwość zakupu',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Zawsze',
                 'in_stock' => 'Tylko gdy jest w magazynie',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Ilość jednostkowa',
-            'helper_text' => 'Ile pojedynczych przedmiotów stanowi 1 jednostkę.',
+            'tooltip' => 'Ile pojedynczych przedmiotów stanowi 1 jednostkę.',
         ],
         'min_quantity' => [
             'label' => 'Minimalna ilość',
-            'helper_text' => 'Minimalna ilość, którą klient musi zakupić.',
+            'tooltip' => 'Minimalna ilość, którą klient musi zakupić.',
         ],
         'quantity_increment' => [
             'label' => 'Zwiększenie ilości',
-            'helper_text' => 'Wariant produktu musi być kupowany w wielokrotnościach tej ilości.',
+            'tooltip' => 'Wariant produktu musi być kupowany w wielokrotnościach tej ilości.',
         ],
         'tax_class_id' => [
             'label' => 'Klasa podatkowa',

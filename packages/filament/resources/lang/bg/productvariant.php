@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Продуктов вариант',
     'plural_label' => 'Продуктови варианти',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'В наличност',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'По заявка',
         ],
         'purchasable' => [
-            'label' => 'Възможност за закупуване',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Винаги',
                 'in_stock' => 'В наличност',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Количество в единица',
-            'helper_text' => 'Колко отделни артикула съставляват 1 единица.',
+            'tooltip' => 'Колко отделни артикула съставляват 1 единица.',
         ],
         'min_quantity' => [
             'label' => 'Минимално количество',
-            'helper_text' => 'Минималното количество от варианта, което може да бъде закупено в една поръчка.',
+            'tooltip' => 'Минималното количество от варианта, което може да бъде закупено в една поръчка.',
         ],
         'quantity_increment' => [
             'label' => 'Стъпка на количество',
-            'helper_text' => 'Вариантът трябва да бъде закупуван в кратни на това количество.',
+            'tooltip' => 'Вариантът трябва да бъде закупуван в кратни на това количество.',
         ],
         'tax_class_id' => [
             'label' => 'Данъчен клас',

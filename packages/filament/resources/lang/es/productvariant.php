@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Variante de Producto',
     'plural_label' => 'Variantes de Producto',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'En Stock',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'En Pedido Pendiente',
         ],
         'purchasable' => [
-            'label' => 'Comprabilidad',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Siempre',
                 'in_stock' => 'En Stock',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Cantidad por Unidad',
-            'helper_text' => 'Cuántos artículos individuales componen 1 unidad.',
+            'tooltip' => 'Cuántos artículos individuales componen 1 unidad.',
         ],
         'min_quantity' => [
             'label' => 'Cantidad Mínima',
-            'helper_text' => 'La cantidad mínima de una variante de producto que se puede comprar en una sola compra.',
+            'tooltip' => 'La cantidad mínima de una variante de producto que se puede comprar en una sola compra.',
         ],
         'quantity_increment' => [
             'label' => 'Incremento de Cantidad',
-            'helper_text' => 'La variante de producto debe comprarse en múltiplos de esta cantidad.',
+            'tooltip' => 'La variante de producto debe comprarse en múltiplos de esta cantidad.',
         ],
         'tax_class_id' => [
             'label' => 'Clase Impositiva',

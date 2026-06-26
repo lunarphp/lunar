@@ -178,7 +178,6 @@ test('sets tax rate to the highest basket rate', function () {
     $cart = $this->createCart($currency, 500);
 
     $purchasable = ProductVariant::factory()->create();
-    $purchasable->stock = 50;
     $purchasable->tax_class_id = $higherRate->id;
     $purchasable->save();
 

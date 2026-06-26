@@ -14,11 +14,13 @@ use Filament\Schemas\Components\Callout;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
 use Lunar\Core\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\ProductOption;
 use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Core\Models\ProductVariant;
@@ -266,7 +268,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 'id' => $variant->id,
                 'sku' => $variant->sku,
                 'price' => $variant->basePrices->first()?->decimal('price') ?: 0,
-                'stock' => $variant->stock,
+                'stock' => $variant->stock_on_hand,
                 'values' => $variant->values->mapWithKeys(
                     fn ($value) => [$value->option->translate('name') => $value->translate('name')]
                 )->toArray(),
@@ -410,8 +412,15 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     }
 
                     $variant->sku = $variantData['sku'];
-                    $variant->stock = $variantData['stock'];
                     $variant->save();
+
+                    // Stock is ledger-derived now — reconcile on_hand at the default
+                    // location with a movement rather than writing the column.
+                    $stockDelta = (int) ($variantData['stock'] ?? 0) - $variant->stock_on_hand;
+
+                    if ($stockDelta !== 0) {
+                        $variant->adjustStock(Location::getDefault(), $stockDelta, StockMovementType::Adjustment);
+                    }
 
                     $basePrice->price = (int) bcmul($variantData['price'], $basePrice->currency->factor);
                     $basePrice->save();

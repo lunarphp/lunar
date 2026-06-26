@@ -67,7 +67,14 @@ class ActionServiceProvider extends ServiceProvider
 
         // Products
         Contracts\Products\AdjustsStock::class => Actions\Products\AdjustStock::class,
+        Contracts\Products\CommitsReservation::class => Actions\Products\CommitReservation::class,
         Contracts\Products\DuplicatesProduct::class => Actions\Products\DuplicateProduct::class,
+        Contracts\Products\RecomputesStockReserved::class => Actions\Products\RecomputeStockReserved::class,
+        Contracts\Products\RecomputesStockRollup::class => Actions\Products\RecomputeStockRollup::class,
+        Contracts\Products\RecordsStockMovement::class => Actions\Products\RecordStockMovement::class,
+        Contracts\Products\ReleasesReservation::class => Actions\Products\ReleaseReservation::class,
+        Contracts\Products\ReservesStock::class => Actions\Products\ReserveStock::class,
+        Contracts\Products\SyncsStockCommitment::class => Actions\Products\SyncStockCommitment::class,
         Contracts\Products\MapsVariantsToProductOptions::class => Actions\Products\MapVariantsToProductOptions::class,
         Contracts\Products\UpdatesProductStatus::class => Actions\Products\UpdateProductStatus::class,
 

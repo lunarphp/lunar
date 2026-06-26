@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Ürün Varyantı',
     'plural_label' => 'Ürün Varyantları',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'Stokta',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Sipariş Üzerine',
         ],
         'purchasable' => [
-            'label' => 'Satın Alınabilirlik',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Her Zaman',
                 'in_stock' => 'Stokta',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Birim Miktarı',
-            'helper_text' => '1 birimi kaç adet ürün oluşturur.',
+            'tooltip' => '1 birimi kaç adet ürün oluşturur.',
         ],
         'min_quantity' => [
             'label' => 'Minimum Miktar',
-            'helper_text' => 'Tek bir satın alma işleminde satın alınabilecek minimum ürün varyantı miktarı.',
+            'tooltip' => 'Tek bir satın alma işleminde satın alınabilecek minimum ürün varyantı miktarı.',
         ],
         'quantity_increment' => [
             'label' => 'Miktar Artışı',
-            'helper_text' => 'Ürün varyantı bu miktarın katları halinde satın alınmalıdır.',
+            'tooltip' => 'Ürün varyantı bu miktarın katları halinde satın alınmalıdır.',
         ],
         'tax_class_id' => [
             'label' => 'Vergi Sınıfı',

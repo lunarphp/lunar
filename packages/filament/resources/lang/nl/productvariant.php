@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Productvariant',
     'plural_label' => 'Productvarianten',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'Op Voorraad',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'In Nabestelling',
         ],
         'purchasable' => [
-            'label' => 'Koopbaarheid',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Altijd',
                 'in_stock' => 'Op Voorraad',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Eenheidsaantal',
-            'helper_text' => 'Hoeveel individuele items vormen 1 eenheid.',
+            'tooltip' => 'Hoeveel individuele items vormen 1 eenheid.',
         ],
         'min_quantity' => [
             'label' => 'Minimale Hoeveelheid',
-            'helper_text' => 'De minimale hoeveelheid van een productvariant die in één aankoop kan worden gekocht.',
+            'tooltip' => 'De minimale hoeveelheid van een productvariant die in één aankoop kan worden gekocht.',
         ],
         'quantity_increment' => [
             'label' => 'Hoeveelheidsverhoging',
-            'helper_text' => 'De productvariant moet in veelvouden van deze hoeveelheid worden gekocht.',
+            'tooltip' => 'De productvariant moet in veelvouden van deze hoeveelheid worden gekocht.',
         ],
         'tax_class_id' => [
             'label' => 'Belastingklasse',

@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Produktvariante',
     'plural_label' => 'Produktvarianten',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'Auf Lager',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Im Rückstand',
         ],
         'purchasable' => [
-            'label' => 'Käuflichkeit',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Immer',
                 'in_stock' => 'Auf Lager',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Stückzahl',
-            'helper_text' => 'Wie viele Einzelartikel 1 Einheit ausmachen.',
+            'tooltip' => 'Wie viele Einzelartikel 1 Einheit ausmachen.',
         ],
         'min_quantity' => [
             'label' => 'Mindestmenge',
-            'helper_text' => 'Die Mindestmenge einer Produktvariante, die in einem einzigen Kauf erworben werden kann.',
+            'tooltip' => 'Die Mindestmenge einer Produktvariante, die in einem einzigen Kauf erworben werden kann.',
         ],
         'quantity_increment' => [
             'label' => 'Mengeninkrement',
-            'helper_text' => 'Die Produktvariante muss in Vielfachen dieser Menge gekauft werden.',
+            'tooltip' => 'Die Produktvariante muss in Vielfachen dieser Menge gekauft werden.',
         ],
         'tax_class_id' => [
             'label' => 'Steuerklasse',

@@ -22,7 +22,6 @@ trait TestUtils
         ]);
 
         $purchasable = ProductVariant::factory()->create();
-        $purchasable->stock = 100;
 
         Price::factory()->create([
             'price' => $price,

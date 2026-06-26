@@ -80,7 +80,7 @@ class OrderItemsTable extends TableComponent
             Panel::make([
                 Stack::make([
                     TextColumn::make('stock')
-                        ->getStateUsing(fn ($record) => $record->purchasable?->stock)
+                        ->getStateUsing(fn ($record) => $record->purchasable?->getTotalInventory())
                         ->formatStateUsing(fn ($state) => __('lunarpanel::order.infolist.current_stock_level.message', [
                             'count' => $state,
                         ]))

@@ -19,8 +19,7 @@ test('can validate available stock', function (int $stock, int $backorder, int $
         'currency_id' => $currency->id,
     ]);
 
-    $purchasable = ProductVariant::factory()->create([
-        'stock' => $stock,
+    $purchasable = ProductVariant::factory()->inStock($stock)->create([
         'backorder' => $backorder,
         'purchasable' => $purchasable,
     ]);
