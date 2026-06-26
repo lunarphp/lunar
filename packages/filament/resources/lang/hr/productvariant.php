@@ -46,13 +46,16 @@ return [
             'label' => 'UPC/EAN',
         ],
         'stock' => [
+            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
             'label' => 'Na zalihi',
         ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Naručeno unaprijed',
         ],
         'purchasable' => [
-            'label' => 'Mogućnost kupnje',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Uvijek',
                 'in_stock' => 'Na zalihi',

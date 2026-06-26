@@ -71,6 +71,8 @@ class ProductVariantForm
     {
         return TextInput::make('stock')
             ->label(__('lunar-filament::productvariant.form.stock.label'))
+            ->hintIcon('heroicon-m-question-mark-circle')
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.stock.tooltip'))
             ->numeric();
     }
 
@@ -78,6 +80,8 @@ class ProductVariantForm
     {
         return TextInput::make('backorder')
             ->label(__('lunar-filament::productvariant.form.backorder.label'))
+            ->hintIcon('heroicon-m-question-mark-circle')
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.backorder.tooltip'))
             ->numeric();
     }
 
@@ -89,7 +93,9 @@ class ProductVariantForm
                 'in_stock' => __('lunar-filament::productvariant.form.purchasable.options.in_stock'),
                 'in_stock_or_on_backorder' => __('lunar-filament::productvariant.form.purchasable.options.in_stock_or_on_backorder'),
             ])
-            ->label(__('lunar-filament::productvariant.form.purchasable.label'));
+            ->label(__('lunar-filament::productvariant.form.purchasable.label'))
+            ->hintIcon('heroicon-m-question-mark-circle')
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.purchasable.tooltip'));
     }
 
     public static function getUnitQtyComponent(): TextInput

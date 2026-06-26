@@ -46,13 +46,16 @@ return [
             'label' => 'UPC/EAN',
         ],
         'stock' => [
+            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
             'label' => 'Stokta',
         ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Sipariş Üzerine',
         ],
         'purchasable' => [
-            'label' => 'Satın Alınabilirlik',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Her Zaman',
                 'in_stock' => 'Stokta',

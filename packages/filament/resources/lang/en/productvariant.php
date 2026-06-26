@@ -47,12 +47,15 @@ return [
         ],
         'stock' => [
             'label' => 'In Stock',
+            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
         ],
         'backorder' => [
             'label' => 'On Backorder',
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
         ],
         'purchasable' => [
-            'label' => 'Purchasability',
+            'label' => 'Selling Policy',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
             'options' => [
                 'always' => 'Always',
                 'in_stock' => 'In Stock',
