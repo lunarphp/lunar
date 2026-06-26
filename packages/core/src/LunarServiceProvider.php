@@ -242,6 +242,13 @@ class LunarServiceProvider extends ServiceProvider
                     $schedule->command('lunar:prune:carts')->daily();
                 });
             }
+
+            // Free lapsed stock reservations promptly so held quantity returns to
+            // availability. Cheap when nothing has expired; the host only needs
+            // the standard `schedule:run` cron for it to work out of the box.
+            $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+                $schedule->command('lunar:stock:release-expired')->everyMinute()->withoutOverlapping();
+            });
         }
 
         Arr::macro('permutate', [Utils\Arr::class, 'permutate']);
