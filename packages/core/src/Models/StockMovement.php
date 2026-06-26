@@ -44,6 +44,7 @@ class StockMovement extends Base implements Contracts\StockMovement
      * {@inheritDoc}
      */
     protected $casts = [
+        'quantity' => 'integer',
         'type' => StockMovementType::class,
     ];
 

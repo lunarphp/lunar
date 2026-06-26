@@ -39,6 +39,10 @@ class StockLevel extends Base implements Contracts\StockLevel
      * {@inheritDoc}
      */
     protected $casts = [
+        'on_hand' => 'integer',
+        'incoming' => 'integer',
+        'committed' => 'integer',
+        'unavailable' => 'integer',
         'meta' => AsArrayObject::class,
     ];
 

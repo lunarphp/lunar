@@ -79,6 +79,12 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
      */
     protected $casts = [
         'shippable' => 'bool',
+        'stock_on_hand' => 'integer',
+        'stock_incoming' => 'integer',
+        'stock_committed' => 'integer',
+        'stock_reserved' => 'integer',
+        'stock_unavailable' => 'integer',
+        'stock_available' => 'integer',
     ];
 
     /**

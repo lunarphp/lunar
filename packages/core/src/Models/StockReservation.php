@@ -46,6 +46,7 @@ class StockReservation extends Base implements Contracts\StockReservation
      * {@inheritDoc}
      */
     protected $casts = [
+        'quantity' => 'integer',
         'expires_at' => 'datetime',
         'released_at' => 'datetime',
         'committed_at' => 'datetime',
