@@ -2,14 +2,17 @@
 
 namespace Lunar\Core\Models\Concerns;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Core\Contracts\Actions\Products\RecordsStockMovement;
+use Lunar\Core\Contracts\Actions\Products\ReservesStock;
 use Lunar\Core\Contracts\Actions\Products\SyncsStockCommitment;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\StockLevel;
 use Lunar\Core\Models\StockMovement;
+use Lunar\Core\Models\StockReservation;
 
 /**
  * Stock relations and the model-first movement verb for a stock-holding variant.
@@ -53,5 +56,16 @@ trait HasStock
     public function syncStockCommitment(): void
     {
         app(SyncsStockCommitment::class)->execute($this);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * The built-in `TracksStock` implementation: a `StockReservation` row backed
+     * by the global `stock_reserved` rollup.
+     */
+    public function reserveStock(int $quantity, ?DateTimeInterface $expiresAt = null, ?Model $reference = null, ?string $note = null): StockReservation
+    {
+        return app(ReservesStock::class)->execute($this, $quantity, $expiresAt, $reference, $note);
     }
 }

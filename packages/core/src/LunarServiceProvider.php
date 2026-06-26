@@ -24,6 +24,7 @@ use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
 use Lunar\Core\Console\Commands\ReconcileStock;
+use Lunar\Core\Console\Commands\ReleaseExpiredStockReservations;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
@@ -233,6 +234,7 @@ class LunarServiceProvider extends ServiceProvider
                 SyncNewCustomerOrders::class,
                 PruneCarts::class,
                 ReconcileStock::class,
+                ReleaseExpiredStockReservations::class,
             ]);
 
             if (config('lunar.cart.prune_tables.enabled', false)) {

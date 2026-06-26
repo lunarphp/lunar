@@ -2,6 +2,9 @@
 
 namespace Lunar\Core\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Core\Models\Contracts\StockReservation;
+
 /**
  * Opt-in capability for a `Purchasable` that participates in stock commitment.
  *
@@ -26,4 +29,12 @@ interface TracksStock
      * or out-of-order events converge to the same result.
      */
     public function syncStockCommitment(): void;
+
+    /**
+     * Place a (optionally time-boxed) hold against this purchasable, returning a
+     * reservation handle the checkout can later release or commit. `$reference`
+     * is the holder (a Cart). Built-in implementers return a `StockReservation`;
+     * a custom purchasable returns its own handle satisfying the contract.
+     */
+    public function reserveStock(int $quantity, ?\DateTimeInterface $expiresAt = null, ?Model $reference = null, ?string $note = null): StockReservation;
 }

@@ -3,6 +3,7 @@
 namespace Lunar\Core\Console\Commands;
 
 use Illuminate\Console\Command;
+use Lunar\Core\Contracts\Actions\Products\RecomputesStockReserved;
 use Lunar\Core\Contracts\Actions\Products\SyncsStockCommitment;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockLevel;
@@ -15,13 +16,14 @@ class ReconcileStock extends Command
 
     protected $description = 'Rebuild on_hand from the movement ledger and committed from open orders, then refresh the rollup.';
 
-    public function handle(SyncsStockCommitment $syncCommitment): int
+    public function handle(SyncsStockCommitment $syncCommitment, RecomputesStockReserved $recomputeReserved): int
     {
         ProductVariant::query()
             ->when($this->option('variant'), fn ($query, $ids) => $query->whereIn('id', $ids))
-            ->chunkById(100, function ($variants) use ($syncCommitment) {
+            ->chunkById(100, function ($variants) use ($syncCommitment, $recomputeReserved) {
                 foreach ($variants as $variant) {
                     $this->rebuildOnHand($variant);
+                    $recomputeReserved->execute($variant);
                     $syncCommitment->execute($variant);
                 }
             });
