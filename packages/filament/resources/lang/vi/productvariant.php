@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'Mã UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'Còn hàng',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Đặt trước',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Số lượng đơn vị',
-            'helper_text' => 'Số lượng sản phẩm đơn lẻ tạo thành 1 đơn vị.',
+            'tooltip' => 'Số lượng sản phẩm đơn lẻ tạo thành 1 đơn vị.',
         ],
         'min_quantity' => [
             'label' => 'Số lượng tối thiểu',
-            'helper_text' => 'Số lượng tối thiểu của biến thể sản phẩm có thể mua trong một lần.',
+            'tooltip' => 'Số lượng tối thiểu của biến thể sản phẩm có thể mua trong một lần.',
         ],
         'quantity_increment' => [
             'label' => 'Bước tăng số lượng',
-            'helper_text' => 'Biến thể sản phẩm phải được mua theo bội số của số lượng này.',
+            'tooltip' => 'Biến thể sản phẩm phải được mua theo bội số của số lượng này.',
         ],
         'tax_class_id' => [
             'label' => 'Loại thuế',

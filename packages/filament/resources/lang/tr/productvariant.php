@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'Stokta',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Sipariş Üzerine',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Birim Miktarı',
-            'helper_text' => '1 birimi kaç adet ürün oluşturur.',
+            'tooltip' => '1 birimi kaç adet ürün oluşturur.',
         ],
         'min_quantity' => [
             'label' => 'Minimum Miktar',
-            'helper_text' => 'Tek bir satın alma işleminde satın alınabilecek minimum ürün varyantı miktarı.',
+            'tooltip' => 'Tek bir satın alma işleminde satın alınabilecek minimum ürün varyantı miktarı.',
         ],
         'quantity_increment' => [
             'label' => 'Miktar Artışı',
-            'helper_text' => 'Ürün varyantı bu miktarın katları halinde satın alınmalıdır.',
+            'tooltip' => 'Ürün varyantı bu miktarın katları halinde satın alınmalıdır.',
         ],
         'tax_class_id' => [
             'label' => 'Vergi Sınıfı',

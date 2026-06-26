@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'В наличност',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'По заявка',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Количество в единица',
-            'helper_text' => 'Колко отделни артикула съставляват 1 единица.',
+            'tooltip' => 'Колко отделни артикула съставляват 1 единица.',
         ],
         'min_quantity' => [
             'label' => 'Минимално количество',
-            'helper_text' => 'Минималното количество от варианта, което може да бъде закупено в една поръчка.',
+            'tooltip' => 'Минималното количество от варианта, което може да бъде закупено в една поръчка.',
         ],
         'quantity_increment' => [
             'label' => 'Стъпка на количество',
-            'helper_text' => 'Вариантът трябва да бъде закупуван в кратни на това количество.',
+            'tooltip' => 'Вариантът трябва да бъде закупуван в кратни на това количество.',
         ],
         'tax_class_id' => [
             'label' => 'Данъчен клас',

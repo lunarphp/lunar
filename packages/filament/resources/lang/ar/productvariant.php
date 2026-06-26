@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'متوفر في المخزون',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'طلب مسبق',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'كمية الوحدة',
-            'helper_text' => 'كم عدد العناصر الفردية التي تشكل وحدة واحدة.',
+            'tooltip' => 'كم عدد العناصر الفردية التي تشكل وحدة واحدة.',
         ],
         'min_quantity' => [
             'label' => 'الحد الأدنى للكمية',
-            'helper_text' => 'الحد الأدنى للكمية التي يمكن شراؤها من متغير المنتج في عملية شراء واحدة.',
+            'tooltip' => 'الحد الأدنى للكمية التي يمكن شراؤها من متغير المنتج في عملية شراء واحدة.',
         ],
         'quantity_increment' => [
             'label' => 'زيادة الكمية',
-            'helper_text' => 'يجب شراء متغير المنتج بمضاعفات هذه الكمية.',
+            'tooltip' => 'يجب شراء متغير المنتج بمضاعفات هذه الكمية.',
         ],
         'tax_class_id' => [
             'label' => 'فئة الضريبة',

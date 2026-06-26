@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'Агуулахын нөөц',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Захиалгаар',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Нэгжийн тоо',
-            'helper_text' => '1 нэгжид хэдэн ширхэг бараа байх вэ.',
+            'tooltip' => '1 нэгжид хэдэн ширхэг бараа байх вэ.',
         ],
         'min_quantity' => [
             'label' => 'Хамгийн бага тоо',
-            'helper_text' => 'Нэг худалдаалалтанд худалдаж авах бүтээгдэхүүний вариантын хамгийн бага тоо.',
+            'tooltip' => 'Нэг худалдаалалтанд худалдаж авах бүтээгдэхүүний вариантын хамгийн бага тоо.',
         ],
         'quantity_increment' => [
             'label' => 'Тооны өсөлт',
-            'helper_text' => 'Бүтээгдэхүүний вариант энэ тооны давхцаагаар худалдаж авах ёстой.',
+            'tooltip' => 'Бүтээгдэхүүний вариант энэ тооны давхцаагаар худалдаж авах ёстой.',
         ],
         'tax_class_id' => [
             'label' => 'Татварын ангилал',

@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'In Stock',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'On Backorder',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Unit Quantity',
-            'helper_text' => 'How many individual items make up 1 unit.',
+            'tooltip' => 'How many individual items make up 1 unit.',
         ],
         'min_quantity' => [
             'label' => 'Minimum Quantity',
-            'helper_text' => 'The minimum quantity of a product variant that can be bought in a single purchase.',
+            'tooltip' => 'The minimum quantity of a product variant that can be bought in a single purchase.',
         ],
         'quantity_increment' => [
             'label' => 'Quantity Increment',
-            'helper_text' => 'The product variant must be purchased in multiples of this quantity.',
+            'tooltip' => 'The product variant must be purchased in multiples of this quantity.',
         ],
         'tax_class_id' => [
             'label' => 'Tax Class',

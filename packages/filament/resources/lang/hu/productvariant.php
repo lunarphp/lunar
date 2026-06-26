@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'Raktáron',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Utánrendelhető',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Egység mennyiség',
-            'helper_text' => 'Hány egyedi darabból áll egy egység.',
+            'tooltip' => 'Hány egyedi darabból áll egy egység.',
         ],
         'min_quantity' => [
             'label' => 'Minimális mennyiség',
-            'helper_text' => 'A termékváltozat egy vásárlás során megvásárolható minimális mennyisége.',
+            'tooltip' => 'A termékváltozat egy vásárlás során megvásárolható minimális mennyisége.',
         ],
         'quantity_increment' => [
             'label' => 'Mennyiség növelése',
-            'helper_text' => 'A termékváltozat csak e mennyiség többszörösében vásárolható meg.',
+            'tooltip' => 'A termékváltozat csak e mennyiség többszörösében vásárolható meg.',
         ],
         'tax_class_id' => [
             'label' => 'Adóosztály',

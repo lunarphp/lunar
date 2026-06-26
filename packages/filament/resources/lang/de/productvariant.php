@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'Auf Lager',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Im Rückstand',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Stückzahl',
-            'helper_text' => 'Wie viele Einzelartikel 1 Einheit ausmachen.',
+            'tooltip' => 'Wie viele Einzelartikel 1 Einheit ausmachen.',
         ],
         'min_quantity' => [
             'label' => 'Mindestmenge',
-            'helper_text' => 'Die Mindestmenge einer Produktvariante, die in einem einzigen Kauf erworben werden kann.',
+            'tooltip' => 'Die Mindestmenge einer Produktvariante, die in einem einzigen Kauf erworben werden kann.',
         ],
         'quantity_increment' => [
             'label' => 'Mengeninkrement',
-            'helper_text' => 'Die Produktvariante muss in Vielfachen dieser Menge gekauft werden.',
+            'tooltip' => 'Die Produktvariante muss in Vielfachen dieser Menge gekauft werden.',
         ],
         'tax_class_id' => [
             'label' => 'Steuerklasse',

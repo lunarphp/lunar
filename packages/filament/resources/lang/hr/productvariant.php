@@ -55,10 +55,6 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'tooltip' => 'Units on hand at your default location. Changing this records a stock adjustment.',
-            'label' => 'Na zalihi',
-        ],
         'backorder' => [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Naručeno unaprijed',
@@ -74,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Broj komada',
-            'helper_text' => 'Koliko pojedinačnih artikala čini 1 jedinicu.',
+            'tooltip' => 'Koliko pojedinačnih artikala čini 1 jedinicu.',
         ],
         'min_quantity' => [
             'label' => 'Najmanja količina',
-            'helper_text' => 'Najmanja količina varijante proizvoda koja se može kupiti u jednoj kupnji.',
+            'tooltip' => 'Najmanja količina varijante proizvoda koja se može kupiti u jednoj kupnji.',
         ],
         'quantity_increment' => [
             'label' => 'Korak količine',
-            'helper_text' => 'Varijanta proizvoda mora se kupovati u višekratnicima ove količine.',
+            'tooltip' => 'Varijanta proizvoda mora se kupovati u višekratnicima ove količine.',
         ],
         'tax_class_id' => [
             'label' => 'Porezni razred',
