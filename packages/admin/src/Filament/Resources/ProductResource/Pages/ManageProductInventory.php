@@ -8,6 +8,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantInventory;
+use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
@@ -41,6 +42,10 @@ class ManageProductInventory extends BaseEditRecord
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
+        if (! LunarPanel::usesInventoryControls()) {
+            return false;
+        }
+
         return ($parameters['record']->variants_count ?? $parameters['record']->variants()->count()) == 1;
     }
 

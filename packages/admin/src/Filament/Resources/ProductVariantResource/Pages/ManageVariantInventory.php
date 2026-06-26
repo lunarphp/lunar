@@ -11,6 +11,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Location;
@@ -28,6 +29,11 @@ class ManageVariantInventory extends BaseEditRecord
     public static function getNavigationLabel(): string
     {
         return __('lunarpanel::productvariant.pages.inventory.title');
+    }
+
+    public static function shouldRegisterNavigation(array $parameters = []): bool
+    {
+        return LunarPanel::usesInventoryControls();
     }
 
     protected function getCancelFormAction(): Action
