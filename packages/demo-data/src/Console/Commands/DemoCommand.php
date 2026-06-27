@@ -4,6 +4,7 @@ namespace Lunar\DemoData\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
+use Lunar\Core\Models\CollectionGroup;
 use Lunar\DemoData\Database\Seeders\DemoDataSeeder;
 use Lunar\DemoData\Support\DemoContext;
 
@@ -35,7 +36,15 @@ class DemoCommand extends Command
             return self::FAILURE;
         }
 
-        $context = DemoContext::fromConfig($scale, (bool) $this->option('fresh'));
+        $fresh = (bool) $this->option('fresh');
+
+        if (! $fresh && $this->alreadySeeded()) {
+            $this->components->warn('Demo data is already present. Re-run with --fresh to wipe and reseed.');
+
+            return self::SUCCESS;
+        }
+
+        $context = DemoContext::fromConfig($scale, $fresh);
 
         $this->components->info("Seeding demo data — scale: {$scale}".($context->fresh ? ' (fresh)' : '').'.');
 
@@ -47,5 +56,13 @@ class DemoCommand extends Command
         $this->components->info('Demo data seeded.');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * The demo's collection group is the marker that the store has been seeded.
+     */
+    protected function alreadySeeded(): bool
+    {
+        return CollectionGroup::query()->where('handle', 'shop')->exists();
     }
 }

@@ -27,9 +27,14 @@ php artisan lunar:demo-data --force    # required to run in a production environ
 ```
 
 The command refuses to run in production without `--force`, mirroring Laravel's
-own `migrate:fresh` / `db:wipe`. Seeding is deterministic — faker is seeded from
-a fixed value (see `config/demo-data.php`) so the same scale always produces the
-same store.
+own `migrate:fresh` / `db:wipe`. Without `--fresh` it is a no-op once the store
+is seeded; use `--fresh` to wipe the demo-owned tables and rebuild.
+
+Seeding is reproducible at the structural level — the same scale always yields
+the same catalogue, the same order coverage, and the same counts (faker is
+seeded from a fixed value in `config/demo-data.php`). Cosmetic faker output
+(customer names, addresses) is best-effort: the framework draws from the global
+RNG stream mid-seed, so those values are not byte-identical between runs.
 
 `DemoDataSeeder` is also callable from a host `DatabaseSeeder`:
 

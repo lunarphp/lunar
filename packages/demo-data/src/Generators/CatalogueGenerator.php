@@ -25,6 +25,8 @@ class CatalogueGenerator implements Generator
 {
     public function generate(DemoContext $context): void
     {
+        $context->reseed();
+
         $productType = $this->productType();
         $group = $this->collectionGroup();
         $collections = collect();

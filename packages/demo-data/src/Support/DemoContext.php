@@ -19,7 +19,10 @@ class DemoContext
         public readonly string $scale,
         public readonly bool $fresh,
         public readonly Generator $faker,
-    ) {}
+        public readonly int $seed = 0,
+    ) {
+        $this->faker->seed($seed);
+    }
 
     /**
      * Build a context from config defaults — used when the seeder is called
@@ -27,14 +30,22 @@ class DemoContext
      */
     public static function fromConfig(?string $scale = null, bool $fresh = false): self
     {
-        $faker = Factory::create();
-        $faker->seed((int) config('lunar.demo-data.faker_seed', 0));
-
         return new self(
             scale: $scale ?? (string) config('lunar.demo-data.default_scale', 'small'),
             fresh: $fresh,
-            faker: $faker,
+            faker: Factory::create(),
+            seed: (int) config('lunar.demo-data.faker_seed', 0),
         );
+    }
+
+    /**
+     * Re-apply the base seed. Generators call this at the start so each is
+     * reproducible independently of RNG that earlier generators (and the
+     * framework) consume from the global stream mid-seed.
+     */
+    public function reseed(): void
+    {
+        $this->faker->seed($this->seed);
     }
 
     /**

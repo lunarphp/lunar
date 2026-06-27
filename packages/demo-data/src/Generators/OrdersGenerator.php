@@ -41,6 +41,8 @@ class OrdersGenerator implements Generator
 
     public function generate(DemoContext $context): void
     {
+        $context->reseed();
+
         $this->context = $context;
         $this->gbp = $context->get('currency') ?? Currency::query()->where('code', 'GBP')->firstOrFail();
         $this->customers = Customer::query()->orderBy('id')->get();

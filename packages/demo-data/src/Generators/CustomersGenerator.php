@@ -19,6 +19,8 @@ class CustomersGenerator implements Generator
 {
     public function generate(DemoContext $context): void
     {
+        $context->reseed();
+
         $count = $context->count('customers');
         $group = $context->get('customerGroup');
         $country = $this->country();
