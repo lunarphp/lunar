@@ -3,6 +3,7 @@
 namespace Lunar\DemoData\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Lunar\DemoData\Generators\FoundationGenerator;
 use Lunar\DemoData\Generators\Generator;
 use Lunar\DemoData\Support\DemoContext;
 
@@ -16,7 +17,9 @@ class DemoDataSeeder extends Seeder
      *
      * @var array<class-string<Generator>>
      */
-    protected array $generators = [];
+    protected array $generators = [
+        FoundationGenerator::class,
+    ];
 
     public function usingContext(DemoContext $context): static
     {

@@ -1,11 +1,12 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\DemoData\Support\DemoContext;
 use Lunar\Tests\DemoData\TestCase;
 
 use function Pest\Laravel\artisan;
 
-uses(TestCase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 test('the demo-data config is merged under lunar.demo-data', function () {
     expect(config('lunar.demo-data.default_scale'))->toBe('small');
