@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Lunar\DemoData\Support\DemoContext;
 use Lunar\Tests\DemoData\TestCase;
 
@@ -8,12 +10,23 @@ use function Pest\Laravel\artisan;
 
 uses(TestCase::class, RefreshDatabase::class);
 
+/**
+ * Keep command-run tests fast: tiny catalogue, media on a fake disk.
+ */
+function cheapSeed(string $scale): void
+{
+    Storage::fake((string) config('lunar.demo-data.asset_disk', 'public'));
+    Config::set("lunar.demo-data.scales.{$scale}.products", 3);
+}
+
 test('the demo-data config is merged under lunar.demo-data', function () {
     expect(config('lunar.demo-data.default_scale'))->toBe('small');
     expect(config('lunar.demo-data.scales'))->toHaveKeys(['small', 'medium', 'large']);
 });
 
 test('lunar:demo-data runs at the default scale', function () {
+    cheapSeed('small');
+
     artisan('lunar:demo-data')
         ->expectsOutputToContain('scale: small')
         ->expectsOutputToContain('Demo data seeded.')
@@ -21,6 +34,8 @@ test('lunar:demo-data runs at the default scale', function () {
 });
 
 test('lunar:demo-data accepts an explicit scale', function () {
+    cheapSeed('large');
+
     artisan('lunar:demo-data', ['--scale' => 'large'])
         ->expectsOutputToContain('scale: large')
         ->assertExitCode(0);
