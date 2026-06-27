@@ -7,6 +7,7 @@ use Lunar\DemoData\Generators\CatalogueGenerator;
 use Lunar\DemoData\Generators\CustomersGenerator;
 use Lunar\DemoData\Generators\FoundationGenerator;
 use Lunar\DemoData\Generators\Generator;
+use Lunar\DemoData\Generators\OrdersGenerator;
 use Lunar\DemoData\Support\DemoContext;
 
 class DemoDataSeeder extends Seeder
@@ -23,6 +24,7 @@ class DemoDataSeeder extends Seeder
         FoundationGenerator::class,
         CatalogueGenerator::class,
         CustomersGenerator::class,
+        OrdersGenerator::class,
     ];
 
     public function usingContext(DemoContext $context): static
