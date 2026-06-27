@@ -20,6 +20,7 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         Config::set('providers.users.model', User::class);
+        Config::set('auth.providers.users.model', User::class);
         Config::set('lunar.urls.generator', null);
         activity()->disableLogging();
     }
