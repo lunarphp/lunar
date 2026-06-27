@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Transaction;
 use Lunar\DemoData\Generators\CatalogueGenerator;
 use Lunar\DemoData\Generators\CustomersGenerator;
 use Lunar\DemoData\Generators\FoundationGenerator;
@@ -93,6 +94,16 @@ test('the digital order is provisioned without shipping', function () {
     expect($line->requires_fulfilment)->toBeTrue();
     expect((string) $order->fulfilment_status)->toBe('fulfilled');
     expect($order->fulfilments()->first()->method)->toBe('digital');
+});
+
+test('its transactions use a resolvable payment driver', function () {
+    generateStore();
+
+    $transaction = Transaction::query()->firstOrFail();
+
+    // The admin order view resolves the driver by name, so it must be registered.
+    expect($transaction->driver)->toBe('offline');
+    expect($transaction->driver())->not->toBeNull();
 });
 
 test('it is idempotent', function () {
