@@ -61,6 +61,9 @@
             "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
             "Lunar\\Core\\Database\\Seeders\\": "packages/core/database/seeders",
             "Lunar\\Core\\Database\\State\\": "packages/core/database/state",
+            "Lunar\\DemoData\\": "packages/demo-data/src",
+            "Lunar\\DemoData\\Database\\Factories\\": "packages/demo-data/database/factories",
+            "Lunar\\DemoData\\Database\\Seeders\\": "packages/demo-data/database/seeders",
             "Lunar\\Filament\\": "packages/filament/src/",
             "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",
@@ -78,6 +81,7 @@
             "Lunar\\Tests\\": "tests",
             "Lunar\\Tests\\Admin\\": "tests/admin",
             "Lunar\\Tests\\Core\\": "tests/core",
+            "Lunar\\Tests\\DemoData\\": "tests/demo-data",
             "Lunar\\Tests\\Filament\\": "tests/filament",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",
             "Lunar\\Tests\\Paypal\\": "tests/paypal",
@@ -97,7 +101,8 @@
                 "Meilisearch",
                 "Paypal Payments",
                 "Stripe Payments",
-                "Upgrade"
+                "Upgrade",
+                "Demo Data"
             ]
         },
         "laravel": {
@@ -111,6 +116,7 @@
                 "Lunar\\Opayo\\OpayoServiceProvider",
                 "Lunar\\Shipping\\ShippingServiceProvider",
                 "Lunar\\Upgrade\\UpgradeServiceProvider",
+                "Lunar\\DemoData\\DemoDataServiceProvider",
                 "Lunar\\Core\\LunarServiceProvider"
             ]
         }
@@ -118,6 +124,7 @@
     "replace": {
         "lunarphp/core": "self.version",
         "lunarphp/admin": "self.version",
+        "lunarphp/demo-data": "self.version",
         "lunarphp/filament": "self.version",
         "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",

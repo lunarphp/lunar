@@ -1,0 +1,44 @@
+{
+  "name": "lunarphp/demo-data",
+  "description": "Lunar demo data seeder",
+  "keywords": [
+    "lunar",
+    "laravel",
+    "ecommerce",
+    "e-commerce",
+    "headless",
+    "store",
+    "shop",
+    "demo",
+    "seed"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lunar",
+      "homepage": "https://lunarphp.io/"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Lunar\\DemoData\\": "src",
+      "Lunar\\DemoData\\Database\\Factories\\": "database/factories",
+      "Lunar\\DemoData\\Database\\Seeders\\": "database/seeders"
+    }
+  },
+  "extra": {
+    "lunar": {
+      "name": "Demo Data"
+    },
+    "laravel": {
+      "providers": [
+        "Lunar\\DemoData\\DemoDataServiceProvider"
+      ]
+    }
+  },
+  "require": {
+    "php": "^8.4",
+    "lunarphp/core": "self.version"
+  }
+}
