@@ -8,6 +8,7 @@ use Lunar\Core\Models\Contracts\Channel;
 use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\Customer;
 use Lunar\Core\Models\Contracts\CustomerGroup;
+use Lunar\Core\Models\Contracts\Region;
 
 interface StorefrontSession
 {
@@ -16,6 +17,10 @@ interface StorefrontSession
      * to business logic that should not reach into the session itself.
      */
     public function context(): StorefrontContext;
+
+    public function getRegion(): ?Region;
+
+    public function setRegion(Region $region): static;
 
     public function getChannel(): Channel;
 

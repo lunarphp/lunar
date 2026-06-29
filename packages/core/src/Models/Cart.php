@@ -55,6 +55,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?int $merged_id
  * @property int $currency_id
  * @property int $channel_id
+ * @property ?int $region_id
  * @property ?int $tax_zone_id
  * @property ?int $order_id
  * @property ?string $coupon_code
@@ -226,6 +227,11 @@ class Cart extends Base implements Contracts\Cart
     public function channel(): BelongsTo
     {
         return $this->belongsTo(Channel::modelClass());
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::modelClass());
     }
 
     /**

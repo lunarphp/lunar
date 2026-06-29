@@ -34,6 +34,11 @@ interface Cart
     public function channel(): BelongsTo;
 
     /**
+     * Return the region relationship.
+     */
+    public function region(): BelongsTo;
+
+    /**
      * Produce a storefront context from the cart's stored selections.
      */
     public function context(): StorefrontContext;

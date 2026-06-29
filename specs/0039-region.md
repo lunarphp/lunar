@@ -1,6 +1,6 @@
 # 0039 — Region
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-29
 - TODO item: Region concept to define channel, currency, language, tax_zone, countries and price display
@@ -64,9 +64,9 @@ A `StorefrontContext` is the *resolved snapshot* of these selections for one ope
 
 ### Price display
 
-- **Storage** stays global: `config('lunar.pricing.stored_inclusive_of_tax')` is unchanged — a single price row cannot be stored inc-tax for one region and ex-tax for another.
-- **Display** becomes region-aware. The `prices_inc_tax()` helper resolves the current region's `prices_inc_tax` flag, falling back to the global config when the region leaves it null. `Price::priceIncTax()` / `priceExTax()` already accept a tax zone; catalogue display passes the region's `tax_zone_id` when no explicit zone is given.
-- `TaxZone::price_display` (currently dead) is left as-is; the region flag is the live display control. A follow-up may retire the column.
+- **Storage** stays global: `config('lunar.pricing.stored_inclusive_of_tax')` (read by the `prices_inc_tax()` helper) is unchanged. It drives the tax *arithmetic* in `Price::priceIncTax()`/`priceExTax()` and the tax driver (whether stored prices already include tax) — making it region-dependent would corrupt those calculations, so it is left alone.
+- **Display** is a separate, region-aware preference: whether the storefront *shows* inc- or ex-tax prices (i.e. which of `priceIncTax()`/`priceExTax()` it calls). `Region::displaysPricesIncludingTax()` returns the region's `prices_inc_tax` flag, falling back to the global storage default when null; `StorefrontContext` delegates to its region. `Price::priceIncTax()`/`priceExTax()` already accept a tax zone; the display tax zone is the region's (`$context->region?->taxZone`).
+- `TaxZone::price_display` was a never-read column; it is removed in favour of the region flag (column, model, factory, install, demo-data, Filament form, and lang files).
 
 ### Tax
 
@@ -78,7 +78,7 @@ Region carries a **display** tax zone (`tax_zone_id`) used to price the catalogu
 
 ### Default seed
 
-A default `Region` is seeded from the existing default channel, currency, language and tax zone, flagged `default`, serving the default country set (or all countries until configured). Single-market stores get a working region with zero configuration; everything resolves through it transparently, matching the "features work out of the box" principle.
+A default `Region` is seeded from the existing default channel, currency, language and tax zone, flagged `default`, with no countries assigned — it is the catch-all, so specific regions list their own countries and the default serves everywhere else. Single-market stores get a working region with zero configuration; everything resolves through it transparently, matching the "features work out of the box" principle.
 
 ### Filament
 
@@ -104,7 +104,7 @@ A `RegionResource` (list / create / edit) under the bridge package: name, handle
 - **Channel <-> Region cardinality.** Resolved: **belongs-to-channel for the alpha** (`regions.channel_id`); a region config is duplicated per channel if needed. The `channel_region` pivot can be introduced later additively, without reshaping existing rows.
 - **Country -> region resolution.** Ship the visitor-country -> region hook disabled by default (explicit/session/default only), or wire a default geo source? Leaning disabled — geo-IP is host-app territory.
 - **`currency_id` on Cart/Order.** Keep it denormalised alongside `region_id`, or derive currency from the region? Leaning keep (back-compat, and per-cart currency override stays possible).
-- **`TaxZone::price_display`.** Retire the dead column in this spec, or leave for a separate cleanup? Leaning leave.
+- **`TaxZone::price_display`.** Resolved: removed in slice 4 in favour of the region display preference (it was never read).
 - **Customer-group interaction.** `TaxZone` already filters by customer group; does region selection compose with, or sit beneath, customer-group resolution? Likely orthogonal — confirm.
 
 ## References
@@ -116,9 +116,9 @@ A `RegionResource` (list / create / edit) under the bridge package: name, handle
 
 ## Implementation plan
 
-- [ ] Slice 1 — `Region` model, contract, `regions` + `country_region` migrations, `HasDefaultRecord`, factory; default-region seed wired into install.
-- [ ] Slice 2 — `region_id` on `carts` and `orders`; `CartSessionManager` stamps it; channel/currency invariants held.
-- [ ] Slice 3 — region resolution: extend `ResolveStorefrontContext` to cascade through the region, populate the context's `region` slot, add `StorefrontSession` `getRegion`/`setRegion`.
-- [ ] Slice 4 — region-aware price display (`prices_inc_tax()` + catalogue tax zone from region).
-- [ ] Slice 5 — Filament `RegionResource` + 16-locale translations.
-- [ ] Slice 6 — upgrade-package default-region seed + `region_id` backfill for v1.x consumers.
+- [x] Slice 1 — `Region` model, contract, `regions` + `country_region` migrations, `HasDefaultRecord`, factory; default-region seed wired into install.
+- [x] Slice 2 — `region_id` on `carts` and `orders`; `CartSessionManager` stamps the default region on new carts and `FillOrderFromCart` copies it to the order; `Cart`/`Order` gain the `region()` relation. (Region-aware resolution of the stamped region, beyond the default, lands in slice 3.)
+- [x] Slice 3 — region resolution: `StorefrontContext` gains the `region` slot (trailing optional, with `withRegion`); `ResolveStorefrontContext` cascades channel/currency/language explicit -> region default -> global default and populates the slot; `StorefrontSession` gains `getRegion`/`setRegion`, resolves the default region, and defaults channel/currency from it; `CartSessionManager` stamps `$context->region`.
+- [x] Slice 4 — region-aware price *display* preference, kept distinct from the storage flag (`prices_inc_tax()` stays global, drives the tax arithmetic). `Region::displaysPricesIncludingTax()` (region flag, falling back to the global default) with a `StorefrontContext` delegate; the display tax zone is the region's. The unused `TaxZone.price_display` column is removed in favour of this (model, factory, install, demo-data, Filament form + 32 lang files).
+- [x] Slice 5 — Filament `RegionResource` (admin) + bridge `RegionForm`/`RegionTable`, registered in `LunarPanelManager`, with `region` lang files across all 16 locales in both the admin and filament packages. Reuses the existing channel/currency/language/country/tax-zone selectors; price-display preference is a tri-state select (inherit/inclusive/exclusive) mapping to the nullable `prices_inc_tax`.
+- [x] Slice 6 — upgrade-package default-region seed + `region_id` backfill for v1.x consumers.

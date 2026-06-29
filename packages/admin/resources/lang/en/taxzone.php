@@ -33,13 +33,6 @@ return [
                 'postcodes' => 'Limit to Postcodes',
             ],
         ],
-        'price_display' => [
-            'label' => 'Price Display',
-            'options' => [
-                'include_tax' => 'Include Tax',
-                'exclude_tax' => 'Exclude Tax',
-            ],
-        ],
         'active' => [
             'label' => 'Active',
         ],

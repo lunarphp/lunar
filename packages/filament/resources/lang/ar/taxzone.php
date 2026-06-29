@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'تحديد حسب الرموز البريدية',
             ],
         ],
-        'price_display' => [
-            'label' => 'عرض السعر',
-            'options' => [
-                'include_tax' => 'شامل الضريبة',
-                'exclude_tax' => 'بدون ضريبة',
-            ],
-        ],
         'active' => [
             'label' => 'نشط',
         ],

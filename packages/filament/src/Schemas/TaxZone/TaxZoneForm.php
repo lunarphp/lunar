@@ -33,7 +33,6 @@ class TaxZoneForm
         return [
             Section::make()->schema([
                 static::getNameComponent(),
-                static::getPriceDisplayComponent(),
                 Group::make([
                     static::getActiveComponent(),
                     static::getDefaultComponent(),
@@ -195,17 +194,6 @@ class TaxZoneForm
 
                 $record->states()->delete();
             });
-    }
-
-    public static function getPriceDisplayComponent(): Component
-    {
-        return Select::make('price_display')
-            ->options([
-                'tax_inclusive' => __('lunar-filament::taxzone.form.price_display.options.include_tax'),
-                'tax_exclusive' => __('lunar-filament::taxzone.form.price_display.options.exclude_tax'),
-            ])
-            ->label(__('lunar-filament::taxzone.form.price_display.label'))
-            ->required();
     }
 
     public static function getActiveComponent(): Component

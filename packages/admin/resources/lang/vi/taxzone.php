@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Giới hạn theo mã bưu chính',
             ],
         ],
-        'price_display' => [
-            'label' => 'Hiển thị giá',
-            'options' => [
-                'include_tax' => 'Bao gồm thuế',
-                'exclude_tax' => 'Không bao gồm thuế',
-            ],
-        ],
         'active' => [
             'label' => 'Kích hoạt',
         ],

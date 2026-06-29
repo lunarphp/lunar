@@ -13,6 +13,7 @@ use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\ProductType;
+use Lunar\Core\Models\Region;
 use Lunar\Core\Models\Staff;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxZone;
@@ -149,7 +150,6 @@ class InstallLunar extends Command
                 $taxZone = TaxZone::create([
                     'name' => 'Default Tax Zone',
                     'zone_type' => 'country',
-                    'price_display' => 'tax_exclusive',
                     'default' => true,
                     'active' => true,
                 ]);
@@ -165,6 +165,22 @@ class InstallLunar extends Command
 
                 ProductType::create([
                     'name' => 'Stock',
+                ]);
+            }
+
+            if (! Region::whereDefault(true)->exists()) {
+                $this->components->info('Adding a default region.');
+
+                // The default region is the catch-all; specific regions list
+                // their own countries, so it needs none assigned.
+                Region::create([
+                    'name' => 'Default',
+                    'handle' => 'default',
+                    'channel_id' => Channel::whereDefault(true)->value('id'),
+                    'currency_id' => Currency::whereDefault(true)->value('id'),
+                    'language_id' => Language::whereDefault(true)->value('id'),
+                    'tax_zone_id' => TaxZone::whereDefault(true)->value('id'),
+                    'default' => true,
                 ]);
             }
         });

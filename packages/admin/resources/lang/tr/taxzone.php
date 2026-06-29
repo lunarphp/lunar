@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Posta Kodlarıyla Sınırla',
             ],
         ],
-        'price_display' => [
-            'label' => 'Fiyat Gösterimi',
-            'options' => [
-                'include_tax' => 'Vergi Dahil',
-                'exclude_tax' => 'Vergi Hariç',
-            ],
-        ],
         'active' => [
             'label' => 'Aktif',
         ],

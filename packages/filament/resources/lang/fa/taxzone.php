@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'محدود به کدهای پستی',
             ],
         ],
-        'price_display' => [
-            'label' => 'نمایش قیمت',
-            'options' => [
-                'include_tax' => 'شامل مالیات',
-                'exclude_tax' => 'بدون مالیات',
-            ],
-        ],
         'active' => [
             'label' => 'فعال',
         ],

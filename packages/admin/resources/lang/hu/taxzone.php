@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Csak irányítószámokra korlátozva',
             ],
         ],
-        'price_display' => [
-            'label' => 'Ár megjelenítése',
-            'options' => [
-                'include_tax' => 'Adót is tartalmaz',
-                'exclude_tax' => 'Adót nem tartalmaz',
-            ],
-        ],
         'active' => [
             'label' => 'Aktív',
         ],

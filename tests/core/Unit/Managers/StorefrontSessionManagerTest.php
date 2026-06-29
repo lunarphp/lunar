@@ -12,6 +12,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Region;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
@@ -294,4 +295,74 @@ test('context carries the default language when one is configured', function ():
     $manager = app(StorefrontSession::class);
 
     expect($manager->context()->language->id)->toBe($language->id);
+});
+
+test('the session resolves the default region and carries it on the context', function (): void {
+    $region = Region::factory()->create([
+        'default' => true,
+        'channel_id' => Channel::getDefault()->id,
+        'currency_id' => Currency::getDefault()->id,
+        'language_id' => Language::factory()->create(['default' => true])->id,
+    ]);
+
+    /** @var StorefrontSessionManager */
+    $manager = app(StorefrontSession::class);
+
+    expect($manager->getRegion()->id)->toBe($region->id);
+    expect($manager->context()->region->id)->toBe($region->id);
+});
+
+test('can set the region', function (): void {
+    $region = Region::factory()->create([
+        'default' => false,
+        'channel_id' => Channel::getDefault()->id,
+        'currency_id' => Currency::getDefault()->id,
+        'language_id' => Language::factory()->create(['default' => true])->id,
+    ]);
+
+    /** @var StorefrontSessionManager */
+    $manager = app(StorefrontSession::class);
+    $manager->setRegion($region);
+
+    expect($manager->getRegion()->id)->toBe($region->id);
+    expect(Session::get($manager->getSessionKey().'_region'))->toBe($region->handle);
+});
+
+test('setting the region re-defaults the channel and currency from it', function (): void {
+    $regionChannel = Channel::factory()->create(['default' => false]);
+    $regionCurrency = Currency::factory()->create(['default' => false, 'code' => 'EUR']);
+
+    $region = Region::factory()->create([
+        'default' => false,
+        'channel_id' => $regionChannel->id,
+        'currency_id' => $regionCurrency->id,
+        'language_id' => Language::factory()->create(['default' => true])->id,
+    ]);
+
+    /** @var StorefrontSessionManager */
+    $manager = app(StorefrontSession::class);
+    $manager->setRegion($region);
+
+    expect($manager->getChannel()->id)->toBe($regionChannel->id);
+    expect($manager->getCurrency()->code)->toBe('EUR');
+
+    // an explicit currency override still wins afterwards
+    $manager->setCurrency(Currency::getDefault());
+    expect($manager->getCurrency()->id)->toBe(Currency::getDefault()->id);
+});
+
+test('the session currency defaults from the region', function (): void {
+    $regionCurrency = Currency::factory()->create(['default' => false, 'code' => 'EUR']);
+
+    Region::factory()->create([
+        'default' => true,
+        'channel_id' => Channel::getDefault()->id,
+        'currency_id' => $regionCurrency->id,
+        'language_id' => Language::factory()->create(['default' => true])->id,
+    ]);
+
+    /** @var StorefrontSessionManager */
+    $manager = app(StorefrontSession::class);
+
+    expect($manager->getCurrency()->code)->toBe('EUR');
 });

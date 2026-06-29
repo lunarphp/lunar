@@ -9,13 +9,16 @@ use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\Customer;
 use Lunar\Core\Models\Contracts\CustomerGroup;
 use Lunar\Core\Models\Contracts\Language;
+use Lunar\Core\Models\Contracts\Region;
 
 interface ResolvesStorefrontContext
 {
     /**
-     * Resolve a storefront context, falling back to defaults for anything
-     * not supplied. Supplied customer groups are used as-is; otherwise they
-     * derive from the customer, falling back to the default group.
+     * Resolve a storefront context. Region falls back to the default region,
+     * and channel/currency/language cascade explicit override -> region
+     * default -> global default. Supplied customer groups are used as-is;
+     * otherwise they derive from the customer, falling back to the default
+     * group.
      *
      * @param  Collection<int, CustomerGroup>|null  $customerGroups
      */
@@ -25,5 +28,6 @@ interface ResolvesStorefrontContext
         ?Language $language = null,
         ?Customer $customer = null,
         ?Collection $customerGroups = null,
+        ?Region $region = null,
     ): StorefrontContext;
 }

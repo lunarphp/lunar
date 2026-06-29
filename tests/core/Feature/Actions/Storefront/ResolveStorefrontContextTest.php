@@ -8,6 +8,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Region;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -76,4 +77,75 @@ test('language is null when no default language is configured', function () {
     expect($context->language)->toBeNull();
     expect($context->channel->id)->toBe($channel->id);
     expect($context->currency->id)->toBe($currency->id);
+});
+
+test('channel, currency and language default from the resolved region', function () {
+    // globals, distinct from the region's own selections
+    Channel::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true]);
+    Language::factory()->create(['default' => true]);
+    CustomerGroup::factory()->create(['default' => true]);
+
+    $regionChannel = Channel::factory()->create(['default' => false]);
+    $regionCurrency = Currency::factory()->create(['default' => false, 'code' => 'EUR']);
+    $regionLanguage = Language::factory()->create(['default' => false, 'code' => 'fr']);
+
+    $region = Region::factory()->create([
+        'default' => true,
+        'channel_id' => $regionChannel->id,
+        'currency_id' => $regionCurrency->id,
+        'language_id' => $regionLanguage->id,
+    ]);
+
+    $context = resolveContext()->execute();
+
+    expect($context->region->id)->toBe($region->id);
+    expect($context->channel->id)->toBe($regionChannel->id);
+    expect($context->currency->code)->toBe('EUR');
+    expect($context->language->code)->toBe('fr');
+});
+
+test('an explicit override beats the region default', function () {
+    Channel::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true]);
+    CustomerGroup::factory()->create(['default' => true]);
+
+    $regionCurrency = Currency::factory()->create(['default' => false, 'code' => 'EUR']);
+    Region::factory()->create([
+        'default' => true,
+        'channel_id' => Channel::getDefault()->id,
+        'currency_id' => $regionCurrency->id,
+        'language_id' => Language::factory()->create(['default' => true])->id,
+    ]);
+
+    $override = Currency::factory()->create(['default' => false, 'code' => 'USD']);
+
+    $context = resolveContext()->execute(currency: $override);
+
+    expect($context->currency->code)->toBe('USD');
+});
+
+test('an explicit region overrides the default region', function () {
+    Channel::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true]);
+    CustomerGroup::factory()->create(['default' => true]);
+    $language = Language::factory()->create(['default' => true]);
+
+    Region::factory()->create([
+        'default' => true,
+        'channel_id' => Channel::getDefault()->id,
+        'currency_id' => Currency::getDefault()->id,
+        'language_id' => $language->id,
+    ]);
+
+    $other = Region::factory()->create([
+        'default' => false,
+        'channel_id' => Channel::getDefault()->id,
+        'currency_id' => Currency::getDefault()->id,
+        'language_id' => $language->id,
+    ]);
+
+    $context = resolveContext()->execute(region: $other);
+
+    expect($context->region->id)->toBe($other->id);
 });

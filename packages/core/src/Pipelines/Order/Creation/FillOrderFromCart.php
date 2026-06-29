@@ -23,6 +23,7 @@ class FillOrderFromCart
             'user_id' => $cart->user_id,
             'customer_id' => $cart->customer_id,
             'channel_id' => $cart->channel_id,
+            'region_id' => $cart->region_id,
             // status defaults via the HasStates initializer and the migration
             // column default.
             'reference' => null,

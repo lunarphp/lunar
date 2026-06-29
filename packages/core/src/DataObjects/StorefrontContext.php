@@ -8,6 +8,7 @@ use Lunar\Core\Models\Contracts\Currency;
 use Lunar\Core\Models\Contracts\Customer;
 use Lunar\Core\Models\Contracts\CustomerGroup;
 use Lunar\Core\Models\Contracts\Language;
+use Lunar\Core\Models\Contracts\Region;
 
 /**
  * The resolved storefront selections for a single operation — an explicit,
@@ -23,7 +24,9 @@ final readonly class StorefrontContext
     /**
      * Channel and currency are store invariants (a cart cannot exist without
      * them). Language is optional — null falls back to the app locale until a
-     * default language (or a region) supplies one.
+     * default language (or a region) supplies one. Region is the market this
+     * operation belongs to and the provenance of the currency/language
+     * defaults; null only when no region is configured.
      *
      * @param  Collection<int, CustomerGroup>  $customerGroups  the default group when no customer; empty only if none is configured
      */
@@ -33,26 +36,27 @@ final readonly class StorefrontContext
         public ?Language $language,
         public ?Customer $customer,
         public Collection $customerGroups,
+        public ?Region $region = null,
     ) {}
 
     public function withChannel(Channel $channel): self
     {
-        return new self($channel, $this->currency, $this->language, $this->customer, $this->customerGroups);
+        return new self($channel, $this->currency, $this->language, $this->customer, $this->customerGroups, $this->region);
     }
 
     public function withCurrency(Currency $currency): self
     {
-        return new self($this->channel, $currency, $this->language, $this->customer, $this->customerGroups);
+        return new self($this->channel, $currency, $this->language, $this->customer, $this->customerGroups, $this->region);
     }
 
     public function withLanguage(?Language $language): self
     {
-        return new self($this->channel, $this->currency, $language, $this->customer, $this->customerGroups);
+        return new self($this->channel, $this->currency, $language, $this->customer, $this->customerGroups, $this->region);
     }
 
     public function withCustomer(?Customer $customer): self
     {
-        return new self($this->channel, $this->currency, $this->language, $customer, $this->customerGroups);
+        return new self($this->channel, $this->currency, $this->language, $customer, $this->customerGroups, $this->region);
     }
 
     /**
@@ -60,6 +64,20 @@ final readonly class StorefrontContext
      */
     public function withCustomerGroups(Collection $customerGroups): self
     {
-        return new self($this->channel, $this->currency, $this->language, $this->customer, $customerGroups);
+        return new self($this->channel, $this->currency, $this->language, $this->customer, $customerGroups, $this->region);
+    }
+
+    public function withRegion(?Region $region): self
+    {
+        return new self($this->channel, $this->currency, $this->language, $this->customer, $this->customerGroups, $region);
+    }
+
+    /**
+     * Whether the storefront shows prices inclusive of tax for this context,
+     * from the region's display preference (global storage default if none).
+     */
+    public function displaysPricesIncludingTax(): bool
+    {
+        return $this->region?->displaysPricesIncludingTax() ?? prices_inc_tax();
     }
 }
