@@ -5,9 +5,12 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Lunar\Core\Models\Concerns\HasExtendableCasts;
 
 abstract class Base extends Model
 {
+    use HasExtendableCasts;
+
     /**
      * Create a new instance of the Model.
      */

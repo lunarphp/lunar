@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -98,4 +99,30 @@ test('recipe: override behaviour by binding the action contract', function () {
     Order::factory()->create()->cancel();
 
     expect($spy->called)->toBeTrue();
+});
+
+test('recipe: cast an added column with extendCasts', function () {
+    Schema::table((new Product)->getTable(), function (Blueprint $table) {
+        $table->string('priority')->nullable();
+    });
+
+    Product::extendCasts(['priority' => 'integer']);
+
+    $product = Product::factory()->create(['priority' => '5']);
+
+    expect($product->fresh()->priority)->toBe(5);
+});
+
+test('recipe: register a custom cast class with extendCasts', function () {
+    Schema::table((new Product)->getTable(), function (Blueprint $table) {
+        $table->json('metadata')->nullable();
+    });
+
+    Product::extendCasts(['metadata' => AsArrayObject::class]);
+
+    $product = Product::factory()->create(['metadata' => ['source' => 'import']]);
+
+    expect($product->fresh()->metadata)
+        ->toBeInstanceOf(ArrayObject::class)
+        ->and($product->fresh()->metadata['source'])->toBe('import');
 });

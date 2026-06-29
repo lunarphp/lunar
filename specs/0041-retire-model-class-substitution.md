@@ -71,7 +71,7 @@ Product::extendCasts([
 ]);
 ```
 
-Backed by a concern on `Models\Base` holding a static per-class registry and merging it into the resolved casts:
+Backed by a concern on `Models\Base` holding a static per-class registry and merging it into the resolved casts via `getCasts()`:
 
 ```php
 trait HasExtendableCasts
@@ -87,14 +87,14 @@ trait HasExtendableCasts
         );
     }
 
-    protected function casts(): array
+    public function getCasts()
     {
-        return static::$extendedCasts[static::class] ?? [];
+        return array_merge(parent::getCasts(), static::$extendedCasts[static::class] ?? []);
     }
 }
 ```
 
-Eloquent merges the `casts()` method result with each model's existing `$casts` property, so per-model cast declarations are untouched. This is a tiny, single-purpose registry with none of the two-class-identity fallout. Custom cast classes cover the accessor/mutator case (a value-object cast is a get/set pair); a dedicated accessor-injection seam is deliberately out of scope (see Open questions).
+Overriding `getCasts()` (Eloquent's canonical cast-resolution point) composes whether a model declares casts via the `$casts` property or a `casts()` method — both are already merged into `$this->casts` at boot. This is a tiny, single-purpose registry with none of the two-class-identity fallout. Custom cast classes cover the accessor/mutator case (a value-object cast is a get/set pair); a dedicated accessor-injection seam is deliberately out of scope (see Open questions).
 
 ### Replacement recipes
 
@@ -203,5 +203,5 @@ Slice 2 splits in two: the `modelClass()` collapse (mechanical, ~216 explicit ca
 - [x] Slice 2b — Remove the 51 core `Models\Contracts\*` interfaces and retype every reference to the concrete class (Rector RenameClass + facade docblock fixes). Verified: phpstan clean, all CI suites green.
 - [x] Slice 3 — Deleted `HasModelExtending` and `ModelManifest`'s substitution API (`replace`/`add`/`get`/`guessContractClass`); morph map registers concrete classes; `morphName()` preserved on `Base`. Removed the substitution test set, the `LUNAR_TESTING_REPLACE_MODELS` harness, the `extend-models` CI dimension, and the orphaned new-static phpstan ignore. Slice-1 recipe tests stay green.
 - [ ] Slice 3b — Retire `lunarphp/table-rate-shipping`'s own `Lunar\Shipping\Models\Contracts\*` (6 interfaces) the same way. Independent of core; that package mirrors the deprecated pattern.
-- [ ] Slice 4 — Add `HasExtendableCasts` (`extendCasts`) on `Models\Base`, with tests covering casts and custom cast classes on a consumer-added column (the one recipe that cannot precede this slice).
+- [x] Slice 4 — Added `HasExtendableCasts` (`extendCasts`) on `Models\Base`, overriding `getCasts()`. Recipe tests cover a plain cast and a custom cast class (`AsArrayObject`) on a consumer-added column.
 - [ ] Slice 5 — `upgrade` package: Rector rules (including the consumer-facing `Class::modelClass()` -> `Class::class` rewrite, tested with fixtures) and a migration guide mapping each former extending use to its native replacement, cross-checked against the slice-1/4 recipe tests so the guide and the tests cannot drift. Also drop the now-dangling `Lunar\Base\Traits\HasModelExtending` -> `Lunar\Core\Models\Concerns\HasModelExtending` rename in `packages/upgrade/src/Rector/LunarSetList.php` (its target no longer exists).
