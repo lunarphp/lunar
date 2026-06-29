@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
-use Kalnoy\Nestedset\QueryBuilder;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\CollectionFactory;
+use Lunar\Core\Models\Builders\CollectionQueryBuilder;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasChannels;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
@@ -162,9 +162,9 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
         )->withTimestamps();
     }
 
-    public function newEloquentBuilder($query): QueryBuilder
+    public function newEloquentBuilder($query): CollectionQueryBuilder
     {
-        return new QueryBuilder($query);
+        return new CollectionQueryBuilder($query);
     }
 
     public function getThumbnailImage(): string

@@ -1,6 +1,6 @@
 # 0042 — Model query builders (registerable scopes)
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-29
 - TODO item: Per-model query scopes without subclassing
@@ -19,12 +19,12 @@ So a consumer who wants `Product::query()->featured()` — a reusable, optional 
 
 ## Proposal
 
-Give every Lunar model a single shared query builder, `Lunar\Core\Models\Builder`, returned by `Models\Base::newEloquentBuilder()`. The builder hosts a registry of scopes **keyed by model class**, and models expose `addLocalScope()` to register one. Registered scopes are then callable exactly like a native local scope.
+Give every Lunar model a single shared query builder, `Lunar\Core\Models\Builders\Builder`, returned by `Models\Base::newEloquentBuilder()`. The builder hosts a registry of scopes **keyed by model class**, and models expose `addLocalScope()` to register one. Registered scopes are then callable exactly like a native local scope.
 
 ### Registering — mirrors `resolveRelationUsing`
 
 ```php
-use Lunar\Core\Models\Builder;
+use Lunar\Core\Models\Builders\Builder;
 use Lunar\Core\Models\Product;
 
 // in a service provider boot()
@@ -64,30 +64,34 @@ public static function addLocalScope(string $name, Closure $scope): void
 }
 ```
 
-`Lunar\Core\Models\Builder` extends `Illuminate\Database\Eloquent\Builder`, holds the registry, and resolves registered scopes in `__call` before falling through:
+`Lunar\Core\Models\Builders\Builder` extends `Illuminate\Database\Eloquent\Builder` and owns the canonical registry (keyed by model class). The `__call` resolution lives in a small `Concerns\ResolvesRegisteredScopes` trait so it can be shared with model-specific builders (see below). It resolves a registered scope only when no native scope, macro, or query method claims the name first — native always wins:
 
 ```php
 /** @var array<class-string, array<string, \Closure>> */
-protected static array $scopes = [];
+protected static array $registeredScopes = [];
 
 public static function registerScope(string $model, string $name, Closure $scope): void
 {
-    static::$scopes[$model][$name] = $scope;
+    static::$registeredScopes[$model][$name] = $scope;
 }
 
+// ResolvesRegisteredScopes::__call
 public function __call($method, $parameters)
 {
-    $model = $this->getModel()::class;
+    $scope = Builder::resolveScope($this->getModel()::class, $method);
 
-    if (isset(static::$scopes[$model][$method])) {
-        return static::$scopes[$model][$method]($this, ...$parameters) ?? $this;
+    if ($scope !== null
+        && ! $this->hasNamedScope($method)
+        && ! $this->hasMacro($method)
+        && ! static::hasGlobalMacro($method)) {
+        return $scope($this, ...$parameters) ?? $this;
     }
 
     return parent::__call($method, $parameters);
 }
 ```
 
-Keying on `$this->getModel()::class` gives per-model isolation from one builder class — no per-model subclasses and no `protected static $macros` redeclaration footgun.
+Keying on `$this->getModel()::class` gives per-model isolation from one builder class — no per-model subclasses and no `protected static $macros` redeclaration footgun. `flushScopes()` clears the registry for test isolation.
 
 ### Lunar's own scopes stay on the models
 
@@ -95,7 +99,7 @@ Lunar's first-class scopes remain `scopeX()` / `#[Scope]` methods on the models 
 
 ### Models with a custom builder
 
-`Collection` returns kalnoy's nested-set `QueryBuilder` from `newEloquentBuilder()`. Either its builder extends `Lunar\Core\Models\Builder` (if compatible with the nested-set builder) or it opts out of the registry. Resolved in the implementation spike.
+`Collection` returns kalnoy's nested-set `QueryBuilder` from `newEloquentBuilder()`, which cannot also extend `Builder` (single inheritance). Rather than let it opt out — a silent no-op when a consumer registers a scope on `Collection` — the resolution logic is factored into the `ResolvesRegisteredScopes` trait and the canonical registry lives on `Builder` as static state. `Collection` returns `Builders\CollectionQueryBuilder` (extends the nested-set `QueryBuilder`, uses the trait), so `Collection::addLocalScope()` works identically. Any model that needs its own builder follows the same pattern: extend the builder it needs, use the trait.
 
 ## Alternatives considered
 
@@ -107,18 +111,21 @@ Lunar's first-class scopes remain `scopeX()` / `#[Scope]` methods on the models 
 ## Migration impact
 
 - **Database migrations:** none.
-- **Breaking changes:** none — purely additive. `Lunar\Core\Models\Builder` and `Model::addLocalScope()` become new public contract surface (changing them later needs a spec).
+- **Breaking changes:** none — purely additive. `Lunar\Core\Models\Builders\Builder` and `Model::addLocalScope()` become new public contract surface (changing them later needs a spec). `Base::newEloquentBuilder()` now returns `Builders\Builder`; its declared return type is widened to `Illuminate\Database\Eloquent\Builder` so a model with a custom builder (e.g. `Collection`) can override it covariantly.
 - **Upgrade path:** none required; consumers opt in.
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** none directly; resources can use registered scopes if present.
 
+## Resolved questions
+
+- **API name:** `addLocalScope()`. It mirrors Laravel's `addGlobalScope` and uses Laravel's own local/global taxonomy, and its closure is a builder mutator — the same shape as `addGlobalScope`. `resolveScopeUsing` was rejected (it borrows the relation-seam name, but a relation closure is a *factory* returning an object whereas a scope closure *mutates the builder*, so the parallel is false); `addScope` was rejected as ambiguous between global and local.
+- **Collision policy:** native wins. A registered scope resolves only when the name is not already a native scope (`scopeX` / `#[Scope]`), a local macro, or a global builder macro — so a consumer can never accidentally shadow one of Lunar's own scopes. Among registrations, last-wins (re-registering a name replaces the closure). Verified by the `a native scope wins over a registered scope of the same name` test.
+- **Static state / test isolation:** the registry is static, so registrations persist across a process like macros do. `Builder::flushScopes()` clears it; the scope tests call it in `afterEach`.
+- **Collection's nested-set builder:** composes (does not opt out). The resolution logic lives in `Concerns\ResolvesRegisteredScopes` and the registry on `Builder`; `Collection` returns `Builders\CollectionQueryBuilder` which uses the trait. Verified by the `a registered scope works on a model with a custom builder` test.
+
 ## Open questions
 
-- API name: `addLocalScope()` (recommended) vs `resolveScopeUsing()` vs `addScope()`. `addLocalScope` mirrors Laravel's `addGlobalScope` and uses Laravel's own local/global taxonomy, and its closure is a builder mutator — the same shape as `addGlobalScope`. `resolveScopeUsing` was rejected: it borrows the relation-seam name, but a relation closure is a *factory* that returns an object whereas a scope closure *mutates the builder*, so the parallel is false. `addScope` is ambiguous (global or local). **Owner: confirm before `accepted`.**
-- Collision policy when a registered scope name shadows a real method, relation, or native scope on the model — throw, warn, or last-wins? **Owner: implementation spike.**
-- Static state: the registry is a static, so registrations persist across a process like macros do. Confirm test isolation and whether a reset hook is warranted.
-- Does `Collection`'s nested-set builder compose with `Lunar\Core\Models\Builder`, or does it opt out? **Owner: implementation spike.**
-- Static-analysis ergonomics: registered scopes are opaque to PHPStan/IDE (true of any dynamic scope). Document the `@method` annotation a consumer can add to their own model docblock for type-safety.
+- Static-analysis ergonomics: registered scopes are opaque to PHPStan/IDE (true of any dynamic scope). Document the `@method` annotation a consumer can add to their own model docblock for type-safety. **Deferred to slice 3 (with the rest of v2 docs).**
 
 ## References
 
@@ -127,6 +134,6 @@ Lunar's first-class scopes remain `scopeX()` / `#[Scope]` methods on the models 
 
 ## Implementation plan
 
-- [ ] Slice 1 — Spike: `Lunar\Core\Models\Builder` + `Base::newEloquentBuilder()`, the keyed registry, and `Base::addLocalScope()`. Resolve the `Collection`/nested-set builder question and the collision policy.
-- [ ] Slice 2 — Tests: a registered scope is callable (chained + static + with args) on its model only, throws on others, and composes with native scopes and global scopes. Add a recipe to `ModelExtensionRecipesTest`.
+- [x] Slice 1 — `Lunar\Core\Models\Builders\Builder` + `Base::newEloquentBuilder()`, the keyed registry, `Base::addLocalScope()`, the `ResolvesRegisteredScopes` trait, and `Builders\CollectionQueryBuilder`. Collision policy (native wins) and Collection composition resolved.
+- [x] Slice 2 — Tests: a registered scope is callable (chained + static + with args) on its model only, throws on others, composes with native scopes, a native scope wins on collision, and a custom-builder model (Collection) composes (`RegisteredScopesTest`). Recipe added to `ModelExtensionRecipesTest`.
 - [ ] Slice 3 — Document the `@method` annotation pattern for consumer type-safety (with the rest of v2 docs).

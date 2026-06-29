@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
+use Lunar\Core\Models\Builders\Builder as LunarBuilder;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductType;
@@ -24,6 +25,7 @@ uses(RefreshDatabase::class);
 // test; clear them so the addGlobalScope recipe cannot leak into other tests.
 afterEach(function () {
     Product::clearBootedModels();
+    LunarBuilder::flushScopes();
 });
 
 test('recipe: add a relationship with resolveRelationUsing', function () {
@@ -99,6 +101,19 @@ test('recipe: override behaviour by binding the action contract', function () {
     Order::factory()->create()->cancel();
 
     expect($spy->called)->toBeTrue();
+});
+
+test('recipe: register an optional local scope with addLocalScope', function () {
+    Schema::table((new Product)->getTable(), function (Blueprint $table) {
+        $table->boolean('is_featured')->default(false);
+    });
+
+    Product::addLocalScope('featured', fn (LunarBuilder $query) => $query->where('is_featured', true));
+
+    $featured = Product::factory()->create(['is_featured' => true]);
+    Product::factory()->create(['is_featured' => false]);
+
+    expect(Product::query()->featured()->pluck('id')->all())->toBe([$featured->id]);
 });
 
 test('recipe: cast an added column with addCasts', function () {
