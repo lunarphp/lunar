@@ -1,6 +1,6 @@
 # 0035 — Interactive "Notify customer" order action
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-17
 - TODO item: Order lifecycle follow-up — restore the ad-hoc customer notification (compose + send)

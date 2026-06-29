@@ -1,6 +1,6 @@
 # 0038 — Inventory fundamentals
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-25
 - TODO item: Inventory
