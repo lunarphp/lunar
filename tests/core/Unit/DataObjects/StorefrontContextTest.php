@@ -114,3 +114,16 @@ test('region defaults to null and withRegion returns a new instance carrying it'
     expect($context->region)->toBeNull();
     expect($next->channel)->toBe($context->channel);
 });
+
+test('displaysPricesIncludingTax reads the region preference, else the global default', function () {
+    config()->set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $region = new Region;
+    $region->prices_inc_tax = true;
+    $region->exists = true;
+
+    expect(storefrontContext()->withRegion($region)->displaysPricesIncludingTax())->toBeTrue();
+
+    // no region falls back to the global default
+    expect(storefrontContext()->displaysPricesIncludingTax())->toBeFalse();
+});

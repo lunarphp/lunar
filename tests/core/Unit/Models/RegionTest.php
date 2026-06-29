@@ -60,3 +60,20 @@ test('the handle is stored as a slug', function () {
 
     expect($region->handle)->toBe('united-kingdom');
 });
+
+test('displaysPricesIncludingTax reflects the flag, falling back to the global storage default', function () {
+    config()->set('lunar.pricing.stored_inclusive_of_tax', false);
+
+    $region = Region::factory()->create(['prices_inc_tax' => true]);
+    expect($region->displaysPricesIncludingTax())->toBeTrue();
+
+    $region->update(['prices_inc_tax' => false]);
+    expect($region->displaysPricesIncludingTax())->toBeFalse();
+
+    // null defers to the global default
+    $region->update(['prices_inc_tax' => null]);
+    expect($region->displaysPricesIncludingTax())->toBeFalse();
+
+    config()->set('lunar.pricing.stored_inclusive_of_tax', true);
+    expect($region->displaysPricesIncludingTax())->toBeTrue();
+});

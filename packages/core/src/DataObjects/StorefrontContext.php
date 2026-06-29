@@ -71,4 +71,13 @@ final readonly class StorefrontContext
     {
         return new self($this->channel, $this->currency, $this->language, $this->customer, $this->customerGroups, $region);
     }
+
+    /**
+     * Whether the storefront shows prices inclusive of tax for this context,
+     * from the region's display preference (global storage default if none).
+     */
+    public function displaysPricesIncludingTax(): bool
+    {
+        return $this->region?->displaysPricesIncludingTax() ?? prices_inc_tax();
+    }
 }

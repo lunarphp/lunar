@@ -52,6 +52,16 @@ class Region extends Base implements Contracts\Region
         $this->attributes['handle'] = Str::slug($val);
     }
 
+    /**
+     * Whether the storefront shows prices inclusive of tax in this region.
+     * This is a display preference only — it does not affect how prices are
+     * stored. Falls back to the global storage default when not set.
+     */
+    public function displaysPricesIncludingTax(): bool
+    {
+        return $this->prices_inc_tax ?? prices_inc_tax();
+    }
+
     public function channel(): BelongsTo
     {
         return $this->belongsTo(Channel::modelClass());
