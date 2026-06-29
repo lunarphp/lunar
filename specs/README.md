@@ -63,5 +63,5 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0036 | Default professional customer notifications | draft       |
 | 0037 | Move automatic notifications onto manifests | superseded by 0035 |
 | 0038 | Inventory fundamentals | implemented |
-| 0039 | Region | accepted    |
-| 0040 | Storefront context | accepted    |
+| 0039 | Region | implemented |
+| 0040 | Storefront context | implemented |

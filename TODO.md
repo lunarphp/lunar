@@ -10,8 +10,6 @@ Split into what an alpha needs to be a coherent, representative commerce platfor
 
 ### Pre-alpha
 
-- Region concept to define channel, currency, language, tax_zone, countries and price display — _(judgement)_ a single-region alpha is viable, but Region reshapes currency / channel / tax / price display and is painful to retrofit once adopters have data, so it is cheapest to land first. (spec 0039 draft)
-- `StorefrontContext` for CartSessionManager and other services — foundational plumbing, ties into Region. An immutable DTO bundling the resolved selections (channel, currency, language, region, customer, customer groups) so non-session business logic (API, jobs, tests) takes an explicit context; the session and cart produce one. Lands **before** Region (0039), which populates its region slot. (spec 0040 draft)
 - Add events, including specific events for cache invalidation — the extensibility contract consumers hook into; spec 0038's stock events and reindexing ride this.
 - Make order line purchasables optional — breaking schema (nullable `purchasable_*`); pairs with the shipping-option cleanup below.
 - Stop storing shipping options as polymorphic purchasables on cart/order lines
@@ -83,3 +81,5 @@ Split into what an alpha needs to be a coherent, representative commerce platfor
 - Auto-close settled orders — opt-in `lunar.orders.auto_close` (via `OrderSettings`) closing an order via `CloseSettledOrder` once fully paid and fulfilled (spec 0032)
 - Multi-tenant homes for new config — swap seams (`fulfilment.methods`, `shipping.carriers`) moved to the container; per-store data (hold/cancel reasons, auto-close) behind the `HoldReasons` / `CancelReasons` manifests and `OrderSettings` (spec 0033)
 - Inventory fundamentals — per-location stock as `StockLevel` / `StockMovement` / `StockReservation` on top of `Location`, with global rollup columns denormalised onto `ProductVariant` and physical movements through the `$variant->adjustStock(...)` seam; replaces the flat `stock` column and supersedes the 0009 `AdjustStock` stop-gap (spec 0038)
+- `StorefrontContext` for CartSessionManager and other services — immutable DTO bundling the resolved selections (channel, currency, language, region, customer, customer groups) produced by a single `ResolveStorefrontContext` cascade, so non-session business logic (API, jobs, tests) takes an explicit context; the session and cart produce one (spec 0040)
+- Region concept — first-class market (`Region` belongs-to-channel; carries currency, language, tax zone, served countries via `country_region`, and a price-display preference distinct from the global storage flag) stamped on carts/orders and feeding the storefront-context cascade; default region is the catch-all; Filament `RegionResource`; v1->v2 upgrade seeds a default region and backfills `region_id` (spec 0039)
