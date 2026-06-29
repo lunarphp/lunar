@@ -9,6 +9,7 @@ Design documents for the work tracked in `packages/lunar/TODO.md`.
 - Use `0000-template.md` as the starting point for every new spec.
 - A spec should land (reviewed and merged) before its implementation work begins.
 - Keep specs in present tense, focused on the change being proposed, not the history of how we got here.
+- Every spec ends with an `## Implementation plan` section listing the slices the work ships in, each independently reviewable. Keep its statuses current as slices land — it is the running record of what has shipped and what remains.
 
 ## Status
 
@@ -45,3 +46,22 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0019 | Attribute system redesign | completed   |
 | 0020 | Remove GetCandy migration command | completed   |
 | 0021 | State machines (and retiring soft-deletes) | completed   |
+| 0022 | Order fulfilments, derived statuses & open/closed lifecycle | implemented |
+| 0023 | Demo-data package | implemented |
+| 0024 | Shipping carriers (tracking service registry) | implemented |
+| 0025 | Order cancellation | implemented |
+| 0026 | Bulk order operations | draft       |
+| 0027 | Order print templates | draft       |
+| 0028 | Line-item refunds | draft       |
+| 0029 | Entry-point conventions: actions, model verbs, managers | implemented |
+| 0030 | Fulfillable order lines | implemented |
+| 0031 | Fulfilment methods: pluggable fulfilment flows | implemented |
+| 0032 | Auto-close settled orders | implemented |
+| 0033 | Multi-tenant homes for this branch's new config | implemented |
+| 0034 | Wire and gate fulfilment notifications | implemented |
+| 0035 | Interactive "Notify customer" order action | implemented |
+| 0036 | Default professional customer notifications | draft       |
+| 0037 | Move automatic notifications onto manifests | superseded by 0035 |
+| 0038 | Inventory fundamentals | implemented |
+| 0039 | Region | accepted    |
+| 0040 | Storefront context | accepted    |

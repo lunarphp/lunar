@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Variantă produs',
     'plural_label' => 'Variante de produs',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'Cod de bare (UPC/EAN)',
         ],
-        'stock' => [
-            'label' => 'În stoc',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'La precomandă',
         ],
         'purchasable' => [
-            'label' => 'Disponibilitate la achiziție',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Întotdeauna',
                 'in_stock' => 'În stoc',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Cantitate unitate',
-            'helper_text' => 'Câte articole individuale compun 1 unitate.',
+            'tooltip' => 'Câte articole individuale compun 1 unitate.',
         ],
         'min_quantity' => [
             'label' => 'Cantitate minimă',
-            'helper_text' => 'Cantitatea minimă dintr-o variantă de produs care poate fi cumpărată într-o singură achiziție.',
+            'tooltip' => 'Cantitatea minimă dintr-o variantă de produs care poate fi cumpărată într-o singură achiziție.',
         ],
         'quantity_increment' => [
             'label' => 'Increment cantitate',
-            'helper_text' => 'Varianta de produs trebuie cumpărată în multipli ai acestei cantități.',
+            'tooltip' => 'Varianta de produs trebuie cumpărată în multipli ai acestei cantități.',
         ],
         'tax_class_id' => [
             'label' => 'Clasă de taxe',

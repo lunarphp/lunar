@@ -23,6 +23,8 @@ use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
 use Lunar\Core\Console\Commands\PruneCarts;
+use Lunar\Core\Console\Commands\ReconcileStock;
+use Lunar\Core\Console\Commands\ReleaseExpiredStockReservations;
 use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
@@ -48,18 +50,24 @@ use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\Contracts\TelemetryService;
 use Lunar\Core\Database\State\EnsureBaseRolesAndPermissions;
+use Lunar\Core\Events\Fulfilment\FulfilmentCreated;
 use Lunar\Core\Events\Fulfilment\FulfilmentStatusUpdated;
 use Lunar\Core\Events\Orders\OrderCancelled;
 use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
 use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
+use Lunar\Core\Events\Orders\OrderPlaced;
 use Lunar\Core\Facades\Converter;
 use Lunar\Core\Facades\Telemetry;
+use Lunar\Core\Listeners\AllocateStockForFulfilment;
+use Lunar\Core\Listeners\ApplyStockForFulfilmentTransition;
 use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Listeners\CloseSettledOrder;
+use Lunar\Core\Listeners\EnsureInitialFulfilmentForOrder;
 use Lunar\Core\Listeners\SendFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderPaymentStatusNotifications;
+use Lunar\Core\Listeners\SyncStockForOrder;
 use Lunar\Core\Managers\CartSessionManager;
 use Lunar\Core\Managers\DiscountManager as DiscountManagerImpl;
 use Lunar\Core\Managers\PaymentManager as PaymentManagerImpl;
@@ -226,6 +234,8 @@ class LunarServiceProvider extends ServiceProvider
                 ScoutIndexerCommand::class,
                 SyncNewCustomerOrders::class,
                 PruneCarts::class,
+                ReconcileStock::class,
+                ReleaseExpiredStockReservations::class,
             ]);
 
             if (config('lunar.cart.prune_tables.enabled', false)) {
@@ -233,6 +243,13 @@ class LunarServiceProvider extends ServiceProvider
                     $schedule->command('lunar:prune:carts')->daily();
                 });
             }
+
+            // Free lapsed stock reservations promptly so held quantity returns to
+            // availability. Cheap when nothing has expired; the host only needs
+            // the standard `schedule:run` cron for it to work out of the box.
+            $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+                $schedule->command('lunar:stock:release-expired')->everyMinute()->withoutOverlapping();
+            });
         }
 
         Arr::macro('permutate', [Utils\Arr::class, 'permutate']);
@@ -264,6 +281,15 @@ class LunarServiceProvider extends ServiceProvider
         // Optionally archive a fully paid + fulfilled order (config-gated).
         Event::listen(OrderPaymentStatusUpdated::class, CloseSettledOrder::class);
         Event::listen(OrderFulfilmentStatusUpdated::class, CloseSettledOrder::class);
+
+        // A placed order gets its initial fulfilment.
+        Event::listen(OrderPlaced::class, EnsureInitialFulfilmentForOrder::class);
+
+        // Keep stock commitment in step with the order/fulfilment lifecycle.
+        Event::listen(OrderPlaced::class, SyncStockForOrder::class);
+        Event::listen(OrderCancelled::class, SyncStockForOrder::class);
+        Event::listen(FulfilmentCreated::class, AllocateStockForFulfilment::class);
+        Event::listen(FulfilmentStatusUpdated::class, ApplyStockForFulfilmentTransition::class);
 
         $this->registerStaffAuthGuard();
         $this->registerStaffStateListeners();

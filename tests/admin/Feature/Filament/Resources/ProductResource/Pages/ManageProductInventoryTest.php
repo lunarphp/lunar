@@ -5,6 +5,7 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductInventory;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
@@ -32,6 +33,31 @@ it('can render product inventory page', function () {
             'record' => $record,
         ]))
         ->assertSuccessful();
+});
+
+it('shows the default location it is managing', function () {
+    Language::factory()->create([
+        'default' => true,
+    ]);
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    Location::factory()->create(['default' => true, 'name' => 'Warehouse A']);
+
+    $record = Product::factory()->create();
+
+    ProductVariant::factory()->create([
+        'product_id' => $record->id,
+    ]);
+
+    $this->asStaff(admin: true)
+        ->get(ProductResource::getUrl('inventory', [
+            'record' => $record,
+        ]))
+        ->assertSuccessful()
+        ->assertSee('Warehouse A');
 });
 
 it('will show in navigation when only one variant exists', function () {
@@ -124,14 +150,14 @@ it('mounts inventory page using the active variant when a trashed variant exists
 
     $trashedVariant = ProductVariant::factory()->create([
         'product_id' => $record->id,
-        'stock' => 99,
+        'backorder' => 99,
     ]);
 
     $trashedVariant->delete();
 
     $activeVariant = ProductVariant::factory()->create([
         'product_id' => $record->id,
-        'stock' => 42,
+        'backorder' => 42,
     ]);
 
     $this->asStaff();
@@ -139,15 +165,15 @@ it('mounts inventory page using the active variant when a trashed variant exists
     Livewire::test(
         ManageProductInventory::class, [
             'record' => $record->getRouteKey(),
-        ])->assertSet('stock', $activeVariant->stock);
+        ])->assertSet('backorder', $activeVariant->backorder);
 });
 
-it('can update variant stock figures', function () {
-    $language = Language::factory()->create([
+it('updates the variant selling policy', function () {
+    Language::factory()->create([
         'default' => true,
     ]);
 
-    $currency = Currency::factory()->create([
+    Currency::factory()->create([
         'default' => true,
         'decimal_places' => 2,
     ]);
@@ -164,13 +190,12 @@ it('can update variant stock figures', function () {
         ManageProductInventory::class, [
             'record' => $record->getRouteKey(),
         ])->fillForm([
-            'stock' => 500,
             'backorder' => 50,
             'purchasable' => 'in_stock_or_on_backorder',
         ])->call('save')->assertHasNoErrors();
 
     $this->assertDatabaseHas((new ProductVariant)->getTable(), [
-        'stock' => 500,
+        'id' => $variant->id,
         'backorder' => 50,
         'purchasable' => 'in_stock_or_on_backorder',
     ]);

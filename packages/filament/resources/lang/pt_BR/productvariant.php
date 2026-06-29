@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Variação de produto',
     'plural_label' => 'Variações de produto',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'Em estoque',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Sob encomenda',
         ],
         'purchasable' => [
-            'label' => 'Disponibilidade de compra',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Sempre',
                 'in_stock' => 'Em estoque',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Quantidade por unidade',
-            'helper_text' => 'Quantos itens individuais formam 1 unidade.',
+            'tooltip' => 'Quantos itens individuais formam 1 unidade.',
         ],
         'min_quantity' => [
             'label' => 'Quantidade mínima',
-            'helper_text' => 'Quantidade mínima da variação que pode ser comprada em uma única compra.',
+            'tooltip' => 'Quantidade mínima da variação que pode ser comprada em uma única compra.',
         ],
         'quantity_increment' => [
             'label' => 'Incremento de quantidade',
-            'helper_text' => 'A variação deve ser comprada em múltiplos desta quantidade.',
+            'tooltip' => 'A variação deve ser comprada em múltiplos desta quantidade.',
         ],
         'tax_class_id' => [
             'label' => 'Classe de imposto',

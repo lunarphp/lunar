@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Бүтээгдэхүүний вариант',
     'plural_label' => 'Бүтээгдэхүүний вариантүүд',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'Агуулахын нөөц',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Захиалгаар',
         ],
         'purchasable' => [
-            'label' => 'Худалдаж авах боломж',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Үргэлж',
                 'in_stock' => 'Нөөцтэй үед',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Нэгжийн тоо',
-            'helper_text' => '1 нэгжид хэдэн ширхэг бараа байх вэ.',
+            'tooltip' => '1 нэгжид хэдэн ширхэг бараа байх вэ.',
         ],
         'min_quantity' => [
             'label' => 'Хамгийн бага тоо',
-            'helper_text' => 'Нэг худалдаалалтанд худалдаж авах бүтээгдэхүүний вариантын хамгийн бага тоо.',
+            'tooltip' => 'Нэг худалдаалалтанд худалдаж авах бүтээгдэхүүний вариантын хамгийн бага тоо.',
         ],
         'quantity_increment' => [
             'label' => 'Тооны өсөлт',
-            'helper_text' => 'Бүтээгдэхүүний вариант энэ тооны давхцаагаар худалдаж авах ёстой.',
+            'tooltip' => 'Бүтээгдэхүүний вариант энэ тооны давхцаагаар худалдаж авах ёстой.',
         ],
         'tax_class_id' => [
             'label' => 'Татварын ангилал',

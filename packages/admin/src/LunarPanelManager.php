@@ -77,6 +77,8 @@ class LunarPanelManager
      */
     protected array $excludedResources = [];
 
+    protected bool $inventoryControls = true;
+
     protected static $resources = [
         ActivityResource::class,
         AttributeGroupResource::class,
@@ -366,6 +368,22 @@ class LunarPanelManager
         $this->excludedResources = array_values(array_unique(array_merge($this->excludedResources, $resources)));
 
         return $this;
+    }
+
+    /**
+     * Hide Lunar's built-in per-variant inventory controls, leaving an add-on
+     * to provide its own opinionated inventory system.
+     */
+    public function withoutInventoryControls(bool $without = true): self
+    {
+        $this->inventoryControls = ! $without;
+
+        return $this;
+    }
+
+    public function usesInventoryControls(): bool
+    {
+        return $this->inventoryControls;
     }
 
     /**

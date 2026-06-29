@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'متغير المنتج',
     'plural_label' => 'متغيرات المنتجات',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'متوفر في المخزون',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'طلب مسبق',
         ],
         'purchasable' => [
-            'label' => 'قابلية الشراء',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'دائمًا',
                 'in_stock' => 'متوفر في المخزون',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'كمية الوحدة',
-            'helper_text' => 'كم عدد العناصر الفردية التي تشكل وحدة واحدة.',
+            'tooltip' => 'كم عدد العناصر الفردية التي تشكل وحدة واحدة.',
         ],
         'min_quantity' => [
             'label' => 'الحد الأدنى للكمية',
-            'helper_text' => 'الحد الأدنى للكمية التي يمكن شراؤها من متغير المنتج في عملية شراء واحدة.',
+            'tooltip' => 'الحد الأدنى للكمية التي يمكن شراؤها من متغير المنتج في عملية شراء واحدة.',
         ],
         'quantity_increment' => [
             'label' => 'زيادة الكمية',
-            'helper_text' => 'يجب شراء متغير المنتج بمضاعفات هذه الكمية.',
+            'tooltip' => 'يجب شراء متغير المنتج بمضاعفات هذه الكمية.',
         ],
         'tax_class_id' => [
             'label' => 'فئة الضريبة',

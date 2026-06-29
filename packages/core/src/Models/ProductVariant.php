@@ -9,11 +9,13 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Contracts\TracksStock;
 use Lunar\Core\Database\Factories\ProductVariantFactory;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasDimensions;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPrices;
+use Lunar\Core\Models\Concerns\HasStock;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
@@ -43,19 +45,25 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?float $volume_value
  * @property ?string $volume_unit
  * @property bool $shippable
- * @property int $stock
  * @property int $backorder
  * @property string $purchasable
+ * @property int $stock_on_hand
+ * @property int $stock_incoming
+ * @property int $stock_committed
+ * @property int $stock_reserved
+ * @property int $stock_unavailable
+ * @property int $stock_available
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable
+class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable, TracksStock
 {
     use HasAttributeData;
     use HasDimensions;
     use HasFactory;
     use HasMacros;
     use HasPrices;
+    use HasStock;
     use HasTranslations;
     use LogsActivity;
 
@@ -71,6 +79,12 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
      */
     protected $casts = [
         'shippable' => 'bool',
+        'stock_on_hand' => 'integer',
+        'stock_incoming' => 'integer',
+        'stock_committed' => 'integer',
+        'stock_reserved' => 'integer',
+        'stock_unavailable' => 'integer',
+        'stock_available' => 'integer',
     ];
 
     /**
@@ -230,10 +244,10 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
     public function getTotalInventory(): int
     {
         if ($this->purchasable == 'in_stock') {
-            return $this->stock;
+            return $this->stock_available;
         }
 
-        return $this->stock + $this->backorder;
+        return $this->stock_available + $this->backorder;
     }
 
     public function getThumbnailImage(): string

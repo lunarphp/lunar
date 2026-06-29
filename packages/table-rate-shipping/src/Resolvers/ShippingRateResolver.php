@@ -66,7 +66,7 @@ class ShippingRateResolver
         $shippingMeta = $cart->shippingEstimateMeta;
 
         $this->allCartItemsAreInStock = ! $this->cart->lines->first(function ($line) {
-            return $line->purchasable->shippable && ($line->purchasable->stock < $line->quantity);
+            return $line->purchasable->shippable && ! $line->purchasable->canBeFulfilledAtQuantity($line->quantity);
         });
 
         // Sum all line weights converted to kg so we can cheaply convert to any

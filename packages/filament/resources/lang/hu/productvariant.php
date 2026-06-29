@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Termékváltozat',
     'plural_label' => 'Termékváltozatok',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'Raktáron',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Utánrendelhető',
         ],
         'purchasable' => [
-            'label' => 'Vásárolhatóság',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Mindig',
                 'in_stock' => 'Raktáron',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Egység mennyiség',
-            'helper_text' => 'Hány egyedi darabból áll egy egység.',
+            'tooltip' => 'Hány egyedi darabból áll egy egység.',
         ],
         'min_quantity' => [
             'label' => 'Minimális mennyiség',
-            'helper_text' => 'A termékváltozat egy vásárlás során megvásárolható minimális mennyisége.',
+            'tooltip' => 'A termékváltozat egy vásárlás során megvásárolható minimális mennyisége.',
         ],
         'quantity_increment' => [
             'label' => 'Mennyiség növelése',
-            'helper_text' => 'A termékváltozat csak e mennyiség többszörösében vásárolható meg.',
+            'tooltip' => 'A termékváltozat csak e mennyiség többszörösében vásárolható meg.',
         ],
         'tax_class_id' => [
             'label' => 'Adóosztály',

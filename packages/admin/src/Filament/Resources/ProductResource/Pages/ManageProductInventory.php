@@ -2,20 +2,28 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
+use Filament\Forms\Components\Placeholder;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
-use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantInventory;
+use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Filament\Actions\Products\AdjustStockAction;
+use Lunar\Filament\Schemas\ProductVariant\ProductVariantInventory;
 
+/**
+ * Single-variant convenience: the variant's inventory controls surfaced on the
+ * product. The full per-variant view lives on the variant Inventory page; this
+ * mirrors the editable selling-policy fields, a read-only rollup summary, and
+ * the AdjustStock action.
+ */
 class ManageProductInventory extends BaseEditRecord
 {
     protected static string $resource = ProductResource::class;
-
-    public ?string $stock = null;
 
     public ?string $backorder = null;
 
@@ -39,6 +47,10 @@ class ManageProductInventory extends BaseEditRecord
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
+        if (! LunarPanel::usesInventoryControls()) {
+            return false;
+        }
+
         return ($parameters['record']->variants_count ?? $parameters['record']->variants()->count()) == 1;
     }
 
@@ -63,7 +75,6 @@ class ManageProductInventory extends BaseEditRecord
 
         $variant = $this->getVariant();
 
-        $this->stock = $variant->stock;
         $this->backorder = $variant->backorder;
         $this->purchasable = $variant->purchasable;
         $this->unit_quantity = $variant->unit_quantity;
@@ -73,9 +84,7 @@ class ManageProductInventory extends BaseEditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $variant = $this->getVariant();
-
-        $variant->update($data);
+        $this->getVariant()->update($data);
 
         return $record;
     }
@@ -94,7 +103,28 @@ class ManageProductInventory extends BaseEditRecord
 
     public function getDefaultForm(Schema $schema): Schema
     {
-        return (new ManageVariantInventory)->form($schema)->statePath('');
+        return $schema->components([
+            Section::make(__('lunar-filament::productvariant.inventory.summary_heading'))
+                ->description(ProductVariantInventory::locationDescription())
+                ->headerActions([
+                    AdjustStockAction::make()->record($this->getVariant()),
+                ])
+                ->schema([
+                    $this->rollupPlaceholder('stock_on_hand', 'on_hand'),
+                    $this->rollupPlaceholder('stock_available', 'available'),
+                    $this->rollupPlaceholder('stock_committed', 'committed'),
+                    $this->rollupPlaceholder('stock_reserved', 'reserved'),
+                ])
+                ->columns(['default' => 2, 'xl' => 4]),
+            ProductVariantInventory::getSellingPolicySection(),
+        ])->statePath('');
+    }
+
+    protected function rollupPlaceholder(string $attribute, string $key): Placeholder
+    {
+        return Placeholder::make($attribute)
+            ->label(__("lunar-filament::productvariant.inventory.{$key}"))
+            ->content(fn (): string => (string) ($this->getVariant()->{$attribute} ?? 0));
     }
 
     public function getRelationManagers(): array

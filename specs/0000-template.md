@@ -32,3 +32,10 @@ Things that are not yet decided. Each question should have a clear owner or a pl
 ## References
 
 Links to issues, PRs, prior art, related specs (`[[0002-other-spec]]`).
+
+## Implementation plan
+
+The slices this spec ships in, in order. Each slice should be independently reviewable and leave the app working. Keep the statuses current as work lands — this is the running record of what has shipped and what remains.
+
+- [ ] Slice 1 — <scope>
+- [ ] Slice 2 — <scope>

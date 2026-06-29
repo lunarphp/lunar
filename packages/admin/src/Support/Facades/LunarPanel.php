@@ -14,6 +14,8 @@ use Lunar\Admin\LunarPanelManager;
  * @method static LunarPanelManager forceTwoFactorAuth(bool $state = true)
  * @method static LunarPanelManager disableTwoFactorAuth()
  * @method static LunarPanelManager extensions(array $extensions)
+ * @method static LunarPanelManager withoutInventoryControls(bool $without = true)
+ * @method static bool usesInventoryControls()
  * @method static array getExtensions()
  * @method static array getResources()
  * @method static array getPages()

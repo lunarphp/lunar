@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'inventory' => [
+        'summary_heading' => 'Stock',
+        'location' => 'Location: :location',
+        'on_hand' => 'On hand',
+        'available' => 'Available',
+        'committed' => 'Committed',
+        'reserved' => 'Reserved',
+        'recent_movements' => 'Recent movements',
+        'no_movements' => 'No stock movements yet.',
+    ],
     'label' => 'Product Variant',
     'plural_label' => 'Product Variants',
     'pages' => [
@@ -45,14 +55,13 @@ return [
         'ean' => [
             'label' => 'UPC/EAN',
         ],
-        'stock' => [
-            'label' => 'In Stock',
-        ],
         'backorder' => [
+            'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'On Backorder',
         ],
         'purchasable' => [
-            'label' => 'Purchasability',
+            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
+            'label' => 'Selling Policy',
             'options' => [
                 'always' => 'Always',
                 'in_stock' => 'In Stock',
@@ -61,15 +70,15 @@ return [
         ],
         'unit_quantity' => [
             'label' => 'Unit Quantity',
-            'helper_text' => 'How many individual items make up 1 unit.',
+            'tooltip' => 'How many individual items make up 1 unit.',
         ],
         'min_quantity' => [
             'label' => 'Minimum Quantity',
-            'helper_text' => 'The minimum quantity of a product variant that can be bought in a single purchase.',
+            'tooltip' => 'The minimum quantity of a product variant that can be bought in a single purchase.',
         ],
         'quantity_increment' => [
             'label' => 'Quantity Increment',
-            'helper_text' => 'The product variant must be purchased in multiples of this quantity.',
+            'tooltip' => 'The product variant must be purchased in multiples of this quantity.',
         ],
         'tax_class_id' => [
             'label' => 'Tax Class',

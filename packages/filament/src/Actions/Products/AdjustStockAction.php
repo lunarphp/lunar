@@ -4,6 +4,7 @@ namespace Lunar\Filament\Actions\Products;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
+use Filament\Support\Enums\Width;
 use Lunar\Core\Contracts\Actions\Products\AdjustsStock;
 use Lunar\Core\Models\ProductVariant;
 
@@ -21,6 +22,7 @@ class AdjustStockAction extends Action
         $this
             ->label(__('lunar-filament::actions.products.adjust_stock.label'))
             ->modalHeading(__('lunar-filament::actions.products.adjust_stock.modal_heading'))
+            ->modalWidth(Width::Medium)
             ->icon('heroicon-o-archive-box-arrow-down')
             ->schema([
                 TextInput::make('delta')

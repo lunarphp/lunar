@@ -46,3 +46,28 @@ test('re-parents descendants when a target is provided', function () {
     expect(Collection::find($parent->id))->toBeNull();
     expect($child->fresh()->parent_id)->toBe($newHome->id);
 });
+
+// Deleting a nested-set node sweeps its descendants by the node's in-memory
+// bounds. If the collection handed to the action is stale — its subtree moved
+// elsewhere since it was loaded — those bounds still span the moved nodes, and
+// the descendant sweep destroys them. The package only auto-corrects the bounds
+// when it has performed a node action this request, so we zero that flag to model
+// a request where it hasn't and pin the action's correctness independently of it.
+test('does not sweep up descendants that moved out from under a stale collection', function () {
+    $parent = Collection::factory()->create(['collection_group_id' => $this->group->id]);
+    $child = Collection::factory()->create(['collection_group_id' => $this->group->id]);
+    $parent->appendNode($child);
+
+    $stale = $parent->fresh();
+
+    $newHome = Collection::factory()->create(['collection_group_id' => $this->group->id]);
+    $newHome->appendNode($child);
+
+    Collection::$actionsPerformed = 0;
+
+    app(DeleteCollection::class)->execute($stale);
+
+    expect(Collection::find($parent->id))->toBeNull();
+    expect($child->fresh()?->parent_id)->toBe($newHome->id);
+    expect(Collection::find($newHome->id))->not->toBeNull();
+});

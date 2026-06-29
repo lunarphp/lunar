@@ -1,0 +1,126 @@
+[
+  {
+    "sku": "APP-JMP-001",
+    "name": "Merino Wool Crew Jumper",
+    "collection": "Apparel",
+    "subcollection": "Knitwear",
+    "brand": "Harbour & Co",
+    "price": 89.00,
+    "list_price": 120.00,
+    "short_description": "Mid-weight crew-neck knit in soft merino wool.",
+    "description": "Knitted from a fine 12-gauge merino yarn, this crew-neck jumper is warm without the bulk and naturally breathable. A clean, versatile staple for cooler days."
+  },
+  {
+    "sku": "APP-TEE-002",
+    "name": "Organic Cotton T-Shirt",
+    "collection": "Apparel",
+    "subcollection": "T-Shirts",
+    "brand": "Harbour & Co",
+    "price": 24.00,
+    "short_description": "Everyday tee in heavyweight organic cotton.",
+    "description": "Cut from 220gsm organic cotton with a relaxed fit and a ribbed crew neck that holds its shape wash after wash."
+  },
+  {
+    "sku": "APP-JNS-003",
+    "name": "Selvedge Denim Jeans",
+    "collection": "Apparel",
+    "subcollection": "Denim",
+    "brand": "Foundry Denim",
+    "price": 110.00,
+    "list_price": 135.00,
+    "short_description": "Slim-straight jeans in 13oz Japanese selvedge.",
+    "description": "Woven on vintage shuttle looms, this raw selvedge denim breaks in to the wearer over time. Slim through the thigh with a straight leg and a button fly."
+  },
+  {
+    "sku": "APP-JKT-004",
+    "name": "Lightweight Rain Jacket",
+    "collection": "Apparel",
+    "subcollection": "Outerwear",
+    "brand": "Foundry Denim",
+    "price": 145.00,
+    "short_description": "Packable shell with taped seams.",
+    "description": "A 2.5-layer waterproof shell that packs into its own pocket. Fully taped seams, an adjustable hood, and pit zips for when the climb gets warm."
+  },
+  {
+    "sku": "ACC-CRD-005",
+    "name": "Leather Card Holder",
+    "collection": "Accessories",
+    "subcollection": "Wallets",
+    "brand": "Bridle Goods",
+    "price": 35.00,
+    "short_description": "Slim vegetable-tanned leather card holder.",
+    "description": "Hand-cut from vegetable-tanned leather that patinas beautifully. Three card slots and a central pocket in a profile slim enough for a front pocket."
+  },
+  {
+    "sku": "ACC-BAG-006",
+    "name": "Canvas Weekend Holdall",
+    "collection": "Accessories",
+    "subcollection": "Bags",
+    "brand": "Bridle Goods",
+    "price": 160.00,
+    "list_price": 195.00,
+    "short_description": "Waxed canvas holdall with leather trim.",
+    "description": "Roomy enough for a long weekend, built from heavy waxed canvas with bridle leather handles and a brass zip. Wipes clean and only looks better with age."
+  },
+  {
+    "sku": "ACC-HAT-007",
+    "name": "Merino Beanie",
+    "collection": "Accessories",
+    "subcollection": "Hats",
+    "brand": "Harbour & Co",
+    "price": 28.00,
+    "short_description": "Rib-knit beanie in soft merino.",
+    "description": "A snug rib-knit beanie in itch-free merino wool, with a turn-back cuff for an adjustable fit. Warm, light, and quietly smart."
+  },
+  {
+    "sku": "ACC-BTL-008",
+    "name": "Stainless Water Bottle",
+    "collection": "Accessories",
+    "subcollection": "Drinkware",
+    "brand": "Field Supply",
+    "price": 22.00,
+    "short_description": "Insulated 750ml stainless bottle.",
+    "description": "Double-walled vacuum insulation keeps drinks cold for 24 hours or hot for 12. A leak-proof cap and powder-coated finish that shrugs off knocks."
+  },
+  {
+    "sku": "HOM-MUG-009",
+    "name": "Stoneware Mug Set",
+    "collection": "Home & Living",
+    "subcollection": "Kitchen",
+    "brand": "Kiln & Clay",
+    "price": 32.00,
+    "short_description": "Set of four reactive-glaze stoneware mugs.",
+    "description": "Thrown in stoneware and finished in a speckled reactive glaze, so no two are quite alike. Dishwasher and microwave safe; a generous 350ml each."
+  },
+  {
+    "sku": "HOM-BLK-010",
+    "name": "Linen Throw Blanket",
+    "collection": "Home & Living",
+    "subcollection": "Textiles",
+    "brand": "Loom House",
+    "price": 75.00,
+    "list_price": 95.00,
+    "short_description": "Stonewashed pure-linen throw.",
+    "description": "Woven from pure European linen and stonewashed for a soft, lived-in handle. Light enough for summer evenings, with a loose fringe finish."
+  },
+  {
+    "sku": "HOM-CND-011",
+    "name": "Soy Wax Candle",
+    "collection": "Home & Living",
+    "subcollection": "Candles",
+    "brand": "Ember Studio",
+    "price": 26.00,
+    "short_description": "Hand-poured soy candle, 50-hour burn.",
+    "description": "A natural soy wax blend with a cotton wick and a warm cedar-and-amber scent. Hand-poured in small batches for a clean, even 50-hour burn."
+  },
+  {
+    "sku": "HOM-PAN-012",
+    "name": "Cast Iron Skillet",
+    "collection": "Home & Living",
+    "subcollection": "Kitchen",
+    "brand": "Field Supply",
+    "price": 58.00,
+    "short_description": "Pre-seasoned 26cm cast iron skillet.",
+    "description": "A workhorse 26cm skillet, pre-seasoned and ready to use. Holds and spreads heat evenly from hob to oven, and lasts a lifetime with simple care."
+  }
+]
