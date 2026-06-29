@@ -6,6 +6,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
@@ -18,11 +19,14 @@ use Lunar\Core\Models\Order;
 
 class CartSessionManager implements CartSession
 {
+    protected ?ChannelContract $channel = null;
+
+    protected ?CurrencyContract $currency = null;
+
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
-        protected ChannelContract $channel,
-        protected CurrencyContract $currency,
+        protected ResolvesStorefrontContext $resolveStorefrontContext,
         public ?CartContract $cart = null,
     ) {
         //
@@ -270,12 +274,21 @@ class CartSessionManager implements CartSession
     protected function createNewCart(): CartContract
     {
         $user = $this->authManager->user();
+        $customer = optional($user)->latestCustomer();
+
+        // An explicit setChannel()/setCurrency() override wins; otherwise the
+        // resolver supplies the default (region-aware once regions land).
+        $context = $this->resolveStorefrontContext->execute(
+            channel: $this->channel?->exists ? $this->channel : null,
+            currency: $this->currency?->exists ? $this->currency : null,
+            customer: $customer,
+        );
 
         $cart = Cart::create([
-            'currency_id' => $this->getCurrency()->id,
-            'channel_id' => $this->getChannel()->id,
+            'currency_id' => $context->currency->id,
+            'channel_id' => $context->channel->id,
             'user_id' => optional($user)->id,
-            'customer_id' => optional($user)->latestCustomer()?->id,
+            'customer_id' => optional($customer)->id,
         ]);
 
         return $this->use($cart);

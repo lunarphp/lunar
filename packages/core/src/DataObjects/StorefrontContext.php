@@ -21,12 +21,16 @@ use Lunar\Core\Models\Contracts\Language;
 final readonly class StorefrontContext
 {
     /**
-     * @param  Collection<int, CustomerGroup>  $customerGroups  never empty; the default group when no customer
+     * Channel and currency are store invariants (a cart cannot exist without
+     * them). Language is optional — null falls back to the app locale until a
+     * default language (or a region) supplies one.
+     *
+     * @param  Collection<int, CustomerGroup>  $customerGroups  the default group when no customer; empty only if none is configured
      */
     public function __construct(
         public Channel $channel,
         public Currency $currency,
-        public Language $language,
+        public ?Language $language,
         public ?Customer $customer,
         public Collection $customerGroups,
     ) {}
@@ -41,7 +45,7 @@ final readonly class StorefrontContext
         return new self($this->channel, $currency, $this->language, $this->customer, $this->customerGroups);
     }
 
-    public function withLanguage(Language $language): self
+    public function withLanguage(?Language $language): self
     {
         return new self($this->channel, $this->currency, $language, $this->customer, $this->customerGroups);
     }
