@@ -1,6 +1,6 @@
 # 0040 — Storefront context
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-29
 - TODO item: `StorefrontContext` for CartSessionManager and other services
