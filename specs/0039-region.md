@@ -116,7 +116,7 @@ A `RegionResource` (list / create / edit) under the bridge package: name, handle
 
 ## Implementation plan
 
-- [ ] Slice 1 — `Region` model, contract, `regions` + `country_region` migrations, `HasDefaultRecord`, factory; default-region seed wired into install.
+- [x] Slice 1 — `Region` model, contract, `regions` + `country_region` migrations, `HasDefaultRecord`, factory; default-region seed wired into install.
 - [ ] Slice 2 — `region_id` on `carts` and `orders`; `CartSessionManager` stamps it; channel/currency invariants held.
 - [ ] Slice 3 — region resolution: extend `ResolveStorefrontContext` to cascade through the region, populate the context's `region` slot, add `StorefrontSession` `getRegion`/`setRegion`.
 - [ ] Slice 4 — region-aware price display (`prices_inc_tax()` + catalogue tax zone from region).
