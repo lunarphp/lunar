@@ -182,7 +182,7 @@ $this->app->bind(OrderReferenceGenerator::class, MyReferenceGenerator::class);
 ## Open questions
 
 - Mechanical scope only (not a question of *whether*): do the `Models\Contracts\*` interfaces appear in any **public method signatures** (Lunar internals, the bridge packages, or documented consumer hooks)? If so, those signatures retype to the concrete class and the change needs a Rector rule. The decision to remove the interfaces is settled; this just sizes the call-site sweep. **Owner: slice 1.**
-- Is a separate accessor-injection seam needed, or do custom cast classes cover every real accessor case surfaced in the v1 issue tracker / consumer code? **Owner: review before slice 3.**
+- ~~Is a separate accessor-injection seam needed, or do custom cast classes cover every real accessor case?~~ **Resolved: no separate seam.** A custom `CastsAttributes` class is an accessor/mutator pair (`get()` / `set()`), registered via `addCasts()` — the modern Laravel idiom and the form that composes through `getCasts()` everywhere Lunar hands over the model. The only accessor variant a cast cannot give is auto-appending a *computed* attribute to array/JSON output (`$appends`); API Resources cover that, per the capabilities review.
 - Niche structural needs (per-model connection/table for multi-tenant) — documented as global config, or do we need a sanctioned hook? **Owner: resolve before `accepted`.**
 - Should `addCasts` reject unknown attribute names (typo safety) or stay permissive to allow casting yet-to-exist columns? **Owner: slice 3.**
 
