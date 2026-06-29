@@ -26,7 +26,7 @@ class RegionForm
         return self::callStaticLunarHook(
             'configureForm',
             $schema->components([
-                Section::make()->schema(static::getMainComponents()),
+                Section::make()->columns(2)->schema(static::getMainComponents()),
             ]),
         );
     }
@@ -41,8 +41,8 @@ class RegionForm
             static::getLanguageComponent(),
             static::getTaxZoneComponent(),
             static::getPricesIncTaxComponent(),
-            static::getCountriesComponent(),
             static::getDefaultComponent(),
+            static::getCountriesComponent(),
         ];
     }
 
@@ -126,12 +126,14 @@ class RegionForm
         return CountrySelect::make('countries')
             ->label(__('lunar-filament::region.form.countries.label'))
             ->multiple()
-            ->relationship('countries', 'name');
+            ->relationship('countries', 'name')
+            ->columnSpanFull();
     }
 
     public static function getDefaultComponent(): Component
     {
         return Toggle::make('default')
-            ->label(__('lunar-filament::region.form.default.label'));
+            ->label(__('lunar-filament::region.form.default.label'))
+            ->inline(false);
     }
 }

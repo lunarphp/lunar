@@ -78,7 +78,7 @@ Region carries a **display** tax zone (`tax_zone_id`) used to price the catalogu
 
 ### Default seed
 
-A default `Region` is seeded from the existing default channel, currency, language and tax zone, flagged `default`, serving the default country set (or all countries until configured). Single-market stores get a working region with zero configuration; everything resolves through it transparently, matching the "features work out of the box" principle.
+A default `Region` is seeded from the existing default channel, currency, language and tax zone, flagged `default`, with no countries assigned — it is the catch-all, so specific regions list their own countries and the default serves everywhere else. Single-market stores get a working region with zero configuration; everything resolves through it transparently, matching the "features work out of the box" principle.
 
 ### Filament
 

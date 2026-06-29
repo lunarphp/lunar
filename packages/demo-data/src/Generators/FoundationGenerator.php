@@ -163,7 +163,8 @@ class FoundationGenerator implements Generator
 
     protected function region(Channel $channel, Currency $currency, Language $language, TaxZone $taxZone): Region
     {
-        $region = Region::query()->firstOrCreate(
+        // The default region is the catch-all; it needs no countries assigned.
+        return Region::query()->firstOrCreate(
             ['handle' => 'default'],
             [
                 'name' => 'Default',
@@ -174,12 +175,5 @@ class FoundationGenerator implements Generator
                 'default' => true,
             ],
         );
-
-        // Mirror lunar:install — the default region serves every known country.
-        if (! $region->countries()->exists() && Country::query()->exists()) {
-            $region->countries()->sync(Country::query()->pluck('id'));
-        }
-
-        return $region;
     }
 }

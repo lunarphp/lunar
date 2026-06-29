@@ -171,7 +171,9 @@ class InstallLunar extends Command
             if (! Region::whereDefault(true)->exists()) {
                 $this->components->info('Adding a default region.');
 
-                $region = Region::create([
+                // The default region is the catch-all; specific regions list
+                // their own countries, so it needs none assigned.
+                Region::create([
                     'name' => 'Default',
                     'handle' => 'default',
                     'channel_id' => Channel::whereDefault(true)->value('id'),
@@ -180,8 +182,6 @@ class InstallLunar extends Command
                     'tax_zone_id' => TaxZone::whereDefault(true)->value('id'),
                     'default' => true,
                 ]);
-
-                $region->countries()->sync(Country::pluck('id'));
             }
         });
 
