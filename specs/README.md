@@ -66,3 +66,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0039 | Region | implemented |
 | 0040 | Storefront context | implemented |
 | 0041 | Retire model class substitution | implemented |
+| 0042 | Model query builders (registerable scopes) | draft       |

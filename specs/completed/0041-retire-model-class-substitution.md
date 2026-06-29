@@ -39,10 +39,12 @@ The only question that decides whether a capability needs substitution: can a co
 | Add a method | model / query-builder macros (existing `HasMacros`) |
 | React to lifecycle | `Model::observe(Obs::class)` or `Event::listen('eloquent.*: Class')` in a provider |
 | Add a global scope | `Model::addGlobalScope(new Scope)` — a public static method, callable from a provider |
-| Query sugar (pseudo local-scope) | `Builder::macro(...)` |
+| Query sugar (global) | `Builder::macro(...)` — but global to every builder, not per-model (see note) |
 | Default eager loads (`$with`) | a global scope that calls `->with(...)` |
 | Search indexing | existing `Searchable` concern |
 | Serialization tweaks | `append()` / `makeVisible()` per instance, or API Resources in the consumer's layer |
+
+Note — **optional, per-model local scopes** are the one query-extension case natives do not cover 1:1: `Builder::macro()` is global to all Eloquent builders, and an opt-out global scope is always-on rather than optional. This is the gap that subclassing used to fill. A dedicated seam for it is proposed in [[0042-model-query-builders]].
 
 **Genuinely class-only — the gaps:**
 
@@ -190,6 +192,7 @@ $this->app->bind(OrderReferenceGenerator::class, MyReferenceGenerator::class);
 - `packages/core/src/Manifests/ModelManifest.php`, `packages/core/src/Facades/ModelManifest.php`
 - `tests/core/Unit/Base/Traits/HasModelExtendingTest.php`, `tests/core/Stubs/Models`
 - Entry-point conventions and action seams: `[[0029-entry-point-conventions]]`
+- Per-model optional scopes (the one query-extension gap this leaves): `[[0042-model-query-builders]]`
 - Laravel 13 Eloquent docs: getting-started, mutators & casting, serialization
 
 ## Implementation plan
