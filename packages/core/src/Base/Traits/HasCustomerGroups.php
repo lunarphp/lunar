@@ -141,11 +141,11 @@ trait HasCustomerGroups
         }
 
         if (! $startsAt) {
-            $startsAt = now();
+            $startsAt = now()->toDateTime();
         }
 
         if (! $endsAt) {
-            $endsAt = now()->addSecond();
+            $endsAt = now()->addSecond()->toDateTime();
         }
 
         return $this->applyCustomerGroupScope($query, $groupIds, $startsAt, $endsAt);
