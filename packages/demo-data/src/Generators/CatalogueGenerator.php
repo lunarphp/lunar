@@ -54,11 +54,16 @@ class CatalogueGenerator implements Generator
                 continue;
             }
 
-            $collection = $collections->get($fixture['collection'])
+            $parent = $collections->get($fixture['collection'])
                 ?? $collections->put(
                     $fixture['collection'],
                     $this->collection($group, $fixture['collection'])
                 )->get($fixture['collection']);
+
+            // Nest a sub-collection under the category and shelve the product there.
+            $key = $fixture['collection'].' / '.$fixture['subcollection'];
+            $collection = $collections->get($key)
+                ?? $collections->put($key, $this->childCollection($parent, $fixture['subcollection']))->get($key);
 
             $brand = $brands->get($fixture['brand'])
                 ?? $brands->put($fixture['brand'], $this->brand($fixture['brand']))->get($fixture['brand']);
@@ -111,6 +116,7 @@ class CatalogueGenerator implements Generator
     protected function collection(CollectionGroup $group, string $name): ProductCollection
     {
         return ProductCollection::query()
+            ->whereNull('parent_id')
             ->where('collection_group_id', $group->id)
             ->where('name->en', $name)
             ->first()
@@ -120,6 +126,33 @@ class CatalogueGenerator implements Generator
                 'status' => 'published',
                 'attribute_data' => collect(),
             ]);
+    }
+
+    /**
+     * A sub-collection nested under the given parent via the nested-set
+     * appendNode linkage (matching CreateChildCollection).
+     */
+    protected function childCollection(ProductCollection $parent, string $name): ProductCollection
+    {
+        $existing = ProductCollection::query()
+            ->where('parent_id', $parent->id)
+            ->where('name->en', $name)
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        $child = ProductCollection::create([
+            'collection_group_id' => $parent->collection_group_id,
+            'name' => collect(['en' => $name]),
+            'status' => 'published',
+            'attribute_data' => collect(),
+        ]);
+
+        $parent->appendNode($child);
+
+        return $child->refresh();
     }
 
     protected function brand(string $name): Brand

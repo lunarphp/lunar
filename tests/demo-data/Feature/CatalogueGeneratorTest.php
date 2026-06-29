@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductType;
@@ -32,9 +33,30 @@ test('it builds a product type, collection group and collections', function () {
     generateCatalogue(products: 12);
 
     expect(ProductType::whereName('General')->exists())->toBeTrue();
-    expect(CollectionGroup::whereHandle('shop')->exists())->toBeTrue();
-    // The full fixture spans Apparel, Accessories and Home & Living.
-    expect(CollectionGroup::whereHandle('shop')->first()->collections()->count())->toBe(3);
+
+    $group = CollectionGroup::whereHandle('shop')->first();
+
+    // Three top-level categories: Apparel, Accessories and Home & Living.
+    expect($group->collections()->whereNull('parent_id')->count())->toBe(3);
+    // Each with nested sub-collections.
+    expect($group->collections()->whereNotNull('parent_id')->count())->toBeGreaterThan(0);
+});
+
+test('it nests sub-collections under their category', function () {
+    generateCatalogue(products: 12);
+
+    $apparel = Collection::query()->whereNull('parent_id')->where('name->en', 'Apparel')->first();
+
+    // Knitwear, T-Shirts, Denim and Outerwear.
+    expect($apparel->children()->count())->toBe(4);
+
+    $child = $apparel->children()->first();
+    expect($child->parent_id)->toBe($apparel->id);
+    expect($child->parent->is($apparel))->toBeTrue();
+
+    // Products are shelved on the leaf sub-collection, not the category.
+    $product = Product::query()->whereHas('variants', fn ($q) => $q->where('sku', 'APP-JMP-001'))->first();
+    expect($product->collections()->first()->parent_id)->not->toBeNull();
 });
 
 test('it creates published products with a variant, prices and media', function () {
