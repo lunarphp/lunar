@@ -123,11 +123,9 @@ Lunar's first-class scopes remain `scopeX()` / `#[Scope]` methods on the models 
 - **Static state / test isolation:** the registry is static, so registrations persist across a process like macros do. `Builder::flushScopes()` clears it; the scope tests call it in `afterEach`.
 - **Collection's nested-set builder:** composes (does not opt out). The resolution logic lives in `Concerns\ResolvesRegisteredScopes` and the registry on `Builder`; `Collection` returns `Builders\CollectionQueryBuilder` which uses the trait. Verified by the `a registered scope works on a model with a custom builder` test.
 
-## Open questions
+## IDE / static-analysis awareness
 
-- Static-analysis ergonomics: registered scopes are opaque to PHPStan/IDE (true of any dynamic scope). **Deferred to slice 3 (with the rest of v2 docs).** The shape the docs should describe is settled — see below.
-
-### IDE / static-analysis awareness (slice 3 doc material)
+Registered scopes are opaque to PHPStan/IDE (true of any dynamic scope). The annotation pattern below is the slice 3 doc material; the v2 prose docs port it verbatim.
 
 A registered scope is resolved at runtime inside a closure, so there is nothing static for an IDE or analyser to read — the same limitation that already applies to `Builder::macro()`, model macros, and `resolveRelationUsing()` relations. The fix is the same `@method` annotation Laravel developers already use for those; the only wrinkle is that the consumer does not own the vendor model class, so the annotation has to live in a file they do own.
 
@@ -183,4 +181,4 @@ The consumer declares the signature once, next to where they register the scope.
 
 - [x] Slice 1 — `Lunar\Core\Models\Builders\Builder` + `Base::newEloquentBuilder()`, the keyed registry, `Base::addLocalScope()`, the `ResolvesRegisteredScopes` trait, and `Builders\CollectionQueryBuilder`. Collision policy (native wins) and Collection composition resolved.
 - [x] Slice 2 — Tests: a registered scope is callable (chained + static + with args) on its model only, throws on others, composes with native scopes, a native scope wins on collision, and a custom-builder model (Collection) composes (`RegisteredScopesTest`). Recipe added to `ModelExtensionRecipesTest`.
-- [ ] Slice 3 — Document the `@method` annotation pattern for consumer type-safety (with the rest of v2 docs).
+- [x] Slice 3 — Document the `@method` annotation pattern for consumer type-safety. Captured in this spec (see below); the prose docs port it verbatim when the v2 docs land.
