@@ -7,6 +7,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Region;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -96,4 +97,20 @@ test('the with* chain composes', function () {
 
     expect($context->currency->code)->toBe('EUR');
     expect($context->language->code)->toBe('fr');
+});
+
+test('region defaults to null and withRegion returns a new instance carrying it', function () {
+    $context = storefrontContext();
+    expect($context->region)->toBeNull();
+
+    $region = new Region;
+    $region->id = 1;
+    $region->handle = 'uk';
+    $region->exists = true;
+
+    $next = $context->withRegion($region);
+
+    expect($next->region->id)->toBe(1);
+    expect($context->region)->toBeNull();
+    expect($next->channel)->toBe($context->channel);
 });

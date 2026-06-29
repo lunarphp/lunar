@@ -7,6 +7,8 @@ use Lunar\Core\Managers\StorefrontSessionManager;
 
 /**
  * @method static \Lunar\Core\DataObjects\StorefrontContext context()
+ * @method static \Lunar\Core\Models\Contracts\Region|null getRegion()
+ * @method static \Lunar\Core\Managers\StorefrontSessionManager setRegion(\Lunar\Core\Models\Contracts\Region $region)
  * @method static void forget()
  * @method static void initCustomerGroups()
  * @method static void initChannel()

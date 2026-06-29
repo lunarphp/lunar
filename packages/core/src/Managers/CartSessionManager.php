@@ -16,7 +16,6 @@ use Lunar\Core\Models\Contracts\Channel as ChannelContract;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
-use Lunar\Core\Models\Region;
 
 class CartSessionManager implements CartSession
 {
@@ -278,7 +277,7 @@ class CartSessionManager implements CartSession
         $customer = optional($user)->latestCustomer();
 
         // An explicit setChannel()/setCurrency() override wins; otherwise the
-        // resolver supplies the default (region-aware once regions land).
+        // resolver supplies channel/currency/region from the default region.
         $context = $this->resolveStorefrontContext->execute(
             channel: $this->channel?->exists ? $this->channel : null,
             currency: $this->currency?->exists ? $this->currency : null,
@@ -288,7 +287,7 @@ class CartSessionManager implements CartSession
         $cart = Cart::create([
             'currency_id' => $context->currency->id,
             'channel_id' => $context->channel->id,
-            'region_id' => Region::getDefault()?->id,
+            'region_id' => $context->region?->id,
             'user_id' => optional($user)->id,
             'customer_id' => optional($customer)->id,
         ]);

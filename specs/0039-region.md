@@ -118,7 +118,7 @@ A `RegionResource` (list / create / edit) under the bridge package: name, handle
 
 - [x] Slice 1 — `Region` model, contract, `regions` + `country_region` migrations, `HasDefaultRecord`, factory; default-region seed wired into install.
 - [x] Slice 2 — `region_id` on `carts` and `orders`; `CartSessionManager` stamps the default region on new carts and `FillOrderFromCart` copies it to the order; `Cart`/`Order` gain the `region()` relation. (Region-aware resolution of the stamped region, beyond the default, lands in slice 3.)
-- [ ] Slice 3 — region resolution: extend `ResolveStorefrontContext` to cascade through the region, populate the context's `region` slot, add `StorefrontSession` `getRegion`/`setRegion`.
+- [x] Slice 3 — region resolution: `StorefrontContext` gains the `region` slot (trailing optional, with `withRegion`); `ResolveStorefrontContext` cascades channel/currency/language explicit -> region default -> global default and populates the slot; `StorefrontSession` gains `getRegion`/`setRegion`, resolves the default region, and defaults channel/currency from it; `CartSessionManager` stamps `$context->region`.
 - [ ] Slice 4 — region-aware price display (`prices_inc_tax()` + catalogue tax zone from region).
 - [ ] Slice 5 — Filament `RegionResource` + 16-locale translations.
 - [ ] Slice 6 — upgrade-package default-region seed + `region_id` backfill for v1.x consumers.
