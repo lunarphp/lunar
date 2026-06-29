@@ -1,6 +1,6 @@
 # 0023 — Demo-data package
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-05
 - TODO item: "Demo-data package — seed a realistic store (products, orders, fulfilments) for evaluation, screenshots, and admin/storefront verification"
