@@ -23,11 +23,13 @@ use Lunar\Core\Contracts\Actions\Carts\GeneratesFingerprint;
 use Lunar\Core\Contracts\Actions\Carts\RemovesPurchasable;
 use Lunar\Core\Contracts\Actions\Carts\SetsShippingOption;
 use Lunar\Core\Contracts\Actions\Carts\UpdatesCartLine;
+use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Database\Factories\CartFactory;
 use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\FingerprintMismatchException;
@@ -219,6 +221,24 @@ class Cart extends Base implements Contracts\Cart
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::modelClass());
+    }
+
+    public function channel(): BelongsTo
+    {
+        return $this->belongsTo(Channel::modelClass());
+    }
+
+    /**
+     * Produce a storefront context from the cart's stored selections, so cart
+     * logic and pre-cart browse logic consume the same explicit type.
+     */
+    public function context(): StorefrontContext
+    {
+        return app(ResolvesStorefrontContext::class)->execute(
+            channel: $this->channel,
+            currency: $this->currency,
+            customer: $this->customer,
+        );
     }
 
     public function user(): BelongsTo
