@@ -33,6 +33,14 @@ class DeleteCollection implements DeletesCollection
                 }
             }
 
+            // Deleting a nested-set node sweeps its descendants by the node's
+            // in-memory _lft/_rgt. Those can be stale — after re-parenting above,
+            // or whenever the tree shifted since this model was loaded — and the
+            // package only auto-refreshes them when it has performed a node action
+            // this request. Reload so the sweep is bounded by the live position
+            // and can't catch descendants that have already moved away.
+            $collection->refresh();
+
             return (bool) $collection->delete();
         });
     }
