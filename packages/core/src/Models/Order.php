@@ -42,6 +42,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?int $customer_id
  * @property ?int $user_id
  * @property int $channel_id
+ * @property ?int $region_id
  * @property bool $new_customer
  * @property PaymentStatus $payment_status
  * @property FulfilmentStatus $fulfilment_status
@@ -191,6 +192,11 @@ class Order extends Base implements Contracts\Order, HasCurrency
     public function channel(): BelongsTo
     {
         return $this->belongsTo(Channel::modelClass());
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::modelClass());
     }
 
     public function cart(): BelongsTo

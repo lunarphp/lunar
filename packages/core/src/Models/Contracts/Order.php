@@ -17,6 +17,11 @@ interface Order
     public function channel(): BelongsTo;
 
     /**
+     * Return the region relationship.
+     */
+    public function region(): BelongsTo;
+
+    /**
      * Return the cart relationship.
      */
     public function cart(): BelongsTo;

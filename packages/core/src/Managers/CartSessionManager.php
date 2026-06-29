@@ -16,6 +16,7 @@ use Lunar\Core\Models\Contracts\Channel as ChannelContract;
 use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Region;
 
 class CartSessionManager implements CartSession
 {
@@ -287,6 +288,7 @@ class CartSessionManager implements CartSession
         $cart = Cart::create([
             'currency_id' => $context->currency->id,
             'channel_id' => $context->channel->id,
+            'region_id' => Region::getDefault()?->id,
             'user_id' => optional($user)->id,
             'customer_id' => optional($customer)->id,
         ]);
