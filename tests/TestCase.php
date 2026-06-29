@@ -21,7 +21,7 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        $this->replaceModelsForTesting();
+        $this->replaceModelsForTesting($app);
 
         Model::preventLazyLoading();
 
@@ -124,9 +124,15 @@ class TestCase extends BaseTestCase
      * Replace Lunar models with test models for testing
      * functionality with model extending.
      */
-    protected function replaceModelsForTesting(): void
+    protected function replaceModelsForTesting($app): void
     {
         if (! env('LUNAR_TESTING_REPLACE_MODELS', false)) {
+            return;
+        }
+
+        // Model extending is a core concern exercised with core stubs; suites that
+        // don't boot LunarServiceProvider (e.g. upgrade) leave the contract unbound.
+        if (! $app->bound(\Lunar\Core\Contracts\ModelManifest::class)) {
             return;
         }
 
