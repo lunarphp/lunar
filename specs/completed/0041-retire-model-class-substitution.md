@@ -1,6 +1,6 @@
 # 0041 — Retire model class substitution
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-29
 - TODO item: Reconsider the model-extending system
