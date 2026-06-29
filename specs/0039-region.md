@@ -1,6 +1,6 @@
 # 0039 — Region
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-29
 - TODO item: Region concept to define channel, currency, language, tax_zone, countries and price display
@@ -121,4 +121,4 @@ A `RegionResource` (list / create / edit) under the bridge package: name, handle
 - [x] Slice 3 — region resolution: `StorefrontContext` gains the `region` slot (trailing optional, with `withRegion`); `ResolveStorefrontContext` cascades channel/currency/language explicit -> region default -> global default and populates the slot; `StorefrontSession` gains `getRegion`/`setRegion`, resolves the default region, and defaults channel/currency from it; `CartSessionManager` stamps `$context->region`.
 - [x] Slice 4 — region-aware price *display* preference, kept distinct from the storage flag (`prices_inc_tax()` stays global, drives the tax arithmetic). `Region::displaysPricesIncludingTax()` (region flag, falling back to the global default) with a `StorefrontContext` delegate; the display tax zone is the region's. The unused `TaxZone.price_display` column is removed in favour of this (model, factory, install, demo-data, Filament form + 32 lang files).
 - [x] Slice 5 — Filament `RegionResource` (admin) + bridge `RegionForm`/`RegionTable`, registered in `LunarPanelManager`, with `region` lang files across all 16 locales in both the admin and filament packages. Reuses the existing channel/currency/language/country/tax-zone selectors; price-display preference is a tri-state select (inherit/inclusive/exclusive) mapping to the nullable `prices_inc_tax`.
-- [ ] Slice 6 — upgrade-package default-region seed + `region_id` backfill for v1.x consumers.
+- [x] Slice 6 — upgrade-package default-region seed + `region_id` backfill for v1.x consumers.
