@@ -125,7 +125,54 @@ Lunar's first-class scopes remain `scopeX()` / `#[Scope]` methods on the models 
 
 ## Open questions
 
-- Static-analysis ergonomics: registered scopes are opaque to PHPStan/IDE (true of any dynamic scope). Document the `@method` annotation a consumer can add to their own model docblock for type-safety. **Deferred to slice 3 (with the rest of v2 docs).**
+- Static-analysis ergonomics: registered scopes are opaque to PHPStan/IDE (true of any dynamic scope). **Deferred to slice 3 (with the rest of v2 docs).** The shape the docs should describe is settled — see below.
+
+### IDE / static-analysis awareness (slice 3 doc material)
+
+A registered scope is resolved at runtime inside a closure, so there is nothing static for an IDE or analyser to read — the same limitation that already applies to `Builder::macro()`, model macros, and `resolveRelationUsing()` relations. The fix is the same `@method` annotation Laravel developers already use for those; the only wrinkle is that the consumer does not own the vendor model class, so the annotation has to live in a file they do own.
+
+A registered scope returns the builder and is callable both statically and on an instance. It belongs on the **model**, not the builder — scopes are keyed per model, so `featured()` exists on `Product`, not on every Lunar query.
+
+Real-world shape. The consumer registers the scopes in a service provider:
+
+```php
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Lunar\Core\Models\Builders\Builder;
+use Lunar\Core\Models\Product;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        Product::addLocalScope('featured', fn (Builder $query) => $query->where('is_featured', true));
+        Product::addLocalScope('priorityOver', fn (Builder $query, int $min) => $query->where('priority', '>', $min));
+    }
+}
+```
+
+and declares the matching signatures once, in an analysis-only stub the app owns (excluded from autoload, never executed):
+
+```php
+// ide/lunar-scopes.php
+namespace Lunar\Core\Models;
+
+use Lunar\Core\Models\Builders\Builder;
+
+/**
+ * @method static Builder featured()
+ * @method static Builder priorityOver(int $min)
+ */
+class Product {}
+```
+
+PhpStorm and PHPStan merge that docblock onto the real `Product`, so `Product::featured()->priorityOver(5)->get()` now completes and type-checks. Two homes for the stub, neither needing a vendor edit:
+
+- **PhpStorm** — `barryvdh/laravel-ide-helper` writes a guarded, never-executed model redeclaration into `_ide_helper_models.php` that PhpStorm merges. Its generator cannot see runtime-registered closures, so the consumer hand-adds the `@method` lines to that file's model block. (Laravel Idea recognises many magic patterns natively, but not a custom registry.)
+- **PHPStan / Psalm** — point `stubFiles` at a stub declaring the same `@method` lines; call sites like `Product::featured()->...` then type-check.
+
+The consumer declares the signature once, next to where they register the scope. No runtime closure can self-describe to a static tool, so this is a familiar cost (shared with macros and dynamic relations), not a new one.
 
 ## References
 
