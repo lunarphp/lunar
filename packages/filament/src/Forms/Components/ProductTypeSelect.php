@@ -24,6 +24,6 @@ class ProductTypeSelect extends Select
      */
     public function lunarModel(): string
     {
-        return ProductType::modelClass();
+        return ProductType::class;
     }
 }

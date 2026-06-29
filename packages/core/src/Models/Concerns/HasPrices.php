@@ -16,7 +16,7 @@ trait HasPrices
     public function prices(): MorphMany
     {
         return $this->morphMany(
-            Price::modelClass(),
+            Price::class,
             'priceable'
         );
     }

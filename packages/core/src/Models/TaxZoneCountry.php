@@ -41,7 +41,7 @@ class TaxZoneCountry extends Base implements Contracts\TaxZoneCountry
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::modelClass());
+        return $this->belongsTo(TaxZone::class);
     }
 
     /**
@@ -49,6 +49,6 @@ class TaxZoneCountry extends Base implements Contracts\TaxZoneCountry
      */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::modelClass());
+        return $this->belongsTo(Country::class);
     }
 }

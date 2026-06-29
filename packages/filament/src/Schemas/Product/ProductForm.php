@@ -71,14 +71,14 @@ class ProductForm
                 ->status('warning')
                 ->hidden(fn (Model $record) => ! static::isPublished($record)
                     || ! static::hasEnabledCustomerGroup($record)
-                    || (bool) CustomerGroup::modelClass()::getDefault()
+                    || (bool) CustomerGroup::getDefault()
                 ),
             Callout::make()
                 ->heading(__('lunar-filament::product.status.availability.hidden_from_guests'))
                 ->status('warning')
                 ->hidden(fn (Model $record) => ! static::isPublished($record)
                     || ! static::hasEnabledCustomerGroup($record)
-                    || ! CustomerGroup::modelClass()::getDefault()
+                    || ! CustomerGroup::getDefault()
                     || static::isDefaultGroupVisibleToGuests($record)
                 ),
             Callout::make()
@@ -203,7 +203,7 @@ class ProductForm
 
     protected static function isDefaultGroupVisibleToGuests(Model $record): bool
     {
-        $default = CustomerGroup::modelClass()::getDefault();
+        $default = CustomerGroup::getDefault();
 
         return $default && $record->newQuery()
             ->whereKey($record->getKey())

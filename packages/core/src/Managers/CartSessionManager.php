@@ -231,7 +231,7 @@ class CartSessionManager implements CartSession
      */
     public function getCurrency(): CurrencyContract
     {
-        return $this->currency?->exists ? $this->currency : Currency::modelClass()::getDefault();
+        return $this->currency?->exists ? $this->currency : Currency::getDefault();
     }
 
     /**
@@ -239,7 +239,7 @@ class CartSessionManager implements CartSession
      */
     public function getChannel(): ChannelContract
     {
-        return $this->channel?->exists ? $this->channel : Channel::modelClass()::getDefault();
+        return $this->channel?->exists ? $this->channel : Channel::getDefault();
     }
 
     /**

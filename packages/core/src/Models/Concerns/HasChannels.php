@@ -110,7 +110,7 @@ trait HasChannels
 
         $channelIds = collect();
 
-        if (is_a($channel, Channel::modelClass())) {
+        if (is_a($channel, Channel::class)) {
             $channelIds = collect([$channel->id]);
         }
 

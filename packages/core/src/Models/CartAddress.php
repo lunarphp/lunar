@@ -130,11 +130,11 @@ class CartAddress extends Base implements Addressable, Contracts\CartAddress
 
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::modelClass());
+        return $this->belongsTo(Cart::class);
     }
 
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::modelClass());
+        return $this->belongsTo(Country::class);
     }
 }

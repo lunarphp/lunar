@@ -93,12 +93,12 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
 
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::modelClass());
+        return $this->belongsTo(Order::class);
     }
 
     public function fulfilmentLines(): HasMany
     {
-        return $this->hasMany(FulfilmentLine::modelClass());
+        return $this->hasMany(FulfilmentLine::class);
     }
 
     /**
@@ -117,8 +117,8 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
     public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
-            Currency::modelClass(),
-            Order::modelClass(),
+            Currency::class,
+            Order::class,
             'id',
             'code',
             'order_id',

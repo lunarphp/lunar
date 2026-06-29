@@ -41,6 +41,6 @@ class Language extends Base implements Contracts\Language
 
     public function urls(): HasMany
     {
-        return $this->hasMany(Url::modelClass());
+        return $this->hasMany(Url::class);
     }
 }

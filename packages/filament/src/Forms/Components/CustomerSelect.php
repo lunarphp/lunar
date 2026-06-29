@@ -39,7 +39,7 @@ class CustomerSelect extends Select
      */
     public function lunarModel(): string
     {
-        return Customer::modelClass();
+        return Customer::class;
     }
 
     public function optionLabel(Model $record): string

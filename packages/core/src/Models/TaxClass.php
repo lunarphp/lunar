@@ -61,11 +61,11 @@ class TaxClass extends Base implements Contracts\TaxClass
 
     public function taxRateAmounts(): HasMany
     {
-        return $this->hasMany(TaxRateAmount::modelClass());
+        return $this->hasMany(TaxRateAmount::class);
     }
 
     public function productVariants(): HasMany
     {
-        return $this->hasMany(ProductVariant::modelClass());
+        return $this->hasMany(ProductVariant::class);
     }
 }

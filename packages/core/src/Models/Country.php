@@ -45,6 +45,6 @@ class Country extends Base implements Contracts\Country
 
     public function states(): HasMany
     {
-        return $this->hasMany(State::modelClass());
+        return $this->hasMany(State::class);
     }
 }

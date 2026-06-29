@@ -54,7 +54,7 @@ class ProductSelect extends Select
      */
     public function lunarModel(): string
     {
-        return Product::modelClass();
+        return Product::class;
     }
 
     public function showSku(bool $condition = true): static

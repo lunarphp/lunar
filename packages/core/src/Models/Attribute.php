@@ -85,12 +85,12 @@ class Attribute extends Base implements Contracts\Attribute
 
     public function group(): BelongsTo
     {
-        return $this->belongsTo(AttributeGroup::modelClass(), 'attribute_group_id');
+        return $this->belongsTo(AttributeGroup::class, 'attribute_group_id');
     }
 
     public function models(): HasMany
     {
-        return $this->hasMany(AttributeModel::modelClass());
+        return $this->hasMany(AttributeModel::class);
     }
 
     /**

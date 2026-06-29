@@ -35,7 +35,7 @@ class ShippingExclusion extends Base implements Contracts\ShippingExclusion
      */
     public function list(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::modelClass());
+        return $this->belongsTo(ShippingZone::class);
     }
 
     /**

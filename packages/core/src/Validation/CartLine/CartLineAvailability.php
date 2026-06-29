@@ -65,7 +65,7 @@ class CartLineAvailability extends BaseValidator
      */
     private function isProductPurchasable(int $productId, ChannelContract $channel, Collection $groups): bool
     {
-        $productClass = Product::modelClass();
+        $productClass = Product::class;
 
         return $productClass::query()
             ->where('id', $productId)
@@ -80,7 +80,7 @@ class CartLineAvailability extends BaseValidator
      */
     private function purchasableForGroups(Collection $groups): \Closure
     {
-        $pivotTable = (new (Product::modelClass()))->customerGroups()->getTable();
+        $pivotTable = (new (Product::class))->customerGroups()->getTable();
         $now = now();
 
         return function (Builder $relation) use ($groups, $pivotTable, $now) {
@@ -101,7 +101,7 @@ class CartLineAvailability extends BaseValidator
 
     private function resolveChannel(?CartContract $cart): ?ChannelContract
     {
-        $channelClass = Channel::modelClass();
+        $channelClass = Channel::class;
 
         if ($cart?->channel_id) {
             return $channelClass::find($cart->channel_id);
@@ -123,7 +123,7 @@ class CartLineAvailability extends BaseValidator
             }
         }
 
-        $default = CustomerGroup::modelClass()::getDefault();
+        $default = CustomerGroup::getDefault();
 
         return $default ? new Collection([$default]) : new Collection;
     }

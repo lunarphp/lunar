@@ -97,12 +97,12 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::modelClass());
+        return $this->belongsTo(Product::class);
     }
 
     public function taxClass(): BelongsTo
     {
-        return $this->belongsTo(TaxClass::modelClass());
+        return $this->belongsTo(TaxClass::class);
     }
 
     public function values(): BelongsToMany
@@ -110,7 +110,7 @@ class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbn
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            ProductOptionValue::modelClass(),
+            ProductOptionValue::class,
             "{$prefix}product_option_value_product_variant",
             'variant_id',
             'value_id'

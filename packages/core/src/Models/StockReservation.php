@@ -62,7 +62,7 @@ class StockReservation extends Base implements Contracts\StockReservation
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::modelClass(), 'product_variant_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
     public function reference(): MorphTo

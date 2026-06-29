@@ -55,7 +55,7 @@ class TaxRate extends Base implements Contracts\TaxRate
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::modelClass());
+        return $this->belongsTo(TaxZone::class);
     }
 
     /**
@@ -63,6 +63,6 @@ class TaxRate extends Base implements Contracts\TaxRate
      */
     public function taxRateAmounts(): HasMany
     {
-        return $this->hasMany(TaxRateAmount::modelClass());
+        return $this->hasMany(TaxRateAmount::class);
     }
 }

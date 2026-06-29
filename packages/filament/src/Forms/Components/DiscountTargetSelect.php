@@ -67,13 +67,13 @@ class DiscountTargetSelect extends MorphToSelect
             ProductVariant::class => $this->productVariantType(),
             Collection::class => $this->collectionType(),
             Brand::class => $this->brandType(),
-            default => Type::make($target::modelClass())->titleAttribute('name'),
+            default => Type::make($target)->titleAttribute('name'),
         };
     }
 
     protected function productType(): Type
     {
-        $modelClass = Product::modelClass();
+        $modelClass = Product::class;
 
         return Type::make($modelClass)
             ->titleAttribute('name')
@@ -87,8 +87,8 @@ class DiscountTargetSelect extends MorphToSelect
 
     protected function productVariantType(): Type
     {
-        $variantClass = ProductVariant::modelClass();
-        $productClass = Product::modelClass();
+        $variantClass = ProductVariant::class;
+        $productClass = Product::class;
 
         return Type::make($variantClass)
             ->titleAttribute('sku')
@@ -121,7 +121,7 @@ class DiscountTargetSelect extends MorphToSelect
 
     protected function collectionType(): Type
     {
-        $modelClass = Collection::modelClass();
+        $modelClass = Collection::class;
 
         return Type::make($modelClass)
             ->titleAttribute('name')
@@ -142,7 +142,7 @@ class DiscountTargetSelect extends MorphToSelect
 
     protected function brandType(): Type
     {
-        $modelClass = Brand::modelClass();
+        $modelClass = Brand::class;
 
         return Type::make($modelClass)
             ->titleAttribute('name')

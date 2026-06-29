@@ -24,6 +24,6 @@ class CurrencySelect extends Select
      */
     public function lunarModel(): string
     {
-        return Currency::modelClass();
+        return Currency::class;
     }
 }

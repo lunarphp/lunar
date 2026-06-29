@@ -34,13 +34,13 @@ class ShippingExclusionRelationManager extends RelationManager
             ->components([
                 Forms\Components\MorphToSelect::make('purchasable')
                     ->types([
-                        Forms\Components\MorphToSelect\Type::make(Product::modelClass())
+                        Forms\Components\MorphToSelect\Type::make(Product::class)
                             ->titleAttribute('name')
                             ->getOptionLabelUsing(
-                                fn (string $value): ?string => Product::modelClass()::find($value)?->translate('name')
+                                fn (string $value): ?string => Product::find($value)?->translate('name')
                             )
                             ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
-                                return get_search_builder(Product::modelClass(), $search)
+                                return get_search_builder(Product::class, $search)
                                     ->get()
                                     ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translate('name')])
                                     ->all();

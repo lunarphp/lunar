@@ -66,7 +66,7 @@ class Currency extends Base implements Contracts\Currency
      */
     public function prices(): HasMany
     {
-        return $this->hasMany(Price::modelClass());
+        return $this->hasMany(Price::class);
     }
 
     public function getFactorAttribute(): string

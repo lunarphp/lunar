@@ -117,7 +117,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::modelClass());
+        return $this->belongsTo(Order::class);
     }
 
     /**
@@ -125,7 +125,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      */
     public function location(): BelongsTo
     {
-        return $this->belongsTo(Location::modelClass());
+        return $this->belongsTo(Location::class);
     }
 
     /**
@@ -133,7 +133,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      */
     public function lines(): HasMany
     {
-        return $this->hasMany(FulfilmentLine::modelClass());
+        return $this->hasMany(FulfilmentLine::class);
     }
 
     /**
@@ -141,7 +141,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      */
     public function trackings(): HasMany
     {
-        return $this->hasMany(FulfilmentTracking::modelClass());
+        return $this->hasMany(FulfilmentTracking::class);
     }
 
     /**

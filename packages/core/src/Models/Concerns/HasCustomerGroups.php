@@ -128,7 +128,7 @@ trait HasCustomerGroups
 
         $groupIds = collect();
 
-        if (is_a($customerGroup, CustomerGroup::modelClass())) {
+        if (is_a($customerGroup, CustomerGroup::class)) {
             $groupIds = collect([$customerGroup->id]);
         }
 

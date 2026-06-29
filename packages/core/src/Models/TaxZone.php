@@ -82,7 +82,7 @@ class TaxZone extends Base implements Contracts\TaxZone
      */
     public function countries(): HasMany
     {
-        return $this->hasMany(TaxZoneCountry::modelClass());
+        return $this->hasMany(TaxZoneCountry::class);
     }
 
     /**
@@ -90,7 +90,7 @@ class TaxZone extends Base implements Contracts\TaxZone
      */
     public function states(): HasMany
     {
-        return $this->hasMany(TaxZoneState::modelClass());
+        return $this->hasMany(TaxZoneState::class);
     }
 
     /**
@@ -98,7 +98,7 @@ class TaxZone extends Base implements Contracts\TaxZone
      */
     public function postcodes(): HasMany
     {
-        return $this->hasMany(TaxZonePostcode::modelClass());
+        return $this->hasMany(TaxZonePostcode::class);
     }
 
     /**
@@ -106,7 +106,7 @@ class TaxZone extends Base implements Contracts\TaxZone
      */
     public function customerGroups(): HasMany
     {
-        return $this->hasMany(TaxZoneCustomerGroup::modelClass());
+        return $this->hasMany(TaxZoneCustomerGroup::class);
     }
 
     /**
@@ -114,7 +114,7 @@ class TaxZone extends Base implements Contracts\TaxZone
      */
     public function taxRates(): HasMany
     {
-        return $this->hasMany(TaxRate::modelClass());
+        return $this->hasMany(TaxRate::class);
     }
 
     /**
@@ -122,6 +122,6 @@ class TaxZone extends Base implements Contracts\TaxZone
      */
     public function taxAmounts(): HasManyThrough
     {
-        return $this->hasManyThrough(TaxRateAmount::modelClass(), TaxRate::modelClass());
+        return $this->hasManyThrough(TaxRateAmount::class, TaxRate::class);
     }
 }

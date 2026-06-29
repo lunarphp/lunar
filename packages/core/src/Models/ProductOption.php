@@ -76,7 +76,7 @@ class ProductOption extends Base implements Contracts\ProductOption, SpatieHasMe
 
     public function values(): HasMany
     {
-        return $this->hasMany(ProductOptionValue::modelClass())->orderBy('position');
+        return $this->hasMany(ProductOptionValue::class)->orderBy('position');
     }
 
     public function products(): BelongsToMany
@@ -84,7 +84,7 @@ class ProductOption extends Base implements Contracts\ProductOption, SpatieHasMe
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::modelClass(),
+            Product::class,
             "{$prefix}product_product_option"
         )->withPivot(['position'])->orderByPivot('position');
     }

@@ -60,7 +60,7 @@ class FulfilmentTracking extends Base implements Contracts\FulfilmentTracking
      */
     public function fulfilment(): BelongsTo
     {
-        return $this->belongsTo(Fulfilment::modelClass());
+        return $this->belongsTo(Fulfilment::class);
     }
 
     /**

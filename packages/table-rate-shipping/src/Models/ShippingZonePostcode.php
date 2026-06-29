@@ -34,7 +34,7 @@ class ShippingZonePostcode extends Base implements Contracts\ShippingZonePostcod
      */
     public function shippingZone(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::modelClass());
+        return $this->belongsTo(ShippingZone::class);
     }
 
     /**

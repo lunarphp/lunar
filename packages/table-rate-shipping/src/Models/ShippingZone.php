@@ -53,7 +53,7 @@ class ShippingZone extends Base implements Contracts\ShippingZone
      */
     public function shippingMethods(): HasMany
     {
-        return $this->hasMany(ShippingMethod::modelClass());
+        return $this->hasMany(ShippingMethod::class);
     }
 
     /**
@@ -62,7 +62,7 @@ class ShippingZone extends Base implements Contracts\ShippingZone
     public function countries(): BelongsToMany
     {
         return $this->belongsToMany(
-            Country::modelClass(),
+            Country::class,
             config('lunar.database.table_prefix').'country_shipping_zone'
         )->withTimestamps();
     }
@@ -73,7 +73,7 @@ class ShippingZone extends Base implements Contracts\ShippingZone
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(
-            Order::modelClass(),
+            Order::class,
             config('lunar.database.table_prefix').'order_shipping_zone'
         )->withTimestamps();
     }
@@ -84,7 +84,7 @@ class ShippingZone extends Base implements Contracts\ShippingZone
     public function states(): BelongsToMany
     {
         return $this->belongsToMany(
-            State::modelClass(),
+            State::class,
             config('lunar.database.table_prefix').'state_shipping_zone'
         )->withTimestamps();
     }
@@ -94,18 +94,18 @@ class ShippingZone extends Base implements Contracts\ShippingZone
      */
     public function postcodes(): HasMany
     {
-        return $this->hasMany(ShippingZonePostcode::modelClass());
+        return $this->hasMany(ShippingZonePostcode::class);
     }
 
     public function rates(): HasMany
     {
-        return $this->hasMany(ShippingRate::modelClass());
+        return $this->hasMany(ShippingRate::class);
     }
 
     public function shippingExclusions(): BelongsToMany
     {
         return $this->belongsToMany(
-            ShippingExclusionList::modelClass(),
+            ShippingExclusionList::class,
             config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
             'shipping_zone_id',
             'exclusion_id',

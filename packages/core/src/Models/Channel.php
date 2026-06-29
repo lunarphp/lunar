@@ -73,7 +73,7 @@ class Channel extends Base implements Contracts\Channel
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphedByMany(
-            Discount::modelClass(),
+            Discount::class,
             'channelable',
             "{$prefix}channelables"
         );
@@ -87,7 +87,7 @@ class Channel extends Base implements Contracts\Channel
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphedByMany(
-            Product::modelClass(),
+            Product::class,
             'channelable',
             "{$prefix}channelables"
         );
@@ -101,7 +101,7 @@ class Channel extends Base implements Contracts\Channel
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphedByMany(
-            Collection::modelClass(),
+            Collection::class,
             'channelable',
             "{$prefix}channelables"
         );

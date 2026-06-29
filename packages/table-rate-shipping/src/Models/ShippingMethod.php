@@ -55,7 +55,7 @@ class ShippingMethod extends Base implements Contracts\ShippingMethod
 
     public function shippingRates(): HasMany
     {
-        return $this->hasMany(ShippingRate::modelClass());
+        return $this->hasMany(ShippingRate::class);
     }
 
     /**
@@ -127,7 +127,7 @@ class ShippingMethod extends Base implements Contracts\ShippingMethod
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::modelClass(),
+            CustomerGroup::class,
             "{$prefix}customer_group_shipping_method"
         )->withPivot([
             'visible',

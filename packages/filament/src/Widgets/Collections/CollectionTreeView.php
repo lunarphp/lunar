@@ -196,10 +196,10 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
                     ->label(
                         __('lunar-filament::components.collection-tree-view.actions.move.form.target_id.label')
                     )
-                    ->model(Collection::modelClass())
+                    ->model(Collection::class)
                     ->searchable()
                     ->getSearchResultsUsing(static function (Select $component, string $search): array {
-                        return get_search_builder(Collection::modelClass(), $search)
+                        return get_search_builder(Collection::class, $search)
                             ->with('ancestors')
                             ->get()
                             ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translate('name'))->join(' > ')])

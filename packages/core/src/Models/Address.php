@@ -71,7 +71,7 @@ class Address extends Base implements Addressable, Contracts\Address
      */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::modelClass());
+        return $this->belongsTo(Country::class);
     }
 
     /**

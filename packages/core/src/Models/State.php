@@ -39,6 +39,6 @@ class State extends Base implements Contracts\State
 
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::modelClass());
+        return $this->belongsTo(Country::class);
     }
 }

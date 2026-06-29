@@ -24,6 +24,6 @@ class TaxClassSelect extends Select
      */
     public function lunarModel(): string
     {
-        return TaxClass::modelClass();
+        return TaxClass::class;
     }
 }

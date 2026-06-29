@@ -31,7 +31,7 @@ class TaxRateAmountRelationManager extends RelationManager
             Select::make('tax_class_id')
                 ->required()
                 ->unique(
-                    TaxRateAmount::modelClass(),
+                    TaxRateAmount::class,
                     'tax_class_id',
                     ignoreRecord: true,
                     modifyRuleUsing: fn (Unique $rule) => $rule->when(

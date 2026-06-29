@@ -65,6 +65,6 @@ class CountrySelect extends Select
      */
     public function lunarModel(): string
     {
-        return Country::modelClass();
+        return Country::class;
     }
 }

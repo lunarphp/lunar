@@ -32,11 +32,11 @@ class DiscountCollection extends Base implements Contracts\DiscountCollection
 
     public function discount(): BelongsTo
     {
-        return $this->belongsTo(Discount::modelClass());
+        return $this->belongsTo(Discount::class);
     }
 
     public function collection(): BelongsTo
     {
-        return $this->belongsTo(Collection::modelClass());
+        return $this->belongsTo(Collection::class);
     }
 }

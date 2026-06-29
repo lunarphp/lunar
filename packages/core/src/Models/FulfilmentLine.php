@@ -48,7 +48,7 @@ class FulfilmentLine extends Base implements Contracts\FulfilmentLine
      */
     public function fulfilment(): BelongsTo
     {
-        return $this->belongsTo(Fulfilment::modelClass());
+        return $this->belongsTo(Fulfilment::class);
     }
 
     /**
@@ -56,6 +56,6 @@ class FulfilmentLine extends Base implements Contracts\FulfilmentLine
      */
     public function orderLine(): BelongsTo
     {
-        return $this->belongsTo(OrderLine::modelClass());
+        return $this->belongsTo(OrderLine::class);
     }
 }

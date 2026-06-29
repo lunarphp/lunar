@@ -58,12 +58,12 @@ class StockMovement extends Base implements Contracts\StockMovement
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::modelClass(), 'product_variant_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
     public function location(): BelongsTo
     {
-        return $this->belongsTo(Location::modelClass());
+        return $this->belongsTo(Location::class);
     }
 
     public function source(): MorphTo

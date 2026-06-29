@@ -34,6 +34,6 @@ class CollectionGroup extends Base implements Contracts\CollectionGroup
 
     public function collections(): HasMany
     {
-        return $this->hasMany(Collection::modelClass());
+        return $this->hasMany(Collection::class);
     }
 }

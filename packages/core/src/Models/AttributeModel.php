@@ -35,6 +35,6 @@ class AttributeModel extends Base implements Contracts\AttributeModel
 
     public function attribute(): BelongsTo
     {
-        return $this->belongsTo(Attribute::modelClass());
+        return $this->belongsTo(Attribute::class);
     }
 }

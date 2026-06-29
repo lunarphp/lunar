@@ -48,7 +48,7 @@ class Discountable extends Base implements Contracts\Discountable
      */
     public function discount(): BelongsTo
     {
-        return $this->belongsTo(Discount::modelClass());
+        return $this->belongsTo(Discount::class);
     }
 
     /**

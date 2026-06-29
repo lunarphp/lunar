@@ -122,13 +122,13 @@ class CartLine extends Base implements Contracts\CartLine
 
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::modelClass());
+        return $this->belongsTo(Cart::class);
     }
 
     public function taxClass(): HasOneThrough
     {
         return $this->hasOneThrough(
-            TaxClass::modelClass(),
+            TaxClass::class,
             $this->purchasable_type,
             'tax_class_id',
             'id'
@@ -140,7 +140,7 @@ class CartLine extends Base implements Contracts\CartLine
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::modelClass(),
+            Discount::class,
             "{$prefix}cart_line_discount"
         );
     }

@@ -65,6 +65,6 @@ class Location extends Base implements Contracts\Location
      */
     public function fulfilments(): HasMany
     {
-        return $this->hasMany(Fulfilment::modelClass());
+        return $this->hasMany(Fulfilment::class);
     }
 }

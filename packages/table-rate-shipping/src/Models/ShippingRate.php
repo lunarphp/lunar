@@ -52,12 +52,12 @@ class ShippingRate extends Base implements Contracts\ShippingRate, Purchasable
 
     public function shippingZone(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::modelClass());
+        return $this->belongsTo(ShippingZone::class);
     }
 
     public function shippingMethod(): BelongsTo
     {
-        return $this->belongsTo(ShippingMethod::modelClass());
+        return $this->belongsTo(ShippingMethod::class);
     }
 
     public function getPrices(): Collection

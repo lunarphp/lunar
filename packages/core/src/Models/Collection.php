@@ -89,7 +89,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
      */
     public function group(): BelongsTo
     {
-        return $this->belongsTo(CollectionGroup::modelClass(), 'collection_group_id');
+        return $this->belongsTo(CollectionGroup::class, 'collection_group_id');
     }
 
     public function scopeInGroup(Builder $builder, int $id): Builder
@@ -110,7 +110,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::modelClass(),
+            Product::class,
             "{$prefix}collection_product"
         )->withPivot([
             'position',
@@ -132,7 +132,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::modelClass(),
+            CustomerGroup::class,
             "{$prefix}collection_customer_group"
         )->withPivot([
             'visible',
@@ -147,7 +147,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::modelClass(),
+            Discount::class,
             "{$prefix}collection_discount"
         )->withPivot(['type'])->withTimestamps();
     }
@@ -157,7 +157,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Brand::modelClass(),
+            Brand::class,
             "{$prefix}brand_collection"
         )->withTimestamps();
     }

@@ -73,7 +73,7 @@ class Transaction extends Base implements Contracts\Transaction, HasCurrency
      */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::modelClass());
+        return $this->belongsTo(Order::class);
     }
 
     /**
@@ -82,8 +82,8 @@ class Transaction extends Base implements Contracts\Transaction, HasCurrency
     public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
-            Currency::modelClass(),
-            Order::modelClass(),
+            Currency::class,
+            Order::class,
             'id',
             'code',
             'order_id',

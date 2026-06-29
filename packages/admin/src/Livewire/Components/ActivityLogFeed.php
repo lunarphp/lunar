@@ -128,7 +128,7 @@ class ActivityLogFeed extends Component implements HasActions, HasForms
     #[Computed]
     public function renderers()
     {
-        return ActivityLog::getItems($this->subject::modelClass());
+        return ActivityLog::getItems($this->subject::class);
     }
 
     #[Computed]

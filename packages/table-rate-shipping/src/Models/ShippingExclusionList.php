@@ -42,13 +42,13 @@ class ShippingExclusionList extends Base implements Contracts\ShippingExclusionL
 
     public function exclusions(): HasMany
     {
-        return $this->hasMany(ShippingExclusion::modelClass());
+        return $this->hasMany(ShippingExclusion::class);
     }
 
     public function shippingZones(): BelongsToMany
     {
         return $this->belongsToMany(
-            ShippingZone::modelClass(),
+            ShippingZone::class,
             config('lunar.database.table_prefix').'exclusion_list_shipping_zone',
             'exclusion_id',
             'shipping_zone_id',

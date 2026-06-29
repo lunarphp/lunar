@@ -63,7 +63,7 @@ class Url extends Base implements Contracts\Url
      */
     public function language(): BelongsTo
     {
-        return $this->belongsTo(Language::modelClass());
+        return $this->belongsTo(Language::class);
     }
 
     /**
