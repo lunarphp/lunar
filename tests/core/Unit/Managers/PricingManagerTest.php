@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\DataObjects\PricingResponse;
 use Lunar\Core\Managers\PricingManager;
+use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
@@ -397,4 +399,91 @@ test('can pipeline purchasable price', function () {
 
     $this->assertNotEquals($price->price, $pricing->matched->price);
     expect($pricing->matched->price)->toEqual(200);
+});
+
+test('using a storefront context applies its currency and customer groups', function () {
+    Channel::factory()->create(['default' => true]);
+    $currency = Currency::factory()->create(['default' => true, 'exchange_rate' => 1]);
+    $group = CustomerGroup::factory()->create(['default' => true]);
+
+    $product = Product::factory()->create(['status' => 'published']);
+    $variant = ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    Price::factory()->create([
+        'price' => 100,
+        'priceable_type' => $variant->getMorphClass(),
+        'priceable_id' => $variant->id,
+        'currency_id' => $currency->id,
+        'min_quantity' => 1,
+    ]);
+
+    $groupPrice = Price::factory()->create([
+        'price' => 80,
+        'priceable_type' => $variant->getMorphClass(),
+        'priceable_id' => $variant->id,
+        'currency_id' => $currency->id,
+        'min_quantity' => 1,
+        'customer_group_id' => $group->id,
+    ]);
+
+    $context = app(ResolvesStorefrontContext::class)->execute(
+        currency: $currency,
+        customerGroups: collect([$group]),
+    );
+
+    $pricing = app(PricingManager::class)->using($context)->for($variant)->get();
+
+    expect($pricing->matched->id)->toEqual($groupPrice->id);
+});
+
+test('a context keeps its customer groups even when an authenticated user has different ones', function () {
+    Channel::factory()->create(['default' => true]);
+    $currency = Currency::factory()->create(['default' => true, 'exchange_rate' => 1]);
+    $contextGroup = CustomerGroup::factory()->create(['default' => true]);
+    $userGroup = CustomerGroup::factory()->create(['default' => false]);
+
+    $product = Product::factory()->create(['status' => 'published']);
+    $variant = ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    Price::factory()->create([
+        'price' => 100,
+        'priceable_type' => $variant->getMorphClass(),
+        'priceable_id' => $variant->id,
+        'currency_id' => $currency->id,
+        'min_quantity' => 1,
+    ]);
+
+    $contextGroupPrice = Price::factory()->create([
+        'price' => 80,
+        'priceable_type' => $variant->getMorphClass(),
+        'priceable_id' => $variant->id,
+        'currency_id' => $currency->id,
+        'min_quantity' => 1,
+        'customer_group_id' => $contextGroup->id,
+    ]);
+
+    Price::factory()->create([
+        'price' => 60,
+        'priceable_type' => $variant->getMorphClass(),
+        'priceable_id' => $variant->id,
+        'currency_id' => $currency->id,
+        'min_quantity' => 1,
+        'customer_group_id' => $userGroup->id,
+    ]);
+
+    $user = User::factory()->create();
+    $customer = Customer::factory()->create();
+    $customer->customerGroups()->attach($userGroup);
+    $user->customers()->sync($customer->id);
+    $this->actingAs($user);
+
+    $context = app(ResolvesStorefrontContext::class)->execute(
+        currency: $currency,
+        customerGroups: collect([$contextGroup]),
+    );
+
+    $pricing = app(PricingManager::class)->using($context)->for($variant)->get();
+
+    // the context's group price wins; the authenticated user's group is not applied
+    expect($pricing->matched->id)->toEqual($contextGroupPrice->id);
 });

@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Lunar\Core\DataObjects\PriceValue as DataTypesPrice;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\Exceptions\Carts\CartException;
@@ -1312,4 +1313,32 @@ test('cart session manager prefers the latest unmerged cart for an authenticated
         ->and($foundCart->id)->not->toBe($older->id)
         ->and($foundCart->id)->not->toBe($mergedCart->id)
         ->and($foundCart->merged_id)->toBeNull();
+});
+
+test('a cart produces a storefront context from its stored selections', function () {
+    // Defaults must exist first; the cart then points at distinct non-default
+    // records, proving context() reads the cart's own selections.
+    Channel::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true]);
+    CustomerGroup::factory()->create(['default' => true]);
+
+    $channel = Channel::factory()->create(['default' => false]);
+    $currency = Currency::factory()->create(['default' => false]);
+    $trade = CustomerGroup::factory()->create(['default' => false]);
+    $customer = Customer::factory()->create();
+    $customer->customerGroups()->attach($trade);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+        'customer_id' => $customer->id,
+    ]);
+
+    $context = $cart->context();
+
+    expect($context)->toBeInstanceOf(StorefrontContext::class)
+        ->and($context->channel->id)->toBe($channel->id)
+        ->and($context->currency->id)->toBe($currency->id)
+        ->and($context->customer->id)->toBe($customer->id)
+        ->and($context->customerGroups->pluck('id')->all())->toBe([$trade->id]);
 });

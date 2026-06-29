@@ -90,6 +90,9 @@ class ActionServiceProvider extends ServiceProvider
 
         // Taxes
         Contracts\Taxes\GetsTaxZone::class => Actions\Taxes\GetTaxZone::class,
+
+        // Storefront
+        Contracts\Storefront\ResolvesStorefrontContext::class => Actions\Storefront\ResolveStorefrontContext::class,
     ];
 
     public function register(): void

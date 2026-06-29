@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\FingerprintMismatchException;
 use Lunar\Core\Models\Customer;
@@ -26,6 +27,16 @@ interface Cart
      * Return the currency relationship.
      */
     public function currency(): BelongsTo;
+
+    /**
+     * Return the channel relationship.
+     */
+    public function channel(): BelongsTo;
+
+    /**
+     * Produce a storefront context from the cart's stored selections.
+     */
+    public function context(): StorefrontContext;
 
     /**
      * Return the user relationship.

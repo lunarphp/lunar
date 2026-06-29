@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Facade;
 use Lunar\Core\Managers\StorefrontSessionManager;
 
 /**
+ * @method static \Lunar\Core\DataObjects\StorefrontContext context()
  * @method static void forget()
  * @method static void initCustomerGroups()
  * @method static void initChannel()

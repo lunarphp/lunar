@@ -123,9 +123,9 @@ The cart calculation pipelines (`CalculateLines`, `GetUnitPrice`, `CalculateTax`
 
 ## Implementation plan
 
-- [ ] Slice 1 — `StorefrontContext` DTO (channel, currency, language, nullable region, customer, customerGroups) + `with*` helpers, in `DataObjects/`.
-- [ ] Slice 2 — `ResolveStorefrontContext` action + contract owning the default cascade; `CartSessionManager` sources new-cart channel/currency from it.
-- [ ] Slice 3 — `StorefrontSession::context()` on the contract + manager; session produces a context from its selections.
-- [ ] Slice 4 — `Cart::context()` producer from stored selections.
-- [ ] Slice 5 — `Pricing::using($context)` convenience; route catalogue/browse price display through it.
-- [ ] Slice 6 — tests proving a context built without a session prices a purchasable and renders the right currency/locale.
+- [x] Slice 1 — `StorefrontContext` DTO (channel, currency, language, customer, customerGroups) + `with*` helpers, in `DataObjects/`. Language is nullable (the session never tracked it; falls back to the app locale). The region slot is deferred to [[0039-region]] — it references the as-yet-unbuilt `Region` model and lands there as a trailing optional argument, which does not reshape existing call sites.
+- [x] Slice 2 — `ResolveStorefrontContext` action + contract owning the default cascade; `CartSessionManager` sources new-cart channel/currency from it.
+- [x] Slice 3 — `StorefrontSession::context()` on the contract + manager; session produces a context from its selections (delegating to the resolver, honouring an explicitly set customer group via a `customerGroups` override on the resolver).
+- [x] Slice 4 — `Cart::context()` producer from stored selections (adds the missing `channel()` relation).
+- [x] Slice 5 — `Pricing::using($context)` convenience; `HasPrices::pricing()` takes an optional context for browse-time display. `GetUnitPrice` is left as-is (its user/customer group semantics differ from the context derivation).
+- [x] Slice 6 — test proving a context built without a session prices a purchasable through the browse seam.
