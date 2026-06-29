@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Limitar a CEPs',
             ],
         ],
-        'price_display' => [
-            'label' => 'Exibição de preço',
-            'options' => [
-                'include_tax' => 'Incluir imposto',
-                'exclude_tax' => 'Excluir imposto',
-            ],
-        ],
         'active' => [
             'label' => 'Ativa',
         ],

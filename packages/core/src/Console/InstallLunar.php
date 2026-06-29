@@ -150,7 +150,6 @@ class InstallLunar extends Command
                 $taxZone = TaxZone::create([
                     'name' => 'Default Tax Zone',
                     'zone_type' => 'country',
-                    'price_display' => 'tax_exclusive',
                     'default' => true,
                     'active' => true,
                 ]);

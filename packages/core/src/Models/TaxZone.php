@@ -16,7 +16,6 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property int $id
  * @property string $name
  * @property string $zone_type
- * @property string $price_display
  * @property bool $active
  * @property bool $default
  * @property ?Carbon $created_at

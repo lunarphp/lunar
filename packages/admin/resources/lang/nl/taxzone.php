@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Beperk tot Postcodes',
             ],
         ],
-        'price_display' => [
-            'label' => 'Prijsweergave',
-            'options' => [
-                'include_tax' => 'Inclusief Belasting',
-                'exclude_tax' => 'Exclusief Belasting',
-            ],
-        ],
         'active' => [
             'label' => 'Actief',
         ],

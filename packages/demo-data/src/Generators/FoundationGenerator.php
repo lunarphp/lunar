@@ -127,7 +127,6 @@ class FoundationGenerator implements Generator
             ['name' => 'Default Tax Zone'],
             [
                 'zone_type' => 'country',
-                'price_display' => 'tax_inclusive',
                 'default' => true,
                 'active' => true,
             ],

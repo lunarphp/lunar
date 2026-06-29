@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Limitează la coduri poștale',
             ],
         ],
-        'price_display' => [
-            'label' => 'Afișare preț',
-            'options' => [
-                'include_tax' => 'Include taxe',
-                'exclude_tax' => 'Exclude taxe',
-            ],
-        ],
         'active' => [
             'label' => 'Activă',
         ],

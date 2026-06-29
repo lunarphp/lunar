@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Limiter aux codes postaux',
             ],
         ],
-        'price_display' => [
-            'label' => 'Affichage du prix',
-            'options' => [
-                'include_tax' => 'Inclure la taxe',
-                'exclude_tax' => 'Exclure la taxe',
-            ],
-        ],
         'active' => [
             'label' => 'Active',
         ],

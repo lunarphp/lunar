@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Ograniči na poštanske brojeve',
             ],
         ],
-        'price_display' => [
-            'label' => 'Prikaz cijene',
-            'options' => [
-                'include_tax' => 'Uključi porez',
-                'exclude_tax' => 'Isključi porez',
-            ],
-        ],
         'active' => [
             'label' => 'Aktivno',
         ],
