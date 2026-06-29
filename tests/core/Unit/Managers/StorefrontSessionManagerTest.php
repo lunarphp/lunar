@@ -4,12 +4,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 use Lunar\Core\Contracts\StorefrontSession;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Core\Managers\StorefrontSessionManager;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Language;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Core\TestCase;
 
@@ -257,4 +259,39 @@ test('can forget all values', function (): void {
     expect(Session::has($sessionKey.'_customer_groups'))->toBeFalse();
     expect(Session::has($sessionKey.'_currency'))->toBeFalse();
     expect(Session::has($sessionKey.'_customer'))->toBeFalse();
+});
+
+test('context produces the resolved session selections', function (): void {
+    /** @var StorefrontSessionManager */
+    $manager = app(StorefrontSession::class);
+
+    $context = $manager->context();
+
+    expect($context)->toBeInstanceOf(StorefrontContext::class);
+    expect($context->channel->id)->toBe(Channel::getDefault()->id);
+    expect($context->currency->id)->toBe(Currency::getDefault()->id);
+    expect($context->customer)->toBeNull();
+    expect($context->customerGroups->pluck('id')->all())->toBe([CustomerGroup::getDefault()->id]);
+    // no default language is seeded in beforeEach, so it falls back to null
+    expect($context->language)->toBeNull();
+});
+
+test('context honours an explicitly set customer group rather than re-deriving', function (): void {
+    /** @var CustomerGroup */
+    $trade = CustomerGroup::factory()->create(['default' => false]);
+
+    /** @var StorefrontSessionManager */
+    $manager = app(StorefrontSession::class);
+    $manager->setCustomerGroup($trade);
+
+    expect($manager->context()->customerGroups->pluck('id')->all())->toBe([$trade->id]);
+});
+
+test('context carries the default language when one is configured', function (): void {
+    $language = Language::factory()->create(['default' => true]);
+
+    /** @var StorefrontSessionManager */
+    $manager = app(StorefrontSession::class);
+
+    expect($manager->context()->language->id)->toBe($language->id);
 });

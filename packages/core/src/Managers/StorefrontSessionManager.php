@@ -6,7 +6,9 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\StorefrontSession;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Contracts\Channel as ChannelContract;
@@ -30,6 +32,7 @@ class StorefrontSessionManager implements StorefrontSession
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
+        protected ResolvesStorefrontContext $resolveStorefrontContext,
     ) {
         $this->customerGroups = new Collection;
 
@@ -37,6 +40,16 @@ class StorefrontSessionManager implements StorefrontSession
         $this->initCustomerGroups();
         $this->initCurrency();
         $this->initCustomer();
+    }
+
+    public function context(): StorefrontContext
+    {
+        return $this->resolveStorefrontContext->execute(
+            channel: $this->getChannel(),
+            currency: $this->getCurrency(),
+            customer: $this->getCustomer(),
+            customerGroups: $this->getCustomerGroups(),
+        );
     }
 
     public function getChannel(): ChannelContract

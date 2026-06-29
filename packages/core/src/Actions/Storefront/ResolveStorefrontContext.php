@@ -26,13 +26,16 @@ class ResolveStorefrontContext implements ResolvesStorefrontContext
         ?CurrencyContract $currency = null,
         ?LanguageContract $language = null,
         ?CustomerContract $customer = null,
+        ?Collection $customerGroups = null,
     ): StorefrontContext {
         return new StorefrontContext(
             channel: $channel ?? Channel::getDefault(),
             currency: $currency ?? Currency::getDefault(),
             language: $language ?? Language::getDefault(),
             customer: $customer,
-            customerGroups: $this->resolveCustomerGroups($customer),
+            customerGroups: $customerGroups?->isNotEmpty()
+                ? $customerGroups
+                : $this->resolveCustomerGroups($customer),
         );
     }
 
