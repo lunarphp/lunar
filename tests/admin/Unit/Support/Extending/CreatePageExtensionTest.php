@@ -3,7 +3,7 @@
 use Filament\Actions\Action;
 use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
-use Lunar\Admin\Filament\Resources\ChannelResource;
+use Lunar\Admin\Filament\Resources\ChannelResource\Pages\CreateChannel;
 use Lunar\Admin\Support\Extending\CreatePageExtension;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
@@ -23,12 +23,12 @@ it('can extend header actions', function () {
     };
 
     LunarPanel::extensions([
-        ChannelResource\Pages\CreateChannel::class => $class::class,
+        CreateChannel::class => $class::class,
     ]);
 
     $this->asStaff(admin: true);
 
-    Livewire::test(ChannelResource\Pages\CreateChannel::class)
+    Livewire::test(CreateChannel::class)
         ->assertActionExists('header_action_a');
 });
 
@@ -44,11 +44,11 @@ it('can extend form actions', function () {
     };
 
     LunarPanel::extensions([
-        ChannelResource\Pages\CreateChannel::class => $class::class,
+        CreateChannel::class => $class::class,
     ]);
 
     $this->asStaff(admin: true);
 
-    Livewire::test(ChannelResource\Pages\CreateChannel::class)
+    Livewire::test(CreateChannel::class)
         ->assertActionExists(TestAction::make('form_action_a')->schemaComponent('form-actions', schema: 'content'));
 });

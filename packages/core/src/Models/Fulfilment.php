@@ -28,7 +28,6 @@ use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Facades\HoldReasons;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Observers\FulfilmentObserver;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
 use Spatie\ModelStates\HasStates;
 
@@ -48,7 +47,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Fulfilment extends Base implements Contracts\Fulfilment
+class Fulfilment extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -117,7 +116,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::modelClass());
+        return $this->belongsTo(Order::class);
     }
 
     /**
@@ -125,7 +124,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      */
     public function location(): BelongsTo
     {
-        return $this->belongsTo(Location::modelClass());
+        return $this->belongsTo(Location::class);
     }
 
     /**
@@ -133,7 +132,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      */
     public function lines(): HasMany
     {
-        return $this->hasMany(FulfilmentLine::modelClass());
+        return $this->hasMany(FulfilmentLine::class);
     }
 
     /**
@@ -141,7 +140,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      */
     public function trackings(): HasMany
     {
-        return $this->hasMany(FulfilmentTracking::modelClass());
+        return $this->hasMany(FulfilmentTracking::class);
     }
 
     /**
@@ -193,7 +192,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      * Absorb the given pre-ship fulfilments into this one. Returns this
      * fulfilment (the target), refreshed.
      *
-     * @param  Collection<int, Contracts\Fulfilment>  $sources
+     * @param  Collection<int, Fulfilment>  $sources
      */
     public function merge(Collection $sources): Fulfilment
     {
@@ -206,7 +205,7 @@ class Fulfilment extends Base implements Contracts\Fulfilment
      *
      * @param  array<int|string, int>  $moves  [order_line_id => quantity]
      */
-    public function moveLinesTo(Contracts\Fulfilment $to, array $moves): Fulfilment
+    public function moveLinesTo(Fulfilment $to, array $moves): Fulfilment
     {
         return app(MovesFulfilmentLines::class)->execute($this, $to, $moves);
     }

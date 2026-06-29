@@ -2,7 +2,12 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingMethodResource\Schemas;
 
-use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Group;
@@ -50,7 +55,7 @@ class ShippingMethodForm
 
     public static function getNameComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TextInput::make('name')
             ->label(__('lunarpanel.shipping::shippingmethod.form.name.label'))
             ->required()
             ->maxLength(255)
@@ -59,13 +64,13 @@ class ShippingMethodForm
 
     public static function getDescriptionComponent(): Component
     {
-        return Forms\Components\RichEditor::make('description')
+        return RichEditor::make('description')
             ->label(__('lunarpanel.shipping::shippingmethod.form.description.label'));
     }
 
     public static function getCodeComponent(): Component
     {
-        return Forms\Components\TextInput::make('code')
+        return TextInput::make('code')
             ->label(__('lunarpanel.shipping::shippingmethod.form.code.label'))
             ->required()
             ->unique(ignoreRecord: true);
@@ -84,16 +89,16 @@ class ShippingMethodForm
         ];
 
         $rows = collect($days)->map(fn ($label, $day) => Group::make([
-            Forms\Components\Checkbox::make('enabled')
+            Checkbox::make('enabled')
                 ->label($label)
                 ->live()
                 ->columnSpan(1),
-            Forms\Components\TimePicker::make('from')
+            TimePicker::make('from')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.from.label'))
                 ->seconds(false)
                 ->disabled(fn (Get $get) => ! $get('enabled'))
                 ->columnSpan(1),
-            Forms\Components\TimePicker::make('to')
+            TimePicker::make('to')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
                 ->seconds(false)
                 ->disabled(fn (Get $get) => ! $get('enabled'))
@@ -119,17 +124,17 @@ class ShippingMethodForm
             ->all();
 
         return Group::make([
-            Forms\Components\Select::make('weight_unit')
+            Select::make('weight_unit')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.weight_unit.label'))
                 ->options($weightUnits)
                 ->placeholder(__('lunarpanel.shipping::shippingmethod.form.weight_unit.placeholder')),
-            Forms\Components\TextInput::make('min_weight')
+            TextInput::make('min_weight')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.min_weight.label'))
                 ->numeric()
                 ->minValue(0)
                 ->live()
                 ->required(fn (Get $get) => filled($get('weight_unit'))),
-            Forms\Components\TextInput::make('max_weight')
+            TextInput::make('max_weight')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.max_weight.label'))
                 ->numeric()
                 ->minValue(0)
@@ -140,14 +145,14 @@ class ShippingMethodForm
 
     public static function getStockAvailableComponent(): Component
     {
-        return Forms\Components\Toggle::make('stock_available')
+        return Toggle::make('stock_available')
             ->label(__('lunarpanel.shipping::shippingmethod.form.stock_available.label'));
     }
 
     public static function getChargeByComponent(): Component
     {
         return Group::make([
-            Forms\Components\Select::make('charge_by')
+            Select::make('charge_by')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.charge_by.label'))
                 ->options([
                     'cart_total' => __('lunarpanel.shipping::shippingmethod.form.charge_by.options.cart_total'),
@@ -159,7 +164,7 @@ class ShippingMethodForm
 
     public static function getDriverComponent(): Component
     {
-        return Forms\Components\Select::make('driver')
+        return Select::make('driver')
             ->label(__('lunarpanel.shipping::shippingmethod.form.driver.label'))
             ->options([
                 'ship-by' => __('lunarpanel.shipping::shippingmethod.form.driver.options.ship-by'),

@@ -11,7 +11,7 @@ use Lunar\Admin\Filament\Resources\ChannelResource\Pages\CreateChannel;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages\EditChannel;
 use Lunar\Admin\Filament\Resources\ChannelResource\Pages\ListChannels;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Channel as ChannelContract;
+use Lunar\Core\Models\Channel;
 use Lunar\Filament\Schemas\Channel\ChannelForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Channel\ChannelTable;
@@ -20,7 +20,7 @@ class ChannelResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = ChannelContract::class;
+    protected static ?string $model = Channel::class;
 
     protected static ?int $navigationSort = 1;
 

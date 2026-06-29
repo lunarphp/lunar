@@ -7,7 +7,6 @@ use Lunar\Core\Contracts\Actions\Fulfilment\MergesFulfilments;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 /**
@@ -23,16 +22,16 @@ class MergeFulfilments implements MergesFulfilments
      * Whether a fulfilment may take part in a merge — only outstanding
      * (un-handed-over) fulfilments can be merged.
      */
-    public static function isMergeable(FulfilmentContract $fulfilment): bool
+    public static function isMergeable(Fulfilment $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
         return $fulfilment->state->category() === FulfilmentStateCategory::Outstanding;
     }
 
     /**
-     * @param  Collection<int, FulfilmentContract>  $sources
+     * @param  Collection<int, Fulfilment>  $sources
      */
-    public function execute(FulfilmentContract $target, Collection $sources): Fulfilment
+    public function execute(Fulfilment $target, Collection $sources): Fulfilment
     {
         /** @var Fulfilment $target */
         if ($reason = self::ineligibilityReason($target, $sources)) {
@@ -75,9 +74,9 @@ class MergeFulfilments implements MergesFulfilments
      * merge action in the UI (and by API consumers) without catching an
      * exception.
      *
-     * @param  Collection<int, FulfilmentContract>  $sources
+     * @param  Collection<int, Fulfilment>  $sources
      */
-    public static function canRun(FulfilmentContract $target, Collection $sources): bool
+    public static function canRun(Fulfilment $target, Collection $sources): bool
     {
         /** @var Fulfilment $target */
         return self::ineligibilityReason($target, $sources) === null;
@@ -88,7 +87,7 @@ class MergeFulfilments implements MergesFulfilments
      * is eligible. Single source of truth shared by `execute()` and
      * `canRun()`.
      *
-     * @param  Collection<int, FulfilmentContract>  $sources
+     * @param  Collection<int, Fulfilment>  $sources
      */
     protected static function ineligibilityReason(Fulfilment $target, Collection $sources): ?string
     {

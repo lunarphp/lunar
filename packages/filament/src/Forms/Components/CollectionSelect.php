@@ -54,7 +54,7 @@ class CollectionSelect extends Select
      */
     public function lunarModel(): string
     {
-        return Collection::modelClass();
+        return Collection::class;
     }
 
     public function excludeDescendantsOf(Collection $collection): static

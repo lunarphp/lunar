@@ -52,11 +52,6 @@ use Lunar\Tests\Core\Stubs\User;
 |
 */
 
-function modelsReplaced(): bool
-{
-    return env('LUNAR_TESTING_REPLACE_MODELS', false);
-}
-
 function setAuthUserConfig(): void
 {
     Config::set('auth.providers.users.model', User::class);

@@ -35,7 +35,7 @@ trait HasUrls
     public function urls(): MorphMany
     {
         return $this->morphMany(
-            Url::modelClass(),
+            Url::class,
             'element'
         );
     }
@@ -43,7 +43,7 @@ trait HasUrls
     public function defaultUrl(): MorphOne
     {
         return $this->morphOne(
-            Url::modelClass(),
+            Url::class,
             'element'
         )->whereDefault(true);
     }
@@ -51,7 +51,7 @@ trait HasUrls
     public function localeUrl(?string $locale = null): MorphOne
     {
         return $this->morphOne(
-            Url::modelClass(),
+            Url::class,
             'element'
         )->whereHas('language', function (Builder $query) use ($locale) {
             $query->where('code', $locale ?: app()->getLocale());

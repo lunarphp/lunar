@@ -3,7 +3,6 @@
 namespace Lunar\Core\Observers;
 
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Language as LanguageContract;
 use Lunar\Core\Models\Language;
 
 class LanguageObserver
@@ -13,7 +12,7 @@ class LanguageObserver
      *
      * @return void
      */
-    public function created(LanguageContract $language)
+    public function created(Language $language)
     {
         $this->ensureOnlyOneDefault($language);
     }
@@ -23,7 +22,7 @@ class LanguageObserver
      *
      * @return void
      */
-    public function updated(LanguageContract $language)
+    public function updated(Language $language)
     {
         $this->ensureOnlyOneDefault($language);
     }
@@ -33,7 +32,7 @@ class LanguageObserver
      *
      * @return void
      */
-    public function deleting(LanguageContract $language)
+    public function deleting(Language $language)
     {
         DB::transaction(function () use ($language) {
             $language->urls()->delete();
@@ -45,7 +44,7 @@ class LanguageObserver
      *
      * @return void
      */
-    public function forceDeleted(LanguageContract $language)
+    public function forceDeleted(Language $language)
     {
         //
     }
@@ -53,9 +52,9 @@ class LanguageObserver
     /**
      * Ensures that only one default language exists.
      *
-     * @param  LanguageContract  $savedLanguage  The language that was just saved.
+     * @param  Language  $savedLanguage  The language that was just saved.
      */
-    protected function ensureOnlyOneDefault(LanguageContract $savedLanguage): void
+    protected function ensureOnlyOneDefault(Language $savedLanguage): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedLanguage->default) {

@@ -49,6 +49,6 @@ class BrandSelect extends Select
      */
     public function lunarModel(): string
     {
-        return Brand::modelClass();
+        return Brand::class;
     }
 }

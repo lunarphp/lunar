@@ -2,6 +2,7 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\ProductTypeResource;
+use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\CreateProductType;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\ProductType;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
@@ -23,7 +24,7 @@ it('can create product type', function () {
     ];
 
     Livewire::actingAs($this->makeStaff(admin: true), 'staff')
-        ->test(ProductTypeResource\Pages\CreateProductType::class)
+        ->test(CreateProductType::class)
         ->fillForm($formData)
         ->call('create')
         ->assertHasNoFormErrors();
@@ -42,7 +43,7 @@ it('can associate attributes', function () {
     ];
 
     $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')
-        ->test(ProductTypeResource\Pages\CreateProductType::class)
+        ->test(CreateProductType::class)
         ->fillForm([
             ...$formData,
             'mappedAttributes' => [$attributeA->id, $attributeB->id],

@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\TransitionsFulfilment;
 use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
 
@@ -31,7 +30,7 @@ class TransitionFulfilment implements TransitionsFulfilment
     /**
      * @param  class-string<FulfilmentState>  $state
      */
-    public function execute(FulfilmentContract $fulfilment, string $state, bool $notify = true): Fulfilment
+    public function execute(Fulfilment $fulfilment, string $state, bool $notify = true): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         return DB::transaction(function () use ($fulfilment, $state, $notify) {

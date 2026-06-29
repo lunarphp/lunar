@@ -21,7 +21,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CustomerGroup extends Base implements Contracts\CustomerGroup
+class CustomerGroup extends Base
 {
     use HasAttributeData;
     use HasDefaultRecord;
@@ -53,7 +53,7 @@ class CustomerGroup extends Base implements Contracts\CustomerGroup
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Customer::modelClass(),
+            Customer::class,
             "{$prefix}customer_customer_group"
         )->withTimestamps();
     }
@@ -66,7 +66,7 @@ class CustomerGroup extends Base implements Contracts\CustomerGroup
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::modelClass(),
+            Discount::class,
             "{$prefix}customer_group_discount"
         )->withTimestamps();
     }
@@ -79,7 +79,7 @@ class CustomerGroup extends Base implements Contracts\CustomerGroup
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::modelClass(),
+            Product::class,
             "{$prefix}customer_group_product"
         )->withTimestamps();
     }
@@ -89,7 +89,7 @@ class CustomerGroup extends Base implements Contracts\CustomerGroup
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Collection::modelClass(),
+            Collection::class,
             "{$prefix}collection_customer_group"
         )->withTimestamps();
     }

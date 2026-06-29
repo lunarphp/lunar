@@ -2,14 +2,14 @@
 
 namespace Lunar\Core\Contracts\Actions\Carts;
 
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Order;
 
 interface CreatesOrder
 {
     public function execute(
-        CartContract $cart,
+        Cart $cart,
         bool $allowMultipleOrders = false,
         ?int $orderIdToUpdate = null
-    ): OrderContract;
+    ): Order;
 }

@@ -23,6 +23,6 @@ class CustomerGroupSelect extends Select
      */
     public function lunarModel(): string
     {
-        return CustomerGroup::modelClass();
+        return CustomerGroup::class;
     }
 }

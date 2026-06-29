@@ -16,7 +16,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxRateAmount extends Base implements Contracts\TaxRateAmount
+class TaxRateAmount extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -49,7 +49,7 @@ class TaxRateAmount extends Base implements Contracts\TaxRateAmount
      */
     public function taxRate(): BelongsTo
     {
-        return $this->belongsTo(TaxRate::modelClass());
+        return $this->belongsTo(TaxRate::class);
     }
 
     /**
@@ -57,6 +57,6 @@ class TaxRateAmount extends Base implements Contracts\TaxRateAmount
      */
     public function taxClass(): BelongsTo
     {
-        return $this->belongsTo(TaxClass::modelClass());
+        return $this->belongsTo(TaxClass::class);
     }
 }

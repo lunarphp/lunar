@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\TagResource\Pages\CreateTag;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\EditTag;
 use Lunar\Admin\Filament\Resources\TagResource\Pages\ListTags;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Tag as TagContract;
+use Lunar\Core\Models\Tag;
 use Lunar\Filament\Schemas\Tag\TagForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Tag\TagTable;
@@ -18,7 +18,7 @@ class TagResource extends BaseResource
 {
     protected static ?string $permission = 'settings';
 
-    protected static ?string $model = TagContract::class;
+    protected static ?string $model = Tag::class;
 
     protected static ?int $navigationSort = 1;
 

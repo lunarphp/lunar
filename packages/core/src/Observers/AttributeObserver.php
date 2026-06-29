@@ -4,7 +4,7 @@ namespace Lunar\Core\Observers;
 
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Jobs\Attributes\PurgeAttributeData;
-use Lunar\Core\Models\Contracts\Attribute as AttributeContract;
+use Lunar\Core\Models\Attribute;
 
 class AttributeObserver
 {
@@ -12,12 +12,12 @@ class AttributeObserver
         protected AttributeCache $cache,
     ) {}
 
-    public function saved(AttributeContract $attribute): void
+    public function saved(Attribute $attribute): void
     {
         $this->cache->flush();
     }
 
-    public function deleted(AttributeContract $attribute): void
+    public function deleted(Attribute $attribute): void
     {
         $this->cache->flush();
 

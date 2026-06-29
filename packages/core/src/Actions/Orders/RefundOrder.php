@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Contracts\Actions\Orders\RefundsOrder;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Exceptions\OrderActionException;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
-use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\Pricing\PriceCalculatorInterface;
@@ -30,7 +28,7 @@ class RefundOrder implements RefundsOrder
      * the order's currency factor before being handed to the driver.
      */
     public function execute(
-        OrderContract $order,
+        Order $order,
         int|string $transactionId,
         float|int|string $amount,
         ?string $notes = null,
@@ -63,7 +61,7 @@ class RefundOrder implements RefundsOrder
      * at least one successful capture transaction and remaining
      * available-to-refund balance.
      */
-    public static function canRun(OrderContract $order): bool
+    public static function canRun(Order $order): bool
     {
         /** @var Order $order */
         return self::charges($order)->isNotEmpty() && self::availableToRefund($order) > 0;
@@ -72,7 +70,7 @@ class RefundOrder implements RefundsOrder
     /**
      * Available-to-refund balance for an order, in the order's minor units.
      */
-    public static function availableToRefund(OrderContract $order): int
+    public static function availableToRefund(Order $order): int
     {
         /** @var Order $order */
         return (int) (self::charges($order)->sum('amount') - self::refunds($order)->sum('amount'));
@@ -83,7 +81,7 @@ class RefundOrder implements RefundsOrder
      *
      * @return Collection<int, Transaction>
      */
-    public static function charges(OrderContract $order): Collection
+    public static function charges(Order $order): Collection
     {
         /** @var Order $order */
         /** @var Collection<int, Transaction> $charges */
@@ -97,7 +95,7 @@ class RefundOrder implements RefundsOrder
      *
      * @return Collection<int, Transaction>
      */
-    public static function refunds(OrderContract $order): Collection
+    public static function refunds(Order $order): Collection
     {
         /** @var Order $order */
         /** @var Collection<int, Transaction> $refunds */
@@ -106,7 +104,7 @@ class RefundOrder implements RefundsOrder
         return $refunds;
     }
 
-    protected function canRunForTransaction(TransactionContract $transaction): bool
+    protected function canRunForTransaction(Transaction $transaction): bool
     {
         /** @var Transaction $transaction */
         return $transaction->type === 'capture' && $transaction->success;

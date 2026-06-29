@@ -36,7 +36,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class OrderAddress extends Base implements Addressable, Contracts\OrderAddress
+class OrderAddress extends Base implements Addressable
 {
     use HasFactory;
     use HasMacros;
@@ -90,11 +90,11 @@ class OrderAddress extends Base implements Addressable, Contracts\OrderAddress
 
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::modelClass());
+        return $this->belongsTo(Order::class);
     }
 
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::modelClass());
+        return $this->belongsTo(Country::class);
     }
 }

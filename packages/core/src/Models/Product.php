@@ -46,7 +46,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Product extends Base implements Contracts\Product, HasThumbnailImage, SpatieHasMedia
+class Product extends Base implements HasThumbnailImage, SpatieHasMedia
 {
     use HasAttributeData;
     use HasChannels;
@@ -114,7 +114,7 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
 
     public function productType(): BelongsTo
     {
-        return $this->belongsTo(ProductType::modelClass());
+        return $this->belongsTo(ProductType::class);
     }
 
     public function images(): MorphMany
@@ -124,12 +124,12 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
 
     public function variants(): HasMany
     {
-        return $this->hasMany(ProductVariant::modelClass());
+        return $this->hasMany(ProductVariant::class);
     }
 
     public function variant(): HasOne
     {
-        return $this->hasOne(ProductVariant::modelClass());
+        return $this->hasOne(ProductVariant::class);
     }
 
     protected function hasVariants(): Attribute
@@ -142,19 +142,19 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(
-            \Lunar\Core\Models\Collection::modelClass(),
+            \Lunar\Core\Models\Collection::class,
             config('lunar.database.table_prefix').'collection_product'
         )->withPivot(['position'])->orderByPivot('position')->withTimestamps();
     }
 
     public function associations(): HasMany
     {
-        return $this->hasMany(ProductAssociation::modelClass(), 'product_parent_id');
+        return $this->hasMany(ProductAssociation::class, 'product_parent_id');
     }
 
     public function inverseAssociations(): HasMany
     {
-        return $this->hasMany(ProductAssociation::modelClass(), 'product_target_id');
+        return $this->hasMany(ProductAssociation::class, 'product_target_id');
     }
 
     public function associate(mixed $product, ProvidesProductAssociationType|string $type): void
@@ -175,7 +175,7 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::modelClass(),
+            CustomerGroup::class,
             "{$prefix}customer_group_product"
         )->withPivot([
             'purchasable',
@@ -198,7 +198,7 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
      */
     public function brand(): BelongsTo
     {
-        return $this->belongsTo(Brand::modelClass());
+        return $this->belongsTo(Brand::class);
     }
 
     public function scopeStatus(Builder $query, string $status): Builder
@@ -214,8 +214,8 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
     public function prices(): HasManyThrough
     {
         return $this->hasManyThrough(
-            Price::modelClass(),
-            ProductVariant::modelClass(),
+            Price::class,
+            ProductVariant::class,
             'product_id',
             'priceable_id'
         )->wherePriceableType('product_variant');
@@ -226,7 +226,7 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            ProductOption::modelClass(),
+            ProductOption::class,
             "{$prefix}product_product_option"
         )->withPivot(['position'])->orderByPivot('position');
     }
@@ -244,7 +244,7 @@ class Product extends Base implements Contracts\Product, HasThumbnailImage, Spat
      */
     public function hasOrderHistory(): bool
     {
-        $variantClass = ProductVariant::modelClass();
+        $variantClass = ProductVariant::class;
 
         return OrderLine::query()
             ->where('purchasable_type', (new $variantClass)->getMorphClass())

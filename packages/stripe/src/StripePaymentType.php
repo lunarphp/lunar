@@ -10,7 +10,6 @@ use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\DisallowMultipleCartOrdersException;
-use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
@@ -227,7 +226,7 @@ class StripePaymentType extends AbstractPayment
      *
      * @param  int  $amount
      */
-    public function capture(TransactionContract $transaction, $amount = 0): PaymentCapture
+    public function capture(Transaction $transaction, $amount = 0): PaymentCapture
     {
         /** @var Transaction $transaction */
         $payload = [];
@@ -262,7 +261,7 @@ class StripePaymentType extends AbstractPayment
      *
      * @param  string|null  $notes
      */
-    public function refund(TransactionContract $transaction, int $amount = 0, $notes = null): PaymentRefund
+    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
         /** @var Transaction $transaction */
         $charge = Stripe::getCharge($transaction->reference);
@@ -295,7 +294,7 @@ class StripePaymentType extends AbstractPayment
         );
     }
 
-    public function getPaymentChecks(TransactionContract $transaction): PaymentChecks
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
     {
         /** @var Transaction $transaction */
         $meta = $transaction->meta;

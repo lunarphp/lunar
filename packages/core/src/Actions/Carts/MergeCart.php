@@ -5,14 +5,13 @@ namespace Lunar\Core\Actions\Carts;
 use Lunar\Core\Contracts\Actions\Carts\MergesCart;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class MergeCart implements MergesCart
 {
     /**
      * Execute the action.
      */
-    public function execute(CartContract $target, Cart $source): CartContract
+    public function execute(Cart $target, Cart $source): Cart
     {
         /** @var Cart $target */
         if ($target->id == $source->id) {

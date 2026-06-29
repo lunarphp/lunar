@@ -11,11 +11,6 @@ use Lunar\Core\Contracts\StorefrontSession;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\Models\Contracts\Channel as ChannelContract;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\Models\Contracts\Customer as CustomerContract;
-use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
-use Lunar\Core\Models\Contracts\Region as RegionContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
@@ -23,15 +18,15 @@ use Lunar\Core\Models\Region;
 
 class StorefrontSessionManager implements StorefrontSession
 {
-    protected ?RegionContract $region = null;
+    protected ?Region $region = null;
 
-    protected ?ChannelContract $channel = null;
+    protected ?Channel $channel = null;
 
     protected ?Collection $customerGroups = null;
 
-    protected ?CurrencyContract $currency = null;
+    protected ?Currency $currency = null;
 
-    protected ?CustomerContract $customer = null;
+    protected ?Customer $customer = null;
 
     public function __construct(
         protected SessionManager $sessionManager,
@@ -58,12 +53,12 @@ class StorefrontSessionManager implements StorefrontSession
         );
     }
 
-    public function getRegion(): ?RegionContract
+    public function getRegion(): ?Region
     {
         return $this->region;
     }
 
-    public function setRegion(RegionContract $region): static
+    public function setRegion(Region $region): static
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_region',
@@ -87,12 +82,12 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    public function getChannel(): ChannelContract
+    public function getChannel(): Channel
     {
         return $this->channel;
     }
 
-    public function setChannel(ChannelContract $channel): static
+    public function setChannel(Channel $channel): static
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_channel',
@@ -105,7 +100,7 @@ class StorefrontSessionManager implements StorefrontSession
     }
 
     /**
-     * @return Collection<CustomerGroupContract>
+     * @return Collection<CustomerGroup>
      */
     public function getCustomerGroups(): Collection
     {
@@ -113,7 +108,7 @@ class StorefrontSessionManager implements StorefrontSession
     }
 
     /**
-     * @param  Collection<CustomerGroupContract>  $customerGroups
+     * @param  Collection<CustomerGroup>  $customerGroups
      */
     public function setCustomerGroups(Collection $customerGroups): static
     {
@@ -127,7 +122,7 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    public function setCustomerGroup(CustomerGroupContract $customerGroup): static
+    public function setCustomerGroup(CustomerGroup $customerGroup): static
     {
         return $this->setCustomerGroups(new Collection([$customerGroup]));
     }
@@ -141,12 +136,12 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    public function getCurrency(): CurrencyContract
+    public function getCurrency(): Currency
     {
         return $this->currency;
     }
 
-    public function setCurrency(CurrencyContract $currency): static
+    public function setCurrency(Currency $currency): static
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_currency',
@@ -158,12 +153,12 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    public function getCustomer(): ?CustomerContract
+    public function getCustomer(): ?Customer
     {
         return $this->customer;
     }
 
-    public function setCustomer(CustomerContract $customer): static
+    public function setCustomer(Customer $customer): static
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_customer',
@@ -183,7 +178,7 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    protected function customerBelongsToUser(CustomerContract $customer): bool
+    protected function customerBelongsToUser(Customer $customer): bool
     {
         $user = $this->authManager->user();
 

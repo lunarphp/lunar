@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\ChangesFulfilmentLocation;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Location;
 
@@ -20,7 +19,7 @@ class ChangeFulfilmentLocation implements ChangesFulfilmentLocation
      */
     public const RELOCATABLE_STATES = ['pending', 'in-progress'];
 
-    public function execute(FulfilmentContract $fulfilment, int $locationId): Fulfilment
+    public function execute(Fulfilment $fulfilment, int $locationId): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         if (! self::canRun($fulfilment)) {
@@ -41,7 +40,7 @@ class ChangeFulfilmentLocation implements ChangesFulfilmentLocation
     /**
      * Whether the fulfilment's location can still be changed (pre-ship only).
      */
-    public static function canRun(FulfilmentContract $fulfilment): bool
+    public static function canRun(Fulfilment $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
         return in_array($fulfilment->state::$name, self::RELOCATABLE_STATES, true);

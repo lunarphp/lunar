@@ -19,7 +19,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductAssociation extends Base implements Contracts\ProductAssociation
+class ProductAssociation extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -72,7 +72,7 @@ class ProductAssociation extends Base implements Contracts\ProductAssociation
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Product::modelClass(), 'product_parent_id');
+        return $this->belongsTo(Product::class, 'product_parent_id');
     }
 
     /**
@@ -80,7 +80,7 @@ class ProductAssociation extends Base implements Contracts\ProductAssociation
      */
     public function target(): BelongsTo
     {
-        return $this->belongsTo(Product::modelClass(), 'product_target_id');
+        return $this->belongsTo(Product::class, 'product_target_id');
     }
 
     /**

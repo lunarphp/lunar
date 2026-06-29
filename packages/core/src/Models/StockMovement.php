@@ -25,7 +25,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?int $causer_id
  * @property ?Carbon $created_at
  */
-class StockMovement extends Base implements Contracts\StockMovement
+class StockMovement extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -58,12 +58,12 @@ class StockMovement extends Base implements Contracts\StockMovement
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::modelClass(), 'product_variant_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
     public function location(): BelongsTo
     {
-        return $this->belongsTo(Location::modelClass());
+        return $this->belongsTo(Location::class);
     }
 
     public function source(): MorphTo

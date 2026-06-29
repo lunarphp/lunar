@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\ReturnsFulfilment;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\States\Fulfilment\Returned;
 
@@ -15,7 +14,7 @@ use Lunar\Core\States\Fulfilment\Returned;
  */
 class ReturnFulfilment implements ReturnsFulfilment
 {
-    public function execute(FulfilmentContract $fulfilment, bool $notify = true): Fulfilment
+    public function execute(Fulfilment $fulfilment, bool $notify = true): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         return DB::transaction(function () use ($fulfilment, $notify) {
@@ -32,7 +31,7 @@ class ReturnFulfilment implements ReturnsFulfilment
     /**
      * Whether the fulfilment can be returned, per the `FulfilmentState` graph.
      */
-    public static function canRun(FulfilmentContract $fulfilment): bool
+    public static function canRun(Fulfilment $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
         return $fulfilment->state->canTransitionTo(Returned::class);

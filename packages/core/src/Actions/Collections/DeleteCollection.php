@@ -6,7 +6,6 @@ use Lunar\Core\Contracts\Actions\Collections\DeletesCollection;
 use Lunar\Core\Exceptions\CollectionActionException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 /**
  * Delete a collection. When the collection has descendants, the caller may
@@ -15,7 +14,7 @@ use Lunar\Core\Models\Contracts\Collection as CollectionContract;
  */
 class DeleteCollection implements DeletesCollection
 {
-    public function execute(CollectionContract $collection, ?CollectionContract $reparentTo = null): bool
+    public function execute(Collection $collection, ?Collection $reparentTo = null): bool
     {
         /** @var Collection $collection */
         $hasChildren = $collection->children()->exists();

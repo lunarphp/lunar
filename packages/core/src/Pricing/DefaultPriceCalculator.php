@@ -3,7 +3,7 @@
 namespace Lunar\Core\Pricing;
 
 use InvalidArgumentException;
-use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Currency;
 
 class DefaultPriceCalculator implements PriceCalculatorInterface
 {

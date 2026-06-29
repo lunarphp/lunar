@@ -12,7 +12,7 @@ use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionMedi
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionProducts;
 use Lunar\Admin\Filament\Resources\CollectionResource\Pages\ManageCollectionUrls;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Models\Collection;
 use Lunar\Filament\GlobalSearch\CollectionGlobalSearch;
 use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
 use Lunar\Filament\Schemas\Collection\CollectionForm;
@@ -26,7 +26,7 @@ class CollectionResource extends BaseResource
 
     protected static ?string $permission = 'catalog:manage-collections';
 
-    protected static ?string $model = CollectionContract::class;
+    protected static ?string $model = Collection::class;
 
     protected static int $globalSearchResultsLimit = 5;
 
@@ -47,7 +47,7 @@ class CollectionResource extends BaseResource
         return [];
     }
 
-    public static function getCollectionBreadcrumbs(CollectionContract $collection): array
+    public static function getCollectionBreadcrumbs(Collection $collection): array
     {
         $collection->loadMissing('group');
 

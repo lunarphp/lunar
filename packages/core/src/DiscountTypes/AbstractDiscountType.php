@@ -6,8 +6,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\DiscountType;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\Discount as DiscountContract;
 use Lunar\Core\Models\Discount;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
 
@@ -16,14 +14,14 @@ abstract class AbstractDiscountType implements DiscountType
     /**
      * The instance of the discount.
      */
-    public DiscountContract $discount;
+    public Discount $discount;
 
     /**
      * Set the data for the discount to user.
      *
      * @param  array  $data
      */
-    public function with(DiscountContract $discount): self
+    public function with(Discount $discount): self
     {
         /** @var Discount $discount */
         $this->discount = $discount;
@@ -44,7 +42,7 @@ abstract class AbstractDiscountType implements DiscountType
     /**
      * Mark a discount as used
      */
-    public function markAsUsed(CartContract $cart): self
+    public function markAsUsed(Cart $cart): self
     {
         /** @var Cart $cart */
         $this->discount->uses = $this->discount->uses + 1;
@@ -58,10 +56,8 @@ abstract class AbstractDiscountType implements DiscountType
 
     /**
      * Return the eligible lines for the discount.
-     *
-     * @return Illuminate\Support\Collection
      */
-    protected function getEligibleLines(CartContract $cart): Collection
+    protected function getEligibleLines(Cart $cart): Collection
     {
         /** @var Cart $cart */
         return $cart->lines;
@@ -70,7 +66,7 @@ abstract class AbstractDiscountType implements DiscountType
     /**
      * Check if discount's conditions met.
      */
-    protected function checkDiscountConditions(CartContract $cart): bool
+    protected function checkDiscountConditions(Cart $cart): bool
     {
         /** @var Cart $cart */
         $cart->loadMissing('currency');
@@ -105,10 +101,9 @@ abstract class AbstractDiscountType implements DiscountType
     /**
      * Check if discount's conditions met.
      *
-     * @param  Lunar\Core\ValueObjects\Cart\DiscountBreakdown  $breakdown
      * @return self
      */
-    protected function addDiscountBreakdown(CartContract $cart, DiscountBreakdown $breakdown)
+    protected function addDiscountBreakdown(Cart $cart, DiscountBreakdown $breakdown)
     {
         /** @var Cart $cart */
         if (! $cart->discountBreakdown) {
@@ -122,7 +117,6 @@ abstract class AbstractDiscountType implements DiscountType
     /**
      * Check how many times this discount has been used by the logged in user's customers
      *
-     * @param  Illuminate\Contracts\Auth\Authenticatable  $user
      * @return int
      */
     protected function usesByUser(Authenticatable $user)

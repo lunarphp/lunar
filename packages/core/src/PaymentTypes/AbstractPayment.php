@@ -5,10 +5,8 @@ namespace Lunar\Core\PaymentTypes;
 use Lunar\Core\Contracts\PaymentType;
 use Lunar\Core\DataObjects\PaymentChecks;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
-use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Transaction;
 
 abstract class AbstractPayment implements PaymentType
 {
@@ -20,12 +18,12 @@ abstract class AbstractPayment implements PaymentType
     /**
      * The instance of the cart.
      */
-    protected ?CartContract $cart = null;
+    protected ?Cart $cart = null;
 
     /**
      * The instance of the order.
      */
-    protected ?OrderContract $order = null;
+    protected ?Order $order = null;
 
     /**
      * Any config for this payment provider.
@@ -40,7 +38,7 @@ abstract class AbstractPayment implements PaymentType
     /**
      * {@inheritDoc}
      */
-    public function cart(CartContract $cart): self
+    public function cart(Cart $cart): self
     {
         /** @var Cart $cart */
         $this->cart = $cart;
@@ -52,7 +50,7 @@ abstract class AbstractPayment implements PaymentType
     /**
      * {@inheritDoc}
      */
-    public function order(OrderContract $order): self
+    public function order(Order $order): self
     {
         /** @var Order $order */
         $this->order = $order;
@@ -88,7 +86,7 @@ abstract class AbstractPayment implements PaymentType
         return $this;
     }
 
-    public function getPaymentChecks(TransactionContract $transaction): PaymentChecks
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
     {
         return new PaymentChecks;
     }

@@ -3,13 +3,12 @@
 namespace Lunar\Stripe\Actions;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Transaction;
 
 class StoreCharges
 {
-    public function store(OrderContract $order, Collection $charges)
+    public function store(Order $order, Collection $charges)
     {
         /** @var Order $order */
         /**

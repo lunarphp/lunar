@@ -5,16 +5,16 @@ namespace Lunar\Core\Contracts;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
-use Lunar\Core\Models\Contracts\Cart;
-use Lunar\Core\Models\Contracts\Order;
-use Lunar\Core\Models\Contracts\Transaction;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Order;
+use Lunar\Core\Models\Transaction;
 
 interface PaymentType
 {
     /**
      * Set the cart.
      *
-     * @param  \Lunar\Core\Models\Cart  $order
+     * @param  Cart  $order
      */
     public function cart(Cart $cart): self;
 

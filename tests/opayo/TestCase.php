@@ -63,15 +63,13 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        $this->replaceModelsForTesting();
+        //
     }
 
     /**
      * Define database migrations.
-     *
-     * @return void
      */
-    protected function defineDatabaseMigrations()
+    protected function defineDatabaseMigrations(): void
     {
         $this->loadLaravelMigrations();
     }

@@ -23,6 +23,6 @@ class ChannelSelect extends Select
      */
     public function lunarModel(): string
     {
-        return Channel::modelClass();
+        return Channel::class;
     }
 }

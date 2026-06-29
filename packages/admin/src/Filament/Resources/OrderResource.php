@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\OrderResource\Pages\EditOrder;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ListOrders;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
 use Lunar\Filament\GlobalSearch\OrderGlobalSearch;
 use Lunar\Filament\Support\Resolver;
@@ -23,7 +23,7 @@ class OrderResource extends BaseResource
 
     protected static ?string $permission = 'sales:manage-orders';
 
-    protected static ?string $model = OrderContract::class;
+    protected static ?string $model = Order::class;
 
     protected static ?int $navigationSort = 1;
 

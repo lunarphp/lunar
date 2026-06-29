@@ -5,7 +5,6 @@ namespace Lunar\Tests\Core\Stubs;
 use Closure;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Modifiers\CartModifier;
 
 class TestCartModifier extends CartModifier
@@ -15,7 +14,7 @@ class TestCartModifier extends CartModifier
      *
      * @return void
      */
-    public function calculated(CartContract $cart, Closure $next): CartContract
+    public function calculated(Cart $cart, Closure $next): Cart
     {
         $cart->total = new PriceValue(5000, $cart->currency);
 

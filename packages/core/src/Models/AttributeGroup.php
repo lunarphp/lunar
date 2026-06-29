@@ -19,7 +19,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class AttributeGroup extends Base implements Contracts\AttributeGroup
+class AttributeGroup extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -28,7 +28,7 @@ class AttributeGroup extends Base implements Contracts\AttributeGroup
     protected static function booted(): void
     {
         static::deleting(function (self $group) {
-            Attribute::modelClass()::query()
+            Attribute::query()
                 ->where('attribute_group_id', $group->id)
                 ->update(['attribute_group_id' => null]);
         });
@@ -66,6 +66,6 @@ class AttributeGroup extends Base implements Contracts\AttributeGroup
 
     public function attributes(): HasMany
     {
-        return $this->hasMany(Attribute::modelClass())->orderBy('position');
+        return $this->hasMany(Attribute::class)->orderBy('position');
     }
 }

@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Country as CountryContract;
 use Lunar\Core\Models\Country;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Facades\Postcode;
@@ -19,12 +18,12 @@ test('getParts delegates to the resolver matched for the lookup country', functi
 
     $stubbed = new class implements PostcodeResolverInterface
     {
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return $country->iso2 === 'GB';
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect([sprintf('STUB:%s:%s', $country->iso2, $postcode)]);
         }

@@ -19,7 +19,7 @@ it('instantiates ProductVariantSelect with sensible defaults', function () {
         ->forProduct(null);
 
     expect($component)->toBeInstanceOf(ProductVariantSelect::class)
-        ->and($component->lunarModel())->toBe(ProductVariant::modelClass())
+        ->and($component->lunarModel())->toBe(ProductVariant::class)
         ->and($component->isSearchable())->toBeTrue();
 });
 
@@ -28,7 +28,7 @@ it('instantiates CollectionSelect with fluent options', function () {
         ->excludeAttached();
 
     expect($component)->toBeInstanceOf(CollectionSelect::class)
-        ->and($component->lunarModel())->toBe(Collection::modelClass())
+        ->and($component->lunarModel())->toBe(Collection::class)
         ->and($component->getLabel())->toBe(__('lunar-filament::forms/selectors.collection.label'));
 });
 
@@ -36,7 +36,7 @@ it('instantiates BrandSelect bound to the brand relationship', function () {
     $component = BrandSelect::make('brand_id');
 
     expect($component)->toBeInstanceOf(BrandSelect::class)
-        ->and($component->lunarModel())->toBe(Brand::modelClass())
+        ->and($component->lunarModel())->toBe(Brand::class)
         ->and($component->getRelationshipName())->toBe('brand')
         ->and($component->isPreloaded())->toBeTrue();
 });
@@ -54,5 +54,5 @@ it('instantiates TagSelect with multiple-by-default', function () {
 
     expect($component)->toBeInstanceOf(TagSelect::class)
         ->and($component->isMultiple())->toBeTrue()
-        ->and($component->lunarModel())->toBe(Tag::modelClass());
+        ->and($component->lunarModel())->toBe(Tag::class);
 });

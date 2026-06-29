@@ -30,7 +30,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Attribute extends Base implements Contracts\Attribute
+class Attribute extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -85,12 +85,12 @@ class Attribute extends Base implements Contracts\Attribute
 
     public function group(): BelongsTo
     {
-        return $this->belongsTo(AttributeGroup::modelClass(), 'attribute_group_id');
+        return $this->belongsTo(AttributeGroup::class, 'attribute_group_id');
     }
 
     public function models(): HasMany
     {
-        return $this->hasMany(AttributeModel::modelClass());
+        return $this->hasMany(AttributeModel::class);
     }
 
     /**

@@ -4,7 +4,6 @@ namespace Lunar\Core\Observers;
 
 use Lunar\Core\Contracts\Actions\Orders\RecomputesOrderStatus;
 use Lunar\Core\Events\Fulfilment\FulfilmentStatusUpdated;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
 
@@ -19,7 +18,7 @@ class FulfilmentObserver
      * changes (state transitions, holds) against the parent order so they read
      * clearly in the timeline.
      */
-    public function updating(FulfilmentContract $fulfilment): void
+    public function updating(Fulfilment $fulfilment): void
     {
         /** @var Fulfilment $fulfilment */
         if ($fulfilment->isDirty('state')) {
@@ -45,7 +44,7 @@ class FulfilmentObserver
      *
      * @param  array<string, mixed>  $properties
      */
-    protected function logFulfilmentUpdate(FulfilmentContract $fulfilment, array $properties): void
+    protected function logFulfilmentUpdate(Fulfilment $fulfilment, array $properties): void
     {
         /** @var Fulfilment $fulfilment */
         if (! $order = $fulfilment->order()->first()) {
@@ -66,7 +65,7 @@ class FulfilmentObserver
     /**
      * Handle the Fulfilment "created" event.
      */
-    public function created(FulfilmentContract $fulfilment): void
+    public function created(Fulfilment $fulfilment): void
     {
         $this->recompute($fulfilment);
     }
@@ -74,7 +73,7 @@ class FulfilmentObserver
     /**
      * Handle the Fulfilment "updated" event.
      */
-    public function updated(FulfilmentContract $fulfilment): void
+    public function updated(Fulfilment $fulfilment): void
     {
         /** @var Fulfilment $fulfilment */
         // The verb that drove this state change stamped its "notify the
@@ -99,7 +98,7 @@ class FulfilmentObserver
     /**
      * Handle the Fulfilment "deleted" event.
      */
-    public function deleted(FulfilmentContract $fulfilment): void
+    public function deleted(Fulfilment $fulfilment): void
     {
         $this->recompute($fulfilment);
     }
@@ -108,7 +107,7 @@ class FulfilmentObserver
      * Recompute the parent order's derived fulfilment status, carrying the
      * "notify the customer" intent of the change that triggered it.
      */
-    protected function recompute(FulfilmentContract $fulfilment, bool $notify = true): void
+    protected function recompute(Fulfilment $fulfilment, bool $notify = true): void
     {
         /** @var Fulfilment $fulfilment */
         if ($order = $fulfilment->order()->first()) {

@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Contracts\Actions\Products;
 
-use Lunar\Core\Models\Contracts\StockReservation as StockReservationContract;
 use Lunar\Core\Models\StockReservation;
 
 interface CommitsReservation
@@ -13,5 +12,5 @@ interface CommitsReservation
      * committed recompute). Idempotent. No direct `committed` write — that is
      * derived from the order book.
      */
-    public function execute(StockReservationContract $reservation): StockReservation;
+    public function execute(StockReservation $reservation): StockReservation;
 }

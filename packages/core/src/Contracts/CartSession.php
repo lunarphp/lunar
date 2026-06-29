@@ -3,16 +3,16 @@
 namespace Lunar\Core\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Lunar\Core\Models\Contracts\Cart;
-use Lunar\Core\Models\Contracts\Channel;
-use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
 
 interface CartSession
 {
     /**
      * Return the current cart.
      *
-     * @return \Lunar\Core\Models\Cart|null
+     * @return Cart|null
      */
     public function current();
 

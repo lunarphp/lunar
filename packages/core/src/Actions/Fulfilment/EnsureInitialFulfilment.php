@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\CreatesFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\EnsuresInitialFulfilment;
 use Lunar\Core\Contracts\FulfilmentMethodManifest;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Order;
 
@@ -28,7 +27,7 @@ class EnsureInitialFulfilment implements EnsuresInitialFulfilment
         protected FulfilmentMethodManifest $methods,
     ) {}
 
-    public function execute(OrderContract $order): ?Fulfilment
+    public function execute(Order $order): ?Fulfilment
     {
         /** @var Order $order */
         if ($order->fulfilments()->exists()) {

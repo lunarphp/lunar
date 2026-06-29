@@ -132,7 +132,7 @@ class Attributes extends Group
                 }
 
                 if ($morphMap == ProductVariant::morphName()) {
-                    if ($record::class === Product::modelClass()) {
+                    if ($record::class === Product::class) {
                         $productTypeId = $record?->product_type_id ?: ProductType::first()->id;
                     } else {
                         $productTypeId = $record?->product?->product_type_id ?: ProductType::first()->id;

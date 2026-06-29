@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\LanguageResource\Pages\CreateLanguage;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\EditLanguage;
 use Lunar\Admin\Filament\Resources\LanguageResource\Pages\ListLanguages;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Language as LanguageContract;
+use Lunar\Core\Models\Language;
 use Lunar\Filament\Schemas\Language\LanguageForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Language\LanguageTable;
@@ -18,7 +18,7 @@ class LanguageResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = LanguageContract::class;
+    protected static ?string $model = Language::class;
 
     protected static ?int $navigationSort = 1;
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Lunar\Upgrade\Rector;
 
+use Lunar\Upgrade\Rector\Models\RewriteModelClassCallRector;
+
 /**
  * Catalog of Rector renames contributed by v2 breaking specs.
  *
@@ -106,7 +108,6 @@ final class LunarSetList
         'Lunar\\Base\\Traits\\HasDimensions' => 'Lunar\\Core\\Models\\Concerns\\HasDimensions',
         'Lunar\\Base\\Traits\\HasMacros' => 'Lunar\\Core\\Models\\Concerns\\HasMacros',
         'Lunar\\Base\\Traits\\HasMedia' => 'Lunar\\Core\\Models\\Concerns\\HasMedia',
-        'Lunar\\Base\\Traits\\HasModelExtending' => 'Lunar\\Core\\Models\\Concerns\\HasModelExtending',
         'Lunar\\Base\\Traits\\HasPersonalDetails' => 'Lunar\\Core\\Models\\Concerns\\HasPersonalDetails',
         'Lunar\\Base\\Traits\\HasPrices' => 'Lunar\\Core\\Models\\Concerns\\HasPrices',
         'Lunar\\Base\\Traits\\HasTags' => 'Lunar\\Core\\Models\\Concerns\\HasTags',
@@ -535,7 +536,9 @@ final class LunarSetList
      *
      * @var array<int, class-string>
      */
-    public const V1_TO_V2 = [];
+    public const V1_TO_V2 = [
+        RewriteModelClassCallRector::class,
+    ];
 
     /**
      * Catalogue fields promoted from `attribute_data` to dedicated translatable

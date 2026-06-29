@@ -8,7 +8,6 @@ use Lunar\Core\Contracts\Actions\Carts\CalculatesLineSubtotal;
 use Lunar\Core\Contracts\PricingManager;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\CartLine;
-use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 use Lunar\Core\Modifiers\CartLineModifiers;
 
 class CalculateLineSubtotal implements CalculatesLineSubtotal
@@ -23,9 +22,9 @@ class CalculateLineSubtotal implements CalculatesLineSubtotal
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
      */
     public function execute(
-        CartLineContract $cartLine,
+        CartLine $cartLine,
         Collection $customerGroups
-    ): CartLineContract {
+    ): CartLine {
         /** @var CartLine $cartLine */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;

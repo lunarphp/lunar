@@ -6,7 +6,6 @@ use Lunar\Core\Contracts\Actions\Carts\AddsAddress;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class AddAddress implements AddsAddress
 {
@@ -33,7 +32,7 @@ class AddAddress implements AddsAddress
      * Execute the action.
      */
     public function execute(
-        CartContract $cart,
+        Cart $cart,
         array|Addressable $address,
         string $type
     ): void {

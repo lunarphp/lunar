@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Carts;
 use Lunar\Core\Contracts\Actions\Carts\AssociatesUser;
 use Lunar\Core\Contracts\LunarUser;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class AssociateUser implements AssociatesUser
 {
@@ -16,7 +15,7 @@ class AssociateUser implements AssociatesUser
     /**
      * Execute the action.
      */
-    public function execute(CartContract $cart, LunarUser $user, string $policy = 'merge'): void
+    public function execute(Cart $cart, LunarUser $user, string $policy = 'merge'): void
     {
         if ($policy === 'merge') {
             $userCart = Cart::whereUserId($user->getKey())->active()->unMerged()->latest()->first();

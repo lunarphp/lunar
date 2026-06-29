@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Observers;
 
-use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\CustomerGroup;
 
 class CustomerGroupObserver
@@ -12,7 +11,7 @@ class CustomerGroupObserver
      *
      * @return void
      */
-    public function created(CustomerGroupContract $customerGroup)
+    public function created(CustomerGroup $customerGroup)
     {
         $this->ensureOnlyOneDefault($customerGroup);
     }
@@ -22,7 +21,7 @@ class CustomerGroupObserver
      *
      * @return void
      */
-    public function updated(CustomerGroupContract $customerGroup)
+    public function updated(CustomerGroup $customerGroup)
     {
         $this->ensureOnlyOneDefault($customerGroup);
     }
@@ -32,7 +31,7 @@ class CustomerGroupObserver
      *
      * @return void
      */
-    public function deleted(CustomerGroupContract $customerGroup)
+    public function deleted(CustomerGroup $customerGroup)
     {
         //
     }
@@ -42,7 +41,7 @@ class CustomerGroupObserver
      *
      * @return void
      */
-    public function forceDeleted(CustomerGroupContract $customerGroup)
+    public function forceDeleted(CustomerGroup $customerGroup)
     {
         //
     }
@@ -50,9 +49,9 @@ class CustomerGroupObserver
     /**
      * Ensures that only one default CustomerGroup exists.
      *
-     * @param  CustomerGroupContract  $savedCustomerGroup  The customer group that was just saved.
+     * @param  CustomerGroup  $savedCustomerGroup  The customer group that was just saved.
      */
-    protected function ensureOnlyOneDefault(CustomerGroupContract $savedCustomerGroup): void
+    protected function ensureOnlyOneDefault(CustomerGroup $savedCustomerGroup): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedCustomerGroup->default) {

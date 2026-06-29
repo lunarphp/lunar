@@ -8,7 +8,6 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Collection as LunarCollection;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
@@ -49,7 +48,7 @@ class BuyXGetY extends AbstractDiscountType
      *
      * @return CartLine
      */
-    public function apply(CartContract $cart): CartContract
+    public function apply(Cart $cart): Cart
     {
         $data = $this->discount->data;
 
@@ -223,7 +222,7 @@ class BuyXGetY extends AbstractDiscountType
         return $cart;
     }
 
-    private function processAutomaticRewards(CartContract $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
+    private function processAutomaticRewards(Cart $cart, int $remainingRewardQty, Collection $affectedLines, int $discountTotal)
     {
         // we have lines to add
         if ($remainingRewardQty > 0) {

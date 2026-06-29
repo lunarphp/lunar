@@ -5,7 +5,6 @@ namespace Lunar\Core\Pipelines\Cart;
 use Closure;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class CalculateShippingSubTotal
 {
@@ -16,9 +15,9 @@ class CalculateShippingSubTotal
      * the two may mutate $cart->shippingBreakdown and have the sub total
      * recomputed for free.
      *
-     * @param  Closure(CartContract): mixed  $next
+     * @param  Closure(Cart):mixed  $next
      */
-    public function handle(CartContract $cart, Closure $next): mixed
+    public function handle(Cart $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
         $cart->shippingSubTotal = $cart->shippingBreakdown

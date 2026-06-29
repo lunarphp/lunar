@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Actions\Products\RecomputesStockRollup;
 use Lunar\Core\Contracts\Actions\Products\SyncsStockCommitment;
 use Lunar\Core\Enums\FulfilmentStateCategory;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockLevel;
@@ -29,7 +28,7 @@ class SyncStockCommitment implements SyncsStockCommitment
         protected RecomputesStockRollup $recomputeRollup,
     ) {}
 
-    public function execute(ProductVariantContract $variant): ProductVariant
+    public function execute(ProductVariant $variant): ProductVariant
     {
         /** @var ProductVariant $variant */
         return DB::transaction(function () use ($variant) {

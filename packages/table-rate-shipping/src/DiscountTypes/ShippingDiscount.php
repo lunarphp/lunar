@@ -11,7 +11,7 @@ use Lunar\Admin\Base\LunarPanelDiscountInterface;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
 use Lunar\Core\Facades\PriceCalculator;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\ValueObjects\Cart\DiscountBreakdown;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
@@ -30,7 +30,7 @@ class ShippingDiscount extends AbstractDiscountType implements LunarPanelDiscoun
     /**
      * Apply the shipping discount to the cart.
      */
-    public function apply(CartContract $cart): CartContract
+    public function apply(Cart $cart): Cart
     {
         if (! $this->checkDiscountConditions($cart)) {
             return $cart;

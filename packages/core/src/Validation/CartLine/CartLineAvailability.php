@@ -5,14 +5,11 @@ namespace Lunar\Core\Validation\CartLine;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Purchasable;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\Models\Concerns\HasCustomerGroups;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\Channel as ChannelContract;
-use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\States\Product\Published;
 use Lunar\Core\Validation\BaseValidator;
 
@@ -23,7 +20,7 @@ class CartLineAvailability extends BaseValidator
      */
     public function validate(): bool
     {
-        /** @var ?CartContract $cart */
+        /** @var ?Cart $cart */
         $cart = $this->parameters['cart'] ?? null;
         $cartLineId = $this->parameters['cartLineId'] ?? null;
         $purchasable = $this->parameters['purchasable'] ?? null;
@@ -38,7 +35,7 @@ class CartLineAvailability extends BaseValidator
             return $this->pass();
         }
 
-        if (! $purchasable instanceof ProductVariantContract) {
+        if (! $purchasable instanceof ProductVariant) {
             return $purchasable->isPurchasable()
                 ? $this->pass()
                 : $this->failForPurchasable($purchasable);
@@ -63,9 +60,9 @@ class CartLineAvailability extends BaseValidator
      * which models visibility (`enabled OR visible`). Purchasability
      * additionally requires the `purchasable` pivot flag.
      */
-    private function isProductPurchasable(int $productId, ChannelContract $channel, Collection $groups): bool
+    private function isProductPurchasable(int $productId, Channel $channel, Collection $groups): bool
     {
-        $productClass = Product::modelClass();
+        $productClass = Product::class;
 
         return $productClass::query()
             ->where('id', $productId)
@@ -80,7 +77,7 @@ class CartLineAvailability extends BaseValidator
      */
     private function purchasableForGroups(Collection $groups): \Closure
     {
-        $pivotTable = (new (Product::modelClass()))->customerGroups()->getTable();
+        $pivotTable = (new (Product::class))->customerGroups()->getTable();
         $now = now();
 
         return function (Builder $relation) use ($groups, $pivotTable, $now) {
@@ -99,9 +96,9 @@ class CartLineAvailability extends BaseValidator
         ]));
     }
 
-    private function resolveChannel(?CartContract $cart): ?ChannelContract
+    private function resolveChannel(?Cart $cart): ?Channel
     {
-        $channelClass = Channel::modelClass();
+        $channelClass = Channel::class;
 
         if ($cart?->channel_id) {
             return $channelClass::find($cart->channel_id);
@@ -111,9 +108,9 @@ class CartLineAvailability extends BaseValidator
     }
 
     /**
-     * @return Collection<int, CustomerGroupContract>
+     * @return Collection<int, CustomerGroup>
      */
-    private function resolveCustomerGroups(?CartContract $cart): Collection
+    private function resolveCustomerGroups(?Cart $cart): Collection
     {
         if ($cart?->customer) {
             $groups = $cart->customer->customerGroups;
@@ -123,7 +120,7 @@ class CartLineAvailability extends BaseValidator
             }
         }
 
-        $default = CustomerGroup::modelClass()::getDefault();
+        $default = CustomerGroup::getDefault();
 
         return $default ? new Collection([$default]) : new Collection;
     }

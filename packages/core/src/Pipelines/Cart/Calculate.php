@@ -5,16 +5,15 @@ namespace Lunar\Core\Pipelines\Cart;
 use Closure;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class Calculate
 {
     /**
      * Called just before cart totals are calculated.
      *
-     * @param  Closure(CartContract): mixed  $next
+     * @param  Closure(Cart):mixed  $next
      */
-    public function handle(CartContract $cart, Closure $next): mixed
+    public function handle(Cart $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
         $currency = $cart->currency;

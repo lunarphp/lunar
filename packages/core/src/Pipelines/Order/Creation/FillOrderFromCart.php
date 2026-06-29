@@ -5,16 +5,15 @@ namespace Lunar\Core\Pipelines\Order\Creation;
 use Closure;
 use Illuminate\Support\Facades\App;
 use Lunar\Core\Actions\Orders\GenerateOrderReference;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 
 class FillOrderFromCart
 {
     /**
-     * @param  Closure(OrderContract): mixed  $next
+     * @param  Closure(Order):mixed  $next
      */
-    public function handle(OrderContract $order, Closure $next): mixed
+    public function handle(Order $order, Closure $next): mixed
     {
         /** @var Order $order */
         $cart = $order->cart->calculate();
@@ -38,7 +37,7 @@ class FillOrderFromCart
             'tax_total' => $cart->taxTotal->value,
             'currency_code' => $cart->currency->code,
             'exchange_rate' => $cart->currency->exchange_rate,
-            'compare_currency_code' => App::make(CurrencyContract::class)::getDefault()?->code,
+            'compare_currency_code' => App::make(Currency::class)::getDefault()?->code,
             'meta' => $cart->meta,
         ])->save();
 

@@ -9,7 +9,6 @@ use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\TaxManager;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\CartLine;
-use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
 
 class CalculateLine implements CalculatesLine
 {
@@ -24,11 +23,11 @@ class CalculateLine implements CalculatesLine
      * @param  \Illuminate\Database\Eloquent\Collection  $customerGroups
      */
     public function execute(
-        CartLineContract $cartLine,
+        CartLine $cartLine,
         Collection $customerGroups,
         ?Addressable $shippingAddress = null,
         ?Addressable $billingAddress = null
-    ): CartLineContract {
+    ): CartLine {
         /** @var CartLine $cartLine */
         $purchasable = $cartLine->purchasable;
         $cart = $cartLine->cart;

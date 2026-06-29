@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Contracts\Actions\Orders;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 interface RecomputesOrderStatus
@@ -13,5 +12,5 @@ interface RecomputesOrderStatus
      * override state, which suppresses derivation. Pass `$notify: false` to
      * suppress the customer notification a fulfilment-status change triggers.
      */
-    public function execute(OrderContract $order, bool $notify = true): Order;
+    public function execute(Order $order, bool $notify = true): Order;
 }

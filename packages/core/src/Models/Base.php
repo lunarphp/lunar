@@ -4,11 +4,12 @@ namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Concerns\HasModelExtending;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Lunar\Core\Models\Concerns\HasExtendableCasts;
 
 abstract class Base extends Model
 {
-    use HasModelExtending;
+    use HasExtendableCasts;
 
     /**
      * Create a new instance of the Model.
@@ -22,6 +23,15 @@ abstract class Base extends Model
         if ($connection = config('lunar.database.connection')) {
             $this->setConnection($connection);
         }
+    }
+
+    /**
+     * The model's morph map alias (e.g. "product"), mirroring getMorphClass()
+     * without needing an instance.
+     */
+    public static function morphName(): string
+    {
+        return array_search(static::class, Relation::morphMap(), true) ?: static::class;
     }
 
     /**

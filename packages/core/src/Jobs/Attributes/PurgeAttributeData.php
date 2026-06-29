@@ -29,7 +29,7 @@ class PurgeAttributeData implements ShouldQueue
         $key = (string) $this->attributeId;
 
         foreach (AttributeManifest::getTypes() as $modelClass) {
-            $resolved = $modelClass::modelClass();
+            $resolved = $modelClass;
 
             $resolved::query()
                 ->whereNotNull('attribute_data')

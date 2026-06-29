@@ -6,7 +6,7 @@ use Filament\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 use Lunar\Filament\Support\RecordUrls;
 use Lunar\Filament\Tables\Order\OrderTable;
@@ -28,7 +28,7 @@ class OrdersRelationManager extends BaseRelationManager
             fn (Builder $query): Builder => $query->with(['currency'])
         )->recordActions([
             Action::make('viewOrder')
-                ->url(fn (OrderContract $record): ?string => RecordUrls::for('order', $record)),
+                ->url(fn (Order $record): ?string => RecordUrls::for('order', $record)),
         ]);
     }
 }

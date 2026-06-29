@@ -5,7 +5,6 @@ namespace Lunar\Tests\Core\Stubs;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class TestDiscountType extends AbstractDiscountType
 {
@@ -22,7 +21,7 @@ class TestDiscountType extends AbstractDiscountType
      *
      * @return CartLine
      */
-    public function apply(CartContract $cart): CartContract
+    public function apply(Cart $cart): Cart
     {
         return $cart;
     }

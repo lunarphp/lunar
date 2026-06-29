@@ -6,6 +6,8 @@ use Lunar\Tests\Stripe\Unit\TestCase;
 use Stripe\Event;
 use Stripe\StripeObject;
 
+use function Pest\Laravel\instance;
+
 uses(TestCase::class);
 
 it('can process event parameters', function () {
@@ -29,7 +31,7 @@ it('can replace event parameters action', function () {
     $event->data->object->metadata = new StripeObject;
     $event->data->object->metadata->order_id = 25;
 
-    \Pest\Laravel\instance(ProcessesEventParameters::class, new class implements ProcessesEventParameters
+    instance(ProcessesEventParameters::class, new class implements ProcessesEventParameters
     {
         public function handle(Event $event): EventParameters
         {

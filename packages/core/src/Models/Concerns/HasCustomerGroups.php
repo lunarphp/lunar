@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\CustomerGroup;
 
 trait HasCustomerGroups
@@ -19,7 +18,7 @@ trait HasCustomerGroups
      */
     abstract public function customerGroups(): Relation;
 
-    public static function getExtraCustomerGroupPivotValues(CustomerGroupContract $customerGroup): array
+    public static function getExtraCustomerGroupPivotValues(CustomerGroup $customerGroup): array
     {
         return [
         ];
@@ -117,10 +116,10 @@ trait HasCustomerGroups
      * Apply the customer group scope
      *
      * @param  Builder  $query
-     * @param  CustomerGroupContract|string  $customerGroup
+     * @param  CustomerGroup|string  $customerGroup
      * @return Builder
      */
-    public function scopeCustomerGroup($query, CustomerGroupContract|iterable|null $customerGroup = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
+    public function scopeCustomerGroup($query, CustomerGroup|iterable|null $customerGroup = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
     {
         if (blank($customerGroup)) {
             return $query;
@@ -128,7 +127,7 @@ trait HasCustomerGroups
 
         $groupIds = collect();
 
-        if (is_a($customerGroup, CustomerGroup::modelClass())) {
+        if (is_a($customerGroup, CustomerGroup::class)) {
             $groupIds = collect([$customerGroup->id]);
         }
 

@@ -2,28 +2,35 @@
 
 namespace Lunar\Core\Facades;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Managers\StorefrontSessionManager;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Region;
 
 /**
- * @method static \Lunar\Core\DataObjects\StorefrontContext context()
- * @method static \Lunar\Core\Models\Contracts\Region|null getRegion()
- * @method static \Lunar\Core\Managers\StorefrontSessionManager setRegion(\Lunar\Core\Models\Contracts\Region $region)
+ * @method static StorefrontContext context()
+ * @method static Region|null getRegion()
+ * @method static StorefrontSessionManager setRegion(Region $region)
  * @method static void forget()
  * @method static void initCustomerGroups()
  * @method static void initChannel()
- * @method static \Lunar\Core\Models\Contracts\Customer|null initCustomer()
+ * @method static Customer|null initCustomer()
  * @method static string getSessionKey()
- * @method static \Lunar\Core\Managers\StorefrontSessionManager setChannel(\Lunar\Core\Models\Contracts\Channel|string $channel)
- * @method static \Lunar\Core\Managers\StorefrontSessionManager setCustomer(\Lunar\Core\Models\Contracts\Customer $customer)
- * @method static \Lunar\Core\Models\Contracts\Customer|null getCustomer()
- * @method static \Lunar\Core\Managers\StorefrontSessionManager setCustomerGroups(\Illuminate\Support\Collection $customerGroups)
- * @method static \Lunar\Core\Managers\StorefrontSessionManager setCustomerGroup(\Lunar\Core\Models\Contracts\CustomerGroup $customerGroup)
- * @method static \Lunar\Core\Managers\StorefrontSessionManager resetCustomerGroups()
- * @method static \Lunar\Core\Models\Contracts\Channel getChannel()
- * @method static \Illuminate\Support\Collection|null getCustomerGroups()
- * @method static \Lunar\Core\Managers\StorefrontSessionManager setCurrency(\Lunar\Core\Models\Contracts\Currency $currency)
- * @method static \Lunar\Core\Models\Contracts\Currency getCurrency()
+ * @method static StorefrontSessionManager setChannel(Channel|string $channel)
+ * @method static StorefrontSessionManager setCustomer(Customer $customer)
+ * @method static Customer|null getCustomer()
+ * @method static StorefrontSessionManager setCustomerGroups(Collection $customerGroups)
+ * @method static StorefrontSessionManager setCustomerGroup(CustomerGroup $customerGroup)
+ * @method static StorefrontSessionManager resetCustomerGroups()
+ * @method static Channel getChannel()
+ * @method static Collection|null getCustomerGroups()
+ * @method static StorefrontSessionManager setCurrency(Currency $currency)
+ * @method static Currency getCurrency()
  *
  * @see StorefrontSessionManager
  */

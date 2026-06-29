@@ -5,7 +5,6 @@ namespace Lunar\Filament\GlobalSearch;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\Customer as CustomerContract;
 use Lunar\Core\Models\Customer;
 
 /**
@@ -15,7 +14,7 @@ class CustomerGlobalSearch extends GlobalSearchDescriptor
 {
     public static function getModelContract(): string
     {
-        return CustomerContract::class;
+        return Customer::class;
     }
 
     public static function getSearchableAttributes(): array

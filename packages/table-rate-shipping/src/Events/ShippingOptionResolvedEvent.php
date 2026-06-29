@@ -7,7 +7,6 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Shipping\Models\ShippingRate;
 
 class ShippingOptionResolvedEvent
@@ -27,9 +26,9 @@ class ShippingOptionResolvedEvent
     /**
      * The instance of the cart.
      */
-    public CartContract $cart;
+    public Cart $cart;
 
-    public function __construct(CartContract $cart, ShippingRate $shippingRate, ShippingOption $shippingOption)
+    public function __construct(Cart $cart, ShippingRate $shippingRate, ShippingOption $shippingOption)
     {
         $this->cart = $cart;
         $this->shippingRate = $shippingRate;

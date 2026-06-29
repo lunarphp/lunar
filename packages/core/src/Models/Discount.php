@@ -31,7 +31,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Discount extends Base implements Contracts\Discount
+class Discount extends Base
 {
     use HasChannels,
         HasCustomerGroups,
@@ -98,27 +98,27 @@ class Discount extends Base implements Contracts\Discount
 
     public function discountables(): HasMany
     {
-        return $this->hasMany(Discountable::modelClass());
+        return $this->hasMany(Discountable::class);
     }
 
     public function discountableConditions(): HasMany
     {
-        return $this->hasMany(Discountable::modelClass())->whereType('condition');
+        return $this->hasMany(Discountable::class)->whereType('condition');
     }
 
     public function discountableExclusions(): HasMany
     {
-        return $this->hasMany(Discountable::modelClass())->whereType('exclusion');
+        return $this->hasMany(Discountable::class)->whereType('exclusion');
     }
 
     public function discountableLimitations(): HasMany
     {
-        return $this->hasMany(Discountable::modelClass())->whereType('limitation');
+        return $this->hasMany(Discountable::class)->whereType('limitation');
     }
 
     public function discountableRewards(): HasMany
     {
-        return $this->hasMany(Discountable::modelClass())->whereType('reward');
+        return $this->hasMany(Discountable::class)->whereType('reward');
     }
 
     public function getType(): AbstractDiscountType
@@ -131,7 +131,7 @@ class Discount extends Base implements Contracts\Discount
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Collection::modelClass(),
+            Collection::class,
             "{$prefix}collection_discount"
         )->withPivot(['type'])->withTimestamps();
     }
@@ -141,7 +141,7 @@ class Discount extends Base implements Contracts\Discount
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Customer::modelClass(),
+            Customer::class,
             "{$prefix}customer_discount"
         )->withTimestamps();
     }
@@ -151,7 +151,7 @@ class Discount extends Base implements Contracts\Discount
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::modelClass(),
+            CustomerGroup::class,
             "{$prefix}customer_group_discount"
         )->withPivot([
             'visible',
@@ -166,7 +166,7 @@ class Discount extends Base implements Contracts\Discount
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Brand::modelClass(),
+            Brand::class,
             "{$prefix}brand_discount"
         )->withPivot(['type'])->withTimestamps();
     }

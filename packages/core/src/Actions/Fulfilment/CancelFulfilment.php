@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\CancelsFulfilment;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\States\Fulfilment\Cancelled;
 
@@ -20,7 +19,7 @@ use Lunar\Core\States\Fulfilment\Cancelled;
  */
 class CancelFulfilment implements CancelsFulfilment
 {
-    public function execute(FulfilmentContract $fulfilment): Fulfilment
+    public function execute(Fulfilment $fulfilment): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         return DB::transaction(function () use ($fulfilment) {
@@ -37,7 +36,7 @@ class CancelFulfilment implements CancelsFulfilment
     /**
      * Whether the fulfilment can be cancelled, per the `FulfilmentState` graph.
      */
-    public static function canRun(FulfilmentContract $fulfilment): bool
+    public static function canRun(Fulfilment $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
         return $fulfilment->state->canTransitionTo(Cancelled::class);

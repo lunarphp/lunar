@@ -25,7 +25,7 @@ use Lunar\Admin\Support\RelationManagers\ChannelRelationManager;
 use Lunar\Admin\Support\RelationManagers\MediaRelationManager;
 use Lunar\Admin\Support\RelationManagers\PriceRelationManager;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Product;
 use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
 use Lunar\Filament\GlobalSearch\ProductGlobalSearch;
 use Lunar\Filament\RelationManagers\Product\CustomerGroupPricingRelationManager;
@@ -44,7 +44,7 @@ class ProductResource extends BaseResource
 
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = ProductContract::class;
+    protected static ?string $model = Product::class;
 
     protected static ?string $recordTitleAttribute = 'recordTitle';
 

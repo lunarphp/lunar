@@ -6,7 +6,7 @@ use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Events\PaymentAttemptEvent;
-use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
+use Lunar\Core\Models\Transaction;
 
 class OfflinePayment extends AbstractPayment
 {
@@ -44,7 +44,7 @@ class OfflinePayment extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function refund(TransactionContract $transaction, int $amount = 0, $notes = null): PaymentRefund
+    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
         return new PaymentRefund(true);
     }
@@ -52,7 +52,7 @@ class OfflinePayment extends AbstractPayment
     /**
      * {@inheritDoc}
      */
-    public function capture(TransactionContract $transaction, $amount = 0): PaymentCapture
+    public function capture(Transaction $transaction, $amount = 0): PaymentCapture
     {
         return new PaymentCapture(true);
     }

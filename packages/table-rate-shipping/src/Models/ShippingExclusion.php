@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Core\Models\Base;
 use Lunar\Shipping\Factories\ShippingExclusionFactory;
 
-class ShippingExclusion extends Base implements Contracts\ShippingExclusion
+class ShippingExclusion extends Base
 {
     use HasFactory;
 
@@ -35,7 +35,7 @@ class ShippingExclusion extends Base implements Contracts\ShippingExclusion
      */
     public function list(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::modelClass());
+        return $this->belongsTo(ShippingZone::class);
     }
 
     /**

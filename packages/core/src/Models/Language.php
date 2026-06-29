@@ -17,7 +17,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Language extends Base implements Contracts\Language
+class Language extends Base
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -41,6 +41,6 @@ class Language extends Base implements Contracts\Language
 
     public function urls(): HasMany
     {
-        return $this->hasMany(Url::modelClass());
+        return $this->hasMany(Url::class);
     }
 }

@@ -90,12 +90,12 @@ class ShippingServiceProvider extends ServiceProvider
         );
 
         Relation::morphMap([
-            'shipping_exclusion' => ShippingExclusion::modelClass(),
-            'shipping_exclusion_list' => ShippingExclusionList::modelClass(),
-            'shipping_method' => ShippingMethod::modelClass(),
-            'shipping_rate' => ShippingRate::modelClass(),
-            'shipping_zone' => ShippingZone::modelClass(),
-            'shipping_zone_postcode' => ShippingZonePostcode::modelClass(),
+            'shipping_exclusion' => ShippingExclusion::class,
+            'shipping_exclusion_list' => ShippingExclusionList::class,
+            'shipping_method' => ShippingMethod::class,
+            'shipping_rate' => ShippingRate::class,
+            'shipping_zone' => ShippingZone::class,
+            'shipping_zone_postcode' => ShippingZonePostcode::class,
         ]);
     }
 }

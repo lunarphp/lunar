@@ -2,9 +2,8 @@
 
 namespace Lunar\Core\Observers;
 
-use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
-use Lunar\Core\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
 use Lunar\Core\Models\ProductOption;
+use Lunar\Core\Models\ProductOptionValue;
 
 class ProductOptionObserver
 {
@@ -13,13 +12,13 @@ class ProductOptionObserver
      *
      * @return void
      */
-    public function deleting(ProductOptionContract $productOption)
+    public function deleting(ProductOption $productOption)
     {
         /** @var ProductOption $productOption */
         $productOption->products()->detach();
         /** @var ProductOptionValue $optionValue */
         $productOption->values()->each(
-            fn (ProductOptionValueContract $optionValue) => $optionValue->delete()
+            fn (ProductOptionValue $optionValue) => $optionValue->delete()
         );
     }
 }

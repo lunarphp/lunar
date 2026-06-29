@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\EditCurrency;
 use Lunar\Admin\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
+use Lunar\Core\Models\Currency;
 use Lunar\Filament\Schemas\Currency\CurrencyForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Currency\CurrencyTable;
@@ -18,7 +18,7 @@ class CurrencyResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = CurrencyContract::class;
+    protected static ?string $model = Currency::class;
 
     protected static ?int $navigationSort = 1;
 

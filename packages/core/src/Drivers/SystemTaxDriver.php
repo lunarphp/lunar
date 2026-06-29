@@ -6,9 +6,8 @@ use Lunar\Core\Contracts\Actions\Taxes\GetsTaxZone;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
-use Lunar\Core\Models\Contracts\CartLine;
-use Lunar\Core\Models\Contracts\Currency;
-use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\TaxZone;
 use Lunar\Core\Pricing\PriceCalculatorInterface;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
@@ -52,7 +51,7 @@ class SystemTaxDriver implements TaxDriver
      * An optional tax zone override supplied at the cart level.
      * When set this takes precedence over the address-derived zone.
      */
-    protected ?TaxZoneContract $taxZone = null;
+    protected ?TaxZone $taxZone = null;
 
     /**
      * {@inheritDoc}
@@ -107,7 +106,7 @@ class SystemTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setTaxZone(?TaxZoneContract $taxZone = null): self
+    public function setTaxZone(?TaxZone $taxZone = null): self
     {
         $this->taxZone = $taxZone;
 

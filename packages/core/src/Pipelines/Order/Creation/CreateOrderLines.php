@@ -4,8 +4,6 @@ namespace Lunar\Core\Pipelines\Order\Creation;
 
 use Closure;
 use Illuminate\Support\Facades\App;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
-use Lunar\Core\Models\Contracts\OrderLine as OrderLineContract;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Utils\Arr;
@@ -13,9 +11,9 @@ use Lunar\Core\Utils\Arr;
 class CreateOrderLines
 {
     /**
-     * @param  Closure(OrderContract): mixed  $next
+     * @param  Closure(Order):mixed  $next
      */
-    public function handle(OrderContract $order, Closure $next): mixed
+    public function handle(Order $order, Closure $next): mixed
     {
         /** @var Order $order */
         if (! $order->id) {
@@ -36,7 +34,7 @@ class CreateOrderLines
                     empty($diff->removed) &&
                     $line->purchasable_type == $cartLine->purchasable_type &&
                     $line->purchasable_id == $cartLine->purchasable_id;
-            }) ?: App::make(OrderLineContract::class);
+            }) ?: App::make(OrderLine::class);
 
             $orderLine->fill([
                 'order_id' => $order->id,

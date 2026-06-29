@@ -9,7 +9,6 @@ use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 use Lunar\Filament\Forms\Components\CollectionSelect;
 
 class EditCollection extends BaseEditRecord
@@ -59,7 +58,7 @@ class EditCollection extends BaseEditRecord
                     )->hidden(
                         fn () => ! $record->children()->count()
                     ),
-            ])->before(function (CollectionContract $collection, array $data) {
+            ])->before(function (Collection $collection, array $data) {
 
                 $targetId = $data['target_collection'] ?? null;
 

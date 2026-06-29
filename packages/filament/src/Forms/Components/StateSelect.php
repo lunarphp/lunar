@@ -60,6 +60,6 @@ class StateSelect extends TextInput
      */
     public function lunarModel(): string
     {
-        return State::modelClass();
+        return State::class;
     }
 }

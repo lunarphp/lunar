@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Collections;
 use Illuminate\Support\Collection as SupportCollection;
 use Lunar\Core\Contracts\Actions\Collections\SortsProducts;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 use Lunar\Core\Models\Currency;
 
 class SortProducts implements SortsProducts
@@ -18,7 +17,7 @@ class SortProducts implements SortsProducts
     /**
      * Execute the action.
      */
-    public function execute(CollectionContract $collection): SupportCollection
+    public function execute(Collection $collection): SupportCollection
     {
         /** @var Collection $collection */
         [$sort, $direction] = explode(':', $collection->sort);

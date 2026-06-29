@@ -7,6 +7,8 @@ use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Product;
 use Lunar\Tests\Core\TestCase;
 
+use function Pest\Laravel\assertDatabaseHas;
+
 uses(TestCase::class);
 
 uses(RefreshDatabase::class);
@@ -251,7 +253,7 @@ test('customer groups are synced on model creation', function () {
 
     Product::factory()->create();
 
-    \Pest\Laravel\assertDatabaseHas(
+    assertDatabaseHas(
         'lunar_customer_group_product',
         [
             'customer_group_id' => $customerGroupA->id,
@@ -261,7 +263,7 @@ test('customer groups are synced on model creation', function () {
         ],
     );
 
-    \Pest\Laravel\assertDatabaseHas(
+    assertDatabaseHas(
         'lunar_customer_group_product',
         [
             'customer_group_id' => $customerGroupB->id,

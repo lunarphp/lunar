@@ -2,14 +2,14 @@
 
 namespace Lunar\Core\Observers;
 
-use Lunar\Core\Models\Contracts\Discount as DiscountContract;
+use Lunar\Core\Models\Discount;
 
 class DiscountObserver
 {
     /**
      * Handle the Discount "deleting" event.
      */
-    public function deleting(DiscountContract $discount): void
+    public function deleting(Discount $discount): void
     {
         $discount->brands()->detach();
         $discount->collections()->detach();

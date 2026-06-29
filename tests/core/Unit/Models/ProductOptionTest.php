@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Lunar\Core\Models\ProductOption;

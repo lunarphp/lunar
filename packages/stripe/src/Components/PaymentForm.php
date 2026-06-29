@@ -3,7 +3,7 @@
 namespace Lunar\Stripe\Components;
 
 use Livewire\Component;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Cart;
 use Lunar\Stripe\Facades\Stripe;
 use Stripe\Stripe as StripeClient;
 
@@ -12,7 +12,7 @@ class PaymentForm extends Component
     /**
      * The instance of the order.
      */
-    public CartContract $cart;
+    public Cart $cart;
 
     /**
      * The return URL on a successful transaction

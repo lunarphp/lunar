@@ -9,10 +9,8 @@ use Lunar\Core\Contracts\DiscountManager as DiscountManagerContract;
 use Lunar\Core\DataObjects\CartDiscount;
 use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\Channel as ChannelContract;
-use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Discount;
 
@@ -66,16 +64,16 @@ class DiscountManager implements DiscountManagerContract
     /**
      * Set a single channel or a collection.
      */
-    public function channel(ChannelContract|iterable $channel): self
+    public function channel(Channel|iterable $channel): self
     {
         $channels = collect(
             ! is_iterable($channel) ? [$channel] : $channel
         );
 
-        if ($nonChannel = $channels->filter(fn ($channel) => ! $channel instanceof ChannelContract)->first()) {
+        if ($nonChannel = $channels->filter(fn ($channel) => ! $channel instanceof Channel)->first()) {
             throw new InvalidArgumentException(
                 __('lunar::exceptions.discounts.invalid_type', [
-                    'expected' => ChannelContract::class,
+                    'expected' => Channel::class,
                     'actual' => $nonChannel->getMorphClass(),
                 ])
             );
@@ -89,16 +87,16 @@ class DiscountManager implements DiscountManagerContract
     /**
      * Set a single customer group or a collection.
      */
-    public function customerGroup(CustomerGroupContract|iterable $customerGroups): self
+    public function customerGroup(CustomerGroup|iterable $customerGroups): self
     {
         $customerGroups = collect(
             ! is_iterable($customerGroups) ? [$customerGroups] : $customerGroups
         );
 
-        if ($nonGroup = $customerGroups->filter(fn ($channel) => ! $channel instanceof CustomerGroupContract)->first()) {
+        if ($nonGroup = $customerGroups->filter(fn ($channel) => ! $channel instanceof CustomerGroup)->first()) {
             throw new InvalidArgumentException(
                 __('lunar::exceptions.discounts.invalid_type', [
-                    'expected' => CustomerGroupContract::class,
+                    'expected' => CustomerGroup::class,
                     'actual' => $nonGroup->getMorphClass(),
                 ])
             );
@@ -119,7 +117,7 @@ class DiscountManager implements DiscountManagerContract
     /**
      * Returns the available discounts.
      */
-    public function getDiscounts(?CartContract $cart = null): Collection
+    public function getDiscounts(?Cart $cart = null): Collection
     {
         if ($this->channels->isEmpty() && $defaultChannel = Channel::getDefault()) {
             $this->channel($defaultChannel);
@@ -217,7 +215,7 @@ class DiscountManager implements DiscountManagerContract
         return $this->applied;
     }
 
-    public function apply(CartContract $cart): CartContract
+    public function apply(Cart $cart): Cart
     {
         if (! $this->discounts || $this->discounts?->isEmpty()) {
             $this->discounts = $this->getDiscounts($cart);

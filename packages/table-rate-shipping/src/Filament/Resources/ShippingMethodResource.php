@@ -7,11 +7,13 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
+use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages\EditShippingMethod;
+use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages\ListShippingMethod;
+use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages\ManageShippingMethodAvailability;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Schemas\ShippingMethodForm;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Tables\ShippingMethodTable;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Widgets\AvailabilityScheduleWidget;
-use Lunar\Shipping\Models\Contracts\ShippingMethod;
+use Lunar\Shipping\Models\ShippingMethod;
 
 class ShippingMethodResource extends BaseResource
 {
@@ -63,17 +65,17 @@ class ShippingMethodResource extends BaseResource
     protected static function getDefaultSubNavigation(): array
     {
         return [
-            Pages\EditShippingMethod::class,
-            Pages\ManageShippingMethodAvailability::class,
+            EditShippingMethod::class,
+            ManageShippingMethodAvailability::class,
         ];
     }
 
     protected static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListShippingMethod::route('/'),
-            'edit' => Pages\EditShippingMethod::route('/{record}/edit'),
-            'availability' => Pages\ManageShippingMethodAvailability::route('/{record}/availability'),
+            'index' => ListShippingMethod::route('/'),
+            'edit' => EditShippingMethod::route('/{record}/edit'),
+            'availability' => ManageShippingMethodAvailability::route('/{record}/availability'),
         ];
     }
 }

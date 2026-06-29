@@ -2,7 +2,7 @@
 
 namespace Lunar\Shipping\DataTransferObjects;
 
-use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Cart;
 use Lunar\Shipping\Models\ShippingRate;
 
 class ShippingOptionRequest
@@ -12,7 +12,7 @@ class ShippingOptionRequest
      */
     public function __construct(
         public ShippingRate $shippingRate,
-        public CartContract $cart
+        public Cart $cart
     ) {
         //
     }

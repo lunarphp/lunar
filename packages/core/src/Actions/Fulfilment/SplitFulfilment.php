@@ -7,7 +7,6 @@ use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Events\Fulfilment\FulfilmentCreated;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 /**
@@ -20,7 +19,7 @@ class SplitFulfilment implements SplitsFulfilment
     /**
      * @param  array<int|string, int>  $moves  [order_line_id => quantity]
      */
-    public function execute(FulfilmentContract $fulfilment, array $moves): Fulfilment
+    public function execute(Fulfilment $fulfilment, array $moves): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         if (! self::canRun($fulfilment)) {
@@ -86,7 +85,7 @@ class SplitFulfilment implements SplitsFulfilment
      * (un-handed-over) quantity. Used to gate the split action in the UI
      * without catching an exception.
      */
-    public static function canRun(FulfilmentContract $fulfilment): bool
+    public static function canRun(Fulfilment $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
         return $fulfilment->state->category() === FulfilmentStateCategory::Outstanding;

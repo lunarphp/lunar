@@ -39,6 +39,6 @@ class TagSelect extends Select
      */
     public function lunarModel(): string
     {
-        return Tag::modelClass();
+        return Tag::class;
     }
 }

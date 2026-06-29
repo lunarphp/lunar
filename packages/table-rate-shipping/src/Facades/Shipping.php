@@ -2,27 +2,33 @@
 
 namespace Lunar\Shipping\Facades;
 
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Lunar\Core\Models\Cart;
 use Lunar\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Lunar\Shipping\Managers\ShippingManager;
+use Lunar\Shipping\Resolvers\ShippingOptionResolver;
+use Lunar\Shipping\Resolvers\ShippingRateResolver;
+use Lunar\Shipping\Resolvers\ShippingZoneResolver;
 
 /**
  * @method static void createFreeShippingDriver()
  * @method static void createFlatRateDriver()
  * @method static void createShipByDriver()
  * @method static void createCollectionDriver()
- * @method static \Illuminate\Support\Collection getSupportedDrivers()
- * @method static \Lunar\Shipping\Resolvers\ShippingZoneResolver zones()
- * @method static \Lunar\Shipping\Resolvers\ShippingRateResolver shippingRates(\Lunar\Core\Models\Contracts\Cart|null $cart = null)
- * @method static \Lunar\Shipping\Resolvers\ShippingOptionResolver shippingOptions(\Lunar\Core\Models\Contracts\Cart|null $cart = null)
+ * @method static Collection getSupportedDrivers()
+ * @method static ShippingZoneResolver zones()
+ * @method static ShippingRateResolver shippingRates(Cart|null $cart = null)
+ * @method static ShippingOptionResolver shippingOptions(Cart|null $cart = null)
  * @method static mixed buildProvider(string $provider)
  * @method static void getDefaultDriver()
  * @method static mixed driver(string|null $driver = null)
- * @method static \Lunar\Shipping\Managers\ShippingManager extend(string $driver, \Closure $callback)
+ * @method static ShippingManager extend(string $driver, \Closure $callback)
  * @method static array getDrivers()
- * @method static \Illuminate\Contracts\Container\Container getContainer()
- * @method static \Lunar\Shipping\Managers\ShippingManager setContainer(\Illuminate\Contracts\Container\Container $container)
- * @method static \Lunar\Shipping\Managers\ShippingManager forgetDrivers()
+ * @method static Container getContainer()
+ * @method static ShippingManager setContainer(Container $container)
+ * @method static ShippingManager forgetDrivers()
  *
  * @see ShippingManager
  */

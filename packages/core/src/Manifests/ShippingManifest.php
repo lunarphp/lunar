@@ -7,7 +7,7 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\ShippingManifest as ShippingManifestContract;
 use Lunar\Core\DataTypes\ShippingOption;
-use Lunar\Core\Models\Contracts\Cart;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Modifiers\ShippingModifiers;
 
 class ShippingManifest implements ShippingManifestContract

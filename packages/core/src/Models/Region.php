@@ -24,7 +24,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Region extends Base implements Contracts\Region
+class Region extends Base
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -64,28 +64,28 @@ class Region extends Base implements Contracts\Region
 
     public function channel(): BelongsTo
     {
-        return $this->belongsTo(Channel::modelClass());
+        return $this->belongsTo(Channel::class);
     }
 
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::modelClass());
+        return $this->belongsTo(Currency::class);
     }
 
     public function language(): BelongsTo
     {
-        return $this->belongsTo(Language::modelClass());
+        return $this->belongsTo(Language::class);
     }
 
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::modelClass());
+        return $this->belongsTo(TaxZone::class);
     }
 
     public function countries(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return $this->belongsToMany(Country::modelClass(), "{$prefix}country_region");
+        return $this->belongsToMany(Country::class, "{$prefix}country_region");
     }
 }

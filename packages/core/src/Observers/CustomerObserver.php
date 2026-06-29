@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Observers;
 
-use Lunar\Core\Models\Contracts\Customer as CustomerContract;
+use Lunar\Core\Models\Customer;
 
 class CustomerObserver
 {
@@ -13,7 +13,7 @@ class CustomerObserver
      * constraint violations. Order and cart rows are kept (customer_id nulled);
      * addresses are owned by the customer and removed.
      */
-    public function deleting(CustomerContract $customer): void
+    public function deleting(Customer $customer): void
     {
         $customer->carts()->update(['customer_id' => null]);
         $customer->orders()->update(['customer_id' => null]);

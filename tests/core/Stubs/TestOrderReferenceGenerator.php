@@ -3,7 +3,7 @@
 namespace Lunar\Tests\Core\Stubs;
 
 use Lunar\Core\Contracts\OrderReferenceGenerator;
-use Lunar\Core\Models\Contracts\Order;
+use Lunar\Core\Models\Order;
 
 class TestOrderReferenceGenerator implements OrderReferenceGenerator
 {

@@ -16,7 +16,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxZonePostcode extends Base implements Contracts\TaxZonePostcode
+class TaxZonePostcode extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -42,7 +42,7 @@ class TaxZonePostcode extends Base implements Contracts\TaxZonePostcode
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::modelClass());
+        return $this->belongsTo(TaxZone::class);
     }
 
     /**
@@ -50,6 +50,6 @@ class TaxZonePostcode extends Base implements Contracts\TaxZonePostcode
      */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::modelClass());
+        return $this->belongsTo(Country::class);
     }
 }

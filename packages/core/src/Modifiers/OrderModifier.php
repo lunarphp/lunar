@@ -3,8 +3,8 @@
 namespace Lunar\Core\Modifiers;
 
 use Closure;
-use Lunar\Core\Models\Contracts\Cart;
-use Lunar\Core\Models\Contracts\Order;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\Order;
 
 abstract class OrderModifier
 {

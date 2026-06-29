@@ -17,7 +17,7 @@ trait HasTags
         $prefix = config('lunar.database.table_prefix');
 
         return $this->morphToMany(
-            Tag::modelClass(),
+            Tag::class,
             'taggable',
             "{$prefix}taggables"
         )->withTimestamps();

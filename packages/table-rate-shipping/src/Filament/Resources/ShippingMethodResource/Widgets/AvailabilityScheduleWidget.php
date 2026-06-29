@@ -5,7 +5,8 @@ namespace Lunar\Shipping\Filament\Resources\ShippingMethodResource\Widgets;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -53,16 +54,16 @@ class AvailabilityScheduleWidget extends Widget implements HasActions, HasForms
         ];
 
         $rows = collect($days)->map(fn ($label, $day) => Group::make([
-            Forms\Components\Checkbox::make('enabled')
+            Checkbox::make('enabled')
                 ->label($label)
                 ->live()
                 ->columnSpan(1),
-            Forms\Components\TimePicker::make('from')
+            TimePicker::make('from')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.from.label'))
                 ->seconds(false)
                 ->disabled(fn (Get $get) => ! $get('enabled'))
                 ->columnSpan(1),
-            Forms\Components\TimePicker::make('to')
+            TimePicker::make('to')
                 ->label(__('lunarpanel.shipping::shippingmethod.form.schedule.to.label'))
                 ->seconds(false)
                 ->disabled(fn (Get $get) => ! $get('enabled'))

@@ -2,6 +2,7 @@
 
 use Livewire\Livewire;
 use Lunar\Admin\Filament\Resources\RegionResource;
+use Lunar\Admin\Filament\Resources\RegionResource\Pages\CreateRegion;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Currency;
@@ -31,7 +32,7 @@ it('can create a region with a display preference and served countries', functio
     $countries = Country::factory(2)->create();
 
     $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')
-        ->test(RegionResource\Pages\CreateRegion::class)
+        ->test(CreateRegion::class)
         ->fillForm([
             'name' => 'United Kingdom',
             'handle' => 'uk',
@@ -63,7 +64,7 @@ it('stores a null display preference when left on the store default', function (
     $language = Language::factory()->create(['default' => true]);
 
     Livewire::actingAs($this->makeStaff(admin: true), 'staff')
-        ->test(RegionResource\Pages\CreateRegion::class)
+        ->test(CreateRegion::class)
         ->fillForm([
             'name' => 'Europe',
             'handle' => 'eu',

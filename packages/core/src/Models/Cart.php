@@ -38,7 +38,6 @@ use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Pipelines\Cart\Calculate;
 use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Core\Validation\CartLine\CartLineStock;
@@ -64,7 +63,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Cart extends Base implements Contracts\Cart
+class Cart extends Base
 {
     use CachesProperties;
     use HasFactory;
@@ -216,22 +215,22 @@ class Cart extends Base implements Contracts\Cart
 
     public function lines(): HasMany
     {
-        return $this->hasMany(CartLine::modelClass(), 'cart_id', 'id');
+        return $this->hasMany(CartLine::class, 'cart_id', 'id');
     }
 
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::modelClass());
+        return $this->belongsTo(Currency::class);
     }
 
     public function channel(): BelongsTo
     {
-        return $this->belongsTo(Channel::modelClass());
+        return $this->belongsTo(Channel::class);
     }
 
     public function region(): BelongsTo
     {
-        return $this->belongsTo(Region::modelClass());
+        return $this->belongsTo(Region::class);
     }
 
     /**
@@ -254,12 +253,12 @@ class Cart extends Base implements Contracts\Cart
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::modelClass());
+        return $this->belongsTo(Customer::class);
     }
 
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::modelClass());
+        return $this->belongsTo(TaxZone::class);
     }
 
     public function scopeUnmerged(Builder $query): Builder
@@ -269,22 +268,22 @@ class Cart extends Base implements Contracts\Cart
 
     public function addresses(): HasMany
     {
-        return $this->hasMany(CartAddress::modelClass(), 'cart_id');
+        return $this->hasMany(CartAddress::class, 'cart_id');
     }
 
     public function shippingAddress(): HasOne
     {
-        return $this->hasOne(CartAddress::modelClass(), 'cart_id')->whereType('shipping');
+        return $this->hasOne(CartAddress::class, 'cart_id')->whereType('shipping');
     }
 
     public function billingAddress(): HasOne
     {
-        return $this->hasOne(CartAddress::modelClass(), 'cart_id')->whereType('billing');
+        return $this->hasOne(CartAddress::class, 'cart_id')->whereType('billing');
     }
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::modelClass());
+        return $this->hasMany(Order::class);
     }
 
     public function scopeActive(Builder $query): Builder
@@ -303,7 +302,7 @@ class Cart extends Base implements Contracts\Cart
      */
     public function draftOrder(?int $draftOrderId = null): HasOne
     {
-        return $this->hasOne(Order::modelClass())
+        return $this->hasOne(Order::class)
             ->when($draftOrderId, function (Builder $query, int $draftOrderId) {
                 $query->where('id', $draftOrderId);
             })->whereNull('placed_at');
@@ -325,7 +324,7 @@ class Cart extends Base implements Contracts\Cart
      */
     public function completedOrder(?int $completedOrderId = null): HasOne
     {
-        return $this->hasOne(Order::modelClass())
+        return $this->hasOne(Order::class)
             ->when($completedOrderId, function (Builder $query, int $completedOrderId) {
                 $query->where('id', $completedOrderId);
             })->whereNotNull('placed_at');
@@ -333,7 +332,7 @@ class Cart extends Base implements Contracts\Cart
 
     public function completedOrders(): HasMany
     {
-        return $this->hasMany(Order::modelClass())
+        return $this->hasMany(Order::class)
             ->whereNotNull('placed_at');
     }
 
@@ -658,7 +657,7 @@ class Cart extends Base implements Contracts\Cart
      * Pass null to clear the override and fall back to the address-derived (or default) zone.
      * Pass `$refresh = false` to skip persistence and recalculation (useful for previewing without writing).
      */
-    public function setTaxZone(?TaxZoneContract $taxZone, bool $refresh = true): Cart
+    public function setTaxZone(?TaxZone $taxZone, bool $refresh = true): Cart
     {
         if ($taxZone) {
             $this->taxZone()->associate($taxZone);

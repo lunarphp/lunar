@@ -10,6 +10,8 @@ use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
+use function Pest\Laravel\assertDatabaseHas;
+
 uses(TestCase::class)
     ->group('resource.product');
 
@@ -116,7 +118,7 @@ it('can set product base prices correctly', function () {
         ],
     ])->call('save')->assertHasNoErrors();
 
-    \Pest\Laravel\assertDatabaseHas((new Price)->getTable(), [
+    assertDatabaseHas((new Price)->getTable(), [
         'price' => '232',
     ]);
 

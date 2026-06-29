@@ -32,7 +32,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class StockReservation extends Base implements Contracts\StockReservation
+class StockReservation extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -62,7 +62,7 @@ class StockReservation extends Base implements Contracts\StockReservation
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::modelClass(), 'product_variant_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
     public function reference(): MorphTo

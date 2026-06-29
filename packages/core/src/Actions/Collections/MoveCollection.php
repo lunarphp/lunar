@@ -6,7 +6,6 @@ use Lunar\Core\Contracts\Actions\Collections\MovesCollection;
 use Lunar\Core\Exceptions\CollectionActionException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 /**
  * Re-parent a collection inside its group. Validates the target is not
@@ -15,7 +14,7 @@ use Lunar\Core\Models\Contracts\Collection as CollectionContract;
  */
 class MoveCollection implements MovesCollection
 {
-    public function execute(CollectionContract $collection, ?CollectionContract $target = null): Collection
+    public function execute(Collection $collection, ?Collection $target = null): Collection
     {
         /** @var Collection $collection */
         if ($target !== null) {

@@ -2,11 +2,11 @@
 
 namespace Lunar\Core\Observers;
 
-use Lunar\Core\Models\Contracts\Product as ProductContract;
+use Lunar\Core\Models\Product;
 
 class ProductObserver
 {
-    public function deleting(ProductContract $product): void
+    public function deleting(Product $product): void
     {
         $product->variants()->get()->each->delete();
         $product->collections()->detach();

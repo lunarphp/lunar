@@ -7,7 +7,6 @@ use Lunar\Core\Exceptions\CartLineIdMismatchException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 
 class RemovePurchasable implements RemovesPurchasable
 {
@@ -17,7 +16,7 @@ class RemovePurchasable implements RemovesPurchasable
      * @throws CartLineIdMismatchException
      */
     public function execute(
-        CartContract $cart,
+        Cart $cart,
         int $cartLineId
     ): void {
         /** @var Cart $cart */

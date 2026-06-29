@@ -10,7 +10,7 @@ use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\CreateTaxRate;
 use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\EditTaxRate;
 use Lunar\Admin\Filament\Resources\TaxRateResource\Pages\ListTaxRates;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\TaxRate as TaxRateContract;
+use Lunar\Core\Models\TaxRate;
 use Lunar\Filament\RelationManagers\TaxRate\TaxRateAmountRelationManager;
 use Lunar\Filament\Schemas\TaxRate\TaxRateForm;
 use Lunar\Filament\Support\Resolver;
@@ -22,7 +22,7 @@ class TaxRateResource extends BaseResource
 
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = TaxRateContract::class;
+    protected static ?string $model = TaxRate::class;
 
     protected static ?int $navigationSort = 1;
 

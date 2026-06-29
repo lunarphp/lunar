@@ -3,7 +3,7 @@
 namespace Lunar\Core\Validation\Order;
 
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Models\Contracts\OrderLine as OrderLineContract;
+use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Validation\Fulfilment\FulfilmentQuantity;
 
 /**
@@ -21,7 +21,7 @@ class OrderLineQuantity
     /**
      * @throws FulfilmentException
      */
-    public function validate(OrderLineContract $orderLine, int $quantity): void
+    public function validate(OrderLine $orderLine, int $quantity): void
     {
         $order = $orderLine->order;
 

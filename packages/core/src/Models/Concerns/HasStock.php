@@ -27,7 +27,7 @@ trait HasStock
      */
     public function stockLevels(): HasMany
     {
-        return $this->hasMany(StockLevel::modelClass());
+        return $this->hasMany(StockLevel::class);
     }
 
     /**
@@ -35,7 +35,7 @@ trait HasStock
      */
     public function stockMovements(): HasMany
     {
-        return $this->hasMany(StockMovement::modelClass());
+        return $this->hasMany(StockMovement::class);
     }
 
     /**

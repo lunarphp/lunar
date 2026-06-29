@@ -15,7 +15,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxZoneCustomerGroup extends Base implements Contracts\TaxZoneCustomerGroup
+class TaxZoneCustomerGroup extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -41,7 +41,7 @@ class TaxZoneCustomerGroup extends Base implements Contracts\TaxZoneCustomerGrou
      */
     public function customerGroup(): BelongsTo
     {
-        return $this->belongsTo(CustomerGroup::modelClass());
+        return $this->belongsTo(CustomerGroup::class);
     }
 
     /**
@@ -49,6 +49,6 @@ class TaxZoneCustomerGroup extends Base implements Contracts\TaxZoneCustomerGrou
      */
     public function taxZone(): BelongsTo
     {
-        return $this->belongsTo(TaxZone::modelClass());
+        return $this->belongsTo(TaxZone::class);
     }
 }

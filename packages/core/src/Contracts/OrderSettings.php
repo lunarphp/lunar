@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Contracts;
 
-use Lunar\Core\Models\Contracts\Order;
+use Lunar\Core\Models\Order;
 
 /**
  * Store-level order preferences. Code-level defaults today; the store-scoped

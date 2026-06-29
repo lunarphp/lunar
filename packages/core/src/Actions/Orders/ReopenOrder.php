@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Orders;
 
 use Lunar\Core\Contracts\Actions\Orders\ReopensOrder;
 use Lunar\Core\Events\Orders\OrderReopened;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 /**
@@ -13,7 +12,7 @@ use Lunar\Core\Models\Order;
  */
 class ReopenOrder implements ReopensOrder
 {
-    public function execute(OrderContract $order): Order
+    public function execute(Order $order): Order
     {
         /** @var Order $order */
         if ($order->isOpen()) {
@@ -36,7 +35,7 @@ class ReopenOrder implements ReopensOrder
     /**
      * Whether the order can be reopened (it is currently closed).
      */
-    public static function canRun(OrderContract $order): bool
+    public static function canRun(Order $order): bool
     {
         /** @var Order $order */
         // A cancelled order is closed but must not be reopened (cancellation is

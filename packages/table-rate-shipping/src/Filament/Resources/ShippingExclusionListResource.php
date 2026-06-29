@@ -7,11 +7,12 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Pages;
+use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Pages\EditShippingExclusionList;
+use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Pages\ListShippingExclusionLists;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\RelationManagers\ShippingExclusionRelationManager;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Schemas\ShippingExclusionListForm;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Tables\ShippingExclusionListTable;
-use Lunar\Shipping\Models\Contracts\ShippingExclusionList;
+use Lunar\Shipping\Models\ShippingExclusionList;
 
 class ShippingExclusionListResource extends BaseResource
 {
@@ -63,8 +64,8 @@ class ShippingExclusionListResource extends BaseResource
     protected static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListShippingExclusionLists::route('/'),
-            'edit' => Pages\EditShippingExclusionList::route('/{record}/edit'),
+            'index' => ListShippingExclusionLists::route('/'),
+            'edit' => EditShippingExclusionList::route('/{record}/edit'),
         ];
     }
 }

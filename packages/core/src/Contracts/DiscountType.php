@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Contracts;
 
-use Lunar\Core\Models\Contracts\Cart;
+use Lunar\Core\Models\Cart;
 
 interface DiscountType
 {

@@ -2,28 +2,27 @@
 
 namespace Lunar\Shipping\Observers;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
 use Lunar\Shipping\Facades\Shipping;
 
 class OrderObserver
 {
-    public function updated(OrderContract $order): void
+    public function updated(Order $order): void
     {
         $this->updateShippingZone(
             $order
         );
     }
 
-    public function created(OrderContract $order): void
+    public function created(Order $order): void
     {
         $this->updateShippingZone(
             $order
         );
     }
 
-    protected function updateShippingZone(OrderContract $order): void
+    protected function updateShippingZone(Order $order): void
     {
         $shippingAddress = $order->shippingAddress ?: $order->cart?->shippingAddress;
 
@@ -50,7 +49,7 @@ class OrderObserver
     /**
      * Called when we're about to index the order.
      **/
-    public function indexing(OrderContract $order): void
+    public function indexing(Order $order): void
     {
         /** @var Order $order */
         $order->addSearchableAttribute('shipping_zone', $order->meta?->shipping_zone ?? null);

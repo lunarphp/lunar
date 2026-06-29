@@ -3,8 +3,8 @@
 namespace Lunar\Core\Validation\Fulfilment;
 
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\FulfilmentLine;
+use Lunar\Core\Models\Order;
 
 /**
  * Protects the section A quantity invariant from the fulfilment side: the total
@@ -30,7 +30,7 @@ class FulfilmentQuantity
      *
      * @throws FulfilmentException
      */
-    public function validate(OrderContract $order, array $lines, ?int $ignoreFulfilmentId = null): void
+    public function validate(Order $order, array $lines, ?int $ignoreFulfilmentId = null): void
     {
         foreach ($lines as $orderLineId => $quantity) {
             if ($quantity < 1) {
@@ -75,7 +75,7 @@ class FulfilmentQuantity
      * Quantity of an order line already covered by the order's non-cancelled
      * fulfilments.
      */
-    public function coveredQuantity(OrderContract $order, int $orderLineId, ?int $ignoreFulfilmentId = null): int
+    public function coveredQuantity(Order $order, int $orderLineId, ?int $ignoreFulfilmentId = null): int
     {
         $fulfilmentIds = $order->fulfilments()
             ->where('state', '!=', 'cancelled')

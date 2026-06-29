@@ -32,7 +32,6 @@ use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasTags;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
 use Lunar\Core\States\Order\Payment\PaymentStatus;
 use Spatie\ModelStates\HasStates;
@@ -68,7 +67,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Order extends Base implements Contracts\Order, HasCurrency
+class Order extends Base implements HasCurrency
 {
     use FormatsPrices;
     use HasFactory;
@@ -100,7 +99,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'fulfilment_status' => FulfilmentStatus::class,
     ];
 
-    public function resolveCurrency(): CurrencyContract
+    public function resolveCurrency(): Currency
     {
         $this->loadMissing('currency');
 
@@ -191,27 +190,27 @@ class Order extends Base implements Contracts\Order, HasCurrency
 
     public function channel(): BelongsTo
     {
-        return $this->belongsTo(Channel::modelClass());
+        return $this->belongsTo(Channel::class);
     }
 
     public function region(): BelongsTo
     {
-        return $this->belongsTo(Region::modelClass());
+        return $this->belongsTo(Region::class);
     }
 
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::modelClass());
+        return $this->belongsTo(Cart::class);
     }
 
     public function lines(): HasMany
     {
-        return $this->hasMany(OrderLine::modelClass());
+        return $this->hasMany(OrderLine::class);
     }
 
     public function fulfilments(): HasMany
     {
-        return $this->hasMany(Fulfilment::modelClass());
+        return $this->hasMany(Fulfilment::class);
     }
 
     public function physicalLines(): HasMany
@@ -247,22 +246,22 @@ class Order extends Base implements Contracts\Order, HasCurrency
 
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::modelClass(), 'currency_code', 'code');
+        return $this->belongsTo(Currency::class, 'currency_code', 'code');
     }
 
     public function addresses(): HasMany
     {
-        return $this->hasMany(OrderAddress::modelClass(), 'order_id');
+        return $this->hasMany(OrderAddress::class, 'order_id');
     }
 
     public function shippingAddress(): HasOne
     {
-        return $this->hasOne(OrderAddress::modelClass(), 'order_id')->whereType('shipping');
+        return $this->hasOne(OrderAddress::class, 'order_id')->whereType('shipping');
     }
 
     public function billingAddress(): HasOne
     {
-        return $this->hasOne(OrderAddress::modelClass(), 'order_id')->whereType('billing');
+        return $this->hasOne(OrderAddress::class, 'order_id')->whereType('billing');
     }
 
     /**
@@ -305,7 +304,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::modelClass())->orderBy('created_at', 'desc');
+        return $this->hasMany(Transaction::class)->orderBy('created_at', 'desc');
     }
 
     public function captures(): HasMany
@@ -325,7 +324,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::modelClass());
+        return $this->belongsTo(Customer::class);
     }
 
     public function user(): BelongsTo

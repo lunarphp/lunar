@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\HoldsFulfilment;
 use Lunar\Core\Events\Fulfilment\FulfilmentHeld;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 /**
@@ -19,7 +18,7 @@ class HoldFulfilment implements HoldsFulfilment
      */
     public const HOLDABLE_STATES = ['pending', 'in-progress'];
 
-    public function execute(FulfilmentContract $fulfilment, ?string $reason = null, ?string $note = null): Fulfilment
+    public function execute(Fulfilment $fulfilment, ?string $reason = null, ?string $note = null): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         $fulfilment->forceFill([
@@ -36,7 +35,7 @@ class HoldFulfilment implements HoldsFulfilment
     /**
      * Whether the fulfilment can be held — pre-ship and not already on hold.
      */
-    public static function canRun(FulfilmentContract $fulfilment): bool
+    public static function canRun(Fulfilment $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
         return ! $fulfilment->isOnHold()

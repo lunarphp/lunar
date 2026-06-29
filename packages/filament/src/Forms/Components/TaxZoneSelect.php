@@ -23,6 +23,6 @@ class TaxZoneSelect extends Select
      */
     public function lunarModel(): string
     {
-        return TaxZone::modelClass();
+        return TaxZone::class;
     }
 }

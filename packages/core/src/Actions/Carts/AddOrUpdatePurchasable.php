@@ -6,7 +6,7 @@ use Lunar\Core\Contracts\Actions\Carts\AddsOrUpdatesPurchasable;
 use Lunar\Core\Contracts\Actions\Carts\GetsExistingCartLine;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Exceptions\InvalidCartLineQuantityException;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Cart;
 
 class AddOrUpdatePurchasable implements AddsOrUpdatesPurchasable
 {
@@ -18,7 +18,7 @@ class AddOrUpdatePurchasable implements AddsOrUpdatesPurchasable
      * Execute the action.
      */
     public function execute(
-        CartContract $cart,
+        Cart $cart,
         Purchasable $purchasable,
         int $quantity = 1,
         array $meta = []

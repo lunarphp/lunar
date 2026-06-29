@@ -13,7 +13,6 @@ use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**
  * @property int $id
@@ -32,7 +31,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Transaction extends Base implements Contracts\Transaction, HasCurrency
+class Transaction extends Base implements HasCurrency
 {
     use FormatsPrices;
     use HasFactory;
@@ -53,7 +52,7 @@ class Transaction extends Base implements Contracts\Transaction, HasCurrency
         'meta' => AsArrayObject::class,
     ];
 
-    public function resolveCurrency(): CurrencyContract
+    public function resolveCurrency(): Currency
     {
         $this->loadMissing('order.currency');
 
@@ -73,7 +72,7 @@ class Transaction extends Base implements Contracts\Transaction, HasCurrency
      */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::modelClass());
+        return $this->belongsTo(Order::class);
     }
 
     /**
@@ -82,8 +81,8 @@ class Transaction extends Base implements Contracts\Transaction, HasCurrency
     public function currency(): HasOneThrough
     {
         return $this->hasOneThrough(
-            Currency::modelClass(),
-            Order::modelClass(),
+            Currency::class,
+            Order::class,
             'id',
             'code',
             'order_id',

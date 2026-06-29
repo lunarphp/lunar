@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Actions\Products\AdjustStockAction;
 use Lunar\Filament\Schemas\ProductVariant\ProductVariantInventory;
 
@@ -89,7 +89,7 @@ class ManageProductInventory extends BaseEditRecord
         return $record;
     }
 
-    protected function getVariant(): ProductVariantContract
+    protected function getVariant(): ProductVariant
     {
         return $this->getRecord()->variants()->first();
     }

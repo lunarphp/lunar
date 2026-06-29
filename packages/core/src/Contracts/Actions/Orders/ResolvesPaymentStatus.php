@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Contracts\Actions\Orders;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\Payment\PaymentStatus;
 
 interface ResolvesPaymentStatus
@@ -12,5 +12,5 @@ interface ResolvesPaymentStatus
      *
      * @return class-string<PaymentStatus>
      */
-    public function execute(OrderContract $order): string;
+    public function execute(Order $order): string;
 }
