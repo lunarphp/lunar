@@ -9,6 +9,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
+use Lunar\Core\Models\Region;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxRate;
 use Lunar\Core\Models\TaxRateAmount;
@@ -17,9 +18,9 @@ use Lunar\DemoData\Support\DemoContext;
 
 /**
  * Establishes the store's foundation: language, channel, customer group,
- * default location, currencies, and a tax class/zone/rate. Keyed on natural
- * handles/codes so it reuses anything `lunar:install` already created and is
- * safe to re-run.
+ * default location, currencies, a tax class/zone/rate, and a default region.
+ * Keyed on natural handles/codes so it reuses anything `lunar:install`
+ * already created and is safe to re-run.
  */
 class FoundationGenerator implements Generator
 {
@@ -48,7 +49,15 @@ class FoundationGenerator implements Generator
 
         $taxClass = $this->taxClass();
         $context->set('taxClass', $taxClass);
-        $context->set('taxZone', $this->taxZone($taxClass));
+        $taxZone = $this->taxZone($taxClass);
+        $context->set('taxZone', $taxZone);
+
+        $context->set('region', $this->region(
+            $context->get('channel'),
+            $context->get('currency'),
+            $context->get('language'),
+            $taxZone,
+        ));
     }
 
     protected function language(): Language
@@ -150,5 +159,27 @@ class FoundationGenerator implements Generator
         }
 
         return $zone;
+    }
+
+    protected function region(Channel $channel, Currency $currency, Language $language, TaxZone $taxZone): Region
+    {
+        $region = Region::query()->firstOrCreate(
+            ['handle' => 'default'],
+            [
+                'name' => 'Default',
+                'channel_id' => $channel->id,
+                'currency_id' => $currency->id,
+                'language_id' => $language->id,
+                'tax_zone_id' => $taxZone->id,
+                'default' => true,
+            ],
+        );
+
+        // Mirror lunar:install — the default region serves every known country.
+        if (! $region->countries()->exists() && Country::query()->exists()) {
+            $region->countries()->sync(Country::query()->pluck('id'));
+        }
+
+        return $region;
     }
 }

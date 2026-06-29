@@ -244,6 +244,7 @@ class OrdersGenerator implements Generator
 
         $order = Order::create([
             'channel_id' => $this->context->get('channel')?->id,
+            'region_id' => $this->context->get('region')?->id,
             'customer_id' => $customer?->id,
             'reference' => $reference,
             'currency_code' => $this->currency->code,
