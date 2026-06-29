@@ -23,7 +23,6 @@ use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource;
-use Lunar\Shipping\Models\Contracts\ShippingMethod as ShippingMethodContract;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 
@@ -211,13 +210,13 @@ class ManageShippingRates extends ManageRelatedRecords
         ]);
     }
 
-    private static function getShippingChargeBy(ShippingMethodContract|int|null $method): string
+    private static function getShippingChargeBy(ShippingMethod|int|null $method): string
     {
         if (blank($method)) {
             return 'cart_total';
         }
 
-        if (! $method instanceof ShippingMethodContract) {
+        if (! $method instanceof ShippingMethod) {
             $method = ShippingMethod::find($method);
         }
 

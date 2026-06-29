@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\State;
 use Lunar\Filament\Support\Concerns\CallsHooks;
-use Lunar\Shipping\Models\Contracts\ShippingZone;
+use Lunar\Shipping\Models\ShippingZone;
 
 class ShippingZoneForm
 {

@@ -9,7 +9,7 @@ use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Shipping\Factories\ShippingExclusionListFactory;
 
-class ShippingExclusionList extends Base implements Contracts\ShippingExclusionList
+class ShippingExclusionList extends Base
 {
     use HasFactory;
     use LogsActivity;

@@ -13,7 +13,7 @@ use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages\ManageShippingE
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages\ManageShippingRates;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Schemas\ShippingZoneForm;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Tables\ShippingZoneTable;
-use Lunar\Shipping\Models\Contracts\ShippingZone;
+use Lunar\Shipping\Models\ShippingZone;
 
 class ShippingZoneResource extends BaseResource
 {

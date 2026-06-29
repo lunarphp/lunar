@@ -17,7 +17,7 @@ use Lunar\Shipping\Database\Factories\ShippingMethodFactory;
 use Lunar\Shipping\Facades\Shipping;
 use Lunar\Shipping\Interfaces\ShippingRateInterface;
 
-class ShippingMethod extends Base implements Contracts\ShippingMethod
+class ShippingMethod extends Base
 {
     use HasCustomerGroups;
     use HasFactory;

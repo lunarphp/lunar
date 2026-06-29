@@ -16,7 +16,7 @@ use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\Database\Factories\ShippingRateFactory;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
 
-class ShippingRate extends Base implements Contracts\ShippingRate, Purchasable
+class ShippingRate extends Base implements Purchasable
 {
     use HasFactory;
     use HasPrices;

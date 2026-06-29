@@ -13,7 +13,7 @@ use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages\ManageShippin
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Schemas\ShippingMethodForm;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Tables\ShippingMethodTable;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Widgets\AvailabilityScheduleWidget;
-use Lunar\Shipping\Models\Contracts\ShippingMethod;
+use Lunar\Shipping\Models\ShippingMethod;
 
 class ShippingMethodResource extends BaseResource
 {

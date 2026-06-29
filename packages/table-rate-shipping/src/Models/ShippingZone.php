@@ -13,7 +13,7 @@ use Lunar\Core\Models\Order;
 use Lunar\Core\Models\State;
 use Lunar\Shipping\Database\Factories\ShippingZoneFactory;
 
-class ShippingZone extends Base implements Contracts\ShippingZone
+class ShippingZone extends Base
 {
     use HasFactory;
     use LogsActivity;
