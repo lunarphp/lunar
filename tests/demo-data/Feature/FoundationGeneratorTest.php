@@ -43,8 +43,8 @@ test('it seeds the configured currencies with a single default', function () {
     expect(Currency::whereCode('EUR')->exists())->toBeTrue();
 
     expect(Currency::whereDefault(true)->count())->toBe(1);
-    expect(Currency::whereDefault(true)->first()->code)->toBe('GBP');
-    expect((float) Currency::whereCode('GBP')->first()->exchange_rate)->toBe(1.0);
+    expect(Currency::whereDefault(true)->first()->code)->toBe('USD');
+    expect((float) Currency::whereCode('USD')->first()->exchange_rate)->toBe(1.0);
 });
 
 test('it seeds a tax class, zone and a 20% rate', function () {

@@ -23,7 +23,7 @@ return [
     /*
      | Currencies the store is seeded with. The first is treated as the default.
      */
-    'currencies' => ['GBP', 'USD', 'EUR'],
+    'currencies' => ['USD', 'GBP', 'EUR'],
 
     /*
      | Per-scale volume knobs. Every scale guarantees full order-status and

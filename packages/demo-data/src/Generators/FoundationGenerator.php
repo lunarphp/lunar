@@ -30,9 +30,9 @@ class FoundationGenerator implements Generator
      * @var array<string, array{name: string, rate: float}>
      */
     protected array $currencyMeta = [
-        'GBP' => ['name' => 'British Pound', 'rate' => 1.0],
-        'USD' => ['name' => 'US Dollar', 'rate' => 1.27],
-        'EUR' => ['name' => 'Euro', 'rate' => 1.17],
+        'USD' => ['name' => 'US Dollar', 'rate' => 1.0],
+        'GBP' => ['name' => 'British Pound', 'rate' => 0.79],
+        'EUR' => ['name' => 'Euro', 'rate' => 0.92],
     ];
 
     public function generate(DemoContext $context): void
@@ -88,8 +88,8 @@ class FoundationGenerator implements Generator
      */
     protected function currencies(): Collection
     {
-        $codes = (array) config('lunar.demo-data.currencies', ['GBP']);
-        $defaultCode = $codes[0] ?? 'GBP';
+        $codes = (array) config('lunar.demo-data.currencies', ['USD']);
+        $defaultCode = $codes[0] ?? 'USD';
 
         $currencies = collect($codes)->map(function (string $code) use ($defaultCode) {
             $meta = $this->currencyMeta[$code] ?? ['name' => $code, 'rate' => 1.0];

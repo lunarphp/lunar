@@ -71,11 +71,12 @@ test('it creates published products with a variant, prices and media', function 
     expect($product->getMedia('images'))->toHaveCount(1);
 
     $variant = $product->variants()->first();
-    $gbp = $variant->prices()->whereHas('currency', fn ($q) => $q->where('code', 'GBP'))->first();
+    // The fixture price is the default-currency (USD) amount; £/€ derive from it.
+    $usd = $variant->prices()->whereHas('currency', fn ($q) => $q->where('code', 'USD'))->first();
 
     expect($variant->prices()->count())->toBe(3);
-    expect($gbp->price)->toBe(8900);
-    expect($gbp->list_price)->toBe(12000);
+    expect($usd->price)->toBe(8900);
+    expect($usd->list_price)->toBe(12000);
 });
 
 test('it varies opening stock so out-of-stock is visible', function () {

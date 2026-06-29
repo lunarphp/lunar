@@ -25,7 +25,7 @@ class OrdersGenerator implements Generator
 {
     protected DemoContext $context;
 
-    protected Currency $gbp;
+    protected Currency $currency;
 
     /** @var Collection<int, Customer> */
     protected Collection $customers;
@@ -44,12 +44,12 @@ class OrdersGenerator implements Generator
         $context->reseed();
 
         $this->context = $context;
-        $this->gbp = $context->get('currency') ?? Currency::query()->where('code', 'GBP')->firstOrFail();
+        $this->currency = $context->get('currency') ?? Currency::query()->where('default', true)->firstOrFail();
         $this->customers = Customer::query()->orderBy('id')->get();
         $this->variants = ProductVariant::query()
             ->with('product')
             ->where('shippable', true)
-            ->whereHas('prices', fn ($q) => $q->where('currency_id', $this->gbp->id))
+            ->whereHas('prices', fn ($q) => $q->where('currency_id', $this->currency->id))
             ->orderBy('id')
             ->limit(50)
             ->get();
@@ -246,8 +246,8 @@ class OrdersGenerator implements Generator
             'channel_id' => $this->context->get('channel')?->id,
             'customer_id' => $customer?->id,
             'reference' => $reference,
-            'currency_code' => $this->gbp->code,
-            'compare_currency_code' => $this->gbp->code,
+            'currency_code' => $this->currency->code,
+            'compare_currency_code' => $this->currency->code,
             'exchange_rate' => 1,
             'sub_total' => $rows->sum('sub_total'),
             'tax_total' => $rows->sum('tax_total'),
@@ -383,7 +383,7 @@ class OrdersGenerator implements Generator
     protected function unitPrice(ProductVariant $variant): int
     {
         return (int) ($variant->prices()
-            ->where('currency_id', $this->gbp->id)
+            ->where('currency_id', $this->currency->id)
             ->orderBy('min_quantity')
             ->value('price') ?? 0);
     }
@@ -424,7 +424,7 @@ class OrdersGenerator implements Generator
 
         $variant->prices()->create([
             'price' => 2500,
-            'currency_id' => $this->gbp->id,
+            'currency_id' => $this->currency->id,
             'min_quantity' => 1,
         ]);
 
