@@ -4,7 +4,6 @@ namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionLookup;
 use Lunar\Shipping\Events\ShippingOptionResolvedEvent;
 
@@ -13,12 +12,12 @@ class ShippingOptionResolver
     /**
      * The cart to use when resolving.
      */
-    protected ?CartContract $cart;
+    protected ?Cart $cart;
 
     /**
      * Initialise the resolver.
      */
-    public function __construct(?CartContract $cart = null)
+    public function __construct(?Cart $cart = null)
     {
         $this->cart = $cart;
     }
@@ -26,7 +25,7 @@ class ShippingOptionResolver
     /**
      * Set the cart.
      */
-    public function cart(CartContract $cart): self
+    public function cart(Cart $cart): self
     {
         $this->cart = $cart;
 

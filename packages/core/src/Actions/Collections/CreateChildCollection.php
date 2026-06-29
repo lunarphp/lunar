@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Collections;
 use Lunar\Core\Contracts\Actions\Collections\CreatesChildCollection;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 use Lunar\Core\Models\Language;
 
 /**
@@ -16,7 +15,7 @@ use Lunar\Core\Models\Language;
  */
 class CreateChildCollection implements CreatesChildCollection
 {
-    public function execute(CollectionContract $parent, string|array $name): Collection
+    public function execute(Collection $parent, string|array $name): Collection
     {
         return DB::transaction(function () use ($parent, $name): Collection {
             /** @var Collection $child */

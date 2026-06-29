@@ -16,9 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
-use Lunar\Core\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\ProductOption;
@@ -368,7 +365,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                     $variant = $this->record->variants()->first();
                     $variant->values()->detach();
                     $this->record->productOptions()->exclusive()->each(
-                        fn (ProductOptionContract $productOption) => $productOption->delete()
+                        fn (ProductOption $productOption) => $productOption->delete()
                     );
 
                     $this->record->productOptions()->shared()->detach();
@@ -376,7 +373,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         ->where('id', '!=', $variant->id)
                         ->get()
                         ->each(
-                            fn (ProductVariantContract $variant) => $variant->delete()
+                            fn (ProductVariant $variant) => $variant->delete()
                         );
 
                     DB::commit();
@@ -465,7 +462,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         return RecordUrls::for('product_variant', $variantId, ['product' => $this->record]);
     }
 
-    protected function mapOptionValue(ProductOptionValueContract $value, bool $enabled = true)
+    protected function mapOptionValue(ProductOptionValue $value, bool $enabled = true)
     {
         /** @var ProductOptionValue $value */
         return [
@@ -476,7 +473,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
         ];
     }
 
-    protected function mapOption(ProductOptionContract $option, array $values = []): array
+    protected function mapOption(ProductOption $option, array $values = []): array
     {
         /** @var ProductOption $option */
         return [

@@ -4,7 +4,6 @@ namespace Lunar\Filament\GlobalSearch;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
 
 /**
@@ -14,7 +13,7 @@ class ProductGlobalSearch extends GlobalSearchDescriptor
 {
     public static function getModelContract(): string
     {
-        return ProductContract::class;
+        return Product::class;
     }
 
     public static function getSearchableAttributes(): array

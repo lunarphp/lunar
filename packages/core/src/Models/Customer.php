@@ -29,7 +29,7 @@ use Lunar\Core\Models\Concerns\Searchable;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Customer extends Base implements Contracts\Customer
+class Customer extends Base
 {
     use HasAttributeData;
     use HasFactory;

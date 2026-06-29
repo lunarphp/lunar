@@ -6,30 +6,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductType;
 use Lunar\Tests\Core\TestCase;
 
 /**
- * The supported, substitution-free ways to extend a model, exercised against real
- * Lunar models. This is the gate for retiring model class substitution: if a recipe
- * cannot pass here, removal does not proceed.
+ * The supported ways to extend a Lunar model without subclassing — relationships,
+ * methods, casts, query scopes, lifecycle hooks, and behaviour overrides — each
+ * exercised against a real Lunar model.
  */
 uses(TestCase::class);
 uses(RefreshDatabase::class);
-
-// These recipes describe the post-removal world, where a model has a single class
-// identity. Under model extending the canonical class and its replacement are two
-// identities, which actively breaks some natives (e.g. an externally-registered
-// global scope is dropped because queries run as the replaced class). Asserting
-// the recipes against the system being removed is moot, so skip that matrix leg.
-beforeEach(function () {
-    if (env('LUNAR_TESTING_REPLACE_MODELS')) {
-        $this->markTestSkipped('Recipes assert the post-removal single class identity.');
-    }
-});
 
 // Global scopes live in static state on the model class and outlive a single
 // test; clear them so the addGlobalScope recipe cannot leak into other tests.
@@ -97,7 +85,7 @@ test('recipe: override behaviour by binding the action contract', function () {
     {
         public bool $called = false;
 
-        public function execute(OrderContract $order, ?string $reason = null, ?string $note = null, bool $notify = true): Order
+        public function execute(Order $order, ?string $reason = null, ?string $note = null, bool $notify = true): Order
         {
             $this->called = true;
 

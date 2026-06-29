@@ -5,7 +5,7 @@ namespace Lunar\Filament\RelationManagers\Discount;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Forms;
+use Filament\Forms\Components\Hidden;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -49,7 +49,7 @@ class CollectionConditionRelationManager extends BaseRelationManager
                     CollectionSelect::make('discountable_id')
                         ->label(__('lunar-filament::collection.label'))
                         ->required(),
-                    Forms\Components\Hidden::make('discountable_type')
+                    Hidden::make('discountable_type')
                         ->default(Collection::morphName()),
                 ])->label(
                     __('lunar-filament::discount.relationmanagers.collection_conditions.actions.attach.label')

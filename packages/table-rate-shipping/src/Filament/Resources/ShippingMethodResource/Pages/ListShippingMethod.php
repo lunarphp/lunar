@@ -2,7 +2,7 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages;
 
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Schemas\Components\Group;
 use Lunar\Admin\Support\Pages\BaseListRecords;
 use Lunar\Core\Models\CustomerGroup;
@@ -17,7 +17,7 @@ class ListShippingMethod extends BaseListRecords
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->form([
+            CreateAction::make()->form([
                 ShippingMethodForm::getNameComponent(),
                 Group::make([
                     ShippingMethodForm::getCodeComponent(),

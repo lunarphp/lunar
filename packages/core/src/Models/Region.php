@@ -24,7 +24,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Region extends Base implements Contracts\Region
+class Region extends Base
 {
     use HasDefaultRecord;
     use HasFactory;

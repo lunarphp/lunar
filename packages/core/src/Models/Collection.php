@@ -41,7 +41,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Collection extends Base implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
+class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
 {
     use HasAttributeData,
         HasChannels,

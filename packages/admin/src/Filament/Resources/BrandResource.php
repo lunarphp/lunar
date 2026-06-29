@@ -14,7 +14,7 @@ use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandMedia;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandProducts;
 use Lunar\Admin\Filament\Resources\BrandResource\Pages\ManageBrandUrls;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Brand as BrandContract;
+use Lunar\Core\Models\Brand;
 use Lunar\Filament\GlobalSearch\BrandGlobalSearch;
 use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
 use Lunar\Filament\Schemas\Brand\BrandForm;
@@ -29,7 +29,7 @@ class BrandResource extends BaseResource
 
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = BrandContract::class;
+    protected static ?string $model = Brand::class;
 
     protected static ?int $navigationSort = 3;
 

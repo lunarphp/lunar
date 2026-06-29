@@ -30,7 +30,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Attribute extends Base implements Contracts\Attribute
+class Attribute extends Base
 {
     use HasFactory;
     use HasMacros;

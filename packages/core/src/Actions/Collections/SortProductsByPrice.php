@@ -3,8 +3,6 @@
 namespace Lunar\Core\Actions\Collections;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Product;
 
@@ -27,7 +25,7 @@ class SortProductsByPrice
         });
     }
 
-    protected function getMinPrice(ProductContract $product, CurrencyContract $currency)
+    protected function getMinPrice(Product $product, Currency $currency)
     {
         /** @var Product $product */
         /** @var Currency $currency */

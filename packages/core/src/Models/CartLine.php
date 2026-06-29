@@ -26,7 +26,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CartLine extends Base implements Contracts\CartLine
+class CartLine extends Base
 {
     use CachesProperties;
     use HasFactory;

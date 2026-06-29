@@ -4,7 +4,7 @@ namespace Lunar\Core\Contracts\Actions\Products;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockReservation;
 
 interface ReservesStock
@@ -14,7 +14,7 @@ interface ReservesStock
      * `reserved` rollup. `$reference` is the holder — a Cart in the follow-on.
      */
     public function execute(
-        ProductVariantContract $variant,
+        ProductVariant $variant,
         int $quantity,
         ?DateTimeInterface $expiresAt = null,
         ?Model $reference = null,

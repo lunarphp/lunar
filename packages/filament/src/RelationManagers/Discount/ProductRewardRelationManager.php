@@ -9,7 +9,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Forms\Components\DiscountTargetSelect;
@@ -69,7 +68,7 @@ class ProductRewardRelationManager extends BaseRelationManager
                         __('lunar-filament::discount.relationmanagers.conditions.table.name.label')
                     )
                     ->formatStateUsing(function (Model $record) {
-                        if ($record->discountable instanceof ProductVariantContract) {
+                        if ($record->discountable instanceof ProductVariant) {
                             return $record->discountable->product->translate('name').' - '.$record->discountable->sku;
                         }
 

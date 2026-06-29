@@ -3,7 +3,6 @@
 namespace Lunar\Core\Actions\Fulfilment;
 
 use Lunar\Core\Contracts\Actions\Fulfilment\RemovesFulfilmentTracking;
-use Lunar\Core\Models\Contracts\FulfilmentTracking as FulfilmentTrackingContract;
 use Lunar\Core\Models\FulfilmentTracking;
 
 /**
@@ -12,7 +11,7 @@ use Lunar\Core\Models\FulfilmentTracking;
  */
 class RemoveFulfilmentTracking implements RemovesFulfilmentTracking
 {
-    public function execute(FulfilmentTrackingContract $tracking): void
+    public function execute(FulfilmentTracking $tracking): void
     {
         /** @var FulfilmentTracking $tracking */
         $tracking->delete();

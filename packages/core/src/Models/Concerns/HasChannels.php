@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\Models\Contracts\Channel as ChannelContract;
 
 trait HasChannels
 {
@@ -94,7 +93,7 @@ trait HasChannels
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeChannel($query, ChannelContract|iterable|null $channel = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
+    public function scopeChannel($query, Channel|iterable|null $channel = null, ?DateTime $startsAt = null, ?DateTime $endsAt = null)
     {
         if (blank($channel)) {
             return $query;

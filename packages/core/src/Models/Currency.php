@@ -23,7 +23,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Currency extends Base implements Contracts\Currency
+class Currency extends Base
 {
     use HasDefaultRecord;
     use HasFactory;

@@ -21,7 +21,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxZone extends Base implements Contracts\TaxZone
+class TaxZone extends Base
 {
     use HasDefaultRecord;
     use HasFactory;

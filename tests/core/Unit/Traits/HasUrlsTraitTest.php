@@ -11,6 +11,8 @@ use Lunar\Core\Models\Product;
 use Lunar\Core\Models\Url;
 use Lunar\Tests\Core\TestCase;
 
+use function Pest\Laravel\assertDatabaseHas;
+
 uses(TestCase::class);
 
 uses(RefreshDatabase::class);
@@ -37,7 +39,7 @@ function can_generate_urls()
 
     expect($product->refresh()->urls)->toHaveCount(1);
 
-    \Pest\Laravel\assertDatabaseHas((new Url)->getTable(), [
+    assertDatabaseHas((new Url)->getTable(), [
         'element_type' => $product->getMorphClass(),
         'element_id' => $product->id,
         'slug' => Str::slug($product->translateAttribute('name')),

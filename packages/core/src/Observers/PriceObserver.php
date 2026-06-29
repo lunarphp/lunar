@@ -4,8 +4,8 @@ namespace Lunar\Core\Observers;
 
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Lunar\Core\Jobs\Currencies\SyncPriceCurrencies;
-use Lunar\Core\Models\Contracts\Price;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Price;
 
 class PriceObserver implements ShouldHandleEventsAfterCommit
 {

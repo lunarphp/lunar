@@ -6,12 +6,8 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\Models\Contracts\Channel as ChannelContract;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\Models\Contracts\Customer as CustomerContract;
-use Lunar\Core\Models\Contracts\Language as LanguageContract;
-use Lunar\Core\Models\Contracts\Region as RegionContract;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Region;
@@ -24,12 +20,12 @@ use Lunar\Core\Models\Region;
 class ResolveStorefrontContext implements ResolvesStorefrontContext
 {
     public function execute(
-        ?ChannelContract $channel = null,
-        ?CurrencyContract $currency = null,
-        ?LanguageContract $language = null,
-        ?CustomerContract $customer = null,
+        ?Channel $channel = null,
+        ?Currency $currency = null,
+        ?Language $language = null,
+        ?Customer $customer = null,
         ?Collection $customerGroups = null,
-        ?RegionContract $region = null,
+        ?Region $region = null,
     ): StorefrontContext {
         $region ??= Region::getDefault();
         $region?->loadMissing(['channel', 'currency', 'language']);
@@ -49,7 +45,7 @@ class ResolveStorefrontContext implements ResolvesStorefrontContext
     /**
      * @return Collection<int, CustomerGroup>
      */
-    protected function resolveCustomerGroups(?CustomerContract $customer): Collection
+    protected function resolveCustomerGroups(?Customer $customer): Collection
     {
         $groups = $customer?->customerGroups()->get() ?? new Collection;
 

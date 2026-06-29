@@ -5,7 +5,6 @@ namespace Lunar\Filament\GlobalSearch;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 /**
  * @extends GlobalSearchDescriptor<Collection>
@@ -14,7 +13,7 @@ class CollectionGlobalSearch extends GlobalSearchDescriptor
 {
     public static function getModelContract(): string
     {
-        return CollectionContract::class;
+        return Collection::class;
     }
 
     public static function getSearchableAttributes(): array

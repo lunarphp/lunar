@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Models\Collection;
 use Lunar\Filament\Forms\Components\CollectionSelect;
 use Lunar\Filament\Tables\Columns\TranslatedTextColumn;
 
@@ -46,14 +46,14 @@ class ManageProductCollections extends BaseManageRelatedRecords
     protected function getDefaultTable(Table $table): Table
     {
         return $table
-            ->recordTitle(fn (CollectionContract $record): ?string => $record->translate('name'))
+            ->recordTitle(fn (Collection $record): ?string => $record->translate('name'))
             ->reorderable('position')
             ->modifyQueryUsing(
                 fn (Builder $query): Builder => $query->with('ancestors')
             )
             ->columns([
                 TranslatedTextColumn::make('name')
-                    ->description(fn (CollectionContract $record): string => $record->breadcrumb->implode(' > '))
+                    ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
                     ->fieldHydrated('name')
                     ->limitedTooltip()
                     ->limit(50)

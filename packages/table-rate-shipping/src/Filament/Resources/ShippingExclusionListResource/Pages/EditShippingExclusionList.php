@@ -2,7 +2,7 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Pages;
 
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource;
 
@@ -13,7 +13,7 @@ class EditShippingExclusionList extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

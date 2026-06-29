@@ -4,7 +4,7 @@ namespace Lunar\Core\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Lunar\Core\Models\Contracts\Customer;
+use Lunar\Core\Models\Customer;
 
 interface LunarUser
 {

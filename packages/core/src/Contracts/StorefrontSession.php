@@ -4,11 +4,11 @@ namespace Lunar\Core\Contracts;
 
 use Illuminate\Support\Collection;
 use Lunar\Core\DataObjects\StorefrontContext;
-use Lunar\Core\Models\Contracts\Channel;
-use Lunar\Core\Models\Contracts\Currency;
-use Lunar\Core\Models\Contracts\Customer;
-use Lunar\Core\Models\Contracts\CustomerGroup;
-use Lunar\Core\Models\Contracts\Region;
+use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Region;
 
 interface StorefrontSession
 {

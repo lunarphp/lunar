@@ -11,23 +11,20 @@ use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\Channel as ChannelContract;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Order;
 
 class CartSessionManager implements CartSession
 {
-    protected ?ChannelContract $channel = null;
+    protected ?Channel $channel = null;
 
-    protected ?CurrencyContract $currency = null;
+    protected ?Currency $currency = null;
 
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
         protected ResolvesStorefrontContext $resolveStorefrontContext,
-        public ?CartContract $cart = null,
+        public ?Cart $cart = null,
     ) {
         //
     }
@@ -108,7 +105,7 @@ class CartSessionManager implements CartSession
     /**
      * {@inheritDoc}
      */
-    public function associate(CartContract $cart, Authenticatable $user, $policy): void
+    public function associate(Cart $cart, Authenticatable $user, $policy): void
     {
         /** @var Cart $cart */
         $this->use(
@@ -119,7 +116,7 @@ class CartSessionManager implements CartSession
     /**
      * Set the cart to be used for the session.
      */
-    public function use(CartContract $cart): CartContract
+    public function use(Cart $cart): Cart
     {
         /** @var Cart $cart */
         $this->sessionManager->put(
@@ -199,7 +196,7 @@ class CartSessionManager implements CartSession
     /**
      * Set the current channel.
      */
-    public function setChannel(ChannelContract $channel): void
+    public function setChannel(Channel $channel): void
     {
         /** @var Channel $channel */
         $this->channel = $channel;
@@ -214,7 +211,7 @@ class CartSessionManager implements CartSession
     /**
      * Set the current currency.
      */
-    public function setCurrency(CurrencyContract $currency): void
+    public function setCurrency(Currency $currency): void
     {
         /** @var Currency $currency */
         $this->currency = $currency;
@@ -229,7 +226,7 @@ class CartSessionManager implements CartSession
     /**
      * Return the current currency.
      */
-    public function getCurrency(): CurrencyContract
+    public function getCurrency(): Currency
     {
         return $this->currency?->exists ? $this->currency : Currency::getDefault();
     }
@@ -237,7 +234,7 @@ class CartSessionManager implements CartSession
     /**
      * Return the current channel.
      */
-    public function getChannel(): ChannelContract
+    public function getChannel(): Channel
     {
         return $this->channel?->exists ? $this->channel : Channel::getDefault();
     }
@@ -271,7 +268,7 @@ class CartSessionManager implements CartSession
     /**
      * Create a new cart instance.
      */
-    protected function createNewCart(): CartContract
+    protected function createNewCart(): Cart
     {
         $user = $this->authManager->user();
         $customer = optional($user)->latestCustomer();

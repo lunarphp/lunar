@@ -24,7 +24,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Channel extends Base implements Contracts\Channel
+class Channel extends Base
 {
     use HasDefaultRecord;
     use HasFactory;

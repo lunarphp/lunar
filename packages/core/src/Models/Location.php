@@ -24,7 +24,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Location extends Base implements Contracts\Location
+class Location extends Base
 {
     use HasDefaultRecord;
     use HasFactory;

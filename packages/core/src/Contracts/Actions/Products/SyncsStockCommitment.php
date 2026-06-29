@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Contracts\Actions\Products;
 
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\ProductVariant;
 
 interface SyncsStockCommitment
@@ -14,5 +13,5 @@ interface SyncsStockCommitment
      * This is the single home of the canonical committed predicate, shared by
      * the live lifecycle hooks and `lunar:stock:reconcile`.
      */
-    public function execute(ProductVariantContract $variant): ProductVariant;
+    public function execute(ProductVariant $variant): ProductVariant;
 }

@@ -11,8 +11,6 @@ use Lunar\Core\DataObjects\PaymentCheck;
 use Lunar\Core\DataObjects\PaymentChecks;
 use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Events\PaymentAttemptEvent;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
-use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\PaymentTypes\AbstractPayment;
@@ -148,7 +146,7 @@ class OpayoPaymentType extends AbstractPayment
      *
      * @param  int  $amount
      */
-    public function capture(TransactionContract $transaction, $amount = 0): PaymentCapture
+    public function capture(Transaction $transaction, $amount = 0): PaymentCapture
     {
         /** @var Transaction $transaction */
         $response = Opayo::api()->post("transactions/{$transaction->reference}/instructions", [
@@ -187,7 +185,7 @@ class OpayoPaymentType extends AbstractPayment
      *
      * @param  string|null  $notes
      */
-    public function refund(TransactionContract $transaction, int $amount = 0, $notes = null): PaymentRefund
+    public function refund(Transaction $transaction, int $amount = 0, $notes = null): PaymentRefund
     {
         /** @var Transaction $transaction */
         $response = Opayo::api()->post('transactions', [
@@ -435,7 +433,7 @@ class OpayoPaymentType extends AbstractPayment
         $this->policy = $policy;
     }
 
-    public function getPaymentChecks(TransactionContract $transaction): PaymentChecks
+    public function getPaymentChecks(Transaction $transaction): PaymentChecks
     {
         /** @var Transaction $transaction */
         $meta = $transaction->meta['threedSecure'] ?? null;
@@ -512,7 +510,7 @@ class OpayoPaymentType extends AbstractPayment
         return $checks;
     }
 
-    private function saveCard(OrderContract $order, object $details, ?string $authCode = null)
+    private function saveCard(Order $order, object $details, ?string $authCode = null)
     {
         /** @var Order $order */
         if (! $order->user_id) {

@@ -9,11 +9,13 @@ use Lunar\Search\Facades\Search;
 use Lunar\Tests\Search\TestCase;
 use Mockery\MockInterface;
 
+use function Pest\Laravel\partialMock;
+
 uses(TestCase::class)->group('search');
 
 function mockWithResponse(array $response)
 {
-    $engine = \Pest\Laravel\partialMock(MeilisearchEngine::class, function (MockInterface $mock) use ($response) {
+    $engine = partialMock(MeilisearchEngine::class, function (MockInterface $mock) use ($response) {
         $mock->shouldAllowMockingProtectedMethods()
             ->shouldReceive('getRawResults')
             ->andReturn(

@@ -25,7 +25,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class StockLevel extends Base implements Contracts\StockLevel
+class StockLevel extends Base
 {
     use HasFactory;
     use HasMacros;

@@ -21,7 +21,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CustomerGroup extends Base implements Contracts\CustomerGroup
+class CustomerGroup extends Base
 {
     use HasAttributeData;
     use HasDefaultRecord;

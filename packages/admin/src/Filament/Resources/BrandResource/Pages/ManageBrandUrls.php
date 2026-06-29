@@ -4,11 +4,11 @@ namespace Lunar\Admin\Filament\Resources\BrandResource\Pages;
 
 use Lunar\Admin\Filament\Resources\BrandResource;
 use Lunar\Admin\Support\Resources\Pages\ManageUrlsRelatedRecords;
-use Lunar\Core\Models\Contracts\Brand as BrandContract;
+use Lunar\Core\Models\Brand;
 
 class ManageBrandUrls extends ManageUrlsRelatedRecords
 {
     protected static string $resource = BrandResource::class;
 
-    protected static string $model = BrandContract::class;
+    protected static string $model = Brand::class;
 }

@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Products;
 
 use Lunar\Core\Contracts\Actions\Products\RecomputesStockReserved;
 use Lunar\Core\Contracts\Actions\Products\RecomputesStockRollup;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockReservation;
 
@@ -18,7 +17,7 @@ class RecomputeStockReserved implements RecomputesStockReserved
         protected RecomputesStockRollup $recomputeRollup,
     ) {}
 
-    public function execute(ProductVariantContract $variant): ProductVariant
+    public function execute(ProductVariant $variant): ProductVariant
     {
         /** @var ProductVariant $variant */
         $reserved = (int) StockReservation::query()

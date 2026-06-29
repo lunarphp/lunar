@@ -16,7 +16,7 @@ it('instantiates CustomerSelect with the customer model', function () {
     $component = CustomerSelect::make('customer_id')->excludeAttached();
 
     expect($component)->toBeInstanceOf(CustomerSelect::class)
-        ->and($component->lunarModel())->toBe(Customer::modelClass())
+        ->and($component->lunarModel())->toBe(Customer::class)
         ->and($component->isSearchable())->toBeTrue();
 });
 
@@ -35,7 +35,7 @@ it('instantiates CustomerGroupSelect bound to the customerGroup relationship', f
     $component = CustomerGroupSelect::make('customer_group_id');
 
     expect($component)->toBeInstanceOf(CustomerGroupSelect::class)
-        ->and($component->lunarModel())->toBe(CustomerGroup::modelClass())
+        ->and($component->lunarModel())->toBe(CustomerGroup::class)
         ->and($component->getRelationshipName())->toBe('customerGroup')
         ->and($component->isPreloaded())->toBeTrue();
 });

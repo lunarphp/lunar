@@ -7,7 +7,6 @@ use Lunar\Core\Contracts\Actions\Orders\ResolvesFulfilmentStatus;
 use Lunar\Core\Contracts\Actions\Orders\ResolvesPaymentStatus;
 use Lunar\Core\Events\Orders\OrderFulfilmentStatusUpdated;
 use Lunar\Core\Events\Orders\OrderPaymentStatusUpdated;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 /**
@@ -28,7 +27,7 @@ class RecomputeOrderStatus implements RecomputesOrderStatus
         protected ResolvesFulfilmentStatus $resolveFulfilmentStatus,
     ) {}
 
-    public function execute(OrderContract $order, bool $notify = true): Order
+    public function execute(Order $order, bool $notify = true): Order
     {
         /** @var Order $order */
         $previousPayment = $order->payment_status;

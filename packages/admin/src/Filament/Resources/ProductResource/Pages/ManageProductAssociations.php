@@ -14,7 +14,6 @@ use Filament\Tables\Table;
 use Lunar\Admin\Events\ProductAssociationsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
-use Lunar\Core\Models\Contracts\ProductAssociation as ProductAssociationContract;
 use Lunar\Core\Models\ProductAssociation;
 use Lunar\Filament\Forms\Components\ProductSelect;
 
@@ -63,9 +62,9 @@ class ManageProductAssociations extends BaseManageRelatedRecords
             ->inverseRelationship('parent')
             ->columns([
                 TextColumn::make('target_name')
-                    ->state(fn (ProductAssociationContract $record): ?string => $record->target?->translate('name'))
+                    ->state(fn (ProductAssociation $record): ?string => $record->target?->translate('name'))
                     ->limit(50)
-                    ->tooltip(function (TextColumn $column, ProductAssociationContract $record): ?string {
+                    ->tooltip(function (TextColumn $column, ProductAssociation $record): ?string {
                         $name = $record->target?->translate('name');
 
                         if ($name === null || strlen($name) <= $column->getCharacterLimit()) {

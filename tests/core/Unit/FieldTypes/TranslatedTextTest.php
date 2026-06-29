@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Exceptions\FieldTypeException;
-use Lunar\Core\FieldTypes\Number;
 use Lunar\Core\FieldTypes\Text;
 use Lunar\Core\FieldTypes\TranslatedText;
 use Lunar\Tests\Core\TestCase;

@@ -4,7 +4,7 @@ namespace Lunar\Core\Actions\Currencies;
 
 use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Actions\Currencies\CreatesCurrencyPrices;
-use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Currency;
 
 class CreateCurrencyPrices implements CreatesCurrencyPrices
 {

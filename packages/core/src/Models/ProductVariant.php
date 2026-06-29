@@ -56,7 +56,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductVariant extends Base implements Contracts\ProductVariant, HasThumbnailImage, Purchasable, TracksStock
+class ProductVariant extends Base implements HasThumbnailImage, Purchasable, TracksStock
 {
     use HasAttributeData;
     use HasDimensions;

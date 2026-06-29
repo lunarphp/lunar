@@ -15,7 +15,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class TaxZoneCustomerGroup extends Base implements Contracts\TaxZoneCustomerGroup
+class TaxZoneCustomerGroup extends Base
 {
     use HasFactory;
     use HasMacros;

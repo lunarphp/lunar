@@ -3,7 +3,7 @@
 namespace Lunar\Core\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\StockReservation;
+use Lunar\Core\Models\StockReservation;
 
 /**
  * Opt-in capability for a `Purchasable` that participates in stock commitment.

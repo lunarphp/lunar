@@ -7,14 +7,15 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms;
+use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\MorphToSelect\Type;
+use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
 
 class ShippingExclusionRelationManager extends RelationManager
@@ -32,17 +33,17 @@ class ShippingExclusionRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                Forms\Components\MorphToSelect::make('purchasable')
+                MorphToSelect::make('purchasable')
                     ->types([
-                        Forms\Components\MorphToSelect\Type::make(Product::class)
+                        Type::make(Product::class)
                             ->titleAttribute('name')
                             ->getOptionLabelUsing(
                                 fn (string $value): ?string => Product::find($value)?->translate('name')
                             )
-                            ->getSearchResultsUsing(static function (Forms\Components\Select $component, string $search): array {
+                            ->getSearchResultsUsing(static function (Select $component, string $search): array {
                                 return get_search_builder(Product::class, $search)
                                     ->get()
-                                    ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translate('name')])
+                                    ->mapWithKeys(fn (Product $record): array => [$record->getKey() => $record->translate('name')])
                                     ->all();
                             }),
                     ])

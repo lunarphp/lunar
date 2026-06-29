@@ -10,7 +10,7 @@ use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\CreateTaxZone;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\EditTaxZone;
 use Lunar\Admin\Filament\Resources\TaxZoneResource\Pages\ListTaxZones;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Core\Models\TaxZone;
 use Lunar\Filament\Schemas\TaxZone\TaxZoneForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\TaxZone\TaxZoneTable;
@@ -21,7 +21,7 @@ class TaxZoneResource extends BaseResource
 
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = TaxZoneContract::class;
+    protected static ?string $model = TaxZone::class;
 
     protected static ?int $navigationSort = 1;
 

@@ -31,7 +31,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Discount extends Base implements Contracts\Discount
+class Discount extends Base
 {
     use HasChannels,
         HasCustomerGroups,

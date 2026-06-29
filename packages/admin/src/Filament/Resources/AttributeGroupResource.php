@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\CreateAttributeG
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\EditAttributeGroup;
 use Lunar\Admin\Filament\Resources\AttributeGroupResource\Pages\ListAttributeGroups;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\AttributeGroup as AttributeGroupContract;
+use Lunar\Core\Models\AttributeGroup;
 use Lunar\Filament\RelationManagers\AttributeGroup\AttributesRelationManager;
 use Lunar\Filament\Schemas\AttributeGroup\AttributeGroupForm;
 use Lunar\Filament\Support\Resolver;
@@ -19,7 +19,7 @@ class AttributeGroupResource extends BaseResource
 {
     protected static ?string $permission = 'settings:manage-attributes';
 
-    protected static ?string $model = AttributeGroupContract::class;
+    protected static ?string $model = AttributeGroup::class;
 
     protected static ?int $navigationSort = 1;
 

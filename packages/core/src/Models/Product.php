@@ -46,7 +46,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Product extends Base implements Contracts\Product, HasThumbnailImage, SpatieHasMedia
+class Product extends Base implements HasThumbnailImage, SpatieHasMedia
 {
     use HasAttributeData;
     use HasChannels;

@@ -6,7 +6,6 @@ use Filament\Actions\CreateAction;
 use Lunar\Core\Contracts\Actions\Collections\CreatesChildCollection;
 use Lunar\Core\Models\Collection;
 use Lunar\Filament\Forms\Components\TranslatedText;
-use Lunar\Filament\Tables\Actions\Collections\CreateChildCollection;
 
 /**
  * Creates a child collection from an explicit `id` argument supplied by the

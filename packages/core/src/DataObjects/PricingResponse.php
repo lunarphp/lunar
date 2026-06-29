@@ -3,7 +3,7 @@
 namespace Lunar\Core\DataObjects;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Price;
+use Lunar\Core\Models\Price;
 
 class PricingResponse
 {

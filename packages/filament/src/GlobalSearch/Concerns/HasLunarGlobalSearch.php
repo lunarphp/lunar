@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Lunar\Filament\Forms\Components\Support\RecordSearch;
-use Lunar\Filament\GlobalSearch\GlobalSearchDescriptor;
 
 use function Filament\Support\generate_search_term_expression;
 
@@ -18,7 +17,7 @@ use function Filament\Support\generate_search_term_expression;
  * line. The consumer points `$globalSearch` at the descriptor and the trait
  * forwards every `getGlobalSearch*` method to it.
  *
- * @phpstan-require-extends \Filament\Resources\Resource
+ * @phpstan-require-extends Resource
  */
 trait HasLunarGlobalSearch
 {

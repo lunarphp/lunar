@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 use Lunar\Filament\Actions\Collections\CreateChildCollectionAction;
 use Lunar\Filament\Actions\Collections\CreateRootCollectionAction;
 use Lunar\Filament\Actions\Collections\DeleteCollectionAction;
@@ -202,7 +201,7 @@ class CollectionTreeView extends Widget implements HasActions, HasForms
                         return get_search_builder(Collection::class, $search)
                             ->with('ancestors')
                             ->get()
-                            ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->breadcrumb->push($record->translate('name'))->join(' > ')])
+                            ->mapWithKeys(fn (Collection $record): array => [$record->getKey() => $record->breadcrumb->push($record->translate('name'))->join(' > ')])
                             ->all();
                     }),
             ])->after(

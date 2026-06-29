@@ -16,7 +16,6 @@ use Lunar\Core\Database\Factories\OrderLineFactory;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 
 /**
  * @property int $id
@@ -42,7 +41,7 @@ use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
+class OrderLine extends Base implements HasCurrency
 {
     use FormatsPrices;
     use HasFactory;
@@ -84,7 +83,7 @@ class OrderLine extends Base implements Contracts\OrderLine, HasCurrency
         'total' => 'integer',
     ];
 
-    public function resolveCurrency(): CurrencyContract
+    public function resolveCurrency(): Currency
     {
         $this->loadMissing('order.currency');
 

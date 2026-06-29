@@ -16,7 +16,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductType extends Base implements Contracts\ProductType
+class ProductType extends Base
 {
     use HasFactory;
     use HasMacros;

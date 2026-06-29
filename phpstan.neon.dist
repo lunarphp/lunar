@@ -10,7 +10,3 @@ parameters:
         - packages/vendor/*
         - packages/*/vendor/*
     checkOctaneCompatibility: true
-    ignoreErrors:
-        -
-            message: '#Unsafe usage of new static\(\).#'
-            path: packages/core/src/Models/Concerns/HasModelExtending.php

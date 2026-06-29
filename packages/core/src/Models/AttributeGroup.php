@@ -19,7 +19,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class AttributeGroup extends Base implements Contracts\AttributeGroup
+class AttributeGroup extends Base
 {
     use HasFactory;
     use HasMacros;

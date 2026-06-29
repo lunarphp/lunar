@@ -5,8 +5,7 @@ namespace Lunar\Core\Actions\Carts;
 use Lunar\Core\Contracts\Actions\Carts\GetsExistingCartLine;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Models\CartLine;
 use Lunar\Core\Utils\Arr;
 
 class GetExistingCartLine implements GetsExistingCartLine
@@ -15,10 +14,10 @@ class GetExistingCartLine implements GetsExistingCartLine
      * Execute the action
      */
     public function execute(
-        CartContract $cart,
+        Cart $cart,
         Purchasable $purchasable,
         array $meta = []
-    ): ?CartLineContract {
+    ): ?CartLine {
         /** @var Cart $cart */
 
         // Get all possible cart lines

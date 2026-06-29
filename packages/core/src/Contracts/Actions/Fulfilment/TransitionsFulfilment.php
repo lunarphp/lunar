@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Contracts\Actions\Fulfilment;
 
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
 
@@ -16,5 +15,5 @@ interface TransitionsFulfilment
      *
      * @param  class-string<FulfilmentState>  $state
      */
-    public function execute(FulfilmentContract $fulfilment, string $state, bool $notify = true): Fulfilment;
+    public function execute(Fulfilment $fulfilment, string $state, bool $notify = true): Fulfilment;
 }

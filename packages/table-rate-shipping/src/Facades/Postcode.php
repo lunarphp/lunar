@@ -4,12 +4,12 @@ namespace Lunar\Shipping\Facades;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
-use Lunar\Core\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\Country as CountryContract;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
 use Lunar\Shipping\Managers\PostcodeManager;
 
 /**
- * @method static \Lunar\Shipping\Managers\PostcodeManager addResolver(string|PostcodeResolverInterface|array $resolver)
+ * @method static PostcodeManager addResolver(string|PostcodeResolverInterface|array $resolver)
  * @method static PostcodeResolverInterface country(CountryContract $country)
  * @method static Collection getResolvers()
  *

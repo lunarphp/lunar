@@ -8,7 +8,7 @@ use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\CreateProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\EditProductType;
 use Lunar\Admin\Filament\Resources\ProductTypeResource\Pages\ListProductTypes;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\ProductType as ProductTypeContract;
+use Lunar\Core\Models\ProductType;
 use Lunar\Filament\Schemas\ProductType\ProductTypeForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\ProductType\ProductTypeTable;
@@ -17,7 +17,7 @@ class ProductTypeResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = ProductTypeContract::class;
+    protected static ?string $model = ProductType::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-swatch';
 

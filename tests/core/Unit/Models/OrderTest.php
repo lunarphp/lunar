@@ -389,7 +389,7 @@ class SelfRoutingOrderNotification extends Notification implements ResolvesOrder
 {
     public function __construct(public string|array|null $route) {}
 
-    public function mailRouteForOrder(Lunar\Core\Models\Contracts\Order $order): string|array|null
+    public function mailRouteForOrder(Order $order): string|array|null
     {
         return $this->route;
     }

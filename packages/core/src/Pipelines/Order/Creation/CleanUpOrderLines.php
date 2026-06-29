@@ -3,15 +3,14 @@
 namespace Lunar\Core\Pipelines\Order\Creation;
 
 use Closure;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 class CleanUpOrderLines
 {
     /**
-     * @param  Closure(OrderContract): mixed  $next
+     * @param  Closure(Order):mixed  $next
      */
-    public function handle(OrderContract $order, Closure $next): mixed
+    public function handle(Order $order, Closure $next): mixed
     {
         /** @var Order $order */
         $cart = $order->cart;

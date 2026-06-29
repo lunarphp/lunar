@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Orders;
 
 use Lunar\Core\Contracts\Actions\Orders\ClosesOrder;
 use Lunar\Core\Events\Orders\OrderClosed;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 /**
@@ -15,7 +14,7 @@ use Lunar\Core\Models\Order;
  */
 class CloseOrder implements ClosesOrder
 {
-    public function execute(OrderContract $order): Order
+    public function execute(Order $order): Order
     {
         /** @var Order $order */
         if ($order->isClosed()) {
@@ -40,7 +39,7 @@ class CloseOrder implements ClosesOrder
     /**
      * Whether the order can be closed (it is currently open).
      */
-    public static function canRun(OrderContract $order): bool
+    public static function canRun(Order $order): bool
     {
         /** @var Order $order */
         return $order->isOpen();

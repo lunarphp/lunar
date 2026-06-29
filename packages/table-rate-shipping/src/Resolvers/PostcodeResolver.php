@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\Resolvers;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\Country;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
 
 class PostcodeResolver implements PostcodeResolverInterface
@@ -16,13 +16,13 @@ class PostcodeResolver implements PostcodeResolverInterface
      */
     protected array $countries = [];
 
-    public function supportsCountry(CountryContract $country): bool
+    public function supportsCountry(Country $country): bool
     {
         return empty($this->countries)
             || in_array($country->iso2, $this->countries, true);
     }
 
-    public function getParts(string $postcode, CountryContract $country): Collection
+    public function getParts(string $postcode, Country $country): Collection
     {
         $postcode = str_replace(' ', '', strtoupper($postcode));
 

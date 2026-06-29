@@ -11,9 +11,9 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\State;
+use Lunar\Core\Models\TaxZone;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class TaxZoneForm
@@ -208,7 +208,7 @@ class TaxZoneForm
             ->label(__('lunar-filament::taxzone.form.default.label'));
     }
 
-    private static function syncCountries(TaxZoneContract $taxZone, $selectedCountries): void
+    private static function syncCountries(TaxZone $taxZone, $selectedCountries): void
     {
         $existingCountries = $taxZone->countries()->pluck('country_id');
 
@@ -226,7 +226,7 @@ class TaxZoneForm
             ->delete();
     }
 
-    private static function syncStates(TaxZoneContract $taxZone, $selectedStates): void
+    private static function syncStates(TaxZone $taxZone, $selectedStates): void
     {
         $existingStates = $taxZone->states()->pluck('state_id');
 
@@ -244,7 +244,7 @@ class TaxZoneForm
             ->delete();
     }
 
-    private static function syncPostcodes(TaxZoneContract $taxZone, $countryId, $postcodes): void
+    private static function syncPostcodes(TaxZone $taxZone, $countryId, $postcodes): void
     {
         $postcodes = collect(
             explode("\n", str_replace(' ', '', $postcodes))

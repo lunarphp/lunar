@@ -63,7 +63,7 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        $this->replaceModelsForTesting();
+        //
     }
 
     /**
@@ -71,7 +71,7 @@ class TestCase extends BaseTestCase
      *
      * @return void
      */
-    protected function defineDatabaseMigrations()
+    protected function defineDatabaseMigrations(): void
     {
         $this->loadLaravelMigrations();
     }

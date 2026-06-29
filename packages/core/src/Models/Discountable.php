@@ -18,7 +18,7 @@ use Lunar\Core\Database\Factories\DiscountableFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Discountable extends Base implements Contracts\Discountable
+class Discountable extends Base
 {
     use HasFactory;
 

@@ -6,8 +6,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Lunar\Core\DataObjects\PricingResponse;
 use Lunar\Core\DataObjects\StorefrontContext;
-use Lunar\Core\Models\Contracts\Currency;
-use Lunar\Core\Models\Contracts\CustomerGroup;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
 
 interface PricingManager
 {

@@ -3,13 +3,13 @@
 namespace Lunar\Shipping\DataTransferObjects;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\Country;
 use Lunar\Shipping\Facades\Postcode;
 
 class PostcodeLookup
 {
     public function __construct(
-        public CountryContract $country,
+        public Country $country,
         public string $postcode
     ) {
         //

@@ -15,7 +15,7 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantMed
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantPricing;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Schemas\ProductVariant\ProductVariantForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\ProductVariant\ProductVariantTable;
@@ -24,7 +24,7 @@ class ProductVariantResource extends BaseResource
 {
     protected static ?string $permission = 'catalog:manage-products';
 
-    protected static ?string $model = ProductVariantContract::class;
+    protected static ?string $model = ProductVariant::class;
 
     protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -43,7 +43,7 @@ class ProductVariantResource extends BaseResource
         return false;
     }
 
-    public static function getBaseBreadcrumbs(ProductVariantContract $productVariant): array
+    public static function getBaseBreadcrumbs(ProductVariant $productVariant): array
     {
         return [
             ProductResource::getUrl('edit', [

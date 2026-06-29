@@ -3,7 +3,6 @@
 namespace Lunar\Core\Observers;
 
 use Lunar\Core\Models\Address;
-use Lunar\Core\Models\Contracts\Address as AddressContract;
 
 class AddressObserver
 {
@@ -12,7 +11,7 @@ class AddressObserver
      *
      * @return void
      */
-    public function creating(AddressContract $address)
+    public function creating(Address $address)
     {
         $this->ensureOnlyOneDefaultShipping($address);
         $this->ensureOnlyOneDefaultBilling($address);
@@ -23,7 +22,7 @@ class AddressObserver
      *
      * @return void
      */
-    public function updating(AddressContract $address)
+    public function updating(Address $address)
     {
         $this->ensureOnlyOneDefaultShipping($address);
         $this->ensureOnlyOneDefaultBilling($address);
@@ -32,9 +31,9 @@ class AddressObserver
     /**
      * Ensures that only one default shipping address exists.
      *
-     * @param  AddressContract  $address  The address that will be saved.
+     * @param  Address  $address  The address that will be saved.
      */
-    protected function ensureOnlyOneDefaultShipping(AddressContract $address): void
+    protected function ensureOnlyOneDefaultShipping(Address $address): void
     {
         /** @var Address $address */
         if ($address->shipping_default) {
@@ -54,9 +53,9 @@ class AddressObserver
     /**
      * Ensures that only one default billing address exists.
      *
-     * @param  AddressContract  $address  The address that will be saved.
+     * @param  Address  $address  The address that will be saved.
      */
-    protected function ensureOnlyOneDefaultBilling(AddressContract $address): void
+    protected function ensureOnlyOneDefaultBilling(Address $address): void
     {
         /** @var Address $address */
         if ($address->billing_default) {

@@ -4,9 +4,9 @@ namespace Lunar\Core\Drivers;
 
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\Purchasable;
-use Lunar\Core\Models\Contracts\CartLine;
-use Lunar\Core\Models\Contracts\Currency;
-use Lunar\Core\Models\Contracts\TaxZone;
+use Lunar\Core\Models\CartLine;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\TaxZone;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 interface TaxDriver

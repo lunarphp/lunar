@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Contracts;
 
-use Lunar\Core\Models\Contracts\Order;
+use Lunar\Core\Models\Order;
 
 /**
  * Implemented by an order notification that resolves its own mail recipient

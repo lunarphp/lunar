@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\CreateCustomerGro
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\EditCustomerGroup;
 use Lunar\Admin\Filament\Resources\CustomerGroupResource\Pages\ListCustomerGroups;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
+use Lunar\Core\Models\CustomerGroup;
 use Lunar\Filament\Schemas\CustomerGroup\CustomerGroupForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\CustomerGroup\CustomerGroupTable;
@@ -18,7 +18,7 @@ class CustomerGroupResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = CustomerGroupContract::class;
+    protected static ?string $model = CustomerGroup::class;
 
     protected static ?int $navigationSort = 1;
 

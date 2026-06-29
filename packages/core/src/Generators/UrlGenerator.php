@@ -5,7 +5,6 @@ namespace Lunar\Core\Generators;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Lunar\Core\Models\Contracts\Language as LanguageContract;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Url;
 
@@ -21,14 +20,14 @@ class UrlGenerator
     /**
      * The default language, resolved lazily on first use.
      */
-    protected ?LanguageContract $defaultLanguage = null;
+    protected ?Language $defaultLanguage = null;
 
     /**
      * Return the default language, resolving it on first access. Deferred out
      * of the constructor so the generator can be built before the languages
      * table is queryable (e.g. when resolved early in a migration).
      */
-    protected function defaultLanguage(): LanguageContract
+    protected function defaultLanguage(): Language
     {
         return $this->defaultLanguage ??= Language::getDefault();
     }

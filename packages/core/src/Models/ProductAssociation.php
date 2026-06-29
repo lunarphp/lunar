@@ -19,7 +19,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductAssociation extends Base implements Contracts\ProductAssociation
+class ProductAssociation extends Base
 {
     use HasFactory;
     use HasMacros;

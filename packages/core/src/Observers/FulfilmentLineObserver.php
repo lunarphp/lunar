@@ -3,7 +3,6 @@
 namespace Lunar\Core\Observers;
 
 use Lunar\Core\Contracts\Actions\Orders\RecomputesOrderStatus;
-use Lunar\Core\Models\Contracts\FulfilmentLine as FulfilmentLineContract;
 use Lunar\Core\Models\FulfilmentLine;
 
 class FulfilmentLineObserver
@@ -12,12 +11,12 @@ class FulfilmentLineObserver
         protected RecomputesOrderStatus $recomputeOrderStatus,
     ) {}
 
-    public function saved(FulfilmentLineContract $fulfilmentLine): void
+    public function saved(FulfilmentLine $fulfilmentLine): void
     {
         $this->recompute($fulfilmentLine);
     }
 
-    public function deleted(FulfilmentLineContract $fulfilmentLine): void
+    public function deleted(FulfilmentLine $fulfilmentLine): void
     {
         $this->recompute($fulfilmentLine);
     }
@@ -25,7 +24,7 @@ class FulfilmentLineObserver
     /**
      * Recompute the parent order's derived fulfilment status.
      */
-    protected function recompute(FulfilmentLineContract $fulfilmentLine): void
+    protected function recompute(FulfilmentLine $fulfilmentLine): void
     {
         /** @var FulfilmentLine $fulfilmentLine */
         // Load explicitly (relation method, not lazy property access) so this

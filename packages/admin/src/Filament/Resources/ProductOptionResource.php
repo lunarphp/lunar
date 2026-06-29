@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\CreateProductOpti
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\EditProductOption;
 use Lunar\Admin\Filament\Resources\ProductOptionResource\Pages\ListProductOptions;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\ProductOption as ProductOptionContract;
+use Lunar\Core\Models\ProductOption;
 use Lunar\Filament\RelationManagers\ProductOption\ValuesRelationManager;
 use Lunar\Filament\Schemas\ProductOption\ProductOptionForm;
 use Lunar\Filament\Support\Resolver;
@@ -19,7 +19,7 @@ class ProductOptionResource extends BaseResource
 {
     protected static ?string $permission = 'settings';
 
-    protected static ?string $model = ProductOptionContract::class;
+    protected static ?string $model = ProductOption::class;
 
     protected static ?int $navigationSort = 1;
 

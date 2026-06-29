@@ -3,7 +3,6 @@
 namespace Lunar\Core\Actions\Products;
 
 use Lunar\Core\Contracts\Actions\Products\RecomputesStockRollup;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockLevel;
 
@@ -16,7 +15,7 @@ use Lunar\Core\Models\StockLevel;
  */
 class RecomputeStockRollup implements RecomputesStockRollup
 {
-    public function execute(ProductVariantContract $variant): ProductVariant
+    public function execute(ProductVariant $variant): ProductVariant
     {
         /** @var ProductVariant $variant */
         $sums = StockLevel::query()

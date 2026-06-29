@@ -7,7 +7,6 @@ use Lunar\Core\Contracts\FulfilmentMethodManifest;
 use Lunar\Core\Drivers\FulfilmentMethods\Shipping;
 use Lunar\Core\Events\Fulfilment\FulfilmentCreated;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Order;
@@ -30,7 +29,7 @@ class CreateFulfilment implements CreatesFulfilment
         protected FulfilmentMethodManifest $methods,
     ) {}
 
-    public function execute(OrderContract $order, array $lines, array $attributes = []): Fulfilment
+    public function execute(Order $order, array $lines, array $attributes = []): Fulfilment
     {
         /** @var Order $order */
         $methodKey = $attributes['method'] ?? Shipping::KEY;
@@ -72,7 +71,7 @@ class CreateFulfilment implements CreatesFulfilment
      * Whether there is any outstanding fulfillable quantity left to fulfil — used
      * to gate the "create fulfilment" action in the UI.
      */
-    public static function canRun(OrderContract $order): bool
+    public static function canRun(Order $order): bool
     {
         /** @var Order $order */
         $fulfilmentQuantity = new FulfilmentQuantity;

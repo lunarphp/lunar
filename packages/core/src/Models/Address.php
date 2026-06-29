@@ -35,7 +35,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Address extends Base implements Addressable, Contracts\Address
+class Address extends Base implements Addressable
 {
     use HasFactory, HasMacros;
 

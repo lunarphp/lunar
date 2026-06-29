@@ -22,7 +22,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Country extends Base implements Contracts\Country
+class Country extends Base
 {
     use HasFactory;
     use HasMacros;

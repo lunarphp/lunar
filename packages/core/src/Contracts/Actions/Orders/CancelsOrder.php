@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Contracts\Actions\Orders;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 interface CancelsOrder
@@ -12,5 +11,5 @@ interface CancelsOrder
      * closing it. Does not issue a refund or restock — those are separate
      * concerns (future specs).
      */
-    public function execute(OrderContract $order, ?string $reason = null, ?string $note = null, bool $notify = true): Order;
+    public function execute(Order $order, ?string $reason = null, ?string $note = null, bool $notify = true): Order;
 }

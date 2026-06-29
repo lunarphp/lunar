@@ -39,7 +39,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CartAddress extends Base implements Addressable, Contracts\CartAddress
+class CartAddress extends Base implements Addressable
 {
     use CachesProperties;
     use HasFactory;

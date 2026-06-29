@@ -9,10 +9,9 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Base;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Concerns\HasPrices;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\TaxClass as TaxClassContract;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\Database\Factories\ShippingRateFactory;
 use Lunar\Shipping\DataTransferObjects\ShippingOptionRequest;
@@ -78,7 +77,7 @@ class ShippingRate extends Base implements Contracts\ShippingRate, Purchasable
     /**
      * Return the tax class.
      */
-    public function getTaxClass(): TaxClassContract
+    public function getTaxClass(): TaxClass
     {
         return $this->resolvedTaxClass ?? TaxClass::getDefault();
     }
@@ -152,7 +151,7 @@ class ShippingRate extends Base implements Contracts\ShippingRate, Purchasable
     /**
      * Return the shipping method driver.
      */
-    public function getShippingOption(CartContract $cart): ?ShippingOption
+    public function getShippingOption(Cart $cart): ?ShippingOption
     {
         $calculateBy = config('lunar.shipping-tables.shipping_rate_tax_calculation');
 
@@ -187,7 +186,7 @@ class ShippingRate extends Base implements Contracts\ShippingRate, Purchasable
         return true;
     }
 
-    private function resolveHighestTaxRateInCart(CartContract $cart): ?TaxClass
+    private function resolveHighestTaxRateInCart(Cart $cart): ?TaxClass
     {
         $highestRate = false;
         $highestTaxClass = null;

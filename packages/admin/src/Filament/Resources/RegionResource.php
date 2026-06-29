@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\RegionResource\Pages\CreateRegion;
 use Lunar\Admin\Filament\Resources\RegionResource\Pages\EditRegion;
 use Lunar\Admin\Filament\Resources\RegionResource\Pages\ListRegions;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Region as RegionContract;
+use Lunar\Core\Models\Region;
 use Lunar\Filament\Schemas\Region\RegionForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Region\RegionTable;
@@ -18,7 +18,7 @@ class RegionResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = RegionContract::class;
+    protected static ?string $model = Region::class;
 
     protected static ?int $navigationSort = 1;
 

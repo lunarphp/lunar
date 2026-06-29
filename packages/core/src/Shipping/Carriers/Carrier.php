@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Shipping\Carriers;
 
-use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\ShippingCarrier;
 
 /**

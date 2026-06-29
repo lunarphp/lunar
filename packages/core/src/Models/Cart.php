@@ -38,7 +38,6 @@ use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\LogsActivity;
-use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Pipelines\Cart\Calculate;
 use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
 use Lunar\Core\Validation\CartLine\CartLineStock;
@@ -64,7 +63,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  */
-class Cart extends Base implements Contracts\Cart
+class Cart extends Base
 {
     use CachesProperties;
     use HasFactory;
@@ -658,7 +657,7 @@ class Cart extends Base implements Contracts\Cart
      * Pass null to clear the override and fall back to the address-derived (or default) zone.
      * Pass `$refresh = false` to skip persistence and recalculation (useful for previewing without writing).
      */
-    public function setTaxZone(?TaxZoneContract $taxZone, bool $refresh = true): Cart
+    public function setTaxZone(?TaxZone $taxZone, bool $refresh = true): Cart
     {
         if ($taxZone) {
             $this->taxZone()->associate($taxZone);

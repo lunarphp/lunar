@@ -36,7 +36,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class OrderAddress extends Base implements Addressable, Contracts\OrderAddress
+class OrderAddress extends Base implements Addressable
 {
     use HasFactory;
     use HasMacros;

@@ -3,9 +3,7 @@
 namespace Lunar\Tests;
 
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Facades\ModelManifest;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Spatie\StructureDiscoverer\Discover;
 
 use function Orchestra\Testbench\after_resolving;
 use function Orchestra\Testbench\default_migration_path;
@@ -21,8 +19,6 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        $this->replaceModelsForTesting($app);
-
         Model::preventLazyLoading();
 
         match (env('DB_DRIVER', 'sqlite')) {
@@ -118,31 +114,5 @@ class TestCase extends BaseTestCase
         after_resolving($this->app, 'migrator', static function ($migrator) {
             $migrator->path(default_migration_path());
         });
-    }
-
-    /**
-     * Replace Lunar models with test models for testing
-     * functionality with model extending.
-     */
-    protected function replaceModelsForTesting($app): void
-    {
-        if (! env('LUNAR_TESTING_REPLACE_MODELS', false)) {
-            return;
-        }
-
-        // Model extending is a core concern exercised with core stubs; suites that
-        // don't boot LunarServiceProvider (e.g. upgrade) leave the contract unbound.
-        if (! $app->bound(\Lunar\Core\Contracts\ModelManifest::class)) {
-            return;
-        }
-
-        $modelClasses = Discover::in(__DIR__.'/core/Stubs/Models')
-            ->classes()
-            ->get();
-
-        foreach ($modelClasses as $modelClass) {
-            $interfaceClass = ModelManifest::guessContractClass($modelClass);
-            ModelManifest::replace($interfaceClass, $modelClass);
-        }
     }
 }

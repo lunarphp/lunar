@@ -27,7 +27,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Brand extends Base implements Contracts\Brand, SpatieHasMedia
+class Brand extends Base implements SpatieHasMedia
 {
     use HasAttributeData;
     use HasFactory;

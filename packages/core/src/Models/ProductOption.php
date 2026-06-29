@@ -27,7 +27,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductOption extends Base implements Contracts\ProductOption, SpatieHasMedia
+class ProductOption extends Base implements SpatieHasMedia
 {
     use HasFactory;
     use HasMacros;

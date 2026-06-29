@@ -9,7 +9,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class RebuildCollectionTree implements ShouldQueue
 {
@@ -44,7 +43,7 @@ class RebuildCollectionTree implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(array $newTree, array $currentTree, ?CollectionContract $parent = null)
+    public function __construct(array $newTree, array $currentTree, ?Collection $parent = null)
     {
         $this->newTree = $newTree;
         $this->currentTree = $currentTree;

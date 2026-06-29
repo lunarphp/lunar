@@ -17,7 +17,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class FulfilmentLine extends Base implements Contracts\FulfilmentLine
+class FulfilmentLine extends Base
 {
     use HasFactory;
     use HasMacros;

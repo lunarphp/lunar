@@ -6,12 +6,11 @@ use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Drivers\TaxDriver;
-use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
+use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxRateAmount;
+use Lunar\Core\Models\TaxZone;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 
@@ -30,7 +29,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * The currency model.
      */
-    protected CurrencyContract $currency;
+    protected Currency $currency;
 
     /**
      * The purchasable item.
@@ -40,12 +39,12 @@ class TestTaxDriver implements TaxDriver
     /**
      * The cart line.
      */
-    protected CartLineContract $cartLine;
+    protected CartLine $cartLine;
 
     /**
      * The optional tax zone override.
      */
-    protected ?TaxZoneContract $taxZone = null;
+    protected ?TaxZone $taxZone = null;
 
     /**
      * {@inheritDoc}
@@ -60,7 +59,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setCurrency(CurrencyContract $currency): self
+    public function setCurrency(Currency $currency): self
     {
         $this->currency = $currency;
 
@@ -90,7 +89,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * Set the cart line.
      */
-    public function setCartLine(CartLineContract $cartLine): self
+    public function setCartLine(CartLine $cartLine): self
     {
         $this->cartLine = $cartLine;
 
@@ -100,7 +99,7 @@ class TestTaxDriver implements TaxDriver
     /**
      * {@inheritDoc}
      */
-    public function setTaxZone(?TaxZoneContract $taxZone = null): self
+    public function setTaxZone(?TaxZone $taxZone = null): self
     {
         $this->taxZone = $taxZone;
 

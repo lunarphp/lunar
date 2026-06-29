@@ -32,7 +32,6 @@ use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasTags;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
 use Lunar\Core\States\Order\Payment\PaymentStatus;
 use Spatie\ModelStates\HasStates;
@@ -68,7 +67,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Order extends Base implements Contracts\Order, HasCurrency
+class Order extends Base implements HasCurrency
 {
     use FormatsPrices;
     use HasFactory;
@@ -100,7 +99,7 @@ class Order extends Base implements Contracts\Order, HasCurrency
         'fulfilment_status' => FulfilmentStatus::class,
     ];
 
-    public function resolveCurrency(): CurrencyContract
+    public function resolveCurrency(): Currency
     {
         $this->loadMissing('currency');
 

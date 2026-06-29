@@ -11,7 +11,7 @@ use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ListDiscounts;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ManageDiscountAvailability;
 use Lunar\Admin\Filament\Resources\DiscountResource\Pages\ManageDiscountLimitations;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Discount as DiscountContract;
+use Lunar\Core\Models\Discount;
 use Lunar\Filament\RelationManagers\Discount\BrandLimitationRelationManager;
 use Lunar\Filament\RelationManagers\Discount\CollectionConditionRelationManager;
 use Lunar\Filament\RelationManagers\Discount\CollectionLimitationRelationManager;
@@ -28,7 +28,7 @@ class DiscountResource extends BaseResource
 {
     protected static ?string $permission = 'sales:manage-discounts';
 
-    protected static ?string $model = DiscountContract::class;
+    protected static ?string $model = Discount::class;
 
     protected static ?int $navigationSort = 3;
 

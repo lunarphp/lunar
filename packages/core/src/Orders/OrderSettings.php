@@ -3,7 +3,7 @@
 namespace Lunar\Core\Orders;
 
 use Lunar\Core\Contracts\OrderSettings as OrderSettingsContract;
-use Lunar\Core\Models\Contracts\Order;
+use Lunar\Core\Models\Order;
 
 /**
  * The batteries-included order settings. Auto-close is off, so closing a

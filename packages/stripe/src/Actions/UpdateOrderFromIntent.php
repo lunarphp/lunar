@@ -3,16 +3,16 @@
 namespace Lunar\Stripe\Actions;
 
 use Illuminate\Support\Facades\DB;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 use Lunar\Stripe\Facades\Stripe;
 use Stripe\PaymentIntent;
 
 class UpdateOrderFromIntent
 {
     public static function execute(
-        OrderContract $order,
+        Order $order,
         PaymentIntent $paymentIntent
-    ): OrderContract {
+    ): Order {
         return DB::transaction(function () use ($order, $paymentIntent) {
 
             $charges = Stripe::getCharges($paymentIntent->id);
