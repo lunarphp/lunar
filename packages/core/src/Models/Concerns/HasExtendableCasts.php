@@ -18,7 +18,7 @@ trait HasExtendableCasts
      *
      * @param  array<string, string>  $casts
      */
-    public static function extendCasts(array $casts): void
+    public static function addCasts(array $casts): void
     {
         static::$extendedCasts[static::class] = array_merge(
             static::$extendedCasts[static::class] ?? [],

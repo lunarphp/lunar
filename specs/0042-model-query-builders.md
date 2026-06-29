@@ -13,13 +13,13 @@ Retiring model class substitution (see [[0041-retire-model-class-substitution]])
 - a global (always-on) scope — `Model::addGlobalScope(...)`,
 - a method — a model macro (`HasMacros`).
 
-But there is **no native way to register an optional, local (named) scope on a specific model** from outside the class. Local scopes resolve only through `scopeX()` / `#[Scope]` methods declared on the model, and there is no `resolveScopeUsing` equivalent. The nearest natives are imperfect: `Builder::macro()` registers on **every** Eloquent builder (global, not per-model), and an opt-out global scope is always-on rather than optional. Subclassing — which used to cover this — is exactly what 0041 removed.
+But there is **no native way to register an optional, local (named) scope on a specific model** from outside the class. Local scopes resolve only through `scopeX()` / `#[Scope]` methods declared on the model; Laravel offers `resolveRelationUsing` for relations and `addGlobalScope` for global scopes, but nothing for local scopes. The nearest natives are imperfect: `Builder::macro()` registers on **every** Eloquent builder (global, not per-model), and an opt-out global scope is always-on rather than optional. Subclassing — which used to cover this — is exactly what 0041 removed.
 
 So a consumer who wants `Product::query()->featured()` — a reusable, optional filter scoped to `Product` — has no clean, native, per-model seam.
 
 ## Proposal
 
-Give every Lunar model a single shared query builder, `Lunar\Core\Models\Builder`, returned by `Models\Base::newEloquentBuilder()`. The builder hosts a registry of scopes **keyed by model class**, and models expose `resolveScopeUsing()` to register one. Registered scopes are then callable exactly like a native local scope.
+Give every Lunar model a single shared query builder, `Lunar\Core\Models\Builder`, returned by `Models\Base::newEloquentBuilder()`. The builder hosts a registry of scopes **keyed by model class**, and models expose `addLocalScope()` to register one. Registered scopes are then callable exactly like a native local scope.
 
 ### Registering — mirrors `resolveRelationUsing`
 
@@ -28,11 +28,11 @@ use Lunar\Core\Models\Builder;
 use Lunar\Core\Models\Product;
 
 // in a service provider boot()
-Product::resolveScopeUsing('featured', function (Builder $query) {
+Product::addLocalScope('featured', function (Builder $query) {
     return $query->where('is_featured', true);
 });
 
-Product::resolveScopeUsing('priorityOver', function (Builder $query, int $min) {
+Product::addLocalScope('priorityOver', function (Builder $query, int $min) {
     return $query->where('priority', '>', $min);
 });
 ```
@@ -58,7 +58,7 @@ A scope registered for `Product` is callable only on `Product` queries; `Order::
 `Models\Base` gains a static entry point that records the scope against the calling model class:
 
 ```php
-public static function resolveScopeUsing(string $name, Closure $scope): void
+public static function addLocalScope(string $name, Closure $scope): void
 {
     Builder::registerScope(static::class, $name, $scope);
 }
@@ -107,14 +107,14 @@ Lunar's first-class scopes remain `scopeX()` / `#[Scope]` methods on the models 
 ## Migration impact
 
 - **Database migrations:** none.
-- **Breaking changes:** none — purely additive. `Lunar\Core\Models\Builder` and `Model::resolveScopeUsing()` become new public contract surface (changing them later needs a spec).
+- **Breaking changes:** none — purely additive. `Lunar\Core\Models\Builder` and `Model::addLocalScope()` become new public contract surface (changing them later needs a spec).
 - **Upgrade path:** none required; consumers opt in.
 - **Translation / locale impact:** none.
 - **Filament / admin impact:** none directly; resources can use registered scopes if present.
 
 ## Open questions
 
-- API name: `resolveScopeUsing()` (mirrors `resolveRelationUsing`) vs `registerScope()` vs `scope()`. Recommendation: `resolveScopeUsing()` for symmetry. **Owner: resolve before `accepted`.**
+- API name: `addLocalScope()` (recommended) vs `resolveScopeUsing()` vs `addScope()`. `addLocalScope` mirrors Laravel's `addGlobalScope` and uses Laravel's own local/global taxonomy, and its closure is a builder mutator — the same shape as `addGlobalScope`. `resolveScopeUsing` was rejected: it borrows the relation-seam name, but a relation closure is a *factory* that returns an object whereas a scope closure *mutates the builder*, so the parallel is false. `addScope` is ambiguous (global or local). **Owner: confirm before `accepted`.**
 - Collision policy when a registered scope name shadows a real method, relation, or native scope on the model — throw, warn, or last-wins? **Owner: implementation spike.**
 - Static state: the registry is a static, so registrations persist across a process like macros do. Confirm test isolation and whether a reset hook is warranted.
 - Does `Collection`'s nested-set builder compose with `Lunar\Core\Models\Builder`, or does it opt out? **Owner: implementation spike.**
@@ -127,6 +127,6 @@ Lunar's first-class scopes remain `scopeX()` / `#[Scope]` methods on the models 
 
 ## Implementation plan
 
-- [ ] Slice 1 — Spike: `Lunar\Core\Models\Builder` + `Base::newEloquentBuilder()`, the keyed registry, and `Base::resolveScopeUsing()`. Resolve the `Collection`/nested-set builder question and the collision policy.
+- [ ] Slice 1 — Spike: `Lunar\Core\Models\Builder` + `Base::newEloquentBuilder()`, the keyed registry, and `Base::addLocalScope()`. Resolve the `Collection`/nested-set builder question and the collision policy.
 - [ ] Slice 2 — Tests: a registered scope is callable (chained + static + with args) on its model only, throws on others, and composes with native scopes and global scopes. Add a recipe to `ModelExtensionRecipesTest`.
 - [ ] Slice 3 — Document the `@method` annotation pattern for consumer type-safety (with the rest of v2 docs).

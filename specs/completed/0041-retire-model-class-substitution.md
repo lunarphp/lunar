@@ -66,14 +66,14 @@ Provide a sanctioned seam to register casts (including custom cast classes, whic
 use Lunar\Core\Models\Product;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 
-Product::extendCasts([
+Product::addCasts([
     'external_ref' => 'string',
     'metadata'     => AsArrayObject::class,
     'status'       => FulfilmentStatus::class,
 ]);
 ```
 
-Backed by a concern on `Models\Base` holding a static per-class registry and merging it into the resolved casts via `getCasts()`:
+Named `addCasts` to sit in Laravel's class-level registration family (`addGlobalScope`), distinct from the instance-level `mergeCasts`. Backed by a concern on `Models\Base` holding a static per-class registry and merging it into the resolved casts via `getCasts()`:
 
 ```php
 trait HasExtendableCasts
@@ -81,7 +81,7 @@ trait HasExtendableCasts
     /** @var array<class-string, array<string, string>> */
     protected static array $extendedCasts = [];
 
-    public static function extendCasts(array $casts): void
+    public static function addCasts(array $casts): void
     {
         static::$extendedCasts[static::class] = array_merge(
             static::$extendedCasts[static::class] ?? [],
@@ -100,7 +100,7 @@ Overriding `getCasts()` (Eloquent's canonical cast-resolution point) composes wh
 
 ### Replacement recipes
 
-These are the supported ways to do, without substitution, everything substitution was used for. They double as the source for slice 4's migration guide and the deferred v2 docs, and as the evidence that the capabilities review holds. All run from a consumer's service-provider `boot()` unless noted. Each is **native Laravel and works today** except `extendCasts`, which this spec introduces.
+These are the supported ways to do, without substitution, everything substitution was used for. They double as the source for slice 4's migration guide and the deferred v2 docs, and as the evidence that the capabilities review holds. All run from a consumer's service-provider `boot()` unless noted. Each is **native Laravel and works today** except `addCasts`, which this spec introduces.
 
 **Add a relationship** — native (`resolveRelationUsing`):
 
@@ -128,7 +128,7 @@ Schema::table('lunar_products', fn (Blueprint $t) => $t->string('external_ref')-
 **Cast / value-object an added column** — the new seam (this spec). A custom cast class is also how you get an accessor/mutator pair:
 
 ```php
-Product::extendCasts([
+Product::addCasts([
     'metadata'     => AsArrayObject::class,   // $product->metadata is an ArrayObject
     'dimensions'   => DimensionsCast::class,  // custom cast = get/set transform
 ]);
@@ -175,7 +175,7 @@ $this->app->bind(OrderReferenceGenerator::class, MyReferenceGenerator::class);
 
 - **Database migrations:** none.
 - **Breaking changes to the public contract surface:** yes — this is the headline. `ModelManifest`'s substitution API, the `Models\Contracts\*` interfaces, `Model::modelClass()`, the ability to subclass core models and have Lunar use them, and instances typed as the consumer's class all go away. `HasModelExtending` is removed from `Models/Concerns/`. Any downstream code calling `X::modelClass()` or type-hinting `Models\Contracts\*` retypes to the concrete class (Rector-covered).
-- **Upgrade path for v1.x consumers:** Rector rules in the `upgrade` package plus a migration guide that, per the capabilities review, maps each former use to its native replacement: subclass + added relationship → `resolveRelationUsing`; subclass + added method → macro; subclass + added cast/accessor → `extendCasts`; subclass + behaviour override → action binding (0029); subclass + observer/event → `observe()` / `Event::listen`. Substitutions that only existed to surface a column are a no-op (the column is already an attribute). Data migrations remain one-way.
+- **Upgrade path for v1.x consumers:** Rector rules in the `upgrade` package plus a migration guide that, per the capabilities review, maps each former use to its native replacement: subclass + added relationship → `resolveRelationUsing`; subclass + added method → macro; subclass + added cast/accessor → `addCasts`; subclass + behaviour override → action binding (0029); subclass + observer/event → `observe()` / `Event::listen`. Substitutions that only existed to surface a column are a no-op (the column is already an attribute). Data migrations remain one-way.
 - **Translation / locale impact:** none expected (no new user-facing strings beyond exception messages, which still need all 16 locales if added).
 - **Filament / admin impact:** the admin resolves models for resources and relations. Any resolution that went through `modelClass()` points at the concrete Lunar class instead. Swept in slice 1.
 
@@ -184,7 +184,7 @@ $this->app->bind(OrderReferenceGenerator::class, MyReferenceGenerator::class);
 - Mechanical scope only (not a question of *whether*): do the `Models\Contracts\*` interfaces appear in any **public method signatures** (Lunar internals, the bridge packages, or documented consumer hooks)? If so, those signatures retype to the concrete class and the change needs a Rector rule. The decision to remove the interfaces is settled; this just sizes the call-site sweep. **Owner: slice 1.**
 - Is a separate accessor-injection seam needed, or do custom cast classes cover every real accessor case surfaced in the v1 issue tracker / consumer code? **Owner: review before slice 3.**
 - Niche structural needs (per-model connection/table for multi-tenant) — documented as global config, or do we need a sanctioned hook? **Owner: resolve before `accepted`.**
-- Should `extendCasts` reject unknown attribute names (typo safety) or stay permissive to allow casting yet-to-exist columns? **Owner: slice 3.**
+- Should `addCasts` reject unknown attribute names (typo safety) or stay permissive to allow casting yet-to-exist columns? **Owner: slice 3.**
 
 ## References
 
@@ -206,5 +206,5 @@ Slice 2 splits in two: the `modelClass()` collapse (mechanical, ~216 explicit ca
 - [x] Slice 2b — Remove the 51 core `Models\Contracts\*` interfaces and retype every reference to the concrete class (Rector RenameClass + facade docblock fixes). Verified: phpstan clean, all CI suites green.
 - [x] Slice 3 — Deleted `HasModelExtending` and `ModelManifest`'s substitution API (`replace`/`add`/`get`/`guessContractClass`); morph map registers concrete classes; `morphName()` preserved on `Base`. Removed the substitution test set, the `LUNAR_TESTING_REPLACE_MODELS` harness, the `extend-models` CI dimension, and the orphaned new-static phpstan ignore. Slice-1 recipe tests stay green.
 - [x] Slice 3b — Retired `lunarphp/table-rate-shipping`'s own `Lunar\Shipping\Models\Contracts\*` (6 interfaces) the same way; `ShippingRate` keeps its `Purchasable` contract. Shipping suite green.
-- [x] Slice 4 — Added `HasExtendableCasts` (`extendCasts`) on `Models\Base`, overriding `getCasts()`. Recipe tests cover a plain cast and a custom cast class (`AsArrayObject`) on a consumer-added column.
+- [x] Slice 4 — Added `HasExtendableCasts` (`addCasts`) on `Models\Base`, overriding `getCasts()`. Recipe tests cover a plain cast and a custom cast class (`AsArrayObject`) on a consumer-added column.
 - [~] Slice 5 — `upgrade` package. Done: `RewriteModelClassCallRector` (`Class::modelClass()` -> `Class::class`, fixture-tested) wired into `LunarSetList::V1_TO_V2`; dropped the dangling `Lunar\Base\Traits\HasModelExtending` rename. Deferred (docs, written when v2 docs land): the prose migration guide mapping each former extending use to its native replacement, cross-checked against the slice-1/4 recipe tests. A Rector rule to strip leftover `ModelManifest::replace()`/`add()` calls from consumer code is a possible addition if real usage warrants it.

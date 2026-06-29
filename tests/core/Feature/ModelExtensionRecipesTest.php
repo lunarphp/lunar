@@ -101,24 +101,24 @@ test('recipe: override behaviour by binding the action contract', function () {
     expect($spy->called)->toBeTrue();
 });
 
-test('recipe: cast an added column with extendCasts', function () {
+test('recipe: cast an added column with addCasts', function () {
     Schema::table((new Product)->getTable(), function (Blueprint $table) {
         $table->string('priority')->nullable();
     });
 
-    Product::extendCasts(['priority' => 'integer']);
+    Product::addCasts(['priority' => 'integer']);
 
     $product = Product::factory()->create(['priority' => '5']);
 
     expect($product->fresh()->priority)->toBe(5);
 });
 
-test('recipe: register a custom cast class with extendCasts', function () {
+test('recipe: register a custom cast class with addCasts', function () {
     Schema::table((new Product)->getTable(), function (Blueprint $table) {
         $table->json('metadata')->nullable();
     });
 
-    Product::extendCasts(['metadata' => AsArrayObject::class]);
+    Product::addCasts(['metadata' => AsArrayObject::class]);
 
     $product = Product::factory()->create(['metadata' => ['source' => 'import']]);
 
