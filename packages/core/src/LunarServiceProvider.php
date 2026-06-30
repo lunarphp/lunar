@@ -19,7 +19,9 @@ use Illuminate\Support\Str;
 use Lunar\Core\Addons\Manifest;
 use Lunar\Core\Auth\Manifest as AccessControlManifest;
 use Lunar\Core\Cache\AttributeCache as AttributeCacheImpl;
+use Lunar\Core\Cache\CacheDependencies as CacheDependenciesImpl;
 use Lunar\Core\Cache\CacheInvalidator as CacheInvalidatorImpl;
+use Lunar\Core\Cache\DependencyResolver as DependencyResolverImpl;
 use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
@@ -30,12 +32,14 @@ use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
+use Lunar\Core\Contracts\CacheDependencies as CacheDependenciesContract;
 use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
+use Lunar\Core\Contracts\DependencyResolver as DependencyResolverContract;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
 use Lunar\Core\Contracts\FulfilmentMethodManifest;
@@ -301,6 +305,17 @@ class LunarServiceProvider extends ServiceProvider
         // own model observer cannot see); direct saves reindex through Scout.
         Event::listen(CacheInvalidationEvent::class, ReindexOnCacheInvalidation::class);
 
+        // Default cache-dependency graphs (named after the morph alias). A
+        // product page depends on its brand, collections, options and cross-sells;
+        // other cacheable entities resolve to their own tag unless a consumer
+        // registers a graph for them.
+        $this->app->make(CacheDependenciesContract::class)->define('product', [
+            'brand',
+            'collections',
+            'productOptions',
+            'associations.target',
+        ]);
+
         $this->registerStaffAuthGuard();
         $this->registerStaffStateListeners();
 
@@ -420,6 +435,17 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(CacheInvalidator::class, function ($app) {
             return new CacheInvalidatorImpl($app['db'], config('lunar.database.connection'));
+        });
+
+        $this->app->singleton(CacheDependenciesContract::class, function ($app) {
+            return $app->make(CacheDependenciesImpl::class);
+        });
+
+        $this->app->singleton(DependencyResolverContract::class, function ($app) {
+            return new DependencyResolverImpl(
+                $app->make(CacheDependenciesContract::class),
+                ! $app->environment('production'),
+            );
         });
 
         $this->app->singleton(ModelManifest::class, function ($app) {
