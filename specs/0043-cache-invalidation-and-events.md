@@ -1,6 +1,6 @@
 # 0043 — Cache invalidation and event coverage
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-29
 - TODO item: Add events, including specific events for cache invalidation
@@ -135,7 +135,18 @@ Scout's own model observer already reindexes a searchable model on its direct sa
 
 ### The storefront contract
 
-Part A publishes a table — entity, its event, its default tag, and the changes that trigger it (including the bounded cascades above) — as the authoritative statement of "what to listen to and how to tag." It lands in the spec and ports to the v2 docs when they land.
+The authoritative statement of "what to listen to and how to tag." A storefront tags each cached page with the entities it renders and invalidates by tag; it listens to the event(s) for the entities a page depends on (or to the `CacheInvalidationEvent` interface for all of them). Every event exposes `cacheTags()`, `morphType()`, `cacheKey()` and `reason()`.
+
+| Entity | Event | Default tag | Invalidated when |
+| --- | --- | --- | --- |
+| Product | `ProductInvalidated` | `product:{id}` | the product saves/deletes; or a variant, price, stock level, association (both products), collection / customer-group / channel membership, media, or URL of it changes |
+| Collection | `CollectionInvalidated` | `collection:{id}` | the collection saves/deletes; its product membership, channel / customer-group pivot, media, or URL changes; or it is re-parented (each node in the moved subtree) |
+| Brand | `BrandInvalidated` | `brand:{id}` | the brand saves/deletes, or its media / URL changes |
+| ProductOption | `ProductOptionInvalidated` | `product_option:{id}` | the option saves/deletes, or one of its values changes |
+
+Unbounded references are matched downstream by tag, never fanned out: a page that renders a product's brand tags `brand:{id}` and is dropped when `BrandInvalidated` fires; a page that renders a shared option tags `product_option:{id}`. The tag uses the model's morph alias (`product`, `product_option`, ...) and primary key; the key derives from a single `cacheKey()` seam, ready to move to `public_id` when that lands.
+
+This table ports verbatim to the v2 docs when they land.
 
 ### Part B — domain lifecycle event coverage
 
@@ -163,7 +174,14 @@ Two boundaries are explicit:
 
 - **Database migrations:** none. (Durable webhook/tag keys prefer `public_id`; until that lands, tags use morph type + primary key via the `cacheKey()` seam. Soft dependency, not a blocker.)
 - **Breaking changes to the public contract surface:** the admin/filament `*Updated` catalog events are removed; their only first-party consumer (search reindexing) moves to the core events. Downstream code listening to them retargets to the core `*Invalidated` events. New public surface: the four events, the `CacheInvalidationEvent` contract, `CacheInvalidationReason`, the `InvalidatesCache` / `InvalidatesRelatedCache` concerns, `Contracts\CacheInvalidator`, and `$model->invalidateCache()`.
-- **Upgrade path for v1.x consumers:** upgrade-package notes mapping removed admin events to the core events; a Rector rename where the mapping is 1:1 (e.g. `ProductCollectionsUpdated` -> listen to `CollectionInvalidated` / `ProductInvalidated`). Where semantics widen (core fires on more paths), document the behaviour change rather than a blind rename.
+- **Upgrade path for v1.x consumers:** the removed events have no 1:1 successor (a Rector class-rename would point at a deleted class), so the migration is by guidance, not by rule. A consumer listening to a removed event re-subscribes to the core event it maps to:
+  - `ProductCollectionsUpdated`, `ProductAssociationsUpdated`, `ProductCustomerGroupsUpdated`, `ProductVariantOptionsUpdated`, `ModelPricesUpdated`, `ProductPricingUpdated`, `ModelChannelsUpdated` (on a product), `ModelUrlsUpdated` (on a product) -> `ProductInvalidated`
+  - `CollectionProductAttached`, `CollectionProductDetached`, `ChildCollectionCreated`, and the collection-side `Model*Updated` -> `CollectionInvalidated`
+  - `ModelMediaUpdated` -> the owning entity's `*Invalidated` (note: media is not yet a tracked satellite — see Future direction)
+  - `CustomerAddressEdited` -> removed, no successor (addresses are not indexed)
+  - `CustomerUserEdited` -> unchanged (kept)
+
+  The stale `Lunar\Admin\Events\* -> Lunar\Filament\Events\*` renames for the deleted events are removed from `LunarSetList`; the prose guide above ports to the upgrade docs when they land.
 - **Translation / locale impact:** none (no user-facing strings beyond any new exception messages, which still need all 16 locales if added).
 - **Filament / admin impact:** relation managers and `afterSave` stop dispatching their own events and call the core verb/recorder; the `sync_with_search` closures collapse to listeners on the core events.
 
@@ -207,4 +225,4 @@ Webhooks ride the same invalidation events but get their own home (`Webhooks/`);
 - [x] Slice 4 — Reindex rides core events. `Listeners\ReindexOnCacheInvalidation` reindexes a searchable model on the `RelatedChanged` reason (the cascade Scout's own observer misses; direct saves still reindex through Scout, so no double). The catalog entries are removed from the admin `sync_with_search` listener block; customer reindexing stays until Part B. `cacheModel()` added to the event contract so the listener reads the model generically. Tests assert reindex on `RelatedChanged` and not on a direct change. Full suite (1220) green. (Deleting the now-orphaned catalog `*Updated` event classes + their dispatch sites is folded into the Part B sweep, where the customer events go too.)
 - [x] Slice 5a — Part B lifecycle events (additive). `Events\Customers\{CustomerCreated,CustomerUpdated,CustomerDeleted}` (CustomerObserver), `Events\Discounts\{DiscountCreated,DiscountUpdated,DiscountDeleted}` (DiscountObserver), `Events\Carts\{CartCreated,CartDeleted}` (new CartObserver) + `CartMerged` (MergeCart action). Tests in `tests/core/Feature/LifecycleEventsTest.php`. Non-breaking.
 - [x] Slice 5b — Admin event sweep (breaking). Deleted the 12 catalog `*Updated` event classes from both `packages/admin` and `packages/filament` (`ChildCollectionCreated`, `CollectionProduct{Attached,Detached}`, `Model{Channels,Media,Prices,Urls}Updated`, `Product{Associations,Collections,CustomerGroups,Pricing,VariantOptions}Updated`) plus `CustomerAddressEdited`, and removed every `->after(...)` dispatch site across the relation managers, resource pages, and the options widget. `CustomerAddressEdited` is **not** replaced: the `CustomerIndexer` doesn't index addresses, so its reindex was a no-op. `CustomerUserEdited` is **kept** — `user_emails` *is* in the customer index, so a linked user's edit must still reindex the customer; that one event + its `sync_with_search` listener stay. Stale `Lunar\Admin\Events\*` -> `Lunar\Filament\Events\*` renames for the deleted events removed from the upgrade `LunarSetList` (CustomerUserEdited rename kept). Full suite (core/admin/filament/search/shipping 1265, upgrade 48) green.
-- [ ] Slice 6 — Upgrade + contract. Upgrade-package Rector/notes for the removed admin events; publish the storefront cache-invalidation contract table (spec now, docs when v2 docs land).
+- [x] Slice 6 — Upgrade + contract. Storefront cache-invalidation contract table published (see The storefront contract). Upgrade path for the removed events documented as a prose mapping (no 1:1 Rector rename, since the targets are deleted) in Migration impact; stale renames already dropped from `LunarSetList` in slice 5b. Both port to the v2 docs when they land.
