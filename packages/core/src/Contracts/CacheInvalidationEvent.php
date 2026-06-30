@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Enums\CacheInvalidationReason;
 
 /**
@@ -28,4 +29,7 @@ interface CacheInvalidationEvent
 
     /** Why the entity was invalidated. */
     public function reason(): CacheInvalidationReason;
+
+    /** The invalidated entity. */
+    public function cacheModel(): Model;
 }

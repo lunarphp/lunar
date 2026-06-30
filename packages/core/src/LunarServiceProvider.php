@@ -30,6 +30,7 @@ use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
+use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
@@ -65,6 +66,7 @@ use Lunar\Core\Listeners\ApplyStockForFulfilmentTransition;
 use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Listeners\CloseSettledOrder;
 use Lunar\Core\Listeners\EnsureInitialFulfilmentForOrder;
+use Lunar\Core\Listeners\ReindexOnCacheInvalidation;
 use Lunar\Core\Listeners\SendFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
@@ -292,6 +294,10 @@ class LunarServiceProvider extends ServiceProvider
         Event::listen(OrderCancelled::class, SyncStockForOrder::class);
         Event::listen(FulfilmentCreated::class, AllocateStockForFulfilment::class);
         Event::listen(FulfilmentStatusUpdated::class, ApplyStockForFulfilmentTransition::class);
+
+        // Reindex searchable models on cascade invalidations (the cases Scout's
+        // own model observer cannot see); direct saves reindex through Scout.
+        Event::listen(CacheInvalidationEvent::class, ReindexOnCacheInvalidation::class);
 
         $this->registerStaffAuthGuard();
         $this->registerStaffStateListeners();

@@ -3,11 +3,14 @@
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Laravel\Scout\EngineManager;
+use Laravel\Scout\Engines\NullEngine;
 use Lunar\Core\Enums\CacheInvalidationReason;
 use Lunar\Core\Events\Catalog\BrandInvalidated;
 use Lunar\Core\Events\Catalog\CollectionInvalidated;
 use Lunar\Core\Events\Catalog\ProductInvalidated;
 use Lunar\Core\Events\Catalog\ProductOptionInvalidated;
+use Lunar\Core\Listeners\ReindexOnCacheInvalidation;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\Currency;
@@ -268,6 +271,34 @@ test('invalidation is held until the transaction commits', function () {
     });
 
     Event::assertDispatched(ProductInvalidated::class);
+});
+
+test('a cascade invalidation reindexes the searchable parent', function () {
+    $product = Product::factory()->create();
+
+    // Install the spy after creation so the factory's own Scout sync is excluded.
+    $engine = Mockery::spy(NullEngine::class);
+    $manager = Mockery::mock(EngineManager::class);
+    $manager->shouldReceive('engine')->andReturn($engine);
+    app()->instance(EngineManager::class, $manager);
+
+    // RelatedChanged (a variant/price/pivot changed) is the cascade Scout misses.
+    (new ReindexOnCacheInvalidation)->handle(new ProductInvalidated($product, CacheInvalidationReason::RelatedChanged));
+
+    $engine->shouldHaveReceived('update');
+});
+
+test('a direct change is left to scout and not reindexed by the listener', function () {
+    $product = Product::factory()->create();
+
+    $engine = Mockery::spy(NullEngine::class);
+    $manager = Mockery::mock(EngineManager::class);
+    $manager->shouldReceive('engine')->andReturn($engine);
+    app()->instance(EngineManager::class, $manager);
+
+    (new ReindexOnCacheInvalidation)->handle(new ProductInvalidated($product, CacheInvalidationReason::Updated));
+
+    $engine->shouldNotHaveReceived('update');
 });
 
 test('cache tags use the morph alias and key', function () {

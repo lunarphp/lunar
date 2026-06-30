@@ -3,6 +3,7 @@
 namespace Lunar\Core\Events\Catalog;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Lunar\Core\Contracts\CacheInvalidationEvent;
@@ -52,5 +53,10 @@ class BrandInvalidated implements CacheInvalidationEvent
     public function reason(): CacheInvalidationReason
     {
         return $this->reason;
+    }
+
+    public function cacheModel(): Model
+    {
+        return $this->brand;
     }
 }
