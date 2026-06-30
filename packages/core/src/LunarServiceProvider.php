@@ -89,6 +89,7 @@ use Lunar\Core\Manifests\OrderNotificationManifest as OrderNotificationManifestI
 use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Collection;
@@ -116,6 +117,7 @@ use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Core\Observers\AddressObserver;
 use Lunar\Core\Observers\AttributeObserver;
 use Lunar\Core\Observers\CartLineObserver;
+use Lunar\Core\Observers\CartObserver;
 use Lunar\Core\Observers\ChannelObserver;
 use Lunar\Core\Observers\CollectionObserver;
 use Lunar\Core\Observers\CurrencyObserver;
@@ -501,6 +503,7 @@ class LunarServiceProvider extends ServiceProvider
     {
         Address::observe(AddressObserver::class);
         Attribute::observe(AttributeObserver::class);
+        Cart::observe(CartObserver::class);
         CartLine::observe(CartLineObserver::class);
         Channel::observe(ChannelObserver::class);
         Collection::observe(CollectionObserver::class);
