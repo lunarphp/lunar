@@ -67,3 +67,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0040 | Storefront context | implemented |
 | 0041 | Retire model class substitution | implemented |
 | 0042 | Model query builders (registerable scopes) | implemented |
+| 0043 | Cache invalidation and event coverage | implemented |

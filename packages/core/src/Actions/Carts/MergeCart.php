@@ -3,6 +3,7 @@
 namespace Lunar\Core\Actions\Carts;
 
 use Lunar\Core\Contracts\Actions\Carts\MergesCart;
+use Lunar\Core\Events\Carts\CartMerged;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Cart;
 
@@ -60,6 +61,8 @@ class MergeCart implements MergesCart
                 'merged_id' => $target->id,
             ]);
         });
+
+        CartMerged::dispatch($target, $source);
 
         return $target;
     }

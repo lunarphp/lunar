@@ -17,6 +17,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPrices;
 use Lunar\Core\Models\Concerns\HasStock;
 use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -65,6 +66,7 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
     use HasPrices;
     use HasStock;
     use HasTranslations;
+    use InvalidatesRelatedCache;
     use LogsActivity;
 
     /**
@@ -98,6 +100,13 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function cacheInvalidationTargets(): iterable
+    {
+        $this->loadMissing('product');
+
+        return [$this->product];
     }
 
     public function taxClass(): BelongsTo

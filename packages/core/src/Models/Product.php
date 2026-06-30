@@ -14,9 +14,12 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
+use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\ProductFactory;
+use Lunar\Core\Enums\CacheInvalidationReason;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Events\Catalog\ProductInvalidated;
 use Lunar\Core\Jobs\Products\Associations\Associate;
 use Lunar\Core\Jobs\Products\Associations\Dissociate;
 use Lunar\Core\Models\Concerns\HasAttributeData;
@@ -27,6 +30,7 @@ use Lunar\Core\Models\Concerns\HasMedia;
 use Lunar\Core\Models\Concerns\HasTags;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
+use Lunar\Core\Models\Concerns\InvalidatesCache;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\States\Product\ProductState;
@@ -58,6 +62,7 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
     use HasTags;
     use HasTranslations;
     use HasUrls;
+    use InvalidatesCache;
     use LogsActivity;
     use Searchable;
 
@@ -110,6 +115,11 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
     public function mappedAttributes(): Collection
     {
         return $this->productType->mappedAttributes;
+    }
+
+    public function newCacheInvalidationEvent(CacheInvalidationReason $reason): CacheInvalidationEvent
+    {
+        return new ProductInvalidated($this, $reason);
     }
 
     public function productType(): BelongsTo

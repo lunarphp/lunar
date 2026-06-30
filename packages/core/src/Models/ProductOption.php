@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Database\Factories\ProductOptionFactory;
+use Lunar\Core\Enums\CacheInvalidationReason;
+use Lunar\Core\Events\Catalog\ProductOptionInvalidated;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
 use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\InvalidatesCache;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
@@ -33,6 +37,7 @@ class ProductOption extends Base implements SpatieHasMedia
     use HasMacros;
     use HasMedia;
     use HasTranslations;
+    use InvalidatesCache;
     use LogsActivity;
     use Searchable;
 
@@ -54,6 +59,11 @@ class ProductOption extends Base implements SpatieHasMedia
     protected static function newFactory()
     {
         return ProductOptionFactory::new();
+    }
+
+    public function newCacheInvalidationEvent(CacheInvalidationReason $reason): CacheInvalidationEvent
+    {
+        return new ProductOptionInvalidated($this, $reason);
     }
 
     /**

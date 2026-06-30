@@ -15,7 +15,6 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Events\ModelPricesUpdated;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Currency;
@@ -170,10 +169,6 @@ class PriceRelationManager extends BaseRelationManager
                     return $data;
                 })->label(
                     __('lunarpanel::relationmanagers.pricing.table.actions.create.label')
-                )->after(
-                    fn () => ModelPricesUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
                 ),
             ])
             ->recordActions([
@@ -185,16 +180,8 @@ class PriceRelationManager extends BaseRelationManager
                         $data['price'] = PriceCalculator::toMinor((float) $data['price'], $currencyModel);
 
                         return $data;
-                    })->after(
-                        fn () => ModelPricesUpdated::dispatch(
-                            $this->getOwnerRecord()
-                        )
-                    ),
-                DeleteAction::make()->after(
-                    fn () => ModelPricesUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
-                ),
+                    }),
+                DeleteAction::make(),
             ]);
     }
 

@@ -10,7 +10,7 @@ Split into what an alpha needs to be a coherent, representative commerce platfor
 
 ### Pre-alpha
 
-- Add events, including specific events for cache invalidation — the extensibility contract consumers hook into; spec 0038's stock events and reindexing ride this.
+- Add events, including specific events for cache invalidation — the extensibility contract consumers hook into; spec 0038's stock events and reindexing ride this. (spec 0043 drafted)
 - Make order line purchasables optional — breaking schema (nullable `purchasable_*`); pairs with the shipping-option cleanup below.
 - Stop storing shipping options as polymorphic purchasables on cart/order lines
     - Currently `ShippingOption` is a non-Eloquent value object from `ShippingManifest`, yet lines morph to it via a hardcoded `purchasable_id => 1` (see `CreateShippingLine`)

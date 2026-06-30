@@ -67,7 +67,7 @@ class Dissociate implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
-            $query = $this->product->associations()->whereIn(
+            $associations = $this->product->associations()->whereIn(
                 'product_target_id',
                 $this->targets->pluck('id')
             )->when(
@@ -76,9 +76,11 @@ class Dissociate implements ShouldQueue
                     'type',
                     is_string($this->type) ? $this->type : $this->type->value
                 )
-            );
+            )->get();
 
-            $query->delete();
+            // Delete per-model so the deleted event fires and cache invalidation
+            // (both products) cascades; a bulk delete() would bypass it.
+            $associations->each->delete();
         });
     }
 }

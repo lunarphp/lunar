@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\StockLevelFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
 
 /**
  * A variant's stock balance at a single location.
@@ -29,6 +30,7 @@ class StockLevel extends Base
 {
     use HasFactory;
     use HasMacros;
+    use InvalidatesRelatedCache;
 
     /**
      * {@inheritDoc}
@@ -57,6 +59,13 @@ class StockLevel extends Base
     public function variant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+    }
+
+    public function cacheInvalidationTargets(): iterable
+    {
+        $this->loadMissing('variant.product');
+
+        return [$this->variant?->product];
     }
 
     public function location(): BelongsTo

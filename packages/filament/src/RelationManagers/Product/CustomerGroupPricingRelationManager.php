@@ -19,7 +19,6 @@ use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Price;
-use Lunar\Filament\Events\ProductPricingUpdated;
 use Lunar\Filament\Forms\Components\CurrencySelect;
 use Lunar\Filament\Forms\Components\CustomerGroupSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
@@ -142,10 +141,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                     return $data;
                 })->label(
                     __('lunar-filament::relationmanagers.customer_group_pricing.table.actions.create.label')
-                )->modalHeading(__('lunar-filament::relationmanagers.customer_group_pricing.table.actions.create.modal.heading'))
-                    ->after(
-                        fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
-                    ),
+                )->modalHeading(__('lunar-filament::relationmanagers.customer_group_pricing.table.actions.create.modal.heading')),
             ])
             ->recordActions([
                 EditAction::make()
@@ -158,9 +154,7 @@ class CustomerGroupPricingRelationManager extends BaseRelationManager
                         $data['list_price'] = (int) ($data['list_price'] * $currencyModel->factor);
 
                         return $data;
-                    })->after(
-                        fn () => ProductPricingUpdated::dispatch($this->getOwnerRecord())
-                    ),
+                    }),
                 DeleteAction::make(),
             ]);
     }

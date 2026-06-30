@@ -2,10 +2,28 @@
 
 namespace Lunar\Core\Observers;
 
+use Lunar\Core\Events\Customers\CustomerCreated;
+use Lunar\Core\Events\Customers\CustomerDeleted;
+use Lunar\Core\Events\Customers\CustomerUpdated;
 use Lunar\Core\Models\Customer;
 
 class CustomerObserver
 {
+    public function created(Customer $customer): void
+    {
+        CustomerCreated::dispatch($customer);
+    }
+
+    public function updated(Customer $customer): void
+    {
+        CustomerUpdated::dispatch($customer);
+    }
+
+    public function deleted(Customer $customer): void
+    {
+        CustomerDeleted::dispatch($customer);
+    }
+
     /**
      * Handle the Customer "deleting" event.
      *

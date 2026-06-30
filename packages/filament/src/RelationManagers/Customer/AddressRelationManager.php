@@ -10,7 +10,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Models\Address;
-use Lunar\Filament\Events\CustomerAddressEdited;
 use Lunar\Filament\Forms\Components\CountrySelect;
 use Lunar\Filament\Forms\Components\StateSelect;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
@@ -80,9 +79,6 @@ class AddressRelationManager extends BaseRelationManager
                 ),
             ])->recordActions([
                 EditAction::make('editAddress')
-                    ->after(
-                        fn (Model $record) => CustomerAddressEdited::dispatch($record)
-                    )
                     ->fillForm(fn (Address $record): array => [
                         'title' => $record->title,
                         'first_name' => $record->first_name,
