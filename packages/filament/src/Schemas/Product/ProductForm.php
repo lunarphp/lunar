@@ -8,9 +8,9 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Tag;
 use Lunar\Filament\Forms\Components\Attributes;
@@ -71,14 +71,14 @@ class ProductForm
                 ->status('warning')
                 ->hidden(fn (Model $record) => ! static::isPublished($record)
                     || ! static::hasEnabledCustomerGroup($record)
-                    || (bool) CustomerGroup::modelClass()::getDefault()
+                    || (bool) CustomerGroup::getDefault()
                 ),
             Callout::make()
                 ->heading(__('lunar-filament::product.status.availability.hidden_from_guests'))
                 ->status('warning')
                 ->hidden(fn (Model $record) => ! static::isPublished($record)
                     || ! static::hasEnabledCustomerGroup($record)
-                    || ! CustomerGroup::modelClass()::getDefault()
+                    || ! CustomerGroup::getDefault()
                     || static::isDefaultGroupVisibleToGuests($record)
                 ),
             Callout::make()
@@ -178,7 +178,7 @@ class ProductForm
         return Attributes::make()
             ->using(ProductVariant::class)
             ->relationship('variant')
-            ->hidden(fn (ProductContract $record) => $record->hasVariants);
+            ->hidden(fn (Product $record) => $record->hasVariants);
     }
 
     protected static function isPublished(?Model $record): bool
@@ -203,7 +203,7 @@ class ProductForm
 
     protected static function isDefaultGroupVisibleToGuests(Model $record): bool
     {
-        $default = CustomerGroup::modelClass()::getDefault();
+        $default = CustomerGroup::getDefault();
 
         return $default && $record->newQuery()
             ->whereKey($record->getKey())

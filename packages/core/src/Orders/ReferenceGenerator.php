@@ -3,14 +3,14 @@
 namespace Lunar\Core\Orders;
 
 use Lunar\Core\Contracts\OrderReferenceGenerator as OrderReferenceGeneratorContract;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 
 class ReferenceGenerator implements OrderReferenceGeneratorContract
 {
     /**
      * {@inheritDoc}
      */
-    public function generate(OrderContract $order): string
+    public function generate(Order $order): string
     {
         $config = config('lunar.orders.reference_format', []);
 

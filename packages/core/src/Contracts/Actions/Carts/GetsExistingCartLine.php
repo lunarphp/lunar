@@ -3,14 +3,14 @@
 namespace Lunar\Core\Contracts\Actions\Carts;
 
 use Lunar\Core\Contracts\Purchasable;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
-use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Models\Cart;
+use Lunar\Core\Models\CartLine;
 
 interface GetsExistingCartLine
 {
     public function execute(
-        CartContract $cart,
+        Cart $cart,
         Purchasable $purchasable,
         array $meta = []
-    ): ?CartLineContract;
+    ): ?CartLine;
 }

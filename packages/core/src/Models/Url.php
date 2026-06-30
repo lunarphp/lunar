@@ -20,7 +20,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Url extends Base implements Contracts\Url
+class Url extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -63,7 +63,7 @@ class Url extends Base implements Contracts\Url
      */
     public function language(): BelongsTo
     {
-        return $this->belongsTo(Language::modelClass());
+        return $this->belongsTo(Language::class);
     }
 
     /**

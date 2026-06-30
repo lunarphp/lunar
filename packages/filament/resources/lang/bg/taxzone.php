@@ -29,13 +29,6 @@ return [
                 'postcodes' => 'Ограничи до пощенски кодове',
             ],
         ],
-        'price_display' => [
-            'label' => 'Показване на цена',
-            'options' => [
-                'include_tax' => 'Включително данък',
-                'exclude_tax' => 'Без данък',
-            ],
-        ],
         'active' => [
             'label' => 'Активна',
         ],

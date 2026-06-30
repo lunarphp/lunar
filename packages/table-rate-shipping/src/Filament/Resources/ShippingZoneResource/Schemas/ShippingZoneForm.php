@@ -2,7 +2,9 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingZoneResource\Schemas;
 
-use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
@@ -12,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\State;
 use Lunar\Filament\Support\Concerns\CallsHooks;
-use Lunar\Shipping\Models\Contracts\ShippingZone;
+use Lunar\Shipping\Models\ShippingZone;
 
 class ShippingZoneForm
 {
@@ -46,7 +48,7 @@ class ShippingZoneForm
 
     public static function getNameComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TextInput::make('name')
             ->label(__('lunarpanel.shipping::shippingzone.form.name.label'))
             ->required()
             ->maxLength(255)
@@ -55,7 +57,7 @@ class ShippingZoneForm
 
     public static function getTypeComponent(): Component
     {
-        return Forms\Components\Select::make('type')
+        return Select::make('type')
             ->label(__('lunarpanel.shipping::shippingzone.form.type.label'))
             ->required()
             ->options([
@@ -68,14 +70,14 @@ class ShippingZoneForm
 
     public static function getCountryComponent(): Component
     {
-        return Forms\Components\Select::make('country')
+        return Select::make('country')
             ->label(__('lunarpanel.shipping::shippingzone.form.country.label'))
             ->dehydrated(false)
             ->visible(fn (Get $get) => ! in_array($get('type'), ['countries', 'unrestricted']))
             ->options(Country::get()->pluck('name', 'id'))
             ->required()
             ->searchable()
-            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
+            ->loadStateFromRelationshipsUsing(static function (Select $component, Model $record): void {
                 $record->loadMissing('countries');
 
                 $country = $record->countries->first();
@@ -97,14 +99,14 @@ class ShippingZoneForm
 
     public static function getCountriesComponent(): Component
     {
-        return Forms\Components\Select::make('countries')
+        return Select::make('countries')
             ->label(__('lunarpanel.shipping::shippingzone.form.countries.label'))
             ->visible(fn ($get) => $get('type') == 'countries')
             ->dehydrated(false)
             ->options(Country::get()->pluck('name', 'id'))
             ->multiple()
             ->required()
-            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
+            ->loadStateFromRelationshipsUsing(static function (Select $component, Model $record): void {
                 $record->loadMissing('countries');
                 $relatedModels = $record->countries;
 
@@ -128,14 +130,14 @@ class ShippingZoneForm
 
     public static function getStatesComponent(): Component
     {
-        return Forms\Components\Select::make('states')
+        return Select::make('states')
             ->label(__('lunarpanel.shipping::shippingzone.form.states.label'))
             ->visible(fn ($get) => $get('type') == 'states')
             ->dehydrated(false)
             ->options(fn ($get) => State::where('country_id', $get('country'))->get()->pluck('name', 'id'))
             ->multiple()
             ->required()
-            ->loadStateFromRelationshipsUsing(static function (Forms\Components\Select $component, Model $record): void {
+            ->loadStateFromRelationshipsUsing(static function (Select $component, Model $record): void {
                 $record->loadMissing('states');
 
                 $relatedModels = $record->states;
@@ -160,14 +162,14 @@ class ShippingZoneForm
 
     public static function getPostcodesComponent(): Component
     {
-        return Forms\Components\Textarea::make('postcodes')
+        return Textarea::make('postcodes')
             ->label(__('lunarpanel.shipping::shippingzone.form.postcodes.label'))
             ->visible(fn ($get) => $get('type') == 'postcodes')
             ->dehydrated(false)
             ->rows(10)
             ->helperText(__('lunarpanel.shipping::shippingzone.form.postcodes.helper'))
             ->required()
-            ->afterStateHydrated(static function (Forms\Components\Textarea $component, Model $record): void {
+            ->afterStateHydrated(static function (Textarea $component, Model $record): void {
                 $relatedModels = $record->postcodes;
 
                 $component->state(

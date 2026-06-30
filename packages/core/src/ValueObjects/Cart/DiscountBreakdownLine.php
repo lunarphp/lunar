@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\ValueObjects\Cart;
 
-use Lunar\Core\Models\Contracts\CartLine;
+use Lunar\Core\Models\CartLine;
 
 class DiscountBreakdownLine
 {

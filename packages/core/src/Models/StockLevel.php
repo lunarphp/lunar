@@ -25,7 +25,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class StockLevel extends Base implements Contracts\StockLevel
+class StockLevel extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -56,12 +56,12 @@ class StockLevel extends Base implements Contracts\StockLevel
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::modelClass(), 'product_variant_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
     public function location(): BelongsTo
     {
-        return $this->belongsTo(Location::modelClass());
+        return $this->belongsTo(Location::class);
     }
 
     /**
@@ -70,7 +70,7 @@ class StockLevel extends Base implements Contracts\StockLevel
      */
     public function movements(): HasMany
     {
-        return $this->hasMany(StockMovement::modelClass(), 'product_variant_id', 'product_variant_id')
+        return $this->hasMany(StockMovement::class, 'product_variant_id', 'product_variant_id')
             ->where('location_id', $this->location_id);
     }
 

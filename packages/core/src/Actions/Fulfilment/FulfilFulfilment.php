@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\FulfilsFulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\TransitionsFulfilment;
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 /**
@@ -22,7 +21,7 @@ class FulfilFulfilment implements FulfilsFulfilment
         protected TransitionsFulfilment $transitionFulfilment,
     ) {}
 
-    public function execute(FulfilmentContract $fulfilment, bool $notify = true): Fulfilment
+    public function execute(Fulfilment $fulfilment, bool $notify = true): Fulfilment
     {
         /** @var Fulfilment $fulfilment */
         if ($fulfilment->isOnHold()) {
@@ -35,7 +34,7 @@ class FulfilFulfilment implements FulfilsFulfilment
     /**
      * Whether the fulfilment can be fulfilled, per its method's state graph.
      */
-    public static function canRun(FulfilmentContract $fulfilment): bool
+    public static function canRun(Fulfilment $fulfilment): bool
     {
         /** @var Fulfilment $fulfilment */
         return ! $fulfilment->isOnHold()

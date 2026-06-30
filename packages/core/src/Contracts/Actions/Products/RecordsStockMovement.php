@@ -4,8 +4,8 @@ namespace Lunar\Core\Contracts\Actions\Products;
 
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Enums\StockMovementType;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Location;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockMovement;
 
 interface RecordsStockMovement
@@ -16,7 +16,7 @@ interface RecordsStockMovement
      * transaction.
      */
     public function execute(
-        ProductVariantContract $variant,
+        ProductVariant $variant,
         Location $location,
         int $quantity,
         StockMovementType $type,

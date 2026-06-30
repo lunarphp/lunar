@@ -6,45 +6,88 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Collection;
+use Lunar\Core\Contracts\Actions\Storefront\ResolvesStorefrontContext;
 use Lunar\Core\Contracts\StorefrontSession;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Exceptions\CustomerNotBelongsToUserException;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\Models\Contracts\Channel as ChannelContract;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\Models\Contracts\Customer as CustomerContract;
-use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Region;
 
 class StorefrontSessionManager implements StorefrontSession
 {
-    protected ?ChannelContract $channel = null;
+    protected ?Region $region = null;
+
+    protected ?Channel $channel = null;
 
     protected ?Collection $customerGroups = null;
 
-    protected ?CurrencyContract $currency = null;
+    protected ?Currency $currency = null;
 
-    protected ?CustomerContract $customer = null;
+    protected ?Customer $customer = null;
 
     public function __construct(
         protected SessionManager $sessionManager,
         protected AuthManager $authManager,
+        protected ResolvesStorefrontContext $resolveStorefrontContext,
     ) {
         $this->customerGroups = new Collection;
 
+        $this->initRegion();
         $this->initChannel();
         $this->initCustomerGroups();
         $this->initCurrency();
         $this->initCustomer();
     }
 
-    public function getChannel(): ChannelContract
+    public function context(): StorefrontContext
+    {
+        return $this->resolveStorefrontContext->execute(
+            channel: $this->getChannel(),
+            currency: $this->getCurrency(),
+            customer: $this->getCustomer(),
+            customerGroups: $this->getCustomerGroups(),
+            region: $this->getRegion(),
+        );
+    }
+
+    public function getRegion(): ?Region
+    {
+        return $this->region;
+    }
+
+    public function setRegion(Region $region): static
+    {
+        $this->sessionManager->put(
+            $this->getSessionKey().'_region',
+            $region->handle,
+        );
+
+        $this->region = $region;
+
+        // Channel and currency follow the region (a region belongs to a
+        // channel). A later setChannel()/setCurrency() still overrides.
+        $region->loadMissing(['channel', 'currency']);
+
+        if ($region->channel) {
+            $this->setChannel($region->channel);
+        }
+
+        if ($region->currency) {
+            $this->setCurrency($region->currency);
+        }
+
+        return $this;
+    }
+
+    public function getChannel(): Channel
     {
         return $this->channel;
     }
 
-    public function setChannel(ChannelContract $channel): static
+    public function setChannel(Channel $channel): static
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_channel',
@@ -57,7 +100,7 @@ class StorefrontSessionManager implements StorefrontSession
     }
 
     /**
-     * @return Collection<CustomerGroupContract>
+     * @return Collection<CustomerGroup>
      */
     public function getCustomerGroups(): Collection
     {
@@ -65,7 +108,7 @@ class StorefrontSessionManager implements StorefrontSession
     }
 
     /**
-     * @param  Collection<CustomerGroupContract>  $customerGroups
+     * @param  Collection<CustomerGroup>  $customerGroups
      */
     public function setCustomerGroups(Collection $customerGroups): static
     {
@@ -79,7 +122,7 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    public function setCustomerGroup(CustomerGroupContract $customerGroup): static
+    public function setCustomerGroup(CustomerGroup $customerGroup): static
     {
         return $this->setCustomerGroups(new Collection([$customerGroup]));
     }
@@ -93,12 +136,12 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    public function getCurrency(): CurrencyContract
+    public function getCurrency(): Currency
     {
         return $this->currency;
     }
 
-    public function setCurrency(CurrencyContract $currency): static
+    public function setCurrency(Currency $currency): static
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_currency',
@@ -110,12 +153,12 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    public function getCustomer(): ?CustomerContract
+    public function getCustomer(): ?Customer
     {
         return $this->customer;
     }
 
-    public function setCustomer(CustomerContract $customer): static
+    public function setCustomer(Customer $customer): static
     {
         $this->sessionManager->put(
             $this->getSessionKey().'_customer',
@@ -135,13 +178,32 @@ class StorefrontSessionManager implements StorefrontSession
         return $this;
     }
 
-    protected function customerBelongsToUser(CustomerContract $customer): bool
+    protected function customerBelongsToUser(Customer $customer): bool
     {
         $user = $this->authManager->user();
 
         return $customer->query()
             ->whereHas('users', fn (Builder $query): Builder => $query->where('user_id', $user->id))
             ->exists();
+    }
+
+    public function initRegion(): void
+    {
+        if ($this->region) {
+            return;
+        }
+
+        $sessionRegion = $this->sessionManager->get($this->getSessionKey().'_region');
+
+        // Restore the region directly (no propagation) so a persisted explicit
+        // channel/currency override still wins in initChannel()/initCurrency().
+        if ($sessionRegion && $region = Region::query()->where('handle', $sessionRegion)->first()) {
+            $this->region = $region;
+
+            return;
+        }
+
+        $this->region = Region::getDefault();
     }
 
     public function initChannel(): void
@@ -160,7 +222,7 @@ class StorefrontSessionManager implements StorefrontSession
             return;
         }
 
-        $this->setChannel(Channel::getDefault());
+        $this->setChannel($this->region?->channel ?? Channel::getDefault());
     }
 
     public function initCustomerGroups(): void
@@ -202,7 +264,7 @@ class StorefrontSessionManager implements StorefrontSession
             return;
         }
 
-        $this->setCurrency(Currency::getDefault());
+        $this->setCurrency($this->region?->currency ?? Currency::getDefault());
     }
 
     public function initCustomer(): void
@@ -233,6 +295,7 @@ class StorefrontSessionManager implements StorefrontSession
     public function forget(): void
     {
         $this->sessionManager->forget([
+            $this->getSessionKey().'_region',
             $this->getSessionKey().'_channel',
             $this->getSessionKey().'_customer_groups',
             $this->getSessionKey().'_currency',

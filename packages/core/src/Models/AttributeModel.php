@@ -11,7 +11,7 @@ use Lunar\Core\Database\Factories\AttributeModelFactory;
  * @property int $attribute_id
  * @property string $model_type
  */
-class AttributeModel extends Base implements Contracts\AttributeModel
+class AttributeModel extends Base
 {
     use HasFactory;
 
@@ -35,6 +35,6 @@ class AttributeModel extends Base implements Contracts\AttributeModel
 
     public function attribute(): BelongsTo
     {
-        return $this->belongsTo(Attribute::modelClass());
+        return $this->belongsTo(Attribute::class);
     }
 }

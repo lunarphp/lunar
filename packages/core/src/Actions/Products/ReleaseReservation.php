@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Products;
 use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Actions\Products\RecomputesStockReserved;
 use Lunar\Core\Contracts\Actions\Products\ReleasesReservation;
-use Lunar\Core\Models\Contracts\StockReservation as StockReservationContract;
 use Lunar\Core\Models\StockReservation;
 
 /**
@@ -18,7 +17,7 @@ class ReleaseReservation implements ReleasesReservation
         protected RecomputesStockReserved $recomputeReserved,
     ) {}
 
-    public function execute(StockReservationContract $reservation): StockReservation
+    public function execute(StockReservation $reservation): StockReservation
     {
         /** @var StockReservation $reservation */
         if (filled($reservation->released_at) || filled($reservation->committed_at)) {

@@ -16,7 +16,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class ProductType extends Base implements Contracts\ProductType
+class ProductType extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -43,7 +43,7 @@ class ProductType extends Base implements Contracts\ProductType
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Attribute::modelClass(),
+            Attribute::class,
             "{$prefix}product_type_attribute",
         )->withTimestamps();
     }
@@ -66,6 +66,6 @@ class ProductType extends Base implements Contracts\ProductType
 
     public function products(): HasMany
     {
-        return $this->hasMany(Product::modelClass());
+        return $this->hasMany(Product::class);
     }
 }

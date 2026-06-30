@@ -8,11 +8,7 @@ interface ModelManifest
 
     public function addDirectory(string $dir): void;
 
-    public function add(string $interfaceClass, string $modelClass): void;
+    public function morphMap(): void;
 
-    public function replace(string $interfaceClass, string $modelClass): void;
-
-    public function get(string $interfaceClass): ?string;
-
-    public function guessContractClass(string $modelClass): string;
+    public function getMorphMapKey(string $className): string;
 }

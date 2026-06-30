@@ -3,9 +3,8 @@
 namespace Lunar\Core\Contracts;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\TaxClass;
 use Lunar\Core\Models\Price;
-use Lunar\Core\Validation\CartLine\CartLineAvailability;
+use Lunar\Core\Models\TaxClass;
 
 interface Purchasable
 {

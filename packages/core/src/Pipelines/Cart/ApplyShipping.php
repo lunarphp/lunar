@@ -5,7 +5,6 @@ namespace Lunar\Core\Pipelines\Cart;
 use Closure;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdown;
 use Lunar\Core\ValueObjects\Cart\ShippingBreakdownItem;
 
@@ -14,9 +13,9 @@ class ApplyShipping
     /**
      * Called just before cart totals are calculated.
      *
-     * @param  Closure(CartContract): mixed  $next
+     * @param  Closure(Cart):mixed  $next
      */
-    public function handle(CartContract $cart, Closure $next): mixed
+    public function handle(Cart $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
         $shippingBreakdown = new ShippingBreakdown;

@@ -4,7 +4,6 @@ namespace Lunar\Core\Observers;
 
 use Lunar\Core\Jobs\Collections\UpdateProductPositions;
 use Lunar\Core\Models\Collection;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
 
 class CollectionObserver
 {
@@ -13,7 +12,7 @@ class CollectionObserver
      *
      * @return void
      */
-    public function updated(CollectionContract $collection)
+    public function updated(Collection $collection)
     {
         UpdateProductPositions::dispatch($collection);
     }
@@ -23,7 +22,7 @@ class CollectionObserver
      *
      * @return void
      */
-    public function deleting(CollectionContract $collection)
+    public function deleting(Collection $collection)
     {
         /** @var Collection $collection */
         $collection->products()->detach();

@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\AddsFulfilmentTracking;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Exceptions\FulfilmentException;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentTracking;
 
@@ -19,7 +18,7 @@ class AddFulfilmentTracking implements AddsFulfilmentTracking
         protected CarrierManifest $carriers,
     ) {}
 
-    public function execute(FulfilmentContract $fulfilment, array $attributes): FulfilmentTracking
+    public function execute(Fulfilment $fulfilment, array $attributes): FulfilmentTracking
     {
         /** @var Fulfilment $fulfilment */
         $attributes = array_intersect_key(

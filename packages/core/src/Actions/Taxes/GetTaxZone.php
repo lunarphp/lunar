@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Taxes;
 
 use Lunar\Core\Contracts\Actions\Taxes\GetsTaxZone;
 use Lunar\Core\Contracts\Addressable;
-use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Models\TaxZone;
 
 class GetTaxZone implements GetsTaxZone
@@ -15,7 +14,7 @@ class GetTaxZone implements GetsTaxZone
         protected GetTaxZoneCountry $getTaxZoneCountry,
     ) {}
 
-    public function execute(?Addressable $address = null): ?TaxZoneContract
+    public function execute(?Addressable $address = null): ?TaxZone
     {
         if ($address && $address->postcode) {
             $postcodeZone = $this->getTaxZonePostcode->execute($address->postcode);

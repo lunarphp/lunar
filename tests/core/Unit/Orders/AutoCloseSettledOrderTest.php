@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Contracts\OrderSettings;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Order;
@@ -41,7 +40,7 @@ function enableAutoClose(): void
 {
     app()->instance(OrderSettings::class, new class implements OrderSettings
     {
-        public function autoClosesSettledOrders(OrderContract $order): bool
+        public function autoClosesSettledOrders(Order $order): bool
         {
             return true;
         }

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Facade;
 use Lunar\Filament\Support\ComponentExtensions\Registry;
 
 /**
- * @method static \Lunar\Filament\Support\ComponentExtensions\Registry register(array $extensions)
+ * @method static Registry register(array $extensions)
  * @method static array all()
  * @method static array for(string $target)
  * @method static mixed callHook(string $target, ?object $caller, string $hookName, mixed ...$args)

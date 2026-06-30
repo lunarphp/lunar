@@ -7,7 +7,6 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Facades\Taxes;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdownAmount;
 
@@ -16,9 +15,9 @@ class CalculateTax
     /**
      * Called just before cart totals are calculated.
      *
-     * @param  Closure(CartContract): mixed  $next
+     * @param  Closure(Cart):mixed  $next
      */
-    public function handle(CartContract $cart, Closure $next): mixed
+    public function handle(Cart $cart, Closure $next): mixed
     {
         /** @var Cart $cart */
         $taxBreakDownAmounts = collect();

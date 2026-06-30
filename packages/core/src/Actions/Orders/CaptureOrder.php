@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Lunar\Core\Contracts\Actions\Orders\CapturesOrder;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\Exceptions\OrderActionException;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Transaction;
 
@@ -24,7 +23,7 @@ class CaptureOrder implements CapturesOrder
      * the order's currency factor before being handed to the driver.
      */
     public function execute(
-        OrderContract $order,
+        Order $order,
         int|string $transactionId,
         float|int|string $amount,
     ): PaymentCapture {
@@ -53,7 +52,7 @@ class CaptureOrder implements CapturesOrder
      * Whether any capture is possible against the order — i.e. there is at
      * least one successful intent transaction and no successful capture yet.
      */
-    public static function canRun(OrderContract $order): bool
+    public static function canRun(Order $order): bool
     {
         /** @var Order $order */
         $intents = self::intents($order);
@@ -72,7 +71,7 @@ class CaptureOrder implements CapturesOrder
      *
      * @return Collection<int, Transaction>
      */
-    public static function intents(OrderContract $order): Collection
+    public static function intents(Order $order): Collection
     {
         /** @var Order $order */
         /** @var Collection<int, Transaction> $intents */

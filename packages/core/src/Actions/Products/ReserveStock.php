@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Lunar\Core\Contracts\Actions\Products\RecomputesStockReserved;
 use Lunar\Core\Contracts\Actions\Products\ReservesStock;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\StockReservation;
 
@@ -22,7 +21,7 @@ class ReserveStock implements ReservesStock
     ) {}
 
     public function execute(
-        ProductVariantContract $variant,
+        ProductVariant $variant,
         int $quantity,
         ?DateTimeInterface $expiresAt = null,
         ?Model $reference = null,

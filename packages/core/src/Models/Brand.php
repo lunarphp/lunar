@@ -27,7 +27,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Brand extends Base implements Contracts\Brand, SpatieHasMedia
+class Brand extends Base implements SpatieHasMedia
 {
     use HasAttributeData;
     use HasFactory;
@@ -75,20 +75,20 @@ class Brand extends Base implements Contracts\Brand, SpatieHasMedia
      */
     public function products(): HasMany
     {
-        return $this->hasMany(Product::modelClass());
+        return $this->hasMany(Product::class);
     }
 
     public function discounts()
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return $this->belongsToMany(Discount::modelClass(), "{$prefix}brand_discount");
+        return $this->belongsToMany(Discount::class, "{$prefix}brand_discount");
     }
 
     public function collections(): BelongsToMany
     {
         $prefix = config('lunar.database.table_prefix');
 
-        return $this->belongsToMany(Collection::modelClass(), "{$prefix}brand_collection");
+        return $this->belongsToMany(Collection::class, "{$prefix}brand_collection");
     }
 }

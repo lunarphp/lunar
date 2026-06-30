@@ -162,7 +162,6 @@ test('can get correct price inc tax based on tax class', function () {
     $taxZoneIt = TaxZone::factory()->create([
         'name' => 'IT',
         'zone_type' => 'country',
-        'price_display' => 'tax_inclusive',
         'active' => true,
         'default' => true,
     ]);
@@ -170,7 +169,6 @@ test('can get correct price inc tax based on tax class', function () {
     $taxZoneFr = TaxZone::factory()->create([
         'name' => 'FR',
         'zone_type' => 'country',
-        'price_display' => 'tax_inclusive',
         'active' => true,
         'default' => false,
     ]);

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);

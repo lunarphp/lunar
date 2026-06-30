@@ -2,8 +2,8 @@
 
 namespace Lunar\Core\Contracts\Actions\Fulfilment;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\Order;
 
 interface EnsuresInitialFulfilment
 {
@@ -14,5 +14,5 @@ interface EnsuresInitialFulfilment
      *
      * Returns the created fulfilment, or null when nothing was created.
      */
-    public function execute(OrderContract $order): ?Fulfilment;
+    public function execute(Order $order): ?Fulfilment;
 }

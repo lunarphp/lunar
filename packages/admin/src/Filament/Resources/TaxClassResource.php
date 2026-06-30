@@ -10,7 +10,7 @@ use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\CreateTaxClass;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\EditTaxClass;
 use Lunar\Admin\Filament\Resources\TaxClassResource\Pages\ListTaxClasses;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\TaxClass as TaxClassContract;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Filament\Schemas\TaxClass\TaxClassForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\TaxClass\TaxClassTable;
@@ -21,7 +21,7 @@ class TaxClassResource extends BaseResource
 
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = TaxClassContract::class;
+    protected static ?string $model = TaxClass::class;
 
     protected static ?int $navigationSort = 1;
 

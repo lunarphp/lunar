@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
-use Kalnoy\Nestedset\QueryBuilder;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\CollectionFactory;
+use Lunar\Core\Models\Builders\CollectionQueryBuilder;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasChannels;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
@@ -41,7 +41,7 @@ use Spatie\ModelStates\HasStates;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Collection extends Base implements Contracts\Collection, HasThumbnailImage, SpatieHasMedia
+class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
 {
     use HasAttributeData,
         HasChannels,
@@ -89,7 +89,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
      */
     public function group(): BelongsTo
     {
-        return $this->belongsTo(CollectionGroup::modelClass(), 'collection_group_id');
+        return $this->belongsTo(CollectionGroup::class, 'collection_group_id');
     }
 
     public function scopeInGroup(Builder $builder, int $id): Builder
@@ -110,7 +110,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Product::modelClass(),
+            Product::class,
             "{$prefix}collection_product"
         )->withPivot([
             'position',
@@ -132,7 +132,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            CustomerGroup::modelClass(),
+            CustomerGroup::class,
             "{$prefix}collection_customer_group"
         )->withPivot([
             'visible',
@@ -147,7 +147,7 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Discount::modelClass(),
+            Discount::class,
             "{$prefix}collection_discount"
         )->withPivot(['type'])->withTimestamps();
     }
@@ -157,14 +157,14 @@ class Collection extends Base implements Contracts\Collection, HasThumbnailImage
         $prefix = config('lunar.database.table_prefix');
 
         return $this->belongsToMany(
-            Brand::modelClass(),
+            Brand::class,
             "{$prefix}brand_collection"
         )->withTimestamps();
     }
 
-    public function newEloquentBuilder($query): QueryBuilder
+    public function newEloquentBuilder($query): CollectionQueryBuilder
     {
-        return new QueryBuilder($query);
+        return new CollectionQueryBuilder($query);
     }
 
     public function getThumbnailImage(): string

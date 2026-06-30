@@ -39,7 +39,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CartAddress extends Base implements Addressable, Contracts\CartAddress
+class CartAddress extends Base implements Addressable
 {
     use CachesProperties;
     use HasFactory;
@@ -130,11 +130,11 @@ class CartAddress extends Base implements Addressable, Contracts\CartAddress
 
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(Cart::modelClass());
+        return $this->belongsTo(Cart::class);
     }
 
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::modelClass());
+        return $this->belongsTo(Country::class);
     }
 }

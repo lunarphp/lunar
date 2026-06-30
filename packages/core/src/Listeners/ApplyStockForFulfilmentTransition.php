@@ -6,7 +6,7 @@ use Lunar\Core\Enums\FulfilmentStateCategory;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Events\Fulfilment\FulfilmentStatusUpdated;
 use Lunar\Core\Listeners\Concerns\SyncsTrackedStock;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
+use Lunar\Core\Models\ProductVariant;
 
 /**
  * A fulfilment changed state → apply the physical `on_hand` movement (ship,
@@ -32,7 +32,7 @@ class ApplyStockForFulfilmentTransition
             foreach ($fulfilment->lines as $line) {
                 $variant = $line->orderLine?->purchasable;
 
-                if ($variant instanceof ProductVariantContract) {
+                if ($variant instanceof ProductVariant) {
                     $variant->adjustStock($fulfilment->location, $sign * $line->quantity, $type, source: $fulfilment);
                 }
             }

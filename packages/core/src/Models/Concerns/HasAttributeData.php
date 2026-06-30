@@ -24,7 +24,7 @@ trait HasAttributeData
      */
     public function mappedAttributes(): EloquentCollection
     {
-        return Attribute::modelClass()::query()
+        return Attribute::query()
             ->whereHas('models', fn ($query) => $query->where('model_type', static::morphName()))
             ->orderBy('position')
             ->get();

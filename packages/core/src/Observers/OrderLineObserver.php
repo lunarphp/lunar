@@ -5,7 +5,6 @@ namespace Lunar\Core\Observers;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Exceptions\NonPurchasableItemException;
-use Lunar\Core\Models\Contracts\OrderLine as OrderLineContract;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Validation\Order\OrderLineQuantity;
 
@@ -18,7 +17,7 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "creating" event.
      */
-    public function creating(OrderLineContract $orderLine): void
+    public function creating(OrderLine $orderLine): void
     {
         $this->assertPurchasable($orderLine);
     }
@@ -26,7 +25,7 @@ class OrderLineObserver
     /**
      * Handle the OrderLine "updating" event.
      */
-    public function updating(OrderLineContract $orderLine): void
+    public function updating(OrderLine $orderLine): void
     {
         /** @var OrderLine $orderLine */
         $this->assertPurchasable($orderLine);
@@ -41,7 +40,7 @@ class OrderLineObserver
     /**
      * Ensure the order line references a purchasable model.
      */
-    protected function assertPurchasable(OrderLineContract $orderLine): void
+    protected function assertPurchasable(OrderLine $orderLine): void
     {
         /** @var OrderLine $orderLine */
         $purchasableModel = class_exists($orderLine->purchasable_type) ?

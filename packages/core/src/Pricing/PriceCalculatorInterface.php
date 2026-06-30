@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Pricing;
 
-use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Currency;
 
 /**
  * Every operation takes a {@see Currency}, even when the default

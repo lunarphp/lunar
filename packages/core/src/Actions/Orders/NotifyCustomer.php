@@ -8,7 +8,6 @@ use Lunar\Core\Contracts\Actions\Orders\NotifiesCustomer;
 use Lunar\Core\Contracts\OrderNotificationManifest;
 use Lunar\Core\Events\Orders\OrderCustomerNotified;
 use Lunar\Core\Exceptions\OrderActionException;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 /**
@@ -30,7 +29,7 @@ class NotifyCustomer implements NotifiesCustomer
         protected Dispatcher $dispatcher,
     ) {}
 
-    public function execute(OrderContract $order, string $notification, ?string $message = null, array $recipients = []): Order
+    public function execute(Order $order, string $notification, ?string $message = null, array $recipients = []): Order
     {
         /** @var Order $order */
         $class = $this->catalogue->get($notification);

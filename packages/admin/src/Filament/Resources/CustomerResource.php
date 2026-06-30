@@ -10,7 +10,7 @@ use Lunar\Admin\Filament\Resources\CustomerResource\Pages\EditCustomer;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use Lunar\Admin\Filament\Resources\CustomerResource\Pages\ViewCustomer;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Customer as CustomerContract;
+use Lunar\Core\Models\Customer;
 use Lunar\Filament\GlobalSearch\Concerns\HasLunarGlobalSearch;
 use Lunar\Filament\GlobalSearch\CustomerGlobalSearch;
 use Lunar\Filament\RelationManagers\Customer\AddressRelationManager;
@@ -29,7 +29,7 @@ class CustomerResource extends BaseResource
 
     protected static ?string $permission = 'sales:manage-customers';
 
-    protected static ?string $model = CustomerContract::class;
+    protected static ?string $model = Customer::class;
 
     protected static ?int $navigationSort = 2;
 

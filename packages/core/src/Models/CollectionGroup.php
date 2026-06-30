@@ -16,7 +16,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class CollectionGroup extends Base implements Contracts\CollectionGroup
+class CollectionGroup extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -34,6 +34,6 @@ class CollectionGroup extends Base implements Contracts\CollectionGroup
 
     public function collections(): HasMany
     {
-        return $this->hasMany(Collection::modelClass());
+        return $this->hasMany(Collection::class);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Contracts\Actions\Currencies;
 
-use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Currency;
 
 interface CreatesCurrencyPrices
 {

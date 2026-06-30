@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Contracts\Actions\Orders;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\Fulfilment\FulfilmentStatus;
 
 interface ResolvesFulfilmentStatus
@@ -13,5 +13,5 @@ interface ResolvesFulfilmentStatus
      *
      * @return class-string<FulfilmentStatus>
      */
-    public function execute(OrderContract $order): string;
+    public function execute(Order $order): string;
 }

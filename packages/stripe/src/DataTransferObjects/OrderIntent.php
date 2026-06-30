@@ -2,13 +2,13 @@
 
 namespace Lunar\Stripe\DataTransferObjects;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 use Stripe\PaymentIntent;
 
 class OrderIntent
 {
     public function __construct(
-        public OrderContract $order,
+        public Order $order,
         public PaymentIntent $paymentIntent
     ) {}
 }

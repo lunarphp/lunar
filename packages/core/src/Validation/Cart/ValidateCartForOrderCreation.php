@@ -3,7 +3,7 @@
 namespace Lunar\Core\Validation\Cart;
 
 use Illuminate\Support\Facades\Validator;
-use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Models\CartLine;
 use Lunar\Core\Validation\BaseValidator;
 
 class ValidateCartForOrderCreation extends BaseValidator
@@ -70,7 +70,7 @@ class ValidateCartForOrderCreation extends BaseValidator
         return $this->pass();
     }
 
-    private function cartLineLabel(CartLineContract $line): string
+    private function cartLineLabel(CartLine $line): string
     {
         return $line->purchasable?->getIdentifier() ?? "#{$line->id}";
     }

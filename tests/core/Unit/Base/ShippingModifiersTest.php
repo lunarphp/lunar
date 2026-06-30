@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Models\Cart;
-use Lunar\Core\Models\Contracts\Cart as CartContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Modifiers\ShippingModifier;
 use Lunar\Core\Modifiers\ShippingModifiers;
@@ -23,7 +22,7 @@ beforeEach(function () {
 
     $this->class = new class extends ShippingModifier
     {
-        public function handle(CartContract $cart, Closure $next)
+        public function handle(Cart $cart, Closure $next)
         {
             return $next($cart);
         }

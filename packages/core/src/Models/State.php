@@ -16,7 +16,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class State extends Base implements Contracts\State
+class State extends Base
 {
     use HasFactory;
     use HasMacros;
@@ -39,6 +39,6 @@ class State extends Base implements Contracts\State
 
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::modelClass());
+        return $this->belongsTo(Country::class);
     }
 }

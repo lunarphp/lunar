@@ -24,7 +24,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Location extends Base implements Contracts\Location
+class Location extends Base
 {
     use HasDefaultRecord;
     use HasFactory;
@@ -65,6 +65,6 @@ class Location extends Base implements Contracts\Location
      */
     public function fulfilments(): HasMany
     {
-        return $this->hasMany(Fulfilment::modelClass());
+        return $this->hasMany(Fulfilment::class);
     }
 }

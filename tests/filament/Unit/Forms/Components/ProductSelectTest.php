@@ -17,7 +17,7 @@ it('can be instantiated without the admin panel booted', function () {
 it('resolves the configured Product model class', function () {
     $component = ProductSelect::make('product_id');
 
-    expect($component->lunarModel())->toBe(Product::modelClass());
+    expect($component->lunarModel())->toBe(Product::class);
 });
 
 it('exposes fluent options without breaking the chain', function () {

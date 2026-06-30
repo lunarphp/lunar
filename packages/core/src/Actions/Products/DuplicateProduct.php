@@ -4,7 +4,6 @@ namespace Lunar\Core\Actions\Products;
 
 use Lunar\Core\Contracts\Actions\Products\DuplicatesProduct;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
@@ -16,7 +15,7 @@ use Lunar\Core\Models\ProductVariant;
  */
 class DuplicateProduct implements DuplicatesProduct
 {
-    public function execute(ProductContract $source, ?string $nameSuffix = null): Product
+    public function execute(Product $source, ?string $nameSuffix = null): Product
     {
         /** @var Product $source */
         $suffix = $nameSuffix ?? (string) __('lunar::products.duplicate.name_suffix');

@@ -6,6 +6,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
+use Lunar\Core\Models\Region;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\TaxZone;
 use Lunar\DemoData\Generators\FoundationGenerator;
@@ -62,6 +63,20 @@ test('it seeds a tax class, zone and a 20% rate', function () {
     expect($amount->tax_class_id)->toBe($taxClass->id);
 });
 
+test('it seeds a default region from the foundation', function () {
+    $context = generateFoundation();
+
+    $region = Region::whereHandle('default')->first();
+
+    expect($region)->not->toBeNull();
+    expect((bool) $region->default)->toBeTrue();
+    expect($region->channel_id)->toBe($context->get('channel')->id);
+    expect($region->currency_id)->toBe($context->get('currency')->id);
+    expect($region->language_id)->toBe($context->get('language')->id);
+    expect($region->tax_zone_id)->toBe($context->get('taxZone')->id);
+    expect($context->get('region'))->toBeInstanceOf(Region::class);
+});
+
 test('it is idempotent', function () {
     generateFoundation();
     generateFoundation();
@@ -70,4 +85,5 @@ test('it is idempotent', function () {
     expect(Channel::whereHandle('webstore')->count())->toBe(1);
     expect(TaxZone::whereName('Default Tax Zone')->count())->toBe(1);
     expect(Location::whereHandle('default')->count())->toBe(1);
+    expect(Region::whereHandle('default')->count())->toBe(1);
 });

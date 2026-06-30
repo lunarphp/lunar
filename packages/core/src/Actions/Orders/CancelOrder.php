@@ -7,7 +7,6 @@ use Lunar\Core\Contracts\Actions\Orders\CancelsOrder;
 use Lunar\Core\Events\Orders\OrderCancelled;
 use Lunar\Core\Exceptions\OrderActionException;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 
 /**
@@ -26,7 +25,7 @@ class CancelOrder implements CancelsOrder
         protected CancelsFulfilment $cancelFulfilment,
     ) {}
 
-    public function execute(OrderContract $order, ?string $reason = null, ?string $note = null, bool $notify = true): Order
+    public function execute(Order $order, ?string $reason = null, ?string $note = null, bool $notify = true): Order
     {
         /** @var Order $order */
         if (! self::canRun($order)) {
@@ -67,7 +66,7 @@ class CancelOrder implements CancelsOrder
      * Whether the order can be cancelled — not already cancelled and nothing
      * has shipped (or returned).
      */
-    public static function canRun(OrderContract $order): bool
+    public static function canRun(Order $order): bool
     {
         /** @var Order $order */
         return ! $order->isCancelled()

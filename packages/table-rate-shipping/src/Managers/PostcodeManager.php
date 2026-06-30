@@ -3,7 +3,7 @@
 namespace Lunar\Shipping\Managers;
 
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Country as CountryContract;
+use Lunar\Core\Models\Country;
 use Lunar\Shipping\Exceptions\NoPostcodeResolverException;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
 
@@ -41,7 +41,7 @@ class PostcodeManager
      * Return the matching resolver for the given country. Iterates in reverse registration
      * order — the last-registered resolver that supports the country wins.
      */
-    public function country(CountryContract $country): PostcodeResolverInterface
+    public function country(Country $country): PostcodeResolverInterface
     {
         // Collection::reverse() preserves keys, so $index is the original slot in
         // $this->resolvers — which resolveInstance() relies on for in-place caching.

@@ -3,7 +3,6 @@
 namespace Lunar\Core\Observers;
 
 use Lunar\Core\Jobs\Currencies\CreateCurrencyPrices;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
 use Lunar\Core\Models\Currency;
 
 class CurrencyObserver
@@ -13,7 +12,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function created(CurrencyContract $currency)
+    public function created(Currency $currency)
     {
         $this->ensureOnlyOneDefault($currency);
         CreateCurrencyPrices::dispatch($currency);
@@ -24,7 +23,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function updated(CurrencyContract $currency)
+    public function updated(Currency $currency)
     {
         $this->ensureOnlyOneDefault($currency);
         if ($currency->default && $currency->sync_prices) {
@@ -39,7 +38,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function deleted(CurrencyContract $currency)
+    public function deleted(Currency $currency)
     {
         //
     }
@@ -49,7 +48,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function deleting(CurrencyContract $currency)
+    public function deleting(Currency $currency)
     {
         $currency->prices()->delete();
     }
@@ -59,7 +58,7 @@ class CurrencyObserver
      *
      * @return void
      */
-    public function forceDeleted(CurrencyContract $currency)
+    public function forceDeleted(Currency $currency)
     {
         //
     }
@@ -67,9 +66,9 @@ class CurrencyObserver
     /**
      * Ensures that only one default currency exists.
      *
-     * @param  CurrencyContract  $savedCurrency  The currency that was just saved.
+     * @param  Currency  $savedCurrency  The currency that was just saved.
      */
-    protected function ensureOnlyOneDefault(CurrencyContract $savedCurrency): void
+    protected function ensureOnlyOneDefault(Currency $savedCurrency): void
     {
         // Wrap here so we avoid a query if it's not been set to default.
         if ($savedCurrency->default) {

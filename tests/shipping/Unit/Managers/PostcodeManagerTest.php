@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Country as CountryContract;
 use Lunar\Core\Models\Country;
 use Lunar\Shipping\Exceptions\NoPostcodeResolverException;
 use Lunar\Shipping\Interfaces\PostcodeResolverInterface;
@@ -32,12 +31,12 @@ test('addResolver returns the manager for fluent chaining', function () {
 test('addResolver accepts an array and registers each entry in order', function () {
     $instance = new class implements PostcodeResolverInterface
     {
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return true;
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect([$postcode]);
         }
@@ -58,12 +57,12 @@ test('addResolver array registration preserves last-wins matching order', functi
     {
         public string $label = 'gb-only';
 
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return $country->iso2 === 'GB';
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect([$postcode]);
         }
@@ -83,12 +82,12 @@ test('country returns the last-registered matching resolver', function () {
     {
         public string $label = 'A';
 
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return $country->iso2 === 'GB';
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect([$postcode]);
         }
@@ -98,12 +97,12 @@ test('country returns the last-registered matching resolver', function () {
     {
         public string $label = 'B';
 
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return $country->iso2 === 'GB';
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect([$postcode]);
         }
@@ -121,12 +120,12 @@ test('country falls through to an earlier resolver when later ones do not suppor
 
     $gbOnly = new class implements PostcodeResolverInterface
     {
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return $country->iso2 === 'GB';
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect([$postcode]);
         }

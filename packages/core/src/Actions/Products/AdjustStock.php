@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Products;
 use Lunar\Core\Contracts\Actions\Products\AdjustsStock;
 use Lunar\Core\Contracts\Actions\Products\RecordsStockMovement;
 use Lunar\Core\Enums\StockMovementType;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\ProductVariant;
 
@@ -23,7 +22,7 @@ class AdjustStock implements AdjustsStock
         protected RecordsStockMovement $recordMovement,
     ) {}
 
-    public function execute(ProductVariantContract $variant, int $delta, ?string $reason = null, ?Location $location = null): ProductVariant
+    public function execute(ProductVariant $variant, int $delta, ?string $reason = null, ?Location $location = null): ProductVariant
     {
         /** @var ProductVariant $variant */
         if ($delta === 0) {

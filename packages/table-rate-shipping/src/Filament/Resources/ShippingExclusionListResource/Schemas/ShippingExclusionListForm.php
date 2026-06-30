@@ -2,7 +2,7 @@
 
 namespace Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Schemas;
 
-use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -31,7 +31,7 @@ class ShippingExclusionListForm
 
     public static function getNameComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TextInput::make('name')
             ->label(__('lunarpanel.shipping::shippingexclusionlist.form.name.label'))
             ->required()
             ->maxLength(255)

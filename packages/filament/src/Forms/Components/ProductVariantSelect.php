@@ -41,7 +41,7 @@ class ProductVariantSelect extends Select
      */
     public function lunarModel(): string
     {
-        return ProductVariant::modelClass();
+        return ProductVariant::class;
     }
 
     public function forProduct(?Product $product): static
@@ -105,7 +105,7 @@ class ProductVariantSelect extends Select
     protected function directVariantSearch(string $search): array
     {
         $variantModel = $this->lunarModel();
-        $productModel = Product::modelClass();
+        $productModel = Product::class;
 
         $productIds = RecordSearch::for($productModel, $search)
             ->take($this->resolveOptionsLimit())
@@ -133,7 +133,7 @@ class ProductVariantSelect extends Select
      */
     protected function searchViaProductStrategy(string $search): array
     {
-        $productModel = Product::modelClass();
+        $productModel = Product::class;
         $variantModel = $this->lunarModel();
 
         $productIds = RecordSearch::for($productModel, $search)

@@ -4,7 +4,7 @@ namespace Lunar\Core\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Contracts\HasCurrency;
-use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Pricing\PriceFormatterInterface;
 
 /**

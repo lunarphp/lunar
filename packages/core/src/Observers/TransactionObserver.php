@@ -3,7 +3,6 @@
 namespace Lunar\Core\Observers;
 
 use Lunar\Core\Contracts\Actions\Orders\RecomputesOrderStatus;
-use Lunar\Core\Models\Contracts\Transaction as TransactionContract;
 use Lunar\Core\Models\Transaction;
 
 class TransactionObserver
@@ -15,7 +14,7 @@ class TransactionObserver
     /**
      * Handle the Transaction "created" event.
      */
-    public function created(TransactionContract $transaction): void
+    public function created(Transaction $transaction): void
     {
         /** @var Transaction $transaction */
         activity()
@@ -38,7 +37,7 @@ class TransactionObserver
     /**
      * Handle the Transaction "updated" event.
      */
-    public function updated(TransactionContract $transaction): void
+    public function updated(Transaction $transaction): void
     {
         $this->recompute($transaction);
     }
@@ -46,7 +45,7 @@ class TransactionObserver
     /**
      * Handle the Transaction "deleted" event.
      */
-    public function deleted(TransactionContract $transaction): void
+    public function deleted(Transaction $transaction): void
     {
         $this->recompute($transaction);
     }
@@ -54,7 +53,7 @@ class TransactionObserver
     /**
      * Recompute the parent order's derived statuses from the ledger.
      */
-    protected function recompute(TransactionContract $transaction): void
+    protected function recompute(Transaction $transaction): void
     {
         /** @var Transaction $transaction */
         if ($order = $transaction->order()->first()) {

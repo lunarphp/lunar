@@ -4,13 +4,13 @@ namespace Lunar\Admin\Filament\Resources\CollectionResource\Pages;
 
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Resources\Pages\ManageUrlsRelatedRecords;
-use Lunar\Core\Models\Contracts\Collection as CollectionContract;
+use Lunar\Core\Models\Collection;
 
 class ManageCollectionUrls extends ManageUrlsRelatedRecords
 {
     protected static string $resource = CollectionResource::class;
 
-    protected static string $model = CollectionContract::class;
+    protected static string $model = Collection::class;
 
     public function getBreadcrumbs(): array
     {

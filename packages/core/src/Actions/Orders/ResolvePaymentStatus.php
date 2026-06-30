@@ -3,7 +3,6 @@
 namespace Lunar\Core\Actions\Orders;
 
 use Lunar\Core\Contracts\Actions\Orders\ResolvesPaymentStatus;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\Payment\Authorized;
 use Lunar\Core\States\Order\Payment\Paid;
@@ -23,7 +22,7 @@ use Lunar\Core\States\Order\Payment\Voided;
  */
 class ResolvePaymentStatus implements ResolvesPaymentStatus
 {
-    public function execute(OrderContract $order): string
+    public function execute(Order $order): string
     {
         /** @var Order $order */
         $captured = (int) $order->captures()->whereSuccess(true)->sum('amount');

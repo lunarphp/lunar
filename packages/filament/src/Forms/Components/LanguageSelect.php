@@ -23,6 +23,6 @@ class LanguageSelect extends Select
      */
     public function lunarModel(): string
     {
-        return Language::modelClass();
+        return Language::class;
     }
 }

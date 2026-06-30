@@ -3,6 +3,62 @@
 namespace Lunar\Core;
 
 use Illuminate\Support\ServiceProvider;
+use Lunar\Core\Actions\Carts\AddAddress;
+use Lunar\Core\Actions\Carts\AddOrUpdatePurchasable;
+use Lunar\Core\Actions\Carts\AssociateUser;
+use Lunar\Core\Actions\Carts\CalculateLine;
+use Lunar\Core\Actions\Carts\CalculateLineSubtotal;
+use Lunar\Core\Actions\Carts\CreateOrder;
+use Lunar\Core\Actions\Carts\GenerateFingerprint;
+use Lunar\Core\Actions\Carts\GetExistingCartLine;
+use Lunar\Core\Actions\Carts\MergeCart;
+use Lunar\Core\Actions\Carts\RemovePurchasable;
+use Lunar\Core\Actions\Carts\SetShippingOption;
+use Lunar\Core\Actions\Carts\UpdateCartLine;
+use Lunar\Core\Actions\Collections\CreateChildCollection;
+use Lunar\Core\Actions\Collections\CreateRootCollection;
+use Lunar\Core\Actions\Collections\DeleteCollection;
+use Lunar\Core\Actions\Collections\MoveCollection;
+use Lunar\Core\Actions\Collections\SortProducts;
+use Lunar\Core\Actions\Currencies\CreateCurrencyPrices;
+use Lunar\Core\Actions\Fulfilment\AddFulfilmentTracking;
+use Lunar\Core\Actions\Fulfilment\CancelFulfilment;
+use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
+use Lunar\Core\Actions\Fulfilment\CreateFulfilment;
+use Lunar\Core\Actions\Fulfilment\EnsureInitialFulfilment;
+use Lunar\Core\Actions\Fulfilment\FulfilFulfilment;
+use Lunar\Core\Actions\Fulfilment\HoldFulfilment;
+use Lunar\Core\Actions\Fulfilment\MergeFulfilments;
+use Lunar\Core\Actions\Fulfilment\MoveFulfilmentLines;
+use Lunar\Core\Actions\Fulfilment\ReleaseFulfilment;
+use Lunar\Core\Actions\Fulfilment\RemoveFulfilmentTracking;
+use Lunar\Core\Actions\Fulfilment\ReturnFulfilment;
+use Lunar\Core\Actions\Fulfilment\ShipFulfilment;
+use Lunar\Core\Actions\Fulfilment\SplitFulfilment;
+use Lunar\Core\Actions\Fulfilment\TransitionFulfilment;
+use Lunar\Core\Actions\Orders\CancelOrder;
+use Lunar\Core\Actions\Orders\CaptureOrder;
+use Lunar\Core\Actions\Orders\CloseOrder;
+use Lunar\Core\Actions\Orders\GenerateOrderReference;
+use Lunar\Core\Actions\Orders\NotifyCustomer;
+use Lunar\Core\Actions\Orders\RecomputeOrderStatus;
+use Lunar\Core\Actions\Orders\RefundOrder;
+use Lunar\Core\Actions\Orders\ReopenOrder;
+use Lunar\Core\Actions\Orders\ResolveFulfilmentStatus;
+use Lunar\Core\Actions\Orders\ResolvePaymentStatus;
+use Lunar\Core\Actions\Products\AdjustStock;
+use Lunar\Core\Actions\Products\CommitReservation;
+use Lunar\Core\Actions\Products\DuplicateProduct;
+use Lunar\Core\Actions\Products\MapVariantsToProductOptions;
+use Lunar\Core\Actions\Products\RecomputeStockReserved;
+use Lunar\Core\Actions\Products\RecomputeStockRollup;
+use Lunar\Core\Actions\Products\RecordStockMovement;
+use Lunar\Core\Actions\Products\ReleaseReservation;
+use Lunar\Core\Actions\Products\ReserveStock;
+use Lunar\Core\Actions\Products\SyncStockCommitment;
+use Lunar\Core\Actions\Products\UpdateProductStatus;
+use Lunar\Core\Actions\Storefront\ResolveStorefrontContext;
+use Lunar\Core\Actions\Taxes\GetTaxZone;
 use Lunar\Core\Contracts\Actions as Contracts;
 
 /**
@@ -23,73 +79,76 @@ class ActionServiceProvider extends ServiceProvider
      */
     protected array $actions = [
         // Carts
-        Contracts\Carts\AddsAddress::class => Actions\Carts\AddAddress::class,
-        Contracts\Carts\AddsOrUpdatesPurchasable::class => Actions\Carts\AddOrUpdatePurchasable::class,
-        Contracts\Carts\AssociatesUser::class => Actions\Carts\AssociateUser::class,
-        Contracts\Carts\CalculatesLine::class => Actions\Carts\CalculateLine::class,
-        Contracts\Carts\CalculatesLineSubtotal::class => Actions\Carts\CalculateLineSubtotal::class,
-        Contracts\Carts\CreatesOrder::class => Actions\Carts\CreateOrder::class,
-        Contracts\Carts\GeneratesFingerprint::class => Actions\Carts\GenerateFingerprint::class,
-        Contracts\Carts\GetsExistingCartLine::class => Actions\Carts\GetExistingCartLine::class,
-        Contracts\Carts\MergesCart::class => Actions\Carts\MergeCart::class,
-        Contracts\Carts\RemovesPurchasable::class => Actions\Carts\RemovePurchasable::class,
-        Contracts\Carts\SetsShippingOption::class => Actions\Carts\SetShippingOption::class,
-        Contracts\Carts\UpdatesCartLine::class => Actions\Carts\UpdateCartLine::class,
+        Contracts\Carts\AddsAddress::class => AddAddress::class,
+        Contracts\Carts\AddsOrUpdatesPurchasable::class => AddOrUpdatePurchasable::class,
+        Contracts\Carts\AssociatesUser::class => AssociateUser::class,
+        Contracts\Carts\CalculatesLine::class => CalculateLine::class,
+        Contracts\Carts\CalculatesLineSubtotal::class => CalculateLineSubtotal::class,
+        Contracts\Carts\CreatesOrder::class => CreateOrder::class,
+        Contracts\Carts\GeneratesFingerprint::class => GenerateFingerprint::class,
+        Contracts\Carts\GetsExistingCartLine::class => GetExistingCartLine::class,
+        Contracts\Carts\MergesCart::class => MergeCart::class,
+        Contracts\Carts\RemovesPurchasable::class => RemovePurchasable::class,
+        Contracts\Carts\SetsShippingOption::class => SetShippingOption::class,
+        Contracts\Carts\UpdatesCartLine::class => UpdateCartLine::class,
 
         // Orders
-        Contracts\Orders\CancelsOrder::class => Actions\Orders\CancelOrder::class,
-        Contracts\Orders\CapturesOrder::class => Actions\Orders\CaptureOrder::class,
-        Contracts\Orders\ClosesOrder::class => Actions\Orders\CloseOrder::class,
-        Contracts\Orders\GeneratesOrderReference::class => Actions\Orders\GenerateOrderReference::class,
-        Contracts\Orders\NotifiesCustomer::class => Actions\Orders\NotifyCustomer::class,
-        Contracts\Orders\RecomputesOrderStatus::class => Actions\Orders\RecomputeOrderStatus::class,
-        Contracts\Orders\RefundsOrder::class => Actions\Orders\RefundOrder::class,
-        Contracts\Orders\ReopensOrder::class => Actions\Orders\ReopenOrder::class,
-        Contracts\Orders\ResolvesFulfilmentStatus::class => Actions\Orders\ResolveFulfilmentStatus::class,
-        Contracts\Orders\ResolvesPaymentStatus::class => Actions\Orders\ResolvePaymentStatus::class,
+        Contracts\Orders\CancelsOrder::class => CancelOrder::class,
+        Contracts\Orders\CapturesOrder::class => CaptureOrder::class,
+        Contracts\Orders\ClosesOrder::class => CloseOrder::class,
+        Contracts\Orders\GeneratesOrderReference::class => GenerateOrderReference::class,
+        Contracts\Orders\NotifiesCustomer::class => NotifyCustomer::class,
+        Contracts\Orders\RecomputesOrderStatus::class => RecomputeOrderStatus::class,
+        Contracts\Orders\RefundsOrder::class => RefundOrder::class,
+        Contracts\Orders\ReopensOrder::class => ReopenOrder::class,
+        Contracts\Orders\ResolvesFulfilmentStatus::class => ResolveFulfilmentStatus::class,
+        Contracts\Orders\ResolvesPaymentStatus::class => ResolvePaymentStatus::class,
 
         // Fulfilment
-        Contracts\Fulfilment\AddsFulfilmentTracking::class => Actions\Fulfilment\AddFulfilmentTracking::class,
-        Contracts\Fulfilment\CancelsFulfilment::class => Actions\Fulfilment\CancelFulfilment::class,
-        Contracts\Fulfilment\ChangesFulfilmentLocation::class => Actions\Fulfilment\ChangeFulfilmentLocation::class,
-        Contracts\Fulfilment\CreatesFulfilment::class => Actions\Fulfilment\CreateFulfilment::class,
-        Contracts\Fulfilment\EnsuresInitialFulfilment::class => Actions\Fulfilment\EnsureInitialFulfilment::class,
-        Contracts\Fulfilment\FulfilsFulfilment::class => Actions\Fulfilment\FulfilFulfilment::class,
-        Contracts\Fulfilment\HoldsFulfilment::class => Actions\Fulfilment\HoldFulfilment::class,
-        Contracts\Fulfilment\MergesFulfilments::class => Actions\Fulfilment\MergeFulfilments::class,
-        Contracts\Fulfilment\MovesFulfilmentLines::class => Actions\Fulfilment\MoveFulfilmentLines::class,
-        Contracts\Fulfilment\ReleasesFulfilment::class => Actions\Fulfilment\ReleaseFulfilment::class,
-        Contracts\Fulfilment\RemovesFulfilmentTracking::class => Actions\Fulfilment\RemoveFulfilmentTracking::class,
-        Contracts\Fulfilment\ReturnsFulfilment::class => Actions\Fulfilment\ReturnFulfilment::class,
-        Contracts\Fulfilment\ShipsFulfilment::class => Actions\Fulfilment\ShipFulfilment::class,
-        Contracts\Fulfilment\SplitsFulfilment::class => Actions\Fulfilment\SplitFulfilment::class,
-        Contracts\Fulfilment\TransitionsFulfilment::class => Actions\Fulfilment\TransitionFulfilment::class,
+        Contracts\Fulfilment\AddsFulfilmentTracking::class => AddFulfilmentTracking::class,
+        Contracts\Fulfilment\CancelsFulfilment::class => CancelFulfilment::class,
+        Contracts\Fulfilment\ChangesFulfilmentLocation::class => ChangeFulfilmentLocation::class,
+        Contracts\Fulfilment\CreatesFulfilment::class => CreateFulfilment::class,
+        Contracts\Fulfilment\EnsuresInitialFulfilment::class => EnsureInitialFulfilment::class,
+        Contracts\Fulfilment\FulfilsFulfilment::class => FulfilFulfilment::class,
+        Contracts\Fulfilment\HoldsFulfilment::class => HoldFulfilment::class,
+        Contracts\Fulfilment\MergesFulfilments::class => MergeFulfilments::class,
+        Contracts\Fulfilment\MovesFulfilmentLines::class => MoveFulfilmentLines::class,
+        Contracts\Fulfilment\ReleasesFulfilment::class => ReleaseFulfilment::class,
+        Contracts\Fulfilment\RemovesFulfilmentTracking::class => RemoveFulfilmentTracking::class,
+        Contracts\Fulfilment\ReturnsFulfilment::class => ReturnFulfilment::class,
+        Contracts\Fulfilment\ShipsFulfilment::class => ShipFulfilment::class,
+        Contracts\Fulfilment\SplitsFulfilment::class => SplitFulfilment::class,
+        Contracts\Fulfilment\TransitionsFulfilment::class => TransitionFulfilment::class,
 
         // Products
-        Contracts\Products\AdjustsStock::class => Actions\Products\AdjustStock::class,
-        Contracts\Products\CommitsReservation::class => Actions\Products\CommitReservation::class,
-        Contracts\Products\DuplicatesProduct::class => Actions\Products\DuplicateProduct::class,
-        Contracts\Products\RecomputesStockReserved::class => Actions\Products\RecomputeStockReserved::class,
-        Contracts\Products\RecomputesStockRollup::class => Actions\Products\RecomputeStockRollup::class,
-        Contracts\Products\RecordsStockMovement::class => Actions\Products\RecordStockMovement::class,
-        Contracts\Products\ReleasesReservation::class => Actions\Products\ReleaseReservation::class,
-        Contracts\Products\ReservesStock::class => Actions\Products\ReserveStock::class,
-        Contracts\Products\SyncsStockCommitment::class => Actions\Products\SyncStockCommitment::class,
-        Contracts\Products\MapsVariantsToProductOptions::class => Actions\Products\MapVariantsToProductOptions::class,
-        Contracts\Products\UpdatesProductStatus::class => Actions\Products\UpdateProductStatus::class,
+        Contracts\Products\AdjustsStock::class => AdjustStock::class,
+        Contracts\Products\CommitsReservation::class => CommitReservation::class,
+        Contracts\Products\DuplicatesProduct::class => DuplicateProduct::class,
+        Contracts\Products\RecomputesStockReserved::class => RecomputeStockReserved::class,
+        Contracts\Products\RecomputesStockRollup::class => RecomputeStockRollup::class,
+        Contracts\Products\RecordsStockMovement::class => RecordStockMovement::class,
+        Contracts\Products\ReleasesReservation::class => ReleaseReservation::class,
+        Contracts\Products\ReservesStock::class => ReserveStock::class,
+        Contracts\Products\SyncsStockCommitment::class => SyncStockCommitment::class,
+        Contracts\Products\MapsVariantsToProductOptions::class => MapVariantsToProductOptions::class,
+        Contracts\Products\UpdatesProductStatus::class => UpdateProductStatus::class,
 
         // Collections
-        Contracts\Collections\CreatesChildCollection::class => Actions\Collections\CreateChildCollection::class,
-        Contracts\Collections\CreatesRootCollection::class => Actions\Collections\CreateRootCollection::class,
-        Contracts\Collections\DeletesCollection::class => Actions\Collections\DeleteCollection::class,
-        Contracts\Collections\MovesCollection::class => Actions\Collections\MoveCollection::class,
-        Contracts\Collections\SortsProducts::class => Actions\Collections\SortProducts::class,
+        Contracts\Collections\CreatesChildCollection::class => CreateChildCollection::class,
+        Contracts\Collections\CreatesRootCollection::class => CreateRootCollection::class,
+        Contracts\Collections\DeletesCollection::class => DeleteCollection::class,
+        Contracts\Collections\MovesCollection::class => MoveCollection::class,
+        Contracts\Collections\SortsProducts::class => SortProducts::class,
 
         // Currencies
-        Contracts\Currencies\CreatesCurrencyPrices::class => Actions\Currencies\CreateCurrencyPrices::class,
+        Contracts\Currencies\CreatesCurrencyPrices::class => CreateCurrencyPrices::class,
 
         // Taxes
-        Contracts\Taxes\GetsTaxZone::class => Actions\Taxes\GetTaxZone::class,
+        Contracts\Taxes\GetsTaxZone::class => GetTaxZone::class,
+
+        // Storefront
+        Contracts\Storefront\ResolvesStorefrontContext::class => ResolveStorefrontContext::class,
     ];
 
     public function register(): void

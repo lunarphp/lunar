@@ -7,10 +7,13 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages;
+use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages\EditShippingZone;
+use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages\ListShippingZones;
+use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages\ManageShippingExclusions;
+use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Pages\ManageShippingRates;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Schemas\ShippingZoneForm;
 use Lunar\Shipping\Filament\Resources\ShippingZoneResource\Tables\ShippingZoneTable;
-use Lunar\Shipping\Models\Contracts\ShippingZone;
+use Lunar\Shipping\Models\ShippingZone;
 
 class ShippingZoneResource extends BaseResource
 {
@@ -55,19 +58,19 @@ class ShippingZoneResource extends BaseResource
     protected static function getDefaultSubNavigation(): array
     {
         return [
-            Pages\EditShippingZone::class,
-            Pages\ManageShippingRates::class,
-            Pages\ManageShippingExclusions::class,
+            EditShippingZone::class,
+            ManageShippingRates::class,
+            ManageShippingExclusions::class,
         ];
     }
 
     protected static function getDefaultPages(): array
     {
         return [
-            'index' => Pages\ListShippingZones::route('/'),
-            'edit' => Pages\EditShippingZone::route('/{record}/edit'),
-            'rates' => Pages\ManageShippingRates::route('/{record}/rates'),
-            'exclusions' => Pages\ManageShippingExclusions::route('/{record}/exclusions'),
+            'index' => ListShippingZones::route('/'),
+            'edit' => EditShippingZone::route('/{record}/edit'),
+            'rates' => ManageShippingRates::route('/{record}/rates'),
+            'exclusions' => ManageShippingExclusions::route('/{record}/exclusions'),
         ];
     }
 }

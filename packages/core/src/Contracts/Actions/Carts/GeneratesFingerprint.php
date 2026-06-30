@@ -2,9 +2,9 @@
 
 namespace Lunar\Core\Contracts\Actions\Carts;
 
-use Lunar\Core\Models\Contracts\Cart as CartContract;
+use Lunar\Core\Models\Cart;
 
 interface GeneratesFingerprint
 {
-    public function execute(CartContract $cart): string;
+    public function execute(Cart $cart): string;
 }

@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Lunar\Core\Models\Contracts\Country as CountryContract;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\State;
 use Lunar\Shipping\DataTransferObjects\PostcodeLookup;
@@ -170,12 +169,12 @@ test('the last-registered matching resolver wins over earlier custom resolvers',
 
     $firstCustom = new class implements PostcodeResolverInterface
     {
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return true;
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect(['FIRST-WON']);
         }
@@ -183,12 +182,12 @@ test('the last-registered matching resolver wins over earlier custom resolvers',
 
     $secondCustom = new class implements PostcodeResolverInterface
     {
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return true;
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect(['LAST-WON']);
         }
@@ -217,12 +216,12 @@ test('a resolver whose supportsCountry returns false is skipped and the default 
 
     $usOnly = new class implements PostcodeResolverInterface
     {
-        public function supportsCountry(CountryContract $country): bool
+        public function supportsCountry(Country $country): bool
         {
             return $country->iso2 === 'US';
         }
 
-        public function getParts(string $postcode, CountryContract $country): Collection
+        public function getParts(string $postcode, Country $country): Collection
         {
             return collect(['NEVER-CALLED']);
         }

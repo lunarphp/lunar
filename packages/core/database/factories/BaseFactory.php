@@ -8,6 +8,6 @@ abstract class BaseFactory extends Factory
 {
     public function modelName()
     {
-        return (new $this->model)::modelClass();
+        return $this->model;
     }
 }

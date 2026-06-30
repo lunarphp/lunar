@@ -12,7 +12,7 @@ use Spatie\MediaLibrary\HasMedia;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Asset extends Base implements Contracts\Asset, HasMedia
+class Asset extends Base implements HasMedia
 {
     use TraitsHasMedia;
 

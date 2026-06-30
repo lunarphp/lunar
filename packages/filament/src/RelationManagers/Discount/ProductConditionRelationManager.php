@@ -8,7 +8,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Forms\Components\DiscountTargetSelect;
@@ -69,7 +68,7 @@ class ProductConditionRelationManager extends BaseRelationManager
                         __('lunar-filament::discount.relationmanagers.conditions.table.name.label')
                     )
                     ->formatStateUsing(
-                        fn (Model $record) => $record->discountable instanceof ProductVariantContract ? $record->discountable->product->translate('name').' - '.$record->discountable->sku : $record->discountable->translate('name')
+                        fn (Model $record) => $record->discountable instanceof ProductVariant ? $record->discountable->product->translate('name').' - '.$record->discountable->sku : $record->discountable->translate('name')
                     ),
 
                 TextColumn::make('discountable_type')

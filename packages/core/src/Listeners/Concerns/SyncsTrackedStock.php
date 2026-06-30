@@ -3,7 +3,7 @@
 namespace Lunar\Core\Listeners\Concerns;
 
 use Lunar\Core\Contracts\TracksStock;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 
 trait SyncsTrackedStock
 {
@@ -12,7 +12,7 @@ trait SyncsTrackedStock
      * order. Purchasables that do not track stock (gift cards, digital, …) are
      * skipped; the resync is idempotent, so syncing the whole order is safe.
      */
-    protected function syncTrackedStockForOrder(OrderContract $order): void
+    protected function syncTrackedStockForOrder(Order $order): void
     {
         // Only fulfillable lines can hold stock; this also skips shipping lines,
         // whose purchasable morph is a non-Eloquent value object.

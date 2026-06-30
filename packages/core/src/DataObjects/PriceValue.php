@@ -5,7 +5,7 @@ namespace Lunar\Core\DataObjects;
 use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Exceptions\MismatchedCurrencyException;
 use Lunar\Core\Models\Concerns\FormatsPrices;
-use Lunar\Core\Models\Contracts\Currency;
+use Lunar\Core\Models\Currency;
 
 class PriceValue implements HasCurrency
 {

@@ -9,7 +9,7 @@ use Lunar\Admin\Filament\Resources\LocationResource\Pages\CreateLocation;
 use Lunar\Admin\Filament\Resources\LocationResource\Pages\EditLocation;
 use Lunar\Admin\Filament\Resources\LocationResource\Pages\ListLocations;
 use Lunar\Admin\Support\Resources\BaseResource;
-use Lunar\Core\Models\Contracts\Location as LocationContract;
+use Lunar\Core\Models\Location;
 use Lunar\Filament\Schemas\Location\LocationForm;
 use Lunar\Filament\Support\Resolver;
 use Lunar\Filament\Tables\Location\LocationTable;
@@ -18,7 +18,7 @@ class LocationResource extends BaseResource
 {
     protected static ?string $permission = 'settings:core';
 
-    protected static ?string $model = LocationContract::class;
+    protected static ?string $model = Location::class;
 
     protected static ?int $navigationSort = 2;
 

@@ -2,13 +2,17 @@
 
 namespace Lunar\Core\Models;
 
+use Closure;
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Concerns\HasModelExtending;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Lunar\Core\Models\Builders\Builder;
+use Lunar\Core\Models\Concerns\HasExtendableCasts;
 
 abstract class Base extends Model
 {
-    use HasModelExtending;
+    use HasExtendableCasts;
 
     /**
      * Create a new instance of the Model.
@@ -22,6 +26,35 @@ abstract class Base extends Model
         if ($connection = config('lunar.database.connection')) {
             $this->setConnection($connection);
         }
+    }
+
+    /**
+     * The model's morph map alias (e.g. "product"), mirroring getMorphClass()
+     * without needing an instance.
+     */
+    public static function morphName(): string
+    {
+        return array_search(static::class, Relation::morphMap(), true) ?: static::class;
+    }
+
+    /**
+     * Register an optional, named local scope on this model from outside the
+     * class (e.g. a service provider). Once registered it is callable exactly
+     * like a native local scope: `Product::featured()`, `->featured()`.
+     */
+    public static function addLocalScope(string $name, Closure $scope): void
+    {
+        Builder::registerScope(static::class, $name, $scope);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return Builder<static>
+     */
+    public function newEloquentBuilder($query): EloquentBuilder
+    {
+        return new Builder($query);
     }
 
     /**

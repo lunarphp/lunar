@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Fulfilment;
 use Lunar\Core\Contracts\Actions\Fulfilment\MovesFulfilmentLines;
 use Lunar\Core\Exceptions\FulfilmentException;
 use Lunar\Core\Facades\DB;
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 /**
@@ -19,7 +18,7 @@ class MoveFulfilmentLines implements MovesFulfilmentLines
     /**
      * @param  array<int|string, int>  $moves  [order_line_id => quantity]
      */
-    public function execute(FulfilmentContract $from, FulfilmentContract $to, array $moves): Fulfilment
+    public function execute(Fulfilment $from, Fulfilment $to, array $moves): Fulfilment
     {
         /** @var Fulfilment $from */
         /** @var Fulfilment $to */

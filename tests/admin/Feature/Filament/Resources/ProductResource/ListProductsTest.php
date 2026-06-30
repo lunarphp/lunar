@@ -11,6 +11,8 @@ use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Tests\Admin\Feature\Filament\TestCase;
 
+use function Pest\Laravel\assertDatabaseHas;
+
 uses(TestCase::class)
     ->group('resource.product');
 
@@ -38,7 +40,7 @@ it('can create product', function () {
             'product_type_id' => $productType->id,
         ])->assertHasNoActionErrors();
 
-    \Pest\Laravel\assertDatabaseHas((new Product)->getTable(), [
+    assertDatabaseHas((new Product)->getTable(), [
         'product_type_id' => $productType->id,
         'status' => 'draft',
         'name' => json_encode([

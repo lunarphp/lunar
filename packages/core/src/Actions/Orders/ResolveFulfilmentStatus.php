@@ -5,7 +5,6 @@ namespace Lunar\Core\Actions\Orders;
 use Lunar\Core\Contracts\Actions\Orders\ResolvesFulfilmentStatus;
 use Lunar\Core\Contracts\FulfilmentMethodManifest;
 use Lunar\Core\Enums\FulfilmentStateCategory;
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\FulfilmentLine;
 use Lunar\Core\Models\Order;
 use Lunar\Core\States\Order\Fulfilment\Fulfilled;
@@ -27,7 +26,7 @@ class ResolveFulfilmentStatus implements ResolvesFulfilmentStatus
         protected FulfilmentMethodManifest $methods,
     ) {}
 
-    public function execute(OrderContract $order): string
+    public function execute(Order $order): string
     {
         /** @var Order $order */
         $fulfillableLineIds = $order->fulfillableLines()->pluck('id');

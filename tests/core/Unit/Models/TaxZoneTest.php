@@ -23,7 +23,6 @@ test('can make a tax zone class', function () {
     $data = [
         'name' => 'UK Mainland',
         'zone_type' => 'state',
-        'price_display' => 'tax_inclusive',
         'active' => true,
         'default' => true,
     ];
@@ -37,7 +36,6 @@ test('tax zone can have countries', function () {
     $data = [
         'name' => 'UK Mainland',
         'zone_type' => 'state',
-        'price_display' => 'tax_inclusive',
         'active' => true,
         'default' => true,
     ];
@@ -61,7 +59,6 @@ test('tax zone can have states', function () {
     $data = [
         'name' => 'L.A.',
         'zone_type' => 'state',
-        'price_display' => 'tax_inclusive',
         'active' => true,
         'default' => true,
     ];
@@ -88,7 +85,6 @@ test('tax zone can have postcodes', function () {
     $data = [
         'name' => 'L.A.',
         'zone_type' => 'state',
-        'price_display' => 'tax_inclusive',
         'active' => true,
         'default' => true,
     ];
@@ -113,7 +109,6 @@ test('tax zone can have customer groups', function () {
     $data = [
         'name' => 'L.A.',
         'zone_type' => 'state',
-        'price_display' => 'tax_inclusive',
         'active' => true,
         'default' => true,
     ];
@@ -137,14 +132,13 @@ test('can delete a tax zone', function () {
     $data = [
         'name' => 'L.A.',
         'zone_type' => 'state',
-        'price_display' => 'tax_inclusive',
         'active' => true,
         'default' => true,
     ];
 
     $zone = TaxZone::factory()->create($data);
 
-    \Pest\Laravel\assertDatabaseHas((new TaxZone)->getTable(), $data);
+    assertDatabaseHas((new TaxZone)->getTable(), $data);
 
     $country = Country::factory()->create();
     $state = State::factory()->create();

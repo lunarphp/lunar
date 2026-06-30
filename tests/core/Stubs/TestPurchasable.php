@@ -5,7 +5,6 @@ namespace Lunar\Tests\Core\Stubs;
 use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PriceValue;
-use Lunar\Core\Models\Contracts\TaxClass as TaxClassContract;
 use Lunar\Core\Models\TaxClass;
 
 class TestPurchasable implements Purchasable
@@ -15,7 +14,7 @@ class TestPurchasable implements Purchasable
         public $description,
         public $identifier,
         public PriceValue $price,
-        public TaxClassContract $taxClass,
+        public TaxClass $taxClass,
         public $taxReference = null,
         public $option = null,
         public bool $collect = false,

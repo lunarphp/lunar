@@ -12,8 +12,6 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\Models\Contracts\TaxZone as TaxZoneContract;
 use Lunar\Core\Pricing\PriceFormatterInterface;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
@@ -29,7 +27,7 @@ use Spatie\LaravelBlink\BlinkFacade as Blink;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Price extends Base implements Contracts\Price, HasCurrency
+class Price extends Base implements HasCurrency
 {
     use FormatsPrices;
     use HasFactory;
@@ -80,7 +78,7 @@ class Price extends Base implements Contracts\Price, HasCurrency
         return $this->belongsTo(CustomerGroup::class);
     }
 
-    public function resolveCurrency(): CurrencyContract
+    public function resolveCurrency(): Currency
     {
         $this->loadMissing('currency');
 
@@ -136,9 +134,9 @@ class Price extends Base implements Contracts\Price, HasCurrency
     /**
      * Return the price exclusive of tax.
      *
-     * @param  TaxZoneContract|null  $taxZone  Optional override for the tax zone. Falls back to the store's default zone.
+     * @param  TaxZone|null  $taxZone  Optional override for the tax zone. Falls back to the store's default zone.
      */
-    public function priceExTax(?TaxZoneContract $taxZone = null): PriceValue
+    public function priceExTax(?TaxZone $taxZone = null): PriceValue
     {
         $value = (int) $this->price;
         $currency = $this->resolveCurrency();
@@ -157,9 +155,9 @@ class Price extends Base implements Contracts\Price, HasCurrency
     /**
      * Return the price inclusive of tax.
      *
-     * @param  TaxZoneContract|null  $taxZone  Optional override for the tax zone.
+     * @param  TaxZone|null  $taxZone  Optional override for the tax zone.
      */
-    public function priceIncTax(?TaxZoneContract $taxZone = null): PriceValue
+    public function priceIncTax(?TaxZone $taxZone = null): PriceValue
     {
         $value = (int) $this->price;
         $currency = $this->resolveCurrency();
@@ -178,9 +176,9 @@ class Price extends Base implements Contracts\Price, HasCurrency
     /**
      * Return the list price inclusive of tax.
      *
-     * @param  TaxZoneContract|null  $taxZone  Optional override for the tax zone.
+     * @param  TaxZone|null  $taxZone  Optional override for the tax zone.
      */
-    public function listPriceIncTax(?TaxZoneContract $taxZone = null): PriceValue
+    public function listPriceIncTax(?TaxZone $taxZone = null): PriceValue
     {
         $value = (int) $this->list_price;
         $currency = $this->resolveCurrency();
@@ -203,7 +201,7 @@ class Price extends Base implements Contracts\Price, HasCurrency
      * Tax zone resolution: explicit param → store default zone.
      * Results are memoised per "{classId}_{zoneId}" so unrelated combinations never collide.
      */
-    protected function getPriceableTaxRate(?TaxZoneContract $taxZone = null): int|float
+    protected function getPriceableTaxRate(?TaxZone $taxZone = null): int|float
     {
         $taxClass = $this->priceable->getTaxClass();
         $taxZone ??= Blink::once('lunar_default_tax_zone', fn () => TaxZone::where('default', '=', 1)->first());

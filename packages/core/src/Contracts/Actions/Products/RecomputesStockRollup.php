@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Contracts\Actions\Products;
 
-use Lunar\Core\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Core\Models\ProductVariant;
 
 interface RecomputesStockRollup
@@ -14,5 +13,5 @@ interface RecomputesStockRollup
      * and recomputes `stock_available`. The `stock_committed` and `stock_reserved`
      * counters are maintained by their own seams and left untouched here.
      */
-    public function execute(ProductVariantContract $variant): ProductVariant;
+    public function execute(ProductVariant $variant): ProductVariant;
 }

@@ -9,9 +9,8 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Contracts\PricingManager as PricingManagerContract;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\DataObjects\PricingResponse;
+use Lunar\Core\DataObjects\StorefrontContext;
 use Lunar\Core\Exceptions\MissingCurrencyPriceException;
-use Lunar\Core\Models\Contracts\Currency as CurrencyContract;
-use Lunar\Core\Models\Contracts\CustomerGroup as CustomerGroupContract;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 
@@ -35,7 +34,7 @@ class PricingManager implements PricingManagerContract
     /**
      * The instance of the currency.
      */
-    public ?CurrencyContract $currency = null;
+    public ?Currency $currency = null;
 
     /**
      * The quantity value.
@@ -99,7 +98,7 @@ class PricingManager implements PricingManagerContract
      *
      * @return self
      */
-    public function currency(?CurrencyContract $currency)
+    public function currency(?Currency $currency)
     {
         $this->currency = $currency;
 
@@ -135,11 +134,26 @@ class PricingManager implements PricingManagerContract
      *
      * @return self
      */
-    public function customerGroup(?CustomerGroupContract $customerGroup)
+    public function customerGroup(?CustomerGroup $customerGroup)
     {
         $this->customerGroups(
             collect([$customerGroup])
         );
+
+        return $this;
+    }
+
+    /**
+     * Apply a resolved storefront context. Its currency and customer groups
+     * are authoritative, so auth-derived groups do not override them.
+     *
+     * @return self
+     */
+    public function using(StorefrontContext $context)
+    {
+        $this->currency = $context->currency;
+        $this->customerGroups = $context->customerGroups;
+        $this->userResolved = true;
 
         return $this;
     }

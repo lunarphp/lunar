@@ -6,7 +6,6 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
-use Lunar\Core\States\Fulfilment\MethodAwareTransition;
 
 /**
  * A registered fulfilment method — the driver that owns a fulfilment's *flow*:

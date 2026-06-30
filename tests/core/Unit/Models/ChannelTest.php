@@ -7,6 +7,8 @@ use Lunar\Core\Models\Discount;
 use Lunar\Core\States\Channel\Inactive;
 use Lunar\Tests\Core\TestCase;
 
+use function Pest\Laravel\assertDatabaseHas;
+
 uses(TestCase::class)->group('models');
 
 uses(RefreshDatabase::class);
@@ -62,7 +64,7 @@ test('can mark a channel as inactive', function () {
 
     $channel->status->transitionTo(Inactive::class);
 
-    \Pest\Laravel\assertDatabaseHas(Channel::class, [
+    assertDatabaseHas(Channel::class, [
         'id' => $channel->id,
         'status' => 'inactive',
     ]);

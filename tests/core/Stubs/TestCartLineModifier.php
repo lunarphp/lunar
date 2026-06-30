@@ -4,12 +4,12 @@ namespace Lunar\Tests\Core\Stubs;
 
 use Closure;
 use Lunar\Core\DataObjects\PriceValue;
-use Lunar\Core\Models\Contracts\CartLine as CartLineContract;
+use Lunar\Core\Models\CartLine;
 use Lunar\Core\Modifiers\CartLineModifier;
 
 class TestCartLineModifier extends CartLineModifier
 {
-    public function calculating(CartLineContract $cartLine, Closure $next): CartLineContract
+    public function calculating(CartLine $cartLine, Closure $next): CartLine
     {
         $cartLine->unitPrice = new PriceValue(1000, $cartLine->cart->currency);
 

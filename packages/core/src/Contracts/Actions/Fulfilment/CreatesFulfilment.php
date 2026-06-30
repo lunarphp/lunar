@@ -2,8 +2,8 @@
 
 namespace Lunar\Core\Contracts\Actions\Fulfilment;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
 use Lunar\Core\Models\Fulfilment;
+use Lunar\Core\Models\Order;
 
 interface CreatesFulfilment
 {
@@ -13,5 +13,5 @@ interface CreatesFulfilment
      * @param  array<int|string, int>  $lines  [order_line_id => quantity]
      * @param  array<string, mixed>  $attributes  method / reference / location_id / notes / meta
      */
-    public function execute(OrderContract $order, array $lines, array $attributes = []): Fulfilment;
+    public function execute(Order $order, array $lines, array $attributes = []): Fulfilment;
 }

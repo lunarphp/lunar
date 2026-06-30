@@ -2,7 +2,6 @@
 
 namespace Lunar\Core\Contracts\Actions\Fulfilment;
 
-use Lunar\Core\Models\Contracts\Fulfilment as FulfilmentContract;
 use Lunar\Core\Models\Fulfilment;
 
 interface ShipsFulfilment
@@ -14,5 +13,5 @@ interface ShipsFulfilment
      *
      * @param  array<string, mixed>  $tracking  tracking_number / tracking_url / shipping_method
      */
-    public function execute(FulfilmentContract $fulfilment, array $tracking = [], bool $notify = true): Fulfilment;
+    public function execute(Fulfilment $fulfilment, array $tracking = [], bool $notify = true): Fulfilment;
 }

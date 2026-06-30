@@ -11,7 +11,6 @@ use Illuminate\Support\Collection;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Base;
-use Lunar\Core\Models\Contracts\Product as ProductContract;
 use Lunar\Core\Models\Product;
 
 class Dissociate implements ShouldQueue
@@ -33,7 +32,7 @@ class Dissociate implements ShouldQueue
     /**
      * The parent product instance.
      */
-    protected ProductContract $product;
+    protected Product $product;
 
     /**
      * The SKU for the generated variant.
@@ -45,7 +44,7 @@ class Dissociate implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(ProductContract $product, Collection|Base|array $targets, ProvidesProductAssociationType|string|null $type = null)
+    public function __construct(Product $product, Collection|Base|array $targets, ProvidesProductAssociationType|string|null $type = null)
     {
         if (is_array($targets)) {
             $targets = collect($targets);

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Core\Models\Base;
 use Lunar\Shipping\Factories\ShippingZonePostcodeFactory;
 
-class ShippingZonePostcode extends Base implements Contracts\ShippingZonePostcode
+class ShippingZonePostcode extends Base
 {
     use HasFactory;
 
@@ -34,7 +34,7 @@ class ShippingZonePostcode extends Base implements Contracts\ShippingZonePostcod
      */
     public function shippingZone(): BelongsTo
     {
-        return $this->belongsTo(ShippingZone::modelClass());
+        return $this->belongsTo(ShippingZone::class);
     }
 
     /**

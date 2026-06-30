@@ -2,9 +2,9 @@
 
 namespace Lunar\Core\Contracts\Actions\Orders;
 
-use Lunar\Core\Models\Contracts\Order as OrderContract;
+use Lunar\Core\Models\Order;
 
 interface GeneratesOrderReference
 {
-    public function execute(OrderContract $order): ?string;
+    public function execute(Order $order): ?string;
 }

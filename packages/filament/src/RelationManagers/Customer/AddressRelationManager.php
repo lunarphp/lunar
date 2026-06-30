@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Core\Models\Contracts\Address as AddressContract;
+use Lunar\Core\Models\Address;
 use Lunar\Filament\Events\CustomerAddressEdited;
 use Lunar\Filament\Forms\Components\CountrySelect;
 use Lunar\Filament\Forms\Components\StateSelect;
@@ -83,7 +83,7 @@ class AddressRelationManager extends BaseRelationManager
                     ->after(
                         fn (Model $record) => CustomerAddressEdited::dispatch($record)
                     )
-                    ->fillForm(fn (AddressContract $record): array => [
+                    ->fillForm(fn (Address $record): array => [
                         'title' => $record->title,
                         'first_name' => $record->first_name,
                         'last_name' => $record->last_name,

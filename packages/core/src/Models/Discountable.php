@@ -18,7 +18,7 @@ use Lunar\Core\Database\Factories\DiscountableFactory;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
-class Discountable extends Base implements Contracts\Discountable
+class Discountable extends Base
 {
     use HasFactory;
 
@@ -48,7 +48,7 @@ class Discountable extends Base implements Contracts\Discountable
      */
     public function discount(): BelongsTo
     {
-        return $this->belongsTo(Discount::modelClass());
+        return $this->belongsTo(Discount::class);
     }
 
     /**
