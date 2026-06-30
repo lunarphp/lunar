@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create($this->prefix.'order_lines', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('order_id')->constrained($this->prefix.'orders');
-            $table->morphs('purchasable');
+            $table->nullableMorphs('purchasable');
             $table->string('type')->index();
             $table->boolean('requires_shipping')->default(false)->index()->comment('Needs physical delivery; stamped from the purchasable isShippable()');
             $table->boolean('requires_fulfilment')->default(false)->index()->comment('Needs fulfilling at all; superset of requires_shipping, drives the fulfilment rollup');

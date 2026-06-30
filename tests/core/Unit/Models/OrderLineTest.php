@@ -156,6 +156,34 @@ test('non eloquent models can be added to an order', function () {
     expect($orderLine->decimal('unit_price'))->toEqual(6.5);
 });
 
+test('self-describing lines can be added to an order without a purchasable', function () {
+    $order = Order::factory()->create();
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $data = [
+        'order_id' => $order->id,
+        'quantity' => 1,
+        'type' => 'shipping',
+        'purchasable_type' => null,
+        'purchasable_id' => null,
+        'description' => 'Basic Delivery',
+        'identifier' => 'BASDEL',
+        'unit_price' => 500,
+    ];
+
+    $orderLine = OrderLine::factory()->create($data);
+
+    assertDatabaseHas(
+        (new OrderLine)->getTable(),
+        $data
+    );
+
+    expect($orderLine->purchasable)->toBeNull();
+});
+
 test('withoutFulfilment scope returns only lines not allocated to a fulfilment', function () {
     $unallocated = OrderLine::factory()->create();
 
