@@ -179,6 +179,53 @@ test('an option value change invalidates its option', function () {
     );
 });
 
+test('attaching a product to a collection invalidates both via the native relation', function () {
+    $product = Product::factory()->create();
+    $collection = Collection::factory()->create();
+
+    Event::fake([ProductInvalidated::class, CollectionInvalidated::class]);
+
+    $product->collections()->attach($collection->id);
+
+    Event::assertDispatched(ProductInvalidated::class, fn (ProductInvalidated $e) => $e->product->is($product));
+    Event::assertDispatched(CollectionInvalidated::class, fn (CollectionInvalidated $e) => $e->collection->is($collection));
+});
+
+test('syncing collection products invalidates both sides via the native relation', function () {
+    $collection = Collection::factory()->create();
+    $product = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class, CollectionInvalidated::class]);
+
+    $collection->products()->sync([$product->id]);
+
+    Event::assertDispatched(CollectionInvalidated::class, fn (CollectionInvalidated $e) => $e->collection->is($collection));
+    Event::assertDispatched(ProductInvalidated::class, fn (ProductInvalidated $e) => $e->product->is($product));
+});
+
+test('detaching a collection from a product invalidates the product', function () {
+    $product = Product::factory()->create();
+    $collection = Collection::factory()->create();
+    $product->collections()->attach($collection->id);
+
+    Event::fake([ProductInvalidated::class]);
+
+    $product->collections()->detach($collection->id);
+
+    Event::assertDispatched(ProductInvalidated::class, fn (ProductInvalidated $e) => $e->product->is($product));
+});
+
+test('a non-cacheable related side does not break a native pivot write', function () {
+    $product = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    // Channels are not cacheable entities; only the product is invalidated.
+    $product->channels()->detach();
+
+    Event::assertDispatched(ProductInvalidated::class, fn (ProductInvalidated $e) => $e->product->is($product));
+});
+
 test('one entity is invalidated once per transaction however many parts change', function () {
     $product = Product::factory()->create();
     $variant = ProductVariant::factory()->create(['product_id' => $product->id]);

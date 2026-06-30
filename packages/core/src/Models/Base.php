@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Lunar\Core\Models\Builders\Builder;
 use Lunar\Core\Models\Concerns\HasExtendableCasts;
+use Lunar\Core\Models\Relations\BelongsToMany;
+use Lunar\Core\Models\Relations\MorphToMany;
 
 abstract class Base extends Model
 {
@@ -55,6 +57,25 @@ abstract class Base extends Model
     public function newEloquentBuilder($query): EloquentBuilder
     {
         return new Builder($query);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Return a relation that records cache invalidation on native pivot writes
+     * (a no-op for models that do not participate in cache invalidation).
+     */
+    protected function newBelongsToMany(EloquentBuilder $query, Model $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName = null)
+    {
+        return new BelongsToMany($query, $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function newMorphToMany(EloquentBuilder $query, Model $parent, $name, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName = null, $inverse = false)
+    {
+        return new MorphToMany($query, $parent, $name, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName, $inverse);
     }
 
     /**
