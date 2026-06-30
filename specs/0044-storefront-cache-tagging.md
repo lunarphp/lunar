@@ -1,6 +1,6 @@
 # 0044 — Storefront cache tagging and dependency resolution
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-30
 - TODO item: Storefront caching toolkit (render-time dependency resolution)
@@ -132,5 +132,5 @@ This rides the 0043 events, so it is correct by construction (it bumps on exactl
 
 ## Implementation plan
 
-- [ ] Slice 1 — Dependency resolution. `Contracts\CacheDependencies` + `Cache\CacheDependencies` registry, `Contracts\DependencyResolver` + `Cache\DependencyResolver` (relation-path + closure definitions, dotted traversal, strict-lazy safe, dedupe, strict-dev/lenient-prod path validation), `Facades\CacheTags`, the entity-named default graphs, `lunar.cache` config. Tests: the `product` default resolves the expected tag set, an overridden default, a custom named graph, a closure graph, a dotted path (`associations.target`), a non-cacheable hop is traversed not tagged, and an unknown path throws outside production / is skipped + logged in production.
-- [ ] Slice 2 — Contract + docs. Document the default graphs, the registration recipe, the page-caching recipe (incl. listings), and the optional consumer versioning recipe; port to the v2 docs when they land.
+- [x] Slice 1 — Dependency resolution. `Contracts\CacheDependencies` + `Cache\CacheDependencies` registry, `Contracts\DependencyResolver` + `Cache\DependencyResolver` (relation-path + closure definitions, dotted traversal via `loadMissing`, strict-lazy safe, dedupe, strict-dev/lenient-prod path validation), `Facades\CacheTags` + `Facades\CacheDependencies`, the `product` default graph registered in `LunarServiceProvider` (other cacheable entities resolve to their own tag). No `lunar.cache` config block needed yet (no values). `tests/core/Feature/CacheDependenciesTest.php` covers the default graph, an overridden default, a custom named graph, a closure graph, a dotted path (`associations.target`) skipping the non-cacheable hop, an unregistered graph resolving to the root tag, dedupe, and strict-throw / lenient-skip on an unknown path. Full suite (core/admin) green.
+- [x] Slice 2 — Contract + docs. The default graph, registration recipe, page-caching recipe (incl. listings) and the optional consumer versioning recipe are documented in this spec; they port to the v2 docs when those land.
