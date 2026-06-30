@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 use Lunar\Core\Addons\Manifest;
 use Lunar\Core\Auth\Manifest as AccessControlManifest;
 use Lunar\Core\Cache\AttributeCache as AttributeCacheImpl;
+use Lunar\Core\Cache\CacheInvalidator as CacheInvalidatorImpl;
 use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
@@ -29,6 +30,7 @@ use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
+use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
@@ -406,6 +408,10 @@ class LunarServiceProvider extends ServiceProvider
 
         $this->app->singleton(AttributeCache::class, function ($app) {
             return $app->make(AttributeCacheImpl::class);
+        });
+
+        $this->app->singleton(CacheInvalidator::class, function ($app) {
+            return new CacheInvalidatorImpl($app['db'], config('lunar.database.connection'));
         });
 
         $this->app->singleton(ModelManifest::class, function ($app) {

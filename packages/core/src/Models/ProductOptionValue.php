@@ -11,6 +11,7 @@ use Lunar\Core\Database\Factories\ProductOptionValueFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
 use Lunar\Core\Models\Concerns\HasTranslations;
+use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
@@ -28,6 +29,7 @@ class ProductOptionValue extends Base implements SpatieHasMedia
     use HasMacros;
     use HasMedia;
     use HasTranslations;
+    use InvalidatesRelatedCache;
 
     /**
      * Define which attributes should be cast.
@@ -58,6 +60,13 @@ class ProductOptionValue extends Base implements SpatieHasMedia
     public function option(): BelongsTo
     {
         return $this->belongsTo(ProductOption::class, 'product_option_id');
+    }
+
+    public function cacheInvalidationTargets(): iterable
+    {
+        $this->loadMissing('option');
+
+        return [$this->option];
     }
 
     public function variants(): BelongsToMany

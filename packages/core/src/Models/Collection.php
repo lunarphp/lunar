@@ -9,8 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
+use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\CollectionFactory;
+use Lunar\Core\Enums\CacheInvalidationReason;
+use Lunar\Core\Events\Catalog\CollectionInvalidated;
 use Lunar\Core\Models\Builders\CollectionQueryBuilder;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasChannels;
@@ -19,6 +22,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
+use Lunar\Core\Models\Concerns\InvalidatesCache;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\States\Collection\CollectionState;
 use Lunar\Core\States\Collection\Published;
@@ -52,6 +56,7 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
         HasStates,
         HasTranslations,
         HasUrls,
+        InvalidatesCache,
         NodeTrait,
         Searchable {
             NodeTrait::usesSoftDelete insteadof Searchable;
@@ -82,6 +87,11 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
     public function getScopeAttributes()
     {
         return ['collection_group_id'];
+    }
+
+    public function newCacheInvalidationEvent(CacheInvalidationReason $reason): CacheInvalidationEvent
+    {
+        return new CollectionInvalidated($this, $reason);
     }
 
     /**
