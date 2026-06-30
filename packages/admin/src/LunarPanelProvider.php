@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Console\Commands\MakeLunarAdminCommand;
 use Lunar\Admin\Console\Commands\PublishAdminResourcesCommand;
-use Lunar\Admin\Events\CustomerAddressEdited;
 use Lunar\Admin\Events\CustomerUserEdited;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
@@ -70,14 +69,14 @@ class LunarPanelProvider extends ServiceProvider
             ]);
         }
 
-        // Catalog reindexing now rides the core cache-invalidation events
-        // (Lunar\Core\Listeners\ReindexOnCacheInvalidation), which covers
-        // programmatic changes too. Customer reindexing stays here until the
-        // customer lifecycle events land.
-        Event::listen([
-            CustomerAddressEdited::class,
+        // Catalog reindexing rides the core cache-invalidation events
+        // (Lunar\Core\Listeners\ReindexOnCacheInvalidation). A linked user's
+        // email is part of the customer search document, so a user edit still
+        // reindexes the customer here.
+        Event::listen(
             CustomerUserEdited::class,
-        ], fn ($event) => sync_with_search($event->model));
+            fn ($event) => sync_with_search($event->model),
+        );
 
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunarpanel'),

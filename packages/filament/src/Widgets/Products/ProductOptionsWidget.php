@@ -22,7 +22,6 @@ use Lunar\Core\Models\ProductOption;
 use Lunar\Core\Models\ProductOptionValue;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Filament\Actions\Products\MapVariantsToProductOptions;
-use Lunar\Filament\Events\ProductVariantOptionsUpdated;
 use Lunar\Filament\Support\RecordUrls;
 
 class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
@@ -92,9 +91,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         fn ($value) => $this->mapOptionValue($value, $data['preselect'] ?? false)
                     )->toArray()
                 );
-            })->after(
-                fn () => ProductVariantOptionsUpdated::dispatch($this->record)
-            );
+            });
     }
 
     public function configureBaseOptions(): void
@@ -452,9 +449,7 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                 Notification::make()->title(
                     __('lunar-filament::productoption.widgets.product-options.notifications.save-variants.success.title')
                 )->success()->send();
-            })->after(
-                fn () => ProductVariantOptionsUpdated::dispatch($this->record)
-            );
+            });
     }
 
     public function getVariantLink($variantId)

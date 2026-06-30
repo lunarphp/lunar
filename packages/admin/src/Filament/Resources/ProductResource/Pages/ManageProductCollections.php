@@ -10,7 +10,6 @@ use Filament\Forms\Components\Select;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Core\Models\Collection;
@@ -65,27 +64,14 @@ class ManageProductCollections extends BaseManageRelatedRecords
             ->headerActions([
                 AttachAction::make()
                     ->recordSelect(fn (Select $select) => CollectionSelect::applyTo($select)
-                        ->placeholder(__('lunarpanel::product.pages.collections.select_collection')))
-                    ->after(
-                        fn () => ProductCollectionsUpdated::dispatch(
-                            $this->getOwnerRecord()
-                        )
-                    ),
+                        ->placeholder(__('lunarpanel::product.pages.collections.select_collection'))),
             ])
             ->recordActions([
-                DetachAction::make()->after(
-                    fn () => ProductCollectionsUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
-                ),
+                DetachAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DetachBulkAction::make()->after(
-                        fn () => ProductCollectionsUpdated::dispatch(
-                            $this->getOwnerRecord()
-                        )
-                    ),
+                    DetachBulkAction::make(),
                 ]),
             ]);
     }

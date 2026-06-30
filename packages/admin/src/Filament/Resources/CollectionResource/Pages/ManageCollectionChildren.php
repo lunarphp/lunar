@@ -10,7 +10,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Events\ChildCollectionCreated;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Core\Contracts\Actions\Collections\CreatesChildCollection;
@@ -91,8 +90,7 @@ class ManageCollectionChildren extends BaseManageRelatedRecords
                 ->action(fn (array $data, Table $table) => app(CreatesChildCollection::class)->execute(
                     parent: $table->getRelationship()->getParent(),
                     name: $data['name'],
-                ))
-                ->after(fn () => ChildCollectionCreated::dispatch($this->getRecord())),
+                )),
         ]);
     }
 }

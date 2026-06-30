@@ -497,20 +497,10 @@ final class LunarSetList
         'Lunar\\Admin\\Support\\CustomerStatus' => 'Lunar\\Filament\\Support\\CustomerStatus',
         'Lunar\\Admin\\Support\\Actions\\Traits\\CreatesChildCollections' => 'Lunar\\Filament\\Support\\Concerns\\CreatesChildCollections',
         'Lunar\\Admin\\Base\\LunarPanelDiscountInterface' => 'Lunar\\Filament\\Contracts\\DiscountFormType',
-        'Lunar\\Admin\\Events\\ChildCollectionCreated' => 'Lunar\\Filament\\Events\\ChildCollectionCreated',
-        'Lunar\\Admin\\Events\\CollectionProductAttached' => 'Lunar\\Filament\\Events\\CollectionProductAttached',
-        'Lunar\\Admin\\Events\\CollectionProductDetached' => 'Lunar\\Filament\\Events\\CollectionProductDetached',
-        'Lunar\\Admin\\Events\\CustomerAddressEdited' => 'Lunar\\Filament\\Events\\CustomerAddressEdited',
+        // Catalog *Updated events removed in v2 (spec 0043) — catalog changes
+        // now emit core cache-invalidation events. The CustomerUserEdited bridge
+        // survives (it drives customer search reindexing).
         'Lunar\\Admin\\Events\\CustomerUserEdited' => 'Lunar\\Filament\\Events\\CustomerUserEdited',
-        'Lunar\\Admin\\Events\\ModelChannelsUpdated' => 'Lunar\\Filament\\Events\\ModelChannelsUpdated',
-        'Lunar\\Admin\\Events\\ModelMediaUpdated' => 'Lunar\\Filament\\Events\\ModelMediaUpdated',
-        'Lunar\\Admin\\Events\\ModelPricesUpdated' => 'Lunar\\Filament\\Events\\ModelPricesUpdated',
-        'Lunar\\Admin\\Events\\ModelUrlsUpdated' => 'Lunar\\Filament\\Events\\ModelUrlsUpdated',
-        'Lunar\\Admin\\Events\\ProductAssociationsUpdated' => 'Lunar\\Filament\\Events\\ProductAssociationsUpdated',
-        'Lunar\\Admin\\Events\\ProductCollectionsUpdated' => 'Lunar\\Filament\\Events\\ProductCollectionsUpdated',
-        'Lunar\\Admin\\Events\\ProductCustomerGroupsUpdated' => 'Lunar\\Filament\\Events\\ProductCustomerGroupsUpdated',
-        'Lunar\\Admin\\Events\\ProductPricingUpdated' => 'Lunar\\Filament\\Events\\ProductPricingUpdated',
-        'Lunar\\Admin\\Events\\ProductVariantOptionsUpdated' => 'Lunar\\Filament\\Events\\ProductVariantOptionsUpdated',
         // Resource-tied widgets moved to bridge.
         'Lunar\\Admin\\Filament\\Resources\\CustomerResource\\Widgets\\CustomerStatsOverviewWidget' => 'Lunar\\Filament\\Widgets\\Customer\\CustomerStatsOverviewWidget',
         'Lunar\\Admin\\Filament\\Resources\\ProductResource\\Widgets\\ProductOptionsWidget' => 'Lunar\\Filament\\Widgets\\Products\\ProductOptionsWidget',

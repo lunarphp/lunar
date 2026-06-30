@@ -13,7 +13,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Lunar\Filament\Events\ProductCustomerGroupsUpdated;
 use Lunar\Filament\RelationManagers\BaseRelationManager;
 
 class CustomerGroupRelationManager extends BaseRelationManager
@@ -106,8 +105,6 @@ class CustomerGroupRelationManager extends BaseRelationManager
                 })->preloadRecordSelect()
                     ->label(
                         __('lunar-filament::relationmanagers.customer_groups.actions.attach.label')
-                    )->after(
-                        fn () => ProductCustomerGroupsUpdated::dispatch($this->getOwnerRecord())
                     ),
             ])->columns([
                 ...[
@@ -130,11 +127,7 @@ class CustomerGroupRelationManager extends BaseRelationManager
                     )->dateTime(),
                 ],
             ])->recordActions([
-                EditAction::make()->after(
-                    fn () => ProductCustomerGroupsUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
-                ),
+                EditAction::make(),
             ]);
     }
 }

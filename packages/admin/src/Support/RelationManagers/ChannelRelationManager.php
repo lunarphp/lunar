@@ -12,7 +12,6 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Admin\Events\ModelChannelsUpdated;
 
 class ChannelRelationManager extends BaseRelationManager
 {
@@ -73,11 +72,7 @@ class ChannelRelationManager extends BaseRelationManager
                     ...static::getFormInputs(),
                 ])->recordTitle(function ($record) {
                     return $record->name;
-                })->after(
-                    fn () => sync_with_search(
-                        $this->getOwnerRecord()
-                    )
-                )->preloadRecordSelect()
+                })->preloadRecordSelect()
                     ->label(
                         __('lunarpanel::relationmanagers.channels.actions.attach.label')
                     ),
@@ -103,11 +98,7 @@ class ChannelRelationManager extends BaseRelationManager
                     __('lunarpanel::relationmanagers.channels.table.ends_at.label')
                 )->dateTime(),
             ])->recordActions([
-                EditAction::make()->after(
-                    fn () => ModelChannelsUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
-                ),
+                EditAction::make(),
             ]);
     }
 }
