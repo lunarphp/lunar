@@ -129,6 +129,43 @@ test('adding an associated product invalidates both products', function () {
     Event::assertDispatched(ProductInvalidated::class, fn (ProductInvalidated $e) => $e->product->is($target));
 });
 
+test('removing an associated product invalidates both products', function () {
+    $parent = Product::factory()->create();
+    $target = Product::factory()->create();
+    $association = ProductAssociation::create([
+        'product_parent_id' => $parent->id,
+        'product_target_id' => $target->id,
+        'type' => 'cross-sell',
+    ]);
+
+    Event::fake([ProductInvalidated::class]);
+
+    $association->delete();
+
+    Event::assertDispatched(ProductInvalidated::class, fn (ProductInvalidated $e) => $e->product->is($parent));
+    Event::assertDispatched(ProductInvalidated::class, fn (ProductInvalidated $e) => $e->product->is($target));
+});
+
+test('re-parenting a collection invalidates its descendant subtree', function () {
+    $root = Collection::factory()->create();
+    $group = ['collection_group_id' => $root->collection_group_id];
+
+    $branch = Collection::factory()->create($group);
+    $branch->appendToNode($root)->save();
+    $leaf = Collection::factory()->create($group);
+    $leaf->appendToNode($branch)->save();
+
+    $newRoot = Collection::factory()->create($group);
+
+    Event::fake([CollectionInvalidated::class]);
+
+    $branch->refresh()->appendToNode($newRoot)->save();
+
+    // The moved node (self) and every descendant are invalidated.
+    Event::assertDispatched(CollectionInvalidated::class, fn (CollectionInvalidated $e) => $e->collection->is($branch));
+    Event::assertDispatched(CollectionInvalidated::class, fn (CollectionInvalidated $e) => $e->collection->is($leaf));
+});
+
 test('an option value change invalidates its option', function () {
     $option = ProductOption::factory()->create();
 

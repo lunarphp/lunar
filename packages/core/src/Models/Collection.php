@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Kalnoy\Nestedset\NodeTrait;
 use Lunar\Core\Contracts\CacheInvalidationEvent;
+use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Database\Factories\CollectionFactory;
 use Lunar\Core\Enums\CacheInvalidationReason;
@@ -87,6 +88,25 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
     public function getScopeAttributes()
     {
         return ['collection_group_id'];
+    }
+
+    protected static function booted(): void
+    {
+        // A re-parent changes every descendant's ancestry (path / breadcrumb),
+        // so the moved node's subtree is invalidated alongside the node itself.
+        static::saved(function (self $collection) {
+            if (! $collection->hasMoved()) {
+                return;
+            }
+
+            $invalidator = app(CacheInvalidator::class);
+
+            // Re-query from a fresh copy: kalnoy syncs the moved node's bounds
+            // only after this event, so descendants() on $collection is stale here.
+            $collection->fresh()?->descendants()->get()->each(
+                fn (self $descendant) => $invalidator->record($descendant, CacheInvalidationReason::RelatedChanged)
+            );
+        });
     }
 
     public function newCacheInvalidationEvent(CacheInvalidationReason $reason): CacheInvalidationEvent
