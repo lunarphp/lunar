@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'orders', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->userForeignKey(nullable: true);
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');
             $table->string('payment_status')->default('pending')->index();

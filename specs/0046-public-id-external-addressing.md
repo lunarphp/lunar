@@ -158,7 +158,7 @@ Each Tier 1/2 resource surfaces `public_id` as a **read-only, copyable** field (
 
 ## Implementation plan
 
-- [ ] Slice 1 — concern + Tier 1 columns. `Models\Concerns\HasPublicId` (lazy `creating` generation, `wherePublicId()` scope, no route override); add the `ulid('public_id')->unique()` column to the six Tier 1 `create_*_table` migrations; mix the trait into the six models; factories generate one.
-- [ ] Slice 2 — Tier 2 + search. Same column + trait for `Cart` and `Discount`; add `'public_id'` to the five searchable Tier 1 indexers (`Product`, `Order`, `Customer`, `Collection`, `Brand`).
-- [ ] Slice 3 — Filament. Read-only copyable `public_id` infolist entry (and optional table column) on the Tier 1/2 resources; translations across 16 locales.
-- [ ] Slice 4 — upgrade package. Per included table: add `public_id` nullable, batched backfill seeded from `created_at`, then tighten to `NOT NULL`; guarded/idempotent, no `down()`.
+- [x] Slice 1 — concern + Tier 1 columns. `Models\Concerns\HasPublicId` (lazy `creating` generation, fresh id on `replicating`, `wherePublicId()` scope, no route override); add the `ulid('public_id')->unique()` column to the six Tier 1 `create_*_table` migrations; mix the trait into the six models; factories generate one.
+- [x] Slice 2 — Tier 2 + search. Same column + trait for `Cart` and `Discount`; add `'public_id'` to the five searchable Tier 1 indexers (`Product`, `Order`, `Customer`, `Collection`, `Brand`).
+- [x] Slice 3 — Filament. Read-only copyable `public_id` entry on each form (and the order summary infolist) plus a toggleable copyable table column on the resources that have one; shared `components.public_id.label` translation across 16 locales in both the filament and admin packages.
+- [x] Slice 4 — upgrade package. Single migration over all eight included tables: add `public_id` nullable, batched backfill seeded from `created_at`, then tighten to `NOT NULL` with a unique index; guarded/idempotent, no `down()`.

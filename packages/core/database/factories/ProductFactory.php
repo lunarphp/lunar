@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Database\Factories;
 
+use Illuminate\Support\Str;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductType;
@@ -13,6 +14,7 @@ class ProductFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'product_type_id' => ProductType::factory(),
             'status' => 'published',
             'brand_id' => Brand::factory()->create()->id,

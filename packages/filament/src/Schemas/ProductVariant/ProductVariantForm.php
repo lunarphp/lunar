@@ -5,6 +5,7 @@ namespace Lunar\Filament\Schemas\ProductVariant;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Lunar\Core\Facades\Converter;
@@ -24,6 +25,7 @@ class ProductVariantForm
             $schema
                 ->components([
                     static::getAttributeDataComponent(),
+                    static::getPublicIdComponent(),
                 ])
                 ->columns(1),
         );
@@ -34,6 +36,14 @@ class ProductVariantForm
         return [
             static::getSkuComponent(),
         ];
+    }
+
+    public static function getPublicIdComponent(): Component
+    {
+        return TextEntry::make('public_id')
+            ->label(__('lunar-filament::components.public_id.label'))
+            ->copyable()
+            ->visible(fn ($record): bool => (bool) $record);
     }
 
     public static function getAttributeDataComponent(): Component

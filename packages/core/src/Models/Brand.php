@@ -15,6 +15,7 @@ use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
 use Lunar\Core\Models\Concerns\InvalidatesCache;
@@ -24,6 +25,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property string $name
  * @property ?\Illuminate\Support\Collection $description
  * @property ?\Illuminate\Support\Collection $short_description
@@ -37,6 +39,7 @@ class Brand extends Base implements SpatieHasMedia
     use HasFactory;
     use HasMacros;
     use HasMedia;
+    use HasPublicId;
     use HasTranslations;
     use HasUrls;
     use InvalidatesCache;

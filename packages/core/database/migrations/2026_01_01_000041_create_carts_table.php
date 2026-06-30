@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'carts', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->userForeignKey(nullable: true);
             $table->foreignId('merged_id')->nullable()->constrained($this->prefix.'carts');
             $table->foreignId('currency_id')->constrained($this->prefix.'currencies');

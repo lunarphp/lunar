@@ -31,6 +31,7 @@ class ProductVariantFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'product_id' => Product::factory(),
             'tax_class_id' => TaxClass::factory()->hasTaxRateAmounts(
                 TaxRateAmount::factory()

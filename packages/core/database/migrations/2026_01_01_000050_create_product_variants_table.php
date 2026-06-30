@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'product_variants', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->foreignId('product_id')->constrained($this->prefix.'products');
             $table->foreignId('tax_class_id')->constrained($this->prefix.'tax_classes');
             $table->string('tax_ref')->index()->nullable();

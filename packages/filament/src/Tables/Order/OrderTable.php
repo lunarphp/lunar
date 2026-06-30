@@ -115,6 +115,10 @@ class OrderTable
                 ->label(__('lunar-filament::order.table.date.label'))
                 ->toggleable()
                 ->dateTime(),
+            TextColumn::make('public_id')
+                ->label(__('lunar-filament::components.public_id.label'))
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->copyable(),
         ];
     }
 
