@@ -2,7 +2,7 @@
 
 return [
     'public_id' => [
-        'label' => 'Public ID',
+        'label' => 'Publiczny identyfikator',
     ],
 
     'tags' => [

@@ -2,7 +2,7 @@
 
 return [
     'public_id' => [
-        'label' => 'Public ID',
+        'label' => 'شناسه عمومی',
     ],
 
     'tags' => [
