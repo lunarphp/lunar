@@ -1,6 +1,6 @@
 # 0046 — `public_id` for externally-addressable models
 
-- Status: proposed
+- Status: proposed (amended 2026-07-01 — see [Amendment](#amendment-2026-07-01--default-on-exclusion-driven-membership))
 - Author: Glenn Jacobs
 - Created: 2026-06-30
 - TODO item: Add `public_id` (ULID) to externally-addressable models
@@ -67,6 +67,8 @@ trait HasPublicId
 
 ### Which models get one
 
+> **Superseded by the [Amendment](#amendment-2026-07-01--default-on-exclusion-driven-membership) below.** The tiered inclusion list here was the shipped v1 of this spec. It has been replaced by a default-on rule with a derivable exclusion list; the tables below are retained as the record of what shipped first.
+
 **Tier 1 — externally-addressable:**
 
 | Model | Table |
@@ -115,9 +117,9 @@ A consumer that wants `public_id` route binding for their own storefront routes 
 - **Search** — `getScoutKey()` stays `id` (changing the Scout key reshapes existing external indexes — breaking for adopters mid-flight). To make `public_id` a filterable/returnable search field, it is added to the **per-model indexers** that build the searchable payload (`ProductIndexer`, `OrderIndexer`, `CustomerIndexer`, `CollectionIndexer`, `BrandIndexer` each emit their own array starting `'id' => (string) $model->id`; each gains `'public_id' => (string) $model->public_id`). `ProductOption` is searchable but is not a `public_id` model, so it is skipped.
 - **Cache** — `InvalidatesCache::cacheKey()` stays `id`. Moving the cache-tag vocabulary to `public_id` (the seam the comment anticipates) is a **follow-on**, not bundled here: it interacts with the tag scheme shipped in [[0044-storefront-cache-tagging]] and the invalidation events in [[0043-cache-invalidation-and-events]], and is worth its own change. This spec lays the column the seam will later read.
 
-### Filament
+### No admin surfacing
 
-Each Tier 1/2 resource surfaces `public_id` as a **read-only, copyable** field (infolist entry + an optionally-toggled, copyable table column), so an operator can grab the external id for support/debugging. It is never editable.
+`public_id` is **not** shown anywhere in the Filament admin panel — no form entry, no table column, no infolist. It is a machine address for APIs, webhooks, and syncs; customers never quote it and operators never act on it, so the only party that ever needs to read it is a developer, who reads it straight from the database. Surfacing it in the admin UI would add contract (a translation key per resource, a column on every table) for no operator value. It stays a core concern.
 
 ## Alternatives considered
 
@@ -134,8 +136,8 @@ Each Tier 1/2 resource surfaces `public_id` as a **read-only, copyable** field (
 - **Database** (baseline editable, v2 pre-release): a `ulid('public_id')->unique()` (NOT NULL) column born on each of the eight included `create_*_table` migrations (`products`, `product_variants`, `orders`, `customers`, `collections`, `brands`, `carts`, `discounts`).
 - **Breaking changes to the public contract surface:** none for existing consumers — purely additive. New surface: `Models\Concerns\HasPublicId`, the `public_id` attribute + `wherePublicId()` scope on the included models, `public_id` in the relevant search indexers.
 - **Upgrade path for v1.x consumers:** the upgrade package, for each included table, adds the column **nullable**, **backfills** a ULID into every existing row in batches (seeding each ULID's timestamp from the row's `created_at` via `Str::ulid($createdAt)`, so migrated `public_id`s sort by record creation time exactly as freshly-minted ones do), then **tightens the column to `NOT NULL`** and relies on the unique index. One-way (the upgrade data migrations are not reversible; restore from backup to undo). No Rector rule (no code-surface rename).
-- **Translation / locale impact:** one new Filament label per resource (`public_id` field), English-first then mirrored across the other 15 locales.
-- **Filament / admin impact:** read-only copyable `public_id` infolist entry (and optional table column) on the Tier 1/2 resources. No editing, no validation.
+- **Translation / locale impact:** none — `public_id` is not surfaced in the UI, so no new locale keys.
+- **Filament / admin impact:** none — `public_id` is not shown in the admin panel (see "No admin surfacing").
 
 ## Resolved decisions
 
@@ -144,6 +146,69 @@ Each Tier 1/2 resource surfaces `public_id` as a **read-only, copyable** field (
 - **Backfill seeds the ULID timestamp from `created_at`.** Migrated `public_id`s sort chronologically like fresh ones, rather than by backfill iteration order.
 - **Cache-key cutover is deferred.** `cacheKey()` stays `id`; moving the tag vocabulary to `public_id` is a separate change touching the 0043 events and the 0044 tag scheme. This spec only lays the column.
 - **`HasUlids` is not used; route binding stays on `id`.** A bespoke `HasPublicId` concern adds a secondary unique column without disturbing the integer PK or route resolution.
+
+## Amendment (2026-07-01) — default-on, exclusion-driven membership
+
+The original curated list of eight tables was an **inclusion list**: nothing in it was derivable from a rule, so which models had a `public_id` and which did not read as arbitrary, and the set had real gaps (`Fulfilment` and `Transaction` — the two rows a fulfilment/payment webhook must name directly — were omitted while the short-lived `Cart` was included).
+
+Two observations drive the correction:
+
+1. **The package cannot know what a store exposes.** Whether regions, customer groups, or line items are reachable over a given store's storefront/admin API is a per-store decision. Guessing "not addressable" is an opinion about the consumer's API shape, which contradicts Lunar's unopinionated boundary — and guessing wrong forces the store to add a column and backfill it **on Lunar's own tables**, mid-upgrade, which is the worst place to retrofit one.
+2. **A mutable natural key is not a safe external address.** A `handle`/`code` that an admin can rename cannot be the thing integrations pin to — a rename silently breaks every stored reference. So a handle does not remove the need for a `public_id`; the two coexist (`handle` = readable key, `public_id` = rename-proof machine address). The **only** natural keys that are safe standalone addresses are immutable external standards (ISO currency/country/language codes), which cannot be renamed without being wrong.
+
+### The rule
+
+> Every standalone model gets a `public_id`, **except**:
+> - **link / pivot models** — no independent identity; you address the two things they join, through their endpoints;
+> - **immutable-standard-code models** — the ISO code already *is* a stable public identifier, and a better one than a ULID (an integration wants `"USD"`, not `01J…`); a `public_id` there is redundant and worse.
+
+This flips the mechanism from a curated inclusion list to a **default with a short, principled exclusion list** — one sentence a reviewer can apply to the next model they add, and visible in the schema (nearly every `create_*` migration carries `ulid('public_id')->unique()`; the absences self-explain).
+
+### Membership (models extending `Models\Base`)
+
+**Included — already shipped (8):** `Product`, `ProductVariant`, `Order`, `Customer`, `Collection`, `Brand`, `Cart`, `Discount`.
+
+**Included — added by this amendment:**
+
+- *Roots / gaps:* `Fulfilment`, `Transaction`.
+- *Config (mutable `handle`/name, or no natural key):* `Channel`, `Region`, `Location`, `CustomerGroup`, `Attribute`, `AttributeGroup`, `CollectionGroup`, `ProductType`, `ProductOption`, `ProductOptionValue`, `TaxClass`, `TaxRate`, `TaxZone`, `Tag`, `Asset`.
+- *Dependent rows (conscious include — see cost note):* `Address`, `CartAddress`, `OrderAddress`, `CartLine`, `OrderLine`, `FulfilmentLine`, `FulfilmentTracking`, `Price`, `StockLevel`, `StockMovement`, `StockReservation`, `Url`, `TaxRateAmount`, `TaxZonePostcode`.
+
+**Excluded — pivot / link models:** `Discountable`, `DiscountCollection`, `TaxZoneCountry`, `TaxZoneState`, `TaxZoneCustomerGroup`, `AttributeModel`, `UserPermission`, plus every classless pivot table (`brand_collection`, `channelables`, `collection_product`, `taggables`, …), which has no model and simply carries no column.
+
+**Excluded — immutable-standard code:** `Country` (`iso2`/`iso3`), `Currency` (`code`), `Language` (`code`), `State` (`code`).
+
+**Borderline — confirm before implementing:**
+
+- `Staff` — extends `Authenticatable`, not `Base`; an admin/audit API may address it, but it is keyed today by the auth user. If included, the trait is added explicitly (the `Base` archtest below won't cover it).
+- `ProductAssociation` — a typed product-to-product link; pivot-like (exclude) vs. a row with its own attributes (include).
+- `TaxZonePostcode` — a zone's postcode list; a child row (include) rather than a join (exclude).
+
+### Cost note — dependent rows
+
+The dependent set (`OrderLine`, `CartLine`, `Price`, `StockLevel`/`StockMovement`/`StockReservation`, `Address`, …) is where a unique 26-char index carries real per-insert and storage cost, on the busiest tables. They are included deliberately on the "can't-predict-exposure + downstream migrations are the worst retrofit" reasoning (line-item webhooks and inventory-audit integrations are entirely plausible), not because each is known to be addressed. This is the one part of the scope to trim first if the index cost outweighs the future-proofing for a given table.
+
+### Mechanism — trait plus architecture test, not `Base`
+
+`HasPublicId` is **not** moved into `Models\Base`: every model — including the excluded pivots and ISO-code models — extends `Base`, and a trait cannot be selectively un-applied. Instead:
+
+- The trait is applied per-model to every included model (mechanical, one-time).
+- A new case in `tests/core/Unit/ArchitectureTest.php` asserts that **every `Models\*` extending `Base` uses `HasPublicId` except an explicit `$withoutPublicId` allowlist** (the pivot + ISO-code models above). This codifies the rule: a new model that neither adopts the trait nor is added to the allowlist fails the test, forcing a conscious include/exclude decision rather than leaving membership to memory.
+
+### Migration and upgrade impact of the amendment
+
+- **Baseline** (still editable, pre-alpha): add `ulid('public_id')->unique()` to each newly-included `create_*_table` migration. No change to the eight already carrying it.
+- **Upgrade**: extend the single `add_public_id_to_addressable_models` migration's table array from eight to the full included set — same guarded, idempotent `nullable -> batched backfill -> tighten to NOT NULL` pattern. Backfill seeds the ULID timestamp from `created_at` on tables that have it; the few dependent tables without a `created_at` fall back to an unseeded `Str::ulid()`. Still one-way, still no `down()`.
+- **Search**: extend only where a searchable model exists — no blanket rollout. Indexers gain `'public_id'` only on searchable models.
+- **Factories**: every included model's factory generates one.
+- **Filament / translations**: none — `public_id` is not surfaced in the admin panel (see "No admin surfacing"), so no resource, column, or locale-key changes.
+
+### Implementation plan (amendment)
+
+- [ ] Slice 5 — rule + enforcement. Apply `HasPublicId` to every included model; add the `ArchitectureTest` case with the `$withoutPublicId` allowlist; resolve the three borderline models first.
+- [ ] Slice 6 — baseline columns. Add `ulid('public_id')->unique()` to each newly-included `create_*_table` migration; update each model's factory.
+- [ ] Slice 7 — upgrade backfill. Extend the upgrade migration's table array to the full set; handle the `created_at`-less tables in the seed step.
+- [ ] Slice 8 — search. Add `'public_id'` to any newly-searchable indexers. No Filament work.
 
 ## References
 
@@ -160,5 +225,4 @@ Each Tier 1/2 resource surfaces `public_id` as a **read-only, copyable** field (
 
 - [x] Slice 1 — concern + Tier 1 columns. `Models\Concerns\HasPublicId` (lazy `creating` generation, fresh id on `replicating`, `wherePublicId()` scope, no route override); add the `ulid('public_id')->unique()` column to the six Tier 1 `create_*_table` migrations; mix the trait into the six models; factories generate one.
 - [x] Slice 2 — Tier 2 + search. Same column + trait for `Cart` and `Discount`; add `'public_id'` to the five searchable Tier 1 indexers (`Product`, `Order`, `Customer`, `Collection`, `Brand`).
-- [x] Slice 3 — Filament. Read-only copyable `public_id` entry on each form (and the order summary infolist) plus a toggleable copyable table column on the resources that have one; shared `components.public_id.label` translation across 16 locales in both the filament and admin packages.
 - [x] Slice 4 — upgrade package. Single migration over all eight included tables: add `public_id` nullable, batched backfill seeded from `created_at`, then tighten to `NOT NULL` with a unique index; guarded/idempotent, no `down()`.
