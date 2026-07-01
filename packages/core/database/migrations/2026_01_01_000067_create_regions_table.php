@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'regions', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->string('name');
             $table->string('handle')->unique();
             $table->foreignId('channel_id')->constrained($this->prefix.'channels');

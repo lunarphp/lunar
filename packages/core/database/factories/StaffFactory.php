@@ -20,6 +20,7 @@ class StaffFactory extends Factory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'admin' => $this->faker->boolean(5),

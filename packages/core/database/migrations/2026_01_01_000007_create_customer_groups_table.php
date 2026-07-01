@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'customer_groups', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->string('name');
             $table->string('handle')->unique();
             $table->boolean('default')->default(false)->index();

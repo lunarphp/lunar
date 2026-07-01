@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'product_options', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->jsonb('name');
             $table->string('handle')->nullable()->index();
             $table->boolean('shared')->default(false)->index();

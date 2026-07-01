@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'fulfilments', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->foreignId('order_id')->constrained($this->prefix.'orders')->cascadeOnDelete();
             $table->foreignId('location_id')->constrained($this->prefix.'locations')->restrictOnDelete();
             $table->string('reference')->nullable()->index();

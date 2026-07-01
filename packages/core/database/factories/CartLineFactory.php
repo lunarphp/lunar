@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Database\Factories;
 
+use Illuminate\Support\Str;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\ProductVariant;
@@ -13,6 +14,7 @@ class CartLineFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'cart_id' => Cart::factory(),
             'quantity' => $this->faker->numberBetween(0, 1000),
             'purchasable_type' => ProductVariant::morphName(),

@@ -15,6 +15,7 @@ class OrderLineFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'order_id' => Order::factory(),
             'purchasable_type' => ProductVariant::morphName(),
             'purchasable_id' => ProductVariant::factory(),

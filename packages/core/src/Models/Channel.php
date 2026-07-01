@@ -10,12 +10,14 @@ use Illuminate\Support\Str;
 use Lunar\Core\Database\Factories\ChannelFactory;
 use Lunar\Core\Models\Concerns\HasDefaultRecord;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\States\Channel\ChannelState;
 use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property string $name
  * @property string $handle
  * @property bool $default
@@ -29,6 +31,7 @@ class Channel extends Base
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use HasStates;
     use LogsActivity;
 

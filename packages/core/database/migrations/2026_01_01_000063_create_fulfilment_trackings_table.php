@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'fulfilment_trackings', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->foreignId('fulfilment_id')->constrained($this->prefix.'fulfilments')->cascadeOnDelete();
             $table->string('carrier')->nullable();
             $table->string('shipping_method')->nullable();

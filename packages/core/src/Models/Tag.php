@@ -10,10 +10,12 @@ use Illuminate\Support\Str;
 use Lunar\Core\Database\Factories\TagFactory;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property string $value
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -22,6 +24,7 @@ class Tag extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     public static function booted(): void

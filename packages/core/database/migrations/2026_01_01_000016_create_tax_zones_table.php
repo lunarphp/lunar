@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'tax_zones', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->string('name');
             $table->string('zone_type')->index();
             $table->string('price_display');

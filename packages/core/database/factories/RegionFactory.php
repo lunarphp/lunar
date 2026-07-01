@@ -17,6 +17,7 @@ class RegionFactory extends BaseFactory
         $name = $this->faker->country();
 
         return [
+            'public_id' => (string) Str::ulid(),
             'name' => $name,
             'handle' => Str::slug($name).'-'.Str::random(4),
             'channel_id' => Channel::factory(),

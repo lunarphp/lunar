@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'fulfilment_lines', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->foreignId('fulfilment_id')->constrained($this->prefix.'fulfilments')->cascadeOnDelete();
             $table->foreignId('order_line_id')->constrained($this->prefix.'order_lines')->cascadeOnDelete();
             $table->unsignedInteger('quantity');

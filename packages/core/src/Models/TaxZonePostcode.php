@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\TaxZonePostcodeFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?int $tax_zone_id
  * @property ?int $country_id
  * @property string $postcode
@@ -20,6 +22,7 @@ class TaxZonePostcode extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
 
     /**
      * Return a new factory instance for the model.

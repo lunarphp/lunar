@@ -13,11 +13,13 @@ use Lunar\Core\Database\Factories\CartLineFactory;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $cart_id
  * @property string $purchasable_type
  * @property int $purchasable_id
@@ -31,6 +33,7 @@ class CartLine extends Base
     use CachesProperties;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     /**

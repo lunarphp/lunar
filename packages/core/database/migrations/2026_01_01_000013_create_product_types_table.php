@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'product_types', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->string('name');
             $table->timestamps();
         });
