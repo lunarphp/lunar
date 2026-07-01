@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Захиалгаар',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Худалдааны бодлого',
+            'tooltip' => 'Энэ хувилбарыг хэзээ худалдан авах боломжтой. "Нөөцтэй үед" нь зөвхөн бараа байгаа үед зарна; "Нөөцтэй үед эсвэл захиалгаар" нь захиалгын хязгаарыг мөн зарна; "Үргэлж" нь нөөцийг огт тооцохгүй.',
             'options' => [
                 'always' => 'Үргэлж',
                 'in_stock' => 'Нөөцтэй үед',

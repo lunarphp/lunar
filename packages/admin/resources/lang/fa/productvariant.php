@@ -51,12 +51,12 @@ return [
         'backorder' => [
             'label' => 'On Backorder',
         ],
-        'purchasable' => [
-            'label' => 'Purchasability',
+        'selling_policy' => [
+            'label' => 'سیاست فروش',
             'options' => [
-                'always' => 'Always',
-                'in_stock' => 'In Stock',
-                'in_stock_or_on_backorder' => 'In Stock or On Backorder',
+                'always' => 'همیشه',
+                'in_stock' => 'موجود در انبار',
+                'in_stock_or_on_backorder' => 'موجود در انبار یا پیش‌خرید',
             ],
         ],
         'unit_quantity' => [

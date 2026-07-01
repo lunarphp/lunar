@@ -191,12 +191,12 @@ it('updates the variant selling policy', function () {
             'record' => $record->getRouteKey(),
         ])->fillForm([
             'backorder' => 50,
-            'purchasable' => 'in_stock_or_on_backorder',
+            'selling_policy' => 'in_stock_or_on_backorder',
         ])->call('save')->assertHasNoErrors();
 
     $this->assertDatabaseHas((new ProductVariant)->getTable(), [
         'id' => $variant->id,
         'backorder' => 50,
-        'purchasable' => 'in_stock_or_on_backorder',
+        'selling_policy' => 'in_stock_or_on_backorder',
     ]);
 });

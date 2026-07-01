@@ -12,7 +12,7 @@ uses(TestCase::class)
     ->group('validation.cart_line');
 uses(RefreshDatabase::class);
 
-test('can validate available stock', function (int $stock, int $backorder, int $quantity, string $purchasable, bool $shouldValidate = true) {
+test('can validate available stock', function (int $stock, int $backorder, int $quantity, string $sellingPolicy, bool $shouldValidate = true) {
     $currency = Currency::factory()->create();
 
     $cart = Cart::factory()->create([
@@ -21,7 +21,7 @@ test('can validate available stock', function (int $stock, int $backorder, int $
 
     $purchasable = ProductVariant::factory()->inStock($stock)->create([
         'backorder' => $backorder,
-        'purchasable' => $purchasable,
+        'selling_policy' => $sellingPolicy,
     ]);
 
     $validator = (new CartLineStock)->using(
@@ -85,7 +85,7 @@ test('can validate available stock', function (int $stock, int $backorder, int $
         0,
         150,
         150,
-        'in_stock_or_backorder',
+        'in_stock_or_on_backorder',
         true,
     ],
 ]);

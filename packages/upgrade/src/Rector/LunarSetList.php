@@ -648,11 +648,23 @@ final class LunarSetList
      * class strings are listed so the rename applies regardless of whether
      * `RenameClassRector` has already rewritten the surrounding type.
      *
+     * Spec 0048 renamed the `ProductVariant` selling-policy attribute
+     * `purchasable` to `selling_policy`. `RenamePropertyRector` is class-scoped,
+     * so it rewrites `->purchasable` only on expressions typed as
+     * `ProductVariant` — the `CartLine`/`OrderLine` morph relation
+     * (`$line->purchasable`) and the `customer_group_product.purchasable` pivot
+     * boolean, which mean unrelated things, are left untouched. A fully untyped
+     * `$model->purchasable` cannot be inferred and is flagged for manual review
+     * in the upgrade notes (those are almost always the morph/pivot accesses,
+     * which must not be renamed anyway).
+     *
      * @var array<int, array{0: class-string, 1: string, 2: string}>
      */
     public const V1_TO_V2_PROPERTY_RENAMES = [
         ['Lunar\\Core\\Models\\Price', 'compare_price', 'list_price'],
         ['Lunar\\Models\\Price', 'compare_price', 'list_price'],
+        ['Lunar\\Core\\Models\\ProductVariant', 'purchasable', 'selling_policy'],
+        ['Lunar\\Models\\ProductVariant', 'purchasable', 'selling_policy'],
     ];
 
     /**

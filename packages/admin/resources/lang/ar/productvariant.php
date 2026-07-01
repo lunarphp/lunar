@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'طلب مسبق',
         ],
-        'purchasable' => [
-            'label' => 'قابلية الشراء',
+        'selling_policy' => [
+            'label' => 'سياسة البيع',
             'options' => [
                 'always' => 'دائمًا',
                 'in_stock' => 'متوفر في المخزون',

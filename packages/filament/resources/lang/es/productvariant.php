@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'En Pedido Pendiente',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Política de venta',
+            'tooltip' => 'Cuándo se puede comprar esta variante. «En Stock» vende solo mientras haya unidades disponibles; «En Stock o en Pedido Pendiente» también vende el margen de pedido pendiente; «Siempre» ignora el stock por completo.',
             'options' => [
                 'always' => 'Siempre',
                 'in_stock' => 'En Stock',

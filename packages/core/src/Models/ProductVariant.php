@@ -11,6 +11,7 @@ use Lunar\Core\Contracts\HasThumbnailImage;
 use Lunar\Core\Contracts\Purchasable;
 use Lunar\Core\Contracts\TracksStock;
 use Lunar\Core\Database\Factories\ProductVariantFactory;
+use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasDimensions;
 use Lunar\Core\Models\Concerns\HasMacros;
@@ -47,7 +48,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?string $volume_unit
  * @property bool $shippable
  * @property int $backorder
- * @property string $purchasable
+ * @property SellingPolicy $selling_policy
  * @property int $stock_on_hand
  * @property int $stock_incoming
  * @property int $stock_committed
@@ -81,6 +82,7 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
      */
     protected $casts = [
         'shippable' => 'bool',
+        'selling_policy' => SellingPolicy::class,
         'stock_on_hand' => 'integer',
         'stock_incoming' => 'integer',
         'stock_committed' => 'integer',
@@ -237,11 +239,8 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
 
     public function canBeFulfilledAtQuantity(int $quantity): bool
     {
-        if ($this->purchasable == 'always') {
-            return true;
-        }
-
-        return $quantity <= $this->getTotalInventory();
+        return $this->selling_policy === SellingPolicy::Always
+            || $quantity <= $this->getTotalInventory();
     }
 
     public function isPurchasable(): bool
@@ -252,11 +251,11 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
 
     public function getTotalInventory(): int
     {
-        if ($this->purchasable == 'in_stock') {
-            return $this->stock_available;
-        }
-
-        return $this->stock_available + $this->backorder;
+        return match ($this->selling_policy) {
+            SellingPolicy::Always => $this->stock_available,
+            SellingPolicy::InStock => $this->stock_available,
+            SellingPolicy::InStockOrOnBackorder => $this->stock_available + $this->backorder,
+        };
     }
 
     public function getThumbnailImage(): string
