@@ -1,6 +1,6 @@
 # 0048 — Rename `product_variants.purchasable` to `selling_policy`
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-30
 - TODO item: Rename `product_variants.purchasable` to `selling_policy` and reconcile its values

@@ -70,7 +70,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0042 | Model query builders (registerable scopes) | implemented |
 | 0043 | Cache invalidation and event coverage | implemented |
 | 0044 | Storefront cache tagging and dependency resolution | implemented |
-| 0045 | Optional order-line purchasables and de-morphing shipping options | proposed    |
-| 0046 | `public_id` for externally-addressable models | proposed    |
+| 0045 | Optional order-line purchasables and de-morphing shipping options | implemented |
+| 0046 | `public_id` for externally-addressable models | implemented |
 | 0047 | Promotions: a campaign layer over discounts | declined    |
-| 0048 | Rename `product_variants.purchasable` to `selling_policy` | proposed    |
+| 0048 | Rename `product_variants.purchasable` to `selling_policy` | implemented |

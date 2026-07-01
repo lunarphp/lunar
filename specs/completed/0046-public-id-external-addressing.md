@@ -1,6 +1,6 @@
 # 0046 — `public_id` for externally-addressable models
 
-- Status: proposed (amended 2026-07-01 — see [Amendment](#amendment-2026-07-01--default-on-exclusion-driven-membership))
+- Status: implemented (amended 2026-07-01 — see [Amendment](#amendment-2026-07-01--default-on-exclusion-driven-membership))
 - Author: Glenn Jacobs
 - Created: 2026-06-30
 - TODO item: Add `public_id` (ULID) to externally-addressable models
@@ -205,10 +205,10 @@ The dependent set (`OrderLine`, `CartLine`, `Price`, `StockLevel`/`StockMovement
 
 ### Implementation plan (amendment)
 
-- [ ] Slice 5 — rule + enforcement. Apply `HasPublicId` to every included model; add the `ArchitectureTest` case with the `$withoutPublicId` allowlist; resolve the three borderline models first.
-- [ ] Slice 6 — baseline columns. Add `ulid('public_id')->unique()` to each newly-included `create_*_table` migration; update each model's factory.
-- [ ] Slice 7 — upgrade backfill. Extend the upgrade migration's table array to the full set; handle the `created_at`-less tables in the seed step.
-- [ ] Slice 8 — search. Add `'public_id'` to any newly-searchable indexers. No Filament work.
+- [x] Slice 5 — rule + enforcement. Apply `HasPublicId` to every included model; add the `ArchitectureTest` case with the `$withoutPublicId` allowlist; resolve the three borderline models first (`Staff` included).
+- [x] Slice 6 — baseline columns. Add `ulid('public_id')->unique()` to each newly-included `create_*_table` migration; update each model's factory.
+- [x] Slice 7 — upgrade backfill. Extend the upgrade migration's table array to the full set; handle the `created_at`-less tables in the seed step.
+- [x] Slice 8 — search. Add `'public_id'` to any newly-searchable indexers. No Filament work.
 
 ## References
 

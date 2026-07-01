@@ -1,6 +1,6 @@
 # 0045 — Optional order-line purchasables and de-morphing shipping options
 
-- Status: proposed
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-06-30
 - TODO item: Make order line purchasables optional + Stop storing shipping options as polymorphic purchasables
