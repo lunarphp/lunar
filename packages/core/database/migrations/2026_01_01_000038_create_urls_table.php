@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'urls', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->foreignId('language_id')->constrained($this->prefix.'languages');
             $table->morphs('element');
             $table->string('slug')->index();

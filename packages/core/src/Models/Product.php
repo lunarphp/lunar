@@ -27,6 +27,7 @@ use Lunar\Core\Models\Concerns\HasChannels;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTags;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
@@ -40,6 +41,7 @@ use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?int $brand_id
  * @property int $product_type_id
  * @property ProductState $status
@@ -58,6 +60,7 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
     use HasFactory;
     use HasMacros;
     use HasMedia;
+    use HasPublicId;
     use HasStates;
     use HasTags;
     use HasTranslations;
@@ -82,6 +85,7 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
      */
     protected $fillable = [
         'attribute_data',
+        'public_id',
         'product_type_id',
         'status',
         'brand_id',

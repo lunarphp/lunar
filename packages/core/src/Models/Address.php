@@ -9,9 +9,11 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Database\Factories\AddressFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $customer_id
  * @property ?string $title
  * @property string $first_name
@@ -37,7 +39,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  */
 class Address extends Base implements Addressable
 {
-    use HasFactory, HasMacros;
+    use HasFactory, HasMacros, HasPublicId;
 
     /**
      * Return a new factory instance for the model.

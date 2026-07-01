@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'La precomandă',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Politică de vânzare',
+            'tooltip' => 'Când poate fi cumpărată această variantă. „În stoc” vinde doar cât timp există unități disponibile; „În stoc sau la precomandă” vinde și limita de precomandă; „Întotdeauna” ignoră complet stocul.',
             'options' => [
                 'always' => 'Întotdeauna',
                 'in_stock' => 'În stoc',

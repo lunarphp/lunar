@@ -37,6 +37,7 @@ use Lunar\Core\Facades\DB;
 use Lunar\Core\Facades\ShippingManifest;
 use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Pipelines\Cart\Calculate;
 use Lunar\Core\Validation\Cart\ValidateCartForOrderCreation;
@@ -49,6 +50,7 @@ use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?int $user_id
  * @property ?int $customer_id
  * @property ?int $merged_id
@@ -68,6 +70,7 @@ class Cart extends Base
     use CachesProperties;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
     use SoftDeletes;
 

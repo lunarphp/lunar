@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'По заявка',
         ],
-        'purchasable' => [
-            'label' => 'Възможност за закупуване',
+        'selling_policy' => [
+            'label' => 'Политика на продажба',
             'options' => [
                 'always' => 'Винаги',
                 'in_stock' => 'В наличност',

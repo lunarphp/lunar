@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'stock_reservations', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->foreignId('product_variant_id')->constrained($this->prefix.'product_variants')->cascadeOnDelete();
             $table->integer('quantity');
             $table->nullableMorphs('reference'); // the holder — a Cart / checkout session in the follow-on

@@ -12,10 +12,12 @@ use Lunar\Core\Database\Factories\TransactionFactory;
 use Lunar\Core\Facades\Payments;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?int $parent_transaction_id
  * @property int $order_id
  * @property bool $success
@@ -36,6 +38,7 @@ class Transaction extends Base implements HasCurrency
     use FormatsPrices;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     /**

@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'product_variants', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->foreignId('product_id')->constrained($this->prefix.'products');
             $table->foreignId('tax_class_id')->constrained($this->prefix.'tax_classes');
             $table->string('tax_ref')->index()->nullable();
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->dimensions();
             $table->boolean('shippable')->default(true)->index();
             $table->integer('backorder')->default(0)->index();
-            $table->string('purchasable')->default('always')->index();
+            $table->string('selling_policy')->default('always')->index();
             // Cached stock rollup, summed from the variant's stock levels (and the
             // global committed/reserved counters). `stock_available` is the indexed
             // sellable figure: on_hand - committed - reserved - unavailable.

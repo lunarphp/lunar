@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'Utánrendelhető',
         ],
-        'purchasable' => [
-            'label' => 'Vásárolhatóság',
+        'selling_policy' => [
+            'label' => 'Értékesítési szabály',
             'options' => [
                 'always' => 'Mindig',
                 'in_stock' => 'Raktáron',

@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'stock_levels', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->foreignId('product_variant_id')->constrained($this->prefix.'product_variants')->cascadeOnDelete();
             $table->foreignId('location_id')->constrained($this->prefix.'locations')->restrictOnDelete();
             $table->integer('on_hand')->default(0);

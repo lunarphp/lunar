@@ -15,10 +15,12 @@ use Lunar\Core\Contracts\HasCurrency;
 use Lunar\Core\Database\Factories\OrderLineFactory;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $order_id
  * @property string $purchasable_type
  * @property int $purchasable_id
@@ -46,6 +48,7 @@ class OrderLine extends Base implements HasCurrency
     use FormatsPrices;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     /**

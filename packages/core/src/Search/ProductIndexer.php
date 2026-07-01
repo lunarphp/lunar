@@ -42,6 +42,7 @@ class ProductIndexer extends ScoutIndexer
         // more of a vanity thing than anything else.
         $data = array_merge([
             'id' => (string) $model->id,
+            'public_id' => (string) $model->public_id,
             'status' => (string) $model->status,
             'product_type' => $model->productType->name,
             'brand' => $model->brand?->name,

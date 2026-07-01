@@ -29,6 +29,7 @@ use Lunar\Core\DataObjects\PaymentRefund;
 use Lunar\Core\Facades\CancelReasons;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTags;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
@@ -38,6 +39,7 @@ use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?int $customer_id
  * @property ?int $user_id
  * @property int $channel_id
@@ -72,6 +74,7 @@ class Order extends Base implements HasCurrency
     use FormatsPrices;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use HasStates;
     use HasTags;
     use LogsActivity;

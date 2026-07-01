@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'staff', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->boolean('admin')->default(false)->index();
             $table->string('first_name')->index();
             $table->string('last_name')->index();

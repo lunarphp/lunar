@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'In Nabestelling',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Verkoopbeleid',
+            'tooltip' => 'Wanneer deze variant gekocht kan worden. „Op Voorraad” verkoopt alleen zolang er eenheden beschikbaar zijn; „Op Voorraad of In Nabestelling” verkoopt ook het nabestellingstegoed; „Altijd” negeert de voorraad volledig.',
             'options' => [
                 'always' => 'Altijd',
                 'in_stock' => 'Op Voorraad',

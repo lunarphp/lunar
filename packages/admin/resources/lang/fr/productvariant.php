@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'En commande',
         ],
-        'purchasable' => [
-            'label' => 'Achat possible',
+        'selling_policy' => [
+            'label' => 'Politique de vente',
             'options' => [
                 'always' => 'Toujours',
                 'in_stock' => 'En stock',

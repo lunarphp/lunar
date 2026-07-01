@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'customers', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->string('title')->nullable();
             $table->string('first_name');
             $table->string('last_name');

@@ -16,6 +16,7 @@ class ProductOptionFactory extends BaseFactory
         $name = $this->faker->name;
 
         return [
+            'public_id' => (string) Str::ulid(),
             'handle' => Str::slug($name),
             'name' => [
                 'en' => $name,

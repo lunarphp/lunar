@@ -12,6 +12,7 @@ use Lunar\Core\Contracts\ShippingCarrier;
 use Lunar\Core\Database\Factories\FulfilmentTrackingFactory;
 use Lunar\Core\Facades\Carriers;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
@@ -19,6 +20,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * (e.g. a shipment split across multiple boxes or carriers).
  *
  * @property int $id
+ * @property string $public_id
  * @property int $fulfilment_id
  * @property ?string $carrier
  * @property ?string $shipping_method
@@ -33,6 +35,7 @@ class FulfilmentTracking extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     /**

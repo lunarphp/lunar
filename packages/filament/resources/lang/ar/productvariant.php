@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'طلب مسبق',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'سياسة البيع',
+            'tooltip' => 'متى يمكن شراء هذا المتغير. "متوفر في المخزون" يبيع فقط أثناء توفر الوحدات؛ "متوفر في المخزون أو طلب مسبق" يبيع أيضًا ضمن حد الطلب المسبق؛ "دائمًا" يتجاهل المخزون تمامًا.',
             'options' => [
                 'always' => 'دائمًا',
                 'in_stock' => 'متوفر في المخزون',

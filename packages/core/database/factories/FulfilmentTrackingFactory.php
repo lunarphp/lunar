@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Database\Factories;
 
+use Illuminate\Support\Str;
 use Lunar\Core\Models\Fulfilment;
 use Lunar\Core\Models\FulfilmentTracking;
 
@@ -12,6 +13,7 @@ class FulfilmentTrackingFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'fulfilment_id' => Fulfilment::factory(),
             'tracking_number' => $this->faker->unique()->regexify('[A-Z0-9]{12}'),
             'tracking_url' => $this->faker->url(),

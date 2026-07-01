@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Utánrendelhető',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Értékesítési szabály',
+            'tooltip' => 'Mikor vásárolható meg ez a változat. A „Raktáron” csak addig ad el, amíg van elérhető darab; a „Raktáron vagy utánrendelhető” az utánrendelési keretet is értékesíti; a „Mindig” teljesen figyelmen kívül hagyja a készletet.',
             'options' => [
                 'always' => 'Mindig',
                 'in_stock' => 'Raktáron',

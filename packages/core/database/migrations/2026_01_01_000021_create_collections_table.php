@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'collections', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->foreignId('collection_group_id')->constrained($this->prefix.'collection_groups');
             $table->nestedSet();
             $table->string('type')->default('static')->index();

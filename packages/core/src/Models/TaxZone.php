@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\DB;
 use Lunar\Core\Database\Factories\TaxZoneFactory;
 use Lunar\Core\Models\Concerns\HasDefaultRecord;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property string $name
  * @property string $zone_type
  * @property bool $active
@@ -26,6 +28,7 @@ class TaxZone extends Base
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     protected static function booted(): void

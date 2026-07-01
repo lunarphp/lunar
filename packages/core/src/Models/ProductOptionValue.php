@@ -10,12 +10,14 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\ProductOptionValueFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $product_option_id
  * @property AsArrayObject $name
  * @property int $position
@@ -28,6 +30,7 @@ class ProductOptionValue extends Base implements SpatieHasMedia
     use HasFactory;
     use HasMacros;
     use HasMedia;
+    use HasPublicId;
     use HasTranslations;
     use InvalidatesRelatedCache;
 

@@ -59,13 +59,13 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Na zamówienie',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Zasady sprzedaży',
+            'tooltip' => 'Kiedy ten wariant można kupić. „Tylko gdy jest w magazynie” sprzedaje tylko, gdy są dostępne sztuki; „W magazynie lub na zamówienie” sprzedaje także limit zamówień oczekujących; „Zawsze” całkowicie ignoruje stan magazynowy.',
             'options' => [
                 'always' => 'Zawsze',
                 'in_stock' => 'Tylko gdy jest w magazynie',
-                'in_stock_or_on_backorder' => 'In Stock or On Backorder',
+                'in_stock_or_on_backorder' => 'W magazynie lub na zamówienie',
             ],
         ],
         'unit_quantity' => [

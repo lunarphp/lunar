@@ -9,11 +9,13 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\StockMovementFactory;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 
 /**
  * An immutable, append-only entry in a variant's `on_hand` ledger.
  *
  * @property int $id
+ * @property string $public_id
  * @property int $product_variant_id
  * @property int $location_id
  * @property int $quantity
@@ -29,6 +31,7 @@ class StockMovement extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
 
     /**
      * The ledger is append-only — entries are never updated.

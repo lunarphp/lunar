@@ -21,6 +21,7 @@ use Lunar\Core\Models\Concerns\HasChannels;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
 use Lunar\Core\Models\Concerns\InvalidatesCache;
@@ -32,6 +33,7 @@ use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $collection_group_id
  * @property-read  int $_lft
  * @property-read  int $_rgt
@@ -54,6 +56,7 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
         HasFactory,
         HasMacros,
         HasMedia,
+        HasPublicId,
         HasStates,
         HasTranslations,
         HasUrls,

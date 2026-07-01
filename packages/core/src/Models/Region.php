@@ -10,9 +10,11 @@ use Illuminate\Support\Str;
 use Lunar\Core\Database\Factories\RegionFactory;
 use Lunar\Core\Models\Concerns\HasDefaultRecord;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property string $name
  * @property string $handle
  * @property int $channel_id
@@ -29,6 +31,7 @@ class Region extends Base
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
 
     protected $guarded = [];
 

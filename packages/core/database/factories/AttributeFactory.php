@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Database\Factories;
 
+use Illuminate\Support\Str;
 use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeGroup;
@@ -15,6 +16,7 @@ class AttributeFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'attribute_group_id' => AttributeGroup::factory(),
             'position' => self::$position++,
             'name' => $this->faker->words(2, true),

@@ -14,6 +14,7 @@ use Lunar\Core\Enums\CacheInvalidationReason;
 use Lunar\Core\Events\Catalog\ProductOptionInvalidated;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\InvalidatesCache;
 use Lunar\Core\Models\Concerns\LogsActivity;
@@ -22,6 +23,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property AsArrayObject $name
  * @property ?AsArrayObject $label
  * @property int $position
@@ -36,6 +38,7 @@ class ProductOption extends Base implements SpatieHasMedia
     use HasFactory;
     use HasMacros;
     use HasMedia;
+    use HasPublicId;
     use HasTranslations;
     use InvalidatesCache;
     use LogsActivity;
