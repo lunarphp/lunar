@@ -76,17 +76,17 @@ class ProductVariantForm
             ->numeric();
     }
 
-    public static function getPurchasableComponent(): Select
+    public static function getSellingPolicyComponent(): Select
     {
-        return Select::make('purchasable')
+        return Select::make('selling_policy')
             ->options([
-                'always' => __('lunar-filament::productvariant.form.purchasable.options.always'),
-                'in_stock' => __('lunar-filament::productvariant.form.purchasable.options.in_stock'),
-                'in_stock_or_on_backorder' => __('lunar-filament::productvariant.form.purchasable.options.in_stock_or_on_backorder'),
+                'always' => __('lunar-filament::productvariant.form.selling_policy.options.always'),
+                'in_stock' => __('lunar-filament::productvariant.form.selling_policy.options.in_stock'),
+                'in_stock_or_on_backorder' => __('lunar-filament::productvariant.form.selling_policy.options.in_stock_or_on_backorder'),
             ])
-            ->label(__('lunar-filament::productvariant.form.purchasable.label'))
+            ->label(__('lunar-filament::productvariant.form.selling_policy.label'))
             ->hintIcon('heroicon-m-question-mark-circle')
-            ->hintIconTooltip(__('lunar-filament::productvariant.form.purchasable.tooltip'));
+            ->hintIconTooltip(__('lunar-filament::productvariant.form.selling_policy.tooltip'));
     }
 
     public static function getUnitQtyComponent(): TextInput

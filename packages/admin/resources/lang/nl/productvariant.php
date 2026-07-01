@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'In Nabestelling',
         ],
-        'purchasable' => [
-            'label' => 'Koopbaarheid',
+        'selling_policy' => [
+            'label' => 'Verkoopbeleid',
             'options' => [
                 'always' => 'Altijd',
                 'in_stock' => 'Op Voorraad',

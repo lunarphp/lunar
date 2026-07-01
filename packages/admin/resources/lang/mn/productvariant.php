@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'Захиалгаар',
         ],
-        'purchasable' => [
-            'label' => 'Худалдаж авах боломж',
+        'selling_policy' => [
+            'label' => 'Худалдааны бодлого',
             'options' => [
                 'always' => 'Үргэлж',
                 'in_stock' => 'Нөөцтэй үед',

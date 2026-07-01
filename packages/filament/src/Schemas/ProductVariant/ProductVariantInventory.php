@@ -78,9 +78,9 @@ class ProductVariantInventory
     {
         return Section::make()
             ->schema([
-                ProductVariantForm::getPurchasableComponent()->live(),
+                ProductVariantForm::getSellingPolicyComponent()->live(),
                 ProductVariantForm::getBackorderComponent()
-                    ->disabled(fn (Get $get): bool => $get('purchasable') !== 'in_stock_or_on_backorder'),
+                    ->disabled(fn (Get $get): bool => $get('selling_policy') !== 'in_stock_or_on_backorder'),
                 ProductVariantForm::getUnitQtyComponent(),
                 ProductVariantForm::getQuantityIncrementComponent(),
                 ProductVariantForm::getMinQuantityComponent(),

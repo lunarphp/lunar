@@ -59,13 +59,13 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'On Backorder',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'سیاست فروش',
+            'tooltip' => 'این تنوع چه زمانی قابل خرید است. «موجود در انبار» فقط تا زمانی که موجودی هست می‌فروشد؛ «موجود در انبار یا پیش‌خرید» سهمیه پیش‌خرید را نیز می‌فروشد؛ «همیشه» موجودی را کاملاً نادیده می‌گیرد.',
             'options' => [
-                'always' => 'Always',
-                'in_stock' => 'In Stock',
-                'in_stock_or_on_backorder' => 'In Stock or On Backorder',
+                'always' => 'همیشه',
+                'in_stock' => 'موجود در انبار',
+                'in_stock_or_on_backorder' => 'موجود در انبار یا پیش‌خرید',
             ],
         ],
         'unit_quantity' => [

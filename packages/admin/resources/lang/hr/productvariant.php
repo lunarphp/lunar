@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'Naručeno unaprijed',
         ],
-        'purchasable' => [
-            'label' => 'Mogućnost kupnje',
+        'selling_policy' => [
+            'label' => 'Pravila prodaje',
             'options' => [
                 'always' => 'Uvijek',
                 'in_stock' => 'Na zalihi',

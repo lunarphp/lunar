@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'Im Rückstand',
         ],
-        'purchasable' => [
-            'label' => 'Käuflichkeit',
+        'selling_policy' => [
+            'label' => 'Verkaufsrichtlinie',
             'options' => [
                 'always' => 'Immer',
                 'in_stock' => 'Auf Lager',

@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Im Rückstand',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Verkaufsrichtlinie',
+            'tooltip' => 'Wann diese Variante gekauft werden kann. „Auf Lager“ verkauft nur, solange Einheiten verfügbar sind; „Auf Lager oder im Rückstand“ verkauft zusätzlich das Rückstandskontingent; „Immer“ ignoriert den Lagerbestand vollständig.',
             'options' => [
                 'always' => 'Immer',
                 'in_stock' => 'Auf Lager',

@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'En commande',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Politique de vente',
+            'tooltip' => 'Quand cette variante peut être achetée. « En stock » ne vend que tant que des unités sont disponibles ; « En stock ou en commande » vend aussi le quota de commande en attente ; « Toujours » ignore complètement le stock.',
             'options' => [
                 'always' => 'Toujours',
                 'in_stock' => 'En stock',

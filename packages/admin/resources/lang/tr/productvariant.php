@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'Sipariş Üzerine',
         ],
-        'purchasable' => [
-            'label' => 'Satın Alınabilirlik',
+        'selling_policy' => [
+            'label' => 'Satış Politikası',
             'options' => [
                 'always' => 'Her Zaman',
                 'in_stock' => 'Stokta',

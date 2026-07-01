@@ -3,6 +3,7 @@
 namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
+use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
@@ -41,6 +42,7 @@ class ProductVariantFactory extends BaseFactory
             'mpn' => $this->faker->unique()->isbn13,
             'ean' => $this->faker->unique()->ean13,
             'shippable' => true,
+            'selling_policy' => SellingPolicy::Always,
         ];
     }
 }

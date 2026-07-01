@@ -21,7 +21,7 @@ return new class extends Migration
             $table->dimensions();
             $table->boolean('shippable')->default(true)->index();
             $table->integer('backorder')->default(0)->index();
-            $table->string('purchasable')->default('always')->index();
+            $table->string('selling_policy')->default('always')->index();
             // Cached stock rollup, summed from the variant's stock levels (and the
             // global committed/reserved counters). `stock_available` is the indexed
             // sellable figure: on_hand - committed - reserved - unavailable.

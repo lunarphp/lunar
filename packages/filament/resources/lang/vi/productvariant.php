@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Đặt trước',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Chính sách bán hàng',
+            'tooltip' => 'Khi nào có thể mua biến thể này. „Còn hàng” chỉ bán khi còn đơn vị; „Còn hàng hoặc đặt trước” bán thêm cả hạn mức đặt trước; „Luôn luôn” bỏ qua hoàn toàn tồn kho.',
             'options' => [
                 'always' => 'Luôn luôn',
                 'in_stock' => 'Còn hàng',

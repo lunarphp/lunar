@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'Sob encomenda',
         ],
-        'purchasable' => [
-            'label' => 'Disponibilidade de compra',
+        'selling_policy' => [
+            'label' => 'Política de venda',
             'options' => [
                 'always' => 'Sempre',
                 'in_stock' => 'Em estoque',

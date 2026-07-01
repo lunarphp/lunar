@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'La precomandă',
         ],
-        'purchasable' => [
-            'label' => 'Disponibilitate la achiziție',
+        'selling_policy' => [
+            'label' => 'Politică de vânzare',
             'options' => [
                 'always' => 'Întotdeauna',
                 'in_stock' => 'În stoc',

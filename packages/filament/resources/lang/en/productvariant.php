@@ -59,7 +59,7 @@ return [
             'label' => 'On Backorder',
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
         ],
-        'purchasable' => [
+        'selling_policy' => [
             'label' => 'Selling Policy',
             'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
             'options' => [

@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'По заявка',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Политика на продажба',
+            'tooltip' => 'Кога този вариант може да бъде закупен. „В наличност“ продава само докато има налични бройки; „В наличност или по заявка“ продава и в рамките на разрешеното количество по заявка; „Винаги“ напълно пренебрегва наличността.',
             'options' => [
                 'always' => 'Винаги',
                 'in_stock' => 'В наличност',
