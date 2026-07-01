@@ -13,11 +13,15 @@ jobs:
         package:
           - "admin"
           - "core"
+          - "demo-data"
+          - "filament"
+          - "meilisearch"
           - "opayo"
           - "paypal"
-          - "table-rate-shipping"
-          - "stripe"
           - "search"
+          - "stripe"
+          - "table-rate-shipping"
+          - "upgrade"
     steps:
       - uses: actions/checkout@v6
       - name: Monorepo Split of ${{ matrix.package }}
