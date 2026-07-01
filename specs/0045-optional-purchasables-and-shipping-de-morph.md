@@ -132,6 +132,6 @@ A handful of sites read `$orderLine->purchasable`; under the order-lines-only sc
 
 ## Implementation plan
 
-- [ ] Slice 1 — nullable morph + relaxed observer. `nullableMorphs` on `order_lines`; `OrderLineObserver::assertPurchasable()` early-returns on null `purchasable_type`. Additive permission — the app still creates the fake shipping morph at this point.
-- [ ] Slice 2 — de-morph shipping. `CreateShippingLine` stops setting the morph and keys its lookup on `type` + `identifier`; guard the admin `OrderItemsTable` product-link column for null purchasable; migrate tests (`CreateShippingLineTest`, `OrderLineTest`'s non-Eloquent-line case).
-- [ ] Slice 3 — upgrade package. Data migration nulling the shipping morph on existing `order_lines` (`type = 'shipping'`); guarded/idempotent, no `down()`.
+- [x] Slice 1 — nullable morph + relaxed observer. `nullableMorphs` on `order_lines`; `OrderLineObserver::assertPurchasable()` early-returns on null `purchasable_type`. Additive permission — the app still creates the fake shipping morph at this point.
+- [x] Slice 2 — de-morph shipping. `CreateShippingLine` stops setting the morph and keys its lookup on `type` + `identifier`; the admin `OrderItemsTable` product-link column already guards null purchasable (`$record->purchasable && …`); migrate tests (`CreateShippingLineTest`, `OrderLineTest`, `CleanUpOrderLinesTest`).
+- [x] Slice 3 — upgrade package. Data migration nulling the shipping morph on existing `order_lines` (`type = 'shipping'`); guarded/idempotent, no `down()`.

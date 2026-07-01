@@ -88,7 +88,8 @@ test('can run pipeline', function () {
 
     OrderLine::factory()->create([
         'identifier' => 'BASDEL',
-        'purchasable_type' => ShippingOption::class,
+        'purchasable_type' => null,
+        'purchasable_id' => null,
         'type' => 'shipping',
         'order_id' => $order->id,
     ]);
@@ -193,7 +194,8 @@ test('will remove lines with same purchasable ids when different', function () {
 
     OrderLine::factory()->create([
         'identifier' => 'BASDEL',
-        'purchasable_type' => ShippingOption::class,
+        'purchasable_type' => null,
+        'purchasable_id' => null,
         'type' => 'shipping',
         'order_id' => $order->id,
     ]);

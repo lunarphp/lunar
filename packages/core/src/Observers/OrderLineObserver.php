@@ -42,6 +42,11 @@ class OrderLineObserver
      */
     protected function assertPurchasable(OrderLine $orderLine): void
     {
+        // Self-describing line (shipping, ad-hoc charge) — no morph to validate.
+        if ($orderLine->purchasable_type === null) {
+            return;
+        }
+
         /** @var OrderLine $orderLine */
         $purchasableModel = class_exists($orderLine->purchasable_type) ?
             $orderLine->purchasable_type :
