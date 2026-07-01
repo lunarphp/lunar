@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'Публичен ID',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Етикетите са актуализирани',

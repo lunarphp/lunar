@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'ID público',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Etiquetas actualizadas',

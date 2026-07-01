@@ -98,10 +98,6 @@ class ProductTable
                     return $state;
                 })
                 ->toggleable(),
-            TextColumn::make('public_id')
-                ->label(__('lunar-filament::components.public_id.label'))
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->copyable(),
         ];
     }
 

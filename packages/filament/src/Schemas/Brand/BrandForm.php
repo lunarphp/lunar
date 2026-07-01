@@ -3,7 +3,6 @@
 namespace Lunar\Filament\Schemas\Brand;
 
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -34,16 +33,7 @@ class BrandForm
             static::getNameComponent(),
             static::getShortDescriptionComponent(),
             static::getDescriptionComponent(),
-            static::getPublicIdComponent(),
         ];
-    }
-
-    public static function getPublicIdComponent(): Component
-    {
-        return TextEntry::make('public_id')
-            ->label(__('lunar-filament::components.public_id.label'))
-            ->copyable()
-            ->visible(fn ($record): bool => (bool) $record);
     }
 
     public static function getNameComponent(): Component

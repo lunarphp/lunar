@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'ID công khai',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Đã cập nhật thẻ',

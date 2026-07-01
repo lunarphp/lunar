@@ -3,7 +3,6 @@
 namespace Lunar\Filament\Schemas\Product;
 
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
@@ -49,16 +48,7 @@ class ProductForm
             static::getBrandComponent(),
             static::getProductTypeComponent(),
             static::getTagsComponent(),
-            static::getPublicIdComponent(),
         ];
-    }
-
-    public static function getPublicIdComponent(): Component
-    {
-        return TextEntry::make('public_id')
-            ->label(__('lunar-filament::components.public_id.label'))
-            ->copyable()
-            ->visible(fn ($record): bool => (bool) $record);
     }
 
     public static function getStatusShouts(): array

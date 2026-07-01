@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'Openbare ID',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Tags bijgewerkt',

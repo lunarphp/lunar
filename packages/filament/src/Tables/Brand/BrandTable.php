@@ -51,10 +51,6 @@ class BrandTable
                     fn ($state) => number_format($state, 0)
                 )
                 ->label(__('lunar-filament::brand.table.products_count.label')),
-            TextColumn::make('public_id')
-                ->label(__('lunar-filament::components.public_id.label'))
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->copyable(),
         ];
     }
 }

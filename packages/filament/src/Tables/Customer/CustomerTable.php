@@ -82,10 +82,6 @@ class CustomerTable
                         ->map(fn ($customerGroup) => $customerGroup->name)
                         ->implode(', ');
                 }),
-            TextColumn::make('public_id')
-                ->label(__('lunar-filament::components.public_id.label'))
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->copyable(),
         ];
     }
 }

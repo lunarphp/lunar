@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'Javni ID',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Oznake ažurirane',

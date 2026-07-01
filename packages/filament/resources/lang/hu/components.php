@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'Nyilvános azonosító',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Címkék frissítve',

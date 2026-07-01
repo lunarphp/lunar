@@ -42,21 +42,6 @@ trait DisplaysOrderSummary
         return self::callStaticLunarHook('extendOrderSummaryStatusEntry', static::getDefaultOrderSummaryStatusEntry());
     }
 
-    public static function getDefaultOrderSummaryPublicIdEntry(): TextEntry
-    {
-        return TextEntry::make('public_id')
-            ->label(__('lunarpanel::components.public_id.label'))
-            ->alignEnd()
-            ->icon('heroicon-o-clipboard')
-            ->iconPosition(IconPosition::After)
-            ->copyable();
-    }
-
-    public static function getOrderSummaryPublicIdEntry(): Entry
-    {
-        return self::callStaticLunarHook('extendOrderSummaryPublicIdEntry', static::getDefaultOrderSummaryPublicIdEntry());
-    }
-
     public static function getDefaultOrderReferenceEntry(): TextEntry
     {
         return TextEntry::make('reference')
@@ -133,7 +118,6 @@ trait DisplaysOrderSummary
             static::getOrderSummaryNewCustomerEntry(),
             static::getOrderSummaryStatusEntry(),
             static::getOrderSummaryReferenceEntry(),
-            static::getOrderSummaryPublicIdEntry(),
             static::getOrderSummaryCustomerReferenceEntry(),
             static::getOrderSummaryChannelEntry(),
             static::getOrderSummaryCreatedAtEntry(),

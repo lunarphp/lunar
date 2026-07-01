@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'Public ID',
-    ],
-
     'tags' => [
         'notification' => [
 

@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'Öffentliche ID',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Tags aktualisiert',

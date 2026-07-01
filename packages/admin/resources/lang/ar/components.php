@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'المعرّف العام',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'تم تحديث الوسوم',

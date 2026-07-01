@@ -6,7 +6,6 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Group;
@@ -76,16 +75,7 @@ class DiscountForm
                 static::getDiscountTypeComponent(),
             ])->columns(2),
             static::getStopComponent(),
-            static::getPublicIdComponent(),
         ];
-    }
-
-    public static function getPublicIdComponent(): Component
-    {
-        return TextEntry::make('public_id')
-            ->label(__('lunar-filament::components.public_id.label'))
-            ->copyable()
-            ->visible(fn ($record): bool => (bool) $record);
     }
 
     public static function getConditionsComponents(): array

@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'Genel Kimlik',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Etiketler güncellendi',

@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'public_id' => [
-        'label' => 'Нийтийн ID',
-    ],
-
     'tags' => [
         'notification' => [
             'updated' => 'Тагнууд шинэчлэгдсэн',
