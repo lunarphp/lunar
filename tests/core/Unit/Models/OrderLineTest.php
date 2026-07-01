@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Exceptions\NonPurchasableItemException;
@@ -182,6 +183,52 @@ test('self-describing lines can be added to an order without a purchasable', fun
     );
 
     expect($orderLine->purchasable)->toBeNull();
+});
+
+test('eager loading purchasable resolves real lines and leaves null-morph lines null without extra queries', function () {
+    $order = Order::factory()->create();
+
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $variant = ProductVariant::factory()->create();
+
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'physical',
+        'purchasable_type' => $variant->getMorphClass(),
+        'purchasable_id' => $variant->id,
+    ]);
+
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'shipping',
+        'purchasable_type' => null,
+        'purchasable_id' => null,
+        'description' => 'Basic Delivery',
+        'identifier' => 'BASDEL',
+    ]);
+
+    $order = Order::with('lines.purchasable')->findOrFail($order->id);
+
+    [$productLine, $shippingLine] = [
+        $order->lines->firstWhere('type', 'physical'),
+        $order->lines->firstWhere('type', 'shipping'),
+    ];
+
+    // The v1 morph stored a non-Eloquent ShippingOption type, so this eager
+    // load blew up trying to instantiate it. Both relations must resolve here.
+    expect($productLine->relationLoaded('purchasable'))->toBeTrue();
+    expect($shippingLine->relationLoaded('purchasable'))->toBeTrue();
+
+    DB::enableQueryLog();
+
+    expect($productLine->purchasable)->toBeInstanceOf(ProductVariant::class);
+    expect($productLine->purchasable->id)->toEqual($variant->id);
+    expect($shippingLine->purchasable)->toBeNull();
+
+    expect(DB::getQueryLog())->toBeEmpty();
 });
 
 test('withoutFulfilment scope returns only lines not allocated to a fulfilment', function () {
