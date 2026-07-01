@@ -44,8 +44,11 @@ When asked to start a new piece of work that isn't already specced, write the sp
 
 ## Tests
 
-- `php artisan test --compact` from the host app (preferred — exercises the real Laravel boot), or `vendor/bin/pest` from inside this package against Orchestra Testbench.
-- Filter by suite: `vendor/bin/pest --testsuite=core`.
+- **Run one suite at a time, exactly as CI does.** Each suite is a separate job in `.github/workflows/tests.yml`; run them the same way locally rather than in a single combined pass. Do **not** run `vendor/bin/pest` with no `--testsuite`.
+- From inside this package: `vendor/bin/pest --testsuite <name> --parallel` (matches CI). Suites (the CI matrix): `core`, `admin`, `filament`, `shipping`, `stripe`, `search`, `upgrade`. (A `demo-data` suite also exists in `phpunit.xml` but is not in the CI matrix.)
+- Full local sweep — loop the suites: `for s in core admin filament shipping stripe search upgrade; do vendor/bin/pest --testsuite "$s" --parallel || break; done`.
+- Cross-database tests run as a group, not a suite: `vendor/bin/pest --group=cross-db --parallel --do-not-fail-on-empty-test-suite`.
+- `php artisan test` from the host app runs only the host app's own tests, not these package suites — it is not a substitute for running the suites above.
 - Use factories; do not invent ad-hoc test data when a factory state already covers it.
 
 ## Static analysis (REQUIRED)
