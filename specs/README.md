@@ -20,6 +20,7 @@ Each spec carries a `Status:` line in its frontmatter / header:
 - `accepted` — agreed, implementation can start
 - `implemented` — work has shipped
 - `superseded` — replaced by a later spec (link to it)
+- `declined` — no longer being considered
 
 ## Index
 
@@ -71,5 +72,5 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0044 | Storefront cache tagging and dependency resolution | implemented |
 | 0045 | Optional order-line purchasables and de-morphing shipping options | proposed    |
 | 0046 | `public_id` for externally-addressable models | proposed    |
-| 0047 | Promotions: a campaign layer over discounts | proposed    |
+| 0047 | Promotions: a campaign layer over discounts | declined    |
 | 0048 | Rename `product_variants.purchasable` to `selling_policy` | proposed    |
