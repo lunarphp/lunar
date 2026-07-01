@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\CollectionGroupFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property string $name
  * @property string $handle
  * @property ?Carbon $created_at
@@ -20,6 +22,7 @@ class CollectionGroup extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     protected $guarded = [];

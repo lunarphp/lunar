@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'attribute_groups', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->string('name');
             $table->string('handle')->unique();
             $table->integer('position')->default(1)->index();

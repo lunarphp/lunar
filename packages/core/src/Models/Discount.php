@@ -13,11 +13,13 @@ use Lunar\Core\Database\Factories\DiscountFactory;
 use Lunar\Core\DiscountTypes\AbstractDiscountType;
 use Lunar\Core\Models\Concerns\HasChannels;
 use Lunar\Core\Models\Concerns\HasCustomerGroups;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property string $name
  * @property string $handle
  * @property ?string $coupon
@@ -36,6 +38,7 @@ class Discount extends Base
     use HasChannels,
         HasCustomerGroups,
         HasFactory,
+        HasPublicId,
         HasTranslations,
         LogsActivity;
 

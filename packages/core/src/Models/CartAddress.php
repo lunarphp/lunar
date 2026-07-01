@@ -12,11 +12,13 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Concerns\CachesProperties;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $cart_id
  * @property ?int $country_id
  * @property ?string $title
@@ -44,6 +46,7 @@ class CartAddress extends Base implements Addressable
     use CachesProperties;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     /**

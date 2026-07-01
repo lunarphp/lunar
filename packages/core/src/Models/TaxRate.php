@@ -9,10 +9,12 @@ use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\TaxRateFactory;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?int $tax_zone_id
  * @property bool $priority
  * @property string $name
@@ -23,6 +25,7 @@ class TaxRate extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     /**

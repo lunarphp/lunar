@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'assets', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->timestamps();
         });
     }

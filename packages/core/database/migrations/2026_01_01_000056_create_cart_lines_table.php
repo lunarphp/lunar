@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'cart_lines', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->foreignId('cart_id')->constrained($this->prefix.'carts');
             $table->morphs('purchasable');
             $table->unsignedInteger('quantity');

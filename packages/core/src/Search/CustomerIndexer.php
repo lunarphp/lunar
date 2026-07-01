@@ -42,6 +42,7 @@ class CustomerIndexer extends ScoutIndexer
 
         $data = array_merge([
             'id' => (string) $model->id,
+            'public_id' => (string) $model->public_id,
             'name' => $model->fullName,
             'company_name' => $model->company_name,
             'tax_identifier' => $model->tax_identifier,

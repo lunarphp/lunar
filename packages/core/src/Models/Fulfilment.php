@@ -27,12 +27,14 @@ use Lunar\Core\Drivers\FulfilmentMethods\Shipping;
 use Lunar\Core\Facades\FulfilmentMethods;
 use Lunar\Core\Facades\HoldReasons;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\States\Fulfilment\FulfilmentState;
 use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $order_id
  * @property int $location_id
  * @property ?string $reference
@@ -51,6 +53,7 @@ class Fulfilment extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use HasStates;
     use LogsActivity;
 

@@ -16,6 +16,7 @@ use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasDimensions;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPrices;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasStock;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
@@ -25,6 +26,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $product_id
  * @property int $tax_class_id
  * @property ?Collection $attribute_data
@@ -65,6 +67,7 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
     use HasFactory;
     use HasMacros;
     use HasPrices;
+    use HasPublicId;
     use HasStock;
     use HasTranslations;
     use InvalidatesRelatedCache;

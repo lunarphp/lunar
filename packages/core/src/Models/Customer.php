@@ -12,12 +12,14 @@ use Lunar\Core\Database\Factories\CustomerFactory;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPersonalDetails;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?string $title
  * @property string $first_name
  * @property string $last_name
@@ -35,6 +37,7 @@ class Customer extends Base
     use HasFactory;
     use HasMacros;
     use HasPersonalDetails;
+    use HasPublicId;
     use HasTranslations;
     use LogsActivity;
     use Searchable;

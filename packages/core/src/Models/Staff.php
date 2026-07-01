@@ -2,7 +2,7 @@
 
 namespace Lunar\Core\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,11 +10,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\StaffFactory;
+use Lunar\Core\Models\Builders\Builder;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property bool $admin
  * @property string $first_name
  * @property string $last_name
@@ -32,6 +35,7 @@ use Spatie\Permission\Traits\HasRoles;
 class Staff extends Authenticatable
 {
     use HasFactory;
+    use HasPublicId;
     use HasRoles;
     use LogsActivity;
     use Notifiable;
@@ -76,6 +80,17 @@ class Staff extends Authenticatable
     protected static function newFactory(): StaffFactory
     {
         return StaffFactory::new();
+    }
+
+    /**
+     * Staff is not a Base subclass, so give it Lunar's builder explicitly —
+     * the HasPublicId `wherePublicId()` scope type-hints it.
+     *
+     * @return Builder<static>
+     */
+    public function newEloquentBuilder($query): EloquentBuilder
+    {
+        return new Builder($query);
     }
 
     protected function firstname(): Attribute
