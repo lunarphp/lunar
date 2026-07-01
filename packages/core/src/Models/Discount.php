@@ -4,6 +4,7 @@ namespace Lunar\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
@@ -20,6 +21,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
 /**
  * @property int $id
  * @property string $public_id
+ * @property ?int $promotion_id
  * @property string $name
  * @property string $handle
  * @property ?string $coupon
@@ -97,6 +99,11 @@ class Discount extends Base
             config('auth.providers.users.model'),
             "{$prefix}discount_user"
         )->withTimestamps();
+    }
+
+    public function promotion(): BelongsTo
+    {
+        return $this->belongsTo(Promotion::class);
     }
 
     public function discountables(): HasMany

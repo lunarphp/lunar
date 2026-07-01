@@ -4,6 +4,10 @@ return [
     'plural_label' => 'İndirimler',
     'label' => 'İndirim',
     'form' => [
+        'promotion' => [
+            'label' => 'Promosyon',
+            'helper_text' => 'Bu indirimi bir kampanya altında gruplayın veya bağımsız bir indirim için boş bırakın.',
+        ],
         'conditions' => [
             'heading' => 'Koşullar',
         ],

@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Discounts',
     'label' => 'Discount',
     'form' => [
+        'promotion' => [
+            'label' => 'کمپین',
+            'helper_text' => 'این تخفیف را در یک کمپین گروه‌بندی کنید یا برای یک تخفیف مستقل خالی بگذارید.',
+        ],
         'conditions' => [
             'heading' => 'Conditions',
         ],

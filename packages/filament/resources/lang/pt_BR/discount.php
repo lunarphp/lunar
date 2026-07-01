@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Descontos',
     'label' => 'Desconto',
     'form' => [
+        'promotion' => [
+            'label' => 'Promoção',
+            'helper_text' => 'Agrupe este desconto em uma campanha ou deixe em branco para um desconto independente.',
+        ],
         'conditions' => [
             'heading' => 'Condições',
         ],

@@ -135,6 +135,10 @@ class DiscountManager implements DiscountManagerContract
             ->usable()
             ->channel($this->channels)
             ->customerGroup($this->customerGroups)
+            ->where(fn ($query) => $query
+                ->whereNull('promotion_id')
+                ->orWhereHas('promotion', fn ($promotion) => $promotion->active())
+            )
             ->with([
                 'discountables',
             ])

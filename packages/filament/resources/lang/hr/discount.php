@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Popusti',
     'label' => 'Popust',
     'form' => [
+        'promotion' => [
+            'label' => 'Promocija',
+            'helper_text' => 'Grupirajte ovaj popust u kampanju ili ostavite prazno za samostalni popust.',
+        ],
         'conditions' => [
             'heading' => 'Uvjeti',
         ],

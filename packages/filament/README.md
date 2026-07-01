@@ -35,7 +35,7 @@ php artisan migrate
 | Generic form components | `Lunar\Filament\Forms\Components\*` | `Attributes`, `TranslatedText`, `MediaSelect`, `Tags`, `Vimeo`, `YouTube` |
 | Table columns | `Lunar\Filament\Tables\Columns\*` | `TranslatedTextColumn`, `ThumbnailImageColumn` |
 | Infolist entries | `Lunar\Filament\Infolists\Components\*` | `Timeline`, `Tags`, `Transaction` |
-| Resource schemas | `Lunar\Filament\Schemas\{Model}\{Model}Form` | `ProductForm`, `OrderForm`, `BrandForm`, `LocationForm`, `RegionForm`, … (22 models) |
+| Resource schemas | `Lunar\Filament\Schemas\{Model}\{Model}Form` | `ProductForm`, `OrderForm`, `BrandForm`, `LocationForm`, `RegionForm`, `PromotionForm`, … (23 models) |
 | Resource tables | `Lunar\Filament\Tables\{Model}\{Model}Table` | `ProductTable`, `OrderTable`, … |
 | Relation managers | `Lunar\Filament\RelationManagers\{Model}\*` | Customer addresses, Discount conditions, ProductOption values, … |
 | Actions | `Lunar\Filament\Actions\{Subject}\*Action` | `RefundOrderAction`, `CaptureOrderAction`, `DuplicateProductAction`, `PublishProductsBulkAction` |

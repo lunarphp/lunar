@@ -37,6 +37,8 @@ class MapDiscountBreakdown
         $discountBreakdown = ($cart->discountBreakdown ?? collect())->map(function ($discount) use ($cartLinesMappedToOrderLines) {
             return (object) [
                 'discount_id' => $discount->discount->id,
+                'promotion_id' => $discount->discount->promotion_id,
+                'promotion_handle' => $discount->discount->promotion?->handle,
                 'lines' => $discount->lines->map(function ($discountLine) use ($cartLinesMappedToOrderLines) {
                     return (object) [
                         'quantity' => $discountLine->quantity,

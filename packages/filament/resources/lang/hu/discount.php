@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Kedvezmények',
     'label' => 'Kedvezmény',
     'form' => [
+        'promotion' => [
+            'label' => 'Promóció',
+            'helper_text' => 'Csoportosítsa ezt a kedvezményt egy kampányba, vagy hagyja üresen önálló kedvezményhez.',
+        ],
         'conditions' => [
             'heading' => 'Feltételek',
         ],

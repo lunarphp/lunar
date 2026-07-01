@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Kortingen',
     'label' => 'Korting',
     'form' => [
+        'promotion' => [
+            'label' => 'Promotie',
+            'helper_text' => 'Groepeer deze korting onder een campagne, of laat leeg voor een losse korting.',
+        ],
         'conditions' => [
             'heading' => 'Voorwaarden',
         ],

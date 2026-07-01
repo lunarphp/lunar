@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Reduceri',
     'label' => 'Reducere',
     'form' => [
+        'promotion' => [
+            'label' => 'Promoție',
+            'helper_text' => 'Grupează această reducere într-o campanie sau lasă gol pentru o reducere independentă.',
+        ],
         'conditions' => [
             'heading' => 'Condiții',
         ],

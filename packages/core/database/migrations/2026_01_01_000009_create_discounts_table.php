@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create($this->prefix.'discounts', function (Blueprint $table) {
             $table->id();
             $table->ulid('public_id')->unique();
+            $table->foreignId('promotion_id')->nullable()->index();
             $table->string('name');
             $table->string('handle')->unique();
             $table->string('coupon')->nullable()->unique();

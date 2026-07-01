@@ -50,6 +50,7 @@ use Lunar\Admin\Filament\Resources\ProductOptionResource;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductTypeResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
+use Lunar\Admin\Filament\Resources\PromotionResource;
 use Lunar\Admin\Filament\Resources\RegionResource;
 use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\Filament\Resources\TagResource;
@@ -98,6 +99,7 @@ class LunarPanelManager
         ProductResource::class,
         ProductTypeResource::class,
         ProductVariantResource::class,
+        PromotionResource::class,
         RegionResource::class,
         StaffResource::class,
         TagResource::class,

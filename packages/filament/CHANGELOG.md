@@ -4,6 +4,7 @@ All notable changes to `lunarphp/filament` will be documented in this file.
 
 ## Unreleased
 
+- Added `Schemas\Promotion\PromotionForm`, `Tables\Promotion\PromotionTable` and `RelationManagers\Promotion\DiscountsRelationManager` for the new `Promotion` campaign model, plus a `promotion` lang file across all 16 locales. `Schemas\Discount\DiscountForm` gains `getPromotionComponent()` (a promotion select) and a `discount.form.promotion` lang key — see [spec 0047](../../specs/0047-split-promotions-from-discounts.md).
 - Surfaced the new `public_id` external identifier on the Brand, Product, ProductVariant, Collection, Customer, Discount and Order resources: a read-only copyable entry (`getPublicIdComponent()` on each form / `getOrderSummaryPublicIdEntry()` on the order summary) plus a toggleable, copyable `public_id` table column. Adds the shared `components.public_id.label` lang key across all 16 locales — see [spec 0046](../../specs/0046-public-id-external-addressing.md).
 - Added `Schemas\Region\RegionForm` and `Tables\Region\RegionTable` for the new `Region` model, plus a `region` lang file across all 16 locales — see [spec 0039](../../specs/0039-region.md).
 - Removed `Schemas\TaxZone\TaxZoneForm::getPriceDisplayComponent()` and the `taxzone.form.price_display` lang keys. The per-zone price-display preference is superseded by the region's display preference, and the underlying `tax_zones.price_display` column is dropped in core — see [spec 0039](../../specs/0039-region.md).

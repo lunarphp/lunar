@@ -4,6 +4,10 @@ return [
     'plural_label' => 'الخصومات',
     'label' => 'خصم',
     'form' => [
+        'promotion' => [
+            'label' => 'حملة ترويجية',
+            'helper_text' => 'اربط هذا الخصم بحملة، أو اتركه فارغًا ليكون خصمًا مستقلاً.',
+        ],
         'conditions' => [
             'heading' => 'الشروط',
         ],

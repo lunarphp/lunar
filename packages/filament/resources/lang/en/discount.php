@@ -6,6 +6,10 @@ return [
     'plural_label' => 'Discounts',
     'label' => 'Discount',
     'form' => [
+        'promotion' => [
+            'label' => 'Promotion',
+            'helper_text' => 'Group this discount under a campaign, or leave blank for a standalone discount.',
+        ],
         'conditions' => [
             'heading' => 'Conditions',
         ],

@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Rabaty',
     'label' => 'Rabat',
     'form' => [
+        'promotion' => [
+            'label' => 'Promocja',
+            'helper_text' => 'Zgrupuj ten rabat w kampanii lub pozostaw puste dla samodzielnego rabatu.',
+        ],
         'conditions' => [
             'heading' => 'Warunki',
         ],

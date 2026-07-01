@@ -19,6 +19,7 @@ use Lunar\Core\DiscountTypes\AmountOff;
 use Lunar\Core\DiscountTypes\BuyXGetY;
 use Lunar\Core\Facades\Discounts;
 use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\Promotion;
 use Lunar\Filament\Contracts\DiscountFormType;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
@@ -75,9 +76,21 @@ class DiscountForm
                 static::getPriorityComponent(),
                 static::getDiscountTypeComponent(),
             ])->columns(2),
+            static::getPromotionComponent(),
             static::getStopComponent(),
             static::getPublicIdComponent(),
         ];
+    }
+
+    public static function getPromotionComponent(): Component
+    {
+        return Select::make('promotion_id')
+            ->label(__('lunar-filament::discount.form.promotion.label'))
+            ->helperText(__('lunar-filament::discount.form.promotion.helper_text'))
+            ->relationship('promotion')
+            ->getOptionLabelFromRecordUsing(fn (Promotion $record): ?string => $record->translate('name'))
+            ->searchable()
+            ->preload();
     }
 
     public static function getPublicIdComponent(): Component

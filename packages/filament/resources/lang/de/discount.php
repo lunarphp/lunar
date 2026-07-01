@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Rabatte',
     'label' => 'Rabatt',
     'form' => [
+        'promotion' => [
+            'label' => 'Aktion',
+            'helper_text' => 'Ordnen Sie diesen Rabatt einer Aktion zu oder lassen Sie das Feld leer für einen eigenständigen Rabatt.',
+        ],
         'conditions' => [
             'heading' => 'Bedingungen',
         ],

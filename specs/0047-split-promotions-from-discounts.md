@@ -138,7 +138,7 @@ This gives campaign-level reporting and storefront display ("this order benefite
 
 ## Implementation plan
 
-- [ ] Slice 1 — model + relationship. `promotions` table (translatable `name`/`description`, `handle`, window, `public_id`); `Promotion` model + `Contracts\Promotion` (`discounts()` hasMany, `active()` window scope, `HasTranslations`/`HasPublicId`/`LogsActivity`); nullable `discounts.promotion_id` + `Discount::promotion()`.
-- [ ] Slice 2 — application gating + surfacing. Promotion-window clause in `DiscountManager::getDiscounts`; populate `Cart->promotions` from applied discounts (repurposing the stub VO); record `promotion_id`/`handle` in the `order.discount_breakdown` snapshot.
-- [ ] Slice 3 — Filament. `PromotionResource` (CRUD + discounts relation manager); promotion select on the discount form; translations across 16 locales.
-- [ ] Slice 4 — upgrade package. Additive migration creating `promotions` and adding nullable `promotion_id`; no backfill, no Rector, no `down()`.
+- [x] Slice 1 — model + relationship. `promotions` table (translatable `name`/`description`, `handle`, window, `public_id`); `Promotion` model + `Contracts\Promotion` (`discounts()` hasMany, `active()` window scope, `HasTranslations`/`HasPublicId`/`LogsActivity`); nullable `discounts.promotion_id` + `Discount::promotion()`.
+- [x] Slice 2 — application gating + surfacing. Promotion-window clause in `DiscountManager::getDiscounts`; populate `Cart->promotions` from applied discounts (repurposing the stub VO); record `promotion_id`/`handle` in the `order.discount_breakdown` snapshot (cast + `MapDiscountBreakdown`).
+- [x] Slice 3 — Filament. `PromotionResource` (CRUD + discounts relation manager via `AssociateAction`/`DissociateAction`); promotion select on the discount form; `promotion` lang file + `discount.form.promotion` key across 16 locales in both packages.
+- [x] Slice 4 — upgrade package. Additive migration creating `promotions` and adding nullable `promotion_id`; no backfill, no Rector, no `down()`.

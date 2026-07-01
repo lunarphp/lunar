@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Réductions',
     'label' => 'Réduction',
     'form' => [
+        'promotion' => [
+            'label' => 'Promotion',
+            'helper_text' => 'Regroupez cette réduction dans une campagne, ou laissez vide pour une réduction indépendante.',
+        ],
         'conditions' => [
             'heading' => 'Conditions',
         ],

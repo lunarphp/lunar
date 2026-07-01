@@ -4,6 +4,10 @@ return [
     'plural_label' => 'Mã giảm giá',
     'label' => 'Mã giảm giá',
     'form' => [
+        'promotion' => [
+            'label' => 'Chương trình khuyến mãi',
+            'helper_text' => 'Nhóm mã giảm giá này vào một chương trình, hoặc để trống cho mã giảm giá độc lập.',
+        ],
         'conditions' => [
             'heading' => 'Điều kiện',
         ],

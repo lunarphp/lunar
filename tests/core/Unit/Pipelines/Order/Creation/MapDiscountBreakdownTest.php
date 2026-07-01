@@ -10,6 +10,7 @@ use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\Promotion;
 use Lunar\Core\Pipelines\Order\Creation\CreateOrderLines;
 use Lunar\Core\Pipelines\Order\Creation\MapDiscountBreakdown;
 use Lunar\Tests\Core\TestCase;
@@ -124,4 +125,61 @@ test('can map discount with same purchasable with different meta', function () {
 
     expect($appliedDiscountLines)->toHaveCount($orderLines->count());
     expect($appliedDiscountLines->toArray())->toEqual($orderLines->toArray());
+});
+
+test('it records the originating promotion on the breakdown snapshot', function () {
+    $customerGroup = CustomerGroup::getDefault();
+    $channel = Channel::getDefault();
+    $currency = Currency::getDefault();
+
+    $purchasable = ProductVariant::factory()->create();
+
+    Price::factory()->create([
+        'price' => 100,
+        'min_quantity' => 1,
+        'currency_id' => $currency->id,
+        'priceable_type' => $purchasable->getMorphClass(),
+        'priceable_id' => $purchasable->id,
+    ]);
+
+    $promotion = Promotion::factory()->create(['handle' => 'world-cup-2026']);
+
+    $discount = Discount::factory()->create([
+        'type' => AmountOff::class,
+        'name' => 'Test Coupon',
+        'coupon' => '10OFF',
+        'promotion_id' => $promotion->id,
+        'data' => ['fixed_value' => false, 'percentage' => 10],
+    ]);
+
+    $discount->customerGroups()->sync([
+        $customerGroup->id => ['enabled' => true, 'starts_at' => now()],
+    ]);
+    $discount->channels()->sync([
+        $channel->id => ['enabled' => true, 'starts_at' => now()->subHour()],
+    ]);
+
+    $cart = Cart::factory()->create([
+        'channel_id' => $channel->id,
+        'currency_id' => $currency->id,
+        'coupon_code' => '10OFF',
+    ]);
+
+    $cart->lines()->create([
+        'purchasable_type' => $purchasable->getMorphClass(),
+        'purchasable_id' => $purchasable->id,
+        'quantity' => 1,
+    ]);
+
+    $order = Order::factory()->create(['cart_id' => $cart->id]);
+
+    $cart->calculate();
+
+    app(CreateOrderLines::class)->handle($order, fn ($order) => $order);
+    app(MapDiscountBreakdown::class)->handle($order, fn ($order) => $order);
+
+    $appliedDiscount = $order->refresh()->discount_breakdown->first();
+
+    expect($appliedDiscount->promotion_id)->toEqual($promotion->id);
+    expect($appliedDiscount->promotion_handle)->toBe('world-cup-2026');
 });
