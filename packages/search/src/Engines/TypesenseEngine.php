@@ -14,6 +14,7 @@ use Lunar\Search\Data\SearchHit;
 use Lunar\Search\Data\SearchHitHighlight;
 use Lunar\Search\Data\SearchResults;
 use Typesense\Documents;
+use Typesense\Exceptions\ObjectNotFound;
 use Typesense\Exceptions\ServiceUnavailable;
 
 class TypesenseEngine extends AbstractEngine
@@ -36,15 +37,29 @@ class TypesenseEngine extends AbstractEngine
 
                 $completeResults = $response['results'][0];
 
+                // A multi-search request resolves with HTTP 200 even when the
+                // collection is missing; the failure surfaces as a per-search
+                // error code in the body (e.g. 404 "Not found."). Treat any
+                // non-200 result as an empty result set rather than letting the
+                // missing 'hits'/'facet_counts' keys blow up downstream.
+                if (($completeResults['code'] ?? 200) !== 200) {
+                    Log::error('Typesense search failed: '.($completeResults['error'] ?? 'Unknown error'));
+
+                    return [
+                        'hits' => [],
+                        'facet_counts' => [],
+                    ];
+                }
+
                 unset($response['results'][0]);
                 $otherResults = $response['results'];
 
-                $facets = collect($completeResults['facet_counts'])->mapWithKeys(
+                $facets = collect($completeResults['facet_counts'] ?? [])->mapWithKeys(
                     fn ($facets) => [$facets['field_name'] => $facets]
                 );
 
                 foreach ($otherResults as $result) {
-                    foreach ($result['facet_counts'] as $facet) {
+                    foreach ($result['facet_counts'] ?? [] as $facet) {
                         $facets->put($facet['field_name'], $facet);
                     }
                 }
@@ -55,7 +70,7 @@ class TypesenseEngine extends AbstractEngine
                 ];
             });
 
-        } catch (ConnectException|ServiceUnavailable  $e) {
+        } catch (ConnectException|ServiceUnavailable|ObjectNotFound $e) {
             Log::error($e->getMessage());
             $paginator = new LengthAwarePaginator(
                 items: [
@@ -81,7 +96,10 @@ class TypesenseEngine extends AbstractEngine
             'document' => $hit['document'],
         ]));
 
-        $facets = collect($results['facet_counts'] ?? [])->map(
+        // The raw facet_counts are keyed by field name (the multi-search merge
+        // above needs that for dedupe); reset to a list so `facets` serialises
+        // as a JSON array, matching MeilisearchEngine::mapFacets().
+        $facets = collect($results['facet_counts'] ?? [])->values()->map(
             fn ($facet) => SearchFacet::from([
                 'label' => $this->getFacetConfig($facet['field_name'])['label'] ?? '',
                 'field' => $facet['field_name'],
@@ -114,12 +132,16 @@ class TypesenseEngine extends AbstractEngine
 
         $newPaginator = clone $paginator;
 
+        [$sortField, $sortDirection] = $this->getSortParts();
+
         return SearchResults::from([
             'query' => $this->query,
-            'total_pages' => $paginator->lastPage(),
+            'totalPages' => $paginator->lastPage(),
             'page' => $paginator->currentPage(),
             'count' => $paginator->total(),
-            'per_page' => $paginator->perPage(),
+            'perPage' => $paginator->perPage(),
+            'sortField' => $sortField,
+            'sortDirection' => $sortDirection,
             'hits' => $documents,
             'facets' => $facets,
             'links' => $newPaginator->setCollection(
@@ -140,7 +162,9 @@ class TypesenseEngine extends AbstractEngine
 
         foreach ($searchQueries as $searchQuery) {
 
-            $filters = collect($options['filter_by']);
+            // Scout passes filter_by through even when empty; a blank entry
+            // joined with real filters produces "unbalanced `&&` operands".
+            $filters = collect($options['filter_by'])->filter(fn ($filter) => filled($filter));
 
             foreach ($this->filters as $key => $value) {
                 $filters->push($key.':'.collect($value)->join(','));
@@ -197,7 +221,10 @@ class TypesenseEngine extends AbstractEngine
                 'facet_by' => implode(',', $searchQuery->facets),
             ];
 
-            if ($this->query) {
+            // Hybrid semantic search only works when the collection schema
+            // actually declares an auto-embed `embedding` field; requesting a
+            // vector query without one 404s the whole multi-search.
+            if ($this->query && $this->schemaHasEmbeddingField()) {
                 $params['vector_query'] = 'embedding:([], k: 200)';
             }
 
@@ -219,6 +246,12 @@ class TypesenseEngine extends AbstractEngine
         return $typesense->getCollections()[$index]->documents->delete([
             'filter_by' => 'id: ['.$ids->join(',').']',
         ]);
+    }
+
+    protected function schemaHasEmbeddingField(): bool
+    {
+        return collect($this->getFieldConfig())
+            ->contains(fn (array $field): bool => ($field['name'] ?? null) === 'embedding');
     }
 
     protected function getFieldConfig(): array

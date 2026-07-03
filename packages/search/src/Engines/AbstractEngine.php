@@ -165,6 +165,24 @@ abstract class AbstractEngine
         return collect($queries);
     }
 
+    /**
+     * The requested sort split into [field, direction] for the results payload,
+     * or [null, null] when no sort was requested. An invalid or missing
+     * direction falls back to `asc`.
+     *
+     * @return array{0: string|null, 1: string|null}
+     */
+    protected function getSortParts(): array
+    {
+        if (! $this->sort) {
+            return [null, null];
+        }
+
+        [$field, $direction] = array_pad(explode(':', $this->sort, 2), 2, null);
+
+        return [$field ?: null, in_array($direction, ['asc', 'desc']) ? $direction : 'asc'];
+    }
+
     protected function sortByIsValid(): bool
     {
         $sort = $this->sort;

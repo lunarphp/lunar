@@ -4,11 +4,9 @@ namespace Lunar\Search\Data;
 
 use Illuminate\View\View;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
-use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Spatie\TypeScriptTransformer\Attributes\LiteralTypeScriptType;
 
-#[MapName(SnakeCaseMapper::class)]
 /** @typescript */
 class SearchResults extends Data
 {
@@ -22,7 +20,12 @@ class SearchResults extends Data
         public array $hits,
         #[DataCollectionOf(SearchFacet::class)]
         public array $facets,
+        // Serialised via toArray() to the paginator's link array, not the View.
+        #[LiteralTypeScriptType('Array<{ url: string | null; label: string; active: boolean }>')]
         public View $links,
+        public ?string $sortField = null,
+        #[LiteralTypeScriptType("'asc' | 'desc' | null")]
+        public ?string $sortDirection = null,
     ) {}
 
     public function toArray(): array
