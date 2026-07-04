@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin\Filament\Resources;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
@@ -14,6 +13,7 @@ use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages;
 use Lunar\Admin\Support\Forms\Components\Attributes;
 use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Resources\BaseResource;
+use Lunar\Facades\Converter;
 use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 use Lunar\Models\TaxClass;
 

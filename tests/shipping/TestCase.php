@@ -2,7 +2,6 @@
 
 namespace Lunar\Tests\Shipping;
 
-use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\LunarServiceProvider;
@@ -31,7 +30,6 @@ class TestCase extends BaseTestCase
             LunarServiceProvider::class,
             MediaLibraryServiceProvider::class,
             ActivitylogServiceProvider::class,
-            ConverterServiceProvider::class,
             NestedSetServiceProvider::class,
             ShippingServiceProvider::class,
             BlinkServiceProvider::class,

@@ -12,7 +12,6 @@
         "awcodes/filament-badgeable-column": "^2.3.2",
         "awcodes/shout": "^2.0.4",
         "barryvdh/laravel-dompdf": "^3.0",
-        "cartalyst/converter": "^9.0|^10",
         "dompdf/dompdf": "^3.1",
         "ext-bcmath": "*",
         "ext-exif": "*",

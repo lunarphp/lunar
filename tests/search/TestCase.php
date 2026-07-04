@@ -2,7 +2,6 @@
 
 namespace Lunar\Tests\Search;
 
-use Cartalyst\Converter\Laravel\ConverterServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Laravel\Scout\ScoutServiceProvider;
 use Lunar\LunarServiceProvider;
@@ -31,7 +30,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         return [
             LunarServiceProvider::class,
-            ConverterServiceProvider::class,
             ActivitylogServiceProvider::class,
             LaravelDataServiceProvider::class,
             SearchServiceProvider::class,

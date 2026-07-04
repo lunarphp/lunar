@@ -7,8 +7,8 @@ return [
     | Measurements
     |--------------------------------------------------------------------------
     |
-    | You can use any measurements available at
-    | https://github.com/cartalyst/converter/edit/master/src/config/config.php
+    | Define the available measurements for shipping dimensions.
+    | Each unit has a format string and a conversion factor relative to the base unit (factor 1.0).
     |
     */
     'measurements' => [
