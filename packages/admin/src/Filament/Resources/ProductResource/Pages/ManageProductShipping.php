@@ -2,7 +2,6 @@
 
 namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 
-use Cartalyst\Converter\Laravel\Facades\Converter;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -14,6 +13,7 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductVariantResource\Pages\ManageVariantShipping;
 use Lunar\Admin\Support\Forms\Components\TextInputSelectAffix;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Facades\Converter;
 use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
 
 class ManageProductShipping extends BaseEditRecord
