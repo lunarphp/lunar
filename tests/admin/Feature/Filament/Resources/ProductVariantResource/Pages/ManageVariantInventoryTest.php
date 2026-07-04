@@ -29,5 +29,5 @@ it('rejects a unit quantity below one', function () {
         ])->fillForm([
             'unit_quantity' => 0,
         ])->call('save')
-        ->assertHasFormErrors(['unit_quantity' => 'minValue']);
+        ->assertHasFormErrors(['unit_quantity' => 'min']);
 });
