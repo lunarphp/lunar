@@ -3,8 +3,9 @@
 namespace Lunar\Search\Data;
 
 use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
-/** @typescript */
+#[TypeScript]
 class SearchHitHighlight extends Data
 {
     public function __construct(
