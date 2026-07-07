@@ -105,6 +105,18 @@ the same events, closing the programmatic-change gap. On the read side,
 a registry of named dependency graphs. This gives storefronts a precise cache
 key/invalidation vocabulary without hand-rolled busting.
 
+## Search
+
+Every engine (Database, Meilisearch, Typesense) returns a typed `SearchResults`
+data object with a consistent shape: camelCase keys (`perPage`, `totalPages`),
+the active sort echoed back as `sortField` / `sortDirection`, and facets always
+serialised as a plain array. The search data objects are annotated with
+`spatie/typescript-transformer` v3 attributes (`#[TypeScript]`), so storefronts
+can generate accurate TypeScript definitions for the whole results payload. The
+Typesense engine degrades gracefully — a missing collection yields an empty
+result set instead of an exception, and hybrid semantic search is only requested
+when the collection schema actually declares an embedding field.
+
 ## Pricing & attributes
 
 Prices are stored as plain integers with a `FormatsPrices` trait, and a new
