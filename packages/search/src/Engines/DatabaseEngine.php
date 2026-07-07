@@ -19,10 +19,10 @@ class DatabaseEngine extends AbstractEngine
 
         return SearchResults::from([
             'query' => $this->query,
-            'total_pages' => $results->lastPage(),
+            'totalPages' => $results->lastPage(),
             'page' => $results->currentPage(),
             'count' => $results->total(),
-            'per_page' => $results->perPage(),
+            'perPage' => $results->perPage(),
             'hits' => $documents,
             'facets' => collect(),
         ]);
