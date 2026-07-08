@@ -99,10 +99,12 @@ return new class extends Migration
 
     protected function backfill(string $table): void
     {
+        // eachById, not each: the updates remove rows from the whereNull set,
+        // so offset pagination would skip every other batch.
         DB::table($table)
             ->whereNull('public_id')
             ->orderBy('id')
-            ->each(function ($row) use ($table) {
+            ->eachById(function ($row) use ($table) {
                 $time = isset($row->created_at) ? Carbon::parse($row->created_at) : Carbon::now();
 
                 DB::table($table)

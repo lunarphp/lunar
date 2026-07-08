@@ -80,6 +80,26 @@ test('it seeds the ULID timestamp from created_at', function () {
     expect($ulid->getDateTime()->format('Y-m-d'))->toBe('2024-01-01');
 });
 
+test('it backfills every row across multiple batches', function () {
+    Schema::create(SPEC0046_PREFIX.'products', function (Blueprint $table) {
+        $table->id();
+        $table->string('status');
+        $table->timestamps();
+    });
+
+    // More rows than one batch (1000) so the backfill has to paginate while
+    // its own updates shrink the whereNull result set.
+    foreach (array_chunk(range(1, 1500), 500) as $ids) {
+        DB::table(SPEC0046_PREFIX.'products')->insert(array_map(fn (int $id): array => [
+            'id' => $id, 'status' => 'published', 'created_at' => now(), 'updated_at' => now(),
+        ], $ids));
+    }
+
+    publicIdMigration()->up();
+
+    expect(DB::table(SPEC0046_PREFIX.'products')->whereNull('public_id')->count())->toBe(0);
+});
+
 test('it is idempotent across re-runs', function () {
     simulateV1ProductsWithoutPublicId();
 
