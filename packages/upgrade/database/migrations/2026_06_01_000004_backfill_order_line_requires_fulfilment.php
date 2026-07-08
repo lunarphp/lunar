@@ -33,11 +33,17 @@ return new class extends Migration
             return;
         }
 
-        $this->ensureColumns($table);
+        // Adding the columns is the v1 signal: when they already exist the
+        // rows carry deliberate per-line values (already-v2 or already run)
+        // and flipping them would overwrite store choices. If a crash lands
+        // between the column add and the backfill, drop the two columns
+        // before re-running.
+        if (! $this->ensureColumns($table)) {
+            return;
+        }
 
         DB::table($table)
             ->where('type', 'physical')
-            ->where('requires_fulfilment', false)
             ->update([
                 'requires_shipping' => true,
                 'requires_fulfilment' => true,
@@ -47,18 +53,25 @@ return new class extends Migration
     /**
      * Add the requires_shipping / requires_fulfilment columns if the baseline
      * migrations have not (mirrors ..._create_order_lines_table); v1 had
-     * neither.
+     * neither. Returns whether anything was added.
      */
-    protected function ensureColumns(string $table): void
+    protected function ensureColumns(string $table): bool
     {
-        foreach (['requires_shipping', 'requires_fulfilment'] as $column) {
-            if (Schema::hasColumn($table, $column)) {
-                continue;
-            }
+        $missing = array_filter(
+            ['requires_shipping', 'requires_fulfilment'],
+            fn (string $column): bool => ! Schema::hasColumn($table, $column),
+        );
 
-            Schema::table($table, function (Blueprint $blueprint) use ($column) {
-                $blueprint->boolean($column)->default(false)->index();
-            });
+        if ($missing === []) {
+            return false;
         }
+
+        Schema::table($table, function (Blueprint $blueprint) use ($missing) {
+            foreach ($missing as $column) {
+                $blueprint->boolean($column)->default(false)->index();
+            }
+        });
+
+        return true;
     }
 };

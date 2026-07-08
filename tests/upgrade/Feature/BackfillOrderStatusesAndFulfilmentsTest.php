@@ -149,6 +149,9 @@ test('it creates a whole-order shipped fulfilment for dispatched orders', functi
     expect($fulfilment->state)->toBe('shipped')
         ->and($fulfilment->method)->toBe('shipping')
         ->and($fulfilment->shipped_at)->toBe('2024-03-01 10:00:00')
+        // Timestamps are seeded from the ship time, not the migration run,
+        // so created_at ordering reflects history.
+        ->and($fulfilment->created_at)->toBe('2024-03-01 10:00:00')
         ->and(strlen($fulfilment->public_id))->toBe(26)
         ->and((int) $fulfilment->location_id)->toBe((int) DB::table(ORDERS_UPG_PREFIX.'locations')->value('id'));
 

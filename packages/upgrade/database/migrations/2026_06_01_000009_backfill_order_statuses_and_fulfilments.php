@@ -68,7 +68,9 @@ return new class extends Migration
 
     /**
      * Add the v2 order columns if the baseline migrations have not (mirrors
-     * ..._create_orders_table); v1 had only the headline `status`.
+     * ..._create_orders_table); v1 had only the headline `status`. All the
+     * missing columns go in one Schema::table call — one ALTER, one table
+     * rebuild, on what is usually the largest table in the database.
      */
     protected function ensureOrderColumns(string $orders): void
     {
@@ -81,15 +83,20 @@ return new class extends Migration
             'cancel_note' => fn (Blueprint $table) => $table->text('cancel_note')->nullable(),
         ];
 
-        foreach ($columns as $column => $definition) {
-            if (Schema::hasColumn($orders, $column)) {
-                continue;
-            }
+        $missing = array_filter(
+            array_keys($columns),
+            fn (string $column): bool => ! Schema::hasColumn($orders, $column),
+        );
 
-            Schema::table($orders, function (Blueprint $table) use ($definition) {
-                $definition($table);
-            });
+        if ($missing === []) {
+            return;
         }
+
+        Schema::table($orders, function (Blueprint $table) use ($columns, $missing) {
+            foreach ($missing as $column) {
+                $columns[$column]($table);
+            }
+        });
     }
 
     /**
@@ -210,7 +217,6 @@ return new class extends Migration
         }
 
         $locationId = $this->defaultLocationId();
-        $now = now()->format('Y-m-d H:i:s');
 
         DB::table($orders)
             ->whereIn('status', $fulfilled)
@@ -221,7 +227,7 @@ return new class extends Migration
             })
             ->orderBy('id')
             ->select(['id', 'placed_at', 'created_at'])
-            ->chunkById(500, function ($chunk) use ($lines, $fulfilments, $fulfilmentLines, $locationId, $now) {
+            ->chunkById(500, function ($chunk) use ($lines, $fulfilments, $fulfilmentLines, $locationId) {
                 $lineRows = DB::table($lines)
                     ->whereIn('order_id', $chunk->pluck('id'))
                     ->where('requires_fulfilment', true)
@@ -235,6 +241,9 @@ return new class extends Migration
                     return;
                 }
 
+                // Timestamps are seeded from the ship time, not the migration
+                // run, so created_at ordering reflects history — matching the
+                // ULID treatment in the add_public_id step.
                 DB::table($fulfilments)->insert($shippable->map(fn (object $order): array => [
                     'public_id' => (string) Str::ulid(Carbon::parse($this->shippedAt($order))),
                     'order_id' => $order->id,
@@ -242,8 +251,8 @@ return new class extends Migration
                     'method' => 'shipping',
                     'state' => 'shipped',
                     'shipped_at' => $this->shippedAt($order),
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                    'created_at' => $this->shippedAt($order),
+                    'updated_at' => $this->shippedAt($order),
                 ])->all());
 
                 $fulfilmentIds = DB::table($fulfilments)
@@ -255,8 +264,8 @@ return new class extends Migration
                     'fulfilment_id' => $fulfilmentIds[$order->id],
                     'order_line_id' => $line->id,
                     'quantity' => $line->quantity,
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                    'created_at' => $this->shippedAt($order),
+                    'updated_at' => $this->shippedAt($order),
                 ]));
 
                 foreach ($inserts->chunk(500) as $batch) {

@@ -90,3 +90,25 @@ test('it is a no-op on an already-migrated database', function () {
     $line = DB::table(FULFIL_UPG_PREFIX.'order_lines')->find(1);
     expect((bool) $line->requires_fulfilment)->toBeTrue();
 });
+
+test('it leaves deliberate per-line choices alone when the columns pre-exist', function () {
+    // v2-shaped table: a physical line a store deliberately marked as not
+    // fulfillable must not be flipped by a re-run.
+    Schema::create(FULFIL_UPG_PREFIX.'order_lines', function (Blueprint $table) {
+        $table->id();
+        $table->string('type');
+        $table->boolean('requires_shipping')->default(false);
+        $table->boolean('requires_fulfilment')->default(false);
+        $table->timestamps();
+    });
+
+    DB::table(FULFIL_UPG_PREFIX.'order_lines')->insert([
+        'id' => 1, 'type' => 'physical', 'requires_shipping' => false, 'requires_fulfilment' => false, 'created_at' => now(), 'updated_at' => now(),
+    ]);
+
+    requiresFulfilmentMigration()->up();
+
+    $line = DB::table(FULFIL_UPG_PREFIX.'order_lines')->find(1);
+    expect((bool) $line->requires_fulfilment)->toBeFalse()
+        ->and((bool) $line->requires_shipping)->toBeFalse();
+});
