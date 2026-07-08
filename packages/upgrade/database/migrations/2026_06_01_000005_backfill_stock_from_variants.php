@@ -18,8 +18,9 @@ use Lunar\Core\Database\Migration;
  *
  * Self-sufficient: the v2 baseline that adds the rollup columns / new tables is
  * marked-run by the ledger rewrite, so the schema delta is applied here (guarded,
- * mirroring the baseline). Re-runs and already-v2 databases are no-ops. There is
- * no `down()` — upgrade data migrations are one-way; recover from a backup.
+ * mirroring the baseline) — including the `locations` table the stock tables
+ * reference, since v1 has none. Re-runs and already-v2 databases are no-ops.
+ * There is no `down()` — upgrade data migrations are one-way; recover from a backup.
  */
 return new class extends Migration
 {
@@ -33,13 +34,8 @@ return new class extends Migration
         }
 
         $this->addRollupColumns($variants);
+        $this->ensureLocationsTable();
         $this->ensureStockTables();
-
-        // Without a location there is nowhere to place the stock; leave `stock`
-        // intact so the step can re-run once locations exist.
-        if (! Schema::hasTable($this->prefix.'locations')) {
-            return;
-        }
 
         $this->backfill($variants, $this->defaultLocationId());
 
@@ -50,21 +46,45 @@ return new class extends Migration
 
     protected function addRollupColumns(string $variants): void
     {
-        $columns = ['stock_on_hand', 'stock_incoming', 'stock_committed', 'stock_reserved', 'stock_unavailable'];
+        $missing = array_filter(
+            ['stock_on_hand', 'stock_incoming', 'stock_committed', 'stock_reserved', 'stock_unavailable'],
+            fn (string $column): bool => ! Schema::hasColumn($variants, $column),
+        );
 
-        foreach ($columns as $column) {
-            if (Schema::hasColumn($variants, $column)) {
-                continue;
-            }
+        $addAvailable = ! Schema::hasColumn($variants, 'stock_available');
 
-            Schema::table($variants, function (Blueprint $table) use ($column) {
-                $table->integer($column)->default(0);
-            });
+        if ($missing === [] && ! $addAvailable) {
+            return;
         }
 
-        if (! Schema::hasColumn($variants, 'stock_available')) {
-            Schema::table($variants, function (Blueprint $table) {
+        // One Schema::table call — one ALTER, one table rebuild.
+        Schema::table($variants, function (Blueprint $table) use ($missing, $addAvailable) {
+            foreach ($missing as $column) {
+                $table->integer($column)->default(0);
+            }
+
+            if ($addAvailable) {
                 $table->integer('stock_available')->default(0)->index();
+            }
+        });
+    }
+
+    /**
+     * Create the locations table if the baseline migrations have not (mirrors
+     * packages/core/database/migrations/..._create_locations_table). The stock
+     * tables reference it, and v1 has no locations at all. `public_id` arrives
+     * with the later add_public_id_to_addressable_models step.
+     */
+    protected function ensureLocationsTable(): void
+    {
+        if (! Schema::hasTable($this->prefix.'locations')) {
+            Schema::create($this->prefix.'locations', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('handle')->unique();
+                $table->boolean('default')->default(false)->index();
+                $table->jsonb('meta')->nullable();
+                $table->timestamps();
             });
         }
     }

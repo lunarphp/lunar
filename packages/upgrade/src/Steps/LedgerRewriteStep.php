@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lunar\Upgrade\Steps;
 
 use Illuminate\Database\ConnectionResolverInterface;
+use Illuminate\Database\Migrations\Migrator;
 use Lunar\Upgrade\Support\StepReport;
 
 /**
@@ -12,12 +13,20 @@ use Lunar\Upgrade\Support\StepReport;
  * are removed and the v2 flat baseline (see spec 0003) is marked as run.
  *
  * The actual v2 baseline filenames are configured under
- * `lunar.upgrade.ledger.v2_baseline`. The skeleton ships an empty baseline
- * list until the flattened migrations land in `packages/core/database/migrations`.
+ * `lunar.upgrade.ledger.v2_baseline`. Both directions are limited by what the
+ * application can actually load: a matched row is only removed when its
+ * migration file is gone (the v1 package files vanish with the composer swap;
+ * the app's own files do not, and deleting their rows would make `migrate`
+ * re-run them), and a baseline row is only inserted when its file is present
+ * (marking-run a migration from an uninstalled sub-package would silently
+ * skip it if that package is installed later).
  */
 class LedgerRewriteStep implements UpgradeStep
 {
-    public function __construct(protected ConnectionResolverInterface $connections) {}
+    public function __construct(
+        protected ConnectionResolverInterface $connections,
+        protected Migrator $migrator,
+    ) {}
 
     public function name(): string
     {
@@ -53,12 +62,18 @@ class LedgerRewriteStep implements UpgradeStep
 
         $existing = $connection->table('migrations')->pluck('migration')->all();
 
+        $known = $this->knownMigrations();
+
         $toRemove = array_values(array_filter(
             $existing,
-            fn (string $migration): bool => $this->matchesAny($migration, $config['v1_match']),
+            fn (string $migration): bool => ! isset($known[$migration])
+                && $this->matchesAny($migration, $config['v1_match']),
         ));
 
-        $toInsert = array_values(array_diff($config['v2_baseline'], $existing));
+        $toInsert = array_values(array_filter(
+            array_diff($config['v2_baseline'], $existing),
+            fn (string $migration): bool => isset($known[$migration]),
+        ));
 
         if ($context->dryRun) {
             $context->report->record(
@@ -90,6 +105,24 @@ class LedgerRewriteStep implements UpgradeStep
             StepReport::STATUS_OK,
             'Removed '.count($toRemove).' v1 row(s); inserted '.count($toInsert).' v2 baseline row(s).',
         );
+    }
+
+    /**
+     * Migration names the application can currently load, keyed by name —
+     * every path registered with the migrator (package `loadMigrationsFrom`
+     * calls), the app's own `database/migrations`, and this package's data
+     * migrations (run by path in the data step, so never migrator-registered,
+     * yet their 2026_06 rows match the broad v1 date patterns).
+     *
+     * @return array<string, string>
+     */
+    protected function knownMigrations(): array
+    {
+        return $this->migrator->getMigrationFiles([
+            ...$this->migrator->paths(),
+            database_path('migrations'),
+            dirname(__DIR__, 2).'/database/migrations',
+        ]);
     }
 
     /**

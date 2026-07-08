@@ -10,10 +10,12 @@ use Lunar\Core\Database\Migration;
  * `description` and `short_description` fields out of the `attribute_data`
  * jsonb blob into dedicated columns.
  *
- * - products / collections: `name` + `description` were system `TranslatedText`
- *   attributes; their stored `{locale: text}` map is copied into the new
- *   columns, the keys are stripped from `attribute_data`, and the backing
- *   system `Attribute` rows are deleted.
+ * - products / collections: `name` + `description` were system attributes;
+ *   their stored value is copied into the new columns, the keys are stripped
+ *   from `attribute_data`, and the backing system `Attribute` rows are
+ *   deleted. A `TranslatedText` value already holds the `{locale: text}` map
+ *   the v2 columns store; a bare `Text` scalar is keyed to the store's
+ *   default language.
  * - brands: `name` stays a plain string column (untouched); only the new
  *   `description` / `short_description` jsonb columns are added (description
  *   backfilled from `attribute_data` when a v1 brand description attribute was
@@ -25,6 +27,11 @@ use Lunar\Core\Database\Migration;
  */
 return new class extends Migration
 {
+    /**
+     * Memoized default language code for keying bare `Text` values.
+     */
+    protected string $defaultLanguage;
+
     /**
      * @var list<string>
      */
@@ -137,7 +144,7 @@ return new class extends Migration
                     continue;
                 }
 
-                $update[$handle] = json_encode($data[$handle]['value'] ?? null);
+                $update[$handle] = $this->translatedValue($data[$handle]['value'] ?? null);
                 unset($data[$handle]);
             }
 
@@ -149,5 +156,40 @@ return new class extends Migration
 
             DB::table($table)->where('id', $row->id)->update($update);
         });
+    }
+
+    /**
+     * Normalise an extracted attribute value to the `{locale: text}` map the
+     * v2 columns store: `TranslatedText` already persists the map, while
+     * `Text` persists a bare scalar, which is keyed to the default language.
+     */
+    protected function translatedValue(mixed $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (! is_array($value)) {
+            $value = [$this->defaultLanguage() => $value];
+        }
+
+        return json_encode($value);
+    }
+
+    protected function defaultLanguage(): string
+    {
+        if (isset($this->defaultLanguage)) {
+            return $this->defaultLanguage;
+        }
+
+        $languages = $this->prefix.'languages';
+
+        if (! Schema::hasTable($languages)) {
+            return $this->defaultLanguage = 'en';
+        }
+
+        return $this->defaultLanguage = DB::table($languages)->where('default', true)->value('code')
+            ?? DB::table($languages)->orderBy('id')->value('code')
+            ?? 'en';
     }
 };
