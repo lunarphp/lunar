@@ -110,7 +110,9 @@ class LedgerRewriteStep implements UpgradeStep
     /**
      * Migration names the application can currently load, keyed by name —
      * every path registered with the migrator (package `loadMigrationsFrom`
-     * calls) plus the app's own `database/migrations`.
+     * calls), the app's own `database/migrations`, and this package's data
+     * migrations (run by path in the data step, so never migrator-registered,
+     * yet their 2026_06 rows match the broad v1 date patterns).
      *
      * @return array<string, string>
      */
@@ -119,6 +121,7 @@ class LedgerRewriteStep implements UpgradeStep
         return $this->migrator->getMigrationFiles([
             ...$this->migrator->paths(),
             database_path('migrations'),
+            dirname(__DIR__, 2).'/database/migrations',
         ]);
     }
 

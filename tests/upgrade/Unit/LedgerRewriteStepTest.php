@@ -108,6 +108,32 @@ it('keeps matched rows whose migration file still exists', function () {
     assertDatabaseMissing('migrations', ['migration' => '2021_07_29_100000_create_channels_table']);
 });
 
+it('keeps rows for the upgrade package data migrations', function () {
+    // Data-migration rows use the 2026_06 prefix, which the broad v1 date
+    // patterns match; their files live in this package, not a registered
+    // migrator path, and their ledger rows must survive the rewrite.
+    DB::table('migrations')->insert([
+        'migration' => '2026_06_01_000000_rewrite_lunar_class_strings', 'batch' => 6,
+    ]);
+
+    Config::set('lunar.upgrade.ledger', [
+        'v1_match' => ['/^2026_0[2-9]_/'],
+        'v2_baseline' => [],
+    ]);
+
+    $report = new StepReport;
+    $context = new StepContext(
+        dryRun: false,
+        paths: [],
+        output: new OutputStyle(new StringInput(''), new BufferedOutput),
+        report: $report,
+    );
+
+    app(LedgerRewriteStep::class)->run($context);
+
+    assertDatabaseHas('migrations', ['migration' => '2026_06_01_000000_rewrite_lunar_class_strings']);
+});
+
 it('does not insert baseline rows for migrations the app cannot load', function () {
     Config::set('lunar.upgrade.ledger', [
         'v1_match' => [],
