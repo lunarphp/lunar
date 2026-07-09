@@ -3,6 +3,7 @@
 namespace Lunar\Panel;
 
 use Illuminate\Support\ServiceProvider;
+use Lunar\Panel\Navigation\NavigationItem;
 
 class PanelServiceProvider extends ServiceProvider
 {
@@ -18,6 +19,8 @@ class PanelServiceProvider extends ServiceProvider
         collect($this->configFiles)->each(function ($config) {
             $this->mergeConfigFrom("{$this->root}/config/$config.php", "lunar.$config");
         });
+
+        $this->app->singleton(PanelManager::class, fn (): PanelManager => new PanelManager);
     }
 
     public function boot(): void
@@ -32,5 +35,25 @@ class PanelServiceProvider extends ServiceProvider
                 ], 'lunar');
             });
         }
+
+        $this->app->booted(function (): void {
+            $this->processRegisteredSections();
+        });
+    }
+
+    protected function processRegisteredSections(): void
+    {
+        $manager = $this->app->make(PanelManager::class);
+
+        $manager->navigation()->addTopLevelItem(new NavigationItem(
+            key: 'dashboard',
+            label: 'panel::nav.dashboard',
+            icon: 'layout-dashboard',
+            route: 'panel.dashboard',
+            priority: 0,
+            exact: true,
+        ));
+
+        $manager->processSections();
     }
 }
