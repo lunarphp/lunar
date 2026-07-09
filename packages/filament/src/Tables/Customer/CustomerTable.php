@@ -3,6 +3,7 @@
 namespace Lunar\Filament\Tables\Customer;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -38,6 +39,7 @@ class CustomerTable
                 ])
                 ->recordActions([
                     ViewAction::make(),
+                    DeleteAction::make(),
                 ])
                 ->toolbarActions([
                     BulkActionGroup::make([
