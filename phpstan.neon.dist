@@ -10,12 +10,3 @@ parameters:
         - packages/vendor/*
         - packages/*/vendor/*
     checkOctaneCompatibility: true
-    ignoreErrors:
-        # ColumnType and Position are verbatim ports of the prototype's static-factory
-        # value objects (Task 7); they are not final and are not intended to be subclassed.
-        -
-            identifier: new.static
-            path: packages/panel/src/Tables/Support/ColumnType.php
-        -
-            identifier: new.static
-            path: packages/panel/src/Tables/Support/Position.php

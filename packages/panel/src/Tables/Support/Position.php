@@ -2,7 +2,7 @@
 
 namespace Lunar\Panel\Tables\Support;
 
-class Position
+final class Position
 {
     public function __construct(
         public readonly string $type,
@@ -11,7 +11,7 @@ class Position
 
     public static function first(): static
     {
-        return new static('first');
+        return new self('first');
     }
 
     public static function last(): static

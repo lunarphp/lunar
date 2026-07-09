@@ -2,7 +2,7 @@
 
 namespace Lunar\Panel\Tables\Support;
 
-class ColumnType
+final class ColumnType
 {
     public function __construct(
         public readonly string $name,
@@ -11,7 +11,7 @@ class ColumnType
 
     public static function currency(?string $code = null): static
     {
-        return new static('currency', array_filter(['code' => $code]));
+        return new self('currency', array_filter(['code' => $code]));
     }
 
     public static function badge(): static
