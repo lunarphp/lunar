@@ -36,6 +36,18 @@ test('beginning enrolment stores a pending secret in the session only', function
             ->has('pendingTwoFactor.qrCode'));
 });
 
+test('beginning enrolment is a no-op when two factor is already enabled', function () {
+    $this->staff->forceFill([
+        'app_authentication_secret' => 'JBSWY3DPEHPK3PXP',
+        'app_authentication_recovery_codes' => [Hash::make('existing-code')],
+    ])->save();
+
+    $this->post(route('panel.account.two-factor.store'));
+
+    expect(session('panel.two_factor.pending_secret'))->toBeNull()
+        ->and($this->staff->fresh()->app_authentication_secret)->toBe('JBSWY3DPEHPK3PXP');
+});
+
 test('a wrong code does not enable two factor', function () {
     $this->post(route('panel.account.two-factor.store'));
 
