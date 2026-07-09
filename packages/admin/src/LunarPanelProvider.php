@@ -18,7 +18,7 @@ use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
 class LunarPanelProvider extends ServiceProvider
 {
     protected $configFiles = [
-        'panel',
+        'admin',
     ];
 
     protected $root = __DIR__.'/..';

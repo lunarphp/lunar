@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\URL;
  * `Lunar\Filament\Actions\Orders\DownloadOrderPdfAction`) to pre-wire the
  * `pdfView` and filename for a specific resource.
  *
- * Honours `lunar.panel.pdf_rendering` — "stream" emits a temporary signed
+ * Honours `lunar.admin.pdf_rendering` — "stream" emits a temporary signed
  * URL handled by the existing PDF route; "download" streams the response
  * inline.
  */
@@ -41,7 +41,7 @@ class DownloadPdfAction extends Action
     {
         parent::setUp();
 
-        if (config('lunar.panel.pdf_rendering', 'download') === 'stream') {
+        if (config('lunar.admin.pdf_rendering', 'download') === 'stream') {
             $this->url(function ($record) {
                 return URL::temporarySignedRoute(
                     'lunar.pdf.download',

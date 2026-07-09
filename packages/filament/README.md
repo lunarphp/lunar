@@ -178,7 +178,7 @@ use Lunar\Filament\Forms\Components\Support\RecordSearch;
 $results = RecordSearch::for(Product::class, $search)->take(20)->get();
 ```
 
-It prefers Laravel Scout when both `lunar.panel.scout_enabled` is true and the model uses Scout's `Searchable` trait, falls back to a translated-attribute DB search, and falls back again to a plain `name` column search for models that have neither.
+It prefers Laravel Scout when both `lunar.admin.scout_enabled` is true and the model uses Scout's `Searchable` trait, falls back to a translated-attribute DB search, and falls back again to a plain `name` column search for models that have neither.
 
 ---
 
@@ -375,7 +375,7 @@ class MyProductResource extends Resource
 }
 ```
 
-The trait forwards `getGloballySearchableAttributes`, `getGlobalSearchResultTitle`, `getGlobalSearchResultDetails`, and `getGlobalSearchEloquentQuery` to the descriptor, and routes the actual constraint-building through `RecordSearch` — the same Scout-vs-translated-attribute backend the entity selectors use. Scout is used when `lunar.panel.scout_enabled=true` and the model uses `Laravel\Scout\Searchable`; otherwise the query falls back to LIKE-matching across the resource's attribute list plus any searchable `TranslatedText` attributes.
+The trait forwards `getGloballySearchableAttributes`, `getGlobalSearchResultTitle`, `getGlobalSearchResultDetails`, and `getGlobalSearchEloquentQuery` to the descriptor, and routes the actual constraint-building through `RecordSearch` — the same Scout-vs-translated-attribute backend the entity selectors use. Scout is used when `lunar.admin.scout_enabled=true` and the model uses `Laravel\Scout\Searchable`; otherwise the query falls back to LIKE-matching across the resource's attribute list plus any searchable `TranslatedText` attributes.
 
 `getGlobalSearchResultUrl` stays on the resource — only the resource knows its own URL.
 
