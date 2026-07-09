@@ -19,9 +19,7 @@ class AuthenticatedSessionController
         return Inertia::render('auth/Login', [
             'urls' => [
                 'store' => route('panel.login.store'),
-                // Swapped for route('panel.password.request') in Task 8,
-                // which defines the password reset routes.
-                'forgotPassword' => null,
+                'forgotPassword' => route('panel.password.request'),
             ],
         ]);
     }
