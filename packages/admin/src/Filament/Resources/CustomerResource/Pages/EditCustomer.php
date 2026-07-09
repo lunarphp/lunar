@@ -2,6 +2,7 @@
 
 namespace Lunar\Admin\Filament\Resources\CustomerResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use Lunar\Admin\Filament\Resources\CustomerResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 
@@ -12,6 +13,7 @@ class EditCustomer extends BaseEditRecord
     protected function getDefaultHeaderActions(): array
     {
         return [
+            DeleteAction::make(),
         ];
     }
 
