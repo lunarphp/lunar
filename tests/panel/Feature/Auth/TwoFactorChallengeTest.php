@@ -45,6 +45,11 @@ test('the challenge screen redirects to login when nothing is pending', function
         ->assertRedirect(route('panel.login'));
 });
 
+test('the challenge submit redirects to login when nothing is pending', function () {
+    $this->post(route('panel.two-factor.challenge.store'), ['code' => '123456'])
+        ->assertRedirect(route('panel.login'));
+});
+
 test('a valid totp code completes the login', function () {
     $staff = Staff::factory()->withTwoFactor()->create();
     submitCredentials($staff);
