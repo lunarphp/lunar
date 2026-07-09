@@ -6,13 +6,13 @@ use Lunar\Tests\Filament\TestCase;
 uses(TestCase::class);
 
 it('returns null when no resolver is configured', function () {
-    config()->set('lunar-filament.record_urls.order', null);
+    config()->set('lunar.filament.record_urls.order', null);
 
     expect(RecordUrls::for('order', (object) ['id' => 1]))->toBeNull();
 });
 
 it('invokes the configured callable resolver', function () {
-    config()->set('lunar-filament.record_urls.order',
+    config()->set('lunar.filament.record_urls.order',
         fn ($record) => 'https://example.test/orders/'.$record->id,
     );
 

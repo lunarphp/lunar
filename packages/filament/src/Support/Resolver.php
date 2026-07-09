@@ -8,7 +8,7 @@ use Filament\Tables\Table;
 /**
  * Resolves the runtime class for a bridge schema, table, or relation manager.
  *
- * When `lunar-filament.resolver.prefer_published` is true (the default) and a
+ * When `lunar.filament.resolver.prefer_published` is true (the default) and a
  * subclass exists in the consumer app under the configured `app_namespace`,
  * the published copy is returned instead of the bridge class.
  *
@@ -59,11 +59,11 @@ class Resolver
      */
     public static function resolve(string $bridgeClass): string
     {
-        if (! config('lunar-filament.resolver.prefer_published', true)) {
+        if (! config('lunar.filament.resolver.prefer_published', true)) {
             return $bridgeClass;
         }
 
-        $appNamespace = (string) config('lunar-filament.resolver.app_namespace', 'App\\Filament');
+        $appNamespace = (string) config('lunar.filament.resolver.app_namespace', 'App\\Filament');
 
         $relative = static::relativePath($bridgeClass);
 

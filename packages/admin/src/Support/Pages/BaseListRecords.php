@@ -83,7 +83,7 @@ abstract class BaseListRecords extends ListRecords
 
     protected function applySearchToTableQuery(Builder $query): Builder
     {
-        $scoutEnabled = config('lunar.admin.scout_enabled', false);
+        $scoutEnabled = config('lunar.filament.scout_enabled', false);
         $isScoutSearchable = in_array(Searchable::class, class_uses_recursive(static::getModel()));
 
         $this->applyColumnSearchesToTableQuery($query);

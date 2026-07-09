@@ -18,7 +18,7 @@ uses(TestCase::class)
     ->group('actions');
 
 beforeEach(function () {
-    Config::set('lunar.admin.scout_enabled', false);
+    Config::set('lunar.filament.scout_enabled', false);
 
     $this->asStaff(admin: true);
 });

@@ -136,8 +136,8 @@ class LunarPlugin implements Plugin
         // from resources/pages. Toggles are persisted via config for downstream consumers that
         // want to gate UI affordances on whether the plugin enabled them.
         config([
-            'lunar-filament.plugin.global_search' => $this->globalSearch,
-            'lunar-filament.plugin.actions' => $this->actions,
+            'lunar.filament.plugin.global_search' => $this->globalSearch,
+            'lunar.filament.plugin.actions' => $this->actions,
         ]);
     }
 

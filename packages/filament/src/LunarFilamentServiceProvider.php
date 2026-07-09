@@ -15,8 +15,8 @@ class LunarFilamentServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/lunar-filament.php',
-            'lunar-filament'
+            __DIR__.'/../config/filament.php',
+            'lunar.filament'
         );
 
         $this->app['config']->set('lunar.staff.model', Staff::class);
@@ -47,7 +47,7 @@ class LunarFilamentServiceProvider extends ServiceProvider
         );
 
         $this->publishes([
-            __DIR__.'/../config/lunar-filament.php' => config_path('lunar-filament.php'),
+            __DIR__.'/../config/filament.php' => config_path('lunar/filament.php'),
         ], 'lunar-filament.config');
 
         $this->publishes([
@@ -59,9 +59,9 @@ class LunarFilamentServiceProvider extends ServiceProvider
         ], 'lunar-filament.views');
 
         $this->publishes([
-            __DIR__.'/Schemas' => config('lunar-filament.publish_path', app_path('Filament')).'/Schemas',
-            __DIR__.'/Tables' => config('lunar-filament.publish_path', app_path('Filament')).'/Tables',
-            __DIR__.'/RelationManagers' => config('lunar-filament.publish_path', app_path('Filament')).'/RelationManagers',
+            __DIR__.'/Schemas' => config('lunar.filament.publish_path', app_path('Filament')).'/Schemas',
+            __DIR__.'/Tables' => config('lunar.filament.publish_path', app_path('Filament')).'/Tables',
+            __DIR__.'/RelationManagers' => config('lunar.filament.publish_path', app_path('Filament')).'/RelationManagers',
         ], 'lunar-filament.schemas');
 
         $this->registerSynthesizers();
