@@ -2,8 +2,12 @@
 
 namespace Lunar\Panel;
 
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Panel\Console\Commands\LinkPanelAssetsCommand;
+use Lunar\Panel\Http\Middleware\Authenticate;
+use Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests;
 use Lunar\Panel\Navigation\NavigationItem;
 
 class PanelServiceProvider extends ServiceProvider
@@ -43,9 +47,50 @@ class PanelServiceProvider extends ServiceProvider
             $this->commands([LinkPanelAssetsCommand::class]);
         }
 
+        $this->registerPermissionGate();
+
         $this->app->booted(function (): void {
             $this->processRegisteredSections();
+            $this->registerRoutes();
         });
+    }
+
+    /**
+     * Grant manifest permissions to admin staff or explicit permission holders.
+     * Mirrors the Filament admin's gate so either panel works standalone.
+     */
+    protected function registerPermissionGate(): void
+    {
+        Gate::after(function ($user, string $ability) {
+            $permission = $this->app->get('lunar-access-control')
+                ->getPermissions()
+                ->first(fn ($permission) => $permission->handle === $ability);
+
+            if ($permission) {
+                return $user->admin || $user->hasPermissionTo($ability);
+            }
+        });
+    }
+
+    protected function registerRoutes(): void
+    {
+        $manager = $this->app->make(PanelManager::class);
+        $prefix = $manager->path();
+        $middleware = config('lunar.panel.route_middleware', ['web']);
+
+        Route::middleware($middleware)
+            ->prefix($prefix)
+            ->group("{$this->root}/routes/auth.php");
+
+        Route::middleware([...$middleware, Authenticate::class, HandlePanelInertiaRequests::class])
+            ->prefix($prefix)
+            ->group(function () use ($manager): void {
+                $this->loadRoutesFrom("{$this->root}/routes/web.php");
+
+                foreach ($manager->getRouteRegistrars() as $registrar) {
+                    $registrar();
+                }
+            });
     }
 
     protected function processRegisteredSections(): void

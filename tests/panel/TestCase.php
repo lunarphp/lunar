@@ -50,5 +50,12 @@ class TestCase extends BaseTestCase
         parent::getEnvironmentSetUp($app);
 
         $app['config']->set('auth.providers.users.model', User::class);
+
+        // Inertia's testing component-exists check looks under the Testbench
+        // skeleton's resource_path() by default; point it at the panel
+        // package's own page components instead.
+        $app['config']->set('inertia.testing.page_paths', [
+            dirname(__DIR__, 2).'/packages/panel/resources/js/pages',
+        ]);
     }
 }
