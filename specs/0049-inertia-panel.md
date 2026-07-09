@@ -264,8 +264,7 @@ rendering; SSR; removal of the Filament admin.
 
 ## Migration impact
 
-- **Database migrations**: none. Auth uses the existing staff 2FA columns; Customers and
-  Channels use existing core tables.
+- **Database migrations**: one — a core `staff_password_reset_tokens` table backing the staff password broker (registered alongside the staff guard). Auth otherwise uses the existing staff 2FA columns; Customers and Channels use existing core tables.
 - **Dependencies**: new require on `inertiajs/inertia-laravel` and `pragmarx/google2fa`
   (+ QR renderer, e.g. `bacon/bacon-qr-code`) in the panel package — needs approval before
   implementation. Frontend deps (Vue, Reka UI, Tailwind v4, vue-i18n) are npm dev-time
@@ -284,10 +283,7 @@ rendering; SSR; removal of the Filament admin.
 
 ## Open questions
 
-- Exact encoding of `app_authentication_secret` / recovery codes in Filament v5 (encrypted
-  casts, hashing of recovery codes) — verify against the installed Filament version before
-  implementing 2FA, since cross-panel compatibility is a stated goal. Owner: implementation
-  slice 3.
+- ~~Exact encoding of `app_authentication_secret` / recovery codes in Filament v5~~ — resolved in slice 3 against filament/filament v5.6.5: the secret is a 16-char base32 string behind Laravel's `encrypted` cast; recovery codes are an `encrypted:array` cast whose elements are bcrypt hashes (8 codes, `Str::random(10).'-'.Str::random(10)`, single-use, replaced on use); TOTP is SHA1/6-digit/30s with a verification window of 8. Covered by `tests/panel/Feature/Auth/FilamentCompatibilityTest.php`.
 - Are the panel's prebuilt assets committed to the repo (as Filament-style packages do) or
   built in CI at release/split time? Affects contributor workflow. Owner: maintainers,
   before slice 1 merges.
@@ -317,7 +313,7 @@ rendering; SSR; removal of the Filament admin.
 - [x] Slice 2 — PHP extension core: `PanelManager` + facade, `Section`/`SectionExtension`,
   `NavigationRegistry` (+ settings), `SlotRegistry`, `TableExtension` + resolver, Inertia
   shared-props middleware, fixture add-on Pest coverage.
-- [ ] Slice 3 — Auth: login, logout, rate limiting, password reset, 2FA challenge + setup,
+- [x] Slice 3 — Auth: login, logout, rate limiting, password reset, 2FA challenge + setup,
   Account/Security page; `AuthLayout` and form primitives ported.
 - [ ] Slice 4 — Shell: `PanelLayout`, sidebar/settings nav rendered from shared props,
   dashboard placeholder, dark mode, i18n endpoint + vue-i18n.
