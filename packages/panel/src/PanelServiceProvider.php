@@ -3,6 +3,7 @@
 namespace Lunar\Panel;
 
 use Illuminate\Support\ServiceProvider;
+use Lunar\Panel\Console\Commands\LinkPanelAssetsCommand;
 use Lunar\Panel\Navigation\NavigationItem;
 
 class PanelServiceProvider extends ServiceProvider
@@ -34,6 +35,12 @@ class PanelServiceProvider extends ServiceProvider
                     "{$this->root}/config/$config.php" => config_path("lunar/$config.php"),
                 ], 'lunar');
             });
+
+            $this->publishes([
+                "{$this->root}/public/build" => public_path('vendor/lunar-panel/build'),
+            ], ['panel-assets', 'panel-all-assets']);
+
+            $this->commands([LinkPanelAssetsCommand::class]);
         }
 
         $this->app->booted(function (): void {
