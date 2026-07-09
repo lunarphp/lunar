@@ -255,7 +255,7 @@ class LunarPanelManager
             DispatchServingFilamentEvent::class,
         ];
 
-        if (config('lunar.panel.pdf_rendering', 'download') == 'stream') {
+        if (config('lunar.admin.pdf_rendering', 'download') == 'stream') {
             Route::get('lunar/pdf/download', DownloadPdfController::class)
                 ->name('lunar.pdf.download')->middleware($panelMiddleware);
         }

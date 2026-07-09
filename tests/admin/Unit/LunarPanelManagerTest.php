@@ -9,7 +9,7 @@ use Lunar\Tests\Admin\Stubs\Filament\Extensions\ExtensionB;
 use Lunar\Tests\Admin\Unit\Filament\TestCase;
 
 uses(TestCase::class)
-    ->group('lunar.panel');
+    ->group('lunar.admin');
 
 it('can register multiple extensions at once', function () {
 

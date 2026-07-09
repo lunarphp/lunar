@@ -55,7 +55,7 @@ class ProductTypeTable
                 )
                 ->label(__('lunar-filament::producttype.table.variant_attributes_count.label'))
                 ->visible(
-                    config('lunar.panel.enable_variants', true)
+                    config('lunar.admin.enable_variants', true)
                 ),
         ];
     }

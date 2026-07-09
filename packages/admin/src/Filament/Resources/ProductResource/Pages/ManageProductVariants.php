@@ -30,12 +30,12 @@ class ManageProductVariants extends BaseManageRelatedRecords
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
-        return config('lunar.panel.enable_variants', true);
+        return config('lunar.admin.enable_variants', true);
     }
 
     public static function canAccess(array $parameters = []): bool
     {
-        if (! config('lunar.panel.enable_variants', true)) {
+        if (! config('lunar.admin.enable_variants', true)) {
             return false;
         }
 
