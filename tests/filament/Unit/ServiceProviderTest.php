@@ -35,8 +35,14 @@ it('exposes the service provider via package discovery', function () {
 });
 
 it('exposes the lunar-filament config namespace', function () {
-    expect(config('lunar-filament'))->toBeArray()
-        ->and(config('lunar-filament.resolver.app_namespace'))->toBe('App\\Filament');
+    expect(config('lunar.filament'))->toBeArray()
+        ->and(config('lunar.filament.resolver.app_namespace'))->toBe('App\\Filament');
+});
+
+it('defaults the config keys relocated from lunar.admin', function () {
+    expect(config('lunar.filament.enable_variants'))->toBeTrue()
+        ->and(config('lunar.filament.pdf_rendering'))->toBe('download')
+        ->and(config('lunar.filament.scout_enabled'))->toBeFalse();
 });
 
 it('boots a LunarFilament facade backed by the registry', function () {

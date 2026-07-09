@@ -59,4 +59,39 @@ return [
         'order' => null,
         'product_variant' => null,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Variants
+    |--------------------------------------------------------------------------
+    |
+    | When `true` this will show the Variants manager when editing a product. If your
+    | storefront doesn't support variants, set this to false.
+    |
+    */
+    'enable_variants' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | PDF Streaming
+    |--------------------------------------------------------------------------
+    |
+    | When handling PDF's when browsing the resource, you can decide whether to stream the
+    | PDF in a new tab or download the PDF to your hard drive.
+    |
+    | Available options are 'download' or 'stream'
+    |
+    */
+    'pdf_rendering' => 'download',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Scout when searching on supported models.
+    |--------------------------------------------------------------------------
+    |
+    | Some models in the core have Scout implemented as a search driver, if you
+    | want to use Scout when possible when searching, enable it here.
+    |
+    */
+    'scout_enabled' => false,
 ];

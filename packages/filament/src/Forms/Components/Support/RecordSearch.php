@@ -16,7 +16,7 @@ use function Filament\Support\generate_search_term_expression;
 /**
  * Single search backend shared by every Lunar selector component.
  *
- * Prefers Scout when both `lunar.admin.scout_enabled` is true and the
+ * Prefers Scout when both `lunar.filament.scout_enabled` is true and the
  * model uses Laravel Scout's `Searchable` trait. Falls back to a
  * translated-attribute DB query across the model's searchable attributes.
  */
@@ -43,7 +43,7 @@ class RecordSearch
      */
     public static function shouldUseScout(string $model): bool
     {
-        if (! config('lunar.admin.scout_enabled', false)) {
+        if (! config('lunar.filament.scout_enabled', false)) {
             return false;
         }
 

@@ -98,15 +98,15 @@ class LunarPanelProvider extends ServiceProvider
      */
     protected function registerBridgeRecordUrls(): void
     {
-        $this->app['config']->set('lunar-filament.record_urls.order',
+        $this->app['config']->set('lunar.filament.record_urls.order',
             fn ($record, array $context = []) => ManageOrder::getUrl([...$context, 'record' => $record]),
         );
 
-        $this->app['config']->set('lunar-filament.record_urls.product_variant',
+        $this->app['config']->set('lunar.filament.record_urls.product_variant',
             fn ($record, array $context = []) => ProductVariantResource::getUrl('edit', [...$context, 'record' => $record]),
         );
 
-        $this->app['config']->set('lunar-filament.record_urls.collection_edit',
+        $this->app['config']->set('lunar.filament.record_urls.collection_edit',
             fn ($record, array $context = []) => CollectionResource::getUrl('edit', [...$context, 'record' => $record]),
         );
     }

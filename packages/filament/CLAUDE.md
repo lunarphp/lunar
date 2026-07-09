@@ -121,6 +121,6 @@ Three supported ways for consumers to bend bridge behaviour, in escalating order
 
 1. **Extension hooks** — `LunarFilament::extensions([SomeClass::class => new class { public function configureForm($form) { … } }])`. Additive, runtime, ideal for "add a field" / "tweak a label" / "wrap an action".
 2. **Subclass and rebind** — extend the bridge class, bind the subclass in the container; `::make()` calls resolve through the container. Use when behaviour changes are too structural for hooks.
-3. **Publish stubs** — `php artisan vendor:publish --tag=lunar-filament.schemas`. Copies into `app/Filament/…` (configurable via `lunar-filament.publish_path`). One-way door — the published copy no longer receives upstream improvements. Prefer the first two strategies unless the consumer genuinely owns the file.
+3. **Publish stubs** — `php artisan vendor:publish --tag=lunar-filament.schemas`. Copies into `app/Filament/…` (configurable via `lunar.filament.publish_path`). One-way door — the published copy no longer receives upstream improvements. Prefer the first two strategies unless the consumer genuinely owns the file.
 
 When designing a new public class, work through all three: hooks should fire at sensible points, the class should be subclass-friendly (final methods only when invariants demand it), and stub-publishable surfaces should be self-contained.

@@ -11,7 +11,7 @@ it('returns the bridge class when no published subclass exists', function () {
 });
 
 it('returns the bridge class when prefer_published is disabled', function () {
-    config()->set('lunar-filament.resolver.prefer_published', false);
+    config()->set('lunar.filament.resolver.prefer_published', false);
 
     expect(Resolver::resolve(BrandForm::class))->toBe(BrandForm::class);
 });
