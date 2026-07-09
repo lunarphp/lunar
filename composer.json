@@ -18,6 +18,7 @@
         "filament/spatie-laravel-media-library-plugin": "^5.0",
         "guzzlehttp/guzzle": "^7.3",
         "http-interop/http-factory-guzzle": "^1.2",
+        "inertiajs/inertia-laravel": "^2.0",
         "lunarphp/nestedset": "^1.0",
         "laravel/framework": "^12.0|^13.0",
         "laravel/scout": "^10.13.1",
@@ -68,6 +69,7 @@
             "Lunar\\Filament\\": "packages/filament/src/",
             "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",
+            "Lunar\\Panel\\": "packages/panel/src/",
             "Lunar\\Paypal\\": "packages/paypal/src/",
             "Lunar\\Search\\": "packages/search/src/",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
@@ -85,6 +87,7 @@
             "Lunar\\Tests\\DemoData\\": "tests/demo-data",
             "Lunar\\Tests\\Filament\\": "tests/filament",
             "Lunar\\Tests\\Opayo\\": "tests/opayo",
+            "Lunar\\Tests\\Panel\\": "tests/panel",
             "Lunar\\Tests\\Paypal\\": "tests/paypal",
             "Lunar\\Tests\\Shipping\\": "tests/shipping",
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
@@ -118,6 +121,7 @@
                 "Lunar\\Shipping\\ShippingServiceProvider",
                 "Lunar\\Upgrade\\UpgradeServiceProvider",
                 "Lunar\\DemoData\\DemoDataServiceProvider",
+                "Lunar\\Panel\\PanelServiceProvider",
                 "Lunar\\Core\\LunarServiceProvider"
             ]
         }
@@ -129,6 +133,7 @@
         "lunarphp/filament": "self.version",
         "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",
+        "lunarphp/panel": "self.version",
         "lunarphp/paypal": "self.version",
         "lunarphp/search": "self.version",
         "lunarphp/stripe": "self.version",
