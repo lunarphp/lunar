@@ -81,7 +81,7 @@ class PanelServiceProvider extends ServiceProvider
         $prefix = $manager->path();
         $middleware = config('lunar.panel.route_middleware', ['web']);
 
-        Route::middleware($middleware)
+        Route::middleware([...$middleware, HandlePanelInertiaRequests::class])
             ->prefix($prefix)
             ->group("{$this->root}/routes/auth.php");
 
