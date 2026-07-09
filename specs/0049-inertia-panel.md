@@ -311,10 +311,10 @@ rendering; SSR; removal of the Filament admin.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Package scaffold: composer/provider wiring, `lunar.panel` config (+ Filament
+- [x] Slice 1 — Package scaffold: composer/provider wiring, `lunar.panel` config (+ Filament
   admin config rename), route skeleton, root Blade view, panel Vite build, asset
   publish/link commands, Tailwind theme tokens, `panel` test suite.
-- [ ] Slice 2 — PHP extension core: `PanelManager` + facade, `Section`/`SectionExtension`,
+- [x] Slice 2 — PHP extension core: `PanelManager` + facade, `Section`/`SectionExtension`,
   `NavigationRegistry` (+ settings), `SlotRegistry`, `TableExtension` + resolver, Inertia
   shared-props middleware, fixture add-on Pest coverage.
 - [ ] Slice 3 — Auth: login, logout, rate limiting, password reset, 2FA challenge + setup,
