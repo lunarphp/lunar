@@ -1,57 +1,160 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { TooltipProvider, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, VisuallyHidden } from 'reka-ui';
+import { usePage } from '@inertiajs/vue3';
+import SettingsNavBody from '../components/SettingsNavBody.vue';
+import Icon from '../components/Icon.vue';
+import { useNavState } from '../composables/useNavState';
+import { useLang } from '../composables/useLang';
 
 defineProps<{ title?: string }>();
 
-type NavItem = { key: string; label: string; url: string | null };
-type NavGroup = { key: string; label: string; items: NavItem[] };
+const { state, toggleCollapsed, openDrawer } = useNavState();
+const t = useLang('nav');
 
-const settingsNavigation = computed(
-    () => (usePage().props.settingsNavigation as { groups?: NavGroup[] } | undefined)?.groups ?? [],
-);
-
+const panelName = computed(() => (usePage().props.panel as { name: string }).name);
 const flashSuccess = computed(() => (usePage().props.flash as { success?: string })?.success);
 const flashError = computed(() => (usePage().props.flash as { error?: string })?.error);
 
-const isCurrent = (url: string | null) => !!url && window.location.pathname === new URL(url, window.location.origin).pathname;
+const isDesktop = ref(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(min-width: 1024px)').matches : true);
+
+const effectivelyCollapsed = computed(() => isDesktop.value && state.collapsed);
+
+let mql: MediaQueryList | null = null;
+
+function onMqlChange(e: MediaQueryListEvent): void {
+    isDesktop.value = e.matches;
+
+    if (e.matches) {
+        state.drawerOpen = false;
+    }
+}
+
+function onKeydown(e: KeyboardEvent): void {
+    if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+        e.preventDefault();
+        toggleCollapsed();
+    }
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', onKeydown);
+
+    if (typeof window === 'undefined' || !window.matchMedia) {
+        return;
+    }
+
+    mql = window.matchMedia('(min-width: 1024px)');
+    isDesktop.value = mql.matches;
+
+    if (mql.addEventListener) {
+        mql.addEventListener('change', onMqlChange);
+    } else {
+        mql.addListener(onMqlChange);
+    }
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', onKeydown);
+
+    if (!mql) {
+        return;
+    }
+
+    if (mql.removeEventListener) {
+        mql.removeEventListener('change', onMqlChange);
+    } else {
+        mql.removeListener(onMqlChange);
+    }
+});
 </script>
 
 <template>
-    <div class="min-h-screen bg-canvas font-sans">
-        <div class="mx-auto flex max-w-5xl gap-8 px-6 py-10">
-            <aside class="w-48 shrink-0">
-                <div class="text-[11px] font-semibold uppercase tracking-wide text-ink-400 px-2 mb-2">Settings</div>
-                <nav class="flex flex-col gap-4">
-                    <div v-for="group in settingsNavigation" :key="group.key">
-                        <div class="px-2 text-[11px] font-medium text-ink-400 mb-1">{{ group.label }}</div>
-                        <div class="flex flex-col">
-                            <Link
-                                v-for="item in group.items"
-                                :key="item.key"
-                                :href="item.url ?? '#'"
-                                class="rounded-md px-2 py-1.5 text-[13px] font-medium transition-colors"
-                                :class="isCurrent(item.url) ? 'bg-surface-2 text-ink-900' : 'text-ink-600 hover:bg-surface-2 hover:text-ink-900'"
-                            >
-                                {{ item.label }}
-                            </Link>
-                        </div>
-                    </div>
-                </nav>
+    <TooltipProvider :delay-duration="350">
+        <div
+            :class="[
+                'min-h-screen lg:grid',
+                state.collapsed ? 'lg:grid-cols-[56px_1fr]' : 'lg:grid-cols-[232px_1fr]',
+            ]"
+        >
+            <aside
+                v-if="isDesktop"
+                :class="[
+                    'bg-paper border-r border-line flex flex-col gap-0.5 overflow-y-auto overflow-x-hidden transition-[width] duration-200 sticky top-0 h-screen',
+                    state.collapsed ? 'py-2.5 px-1.5' : 'p-2.5',
+                ]"
+            >
+                <SettingsNavBody :collapsed="effectivelyCollapsed" />
             </aside>
 
-            <div class="flex-1 min-w-0">
-                <h1 v-if="title" class="text-xl font-semibold tracking-[-0.02em] text-ink-900 mb-5">{{ title }}</h1>
+            <DialogRoot v-else v-model:open="state.drawerOpen">
+                <DialogPortal>
+                    <DialogOverlay
+                        class="fixed inset-0 bg-ink-900/40 z-40 lg:hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+                    />
+                    <DialogContent
+                        class="bg-paper border-r border-line flex flex-col gap-0.5 overflow-y-auto overflow-x-hidden fixed inset-y-0 left-0 z-50 w-[260px] p-2.5 lg:hidden focus:outline-none transition-transform duration-200 data-[state=closed]:-translate-x-full data-[state=open]:translate-x-0"
+                    >
+                        <VisuallyHidden>
+                            <DialogTitle>Settings navigation</DialogTitle>
+                        </VisuallyHidden>
+                        <SettingsNavBody :collapsed="false" />
+                    </DialogContent>
+                </DialogPortal>
+            </DialogRoot>
 
-                <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
-                    {{ flashSuccess }}
-                </div>
-                <div v-if="flashError" class="mb-4 rounded-md border border-danger bg-danger/10 px-3 py-2 text-[12px] text-danger">
-                    {{ flashError }}
+            <button
+                :class="[
+                    'fixed top-3.5 w-[22px] h-[22px] rounded-full bg-paper border border-line-strong shadow-sm place-items-center text-ink-500 z-40 transition-[background-color,color,border-color,left] duration-200 hidden lg:grid',
+                    'hover:bg-surface-2 hover:text-ink-900 hover:border-ink-300',
+                    'focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35 focus-visible:border-sage',
+                    state.collapsed ? 'left-[calc(56px-11px)]' : 'left-[calc(232px-11px)]',
+                ]"
+                :aria-label="state.collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+                :title="state.collapsed ? 'Expand sidebar  ⌘\\' : 'Collapse sidebar  ⌘\\'"
+                @click="toggleCollapsed"
+            >
+                <svg
+                    class="w-3 h-3 transition-transform duration-200"
+                    :class="{ 'rotate-180': state.collapsed }"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <polyline points="15 6 9 12 15 18" />
+                </svg>
+            </button>
+
+            <main class="flex flex-col min-w-0">
+                <div class="sticky top-0 z-30 flex items-center gap-2 px-4 py-2.5 bg-paper/75 backdrop-saturate-[1.6] backdrop-blur-md border-b border-line lg:hidden">
+                    <button
+                        type="button"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-surface-2 shrink-0"
+                        :aria-label="t('toggle_sidebar')"
+                        @click="openDrawer"
+                    >
+                        <Icon name="menu" cls="sm" />
+                    </button>
+                    <span class="text-[13px] font-medium text-ink-900 truncate">{{ panelName }}</span>
                 </div>
 
-                <slot />
-            </div>
+                <div class="mx-auto w-full max-w-5xl px-6 py-10">
+                    <h1 v-if="title" class="text-xl font-semibold tracking-[-0.02em] text-ink-900 mb-5">{{ title }}</h1>
+
+                    <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
+                        {{ flashSuccess }}
+                    </div>
+                    <div v-if="flashError" class="mb-4 rounded-md border border-danger bg-danger/10 px-3 py-2 text-[12px] text-danger">
+                        {{ flashError }}
+                    </div>
+
+                    <slot />
+                </div>
+            </main>
         </div>
-    </div>
+    </TooltipProvider>
 </template>

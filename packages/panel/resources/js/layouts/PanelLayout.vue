@@ -1,126 +1,148 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { TooltipProvider, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, VisuallyHidden } from 'reka-ui';
 import { usePage } from '@inertiajs/vue3';
+import NavBody from '../components/NavBody.vue';
 import Icon from '../components/Icon.vue';
-import NavLink from '../components/NavLink.vue';
+import { useNavState } from '../composables/useNavState';
 import { useLang } from '../composables/useLang';
-import { useTheme } from '../composables/useTheme';
-import type { NavItemShape, NavTreeShape } from '../types/navigation';
 
-const page = usePage();
+const { state, toggleCollapsed, openDrawer } = useNavState();
 const t = useLang('nav');
-const { theme, cycleTheme } = useTheme();
 
-const panelName = computed(() => (page.props.panel as { name: string }).name);
+const panelName = computed(() => (usePage().props.panel as { name: string }).name);
 
-const navigation = computed<NavTreeShape>(() => (page.props.navigation as NavTreeShape | undefined) ?? { groups: [], items: [] });
+const isDesktop = ref(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(min-width: 1024px)').matches : true);
 
-// Settings nav is flattened (no menus) since the middleware always requests skipMenus for it.
-const settingsItems = computed<NavItemShape[]>(() => {
-    const tree = (page.props.settingsNavigation as NavTreeShape | undefined) ?? { groups: [], items: [] };
+const effectivelyCollapsed = computed(() => isDesktop.value && state.collapsed);
 
-    return [...tree.items, ...tree.groups.flatMap((group) => group.items)];
-});
+let mql: MediaQueryList | null = null;
 
-const collapsed = ref(false);
-const mobileOpen = ref(false);
+function onMqlChange(e: MediaQueryListEvent): void {
+    isDesktop.value = e.matches;
 
-function toggleCollapsed(): void {
-    collapsed.value = !collapsed.value;
+    if (e.matches) {
+        state.drawerOpen = false;
+    }
 }
 
-const themeIcon = computed(() => {
-    if (theme.value === 'dark') {
-        return 'moon';
+function onKeydown(e: KeyboardEvent): void {
+    if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+        e.preventDefault();
+        toggleCollapsed();
+    }
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', onKeydown);
+
+    if (typeof window === 'undefined' || !window.matchMedia) {
+        return;
     }
 
-    if (theme.value === 'light') {
-        return 'sun';
+    mql = window.matchMedia('(min-width: 1024px)');
+    isDesktop.value = mql.matches;
+
+    if (mql.addEventListener) {
+        mql.addEventListener('change', onMqlChange);
+    } else {
+        mql.addListener(onMqlChange);
+    }
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', onKeydown);
+
+    if (!mql) {
+        return;
     }
 
-    return 'monitor';
+    if (mql.removeEventListener) {
+        mql.removeEventListener('change', onMqlChange);
+    } else {
+        mql.removeListener(onMqlChange);
+    }
 });
 </script>
 
 <template>
-    <div class="min-h-screen bg-canvas font-sans">
-        <div v-if="mobileOpen" class="fixed inset-0 z-40 bg-black/40 lg:hidden" @click="mobileOpen = false" />
-
-        <aside
+    <TooltipProvider :delay-duration="350">
+        <div
             :class="[
-                'fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-line bg-surface transition-transform duration-150 lg:translate-x-0',
-                mobileOpen ? 'translate-x-0' : '-translate-x-full',
-                collapsed ? 'lg:w-16' : 'lg:w-60',
+                'min-h-screen lg:grid',
+                state.collapsed ? 'lg:grid-cols-[56px_1fr]' : 'lg:grid-cols-[232px_1fr]',
             ]"
         >
-            <div class="flex h-12 shrink-0 items-center gap-2 border-b border-line px-3">
-                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-ink-900 text-[11px] font-semibold text-paper">L</span>
-                <span v-if="!collapsed" class="truncate text-[13px] font-semibold text-ink-900">{{ panelName }}</span>
-            </div>
+            <!-- Desktop: always-visible sticky sidebar -->
+            <aside
+                v-if="isDesktop"
+                :class="[
+                    'bg-paper border-r border-line flex flex-col gap-0.5 overflow-y-auto overflow-x-hidden transition-[width] duration-200 sticky top-0 h-screen',
+                    state.collapsed ? 'py-2.5 px-1.5' : 'p-2.5',
+                ]"
+            >
+                <NavBody :collapsed="effectivelyCollapsed" />
+            </aside>
 
-            <nav class="flex-1 space-y-4 overflow-y-auto px-2 py-3">
-                <div v-if="navigation.items.length" class="space-y-0.5">
-                    <NavLink v-for="item in navigation.items" :key="item.key" :item="item" :collapsed="collapsed" />
-                </div>
+            <!-- Mobile: dialog-backed drawer -->
+            <DialogRoot v-else v-model:open="state.drawerOpen">
+                <DialogPortal>
+                    <DialogOverlay
+                        class="fixed inset-0 bg-ink-900/40 z-40 lg:hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+                    />
+                    <DialogContent
+                        class="bg-paper border-r border-line flex flex-col gap-0.5 overflow-y-auto overflow-x-hidden fixed inset-y-0 left-0 z-50 w-[260px] p-2.5 lg:hidden focus:outline-none transition-transform duration-200 data-[state=closed]:-translate-x-full data-[state=open]:translate-x-0"
+                    >
+                        <VisuallyHidden>
+                            <DialogTitle>Navigation</DialogTitle>
+                        </VisuallyHidden>
+                        <NavBody :collapsed="false" />
+                    </DialogContent>
+                </DialogPortal>
+            </DialogRoot>
 
-                <div v-for="group in navigation.groups" :key="group.key">
-                    <div v-if="!collapsed" class="mb-1 px-2 text-[10.5px] font-semibold uppercase tracking-wide text-ink-400">
-                        {{ group.label }}
-                    </div>
-                    <div class="space-y-0.5">
-                        <NavLink v-for="item in group.items" :key="item.key" :item="item" :collapsed="collapsed" />
-                    </div>
-                </div>
-            </nav>
-
-            <div v-if="settingsItems.length" class="space-y-0.5 border-t border-line p-2">
-                <div v-if="!collapsed" class="mb-1 px-2 text-[10.5px] font-semibold uppercase tracking-wide text-ink-400">
-                    {{ t('settings') }}
-                </div>
-                <NavLink v-for="item in settingsItems" :key="item.key" :item="item" :collapsed="collapsed" />
-            </div>
-
-            <div class="border-t border-line p-2">
-                <button
-                    type="button"
-                    class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-ink-700 hover:bg-surface-2 hover:text-ink-900"
-                    :aria-label="t('toggle_sidebar')"
-                    @click="toggleCollapsed"
+            <button
+                :class="[
+                    'fixed top-3.5 w-[22px] h-[22px] rounded-full bg-paper border border-line-strong shadow-sm place-items-center text-ink-500 z-40 transition-[background-color,color,border-color,left] duration-200',
+                    'hidden lg:grid',
+                    'hover:bg-surface-2 hover:text-ink-900 hover:border-ink-300',
+                    'focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35 focus-visible:border-sage',
+                    state.collapsed ? 'left-[calc(56px-11px)]' : 'left-[calc(232px-11px)]',
+                ]"
+                :aria-label="state.collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+                :title="state.collapsed ? 'Expand sidebar  ⌘\\' : 'Collapse sidebar  ⌘\\'"
+                @click="toggleCollapsed"
+            >
+                <svg
+                    class="w-3 h-3 transition-transform duration-200"
+                    :class="{ 'rotate-180': state.collapsed }"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
                 >
-                    <Icon :name="collapsed ? 'chevronRight' : 'chevronLeft'" cls="sm" />
-                    <span v-if="!collapsed">{{ t('toggle_sidebar') }}</span>
-                </button>
-            </div>
-        </aside>
+                    <polyline points="15 6 9 12 15 18" />
+                </svg>
+            </button>
 
-        <div :class="['flex min-h-screen flex-col transition-[padding] duration-150', collapsed ? 'lg:pl-16' : 'lg:pl-60']">
-            <header class="sticky top-0 z-30 flex h-12 items-center gap-2 border-b border-line bg-surface px-3">
-                <button
-                    type="button"
-                    class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-surface-2 lg:hidden"
-                    :aria-label="t('toggle_sidebar')"
-                    @click="mobileOpen = !mobileOpen"
-                >
-                    <Icon name="menu" cls="sm" />
-                </button>
-
-                <span class="text-[13px] font-medium text-ink-900 lg:hidden">{{ panelName }}</span>
-
-                <div class="ml-auto flex items-center gap-1">
+            <main class="flex flex-col min-w-0">
+                <div class="sticky top-0 z-30 flex items-center gap-2 px-4 py-2.5 bg-paper/75 backdrop-saturate-[1.6] backdrop-blur-md border-b border-line lg:hidden">
                     <button
                         type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-md text-ink-700 hover:bg-surface-2"
-                        :aria-label="t('toggle_theme')"
-                        @click="cycleTheme"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-surface-2 shrink-0"
+                        :aria-label="t('toggle_sidebar')"
+                        @click="openDrawer"
                     >
-                        <Icon :name="themeIcon" cls="sm" />
+                        <Icon name="menu" cls="sm" />
                     </button>
+                    <span class="text-[13px] font-medium text-ink-900 truncate">{{ panelName }}</span>
                 </div>
-            </header>
 
-            <main class="flex-1">
                 <slot />
             </main>
         </div>
-    </div>
+    </TooltipProvider>
 </template>
