@@ -101,4 +101,3 @@ const confirmDestroy = (): void => {
         @confirm="confirmDestroy"
     />
 </template>
-</content>

@@ -154,4 +154,3 @@ const confirmDelete = (): void => {
         @confirm="confirmDelete"
     />
 </template>
-</content>
