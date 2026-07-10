@@ -95,7 +95,8 @@
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
             "Lunar\\Tests\\Stripe\\": "tests/stripe",
             "Lunar\\Tests\\Search\\": "tests/search",
-            "Lunar\\Tests\\Upgrade\\": "tests/upgrade"
+            "Lunar\\Tests\\Upgrade\\": "tests/upgrade",
+            "LunarPanelExample\\": "examples/panel-addon-example/src/"
         }
     },
     "extra": {
