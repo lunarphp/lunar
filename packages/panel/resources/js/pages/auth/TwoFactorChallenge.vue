@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onBeforeUnmount, ref, watch } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
@@ -9,7 +9,10 @@ import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
 
 const props = defineProps<{
-    urls: { store: string; login: string };
+    method: 'authenticator' | 'email';
+    obfuscatedEmail?: string | null;
+    cooldownRemaining?: number;
+    urls: { store: string; resend: string; login: string };
 }>();
 
 const { t } = useI18n();
@@ -19,6 +22,53 @@ const codeInputRef = ref<InstanceType<typeof CodeInput> | null>(null);
 const form = useForm({
     code: '',
     recovery_code: '',
+});
+
+const resendForm = useForm({});
+
+const resendCooldown = ref(props.cooldownRemaining ?? 0);
+let cooldownTimer: ReturnType<typeof setInterval> | null = null;
+
+const startCooldown = (seconds: number) => {
+    resendCooldown.value = seconds;
+
+    if (cooldownTimer) {
+        clearInterval(cooldownTimer);
+    }
+
+    cooldownTimer = setInterval(() => {
+        resendCooldown.value -= 1;
+
+        if (resendCooldown.value <= 0) {
+            resendCooldown.value = 0;
+
+            if (cooldownTimer) {
+                clearInterval(cooldownTimer);
+                cooldownTimer = null;
+            }
+        }
+    }, 1000);
+};
+
+if (props.method === 'email' && resendCooldown.value > 0) {
+    startCooldown(resendCooldown.value);
+}
+
+// A resend reloads the challenge page with a fresh cooldownRemaining prop —
+// restart the local countdown from that server-supplied value.
+watch(
+    () => props.cooldownRemaining,
+    (seconds) => {
+        if (props.method === 'email' && typeof seconds === 'number' && seconds > 0) {
+            startCooldown(seconds);
+        }
+    },
+);
+
+onBeforeUnmount(() => {
+    if (cooldownTimer) {
+        clearInterval(cooldownTimer);
+    }
 });
 
 const submit = () => {
@@ -37,6 +87,16 @@ const toggleRecovery = () => {
     form.reset();
     form.clearErrors();
 };
+
+const resend = () => {
+    if (resendCooldown.value > 0 || resendForm.processing) {
+        return;
+    }
+
+    resendForm.post(props.urls.resend, {
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
@@ -51,12 +111,16 @@ const toggleRecovery = () => {
             </Link>
 
             <div class="inline-flex items-center justify-center w-9 h-9 rounded-md bg-sage-soft text-sage-ink mb-4">
-                <Icon name="shield" />
+                <Icon :name="method === 'email' ? 'mail' : 'shield'" />
             </div>
 
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.challenge_title') }}</h1>
             <p class="mt-1.5 text-[13px] text-ink-500">
-                {{ useRecovery ? t('auth.challenge_recovery_subtitle') : t('auth.challenge_subtitle') }}
+                <template v-if="useRecovery">{{ t('auth.challenge_recovery_subtitle') }}</template>
+                <template v-else-if="method === 'email'">
+                    {{ t('auth.challenge_email_subtitle', { email: obfuscatedEmail }) }}
+                </template>
+                <template v-else>{{ t('auth.challenge_subtitle') }}</template>
             </p>
 
             <div class="mt-7">
@@ -93,7 +157,24 @@ const toggleRecovery = () => {
                 {{ form.processing ? t('auth.verifying') : t('auth.verify_button') }}
             </Button>
 
-            <div class="mt-5 text-[12px]">
+            <div v-if="method === 'email'" class="mt-5 flex items-center justify-between text-[12px]">
+                <span v-if="resendForm.recentlySuccessful" class="text-sage-ink">{{ t('auth.code_resent') }}</span>
+                <span v-else />
+                <button
+                    type="button"
+                    class="text-ink-500 disabled:cursor-not-allowed hover:text-ink-900 transition-colors"
+                    :disabled="resendCooldown > 0 || resendForm.processing"
+                    @click="resend"
+                >
+                    <span v-if="resendCooldown > 0">{{ t('auth.resend_in_seconds', { seconds: resendCooldown }) }}</span>
+                    <span v-else>{{ t('auth.resend_code') }}</span>
+                </button>
+            </div>
+            <div v-if="method === 'email' && resendForm.errors.code" class="mt-2 text-[11px] text-danger">
+                {{ resendForm.errors.code }}
+            </div>
+
+            <div v-if="method === 'authenticator'" class="mt-5 text-[12px]">
                 <button
                     type="button"
                     class="text-ink-700 hover:text-ink-900 underline-offset-4 hover:underline transition-colors"
