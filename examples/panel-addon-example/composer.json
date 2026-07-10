@@ -1,0 +1,22 @@
+{
+    "name": "lunarphp/panel-addon-example",
+    "description": "Reference add-on proving lunarphp/panel's runtime extension mechanism: a page, a nav item, a slot, and a table extension registered without recompiling the panel.",
+    "license": "MIT",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "LunarPanelExample\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.4",
+        "lunarphp/panel": "self.version"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LunarPanelExample\\ExampleAddonServiceProvider"
+            ]
+        }
+    }
+}

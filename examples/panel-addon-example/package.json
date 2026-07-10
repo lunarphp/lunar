@@ -1,0 +1,15 @@
+{
+    "name": "@lunarphp/panel-addon-example",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@lunarphp/panel-vite-plugin": "file:../../packages/panel/resources/package",
+        "@vitejs/plugin-vue": "^5.2.0",
+        "vite": "^6.0.0",
+        "vue": "^3.5.13"
+    }
+}
