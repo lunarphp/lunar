@@ -2,7 +2,12 @@
 import { computed, ref } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import Button from '../../components/Button.vue';
-import FieldLabel from '../../components/FieldLabel.vue';
+import DataTable from '../../components/DataTable.vue';
+import Icon from '../../components/Icon.vue';
+import Pagination from '../../components/Pagination.vue';
+import PageEmpty from '../../components/PageEmpty.vue';
+import Select from '../../components/Select.vue';
+import StatusBadge from '../../components/StatusBadge.vue';
 import TextInput from '../../components/TextInput.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 
@@ -46,6 +51,13 @@ const customerGroupId = ref(props.filters.customer_group_id ?? '');
 const sort = ref(props.filters.sort ?? 'created_at');
 const direction = ref(props.filters.direction ?? 'desc');
 
+const sortOptions: { value: string; label: string }[] = [
+    { value: 'created_at', label: 'Recently created' },
+    { value: 'first_name', label: 'First name' },
+    { value: 'last_name', label: 'Last name' },
+    { value: 'company_name', label: 'Company name' },
+];
+
 const reload = (): void => {
     router.get(
         props.urls.index,
@@ -59,119 +71,135 @@ const reload = (): void => {
     );
 };
 
-const sortBy = (column: string): void => {
-    direction.value = sort.value === column && direction.value === 'asc' ? 'desc' : 'asc';
-    sort.value = column;
+const toggleDirection = (): void => {
+    direction.value = direction.value === 'asc' ? 'desc' : 'asc';
     reload();
 };
 
-const columns: { key: string; label: string }[] = [
-    { key: 'first_name', label: 'Name' },
-    { key: 'company_name', label: 'Company' },
-    { key: 'created_at', label: 'Created' },
+const hasActiveFilters = computed(() => !!q.value.trim() || !!customerGroupId.value);
+const clearFilters = (): void => {
+    q.value = '';
+    customerGroupId.value = '';
+    reload();
+};
+
+const columns = [
+    { key: 'full_name', label: 'Customer', width: 'minmax(0,1.4fr)' },
+    { key: 'company_name', label: 'Company', width: 'minmax(0,1fr)' },
+    { key: 'customer_groups', label: 'Groups', width: 'minmax(0,1fr)' },
+    { key: 'created_at', label: 'Created', width: '120px', align: 'right' as const },
 ];
+
+const initials = (name: string): string =>
+    name
+        .split(' ')
+        .filter(Boolean)
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
+
+const formatDate = (value: string): string => new Date(value).toLocaleDateString();
 </script>
 
 <template>
     <PanelLayout>
-    <div class="bg-canvas font-sans py-10">
-        <div class="mx-auto flex max-w-5xl flex-col gap-6 px-6">
-            <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">Customers</h1>
-                <Link :href="urls.create">
-                    <Button variant="primary" icon="plus">New customer</Button>
-                </Link>
-            </div>
-
-            <div v-if="flashSuccess" class="rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
-                {{ flashSuccess }}
-            </div>
-
-            <div class="flex items-end gap-3">
-                <form class="flex-1" @submit.prevent="reload">
-                    <FieldLabel>Search</FieldLabel>
-                    <TextInput v-model="q" placeholder="Name, company, tax ID, account ref…" @keyup.enter="reload" />
-                </form>
-                <div class="w-56">
-                    <FieldLabel>Customer group</FieldLabel>
-                    <select
-                        v-model="customerGroupId"
-                        class="h-8 w-full rounded-md border border-line-strong bg-surface px-2.5 text-[13px] text-ink-900 outline-none focus:border-sage focus:ring-3 focus:ring-sage/35"
-                        @change="reload"
-                    >
-                        <option value="">All groups</option>
-                        <option v-for="group in customerGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
-                    </select>
+        <div data-screen-label="Customers" class="contents">
+            <!-- Hero header -->
+            <div class="flex items-start gap-3 sm:gap-4 px-4 sm:px-5 lg:px-7 pt-[18px] pb-3.5 border-b border-line bg-paper">
+                <div class="w-11 h-11 rounded-md overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700">
+                    <Icon name="users" />
                 </div>
-                <Button @click="reload">Search</Button>
+                <div class="flex-1 min-w-0">
+                    <h1 class="m-0 text-lg sm:text-xl font-semibold tracking-[-0.015em] truncate">Customers</h1>
+                    <div class="text-xs text-ink-500 mt-[3px] max-w-[640px]">
+                        Everyone who's registered or been invited to a B2B account. Manage groups and keep contact details current.
+                    </div>
+                </div>
+                <div class="hidden sm:flex gap-1.5 shrink-0">
+                    <Link :href="urls.create">
+                        <Button variant="primary" icon="plus">Add customer</Button>
+                    </Link>
+                </div>
             </div>
 
-            <div class="overflow-x-auto rounded-lg border border-line bg-paper">
-                <table class="w-full text-left text-[13px]">
-                    <thead>
-                        <tr class="border-b border-line text-[11px] uppercase tracking-wide text-ink-500">
-                            <th
-                                v-for="column in columns"
-                                :key="column.key"
-                                class="cursor-pointer select-none px-4 py-2 font-medium hover:text-ink-900"
-                                @click="sortBy(column.key)"
-                            >
-                                {{ column.label }}
-                                <span v-if="sort === column.key">{{ direction === 'asc' ? '▲' : '▼' }}</span>
-                            </th>
-                            <th class="px-4 py-2 font-medium">Groups</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="customer in customers.data"
-                            :key="customer.id"
-                            class="border-b border-line last:border-0 hover:bg-surface-2"
-                        >
-                            <td class="px-4 py-2.5">
-                                <Link :href="customer.edit_url" class="font-medium text-ink-900 hover:underline">
-                                    {{ customer.full_name }}
-                                </Link>
-                                <div v-if="customer.account_ref" class="text-[11px] text-ink-400">{{ customer.account_ref }}</div>
-                            </td>
-                            <td class="px-4 py-2.5 text-ink-700">{{ customer.company_name ?? '—' }}</td>
-                            <td class="px-4 py-2.5 text-ink-500">{{ new Date(customer.created_at).toLocaleDateString() }}</td>
-                            <td class="px-4 py-2.5">
-                                <div class="flex flex-wrap gap-1">
-                                    <span
-                                        v-for="group in customer.customer_groups"
-                                        :key="group.id"
-                                        class="rounded-full border border-line-strong bg-surface-2 px-2 py-0.5 text-[11px] text-ink-700"
-                                    >{{ group.name }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr v-if="!customers.data.length">
-                            <td colspan="4" class="px-4 py-8 text-center text-ink-400">No customers found.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+                <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
+                    {{ flashSuccess }}
+                </div>
 
-            <div class="flex items-center justify-between text-[12px] text-ink-500">
-                <span v-if="customers.total">Showing {{ customers.from }}–{{ customers.to }} of {{ customers.total }}</span>
-                <div class="flex gap-2">
-                    <Button
-                        size="sm"
-                        icon="chevronLeft"
-                        :disabled="!customers.prev_page_url"
-                        @click="customers.prev_page_url && router.get(customers.prev_page_url, {}, { preserveState: true, preserveScroll: true })"
-                    />
-                    <span class="flex items-center px-2">Page {{ customers.current_page }} / {{ customers.last_page }}</span>
-                    <Button
-                        size="sm"
-                        icon="chevronRight"
-                        :disabled="!customers.next_page_url"
-                        @click="customers.next_page_url && router.get(customers.next_page_url, {}, { preserveState: true, preserveScroll: true })"
-                    />
+                <!-- Toolbar -->
+                <div class="flex flex-wrap items-end gap-2 mb-4">
+                    <div class="flex-1 max-w-[280px] min-w-[180px]">
+                        <TextInput v-model="q" placeholder="Name, company, tax ID, account ref…" @keyup.enter="reload">
+                            <template #prefix><Icon name="search" cls="sm" /></template>
+                        </TextInput>
+                    </div>
+                    <div class="w-48">
+                        <Select v-model="customerGroupId" @change="reload">
+                            <option value="">All groups</option>
+                            <option v-for="group in customerGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
+                        </Select>
+                    </div>
+                    <div class="w-44">
+                        <Select v-model="sort" @change="reload">
+                            <option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+                        </Select>
+                    </div>
+                    <Button variant="ghost" :aria-label="direction === 'asc' ? 'Sort ascending' : 'Sort descending'" @click="toggleDirection">
+                        {{ direction === 'asc' ? 'Asc' : 'Desc' }}
+                    </Button>
+                    <Button @click="reload">Search</Button>
+                    <div class="flex-1" />
+                    <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ customers.total }} total</span>
+                    <Link :href="urls.create" class="sm:hidden">
+                        <Button variant="primary" icon="plus">New</Button>
+                    </Link>
+                </div>
+
+                <DataTable :columns="columns" :rows="customers.data" :row-to="(row) => row.edit_url as string">
+                    <template #empty>
+                        <PageEmpty title="No customers match these filters">
+                            Try clearing the search or filters to see more customers.
+                            <div v-if="hasActiveFilters" class="mt-3">
+                                <Button @click="clearFilters">Clear filters</Button>
+                            </div>
+                        </PageEmpty>
+                    </template>
+
+                    <template #cell-full_name="{ row }">
+                        <div class="min-w-0 flex items-center gap-2.5">
+                            <div class="w-7 h-7 rounded-full border border-line bg-surface-2 grid place-items-center text-ink-700 text-[10.5px] font-semibold shrink-0">
+                                {{ initials(row.full_name as string) }}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-[12.5px] text-ink-900 truncate">{{ row.full_name }}</div>
+                                <div v-if="row.account_ref" class="text-[11px] text-ink-500 truncate font-mono">{{ row.account_ref }}</div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template #cell-company_name="{ value }">
+                        <span v-if="value" class="text-[12.5px] text-ink-900 truncate">{{ value }}</span>
+                        <span v-else class="text-[12.5px] text-ink-400">—</span>
+                    </template>
+
+                    <template #cell-customer_groups="{ value }">
+                        <div class="min-w-0 flex flex-wrap gap-1">
+                            <StatusBadge v-for="group in (value as CustomerGroupOption[])" :key="group.id" size="sm">{{ group.name }}</StatusBadge>
+                            <span v-if="!(value as CustomerGroupOption[]).length" class="text-[12.5px] text-ink-400">—</span>
+                        </div>
+                    </template>
+
+                    <template #cell-created_at="{ value }">
+                        <span class="text-xs text-ink-700 [font-variant-numeric:tabular-nums]">{{ formatDate(value as string) }}</span>
+                    </template>
+                </DataTable>
+
+                <div class="mt-4">
+                    <Pagination :meta="customers" />
                 </div>
             </div>
         </div>
-    </div>
     </PanelLayout>
 </template>
