@@ -4,6 +4,7 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import Button from '../../components/Button.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import TextInput from '../../components/TextInput.vue';
+import PanelLayout from '../../layouts/PanelLayout.vue';
 
 interface CustomerGroupOption {
     id: number;
@@ -72,7 +73,8 @@ const columns: { key: string; label: string }[] = [
 </script>
 
 <template>
-    <div class="min-h-screen bg-canvas font-sans py-10">
+    <PanelLayout>
+    <div class="bg-canvas font-sans py-10">
         <div class="mx-auto flex max-w-5xl flex-col gap-6 px-6">
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">Customers</h1>
@@ -171,4 +173,5 @@ const columns: { key: string; label: string }[] = [
             </div>
         </div>
     </div>
+    </PanelLayout>
 </template>

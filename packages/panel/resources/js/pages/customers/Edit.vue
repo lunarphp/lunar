@@ -6,6 +6,7 @@ import Checkbox from '../../components/Checkbox.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
+import PanelLayout from '../../layouts/PanelLayout.vue';
 
 interface OptionItem {
     id: number;
@@ -201,7 +202,8 @@ const unlinkUser = (user: LinkedUser): void => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-canvas font-sans py-10">
+    <PanelLayout>
+    <div class="bg-canvas font-sans py-10">
         <div class="mx-auto flex max-w-3xl flex-col gap-6 px-6">
             <div class="flex items-center gap-2">
                 <Link :href="urls.index" class="text-ink-500 hover:text-ink-900">
@@ -476,4 +478,5 @@ const unlinkUser = (user: LinkedUser): void => {
             </div>
         </div>
     </div>
+    </PanelLayout>
 </template>
