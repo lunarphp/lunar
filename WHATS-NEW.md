@@ -137,6 +137,34 @@ fulfilment status, stock adjust, bulk publish, and more) and global-search
 descriptors. Admin resources are publishable, and Staff moved into core so
 non-Filament panels can share it.
 
+## A new admin panel, built on Inertia + Vue
+
+Alongside the Filament admin, a first-party `lunarphp/panel` package now ships
+a Vue 3 + Inertia.js v2 admin with its own design system and a runtime
+extension mechanism — add-on packages register pages, navigation, table
+columns and page-slot content through a `PanelManager`/`Section` API, and
+their prebuilt JS bundles are picked up by the host app without a recompile.
+The two panels coexist during the transition; nothing about Filament changes
+because of this.
+
+Every staff login now requires a second factor: an authenticator app (TOTP)
+when one is configured, or an emailed 6-digit code as an automatic fallback
+otherwise. There is no password-only login path.
+
+Add it to a Laravel app that already has Lunar installed:
+
+```
+composer require lunarphp/panel
+php artisan vendor:publish --tag=lunar          # config/lunar/panel.php
+php artisan vendor:publish --tag=panel-assets   # published Vue build
+```
+
+Set `path`, `name` and `guard` in `config/lunar/panel.php`, then visit the
+panel at `/{path}` (`/panel` by default). The service provider is
+auto-discovered — no manual registration needed. Building the panel's own
+assets (`npm run build` inside the package, before publishing) is only
+required if you're developing the panel or an add-on for it locally.
+
 ## Foundations & external addressing
 
 - **`\Lunar\Core` namespace** — the core package moved to `Lunar\Core\…`.
