@@ -40,10 +40,13 @@ class EmailTwoFactor
 
         $code = $this->generateCode();
 
+        // Sent before the cache is touched: if mail delivery throws, nothing
+        // is left behind — no phantom cooldown or code hash for an email
+        // that never went out, and the exception surfaces uncaught.
+        $staff->notify(new TwoFactorEmailCode($code));
+
         $this->cache->put($this->codeCacheKey($staff), $this->hasher->make($code), $this->codeTtlSeconds);
         $this->cache->put($this->cooldownCacheKey($staff), now()->addSeconds($this->cooldownSeconds)->getTimestamp(), $this->cooldownSeconds);
-
-        $staff->notify(new TwoFactorEmailCode($code));
 
         return true;
     }
