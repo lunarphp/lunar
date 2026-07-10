@@ -7,9 +7,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Panel\Auth\AppAuthentication;
 use Lunar\Panel\Console\Commands\LinkPanelAssetsCommand;
+use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\Http\Middleware\Authenticate;
 use Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests;
 use Lunar\Panel\Navigation\NavigationItem;
+use Lunar\Panel\Sections\Sales\SalesSection;
+use Lunar\Panel\Sections\Settings\ChannelsSection;
 
 class PanelServiceProvider extends ServiceProvider
 {
@@ -51,6 +54,9 @@ class PanelServiceProvider extends ServiceProvider
         }
 
         $this->registerPermissionGate();
+
+        Panel::section(new SalesSection);
+        Panel::section(new ChannelsSection);
 
         $this->app->booted(function (): void {
             $this->processRegisteredSections();

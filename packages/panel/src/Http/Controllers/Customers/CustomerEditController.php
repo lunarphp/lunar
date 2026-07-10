@@ -42,7 +42,10 @@ class CustomerEditController
             'destroy_url' => route('panel.customers.addresses.destroy', [$customer, $address]),
         ]);
 
-        $users = $customer->users()->get(['id', 'name', 'email'])->map(fn ($user) => [
+        $usersRelation = $customer->users();
+        $usersTable = $usersRelation->getRelated()->getTable();
+
+        $users = $usersRelation->get(["{$usersTable}.id", "{$usersTable}.name", "{$usersTable}.email"])->map(fn ($user) => [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
