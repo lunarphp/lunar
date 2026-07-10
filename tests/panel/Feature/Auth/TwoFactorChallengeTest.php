@@ -37,7 +37,9 @@ test('the challenge screen renders when a login is pending', function () {
 
     $this->get(route('panel.two-factor.challenge'))
         ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page->component('auth/TwoFactorChallenge'));
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('auth/TwoFactorChallenge')
+            ->where('method', 'authenticator'));
 });
 
 test('the challenge screen redirects to login when nothing is pending', function () {

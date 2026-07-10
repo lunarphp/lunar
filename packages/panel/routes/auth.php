@@ -21,6 +21,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function (): void {
 
     Route::get('two-factor-challenge', [TwoFactorChallengeController::class, 'create'])->name('panel.two-factor.challenge');
     Route::post('two-factor-challenge', [TwoFactorChallengeController::class, 'store'])->name('panel.two-factor.challenge.store');
+    Route::post('two-factor-challenge/resend', [TwoFactorChallengeController::class, 'resend'])->name('panel.two-factor.challenge.resend');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('panel.password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('panel.password.email');

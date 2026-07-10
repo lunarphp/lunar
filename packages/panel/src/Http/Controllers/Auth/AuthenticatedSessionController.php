@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Panel\Auth\AppAuthentication;
+use Lunar\Panel\Auth\EmailTwoFactor;
 use Lunar\Panel\Http\Requests\Auth\LoginRequest;
 use Lunar\Panel\PanelManager;
 
@@ -28,6 +29,7 @@ class AuthenticatedSessionController
         LoginRequest $request,
         PanelManager $manager,
         AppAuthentication $appAuthentication,
+        EmailTwoFactor $emailTwoFactor,
     ): RedirectResponse {
         $request->ensureIsNotRateLimited();
 
@@ -46,19 +48,19 @@ class AuthenticatedSessionController
 
         $request->clearRateLimiter();
 
-        if ($appAuthentication->isEnabled($user)) {
-            $request->session()->put([
-                'panel.login.id' => $user->getAuthIdentifier(),
-                'panel.login.remember' => $request->boolean('remember'),
-            ]);
+        $request->session()->put([
+            'panel.login.id' => $user->getAuthIdentifier(),
+            'panel.login.remember' => $request->boolean('remember'),
+        ]);
 
-            return redirect()->route('panel.two-factor.challenge');
+        // Every login is a two-step challenge — TOTP if the staff member has
+        // it configured, otherwise an emailed one-time code, so a second
+        // factor is always required one way or another.
+        if (! $appAuthentication->isEnabled($user)) {
+            $emailTwoFactor->send($user);
         }
 
-        $guard->login($user, $request->boolean('remember'));
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('panel.dashboard'));
+        return redirect()->route('panel.two-factor.challenge');
     }
 
     public function destroy(Request $request, PanelManager $manager): RedirectResponse

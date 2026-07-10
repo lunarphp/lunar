@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Staff;
+use Lunar\Panel\Notifications\TwoFactorEmailCode;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -16,13 +18,26 @@ test('the login screen renders', function () {
             ->has('locale'));
 });
 
-test('staff can authenticate with valid credentials', function () {
+test('staff without two factor configured are challenged by email rather than logged in immediately', function () {
+    Notification::fake();
     $staff = Staff::factory()->create();
 
     $this->post(route('panel.login.store'), [
         'email' => $staff->email,
         'password' => 'password',
-    ])->assertRedirect(route('panel.dashboard'));
+    ])->assertRedirect(route('panel.two-factor.challenge'));
+
+    expect(Auth::guard('staff')->check())->toBeFalse();
+
+    $code = null;
+    Notification::assertSentTo($staff, TwoFactorEmailCode::class, function (TwoFactorEmailCode $notification) use (&$code) {
+        $code = $notification->code;
+
+        return true;
+    });
+
+    $this->post(route('panel.two-factor.challenge.store'), ['code' => $code])
+        ->assertRedirect(route('panel.dashboard'));
 
     expect(Auth::guard('staff')->id())->toBe($staff->id);
 });
@@ -58,13 +73,24 @@ test('login is rate limited after five failed attempts', function () {
 });
 
 test('the remember flag issues a recaller cookie', function () {
+    Notification::fake();
     $staff = Staff::factory()->create();
 
     $this->post(route('panel.login.store'), [
         'email' => $staff->email,
         'password' => 'password',
         'remember' => true,
-    ])->assertCookie(Auth::guard('staff')->getRecallerName());
+    ]);
+
+    $code = null;
+    Notification::assertSentTo($staff, TwoFactorEmailCode::class, function (TwoFactorEmailCode $notification) use (&$code) {
+        $code = $notification->code;
+
+        return true;
+    });
+
+    $this->post(route('panel.two-factor.challenge.store'), ['code' => $code])
+        ->assertCookie(Auth::guard('staff')->getRecallerName());
 });
 
 test('authenticated staff are redirected away from the login screen', function () {

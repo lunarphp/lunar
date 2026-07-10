@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Notification;
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Staff;
 use Lunar\Panel\Notifications\ResetPassword;
+use Lunar\Panel\Notifications\TwoFactorEmailCode;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -71,7 +72,16 @@ test('a valid token resets the password', function () {
     $this->post(route('panel.login.store'), [
         'email' => $staff->email,
         'password' => 'new-secret-password',
-    ]);
+    ])->assertRedirect(route('panel.two-factor.challenge'));
+
+    $code = null;
+    Notification::assertSentTo($staff, TwoFactorEmailCode::class, function (TwoFactorEmailCode $notification) use (&$code) {
+        $code = $notification->code;
+
+        return true;
+    });
+
+    $this->post(route('panel.two-factor.challenge.store'), ['code' => $code]);
 
     expect(Auth::guard('staff')->id())->toBe($staff->id);
 });
