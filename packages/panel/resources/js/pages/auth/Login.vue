@@ -13,6 +13,11 @@ const props = defineProps<{
     urls: { store: string; forgotPassword: string | null };
 }>();
 
+// Dev: swap this URL for your own brand asset. AuthLayout falls back to a
+// soft sage gradient if the image fails to load or this is left empty.
+const HERO_IMAGE = 'https://images.unsplash.com/photo-1761090617068-f1b3257d27ad?w=1600&q=80';
+const HERO_ALT = 'Curated clothing racks in a boutique';
+
 const { t } = useI18n();
 const showPassword = ref(false);
 const emailInputRef = ref<InstanceType<typeof TextInput> | null>(null);
@@ -35,7 +40,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <AuthLayout>
+    <AuthLayout :image="HERO_IMAGE" :image-alt="HERO_ALT">
+        <template #caption>
+            <div class="font-medium text-white">Built for the next chapter of commerce.</div>
+            <div class="mt-1 text-white/65">Lunar v2 — coming soon.</div>
+        </template>
+
         <form class="flex flex-col" @submit.prevent="submit">
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.sign_in_title') }}</h1>
             <p class="mt-1.5 text-[13px] text-ink-500">{{ t('auth.sign_in_subtitle') }}</p>
@@ -79,7 +89,7 @@ onMounted(() => {
                                 :aria-label="showPassword ? t('auth.hide_password') : t('auth.show_password')"
                                 @click="showPassword = !showPassword"
                             >
-                                <Icon name="eye" />
+                                <Icon :name="showPassword ? 'eyeOff' : 'eye'" />
                             </button>
                         </template>
                     </TextInput>
@@ -93,6 +103,7 @@ onMounted(() => {
             </div>
 
             <Button type="submit" variant="primary" class="mt-6 w-full" :disabled="form.processing">
+                <Icon v-if="!form.processing" name="arrowLeft" cls="rotate-180" />
                 {{ form.processing ? t('auth.signing_in') : t('auth.continue') }}
             </Button>
 

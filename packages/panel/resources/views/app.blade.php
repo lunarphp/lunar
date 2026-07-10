@@ -6,6 +6,13 @@
 
         <title inertia>{{ config('lunar.panel.name', 'Lunar') }}</title>
 
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+
         @foreach (app(\Lunar\Panel\PanelManager::class)->styles() as $name => $path)
             <link rel="stylesheet" href="{{ $path }}" />
         @endforeach
@@ -14,7 +21,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.ts'], 'vendor/lunar-panel/build')
         @inertiaHead
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans text-[13px] leading-[1.45] antialiased [font-feature-settings:'cv11','ss01']">
         @inertia
 
         @foreach (app(\Lunar\Panel\PanelManager::class)->scripts() as $name => $path)
