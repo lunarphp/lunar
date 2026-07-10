@@ -159,13 +159,21 @@ const resend = () => {
             </div>
 
             <Button
+                v-if="useRecovery"
                 type="submit"
                 variant="primary"
                 class="mt-6 w-full"
-                :disabled="form.processing || (!useRecovery && form.code.length !== 6) || (useRecovery && !form.recovery_code)"
+                :disabled="form.processing || !form.recovery_code"
             >
                 {{ form.processing ? t('auth.verifying') : t('auth.verify_button') }}
             </Button>
+
+            <!-- CodeInput auto-submits on the 6th digit (see @complete above), so there's
+            nothing to click here — just a status while the request is in flight. -->
+            <div v-else-if="form.processing" class="mt-6 flex items-center justify-center gap-2 text-[13px] text-ink-500">
+                <span class="h-3.5 w-3.5 shrink-0 rounded-full border-2 border-ink-300 border-t-transparent animate-spin" />
+                {{ t('auth.verifying') }}
+            </div>
 
             <div v-if="method === 'email'" class="mt-5 flex items-center justify-between text-[12px]">
                 <span v-if="resendForm.recentlySuccessful" class="text-sage-ink">{{ t('auth.code_resent') }}</span>
