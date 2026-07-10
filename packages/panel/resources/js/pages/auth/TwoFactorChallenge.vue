@@ -175,9 +175,7 @@ const resend = () => {
                 {{ t('auth.verifying') }}
             </div>
 
-            <div v-if="method === 'email'" class="mt-5 flex items-center justify-between text-[12px]">
-                <span v-if="resendForm.recentlySuccessful" class="text-sage-ink">{{ t('auth.code_resent') }}</span>
-                <span v-else />
+            <div v-if="method === 'email'" class="mt-5 flex items-center gap-3 text-[12px]">
                 <button
                     type="button"
                     class="text-ink-500 disabled:cursor-not-allowed hover:text-ink-900 transition-colors"
@@ -187,6 +185,7 @@ const resend = () => {
                     <span v-if="resendCooldown > 0">{{ t('auth.resend_in_seconds', { seconds: resendCooldown }) }}</span>
                     <span v-else>{{ t('auth.resend_code') }}</span>
                 </button>
+                <span v-if="resendForm.recentlySuccessful" class="text-sage-ink">{{ t('auth.code_resent') }}</span>
             </div>
             <div v-if="method === 'email' && resendForm.errors.code" class="mt-2 text-[11px] text-danger">
                 {{ resendForm.errors.code }}
