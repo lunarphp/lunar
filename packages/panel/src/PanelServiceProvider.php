@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Panel\Auth\AppAuthentication;
+use Lunar\Panel\Auth\EmailTwoFactor;
 use Lunar\Panel\Console\Commands\LinkPanelAssetsCommand;
 use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\Http\Middleware\Authenticate;
@@ -32,6 +33,7 @@ class PanelServiceProvider extends ServiceProvider
         $this->app->singleton(PanelManager::class, fn (): PanelManager => new PanelManager);
 
         $this->app->singleton(AppAuthentication::class);
+        $this->app->singleton(EmailTwoFactor::class);
     }
 
     public function boot(): void
