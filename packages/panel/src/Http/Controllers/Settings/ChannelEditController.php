@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lunar\Core\Contracts\Actions\Channels\DeletesChannel;
+use Lunar\Core\Contracts\Actions\Channels\UpdatesChannel;
+use Lunar\Core\Exceptions\ChannelActionException;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\States\Channel\ChannelState;
 
@@ -32,7 +35,7 @@ class ChannelEditController
         ]);
     }
 
-    public function update(Request $request, Channel $channel): RedirectResponse
+    public function update(Request $request, Channel $channel, UpdatesChannel $updatesChannel): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -41,30 +44,28 @@ class ChannelEditController
             'status' => ['nullable', Rule::in(ChannelState::getStateMapping()->keys()->all())],
         ]);
 
-        $default = (bool) ($validated['default'] ?? false);
+        $attributes = [
+            'name' => $validated['name'],
+            'url' => $validated['url'] ?? null,
+            'default' => (bool) ($validated['default'] ?? false),
+        ];
 
-        if ($default) {
-            Channel::where('default', true)->where('id', '!=', $channel->id)->update(['default' => false]);
+        if (($validated['status'] ?? null) !== null) {
+            $attributes['status'] = $validated['status'];
         }
 
-        $channel->update([
-            'name' => $validated['name'],
-            'handle' => $validated['name'],
-            'url' => $validated['url'] ?? null,
-            'default' => $default,
-            'status' => $validated['status'] ?? null,
-        ]);
+        $updatesChannel->execute($channel, $attributes);
 
         return redirect()->route('panel.settings.channels.index')->with('success', 'Channel updated.');
     }
 
-    public function destroy(Channel $channel): RedirectResponse
+    public function destroy(Channel $channel, DeletesChannel $deletesChannel): RedirectResponse
     {
-        if ($channel->hasOrderHistory()) {
-            return back()->with('error', 'Cannot delete a channel with order history.');
+        try {
+            $deletesChannel->execute($channel);
+        } catch (ChannelActionException $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        $channel->delete();
 
         return redirect()->route('panel.settings.channels.index')->with('success', 'Channel deleted.');
     }

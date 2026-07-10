@@ -5,12 +5,12 @@ namespace Lunar\Panel\Http\Controllers\Settings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Lunar\Core\Models\Channel;
+use Lunar\Core\Contracts\Actions\Channels\CreatesChannel;
 use Lunar\Core\States\Channel\ChannelState;
 
 class ChannelCreateController
 {
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, CreatesChannel $createsChannel): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -19,19 +19,17 @@ class ChannelCreateController
             'status' => ['nullable', Rule::in(ChannelState::getStateMapping()->keys()->all())],
         ]);
 
-        $default = (bool) ($validated['default'] ?? false);
+        $attributes = [
+            'name' => $validated['name'],
+            'url' => $validated['url'] ?? null,
+            'default' => (bool) ($validated['default'] ?? false),
+        ];
 
-        if ($default) {
-            Channel::where('default', true)->update(['default' => false]);
+        if (($validated['status'] ?? null) !== null) {
+            $attributes['status'] = $validated['status'];
         }
 
-        Channel::create([
-            'name' => $validated['name'],
-            'handle' => $validated['name'],
-            'url' => $validated['url'] ?? null,
-            'default' => $default,
-            'status' => $validated['status'] ?? null,
-        ]);
+        $createsChannel->execute($attributes);
 
         return redirect()->route('panel.settings.channels.index')->with('success', 'Channel created.');
     }
