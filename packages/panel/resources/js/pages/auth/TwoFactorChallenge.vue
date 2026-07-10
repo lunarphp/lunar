@@ -15,6 +15,11 @@ const props = defineProps<{
     urls: { store: string; resend: string; login: string };
 }>();
 
+// Dev: swap this URL for your own brand asset. AuthLayout falls back to a
+// soft sage gradient if the image fails to load or this is left empty.
+const HERO_IMAGE = 'https://images.unsplash.com/photo-1761090617068-f1b3257d27ad?w=1600&q=80';
+const HERO_ALT = 'Curated clothing racks in a boutique';
+
 const { t } = useI18n();
 const useRecovery = ref(false);
 const codeInputRef = ref<InstanceType<typeof CodeInput> | null>(null);
@@ -100,7 +105,12 @@ const resend = () => {
 </script>
 
 <template>
-    <AuthLayout>
+    <AuthLayout :image="HERO_IMAGE" :image-alt="HERO_ALT">
+        <template #caption>
+            <div class="font-medium text-white">Built for the next chapter of commerce.</div>
+            <div class="mt-1 text-white/65">Lunar v2</div>
+        </template>
+
         <form class="flex flex-col" @submit.prevent="submit">
             <Link
                 :href="urls.login"
