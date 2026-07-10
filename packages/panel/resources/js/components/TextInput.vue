@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue';
+import { computed, ref, useSlots } from 'vue';
 
 const props = withDefaults(
     defineProps<{
@@ -43,6 +43,10 @@ const groupedInputCls = computed(() => [
 const onInput = (e: Event) => {
     emit('update:modelValue', (e.target as HTMLInputElement).value);
 };
+
+const inputRef = ref<HTMLInputElement | null>(null);
+
+defineExpose({ focus: () => inputRef.value?.focus() });
 </script>
 
 <template>
@@ -52,6 +56,7 @@ const onInput = (e: Event) => {
             class="flex items-center px-2.5 bg-surface-2 border-r border-line text-ink-500 font-mono text-xs whitespace-nowrap"
         ><slot name="prefix" /></span>
         <input
+            ref="inputRef"
             :type="type"
             :class="groupedInputCls"
             :value="modelValue"
@@ -68,6 +73,7 @@ const onInput = (e: Event) => {
     </div>
     <input
         v-else
+        ref="inputRef"
         :type="type"
         :class="standaloneInputCls"
         :value="modelValue"

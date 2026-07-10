@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
@@ -15,6 +15,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const showPassword = ref(false);
+const emailInputRef = ref<InstanceType<typeof TextInput> | null>(null);
 
 const form = useForm({
     email: '',
@@ -27,6 +28,10 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+onMounted(() => {
+    emailInputRef.value?.focus();
+});
 </script>
 
 <template>
@@ -39,6 +44,7 @@ const submit = () => {
                 <div>
                     <FieldLabel>{{ t('auth.email') }}</FieldLabel>
                     <TextInput
+                        ref="emailInputRef"
                         v-model="form.email"
                         type="email"
                         autocomplete="email"
@@ -55,6 +61,7 @@ const submit = () => {
                         <Link
                             v-if="urls.forgotPassword"
                             :href="urls.forgotPassword"
+                            tabindex="-1"
                             class="ml-auto text-[11px] font-normal text-ink-400 hover:text-ink-900 transition-colors"
                         >{{ t('auth.forgot_password') }}</Link>
                     </div>

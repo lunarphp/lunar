@@ -21,7 +21,7 @@ const panelName = computed(() => (usePage().props.panel as { name: string }).nam
                     <slot />
                 </div>
             </div>
-            <div class="text-[11px] text-ink-400">&copy; {{ panelName }}</div>
+            <div class="text-[11px] text-ink-400">&copy; LunarPHP Ltd</div>
         </div>
 
         <div class="hidden lg:block relative overflow-hidden bg-gradient-to-br from-sage-soft via-canvas to-paper">
