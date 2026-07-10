@@ -3,6 +3,7 @@ import { createApp, h, type DefineComponent } from 'vue';
 import * as Vue from 'vue';
 import '../css/app.css';
 import { LunarPanelRuntime } from './runtime/registry';
+import { useTheme } from './composables/useTheme';
 
 // Published so add-on IIFE bundles (compiled against `@lunarphp/panel/vite-plugin`,
 // which externalises `vue`) can resolve Vue without bundling their own copy.
@@ -49,6 +50,9 @@ createInertiaApp({
         throw new Error(`Panel page not found: ${name}`);
     },
     setup({ el, App, props, plugin }) {
+        // Applies the persisted/system theme class before first paint.
+        useTheme();
+
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .mount(el);
