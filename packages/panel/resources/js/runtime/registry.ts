@@ -14,6 +14,7 @@ export class LunarPanelRuntime {
     private components: Record<string, Component> = {};
     private layouts: Record<string, Component> = {};
     private translations: Record<string, Record<string, Record<string, string>>> = {};
+    private translationListeners: Array<(locale: string, namespace: string, messages: Record<string, string>) => void> = [];
 
     booting(cb: () => void): void {
         if (this.booted) {
@@ -74,9 +75,27 @@ export class LunarPanelRuntime {
             ...this.translations[locale][namespace],
             ...messages,
         };
+
+        this.translationListeners.forEach((listener) => listener(locale, namespace, messages));
     }
 
     getTranslations(locale: string, namespace: string): Record<string, string> | undefined {
         return this.translations[locale]?.[namespace];
+    }
+
+    /**
+     * Subscribe to add-on translation registrations (used by the vue-i18n
+     * wiring in app.ts to merge them into the live message store). Replays
+     * everything already registered first, since add-on IIFEs may call
+     * `registerTranslations` before or after this listener is attached.
+     */
+    onTranslationsRegistered(listener: (locale: string, namespace: string, messages: Record<string, string>) => void): void {
+        Object.entries(this.translations).forEach(([locale, namespaces]) => {
+            Object.entries(namespaces).forEach(([namespace, messages]) => {
+                listener(locale, namespace, messages);
+            });
+        });
+
+        this.translationListeners.push(listener);
     }
 }

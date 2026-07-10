@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
 import Button from '../../components/Button.vue';
 import Checkbox from '../../components/Checkbox.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
-import { useAuthLang } from '../../composables/useLang';
 
 const props = defineProps<{
     urls: { store: string; forgotPassword: string | null };
 }>();
 
-const t = useAuthLang();
+const { t } = useI18n();
 const showPassword = ref(false);
 
 const form = useForm({
@@ -32,44 +32,44 @@ const submit = () => {
 <template>
     <AuthLayout>
         <form class="flex flex-col" @submit.prevent="submit">
-            <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('sign_in_title') }}</h1>
-            <p class="mt-1.5 text-[13px] text-ink-500">{{ t('sign_in_subtitle') }}</p>
+            <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.sign_in_title') }}</h1>
+            <p class="mt-1.5 text-[13px] text-ink-500">{{ t('auth.sign_in_subtitle') }}</p>
 
             <div class="mt-7 flex flex-col gap-3.5">
                 <div>
-                    <FieldLabel>{{ t('email') }}</FieldLabel>
+                    <FieldLabel>{{ t('auth.email') }}</FieldLabel>
                     <TextInput
                         v-model="form.email"
                         type="email"
                         autocomplete="email"
                         placeholder="you@company.com"
                         :invalid="!!form.errors.email"
-                        :aria-label="t('email')"
+                        :aria-label="t('auth.email')"
                     />
                     <div v-if="form.errors.email" class="mt-1 text-[11px] text-danger">{{ form.errors.email }}</div>
                 </div>
 
                 <div>
                     <div class="flex items-center gap-1.5 text-xs font-medium text-ink-700 mb-1.5">
-                        {{ t('password') }}
+                        {{ t('auth.password') }}
                         <Link
                             v-if="urls.forgotPassword"
                             :href="urls.forgotPassword"
                             class="ml-auto text-[11px] font-normal text-ink-400 hover:text-ink-900 transition-colors"
-                        >{{ t('forgot_password') }}</Link>
+                        >{{ t('auth.forgot_password') }}</Link>
                     </div>
                     <TextInput
                         v-model="form.password"
                         :type="showPassword ? 'text' : 'password'"
                         autocomplete="current-password"
                         :invalid="!!form.errors.password"
-                        :aria-label="t('password')"
+                        :aria-label="t('auth.password')"
                     >
                         <template #suffix>
                             <button
                                 type="button"
                                 class="flex items-center text-ink-500 hover:text-ink-900 transition-colors"
-                                :aria-label="showPassword ? t('hide_password') : t('show_password')"
+                                :aria-label="showPassword ? t('auth.hide_password') : t('auth.show_password')"
                                 @click="showPassword = !showPassword"
                             >
                                 <Icon name="eye" />
@@ -80,16 +80,16 @@ const submit = () => {
                 </div>
 
                 <label class="mt-1 inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
-                    <Checkbox v-model="form.remember" :aria-label="t('remember')" />
-                    {{ t('remember') }}
+                    <Checkbox v-model="form.remember" :aria-label="t('auth.remember')" />
+                    {{ t('auth.remember') }}
                 </label>
             </div>
 
             <Button type="submit" variant="primary" class="mt-6 w-full" :disabled="form.processing">
-                {{ form.processing ? t('signing_in') : t('continue') }}
+                {{ form.processing ? t('auth.signing_in') : t('auth.continue') }}
             </Button>
 
-            <p class="mt-6 text-[12px] text-ink-400">{{ t('need_access') }}</p>
+            <p class="mt-6 text-[12px] text-ink-400">{{ t('auth.need_access') }}</p>
         </form>
     </AuthLayout>
 </template>

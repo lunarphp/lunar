@@ -2,13 +2,13 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { TooltipProvider, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, VisuallyHidden } from 'reka-ui';
 import { usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import NavBody from '../components/NavBody.vue';
 import Icon from '../components/Icon.vue';
 import { useNavState } from '../composables/useNavState';
-import { useLang } from '../composables/useLang';
 
 const { state, toggleCollapsed, openDrawer } = useNavState();
-const t = useLang('nav');
+const { t } = useI18n();
 
 const panelName = computed(() => (usePage().props.panel as { name: string }).name);
 
@@ -133,7 +133,7 @@ onUnmounted(() => {
                     <button
                         type="button"
                         class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-surface-2 shrink-0"
-                        :aria-label="t('toggle_sidebar')"
+                        :aria-label="t('nav.toggle_sidebar')"
                         @click="openDrawer"
                     >
                         <Icon name="menu" cls="sm" />

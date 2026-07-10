@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Icon from './Icon.vue';
 import NavLink from './NavLink.vue';
 import Tooltip from './Tooltip.vue';
 import UserMenu from './UserMenu.vue';
-import { useLang } from '../composables/useLang';
 import type { NavItemShape, NavTreeShape } from '../types/navigation';
 
 withDefaults(defineProps<{ collapsed?: boolean }>(), { collapsed: false });
 
 const page = usePage();
-const t = useLang('nav');
+const { t } = useI18n();
 
 type PanelInfo = { name: string; storefront_url: string | null; support_url: string | null };
 
@@ -29,7 +29,7 @@ const settingsUrl = computed<string | null>(
 
 const settingsItem = computed<NavItemShape>(() => ({
     key: 'settings',
-    label: t('settings'),
+    label: t('nav.settings'),
     icon: 'settings',
     url: settingsUrl.value,
     priority: 0,

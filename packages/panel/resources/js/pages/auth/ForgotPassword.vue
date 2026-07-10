@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
 import Button from '../../components/Button.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
-import { useAuthLang } from '../../composables/useLang';
 
 const props = defineProps<{
     urls: { store: string; login: string };
 }>();
 
-const t = useAuthLang();
+const { t } = useI18n();
 
 const flashSuccess = computed(() => (usePage().props.flash as { success?: string })?.success);
 
@@ -29,11 +29,11 @@ const submit = () => form.post(props.urls.store);
                 class="-ml-1 mb-5 inline-flex items-center gap-1 self-start text-[12px] text-ink-500 hover:text-ink-900 transition-colors"
             >
                 <Icon name="arrowLeft" cls="sm" />
-                {{ t('back_to_sign_in') }}
+                {{ t('auth.back_to_sign_in') }}
             </Link>
 
-            <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('forgot_title') }}</h1>
-            <p class="mt-1.5 text-[13px] text-ink-500">{{ t('forgot_subtitle') }}</p>
+            <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.forgot_title') }}</h1>
+            <p class="mt-1.5 text-[13px] text-ink-500">{{ t('auth.forgot_subtitle') }}</p>
 
             <div
                 v-if="flashSuccess"
@@ -43,20 +43,20 @@ const submit = () => form.post(props.urls.store);
             </div>
 
             <div class="mt-7">
-                <FieldLabel>{{ t('email') }}</FieldLabel>
+                <FieldLabel>{{ t('auth.email') }}</FieldLabel>
                 <TextInput
                     v-model="form.email"
                     type="email"
                     autocomplete="email"
                     placeholder="you@company.com"
                     :invalid="!!form.errors.email"
-                    :aria-label="t('email')"
+                    :aria-label="t('auth.email')"
                 />
                 <div v-if="form.errors.email" class="mt-1 text-[11px] text-danger">{{ form.errors.email }}</div>
             </div>
 
             <Button type="submit" variant="primary" class="mt-6 w-full" :disabled="form.processing">
-                {{ form.processing ? t('sending') : t('send_reset_link') }}
+                {{ form.processing ? t('auth.sending') : t('auth.send_reset_link') }}
             </Button>
         </form>
     </AuthLayout>

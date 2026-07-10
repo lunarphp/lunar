@@ -70,5 +70,25 @@ describe('LunarPanelRuntime', () => {
 
             expect(runtime.getTranslations('en', 'core')).toEqual({ hello: 'Hello', bye: 'Bye' });
         });
+
+        it('notifies a listener attached after registration has already happened', () => {
+            runtime.registerTranslations('en', 'core', { hello: 'Hello' });
+
+            const listener = vi.fn();
+            runtime.onTranslationsRegistered(listener);
+
+            expect(listener).toHaveBeenCalledTimes(1);
+            expect(listener).toHaveBeenCalledWith('en', 'core', { hello: 'Hello' });
+        });
+
+        it('notifies a listener attached before registration happens', () => {
+            const listener = vi.fn();
+            runtime.onTranslationsRegistered(listener);
+
+            runtime.registerTranslations('en', 'core', { hello: 'Hello' });
+
+            expect(listener).toHaveBeenCalledTimes(1);
+            expect(listener).toHaveBeenCalledWith('en', 'core', { hello: 'Hello' });
+        });
     });
 });

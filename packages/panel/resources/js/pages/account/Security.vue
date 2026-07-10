@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import CodeInput from '../../components/CodeInput.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
-import { useAuthLang } from '../../composables/useLang';
 
 const props = defineProps<{
     twoFactorEnabled: boolean;
@@ -21,7 +21,7 @@ const props = defineProps<{
     };
 }>();
 
-const t = useAuthLang();
+const { t } = useI18n();
 
 const flashSuccess = computed(() => (usePage().props.flash as { success?: string })?.success);
 
@@ -71,7 +71,7 @@ const copyCodes = () => {
 <template>
     <div class="min-h-screen bg-canvas font-sans py-10">
         <div class="mx-auto flex max-w-xl flex-col gap-6 px-6">
-            <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('security_title') }}</h1>
+            <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.security_title') }}</h1>
 
             <div
                 v-if="flashSuccess"
@@ -82,48 +82,48 @@ const copyCodes = () => {
 
             <!-- Password -->
             <section class="rounded-lg border border-line bg-paper p-6">
-                <h2 class="text-[15px] font-semibold text-ink-900">{{ t('password_section_title') }}</h2>
-                <p class="mt-1 text-[13px] text-ink-500">{{ t('password_section_subtitle') }}</p>
+                <h2 class="text-[15px] font-semibold text-ink-900">{{ t('auth.password_section_title') }}</h2>
+                <p class="mt-1 text-[13px] text-ink-500">{{ t('auth.password_section_subtitle') }}</p>
 
                 <form class="mt-5 flex flex-col gap-3.5" @submit.prevent="submitPassword">
                     <div>
-                        <FieldLabel>{{ t('current_password') }}</FieldLabel>
+                        <FieldLabel>{{ t('auth.current_password') }}</FieldLabel>
                         <TextInput
                             v-model="passwordForm.current_password"
                             type="password"
                             autocomplete="current-password"
                             :invalid="!!passwordForm.errors.current_password"
-                            :aria-label="t('current_password')"
+                            :aria-label="t('auth.current_password')"
                         />
                         <div v-if="passwordForm.errors.current_password" class="mt-1 text-[11px] text-danger">
                             {{ passwordForm.errors.current_password }}
                         </div>
                     </div>
                     <div>
-                        <FieldLabel>{{ t('new_password') }}</FieldLabel>
+                        <FieldLabel>{{ t('auth.new_password') }}</FieldLabel>
                         <TextInput
                             v-model="passwordForm.password"
                             type="password"
                             autocomplete="new-password"
                             :invalid="!!passwordForm.errors.password"
-                            :aria-label="t('new_password')"
+                            :aria-label="t('auth.new_password')"
                         />
                         <div v-if="passwordForm.errors.password" class="mt-1 text-[11px] text-danger">
                             {{ passwordForm.errors.password }}
                         </div>
                     </div>
                     <div>
-                        <FieldLabel>{{ t('confirm_password') }}</FieldLabel>
+                        <FieldLabel>{{ t('auth.confirm_password') }}</FieldLabel>
                         <TextInput
                             v-model="passwordForm.password_confirmation"
                             type="password"
                             autocomplete="new-password"
-                            :aria-label="t('confirm_password')"
+                            :aria-label="t('auth.confirm_password')"
                         />
                     </div>
                     <div>
                         <Button type="submit" variant="primary" :disabled="passwordForm.processing">
-                            {{ t('update_password') }}
+                            {{ t('auth.update_password') }}
                         </Button>
                     </div>
                 </form>
@@ -133,29 +133,29 @@ const copyCodes = () => {
             <section class="rounded-lg border border-line bg-paper p-6">
                 <div class="flex items-center gap-2">
                     <Icon name="shield" />
-                    <h2 class="text-[15px] font-semibold text-ink-900">{{ t('two_factor_title') }}</h2>
+                    <h2 class="text-[15px] font-semibold text-ink-900">{{ t('auth.two_factor_title') }}</h2>
                 </div>
-                <p class="mt-1 text-[13px] text-ink-500">{{ t('two_factor_subtitle') }}</p>
+                <p class="mt-1 text-[13px] text-ink-500">{{ t('auth.two_factor_subtitle') }}</p>
 
                 <!-- Freshly issued recovery codes (shown once) -->
                 <div v-if="recoveryCodes" class="mt-5 rounded-md border border-warn-border bg-warn-soft p-4">
                     <div class="flex items-center gap-2 text-[13px] font-medium text-warn-ink">
                         <Icon name="alertTriangle" cls="sm" />
-                        {{ t('recovery_codes_title') }}
+                        {{ t('auth.recovery_codes_title') }}
                     </div>
-                    <p class="mt-1 text-[12px] text-warn-ink">{{ t('recovery_codes_intro') }}</p>
+                    <p class="mt-1 text-[12px] text-warn-ink">{{ t('auth.recovery_codes_intro') }}</p>
                     <div class="mt-3 grid grid-cols-2 gap-1.5 font-mono text-[12px] text-ink-900">
                         <span v-for="code in recoveryCodes" :key="code">{{ code }}</span>
                     </div>
-                    <Button class="mt-3" size="sm" icon="copy" @click="copyCodes">{{ t('copy_codes') }}</Button>
+                    <Button class="mt-3" size="sm" icon="copy" @click="copyCodes">{{ t('auth.copy_codes') }}</Button>
                 </div>
 
                 <!-- Pending enrolment -->
                 <div v-if="pendingTwoFactor" class="mt-5">
-                    <p class="text-[13px] text-ink-700">{{ t('two_factor_scan') }}</p>
+                    <p class="text-[13px] text-ink-700">{{ t('auth.two_factor_scan') }}</p>
                     <img :src="pendingTwoFactor.qrCode" alt="" class="mt-3 h-48 w-48 rounded-md border border-line bg-white p-2" />
                     <p class="mt-3 text-[12px] text-ink-500">
-                        {{ t('two_factor_manual') }}
+                        {{ t('auth.two_factor_manual') }}
                         <span class="font-mono text-ink-700">{{ pendingTwoFactor.secret }}</span>
                     </p>
                     <form class="mt-4 flex flex-col gap-3" @submit.prevent="submitConfirm">
@@ -168,7 +168,7 @@ const copyCodes = () => {
                         <div v-if="confirmForm.errors.code" class="text-[11px] text-danger">{{ confirmForm.errors.code }}</div>
                         <div>
                             <Button type="submit" variant="primary" :disabled="confirmForm.processing || confirmForm.code.length !== 6">
-                                {{ t('confirm') }}
+                                {{ t('auth.confirm') }}
                             </Button>
                         </div>
                     </form>
@@ -176,9 +176,9 @@ const copyCodes = () => {
 
                 <!-- Disabled state -->
                 <div v-else-if="!twoFactorEnabled" class="mt-5">
-                    <p class="text-[13px] text-ink-500">{{ t('two_factor_disabled_state') }}</p>
+                    <p class="text-[13px] text-ink-500">{{ t('auth.two_factor_disabled_state') }}</p>
                     <Button class="mt-3" variant="primary" :disabled="enrolForm.processing" @click="beginEnrolment">
-                        {{ t('enable_two_factor') }}
+                        {{ t('auth.enable_two_factor') }}
                     </Button>
                 </div>
 
@@ -186,21 +186,21 @@ const copyCodes = () => {
                 <div v-else class="mt-5 flex flex-col gap-6">
                     <div class="flex items-center gap-2 text-[13px] text-sage-ink">
                         <Icon name="check" cls="sm" />
-                        {{ t('two_factor_enabled_state') }}
+                        {{ t('auth.two_factor_enabled_state') }}
                     </div>
 
                     <form class="flex flex-col gap-2" @submit.prevent="submitRegenerate">
-                        <FieldLabel :hint="t('password_confirm_hint')">{{ t('regenerate_recovery_codes') }}</FieldLabel>
+                        <FieldLabel :hint="t('auth.password_confirm_hint')">{{ t('auth.regenerate_recovery_codes') }}</FieldLabel>
                         <div class="flex gap-2">
                             <TextInput
                                 v-model="regenerateForm.password"
                                 type="password"
                                 autocomplete="current-password"
                                 :invalid="!!regenerateForm.errors.password"
-                                :aria-label="t('current_password')"
+                                :aria-label="t('auth.current_password')"
                             />
                             <Button type="submit" icon="refresh" :disabled="regenerateForm.processing">
-                                {{ t('regenerate_recovery_codes') }}
+                                {{ t('auth.regenerate_recovery_codes') }}
                             </Button>
                         </div>
                         <div v-if="regenerateForm.errors.password" class="text-[11px] text-danger">
@@ -209,17 +209,17 @@ const copyCodes = () => {
                     </form>
 
                     <form class="flex flex-col gap-2" @submit.prevent="submitDisable">
-                        <FieldLabel :hint="t('password_confirm_hint')">{{ t('disable_two_factor') }}</FieldLabel>
+                        <FieldLabel :hint="t('auth.password_confirm_hint')">{{ t('auth.disable_two_factor') }}</FieldLabel>
                         <div class="flex gap-2">
                             <TextInput
                                 v-model="disableForm.password"
                                 type="password"
                                 autocomplete="current-password"
                                 :invalid="!!disableForm.errors.password"
-                                :aria-label="t('current_password')"
+                                :aria-label="t('auth.current_password')"
                             />
                             <Button type="submit" :disabled="disableForm.processing">
-                                {{ t('disable_two_factor') }}
+                                {{ t('auth.disable_two_factor') }}
                             </Button>
                         </div>
                         <div v-if="disableForm.errors.password" class="text-[11px] text-danger">
