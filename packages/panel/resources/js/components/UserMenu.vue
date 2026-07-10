@@ -112,6 +112,7 @@ const radioBase =
                     :class="[itemBase, 'text-danger data-[highlighted]:bg-danger-soft data-[highlighted]:text-danger']"
                     @select="signOut"
                 >
+                    <Icon name="logOut" cls="sm" />
                     Sign out
                 </DropdownMenuItem>
             </DropdownMenuContent>
