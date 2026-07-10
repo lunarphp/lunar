@@ -13,7 +13,7 @@ test('the login screen renders', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('auth/Login')
             ->has('urls.store')
-            ->has('lang.auth.sign_in_title'));
+            ->has('locale'));
 });
 
 test('staff can authenticate with valid credentials', function () {

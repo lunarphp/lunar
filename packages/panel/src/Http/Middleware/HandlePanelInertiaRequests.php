@@ -33,12 +33,6 @@ class HandlePanelInertiaRequests extends Middleware
                 'support_url' => config('lunar.panel.support_url'),
             ],
             'locale' => fn () => app()->getLocale(),
-            // Interim translation channel for auth screens; replaced by the
-            // vue-i18n endpoint in spec 0049 slice 4.
-            'lang' => [
-                'auth' => fn () => trans('panel::auth'),
-                'nav' => fn () => trans('panel::nav'),
-            ],
             'navigation' => fn () => $this->manager->navigation()->toArray($user),
             'settingsNavigation' => fn () => $this->manager->settingsNavigation()->toArray($user, skipMenus: true),
             'slots' => fn () => $this->manager->slots()->forPage($this->currentPagePrefix($request), $user),

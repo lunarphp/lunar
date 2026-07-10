@@ -5,7 +5,15 @@ use Lunar\Panel\Http\Controllers\Auth\AuthenticatedSessionController;
 use Lunar\Panel\Http\Controllers\Auth\NewPasswordController;
 use Lunar\Panel\Http\Controllers\Auth\PasswordResetLinkController;
 use Lunar\Panel\Http\Controllers\Auth\TwoFactorChallengeController;
+use Lunar\Panel\Http\Controllers\TranslationsController;
 use Lunar\Panel\Http\Middleware\RedirectIfAuthenticated;
+
+// Registered outside the `RedirectIfAuthenticated` group (and outside the
+// authenticated web.php group) so it serves guests on the login/2FA/reset
+// screens and authenticated staff alike from a single route.
+Route::get('translations/{locale}', TranslationsController::class)
+    ->where('locale', '[A-Za-z_]+')
+    ->name('panel.translations');
 
 Route::middleware(RedirectIfAuthenticated::class)->group(function (): void {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('panel.login');
