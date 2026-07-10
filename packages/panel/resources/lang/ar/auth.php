@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'استخدم حسابًا مختلفًا',
     'recovery_code' => 'رمز الاسترداد',
     'invalid_code' => 'هذا الرمز غير مطابق. حاول مرة أخرى.',
+    'challenge_email_subtitle' => 'لقد أرسلنا رمزًا إلى {email}.',
+    'resend_code' => 'إعادة إرسال الرمز',
+    'resend_in_seconds' => 'إعادة الإرسال خلال {seconds} ثانية',
+    'code_resent' => 'تم إرسال رمز جديد.',
 
     'forgot_title' => 'أعد تعيين كلمة المرور الخاصة بك',
     'forgot_subtitle' => 'أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'تتلقى هذه الرسالة لأننا تلقينا طلبًا لإعادة تعيين كلمة المرور الخاصة بحسابك.',
     'reset_notification_action' => 'إعادة تعيين كلمة المرور',
     'reset_notification_line2' => 'تنتهي صلاحية هذا الرابط خلال :count دقيقة. إذا لم تطلب إعادة تعيين، فلا حاجة لاتخاذ أي إجراء.',
+    'two_factor_email_subject' => 'رمز تسجيل الدخول الخاص بك',
+    'two_factor_email_line1' => 'استخدم الرمز التالي لإتمام تسجيل الدخول:',
+    'two_factor_email_line2' => 'تنتهي صلاحية هذا الرمز خلال :count دقيقة. إذا لم تطلب هذا، يمكنك تجاهل هذه الرسالة بأمان.',
 
     'security_title' => 'الأمان',
     'password_section_title' => 'كلمة المرور',

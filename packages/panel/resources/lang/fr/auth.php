@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Utiliser un autre compte',
     'recovery_code' => 'Code de récupération',
     'invalid_code' => 'Ce code ne correspond pas. Réessayez.',
+    'challenge_email_subtitle' => 'Nous avons envoyé un code à {email}.',
+    'resend_code' => 'Renvoyer le code',
+    'resend_in_seconds' => 'Renvoyer dans {seconds} secondes',
+    'code_resent' => 'Un nouveau code a été envoyé.',
 
     'forgot_title' => 'Réinitialisez votre mot de passe',
     'forgot_subtitle' => 'Saisissez votre e-mail et nous vous enverrons un lien de réinitialisation.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.',
     'reset_notification_action' => 'Réinitialiser le mot de passe',
     'reset_notification_line2' => "Ce lien expire dans :count minutes. Si vous n'avez pas demandé de réinitialisation, aucune action n'est requise.",
+    'two_factor_email_subject' => 'Votre code de connexion',
+    'two_factor_email_line1' => 'Utilisez le code suivant pour terminer votre connexion :',
+    'two_factor_email_line2' => "Ce code expire dans :count minutes. Si vous n'avez pas demandé ce code, vous pouvez ignorer cet e-mail en toute sécurité.",
 
     'security_title' => 'Sécurité',
     'password_section_title' => 'Mot de passe',

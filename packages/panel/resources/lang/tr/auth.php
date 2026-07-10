@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Farklı bir hesap kullan',
     'recovery_code' => 'Kurtarma kodu',
     'invalid_code' => 'Bu kod eşleşmedi. Tekrar deneyin.',
+    'challenge_email_subtitle' => '{email} adresine bir kod gönderdik.',
+    'resend_code' => 'Kodu yeniden gönder',
+    'resend_in_seconds' => '{seconds} saniye içinde yeniden gönder',
+    'code_resent' => 'Yeni bir kod gönderildi.',
 
     'forgot_title' => 'Parolanızı sıfırlayın',
     'forgot_subtitle' => 'E-postanızı girin, size bir sıfırlama bağlantısı gönderelim.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Hesabınız için bir parola sıfırlama talebi aldığımız için bu e-postayı alıyorsunuz.',
     'reset_notification_action' => 'Parolayı sıfırla',
     'reset_notification_line2' => 'Bu bağlantının süresi :count dakika içinde dolacak. Bir sıfırlama talep etmediyseniz herhangi bir işlem yapmanıza gerek yoktur.',
+    'two_factor_email_subject' => 'Giriş kodunuz',
+    'two_factor_email_line1' => 'Girişinizi tamamlamak için aşağıdaki kodu kullanın:',
+    'two_factor_email_line2' => 'Bu kodun süresi :count dakika içinde dolacak. Bunu siz talep etmediyseniz bu e-postayı güvenle yok sayabilirsiniz.',
 
     'security_title' => 'Güvenlik',
     'password_section_title' => 'Parola',

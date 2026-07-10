@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Usar uma conta diferente',
     'recovery_code' => 'Código de recuperação',
     'invalid_code' => 'Esse código não corresponde. Tente novamente.',
+    'challenge_email_subtitle' => 'Enviamos um código para {email}.',
+    'resend_code' => 'Reenviar código',
+    'resend_in_seconds' => 'Reenviar em {seconds} segundos',
+    'code_resent' => 'Um novo código foi enviado.',
 
     'forgot_title' => 'Redefina sua senha',
     'forgot_subtitle' => 'Informe seu e-mail e enviaremos um link de redefinição.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Você está recebendo este e-mail porque recebemos uma solicitação de redefinição de senha para sua conta.',
     'reset_notification_action' => 'Redefinir senha',
     'reset_notification_line2' => 'Este link expira em :count minutos. Se você não solicitou uma redefinição, nenhuma ação é necessária.',
+    'two_factor_email_subject' => 'Seu código de login',
+    'two_factor_email_line1' => 'Use o código abaixo para concluir seu login:',
+    'two_factor_email_line2' => 'Este código expira em :count minutos. Se você não solicitou isso, pode ignorar este e-mail com segurança.',
 
     'security_title' => 'Segurança',
     'password_section_title' => 'Senha',

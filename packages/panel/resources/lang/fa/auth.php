@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'استفاده از حساب دیگر',
     'recovery_code' => 'کد بازیابی',
     'invalid_code' => 'این کد مطابقت ندارد. دوباره تلاش کنید.',
+    'challenge_email_subtitle' => 'کدی به {email} ارسال کردیم.',
+    'resend_code' => 'ارسال مجدد کد',
+    'resend_in_seconds' => 'ارسال مجدد ظرف {seconds} ثانیه',
+    'code_resent' => 'کد جدیدی ارسال شد.',
 
     'forgot_title' => 'رمز عبور خود را بازنشانی کنید',
     'forgot_subtitle' => 'ایمیل خود را وارد کنید تا پیوند بازنشانی برایتان ارسال شود.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'این ایمیل را دریافت کرده‌اید زیرا درخواست بازنشانی رمز عبور برای حساب شما ثبت شده است.',
     'reset_notification_action' => 'بازنشانی رمز عبور',
     'reset_notification_line2' => 'این پیوند ظرف :count دقیقه منقضی می‌شود. اگر درخواست بازنشانی نداده‌اید، نیازی به هیچ اقدامی نیست.',
+    'two_factor_email_subject' => 'کد ورود شما',
+    'two_factor_email_line1' => 'برای تکمیل ورود خود از کد زیر استفاده کنید:',
+    'two_factor_email_line2' => 'این کد ظرف :count دقیقه منقضی می‌شود. اگر این درخواست را نداده‌اید، می‌توانید این ایمیل را نادیده بگیرید.',
 
     'security_title' => 'امنیت',
     'password_section_title' => 'رمز عبور',

@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Folosește alt cont',
     'recovery_code' => 'Cod de recuperare',
     'invalid_code' => 'Acest cod nu se potrivește. Încearcă din nou.',
+    'challenge_email_subtitle' => 'Am trimis un cod la {email}.',
+    'resend_code' => 'Retrimite codul',
+    'resend_in_seconds' => 'Retrimite în {seconds} secunde',
+    'code_resent' => 'A fost trimis un cod nou.',
 
     'forgot_title' => 'Resetează-ți parola',
     'forgot_subtitle' => 'Introdu adresa de e-mail și îți vom trimite un link de resetare.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Primești acest e-mail pentru că am primit o solicitare de resetare a parolei pentru contul tău.',
     'reset_notification_action' => 'Resetează parola',
     'reset_notification_line2' => 'Acest link expiră în :count minute. Dacă nu ai solicitat o resetare, nu este necesară nicio acțiune.',
+    'two_factor_email_subject' => 'Codul tău de conectare',
+    'two_factor_email_line1' => 'Folosește următorul cod pentru a finaliza conectarea:',
+    'two_factor_email_line2' => 'Acest cod expiră în :count minute. Dacă nu ai solicitat acest lucru, poți ignora acest e-mail în siguranță.',
 
     'security_title' => 'Securitate',
     'password_section_title' => 'Parolă',

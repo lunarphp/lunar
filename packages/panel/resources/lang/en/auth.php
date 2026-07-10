@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Use a different account',
     'recovery_code' => 'Recovery code',
     'invalid_code' => "That code didn't match. Try again.",
+    'challenge_email_subtitle' => "We've sent a code to {email}.",
+    'resend_code' => 'Resend code',
+    'resend_in_seconds' => 'Resend in {seconds} seconds',
+    'code_resent' => 'A new code has been sent.',
 
     'forgot_title' => 'Reset your password',
     'forgot_subtitle' => "Enter your email and we'll send you a reset link.",
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'You are receiving this email because we received a password reset request for your account.',
     'reset_notification_action' => 'Reset password',
     'reset_notification_line2' => 'This link expires in :count minutes. If you did not request a reset, no action is needed.',
+    'two_factor_email_subject' => 'Your sign-in code',
+    'two_factor_email_line1' => 'Use the following code to complete your sign-in:',
+    'two_factor_email_line2' => 'This code expires in :count minutes. If you did not request this, you can safely ignore this email.',
 
     'security_title' => 'Security',
     'password_section_title' => 'Password',

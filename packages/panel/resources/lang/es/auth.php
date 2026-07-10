@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Usar una cuenta diferente',
     'recovery_code' => 'Código de recuperación',
     'invalid_code' => 'Ese código no coincide. Inténtalo de nuevo.',
+    'challenge_email_subtitle' => 'Hemos enviado un código a {email}.',
+    'resend_code' => 'Reenviar código',
+    'resend_in_seconds' => 'Reenviar en {seconds} segundos',
+    'code_resent' => 'Se ha enviado un nuevo código.',
 
     'forgot_title' => 'Restablece tu contraseña',
     'forgot_subtitle' => 'Introduce tu correo electrónico y te enviaremos un enlace de restablecimiento.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Recibes este correo porque hemos recibido una solicitud de restablecimiento de contraseña para tu cuenta.',
     'reset_notification_action' => 'Restablecer contraseña',
     'reset_notification_line2' => 'Este enlace caduca en :count minutos. Si no solicitaste un restablecimiento, no se requiere ninguna acción.',
+    'two_factor_email_subject' => 'Tu código de inicio de sesión',
+    'two_factor_email_line1' => 'Usa el siguiente código para completar tu inicio de sesión:',
+    'two_factor_email_line2' => 'Este código caduca en :count minutos. Si no lo solicitaste, puedes ignorar este correo de forma segura.',
 
     'security_title' => 'Seguridad',
     'password_section_title' => 'Contraseña',

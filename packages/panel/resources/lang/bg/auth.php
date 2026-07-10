@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Използвай друг акаунт',
     'recovery_code' => 'Резервен код',
     'invalid_code' => 'Този код не съвпада. Опитайте отново.',
+    'challenge_email_subtitle' => 'Изпратихме код на {email}.',
+    'resend_code' => 'Изпрати кода отново',
+    'resend_in_seconds' => 'Изпрати отново след {seconds} секунди',
+    'code_resent' => 'Изпратен е нов код.',
 
     'forgot_title' => 'Нулирайте паролата си',
     'forgot_subtitle' => 'Въведете имейла си и ще ви изпратим връзка за нулиране.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Получавате този имейл, защото получихме заявка за нулиране на паролата за вашия акаунт.',
     'reset_notification_action' => 'Нулирай паролата',
     'reset_notification_line2' => 'Тази връзка изтича след :count минути. Ако не сте поискали нулиране, не е необходимо действие.',
+    'two_factor_email_subject' => 'Вашият код за вход',
+    'two_factor_email_line1' => 'Използвайте следния код, за да завършите входа си:',
+    'two_factor_email_line2' => 'Този код изтича след :count минути. Ако не сте поискали това, можете спокойно да игнорирате този имейл.',
 
     'security_title' => 'Сигурност',
     'password_section_title' => 'Парола',

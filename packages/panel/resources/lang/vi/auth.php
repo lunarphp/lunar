@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Dùng tài khoản khác',
     'recovery_code' => 'Mã khôi phục',
     'invalid_code' => 'Mã này không khớp. Vui lòng thử lại.',
+    'challenge_email_subtitle' => 'Chúng tôi đã gửi một mã đến {email}.',
+    'resend_code' => 'Gửi lại mã',
+    'resend_in_seconds' => 'Gửi lại sau {seconds} giây',
+    'code_resent' => 'Một mã mới đã được gửi.',
 
     'forgot_title' => 'Đặt lại mật khẩu của bạn',
     'forgot_subtitle' => 'Nhập email của bạn và chúng tôi sẽ gửi cho bạn một liên kết đặt lại.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Bạn nhận được email này vì chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.',
     'reset_notification_action' => 'Đặt lại mật khẩu',
     'reset_notification_line2' => 'Liên kết này sẽ hết hạn sau :count phút. Nếu bạn không yêu cầu đặt lại, không cần thực hiện hành động nào.',
+    'two_factor_email_subject' => 'Mã đăng nhập của bạn',
+    'two_factor_email_line1' => 'Sử dụng mã sau để hoàn tất đăng nhập của bạn:',
+    'two_factor_email_line2' => 'Mã này sẽ hết hạn sau :count phút. Nếu bạn không yêu cầu điều này, bạn có thể bỏ qua email này một cách an toàn.',
 
     'security_title' => 'Bảo mật',
     'password_section_title' => 'Mật khẩu',

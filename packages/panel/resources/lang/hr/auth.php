@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Upotrijebi drugi račun',
     'recovery_code' => 'Kod za oporavak',
     'invalid_code' => 'Taj se kod ne podudara. Pokušajte ponovno.',
+    'challenge_email_subtitle' => 'Poslali smo kod na {email}.',
+    'resend_code' => 'Ponovno pošalji kod',
+    'resend_in_seconds' => 'Ponovno slanje za {seconds} sekundi',
+    'code_resent' => 'Poslan je novi kod.',
 
     'forgot_title' => 'Poništite svoju lozinku',
     'forgot_subtitle' => 'Unesite svoju e-poštu i poslat ćemo vam poveznicu za poništavanje.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Primate ovu e-poštu jer smo zaprimili zahtjev za poništavanje lozinke za vaš račun.',
     'reset_notification_action' => 'Poništi lozinku',
     'reset_notification_line2' => 'Ova poveznica istječe za :count minuta. Ako niste zatražili poništavanje, nikakva radnja nije potrebna.',
+    'two_factor_email_subject' => 'Vaš kod za prijavu',
+    'two_factor_email_line1' => 'Upotrijebite sljedeći kod za dovršetak prijave:',
+    'two_factor_email_line2' => 'Ovaj kod istječe za :count minuta. Ako niste zatražili ovo, možete sigurno zanemariti ovu e-poštu.',
 
     'security_title' => 'Sigurnost',
     'password_section_title' => 'Lozinka',

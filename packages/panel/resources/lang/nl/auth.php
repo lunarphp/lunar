@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Ander account gebruiken',
     'recovery_code' => 'Herstelcode',
     'invalid_code' => 'Die code klopt niet. Probeer het opnieuw.',
+    'challenge_email_subtitle' => 'We hebben een code gestuurd naar {email}.',
+    'resend_code' => 'Code opnieuw versturen',
+    'resend_in_seconds' => 'Opnieuw versturen over {seconds} seconden',
+    'code_resent' => 'Er is een nieuwe code verstuurd.',
 
     'forgot_title' => 'Stel je wachtwoord opnieuw in',
     'forgot_subtitle' => 'Voer je e-mailadres in en we sturen je een resetlink.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Je ontvangt deze e-mail omdat we een verzoek hebben ontvangen om het wachtwoord van je account opnieuw in te stellen.',
     'reset_notification_action' => 'Wachtwoord resetten',
     'reset_notification_line2' => 'Deze link verloopt over :count minuten. Als je geen reset hebt aangevraagd, hoef je niets te doen.',
+    'two_factor_email_subject' => 'Je inlogcode',
+    'two_factor_email_line1' => 'Gebruik de volgende code om je inloggen te voltooien:',
+    'two_factor_email_line2' => 'Deze code verloopt over :count minuten. Als je dit niet hebt aangevraagd, kun je deze e-mail veilig negeren.',
 
     'security_title' => 'Beveiliging',
     'password_section_title' => 'Wachtwoord',

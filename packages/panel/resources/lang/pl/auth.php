@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Użyj innego konta',
     'recovery_code' => 'Kod odzyskiwania',
     'invalid_code' => 'Ten kod się nie zgadza. Spróbuj ponownie.',
+    'challenge_email_subtitle' => 'Wysłaliśmy kod na adres {email}.',
+    'resend_code' => 'Wyślij kod ponownie',
+    'resend_in_seconds' => 'Wyślij ponownie za {seconds} sekund',
+    'code_resent' => 'Wysłano nowy kod.',
 
     'forgot_title' => 'Zresetuj hasło',
     'forgot_subtitle' => 'Wprowadź swój e-mail, a wyślemy Ci link do resetowania hasła.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Otrzymujesz tę wiadomość, ponieważ otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta.',
     'reset_notification_action' => 'Zresetuj hasło',
     'reset_notification_line2' => 'Ten link wygaśnie za :count minut. Jeśli nie prosiłeś o zresetowanie hasła, nie musisz podejmować żadnych działań.',
+    'two_factor_email_subject' => 'Twój kod logowania',
+    'two_factor_email_line1' => 'Użyj poniższego kodu, aby dokończyć logowanie:',
+    'two_factor_email_line2' => 'Ten kod wygaśnie za :count minut. Jeśli nie prosiłeś o to, możesz bezpiecznie zignorować tę wiadomość.',
 
     'security_title' => 'Bezpieczeństwo',
     'password_section_title' => 'Hasło',

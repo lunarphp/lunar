@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Másik fiók használata',
     'recovery_code' => 'Helyreállítási kód',
     'invalid_code' => 'A kód nem egyezik. Próbálja újra.',
+    'challenge_email_subtitle' => 'Kódot küldtünk erre a címre: {email}.',
+    'resend_code' => 'Kód újraküldése',
+    'resend_in_seconds' => 'Újraküldés {seconds} másodperc múlva',
+    'code_resent' => 'Új kód lett elküldve.',
 
     'forgot_title' => 'Jelszó visszaállítása',
     'forgot_subtitle' => 'Adja meg e-mail címét, és küldünk egy visszaállítási hivatkozást.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Ezt az e-mailt azért kapja, mert jelszó-visszaállítási kérelmet kaptunk fiókjához.',
     'reset_notification_action' => 'Jelszó visszaállítása',
     'reset_notification_line2' => 'Ez a hivatkozás :count perc múlva lejár. Ha nem kért visszaállítást, nincs szükség további teendőre.',
+    'two_factor_email_subject' => 'Bejelentkezési kódja',
+    'two_factor_email_line1' => 'A bejelentkezés befejezéséhez használja az alábbi kódot:',
+    'two_factor_email_line2' => 'Ez a kód :count perc múlva lejár. Ha nem ön kérte ezt, nyugodtan hagyja figyelmen kívül ezt az e-mailt.',
 
     'security_title' => 'Biztonság',
     'password_section_title' => 'Jelszó',

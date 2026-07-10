@@ -26,6 +26,10 @@ return [
     'use_different_account' => 'Ein anderes Konto verwenden',
     'recovery_code' => 'Wiederherstellungscode',
     'invalid_code' => 'Der Code war nicht korrekt. Versuchen Sie es erneut.',
+    'challenge_email_subtitle' => 'Wir haben einen Code an {email} gesendet.',
+    'resend_code' => 'Code erneut senden',
+    'resend_in_seconds' => 'Erneut senden in {seconds} Sekunden',
+    'code_resent' => 'Ein neuer Code wurde gesendet.',
 
     'forgot_title' => 'Setzen Sie Ihr Passwort zurück',
     'forgot_subtitle' => 'Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen.',
@@ -46,6 +50,9 @@ return [
     'reset_notification_line1' => 'Sie erhalten diese E-Mail, weil wir eine Anfrage zum Zurücksetzen des Passworts für Ihr Konto erhalten haben.',
     'reset_notification_action' => 'Passwort zurücksetzen',
     'reset_notification_line2' => 'Dieser Link läuft in :count Minuten ab. Wenn Sie kein Zurücksetzen angefordert haben, ist keine weitere Aktion erforderlich.',
+    'two_factor_email_subject' => 'Ihr Anmeldecode',
+    'two_factor_email_line1' => 'Verwenden Sie den folgenden Code, um Ihre Anmeldung abzuschließen:',
+    'two_factor_email_line2' => 'Dieser Code läuft in :count Minuten ab. Wenn Sie dies nicht angefordert haben, können Sie diese E-Mail ignorieren.',
 
     'security_title' => 'Sicherheit',
     'password_section_title' => 'Passwort',
