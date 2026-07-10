@@ -40,10 +40,12 @@ class ExampleSection extends Section
 
     public function slots(SlotRegistry $registry): void
     {
-        // Demonstrates the slot mechanism using the spec's documented Customers example zone.
-        // Any section (real or add-on) can render into the Customer edit page this way.
+        // Demonstrates the slot mechanism on the Customer edit page. The zone prefix must
+        // match the page's route name with the "panel." prefix stripped — our route is
+        // named panel.customers.edit (there's no separate "show" route), so the zone is
+        // "customers.edit", not the spec's illustrative "customers.show".
         $registry->add(new Slot(
-            zone: 'customers.show:main:after',
+            zone: 'customers.edit:main:after',
             component: 'example-addon::InfoBanner',
             props: ['message' => 'This banner was injected by the example add-on via a slot.'],
         ));
