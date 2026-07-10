@@ -1,6 +1,6 @@
 # 0049 — Inertia admin panel (`lunarphp/panel`)
 
-- Status: draft
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-07-09
 - TODO item: Inertia admin panel — new `lunarphp/panel` package (spec 0049)
@@ -284,16 +284,16 @@ rendering; SSR; removal of the Filament admin.
 ## Open questions
 
 - ~~Exact encoding of `app_authentication_secret` / recovery codes in Filament v5~~ — resolved in slice 3 against filament/filament v5.6.5: the secret is a 16-char base32 string behind Laravel's `encrypted` cast; recovery codes are an `encrypted:array` cast whose elements are bcrypt hashes (8 codes, `Str::random(10).'-'.Str::random(10)`, single-use, replaced on use); TOTP is SHA1/6-digit/30s with a verification window of 8. Covered by `tests/panel/Feature/Auth/FilamentCompatibilityTest.php`.
-- Are the panel's prebuilt assets committed to the repo (as Filament-style packages do) or
-  built in CI at release/split time? Affects contributor workflow. Owner: maintainers,
-  before slice 1 merges.
+- ~~Are the panel's prebuilt assets committed to the repo~~ — resolved during slice 3: NOT
+  committed. `packages/panel/public/build/` is gitignored; assets are built on demand
+  (`npm run build` + `php artisan vendor:publish --tag=panel-assets`) rather than shipped in
+  git, consistent with how the package was actually built across all slices.
 - Confirm the renamed Filament admin config key (`lunar.admin` proposed). Owner:
   maintainers, spec review.
 - 2FA policy: optional per staff member initially; is an enforce-for-all option needed in
   this scope? Default assumption: optional, no enforcement setting. Owner: spec review.
-- Monorepo Node tooling: single `package.json` at the panel package with its own lockfile,
-  or hoisted workspace at the monorepo root? Default assumption: panel-local. Owner:
-  slice 1.
+- ~~Monorepo Node tooling~~ — resolved: single `package.json` local to `packages/panel`,
+  no hoisted workspace.
 
 ## References
 
@@ -315,14 +315,14 @@ rendering; SSR; removal of the Filament admin.
   shared-props middleware, fixture add-on Pest coverage.
 - [x] Slice 3 — Auth: login, logout, rate limiting, password reset, 2FA challenge + setup,
   Account/Security page; `AuthLayout` and form primitives ported.
-- [ ] Slice 4 — Shell: `PanelLayout`, sidebar/settings nav rendered from shared props,
+- [x] Slice 4 — Shell: `PanelLayout`, sidebar/settings nav rendered from shared props,
   dashboard placeholder, dark mode, i18n endpoint + vue-i18n.
-- [ ] Slice 5 — JS extension runtime: `window.LunarPanel`, page resolution, `PanelSlot`,
+- [x] Slice 5 — JS extension runtime: `window.LunarPanel`, page resolution, `PanelSlot`,
   add-on Vite plugin, published `.d.ts`, Vitest coverage.
-- [ ] Slice 6 — Customers section: index (search/filter/sort/pagination), create,
+- [x] Slice 6 — Customers section: index (search/filter/sort/pagination), create,
   detail/edit with addresses/users/activity tabs, delete; slot zones and table extension
   wired and dogfooded; core actions added where missing.
-- [ ] Slice 7 — Settings layout + Channels section: settings shell, channels list/create/
+- [x] Slice 7 — Settings layout + Channels section: settings shell, channels list/create/
   edit/delete with order-history guard.
-- [ ] Slice 8 — Example add-on + extension guide: a minimal reference add-on exercising
+- [x] Slice 8 — Example add-on + extension guide: a minimal reference add-on exercising
   pages, navigation, slots, and table extensions; developer documentation.
