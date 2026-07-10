@@ -15,6 +15,9 @@ use Lunar\Core\Actions\Carts\MergeCart;
 use Lunar\Core\Actions\Carts\RemovePurchasable;
 use Lunar\Core\Actions\Carts\SetShippingOption;
 use Lunar\Core\Actions\Carts\UpdateCartLine;
+use Lunar\Core\Actions\Channels\CreateChannel;
+use Lunar\Core\Actions\Channels\DeleteChannel;
+use Lunar\Core\Actions\Channels\UpdateChannel;
 use Lunar\Core\Actions\Collections\CreateChildCollection;
 use Lunar\Core\Actions\Collections\CreateRootCollection;
 use Lunar\Core\Actions\Collections\DeleteCollection;
@@ -99,6 +102,11 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\RemovesPurchasable::class => RemovePurchasable::class,
         Contracts\Carts\SetsShippingOption::class => SetShippingOption::class,
         Contracts\Carts\UpdatesCartLine::class => UpdateCartLine::class,
+
+        // Channels
+        Contracts\Channels\CreatesChannel::class => CreateChannel::class,
+        Contracts\Channels\DeletesChannel::class => DeleteChannel::class,
+        Contracts\Channels\UpdatesChannel::class => UpdateChannel::class,
 
         // Orders
         Contracts\Orders\CancelsOrder::class => CancelOrder::class,

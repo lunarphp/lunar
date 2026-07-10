@@ -36,6 +36,7 @@ class Channel extends Base
     use LogsActivity;
 
     public $casts = [
+        'default' => 'boolean',
         'status' => ChannelState::class,
     ];
 
