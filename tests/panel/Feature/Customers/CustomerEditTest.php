@@ -1,0 +1,102 @@
+<?php
+
+use Inertia\Testing\AssertableInertia as Assert;
+use Lunar\Core\Models\Address;
+use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Staff;
+use Lunar\Tests\Core\Stubs\User;
+use Lunar\Tests\Panel\TestCase;
+use Spatie\Activitylog\Models\Activity;
+
+uses(TestCase::class);
+
+it('renders the edit page with addresses, users and activity', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+    $this->actingAs($staff, 'staff');
+
+    $customer = Customer::factory()->create();
+    $address = Address::factory()->for($customer)->create();
+    $user = User::factory()->create();
+    $customer->users()->attach($user);
+
+    Activity::create([
+        'description' => 'created',
+        'subject_type' => $customer->getMorphClass(),
+        'subject_id' => $customer->id,
+        'causer_type' => $staff->getMorphClass(),
+        'causer_id' => $staff->id,
+        'log_name' => 'default',
+    ]);
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('customers/Edit')
+            ->where('customer.id', $customer->id)
+            ->has('addresses', 1)
+            ->where('addresses.0.id', $address->id)
+            ->has('users', 1)
+            ->where('users.0.id', $user->id)
+            ->has('activities', 1)
+        );
+});
+
+it('updates a customer and syncs its customer groups', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+    $originalGroup = CustomerGroup::factory()->create();
+    $customer->customerGroups()->sync([$originalGroup->id]);
+
+    $newGroup = CustomerGroup::factory()->create();
+
+    $this->put(route('panel.customers.update', $customer), [
+        'first_name' => 'Updated',
+        'last_name' => 'Name',
+        'customer_group_ids' => [$newGroup->id],
+    ])->assertRedirect()
+        ->assertSessionHas('success', 'Customer updated.');
+
+    $customer->refresh();
+
+    expect($customer->first_name)->toBe('Updated')
+        ->and($customer->last_name)->toBe('Name')
+        ->and($customer->customerGroups->pluck('id')->all())->toBe([$newGroup->id]);
+});
+
+it('clears customer groups when an empty array is given on update', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+    $group = CustomerGroup::factory()->create();
+    $customer->customerGroups()->sync([$group->id]);
+
+    $this->put(route('panel.customers.update', $customer), [
+        'first_name' => $customer->first_name,
+        'last_name' => $customer->last_name,
+    ]);
+
+    expect($customer->customerGroups()->count())->toBe(0);
+});
+
+it('validates required fields on update', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    $this->put(route('panel.customers.update', $customer), [])
+        ->assertSessionHasErrors(['first_name', 'last_name']);
+});
+
+it('deletes a customer', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    $this->delete(route('panel.customers.destroy', $customer))
+        ->assertRedirect(route('panel.customers.index'))
+        ->assertSessionHas('success', 'Customer deleted.');
+
+    expect(Customer::find($customer->id))->toBeNull();
+});

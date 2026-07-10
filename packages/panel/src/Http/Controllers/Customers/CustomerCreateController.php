@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
-use Lunar\Core\Models\Customer;
+use Lunar\Core\Contracts\Actions\Customers\CreatesCustomer;
 use Lunar\Core\Models\CustomerGroup;
 
 class CustomerCreateController
@@ -23,7 +23,7 @@ class CustomerCreateController
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, CreatesCustomer $createsCustomer): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
@@ -36,9 +36,10 @@ class CustomerCreateController
             'customer_group_ids.*' => ['integer', Rule::exists((new CustomerGroup)->getTable(), 'id')],
         ]);
 
-        $customer = Customer::create(collect($validated)->except('customer_group_ids')->all());
-
-        $customer->customerGroups()->sync($validated['customer_group_ids'] ?? []);
+        $customer = $createsCustomer->execute(
+            collect($validated)->except('customer_group_ids')->all(),
+            $validated['customer_group_ids'] ?? [],
+        );
 
         return redirect()
             ->route('panel.customers.edit', $customer)

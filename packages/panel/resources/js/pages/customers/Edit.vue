@@ -10,6 +10,7 @@ import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
+import PanelSlot from '../../components/PanelSlot.vue';
 import Section from '../../components/Section.vue';
 import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
@@ -39,7 +40,7 @@ interface Address {
     postcode: string | null;
     country_id: number;
     delivery_instructions: string | null;
-    contact_mail: string | null;
+    contact_email: string | null;
     contact_phone: string | null;
     shipping_default: boolean;
     billing_default: boolean;
@@ -190,7 +191,7 @@ const countryName = (id: number): string => props.countries.find((country) => co
 const cardAddress = (address: Address) => ({
     ...address,
     country_name: countryName(address.country_id),
-    contact_email: address.contact_mail ?? undefined,
+    contact_email: address.contact_email ?? undefined,
 });
 
 const emptyAddress = () => ({
@@ -207,7 +208,7 @@ const emptyAddress = () => ({
     postcode: '',
     country_id: '' as number | string,
     delivery_instructions: '',
-    contact_mail: '',
+    contact_email: '',
     contact_phone: '',
     shipping_default: false,
     billing_default: false,
@@ -245,7 +246,7 @@ const startEditAddress = (address: Address): void => {
     addressForm.postcode = address.postcode ?? '';
     addressForm.country_id = address.country_id;
     addressForm.delivery_instructions = address.delivery_instructions ?? '';
-    addressForm.contact_mail = address.contact_mail ?? '';
+    addressForm.contact_email = address.contact_email ?? '';
     addressForm.contact_phone = address.contact_phone ?? '';
     addressForm.shipping_default = address.shipping_default;
     addressForm.billing_default = address.billing_default;
@@ -285,7 +286,7 @@ const setAddressDefault = (address: Address, field: 'shipping_default' | 'billin
             postcode: address.postcode,
             country_id: address.country_id,
             delivery_instructions: address.delivery_instructions,
-            contact_mail: address.contact_mail,
+            contact_email: address.contact_email,
             contact_phone: address.contact_phone,
             shipping_default: address.shipping_default,
             billing_default: address.billing_default,
@@ -432,6 +433,8 @@ const tabDefs = computed(() => [
                                 <Button type="submit" variant="primary" :disabled="detailsForm.processing">Save changes</Button>
                             </div>
                         </form>
+
+                        <PanelSlot name="customers.edit:main:after" :customer="customer" />
 
                         <!-- Tabbed: addresses, users, activity -->
                         <div class="pt-2">

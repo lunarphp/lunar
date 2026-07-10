@@ -24,6 +24,15 @@ interface CustomerRow {
     created_at: string;
     customer_groups: CustomerGroupOption[];
     edit_url: string;
+    // Extension-contributed columns land here under their own key.
+    [key: string]: unknown;
+}
+
+interface CustomerColumn {
+    key: string;
+    label: string;
+    width?: string;
+    align?: 'left' | 'right' | 'center';
 }
 
 interface Paginated<T> {
@@ -39,6 +48,7 @@ interface Paginated<T> {
 
 const props = defineProps<{
     customers: Paginated<CustomerRow>;
+    columns: CustomerColumn[];
     customerGroups: CustomerGroupOption[];
     filters: { q?: string; customer_group_id?: string | number; sort?: string; direction?: string };
     urls: { index: string; create: string };
@@ -82,13 +92,6 @@ const clearFilters = (): void => {
     customerGroupId.value = '';
     reload();
 };
-
-const columns = [
-    { key: 'full_name', label: 'Customer', width: 'minmax(0,1.4fr)' },
-    { key: 'company_name', label: 'Company', width: 'minmax(0,1fr)' },
-    { key: 'customer_groups', label: 'Groups', width: 'minmax(0,1fr)' },
-    { key: 'created_at', label: 'Created', width: '120px', align: 'right' as const },
-];
 
 const initials = (name: string): string =>
     name
@@ -157,7 +160,7 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     </Link>
                 </div>
 
-                <DataTable :columns="columns" :rows="customers.data" :row-to="(row) => row.edit_url as string">
+                <DataTable :columns="props.columns" :rows="customers.data" :row-to="(row) => row.edit_url as string">
                     <template #empty>
                         <PageEmpty title="No customers match these filters">
                             Try clearing the search or filters to see more customers.

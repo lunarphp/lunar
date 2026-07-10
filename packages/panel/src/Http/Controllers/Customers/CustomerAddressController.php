@@ -4,29 +4,32 @@ namespace Lunar\Panel\Http\Controllers\Customers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Lunar\Core\Contracts\Actions\Customers\CreatesCustomerAddress;
+use Lunar\Core\Contracts\Actions\Customers\DeletesCustomerAddress;
+use Lunar\Core\Contracts\Actions\Customers\UpdatesCustomerAddress;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Customer;
 
 class CustomerAddressController
 {
-    public function store(Request $request, Customer $customer): RedirectResponse
+    public function store(Request $request, Customer $customer, CreatesCustomerAddress $createsCustomerAddress): RedirectResponse
     {
-        $customer->addresses()->create($this->validated($request));
+        $createsCustomerAddress->execute($customer, $this->validated($request));
 
         return back()->with('success', 'Address added.');
     }
 
-    public function update(Request $request, Customer $customer, Address $address): RedirectResponse
+    public function update(Request $request, Customer $customer, Address $address, UpdatesCustomerAddress $updatesCustomerAddress): RedirectResponse
     {
-        $address->update($this->validated($request));
+        $updatesCustomerAddress->execute($address, $this->validated($request));
 
         return back()->with('success', 'Address updated.');
     }
 
-    public function destroy(Customer $customer, Address $address): RedirectResponse
+    public function destroy(Customer $customer, Address $address, DeletesCustomerAddress $deletesCustomerAddress): RedirectResponse
     {
-        $address->delete();
+        $deletesCustomerAddress->execute($address);
 
         return back()->with('success', 'Address deleted.');
     }
@@ -48,7 +51,7 @@ class CustomerAddressController
             'postcode' => ['nullable', 'string', 'max:255'],
             'country_id' => ['required', 'integer', 'exists:'.(new Country)->getTable().',id'],
             'delivery_instructions' => ['nullable', 'string'],
-            'contact_mail' => ['nullable', 'email', 'max:255'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
             'contact_phone' => ['nullable', 'string', 'max:255'],
             'shipping_default' => ['nullable', 'boolean'],
             'billing_default' => ['nullable', 'boolean'],

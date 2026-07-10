@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lunar\Core\Contracts\Actions\Customers\DeletesCustomer;
+use Lunar\Core\Contracts\Actions\Customers\UpdatesCustomer;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Customer;
@@ -34,7 +36,7 @@ class CustomerEditController
             'postcode' => $address->postcode,
             'country_id' => $address->country_id,
             'delivery_instructions' => $address->delivery_instructions,
-            'contact_mail' => $address->contact_mail,
+            'contact_email' => $address->contact_email,
             'contact_phone' => $address->contact_phone,
             'shipping_default' => $address->shipping_default,
             'billing_default' => $address->billing_default,
@@ -93,7 +95,7 @@ class CustomerEditController
         ]);
     }
 
-    public function update(Request $request, Customer $customer): RedirectResponse
+    public function update(Request $request, Customer $customer, UpdatesCustomer $updatesCustomer): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
@@ -106,16 +108,18 @@ class CustomerEditController
             'customer_group_ids.*' => ['integer', Rule::exists((new CustomerGroup)->getTable(), 'id')],
         ]);
 
-        $customer->update(collect($validated)->except('customer_group_ids')->all());
-
-        $customer->customerGroups()->sync($validated['customer_group_ids'] ?? []);
+        $updatesCustomer->execute(
+            $customer,
+            collect($validated)->except('customer_group_ids')->all(),
+            $validated['customer_group_ids'] ?? [],
+        );
 
         return back()->with('success', 'Customer updated.');
     }
 
-    public function destroy(Customer $customer): RedirectResponse
+    public function destroy(Customer $customer, DeletesCustomer $deletesCustomer): RedirectResponse
     {
-        $customer->delete();
+        $deletesCustomer->execute($customer);
 
         return redirect()->route('panel.customers.index')->with('success', 'Customer deleted.');
     }
