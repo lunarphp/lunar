@@ -3,6 +3,7 @@ import { createApp, h, type DefineComponent } from 'vue';
 import * as Vue from 'vue';
 import '../css/app.css';
 import { LunarPanelRuntime } from './runtime/registry';
+import { createPageResolver } from './runtime/pageResolver';
 import { useTheme } from './composables/useTheme';
 
 // Published so add-on IIFE bundles (compiled against `@lunarphp/panel/vite-plugin`,
@@ -12,43 +13,11 @@ window.LunarPanel = new LunarPanelRuntime();
 
 const pages = import.meta.glob<DefineComponent>('./pages/**/*.vue', { eager: true });
 
-function resolveLocalPage(name: string): DefineComponent | undefined {
-    return pages[`./pages/${name}.vue`];
-}
-
-function resolveAnyPage(name: string): DefineComponent | undefined {
-    return (window.LunarPanel.getPage(name) as DefineComponent | undefined) ?? resolveLocalPage(name);
-}
-
-function waitForDomContentLoaded(): Promise<void> {
-    return new Promise((resolve) => {
-        document.addEventListener('DOMContentLoaded', () => resolve(), { once: true });
-    });
-}
-
+// `window.LunarPanel`'s declared type is the public add-on-facing interface (see
+// lunar-panel.d.ts); the resolver needs the internal getPage/markBooted surface the
+// concrete runtime actually exposes.
 createInertiaApp({
-    resolve: async (name) => {
-        const page = resolveAnyPage(name);
-
-        if (page) {
-            return page;
-        }
-
-        // On a hard refresh, deferred add-on <script> IIFEs (see app.blade.php) may not
-        // have registered their pages yet. Wait once for the document to finish loading,
-        // then retry, before giving up.
-        if (document.readyState !== 'complete') {
-            await waitForDomContentLoaded();
-
-            const retried = resolveAnyPage(name);
-
-            if (retried) {
-                return retried;
-            }
-        }
-
-        throw new Error(`Panel page not found: ${name}`);
-    },
+    resolve: createPageResolver(window.LunarPanel as LunarPanelRuntime, pages),
     setup({ el, App, props, plugin }) {
         // Applies the persisted/system theme class before first paint.
         useTheme();
