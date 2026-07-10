@@ -43,7 +43,7 @@ onMounted(() => {
     <AuthLayout :image="HERO_IMAGE" :image-alt="HERO_ALT">
         <template #caption>
             <div class="font-medium text-white">Built for the next chapter of commerce.</div>
-            <div class="mt-1 text-white/65">Lunar v2 — coming soon.</div>
+            <div class="mt-1 text-white/65">Lunar v2</div>
         </template>
 
         <form class="flex flex-col" @submit.prevent="submit">
