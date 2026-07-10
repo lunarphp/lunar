@@ -21,6 +21,14 @@ use Lunar\Core\Actions\Collections\DeleteCollection;
 use Lunar\Core\Actions\Collections\MoveCollection;
 use Lunar\Core\Actions\Collections\SortProducts;
 use Lunar\Core\Actions\Currencies\CreateCurrencyPrices;
+use Lunar\Core\Actions\Customers\CreateCustomer;
+use Lunar\Core\Actions\Customers\CreateCustomerAddress;
+use Lunar\Core\Actions\Customers\DeleteCustomer;
+use Lunar\Core\Actions\Customers\DeleteCustomerAddress;
+use Lunar\Core\Actions\Customers\LinkCustomerUser;
+use Lunar\Core\Actions\Customers\UnlinkCustomerUser;
+use Lunar\Core\Actions\Customers\UpdateCustomer;
+use Lunar\Core\Actions\Customers\UpdateCustomerAddress;
 use Lunar\Core\Actions\Fulfilment\AddFulfilmentTracking;
 use Lunar\Core\Actions\Fulfilment\CancelFulfilment;
 use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
@@ -143,6 +151,16 @@ class ActionServiceProvider extends ServiceProvider
 
         // Currencies
         Contracts\Currencies\CreatesCurrencyPrices::class => CreateCurrencyPrices::class,
+
+        // Customers
+        Contracts\Customers\CreatesCustomer::class => CreateCustomer::class,
+        Contracts\Customers\CreatesCustomerAddress::class => CreateCustomerAddress::class,
+        Contracts\Customers\DeletesCustomer::class => DeleteCustomer::class,
+        Contracts\Customers\DeletesCustomerAddress::class => DeleteCustomerAddress::class,
+        Contracts\Customers\LinksCustomerUser::class => LinkCustomerUser::class,
+        Contracts\Customers\UnlinksCustomerUser::class => UnlinkCustomerUser::class,
+        Contracts\Customers\UpdatesCustomer::class => UpdateCustomer::class,
+        Contracts\Customers\UpdatesCustomerAddress::class => UpdateCustomerAddress::class,
 
         // Taxes
         Contracts\Taxes\GetsTaxZone::class => GetTaxZone::class,
