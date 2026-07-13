@@ -162,24 +162,69 @@ class TableExtensionResolver
             ->all();
     }
 
-    /** @return array<int, array<string, mixed>> */
+    /**
+     * Static row-action descriptors (key, label, icon, method, confirmation,
+     * primary, position), ordered by Position. Per-row target URLs are resolved
+     * separately by {@see resolveRowActionUrls()}.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function getActions(): array
     {
-        return collect($this->actions)
-            ->filter(fn (TableAction $action) => $action->visible())
-            ->map(fn (TableAction $action) => $action->toArray())
-            ->values()
-            ->all();
+        $visible = array_values(array_filter(
+            $this->actions,
+            fn (TableAction $action) => $action->visible(),
+        ));
+
+        $ordered = (new OrderResolver)->sort(
+            $visible,
+            fn (TableAction $action): string => $action->key(),
+            fn (TableAction $action): Position => $action->position(),
+        );
+
+        return array_map(fn (TableAction $action) => $action->toArray(), $ordered);
+    }
+
+    /**
+     * Resolve each visible row action's target URL for a single record. Actions
+     * with no URL (e.g. component-rendered) are omitted.
+     *
+     * @return array<string, string>
+     */
+    public function resolveRowActionUrls(mixed $record): array
+    {
+        $urls = [];
+
+        foreach ($this->actions as $action) {
+            if (! $action->visible()) {
+                continue;
+            }
+
+            $url = $action->url($record);
+
+            if ($url !== null) {
+                $urls[$action->key()] = $url;
+            }
+        }
+
+        return $urls;
     }
 
     /** @return array<int, array<string, mixed>> */
     public function getBulkActions(): array
     {
-        return collect($this->bulkActions)
-            ->filter(fn (TableBulkAction $action) => $action->visible())
-            ->map(fn (TableBulkAction $action) => $action->toArray())
-            ->values()
-            ->all();
+        $visible = array_values(array_filter(
+            $this->bulkActions,
+            fn (TableBulkAction $action) => $action->visible(),
+        ));
+
+        $ordered = (new OrderResolver)->sort(
+            $visible,
+            fn (TableBulkAction $action): string => $action->key(),
+            fn (TableBulkAction $action): Position => $action->position(),
+        );
+
+        return array_map(fn (TableBulkAction $action) => $action->toArray(), $ordered);
     }
 
     /** @return array<string, mixed> */

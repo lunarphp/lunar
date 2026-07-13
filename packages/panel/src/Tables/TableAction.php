@@ -20,7 +20,12 @@ abstract class TableAction
         return null;
     }
 
-    public function url(): ?string
+    /**
+     * The action's target URL for a given row record. Row actions build a
+     * per-row URL from the record (`route('panel.customers.edit', $record)`);
+     * static actions ignore it. Null omits the action from that row.
+     */
+    public function url(mixed $record = null): ?string
     {
         return null;
     }
@@ -28,6 +33,12 @@ abstract class TableAction
     public function method(): string
     {
         return 'post';
+    }
+
+    /** Render as an inline button (true) or collapse into the row's ellipsis menu (false). */
+    public function primary(): bool
+    {
+        return false;
     }
 
     public function confirmationMessage(): ?string
@@ -49,18 +60,29 @@ abstract class TableAction
         return true;
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * The static descriptor shared once per table. The per-row target URL is
+     * resolved separately via {@see url()} and merged into each row's payload.
+     *
+     * @return array<string, mixed>
+     */
     final public function toArray(): array
     {
         return [
             'key' => $this->key(),
             'label' => $this->label(),
+            'icon' => $this->icon(),
             'component' => $this->component(),
-            'url' => $this->url(),
             'method' => $this->method(),
+            'primary' => $this->primary(),
             'confirmation' => $this->confirmationMessage(),
             'position' => $this->position()->toArray(),
             'visible' => $this->visible(),
         ];
+    }
+
+    public function icon(): ?string
+    {
+        return null;
     }
 }

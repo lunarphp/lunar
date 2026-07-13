@@ -67,6 +67,7 @@ class CustomerIndexController
                         'name' => $group->name,
                     ]),
                     'edit_url' => route('panel.customers.edit', $customer),
+                    '_actions' => $resolver->resolveRowActionUrls($customer),
                 ];
 
                 foreach ($resolver->getColumnKeys() as $key) {
@@ -81,6 +82,8 @@ class CustomerIndexController
         return Inertia::render('customers/Index', [
             'customers' => $customers,
             'columns' => $columns,
+            'tableActions' => $resolver->getActions(),
+            'tableBulkActions' => $resolver->getBulkActions(),
             'customerGroups' => CustomerGroup::all(['id', 'name']),
             'filters' => $request->only(['q', 'customer_group_id', 'sort', 'direction']),
             'urls' => [

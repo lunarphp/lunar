@@ -11,6 +11,7 @@ use Lunar\Panel\Http\Controllers\Customers\CustomerIndexController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Sections\Sales\Tables\CustomersTableExtension;
 use Lunar\Panel\Sections\Section;
 
 class SalesSection extends Section
@@ -34,6 +35,14 @@ class SalesSection extends Section
             icon: 'users',
             route: 'panel.customers.index',
         ));
+    }
+
+    /** @return array<string, class-string> */
+    public function tableExtensions(): array
+    {
+        return [
+            'customers.index' => CustomersTableExtension::class,
+        ];
     }
 
     public function routes(): ?Closure

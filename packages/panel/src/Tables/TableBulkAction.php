@@ -20,6 +20,12 @@ abstract class TableBulkAction
         return null;
     }
 
+    public function icon(): ?string
+    {
+        return null;
+    }
+
+    /** The endpoint the selected row ids are submitted to. */
     public function url(): ?string
     {
         return null;
@@ -55,6 +61,7 @@ abstract class TableBulkAction
         return [
             'key' => $this->key(),
             'label' => $this->label(),
+            'icon' => $this->icon(),
             'component' => $this->component(),
             'url' => $this->url(),
             'method' => $this->method(),
