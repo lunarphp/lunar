@@ -120,6 +120,20 @@ it('collects columns, filters and actions from extension classes', function () {
         ->and(array_column($resolver->getActions(), 'key'))->toBe(['ping']);
 });
 
+it('merges add-on columns into the first-party set and honours their position anchor', function () {
+    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
+
+    // FixtureRatingColumn declares Position::after('name'); FixtureSecretColumn is
+    // permission-gated and hidden here (no authenticated user), proving both the
+    // anchor placement and that permission filtering flows through the merge.
+    $columns = $resolver->mergeAndOrderColumns([
+        ['key' => 'name', 'label' => 'Name'],
+        ['key' => 'email', 'label' => 'Email'],
+    ]);
+
+    expect(array_column($columns, 'key'))->toBe(['name', 'rating', 'email']);
+});
+
 it('hides columns whose permission the user lacks', function () {
     Gate::define('panel-test.table', fn ($user) => (bool) $user->admin);
 

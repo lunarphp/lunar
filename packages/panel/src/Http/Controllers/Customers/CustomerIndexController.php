@@ -76,15 +76,7 @@ class CustomerIndexController
                 return $row;
             });
 
-        $columns = [
-            ...$this->columns,
-            ...collect($resolver->getColumns())
-                ->map(fn (array $column) => array_filter([
-                    'key' => $column['key'],
-                    'label' => $column['header'],
-                ]))
-                ->all(),
-        ];
+        $columns = $resolver->mergeAndOrderColumns($this->columns);
 
         return Inertia::render('customers/Index', [
             'customers' => $customers,

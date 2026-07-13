@@ -4,6 +4,8 @@ namespace Lunar\Panel\Tables\Resolvers;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Lunar\Panel\Support\OrderResolver;
+use Lunar\Panel\Support\Position;
 use Lunar\Panel\Tables\TableAction;
 use Lunar\Panel\Tables\TableBulkAction;
 use Lunar\Panel\Tables\TableColumn;
@@ -93,6 +95,51 @@ class TableExtensionResolver
             ->map(fn (TableColumn $column) => $column->toArray())
             ->values()
             ->all();
+    }
+
+    /**
+     * Merge the page's first-party columns with visible add-on columns and order
+     * the combined set by Position. First-party columns keep their declared order
+     * (assigned ascending priority); add-on columns can anchor before/after a
+     * first-party key, which only resolves because both sets are ordered together.
+     *
+     * @param  array<int, array{key: string, label: string, width?: string, align?: string}>  $firstParty
+     * @return array<int, array<string, mixed>>
+     */
+    public function mergeAndOrderColumns(array $firstParty): array
+    {
+        $entries = [];
+
+        foreach (array_values($firstParty) as $index => $column) {
+            $entries[] = [
+                'key' => $column['key'],
+                'position' => Position::priority(($index + 1) * 10),
+                'payload' => $column,
+            ];
+        }
+
+        foreach ($this->columns as $column) {
+            if (! $column->visible()) {
+                continue;
+            }
+
+            $entries[] = [
+                'key' => $column->key(),
+                'position' => $column->position(),
+                'payload' => array_filter([
+                    'key' => $column->key(),
+                    'label' => $column->header(),
+                ]),
+            ];
+        }
+
+        $ordered = (new OrderResolver)->sort(
+            $entries,
+            fn (array $entry): string => $entry['key'],
+            fn (array $entry): Position => $entry['position'],
+        );
+
+        return array_map(fn (array $entry) => $entry['payload'], $ordered);
     }
 
     /** @return string[] */
