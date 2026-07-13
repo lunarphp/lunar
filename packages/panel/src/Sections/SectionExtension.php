@@ -32,6 +32,14 @@ abstract class SectionExtension implements ProvidesNavigation
     }
 
     /**
+     * @return array<string, array<int, class-string>>
+     */
+    public function pageActions(): array
+    {
+        return [];
+    }
+
+    /**
      * Return a Vite config to register for this section, or null to skip.
      *
      * @return array{input?: string|string[], hotFile?: string|null, buildDirectory?: string, __buildSourcePath?: string}|string|null

@@ -4,6 +4,7 @@ namespace Lunar\Panel;
 
 use Closure;
 use Illuminate\Support\Facades\Log;
+use Lunar\Panel\Actions\PageActionResolver;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\ProvidesNavigation;
 use Lunar\Panel\Sections\Section;
@@ -35,6 +36,9 @@ class PanelManager
 
     /** @var array<string, string[]> */
     protected array $tableExtensions = [];
+
+    /** @var array<string, string[]> */
+    protected array $pageActions = [];
 
     /** @var Closure[] */
     protected array $routeRegistrars = [];
@@ -107,6 +111,12 @@ class PanelManager
             $this->extendTable($tableId, $extensionClass);
         }
 
+        foreach ($entity->pageActions() as $pageId => $actionClasses) {
+            foreach ((array) $actionClasses as $actionClass) {
+                $this->addPageAction($pageId, $actionClass);
+            }
+        }
+
         if ($viteConfig = $entity->vite()) {
             $this->vite($sectionKey, $viteConfig);
         }
@@ -143,6 +153,25 @@ class PanelManager
     public function resolveExtensions(string $tableId): TableExtensionResolver
     {
         return new TableExtensionResolver($this->getTableExtensions($tableId));
+    }
+
+    /** @param class-string $actionClass */
+    public function addPageAction(string $pageId, string $actionClass): static
+    {
+        $this->pageActions[$pageId][] = $actionClass;
+
+        return $this;
+    }
+
+    /** @return string[] */
+    public function getPageActions(string $pageId): array
+    {
+        return $this->pageActions[$pageId] ?? [];
+    }
+
+    public function resolvePageActions(string $pageId): PageActionResolver
+    {
+        return new PageActionResolver($this->getPageActions($pageId));
     }
 
     public function registerRoutes(Closure $callback): static

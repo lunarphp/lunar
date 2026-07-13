@@ -5,6 +5,7 @@ namespace Lunar\Tests\Panel\Fixtures\Customers;
 use Lunar\Panel\Sections\Section;
 use Lunar\Panel\Slots\Slot;
 use Lunar\Panel\Slots\SlotRegistry;
+use Lunar\Tests\Panel\Fixtures\Customers\Actions\ImpersonatePageAction;
 use Lunar\Tests\Panel\Fixtures\Customers\Tables\CustomerFixtureTableExtension;
 
 /**
@@ -31,5 +32,10 @@ class CustomerFixtureSection extends Section
     public function tableExtensions(): array
     {
         return ['customers.index' => CustomerFixtureTableExtension::class];
+    }
+
+    public function pageActions(): array
+    {
+        return ['customers.edit' => [ImpersonatePageAction::class]];
     }
 }
