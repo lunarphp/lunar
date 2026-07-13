@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import Button from '../../components/Button.vue';
 import DataTable from '../../components/DataTable.vue';
+import { type RowAction } from '../../components/RowActions.vue';
 import Icon from '../../components/Icon.vue';
 import Pagination from '../../components/Pagination.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
@@ -49,6 +50,7 @@ interface Paginated<T> {
 const props = defineProps<{
     customers: Paginated<CustomerRow>;
     columns: CustomerColumn[];
+    tableActions: RowAction[];
     customerGroups: CustomerGroupOption[];
     filters: { q?: string; customer_group_id?: string | number; sort?: string; direction?: string };
     urls: { index: string; create: string };
@@ -160,7 +162,7 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     </Link>
                 </div>
 
-                <DataTable :columns="props.columns" :rows="customers.data" :row-to="(row) => row.edit_url as string">
+                <DataTable :columns="props.columns" :rows="customers.data" :row-to="(row) => row.edit_url as string" :row-actions="props.tableActions">
                     <template #empty>
                         <PageEmpty title="No customers match these filters">
                             Try clearing the search or filters to see more customers.

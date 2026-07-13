@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import RowActions, { type RowAction } from './RowActions.vue';
 
 interface DataTableColumn {
     key: string;
@@ -15,12 +16,23 @@ const props = withDefaults(
         rows: Record<string, unknown>[];
         rowKey?: string;
         rowTo?: (row: Record<string, unknown>) => string | null | undefined;
+        rowActions?: RowAction[];
         emptyText?: string;
     }>(),
-    { rowKey: 'id', emptyText: 'No records yet' },
+    { rowKey: 'id', rowActions: () => [], emptyText: 'No records yet' },
 );
 
-const gridTemplate = computed(() => props.columns.map((c) => c.width || 'minmax(0, 1fr)').join(' '));
+const hasRowActions = computed(() => props.rowActions.length > 0);
+
+const gridTemplate = computed(() => {
+    const tracks = props.columns.map((c) => c.width || 'minmax(0, 1fr)');
+
+    if (hasRowActions.value) {
+        tracks.push('minmax(0, max-content)');
+    }
+
+    return tracks.join(' ');
+});
 
 // rowTo may return null/undefined for individual rows to keep them non-clickable.
 const linkFor = (row: Record<string, unknown>): string | null => (props.rowTo ? props.rowTo(row) : null) || null;
@@ -38,6 +50,7 @@ const linkFor = (row: Record<string, unknown>): string | null => (props.rowTo ? 
                 :key="c.key"
                 :class="c.align === 'right' ? 'text-right' : c.align === 'center' ? 'text-center' : ''"
             >{{ c.label }}</div>
+            <div v-if="hasRowActions" aria-hidden="true" />
         </div>
 
         <!-- Empty -->
@@ -70,6 +83,7 @@ const linkFor = (row: Record<string, unknown>): string | null => (props.rowTo ? 
             >
                 <slot :name="`cell-${c.key}`" :row="row" :value="row[c.key]">{{ row[c.key] }}</slot>
             </div>
+            <RowActions v-if="hasRowActions" :actions="rowActions" :row="row" />
         </component>
     </div>
 </template>
