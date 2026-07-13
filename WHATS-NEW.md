@@ -142,8 +142,8 @@ non-Filament panels can share it.
 Alongside the Filament admin, a first-party `lunarphp/panel` package now ships
 a Vue 3 + Inertia.js v2 admin with its own design system and a runtime
 extension mechanism — add-on packages register pages, navigation, table
-columns and page-slot content through a `PanelManager`/`Section` API, and
-their prebuilt JS bundles are picked up by the host app without a recompile.
+columns, actions and page-slot content through a `PanelManager`/`Section` API,
+and their prebuilt JS bundles are picked up by the host app without a recompile.
 The two panels coexist during the transition; nothing about Filament changes
 because of this.
 
