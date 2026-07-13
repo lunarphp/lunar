@@ -3,8 +3,8 @@
 namespace Lunar\Panel\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
+use Lunar\Panel\Support\Position;
 use Lunar\Panel\Tables\Support\ColumnType;
-use Lunar\Panel\Tables\Support\Position;
 
 abstract class TableColumn
 {

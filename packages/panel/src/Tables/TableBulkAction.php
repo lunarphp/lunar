@@ -2,11 +2,18 @@
 
 namespace Lunar\Panel\Tables;
 
+use Lunar\Panel\Support\Position;
+
 abstract class TableBulkAction
 {
     abstract public function key(): string;
 
     abstract public function label(): string;
+
+    public function position(): Position
+    {
+        return Position::last();
+    }
 
     public function component(): ?string
     {
@@ -52,6 +59,7 @@ abstract class TableBulkAction
             'url' => $this->url(),
             'method' => $this->method(),
             'confirmation' => $this->confirmationMessage(),
+            'position' => $this->position()->toArray(),
             'visible' => $this->visible(),
         ];
     }

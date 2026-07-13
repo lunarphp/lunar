@@ -3,6 +3,8 @@
 namespace Lunar\Panel\Navigation;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Lunar\Panel\Support\OrderResolver;
+use Lunar\Panel\Support\Position;
 
 class NavigationRegistry
 {
@@ -24,10 +26,10 @@ class NavigationRegistry
         $this->currentSection = null;
     }
 
-    public function group(string $key, string $label, int $priority = 50): static
+    public function group(string $key, string $label, int $priority = 50, ?Position $position = null): static
     {
         if (! isset($this->groups[$key])) {
-            $this->groups[$key] = new NavigationGroup($key, $label, $priority, section: $this->currentSection);
+            $this->groups[$key] = new NavigationGroup($key, $label, $priority, section: $this->currentSection, position: $position);
         }
 
         return $this;
@@ -76,28 +78,54 @@ class NavigationRegistry
 
     public function firstItem(): ?NavigationItem
     {
-        foreach (collect($this->groups)->sortBy('priority') as $group) {
-            $sorted = collect($group->items)->sortBy('priority');
+        foreach ($this->orderGroups($this->groups) as $group) {
+            $sorted = $this->orderItems($group->items);
 
-            if ($sorted->isNotEmpty()) {
-                return $sorted->first();
+            if ($sorted !== []) {
+                return $sorted[0];
             }
         }
 
-        return collect($this->ungroupedItems)->sortBy('priority')->first();
+        return $this->orderItems($this->ungroupedItems)[0] ?? null;
+    }
+
+    /**
+     * @param  iterable<NavigationGroup>  $groups
+     * @return list<NavigationGroup>
+     */
+    protected function orderGroups(iterable $groups): array
+    {
+        return (new OrderResolver)->sort(
+            $groups,
+            fn (NavigationGroup $group) => $group->key,
+            fn (NavigationGroup $group) => $group->position(),
+        );
+    }
+
+    /**
+     * @param  iterable<NavigationItem>  $items
+     * @return list<NavigationItem>
+     */
+    protected function orderItems(iterable $items): array
+    {
+        return (new OrderResolver)->sort(
+            $items,
+            fn (NavigationItem $item) => $item->key,
+            fn (NavigationItem $item) => $item->position(),
+        );
     }
 
     /** @return array<int, mixed> */
     public function toArray(?Authenticatable $user = null, bool $skipMenus = false): array
     {
-        $groups = collect($this->groups)
-            ->sortBy(fn (NavigationGroup $group) => $group->priority)
+        $groups = collect($this->orderGroups($this->groups))
             ->map(function (NavigationGroup $group) use ($user): array {
-                $filteredItems = collect($group->items)
+                $visibleItems = collect($group->items)
                     ->filter(fn (NavigationItem $item) => $this->userCanSeeItem($user, $item))
-                    ->sortBy('priority')
+                    ->all();
+
+                $filteredItems = collect($this->orderItems($visibleItems))
                     ->map(fn (NavigationItem $item) => $item->toArray($user))
-                    ->values()
                     ->all();
 
                 $groupArray = $group->toArray();
@@ -108,11 +136,12 @@ class NavigationRegistry
             ->filter(fn (array $group) => ! empty($group['items']))
             ->values();
 
-        $topLevel = collect($this->ungroupedItems)
+        $visibleTopLevel = collect($this->ungroupedItems)
             ->filter(fn (NavigationItem $item) => $this->userCanSeeItem($user, $item))
-            ->sortBy('priority')
+            ->all();
+
+        $topLevel = collect($this->orderItems($visibleTopLevel))
             ->map(fn (NavigationItem $item) => $item->toArray($user))
-            ->values()
             ->all();
 
         $menusConfig = config('lunar.panel.menus', []);

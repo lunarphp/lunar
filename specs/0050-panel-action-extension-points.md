@@ -256,16 +256,20 @@ mechanism.
 
 - [ ] Slice 1 — Move `Position` to `Lunar\Panel\Support`. Build the shared `OrderResolver`
       (priority, then `before`/`after` anchors; missing-target fallback with warning;
-      circular-anchor guard) with unit tests for ordering and fallback cases. Apply it in
-      `TableExtensionResolver::getColumns()` so column `position()` is finally honoured
-      (fixing the latent 0049 gap). Retrofit `NavigationItem`/`NavigationGroup` to a
-      `Position` and route the registry's sorting through `OrderResolver`. Add
-      `position(): Position` to `TableAction`/`TableBulkAction`.
+      circular-anchor guard) with unit tests for ordering and fallback cases. Retrofit
+      `NavigationItem`/`NavigationGroup` to a `Position` and route the registry's sorting
+      through `OrderResolver`. Add `position(): Position` to `TableAction`/`TableBulkAction`.
+      (Column ordering is applied in Slice 2, where the first-party and add-on column sets
+      are merged — ordering the add-on set alone would misfire the missing-target fallback
+      on the common case of anchoring to a first-party column.)
 - [ ] Slice 2 — Wire `TableAction`/`TableBulkAction` into Customers: resolver calls in
       `CustomerIndexController`, `tableActions`/`tableBulkActions` Inertia props,
       `DataTableActions.vue` and new `BulkActionsToolbar.vue` render from props instead of
       hardcoded buttons. Row actions collapse into the per-row ellipsis. First-party
-      Edit/Delete become registered actions, not bespoke markup.
+      Edit/Delete become registered actions, not bespoke markup. Order the merged
+      first-party + add-on column and action sets through `OrderResolver`, so `position()`
+      (including anchors onto first-party keys) is finally honoured — fixing the latent 0049
+      gap where column position was inert.
 - [ ] Slice 3 — Extract the resolve-and-share sequence into a reusable concern and apply it
       to `ChannelsController`, proving the pattern is cross-cutting.
 - [ ] Slice 4 — `PageAction` abstract (with `primary()` tier and optional `$context`),
