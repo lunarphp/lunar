@@ -82,6 +82,51 @@ it('resolves the example add-on table extension directly', function () {
     expect(array_column($resolver->getColumns(), 'key'))->toBe(['id']);
 });
 
+it('injects an example row action anchored after the first-party edit action', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    $this->get(route('panel.customers.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            // after('edit') places the example action between edit and delete.
+            ->where('tableActions', fn ($actions) => collect($actions)->pluck('key')->all() === ['edit', 'example-ping', 'delete'])
+            ->where('customers.data.0._actions.example-ping', route('panel.example-addon.ping', $customer))
+        );
+});
+
+it('injects an example bulk action into the customers table', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('tableBulkActions', fn ($actions) => collect($actions)->pluck('key')->all() === ['example-bulk-ping'])
+        );
+});
+
+it('injects an example listing-page action on the customers index', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('pageActions', fn ($actions) => collect($actions)->pluck('key')->all() === ['example-import'])
+            ->where('pageActions.0.url', route('panel.example-addon.import'))
+        );
+});
+
+it('injects an example record-page action with a per-record url on the customer edit page', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('pageActions', fn ($actions) => collect($actions)->pluck('key')->all() === ['example-audit'])
+            ->where('pageActions.0.url', route('panel.example-addon.audit', $customer))
+        );
+});
+
 it('registers the example add-on vite module', function () {
     $vites = app(PanelManager::class)->registeredVites();
 

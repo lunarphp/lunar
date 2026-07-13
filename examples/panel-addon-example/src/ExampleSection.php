@@ -3,13 +3,17 @@
 namespace LunarPanelExample;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Lunar\Core\Models\Customer;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Section;
 use Lunar\Panel\Slots\Slot;
 use Lunar\Panel\Slots\SlotRegistry;
+use LunarPanelExample\Actions\AuditPageAction;
+use LunarPanelExample\Actions\ImportPageAction;
 use LunarPanelExample\Tables\ExampleTableExtension;
 
 class ExampleSection extends Section
@@ -35,7 +39,34 @@ class ExampleSection extends Section
             Route::get('example-addon', fn () => Inertia::render('example-addon::Widgets/Index', [
                 'message' => 'Hello from the example add-on! This page was registered at runtime via window.LunarPanel.registerPages(), not compiled into the panel.',
             ]))->name('panel.example-addon.index');
+
+            // Demo endpoints the injected actions target. Each just flashes back
+            // so the add-on stays side-effect free.
+            Route::get('example-addon/ping/{customer}', fn (Customer $customer) => back()
+                ->with('success', "Pinged {$customer->full_name} (example row action)."))
+                ->name('panel.example-addon.ping');
+
+            Route::post('example-addon/bulk-ping', fn (Request $request) => back()
+                ->with('success', count((array) $request->input('ids', [])).' customers pinged (example bulk action).'))
+                ->name('panel.example-addon.bulk-ping');
+
+            Route::get('example-addon/import', fn () => back()
+                ->with('success', 'Import started (example listing action).'))
+                ->name('panel.example-addon.import');
+
+            Route::get('example-addon/customers/{customer}/audit', fn (Customer $customer) => back()
+                ->with('success', "Audit log opened for {$customer->full_name} (example record action)."))
+                ->name('panel.example-addon.audit');
         };
+    }
+
+    /** @return array<string, array<int, class-string>> */
+    public function pageActions(): array
+    {
+        return [
+            'customers.index' => [ImportPageAction::class],
+            'customers.edit' => [AuditPageAction::class],
+        ];
     }
 
     public function slots(SlotRegistry $registry): void

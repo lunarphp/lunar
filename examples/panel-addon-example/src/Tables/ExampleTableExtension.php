@@ -10,4 +10,14 @@ class ExampleTableExtension extends TableExtension
     {
         return [ExampleColumn::class];
     }
+
+    public function actions(): array
+    {
+        return [PingRowAction::class];
+    }
+
+    public function bulkActions(): array
+    {
+        return [PingBulkAction::class];
+    }
 }
