@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import Button from '../../../components/Button.vue';
-import ConfirmDialog from '../../../components/ConfirmDialog.vue';
 import DataTable from '../../../components/DataTable.vue';
-import DataTableActions from '../../../components/DataTableActions.vue';
+import { type RowAction } from '../../../components/RowActions.vue';
 import Dialog from '../../../components/Dialog.vue';
 import FieldLabel from '../../../components/FieldLabel.vue';
 import PageEmpty from '../../../components/PageEmpty.vue';
@@ -21,21 +20,17 @@ type Channel = {
     url: string | null;
     default: boolean;
     status: string | null;
-    urls: { edit: string; destroy: string };
+    urls: { edit: string };
 };
+
+type ChannelColumn = { key: string; label: string; width?: string; align?: 'left' | 'right' | 'center' };
 
 const props = defineProps<{
     channels: Channel[];
+    columns: ChannelColumn[];
+    tableActions: RowAction[];
     urls: { store: string };
 }>();
-
-const columns = [
-    { key: 'handle', label: 'Handle', width: 'minmax(0, 0.8fr)' },
-    { key: 'name', label: 'Name', width: 'minmax(0, 1.2fr)' },
-    { key: 'url', label: 'URL', width: 'minmax(0, 1.4fr)' },
-    { key: 'status', label: 'Status', width: '110px' },
-    { key: 'actions', label: '', width: '80px', align: 'right' as const },
-];
 
 const rowTo = (row: Record<string, unknown>): string => (row as unknown as Channel).urls.edit;
 
@@ -61,17 +56,6 @@ const submitCreate = (): void => {
         },
     });
 };
-
-const deleting = ref<Channel | null>(null);
-
-const confirmDelete = (): void => {
-    if (!deleting.value) {
-        return;
-    }
-
-    router.delete(deleting.value.urls.destroy);
-    deleting.value = null;
-};
 </script>
 
 <template>
@@ -80,7 +64,7 @@ const confirmDelete = (): void => {
             <Button variant="primary" icon="plus" size="sm" @click="openCreate">Create channel</Button>
         </div>
 
-        <DataTable :columns="columns" :rows="channels" :row-to="rowTo">
+        <DataTable :columns="props.columns" :rows="channels" :row-to="rowTo" :row-actions="props.tableActions">
             <template #cell-handle="{ row }">
                 <span class="font-mono text-xs text-ink-700">{{ (row as unknown as Channel).handle }}</span>
             </template>
@@ -95,14 +79,6 @@ const confirmDelete = (): void => {
                 <StatusBadge :tone="(row as unknown as Channel).status === 'active' ? 'sage' : 'archived'" size="sm" dot>
                     {{ (row as unknown as Channel).status === 'active' ? 'Active' : 'Inactive' }}
                 </StatusBadge>
-            </template>
-            <template #cell-actions="{ row }">
-                <DataTableActions
-                    :edit-to="(row as unknown as Channel).urls.edit"
-                    :on-delete="!(row as unknown as Channel).default ? () => (deleting = row as unknown as Channel) : null"
-                    :locked="(row as unknown as Channel).default"
-                    lock-reason="Default channel cannot be deleted"
-                />
             </template>
             <template #empty>
                 <PageEmpty title="No channels" />
@@ -143,14 +119,4 @@ const confirmDelete = (): void => {
             <Button variant="primary" :disabled="createForm.processing" @click="submitCreate">Create</Button>
         </template>
     </Dialog>
-
-    <ConfirmDialog
-        :open="!!deleting"
-        title="Delete channel?"
-        :description="deleting ? `&quot;${deleting.name}&quot; will be permanently removed.` : ''"
-        confirm-label="Delete"
-        tone="danger"
-        @update:open="(v) => !v && (deleting = null)"
-        @confirm="confirmDelete"
-    />
 </template>

@@ -32,6 +32,21 @@ test('the channels index renders with the real channel list', function () {
     expect($other->fresh()->default)->toBeFalse();
 });
 
+test('channels carry first-party row actions, with delete omitted for the default channel', function () {
+    // Order by name: Retail (non-default) then Webstore (default).
+    Channel::factory()->create(['name' => 'Webstore', 'default' => true]);
+    Channel::factory()->create(['name' => 'Retail', 'default' => false]);
+
+    $this->get(route('panel.settings.channels.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('tableActions', fn ($actions) => collect($actions)->pluck('key')->all() === ['edit', 'delete'])
+            // Non-default channel: both edit and delete resolve a url.
+            ->where('channels.0._actions', fn ($actions) => isset($actions['edit'], $actions['delete']))
+            // Default channel: edit only, delete is protected/omitted.
+            ->where('channels.1._actions', fn ($actions) => isset($actions['edit']) && ! isset($actions['delete']))
+        );
+});
+
 test('the default flag is serialized as a real boolean', function () {
     Channel::factory()->create(['name' => 'Webstore', 'default' => true]);
 

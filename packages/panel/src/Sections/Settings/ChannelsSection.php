@@ -10,12 +10,21 @@ use Lunar\Panel\Http\Controllers\Settings\ChannelIndexController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Section;
+use Lunar\Panel\Sections\Settings\Tables\ChannelsTableExtension;
 
 class ChannelsSection extends Section
 {
     public function key(): string
     {
         return 'channels';
+    }
+
+    /** @return array<string, class-string> */
+    public function tableExtensions(): array
+    {
+        return [
+            'channels.index' => ChannelsTableExtension::class,
+        ];
     }
 
     public function settingsNavigation(NavigationRegistry $registry): void

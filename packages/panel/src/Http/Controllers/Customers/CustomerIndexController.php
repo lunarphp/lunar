@@ -7,10 +7,12 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
-use Lunar\Panel\PanelManager;
+use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
 
 class CustomerIndexController
 {
+    use ResolvesTableExtensions;
+
     /** @var string[] */
     protected array $sortable = ['first_name', 'last_name', 'company_name', 'created_at'];
 
@@ -22,14 +24,14 @@ class CustomerIndexController
         ['key' => 'created_at', 'label' => 'Created', 'width' => '120px', 'align' => 'right'],
     ];
 
-    public function index(Request $request, PanelManager $manager): Response
+    public function index(Request $request): Response
     {
         $sort = $request->string('sort')->value();
         $sort = in_array($sort, $this->sortable, true) ? $sort : 'created_at';
 
         $direction = $request->string('direction')->value() === 'asc' ? 'asc' : 'desc';
 
-        $resolver = $manager->resolveExtensions('customers.index');
+        $resolver = $this->resolveTable('customers.index');
 
         $customers = Customer::query()
             ->with('customerGroups:id,name')
@@ -77,13 +79,9 @@ class CustomerIndexController
                 return $row;
             });
 
-        $columns = $resolver->mergeAndOrderColumns($this->columns);
-
         return Inertia::render('customers/Index', [
             'customers' => $customers,
-            'columns' => $columns,
-            'tableActions' => $resolver->getActions(),
-            'tableBulkActions' => $resolver->getBulkActions(),
+            ...$this->tableProps($resolver, $this->columns),
             'customerGroups' => CustomerGroup::all(['id', 'name']),
             'filters' => $request->only(['q', 'customer_group_id', 'sort', 'direction']),
             'urls' => [
