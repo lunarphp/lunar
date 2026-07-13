@@ -10,7 +10,8 @@ import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
-import PanelSlot from '../../components/PanelSlot.vue';
+import PageHeader from '../../components/PageHeader.vue';
+import PageZone from '../../components/PageZone.vue';
 import Section from '../../components/Section.vue';
 import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
@@ -334,14 +335,14 @@ const tabDefs = computed(() => [
 <template>
     <PanelLayout>
         <div data-screen-label="Customer detail" class="contents">
-            <!-- Hero strip -->
-            <div class="flex items-start gap-3 sm:gap-4 px-4 sm:px-5 lg:px-7 pt-[18px] pb-3.5 border-b border-line bg-paper">
-                <div class="w-11 h-11 rounded-full overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700 text-[13px] font-semibold">
-                    {{ initials() }}
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h1 class="m-0 text-lg sm:text-xl font-semibold tracking-[-0.015em] truncate">{{ fullName }}</h1>
-                    <div class="text-xs text-ink-500 mt-[3px] flex gap-2 items-center flex-wrap">
+            <PageHeader :title="fullName">
+                <template #icon>
+                    <div class="w-11 h-11 rounded-full overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700 text-[13px] font-semibold">
+                        {{ initials() }}
+                    </div>
+                </template>
+                <template #description>
+                    <div class="flex gap-2 items-center flex-wrap">
                         <span v-if="customer.company_name" class="text-ink-700">{{ customer.company_name }}</span>
                         <span v-if="customer.company_name" class="text-ink-500">·</span>
                         <template v-for="group in customer.customer_groups" :key="group.id">
@@ -350,13 +351,15 @@ const tabDefs = computed(() => [
                         <span class="text-ink-500">·</span>
                         <span>Joined {{ new Date(customer.created_at).toLocaleDateString() }}</span>
                     </div>
-                </div>
-                <div class="hidden sm:flex gap-1.5 shrink-0">
+                </template>
+                <template #actions>
                     <Button icon="trash" class="!text-danger" @click="destroyCustomer">Delete customer</Button>
-                </div>
-            </div>
+                </template>
+            </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+                <PageZone region="main" position="before" />
+
                 <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
                     {{ flashSuccess }}
                 </div>
@@ -434,7 +437,7 @@ const tabDefs = computed(() => [
                             </div>
                         </form>
 
-                        <PanelSlot name="customers.edit:main:after" :customer="customer" />
+                        <PageZone region="main" position="after" :customer="customer" />
 
                         <!-- Tabbed: addresses, users, activity -->
                         <div class="pt-2">

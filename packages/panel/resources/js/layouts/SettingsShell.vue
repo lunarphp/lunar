@@ -5,6 +5,8 @@ import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import SettingsNavBody from '../components/SettingsNavBody.vue';
 import Icon from '../components/Icon.vue';
+import PageActions, { type PageAction } from '../components/PageActions.vue';
+import PageZone from '../components/PageZone.vue';
 import { useNavState } from '../composables/useNavState';
 
 defineProps<{ title?: string }>();
@@ -13,6 +15,7 @@ const { state, toggleCollapsed, openDrawer } = useNavState();
 const { t } = useI18n();
 
 const panelName = computed(() => (usePage().props.panel as { name: string }).name);
+const pageActions = computed(() => (usePage().props.pageActions as PageAction[] | undefined) ?? []);
 const flashSuccess = computed(() => (usePage().props.flash as { success?: string })?.success);
 const flashError = computed(() => (usePage().props.flash as { error?: string })?.error);
 
@@ -143,7 +146,12 @@ onUnmounted(() => {
                 </div>
 
                 <div class="mx-auto w-full max-w-5xl px-6 py-10">
-                    <h1 v-if="title" class="text-xl font-semibold tracking-[-0.02em] text-ink-900 mb-5">{{ title }}</h1>
+                    <div v-if="title || pageActions.length" class="flex items-start justify-between gap-3 mb-5">
+                        <h1 v-if="title" class="text-xl font-semibold tracking-[-0.02em] text-ink-900">{{ title }}</h1>
+                        <PageActions :actions="pageActions" />
+                    </div>
+
+                    <PageZone region="main" position="before" />
 
                     <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
                         {{ flashSuccess }}
@@ -153,6 +161,8 @@ onUnmounted(() => {
                     </div>
 
                     <slot />
+
+                    <PageZone region="main" position="after" />
                 </div>
             </main>
         </div>

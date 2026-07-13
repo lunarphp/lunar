@@ -7,6 +7,8 @@ import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
 import Select from '../../components/Select.vue';
 import TextInput from '../../components/TextInput.vue';
+import PageHeader from '../../components/PageHeader.vue';
+import PageZone from '../../components/PageZone.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 
 interface CustomerGroupOption {
@@ -56,17 +58,16 @@ const submit = (): void => {
 <template>
     <PanelLayout>
         <div data-screen-label="New customer" class="contents">
-            <!-- Hero header -->
-            <div class="flex items-center gap-3 sm:gap-4 px-4 sm:px-5 lg:px-7 pt-[18px] pb-3.5 border-b border-line bg-paper">
-                <Link :href="urls.index" class="text-ink-500 hover:text-ink-900 shrink-0">
-                    <Icon name="arrowLeft" />
-                </Link>
-                <div class="flex-1 min-w-0">
-                    <h1 class="m-0 text-lg sm:text-xl font-semibold tracking-[-0.015em] truncate">New customer</h1>
-                </div>
-            </div>
+            <PageHeader title="New customer">
+                <template #icon>
+                    <Link :href="urls.index" class="text-ink-500 hover:text-ink-900 shrink-0 self-center">
+                        <Icon name="arrowLeft" />
+                    </Link>
+                </template>
+            </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[720px] w-full mx-auto pt-5 pb-7">
+                <PageZone region="main" position="before" />
                 <form class="bg-surface border border-line rounded-xl shadow-sm p-5" @submit.prevent="submit">
                     <div class="pb-5 border-b border-line mb-5">
                         <h2 class="m-0 mb-1 text-sm font-semibold tracking-[-0.01em] text-ink-900">Personal details</h2>
@@ -141,6 +142,8 @@ const submit = (): void => {
                         <Button type="submit" variant="primary" :disabled="form.processing">Create customer</Button>
                     </div>
                 </form>
+
+                <PageZone region="main" position="after" />
             </div>
         </div>
     </PanelLayout>

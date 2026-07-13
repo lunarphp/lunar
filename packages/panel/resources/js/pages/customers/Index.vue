@@ -5,6 +5,8 @@ import Button from '../../components/Button.vue';
 import DataTable from '../../components/DataTable.vue';
 import { type RowAction } from '../../components/RowActions.vue';
 import BulkActionsToolbar, { type BulkAction } from '../../components/BulkActionsToolbar.vue';
+import PageHeader from '../../components/PageHeader.vue';
+import PageZone from '../../components/PageZone.vue';
 import Icon from '../../components/Icon.vue';
 import Pagination from '../../components/Pagination.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
@@ -115,25 +117,25 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
 <template>
     <PanelLayout>
         <div data-screen-label="Customers" class="contents">
-            <!-- Hero header -->
-            <div class="flex items-start gap-3 sm:gap-4 px-4 sm:px-5 lg:px-7 pt-[18px] pb-3.5 border-b border-line bg-paper">
-                <div class="w-11 h-11 rounded-md overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700">
-                    <Icon name="users" />
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h1 class="m-0 text-lg sm:text-xl font-semibold tracking-[-0.015em] truncate">Customers</h1>
-                    <div class="text-xs text-ink-500 mt-[3px] max-w-[640px]">
-                        Everyone who's registered or been invited to a B2B account. Manage groups and keep contact details current.
+            <PageHeader
+                title="Customers"
+                description="Everyone who's registered or been invited to a B2B account. Manage groups and keep contact details current."
+            >
+                <template #icon>
+                    <div class="w-11 h-11 rounded-md overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700">
+                        <Icon name="users" />
                     </div>
-                </div>
-                <div class="hidden sm:flex gap-1.5 shrink-0">
+                </template>
+                <template #actions>
                     <Link :href="urls.create">
                         <Button variant="primary" icon="plus">Add customer</Button>
                     </Link>
-                </div>
-            </div>
+                </template>
+            </PageHeader>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+                <PageZone region="main" position="before" />
+
                 <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
                     {{ flashSuccess }}
                 </div>
@@ -226,6 +228,8 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                 <div class="mt-4">
                     <Pagination :meta="customers" />
                 </div>
+
+                <PageZone region="main" position="after" />
             </div>
         </div>
     </PanelLayout>

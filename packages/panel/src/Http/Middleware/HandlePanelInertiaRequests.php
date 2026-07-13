@@ -36,6 +36,7 @@ class HandlePanelInertiaRequests extends Middleware
             'locale' => fn () => app()->getLocale(),
             'navigation' => fn () => $this->manager->navigation()->toArray($user),
             'settingsNavigation' => fn () => $this->manager->settingsNavigation()->toArray($user, skipMenus: true),
+            'pageId' => fn () => $this->currentPagePrefix($request),
             'slots' => fn () => $this->manager->slots()->forPage($this->currentPagePrefix($request), $user),
             'pageActions' => fn () => $this->manager
                 ->resolvePageActions($this->currentPagePrefix($request))
