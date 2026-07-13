@@ -1,6 +1,6 @@
 # 0050 — Panel action extension points (row, bulk and page actions)
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-07-10
 - TODO item: Panel action extension points — row/bulk/page actions (spec 0050)
@@ -231,16 +231,20 @@ mechanism.
 - Additive to the public contract surface: new `PageAction` abstract, new
   `Section::pageActions()` hook, new Inertia props (`tableActions`, `tableBulkActions`,
   `pageActions`), and a `position(): Position` accessor on `TableAction`/`TableBulkAction`.
-- Moves `Position` from `Lunar\Panel\Tables\Support` to `Lunar\Panel\Support` and changes
-  `NavigationItem`/`NavigationGroup` from an `int $priority` to a `Position`. Both are 0049
+- Moves `Position` from `Lunar\Panel\Tables\Support` to `Lunar\Panel\Support`. This is 0049
   surface that is unmerged (stacked below this branch), so there is no released contract to
-  break; the 0049 PR and this one land together.
-- First-party pages are refactored to render their header/body through the shared scaffold
-  (new `PageHeader`/`PanelLayout` header slots). This is internal to the panel package — no
-  public JS API is removed — but every existing content page's template changes, and the
-  standard `{page}:main:before`/`{page}:main:after` slot zones become available panel-wide.
-- Translation impact: new first-party strings (e.g. "More actions" aria-label) need all 16
-  locales (`ar, bg, de, en, es, fa, fr, hr, hu, mn, nl, pl, pt_BR, ro, tr, vi`).
+  break; the 0049 PR and this one land together. `NavigationItem`/`NavigationGroup` gain an
+  optional `Position` (`priority` stays as the ergonomic shortcut, deriving
+  `Position::priority($priority)`), so existing registrations are unchanged.
+- First-party pages are refactored to render their header/body through a shared scaffold
+  (new `PageHeader` component + `PageZone`; `SettingsShell` carries the same seams). This is
+  internal to the panel package — no public JS API is removed — but every content page's
+  template changes, and the standard `{page}:main:before`/`{page}:main:after` slot zones
+  become available panel-wide.
+- Translation impact: first-party action labels are literal English strings passed through
+  `__()`, matching the surrounding content pages (which are not yet internationalised — only
+  `auth`/`nav` have lang files). No new translation keys are introduced, so no 16-locale
+  work is triggered. Full content-page i18n remains a separate, pre-existing gap.
 - No Filament impact — panel-only, Filament's own actions library (spec 0009) is unrelated
   and unchanged.
 
@@ -254,7 +258,7 @@ mechanism.
 
 ## Implementation plan
 
-- [ ] Slice 1 — Move `Position` to `Lunar\Panel\Support`. Build the shared `OrderResolver`
+- [x] Slice 1 — Move `Position` to `Lunar\Panel\Support`. Build the shared `OrderResolver`
       (priority, then `before`/`after` anchors; missing-target fallback with warning;
       circular-anchor guard) with unit tests for ordering and fallback cases. Retrofit
       `NavigationItem`/`NavigationGroup` to a `Position` and route the registry's sorting
@@ -262,7 +266,7 @@ mechanism.
       (Column ordering is applied in Slice 2, where the first-party and add-on column sets
       are merged — ordering the add-on set alone would misfire the missing-target fallback
       on the common case of anchoring to a first-party column.)
-- [ ] Slice 2 — Wire `TableAction`/`TableBulkAction` into Customers: resolver calls in
+- [x] Slice 2 — Wire `TableAction`/`TableBulkAction` into Customers: resolver calls in
       `CustomerIndexController`, `tableActions`/`tableBulkActions` Inertia props,
       `DataTableActions.vue` and new `BulkActionsToolbar.vue` render from props instead of
       hardcoded buttons. Row actions collapse into the per-row ellipsis. First-party
@@ -270,19 +274,19 @@ mechanism.
       first-party + add-on column and action sets through `OrderResolver`, so `position()`
       (including anchors onto first-party keys) is finally honoured — fixing the latent 0049
       gap where column position was inert.
-- [ ] Slice 3 — Extract the resolve-and-share sequence into a reusable concern and apply it
+- [x] Slice 3 — Extract the resolve-and-share sequence into a reusable concern and apply it
       to `ChannelsController`, proving the pattern is cross-cutting.
-- [ ] Slice 4 — `PageAction` abstract (with `primary()` tier and optional `$context`),
+- [x] Slice 4 — `PageAction` abstract (with `primary()` tier and optional `$context`),
       `PageActionResolver`, `Section::pageActions()` hook, `pageActions` Inertia prop, and a
       `PageActions.vue` header component (primary buttons + always-present overflow ellipsis).
-- [ ] Slice 5 — Shared page scaffold: extract the per-page header into a `PageHeader`
+- [x] Slice 5 — Shared page scaffold: extract the per-page header into a `PageHeader`
       component (or `PanelLayout` header slots) that owns the primary buttons, the
       `<PageActions>` ellipsis, and the standard `{page}:main:before`/`{page}:main:after`
       slot zones. Refactor every content page (`customers/*`, `settings/channels/*`,
       `Dashboard`) onto it. Add the convention test asserting each content page (excluding
       `pages/auth/**`) is built through the scaffold. Document the page-building convention
       in the panel package `CLAUDE.md`.
-- [ ] Slice 6 — Update `examples/panel-addon-example` to register one of each — a Customers
+- [x] Slice 6 — Update `examples/panel-addon-example` to register one of each — a Customers
       row action, a bulk action, a record-page action (on `customers.edit`), a listing-page
       action (on a listing page), and a slot entry into a standard `:main` zone — at least
       one action placed with a `before`/`after` anchor. Proves all the action extension
