@@ -54,11 +54,13 @@ class CollectionConditionRelationManager extends BaseRelationManager
                         ->getSearchResultsUsing(static function (string $search): array {
                             return get_search_builder(Collection::modelClass(), $search)
                                 ->get()
-                                ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => $record->attr('name')])
+                                ->mapWithKeys(fn (CollectionContract $record): array => [$record->getKey() => static::getCollectionOptionLabel($record)])
                                 ->all();
                         })
                         ->getOptionLabelUsing(function ($value): string {
-                            return Collection::modelClass()::find($value)?->attr('name') ?? $value;
+                            $record = Collection::modelClass()::find($value);
+
+                            return $record ? static::getCollectionOptionLabel($record) : $value;
                         }),
                     Forms\Components\Hidden::make('discountable_type')
                         ->default(Collection::morphName()),
@@ -76,11 +78,26 @@ class CollectionConditionRelationManager extends BaseRelationManager
                     )
                     ->formatStateUsing(
                         fn (Model $record) => $record->discountable?->attr('name')
+                    )
+                    ->description(
+                        fn (Model $record) => $record->discountable ? static::getCollectionPath($record->discountable) : null
                     ),
             ])->recordActions([
                 DeleteAction::make(),
             ])->toolbarActions([
                 DeleteBulkAction::make(),
             ]);
+    }
+
+    protected static function getCollectionPath(CollectionContract $record): string
+    {
+        return collect([$record->group->name])
+            ->merge($record->breadcrumb)
+            ->implode(' > ');
+    }
+
+    protected static function getCollectionOptionLabel(CollectionContract $record): string
+    {
+        return $record->attr('name').' ('.static::getCollectionPath($record).')';
     }
 }

@@ -50,8 +50,8 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                                 'exclusion' => __('lunarpanel::discount.relationmanagers.collections.form.type.options.exclusion.label'),
                             ]
                         )->default('limitation'),
-                ])->recordTitle(function ($record) {
-                    return $record->attr('name');
+                ])->recordTitle(function (Collection $record) {
+                    return $record->attr('name').' ('.static::getCollectionPath($record).')';
                 })->recordSelectSearchColumns(['attribute_data->name'])
                     ->preloadRecordSelect()
                     ->label(
@@ -62,7 +62,7 @@ class CollectionLimitationRelationManager extends BaseRelationManager
                     ->label(
                         __('lunarpanel::discount.relationmanagers.collections.table.name.label')
                     )
-                    ->description(fn (Collection $record): string => $record->breadcrumb->implode(' > '))
+                    ->description(fn (Collection $record): string => static::getCollectionPath($record))
                     ->formatStateUsing(
                         fn (Model $record) => $record->attr('name')
                     ),
@@ -77,5 +77,12 @@ class CollectionLimitationRelationManager extends BaseRelationManager
             ])->toolbarActions([
                 DetachBulkAction::make(),
             ]);
+    }
+
+    protected static function getCollectionPath(Collection $record): string
+    {
+        return collect([$record->group->name])
+            ->merge($record->breadcrumb)
+            ->implode(' > ');
     }
 }
