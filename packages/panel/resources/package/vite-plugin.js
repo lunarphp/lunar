@@ -12,15 +12,16 @@ import { join } from 'node:path';
  * import the panel's own layout and page-chrome components (PageHeader, PageZone, Button, …)
  * instead of bundling copies.
  *
+ * Also externalises `@inertiajs/vue3` to the `window.InertiaVue3` global. Inertia's
+ * composables (`usePage`, `router`, `<Link>`) read module-level state owned by the app
+ * instance that called `createInertiaApp` — sharing the panel's module instance is what
+ * makes them work inside add-on pages; a bundled second copy would read uninitialised
+ * state.
+ *
  * Also enables Vite's manifest and moves it from Vite's default `.vite/manifest.json`
  * to the build root as `manifest.json`, where Laravel's Vite resolves it (it only reads
  * `{buildDirectory}/manifest.json`). This lets the add-on's `build/` be published as-is
  * and the panel emit its script tag via `PanelManager::vite()`.
- *
- * `@inertiajs/vue3` is NOT externalised: the panel does not currently publish it as a
- * window global, so add-ons needing Inertia composables (`usePage`, `Link`, ...) bundle
- * their own copy for now. Follow-up: publish a `window.InertiaVue3` global and externalise
- * it here too, once cross-bundle `usePage()` provide/inject compatibility is verified.
  *
  * @param {{ name?: string }} [options]
  */
@@ -37,13 +38,14 @@ export default function lunarPanelPlugin(options = {}) {
                     manifest: true,
                     rollupOptions: {
                         ...config.build?.rollupOptions,
-                        external: ['vue', '@lunarphp/panel', ...(config.build?.rollupOptions?.external ?? [])],
+                        external: ['vue', '@inertiajs/vue3', '@lunarphp/panel', ...(config.build?.rollupOptions?.external ?? [])],
                         output: {
                             ...config.build?.rollupOptions?.output,
                             format: 'iife',
                             name: globalName,
                             globals: {
                                 'vue': 'Vue',
+                                '@inertiajs/vue3': 'InertiaVue3',
                                 '@lunarphp/panel': 'LunarPanelUI',
                                 ...config.build?.rollupOptions?.output?.globals,
                             },

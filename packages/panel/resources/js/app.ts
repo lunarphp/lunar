@@ -1,4 +1,5 @@
 import { createInertiaApp } from '@inertiajs/vue3';
+import * as InertiaVue3 from '@inertiajs/vue3';
 import { createApp, h, type DefineComponent } from 'vue';
 import * as Vue from 'vue';
 import '../css/app.css';
@@ -11,9 +12,12 @@ import * as LunarPanelUI from './ui';
 import PanelLayout from './layouts/PanelLayout.vue';
 
 // Published so add-on IIFE bundles (compiled against `@lunarphp/panel-vite-plugin`,
-// which externalises `vue` and `@lunarphp/panel`) can resolve Vue and the panel's
-// own layout/page components without bundling copies.
+// which externalises `vue`, `@inertiajs/vue3` and `@lunarphp/panel`) can resolve
+// Vue, Inertia and the panel's own layout/page components without bundling copies.
+// Sharing one Inertia module instance is what makes `usePage()`/`<Link>` work in
+// add-on pages: the composables read module-level state this app instance owns.
 window.Vue = Vue;
+window.InertiaVue3 = InertiaVue3;
 window.LunarPanelUI = LunarPanelUI;
 window.LunarPanel = new LunarPanelRuntime();
 

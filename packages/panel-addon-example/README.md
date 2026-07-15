@@ -9,8 +9,8 @@ It doubles as a starter template — fork it with
 `composer create-project lunarphp/panel-addon-example my-addon` and replace the
 example page, slot, and column with your own.
 
-Every code snippet below is copied verbatim from this package's own source —
-read the linked file if you want the full context.
+Every code snippet below is taken from this package's own source (some are
+trimmed for brevity) — read the linked file if you want the full context.
 
 ## What this proves
 
@@ -43,9 +43,9 @@ package's own `composer.json`:
 ```json
 {
     "name": "lunarphp/panel-addon-example",
-    "description": "Reference add-on proving lunarphp/panel's runtime extension mechanism: a page, a nav item, a slot, and a table extension registered without recompiling the panel.",
+    "description": "Starter template and reference add-on for lunarphp/panel: a page, a nav item, a slot, and a table extension registered at runtime without recompiling the panel. Fork it with `composer create-project lunarphp/panel-addon-example`.",
     "license": "MIT",
-    "type": "library",
+    "type": "project",
     "autoload": {
         "psr-4": {
             "LunarPanelExample\\": "src/"
@@ -99,6 +99,8 @@ Both live on a `Section` subclass (`src/ExampleSection.php`), which extends
 `Lunar\Panel\Sections\Section`:
 
 ```php
+private const PERMISSION = 'sales:manage-customers';
+
 public function navigation(NavigationRegistry $registry): void
 {
     $registry->group('example-addon-group', 'Example Add-on');
@@ -106,15 +108,18 @@ public function navigation(NavigationRegistry $registry): void
         key: 'example-addon',
         label: 'Example Add-on',
         route: 'panel.example-addon.index',
+        permission: self::PERMISSION,
     ));
 }
 
 public function routes(): ?Closure
 {
     return function (): void {
-        Route::get('example-addon', fn () => Inertia::render('example-addon::Widgets/Index', [
-            'message' => 'Hello from the example add-on! This page was registered at runtime via window.LunarPanel.registerPages(), not compiled into the panel.',
-        ]))->name('panel.example-addon.index');
+        Route::middleware('can:'.self::PERMISSION)->group(function (): void {
+            Route::get('example-addon', fn () => Inertia::render('example-addon::Widgets/Index', [
+                'message' => 'Hello from the example add-on! This page was registered at runtime via window.LunarPanel.registerPages(), not compiled into the panel.',
+            ]))->name('panel.example-addon.index');
+        });
     };
 }
 ```
@@ -125,6 +130,14 @@ picks up the panel's URL prefix, guard, and middleware). The Inertia
 component name is namespaced (`example-addon::Widgets/Index`) to match the
 key the add-on's JS registers the page under — see
 [Compiling the add-on bundle](#compiling-the-add-on-bundle-with-vite) below.
+
+Note the authorization pattern: the panel's `Authenticate` middleware only
+proves the visitor is signed-in staff, so an add-on gates its own routes with
+`can:` middleware and declares the **same** permission handle on its
+navigation item — what a user sees and what they can reach stay in lockstep.
+This add-on extends the Customers area, so it reuses the core
+`sales:manage-customers` handle; an add-on with its own domain seeds and
+uses its own handle.
 
 ### Using the standard page layout
 
@@ -147,9 +160,14 @@ without bundling any panel UI:
 
 ```vue
 <script setup lang="ts">
+import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { PageHeader, PageZone, Button } from '@lunarphp/panel';
 
 defineProps<{ message?: string }>();
+
+// Shared props the panel middleware provides to every page, add-on pages included.
+const panelName = computed(() => (usePage().props.panel as { name?: string } | undefined)?.name ?? 'Lunar');
 </script>
 
 <template>
@@ -162,7 +180,8 @@ defineProps<{ message?: string }>();
 
         <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
             <PageZone region="main" position="before" />
-            <p class="text-[13px] text-ink-700">{{ message }}</p>
+            <p class="text-[13px] text-ink-700">{{ message }} — {{ panelName }}</p>
+            <Link href="/panel/customers">Customers</Link>
             <PageZone region="main" position="after" />
         </div>
     </div>
@@ -173,6 +192,9 @@ defineProps<{ message?: string }>();
 add-on (or the host) registers for this page appear automatically. `PageZone`
 declares slot zones on the page you own, so other add-ons can inject into it —
 the same mechanism this package uses against the first-party Customers page.
+`usePage()` and `<Link>` work because `@inertiajs/vue3` is externalised to the
+panel's own Inertia instance (`window.InertiaVue3`) — the add-on never bundles
+a second copy, which would read uninitialised state.
 
 ## Registering a slot and the zone-naming convention
 
@@ -262,6 +284,12 @@ registered column's `key()`/`header()` onto the first-party column list, and
 before pagination — see `Lunar\Panel\Tables\TableColumn::query()` if your
 column needs a computed value (e.g. a `withCount()`).
 
+A column renders its value as plain text by default. Override `type()` with a
+`ColumnType` (`badge`, `date`, `boolean`, `currency`, `image`) for a generic
+renderer, or `component()` with a namespaced name registered via
+`window.LunarPanel.registerComponents()` for a fully custom cell — the
+component receives `row` and `value` props.
+
 ## Compiling the add-on bundle with Vite
 
 `package.json` and `vite.config.js`:
@@ -276,6 +304,7 @@ column needs a computed value (e.g. a `withCount()`).
         "dev": "vite"
     },
     "devDependencies": {
+        "@inertiajs/vue3": "^2.0.0",
         "@lunarphp/panel": "^0.1.0",
         "@lunarphp/panel-vite-plugin": "^0.1.0",
         "@vitejs/plugin-vue": "^5.2.0",
@@ -315,11 +344,12 @@ export default defineConfig({
 ```
 
 `@lunarphp/panel-vite-plugin` (the panel's `packages/panel/resources/package/vite-plugin.js`)
-forces `output.format: 'iife'` and externalises both `vue` (to the `window.Vue`
-global) and `@lunarphp/panel` (to the `window.LunarPanelUI` global), each
-published by the panel's own `app.ts` at startup. That is what lets the add-on's
-bundle call into the panel's Vue runtime and reuse its layout/page components
-instead of shipping second copies.
+forces `output.format: 'iife'` and externalises `vue` (to the `window.Vue`
+global), `@inertiajs/vue3` (to `window.InertiaVue3`), and `@lunarphp/panel`
+(to `window.LunarPanelUI`), each published by the panel's own `app.ts` at
+startup. That is what lets the add-on's bundle call into the panel's Vue and
+Inertia runtimes and reuse its layout/page components instead of shipping
+second copies.
 
 The add-on's entry point (`resources/js/addon.ts`) registers its page and
 slot components:
@@ -401,8 +431,10 @@ pages, not only in an isolated fixture.
   column that never appears.
 - **Add-on JS never runs**: check the compiled bundle is actually being
   served at the `buildDirectory` path passed to `PanelManager::vite()`, and
-  that `window.LunarPanel.booting()` (not a bare top-level call) wraps your
-  registration calls.
+  that your registration calls run at the **top level** of the bundle — not
+  inside `window.LunarPanel.booting()`, whose callbacks run after the first
+  render and are therefore too late for page and slot registration (see
+  [Compiling the add-on bundle](#compiling-the-add-on-bundle-with-vite)).
 
 ## Files
 
