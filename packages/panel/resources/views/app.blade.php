@@ -35,9 +35,13 @@
             <script src="{{ $path }}" defer></script>
         @endforeach
 
+        {{-- Clone per module: hot file and build directory must never leak between
+             modules, or in from the panel's own hot file configured above. A module
+             without a hot file gets its own conventional path, so another module's
+             running dev server can never capture its tags. --}}
         @foreach (app(\Lunar\Panel\PanelManager::class)->registeredVites() as $name => $config)
-            @php($config['hotFile'] && app(\Illuminate\Foundation\Vite::class)->useHotFile($config['hotFile']))
-            {!! app(\Illuminate\Foundation\Vite::class)
+            {!! (clone app(\Illuminate\Foundation\Vite::class))
+                ->useHotFile($config['hotFile'] ?: public_path("vendor/lunar-panel/{$name}/hot"))
                 ->useBuildDirectory($config['buildDirectory'])
                 ->withEntryPoints((array) $config['input'])
                 ->toHtml() !!}

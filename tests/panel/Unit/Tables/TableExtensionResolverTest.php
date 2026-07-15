@@ -124,7 +124,7 @@ it('merges add-on columns into the first-party set and honours their position an
     $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
 
     // FixtureRatingColumn declares Position::after('name'); FixtureSecretColumn is
-    // permission-gated and hidden here (no authenticated user), proving both the
+    // permission-gated and hidden here (no user passed), proving both the
     // anchor placement and that permission filtering flows through the merge.
     $columns = $resolver->mergeAndOrderColumns([
         ['key' => 'name', 'label' => 'Name'],
@@ -134,21 +134,41 @@ it('merges add-on columns into the first-party set and honours their position an
     expect(array_column($columns, 'key'))->toBe(['name', 'rating', 'email']);
 });
 
+it('ships add-on column component and type through the merged payload', function () {
+    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
+
+    $columns = $resolver->mergeAndOrderColumns([
+        ['key' => 'name', 'label' => 'Name'],
+    ]);
+
+    $rating = collect($columns)->firstWhere('key', 'rating');
+
+    expect($rating)->toBe([
+        'key' => 'rating',
+        'label' => 'Rating',
+        'type' => ['name' => 'badge', 'options' => []],
+    ]);
+});
+
 it('hides columns whose permission the user lacks', function () {
     Gate::define('panel-test.table', fn ($user) => (bool) $user->admin);
 
-    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
+    $resolver = new TableExtensionResolver(
+        [FixtureTableExtension::class],
+        Staff::factory()->create(['admin' => false]),
+    );
 
-    $this->actingAs(Staff::factory()->create(['admin' => false]), 'staff');
     expect(array_column($resolver->getColumns(), 'key'))->not->toContain('secret');
 });
 
 it('shows permission-gated columns to authorised users', function () {
     Gate::define('panel-test.table', fn ($user) => (bool) $user->admin);
 
-    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+    $resolver = new TableExtensionResolver(
+        [FixtureTableExtension::class],
+        Staff::factory()->create(['admin' => true]),
+    );
 
-    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
     expect(array_column($resolver->getColumns(), 'key'))->toContain('secret');
 });
 

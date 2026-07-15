@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel\Actions;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Lunar\Panel\Support\OrderResolver;
 use Lunar\Panel\Support\Position;
 
@@ -14,8 +15,11 @@ class PageActionResolver
     /** @var PageAction[] */
     protected array $actions = [];
 
-    /** @param array<int, class-string<PageAction>> $actionClasses */
-    public function __construct(array $actionClasses)
+    /**
+     * @param  array<int, class-string<PageAction>>  $actionClasses
+     * @param  Authenticatable|null  $user  The panel user visibility checks run against.
+     */
+    public function __construct(array $actionClasses, protected ?Authenticatable $user = null)
     {
         foreach ($actionClasses as $class) {
             $this->actions[] = app($class);
@@ -29,7 +33,7 @@ class PageActionResolver
     {
         $visible = array_values(array_filter(
             $this->actions,
-            fn (PageAction $action) => $action->visible($context),
+            fn (PageAction $action) => $action->visible($context, $this->user),
         ));
 
         $ordered = (new OrderResolver)->sort(

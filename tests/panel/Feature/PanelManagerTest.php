@@ -14,6 +14,32 @@ use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
 
+class FixtureViteSection extends Section
+{
+    public function key(): string
+    {
+        return 'vited';
+    }
+
+    public function vite(): array|string|null
+    {
+        return 'resources/js/section.ts';
+    }
+}
+
+class FixtureViteExtension extends SectionExtension
+{
+    public function extends(): string
+    {
+        return 'vited';
+    }
+
+    public function vite(): array|string|null
+    {
+        return 'resources/js/extension.ts';
+    }
+}
+
 it('is a container singleton behind the facade', function () {
     expect(app(PanelManager::class))->toBe(app(PanelManager::class))
         ->and(Panel::getFacadeRoot())->toBe(app(PanelManager::class));
@@ -108,6 +134,24 @@ it('logs a warning when an extension targets an unknown section', function () {
         ->once();
 });
 
+it('warns when a section is registered after sections were processed', function () {
+    // The provider processed sections when the app booted, so any registration
+    // from here on is late.
+    Log::spy();
+
+    Panel::section(new class extends Section
+    {
+        public function key(): string
+        {
+            return 'too-late';
+        }
+    });
+
+    Log::shouldHaveReceived('warning')
+        ->withArgs(fn (string $message) => str_contains($message, 'registered after sections were processed'))
+        ->once();
+});
+
 it('falls back to the staff guard when no panel guard is configured', function () {
     config()->set('lunar.panel.guard', null);
     config()->set('lunar.staff.guard', 'staff');
@@ -116,6 +160,54 @@ it('falls back to the staff guard when no panel guard is configured', function (
 
     config()->set('lunar.panel.guard', 'web');
     expect(app(PanelManager::class)->guard())->toBe('web');
+});
+
+it('accepts a list of table extension classes per table id', function () {
+    $section = new class extends Section
+    {
+        public function key(): string
+        {
+            return 'multi';
+        }
+
+        public function tableExtensions(): array
+        {
+            return ['widgets.index' => [TableExtension::class, TableExtension::class]];
+        }
+    };
+
+    Panel::section($section);
+
+    $manager = app(PanelManager::class);
+    $manager->processSections();
+
+    expect($manager->getTableExtensions('widgets.index'))
+        ->toBe([TableExtension::class, TableExtension::class]);
+});
+
+it('registers section and extension vite configs under distinct keys', function () {
+    Panel::section(new FixtureViteSection);
+    Panel::extendSection(new FixtureViteExtension);
+
+    $manager = app(PanelManager::class);
+    $manager->processSections();
+
+    expect($manager->registeredVites()['vited']['input'])->toBe('resources/js/section.ts')
+        ->and($manager->registeredVites()['vited-fixture-vite-extension']['input'])->toBe('resources/js/extension.ts');
+});
+
+it('warns when a vite module name is registered twice', function () {
+    Log::spy();
+
+    $manager = app(PanelManager::class);
+    $manager->vite('dup', 'a.ts');
+    $manager->vite('dup', 'b.ts');
+
+    Log::shouldHaveReceived('warning')
+        ->withArgs(fn (string $message) => str_contains($message, '[dup]'))
+        ->once();
+
+    expect($manager->registeredVites()['dup']['input'])->toBe('b.ts');
 });
 
 it('normalises vite registrations', function () {

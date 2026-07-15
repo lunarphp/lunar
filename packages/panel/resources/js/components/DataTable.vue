@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import Checkbox from './Checkbox.vue';
+import DataTableCell, { type DataTableColumnType } from './DataTableCell.vue';
 import RowActions, { type RowAction } from './RowActions.vue';
 
 interface DataTableColumn {
@@ -9,6 +10,10 @@ interface DataTableColumn {
     label: string;
     width?: string;
     align?: 'left' | 'right' | 'center';
+    /** Namespaced add-on cell component (e.g. "my-addon::RatingCell"), resolved via window.LunarPanel. */
+    component?: string;
+    /** Generic renderer descriptor for add-on columns without a component. */
+    type?: DataTableColumnType;
 }
 
 type RowKey = string | number;
@@ -130,7 +135,9 @@ const linkFor = (row: Record<string, unknown>): string | null => (props.rowTo ? 
                     c.align === 'right' ? 'text-right' : c.align === 'center' ? 'text-center' : '',
                 ]"
             >
-                <slot :name="`cell-${c.key}`" :row="row" :value="row[c.key]">{{ row[c.key] }}</slot>
+                <slot :name="`cell-${c.key}`" :row="row" :value="row[c.key]">
+                    <DataTableCell :component="c.component" :type="c.type" :row="row" :value="row[c.key]" />
+                </slot>
             </div>
             <RowActions v-if="hasRowActions" :actions="rowActions" :row="row" />
         </component>

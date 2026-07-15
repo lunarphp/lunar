@@ -3,7 +3,9 @@
 namespace Lunar\Panel;
 
 use Closure;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Lunar\Panel\Actions\PageActionResolver;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\ProvidesNavigation;
@@ -43,6 +45,8 @@ class PanelManager
     /** @var Closure[] */
     protected array $routeRegistrars = [];
 
+    protected bool $sectionsProcessed = false;
+
     protected SectionRegistry $sectionRegistry;
 
     protected NavigationRegistry $navigationRegistry;
@@ -62,6 +66,7 @@ class PanelManager
     public function section(Section $section): static
     {
         $this->sectionRegistry->register($section);
+        $this->warnIfRegisteredLate($section::class);
 
         return $this;
     }
@@ -69,12 +74,27 @@ class PanelManager
     public function extendSection(SectionExtension $extension): static
     {
         $this->sectionRegistry->registerExtension($extension);
+        $this->warnIfRegisteredLate($extension::class);
 
         return $this;
     }
 
+    /**
+     * Sections register in provider boot and are processed once the app has
+     * booted; a registration arriving after that would otherwise be silently
+     * ignored, so make it diagnosable.
+     */
+    private function warnIfRegisteredLate(string $class): void
+    {
+        if ($this->sectionsProcessed) {
+            Log::warning("Lunar Panel: [{$class}] was registered after sections were processed and will be ignored; register it in a service provider's boot method.");
+        }
+    }
+
     public function processSections(): void
     {
+        $this->sectionsProcessed = true;
+
         $sections = $this->sectionRegistry->all();
         $allExtensions = $this->sectionRegistry->extensions();
 
@@ -107,8 +127,10 @@ class PanelManager
             $this->registerRoutes($routes);
         }
 
-        foreach ($entity->tableExtensions() as $tableId => $extensionClass) {
-            $this->extendTable($tableId, $extensionClass);
+        foreach ($entity->tableExtensions() as $tableId => $extensionClasses) {
+            foreach ((array) $extensionClasses as $extensionClass) {
+                $this->extendTable($tableId, $extensionClass);
+            }
         }
 
         foreach ($entity->pageActions() as $pageId => $actionClasses) {
@@ -118,8 +140,23 @@ class PanelManager
         }
 
         if ($viteConfig = $entity->vite()) {
-            $this->vite($sectionKey, $viteConfig);
+            $this->vite($this->viteKeyFor($sectionKey, $entity), $viteConfig);
         }
+    }
+
+    /**
+     * A unique Vite module key per entity: the section's own key, or a derived
+     * key for extensions so an extension's config never clobbers its target
+     * section's (or a sibling extension's). Also the public asset path segment
+     * (vendor/lunar-panel/{key}), so it must be filesystem-safe.
+     */
+    private function viteKeyFor(string $sectionKey, ProvidesNavigation $entity): string
+    {
+        if ($entity instanceof SectionExtension) {
+            return $sectionKey.'-'.Str::kebab(class_basename($entity));
+        }
+
+        return $sectionKey;
     }
 
     public function navigation(): NavigationRegistry
@@ -152,7 +189,7 @@ class PanelManager
 
     public function resolveExtensions(string $tableId): TableExtensionResolver
     {
-        return new TableExtensionResolver($this->getTableExtensions($tableId));
+        return new TableExtensionResolver($this->getTableExtensions($tableId), $this->user());
     }
 
     /** @param class-string $actionClass */
@@ -171,7 +208,7 @@ class PanelManager
 
     public function resolvePageActions(string $pageId): PageActionResolver
     {
-        return new PageActionResolver($this->getPageActions($pageId));
+        return new PageActionResolver($this->getPageActions($pageId), $this->user());
     }
 
     public function registerRoutes(Closure $callback): static
@@ -208,6 +245,10 @@ class PanelManager
      */
     public function vite(string $name, array|string $config): static
     {
+        if (isset($this->vites[$name])) {
+            Log::warning("Lunar Panel: Vite module [{$name}] is already registered and will be overwritten.");
+        }
+
         if (is_string($config) || (is_array($config) && array_is_list($config))) {
             $config = ['input' => $config];
         }
@@ -273,6 +314,15 @@ class PanelManager
     public function guard(): string
     {
         return config('lunar.panel.guard') ?: config('lunar.staff.guard', 'staff');
+    }
+
+    /**
+     * The authenticated panel user, always resolved from the panel guard so
+     * visibility checks never depend on the request's default guard.
+     */
+    public function user(): ?Authenticatable
+    {
+        return auth($this->guard())->user();
     }
 
     public function name(): string

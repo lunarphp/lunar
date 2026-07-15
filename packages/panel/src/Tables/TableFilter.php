@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel\Tables;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 
 abstract class TableFilter
@@ -31,10 +32,10 @@ abstract class TableFilter
         return null;
     }
 
-    public function visible(): bool
+    public function visible(?Authenticatable $user = null): bool
     {
         if ($permission = $this->permission()) {
-            return auth()->check() && auth()->user()->can($permission);
+            return $user !== null && $user->can($permission);
         }
 
         return true;
@@ -48,7 +49,6 @@ abstract class TableFilter
             'label' => $this->label(),
             'component' => $this->component(),
             'options' => $this->options(),
-            'visible' => $this->visible(),
         ];
     }
 }

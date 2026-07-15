@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel\Actions;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Lunar\Panel\Support\Position;
 
 /**
@@ -52,10 +53,10 @@ abstract class PageAction
         return null;
     }
 
-    public function visible(mixed $context = null): bool
+    public function visible(mixed $context = null, ?Authenticatable $user = null): bool
     {
         if ($permission = $this->permission()) {
-            return auth()->check() && auth()->user()->can($permission);
+            return $user !== null && $user->can($permission);
         }
 
         return true;

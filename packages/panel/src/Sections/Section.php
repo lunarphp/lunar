@@ -27,9 +27,10 @@ abstract class Section implements ProvidesNavigation
     }
 
     /**
-     * Return an array of [tableId => extensionClass] pairs.
+     * Return extension classes keyed by table id; each value is one class
+     * or a list of them.
      *
-     * @return array<string, string>
+     * @return array<string, class-string|array<int, class-string>>
      */
     public function tableExtensions(): array
     {

@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel\Tables;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Lunar\Panel\Support\Position;
 
 abstract class TableAction
@@ -51,10 +52,10 @@ abstract class TableAction
         return null;
     }
 
-    public function visible(): bool
+    public function visible(?Authenticatable $user = null): bool
     {
         if ($permission = $this->permission()) {
-            return auth()->check() && auth()->user()->can($permission);
+            return $user !== null && $user->can($permission);
         }
 
         return true;
@@ -77,7 +78,6 @@ abstract class TableAction
             'primary' => $this->primary(),
             'confirmation' => $this->confirmationMessage(),
             'position' => $this->position()->toArray(),
-            'visible' => $this->visible(),
         ];
     }
 

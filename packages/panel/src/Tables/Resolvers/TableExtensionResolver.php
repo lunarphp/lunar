@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel\Tables\Resolvers;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Lunar\Panel\Support\OrderResolver;
@@ -29,8 +30,11 @@ class TableExtensionResolver
     /** @var TableExtension[] */
     protected array $extensions = [];
 
-    /** @param class-string<TableExtension>[] $extensionClasses */
-    public function __construct(array $extensionClasses)
+    /**
+     * @param  class-string<TableExtension>[]  $extensionClasses
+     * @param  Authenticatable|null  $user  The panel user visibility checks run against.
+     */
+    public function __construct(array $extensionClasses, protected ?Authenticatable $user = null)
     {
         foreach ($extensionClasses as $class) {
             /** @var TableExtension $extension */
@@ -66,7 +70,7 @@ class TableExtensionResolver
     public function applyColumnQueries(Builder $query): void
     {
         foreach ($this->columns as $column) {
-            if ($column->visible()) {
+            if ($column->visible($this->user)) {
                 $column->query($query);
             }
         }
@@ -75,7 +79,7 @@ class TableExtensionResolver
     public function applyFilters(Builder $query, Request $request): void
     {
         foreach ($this->filters as $filter) {
-            if (! $filter->visible()) {
+            if (! $filter->visible($this->user)) {
                 continue;
             }
 
@@ -91,7 +95,7 @@ class TableExtensionResolver
     public function getColumns(): array
     {
         return collect($this->columns)
-            ->filter(fn (TableColumn $column) => $column->visible())
+            ->filter(fn (TableColumn $column) => $column->visible($this->user))
             ->map(fn (TableColumn $column) => $column->toArray())
             ->values()
             ->all();
@@ -119,7 +123,7 @@ class TableExtensionResolver
         }
 
         foreach ($this->columns as $column) {
-            if (! $column->visible()) {
+            if (! $column->visible($this->user)) {
                 continue;
             }
 
@@ -129,7 +133,9 @@ class TableExtensionResolver
                 'payload' => array_filter([
                     'key' => $column->key(),
                     'label' => $column->header(),
-                ]),
+                    'component' => $column->component(),
+                    'type' => $column->type()?->toArray(),
+                ], fn (mixed $value) => $value !== null),
             ];
         }
 
@@ -146,7 +152,7 @@ class TableExtensionResolver
     public function getColumnKeys(): array
     {
         return collect($this->columns)
-            ->filter(fn (TableColumn $column) => $column->visible())
+            ->filter(fn (TableColumn $column) => $column->visible($this->user))
             ->map(fn (TableColumn $column) => $column->key())
             ->values()
             ->all();
@@ -156,7 +162,7 @@ class TableExtensionResolver
     public function getFilters(): array
     {
         return collect($this->filters)
-            ->filter(fn (TableFilter $filter) => $filter->visible())
+            ->filter(fn (TableFilter $filter) => $filter->visible($this->user))
             ->map(fn (TableFilter $filter) => $filter->toArray())
             ->values()
             ->all();
@@ -173,7 +179,7 @@ class TableExtensionResolver
     {
         $visible = array_values(array_filter(
             $this->actions,
-            fn (TableAction $action) => $action->visible(),
+            fn (TableAction $action) => $action->visible($this->user),
         ));
 
         $ordered = (new OrderResolver)->sort(
@@ -196,7 +202,7 @@ class TableExtensionResolver
         $urls = [];
 
         foreach ($this->actions as $action) {
-            if (! $action->visible()) {
+            if (! $action->visible($this->user)) {
                 continue;
             }
 
@@ -215,7 +221,7 @@ class TableExtensionResolver
     {
         $visible = array_values(array_filter(
             $this->bulkActions,
-            fn (TableBulkAction $action) => $action->visible(),
+            fn (TableBulkAction $action) => $action->visible($this->user),
         ));
 
         $ordered = (new OrderResolver)->sort(
@@ -233,7 +239,7 @@ class TableExtensionResolver
         $values = [];
 
         foreach ($this->filters as $filter) {
-            if ($filter->visible()) {
+            if ($filter->visible($this->user)) {
                 $values[$filter->key()] = $request->input("filter.{$filter->key()}", '');
             }
         }

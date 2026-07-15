@@ -86,11 +86,11 @@ it('orders actions by position and resolves url with the given context', functio
 it('filters actions by permission', function () {
     Gate::define('panel-test.secret-page-action', fn ($user) => (bool) $user->admin);
 
-    $resolver = new PageActionResolver([FixtureSecretPageAction::class, FixtureAddAction::class]);
+    $actionClasses = [FixtureSecretPageAction::class, FixtureAddAction::class];
 
-    $this->actingAs(Staff::factory()->create(['admin' => false]), 'staff');
-    expect(array_column($resolver->resolve(), 'key'))->toBe(['add']);
+    $blocked = new PageActionResolver($actionClasses, Staff::factory()->create(['admin' => false]));
+    expect(array_column($blocked->resolve(), 'key'))->toBe(['add']);
 
-    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
-    expect(array_column($resolver->resolve(), 'key'))->toContain('secret');
+    $allowed = new PageActionResolver($actionClasses, Staff::factory()->create(['admin' => true]));
+    expect(array_column($allowed->resolve(), 'key'))->toContain('secret');
 });

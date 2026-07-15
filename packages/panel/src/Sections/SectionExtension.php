@@ -22,9 +22,10 @@ abstract class SectionExtension implements ProvidesNavigation
     }
 
     /**
-     * Return an array of [tableId => extensionClass] pairs.
+     * Return extension classes keyed by table id; each value is one class
+     * or a list of them.
      *
-     * @return array<string, string>
+     * @return array<string, class-string|array<int, class-string>>
      */
     public function tableExtensions(): array
     {
@@ -40,7 +41,10 @@ abstract class SectionExtension implements ProvidesNavigation
     }
 
     /**
-     * Return a Vite config to register for this section, or null to skip.
+     * Return a Vite config to register for this extension, or null to skip.
+     * Registered under a key derived from the target section and this class
+     * ("{section}-{kebab-class-name}"), so it never collides with the
+     * section's own config or a sibling extension's.
      *
      * @return array{input?: string|string[], hotFile?: string|null, buildDirectory?: string, __buildSourcePath?: string}|string|null
      */

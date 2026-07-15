@@ -71,6 +71,34 @@ describe('PanelSlot', () => {
         expect(divs[0].text()).toBe('known');
     });
 
+    it('renders the same component twice in one zone without key collisions', () => {
+        const Banner = defineComponent({
+            props: ['label'],
+            render() {
+                return h('div', this.label);
+            },
+        });
+
+        window.LunarPanel = {
+            resolveExtensionComponent: () => Banner,
+        } as unknown as Window['LunarPanel'];
+
+        pageProps.slots = {
+            toolbar: [
+                { component: 'Banner', props: { label: 'one' }, priority: 1 },
+                { component: 'Banner', props: { label: 'two' }, priority: 2 },
+            ],
+        };
+
+        const warn = vi.spyOn(console, 'warn');
+        const wrapper = mount(PanelSlot, { props: { name: 'toolbar' } });
+
+        expect(wrapper.findAll('div').map((div) => div.text())).toEqual(['one', 'two']);
+        expect(warn).not.toHaveBeenCalled();
+
+        warn.mockRestore();
+    });
+
     it('passes both the slot entry props and extra attrs through to the rendered component', () => {
         const Widget = defineComponent({
             props: ['label', 'extra'],

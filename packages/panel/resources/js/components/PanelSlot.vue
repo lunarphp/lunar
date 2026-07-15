@@ -27,10 +27,13 @@ const resolvedEntries = computed(() => {
 </script>
 
 <template>
+    <!-- Index keys: the same component can appear twice in one zone (same banner,
+         different props), so the component name is not a unique key. The list is
+         fixed per page load, so index keys are stable. -->
     <component
         :is="resolved.component"
-        v-for="resolved in resolvedEntries"
-        :key="resolved.entry.component"
+        v-for="(resolved, index) in resolvedEntries"
+        :key="index"
         v-bind="{ ...resolved.entry.props, ...attrs }"
     />
 </template>
