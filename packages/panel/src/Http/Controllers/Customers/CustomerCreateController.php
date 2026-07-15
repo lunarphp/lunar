@@ -43,6 +43,6 @@ class CustomerCreateController
 
         return redirect()
             ->route('panel.customers.edit', $customer)
-            ->with('success', 'Customer created.');
+            ->with('success', __('panel::customers.flash_created'));
     }
 }

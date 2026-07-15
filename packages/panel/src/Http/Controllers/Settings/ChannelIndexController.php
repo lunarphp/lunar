@@ -12,15 +12,17 @@ class ChannelIndexController
     use ResolvesTableExtensions;
 
     /** @var array<int, array{key: string, label: string, width?: string, align?: string}> */
-    protected array $columns = [
-        ['key' => 'handle', 'label' => 'Handle', 'width' => 'minmax(0, 0.8fr)'],
-        ['key' => 'name', 'label' => 'Name', 'width' => 'minmax(0, 1.2fr)'],
-        ['key' => 'url', 'label' => 'URL', 'width' => 'minmax(0, 1.4fr)'],
-        ['key' => 'status', 'label' => 'Status', 'width' => '110px'],
-    ];
+    protected array $columns = [];
 
     public function index(): Response
     {
+        $this->columns = [
+            ['key' => 'handle', 'label' => __('panel::channels.column_handle'), 'width' => 'minmax(0, 0.8fr)'],
+            ['key' => 'name', 'label' => __('panel::channels.column_name'), 'width' => 'minmax(0, 1.2fr)'],
+            ['key' => 'url', 'label' => __('panel::channels.column_url'), 'width' => 'minmax(0, 1.4fr)'],
+            ['key' => 'status', 'label' => __('panel::channels.column_status'), 'width' => '110px'],
+        ];
+
         $resolver = $this->resolveTable('channels.index');
 
         $channels = Channel::orderBy('name')->get()->map(fn (Channel $channel): array => [

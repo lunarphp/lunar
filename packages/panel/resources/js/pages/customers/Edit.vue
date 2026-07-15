@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { router, useForm, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import AddressCard from '../../components/AddressCard.vue';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
@@ -88,6 +89,8 @@ const props = defineProps<{
     };
 }>();
 
+const { t } = useI18n();
+
 const flashSuccess = computed(() => (usePage().props.flash as { success?: string } | undefined)?.success);
 
 const initials = (): string => ((props.customer.first_name?.[0] ?? '?') + (props.customer.last_name?.[0] ?? '')).toUpperCase();
@@ -143,24 +146,24 @@ const confirmOpen = computed({
 const confirmTitle = computed(() => {
     switch (confirmTarget.value?.kind) {
         case 'customer':
-            return 'Delete this customer?';
+            return t('customers.confirm_delete_customer_title');
         case 'address':
-            return 'Delete this address?';
+            return t('customers.confirm_delete_address_title');
         case 'user':
-            return 'Unlink this user?';
+            return t('customers.confirm_unlink_user_title');
         default:
-            return 'Are you sure?';
+            return t('common.are_you_sure');
     }
 });
 
 const confirmDescription = computed(() => {
     switch (confirmTarget.value?.kind) {
         case 'customer':
-            return 'This cannot be undone.';
+            return t('customers.confirm_delete_customer_body');
         case 'address':
-            return 'This address will be permanently removed from the customer.';
+            return t('customers.confirm_delete_address_body');
         case 'user':
-            return `${confirmTarget.value?.user?.email} will no longer be able to sign in as this customer.`;
+            return t('customers.confirm_unlink_user_body', { email: confirmTarget.value?.user?.email ?? '' });
         default:
             return '';
     }
@@ -326,9 +329,9 @@ const userInitials = (user: LinkedUser): string =>
 // Tabs
 const activeTab = ref<'addresses' | 'users' | 'activity'>('addresses');
 const tabDefs = computed(() => [
-    { value: 'addresses', label: 'Addresses', count: props.addresses.length },
-    { value: 'users', label: 'Users', count: props.users.length },
-    { value: 'activity', label: 'Activity' },
+    { value: 'addresses', label: t('customers.tab_addresses'), count: props.addresses.length },
+    { value: 'users', label: t('customers.tab_users'), count: props.users.length },
+    { value: 'activity', label: t('customers.tab_activity') },
 ]);
 </script>
 
@@ -349,11 +352,11 @@ const tabDefs = computed(() => [
                             <StatusBadge size="sm">{{ group.name }}</StatusBadge>
                         </template>
                         <span class="text-ink-500">·</span>
-                        <span>Joined {{ new Date(customer.created_at).toLocaleDateString() }}</span>
+                        <span>{{ t('customers.joined', { date: new Date(customer.created_at).toLocaleDateString() }) }}</span>
                     </div>
                 </template>
                 <template #actions>
-                    <Button icon="trash" class="!text-danger" @click="destroyCustomer">Delete customer</Button>
+                    <Button icon="trash" class="!text-danger" @click="destroyCustomer">{{ t('customers.delete_customer') }}</Button>
                 </template>
             </PageHeader>
 
@@ -367,42 +370,42 @@ const tabDefs = computed(() => [
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="min-w-0">
                         <form @submit.prevent="submitDetails">
-                            <Section title="Personal details">
-                                <template #desc>Name, company, and account identifiers used across orders and invoices.</template>
+                            <Section :title="t('customers.personal_details')">
+                                <template #desc>{{ t('customers.personal_details_desc') }}</template>
                                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                                     <label class="flex flex-col gap-1 sm:col-span-2">
-                                        <span class="text-[11.5px] text-ink-500">Title</span>
+                                        <span class="text-[11.5px] text-ink-500">{{ t('customers.field_title') }}</span>
                                         <Select v-model="detailsForm.title">
                                             <option v-for="option in titleOptions" :key="option || 'none'" :value="option">{{ option || '—' }}</option>
                                         </Select>
                                     </label>
                                     <div class="sm:col-span-5">
-                                        <FieldLabel required>First name</FieldLabel>
+                                        <FieldLabel required>{{ t('customers.field_first_name') }}</FieldLabel>
                                         <TextInput v-model="detailsForm.first_name" :invalid="!!detailsForm.errors.first_name" />
                                         <div v-if="detailsForm.errors.first_name" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.first_name }}</div>
                                     </div>
                                     <div class="sm:col-span-5">
-                                        <FieldLabel required>Last name</FieldLabel>
+                                        <FieldLabel required>{{ t('customers.field_last_name') }}</FieldLabel>
                                         <TextInput v-model="detailsForm.last_name" :invalid="!!detailsForm.errors.last_name" />
                                         <div v-if="detailsForm.errors.last_name" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.last_name }}</div>
                                     </div>
                                     <div class="sm:col-span-12">
-                                        <FieldLabel>Company name</FieldLabel>
-                                        <TextInput v-model="detailsForm.company_name" placeholder="Optional" :invalid="!!detailsForm.errors.company_name" />
+                                        <FieldLabel>{{ t('customers.field_company_name') }}</FieldLabel>
+                                        <TextInput v-model="detailsForm.company_name" :placeholder="t('common.optional')" :invalid="!!detailsForm.errors.company_name" />
                                     </div>
                                     <div class="sm:col-span-6">
-                                        <FieldLabel>Tax identifier</FieldLabel>
+                                        <FieldLabel>{{ t('customers.field_tax_identifier') }}</FieldLabel>
                                         <TextInput v-model="detailsForm.tax_identifier" mono :invalid="!!detailsForm.errors.tax_identifier" />
                                     </div>
                                     <div class="sm:col-span-6">
-                                        <FieldLabel>Account reference</FieldLabel>
+                                        <FieldLabel>{{ t('customers.field_account_ref') }}</FieldLabel>
                                         <TextInput v-model="detailsForm.account_ref" mono :invalid="!!detailsForm.errors.account_ref" />
                                     </div>
                                 </div>
                             </Section>
 
-                            <Section title="Customer groups">
-                                <template #desc>Groups control storefront permissions, pricing rules, and segmentation.</template>
+                            <Section :title="t('customers.customer_groups')">
+                                <template #desc>{{ t('customers.groups_desc') }}</template>
                                 <div class="flex flex-wrap items-center gap-1.5">
                                     <span
                                         v-for="id in detailsForm.customer_group_ids"
@@ -413,19 +416,19 @@ const tabDefs = computed(() => [
                                         <button
                                             type="button"
                                             class="grid place-items-center w-[16px] h-[16px] rounded-full text-ink-500 hover:text-ink-900 hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35"
-                                            :aria-label="`Remove ${groupName(id)}`"
+                                            :aria-label="t('customers.remove_group', { name: groupName(id) })"
                                             @click="removeGroup(id)"
                                         >
                                             <Icon name="x" cls="sm" />
                                         </button>
                                     </span>
-                                    <span v-if="!detailsForm.customer_group_ids.length" class="text-[12px] text-ink-500">No groups assigned.</span>
+                                    <span v-if="!detailsForm.customer_group_ids.length" class="text-[12px] text-ink-500">{{ t('customers.no_groups') }}</span>
                                     <div class="ml-auto min-w-[180px] max-w-[220px] flex-1">
                                         <Combobox
                                             v-if="addableGroupOptions.length"
                                             v-model="addGroupSelection"
                                             :options="addableGroupOptions"
-                                            placeholder="Add to group…"
+                                            :placeholder="t('customers.add_to_group')"
                                             @change="onAddGroup"
                                         />
                                     </div>
@@ -433,7 +436,7 @@ const tabDefs = computed(() => [
                             </Section>
 
                             <div class="pt-2 pb-6">
-                                <Button type="submit" variant="primary" :disabled="detailsForm.processing">Save changes</Button>
+                                <Button type="submit" variant="primary" :disabled="detailsForm.processing">{{ t('common.save_changes') }}</Button>
                             </div>
                         </form>
 
@@ -443,7 +446,7 @@ const tabDefs = computed(() => [
                         <div class="pt-2">
                             <Tabs v-model="activeTab" :tabs="tabDefs">
                                 <template #actions>
-                                    <Button v-if="activeTab === 'addresses'" size="sm" icon="plus" @click="showNewAddressForm = !showNewAddressForm">Add address</Button>
+                                    <Button v-if="activeTab === 'addresses'" size="sm" icon="plus" @click="showNewAddressForm = !showNewAddressForm">{{ t('customers.add_address') }}</Button>
                                 </template>
 
                                 <template #addresses>
@@ -456,157 +459,157 @@ const tabDefs = computed(() => [
                                             >
                                                 <div class="grid grid-cols-2 gap-3">
                                                     <div>
-                                                        <FieldLabel required>First name</FieldLabel>
+                                                        <FieldLabel required>{{ t('customers.field_first_name') }}</FieldLabel>
                                                         <TextInput v-model="addressForm.first_name" />
                                                     </div>
                                                     <div>
-                                                        <FieldLabel required>Last name</FieldLabel>
+                                                        <FieldLabel required>{{ t('customers.field_last_name') }}</FieldLabel>
                                                         <TextInput v-model="addressForm.last_name" />
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <FieldLabel>Company name</FieldLabel>
+                                                    <FieldLabel>{{ t('customers.field_company_name') }}</FieldLabel>
                                                     <TextInput v-model="addressForm.company_name" />
                                                 </div>
                                                 <div>
-                                                    <FieldLabel required>Address line 1</FieldLabel>
+                                                    <FieldLabel required>{{ t('customers.field_line_one') }}</FieldLabel>
                                                     <TextInput v-model="addressForm.line_one" />
                                                 </div>
                                                 <div>
-                                                    <FieldLabel>Address line 2</FieldLabel>
+                                                    <FieldLabel>{{ t('customers.field_line_two') }}</FieldLabel>
                                                     <TextInput v-model="addressForm.line_two" />
                                                 </div>
                                                 <div class="grid grid-cols-2 gap-3">
                                                     <div>
-                                                        <FieldLabel required>City</FieldLabel>
+                                                        <FieldLabel required>{{ t('customers.field_city') }}</FieldLabel>
                                                         <TextInput v-model="addressForm.city" />
                                                     </div>
                                                     <div>
-                                                        <FieldLabel>Postcode</FieldLabel>
+                                                        <FieldLabel>{{ t('customers.field_postcode') }}</FieldLabel>
                                                         <TextInput v-model="addressForm.postcode" />
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <FieldLabel required>Country</FieldLabel>
+                                                    <FieldLabel required>{{ t('customers.field_country') }}</FieldLabel>
                                                     <Select
                                                         :model-value="addressForm.country_id"
                                                         @update:model-value="(value) => (addressForm.country_id = value ? Number(value) : '')"
                                                     >
-                                                        <option value="">Select a country</option>
+                                                        <option value="">{{ t('customers.select_country') }}</option>
                                                         <option v-for="country in countries" :key="country.id" :value="country.id">{{ country.name }}</option>
                                                     </Select>
                                                 </div>
                                                 <div>
-                                                    <FieldLabel>Delivery instructions</FieldLabel>
+                                                    <FieldLabel>{{ t('customers.field_delivery_instructions') }}</FieldLabel>
                                                     <Textarea v-model="addressForm.delivery_instructions" :rows="2" />
                                                 </div>
                                                 <div class="flex gap-4">
                                                     <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
                                                         <Checkbox v-model="addressForm.shipping_default" />
-                                                        Default shipping
+                                                        {{ t('customers.default_shipping') }}
                                                     </label>
                                                     <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
                                                         <Checkbox v-model="addressForm.billing_default" />
-                                                        Default billing
+                                                        {{ t('customers.default_billing') }}
                                                     </label>
                                                 </div>
                                                 <div class="flex gap-2">
-                                                    <Button type="submit" variant="primary" size="sm" :disabled="addressForm.processing">Save address</Button>
-                                                    <Button type="button" size="sm" @click="cancelEditAddress">Cancel</Button>
+                                                    <Button type="submit" variant="primary" size="sm" :disabled="addressForm.processing">{{ t('customers.save_address') }}</Button>
+                                                    <Button type="button" size="sm" @click="cancelEditAddress">{{ t('common.cancel') }}</Button>
                                                 </div>
                                             </form>
                                             <AddressCard v-else :address="cardAddress(address)">
                                                 <template #actions>
-                                                    <Button variant="ghost" size="sm" icon="edit" @click="startEditAddress(address)">Edit</Button>
-                                                    <Button v-if="!address.billing_default" variant="ghost" size="sm" @click="setAddressDefault(address, 'billing_default')">Set default billing</Button>
-                                                    <Button v-if="!address.shipping_default" variant="ghost" size="sm" @click="setAddressDefault(address, 'shipping_default')">Set default shipping</Button>
+                                                    <Button variant="ghost" size="sm" icon="edit" @click="startEditAddress(address)">{{ t('common.edit') }}</Button>
+                                                    <Button v-if="!address.billing_default" variant="ghost" size="sm" @click="setAddressDefault(address, 'billing_default')">{{ t('customers.set_default_billing') }}</Button>
+                                                    <Button v-if="!address.shipping_default" variant="ghost" size="sm" @click="setAddressDefault(address, 'shipping_default')">{{ t('customers.set_default_shipping') }}</Button>
                                                     <div class="flex-1" />
-                                                    <Button variant="ghost" size="sm" icon="trash" aria-label="Remove address" @click="destroyAddress(address)" />
+                                                    <Button variant="ghost" size="sm" icon="trash" :aria-label="t('customers.remove_address')" @click="destroyAddress(address)" />
                                                 </template>
                                             </AddressCard>
                                         </template>
                                     </div>
-                                    <PageEmpty v-else title="No saved addresses">Addresses entered at checkout will appear here.</PageEmpty>
+                                    <PageEmpty v-else :title="t('customers.addresses_empty_title')">{{ t('customers.addresses_empty_body') }}</PageEmpty>
 
                                     <form
                                         v-if="showNewAddressForm"
                                         class="mt-3 rounded-md border border-dashed border-line-strong p-4"
                                         @submit.prevent="submitNewAddress"
                                     >
-                                        <h3 class="text-[13px] font-semibold text-ink-900 mb-3">Add address</h3>
+                                        <h3 class="text-[13px] font-semibold text-ink-900 mb-3">{{ t('customers.add_address') }}</h3>
                                         <div class="flex flex-col gap-3">
                                             <div class="grid grid-cols-2 gap-3">
                                                 <div>
-                                                    <FieldLabel required>First name</FieldLabel>
+                                                    <FieldLabel required>{{ t('customers.field_first_name') }}</FieldLabel>
                                                     <TextInput v-model="newAddressForm.first_name" :invalid="!!newAddressForm.errors.first_name" />
                                                 </div>
                                                 <div>
-                                                    <FieldLabel required>Last name</FieldLabel>
+                                                    <FieldLabel required>{{ t('customers.field_last_name') }}</FieldLabel>
                                                     <TextInput v-model="newAddressForm.last_name" :invalid="!!newAddressForm.errors.last_name" />
                                                 </div>
                                             </div>
                                             <div>
-                                                <FieldLabel>Company name</FieldLabel>
+                                                <FieldLabel>{{ t('customers.field_company_name') }}</FieldLabel>
                                                 <TextInput v-model="newAddressForm.company_name" />
                                             </div>
                                             <div>
-                                                <FieldLabel required>Address line 1</FieldLabel>
+                                                <FieldLabel required>{{ t('customers.field_line_one') }}</FieldLabel>
                                                 <TextInput v-model="newAddressForm.line_one" :invalid="!!newAddressForm.errors.line_one" />
                                             </div>
                                             <div>
-                                                <FieldLabel>Address line 2</FieldLabel>
+                                                <FieldLabel>{{ t('customers.field_line_two') }}</FieldLabel>
                                                 <TextInput v-model="newAddressForm.line_two" />
                                             </div>
                                             <div class="grid grid-cols-2 gap-3">
                                                 <div>
-                                                    <FieldLabel required>City</FieldLabel>
+                                                    <FieldLabel required>{{ t('customers.field_city') }}</FieldLabel>
                                                     <TextInput v-model="newAddressForm.city" :invalid="!!newAddressForm.errors.city" />
                                                 </div>
                                                 <div>
-                                                    <FieldLabel>Postcode</FieldLabel>
+                                                    <FieldLabel>{{ t('customers.field_postcode') }}</FieldLabel>
                                                     <TextInput v-model="newAddressForm.postcode" />
                                                 </div>
                                             </div>
                                             <div>
-                                                <FieldLabel required>Country</FieldLabel>
+                                                <FieldLabel required>{{ t('customers.field_country') }}</FieldLabel>
                                                 <Select
                                                     :model-value="newAddressForm.country_id"
                                                     @update:model-value="(value) => (newAddressForm.country_id = value ? Number(value) : '')"
                                                 >
-                                                    <option value="">Select a country</option>
+                                                    <option value="">{{ t('customers.select_country') }}</option>
                                                     <option v-for="country in countries" :key="country.id" :value="country.id">{{ country.name }}</option>
                                                 </Select>
                                                 <div v-if="newAddressForm.errors.country_id" class="mt-1 text-[11px] text-danger">{{ newAddressForm.errors.country_id }}</div>
                                             </div>
                                             <div>
-                                                <FieldLabel>Delivery instructions</FieldLabel>
+                                                <FieldLabel>{{ t('customers.field_delivery_instructions') }}</FieldLabel>
                                                 <Textarea v-model="newAddressForm.delivery_instructions" :rows="2" />
                                             </div>
                                             <div class="flex gap-4">
                                                 <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
                                                     <Checkbox v-model="newAddressForm.shipping_default" />
-                                                    Default shipping
+                                                    {{ t('customers.default_shipping') }}
                                                 </label>
                                                 <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
                                                     <Checkbox v-model="newAddressForm.billing_default" />
-                                                    Default billing
+                                                    {{ t('customers.default_billing') }}
                                                 </label>
                                             </div>
                                             <div class="flex gap-2">
-                                                <Button type="submit" variant="primary" size="sm" :disabled="newAddressForm.processing">Add address</Button>
-                                                <Button type="button" size="sm" @click="showNewAddressForm = false">Cancel</Button>
+                                                <Button type="submit" variant="primary" size="sm" :disabled="newAddressForm.processing">{{ t('customers.add_address') }}</Button>
+                                                <Button type="button" size="sm" @click="showNewAddressForm = false">{{ t('common.cancel') }}</Button>
                                             </div>
                                         </div>
                                     </form>
                                 </template>
 
                                 <template #users>
-                                    <p class="text-xs text-ink-500 mb-3 max-w-[640px]">People who can sign in as this customer.</p>
+                                    <p class="text-xs text-ink-500 mb-3 max-w-[640px]">{{ t('customers.users_intro') }}</p>
                                     <div v-if="users.length" class="bg-surface border border-line rounded-xl shadow-sm overflow-hidden">
                                         <table class="w-full border-collapse text-[13px]">
                                             <thead>
                                                 <tr class="text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium bg-surface-2 border-b border-line">
-                                                    <th class="text-left font-medium px-4 py-2.5">Name</th>
+                                                    <th class="text-left font-medium px-4 py-2.5">{{ t('common.name') }}</th>
                                                     <th class="px-4 py-2.5 w-[40px]" />
                                                 </tr>
                                             </thead>
@@ -624,27 +627,27 @@ const tabDefs = computed(() => [
                                                         </div>
                                                     </td>
                                                     <td class="px-4 py-2.5 align-middle text-right">
-                                                        <Button variant="ghost" size="sm" icon="trash" aria-label="Unlink user" @click="unlinkUser(user)" />
+                                                        <Button variant="ghost" size="sm" icon="trash" :aria-label="t('customers.unlink_user')" @click="unlinkUser(user)" />
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    <PageEmpty v-else title="No users yet">Invite a user so this customer can sign in.</PageEmpty>
+                                    <PageEmpty v-else :title="t('customers.users_empty_title')">{{ t('customers.users_empty_body') }}</PageEmpty>
 
                                     <form class="mt-3 flex items-end gap-2 rounded-md border border-dashed border-line-strong p-4" @submit.prevent="submitLinkUser">
                                         <div class="flex-1">
-                                            <FieldLabel>Link user by email</FieldLabel>
+                                            <FieldLabel>{{ t('customers.link_user_label') }}</FieldLabel>
                                             <TextInput v-model="linkUserForm.email" type="email" :invalid="!!linkUserForm.errors.email" />
                                             <div v-if="linkUserForm.errors.email" class="mt-1 text-[11px] text-danger">{{ linkUserForm.errors.email }}</div>
                                         </div>
-                                        <Button type="submit" :disabled="linkUserForm.processing">Link</Button>
+                                        <Button type="submit" :disabled="linkUserForm.processing">{{ t('customers.link_user_button') }}</Button>
                                     </form>
                                 </template>
 
                                 <template #activity>
                                     <ActivityTimeline :events="activities" :reverse="false" />
-                                    <PageEmpty v-if="!activities.length" title="No activity recorded yet" />
+                                    <PageEmpty v-if="!activities.length" :title="t('customers.activity_empty')" />
                                 </template>
                             </Tabs>
                         </div>
@@ -652,22 +655,22 @@ const tabDefs = computed(() => [
 
                     <aside>
                         <div class="lg:sticky lg:top-4 flex flex-col gap-0">
-                            <SideCard title="At a glance">
+                            <SideCard :title="t('customers.at_a_glance')">
                                 <div class="flex flex-col gap-2 text-[12px]">
                                     <div class="flex items-center justify-between gap-2">
-                                        <span class="text-ink-500">Type</span>
-                                        <span class="text-ink-900 font-medium">{{ customer.company_name ? 'Business' : 'Individual' }}</span>
+                                        <span class="text-ink-500">{{ t('customers.side_type') }}</span>
+                                        <span class="text-ink-900 font-medium">{{ customer.company_name ? t('customers.type_business') : t('customers.type_individual') }}</span>
                                     </div>
                                     <div v-if="customer.account_ref" class="flex items-center justify-between gap-2">
-                                        <span class="text-ink-500">Account ref</span>
+                                        <span class="text-ink-500">{{ t('customers.side_account_ref') }}</span>
                                         <span class="text-ink-900 font-mono">{{ customer.account_ref }}</span>
                                     </div>
                                     <div v-if="customer.tax_identifier" class="flex items-center justify-between gap-2">
-                                        <span class="text-ink-500">Tax ID</span>
+                                        <span class="text-ink-500">{{ t('customers.side_tax_id') }}</span>
                                         <span class="text-ink-900 font-mono">{{ customer.tax_identifier }}</span>
                                     </div>
                                     <div class="flex items-center justify-between gap-2">
-                                        <span class="text-ink-500">Joined</span>
+                                        <span class="text-ink-500">{{ t('customers.side_joined') }}</span>
                                         <span class="text-ink-900 [font-variant-numeric:tabular-nums]">{{ new Date(customer.created_at).toLocaleDateString() }}</span>
                                     </div>
                                     <div v-if="customer.customer_groups.length" class="border-t border-line pt-2 mt-1 flex flex-wrap gap-1">
@@ -676,10 +679,10 @@ const tabDefs = computed(() => [
                                 </div>
                             </SideCard>
 
-                            <SideCard title="Default addresses">
+                            <SideCard :title="t('customers.default_addresses')">
                                 <div class="flex flex-col gap-3">
                                     <div>
-                                        <div class="text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium mb-1">Billing</div>
+                                        <div class="text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium mb-1">{{ t('customers.billing') }}</div>
                                         <div v-if="defaultBilling" class="text-[12.5px] text-ink-700 leading-[1.5]">
                                             <div class="text-ink-900">{{ defaultBilling.first_name }} {{ defaultBilling.last_name }}</div>
                                             <div>{{ defaultBilling.line_one }}<span v-if="defaultBilling.line_two">, {{ defaultBilling.line_two }}</span></div>
@@ -687,10 +690,10 @@ const tabDefs = computed(() => [
                                             <div>{{ defaultBilling.postcode }}</div>
                                             <div class="text-ink-500">{{ countryName(defaultBilling.country_id) }}</div>
                                         </div>
-                                        <div v-else class="text-[12px] text-ink-500 italic">None set.</div>
+                                        <div v-else class="text-[12px] text-ink-500 italic">{{ t('customers.none_set') }}</div>
                                     </div>
                                     <div class="border-t border-line pt-2.5">
-                                        <div class="text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium mb-1">Shipping</div>
+                                        <div class="text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium mb-1">{{ t('customers.shipping') }}</div>
                                         <div v-if="defaultShipping" class="text-[12.5px] text-ink-700 leading-[1.5]">
                                             <div class="text-ink-900">{{ defaultShipping.first_name }} {{ defaultShipping.last_name }}</div>
                                             <div>{{ defaultShipping.line_one }}<span v-if="defaultShipping.line_two">, {{ defaultShipping.line_two }}</span></div>
@@ -698,7 +701,7 @@ const tabDefs = computed(() => [
                                             <div>{{ defaultShipping.postcode }}</div>
                                             <div class="text-ink-500">{{ countryName(defaultShipping.country_id) }}</div>
                                         </div>
-                                        <div v-else class="text-[12px] text-ink-500 italic">None set.</div>
+                                        <div v-else class="text-[12px] text-ink-500 italic">{{ t('customers.none_set') }}</div>
                                     </div>
                                 </div>
                             </SideCard>
@@ -712,7 +715,7 @@ const tabDefs = computed(() => [
                 :title="confirmTitle"
                 :description="confirmDescription"
                 tone="danger"
-                confirm-label="Delete"
+                :confirm-label="t('common.delete')"
                 @confirm="confirmDestroy"
             />
         </div>

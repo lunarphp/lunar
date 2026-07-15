@@ -22,17 +22,17 @@ class CustomerUserController
             $linksCustomerUser->execute($customer, $validated['email']);
         } catch (ModelNotFoundException) {
             throw ValidationException::withMessages([
-                'email' => 'No user was found with that email address.',
+                'email' => __('panel::customers.link_user_not_found'),
             ]);
         }
 
-        return back()->with('success', 'User linked.');
+        return back()->with('success', __('panel::customers.flash_user_linked'));
     }
 
     public function destroy(Customer $customer, int $user, UnlinksCustomerUser $unlinksCustomerUser): RedirectResponse
     {
         $unlinksCustomerUser->execute($customer, $user);
 
-        return back()->with('success', 'User unlinked.');
+        return back()->with('success', __('panel::customers.flash_user_unlinked'));
     }
 }

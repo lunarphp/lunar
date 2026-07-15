@@ -17,15 +17,17 @@ class CustomerIndexController
     protected array $sortable = ['first_name', 'last_name', 'company_name', 'created_at'];
 
     /** @var array<int, array{key: string, label: string, width?: string, align?: string}> */
-    protected array $columns = [
-        ['key' => 'full_name', 'label' => 'Customer', 'width' => 'minmax(0,1.4fr)'],
-        ['key' => 'company_name', 'label' => 'Company', 'width' => 'minmax(0,1fr)'],
-        ['key' => 'customer_groups', 'label' => 'Groups', 'width' => 'minmax(0,1fr)'],
-        ['key' => 'created_at', 'label' => 'Created', 'width' => '120px', 'align' => 'right'],
-    ];
+    protected array $columns = [];
 
     public function index(Request $request): Response
     {
+        $this->columns = [
+            ['key' => 'full_name', 'label' => __('panel::customers.column_customer'), 'width' => 'minmax(0,1.4fr)'],
+            ['key' => 'company_name', 'label' => __('panel::customers.column_company'), 'width' => 'minmax(0,1fr)'],
+            ['key' => 'customer_groups', 'label' => __('panel::customers.column_groups'), 'width' => 'minmax(0,1fr)'],
+            ['key' => 'created_at', 'label' => __('panel::customers.column_created'), 'width' => '120px', 'align' => 'right'],
+        ];
+
         $sort = $request->string('sort')->value();
         $sort = in_array($sort, $this->sortable, true) ? $sort : 'created_at';
 

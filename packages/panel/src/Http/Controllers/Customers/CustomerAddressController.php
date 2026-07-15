@@ -17,21 +17,21 @@ class CustomerAddressController
     {
         $createsCustomerAddress->execute($customer, $this->validated($request));
 
-        return back()->with('success', 'Address added.');
+        return back()->with('success', __('panel::customers.flash_address_added'));
     }
 
     public function update(Request $request, Customer $customer, Address $address, UpdatesCustomerAddress $updatesCustomerAddress): RedirectResponse
     {
         $updatesCustomerAddress->execute($address, $this->validated($request));
 
-        return back()->with('success', 'Address updated.');
+        return back()->with('success', __('panel::customers.flash_address_updated'));
     }
 
     public function destroy(Customer $customer, Address $address, DeletesCustomerAddress $deletesCustomerAddress): RedirectResponse
     {
         $deletesCustomerAddress->execute($address);
 
-        return back()->with('success', 'Address deleted.');
+        return back()->with('success', __('panel::customers.flash_address_deleted'));
     }
 
     /** @return array<string, mixed> */

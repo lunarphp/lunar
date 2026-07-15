@@ -114,13 +114,13 @@ class CustomerEditController
             $validated['customer_group_ids'] ?? [],
         );
 
-        return back()->with('success', 'Customer updated.');
+        return back()->with('success', __('panel::customers.flash_updated'));
     }
 
     public function destroy(Customer $customer, DeletesCustomer $deletesCustomer): RedirectResponse
     {
         $deletesCustomer->execute($customer);
 
-        return redirect()->route('panel.customers.index')->with('success', 'Customer deleted.');
+        return redirect()->route('panel.customers.index')->with('success', __('panel::customers.flash_deleted'));
     }
 }

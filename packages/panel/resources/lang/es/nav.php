@@ -5,4 +5,8 @@ return [
     'settings' => 'Configuración',
     'toggle_theme' => 'Cambiar tema',
     'toggle_sidebar' => 'Alternar barra lateral',
+    'sales' => 'Ventas',
+    'customers' => 'Clientes',
+    'general' => 'General',
+    'channels' => 'Canales',
 ];

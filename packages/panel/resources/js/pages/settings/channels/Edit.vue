@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Button from '../../../components/Button.vue';
 import ConfirmDialog from '../../../components/ConfirmDialog.vue';
 import FieldLabel from '../../../components/FieldLabel.vue';
@@ -26,6 +27,8 @@ const props = defineProps<{
     urls: { update: string; destroy: string; index: string };
 }>();
 
+const { t } = useI18n();
+
 const form = useForm({
     name: props.channel.name,
     url: props.channel.url ?? '',
@@ -45,47 +48,47 @@ const confirmDestroy = (): void => {
 </script>
 
 <template>
-    <SettingsShell :title="`Edit channel — ${channel.name}`">
+    <SettingsShell :title="t('channels.edit_title', { name: channel.name })">
         <div class="flex justify-end gap-2 mb-4">
-            <Tooltip :text="hasOrderHistory ? 'Cannot delete a channel with order history.' : ''">
-                <Button variant="ghost" icon="trash" :disabled="hasOrderHistory" @click="deleting = true">Delete</Button>
+            <Tooltip :text="hasOrderHistory ? t('channels.delete_blocked') : ''">
+                <Button variant="ghost" icon="trash" :disabled="hasOrderHistory" @click="deleting = true">{{ t('common.delete') }}</Button>
             </Tooltip>
-            <Button variant="primary" icon="check" size="sm" :disabled="form.processing" @click="submit">Save</Button>
+            <Button variant="primary" icon="check" size="sm" :disabled="form.processing" @click="submit">{{ t('common.save') }}</Button>
         </div>
 
-        <Section title="Details">
+        <Section :title="t('channels.section_details')">
             <div class="grid sm:grid-cols-2 gap-3">
                 <div>
-                    <FieldLabel required>Name</FieldLabel>
+                    <FieldLabel required>{{ t('channels.field_name') }}</FieldLabel>
                     <TextInput v-model="form.name" :invalid="!!form.errors.name" />
                     <div v-if="form.errors.name" class="mt-1 text-[11px] text-danger">{{ form.errors.name }}</div>
                 </div>
                 <div>
-                    <FieldLabel hint="auto-slugged from name">Handle</FieldLabel>
+                    <FieldLabel :hint="t('channels.handle_hint')">{{ t('channels.field_handle') }}</FieldLabel>
                     <TextInput :model-value="channel.handle" disabled mono />
                 </div>
                 <div class="sm:col-span-2">
-                    <FieldLabel>URL</FieldLabel>
+                    <FieldLabel>{{ t('channels.field_url') }}</FieldLabel>
                     <TextInput v-model="form.url" type="url" :invalid="!!form.errors.url" placeholder="https://example.com" />
                     <div v-if="form.errors.url" class="mt-1 text-[11px] text-danger">{{ form.errors.url }}</div>
                 </div>
             </div>
         </Section>
 
-        <Section title="State">
+        <Section :title="t('channels.section_state')">
             <div class="flex flex-col gap-4">
                 <label class="flex items-center gap-3 cursor-pointer">
                     <Toggle :on="form.default" @toggle="form.default = !form.default" />
                     <div>
-                        <div class="text-[12.5px] text-ink-900 font-medium">Default channel</div>
-                        <div class="text-[11px] text-ink-500">Used when a request doesn't pick one explicitly.</div>
+                        <div class="text-[12.5px] text-ink-900 font-medium">{{ t('channels.default_channel') }}</div>
+                        <div class="text-[11px] text-ink-500">{{ t('channels.default_channel_hint') }}</div>
                     </div>
                 </label>
                 <div class="max-w-[220px]">
-                    <FieldLabel>Status</FieldLabel>
+                    <FieldLabel>{{ t('channels.field_status') }}</FieldLabel>
                     <Select v-model="form.status">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="active">{{ t('common.active') }}</option>
+                        <option value="inactive">{{ t('common.inactive') }}</option>
                     </Select>
                 </div>
             </div>
@@ -94,9 +97,9 @@ const confirmDestroy = (): void => {
 
     <ConfirmDialog
         v-model:open="deleting"
-        title="Delete channel?"
-        :description="`&quot;${channel.name}&quot; will be permanently removed.`"
-        confirm-label="Delete"
+        :title="t('channels.confirm_delete_title')"
+        :description="t('channels.confirm_delete_body', { name: channel.name })"
+        :confirm-label="t('common.delete')"
         tone="danger"
         @confirm="confirmDestroy"
     />

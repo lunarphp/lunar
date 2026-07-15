@@ -5,4 +5,8 @@ return [
     'settings' => 'تنظیمات',
     'toggle_theme' => 'تغییر تم',
     'toggle_sidebar' => 'تغییر نوار کناری',
+    'sales' => 'فروش',
+    'customers' => 'مشتریان',
+    'general' => 'عمومی',
+    'channels' => 'کانال‌ها',
 ];

@@ -56,17 +56,17 @@ class ChannelEditController
 
         $updatesChannel->execute($channel, $attributes);
 
-        return redirect()->route('panel.settings.channels.index')->with('success', 'Channel updated.');
+        return redirect()->route('panel.settings.channels.index')->with('success', __('panel::channels.flash_updated'));
     }
 
     public function destroy(Channel $channel, DeletesChannel $deletesChannel): RedirectResponse
     {
         try {
             $deletesChannel->execute($channel);
-        } catch (ChannelActionException $e) {
-            return back()->with('error', $e->getMessage());
+        } catch (ChannelActionException) {
+            return back()->with('error', __('panel::channels.delete_blocked'));
         }
 
-        return redirect()->route('panel.settings.channels.index')->with('success', 'Channel deleted.');
+        return redirect()->route('panel.settings.channels.index')->with('success', __('panel::channels.flash_deleted'));
     }
 }

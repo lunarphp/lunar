@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Button from '../../../components/Button.vue';
 import DataTable from '../../../components/DataTable.vue';
 import { type RowAction } from '../../../components/RowActions.vue';
@@ -32,6 +33,8 @@ const props = defineProps<{
     urls: { store: string };
 }>();
 
+const { t } = useI18n();
+
 const rowTo = (row: Record<string, unknown>): string => (row as unknown as Channel).urls.edit;
 
 const creating = ref(false);
@@ -59,9 +62,9 @@ const submitCreate = (): void => {
 </script>
 
 <template>
-    <SettingsShell title="Channels">
+    <SettingsShell :title="t('channels.title')">
         <div class="flex justify-end mb-4">
-            <Button variant="primary" icon="plus" size="sm" @click="openCreate">Create channel</Button>
+            <Button variant="primary" icon="plus" size="sm" @click="openCreate">{{ t('channels.create_channel') }}</Button>
         </div>
 
         <DataTable :columns="props.columns" :rows="channels" :row-to="rowTo" :row-actions="props.tableActions">
@@ -70,53 +73,53 @@ const submitCreate = (): void => {
             </template>
             <template #cell-name="{ row }">
                 <span class="text-[12.5px] text-ink-900 font-medium">{{ (row as unknown as Channel).name }}</span>
-                <StatusBadge v-if="(row as unknown as Channel).default" tone="sage" size="sm" class="ml-2">Default</StatusBadge>
+                <StatusBadge v-if="(row as unknown as Channel).default" tone="sage" size="sm" class="ml-2">{{ t('channels.default_badge') }}</StatusBadge>
             </template>
             <template #cell-url="{ row }">
                 <span class="text-xs text-ink-500 truncate block">{{ (row as unknown as Channel).url || '—' }}</span>
             </template>
             <template #cell-status="{ row }">
                 <StatusBadge :tone="(row as unknown as Channel).status === 'active' ? 'sage' : 'archived'" size="sm" dot>
-                    {{ (row as unknown as Channel).status === 'active' ? 'Active' : 'Inactive' }}
+                    {{ (row as unknown as Channel).status === 'active' ? t('common.active') : t('common.inactive') }}
                 </StatusBadge>
             </template>
             <template #empty>
-                <PageEmpty title="No channels" />
+                <PageEmpty :title="t('channels.empty_title')" />
             </template>
         </DataTable>
     </SettingsShell>
 
     <Dialog
         v-model:open="creating"
-        title="Create channel"
-        description="Channels represent surfaces where customers buy from your store."
+        :title="t('channels.create_channel')"
+        :description="t('channels.create_description')"
     >
         <div class="flex flex-col gap-3">
             <div>
-                <FieldLabel required>Name</FieldLabel>
-                <TextInput v-model="createForm.name" :invalid="!!createForm.errors.name" placeholder="e.g. Webstore" />
+                <FieldLabel required>{{ t('channels.field_name') }}</FieldLabel>
+                <TextInput v-model="createForm.name" :invalid="!!createForm.errors.name" :placeholder="t('channels.name_placeholder')" />
                 <div v-if="createForm.errors.name" class="mt-1 text-[11px] text-danger">{{ createForm.errors.name }}</div>
             </div>
             <div>
-                <FieldLabel>URL</FieldLabel>
+                <FieldLabel>{{ t('channels.field_url') }}</FieldLabel>
                 <TextInput v-model="createForm.url" type="url" :invalid="!!createForm.errors.url" placeholder="https://example.com" />
                 <div v-if="createForm.errors.url" class="mt-1 text-[11px] text-danger">{{ createForm.errors.url }}</div>
             </div>
             <div>
-                <FieldLabel>Status</FieldLabel>
+                <FieldLabel>{{ t('channels.field_status') }}</FieldLabel>
                 <Select v-model="createForm.status">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="active">{{ t('common.active') }}</option>
+                    <option value="inactive">{{ t('common.inactive') }}</option>
                 </Select>
             </div>
             <label class="flex items-center gap-3 cursor-pointer">
                 <Toggle :on="createForm.default" @toggle="createForm.default = !createForm.default" />
-                <span class="text-[12.5px] text-ink-900 font-medium">Default channel</span>
+                <span class="text-[12.5px] text-ink-900 font-medium">{{ t('channels.default_channel') }}</span>
             </label>
         </div>
         <template #footer>
-            <Button variant="ghost" @click="creating = false">Cancel</Button>
-            <Button variant="primary" :disabled="createForm.processing" @click="submitCreate">Create</Button>
+            <Button variant="ghost" @click="creating = false">{{ t('common.cancel') }}</Button>
+            <Button variant="primary" :disabled="createForm.processing" @click="submitCreate">{{ t('common.create') }}</Button>
         </template>
     </Dialog>
 </template>

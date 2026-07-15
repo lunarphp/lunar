@@ -5,4 +5,8 @@ return [
     'settings' => 'Beállítások',
     'toggle_theme' => 'Téma váltása',
     'toggle_sidebar' => 'Oldalsáv váltása',
+    'sales' => 'Értékesítés',
+    'customers' => 'Ügyfelek',
+    'general' => 'Általános',
+    'channels' => 'Csatornák',
 ];

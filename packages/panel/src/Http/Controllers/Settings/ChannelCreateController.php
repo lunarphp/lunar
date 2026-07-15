@@ -31,6 +31,6 @@ class ChannelCreateController
 
         $createsChannel->execute($attributes);
 
-        return redirect()->route('panel.settings.channels.index')->with('success', 'Channel created.');
+        return redirect()->route('panel.settings.channels.index')->with('success', __('panel::channels.flash_created'));
     }
 }

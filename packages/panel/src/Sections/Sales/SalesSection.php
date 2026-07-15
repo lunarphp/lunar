@@ -23,15 +23,15 @@ class SalesSection extends Section
 
     public function label(): string
     {
-        return 'Sales';
+        return __('panel::nav.sales');
     }
 
     public function navigation(NavigationRegistry $registry): void
     {
-        $registry->group('sales', 'Sales');
+        $registry->group('sales', __('panel::nav.sales'));
         $registry->addItem('sales', new NavigationItem(
             key: 'customers',
-            label: 'Customers',
+            label: __('panel::nav.customers'),
             icon: 'users',
             route: 'panel.customers.index',
         ));

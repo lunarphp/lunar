@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import DataTable from '../../components/DataTable.vue';
 import { type RowAction } from '../../components/RowActions.vue';
@@ -18,9 +19,11 @@ import TextInput from '../../components/TextInput.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import type { BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 
+const { t } = useI18n();
+
 const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Sales' },
-    { label: 'Customers', current: true },
+    { label: t('nav.sales') },
+    { label: t('nav.customers'), current: true },
 ];
 
 interface CustomerGroupOption {
@@ -77,10 +80,10 @@ const flashSuccess = computed(() => (usePage().props.flash as { success?: string
 // Sort options fold the backend's sort + direction pair into a single dropdown value,
 // matching the prototype's one-control sort.
 const sortOptions: { value: string; label: string; sort: string; direction: string }[] = [
-    { value: 'recent', label: 'Recently created', sort: 'created_at', direction: 'desc' },
-    { value: 'oldest', label: 'Oldest first', sort: 'created_at', direction: 'asc' },
-    { value: 'name', label: 'Name A→Z', sort: 'last_name', direction: 'asc' },
-    { value: 'company', label: 'Company A→Z', sort: 'company_name', direction: 'asc' },
+    { value: 'recent', label: t('customers.sort_recent'), sort: 'created_at', direction: 'desc' },
+    { value: 'oldest', label: t('customers.sort_oldest'), sort: 'created_at', direction: 'asc' },
+    { value: 'name', label: t('customers.sort_name'), sort: 'last_name', direction: 'asc' },
+    { value: 'company', label: t('customers.sort_company'), sort: 'company_name', direction: 'asc' },
 ];
 
 const q = ref(props.filters.q ?? '');
@@ -91,14 +94,14 @@ const sortKey = ref<string>(
 );
 
 const groupOptions = computed<FilterOption[]>(() => [
-    { value: 'all', label: 'All groups' },
+    { value: 'all', label: t('customers.all_groups') },
     ...props.customerGroups.map((group) => ({ value: group.id, label: group.name })),
 ]);
 
 const typeOptions: FilterOption[] = [
-    { value: 'all', label: 'All customers' },
-    { value: 'individual', label: 'Individual' },
-    { value: 'business', label: 'Business' },
+    { value: 'all', label: t('customers.type_all') },
+    { value: 'individual', label: t('customers.type_individual') },
+    { value: 'business', label: t('customers.type_business') },
 ];
 
 const reload = (): void => {
@@ -166,13 +169,13 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
         <div data-screen-label="Customers" class="contents">
             <Breadcrumbs :items="breadcrumbs">
                 <template #actions>
-                    <Button icon="help"><span class="hidden sm:inline">Docs</span></Button>
+                    <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
                 </template>
             </Breadcrumbs>
 
             <PageHeader
-                title="Customers"
-                description="Everyone who's registered or been invited to a B2B account. Manage groups and keep contact details current."
+                :title="t('customers.title')"
+                :description="t('customers.description')"
             >
                 <template #icon>
                     <div class="w-11 h-11 rounded-md overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700">
@@ -180,9 +183,9 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     </div>
                 </template>
                 <template #actions>
-                    <Button icon="download">Export</Button>
+                    <Button icon="download">{{ t('common.export') }}</Button>
                     <Link :href="urls.create">
-                        <Button variant="primary" icon="plus">Add customer</Button>
+                        <Button variant="primary" icon="plus">{{ t('customers.add_customer') }}</Button>
                     </Link>
                 </template>
             </PageHeader>
@@ -225,20 +228,20 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                 <div class="flex flex-wrap items-center gap-2 mb-4 min-h-[34px]">
                     <template v-if="!(hasBulkActions && selected.length)">
                         <div class="flex-1 max-w-[280px] min-w-[180px]">
-                            <TextInput v-model="q" placeholder="Search name, email, company…">
+                            <TextInput v-model="q" :placeholder="t('customers.search_placeholder')">
                                 <template #prefix><Icon name="search" cls="sm" /></template>
                             </TextInput>
                         </div>
-                        <FilterDropdown v-model="groupFilter" label="Group" icon="flag" :options="groupOptions" default-value="all" />
-                        <FilterDropdown v-model="typeFilter" label="Type" :options="typeOptions" default-value="all" />
-                        <FilterDropdown v-model="sortKey" label="Sort" :options="sortOptions" default-value="recent" />
+                        <FilterDropdown v-model="groupFilter" :label="t('customers.filter_group')" icon="flag" :options="groupOptions" default-value="all" />
+                        <FilterDropdown v-model="typeFilter" :label="t('customers.filter_type')" :options="typeOptions" default-value="all" />
+                        <FilterDropdown v-model="sortKey" :label="t('common.sort')" :options="sortOptions" default-value="recent" />
                         <div class="flex-1" />
-                        <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ customers.total }} of {{ totalCount }}</span>
+                        <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ t('customers.count_of', { shown: customers.total, total: totalCount }) }}</span>
                         <Button v-if="kpisDismissed" icon="chart" @click="kpisDismissed = false">
                             <span class="hidden sm:inline">Show KPIs</span>
                         </Button>
                         <Link :href="urls.create" class="sm:hidden">
-                            <Button variant="primary" icon="plus">New</Button>
+                            <Button variant="primary" icon="plus">{{ t('common.new') }}</Button>
                         </Link>
                     </template>
 
@@ -261,10 +264,10 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     @update:selected="selected = $event"
                 >
                     <template #empty>
-                        <PageEmpty title="No customers match these filters">
-                            Try clearing the search or filters to see more customers.
+                        <PageEmpty :title="t('customers.empty_title')">
+                            {{ t('customers.empty_body') }}
                             <div v-if="hasActiveFilters" class="mt-3">
-                                <Button @click="clearFilters">Clear filters</Button>
+                                <Button @click="clearFilters">{{ t('customers.clear_filters') }}</Button>
                             </div>
                         </PageEmpty>
                     </template>

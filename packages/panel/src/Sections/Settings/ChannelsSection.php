@@ -29,10 +29,10 @@ class ChannelsSection extends Section
 
     public function settingsNavigation(NavigationRegistry $registry): void
     {
-        $registry->group('general', 'General');
+        $registry->group('general', __('panel::nav.general'));
         $registry->addItem('general', new NavigationItem(
             key: 'channels',
-            label: 'Channels',
+            label: __('panel::nav.channels'),
             route: 'panel.settings.channels.index',
         ));
     }
