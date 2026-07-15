@@ -4,22 +4,18 @@ namespace Lunar\Panel\Http\Controllers\Customers;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Lunar\Core\Contracts\Actions\Customers\LinksCustomerUser;
 use Lunar\Core\Contracts\Actions\Customers\UnlinksCustomerUser;
 use Lunar\Core\Models\Customer;
+use Lunar\Panel\Http\Requests\Customers\LinkCustomerUserRequest;
 
 class CustomerUserController
 {
-    public function store(Request $request, Customer $customer, LinksCustomerUser $linksCustomerUser): RedirectResponse
+    public function store(LinkCustomerUserRequest $request, Customer $customer, LinksCustomerUser $linksCustomerUser): RedirectResponse
     {
-        $validated = $request->validate([
-            'email' => ['required', 'email'],
-        ]);
-
         try {
-            $linksCustomerUser->execute($customer, $validated['email']);
+            $linksCustomerUser->execute($customer, $request->validated()['email']);
         } catch (ModelNotFoundException) {
             throw ValidationException::withMessages([
                 'email' => __('panel::customers.link_user_not_found'),

@@ -3,15 +3,13 @@
 namespace Lunar\Panel\Http\Controllers\Settings;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Channels\DeletesChannel;
 use Lunar\Core\Contracts\Actions\Channels\UpdatesChannel;
 use Lunar\Core\Exceptions\ChannelActionException;
 use Lunar\Core\Models\Channel;
-use Lunar\Core\States\Channel\ChannelState;
+use Lunar\Panel\Http\Requests\Settings\ChannelRequest;
 
 class ChannelEditController
 {
@@ -35,26 +33,9 @@ class ChannelEditController
         ]);
     }
 
-    public function update(Request $request, Channel $channel, UpdatesChannel $updatesChannel): RedirectResponse
+    public function update(ChannelRequest $request, Channel $channel, UpdatesChannel $updatesChannel): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'url' => ['nullable', 'url', 'max:255'],
-            'default' => ['sometimes', 'boolean'],
-            'status' => ['nullable', Rule::in(ChannelState::getStateMapping()->keys()->all())],
-        ]);
-
-        $attributes = [
-            'name' => $validated['name'],
-            'url' => $validated['url'] ?? null,
-            'default' => (bool) ($validated['default'] ?? false),
-        ];
-
-        if (($validated['status'] ?? null) !== null) {
-            $attributes['status'] = $validated['status'];
-        }
-
-        $updatesChannel->execute($channel, $attributes);
+        $updatesChannel->execute($channel, $request->channelAttributes());
 
         return redirect()->route('panel.settings.channels.index')->with('success', __('panel::channels.flash_updated'));
     }

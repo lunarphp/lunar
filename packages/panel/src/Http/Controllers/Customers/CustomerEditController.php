@@ -3,8 +3,6 @@
 namespace Lunar\Panel\Http\Controllers\Customers;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Customers\DeletesCustomer;
@@ -13,6 +11,7 @@ use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Country;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Panel\Http\Requests\Customers\CustomerRequest;
 use Spatie\Activitylog\Models\Activity;
 
 class CustomerEditController
@@ -95,23 +94,12 @@ class CustomerEditController
         ]);
     }
 
-    public function update(Request $request, Customer $customer, UpdatesCustomer $updatesCustomer): RedirectResponse
+    public function update(CustomerRequest $request, Customer $customer, UpdatesCustomer $updatesCustomer): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['nullable', 'string', 'max:255'],
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'company_name' => ['nullable', 'string', 'max:255'],
-            'tax_identifier' => ['nullable', 'string', 'max:255'],
-            'account_ref' => ['nullable', 'string', 'max:255'],
-            'customer_group_ids' => ['nullable', 'array'],
-            'customer_group_ids.*' => ['integer', Rule::exists((new CustomerGroup)->getTable(), 'id')],
-        ]);
-
         $updatesCustomer->execute(
             $customer,
-            collect($validated)->except('customer_group_ids')->all(),
-            $validated['customer_group_ids'] ?? [],
+            $request->customerAttributes(),
+            $request->customerGroupIds(),
         );
 
         return back()->with('success', __('panel::customers.flash_updated'));

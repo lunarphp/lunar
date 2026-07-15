@@ -23,6 +23,22 @@ it('renders the example add-on own page for an authenticated admin', function ()
         ->assertInertia(fn (Assert $page) => $page->component('example-addon::Widgets/Index', false));
 });
 
+it('denies the example add-on routes to staff without the customers permission', function () {
+    $staff = Staff::factory()->create(['admin' => false]);
+
+    $this->actingAs($staff, 'staff');
+
+    $this->get('/panel/example-addon')->assertForbidden();
+    $this->get('/panel/example-addon/import')->assertForbidden();
+
+    $this->get('/panel')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('navigation.groups', fn ($groups) => ! collect($groups)
+                ->pluck('key')
+                ->contains('example-addon-group'))
+        );
+});
+
 it('shows the example add-on navigation to staff', function () {
     $staff = Staff::factory()->create(['admin' => true]);
 

@@ -268,8 +268,10 @@ Against the core `staff` guard (`Lunar\Core\Models\Staff`), configurable via
 
 ### Data layer and authorization
 
-Thin Inertia controllers with form requests. Mutations go through core's action/contract
-conventions — where a needed operation has no core action yet, the action is added to core
+Thin Inertia controllers with form requests for resource CRUD input (shared between store
+and update where the rules are identical); the small single-field auth and account flows
+validate inline, mirroring Laravel's own starter-kit convention. Mutations go through
+core's action/contract conventions — where a needed operation has no core action yet, the action is added to core
 (with contract and `execute()`) per the service-layer rules, not implemented panel-side.
 Authorization uses the existing permission manifest and the `Gate::after` admin override;
 the same permission keys drive navigation filtering, slot filtering, and route/policy
