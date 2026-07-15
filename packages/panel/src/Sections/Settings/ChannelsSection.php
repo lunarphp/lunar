@@ -14,6 +14,13 @@ use Lunar\Panel\Sections\Settings\Tables\ChannelsTableExtension;
 
 class ChannelsSection extends Section
 {
+    /**
+     * Manifest permission handle gating both the routes (via can: middleware)
+     * and the settings navigation item. Same handle as the Filament admin's
+     * ChannelResource.
+     */
+    private const CHANNELS_PERMISSION = 'settings:core';
+
     public function key(): string
     {
         return 'channels';
@@ -34,26 +41,23 @@ class ChannelsSection extends Section
             key: 'channels',
             label: __('panel::nav.channels'),
             route: 'panel.settings.channels.index',
+            permission: self::CHANNELS_PERMISSION,
         ));
     }
 
     public function routes(): ?Closure
     {
         return function (): void {
-            Route::get('settings/channels', [ChannelIndexController::class, 'index'])
-                ->name('panel.settings.channels.index');
-
-            Route::post('settings/channels', [ChannelCreateController::class, 'store'])
-                ->name('panel.settings.channels.store');
-
-            Route::get('settings/channels/{channel}/edit', [ChannelEditController::class, 'edit'])
-                ->name('panel.settings.channels.edit');
-
-            Route::put('settings/channels/{channel}', [ChannelEditController::class, 'update'])
-                ->name('panel.settings.channels.update');
-
-            Route::delete('settings/channels/{channel}', [ChannelEditController::class, 'destroy'])
-                ->name('panel.settings.channels.destroy');
+            Route::prefix('settings/channels')
+                ->name('panel.settings.channels.')
+                ->middleware('can:'.self::CHANNELS_PERMISSION)
+                ->group(function (): void {
+                    Route::get('/', [ChannelIndexController::class, 'index'])->name('index');
+                    Route::post('/', [ChannelCreateController::class, 'store'])->name('store');
+                    Route::get('/{channel}/edit', [ChannelEditController::class, 'edit'])->name('edit');
+                    Route::put('/{channel}', [ChannelEditController::class, 'update'])->name('update');
+                    Route::delete('/{channel}', [ChannelEditController::class, 'destroy'])->name('destroy');
+                });
         };
     }
 }

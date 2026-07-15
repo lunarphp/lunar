@@ -16,6 +16,13 @@ use Lunar\Panel\Sections\Section;
 
 class SalesSection extends Section
 {
+    /**
+     * Manifest permission handle gating both the routes (via can: middleware)
+     * and the navigation item, so what a user can see and what they can reach
+     * stay in lockstep. Same handle as the Filament admin's CustomerResource.
+     */
+    private const CUSTOMERS_PERMISSION = 'sales:manage-customers';
+
     public function key(): string
     {
         return 'sales';
@@ -34,6 +41,7 @@ class SalesSection extends Section
             label: __('panel::nav.customers'),
             icon: 'users',
             route: 'panel.customers.index',
+            permission: self::CUSTOMERS_PERMISSION,
         ));
     }
 
@@ -48,7 +56,7 @@ class SalesSection extends Section
     public function routes(): ?Closure
     {
         return function (): void {
-            Route::prefix('customers')->name('panel.customers.')->group(function (): void {
+            Route::prefix('customers')->name('panel.customers.')->middleware('can:'.self::CUSTOMERS_PERMISSION)->group(function (): void {
                 Route::get('/', [CustomerIndexController::class, 'index'])->name('index');
                 Route::get('/create', [CustomerCreateController::class, 'create'])->name('create');
                 Route::post('/', [CustomerCreateController::class, 'store'])->name('store');
