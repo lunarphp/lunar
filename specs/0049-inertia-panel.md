@@ -41,9 +41,9 @@ TypeScript extension runtime port from the architecture prototype largely as-is 
 this monorepo's conventions); every Vue component and screen is rebuilt from the design
 prototype. No visual element from the architecture prototype is carried over.
 
-Initial scope: authentication (including 2FA), the extension points (slots, actions,
-navigation), the settings layout, one CRUD implementation (Customers), and one settings
-section (Channels).
+Initial scope: authentication (including 2FA), the full extension surface (navigation,
+slots, table columns, row/bulk/page actions, and a shared ordering primitive), the settings
+layout, one CRUD implementation (Customers), and one settings section (Channels).
 
 ### Package structure
 
@@ -93,16 +93,45 @@ Ported from the architecture prototype, adapted to this monorepo's provider conv
 - **`SectionExtension`** (abstract) — same optional hooks plus `extends()` returning the
   target section key. Lets an add-on graft navigation, routes, table extensions, and slot
   entries onto an existing section. Unknown section keys log a warning rather than throw.
-- **`NavigationRegistry`** — groups, top-level items, and children with priorities. Items
-  carry `key`, `label`, `icon`, `route`, `exact`, `permission`, `children`. `toArray($user)`
+- **`NavigationRegistry`** — groups, top-level items, and children carrying a `Position`
+  (see Ordering below; `priority` stays as an ergonomic shortcut deriving
+  `Position::priority($priority)`). Items carry `key`, `label`, `icon`, `route`, `exact`,
+  `permission`, `children`. `toArray($user)`
   filters by `$user->can($permission)`, so the sidebar is permission-aware for free. A
   parallel settings-navigation registry drives the settings sidebar. The panel seeds the
   Dashboard item itself.
-- **`TableExtension`** — the "actions" extension point. Keyed by table id (e.g.
+- **`TableExtension`** — table-level extension point, keyed by table id (e.g.
   `customers.index`); exposes `columns()`, `filters()`, `actions()`, `bulkActions()`, and
-  `searchQuery()`. Column/filter/action classes may name a Vue component (resolved from the
-  JS registry) or fall back to generic renderers. A resolver merges all extensions for a
-  table id and the result ships to the page as Inertia props.
+  `searchQuery()`. Column/action classes may name a Vue component (resolved from the JS
+  registry) or fall back to generic renderers. `TableExtensionResolver` merges every
+  extension for a table id, orders the result (see Ordering below), and ships it as Inertia
+  props (`tableColumns`, `tableActions`, `tableBulkActions`). Index controllers pull columns
+  + row actions + bulk actions + search/filter queries through a shared
+  `ResolvesTableExtensions` concern (used by Customers and Channels), so table extension is a
+  cross-cutting pattern rather than one wired page. Row actions render in a per-row ellipsis
+  dropdown; bulk actions render in the selection toolbar shown when rows are checked (acting
+  on the selected row ids). First-party Edit/Delete are ordinary `TableAction` entries, so
+  first-party and add-on actions share one render path.
+- **`PageAction`** — header-level extension point covering both record pages ("Create
+  return" on an order, handed the record as `$context`) and listing pages ("Import Products"
+  above a table, handed `null`), unified into one abstract keyed by page id. Mirrors
+  `TableAction`'s shape (`key`/`label`/`icon`/`url`/`method`/`confirmationMessage`/
+  `permission`/`visible`) plus `primary()` to promote an action from the overflow ellipsis
+  to an always-visible inline button. Registered via `Section::pageActions()`, resolved by
+  `PageActionResolver` (same shape as `TableExtensionResolver`, no new registry class),
+  shared as a permission-filtered `pageActions` prop, and rendered by `<PageActions>` in the
+  page header.
+- **Ordering (`Position` + `OrderResolver`)** — every ordered entry (navigation items, table
+  columns, and all action types) exposes `position(): Position`
+  (`Lunar\Panel\Support\Position`), defaulting to `priority(50)`. `Position` supports coarse
+  `priority(int)` ordering and relative `before(key)`/`after(key)` anchors. A single shared
+  `OrderResolver` sorts by priority (stable, ties keep registration order), then repositions
+  anchored entries adjacent to their target key; a missing target falls back to priority and
+  logs a warning (consistent with the unknown-section-key behaviour above), and circular
+  anchors fall back to priority. The navigation registry, table resolver, and action
+  resolvers all order through it — one ordering model panel-wide — so an add-on can place
+  work precisely (e.g. a row action immediately after first-party `edit`) without guessing
+  priority numbers.
 - **Routes** — registered on `app booted` under the configured prefix: an unauthenticated
   group loading `routes/auth.php`, and an authenticated group (`Authenticate` middleware
   forcing the panel guard + `HandlePanelInertiaRequests`, root view `lunar-panel::app`)
@@ -135,6 +164,26 @@ table-extension pattern (and inspired by Statamic's Inertia panel):
   `window.LunarPanel.resolveExtensionComponent()`, passing slot props from PHP plus page
   context. Unresolvable components are skipped with a console warning.
 - Customers and Channels screens ship with a documented set of zones.
+
+### Actions and the shared page scaffold
+
+Actions default into an always-present "more actions" ellipsis dropdown — per table row
+(`<RowActions>`) and per page header (`<PageActions>`) — rendered only when it holds at
+least one action. This guarantees an add-on can always inject an action into any row or page
+without the first-party page having wired a slot for it; promoting an action to an inline
+button (`primary()`) is the opt-in exception, reserved for first-party primaries like "Add"
+or "Edit". Bulk actions are the one exception: they live in the selection toolbar and act on
+the checked row set, not the ellipsis.
+
+That guarantee is structural, not conventional. Every content page renders its header and
+body through a shared scaffold — `<PageHeader>` (or `<SettingsShell>` for settings pages) —
+that owns the primary buttons, the `<PageActions>` ellipsis, and a standard pair of slot
+zones (`{page}:main:before`, `{page}:main:after`) present on every page. A page cannot omit
+what it no longer hand-rolls. Three layers, in descending reliability: the scaffold itself
+(the actual guarantee); `tests/panel/Unit/PageScaffoldTest.php`, a convention test asserting
+every content page (auth/account pages exempt) is built through the scaffold, so a new page
+that skips it fails CI; and the panel package's `CLAUDE.md`, which documents the
+build-a-page convention for humans and Claude.
 
 ### Extension architecture — JS runtime
 
@@ -228,11 +277,13 @@ checks.
 ### Testing
 
 - New `panel` Pest testsuite in `phpunit.xml` (and the CI matrix): auth including the full
-  2FA lifecycle, registries (navigation/slot/table resolution, permission filtering,
-  section extension matching), Inertia page and prop assertions for Customers and Channels
-  CRUD, and a fixture add-on package inside the test suite proving an add-on can register a
-  section extension, navigation, slot entries, and table extensions without touching panel
-  source.
+  2FA lifecycle, registries (navigation/slot/table/action resolution, `OrderResolver`
+  priority/anchor/missing-target-fallback ordering, permission filtering, section extension
+  matching), the `PageScaffoldTest` convention test asserting every content page goes through
+  the shared scaffold, Inertia page and prop assertions for Customers and Channels CRUD, and
+  a fixture add-on package inside the test suite proving an add-on can register a section
+  extension, navigation, slot entries, table columns, row/bulk actions, and page actions
+  (including a `before`/`after`-anchored action) without touching panel source.
 - Vitest for the JS extension runtime (boot ordering, pending stash, page resolution
   fallbacks, component registry).
 - PHPStan and Pint as required by the monorepo pipeline.
@@ -242,7 +293,12 @@ checks.
 Inventory, Accounting, and Reviews screens (add-ons or prototype-only); the SEO product
 section (documented as the canonical slot example instead); Orders, Products, and all other
 resources; dashboard widgets; command palette; global search; dynamic attributes/field-type
-rendering; SSR; removal of the Filament admin.
+rendering; SSR; removal of the Filament admin. Table filters and `applyFilters()` (the other
+unwired `TableExtension` method) are also out of scope — filtering is a separate concern
+with its own UI affordances (chips, popovers, saved state); this foundation wires columns
+and actions only. An add-on **tabs** extension point for detail pages is deliberately not
+provided (see Alternatives): an add-on wanting an in-context view registers a route/page and
+links to it from a `PageAction`, or injects into a slot zone.
 
 ## Alternatives considered
 
@@ -261,6 +317,25 @@ rendering; SSR; removal of the Filament admin.
 - **Split panel + section packages now** (as the architecture prototype does with
   `catalog`) — rejected for the initial scope: one package with sections registered through
   the public API keeps the dogfooding benefit; splitting later is mechanical.
+- **Model page actions as generic slot zones instead of a typed `PageAction`** — rejected: a
+  slot is "render this arbitrary component here", right for open-ended content (the SEO
+  section) but wrong for something structurally always "a labelled, permission-gated,
+  optionally-confirmed link or button". Forcing every add-on to hand-roll a dropdown item as
+  a Vue component is the ergonomic regression `TableAction` already avoids for rows.
+- **Keep record-header and listing-header actions as two separate concepts** — rejected:
+  they are the same shape, differing only in whether the page has a record to pass as
+  context. One `PageAction` keyed by page id with an optional `$context` covers both with
+  less surface than two abstracts.
+- **A `tabs()` extension point letting add-ons register detail-page tabs** — rejected on
+  design grounds. Columns, row actions and bulk actions grow a list gracefully; a tab bar is
+  a bounded, curated structure where every addition costs shared horizontal space and
+  cognitive load (Filament's add-on tab sprawl is the cautionary case). The legitimate need
+  — an in-context view of a record — is served by registering a route/page and linking from
+  a `PageAction`, or injecting into a slot zone. It can be added later, additively, if real
+  demand appears.
+- **Invent a parallel `priority`/`before`/`after` ordering triple for actions** — rejected:
+  the panel already ships `Position` for columns, so one shared `Position` + `OrderResolver`
+  serves navigation, columns and every action type rather than a per-extension-point scheme.
 
 ## Migration impact
 
@@ -277,9 +352,14 @@ rendering; SSR; removal of the Filament admin.
 - **Filament / admin impact**: none beyond the config rename; both panels run side by side
   on different route prefixes sharing the staff guard and permission manifest.
 - **Public contract surface**: this spec introduces new contract surface — the `Panel`
-  facade, `Section`/`SectionExtension`, the registries, `window.LunarPanel`, the Vite
-  plugin, and the slot zone names. Zone names and registry APIs are treated as contract
-  from first release.
+  facade, `Section`/`SectionExtension` (including the `pageActions()` hook), the registries,
+  the `TableAction`/`TableBulkAction`/`PageAction` abstracts and their resolvers,
+  `Lunar\Panel\Support\Position` + `OrderResolver`, the Inertia props (`navigation`,
+  `settingsNavigation`, slot entries, `tableColumns`/`tableActions`/`tableBulkActions`,
+  `pageActions`), the standard `{page}:main:before`/`{page}:main:after` slot zones,
+  `window.LunarPanel`, the `@lunarphp/panel` and `@lunarphp/panel-vite-plugin` npm packages,
+  and the slot zone naming scheme. Zone names, registry APIs, and action abstracts are
+  treated as contract from first release.
 
 ## Open questions
 
@@ -326,3 +406,29 @@ rendering; SSR; removal of the Filament admin.
   edit/delete with order-history guard.
 - [x] Slice 8 — Example add-on + extension guide: a minimal reference add-on exercising
   pages, navigation, slots, and table extensions; developer documentation.
+- [x] Slice 9 — Ordering primitive: `Lunar\Panel\Support\Position` and the shared
+  `OrderResolver` (priority, then `before`/`after` anchors; missing-target fallback with
+  warning; circular-anchor guard), unit-tested. Navigation retrofitted to `Position` and its
+  sorting routed through `OrderResolver`; `position()` added to table column/action types.
+- [x] Slice 10 — Wire `TableAction`/`TableBulkAction` into Customers: resolver calls,
+  `tableActions`/`tableBulkActions` props, row actions collapsed into the per-row ellipsis,
+  a `BulkActionsToolbar` driven by props, first-party Edit/Delete as registered actions.
+  The merged first-party + add-on column and action sets are ordered through `OrderResolver`,
+  finally honouring `position()`.
+- [x] Slice 11 — Extract the resolve-and-share sequence into the `ResolvesTableExtensions`
+  concern and apply it to Channels, proving the table pattern is cross-cutting.
+- [x] Slice 12 — `PageAction` abstract (primary tier, optional `$context`),
+  `PageActionResolver`, `Section::pageActions()` hook, `pageActions` prop, and a
+  `PageActions` header component (primary buttons + always-present overflow ellipsis).
+- [x] Slice 13 — Shared page scaffold: `PageHeader`/`SettingsShell` owning the primary
+  buttons, `<PageActions>` ellipsis, and standard `{page}:main:before`/`{page}:main:after`
+  zones. Every content page refactored onto it; `PageScaffoldTest` convention test added;
+  page-building convention documented in the panel package `CLAUDE.md`.
+- [x] Slice 14 — Extend the example add-on to register one of each — a row action, a bulk
+  action, a record-page action, a listing-page action, and a `:main`-zone slot entry, at
+  least one placed with a `before`/`after` anchor — proving every action extension point,
+  relative ordering, and panel-wide slot zones end to end.
+- [x] Slice 15 — Publish the add-on-facing frontend surface: `@lunarphp/panel` (layout/page
+  components, types generated via `build:types`) and `@lunarphp/panel-vite-plugin` as npm
+  packages under a monorepo workspace; promote the example add-on to a real
+  `packages/panel-addon-example` package (composer autoload, split matrix, self.version).
