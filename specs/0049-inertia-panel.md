@@ -60,7 +60,6 @@ packages/panel/
     Slots/                    SlotRegistry, Slot
     Tables/                   TableExtension, TableColumn/Filter/Action/BulkAction, resolver
     Http/                     controllers, middleware, form requests
-    Concerns/                 RegistersPanelAssets
     Console/Commands/         lunar:panel:link
   routes/                     auth.php, web.php
   resources/
@@ -83,7 +82,8 @@ Ported from the architecture prototype, adapted to this monorepo's provider conv
 (`$configFiles` array + `mergeConfigFrom`, no third-party package-tools dependency).
 
 - **`PanelManager`** — a container singleton behind the `Panel` facade. Registration hub for
-  sections, section extensions, slots, add-on Vite modules, and plain scripts/styles.
+  sections, section extensions, slots, and add-on Vite modules (the single asset pipeline —
+  there is deliberately no separate plain script/style registration).
   Resolves the panel guard. Registration happens in add-on service providers' `boot()`;
   processing is deferred to `$app->booted()` so registration order never matters.
 - **`Section`** (abstract) — a cohesive admin area. Declares `key()` and optionally
@@ -204,9 +204,10 @@ Ported from the architecture prototype:
   globals, which the panel's own `app.ts` publishes at startup. Add-ons compile once,
   publish prebuilt bundles, and the root Blade view emits a `@vite` tag per registered
   module (own build directory and hot file, so add-on HMR works in dev).
-- **Assets** — panel assets publish to `public/vendor/lunar-panel/build`; add-ons to
-  `public/vendor/lunar-panel/{key}` via the `RegistersPanelAssets` trait;
-  `php artisan lunar:panel:link` symlinks instead of copying for local development.
+- **Assets** — panel assets publish to `public/vendor/lunar-panel/build`; an add-on serves
+  its compiled build from `public/vendor/lunar-panel/{key}` (the `buildDirectory` it passes
+  to `PanelManager::vite()`); `php artisan lunar:panel:link` symlinks a registered
+  `__buildSourcePath` there instead of copying for local development.
 - **i18n** — vue-i18n; PHP lang groups served as JSON per locale from a translations
   endpoint, cached in localStorage keyed by an mtime-derived version hash. Add-ons can also
   push messages at runtime via `registerTranslations()`.

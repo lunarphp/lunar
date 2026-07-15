@@ -133,3 +133,23 @@ it('registers the example add-on vite module', function () {
     expect($vites)->toHaveKey('example-addon')
         ->and($vites['example-addon']['buildDirectory'])->toBe('vendor/lunar-panel/example-addon');
 });
+
+it('symlinks the example add-on build directory via lunar:panel:link', function () {
+    $target = public_path('vendor/lunar-panel/example-addon');
+
+    if (is_link($target)) {
+        unlink($target);
+    }
+
+    try {
+        $this->artisan('lunar:panel:link')->assertSuccessful();
+
+        expect(is_link($target))->toBeTrue()
+            ->and(readlink($target))->toBe(dirname(__DIR__, 3).'/packages/panel-addon-example/build');
+    } finally {
+        // The Testbench skeleton's public/ is shared across runs; leave it clean.
+        if (is_link($target)) {
+            unlink($target);
+        }
+    }
+});

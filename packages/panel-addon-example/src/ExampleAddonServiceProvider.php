@@ -16,6 +16,9 @@ class ExampleAddonServiceProvider extends ServiceProvider
             'input' => 'resources/js/addon.ts',
             'hotFile' => null,
             'buildDirectory' => 'vendor/lunar-panel/example-addon',
+            // Lets `php artisan lunar:panel:link` symlink this package's
+            // compiled build/ into public/vendor/lunar-panel/example-addon.
+            '__buildSourcePath' => dirname(__DIR__).'/build',
         ]);
     }
 }

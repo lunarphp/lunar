@@ -17,15 +17,6 @@ use Lunar\Panel\Tables\Resolvers\TableExtensionResolver;
 
 class PanelManager
 {
-    /** @var array<string, string> */
-    protected array $scripts = [];
-
-    /** @var array<string, string> */
-    protected array $styles = [];
-
-    /** @var array<string, string> */
-    protected array $assets = [];
-
     /**
      * Vite configurations keyed by module name.
      *
@@ -224,22 +215,10 @@ class PanelManager
         return $this->routeRegistrars;
     }
 
-    public function registerAssets(string $key, string $buildPath): static
-    {
-        $this->assets[$key] = $buildPath;
-        $this->scripts[$key] = asset("vendor/lunar-panel/{$key}/app.js");
-
-        return $this;
-    }
-
-    /** @return array<string, string> */
-    public function assets(): array
-    {
-        return $this->assets;
-    }
-
     /**
-     * Register a Vite configuration for a panel module.
+     * Register a Vite configuration for a panel module. The optional
+     * __buildSourcePath points at the module's compiled build directory on
+     * disk so `lunar:panel:link` can symlink it into public/.
      *
      * @param  array{input?: string|string[], hotFile?: string|null, buildDirectory?: string, __buildSourcePath?: string}|string|string[]  $config
      */
@@ -278,32 +257,6 @@ class PanelManager
     public function viteBuildPaths(): array
     {
         return $this->viteBuildPaths;
-    }
-
-    public function registerScript(string $name, string $path): static
-    {
-        $this->scripts[$name] = $path;
-
-        return $this;
-    }
-
-    public function registerStyle(string $name, string $path): static
-    {
-        $this->styles[$name] = $path;
-
-        return $this;
-    }
-
-    /** @return array<string, string> */
-    public function scripts(): array
-    {
-        return $this->scripts;
-    }
-
-    /** @return array<string, string> */
-    public function styles(): array
-    {
-        return $this->styles;
     }
 
     public function path(): string

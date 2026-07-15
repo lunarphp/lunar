@@ -20,20 +20,12 @@
             rel="stylesheet"
         />
 
-        @foreach (app(\Lunar\Panel\PanelManager::class)->styles() as $name => $path)
-            <link rel="stylesheet" href="{{ $path }}" />
-        @endforeach
-
         @php(app(\Illuminate\Foundation\Vite::class)->useHotFile(public_path('vendor/lunar-panel/build/hot')))
         @vite(['resources/css/app.css', 'resources/js/app.ts'], 'vendor/lunar-panel/build')
         @inertiaHead
     </head>
     <body class="font-sans text-[13px] leading-[1.45] antialiased [font-feature-settings:'cv11','ss01']">
         @inertia
-
-        @foreach (app(\Lunar\Panel\PanelManager::class)->scripts() as $name => $path)
-            <script src="{{ $path }}" defer></script>
-        @endforeach
 
         {{-- Clone per module: hot file and build directory must never leak between
              modules, or in from the panel's own hot file configured above. A module

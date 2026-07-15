@@ -81,6 +81,9 @@ class ExampleAddonServiceProvider extends ServiceProvider
             'input' => 'resources/js/addon.ts',
             'hotFile' => null,
             'buildDirectory' => 'vendor/lunar-panel/example-addon',
+            // Lets `php artisan lunar:panel:link` symlink this package's
+            // compiled build/ into public/vendor/lunar-panel/example-addon.
+            '__buildSourcePath' => dirname(__DIR__).'/build',
         ]);
     }
 }
@@ -355,9 +358,11 @@ that genuinely needs the mounted app, not for registration.
    via `composer.json`'s `extra.laravel.providers`, or add it manually).
 3. `npm install` inside this package, then `npm run build`. This produces a
    compiled IIFE + manifest in `build/`.
-4. Copy (or symlink) `build/` to `public/vendor/lunar-panel/example-addon/` in
-   the host app — matching the `buildDirectory` passed to
-   `PanelManager::vite()` in `ExampleAddonServiceProvider::boot()`.
+4. `php artisan lunar:panel:link` symlinks `build/` to
+   `public/vendor/lunar-panel/example-addon/` in the host app (the command
+   reads the `__buildSourcePath` passed to `PanelManager::vite()` in
+   `ExampleAddonServiceProvider::boot()`). Prefer copying the directory to
+   the same location if your deployment can't serve symlinked paths.
 5. The panel's `app.blade.php` loops `PanelManager::registeredVites()` and
    emits a `<script>`/`<link>` tag for every registered module automatically —
    no panel changes required.
