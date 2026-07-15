@@ -7,10 +7,11 @@
 // live Inertia instance rather than a bundled second copy.
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { Breadcrumbs, PageHeader, PageZone, Button, SideCard, StatusBadge } from '@lunarphp/panel';
+import { Breadcrumbs, DataTable, PageHeader, PageZone, Button, SideCard, StatusBadge } from '@lunarphp/panel';
 
 defineProps<{
     message?: string;
+    widgets?: Record<string, unknown>[];
 }>();
 
 const breadcrumbs = [
@@ -20,6 +21,21 @@ const breadcrumbs = [
 
 // Shared props the panel middleware provides to every page, add-on pages included.
 const panelName = computed(() => (usePage().props.panel as { name?: string } | undefined)?.name ?? 'Lunar');
+
+const flashSuccess = computed(() => (usePage().props.flash as { success?: string } | undefined)?.success);
+
+// Same column shape first-party pages use: key/label plus optional width and align.
+const columns = [
+    { key: 'name', label: 'Widget', width: 'minmax(0,1.4fr)' },
+    { key: 'status', label: 'Status' },
+    { key: 'sales', label: 'Sales (30d)', width: '110px', align: 'right' as const },
+];
+
+// Static descriptors; each row's target URL comes from its server-provided
+// _actions map, so an action only renders on rows that resolved a URL for it.
+const rowActions = [
+    { key: 'ping', label: 'Ping', icon: 'refresh', method: 'get', primary: false },
+];
 </script>
 
 <template>
@@ -38,9 +54,26 @@ const panelName = computed(() => (usePage().props.panel as { name?: string } | u
         <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
             <PageZone region="main" position="before" />
 
+            <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
+                {{ flashSuccess }}
+            </div>
+
             <p class="text-[13px] text-ink-700">
                 {{ message ?? 'This page is served by a separately-compiled add-on package.' }}
             </p>
+
+            <div class="mt-5">
+                <DataTable
+                    :columns="columns"
+                    :rows="widgets ?? []"
+                    :row-actions="rowActions"
+                    empty-text="No widgets yet"
+                >
+                    <template #cell-status="{ value }">
+                        <StatusBadge :tone="value === 'active' ? 'sage' : 'archived'" size="sm">{{ value }}</StatusBadge>
+                    </template>
+                </DataTable>
+            </div>
 
             <SideCard title="Reusing panel components" class="mt-5 max-w-md">
                 <p class="text-[12.5px] text-ink-700">

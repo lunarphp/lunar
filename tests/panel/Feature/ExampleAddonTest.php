@@ -20,7 +20,21 @@ it('renders the example add-on own page for an authenticated admin', function ()
         // shouldExist: false — the component is resolved client-side via
         // window.LunarPanel.registerPages(), not a namespaced Blade view, so
         // Inertia's testing view-finder has no on-disk path to check.
-        ->assertInertia(fn (Assert $page) => $page->component('example-addon::Widgets/Index', false));
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('example-addon::Widgets/Index', false)
+            // The demo table rows, each carrying its per-row action URL map.
+            ->has('widgets', 3)
+            ->where('widgets.0._actions.ping', route('panel.example-addon.widgets.ping', 1)));
+});
+
+it('flashes back from the widget table row action', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    $this->actingAs($staff, 'staff')
+        ->from('/panel/example-addon')
+        ->get(route('panel.example-addon.widgets.ping', 2))
+        ->assertRedirect('/panel/example-addon')
+        ->assertSessionHas('success');
 });
 
 it('denies the example add-on routes to staff without the customers permission', function () {

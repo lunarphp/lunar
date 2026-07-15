@@ -47,9 +47,29 @@ class ExampleSection extends Section
     {
         return function (): void {
             Route::middleware('can:'.self::PERMISSION)->group(function (): void {
-                Route::get('example-addon', fn () => Inertia::render('example-addon::Widgets/Index', [
-                    'message' => 'Hello from the example add-on! This page was registered at runtime via window.LunarPanel.registerPages(), not compiled into the panel.',
-                ]))->name('panel.example-addon.index');
+                Route::get('example-addon', function () {
+                    // Static demo rows shaped the way a table page shares them: plain
+                    // attributes for the columns, plus an _actions map of per-row URLs
+                    // the ellipsis actions dispatch to. A real add-on queries its own
+                    // models here.
+                    $widgets = collect([
+                        ['id' => 1, 'name' => 'Anti-Gravity Widget', 'status' => 'active', 'sales' => 132],
+                        ['id' => 2, 'name' => 'Self-Sealing Stem Bolt', 'status' => 'active', 'sales' => 87],
+                        ['id' => 3, 'name' => 'Left-Handed Hammer', 'status' => 'archived', 'sales' => 12],
+                    ])->map(fn (array $widget) => [
+                        ...$widget,
+                        '_actions' => ['ping' => route('panel.example-addon.widgets.ping', $widget['id'])],
+                    ])->all();
+
+                    return Inertia::render('example-addon::Widgets/Index', [
+                        'message' => 'Hello from the example add-on! This page was registered at runtime via window.LunarPanel.registerPages(), not compiled into the panel.',
+                        'widgets' => $widgets,
+                    ]);
+                })->name('panel.example-addon.index');
+
+                Route::get('example-addon/widgets/{widget}/ping', fn (int $widget) => back()
+                    ->with('success', "Widget {$widget} pinged (example table row action)."))
+                    ->name('panel.example-addon.widgets.ping');
 
                 // Demo endpoints the injected actions target. Each just flashes back
                 // so the add-on stays side-effect free.

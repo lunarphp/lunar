@@ -196,6 +196,42 @@ the same mechanism this package uses against the first-party Customers page.
 panel's own Inertia instance (`window.InertiaVue3`) — the add-on never bundles
 a second copy, which would read uninitialised state.
 
+### Rendering a data table
+
+`DataTable` is the same component every first-party listing page uses. The
+add-on's route shares rows as a plain Inertia prop, where each row carries its
+column values plus an `_actions` map of per-row URLs (see the widgets route in
+`src/ExampleSection.php`); the page passes the static action descriptors — an
+action only renders on rows whose `_actions` map resolved a URL for its key.
+From `resources/js/pages/Widgets/Index.vue`:
+
+```vue
+<script setup lang="ts">
+const columns = [
+    { key: 'name', label: 'Widget', width: 'minmax(0,1.4fr)' },
+    { key: 'status', label: 'Status' },
+    { key: 'sales', label: 'Sales (30d)', width: '110px', align: 'right' as const },
+];
+
+const rowActions = [
+    { key: 'ping', label: 'Ping', icon: 'refresh', method: 'get', primary: false },
+];
+</script>
+
+<template>
+    <DataTable :columns="columns" :rows="widgets ?? []" :row-actions="rowActions" empty-text="No widgets yet">
+        <template #cell-status="{ value }">
+            <StatusBadge :tone="value === 'active' ? 'sage' : 'archived'" size="sm">{{ value }}</StatusBadge>
+        </template>
+    </DataTable>
+</template>
+```
+
+A named `#cell-{key}` slot overrides how that column renders each cell (the
+status badge above); columns without a slot render their raw row value as
+text. This is your own page's table — to add columns or actions to a
+*first-party* table instead, use a `TableExtension` (below).
+
 ## Registering a slot and the zone-naming convention
 
 Slots let an add-on inject a component into a specific spot on a page it
