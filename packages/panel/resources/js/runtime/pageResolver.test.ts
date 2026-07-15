@@ -62,4 +62,42 @@ describe('createPageResolver', () => {
 
         await expect(pending).rejects.toThrow('Panel page not found: Missing');
     });
+
+    it('auto-applies the registered default layout to add-on pages', async () => {
+        const runtime = new LunarPanelRuntime();
+        const layout = testPage();
+        runtime.registerLayout('default', layout);
+        const page = testPage();
+        runtime.registerPages({ Widgets: page });
+
+        const resolve = createPageResolver(runtime, {});
+        const resolved = (await resolve('Widgets')) as DefineComponent & { layout?: unknown };
+
+        expect(resolved.layout).toBe(layout);
+    });
+
+    it('does not apply the default layout to local (first-party) pages', async () => {
+        const runtime = new LunarPanelRuntime();
+        runtime.registerLayout('default', testPage());
+        const page = testPage() as DefineComponent & { layout?: unknown };
+
+        const resolve = createPageResolver(runtime, { './pages/Dashboard.vue': page });
+        const resolved = (await resolve('Dashboard')) as DefineComponent & { layout?: unknown };
+
+        expect(resolved.layout).toBeUndefined();
+    });
+
+    it('leaves an add-on page that sets its own layout untouched', async () => {
+        const runtime = new LunarPanelRuntime();
+        runtime.registerLayout('default', testPage());
+        const ownLayout = testPage();
+        const page = testPage() as DefineComponent & { layout?: unknown };
+        page.layout = ownLayout;
+        runtime.registerPages({ Widgets: page });
+
+        const resolve = createPageResolver(runtime, {});
+        const resolved = (await resolve('Widgets')) as DefineComponent & { layout?: unknown };
+
+        expect(resolved.layout).toBe(ownLayout);
+    });
 });

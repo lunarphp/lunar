@@ -5,6 +5,10 @@ separately-versioned, separately-compiled Composer + npm package proving that
 the panel's runtime extension mechanism works end-to-end, without the panel
 itself needing to recompile.
 
+It doubles as a starter template — fork it with
+`composer create-project lunarphp/panel-addon-example my-addon` and replace the
+example page, slot, and column with your own.
+
 Every code snippet below is copied verbatim from this package's own source —
 read the linked file if you want the full context.
 
@@ -119,6 +123,54 @@ component name is namespaced (`example-addon::Widgets/Index`) to match the
 key the add-on's JS registers the page under — see
 [Compiling the add-on bundle](#compiling-the-add-on-bundle-with-vite) below.
 
+### Using the standard page layout
+
+An add-on page should look like a first-party page. Two things make that work
+without bundling any panel UI:
+
+- **The sidebar shell is auto-applied.** The panel wraps every add-on page in
+  its `PanelLayout` (the persistent layout), so the page renders inside the real
+  panel chrome — nav sidebar, mobile drawer, collapse toggle — without importing
+  or wrapping anything.
+- **Panel components are imported from `@lunarphp/panel`.** The panel exposes a
+  page-building set at runtime — layout/chrome (`PageHeader`, `PageZone`,
+  `Breadcrumbs`, `SettingsShell`), data (`DataTable`, `Pagination`, `PageEmpty`,
+  `StatusBadge`), filters/stats (`FilterDropdown`, `KpiCard`), form inputs
+  (`TextInput`, `Select`, `Checkbox`, …), overlays (`Dialog`, `Slideout`,
+  `ConfirmDialog`, `Tooltip`, `SideCard`, `Tabs`), and `Button`/`Icon`. The add-on's
+  vite plugin externalises the `@lunarphp/panel` import to the panel's own components
+  (`window.LunarPanelUI`) exactly the way it externalises `vue`, so nothing is
+  duplicated. `resources/js/pages/Widgets/Index.vue`:
+
+```vue
+<script setup lang="ts">
+import { PageHeader, PageZone, Button } from '@lunarphp/panel';
+
+defineProps<{ message?: string }>();
+</script>
+
+<template>
+    <div data-screen-label="Example Add-on" class="contents">
+        <PageHeader title="Example Add-on" description="…">
+            <template #actions>
+                <Button variant="primary" icon="plus">Example action</Button>
+            </template>
+        </PageHeader>
+
+        <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
+            <PageZone region="main" position="before" />
+            <p class="text-[13px] text-ink-700">{{ message }}</p>
+            <PageZone region="main" position="after" />
+        </div>
+    </div>
+</template>
+```
+
+`PageHeader` carries the shared page-action ellipsis, so header actions an
+add-on (or the host) registers for this page appear automatically. `PageZone`
+declares slot zones on the page you own, so other add-ons can inject into it —
+the same mechanism this package uses against the first-party Customers page.
+
 ## Registering a slot and the zone-naming convention
 
 Slots let an add-on inject a component into a specific spot on a page it
@@ -221,13 +273,22 @@ column needs a computed value (e.g. a `withCount()`).
         "dev": "vite"
     },
     "devDependencies": {
-        "@lunarphp/panel-vite-plugin": "file:../../packages/panel/resources/package",
+        "@lunarphp/panel": "^0.1.0",
+        "@lunarphp/panel-vite-plugin": "^0.1.0",
         "@vitejs/plugin-vue": "^5.2.0",
         "vite": "^6.0.0",
         "vue": "^3.5.13"
     }
 }
 ```
+
+`@lunarphp/panel` (the panel's layout/page components) and
+`@lunarphp/panel-vite-plugin` (the build preset) are published to npm, so a
+forked add-on installs them from the registry like any dependency — no paths
+into the panel's source. (Inside the Lunar monorepo itself, the root
+`package.json` declares an npm workspace that resolves these two names to the
+local package directories, so this example builds against the in-development
+source without changing the version specifiers above.)
 
 ```js
 import { defineConfig } from 'vite';
@@ -251,10 +312,11 @@ export default defineConfig({
 ```
 
 `@lunarphp/panel-vite-plugin` (the panel's `packages/panel/resources/package/vite-plugin.js`)
-forces `output.format: 'iife'` and externalises `vue`, mapping it to the
-`window.Vue` global the panel's own `app.ts` publishes at startup. That is
-what lets the add-on's bundle call into the panel's Vue runtime instead of
-shipping a second copy of Vue.
+forces `output.format: 'iife'` and externalises both `vue` (to the `window.Vue`
+global) and `@lunarphp/panel` (to the `window.LunarPanelUI` global), each
+published by the panel's own `app.ts` at startup. That is what lets the add-on's
+bundle call into the panel's Vue runtime and reuse its layout/page components
+instead of shipping second copies.
 
 The add-on's entry point (`resources/js/addon.ts`) registers its page and
 slot components:
@@ -263,31 +325,32 @@ slot components:
 import WidgetsIndexPage from './pages/Widgets/Index.vue';
 import InfoBannerComponent from './components/InfoBanner.vue';
 
-// window.LunarPanel is published by the panel's app.ts before it mounts. Add-on
-// script tags may execute before or after that happens, so wait for `booting()`
-// rather than registering immediately.
-window.LunarPanel.booting(() => {
-    window.LunarPanel.registerPages({
-        'example-addon::Widgets/Index': WidgetsIndexPage,
-    });
+// Register eagerly. The panel's app.ts publishes window.LunarPanel and is emitted
+// before any add-on script, so it is always present here. Registration MUST happen
+// before the panel's first render — the panel holds its initial mount until
+// DOMContentLoaded (after which all add-on scripts have run), so anything registered
+// at the top level of an add-on bundle is guaranteed to be in place in time.
+window.LunarPanel.registerPages({
+    'example-addon::Widgets/Index': WidgetsIndexPage,
+});
 
-    window.LunarPanel.registerComponents('example-addon', {
-        InfoBanner: InfoBannerComponent,
-    });
+window.LunarPanel.registerComponents('example-addon', {
+    InfoBanner: InfoBannerComponent,
 });
 ```
 
-`window.LunarPanel.booting(callback)` is what makes this ordering-independent:
-whether the panel's own `app.ts` or the add-on's compiled script tag executes
-first (script tag order in the rendered HTML depends on registration order,
-not load order), `booting()` either queues the callback (if the panel hasn't
-mounted yet) or runs it immediately (if it has). An add-on never needs to
-coordinate `<script>` tag ordering with the panel or with other add-ons.
+Register pages, components, layouts, and translations at the top level like this —
+never inside `window.LunarPanel.booting()`. `booting()` callbacks run *after* the
+panel has mounted, which is too late: a page or slot component registered there is
+missing when Inertia resolves and first renders it on a hard load, and because
+registration is not reactive the slot never recovers. Reserve `booting()` for work
+that genuinely needs the mounted app, not for registration.
 
 ## Installing into a host app
 
-1. `composer require lunarphp/panel-addon-example` (path-repo it locally
-   while developing; this example isn't published).
+1. `composer require lunarphp/panel-addon-example` to install it as-is, or
+   `composer create-project lunarphp/panel-addon-example my-addon` to fork it
+   as the starting point for your own add-on.
 2. Register `LunarPanelExample\ExampleAddonServiceProvider` (auto-discovered
    via `composer.json`'s `extra.laravel.providers`, or add it manually).
 3. `npm install` inside this package, then `npm run build`. This produces a

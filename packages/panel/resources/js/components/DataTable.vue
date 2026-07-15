@@ -41,7 +41,11 @@ const gridTemplate = computed(() => {
     tracks.push(...props.columns.map((c) => c.width || 'minmax(0, 1fr)'));
 
     if (hasRowActions.value) {
-        tracks.push('minmax(0, max-content)');
+        // Fixed, not content-based: the header and each row are separate grids, and the
+        // actions cell holds the 26px trigger in rows but an empty placeholder in the
+        // header. A `max-content` track would then resolve wider in rows than in the
+        // header, shifting every flexible column out of alignment.
+        tracks.push('2rem');
     }
 
     return tracks.join(' ');
@@ -75,7 +79,7 @@ const linkFor = (row: Record<string, unknown>): string | null => (props.rowTo ? 
             class="grid items-center gap-3 px-3.5 py-2.5 bg-surface-2 border-b border-line text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium"
             :style="{ gridTemplateColumns: gridTemplate }"
         >
-            <div v-if="selectable">
+            <div v-if="selectable" class="flex items-center">
                 <Checkbox
                     :model-value="allSelected"
                     :indeterminate="someSelected && !allSelected"
@@ -111,7 +115,7 @@ const linkFor = (row: Record<string, unknown>): string | null => (props.rowTo ? 
             ]"
             :style="{ gridTemplateColumns: gridTemplate }"
         >
-            <div v-if="selectable" @click.stop.prevent>
+            <div v-if="selectable" class="flex items-center" @click.stop.prevent>
                 <Checkbox
                     :model-value="selectedSet.has(keyOf(row))"
                     :aria-label="`Select row`"

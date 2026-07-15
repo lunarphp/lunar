@@ -1,0 +1,10 @@
+{
+    "name": "@lunarphp/panel-workspace",
+    "private": true,
+    "description": "npm workspace root for the panel's publishable JS packages and the add-on example, so they resolve each other locally during monorepo development. Not published.",
+    "workspaces": [
+        "packages/panel/resources/package",
+        "packages/panel/resources/panel-package",
+        "packages/panel-addon-example"
+    ]
+}

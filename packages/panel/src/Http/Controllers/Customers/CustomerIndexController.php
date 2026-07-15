@@ -53,6 +53,8 @@ class CustomerIndexController
                 'customerGroups',
                 fn ($query) => $query->where($query->getModel()->qualifyColumn('id'), $request->integer('customer_group_id')),
             ))
+            ->when($request->string('type')->value() === 'business', fn ($query) => $query->whereNotNull('company_name')->where('company_name', '!=', ''))
+            ->when($request->string('type')->value() === 'individual', fn ($query) => $query->where(fn ($query) => $query->whereNull('company_name')->orWhere('company_name', '')))
             ->tap(fn ($query) => $resolver->applyColumnQueries($query))
             ->orderBy($sort, $direction)
             ->paginate(15)
@@ -83,7 +85,8 @@ class CustomerIndexController
             'customers' => $customers,
             ...$this->tableProps($resolver, $this->columns),
             'customerGroups' => CustomerGroup::all(['id', 'name']),
-            'filters' => $request->only(['q', 'customer_group_id', 'sort', 'direction']),
+            'totalCount' => Customer::count(),
+            'filters' => $request->only(['q', 'customer_group_id', 'type', 'sort', 'direction']),
             'urls' => [
                 'index' => route('panel.customers.index'),
                 'create' => route('panel.customers.create'),

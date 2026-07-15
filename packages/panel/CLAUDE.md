@@ -25,6 +25,44 @@ inject into it without the page opting in. Do not hand-roll a bare page header.
 `tests/panel/Unit/PageScaffoldTest.php` enforces that every content page (auth
 and account pages excepted) goes through `PageHeader` or `SettingsShell`.
 
+First-party pages import these components directly and wrap their own
+`<PanelLayout>`. Add-on pages can't import panel source, so the panel exposes a
+public page-building surface to them: `app.ts` publishes the components on
+`window.LunarPanelUI`, and `@lunarphp/panel-vite-plugin` externalises the
+`@lunarphp/panel` import to that global. **`resources/js/ui.ts` is the source of
+truth for what add-ons can import** — the barrel there lists the whole set (layout,
+DataTable, FilterDropdown, KpiCard, form inputs, overlays, `Button`, `Icon`, …).
+Internal machinery (`NavBody`, `PanelSlot`, `RowActions`, `PageActions`, `Section`, …)
+is deliberately not exported. The `PanelLayout` shell is applied to add-on pages
+automatically (the resolver sets it as their persistent layout via the `default`
+entry in the layout registry), so an add-on page only builds its own `PageHeader` +
+content, never the sidebar.
+
+Editing the public surface is normally just `ui.ts`: the runtime global
+(`window.LunarPanelUI`) is spread from the ui.ts namespace in app.ts, its type is
+`typeof import('../ui')`, and the `@lunarphp/panel` package's `dist/ui.d.ts` types
+are generated from ui.ts by `npm run build:types` (vue-tsc, via
+`tsconfig.build-types.json`; run automatically as part of `npm run build`). The one
+still-manual file is the package's `index.js` — a runtime fallback re-export list
+for consumers that don't externalise the import; the vite plugin externalises
+`@lunarphp/panel` to the global, so add-ons never load it, but keep it mirroring
+ui.ts anyway.
+
+### npm packages and the workspace
+
+Two npm packages are published for add-on authors and depended on by version
+(never a `file:` path, which would only resolve inside this monorepo):
+
+- `@lunarphp/panel` (`resources/panel-package/`) — the layout/page components above.
+- `@lunarphp/panel-vite-plugin` (`resources/package/`) — the IIFE build preset.
+
+This package's own frontend build package (`packages/panel/package.json`) is the
+private, unpublished `@lunarphp/panel-build` — kept distinct so the public name is
+free for the add-on-facing package. The monorepo root `package.json` declares an
+npm workspace over these two packages plus `packages/panel-addon-example`, so the
+example resolves the version-ranged deps to the local source during development.
+Run `npm install` at the monorepo root (not inside the example) to link them.
+
 ## Ordering
 
 Navigation items, table columns, and all action types carry a `Position`

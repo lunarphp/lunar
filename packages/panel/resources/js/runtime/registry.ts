@@ -1,9 +1,12 @@
 import type { Component } from 'vue';
 
 /**
- * `window.LunarPanel` — the registry add-on IIFE bundles talk to. Add-ons may load before
- * or after this runtime boots (script order is not guaranteed), so registration methods
- * are safe to call at any time and `booting()` queues callbacks until boot completes.
+ * `window.LunarPanel` — the registry add-on IIFE bundles talk to. app.ts publishes this
+ * before any add-on script runs, so add-ons register (pages, components, layouts,
+ * translations) eagerly at the top level; app.ts holds its first mount until
+ * DOMContentLoaded so every such registration lands before the first render.
+ * `booting()` is only for work that needs the mounted app — never for registration,
+ * whose callbacks would run too late for the initial page resolve (see markBooted).
  */
 export class LunarPanelRuntime {
     private booted = false;

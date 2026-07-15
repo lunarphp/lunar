@@ -96,7 +96,7 @@
             "Lunar\\Tests\\Stripe\\": "tests/stripe",
             "Lunar\\Tests\\Search\\": "tests/search",
             "Lunar\\Tests\\Upgrade\\": "tests/upgrade",
-            "LunarPanelExample\\": "examples/panel-addon-example/src/"
+            "LunarPanelExample\\": "packages/panel-addon-example/src/"
         }
     },
     "extra": {
@@ -137,6 +137,7 @@
         "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/panel": "self.version",
+        "lunarphp/panel-addon-example": "self.version",
         "lunarphp/paypal": "self.version",
         "lunarphp/search": "self.version",
         "lunarphp/stripe": "self.version",

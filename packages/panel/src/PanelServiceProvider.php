@@ -50,6 +50,7 @@ class PanelServiceProvider extends ServiceProvider
 
             $this->publishes([
                 "{$this->root}/public/build" => public_path('vendor/lunar-panel/build'),
+                "{$this->root}/public/favicons" => public_path('vendor/lunar-panel/favicons'),
             ], ['panel-assets', 'panel-all-assets']);
 
             $this->commands([LinkPanelAssetsCommand::class]);

@@ -6,6 +6,13 @@
 
         <title inertia>{{ config('lunar.panel.name', 'Lunar') }}</title>
 
+        <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/lunar-panel/favicons/favicon.svg') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('vendor/lunar-panel/favicons/favicon.ico') }}" sizes="any" />
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('vendor/lunar-panel/favicons/favicon-96x96.png') }}" />
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('vendor/lunar-panel/favicons/apple-touch-icon.png') }}" />
+        <link rel="manifest" href="{{ asset('vendor/lunar-panel/favicons/site.webmanifest') }}" />
+        <meta name="theme-color" content="#122036" />
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link

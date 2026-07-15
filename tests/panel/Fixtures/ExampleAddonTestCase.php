@@ -24,7 +24,7 @@ class ExampleAddonTestCase extends TestCase
         // and the test fixtures' for Inertia's testing finder.
         $app['config']->set('inertia.testing.page_paths', [
             ...$app['config']->get('inertia.testing.page_paths', []),
-            dirname(__DIR__, 3).'/examples/panel-addon-example/resources/js/pages',
+            dirname(__DIR__, 3).'/packages/panel-addon-example/resources/js/pages',
         ]);
     }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import Button from '../../components/Button.vue';
 import DataTable from '../../components/DataTable.vue';
@@ -7,13 +7,21 @@ import { type RowAction } from '../../components/RowActions.vue';
 import BulkActionsToolbar, { type BulkAction } from '../../components/BulkActionsToolbar.vue';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
+import Breadcrumbs from '../../components/Breadcrumbs.vue';
 import Icon from '../../components/Icon.vue';
 import Pagination from '../../components/Pagination.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
-import Select from '../../components/Select.vue';
+import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
+import KpiCard from '../../components/KpiCard.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import TextInput from '../../components/TextInput.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
+import type { BreadcrumbItem } from '../../components/Breadcrumbs.vue';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Sales' },
+    { label: 'Customers', current: true },
+];
 
 interface CustomerGroupOption {
     id: number;
@@ -56,7 +64,8 @@ const props = defineProps<{
     tableActions: RowAction[];
     tableBulkActions: BulkAction[];
     customerGroups: CustomerGroupOption[];
-    filters: { q?: string; customer_group_id?: string | number; sort?: string; direction?: string };
+    totalCount: number;
+    filters: { q?: string; customer_group_id?: string | number; type?: string; sort?: string; direction?: string };
     urls: { index: string; create: string };
 }>();
 
@@ -65,42 +74,80 @@ const hasBulkActions = computed(() => props.tableBulkActions.length > 0);
 
 const flashSuccess = computed(() => (usePage().props.flash as { success?: string } | undefined)?.success);
 
-const q = ref(props.filters.q ?? '');
-const customerGroupId = ref(props.filters.customer_group_id ?? '');
-const sort = ref(props.filters.sort ?? 'created_at');
-const direction = ref(props.filters.direction ?? 'desc');
+// Sort options fold the backend's sort + direction pair into a single dropdown value,
+// matching the prototype's one-control sort.
+const sortOptions: { value: string; label: string; sort: string; direction: string }[] = [
+    { value: 'recent', label: 'Recently created', sort: 'created_at', direction: 'desc' },
+    { value: 'oldest', label: 'Oldest first', sort: 'created_at', direction: 'asc' },
+    { value: 'name', label: 'Name A→Z', sort: 'last_name', direction: 'asc' },
+    { value: 'company', label: 'Company A→Z', sort: 'company_name', direction: 'asc' },
+];
 
-const sortOptions: { value: string; label: string }[] = [
-    { value: 'created_at', label: 'Recently created' },
-    { value: 'first_name', label: 'First name' },
-    { value: 'last_name', label: 'Last name' },
-    { value: 'company_name', label: 'Company name' },
+const q = ref(props.filters.q ?? '');
+const groupFilter = ref<string | number>(props.filters.customer_group_id ?? 'all');
+const typeFilter = ref<string>(props.filters.type ?? 'all');
+const sortKey = ref<string>(
+    sortOptions.find((o) => o.sort === props.filters.sort && o.direction === (props.filters.direction ?? 'desc'))?.value ?? 'recent',
+);
+
+const groupOptions = computed<FilterOption[]>(() => [
+    { value: 'all', label: 'All groups' },
+    ...props.customerGroups.map((group) => ({ value: group.id, label: group.name })),
+]);
+
+const typeOptions: FilterOption[] = [
+    { value: 'all', label: 'All customers' },
+    { value: 'individual', label: 'Individual' },
+    { value: 'business', label: 'Business' },
 ];
 
 const reload = (): void => {
+    const sortOption = sortOptions.find((o) => o.value === sortKey.value) ?? sortOptions[0];
+
     router.get(
         props.urls.index,
         {
             q: q.value || undefined,
-            customer_group_id: customerGroupId.value || undefined,
-            sort: sort.value,
-            direction: direction.value,
+            customer_group_id: groupFilter.value === 'all' ? undefined : groupFilter.value,
+            type: typeFilter.value === 'all' ? undefined : typeFilter.value,
+            sort: sortOption.sort,
+            direction: sortOption.direction,
         },
         { preserveState: true, preserveScroll: true, replace: true },
     );
 };
 
-const toggleDirection = (): void => {
-    direction.value = direction.value === 'asc' ? 'desc' : 'asc';
+// Dropdowns reload immediately; the search box debounces so a reload only fires
+// once typing settles (no Search button).
+watch([groupFilter, typeFilter, sortKey], reload);
+
+let searchTimer: ReturnType<typeof setTimeout> | undefined;
+watch(q, () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(reload, 300);
+});
+
+const hasActiveFilters = computed(
+    () => !!q.value.trim() || groupFilter.value !== 'all' || typeFilter.value !== 'all',
+);
+const clearFilters = (): void => {
+    q.value = '';
+    groupFilter.value = 'all';
+    typeFilter.value = 'all';
     reload();
 };
 
-const hasActiveFilters = computed(() => !!q.value.trim() || !!customerGroupId.value);
-const clearFilters = (): void => {
-    q.value = '';
-    customerGroupId.value = '';
-    reload();
-};
+// KPI strip: values are placeholders for now; the dismissed state persists locally.
+const KPI_STORAGE_KEY = 'lunar.panel.customers.kpisDismissed';
+const kpisDismissed = ref(localStorage.getItem(KPI_STORAGE_KEY) === '1');
+watch(kpisDismissed, (value) => localStorage.setItem(KPI_STORAGE_KEY, value ? '1' : '0'));
+
+const kpis = computed(() => [
+    { label: 'Total customers', value: props.totalCount, hint: 'across all groups', tone: 'neutral' as const, icon: 'users', delta: { value: '+12', tone: 'sage' as const } },
+    { label: 'New (30d)', value: 6, hint: 'joined in the last 30 days', tone: 'sage' as const, icon: 'userPlus', delta: { value: '+5', tone: 'sage' as const } },
+    { label: 'B2B accounts', value: 10, hint: 'customers with a company', tone: 'neutral' as const, icon: 'building', delta: { value: '+1', tone: 'sage' as const } },
+    { label: 'Avg lifetime value', value: '£3,575.00', hint: 'across customers with orders', tone: 'sage' as const, icon: 'chart', delta: { value: '+4%', tone: 'sage' as const } },
+]);
 
 const initials = (name: string): string =>
     name
@@ -117,6 +164,12 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
 <template>
     <PanelLayout>
         <div data-screen-label="Customers" class="contents">
+            <Breadcrumbs :items="breadcrumbs">
+                <template #actions>
+                    <Button icon="help"><span class="hidden sm:inline">Docs</span></Button>
+                </template>
+            </Breadcrumbs>
+
             <PageHeader
                 title="Customers"
                 description="Everyone who's registered or been invited to a B2B account. Manage groups and keep contact details current."
@@ -127,6 +180,7 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     </div>
                 </template>
                 <template #actions>
+                    <Button icon="download">Export</Button>
                     <Link :href="urls.create">
                         <Button variant="primary" icon="plus">Add customer</Button>
                     </Link>
@@ -140,37 +194,56 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     {{ flashSuccess }}
                 </div>
 
-                <!-- Toolbar -->
-                <div class="flex flex-wrap items-end gap-2 mb-4">
-                    <div class="flex-1 max-w-[280px] min-w-[180px]">
-                        <TextInput v-model="q" placeholder="Name, company, tax ID, account ref…" @keyup.enter="reload">
-                            <template #prefix><Icon name="search" cls="sm" /></template>
-                        </TextInput>
+                <!-- KPI strip (values are placeholders); dismissable, restored via "Show KPIs". -->
+                <div v-if="!kpisDismissed" class="mb-5 relative">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <KpiCard
+                            v-for="kpi in kpis"
+                            :key="kpi.label"
+                            :label="kpi.label"
+                            :value="kpi.value"
+                            :hint="kpi.hint"
+                            :tone="kpi.tone"
+                            :icon="kpi.icon"
+                            :delta="kpi.delta"
+                        />
                     </div>
-                    <div class="w-48">
-                        <Select v-model="customerGroupId" @change="reload">
-                            <option value="">All groups</option>
-                            <option v-for="group in customerGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
-                        </Select>
-                    </div>
-                    <div class="w-44">
-                        <Select v-model="sort" @change="reload">
-                            <option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-                        </Select>
-                    </div>
-                    <Button variant="ghost" :aria-label="direction === 'asc' ? 'Sort ascending' : 'Sort descending'" @click="toggleDirection">
-                        {{ direction === 'asc' ? 'Asc' : 'Desc' }}
-                    </Button>
-                    <Button @click="reload">Search</Button>
-                    <div class="flex-1" />
-                    <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ customers.total }} total</span>
-                    <Link :href="urls.create" class="sm:hidden">
-                        <Button variant="primary" icon="plus">New</Button>
-                    </Link>
+                    <button
+                        type="button"
+                        class="absolute -top-2 -right-2 w-[22px] h-[22px] rounded-full bg-paper border border-line-strong shadow-sm grid place-items-center text-ink-500 hover:bg-surface-2 hover:text-ink-900 hover:border-ink-300 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35"
+                        aria-label="Hide KPIs"
+                        title="Hide KPIs"
+                        @click="kpisDismissed = true"
+                    >
+                        <Icon name="x" cls="sm" />
+                    </button>
                 </div>
 
-                <div v-if="hasBulkActions && selected.length" class="mb-3">
+                <!-- Toolbar: filters, replaced in place by the bulk-action bar while rows
+                     are selected so the table below never shifts. The min-height keeps the
+                     row a constant height across both states. -->
+                <div class="flex flex-wrap items-center gap-2 mb-4 min-h-[34px]">
+                    <template v-if="!(hasBulkActions && selected.length)">
+                        <div class="flex-1 max-w-[280px] min-w-[180px]">
+                            <TextInput v-model="q" placeholder="Search name, email, company…">
+                                <template #prefix><Icon name="search" cls="sm" /></template>
+                            </TextInput>
+                        </div>
+                        <FilterDropdown v-model="groupFilter" label="Group" icon="flag" :options="groupOptions" default-value="all" />
+                        <FilterDropdown v-model="typeFilter" label="Type" :options="typeOptions" default-value="all" />
+                        <FilterDropdown v-model="sortKey" label="Sort" :options="sortOptions" default-value="recent" />
+                        <div class="flex-1" />
+                        <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ customers.total }} of {{ totalCount }}</span>
+                        <Button v-if="kpisDismissed" icon="chart" @click="kpisDismissed = false">
+                            <span class="hidden sm:inline">Show KPIs</span>
+                        </Button>
+                        <Link :href="urls.create" class="sm:hidden">
+                            <Button variant="primary" icon="plus">New</Button>
+                        </Link>
+                    </template>
+
                     <BulkActionsToolbar
+                        v-else
                         :actions="props.tableBulkActions"
                         :selected="selected"
                         @clear="selected = []"

@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import Button from './Button.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
-import Icon from './Icon.vue';
 
 export interface BulkAction {
     key: string;
@@ -57,31 +56,27 @@ const confirm = (): void => {
 </script>
 
 <template>
-    <div
-        v-if="selected.length"
-        class="flex items-center gap-3 rounded-lg border border-line bg-surface px-3.5 py-2 shadow-sm"
-    >
-        <span class="text-[12.5px] text-ink-700">{{ selected.length }} selected</span>
+    <!-- Inline row so it can replace the filters in the same toolbar slot, keeping
+         the table in place rather than pushing it down with an extra bar. -->
+    <div v-if="selected.length" class="flex flex-wrap items-center gap-2 w-full">
+        <span class="text-xs text-ink-700 pl-1 pr-1.5 whitespace-nowrap">
+            <span class="font-semibold text-ink-900 [font-variant-numeric:tabular-nums]">{{ selected.length }}</span>
+            selected
+        </span>
 
-        <div class="flex items-center gap-1.5">
-            <Button
-                v-for="action in actions"
-                :key="action.key"
-                size="sm"
-                :icon="action.icon || undefined"
-                :class="action.method.toLowerCase() === 'delete' ? 'text-danger' : ''"
-                @click="run(action)"
-            >{{ action.label }}</Button>
-        </div>
+        <span class="w-px h-5 bg-line" />
 
-        <button
-            type="button"
-            class="ml-1 inline-flex items-center gap-1 text-[12px] text-ink-500 hover:text-ink-900 transition-colors"
-            @click="emit('clear')"
-        >
-            <Icon name="x" cls="sm" />
-            Clear
-        </button>
+        <Button
+            v-for="action in actions"
+            :key="action.key"
+            :icon="action.icon || undefined"
+            :class="action.method.toLowerCase() === 'delete' ? 'text-danger' : ''"
+            @click="run(action)"
+        >{{ action.label }}</Button>
+
+        <div class="flex-1" />
+
+        <Button variant="ghost" @click="emit('clear')">Clear</Button>
 
         <ConfirmDialog
             :open="!!pending"

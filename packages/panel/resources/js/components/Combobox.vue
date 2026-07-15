@@ -38,7 +38,13 @@ const open = ref(false);
 const selected = computed(() => props.options.find((o) => o.value === props.modelValue));
 const selectedLabel = computed(() => selected.value?.label ?? '');
 
-const onSelect = (value: string | number) => {
+// reka-ui's update:model-value can emit null (e.g. cleared selection); ignore it
+// since this control always carries a concrete value.
+const onSelect = (value: string | number | null) => {
+    if (value === null) {
+        return;
+    }
+
     emit('update:modelValue', value);
     emit('change', value);
 };

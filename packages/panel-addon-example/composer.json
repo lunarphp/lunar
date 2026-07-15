@@ -1,8 +1,8 @@
 {
     "name": "lunarphp/panel-addon-example",
-    "description": "Reference add-on proving lunarphp/panel's runtime extension mechanism: a page, a nav item, a slot, and a table extension registered without recompiling the panel.",
+    "description": "Starter template and reference add-on for lunarphp/panel: a page, a nav item, a slot, and a table extension registered at runtime without recompiling the panel. Fork it with `composer create-project lunarphp/panel-addon-example`.",
     "license": "MIT",
-    "type": "library",
+    "type": "project",
     "autoload": {
         "psr-4": {
             "LunarPanelExample\\": "src/"

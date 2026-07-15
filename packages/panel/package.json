@@ -1,9 +1,11 @@
 {
-    "name": "@lunarphp/panel",
+    "name": "@lunarphp/panel-build",
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
+        "build": "vite build && npm run build:types",
+        "build:types": "vue-tsc -p tsconfig.build-types.json",
+        "type-check": "vue-tsc -p tsconfig.json",
         "dev": "vite",
         "test": "vitest run"
     },
@@ -20,6 +22,7 @@
         "vite": "^6.0.0",
         "vitest": "^4.1.10",
         "vue": "^3.5.13",
-        "vue-i18n": "^11.4.6"
+        "vue-i18n": "^11.4.6",
+        "vue-tsc": "^2.2.12"
     }
 }

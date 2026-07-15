@@ -29,7 +29,8 @@ const form = useForm({
     recovery_code: '',
 });
 
-const resendForm = useForm({});
+// Sends no payload, but the server may return a `code` validation error (e.g. resend cooldown).
+const resendForm = useForm<{ code?: string }>({});
 
 const resendCooldown = ref(props.cooldownRemaining ?? 0);
 let cooldownTimer: ReturnType<typeof setInterval> | null = null;
