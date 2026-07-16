@@ -14,9 +14,11 @@ use Lunar\Core\Contracts\FieldType;
 use Lunar\Core\Database\Factories\AttributeFactory;
 use Lunar\Core\Facades\FieldTypeManifest;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?int $attribute_group_id
  * @property string $name
  * @property string $handle
@@ -34,6 +36,7 @@ class Attribute extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
 
     protected static function booted(): void
     {

@@ -59,9 +59,9 @@ return [
             'tooltip' => 'How many units you will accept orders for beyond stock on hand. Used only when Selling Policy allows backorders.',
             'label' => 'Sipariş Üzerine',
         ],
-        'purchasable' => [
-            'tooltip' => 'When this variant can be purchased. In Stock sells only while units are available; In Stock or On Backorder also sells the backorder allowance; Always ignores stock entirely.',
-            'label' => 'Selling Policy',
+        'selling_policy' => [
+            'label' => 'Satış Politikası',
+            'tooltip' => 'Bu varyantın ne zaman satın alınabileceği. „Stokta” yalnızca birim mevcutken satar; „Stokta veya Sipariş Üzerine” ayrıca ön sipariş kotasını da satar; „Her Zaman” stoğu tamamen yok sayar.',
             'options' => [
                 'always' => 'Her Zaman',
                 'in_stock' => 'Stokta',

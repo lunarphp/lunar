@@ -40,7 +40,7 @@ class ProductTypeForm
                                 ->label('')
                                 ->columnSpan(2),
                         ])->visible(
-                            config('lunar.panel.enable_variants', true)
+                            config('lunar.filament.enable_variants', true)
                         ),
                 ])->columnSpan(2),
             ]),

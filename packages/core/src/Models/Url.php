@@ -9,9 +9,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\UrlFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
+use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $language_id
  * @property string $element_type
  * @property int $element_id
@@ -24,6 +27,8 @@ class Url extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
+    use InvalidatesRelatedCache;
 
     /**
      * Return a new factory instance for the model.
@@ -56,6 +61,13 @@ class Url extends Base
     public function element(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function cacheInvalidationTargets(): iterable
+    {
+        $this->loadMissing('element');
+
+        return [$this->element];
     }
 
     /**

@@ -333,7 +333,7 @@ test('can reject shipping rates when stock is not available', function () {
     $cart = $this->createCart($currency, 500);
 
     // Out of stock under the in_stock policy with no available units.
-    $purchasable = ProductVariant::factory()->create(['purchasable' => 'in_stock']);
+    $purchasable = ProductVariant::factory()->create(['selling_policy' => 'in_stock']);
 
     Price::factory()->create([
         'price' => 200,
@@ -430,7 +430,7 @@ test('doesnt_include_unshippable_items_in_calculations', function () {
     $cart->lines()->delete();
 
     // Out of stock under the in_stock policy, so stock_available methods drop out.
-    $purchasable = ProductVariant::factory()->create(['purchasable' => 'in_stock']);
+    $purchasable = ProductVariant::factory()->create(['selling_policy' => 'in_stock']);
 
     Price::factory()->create([
         'price' => 200,

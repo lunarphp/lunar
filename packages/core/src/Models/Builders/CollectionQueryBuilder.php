@@ -2,8 +2,8 @@
 
 namespace Lunar\Core\Models\Builders;
 
-use Kalnoy\Nestedset\QueryBuilder;
 use Lunar\Core\Models\Concerns\ResolvesRegisteredScopes;
+use Lunar\Nestedset\QueryBuilder;
 
 /**
  * The nested-set builder for Collection, extended to also resolve

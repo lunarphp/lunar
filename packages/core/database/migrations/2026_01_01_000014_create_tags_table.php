@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'tags', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->string('value')->index();
             $table->timestamps();
         });

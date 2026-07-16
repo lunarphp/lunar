@@ -3,6 +3,7 @@
 namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Support\Str;
+use Lunar\Core\Enums\SellingPolicy;
 use Lunar\Core\Enums\StockMovementType;
 use Lunar\Core\Models\Location;
 use Lunar\Core\Models\Product;
@@ -31,6 +32,7 @@ class ProductVariantFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'product_id' => Product::factory(),
             'tax_class_id' => TaxClass::factory()->hasTaxRateAmounts(
                 TaxRateAmount::factory()
@@ -41,6 +43,7 @@ class ProductVariantFactory extends BaseFactory
             'mpn' => $this->faker->unique()->isbn13,
             'ean' => $this->faker->unique()->ean13,
             'shippable' => true,
+            'selling_policy' => SellingPolicy::Always,
         ];
     }
 }

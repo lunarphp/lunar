@@ -2,49 +2,31 @@
 
 ## Approach
 
-Each item below should have a written spec in `specs/` (alongside this file in the Lunar package) before implementation begins. One markdown file per item, named `NNNN-short-slug.md`, starting from `specs/0000-template.md`. See `specs/README.md` for the full convention.
+Each item below should have a written spec in `specs/` (alongside this file in the Lunar package) before implementation begins. One markdown file per item, named `NNNN-short-slug.md`, starting from `specs/0000-template.md`. See `specs/README.md` for the full convention. Item detail lives in the spec — keep entries here to a line.
+
+Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
-Split into what an alpha needs to be a coherent, representative commerce platform (**pre-alpha**) and what can follow (**post-alpha**). Alpha is explicitly unstable, so post-alpha items may still carry breaking changes — the pre-alpha cut is about getting the foundational shape right before adopters build on it, and finishing any half-built core path that is visibly broken. Items tagged _(judgement)_ are the genuine line-calls worth revisiting.
-
-### Pre-alpha
-
-- Add events, including specific events for cache invalidation — the extensibility contract consumers hook into; spec 0038's stock events and reindexing ride this.
-- Make order line purchasables optional — breaking schema (nullable `purchasable_*`); pairs with the shipping-option cleanup below.
-- Stop storing shipping options as polymorphic purchasables on cart/order lines
-    - Currently `ShippingOption` is a non-Eloquent value object from `ShippingManifest`, yet lines morph to it via a hardcoded `purchasable_id => 1` (see `CreateShippingLine`)
-    - Drop the fake morph: rely on the existing `type = 'shipping'` column and store the option `identifier` + a snapshot of name/price/meta directly on the line
-    - Make `purchasable_type`/`purchasable_id` nullable (ties in with "Make order line purchasables optional")
-    - Resolve the live `ShippingOption` from `ShippingManifest` by identifier when needed, rather than via the polymorphic relation
-- Add `public_id` (ULID) to externally-addressable models — stabilise external addressing before APIs and integrations are built against it.
-
-### Post-alpha
-
-- Add Vendors concept to support marketplace developments — expansion beyond a single-merchant alpha.
-- Ship default professional customer notifications for the order lifecycle — _(judgement)_ improves first impressions and aligns with sensible-defaults; could be pulled pre-alpha for lifecycle completeness, but a developer can hand-roll for early feedback.
-    - The system already *expects* notifications (e.g. order cancellation dispatches `OrderCancelled` with a "notify the customer" toggle, and the `OrderNotifications` registry keys auto-triggers off `cancelled` / `paid` / `fulfilled` / per-parcel `shipped`), but core ships **none** — so out of the box a customer is never emailed and a developer must hand-roll each notification + template
-    - Provide a set of sensible, branded-but-overridable default `Notification` classes + mail templates for the key events: order confirmation (placed), payment received, fulfilment shipped (with tracking), order cancelled, refund issued
-    - Register them in the `OrderNotifications` manifest `defaults()` (each with its `on` triggers + `scope`, `manual: true` so they're resendable) so the admin toggles actually send something; keep them publishable/swappable and respect the existing notify flags
-    - Consider a shared mailable layout + a way to disable per-event; ties into the storefront/branding work
-    - (spec 0036 draft) — spec 0035 ships a stop-gap general-purpose `OrderUpdate` default in the `OrderNotifications` catalogue; this item covers the branded lifecycle set
-- Bulk order operations — Shopify-style bulk actions on the orders table that are **goal-oriented operations, not blind transitions**: "Mark as shipped", "Mark as fulfilled", "Close", "Cancel". Each iterates the selection, filters targets by the action's existing `canRun()` predicate (skipping parcels/orders that can't move — already shipped, cancelled, on hold), executes per parcel/order, and reports a "X of Y" tally. Ships every fulfillable parcel of multi-parcel orders, with optional/blank tracking backfilled later. (spec 0026 drafted)
-- Line-item refunds — the amount-only refund (`RefundOrder::execute(order, transaction, amount, notes)`) already works, so this is an enhancement: **refunding order lines directly** — select lines + quantities (plus shipping and an optional adjustment), so the system records **which lines/quantities have been refunded**. New `refund_lines` linkage off the refund transaction + denormalised `refunded_quantity` on `order_lines`; a Shopify-style **dedicated refund page** (not a modal) that lists refundable lines, computes the suggested total, captures a reason/note/notify, and dispatches to the payment driver. Payment-status rollup (`ResolvePaymentStatus`) stays money-derived. Restock deferred to inventory. (spec 0028 drafted)
-- Order print templates — replace the single "Download PDF" button with a **"Print" dropdown** offering selectable PDF templates. Core ships **one** default template, an **Advice Note** (packing/delivery slip — items + quantities + addresses), as a publishable blade view; the existing priced "invoice" view is **retired** (Lunar doesn't model invoices). Developers register additional templates (label + view + filename) via config; the existing template-agnostic PDF pipeline (`DownloadPdfController`, `DownloadPdfAction`) renders each. Format stays PDF. (spec 0027 drafted)
-- Cart/order line grouping
-- Split out Promotions concept from Discounts — breaking architectural split; land before a stable 1.0 even if after alpha.
-- Add cart totals caching in the database — performance optimisation.
-- Add Boost guidelines to packages — developer tooling / docs.
-
+- Inertia admin panel — new `lunarphp/panel` package: auth, extension points, Customers CRUD, Channels settings (spec 0049)
+- Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
+- Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
+- Line-item refunds — refund specific lines/quantities via a dedicated refund page (spec 0028)
+- Order print templates — Print dropdown of selectable PDF templates, ships an Advice Note (spec 0027)
+- Cart/order line grouping — grouping key on the `*_lines` tables _(judgement)_
+- Cart totals caching in the database — additive performance optimisation
+- Add Boost guidelines to packages
 
 ## Ideas
 
-- Location-scoped availability & stock routing — builds on inventory fundamentals (spec 0038, which ships a single global availability figure summed across all locations). Two storefront capabilities: (a) **customer store selection** — the buyer picks a store/collection point and sees *that location's* stock while browsing (Screwfix-style "in stock at your branch"), reading the per-location `StockLevel` rows; (b) **sell-time routing** — a channel / region / collection point maps to the location(s) that may serve it, so the storefront sells only what the relevant location holds (click-and-collect to one store, a channel bound to one warehouse) rather than the global total, plus order routing/splitting at checkout (Shopify's fulfillment-order routing is the reference model). Likely also covers stock transfers between locations. Planned follow-on to 0038, not yet specced.
-- Checkout stock reservations — wire a cart/checkout to actually hold stock via the `ReservesStock` seam shipped in spec 0038 (model + seam + `lunar:stock:release-expired` sweep already land there). Likely reserve at **payment/checkout start, not add-to-cart** (matches native Shopify; avoids holding stock for abandoned carts), with a TTL covering the payment window (e.g. a ticket-sales site holding seats for a few minutes while the customer pays). Decide the TTL policy, cart→reservation association, admin visibility of held stock, and registering the expiry sweep on the scheduler. Converts to a commitment at order placement; closes the oversell window for opted-in flows. Planned follow-on to 0038.
-- Selling-policy rework — rationalise the whole selling-policy layer (the `purchasable` mode + `backorder` allowance) into one coherent, declarative model rather than mode-string accretion. Threads to fold in: (a) **deny-oversell mode** — 0038 lets commit-on-place drive `available` negative (warned), since there is no add-to-cart reservation; add an opt-in per-variant/per-channel mode that blocks placement past available (pairs with checkout reservations); (b) **sell-against-incoming** — let a policy sell up to `available + incoming` so a pre-order/PO-backed store maintains one figure, not a duplicated `backorder` (reads the existing `stock_incoming` rollup column — additive; only meaningful once a purchasing add-on populates `incoming`; Shopify keeps incoming non-sellable natively and pushes pre-orders to apps, so this would be a deliberate step beyond Shopify); (c) **column rename `product_variants.purchasable` → `selling_policy`** — clearer, and disambiguates from the `Purchasable` morph (`$line->purchasable`) and the `customer_group_product.purchasable` boolean; breaking public surface, so it needs a **type-aware Rector rule scoped to `ProductVariant`** (a blanket `->purchasable` rename would corrupt the line morph and the customer-group boolean) plus a v1→v2 mapping in the upgrade package; (d) **value cleanup** — reconcile the stored `in_stock_or_on_backorder` vs the spec's `in_stock_or_backorder`, and the `always` mode oddly adding backorder in `getTotalInventory()`; (e) **weigh a Shopify-style boolean** "continue selling when out of stock" against the richer quantity `backorder` Lunar already has. The admin label already reads "Selling Policy" (the field key/column rename lands here). Follow-on to 0038.
-- Low-stock thresholds & notifications — per-location/per-variant reorder thresholds that fire a notification (reusing the 0034/0035 notification infrastructure) when `available` drops below them. Follow-on to 0038.
-- Returned-goods quarantine — spec 0038 lands returns and refund-restock in sellable `on_hand`; route them through `unavailable` for inspection first. Pairs with RMA.
-- Storefront REST API — a first-party `lunar/api` sub-package exposing a versioned, RESTful storefront API (Laravel API Resources + JSON:API-inspired `?include=`/`?fields[]=`/`?filter[]=`/`?sort=`/`?page[]=` grammar), auth delegated to the host app (Sanctum default), an add-on extension registry, and the existing `StorefrontSession` context + `CartSession` pipeline exposed over HTTP. Closes a v1→v2 regression (v1 had one). Design already drafted in `specs/draft-storefront-api.md` (under consideration); depends on Region / `StorefrontContext`.
+- Cache toolkit follow-ons — outbound webhooks, change feed / sync cursor, internal derived caches (ride spec 0043 events)
+- Cache-invalidation deferrals — media as a tracked satellite; a `CartLinesUpdated` event (from spec 0043)
+- Location-scoped availability & stock routing — per-location stock selection + sell-time routing/splitting (follow-on to 0038)
+- Checkout stock reservations — hold stock via the `ReservesStock` seam at checkout start (follow-on to 0038)
+- Selling-policy rework — declarative model: deny-oversell, sell-against-incoming, continue-selling boolean (follow-on to 0038)
+- Low-stock thresholds & notifications — reorder thresholds firing notifications (follow-on to 0038)
+- Returned-goods quarantine — route returns through `unavailable` for inspection; pairs with RMA
+- Storefront REST API — first-party `lunar/api` storefront API (see `specs/draft-storefront-api.md`)
 - RMA
 - Admin MCP
 - Storefront MCP
@@ -53,35 +35,40 @@ Split into what an alpha needs to be a coherent, representative commerce platfor
 
 ## Done
 
-- Add an Upgrade package for those migrating from v1.x (using Rector) — land first so subsequent breaking specs can ship their Rector rules and data migrations into it
-- Flatten v1.x migrations into a v2 baseline — single flat set of migration files at v2.0.0; upgrade package handles the v1 → v2 schema transformation and rewrites the `migrations` ledger
-- Change to `\Lunar\Core` namespace
+- Upgrade package for v1.x migrators, using Rector (spec 0001)
+- Flatten v1.x migrations into a v2 baseline (spec 0003)
+- `\Lunar\Core` namespace change (spec 0002)
 - Filament v5 upgrade (spec 0004)
 - Filament v5 schemas refactor (spec 0005)
-- Extract `lunarphp/filament` bridge package and reshape the install model (spec 0006)
-- Pages refactor — inline the 10 page-extension traits into the 5 base page classes (spec 0007)
-- Reusable Filament entity-selector components — 16 selector classes in `lunarphp/filament` replacing 17+ duplicated implementations across admin and filament (spec 0008)
-- Filament-native verbs and discoverability — first-party actions library (refund, capture, fulfilment status, duplicate product, bulk publish/unpublish/archive, stock adjust) + Filament global search descriptors lifted into the bridge package (spec 0009)
-- Publishable admin resources + Staff to core (spec 0010) — `lunar:admin:publish` command + `LunarPanel::excludeResources()` give consumers a real migration path off `lunarphp/admin`; Staff (model, migrations, factory, `Auth\Manifest`, lang, DTOs) moves into `lunarphp/core` so non-Filament panels can share it; `LunarPlugin::make()` wires bridge widgets/global-search/actions onto any Filament v5 panel
-- Support `Model::preventLazyLoading()`
-- Price data type / cast refactor — replace per-attribute `DataTypes\Price` cast with plain `integer` cast + `FormatsPrices` trait; new `PriceValue` data object for non-Eloquent currency-aware values (spec 0012)
-- `Base/` directory reorganisation — every class drained into a semantic home (`Casts/`, `Concerns/`, `Contracts/`, `DataObjects/`, `Enums/`, `FieldTypes/`, `Manifests/`, `Media/`, `Models/`, `Modifiers/`, `Orders/`, `Telemetry/`, `ValueObjects/`); `*Interface` suffix dropped on contracts; `BaseModel` renamed to `Models\Base`; `Base/` namespace deleted (spec 0013)
-- `PriceCalculatorInterface` consolidates money arithmetic — half-up `percentage`, strict-inverse `withTax`/`withoutTax`, largest-remainder `distribute`, bc-aware `toMinor`/`toMajor`; routed through every previously inline rounding site; new `PriceCalculator` facade (spec 0014)
-- Ensure all service-layer classes are DI'd — actions/managers/drivers/generators constructor-inject collaborators and bind to `Contracts\Actions\…` interfaces in `LunarServiceProvider`; `AbstractAction` and the `lunar.cart.actions.*` / `fingerprint_generator` / `discounts.coupon_validator` config-string swaps removed; `RewriteActionRunCallRector` migrates `Action::run()` callers (spec 0016)
-- Change `compare_price` to `list_price`
-- Add dedicated `name` / `description` / `short_description` fields — promote Product/Collection name + description out of `attribute_data` into translatable columns and add a translatable `short_description`; Brand gains translatable description/short_description but keeps a plain string name; reads route through `translate()`, search indexes per locale, Filament binds explicit fields; one-way v1→v2 backfill migration + `translateAttribute`→`translate` Rector rule (spec 0018)
-- Attribute system redesign — id-keyed raw `attribute_data` JSON on disk + handle-keyed `FieldType` collection in memory; drop the morph columns on `Attribute` / `AttributeGroup` for a nullable group FK + typed `attribute_models` join + renamed `product_type_attribute` pivot; shared `AbstractFieldType` base + `FieldTypeEnum` + relocated `Manifests\FieldTypeManifest`; `AttributeCache` + observer + `PurgeAttributeData` job keep the new shape consistent; one-way v1→v2 data migration + Rector renames in the upgrade package (spec 0019)
-- State machines — `spatie/laravel-model-states` v2 across core. Channel (Active/Inactive), Product/Collection (Draft/Published/Archived), and Order as a **single** transition-guarded `OrderState` machine (`AwaitingPayment → InProcess → Shipped → Complete`, plus `OnHold`/`Cancelled`/`Refunded`). `OrderStateConfig` contract is the single seam for adding bespoke states, transitions and notifications. `SoftDeletes` retired from Product/ProductVariant/Channel/Collection; baseline migrations edited in place. PHP minimum bumped to 8.4 due to upstream `spatie/laravel-model-states` PHP/Laravel matrix split. The payment/fulfilment decomposition was deferred to spec 0022 (spec 0021)
-- Move automatic notifications off `config('lunar.orders.notifications')` onto manifests — done as part of spec 0035: the automatic and manual notifications were unified into one `OrderNotifications` manifest (entries carry `on` auto-triggers, a `manual` flag, and a `NotificationScope`), retiring the config map. (spec 0037 superseded by 0035)
-- Order fulfilments & order lifecycle — line-item `Fulfilment` records with a guarded per-parcel lifecycle, Locations split-down, derived `payment_status` / `fulfilment_status` rollups, open/closed (`closed_at`) archive replacing the hand-driven `Order::$status`, shipping-carrier registry + tracking, and order cancellation (`cancelled_at`) (specs 0022, 0024, 0025; demo data 0023)
-- Entry-point conventions & fulfillable order lines — action/model-verb/manager seam conventions, and `order_lines.requires_fulfilment` decoupling fulfilment from the line `type` string (specs 0029, 0030)
-- Fulfilment methods — pluggable fulfilment flows on a `FulfilmentMethod` driver + `FulfilmentMethods` facade; core ships `shipping`, `collection` and `digital` (spec 0031)
-- Wire and gate fulfilment notifications — `SendFulfilmentStatusNotifications` listener through the method-aware seam, a `notify` flag on the fulfilment verbs/events, and a conditional "Notify customer" toggle in the fulfilment modals (spec 0034)
-- Interactive "Notify customer" order action — order-level action to pick a notification variant, add a custom message, choose recipients, and record the send; backed by a `CustomerNotifications` registry and core `NotifyCustomer` action (spec 0035)
-- Auto-close settled orders — opt-in `lunar.orders.auto_close` (via `OrderSettings`) closing an order via `CloseSettledOrder` once fully paid and fulfilled (spec 0032)
-- Multi-tenant homes for new config — swap seams (`fulfilment.methods`, `shipping.carriers`) moved to the container; per-store data (hold/cancel reasons, auto-close) behind the `HoldReasons` / `CancelReasons` manifests and `OrderSettings` (spec 0033)
-- Inventory fundamentals — per-location stock as `StockLevel` / `StockMovement` / `StockReservation` on top of `Location`, with global rollup columns denormalised onto `ProductVariant` and physical movements through the `$variant->adjustStock(...)` seam; replaces the flat `stock` column and supersedes the 0009 `AdjustStock` stop-gap (spec 0038)
-- `StorefrontContext` for CartSessionManager and other services — immutable DTO bundling the resolved selections (channel, currency, language, region, customer, customer groups) produced by a single `ResolveStorefrontContext` cascade, so non-session business logic (API, jobs, tests) takes an explicit context; the session and cart produce one (spec 0040)
-- Region concept — first-class market (`Region` belongs-to-channel; carries currency, language, tax zone, served countries via `country_region`, and a price-display preference distinct from the global storage flag) stamped on carts/orders and feeding the storefront-context cascade; default region is the catch-all; Filament `RegionResource`; v1->v2 upgrade seeds a default region and backfills `region_id` (spec 0039)
-- Retire model class substitution — removed consumer model class-swapping (`HasModelExtending`, `ModelManifest` substitution API, the `Models\Contracts\*` interfaces, `Model::modelClass()`); models are now single-identity Lunar records and consumers extend via native Laravel seams (`resolveRelationUsing`, macros, `addGlobalScope`, `observe`, action bindings) plus a new `addCasts()` registry for casts/accessors on consumer-added columns; Rector `RewriteModelClassCallRector` in the upgrade package (spec 0041)
-- Model query builders — registerable per-model local scopes via a shared `Models\Builders\Builder` keyed scope registry and `Model::addLocalScope()`, filling the one query-extension gap left by retiring substitution; native scopes always win on collision, custom-builder models (e.g. `Collection`) compose via `ResolvesRegisteredScopes` (spec 0042)
+- Extract `lunarphp/filament` bridge package + reshape the install model (spec 0006)
+- Pages refactor — inline page-extension traits into the base page classes (spec 0007)
+- Reusable Filament entity-selector components (spec 0008)
+- Filament-native verbs + global-search discoverability (spec 0009)
+- Publishable admin resources + Staff to core (spec 0010)
+- Support `Model::preventLazyLoading()` (spec 0011)
+- Price data type / cast refactor + `PriceValue` (specs 0012, 0015)
+- `Base/` directory reorganisation (spec 0013)
+- `PriceCalculator` money arithmetic (spec 0014)
+- Service-layer dependency injection (spec 0016)
+- Rename `compare_price` to `list_price` (spec 0017)
+- Dedicated `name` / `description` / `short_description` fields (spec 0018)
+- Attribute system redesign (spec 0019)
+- State machines + retire soft-deletes (spec 0021)
+- Automatic notifications onto manifests (spec 0037, superseded by 0035)
+- Order fulfilments, derived statuses & open/closed lifecycle (specs 0022, 0024, 0025; demo data 0023)
+- Entry-point conventions & fulfillable order lines (specs 0029, 0030)
+- Fulfilment methods (spec 0031)
+- Wire & gate fulfilment notifications (spec 0034)
+- Interactive "Notify customer" order action (spec 0035)
+- Auto-close settled orders (spec 0032)
+- Multi-tenant homes for new config (spec 0033)
+- Inventory fundamentals (spec 0038)
+- `StorefrontContext` for services (spec 0040)
+- Region concept (spec 0039)
+- Retire model class substitution (spec 0041)
+- Model query builders — registerable local scopes (spec 0042)
+- Cache invalidation & event coverage (spec 0043)
+- Storefront cache tagging & dependency resolution (spec 0044)
+- Optional order-line purchasables & shipping-option de-morph (spec 0045)
+- `public_id` (ULID) external addressing (spec 0046)
+- Rename `product_variants.purchasable` to `selling_policy` (spec 0048)

@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "jsx": "preserve",
+        "types": ["vite/client"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["resources/js/*"]
+        },
+        "skipLibCheck": true,
+        "noEmit": true
+    },
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue"]
+}

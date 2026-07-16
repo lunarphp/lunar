@@ -3,9 +3,9 @@
 namespace Lunar\Tests\DemoData;
 
 use Illuminate\Support\Facades\Config;
-use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\Core\LunarServiceProvider;
 use Lunar\DemoData\DemoDataServiceProvider;
+use Lunar\Nestedset\NestedSetServiceProvider;
 use Lunar\Tests\Admin\Stubs\User;
 use Lunar\Tests\TestCase as BaseTestCase;
 use Spatie\Activitylog\ActivitylogServiceProvider;

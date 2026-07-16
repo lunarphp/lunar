@@ -7,19 +7,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Database\Factories\BrandFactory;
+use Lunar\Core\Enums\CacheInvalidationReason;
+use Lunar\Core\Events\Catalog\BrandInvalidated;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Concerns\HasAttributeData;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasMedia;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
+use Lunar\Core\Models\Concerns\InvalidatesCache;
 use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property string $name
  * @property ?\Illuminate\Support\Collection $description
  * @property ?\Illuminate\Support\Collection $short_description
@@ -33,8 +39,10 @@ class Brand extends Base implements SpatieHasMedia
     use HasFactory;
     use HasMacros;
     use HasMedia;
+    use HasPublicId;
     use HasTranslations;
     use HasUrls;
+    use InvalidatesCache;
     use LogsActivity;
     use Searchable;
 
@@ -57,6 +65,11 @@ class Brand extends Base implements SpatieHasMedia
     protected static function newFactory()
     {
         return BrandFactory::new();
+    }
+
+    public function newCacheInvalidationEvent(CacheInvalidationReason $reason): CacheInvalidationEvent
+    {
+        return new BrandInvalidated($this, $reason);
     }
 
     protected static function booted(): void

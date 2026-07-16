@@ -89,3 +89,15 @@ it('can save attributes', function () {
 
     expect($record->refresh()->attr('name'))->toBe('New Customer Name');
 });
+
+it('can delete a customer from the edit page', function () {
+    $customer = Customer::factory()->create();
+
+    Livewire::actingAs($this->makeStaff(admin: true), 'staff')
+        ->test(EditCustomer::class, [
+            'record' => $customer->getRouteKey(),
+        ])
+        ->callAction('delete');
+
+    $this->assertModelMissing($customer);
+});

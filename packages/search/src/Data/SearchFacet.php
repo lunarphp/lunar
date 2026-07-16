@@ -4,8 +4,9 @@ namespace Lunar\Search\Data;
 
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
-/** @typescript */
+#[TypeScript]
 class SearchFacet extends Data
 {
     public function __construct(

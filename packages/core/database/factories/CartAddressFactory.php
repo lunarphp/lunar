@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Database\Factories;
 
+use Illuminate\Support\Str;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Country;
 
@@ -12,6 +13,7 @@ class CartAddressFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'title' => $this->faker->title,
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,

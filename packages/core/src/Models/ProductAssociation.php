@@ -10,6 +10,7 @@ use Lunar\Core\Database\Factories\ProductAssociationFactory;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
 use Lunar\Core\Enums\ProductAssociation as ProductAssociationEnum;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
 
 /**
  * @property int $id
@@ -23,6 +24,7 @@ class ProductAssociation extends Base
 {
     use HasFactory;
     use HasMacros;
+    use InvalidatesRelatedCache;
 
     /**
      * Define the cross-sell type.
@@ -81,6 +83,13 @@ class ProductAssociation extends Base
     public function target(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_target_id');
+    }
+
+    public function cacheInvalidationTargets(): iterable
+    {
+        $this->loadMissing(['parent', 'target']);
+
+        return [$this->parent, $this->target];
     }
 
     /**

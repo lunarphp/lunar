@@ -2,7 +2,7 @@ name: monorepo-split
 
 on:
   push:
-    tags: '*'
+    tags: "*"
 
 jobs:
   split-monorepo:
@@ -13,22 +13,26 @@ jobs:
         package:
           - "admin"
           - "core"
+          - "demo-data"
+          - "filament"
+          - "meilisearch"
           - "opayo"
           - "paypal"
-          - "table-rate-shipping"
-          - "stripe"
           - "search"
+          - "stripe"
+          - "table-rate-shipping"
+          - "upgrade"
     steps:
       - uses: actions/checkout@v6
       - name: Monorepo Split of ${{ matrix.package }}
-        uses: danharrin/monorepo-split-github-action@v2.4.0
+        uses: danharrin/monorepo-split-github-action@v2.4.5
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: "packages/${{ matrix.package }}"
           repository_organization: "lunarphp"
           repository_name: "${{ matrix.package }}"
-          branch: 1.x
+          branch: 2.x
           tag: ${{ github.ref_name }}
           user_name: "GitHub Action"
           user_email: "action@github.com"

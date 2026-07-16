@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\TaxClass;
 use Lunar\Shipping\Models\ShippingMethod;
@@ -41,6 +42,7 @@ test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw k
     $prefix = config('lunar.database.table_prefix');
 
     $weightBaseId = DB::table("{$prefix}prices")->insertGetId([
+        'public_id' => (string) Str::ulid(),
         'priceable_type' => 'shipping_rate',
         'priceable_id' => $weightRate->id,
         'currency_id' => $currency->id,
@@ -50,6 +52,7 @@ test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw k
         'updated_at' => now(),
     ]);
     $weightTier5KgId = DB::table("{$prefix}prices")->insertGetId([
+        'public_id' => (string) Str::ulid(),
         'priceable_type' => 'shipping_rate',
         'priceable_id' => $weightRate->id,
         'currency_id' => $currency->id,
@@ -59,6 +62,7 @@ test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw k
         'updated_at' => now(),
     ]);
     $weightTier10KgId = DB::table("{$prefix}prices")->insertGetId([
+        'public_id' => (string) Str::ulid(),
         'priceable_type' => 'shipping_rate',
         'priceable_id' => $weightRate->id,
         'currency_id' => $currency->id,
@@ -68,6 +72,7 @@ test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw k
         'updated_at' => now(),
     ]);
     $cartTotalTierId = DB::table("{$prefix}prices")->insertGetId([
+        'public_id' => (string) Str::ulid(),
         'priceable_type' => 'shipping_rate',
         'priceable_id' => $cartTotalRate->id,
         'currency_id' => $currency->id,
@@ -127,6 +132,7 @@ test('migration is a no-op when there are no weight-based shipping methods', fun
     $prefix = config('lunar.database.table_prefix');
 
     $priceId = DB::table("{$prefix}prices")->insertGetId([
+        'public_id' => (string) Str::ulid(),
         'priceable_type' => 'shipping_rate',
         'priceable_id' => $cartTotalRate->id,
         'currency_id' => $currency->id,

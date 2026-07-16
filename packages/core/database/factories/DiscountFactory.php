@@ -15,6 +15,7 @@ class DiscountFactory extends BaseFactory
         $name = $this->faker->unique()->name;
 
         return [
+            'public_id' => (string) Str::ulid(),
             'name' => $name,
             'handle' => Str::snake($name),
             'type' => AmountOff::class,

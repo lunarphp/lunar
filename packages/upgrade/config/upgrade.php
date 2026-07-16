@@ -38,6 +38,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | v1 order headline mapping (spec 0022)
+    |--------------------------------------------------------------------------
+    |
+    | v1's hand-driven `orders.status` values are free-form per store. The
+    | order-status data step maps them onto the v2 derived rollups and the
+    | open/closed archive:
+    |
+    | - `fulfilled_statuses`: the order went out the door — it gets
+    |   `fulfilment_status` = fulfilled and a whole-order shipped Fulfilment.
+    | - `closed_statuses`: the order is archived — `closed_at` is stamped.
+    | - `cancelled_statuses`: additionally stamp `cancelled_at`.
+    |
+    | The defaults cover the stock v1 statuses; add your store's custom
+    | statuses to the right lists before running the upgrade.
+    |
+    */
+    'orders' => [
+        'fulfilled_statuses' => ['dispatched', 'complete'],
+        'closed_statuses' => ['complete', 'cancelled', 'refunded'],
+        'cancelled_statuses' => ['cancelled'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Migrations ledger rewrite (spec 0003)
     |--------------------------------------------------------------------------
     |
@@ -111,7 +135,7 @@ return [
             '2026_01_01_000036_create_tax_zone_customer_groups_table',
             '2026_01_01_000037_create_tax_zone_postcodes_table',
             '2026_01_01_000038_create_urls_table',
-            '2026_01_01_000039_create_attributables_table',
+            '2026_01_01_000039_create_attribute_pivot_tables',
             '2026_01_01_000040_create_brand_collection_table',
             '2026_01_01_000041_create_carts_table',
             '2026_01_01_000042_create_collection_customer_group_table',
@@ -131,9 +155,15 @@ return [
             '2026_01_01_000056_create_cart_lines_table',
             '2026_01_01_000057_create_media_product_variant_table',
             '2026_01_01_000058_create_product_option_value_product_variant_table',
+            '2026_01_01_000060_create_locations_table',
+            '2026_01_01_000061_create_fulfilments_table',
+            '2026_01_01_000062_create_fulfilment_lines_table',
+            '2026_01_01_000063_create_fulfilment_trackings_table',
             '2026_01_01_000064_create_stock_levels_table',
             '2026_01_01_000065_create_stock_movements_table',
-            '2026_01_01_000066_create_stock_reservations_table',
+            '2026_01_01_000067_create_regions_table',
+            '2026_01_01_000068_create_country_region_table',
+            '2026_01_01_000069_add_region_id_to_carts_and_orders',
             '2026_01_01_000059_add_orders_cart_id_foreign_key',
             '2026_01_01_900000_create_staff_table',
             '2026_01_01_900001_create_activity_log_table',

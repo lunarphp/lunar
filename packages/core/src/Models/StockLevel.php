@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Database\Factories\StockLevelFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
+use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
 
 /**
  * A variant's stock balance at a single location.
  *
  * @property int $id
+ * @property string $public_id
  * @property int $product_variant_id
  * @property int $location_id
  * @property int $on_hand
@@ -29,6 +32,8 @@ class StockLevel extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
+    use InvalidatesRelatedCache;
 
     /**
      * {@inheritDoc}
@@ -57,6 +62,13 @@ class StockLevel extends Base
     public function variant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+    }
+
+    public function cacheInvalidationTargets(): iterable
+    {
+        $this->loadMissing('variant.product');
+
+        return [$this->variant?->product];
     }
 
     public function location(): BelongsTo

@@ -10,10 +10,12 @@ use Lunar\Core\Contracts\Addressable;
 use Lunar\Core\Database\Factories\OrderAddressFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
 use Lunar\Core\Models\Concerns\HasPersonalDetails;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property int $order_id
  * @property ?int $country_id
  * @property ?string $title
@@ -41,6 +43,7 @@ class OrderAddress extends Base implements Addressable
     use HasFactory;
     use HasMacros;
     use HasPersonalDetails;
+    use HasPublicId;
     use LogsActivity;
 
     /**

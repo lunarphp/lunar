@@ -33,6 +33,7 @@ class BrandIndexer extends ScoutIndexer
     {
         return array_merge([
             'id' => (string) $model->id,
+            'public_id' => (string) $model->public_id,
             'created_at' => (int) $model->created_at->timestamp,
         ],
             $this->mapTranslatableFields($model, ['name', 'description', 'short_description']),

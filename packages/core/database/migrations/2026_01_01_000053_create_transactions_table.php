@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->foreignId('order_id')->constrained($this->prefix.'orders');
             $table->boolean('success')->index();
             $table->string('driver');

@@ -186,6 +186,56 @@ test('it clears attributables pivot rows before deleting the system attributes',
     expect(DB::table(SPEC0018_PREFIX.'attributes')->whereIn('handle', ['name', 'description'])->count())->toBe(0);
 });
 
+test('it wraps plain Text values in the default language', function () {
+    simulateV1Products();
+
+    // v1 stores with a single locale commonly used `Text` (a bare string)
+    // rather than `TranslatedText` for name/description.
+    DB::table(SPEC0018_PREFIX.'products')->where('id', 1)->update([
+        'attribute_data' => json_encode([
+            'name' => ['field_type' => Text::class, 'value' => 'Contactor'],
+            'description' => ['field_type' => Text::class, 'value' => '<p>4kw</p>'],
+        ]),
+    ]);
+
+    Schema::create(SPEC0018_PREFIX.'languages', function (Blueprint $table) {
+        $table->id();
+        $table->string('code');
+        $table->string('name');
+        $table->boolean('default')->default(false);
+    });
+
+    DB::table(SPEC0018_PREFIX.'languages')->insert([
+        ['code' => 'fr', 'name' => 'French', 'default' => false],
+        ['code' => 'de', 'name' => 'German', 'default' => true],
+    ]);
+
+    catalogueMigration()->up();
+
+    $product = DB::table(SPEC0018_PREFIX.'products')->find(1);
+
+    expect(json_decode($product->name, true))->toBe(['de' => 'Contactor']);
+    expect(json_decode($product->description, true))->toBe(['de' => '<p>4kw</p>']);
+
+    Schema::drop(SPEC0018_PREFIX.'languages');
+});
+
+test('it falls back to en when no languages table exists', function () {
+    simulateV1Products();
+
+    DB::table(SPEC0018_PREFIX.'products')->where('id', 1)->update([
+        'attribute_data' => json_encode([
+            'name' => ['field_type' => Text::class, 'value' => 'Contactor'],
+        ]),
+    ]);
+
+    catalogueMigration()->up();
+
+    $product = DB::table(SPEC0018_PREFIX.'products')->find(1);
+
+    expect(json_decode($product->name, true))->toBe(['en' => 'Contactor']);
+});
+
 test('it backfills the dedicated columns from attribute_data', function () {
     simulateV1Products();
 

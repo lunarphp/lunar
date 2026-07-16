@@ -51,8 +51,8 @@ return [
         'backorder' => [
             'label' => 'Đặt trước',
         ],
-        'purchasable' => [
-            'label' => 'Khả năng mua hàng',
+        'selling_policy' => [
+            'label' => 'Chính sách bán hàng',
             'options' => [
                 'always' => 'Luôn luôn',
                 'in_stock' => 'Còn hàng',

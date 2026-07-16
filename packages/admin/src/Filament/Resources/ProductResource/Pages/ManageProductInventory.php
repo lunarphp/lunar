@@ -27,7 +27,7 @@ class ManageProductInventory extends BaseEditRecord
 
     public ?string $backorder = null;
 
-    public ?string $purchasable = null;
+    public ?string $selling_policy = null;
 
     public ?int $unit_quantity = 1;
 
@@ -76,7 +76,7 @@ class ManageProductInventory extends BaseEditRecord
         $variant = $this->getVariant();
 
         $this->backorder = $variant->backorder;
-        $this->purchasable = $variant->purchasable;
+        $this->selling_policy = $variant->selling_policy?->value;
         $this->unit_quantity = $variant->unit_quantity;
         $this->min_quantity = $variant->min_quantity;
         $this->quantity_increment = $variant->quantity_increment;

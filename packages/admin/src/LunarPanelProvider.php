@@ -8,18 +8,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Console\Commands\MakeLunarAdminCommand;
 use Lunar\Admin\Console\Commands\PublishAdminResourcesCommand;
-use Lunar\Admin\Events\ChildCollectionCreated;
-use Lunar\Admin\Events\CollectionProductDetached;
-use Lunar\Admin\Events\CustomerAddressEdited;
 use Lunar\Admin\Events\CustomerUserEdited;
-use Lunar\Admin\Events\ModelChannelsUpdated;
-use Lunar\Admin\Events\ModelPricesUpdated;
-use Lunar\Admin\Events\ModelUrlsUpdated;
-use Lunar\Admin\Events\ProductAssociationsUpdated;
-use Lunar\Admin\Events\ProductCollectionsUpdated;
-use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
-use Lunar\Admin\Events\ProductPricingUpdated;
-use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Filament\Resources\CollectionResource;
 use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Filament\Resources\ProductVariantResource;
@@ -29,7 +18,7 @@ use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
 class LunarPanelProvider extends ServiceProvider
 {
     protected $configFiles = [
-        'panel',
+        'admin',
     ];
 
     protected $root = __DIR__.'/..';
@@ -80,20 +69,14 @@ class LunarPanelProvider extends ServiceProvider
             ]);
         }
 
-        Event::listen([
-            ChildCollectionCreated::class,
-            CollectionProductDetached::class,
-            CustomerAddressEdited::class,
+        // Catalog reindexing rides the core cache-invalidation events
+        // (Lunar\Core\Listeners\ReindexOnCacheInvalidation). A linked user's
+        // email is part of the customer search document, so a user edit still
+        // reindexes the customer here.
+        Event::listen(
             CustomerUserEdited::class,
-            ProductAssociationsUpdated::class,
-            ProductCollectionsUpdated::class,
-            ProductPricingUpdated::class,
-            ProductCustomerGroupsUpdated::class,
-            ProductVariantOptionsUpdated::class,
-            ModelChannelsUpdated::class,
-            ModelPricesUpdated::class,
-            ModelUrlsUpdated::class,
-        ], fn ($event) => sync_with_search($event->model));
+            fn ($event) => sync_with_search($event->model),
+        );
 
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/lunarpanel'),
@@ -115,15 +98,15 @@ class LunarPanelProvider extends ServiceProvider
      */
     protected function registerBridgeRecordUrls(): void
     {
-        $this->app['config']->set('lunar-filament.record_urls.order',
+        $this->app['config']->set('lunar.filament.record_urls.order',
             fn ($record, array $context = []) => ManageOrder::getUrl([...$context, 'record' => $record]),
         );
 
-        $this->app['config']->set('lunar-filament.record_urls.product_variant',
+        $this->app['config']->set('lunar.filament.record_urls.product_variant',
             fn ($record, array $context = []) => ProductVariantResource::getUrl('edit', [...$context, 'record' => $record]),
         );
 
-        $this->app['config']->set('lunar-filament.record_urls.collection_edit',
+        $this->app['config']->set('lunar.filament.record_urls.collection_edit',
             fn ($record, array $context = []) => CollectionResource::getUrl('edit', [...$context, 'record' => $record]),
         );
     }

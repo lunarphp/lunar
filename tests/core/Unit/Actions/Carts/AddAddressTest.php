@@ -32,6 +32,7 @@ test('can add address from addressable', function () {
     $attributes = $address->getAttributes();
     unset($attributes['shipping_default']);
     unset($attributes['billing_default']);
+    unset($attributes['public_id']); // a copied address is a new record with its own external id
 
     $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
         'cart_id' => $cart->id,
@@ -59,6 +60,7 @@ test('can add address from array', function () {
     $attributes = $address->getAttributes();
     unset($attributes['shipping_default']);
     unset($attributes['billing_default']);
+    unset($attributes['public_id']); // a copied address is a new record with its own external id
 
     $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
         'cart_id' => $cart->id,
@@ -92,6 +94,7 @@ test('can override existing address', function () {
     $attributes = $addressA->getAttributes();
     unset($attributes['shipping_default']);
     unset($attributes['billing_default']);
+    unset($attributes['public_id']); // a copied address is a new record with its own external id
 
     $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
         'cart_id' => $cart->id,
@@ -103,6 +106,7 @@ test('can override existing address', function () {
     $attributes = $addressA->getAttributes();
     unset($attributes['shipping_default']);
     unset($attributes['billing_default']);
+    unset($attributes['public_id']); // a copied address is a new record with its own external id
 
     $this->assertDatabaseMissing((new CartAddress)->getTable(), array_merge([
         'cart_id' => $cart->id,
@@ -112,6 +116,7 @@ test('can override existing address', function () {
     $attributes = $addressB->getAttributes();
     unset($attributes['shipping_default']);
     unset($attributes['billing_default']);
+    unset($attributes['public_id']); // a copied address is a new record with its own external id
 
     $this->assertDatabaseHas((new CartAddress)->getTable(), array_merge([
         'cart_id' => $cart->id,

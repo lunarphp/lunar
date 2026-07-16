@@ -33,8 +33,16 @@ class TestCase extends BaseTestCase
         // File-backed SQLite per worker; Testbench wipes RefreshDatabase's
         // cache for `:memory:`, forcing a full migrate every test.
         $dbPath = sys_get_temp_dir().'/lunar-test-'.$this->workerToken().'.sqlite';
-        if (! file_exists($dbPath)) {
+
+        // Start from a clean file once per process so a stale schema left in
+        // temp by a previous run can't collide with migrations (mirrors the
+        // mysql/pgsql drop-and-recreate below).
+        if (! static::$databasePrepared) {
+            if (file_exists($dbPath)) {
+                unlink($dbPath);
+            }
             touch($dbPath);
+            static::$databasePrepared = true;
         }
 
         $app['config']->set('database.connections.testing.database', $dbPath);

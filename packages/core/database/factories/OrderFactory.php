@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Database\Factories;
 
+use Illuminate\Support\Str;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Order;
 use Lunar\Core\ValueObjects\Cart\TaxBreakdown;
@@ -16,6 +17,7 @@ class OrderFactory extends BaseFactory
         $taxTotal = intval(($total - 100) * .2);
 
         return [
+            'public_id' => (string) Str::ulid(),
             'channel_id' => Channel::factory(),
             'new_customer' => $this->faker->boolean,
             'user_id' => null,

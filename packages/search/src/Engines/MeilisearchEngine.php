@@ -46,12 +46,16 @@ class MeilisearchEngine extends AbstractEngine
 
         $results = $paginator->items();
 
+        [$sortField, $sortDirection] = $this->getSortParts();
+
         return SearchResults::from([
             'query' => $results['query'],
-            'total_pages' => $paginator->lastPage(),
+            'totalPages' => $paginator->lastPage(),
             'page' => $paginator->currentPage(),
             'count' => $paginator->total(),
-            'per_page' => $paginator->perPage(),
+            'perPage' => $paginator->perPage(),
+            'sortField' => $sortField,
+            'sortDirection' => $sortDirection,
             'hits' => collect($results['hits'])->map(fn ($hit) => SearchHit::from([
                 'highlights' => collect(),
                 'document' => $hit,

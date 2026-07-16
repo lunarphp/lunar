@@ -11,7 +11,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Lunar\Admin\Events\ProductAssociationsUpdated;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseManageRelatedRecords;
 use Lunar\Core\Models\ProductAssociation;
@@ -86,26 +85,14 @@ class ManageProductAssociations extends BaseManageRelatedRecords
                 //
             ])
             ->headerActions([
-                CreateAction::make()->after(
-                    fn () => ProductAssociationsUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
-                ),
+                CreateAction::make(),
             ])
             ->recordActions([
-                DeleteAction::make()->after(
-                    fn () => ProductAssociationsUpdated::dispatch(
-                        $this->getOwnerRecord()
-                    )
-                ),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()->after(
-                        fn () => ProductAssociationsUpdated::dispatch(
-                            $this->getOwnerRecord()
-                        )
-                    ),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

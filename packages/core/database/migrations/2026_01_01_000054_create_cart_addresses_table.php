@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'cart_addresses', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->ulid('public_id')->unique();
             $table->foreignId('cart_id')->constrained($this->prefix.'carts');
             $table->foreignId('country_id')->nullable()->constrained($this->prefix.'countries');
             $table->string('title')->nullable();

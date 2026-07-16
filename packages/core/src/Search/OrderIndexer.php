@@ -71,6 +71,7 @@ class OrderIndexer extends ScoutIndexer
     {
         $data = [
             'id' => (string) $model->id,
+            'public_id' => (string) $model->public_id,
             'channel' => $model->channel->name,
             'reference' => $model->reference,
             'customer_reference' => $model->customer_reference,

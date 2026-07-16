@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create($this->prefix.'tax_zone_postcodes', function (Blueprint $table) {
             $table->id();
+            $table->ulid('public_id')->unique();
             $table->foreignId('tax_zone_id')->nullable()->constrained($this->prefix.'tax_zones');
             $table->foreignId('country_id')->nullable()->constrained($this->prefix.'countries');
             $table->string('postcode', 20)->index();

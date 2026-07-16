@@ -4,7 +4,6 @@ namespace Lunar\Core\Pipelines\Order\Creation;
 
 use Closure;
 use Illuminate\Support\Facades\App;
-use Lunar\Core\DataTypes\ShippingOption;
 use Lunar\Core\Models\Order;
 use Lunar\Core\Models\OrderLine;
 
@@ -25,14 +24,13 @@ class CreateShippingLine
             /** @var OrderLine $shippingLine */
             $shippingLine = $order->lines->first(function ($orderLine) use ($shippingOption) {
                 return $orderLine->type == 'shipping' &&
-                    $orderLine->purchasable_type == ShippingOption::class &&
                     $orderLine->identifier == $shippingOption->getIdentifier();
             }) ?: App::make(OrderLine::class);
 
             $shippingLine->fill([
                 'order_id' => $order->id,
-                'purchasable_type' => ShippingOption::class,
-                'purchasable_id' => 1,
+                'purchasable_type' => null,
+                'purchasable_id' => null,
                 'type' => 'shipping',
                 'requires_shipping' => false,
                 'requires_fulfilment' => false,

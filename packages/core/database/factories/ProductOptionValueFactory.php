@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Database\Factories;
 
+use Illuminate\Support\Str;
 use Lunar\Core\Models\ProductOptionValue;
 
 class ProductOptionValueFactory extends BaseFactory
@@ -11,6 +12,7 @@ class ProductOptionValueFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'name' => [
                 'en' => $this->faker->name,
             ],

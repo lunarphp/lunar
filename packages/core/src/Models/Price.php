@@ -12,11 +12,14 @@ use Lunar\Core\DataObjects\PriceValue;
 use Lunar\Core\Facades\PriceCalculator;
 use Lunar\Core\Models\Concerns\FormatsPrices;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
+use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
 use Lunar\Core\Pricing\PriceFormatterInterface;
 use Spatie\LaravelBlink\BlinkFacade as Blink;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?int $customer_group_id
  * @property ?int $currency_id
  * @property string $priceable_type
@@ -32,6 +35,8 @@ class Price extends Base implements HasCurrency
     use FormatsPrices;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
+    use InvalidatesRelatedCache;
 
     /**
      * Return a new factory instance for the model.
@@ -60,6 +65,19 @@ class Price extends Base implements HasCurrency
     public function priceable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function cacheInvalidationTargets(): iterable
+    {
+        $priceable = $this->loadMissing('priceable')->priceable;
+
+        if ($priceable instanceof ProductVariant) {
+            $priceable->loadMissing('product');
+
+            return [$priceable->product];
+        }
+
+        return [$priceable];
     }
 
     /**

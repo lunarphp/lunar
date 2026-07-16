@@ -14,6 +14,7 @@ class LocationFactory extends BaseFactory
         $name = $this->faker->unique()->company();
 
         return [
+            'public_id' => (string) Str::ulid(),
             'name' => $name,
             'handle' => Str::slug($name).'-'.Str::random(5),
             'default' => false,

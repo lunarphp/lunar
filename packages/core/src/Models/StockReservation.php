@@ -11,6 +11,7 @@ use Lunar\Core\Contracts\Actions\Products\CommitsReservation;
 use Lunar\Core\Contracts\Actions\Products\ReleasesReservation;
 use Lunar\Core\Database\Factories\StockReservationFactory;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 
 /**
  * A time-boxable hold a checkout places against a variant before an order
@@ -20,6 +21,7 @@ use Lunar\Core\Models\Concerns\HasMacros;
  * (`stock_reserved`), never on a `StockLevel`.
  *
  * @property int $id
+ * @property string $public_id
  * @property int $product_variant_id
  * @property int $quantity
  * @property ?string $reference_type
@@ -36,6 +38,7 @@ class StockReservation extends Base
 {
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
 
     /**
      * {@inheritDoc}

@@ -178,7 +178,7 @@ use Lunar\Filament\Forms\Components\Support\RecordSearch;
 $results = RecordSearch::for(Product::class, $search)->take(20)->get();
 ```
 
-It prefers Laravel Scout when both `lunar.panel.scout_enabled` is true and the model uses Scout's `Searchable` trait, falls back to a translated-attribute DB search, and falls back again to a plain `name` column search for models that have neither.
+It prefers Laravel Scout when both `lunar.filament.scout_enabled` is true and the model uses Scout's `Searchable` trait, falls back to a translated-attribute DB search, and falls back again to a plain `name` column search for models that have neither.
 
 ---
 
@@ -375,7 +375,7 @@ class MyProductResource extends Resource
 }
 ```
 
-The trait forwards `getGloballySearchableAttributes`, `getGlobalSearchResultTitle`, `getGlobalSearchResultDetails`, and `getGlobalSearchEloquentQuery` to the descriptor, and routes the actual constraint-building through `RecordSearch` — the same Scout-vs-translated-attribute backend the entity selectors use. Scout is used when `lunar.panel.scout_enabled=true` and the model uses `Laravel\Scout\Searchable`; otherwise the query falls back to LIKE-matching across the resource's attribute list plus any searchable `TranslatedText` attributes.
+The trait forwards `getGloballySearchableAttributes`, `getGlobalSearchResultTitle`, `getGlobalSearchResultDetails`, and `getGlobalSearchEloquentQuery` to the descriptor, and routes the actual constraint-building through `RecordSearch` — the same Scout-vs-translated-attribute backend the entity selectors use. Scout is used when `lunar.filament.scout_enabled=true` and the model uses `Laravel\Scout\Searchable`; otherwise the query falls back to LIKE-matching across the resource's attribute list plus any searchable `TranslatedText` attributes.
 
 `getGlobalSearchResultUrl` stays on the resource — only the resource knows its own URL.
 
@@ -502,7 +502,7 @@ $this->app->bind(
 php artisan vendor:publish --tag=lunar-filament.schemas
 ```
 
-Copies every schema, table, infolist, and relation manager into `app/Filament/…` (configurable in `config/lunar-filament.php` → `publish_path`). The runtime resolver prefers your published copy when both exist.
+Copies every schema, table, infolist, and relation manager into `app/Filament/…` (configurable in `config/lunar/filament.php` → `publish_path`). The runtime resolver prefers your published copy when both exist.
 
 You can also publish:
 
@@ -516,12 +516,15 @@ php artisan vendor:publish --tag=lunar-filament.views     # blade views
 
 ## Configuration
 
-Publish and tweak `config/lunar-filament.php` to change:
+Publish and tweak `config/lunar/filament.php` to change:
 
 - `publish_path` — where stub publication writes files (default: `app/Filament`).
 - `resolver.prefer_published` — runtime preference between published and bridge classes.
 - `register_widgets_on_default_panel` — opt-in auto-registration of the dashboard widgets (off by default for downstream-panel installs).
 - `record_url_resolvers` — closures that map a record + key to a URL inside your panel.
+- `enable_variants` — whether the variants manager shows when editing a product (default: `true`).
+- `pdf_rendering` — `'download'` or `'stream'`, controlling how PDFs are handled when browsing the resource (default: `'download'`).
+- `scout_enabled` — whether to prefer Laravel Scout over the translated-attribute DB search on supported models (default: `false`).
 
 ---
 

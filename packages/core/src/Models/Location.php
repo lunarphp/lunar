@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Lunar\Core\Database\Factories\LocationFactory;
 use Lunar\Core\Models\Concerns\HasDefaultRecord;
 use Lunar\Core\Models\Concerns\HasMacros;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\LogsActivity;
 
 /**
@@ -17,6 +18,7 @@ use Lunar\Core\Models\Concerns\LogsActivity;
  * and (in future) that inventory is tracked against.
  *
  * @property int $id
+ * @property string $public_id
  * @property string $name
  * @property string $handle
  * @property bool $default
@@ -29,6 +31,7 @@ class Location extends Base
     use HasDefaultRecord;
     use HasFactory;
     use HasMacros;
+    use HasPublicId;
     use LogsActivity;
 
     /**

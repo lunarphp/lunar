@@ -5,15 +5,18 @@ namespace Lunar\Core\Models;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 use Lunar\Core\Models\Concerns\HasMedia as TraitsHasMedia;
+use Lunar\Core\Models\Concerns\HasPublicId;
 use Spatie\MediaLibrary\HasMedia;
 
 /**
  * @property int $id
+ * @property string $public_id
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
 class Asset extends Base implements HasMedia
 {
+    use HasPublicId;
     use TraitsHasMedia;
 
     /**

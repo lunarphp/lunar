@@ -3,9 +3,9 @@
 namespace Lunar\Tests\Core;
 
 use Illuminate\Support\Facades\Config;
-use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Lunar\Core\Facades\Taxes;
 use Lunar\Core\LunarServiceProvider;
+use Lunar\Nestedset\NestedSetServiceProvider;
 use Lunar\Tests\Core\Stubs\TestTaxDriver;
 use Lunar\Tests\Core\Stubs\TestUrlGenerator;
 use Lunar\Tests\Core\Stubs\User;

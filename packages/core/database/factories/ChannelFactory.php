@@ -12,6 +12,7 @@ class ChannelFactory extends BaseFactory
     public function definition(): array
     {
         return [
+            'public_id' => (string) Str::ulid(),
             'name' => $this->faker->name(),
             'handle' => Str::slug($this->faker->name()),
             'default' => true,

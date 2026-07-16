@@ -37,7 +37,7 @@ test('it resolves the configured defaults when nothing is supplied', function ()
 
 test('explicit overrides win over the defaults', function () {
     Channel::factory()->create(['default' => true]);
-    Currency::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true, 'code' => 'GBP']);
     Language::factory()->create(['default' => true]);
     CustomerGroup::factory()->create(['default' => true]);
 
@@ -82,7 +82,7 @@ test('language is null when no default language is configured', function () {
 test('channel, currency and language default from the resolved region', function () {
     // globals, distinct from the region's own selections
     Channel::factory()->create(['default' => true]);
-    Currency::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true, 'code' => 'GBP']);
     Language::factory()->create(['default' => true]);
     CustomerGroup::factory()->create(['default' => true]);
 
@@ -107,7 +107,7 @@ test('channel, currency and language default from the resolved region', function
 
 test('an explicit override beats the region default', function () {
     Channel::factory()->create(['default' => true]);
-    Currency::factory()->create(['default' => true]);
+    Currency::factory()->create(['default' => true, 'code' => 'GBP']);
     CustomerGroup::factory()->create(['default' => true]);
 
     $regionCurrency = Currency::factory()->create(['default' => false, 'code' => 'EUR']);

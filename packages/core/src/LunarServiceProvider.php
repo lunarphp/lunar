@@ -19,6 +19,9 @@ use Illuminate\Support\Str;
 use Lunar\Core\Addons\Manifest;
 use Lunar\Core\Auth\Manifest as AccessControlManifest;
 use Lunar\Core\Cache\AttributeCache as AttributeCacheImpl;
+use Lunar\Core\Cache\CacheDependencies as CacheDependenciesImpl;
+use Lunar\Core\Cache\CacheInvalidator as CacheInvalidatorImpl;
+use Lunar\Core\Cache\DependencyResolver as DependencyResolverImpl;
 use Lunar\Core\Console\Commands\AddonsDiscover;
 use Lunar\Core\Console\Commands\Import\AddressData;
 use Lunar\Core\Console\Commands\Orders\SyncNewCustomerOrders;
@@ -29,10 +32,14 @@ use Lunar\Core\Console\Commands\ScoutIndexerCommand;
 use Lunar\Core\Console\InstallLunar;
 use Lunar\Core\Contracts\AttributeCache;
 use Lunar\Core\Contracts\AttributeManifest;
+use Lunar\Core\Contracts\CacheDependencies as CacheDependenciesContract;
+use Lunar\Core\Contracts\CacheInvalidationEvent;
+use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\CancelReasonManifest;
 use Lunar\Core\Contracts\CarrierManifest;
 use Lunar\Core\Contracts\CartSession;
 use Lunar\Core\Contracts\CouponValidator;
+use Lunar\Core\Contracts\DependencyResolver as DependencyResolverContract;
 use Lunar\Core\Contracts\DiscountManager;
 use Lunar\Core\Contracts\FieldTypeManifest;
 use Lunar\Core\Contracts\FulfilmentMethodManifest;
@@ -63,6 +70,7 @@ use Lunar\Core\Listeners\ApplyStockForFulfilmentTransition;
 use Lunar\Core\Listeners\CartSessionAuthListener;
 use Lunar\Core\Listeners\CloseSettledOrder;
 use Lunar\Core\Listeners\EnsureInitialFulfilmentForOrder;
+use Lunar\Core\Listeners\ReindexOnCacheInvalidation;
 use Lunar\Core\Listeners\SendFulfilmentStatusNotifications;
 use Lunar\Core\Listeners\SendOrderCancelledNotifications;
 use Lunar\Core\Listeners\SendOrderFulfilmentStatusNotifications;
@@ -85,6 +93,7 @@ use Lunar\Core\Manifests\OrderNotificationManifest as OrderNotificationManifestI
 use Lunar\Core\Manifests\ShippingManifest as ShippingManifestImpl;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Attribute;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartLine;
 use Lunar\Core\Models\Channel;
 use Lunar\Core\Models\Collection;
@@ -112,6 +121,7 @@ use Lunar\Core\Modifiers\ShippingModifiers;
 use Lunar\Core\Observers\AddressObserver;
 use Lunar\Core\Observers\AttributeObserver;
 use Lunar\Core\Observers\CartLineObserver;
+use Lunar\Core\Observers\CartObserver;
 use Lunar\Core\Observers\ChannelObserver;
 use Lunar\Core\Observers\CollectionObserver;
 use Lunar\Core\Observers\CurrencyObserver;
@@ -291,6 +301,21 @@ class LunarServiceProvider extends ServiceProvider
         Event::listen(FulfilmentCreated::class, AllocateStockForFulfilment::class);
         Event::listen(FulfilmentStatusUpdated::class, ApplyStockForFulfilmentTransition::class);
 
+        // Reindex searchable models on cascade invalidations (the cases Scout's
+        // own model observer cannot see); direct saves reindex through Scout.
+        Event::listen(CacheInvalidationEvent::class, ReindexOnCacheInvalidation::class);
+
+        // Default cache-dependency graphs (named after the morph alias). A
+        // product page depends on its brand, collections, options and cross-sells;
+        // other cacheable entities resolve to their own tag unless a consumer
+        // registers a graph for them.
+        $this->app->make(CacheDependenciesContract::class)->define('product', [
+            'brand',
+            'collections',
+            'productOptions',
+            'associations.target',
+        ]);
+
         $this->registerStaffAuthGuard();
         $this->registerStaffStateListeners();
 
@@ -408,6 +433,21 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(AttributeCacheImpl::class);
         });
 
+        $this->app->singleton(CacheInvalidator::class, function ($app) {
+            return new CacheInvalidatorImpl($app['db'], config('lunar.database.connection'));
+        });
+
+        $this->app->singleton(CacheDependenciesContract::class, function ($app) {
+            return $app->make(CacheDependenciesImpl::class);
+        });
+
+        $this->app->singleton(DependencyResolverContract::class, function ($app) {
+            return new DependencyResolverImpl(
+                $app->make(CacheDependenciesContract::class),
+                ! $app->environment('production'),
+            );
+        });
+
         $this->app->singleton(ModelManifest::class, function ($app) {
             return $app->make(ModelManifestImpl::class);
         });
@@ -489,6 +529,7 @@ class LunarServiceProvider extends ServiceProvider
     {
         Address::observe(AddressObserver::class);
         Attribute::observe(AttributeObserver::class);
+        Cart::observe(CartObserver::class);
         CartLine::observe(CartLineObserver::class);
         Channel::observe(ChannelObserver::class);
         Collection::observe(CollectionObserver::class);
