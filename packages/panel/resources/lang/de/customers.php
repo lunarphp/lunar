@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Standardversand',
     'default_billing' => 'Standardrechnung',
     'save_address' => 'Adresse speichern',
+    'edit_address' => 'Adresse bearbeiten',
     'set_default_billing' => 'Als Standardrechnungsadresse festlegen',
     'set_default_shipping' => 'Als Standardversandadresse festlegen',
     'remove_address' => 'Adresse entfernen',

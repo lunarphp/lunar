@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Default shipping',
     'default_billing' => 'Default billing',
     'save_address' => 'Save address',
+    'edit_address' => 'Edit address',
     'set_default_billing' => 'Set default billing',
     'set_default_shipping' => 'Set default shipping',
     'remove_address' => 'Remove address',

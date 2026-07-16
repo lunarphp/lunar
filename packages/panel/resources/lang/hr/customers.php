@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Zadana dostava',
     'default_billing' => 'Zadana naplata',
     'save_address' => 'Spremi adresu',
+    'edit_address' => 'Uredi adresu',
     'set_default_billing' => 'Postavi kao zadanu adresu za naplatu',
     'set_default_shipping' => 'Postavi kao zadanu adresu za dostavu',
     'remove_address' => 'Ukloni adresu',

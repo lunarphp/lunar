@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'الشحن الافتراضي',
     'default_billing' => 'الفوترة الافتراضية',
     'save_address' => 'حفظ العنوان',
+    'edit_address' => 'تعديل العنوان',
     'set_default_billing' => 'تعيين كعنوان فوترة افتراضي',
     'set_default_shipping' => 'تعيين كعنوان شحن افتراضي',
     'remove_address' => 'إزالة العنوان',

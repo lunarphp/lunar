@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Standaard verzendadres',
     'default_billing' => 'Standaard factuuradres',
     'save_address' => 'Adres opslaan',
+    'edit_address' => 'Adres bewerken',
     'set_default_billing' => 'Instellen als standaard factuuradres',
     'set_default_shipping' => 'Instellen als standaard verzendadres',
     'remove_address' => 'Adres verwijderen',

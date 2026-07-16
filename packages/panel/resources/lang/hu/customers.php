@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Alapértelmezett szállítási cím',
     'default_billing' => 'Alapértelmezett számlázási cím',
     'save_address' => 'Cím mentése',
+    'edit_address' => 'Cím szerkesztése',
     'set_default_billing' => 'Beállítás alapértelmezett számlázási címként',
     'set_default_shipping' => 'Beállítás alapértelmezett szállítási címként',
     'remove_address' => 'Cím eltávolítása',

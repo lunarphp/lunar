@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Giao hàng mặc định',
     'default_billing' => 'Thanh toán mặc định',
     'save_address' => 'Lưu địa chỉ',
+    'edit_address' => 'Sửa địa chỉ',
     'set_default_billing' => 'Đặt làm thanh toán mặc định',
     'set_default_shipping' => 'Đặt làm giao hàng mặc định',
     'remove_address' => 'Xóa địa chỉ',

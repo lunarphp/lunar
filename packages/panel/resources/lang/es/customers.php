@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Envío predeterminado',
     'default_billing' => 'Facturación predeterminada',
     'save_address' => 'Guardar dirección',
+    'edit_address' => 'Editar dirección',
     'set_default_billing' => 'Establecer como facturación predeterminada',
     'set_default_shipping' => 'Establecer como envío predeterminado',
     'remove_address' => 'Eliminar dirección',

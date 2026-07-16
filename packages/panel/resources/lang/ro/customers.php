@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Livrare implicită',
     'default_billing' => 'Facturare implicită',
     'save_address' => 'Salvează adresa',
+    'edit_address' => 'Editează adresa',
     'set_default_billing' => 'Setează ca facturare implicită',
     'set_default_shipping' => 'Setează ca livrare implicită',
     'remove_address' => 'Elimină adresa',

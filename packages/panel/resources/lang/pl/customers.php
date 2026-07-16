@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Domyślny adres wysyłki',
     'default_billing' => 'Domyślny adres rozliczeniowy',
     'save_address' => 'Zapisz adres',
+    'edit_address' => 'Edytuj adres',
     'set_default_billing' => 'Ustaw jako domyślny rozliczeniowy',
     'set_default_shipping' => 'Ustaw jako domyślny wysyłkowy',
     'remove_address' => 'Usuń adres',

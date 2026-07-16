@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'По подразбиране за доставка',
     'default_billing' => 'По подразбиране за фактуриране',
     'save_address' => 'Запази адрес',
+    'edit_address' => 'Редактиране на адреса',
     'set_default_billing' => 'Задай като основен за фактуриране',
     'set_default_shipping' => 'Задай като основен за доставка',
     'remove_address' => 'Премахни адрес',

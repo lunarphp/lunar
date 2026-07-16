@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Livraison par défaut',
     'default_billing' => 'Facturation par défaut',
     'save_address' => "Enregistrer l'adresse",
+    'edit_address' => 'Modifier l\'adresse',
     'set_default_billing' => 'Définir comme facturation par défaut',
     'set_default_shipping' => 'Définir comme livraison par défaut',
     'remove_address' => "Supprimer l'adresse",

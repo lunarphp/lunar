@@ -328,12 +328,23 @@ const startEditAddress = (address: Address): void => {
     addressForm.billing_default = address.billing_default;
 };
 
-const cancelEditAddress = (): void => {
-    editingAddressId.value = null;
-};
+const editingAddress = computed(() => props.addresses.find((address) => address.id === editingAddressId.value) ?? null);
 
-const submitEditAddress = (address: Address): void => {
-    addressForm.put(address.update_url, {
+const editAddressOpen = computed({
+    get: () => editingAddressId.value !== null,
+    set: (value: boolean) => {
+        if (!value) {
+            editingAddressId.value = null;
+        }
+    },
+});
+
+const submitEditAddress = (): void => {
+    if (!editingAddress.value) {
+        return;
+    }
+
+    addressForm.put(editingAddress.value.update_url, {
         preserveScroll: true,
         onSuccess: () => {
             editingAddressId.value = null;
@@ -634,28 +645,15 @@ const tabDefs = computed(() => [
 
                                 <template #addresses>
                                     <div v-if="addresses.length" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                                        <template v-for="address in addresses" :key="address.id">
-                                            <form
-                                                v-if="editingAddressId === address.id"
-                                                class="bg-surface border border-line rounded-md p-3.5 flex flex-col gap-3"
-                                                @submit.prevent="submitEditAddress(address)"
-                                            >
-                                                <AddressFormFields :form="addressForm" :countries="countries" id-prefix="edit-address" />
-                                                <div class="flex gap-2">
-                                                    <Button type="submit" variant="primary" size="sm" :disabled="addressForm.processing">{{ t('customers.save_address') }}</Button>
-                                                    <Button type="button" size="sm" @click="cancelEditAddress">{{ t('common.cancel') }}</Button>
-                                                </div>
-                                            </form>
-                                            <AddressCard v-else :address="cardAddress(address)">
-                                                <template #actions>
-                                                    <Button variant="ghost" size="sm" icon="edit" @click="startEditAddress(address)">{{ t('common.edit') }}</Button>
-                                                    <Button v-if="!address.billing_default" variant="ghost" size="sm" @click="setAddressDefault(address, 'billing_default')">{{ t('customers.set_default_billing') }}</Button>
-                                                    <Button v-if="!address.shipping_default" variant="ghost" size="sm" @click="setAddressDefault(address, 'shipping_default')">{{ t('customers.set_default_shipping') }}</Button>
-                                                    <div class="flex-1" />
-                                                    <Button variant="ghost" size="sm" icon="trash" :aria-label="t('customers.remove_address')" @click="destroyAddress(address)" />
-                                                </template>
-                                            </AddressCard>
-                                        </template>
+                                        <AddressCard v-for="address in addresses" :key="address.id" :address="cardAddress(address)">
+                                            <template #actions>
+                                                <Button variant="ghost" size="sm" icon="edit" @click="startEditAddress(address)">{{ t('common.edit') }}</Button>
+                                                <Button v-if="!address.billing_default" variant="ghost" size="sm" @click="setAddressDefault(address, 'billing_default')">{{ t('customers.set_default_billing') }}</Button>
+                                                <Button v-if="!address.shipping_default" variant="ghost" size="sm" @click="setAddressDefault(address, 'shipping_default')">{{ t('customers.set_default_shipping') }}</Button>
+                                                <div class="flex-1" />
+                                                <Button variant="ghost" size="sm" icon="trash" :aria-label="t('customers.remove_address')" @click="destroyAddress(address)" />
+                                            </template>
+                                        </AddressCard>
                                     </div>
                                     <PageEmpty v-else :title="t('customers.addresses_empty_title')">{{ t('customers.addresses_empty_body') }}</PageEmpty>
 
@@ -666,6 +664,16 @@ const tabDefs = computed(() => [
                                         <template #footer>
                                             <Button type="button" @click="showNewAddressForm = false">{{ t('common.cancel') }}</Button>
                                             <Button type="submit" form="new-address-form" variant="primary" :disabled="newAddressForm.processing">{{ t('customers.add_address') }}</Button>
+                                        </template>
+                                    </Dialog>
+
+                                    <Dialog v-model:open="editAddressOpen" :title="t('customers.edit_address')" size="lg">
+                                        <form id="edit-address-form" @submit.prevent="submitEditAddress">
+                                            <AddressFormFields :form="addressForm" :countries="countries" id-prefix="edit-address" />
+                                        </form>
+                                        <template #footer>
+                                            <Button type="button" @click="editAddressOpen = false">{{ t('common.cancel') }}</Button>
+                                            <Button type="submit" form="edit-address-form" variant="primary" :disabled="addressForm.processing">{{ t('customers.save_address') }}</Button>
                                         </template>
                                     </Dialog>
                                 </template>

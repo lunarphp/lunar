@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'ارسال پیش‌فرض',
     'default_billing' => 'صورت‌حساب پیش‌فرض',
     'save_address' => 'ذخیره آدرس',
+    'edit_address' => 'ویرایش آدرس',
     'set_default_billing' => 'تنظیم به‌عنوان صورت‌حساب پیش‌فرض',
     'set_default_shipping' => 'تنظیم به‌عنوان ارسال پیش‌فرض',
     'remove_address' => 'حذف آدرس',

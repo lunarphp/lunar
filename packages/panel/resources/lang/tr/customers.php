@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Varsayılan gönderim',
     'default_billing' => 'Varsayılan fatura',
     'save_address' => 'Adresi kaydet',
+    'edit_address' => 'Adresi düzenle',
     'set_default_billing' => 'Varsayılan fatura olarak ayarla',
     'set_default_shipping' => 'Varsayılan gönderim olarak ayarla',
     'remove_address' => 'Adresi kaldır',

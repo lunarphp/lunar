@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Үндсэн хүргэлтийн хаяг',
     'default_billing' => 'Үндсэн нэхэмжлэхийн хаяг',
     'save_address' => 'Хаяг хадгалах',
+    'edit_address' => 'Хаяг засах',
     'set_default_billing' => 'Үндсэн нэхэмжлэхийн хаяг болгох',
     'set_default_shipping' => 'Үндсэн хүргэлтийн хаяг болгох',
     'remove_address' => 'Хаяг устгах',

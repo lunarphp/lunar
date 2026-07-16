@@ -81,6 +81,7 @@ return [
     'default_shipping' => 'Envio padrão',
     'default_billing' => 'Cobrança padrão',
     'save_address' => 'Salvar endereço',
+    'edit_address' => 'Editar endereço',
     'set_default_billing' => 'Definir como cobrança padrão',
     'set_default_shipping' => 'Definir como envio padrão',
     'remove_address' => 'Remover endereço',
