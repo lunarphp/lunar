@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
 import Button from '../../components/Button.vue';
@@ -32,6 +32,7 @@ const submit = () => form.post(props.urls.store);
                 {{ t('auth.back_to_sign_in') }}
             </Link>
 
+            <Head :title="t('auth.forgot_title')" />
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.forgot_title') }}</h1>
             <p class="mt-1.5 text-[13px] text-ink-500">{{ t('auth.forgot_subtitle') }}</p>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import CodeInput from '../../components/CodeInput.vue';
@@ -71,6 +71,7 @@ const copyCodes = () => {
 <template>
     <div class="min-h-screen bg-canvas font-sans py-10">
         <div class="mx-auto flex max-w-xl flex-col gap-6 px-6">
+            <Head :title="t('auth.security_title')" />
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.security_title') }}</h1>
 
             <div

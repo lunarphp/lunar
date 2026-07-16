@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
 import Button from '../../components/Button.vue';
@@ -47,6 +47,7 @@ onMounted(() => {
         </template>
 
         <form class="flex flex-col" @submit.prevent="submit">
+            <Head :title="t('auth.sign_in_title')" />
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.sign_in_title') }}</h1>
             <p class="mt-1.5 text-[13px] text-ink-500">{{ t('auth.sign_in_subtitle') }}</p>
 

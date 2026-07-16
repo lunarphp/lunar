@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { TooltipProvider, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, VisuallyHidden } from 'reka-ui';
-import { usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import SettingsNavBody from '../components/SettingsNavBody.vue';
 import Icon from '../components/Icon.vue';
@@ -74,6 +74,9 @@ onUnmounted(() => {
 
 <template>
     <TooltipProvider :delay-duration="350">
+        <!-- Same scaffold-owned browser-tab title as PageHeader; settings pages
+             without a title fall back to the panel name via app.ts. -->
+        <Head v-if="title" :title="title" />
         <div
             :class="[
                 'min-h-screen lg:grid',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watch } from 'vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
 import Button from '../../components/Button.vue';
@@ -125,6 +125,7 @@ const resend = () => {
                 <Icon :name="method === 'email' ? 'mail' : 'shield'" />
             </div>
 
+            <Head :title="t('auth.challenge_title')" />
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.challenge_title') }}</h1>
             <p class="mt-1.5 text-[13px] text-ink-500">
                 <template v-if="useRecovery">{{ t('auth.challenge_recovery_subtitle') }}</template>

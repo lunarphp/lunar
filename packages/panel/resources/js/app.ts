@@ -27,17 +27,27 @@ window.LunarPanel.registerLayout('default', PanelLayout);
 
 const pages = import.meta.glob<DefineComponent>('./pages/**/*.vue', { eager: true });
 
+// Browser-tab title suffix; assigned from the shared panel prop in setup(),
+// which runs before the head manager (installed by the plugin during mount)
+// resolves any page title.
+let panelName = 'Lunar';
+
 // `window.LunarPanel`'s declared type is the public add-on-facing interface (see
 // lunar-panel.d.ts); the resolver needs the internal getPage/markBooted surface the
 // concrete runtime actually exposes.
 createInertiaApp({
+    // Pages provide their title through <Head> (rendered by the shared
+    // scaffold); pages without one fall back to the bare panel name.
+    title: (title) => (title ? `${title} — ${panelName}` : panelName),
     resolve: createPageResolver(window.LunarPanel as LunarPanelRuntime, pages),
     async setup({ el, App, props, plugin }) {
         // Applies the persisted/system theme class before first paint.
         useTheme();
 
         const locale = (props.initialPage.props.locale as string | undefined) ?? 'en';
-        const panelPath = (props.initialPage.props.panel as { path: string } | undefined)?.path ?? 'panel';
+        const panel = props.initialPage.props.panel as { path?: string; name?: string } | undefined;
+        const panelPath = panel?.path ?? 'panel';
+        panelName = panel?.name ?? 'Lunar';
 
         const i18n = createPanelI18n(locale);
 

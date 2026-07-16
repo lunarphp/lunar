@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import PageActions, { type PageAction } from './PageActions.vue';
 
 defineProps<{ title: string; description?: string }>();
@@ -13,6 +13,10 @@ const pageActions = computed(() => (usePage().props.pageActions as PageAction[] 
 
 <template>
     <div class="flex items-start gap-3 sm:gap-4 px-4 sm:px-5 lg:px-7 pt-[18px] pb-3.5 border-b border-line bg-paper">
+        <!-- The scaffold owns the browser-tab title, so every page that renders a
+             header gets one for free; app.ts suffixes the panel name. -->
+        <Head :title="title" />
+
         <slot name="icon" />
 
         <div class="flex-1 min-w-0">

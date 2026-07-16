@@ -46,11 +46,46 @@ it('builds every content page through the shared scaffold', function () {
     expect($offenders)->toBe([]);
 });
 
+it('sets a browser-tab title on every page', function () {
+    $pagesDir = panelJsPath('pages');
+
+    // Content pages inherit <Head> from PageHeader/SettingsShell (asserted in
+    // the scaffold test below); the exempt auth and account pages must render
+    // their own.
+    $exemptTopLevel = ['auth', 'account'];
+
+    $offenders = [];
+
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($pagesDir, FilesystemIterator::SKIP_DOTS),
+    );
+
+    foreach ($files as $file) {
+        if ($file->getExtension() !== 'vue') {
+            continue;
+        }
+
+        $relative = str_replace($pagesDir.'/', '', $file->getPathname());
+
+        if (! in_array(explode('/', $relative)[0], $exemptTopLevel, true)) {
+            continue;
+        }
+
+        if (! str_contains((string) file_get_contents($file->getPathname()), '<Head ')) {
+            $offenders[] = $relative;
+        }
+    }
+
+    expect($offenders)->toBe([]);
+});
+
 it('has scaffold components that carry the page-action ellipsis and a main slot zone', function () {
     $pageHeader = (string) file_get_contents(panelJsPath('components/PageHeader.vue'));
     $settingsShell = (string) file_get_contents(panelJsPath('layouts/SettingsShell.vue'));
 
     expect($pageHeader)->toContain('PageActions')
+        ->and($pageHeader)->toContain('<Head ')
         ->and($settingsShell)->toContain('PageActions')
-        ->and($settingsShell)->toContain('PageZone');
+        ->and($settingsShell)->toContain('PageZone')
+        ->and($settingsShell)->toContain('<Head ');
 });
