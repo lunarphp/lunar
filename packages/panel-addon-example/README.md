@@ -28,7 +28,11 @@ trimmed for brevity) — read the linked file if you want the full context.
   `example-addon::InfoBanner` and injected into the real Customers edit
   page's `customers.edit:main:after` zone.
 - **Table extension registration** — `ExampleTableExtension` adds an extra
-  column to the real Customers index (`customers.index`).
+  column, a toolbar filter, a row action (anchored `Position::after('edit')`),
+  and a bulk action to the real Customers index (`customers.index`).
+- **Page action registration** — `ImportPageAction` (listing header) and
+  `AuditPageAction` (record header, built from the `$context` record) appear
+  in the real Customers pages' header ellipsis via `Section::pageActions()`.
 - **IIFE compilation** — `resources/js/addon.ts` compiles to a single IIFE via
   the panel's exported `@lunarphp/panel-vite-plugin`, sharing the panel's own
   Vue instance (`window.Vue`) instead of bundling a second copy.
@@ -452,6 +456,202 @@ class HasAccountRefFilter extends TableFilter
 }
 ```
 
+A `TableExtension` can also override `searchQuery(Builder $query, string $term)`
+to extend the page's keyword search — the hook is called inside the page's own
+search `where` group, so add `orWhere` clauses for the fields your extension
+makes searchable.
+
+### Row actions
+
+Return `TableAction` classes from `actions()` to add entries to every row's
+ellipsis menu on a first-party table. An action declares a `label()`, optional
+`icon()` and `method()`, and builds its per-row URL from the record — return
+`null` to omit the action from that row (that's how the first-party Delete
+hides itself on protected records). From `src/Tables/PingRowAction.php`:
+
+```php
+class PingRowAction extends TableAction
+{
+    public function key(): string
+    {
+        return 'example-ping';
+    }
+
+    public function label(): string
+    {
+        return 'Ping (Example)';
+    }
+
+    public function icon(): ?string
+    {
+        return 'refresh';
+    }
+
+    public function position(): Position
+    {
+        return Position::after('edit');
+    }
+
+    public function method(): string
+    {
+        return 'get';
+    }
+
+    public function url(mixed $record = null): ?string
+    {
+        return $record ? route('panel.example-addon.ping', $record) : null;
+    }
+}
+```
+
+The `Position::after('edit')` anchor places the action immediately after the
+built-in Edit entry — first-party Edit/Delete are ordinary `TableAction`s in
+the same ordered set, so add-ons can position relative to them (see
+[Ordering with `Position`](#ordering-with-position)). A destructive action
+returns a `confirmationMessage()` to get a confirm dialog before dispatch, a
+`permission()` key to hide itself from unauthorised staff, and `primary(): true`
+to render as an inline button instead of collapsing into the ellipsis
+(reserved by convention for a page's main verb — add-ons should normally stay
+in the ellipsis).
+
+### Bulk actions
+
+Return `TableBulkAction` classes from `bulkActions()`. Registering any bulk
+action is what makes the table's selection checkboxes appear; while rows are
+checked, the toolbar is replaced by the bulk-action bar, and dispatching the
+action posts the selected row ids (as `ids`) to the action's `url()`. From
+`src/Tables/PingBulkAction.php`:
+
+```php
+class PingBulkAction extends TableBulkAction
+{
+    public function key(): string
+    {
+        return 'example-bulk-ping';
+    }
+
+    public function label(): string
+    {
+        return 'Ping selected (Example)';
+    }
+
+    public function method(): string
+    {
+        return 'post';
+    }
+
+    public function url(): ?string
+    {
+        return route('panel.example-addon.bulk-ping');
+    }
+}
+```
+
+`confirmationMessage()`, `permission()` and `position()` work exactly as they
+do on row actions.
+
+## Registering page actions
+
+Where a `TableAction` targets rows, a `PageAction` targets a page's header —
+"Import" above a listing, "Audit log" on a record page. Both cases are one
+abstract keyed by page id (the same route-name-derived ids slots use); record
+pages hand the route-bound model to `url()` as `$context`, listing pages hand
+`null`. Registered via `Section::pageActions()`:
+
+```php
+// src/ExampleSection.php
+public function pageActions(): array
+{
+    return [
+        'customers.index' => [ImportPageAction::class],
+        'customers.edit' => [AuditPageAction::class],
+    ];
+}
+```
+
+```php
+// src/Actions/AuditPageAction.php — a record-page action
+class AuditPageAction extends PageAction
+{
+    public function key(): string
+    {
+        return 'example-audit';
+    }
+
+    public function label(): string
+    {
+        return 'Audit log (Example)';
+    }
+
+    public function icon(): ?string
+    {
+        return 'fileText';
+    }
+
+    public function url(mixed $context = null): ?string
+    {
+        return $context ? route('panel.example-addon.audit', $context) : null;
+    }
+}
+```
+
+(`src/Actions/ImportPageAction.php` is the listing-page variant — identical
+shape, static URL, `$context` ignored.)
+
+Every content page renders its header through the shared page scaffold, which
+always carries the page-action ellipsis — so a `PageAction` needs no
+cooperation from the target page. Actions collapse into the header's "more
+actions" ellipsis by default; `primary(): true` promotes one to an
+always-visible header button. `method()`, `confirmationMessage()`,
+`permission()` and `position()` mirror `TableAction`.
+
+## Ordering with `Position`
+
+Everything an add-on injects into an ordered set — navigation items, table
+columns, filters, row actions, bulk actions, page actions — exposes
+`position(): Position` (`Lunar\Panel\Support\Position`) and is sorted by one
+shared resolver, so the same placement rules apply panel-wide:
+
+- `Position::priority(int)` — coarse ordering; lower sorts first, ties keep
+  registration order. First-party entries sit at predictable priorities, and
+  unpositioned entries default to last.
+- `Position::before('key')` / `Position::after('key')` — anchor immediately
+  adjacent to another entry in the same set by its key, first-party or
+  add-on. This is how `PingRowAction` sits right after the built-in `edit`.
+
+An anchor whose target key doesn't exist falls back to priority ordering and
+logs a warning (nothing throws — the entry still renders). Prefer anchors
+when you care about a neighbour, priorities when you only care about
+roughly-where.
+
+## Extending an existing section with `SectionExtension`
+
+A `Section` owns a key and appears as its own area; a `SectionExtension`
+grafts onto a section someone else owns. It supports the same hooks —
+`navigation()`, `settingsNavigation()`, `routes()`, `tableExtensions()`,
+`pageActions()`, `slots()`, `vite()`, `langNamespaces()` — plus `extends()`
+naming the target section key:
+
+```php
+class SalesExtension extends SectionExtension
+{
+    public function extends(): string
+    {
+        return 'sales';
+    }
+
+    // ... any of the Section hooks
+}
+```
+
+Register it with `Panel::extendSection(new SalesExtension)`. Use a `SectionExtension`
+when your add-on is conceptually part of an existing area (extra navigation
+under Sales, say); use your own `Section` when it stands alone. An `extends()`
+key that matches no registered section logs a warning and the extension is
+skipped, so load order between add-ons never throws. (This example package
+uses a full `Section`; the monorepo's `tests/panel/Fixtures/Addon/` shows a
+worked `SectionExtension`.)
+
 ## Translating an add-on
 
 Add-on strings live in ordinary Laravel lang groups — no JS-side message
@@ -515,9 +715,10 @@ panel language from the user menu (persisted per staff member as
 ```
 
 `@lunarphp/panel` (the panel's layout/page components) and
-`@lunarphp/panel-vite-plugin` (the build preset) are published to npm, so a
-forked add-on installs them from the registry like any dependency — no paths
-into the panel's source. (Inside the Lunar monorepo itself, the root
+`@lunarphp/panel-vite-plugin` (the build preset) are published to npm with
+each tagged Lunar release (the `publish-npm` workflow), so a forked add-on
+installs them from the registry like any dependency — no paths into the
+panel's source. (Inside the Lunar monorepo itself, the root
 `package.json` declares an npm workspace that resolves these two names to the
 local package directories, so this example builds against the in-development
 source without changing the version specifiers above.)
@@ -578,6 +779,29 @@ panel has mounted, which is too late: a page or slot component registered there 
 missing when Inertia resolves and first renders it on a hard load, and because
 registration is not reactive the slot never recovers. Reserve `booting()` for work
 that genuinely needs the mounted app, not for registration.
+
+### The rest of the runtime API
+
+Beyond `registerPages()`, `registerComponents()` and `booting()`, the runtime
+exposes:
+
+- `registerLayout(name, component)` — register a persistent layout an add-on
+  page can opt into; the panel's default `PanelLayout` is the `default` entry
+  in the same registry, applied automatically to add-on pages that declare no
+  layout of their own.
+- `registerTranslations(locale, namespace, messages)` — push vue-i18n messages
+  for your namespace directly at runtime, merging over the endpoint-served
+  set. Prefer [`langNamespaces()`](#translating-an-add-on) (PHP lang files) so
+  your strings version and cache with everyone else's; this is the escape
+  hatch for messages that only exist client-side.
+- `resolveExtensionComponent(name)` — look up a namespaced component
+  registered by any bundle, the same resolution `PanelSlot` and
+  component-rendered table columns use.
+
+The typed contract for all of this is the `LunarPanelRuntime` interface,
+shipped as `dist/runtime.d.ts` in the `@lunarphp/panel` package and referenced
+from its main types — importing anything from `@lunarphp/panel` types
+`window.LunarPanel` in your editor for free.
 
 ## Installing into a host app
 
@@ -657,9 +881,14 @@ pages, not only in an isolated fixture.
 - `src/ExampleAddonServiceProvider.php` — registers the section and the Vite
   module.
 - `src/ExampleSection.php` — the `Section` implementation (key, navigation,
-  settings navigation, routes, slots, table extensions).
-- `src/Tables/ExampleColumn.php` / `ExampleTableExtension.php` — the
-  `customers.index` table extension.
+  settings navigation, routes, slots, table extensions, page actions, lang
+  namespaces).
+- `src/Tables/ExampleColumn.php` / `HasAccountRefFilter.php` /
+  `ExampleTableExtension.php` — the `customers.index` table extension.
+- `src/Tables/PingRowAction.php` / `PingBulkAction.php` — the row and bulk
+  actions injected into the first-party customers table.
+- `src/Actions/ImportPageAction.php` / `AuditPageAction.php` — the listing-
+  and record-page header actions.
 - `resources/js/addon.ts` — the IIFE entry point.
 - `resources/js/pages/Widgets/Index.vue`, `resources/js/components/InfoBanner.vue`
   — the example page and slot component.
