@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Checkout\Contracts\CheckoutDriver;
+use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Elements\ContactInformation;
 use Lunar\Checkout\Session\CheckoutSession as SessionBag;
 use Lunar\Core\Facades\CartSession;
@@ -38,7 +39,7 @@ it('projects guest contact state when not authenticated', function () {
         ->and($props['passkeysEnabled'])->toBeFalse();
 });
 
-it('lets a signed-in customer view a session they own by customer_reference', function () {
+it('owns a session by customer_reference when the cart differs, and reconciles instead of forbidding', function () {
     [$user, $customer] = makeUserWithCustomer();
 
     $ownerCart = routeTestCart();
@@ -46,12 +47,16 @@ it('lets a signed-in customer view a session they own by customer_reference', fu
     $session->customer_reference = (string) $customer->id;
     $session->save();
 
-    // A different (empty) cart is current, so cart-ownership would fail.
+    // A different (empty) cart is current, so cart-ownership would fail
+    // without the customer_reference fallback — ensureOwnership lets this
+    // through (not a 403). show() then treats the mismatched cart as a swap
+    // (see the cart-swap reconcile test below) and hands off to the fresh
+    // session for the current cart rather than rendering the stale one.
     CartSession::use(routeTestCart());
     $this->actingAs($user);
 
     $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
-        ->assertOk();
+        ->assertConflict();
 });
 
 it('forbids a signed-in customer from viewing another customer\'s session', function () {
@@ -120,4 +125,38 @@ it('associates the customer when authenticated', function () {
 
     expect($session->fresh()->customer_reference)->toBe((string) $customer->id)
         ->and($session->fresh()->customer_email)->toBe('trade@example.test');
+});
+
+it('injects contact urls into the projected contact element', function () {
+    app(ElementRegistry::class)->add(ContactInformation::class);
+
+    $cart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('props.checkout.elements.0.handle', 'contact')
+        ->assertJsonPath('props.checkout.elements.0.props.lookupUrl', route('lunar.checkout.contact.lookup', $session->uuid))
+        ->assertJsonPath('props.checkout.elements.0.props.contactUrl', route('lunar.checkout.contact.store', $session->uuid));
+});
+
+it('re-resolves to the current cart session when the cart was swapped on login', function () {
+    [$user, $customer] = makeUserWithCustomer();
+
+    // Stale session pinned to an old cart the user now owns by customer_reference.
+    $oldCart = routeTestCart();
+    $stale = app(CheckoutDriver::class)->createSession($oldCart);
+    $stale->customer_reference = (string) $customer->id;
+    $stale->save();
+
+    // A different cart is now current (simulating the post-login merge).
+    $currentCart = routeTestCart();
+    CartSession::use($currentCart);
+    $this->actingAs($user);
+
+    $response = $this->get(route('lunar.checkout.show', $stale->uuid));
+    // Inertia::location → 409 for Inertia callers, 302 otherwise; here a plain GET → 302.
+    $response->assertRedirect();
+    expect($response->headers->get('Location'))->not->toContain($stale->uuid);
 });

@@ -70,10 +70,39 @@ class CheckoutController extends Controller
      * The session is resolved from its UUID (route-model bound). The UUID is a
      * capability token, so ownership is verified before any session data is
      * projected, and terminal sessions redirect rather than render.
+     *
+     * Return type is widened past Response|RedirectResponse: a cart-swap
+     * reconcile hands off to Inertia::location(), which for an Inertia XHR
+     * caller returns a bare 409 SymfonyResponse rather than a RedirectResponse
+     * (same reason `start()` above is typed against SymfonyResponse).
      */
-    public function show(CheckoutSessionModel $session, CheckoutDriver $checkoutDriver, CheckoutTheme $theme): Response|RedirectResponse
+    public function show(CheckoutSessionModel $session, CheckoutDriver $checkoutDriver, CheckoutTheme $theme): Response|RedirectResponse|SymfonyResponse
     {
         $this->ensureOwnership($session);
+
+        // A login mid-checkout can merge/swap the live cart (auth_policy=merge).
+        // cart_reference is pinned identity, so rather than mutate it, re-resolve
+        // to the surviving cart's session and move the customer there. Guarded to
+        // signed-in owners; a guest with a different cart already failed ownership.
+        if ($user = auth()->user()) {
+            $cart = CartSession::current();
+
+            if ($cart !== null && (string) $cart->id !== $session->cart_reference) {
+                $fresh = $checkoutDriver->resolveOrCreateSession($cart);
+
+                if ($fresh->uuid !== $session->uuid) {
+                    return Inertia::location(route('lunar.checkout.show', $fresh->uuid));
+                }
+            }
+
+            // Associate once (idempotent — only when it changes) so we don't spam
+            // CustomerAssociated on every render.
+            $customerId = (string) ($user->latestCustomer()?->id ?? '');
+
+            if ($customerId !== '' && $session->customer_reference !== $customerId) {
+                $checkoutDriver->associateCustomer($session, $customerId, $user->email);
+            }
+        }
 
         // Order already placed — send to the stored return URL if the caller
         // set one (hosted flow), otherwise home. TODO(payment): the storefront
@@ -94,7 +123,7 @@ class CheckoutController extends Controller
         return Inertia::render('Show', [
             'checkout' => array_merge(
                 $this->projectCheckout($checkoutDriver, $session),
-                ['elements' => $this->projectElements()],
+                ['elements' => $this->projectElements($session)],
             ),
             'theme' => $theme->tokens(),
             'branding' => $theme->branding(),
@@ -231,18 +260,25 @@ class CheckoutController extends Controller
      *
      * @return array<int, array<string, mixed>>
      */
-    private function projectElements(): array
+    private function projectElements(CheckoutSessionModel $session): array
     {
-        return array_map(function (CheckoutElement $element): array {
+        return array_map(function (CheckoutElement $element) use ($session): array {
             $element->setSession($this->session);
             $element->mount();
+
+            $props = $element->props();
+
+            if ($element->handle() === 'contact') {
+                $props['lookupUrl'] = route('lunar.checkout.contact.lookup', $session->uuid);
+                $props['contactUrl'] = route('lunar.checkout.contact.store', $session->uuid);
+            }
 
             return [
                 'handle' => $element->handle(),
                 'title' => $element->title(),
                 'component' => $element->component(),
                 'region' => $element->region(),
-                'props' => $element->props(),
+                'props' => $props,
                 'data' => $element->data(),
                 'storeUrl' => route('lunar.checkout.elements.store', $element->handle()),
             ];
