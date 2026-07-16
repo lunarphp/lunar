@@ -21,6 +21,8 @@ return [
     'field_status' => 'Status',
     'default_channel' => 'Canal padrão',
     'default_channel_hint' => 'Usado quando uma solicitação não escolhe um explicitamente.',
+    'default_locked_hint' => 'Este é o canal padrão. Para alterá-lo, defina outro canal como padrão.',
+    'default_unset_blocked' => 'O canal padrão não pode ser desativado. Em vez disso, defina outro canal como padrão.',
 
     'section_details' => 'Detalhes',
     'section_state' => 'Estado',
@@ -30,6 +32,7 @@ return [
     'confirm_delete_title' => 'Excluir canal?',
     'confirm_delete_body' => '"{name}" será removido permanentemente.',
     'delete_blocked' => 'Não é possível excluir um canal com histórico de pedidos.',
+    'delete_blocked_default' => 'O canal padrão não pode ser excluído. Defina outro canal como padrão primeiro.',
 
     'flash_created' => 'Canal criado.',
     'flash_updated' => 'Canal atualizado.',

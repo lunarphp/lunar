@@ -21,6 +21,8 @@ return [
     'field_status' => 'Status',
     'default_channel' => 'Standardkanal',
     'default_channel_hint' => 'Wird verwendet, wenn eine Anfrage keinen explizit auswählt.',
+    'default_locked_hint' => 'Dies ist der Standardkanal. Um dies zu ändern, machen Sie einen anderen Kanal zum Standard.',
+    'default_unset_blocked' => 'Der Standardkanal kann nicht deaktiviert werden. Machen Sie stattdessen einen anderen Kanal zum Standard.',
 
     'section_details' => 'Details',
     'section_state' => 'Status',
@@ -30,6 +32,7 @@ return [
     'confirm_delete_title' => 'Kanal löschen?',
     'confirm_delete_body' => '"{name}" wird dauerhaft entfernt.',
     'delete_blocked' => 'Ein Kanal mit Bestellhistorie kann nicht gelöscht werden.',
+    'delete_blocked_default' => 'Der Standardkanal kann nicht gelöscht werden. Machen Sie zuerst einen anderen Kanal zum Standard.',
 
     'flash_created' => 'Kanal erstellt.',
     'flash_updated' => 'Kanal aktualisiert.',

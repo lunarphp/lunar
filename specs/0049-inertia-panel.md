@@ -276,7 +276,10 @@ Against the core `staff` guard (`Lunar\Core\Models\Staff`), configurable via
   `SettingsNav`.
 - **Channels** (settings section) — list on `DataTable`; inline create dialog; edit page
   (name, auto-slugged handle, URL, default toggle, status); delete with confirmation,
-  blocked when `Channel::hasOrderHistory()` is true.
+  blocked when `Channel::hasOrderHistory()` is true or the channel is the default. The
+  default flag moves by promoting another channel, never by unsetting, so a store with
+  channels always has a default — the core `UpdateChannel`/`DeleteChannel` actions enforce
+  both rules and the edit page disables the corresponding controls.
 
 ### Data layer and authorization
 

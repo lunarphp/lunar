@@ -21,6 +21,8 @@ return [
     'field_status' => 'Status',
     'default_channel' => 'Domyślny kanał',
     'default_channel_hint' => 'Używany, gdy żądanie nie wybiera go jawnie.',
+    'default_locked_hint' => 'To jest domyślny kanał. Aby to zmienić, ustaw inny kanał jako domyślny.',
+    'default_unset_blocked' => 'Nie można wyłączyć domyślnego kanału. Zamiast tego ustaw inny kanał jako domyślny.',
 
     'section_details' => 'Szczegóły',
     'section_state' => 'Stan',
@@ -30,6 +32,7 @@ return [
     'confirm_delete_title' => 'Usunąć kanał?',
     'confirm_delete_body' => '"{name}" zostanie trwale usunięty.',
     'delete_blocked' => 'Nie można usunąć kanału z historią zamówień.',
+    'delete_blocked_default' => 'Nie można usunąć domyślnego kanału. Najpierw ustaw inny kanał jako domyślny.',
 
     'flash_created' => 'Kanał utworzony.',
     'flash_updated' => 'Kanał zaktualizowany.',

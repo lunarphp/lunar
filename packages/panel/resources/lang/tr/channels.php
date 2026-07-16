@@ -21,6 +21,8 @@ return [
     'field_status' => 'Durum',
     'default_channel' => 'Varsayılan kanal',
     'default_channel_hint' => 'Bir istek açıkça birini seçmediğinde kullanılır.',
+    'default_locked_hint' => 'Bu varsayılan kanaldır. Değiştirmek için başka bir kanalı varsayılan yapın.',
+    'default_unset_blocked' => 'Varsayılan kanal kaldırılamaz. Bunun yerine başka bir kanalı varsayılan yapın.',
 
     'section_details' => 'Detaylar',
     'section_state' => 'Durum',
@@ -30,6 +32,7 @@ return [
     'confirm_delete_title' => 'Kanal silinsin mi?',
     'confirm_delete_body' => '"{name}" kalıcı olarak kaldırılacak.',
     'delete_blocked' => 'Sipariş geçmişi olan bir kanal silinemez.',
+    'delete_blocked_default' => 'Varsayılan kanal silinemez. Önce başka bir kanalı varsayılan yapın.',
 
     'flash_created' => 'Kanal oluşturuldu.',
     'flash_updated' => 'Kanal güncellendi.',

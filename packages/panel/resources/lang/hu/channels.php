@@ -21,6 +21,8 @@ return [
     'field_status' => 'Állapot',
     'default_channel' => 'Alapértelmezett csatorna',
     'default_channel_hint' => 'Akkor kerül felhasználásra, ha egy kérés nem választ ki kifejezetten egyet.',
+    'default_locked_hint' => 'Ez az alapértelmezett csatorna. A módosításhoz tegyen egy másik csatornát alapértelmezetté.',
+    'default_unset_blocked' => 'Az alapértelmezett csatorna nem kapcsolható ki. Tegyen inkább egy másik csatornát alapértelmezetté.',
 
     'section_details' => 'Részletek',
     'section_state' => 'Állapot',
@@ -30,6 +32,7 @@ return [
     'confirm_delete_title' => 'Törli a csatornát?',
     'confirm_delete_body' => '"{name}" véglegesen eltávolításra kerül.',
     'delete_blocked' => 'Nem törölhető olyan csatorna, amelynek rendelési előzményei vannak.',
+    'delete_blocked_default' => 'Az alapértelmezett csatorna nem törölhető. Előbb tegyen egy másik csatornát alapértelmezetté.',
 
     'flash_created' => 'A csatorna létrehozva.',
     'flash_updated' => 'A csatorna frissítve.',

@@ -82,6 +82,30 @@ test('updating a channel to default un-defaults whichever channel was default', 
     expect(Channel::where('default', true)->count())->toBe(1);
 });
 
+test('unsetting default on the default channel is rejected with a flash error', function () {
+    $channel = Channel::factory()->create(['name' => 'Webstore', 'default' => true]);
+
+    $this->from(route('panel.settings.channels.edit', $channel))
+        ->put(route('panel.settings.channels.update', $channel), [
+            'name' => 'Webstore',
+            'default' => false,
+        ])->assertRedirect(route('panel.settings.channels.edit', $channel))
+        ->assertSessionHas('error', __('panel::channels.default_unset_blocked'));
+
+    expect($channel->fresh()->default)->toBeTrue();
+});
+
+test('the default channel cannot be deleted and shows a flash error', function () {
+    $channel = Channel::factory()->create(['default' => true]);
+
+    $this->from(route('panel.settings.channels.edit', $channel))
+        ->delete(route('panel.settings.channels.destroy', $channel))
+        ->assertRedirect(route('panel.settings.channels.edit', $channel))
+        ->assertSessionHas('error', __('panel::channels.delete_blocked_default'));
+
+    expect(Channel::find($channel->id))->not->toBeNull();
+});
+
 test('a channel with no order history can be deleted', function () {
     $channel = Channel::factory()->create(['default' => false]);
 
