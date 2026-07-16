@@ -74,6 +74,24 @@ class FixtureAdminFilter extends TableFilter
     }
 }
 
+class FixtureStatusFilter extends TableFilter
+{
+    public function key(): string
+    {
+        return 'status';
+    }
+
+    public function position(): Position
+    {
+        return Position::before('is_admin');
+    }
+
+    public function query(Builder $query, mixed $value): void
+    {
+        $query->where('status', $value);
+    }
+}
+
 class FixturePingAction extends TableAction
 {
     public function key(): string
@@ -101,7 +119,7 @@ class FixtureTableExtension extends TableExtension
 
     public function filters(): array
     {
-        return [FixtureAdminFilter::class];
+        return [FixtureAdminFilter::class, FixtureStatusFilter::class];
     }
 
     public function actions(): array
@@ -116,8 +134,16 @@ it('collects columns, filters and actions from extension classes', function () {
     expect(array_column($resolver->getColumns(), 'key'))->toContain('rating')
         ->and($resolver->getColumns()[0]['type'])->toBe(['name' => 'badge', 'options' => []])
         ->and($resolver->getColumns()[0]['position'])->toBe(['type' => 'after', 'reference' => 'name'])
-        ->and(array_column($resolver->getFilters(), 'key'))->toBe(['is_admin'])
+        ->and(array_column($resolver->getFilters(), 'key'))->toBe(['status', 'is_admin'])
         ->and(array_column($resolver->getActions(), 'key'))->toBe(['ping']);
+});
+
+it('orders filters by position like every other table entry type', function () {
+    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
+
+    // FixtureStatusFilter registers after FixtureAdminFilter but anchors
+    // Position::before('is_admin'), so it must come out first.
+    expect(array_column($resolver->getFilters(), 'key'))->toBe(['status', 'is_admin']);
 });
 
 it('merges add-on columns into the first-party set and honours their position anchor', function () {

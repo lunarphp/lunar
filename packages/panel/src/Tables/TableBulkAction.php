@@ -16,11 +16,6 @@ abstract class TableBulkAction
         return Position::last();
     }
 
-    public function component(): ?string
-    {
-        return null;
-    }
-
     public function icon(): ?string
     {
         return null;
@@ -63,7 +58,6 @@ abstract class TableBulkAction
             'key' => $this->key(),
             'label' => $this->label(),
             'icon' => $this->icon(),
-            'component' => $this->component(),
             'url' => $this->url(),
             'method' => $this->method(),
             'confirmation' => $this->confirmationMessage(),

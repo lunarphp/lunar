@@ -16,11 +16,6 @@ abstract class TableAction
         return Position::last();
     }
 
-    public function component(): ?string
-    {
-        return null;
-    }
-
     /**
      * The action's target URL for a given row record. Row actions build a
      * per-row URL from the record (`route('panel.customers.edit', $record)`);
@@ -73,7 +68,6 @@ abstract class TableAction
             'key' => $this->key(),
             'label' => $this->label(),
             'icon' => $this->icon(),
-            'component' => $this->component(),
             'method' => $this->method(),
             'primary' => $this->primary(),
             'confirmation' => $this->confirmationMessage(),

@@ -4,12 +4,18 @@ namespace Lunar\Panel\Tables;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Lunar\Panel\Support\Position;
 
 abstract class TableFilter
 {
     abstract public function key(): string;
 
     abstract public function query(Builder $query, mixed $value): void;
+
+    public function position(): Position
+    {
+        return Position::last();
+    }
 
     public function label(): string
     {
@@ -55,6 +61,7 @@ abstract class TableFilter
             'label' => $this->label(),
             'component' => $this->component(),
             'options' => $this->options(),
+            'position' => $this->position()->toArray(),
         ];
     }
 }

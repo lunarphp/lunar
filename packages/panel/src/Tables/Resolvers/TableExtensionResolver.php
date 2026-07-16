@@ -161,11 +161,18 @@ class TableExtensionResolver
     /** @return array<int, array<string, mixed>> */
     public function getFilters(): array
     {
-        return collect($this->filters)
-            ->filter(fn (TableFilter $filter) => $filter->visible($this->user))
-            ->map(fn (TableFilter $filter) => $filter->toArray())
-            ->values()
-            ->all();
+        $visible = array_values(array_filter(
+            $this->filters,
+            fn (TableFilter $filter) => $filter->visible($this->user),
+        ));
+
+        $ordered = (new OrderResolver)->sort(
+            $visible,
+            fn (TableFilter $filter): string => $filter->key(),
+            fn (TableFilter $filter): Position => $filter->position(),
+        );
+
+        return array_map(fn (TableFilter $filter) => $filter->toArray(), $ordered);
     }
 
     /**
