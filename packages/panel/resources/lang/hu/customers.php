@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Címek',
     'tab_users' => 'Felhasználók',
+    'tab_order_history' => 'Rendelési előzmények',
     'tab_activity' => 'Tevékenység',
 
     'add_address' => 'Cím hozzáadása',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Cím eltávolítása',
     'addresses_empty_title' => 'Nincsenek mentett címek',
     'addresses_empty_body' => 'A fizetéskor megadott címek itt fognak megjelenni.',
+
+    'order_reference' => 'Hivatkozás',
+    'order_date' => 'Dátum',
+    'order_status' => 'Állapot',
+    'order_total' => 'Összesen',
+    'orders_empty_title' => 'Még nincs rendelés',
+    'orders_empty_body' => 'Az ügyfél rendelései itt jelennek meg.',
 
     'users_intro' => 'Azok a személyek, akik bejelentkezhetnek ennek az ügyfélnek a nevében.',
     'unlink_user' => 'Felhasználó leválasztása',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Szállítás',
     'none_set' => 'Nincs beállítva.',
 
+    'lifetime_stats' => 'Ügyfélstatisztika',
+    'stat_total_spend' => 'Összes költés',
+    'stat_orders' => 'Rendelések',
+    'stat_avg_order' => 'Átl. rendelés',
+    'stat_latest_order' => 'Legutóbbi rendelés',
+
+    'notes' => 'Jegyzetek',
+    'notes_empty' => 'Még nincs jegyzet.',
+    'edit_notes' => 'Jegyzetek szerkesztése',
+
     'confirm_delete_customer' => 'Biztosan törli ezt az ügyfelet?',
     'confirm_delete_customer_title' => 'Törli ezt az ügyfelet?',
     'confirm_delete_customer_body' => 'Ez a művelet nem vonható vissza.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'A cím törölve.',
     'flash_user_linked' => 'A felhasználó összekapcsolva.',
     'flash_user_unlinked' => 'A felhasználó leválasztva.',
+    'flash_notes_updated' => 'Jegyzetek frissítve.',
 ];

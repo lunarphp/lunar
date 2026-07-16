@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'آدرس‌ها',
     'tab_users' => 'کاربران',
+    'tab_order_history' => 'تاریخچه سفارش‌ها',
     'tab_activity' => 'فعالیت',
 
     'add_address' => 'افزودن آدرس',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'حذف آدرس',
     'addresses_empty_title' => 'هیچ آدرس ذخیره‌شده‌ای نیست',
     'addresses_empty_body' => 'آدرس‌های واردشده هنگام تسویه‌حساب در اینجا نمایش داده می‌شوند.',
+
+    'order_reference' => 'مرجع',
+    'order_date' => 'تاریخ',
+    'order_status' => 'وضعیت',
+    'order_total' => 'مجموع',
+    'orders_empty_title' => 'هنوز سفارشی وجود ندارد',
+    'orders_empty_body' => 'سفارش‌های این مشتری اینجا نمایش داده می‌شوند.',
 
     'users_intro' => 'افرادی که می‌توانند به‌عنوان این مشتری وارد شوند.',
     'unlink_user' => 'قطع پیوند کاربر',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'ارسال',
     'none_set' => 'تنظیم نشده است.',
 
+    'lifetime_stats' => 'آمار مشتری',
+    'stat_total_spend' => 'مجموع خرید',
+    'stat_orders' => 'سفارش‌ها',
+    'stat_avg_order' => 'میانگین سفارش',
+    'stat_latest_order' => 'آخرین سفارش',
+
+    'notes' => 'یادداشت‌ها',
+    'notes_empty' => 'هنوز یادداشتی وجود ندارد.',
+    'edit_notes' => 'ویرایش یادداشت‌ها',
+
     'confirm_delete_customer' => 'آیا مطمئن هستید که می‌خواهید این مشتری را حذف کنید؟',
     'confirm_delete_customer_title' => 'این مشتری حذف شود؟',
     'confirm_delete_customer_body' => 'این عملیات قابل بازگشت نیست.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'آدرس حذف شد.',
     'flash_user_linked' => 'کاربر پیوند داده شد.',
     'flash_user_unlinked' => 'پیوند کاربر قطع شد.',
+    'flash_notes_updated' => 'یادداشت‌ها به‌روزرسانی شد.',
 ];

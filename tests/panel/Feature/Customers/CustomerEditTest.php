@@ -2,8 +2,10 @@
 
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Address;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Staff;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Panel\TestCase;
@@ -39,6 +41,45 @@ it('renders the edit page with addresses, users and activity', function () {
             ->has('users', 1)
             ->where('users.0.id', $user->id)
             ->has('activities', 1)
+        );
+});
+
+it('exposes lifetime stats and order history for placed orders', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+
+    Order::factory()->placed()->for($customer)->create(['total' => 10000, 'exchange_rate' => 1]);
+    Order::factory()->placed()->for($customer)->create(['total' => 5000, 'exchange_rate' => 1]);
+    Order::factory()->for($customer)->create(['total' => 99999, 'placed_at' => null]);
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('stats.orders', 2)
+            ->where('stats.totalSpend', '£150.00')
+            ->where('stats.avgOrder', '£75.00')
+            ->whereNot('stats.latestOrderAt', null)
+            ->has('orders', 2)
+            ->has('orders.0', fn (Assert $order) => $order
+                ->hasAll(['id', 'reference', 'status', 'status_label', 'placed_at', 'total'])
+            )
+        );
+});
+
+it('reports empty lifetime stats when the customer has no placed orders', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('stats.orders', 0)
+            ->where('stats.totalSpend', null)
+            ->where('stats.avgOrder', null)
+            ->where('stats.latestOrderAt', null)
+            ->has('orders', 0)
         );
 });
 

@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Adresses',
     'tab_users' => 'Utilisateurs',
+    'tab_order_history' => 'Historique des commandes',
     'tab_activity' => 'Activité',
 
     'add_address' => 'Ajouter une adresse',
@@ -85,6 +86,13 @@ return [
     'remove_address' => "Supprimer l'adresse",
     'addresses_empty_title' => 'Aucune adresse enregistrée',
     'addresses_empty_body' => 'Les adresses saisies lors du paiement apparaîtront ici.',
+
+    'order_reference' => 'Référence',
+    'order_date' => 'Date',
+    'order_status' => 'Statut',
+    'order_total' => 'Total',
+    'orders_empty_title' => 'Aucune commande pour le moment',
+    'orders_empty_body' => 'Les commandes passées par ce client apparaîtront ici.',
 
     'users_intro' => 'Personnes pouvant se connecter en tant que ce client.',
     'unlink_user' => "Dissocier l'utilisateur",
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Livraison',
     'none_set' => 'Aucune définie.',
 
+    'lifetime_stats' => 'Statistiques cumulées',
+    'stat_total_spend' => 'Dépenses totales',
+    'stat_orders' => 'Commandes',
+    'stat_avg_order' => 'Panier moyen',
+    'stat_latest_order' => 'Dernière commande',
+
+    'notes' => 'Notes',
+    'notes_empty' => 'Aucune note pour le moment.',
+    'edit_notes' => 'Modifier les notes',
+
     'confirm_delete_customer' => 'Êtes-vous sûr de vouloir supprimer ce client ?',
     'confirm_delete_customer_title' => 'Supprimer ce client ?',
     'confirm_delete_customer_body' => 'Cette action est irréversible.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Adresse supprimée.',
     'flash_user_linked' => 'Utilisateur associé.',
     'flash_user_unlinked' => 'Utilisateur dissocié.',
+    'flash_notes_updated' => 'Notes mises à jour.',
 ];

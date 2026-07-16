@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'العناوين',
     'tab_users' => 'المستخدمون',
+    'tab_order_history' => 'سجل الطلبات',
     'tab_activity' => 'النشاط',
 
     'add_address' => 'إضافة عنوان',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'إزالة العنوان',
     'addresses_empty_title' => 'لا توجد عناوين محفوظة',
     'addresses_empty_body' => 'ستظهر هنا العناوين المُدخلة عند إتمام الطلب.',
+
+    'order_reference' => 'المرجع',
+    'order_date' => 'التاريخ',
+    'order_status' => 'الحالة',
+    'order_total' => 'الإجمالي',
+    'orders_empty_title' => 'لا توجد طلبات بعد',
+    'orders_empty_body' => 'ستظهر طلبات هذا العميل هنا.',
 
     'users_intro' => 'الأشخاص الذين يمكنهم تسجيل الدخول كهذا العميل.',
     'unlink_user' => 'إلغاء ربط المستخدم',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'الشحن',
     'none_set' => 'لم يتم التعيين.',
 
+    'lifetime_stats' => 'إحصاءات العميل',
+    'stat_total_spend' => 'إجمالي الإنفاق',
+    'stat_orders' => 'الطلبات',
+    'stat_avg_order' => 'متوسط الطلب',
+    'stat_latest_order' => 'آخر طلب',
+
+    'notes' => 'ملاحظات',
+    'notes_empty' => 'لا توجد ملاحظات بعد.',
+    'edit_notes' => 'تعديل الملاحظات',
+
     'confirm_delete_customer' => 'هل أنت متأكد من أنك تريد حذف هذا العميل؟',
     'confirm_delete_customer_title' => 'هل تريد حذف هذا العميل؟',
     'confirm_delete_customer_body' => 'لا يمكن التراجع عن هذا الإجراء.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'تم حذف العنوان.',
     'flash_user_linked' => 'تم ربط المستخدم.',
     'flash_user_unlinked' => 'تم إلغاء ربط المستخدم.',
+    'flash_notes_updated' => 'تم تحديث الملاحظات.',
 ];

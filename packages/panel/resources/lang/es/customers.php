@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Direcciones',
     'tab_users' => 'Usuarios',
+    'tab_order_history' => 'Historial de pedidos',
     'tab_activity' => 'Actividad',
 
     'add_address' => 'Añadir dirección',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Eliminar dirección',
     'addresses_empty_title' => 'Sin direcciones guardadas',
     'addresses_empty_body' => 'Las direcciones introducidas al finalizar la compra aparecerán aquí.',
+
+    'order_reference' => 'Referencia',
+    'order_date' => 'Fecha',
+    'order_status' => 'Estado',
+    'order_total' => 'Total',
+    'orders_empty_title' => 'Aún no hay pedidos',
+    'orders_empty_body' => 'Los pedidos de este cliente aparecerán aquí.',
 
     'users_intro' => 'Personas que pueden iniciar sesión como este cliente.',
     'unlink_user' => 'Desvincular usuario',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Envío',
     'none_set' => 'Ninguna establecida.',
 
+    'lifetime_stats' => 'Estadísticas históricas',
+    'stat_total_spend' => 'Gasto total',
+    'stat_orders' => 'Pedidos',
+    'stat_avg_order' => 'Pedido medio',
+    'stat_latest_order' => 'Último pedido',
+
+    'notes' => 'Notas',
+    'notes_empty' => 'Aún no hay notas.',
+    'edit_notes' => 'Editar notas',
+
     'confirm_delete_customer' => '¿Estás seguro de que quieres eliminar este cliente?',
     'confirm_delete_customer_title' => '¿Eliminar este cliente?',
     'confirm_delete_customer_body' => 'Esta acción no se puede deshacer.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Dirección eliminada.',
     'flash_user_linked' => 'Usuario vinculado.',
     'flash_user_unlinked' => 'Usuario desvinculado.',
+    'flash_notes_updated' => 'Notas actualizadas.',
 ];

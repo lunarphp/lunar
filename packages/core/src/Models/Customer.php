@@ -26,6 +26,7 @@ use Lunar\Core\Models\Concerns\Searchable;
  * @property ?string $company_name
  * @property ?string $tax_identifier
  * @property ?string $account_ref
+ * @property ?string $notes
  * @property ?array $attribute_data
  * @property ?array $meta
  * @property ?Carbon $created_at

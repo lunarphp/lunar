@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Endereços',
     'tab_users' => 'Usuários',
+    'tab_order_history' => 'Histórico de pedidos',
     'tab_activity' => 'Atividade',
 
     'add_address' => 'Adicionar endereço',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Remover endereço',
     'addresses_empty_title' => 'Nenhum endereço salvo',
     'addresses_empty_body' => 'Os endereços informados no checkout aparecerão aqui.',
+
+    'order_reference' => 'Referência',
+    'order_date' => 'Data',
+    'order_status' => 'Status',
+    'order_total' => 'Total',
+    'orders_empty_title' => 'Nenhum pedido ainda',
+    'orders_empty_body' => 'Os pedidos deste cliente aparecerão aqui.',
 
     'users_intro' => 'Pessoas que podem entrar como esse cliente.',
     'unlink_user' => 'Desvincular usuário',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Envio',
     'none_set' => 'Nenhum definido.',
 
+    'lifetime_stats' => 'Estatísticas do cliente',
+    'stat_total_spend' => 'Gasto total',
+    'stat_orders' => 'Pedidos',
+    'stat_avg_order' => 'Pedido médio',
+    'stat_latest_order' => 'Último pedido',
+
+    'notes' => 'Notas',
+    'notes_empty' => 'Nenhuma nota ainda.',
+    'edit_notes' => 'Editar notas',
+
     'confirm_delete_customer' => 'Tem certeza de que deseja excluir este cliente?',
     'confirm_delete_customer_title' => 'Excluir este cliente?',
     'confirm_delete_customer_body' => 'Isso não pode ser desfeito.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Endereço excluído.',
     'flash_user_linked' => 'Usuário vinculado.',
     'flash_user_unlinked' => 'Usuário desvinculado.',
+    'flash_notes_updated' => 'Notas atualizadas.',
 ];

@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Хаягууд',
     'tab_users' => 'Хэрэглэгчид',
+    'tab_order_history' => 'Захиалгын түүх',
     'tab_activity' => 'Үйл ажиллагаа',
 
     'add_address' => 'Хаяг нэмэх',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Хаяг устгах',
     'addresses_empty_title' => 'Хадгалсан хаяг алга',
     'addresses_empty_body' => 'Тооцоо хийхэд оруулсан хаягууд эндээс харагдана.',
+
+    'order_reference' => 'Дугаар',
+    'order_date' => 'Огноо',
+    'order_status' => 'Төлөв',
+    'order_total' => 'Нийт',
+    'orders_empty_title' => 'Одоогоор захиалга алга',
+    'orders_empty_body' => 'Энэ харилцагчийн захиалгууд энд харагдана.',
 
     'users_intro' => 'Энэ харилцагчаар нэвтрэх боломжтой хүмүүс.',
     'unlink_user' => 'Хэрэглэгчийг салгах',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Хүргэлт',
     'none_set' => 'Тохируулаагүй.',
 
+    'lifetime_stats' => 'Харилцагчийн статистик',
+    'stat_total_spend' => 'Нийт зарцуулалт',
+    'stat_orders' => 'Захиалгууд',
+    'stat_avg_order' => 'Дундаж захиалга',
+    'stat_latest_order' => 'Сүүлийн захиалга',
+
+    'notes' => 'Тэмдэглэл',
+    'notes_empty' => 'Одоогоор тэмдэглэл алга.',
+    'edit_notes' => 'Тэмдэглэл засах',
+
     'confirm_delete_customer' => 'Та энэ харилцагчийг устгахдаа итгэлтэй байна уу?',
     'confirm_delete_customer_title' => 'Энэ харилцагчийг устгах уу?',
     'confirm_delete_customer_body' => 'Үүнийг буцаах боломжгүй.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Хаяг устгагдлаа.',
     'flash_user_linked' => 'Хэрэглэгч холбогдлоо.',
     'flash_user_unlinked' => 'Хэрэглэгчийн холбоос тасаллаа.',
+    'flash_notes_updated' => 'Тэмдэглэл шинэчлэгдлээ.',
 ];

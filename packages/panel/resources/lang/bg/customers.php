@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Адреси',
     'tab_users' => 'Потребители',
+    'tab_order_history' => 'История на поръчките',
     'tab_activity' => 'Активност',
 
     'add_address' => 'Добави адрес',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Премахни адрес',
     'addresses_empty_title' => 'Няма запазени адреси',
     'addresses_empty_body' => 'Адресите, въведени при плащане, ще се показват тук.',
+
+    'order_reference' => 'Референция',
+    'order_date' => 'Дата',
+    'order_status' => 'Статус',
+    'order_total' => 'Общо',
+    'orders_empty_title' => 'Все още няма поръчки',
+    'orders_empty_body' => 'Поръчките на този клиент ще се показват тук.',
 
     'users_intro' => 'Хора, които могат да влизат в системата като този клиент.',
     'unlink_user' => 'Премахни връзката с потребител',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Доставка',
     'none_set' => 'Не е зададено.',
 
+    'lifetime_stats' => 'Статистика на клиента',
+    'stat_total_spend' => 'Общи разходи',
+    'stat_orders' => 'Поръчки',
+    'stat_avg_order' => 'Средна поръчка',
+    'stat_latest_order' => 'Последна поръчка',
+
+    'notes' => 'Бележки',
+    'notes_empty' => 'Все още няма бележки.',
+    'edit_notes' => 'Редактиране на бележките',
+
     'confirm_delete_customer' => 'Сигурни ли сте, че искате да изтриете този клиент?',
     'confirm_delete_customer_title' => 'Изтриване на този клиент?',
     'confirm_delete_customer_body' => 'Това не може да бъде отменено.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Адресът е изтрит.',
     'flash_user_linked' => 'Потребителят е свързан.',
     'flash_user_unlinked' => 'Връзката с потребителя е премахната.',
+    'flash_notes_updated' => 'Бележките са актуализирани.',
 ];

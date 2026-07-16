@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Adressen',
     'tab_users' => 'Benutzer',
+    'tab_order_history' => 'Bestellverlauf',
     'tab_activity' => 'Aktivität',
 
     'add_address' => 'Adresse hinzufügen',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Adresse entfernen',
     'addresses_empty_title' => 'Keine gespeicherten Adressen',
     'addresses_empty_body' => 'An der Kasse eingegebene Adressen werden hier angezeigt.',
+
+    'order_reference' => 'Referenz',
+    'order_date' => 'Datum',
+    'order_status' => 'Status',
+    'order_total' => 'Summe',
+    'orders_empty_title' => 'Noch keine Bestellungen',
+    'orders_empty_body' => 'Bestellungen dieses Kunden erscheinen hier.',
 
     'users_intro' => 'Personen, die sich als dieser Kunde anmelden können.',
     'unlink_user' => 'Benutzer trennen',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Versand',
     'none_set' => 'Nicht festgelegt.',
 
+    'lifetime_stats' => 'Kundenstatistik',
+    'stat_total_spend' => 'Gesamtausgaben',
+    'stat_orders' => 'Bestellungen',
+    'stat_avg_order' => 'Ø Bestellwert',
+    'stat_latest_order' => 'Letzte Bestellung',
+
+    'notes' => 'Notizen',
+    'notes_empty' => 'Noch keine Notizen.',
+    'edit_notes' => 'Notizen bearbeiten',
+
     'confirm_delete_customer' => 'Möchten Sie diesen Kunden wirklich löschen?',
     'confirm_delete_customer_title' => 'Diesen Kunden löschen?',
     'confirm_delete_customer_body' => 'Dies kann nicht rückgängig gemacht werden.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Adresse gelöscht.',
     'flash_user_linked' => 'Benutzer verknüpft.',
     'flash_user_unlinked' => 'Benutzer getrennt.',
+    'flash_notes_updated' => 'Notizen aktualisiert.',
 ];

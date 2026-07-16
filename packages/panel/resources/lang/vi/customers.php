@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Địa chỉ',
     'tab_users' => 'Người dùng',
+    'tab_order_history' => 'Lịch sử đơn hàng',
     'tab_activity' => 'Hoạt động',
 
     'add_address' => 'Thêm địa chỉ',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Xóa địa chỉ',
     'addresses_empty_title' => 'Chưa có địa chỉ nào được lưu',
     'addresses_empty_body' => 'Các địa chỉ nhập tại trang thanh toán sẽ xuất hiện ở đây.',
+
+    'order_reference' => 'Mã tham chiếu',
+    'order_date' => 'Ngày',
+    'order_status' => 'Trạng thái',
+    'order_total' => 'Tổng',
+    'orders_empty_title' => 'Chưa có đơn hàng',
+    'orders_empty_body' => 'Đơn hàng của khách này sẽ hiển thị ở đây.',
 
     'users_intro' => 'Những người có thể đăng nhập với tư cách là khách hàng này.',
     'unlink_user' => 'Hủy liên kết người dùng',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Giao hàng',
     'none_set' => 'Chưa được thiết lập.',
 
+    'lifetime_stats' => 'Thống kê khách hàng',
+    'stat_total_spend' => 'Tổng chi tiêu',
+    'stat_orders' => 'Đơn hàng',
+    'stat_avg_order' => 'Đơn trung bình',
+    'stat_latest_order' => 'Đơn gần nhất',
+
+    'notes' => 'Ghi chú',
+    'notes_empty' => 'Chưa có ghi chú.',
+    'edit_notes' => 'Sửa ghi chú',
+
     'confirm_delete_customer' => 'Bạn có chắc chắn muốn xóa khách hàng này không?',
     'confirm_delete_customer_title' => 'Xóa khách hàng này?',
     'confirm_delete_customer_body' => 'Hành động này không thể hoàn tác.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Đã xóa địa chỉ.',
     'flash_user_linked' => 'Đã liên kết người dùng.',
     'flash_user_unlinked' => 'Đã hủy liên kết người dùng.',
+    'flash_notes_updated' => 'Đã cập nhật ghi chú.',
 ];

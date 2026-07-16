@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Adresy',
     'tab_users' => 'Użytkownicy',
+    'tab_order_history' => 'Historia zamówień',
     'tab_activity' => 'Aktywność',
 
     'add_address' => 'Dodaj adres',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Usuń adres',
     'addresses_empty_title' => 'Brak zapisanych adresów',
     'addresses_empty_body' => 'Adresy podane podczas realizacji zamówienia pojawią się tutaj.',
+
+    'order_reference' => 'Referencja',
+    'order_date' => 'Data',
+    'order_status' => 'Status',
+    'order_total' => 'Suma',
+    'orders_empty_title' => 'Brak zamówień',
+    'orders_empty_body' => 'Zamówienia tego klienta pojawią się tutaj.',
 
     'users_intro' => 'Osoby, które mogą logować się jako ten klient.',
     'unlink_user' => 'Odłącz użytkownika',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Wysyłkowy',
     'none_set' => 'Nie ustawiono.',
 
+    'lifetime_stats' => 'Statystyki klienta',
+    'stat_total_spend' => 'Łączne wydatki',
+    'stat_orders' => 'Zamówienia',
+    'stat_avg_order' => 'Śr. zamówienie',
+    'stat_latest_order' => 'Ostatnie zamówienie',
+
+    'notes' => 'Notatki',
+    'notes_empty' => 'Brak notatek.',
+    'edit_notes' => 'Edytuj notatki',
+
     'confirm_delete_customer' => 'Czy na pewno chcesz usunąć tego klienta?',
     'confirm_delete_customer_title' => 'Usunąć tego klienta?',
     'confirm_delete_customer_body' => 'Tej czynności nie można cofnąć.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Adres usunięty.',
     'flash_user_linked' => 'Użytkownik połączony.',
     'flash_user_unlinked' => 'Użytkownik odłączony.',
+    'flash_notes_updated' => 'Notatki zaktualizowane.',
 ];

@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Adresler',
     'tab_users' => 'Kullanıcılar',
+    'tab_order_history' => 'Sipariş geçmişi',
     'tab_activity' => 'Etkinlik',
 
     'add_address' => 'Adres ekle',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Adresi kaldır',
     'addresses_empty_title' => 'Kayıtlı adres yok',
     'addresses_empty_body' => 'Ödeme sırasında girilen adresler burada görünecek.',
+
+    'order_reference' => 'Referans',
+    'order_date' => 'Tarih',
+    'order_status' => 'Durum',
+    'order_total' => 'Toplam',
+    'orders_empty_title' => 'Henüz sipariş yok',
+    'orders_empty_body' => 'Bu müşterinin siparişleri burada görünecek.',
 
     'users_intro' => 'Bu müşteri olarak giriş yapabilecek kişiler.',
     'unlink_user' => 'Kullanıcı bağlantısını kaldır',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Gönderim',
     'none_set' => 'Ayarlanmadı.',
 
+    'lifetime_stats' => 'Müşteri istatistikleri',
+    'stat_total_spend' => 'Toplam harcama',
+    'stat_orders' => 'Siparişler',
+    'stat_avg_order' => 'Ort. sipariş',
+    'stat_latest_order' => 'Son sipariş',
+
+    'notes' => 'Notlar',
+    'notes_empty' => 'Henüz not yok.',
+    'edit_notes' => 'Notları düzenle',
+
     'confirm_delete_customer' => 'Bu müşteriyi silmek istediğinizden emin misiniz?',
     'confirm_delete_customer_title' => 'Bu müşteri silinsin mi?',
     'confirm_delete_customer_body' => 'Bu işlem geri alınamaz.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Adres silindi.',
     'flash_user_linked' => 'Kullanıcı bağlandı.',
     'flash_user_unlinked' => 'Kullanıcı bağlantısı kaldırıldı.',
+    'flash_notes_updated' => 'Notlar güncellendi.',
 ];

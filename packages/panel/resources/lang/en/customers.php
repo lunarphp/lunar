@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Addresses',
     'tab_users' => 'Users',
+    'tab_order_history' => 'Order history',
     'tab_activity' => 'Activity',
 
     'add_address' => 'Add address',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Remove address',
     'addresses_empty_title' => 'No saved addresses',
     'addresses_empty_body' => 'Addresses entered at checkout will appear here.',
+
+    'order_reference' => 'Reference',
+    'order_date' => 'Date',
+    'order_status' => 'Status',
+    'order_total' => 'Total',
+    'orders_empty_title' => 'No orders yet',
+    'orders_empty_body' => 'Orders placed by this customer will appear here.',
 
     'users_intro' => 'People who can sign in as this customer.',
     'unlink_user' => 'Unlink user',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Shipping',
     'none_set' => 'None set.',
 
+    'lifetime_stats' => 'Lifetime stats',
+    'stat_total_spend' => 'Total spend',
+    'stat_orders' => 'Orders',
+    'stat_avg_order' => 'Avg order',
+    'stat_latest_order' => 'Latest order',
+
+    'notes' => 'Notes',
+    'notes_empty' => 'No notes yet.',
+    'edit_notes' => 'Edit notes',
+
     'confirm_delete_customer' => 'Are you sure you want to delete this customer?',
     'confirm_delete_customer_title' => 'Delete this customer?',
     'confirm_delete_customer_body' => 'This cannot be undone.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Address deleted.',
     'flash_user_linked' => 'User linked.',
     'flash_user_unlinked' => 'User unlinked.',
+    'flash_notes_updated' => 'Notes updated.',
 ];

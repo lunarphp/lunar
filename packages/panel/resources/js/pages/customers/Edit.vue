@@ -19,6 +19,7 @@ import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import Tabs from '../../components/Tabs.vue';
+import Textarea from '../../components/Textarea.vue';
 import TextInput from '../../components/TextInput.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 
@@ -63,6 +64,15 @@ interface ActivityEntry {
     causer_name: string | null;
 }
 
+interface OrderRow {
+    id: number;
+    reference: string;
+    status: string;
+    status_label: string;
+    placed_at: string;
+    total: string;
+}
+
 const props = defineProps<{
     customer: {
         id: number;
@@ -72,6 +82,7 @@ const props = defineProps<{
         company_name: string | null;
         tax_identifier: string | null;
         account_ref: string | null;
+        notes: string | null;
         created_at: string;
         customer_groups: OptionItem[];
     };
@@ -80,12 +91,20 @@ const props = defineProps<{
     addresses: Address[];
     users: LinkedUser[];
     activities: ActivityEntry[];
+    orders: OrderRow[];
+    stats: {
+        orders: number;
+        totalSpend: string | null;
+        avgOrder: string | null;
+        latestOrderAt: string | null;
+    };
     urls: {
         index: string;
         update: string;
         destroy: string;
         addressesStore: string;
         usersStore: string;
+        notesUpdate: string;
     };
 }>();
 
@@ -101,6 +120,9 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { label: t('nav.customers'), href: props.urls.index },
     { label: fullName.value, current: true },
 ]);
+
+// Most customers have a single storefront user; surface its email in the header.
+const headerEmail = computed(() => (props.users.length === 1 ? props.users[0].email : null));
 
 // Personal details + customer groups
 const detailsForm = useForm({
@@ -372,11 +394,47 @@ const timelineEvents = computed(() =>
         actor: activity.causer_name ?? '',
     })));
 
+// Notes side card: view by default, pencil toggles an inline editor.
+const notesEditing = ref(false);
+const notesForm = useForm({ notes: props.customer.notes ?? '' });
+
+const startEditNotes = (): void => {
+    notesForm.clearErrors();
+    notesForm.notes = props.customer.notes ?? '';
+    notesEditing.value = true;
+};
+
+const submitNotes = (): void => {
+    notesForm.put(props.urls.notesUpdate, {
+        preserveScroll: true,
+        onSuccess: () => {
+            notesEditing.value = false;
+        },
+    });
+};
+
+// Order history tab
+const orderStatusTone = (status: string): 'sage' | 'archived' | 'danger' | 'neutral' => {
+    switch (status) {
+        case 'open':
+            return 'sage';
+        case 'closed':
+            return 'archived';
+        case 'cancelled':
+            return 'danger';
+        default:
+            return 'neutral';
+    }
+};
+
+const formatDate = (value: string): string => new Date(value).toLocaleDateString();
+
 // Tabs
-const activeTab = ref<'addresses' | 'users' | 'activity'>('addresses');
+const activeTab = ref<'addresses' | 'users' | 'orders' | 'activity'>('addresses');
 const tabDefs = computed(() => [
     { value: 'addresses', label: t('customers.tab_addresses'), count: props.addresses.length },
     { value: 'users', label: t('customers.tab_users'), count: props.users.length },
+    { value: 'orders', label: t('customers.tab_order_history'), count: props.stats.orders },
     { value: 'activity', label: t('customers.tab_activity') },
 ]);
 </script>
@@ -400,6 +458,8 @@ const tabDefs = computed(() => [
                 </template>
                 <template #description>
                     <div class="flex gap-2 items-center flex-wrap">
+                        <span v-if="headerEmail" class="text-ink-700">{{ headerEmail }}</span>
+                        <span v-if="headerEmail" class="text-ink-500">·</span>
                         <span v-if="customer.company_name" class="text-ink-700">{{ customer.company_name }}</span>
                         <span v-if="customer.company_name" class="text-ink-500">·</span>
                         <template v-for="group in customer.customer_groups" :key="group.id">
@@ -591,6 +651,32 @@ const tabDefs = computed(() => [
                                     </form>
                                 </template>
 
+                                <template #orders>
+                                    <div v-if="orders.length" class="bg-surface border border-line rounded-xl shadow-sm overflow-hidden">
+                                        <table class="w-full border-collapse text-[13px]">
+                                            <thead>
+                                                <tr class="text-[11px] uppercase tracking-[0.06em] text-ink-500 font-medium bg-surface-2 border-b border-line">
+                                                    <th class="text-left font-medium px-4 py-2.5">{{ t('customers.order_reference') }}</th>
+                                                    <th class="text-left font-medium px-4 py-2.5">{{ t('customers.order_date') }}</th>
+                                                    <th class="text-left font-medium px-4 py-2.5">{{ t('customers.order_status') }}</th>
+                                                    <th class="text-right font-medium px-4 py-2.5">{{ t('customers.order_total') }}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="order in orders" :key="order.id" class="border-b border-line last:border-b-0">
+                                                    <td class="px-4 py-2.5 align-middle font-mono text-[12px] text-ink-900">{{ order.reference }}</td>
+                                                    <td class="px-4 py-2.5 align-middle text-ink-700 [font-variant-numeric:tabular-nums]">{{ formatDate(order.placed_at) }}</td>
+                                                    <td class="px-4 py-2.5 align-middle">
+                                                        <StatusBadge size="sm" :tone="orderStatusTone(order.status)">{{ order.status_label }}</StatusBadge>
+                                                    </td>
+                                                    <td class="px-4 py-2.5 align-middle text-right text-ink-900 [font-variant-numeric:tabular-nums]">{{ order.total }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <PageEmpty v-else :title="t('customers.orders_empty_title')">{{ t('customers.orders_empty_body') }}</PageEmpty>
+                                </template>
+
                                 <template #activity>
                                     <ActivityTimeline :events="timelineEvents" :reverse="false" />
                                     <PageEmpty v-if="!activities.length" :title="t('customers.activity_empty')" />
@@ -625,6 +711,27 @@ const tabDefs = computed(() => [
                                 </div>
                             </SideCard>
 
+                            <SideCard :title="t('customers.lifetime_stats')">
+                                <div class="flex flex-col gap-2 text-[12px]">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-ink-500">{{ t('customers.stat_total_spend') }}</span>
+                                        <span class="text-ink-900 font-medium [font-variant-numeric:tabular-nums]">{{ stats.totalSpend ?? '—' }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-ink-500">{{ t('customers.stat_orders') }}</span>
+                                        <span class="text-ink-900 font-medium [font-variant-numeric:tabular-nums]">{{ stats.orders }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-ink-500">{{ t('customers.stat_avg_order') }}</span>
+                                        <span class="text-ink-900 font-medium [font-variant-numeric:tabular-nums]">{{ stats.avgOrder ?? '—' }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-ink-500">{{ t('customers.stat_latest_order') }}</span>
+                                        <span class="text-ink-900 font-medium [font-variant-numeric:tabular-nums]">{{ stats.latestOrderAt ? formatDate(stats.latestOrderAt) : '—' }}</span>
+                                    </div>
+                                </div>
+                            </SideCard>
+
                             <SideCard :title="t('customers.default_addresses')">
                                 <div class="flex flex-col gap-3">
                                     <div>
@@ -650,6 +757,36 @@ const tabDefs = computed(() => [
                                         <div v-else class="text-[12px] text-ink-500 italic">{{ t('customers.none_set') }}</div>
                                     </div>
                                 </div>
+                            </SideCard>
+
+                            <SideCard :title="t('customers.notes')">
+                                <template #actions>
+                                    <Button
+                                        v-if="!notesEditing"
+                                        variant="ghost"
+                                        size="sm"
+                                        icon="edit"
+                                        :aria-label="t('customers.edit_notes')"
+                                        @click="startEditNotes"
+                                    />
+                                </template>
+                                <form v-if="notesEditing" class="flex flex-col gap-2" @submit.prevent="submitNotes">
+                                    <Textarea
+                                        v-model="notesForm.notes"
+                                        :rows="4"
+                                        :aria-label="t('customers.notes')"
+                                        :invalid="!!notesForm.errors.notes"
+                                    />
+                                    <div v-if="notesForm.errors.notes" class="text-[11px] text-danger">{{ notesForm.errors.notes }}</div>
+                                    <div class="flex gap-2">
+                                        <Button type="submit" variant="primary" size="sm" :disabled="notesForm.processing">{{ t('common.save_changes') }}</Button>
+                                        <Button type="button" size="sm" @click="notesEditing = false">{{ t('common.cancel') }}</Button>
+                                    </div>
+                                </form>
+                                <template v-else>
+                                    <p v-if="customer.notes" class="m-0 text-[12.5px] text-ink-700 leading-[1.55] whitespace-pre-line">{{ customer.notes }}</p>
+                                    <p v-else class="m-0 text-[12px] text-ink-500 italic">{{ t('customers.notes_empty') }}</p>
+                                </template>
                             </SideCard>
                         </div>
                     </aside>

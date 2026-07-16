@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Adrese',
     'tab_users' => 'Korisnici',
+    'tab_order_history' => 'Povijest narudžbi',
     'tab_activity' => 'Aktivnost',
 
     'add_address' => 'Dodaj adresu',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Ukloni adresu',
     'addresses_empty_title' => 'Nema spremljenih adresa',
     'addresses_empty_body' => 'Adrese unesene prilikom plaćanja pojavit će se ovdje.',
+
+    'order_reference' => 'Referenca',
+    'order_date' => 'Datum',
+    'order_status' => 'Status',
+    'order_total' => 'Ukupno',
+    'orders_empty_title' => 'Još nema narudžbi',
+    'orders_empty_body' => 'Narudžbe ovog kupca pojavit će se ovdje.',
 
     'users_intro' => 'Osobe koje se mogu prijaviti kao ovaj kupac.',
     'unlink_user' => 'Odspoji korisnika',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Dostava',
     'none_set' => 'Nije postavljeno.',
 
+    'lifetime_stats' => 'Statistika kupca',
+    'stat_total_spend' => 'Ukupna potrošnja',
+    'stat_orders' => 'Narudžbe',
+    'stat_avg_order' => 'Prosj. narudžba',
+    'stat_latest_order' => 'Zadnja narudžba',
+
+    'notes' => 'Bilješke',
+    'notes_empty' => 'Još nema bilješki.',
+    'edit_notes' => 'Uredi bilješke',
+
     'confirm_delete_customer' => 'Jeste li sigurni da želite izbrisati ovog kupca?',
     'confirm_delete_customer_title' => 'Izbrisati ovog kupca?',
     'confirm_delete_customer_body' => 'Ovo se ne može poništiti.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Adresa je izbrisana.',
     'flash_user_linked' => 'Korisnik je povezan.',
     'flash_user_unlinked' => 'Korisnik je odspojen.',
+    'flash_notes_updated' => 'Bilješke ažurirane.',
 ];

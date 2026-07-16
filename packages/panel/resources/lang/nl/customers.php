@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Adressen',
     'tab_users' => 'Gebruikers',
+    'tab_order_history' => 'Bestelgeschiedenis',
     'tab_activity' => 'Activiteit',
 
     'add_address' => 'Adres toevoegen',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Adres verwijderen',
     'addresses_empty_title' => 'Geen opgeslagen adressen',
     'addresses_empty_body' => 'Adressen die tijdens het afrekenen zijn ingevoerd, verschijnen hier.',
+
+    'order_reference' => 'Referentie',
+    'order_date' => 'Datum',
+    'order_status' => 'Status',
+    'order_total' => 'Totaal',
+    'orders_empty_title' => 'Nog geen bestellingen',
+    'orders_empty_body' => 'Bestellingen van deze klant verschijnen hier.',
 
     'users_intro' => 'Personen die kunnen inloggen als deze klant.',
     'unlink_user' => 'Gebruiker ontkoppelen',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Verzending',
     'none_set' => 'Niet ingesteld.',
 
+    'lifetime_stats' => 'Totaalstatistieken',
+    'stat_total_spend' => 'Totale uitgaven',
+    'stat_orders' => 'Bestellingen',
+    'stat_avg_order' => 'Gem. bestelling',
+    'stat_latest_order' => 'Laatste bestelling',
+
+    'notes' => 'Notities',
+    'notes_empty' => 'Nog geen notities.',
+    'edit_notes' => 'Notities bewerken',
+
     'confirm_delete_customer' => 'Weet je zeker dat je deze klant wilt verwijderen?',
     'confirm_delete_customer_title' => 'Deze klant verwijderen?',
     'confirm_delete_customer_body' => 'Dit kan niet ongedaan worden gemaakt.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Adres verwijderd.',
     'flash_user_linked' => 'Gebruiker gekoppeld.',
     'flash_user_unlinked' => 'Gebruiker ontkoppeld.',
+    'flash_notes_updated' => 'Notities bijgewerkt.',
 ];

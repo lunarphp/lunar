@@ -63,6 +63,7 @@ return [
 
     'tab_addresses' => 'Adrese',
     'tab_users' => 'Utilizatori',
+    'tab_order_history' => 'Istoric comenzi',
     'tab_activity' => 'Activitate',
 
     'add_address' => 'Adaugă adresă',
@@ -85,6 +86,13 @@ return [
     'remove_address' => 'Elimină adresa',
     'addresses_empty_title' => 'Nicio adresă salvată',
     'addresses_empty_body' => 'Adresele introduse la finalizarea comenzii vor apărea aici.',
+
+    'order_reference' => 'Referință',
+    'order_date' => 'Dată',
+    'order_status' => 'Stare',
+    'order_total' => 'Total',
+    'orders_empty_title' => 'Nicio comandă încă',
+    'orders_empty_body' => 'Comenzile acestui client vor apărea aici.',
 
     'users_intro' => 'Persoanele care se pot conecta ca acest client.',
     'unlink_user' => 'Dezasociază utilizatorul',
@@ -114,6 +122,16 @@ return [
     'shipping' => 'Livrare',
     'none_set' => 'Niciuna setată.',
 
+    'lifetime_stats' => 'Statistici client',
+    'stat_total_spend' => 'Cheltuieli totale',
+    'stat_orders' => 'Comenzi',
+    'stat_avg_order' => 'Comandă medie',
+    'stat_latest_order' => 'Ultima comandă',
+
+    'notes' => 'Notițe',
+    'notes_empty' => 'Nicio notiță încă.',
+    'edit_notes' => 'Editează notițele',
+
     'confirm_delete_customer' => 'Ești sigur că vrei să ștergi acest client?',
     'confirm_delete_customer_title' => 'Ștergi acest client?',
     'confirm_delete_customer_body' => 'Această acțiune nu poate fi anulată.',
@@ -130,4 +148,5 @@ return [
     'flash_address_deleted' => 'Adresă ștearsă.',
     'flash_user_linked' => 'Utilizator asociat.',
     'flash_user_unlinked' => 'Utilizator dezasociat.',
+    'flash_notes_updated' => 'Notițe actualizate.',
 ];
