@@ -53,3 +53,18 @@ it('lets a signed-in customer view a session they own by customer_reference', fu
     $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
         ->assertOk();
 });
+
+it('forbids a signed-in customer from viewing another customer\'s session', function () {
+    [$ownerUser, $ownerCustomer] = makeUserWithCustomer();
+    $ownerCart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($ownerCart);
+    $session->customer_reference = (string) $ownerCustomer->id;
+    $session->save();
+
+    // A DIFFERENT signed-in customer, with their own (different) current cart.
+    [$otherUser, $otherCustomer] = makeUserWithCustomer();
+    CartSession::use(routeTestCart());
+    $this->actingAs($otherUser);
+
+    $this->get(route('lunar.checkout.show', $session->uuid))->assertForbidden();
+});

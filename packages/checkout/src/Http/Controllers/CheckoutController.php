@@ -105,8 +105,9 @@ class CheckoutController extends Controller
     /**
      * The UUID in the URL is a capability token. Without an ownership check any
      * leaked or guessed UUID would expose the session's PII (email, addresses),
-     * so the requester must own the session: their live cart is its source. A
-     * mismatch is abuse, not a wrong turn — 403, not a redirect.
+     * so the requester must own the session: their live cart is its source, or
+     * the customer associated with the session if the cart ID differs (e.g. during
+     * login cart-merge). A mismatch is abuse, not a wrong turn — 403, not a redirect.
      */
     private function ensureOwnership(CheckoutSessionModel $session): void
     {
