@@ -23,6 +23,11 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
             ->middleware('throttle:checkout-contact-lookup')
             ->name('lunar.checkout.contact.lookup');
 
+        // Persist the contact email onto the checkout session model (guest) or
+        // associate the authenticated customer. Inertia POST, returns back().
+        Route::post($path.'/{session}/contact', [CheckoutController::class, 'storeContact'])
+            ->name('lunar.checkout.contact.store');
+
         // Render the self-contained Inertia checkout app for one session,
         // addressed by its UUID capability token (spec 0008). Safe/idempotent:
         // a refresh re-renders, it never mints or mutates a session. Ownership

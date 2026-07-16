@@ -201,6 +201,29 @@ class CheckoutController extends Controller
     }
 
     /**
+     * Persist the contact email. Guest → customer_email on the model; signed-in
+     * → associate the customer (which also stores the email). Order attachment
+     * itself rides on Lunar's cart↔user link, not this value.
+     */
+    public function storeContact(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate(['email' => ['required', 'email']]);
+
+        $customerId = auth()->user()?->latestCustomer()?->id;
+
+        if ($customerId !== null) {
+            $checkoutDriver->associateCustomer($session, (string) $customerId, $data['email']);
+        } else {
+            $session->customer_email = $data['email'];
+            $session->save();
+        }
+
+        return back();
+    }
+
+    /**
      * Project every registered element to the shape the frontend registry
      * renders. Each element is given the session, hydrated read-only, then
      * serialized to its handle, title, component hint, region, props and the

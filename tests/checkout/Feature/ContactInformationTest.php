@@ -93,3 +93,31 @@ it('forbids lookup on a session the requester does not own', function () {
     $this->postJson(route('lunar.checkout.contact.lookup', $session->uuid), ['email' => 'x@example.test'])
         ->assertForbidden();
 });
+
+it('stores a guest email onto the checkout session model', function () {
+    $cart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->post(route('lunar.checkout.contact.store', $session->uuid), ['email' => 'guest@example.test'])
+        ->assertRedirect();
+
+    expect($session->fresh()->customer_email)->toBe('guest@example.test')
+        ->and($session->fresh()->customer_reference)->toBeNull();
+});
+
+it('associates the customer when authenticated', function () {
+    [$user, $customer] = makeUserWithCustomer();
+    $user->update(['email' => 'trade@example.test']);
+
+    $cart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+    $this->actingAs($user);
+
+    $this->post(route('lunar.checkout.contact.store', $session->uuid), ['email' => 'trade@example.test'])
+        ->assertRedirect();
+
+    expect($session->fresh()->customer_reference)->toBe((string) $customer->id)
+        ->and($session->fresh()->customer_email)->toBe('trade@example.test');
+});
