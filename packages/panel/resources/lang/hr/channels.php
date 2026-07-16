@@ -21,6 +21,8 @@ return [
     'field_status' => 'Status',
     'default_channel' => 'Zadani kanal',
     'default_channel_hint' => 'Koristi se kada zahtjev izričito ne odabere kanal.',
+    'default_locked_hint' => 'Ovo je zadani kanal. Da biste to promijenili, postavite drugi kanal kao zadani.',
+    'default_unset_blocked' => 'Zadani kanal nije moguće poništiti. Umjesto toga postavite drugi kanal kao zadani.',
 
     'section_details' => 'Detalji',
     'section_state' => 'Stanje',
@@ -30,6 +32,7 @@ return [
     'confirm_delete_title' => 'Izbrisati kanal?',
     'confirm_delete_body' => '"{name}" bit će trajno uklonjen.',
     'delete_blocked' => 'Nije moguće izbrisati kanal s poviješću narudžbi.',
+    'delete_blocked_default' => 'Zadani kanal nije moguće izbrisati. Najprije postavite drugi kanal kao zadani.',
 
     'flash_created' => 'Kanal je kreiran.',
     'flash_updated' => 'Kanal je ažuriran.',

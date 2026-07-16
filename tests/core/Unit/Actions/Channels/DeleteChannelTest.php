@@ -10,8 +10,8 @@ use Lunar\Tests\Core\TestCase;
 uses(TestCase::class);
 uses(RefreshDatabase::class);
 
-it('deletes a channel with no order history', function () {
-    $channel = Channel::factory()->create();
+it('deletes a non-default channel with no order history', function () {
+    $channel = Channel::factory()->create(['default' => false]);
 
     app(DeleteChannel::class)->execute($channel);
 
@@ -19,7 +19,7 @@ it('deletes a channel with no order history', function () {
 });
 
 it('rejects deleting a channel with order history', function () {
-    $channel = Channel::factory()->create();
+    $channel = Channel::factory()->create(['default' => false]);
 
     Order::factory()->create(['channel_id' => $channel->id]);
 
@@ -27,9 +27,27 @@ it('rejects deleting a channel with order history', function () {
 })->throws(ChannelActionException::class);
 
 it('does not delete a channel with order history', function () {
-    $channel = Channel::factory()->create();
+    $channel = Channel::factory()->create(['default' => false]);
 
     Order::factory()->create(['channel_id' => $channel->id]);
+
+    try {
+        app(DeleteChannel::class)->execute($channel);
+    } catch (ChannelActionException) {
+        // expected
+    }
+
+    expect(Channel::find($channel->id))->not->toBeNull();
+});
+
+it('rejects deleting the default channel', function () {
+    $channel = Channel::factory()->create(['default' => true]);
+
+    app(DeleteChannel::class)->execute($channel);
+})->throws(ChannelActionException::class);
+
+it('does not delete the default channel', function () {
+    $channel = Channel::factory()->create(['default' => true]);
 
     try {
         app(DeleteChannel::class)->execute($channel);

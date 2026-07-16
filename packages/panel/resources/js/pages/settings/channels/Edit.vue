@@ -47,6 +47,13 @@ const submit = (): void => {
     form.put(props.urls.update);
 };
 
+// The default channel cannot be deleted or un-defaulted; promote another channel instead.
+const deleteBlockedReason = computed<string>(() => {
+    if (props.channel.default) return t('channels.delete_blocked_default');
+    if (props.hasOrderHistory) return t('channels.delete_blocked');
+    return '';
+});
+
 const deleting = ref(false);
 
 const confirmDestroy = (): void => {
@@ -57,8 +64,8 @@ const confirmDestroy = (): void => {
 <template>
     <SettingsShell :title="t('channels.edit_title', { name: channel.name })" :breadcrumbs="breadcrumbs">
         <template #actions>
-            <Tooltip :text="hasOrderHistory ? t('channels.delete_blocked') : ''">
-                <Button variant="ghost" icon="trash" :disabled="hasOrderHistory" @click="deleting = true">{{ t('common.delete') }}</Button>
+            <Tooltip :text="deleteBlockedReason">
+                <Button variant="ghost" icon="trash" :disabled="!!deleteBlockedReason" @click="deleting = true">{{ t('common.delete') }}</Button>
             </Tooltip>
             <Button variant="primary" icon="check" size="sm" :disabled="form.processing" @click="submit">{{ t('common.save') }}</Button>
         </template>
@@ -84,11 +91,13 @@ const confirmDestroy = (): void => {
 
         <Section :title="t('channels.section_state')">
             <div class="flex flex-col gap-4">
-                <label class="flex items-center gap-3 cursor-pointer">
-                    <Toggle :on="form.default" @toggle="form.default = !form.default" />
+                <label class="flex items-center gap-3" :class="channel.default ? 'cursor-not-allowed' : 'cursor-pointer'">
+                    <Toggle :on="form.default" :disabled="channel.default" @toggle="form.default = !form.default" />
                     <div>
                         <div class="text-[12.5px] text-ink-900 font-medium">{{ t('channels.default_channel') }}</div>
-                        <div class="text-[11px] text-ink-500">{{ t('channels.default_channel_hint') }}</div>
+                        <div class="text-[11px] text-ink-500">
+                            {{ channel.default ? t('channels.default_locked_hint') : t('channels.default_channel_hint') }}
+                        </div>
                     </div>
                 </label>
                 <div class="max-w-[220px]">

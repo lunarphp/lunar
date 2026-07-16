@@ -35,7 +35,11 @@ class ChannelEditController
 
     public function update(ChannelRequest $request, Channel $channel, UpdatesChannel $updatesChannel): RedirectResponse
     {
-        $updatesChannel->execute($channel, $request->channelAttributes());
+        try {
+            $updatesChannel->execute($channel, $request->channelAttributes());
+        } catch (ChannelActionException) {
+            return back()->with('error', __('panel::channels.default_unset_blocked'));
+        }
 
         return redirect()->route('panel.settings.channels.index')->with('success', __('panel::channels.flash_updated'));
     }
@@ -45,7 +49,9 @@ class ChannelEditController
         try {
             $deletesChannel->execute($channel);
         } catch (ChannelActionException) {
-            return back()->with('error', __('panel::channels.delete_blocked'));
+            return back()->with('error', $channel->default
+                ? __('panel::channels.delete_blocked_default')
+                : __('panel::channels.delete_blocked'));
         }
 
         return redirect()->route('panel.settings.channels.index')->with('success', __('panel::channels.flash_deleted'));

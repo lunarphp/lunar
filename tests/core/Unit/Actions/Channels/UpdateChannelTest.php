@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Actions\Channels\UpdateChannel;
+use Lunar\Core\Exceptions\ChannelActionException;
 use Lunar\Core\Models\Channel;
 use Lunar\Tests\Core\TestCase;
 
@@ -56,5 +57,41 @@ it('does not unset itself when it is already the default channel', function () {
         'default' => true,
     ]);
 
+    expect($channel->fresh()->default)->toBeTrue();
+});
+
+it('rejects unsetting default on the default channel', function () {
+    $channel = Channel::factory()->create(['default' => true]);
+
+    app(UpdateChannel::class)->execute($channel, [
+        'name' => $channel->name,
+        'default' => false,
+    ]);
+})->throws(ChannelActionException::class);
+
+it('keeps the default channel unchanged when unsetting default is rejected', function () {
+    $channel = Channel::factory()->create(['name' => 'Webstore', 'default' => true]);
+
+    try {
+        app(UpdateChannel::class)->execute($channel, [
+            'name' => 'Renamed',
+            'default' => false,
+        ]);
+    } catch (ChannelActionException) {
+        // expected
+    }
+
+    expect($channel->fresh()->default)->toBeTrue();
+    expect($channel->fresh()->name)->toBe('Webstore');
+});
+
+it('updates the default channel when default stays untouched', function () {
+    $channel = Channel::factory()->create(['default' => true]);
+
+    app(UpdateChannel::class)->execute($channel, [
+        'name' => 'Renamed',
+    ]);
+
+    expect($channel->fresh()->name)->toBe('Renamed');
     expect($channel->fresh()->default)->toBeTrue();
 });

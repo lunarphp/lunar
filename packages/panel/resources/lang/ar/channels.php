@@ -21,6 +21,8 @@ return [
     'field_status' => 'الحالة',
     'default_channel' => 'القناة الافتراضية',
     'default_channel_hint' => 'يُستخدم عندما لا يحدد الطلب قناة بشكل صريح.',
+    'default_locked_hint' => 'هذه هي القناة الافتراضية. لتغييرها، اجعل قناة أخرى هي الافتراضية.',
+    'default_unset_blocked' => 'لا يمكن إلغاء تعيين القناة الافتراضية. اجعل قناة أخرى هي الافتراضية بدلاً من ذلك.',
 
     'section_details' => 'التفاصيل',
     'section_state' => 'الحالة',
@@ -30,6 +32,7 @@ return [
     'confirm_delete_title' => 'هل تريد حذف القناة؟',
     'confirm_delete_body' => 'سيتم حذف "{name}" نهائيًا.',
     'delete_blocked' => 'لا يمكن حذف قناة لها سجل طلبات.',
+    'delete_blocked_default' => 'لا يمكن حذف القناة الافتراضية. اجعل قناة أخرى هي الافتراضية أولاً.',
 
     'flash_created' => 'تم إنشاء القناة.',
     'flash_updated' => 'تم تحديث القناة.',

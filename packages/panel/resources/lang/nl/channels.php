@@ -21,6 +21,8 @@ return [
     'field_status' => 'Status',
     'default_channel' => 'Standaardkanaal',
     'default_channel_hint' => 'Wordt gebruikt wanneer een verzoek er niet expliciet één kiest.',
+    'default_locked_hint' => 'Dit is het standaardkanaal. Maak een ander kanaal standaard om dit te wijzigen.',
+    'default_unset_blocked' => 'Het standaardkanaal kan niet worden uitgeschakeld. Maak in plaats daarvan een ander kanaal standaard.',
 
     'section_details' => 'Details',
     'section_state' => 'Status',
@@ -30,6 +32,7 @@ return [
     'confirm_delete_title' => 'Kanaal verwijderen?',
     'confirm_delete_body' => '"{name}" wordt permanent verwijderd.',
     'delete_blocked' => 'Kan geen kanaal verwijderen met bestelgeschiedenis.',
+    'delete_blocked_default' => 'Het standaardkanaal kan niet worden verwijderd. Maak eerst een ander kanaal standaard.',
 
     'flash_created' => 'Kanaal aangemaakt.',
     'flash_updated' => 'Kanaal bijgewerkt.',
