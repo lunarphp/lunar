@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'Pretraživanje',
+    'visit_store' => 'Posjeti trgovinu',
+    'support' => 'Podrška',
     'settings' => 'Postavke',
     'theme' => 'Tema',
     'theme_light' => 'Svijetla',

@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'Pesquisar',
+    'visit_store' => 'Visitar loja',
+    'support' => 'Suporte',
     'settings' => 'Configurações',
     'theme' => 'Tema',
     'theme_light' => 'Claro',

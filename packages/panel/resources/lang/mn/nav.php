@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'Хайх',
+    'visit_store' => 'Дэлгүүр рүү зочлох',
+    'support' => 'Тусламж',
     'settings' => 'Тохиргоо',
     'theme' => 'Загвар',
     'theme_light' => 'Цайвар',

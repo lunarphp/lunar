@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'Ara',
+    'visit_store' => 'Mağazayı ziyaret et',
+    'support' => 'Destek',
     'settings' => 'Ayarlar',
     'theme' => 'Tema',
     'theme_light' => 'Açık',

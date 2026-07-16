@@ -40,6 +40,10 @@ const settingsItem = computed<NavItemShape>(() => ({
 
 const logoLetter = computed(() => panel.value.name?.charAt(0).toUpperCase() ?? 'L');
 
+// Static placeholder for the future command palette (out of scope for the
+// initial slice); the value is the Command keycap glyph plus K.
+const SEARCH_SHORTCUT = '⌘K';
+
 const footerItemBase = 'flex items-center gap-2.5 rounded-sm text-[13px] text-ink-700 cursor-pointer select-none hover:bg-surface-2';
 </script>
 
@@ -62,10 +66,26 @@ const footerItemBase = 'flex items-center gap-2.5 rounded-sm text-[13px] text-in
                 rel="noopener"
                 class="text-[11px] text-ink-500 flex items-center gap-[3px] hover:text-ink-900"
             >
-                Visit store <Icon name="externalLink" cls="sm" />
+                {{ t('nav.visit_store') }} <Icon name="externalLink" cls="sm" />
             </a>
         </div>
     </div>
+
+    <Tooltip :text="collapsed ? `${t('nav.search')} (${SEARCH_SHORTCUT})` : ''">
+        <button
+            type="button"
+            :class="[
+                'flex items-center gap-2 bg-surface-2 border border-line rounded-md text-ink-500 text-xs cursor-pointer transition-colors hover:bg-paper-hover hover:text-ink-700 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35',
+                collapsed ? 'w-auto justify-center p-2 my-1.5 mx-0' : 'w-[calc(100%-0.5rem)] px-2.5 py-1.5 mx-1 mt-1.5 mb-2.5',
+            ]"
+        >
+            <Icon name="search" cls="sm" />
+            <template v-if="!collapsed">
+                <span>{{ t('nav.search') }}</span>
+                <kbd class="ml-auto font-mono text-[10px] text-ink-400 bg-paper border border-line rounded px-1 py-px">{{ SEARCH_SHORTCUT }}</kbd>
+            </template>
+        </button>
+    </Tooltip>
 
     <div v-if="navigation.items.length" class="mt-1">
         <NavLink v-for="item in navigation.items" :key="item.key" :item="item" :collapsed="collapsed" />
@@ -87,7 +107,7 @@ const footerItemBase = 'flex items-center gap-2.5 rounded-sm text-[13px] text-in
 
     <NavLink :item="settingsItem" :collapsed="collapsed" />
 
-    <Tooltip :text="collapsed ? 'Support' : ''">
+    <Tooltip :text="collapsed ? t('nav.support') : ''">
         <a
             v-if="panel.support_url"
             :href="panel.support_url"
@@ -95,10 +115,10 @@ const footerItemBase = 'flex items-center gap-2.5 rounded-sm text-[13px] text-in
             rel="noopener"
             :class="[footerItemBase, collapsed ? 'justify-center py-2 px-0 gap-0' : 'px-2.5 py-1.5']"
         >
-            <Icon name="help" /> <span v-if="!collapsed">Support</span>
+            <Icon name="help" /> <span v-if="!collapsed">{{ t('nav.support') }}</span>
         </a>
         <div v-else :class="[footerItemBase, collapsed ? 'justify-center py-2 px-0 gap-0' : 'px-2.5 py-1.5']">
-            <Icon name="help" /> <span v-if="!collapsed">Support</span>
+            <Icon name="help" /> <span v-if="!collapsed">{{ t('nav.support') }}</span>
         </div>
     </Tooltip>
 

@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'جستجو',
+    'visit_store' => 'بازدید از فروشگاه',
+    'support' => 'پشتیبانی',
     'settings' => 'تنظیمات',
     'theme' => 'تم',
     'theme_light' => 'روشن',

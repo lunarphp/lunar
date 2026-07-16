@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'Търсене',
+    'visit_store' => 'Към магазина',
+    'support' => 'Поддръжка',
     'settings' => 'Настройки',
     'theme' => 'Тема',
     'theme_light' => 'Светла',

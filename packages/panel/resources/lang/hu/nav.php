@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'Keresés',
+    'visit_store' => 'Bolt megtekintése',
+    'support' => 'Támogatás',
     'settings' => 'Beállítások',
     'theme' => 'Téma',
     'theme_light' => 'Világos',

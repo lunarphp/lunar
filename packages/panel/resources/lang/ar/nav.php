@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'بحث',
+    'visit_store' => 'زيارة المتجر',
+    'support' => 'الدعم',
     'settings' => 'الإعدادات',
     'theme' => 'المظهر',
     'theme_light' => 'فاتح',

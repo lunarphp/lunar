@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'Căutare',
+    'visit_store' => 'Vizitează magazinul',
+    'support' => 'Asistență',
     'settings' => 'Setări',
     'theme' => 'Temă',
     'theme_light' => 'Luminoasă',

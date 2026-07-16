@@ -2,6 +2,9 @@
 
 return [
     'dashboard' => 'Dashboard',
+    'search' => 'Tìm kiếm',
+    'visit_store' => 'Xem cửa hàng',
+    'support' => 'Hỗ trợ',
     'settings' => 'Cài đặt',
     'theme' => 'Giao diện',
     'theme_light' => 'Sáng',
