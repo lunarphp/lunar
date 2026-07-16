@@ -60,6 +60,15 @@ describe('TimeSeriesChart', () => {
         expect(wrapper.find('[role="status"]').exists()).toBe(false);
     });
 
+    it('animates the line draw-in with normalised dash math', () => {
+        const wrapper = mountChart();
+
+        const line = wrapper.find('path.tsc-line');
+        expect(line.exists()).toBe(true);
+        expect(line.attributes('pathLength')).toBe('1');
+        expect(wrapper.find('path.tsc-area').exists()).toBe(true);
+    });
+
     it('scales a flat zero series without dividing by zero', () => {
         const wrapper = mountChart({ points: [{ label: 'Jan', value: 0 }, { label: 'Feb', value: 0 }] });
 

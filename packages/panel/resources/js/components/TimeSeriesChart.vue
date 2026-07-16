@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 export interface ChartPoint {
     label: string;
@@ -92,10 +92,25 @@ const tickLabel = (value: number): string => (props.formatValue ? props.formatVa
 // 1/2/2.5/5 axis maximum always land on readable values.
 const ticks = computed(() => [0.5, 1].map((fraction) => fraction * axisMax.value));
 
-// Thin x labels so they never collide; always keep first and last.
+// Thin x labels so they never collide; always keep first and last, and drop
+// a stepped label that would land right next to the final one.
 const labelStep = computed(() => Math.max(1, Math.ceil(props.points.length / 8)));
-const showLabel = (index: number): boolean =>
-    index % labelStep.value === 0 || index === props.points.length - 1;
+const showLabel = (index: number): boolean => {
+    const last = props.points.length - 1;
+
+    if (index === last) {
+        return true;
+    }
+
+    return index % labelStep.value === 0 && last - index >= labelStep.value;
+};
+
+// Remounting the series paths (via :key) restarts their draw-in animation
+// whenever the data changes, e.g. when a range switcher swaps the buckets.
+const animationKey = ref(0);
+watch(() => props.points, () => {
+    animationKey.value++;
+});
 
 // Hover/focus: a crosshair snaps to the nearest bucket; the same readout is
 // reachable by keyboard (arrow keys).
@@ -191,9 +206,19 @@ const tooltipStyle = computed(() => {
                     style="fill: var(--color-ink-500)"
                 >{{ tickLabel(tick) }}</text>
 
-                <!-- Series -->
-                <path :d="areaPath" style="fill: var(--color-sage-soft)" fill-opacity="0.6" />
-                <path :d="linePath" fill="none" style="stroke: var(--color-sage-ink)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+                <!-- Series; keyed so new data replays the draw-in animation. -->
+                <path :key="`area-${animationKey}`" class="tsc-area" :d="areaPath" style="fill: var(--color-sage-soft)" fill-opacity="0.6" />
+                <path
+                    :key="`line-${animationKey}`"
+                    class="tsc-line"
+                    :d="linePath"
+                    pathLength="1"
+                    fill="none"
+                    style="stroke: var(--color-sage-ink)"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                />
 
                 <!-- X labels (thinned) -->
                 <template v-for="(point, i) in points" :key="`label-${i}`">
@@ -240,3 +265,41 @@ const tooltipStyle = computed(() => {
         </div>
     </div>
 </template>
+
+<style scoped>
+/* Draw the line left to right (pathLength="1" normalises the dash math),
+   then fade the area in under it. */
+.tsc-line {
+    stroke-dasharray: 1;
+    animation: tsc-draw 700ms cubic-bezier(0.33, 0, 0.2, 1) both;
+}
+
+.tsc-area {
+    animation: tsc-fade 500ms ease-out 250ms both;
+}
+
+@keyframes tsc-draw {
+    from {
+        stroke-dashoffset: 1;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes tsc-fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tsc-line,
+    .tsc-area {
+        animation: none;
+    }
+}
+</style>
