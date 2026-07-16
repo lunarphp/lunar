@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Icon from './Icon.vue';
 import NavLink from './NavLink.vue';
 import Tooltip from './Tooltip.vue';
@@ -9,6 +10,8 @@ import { useNavState } from '../composables/useNavState';
 import type { NavTreeShape } from '../types/navigation';
 
 const props = withDefaults(defineProps<{ collapsed?: boolean }>(), { collapsed: false });
+
+const { t } = useI18n();
 
 const page = usePage();
 const { closeDrawer } = useNavState();
@@ -32,9 +35,9 @@ const backCls = computed(() => [
 </script>
 
 <template>
-    <Tooltip :text="collapsed ? 'Back to main' : ''">
+    <Tooltip :text="collapsed ? t('common.back_to_main') : ''">
         <Link :href="backToMainUrl" :class="backCls" @click="closeDrawer">
-            <Icon name="arrowLeft" /> <span v-if="!collapsed">Back to main</span>
+            <Icon name="arrowLeft" /> <span v-if="!collapsed">{{ t('common.back_to_main') }}</span>
         </Link>
     </Tooltip>
 

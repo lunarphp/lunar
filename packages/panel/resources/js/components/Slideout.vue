@@ -9,6 +9,7 @@ import {
     DialogTitle,
     VisuallyHidden,
 } from 'reka-ui';
+import { useI18n } from 'vue-i18n';
 import Icon from './Icon.vue';
 
 withDefaults(
@@ -23,6 +24,8 @@ withDefaults(
 );
 
 defineEmits<{ 'update:open': [value: boolean] }>();
+
+const { t } = useI18n();
 
 const sizeMap: Record<string, string> = {
     md: 'sm:max-w-[520px]',
@@ -58,7 +61,7 @@ const sizeMap: Record<string, string> = {
                     <DialogClose
                         v-if="!hideCloseButton"
                         class="shrink-0 -mr-1 -mt-0.5 p-1 rounded-sm text-ink-500 hover:text-ink-900 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35"
-                        aria-label="Close"
+                        :aria-label="t('common.close')"
                     >
                         <Icon name="x" cls="sm" />
                     </DialogClose>

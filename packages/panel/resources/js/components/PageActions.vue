@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import {
     DropdownMenuContent,
     DropdownMenuItem,
@@ -23,6 +24,8 @@ export interface PageAction {
 }
 
 const props = defineProps<{ actions: PageAction[] }>();
+
+const { t } = useI18n();
 
 const primary = computed(() => props.actions.filter((a) => a.primary));
 const overflow = computed(() => props.actions.filter((a) => !a.primary));
@@ -76,7 +79,7 @@ const confirm = (): void => {
 
         <DropdownMenuRoot v-if="overflow.length">
             <DropdownMenuTrigger as-child>
-                <Button variant="ghost" size="sm" icon="more" aria-label="More actions" class="!w-[30px]" />
+                <Button variant="ghost" size="sm" icon="more" :aria-label="t('common.more_actions')" class="!w-[30px]" />
             </DropdownMenuTrigger>
             <DropdownMenuPortal>
                 <DropdownMenuContent

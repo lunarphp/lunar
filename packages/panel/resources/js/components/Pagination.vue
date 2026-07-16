@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
 
 interface PaginationMeta {
@@ -13,6 +14,8 @@ interface PaginationMeta {
 }
 
 defineProps<{ meta: PaginationMeta }>();
+
+const { t } = useI18n();
 
 const go = (url: string | null): void => {
     if (!url) {
@@ -28,13 +31,18 @@ const go = (url: string | null): void => {
         v-if="meta.last_page > 1"
         class="flex items-center justify-between text-xs text-ink-500"
     >
-        <div>Showing <span class="text-ink-900 font-medium">{{ meta.from ?? 0 }}–{{ meta.to ?? 0 }}</span> of {{ meta.total }}</div>
+        <i18n-t keypath="common.showing_results" tag="div" scope="global">
+            <template #range>
+                <span class="text-ink-900 font-medium">{{ meta.from ?? 0 }}–{{ meta.to ?? 0 }}</span>
+            </template>
+            <template #total>{{ meta.total }}</template>
+        </i18n-t>
         <div class="flex items-center gap-2">
             <Button
                 variant="ghost"
                 size="sm"
                 icon="chevronLeft"
-                aria-label="Previous page"
+                :aria-label="t('common.previous_page')"
                 class="!w-[26px] !h-[26px]"
                 :disabled="!meta.prev_page_url"
                 @click="go(meta.prev_page_url)"
@@ -46,7 +54,7 @@ const go = (url: string | null): void => {
                 variant="ghost"
                 size="sm"
                 icon="chevronRight"
-                aria-label="Next page"
+                :aria-label="t('common.next_page')"
                 class="!w-[26px] !h-[26px]"
                 :disabled="!meta.next_page_url"
                 @click="go(meta.next_page_url)"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Checkbox from './Checkbox.vue';
 import DataTableCell, { type DataTableColumnType } from './DataTableCell.vue';
 import RowActions, { type RowAction } from './RowActions.vue';
@@ -29,10 +30,12 @@ const props = withDefaults(
         selected?: RowKey[];
         emptyText?: string;
     }>(),
-    { rowKey: 'id', rowActions: () => [], selectable: false, selected: () => [], emptyText: 'No records yet' },
+    { rowKey: 'id', rowActions: () => [], selectable: false, selected: () => [] },
 );
 
 const emit = defineEmits<{ 'update:selected': [value: RowKey[]] }>();
+
+const { t } = useI18n();
 
 const hasRowActions = computed(() => props.rowActions.length > 0);
 
@@ -88,7 +91,7 @@ const linkFor = (row: Record<string, unknown>): string | null => (props.rowTo ? 
                 <Checkbox
                     :model-value="allSelected"
                     :indeterminate="someSelected && !allSelected"
-                    aria-label="Select all rows"
+                    :aria-label="t('common.select_all_rows')"
                     @update:model-value="toggleAll"
                 />
             </div>
@@ -105,7 +108,7 @@ const linkFor = (row: Record<string, unknown>): string | null => (props.rowTo ? 
             v-if="!rows.length"
             class="px-6 py-10 text-center text-xs text-ink-500"
         >
-            <slot name="empty">{{ emptyText }}</slot>
+            <slot name="empty">{{ emptyText ?? t('common.no_records') }}</slot>
         </div>
 
         <!-- Rows -->

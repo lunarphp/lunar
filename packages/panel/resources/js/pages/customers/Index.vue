@@ -247,8 +247,8 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     <button
                         type="button"
                         class="absolute -top-2 -right-2 w-[22px] h-[22px] rounded-full bg-paper border border-line-strong shadow-sm grid place-items-center text-ink-500 hover:bg-surface-2 hover:text-ink-900 hover:border-ink-300 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35"
-                        aria-label="Hide KPIs"
-                        title="Hide KPIs"
+                        :aria-label="t('common.hide_kpis')"
+                        :title="t('common.hide_kpis')"
                         @click="kpisDismissed = true"
                     >
                         <Icon name="x" cls="sm" />

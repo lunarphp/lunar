@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import {
     DropdownMenuContent,
     DropdownMenuItem,
@@ -25,6 +26,8 @@ const props = defineProps<{
     actions: RowAction[];
     row: Record<string, unknown>;
 }>();
+
+const { t } = useI18n();
 
 // A row action only renders when the server resolved a URL for this row.
 const urls = computed(() => (props.row._actions ?? {}) as Record<string, string>);
@@ -84,7 +87,7 @@ const confirm = (): void => {
                     variant="ghost"
                     size="sm"
                     icon="more"
-                    aria-label="More actions"
+                    :aria-label="t('common.more_actions')"
                     class="!w-[26px] !h-[26px]"
                 />
             </DropdownMenuTrigger>

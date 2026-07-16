@@ -11,6 +11,7 @@ import {
     ComboboxTrigger,
     ComboboxViewport,
 } from 'reka-ui';
+import { useI18n } from 'vue-i18n';
 import Icon from './Icon.vue';
 
 type ComboboxOption = { value: string | number; label: string };
@@ -23,13 +24,15 @@ const props = withDefaults(
         emptyText?: string;
         invalid?: boolean;
     }>(),
-    { modelValue: null, placeholder: 'Search…', emptyText: 'No matches', invalid: false },
+    { modelValue: null, invalid: false },
 );
 
 const emit = defineEmits<{
     'update:modelValue': [value: string | number];
     change: [value: string | number];
 }>();
+
+const { t } = useI18n();
 
 const slots = useSlots();
 
@@ -76,12 +79,12 @@ const inputCls = computed(() => [
             </div>
             <ComboboxInput
                 :class="inputCls"
-                :placeholder="placeholder"
+                :placeholder="placeholder ?? t('common.search_placeholder')"
                 :display-value="() => selectedLabel"
             />
             <ComboboxTrigger
                 class="absolute inset-y-0 right-0 w-8 grid place-items-center text-ink-400 hover:text-ink-700 focus:outline-none"
-                aria-label="Toggle options"
+                :aria-label="t('common.toggle_options')"
             >
                 <Icon name="chevDown" cls="sm" />
             </ComboboxTrigger>
@@ -95,7 +98,7 @@ const inputCls = computed(() => [
             >
                 <ComboboxViewport class="overflow-y-auto max-h-[260px]">
                     <ComboboxEmpty class="px-2.5 py-2 text-[12.5px] text-ink-500">
-                        {{ emptyText }}
+                        {{ emptyText ?? t('common.no_matches') }}
                     </ComboboxEmpty>
                     <ComboboxItem
                         v-for="opt in options"

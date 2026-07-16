@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Icon from './Icon.vue';
 
 // A crumb with an `href` renders as an Inertia link; the `current` crumb is the
@@ -12,6 +13,8 @@ export interface BreadcrumbItem {
 }
 
 defineProps<{ items: BreadcrumbItem[] }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -19,7 +22,7 @@ defineProps<{ items: BreadcrumbItem[] }>();
          min-height matches the sidebar's brand header so the two top bands line up,
          whether or not a page fills the actions slot. -->
     <div class="flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-2.5 min-h-[50px] border-b border-line bg-paper">
-        <nav aria-label="Breadcrumb" class="flex items-center gap-1.5 text-xs text-ink-500 min-w-0">
+        <nav :aria-label="t('common.breadcrumb')" class="flex items-center gap-1.5 text-xs text-ink-500 min-w-0">
             <template v-for="(crumb, i) in items" :key="i">
                 <Icon v-if="i > 0" name="chevronRight" cls="sm" class="text-ink-300 hidden sm:inline" />
                 <component

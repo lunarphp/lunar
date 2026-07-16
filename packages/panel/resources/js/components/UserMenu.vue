@@ -109,7 +109,7 @@ const radioBase =
                     'hover:bg-surface-2 data-[state=open]:bg-surface-2',
                     collapsed ? 'justify-center py-2 px-0' : 'p-2',
                 ]"
-                aria-label="Open user menu"
+                :aria-label="t('common.open_user_menu')"
             >
                 <Tooltip :text="collapsed ? displayName : ''">
                     <span

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
 import Tooltip from './Tooltip.vue';
 
@@ -11,8 +12,10 @@ const props = withDefaults(
         locked?: boolean;
         lockReason?: string;
     }>(),
-    { editTo: null, onEdit: null, onDelete: null, locked: false, lockReason: 'Cannot be deleted' },
+    { editTo: null, onEdit: null, onDelete: null, locked: false },
 );
+
+const { t } = useI18n();
 
 const handleEdit = (): void => {
     if (props.onEdit) {
@@ -34,16 +37,16 @@ const handleEdit = (): void => {
             variant="ghost"
             size="sm"
             icon="edit"
-            aria-label="Edit"
+            :aria-label="t('common.edit')"
             class="!w-[26px] !h-[26px]"
             @click="handleEdit"
         />
-        <Tooltip v-if="locked" :text="lockReason">
+        <Tooltip v-if="locked" :text="lockReason ?? t('common.cannot_be_deleted')">
             <Button
                 variant="ghost"
                 size="sm"
                 icon="lock"
-                aria-label="Locked"
+                :aria-label="t('common.locked')"
                 class="!w-[26px] !h-[26px] text-ink-400 cursor-not-allowed"
                 disabled
             />
@@ -53,7 +56,7 @@ const handleEdit = (): void => {
             variant="ghost"
             size="sm"
             icon="trash"
-            aria-label="Delete"
+            :aria-label="t('common.delete')"
             class="!w-[26px] !h-[26px] text-ink-700 hover:text-danger"
             @click="onDelete"
         />

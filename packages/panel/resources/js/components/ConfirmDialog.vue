@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import Dialog from './Dialog.vue';
 import Button from './Button.vue';
 
@@ -11,8 +12,10 @@ withDefaults(
         cancelLabel?: string;
         tone?: 'default' | 'danger';
     }>(),
-    { open: false, title: 'Are you sure?', description: '', confirmLabel: 'Confirm', cancelLabel: 'Cancel', tone: 'default' },
+    { open: false, description: '', tone: 'default' },
 );
+
+const { t } = useI18n();
 
 const emit = defineEmits<{ 'update:open': [value: boolean]; confirm: []; cancel: [] }>();
 
@@ -29,19 +32,19 @@ const onCancel = () => {
 <template>
     <Dialog
         :open="open"
-        :title="title"
+        :title="title ?? t('common.are_you_sure')"
         :description="description"
         size="sm"
         @update:open="$emit('update:open', $event)"
     >
         <slot />
         <template #footer>
-            <Button variant="ghost" @click="onCancel">{{ cancelLabel }}</Button>
+            <Button variant="ghost" @click="onCancel">{{ cancelLabel ?? t('common.cancel') }}</Button>
             <Button
                 :variant="tone === 'danger' ? 'primary' : 'primary'"
                 :class="tone === 'danger' ? '!bg-danger hover:!bg-danger/90 text-paper' : ''"
                 @click="onConfirm"
-            >{{ confirmLabel }}</Button>
+            >{{ confirmLabel ?? t('common.confirm') }}</Button>
         </template>
     </Dialog>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import StatusBadge from './StatusBadge.vue';
 
 interface AddressCardAddress {
@@ -32,15 +33,17 @@ const props = withDefaults(
     { showLabel: true },
 );
 
+const { t } = useI18n();
+
 const fullName = computed(() => [props.address.title, props.address.first_name, props.address.last_name].filter(Boolean).join(' '));
 </script>
 
 <template>
     <div class="bg-surface border border-line rounded-md p-3.5 flex flex-col gap-2">
         <div v-if="showLabel" class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-[12.5px] text-ink-900 font-medium">{{ address.label || 'Address' }}</span>
-            <StatusBadge v-if="address.billing_default" tone="sage" size="sm">Default billing</StatusBadge>
-            <StatusBadge v-if="address.shipping_default" tone="sage" size="sm">Default shipping</StatusBadge>
+            <span class="text-[12.5px] text-ink-900 font-medium">{{ address.label || t('common.address') }}</span>
+            <StatusBadge v-if="address.billing_default" tone="sage" size="sm">{{ t('customers.default_billing') }}</StatusBadge>
+            <StatusBadge v-if="address.shipping_default" tone="sage" size="sm">{{ t('customers.default_shipping') }}</StatusBadge>
         </div>
         <div class="text-[12.5px] text-ink-700 leading-[1.5]">
             <div v-if="address.company_name" class="text-ink-900">{{ address.company_name }}</div>
