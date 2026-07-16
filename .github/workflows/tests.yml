@@ -157,19 +157,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            packages/panel/package-lock.json
 
-      # Two installs: the workspace root links the publishable packages and the
-      # example add-on to each other; packages/panel is intentionally outside
-      # the workspace and carries its own lockfile.
+      # npm install, not ci: the repo gitignores package-lock.json, so ranges
+      # resolve fresh each run (consistent with the daily full-matrix sweep).
+      # Two installs: the workspace root links the publishable packages and
+      # the example add-on to each other; packages/panel is intentionally
+      # outside the workspace with its own dependency tree.
       - name: Install workspace dependencies
-        run: npm ci
+        run: npm install
 
       - name: Install panel dependencies
-        run: npm ci
+        run: npm install
         working-directory: packages/panel
 
       - name: Run panel JS tests

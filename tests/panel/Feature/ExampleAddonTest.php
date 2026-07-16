@@ -165,6 +165,16 @@ it('registers the example add-on vite module', function () {
 });
 
 it('symlinks the example add-on build directory via lunar:panel:link', function () {
+    $buildPath = dirname(__DIR__, 3).'/packages/panel-addon-example/build';
+
+    // The example's compiled build/ is gitignored, so it is absent on CI —
+    // the command only links directories that exist.
+    $createdBuildDir = ! is_dir($buildPath);
+
+    if ($createdBuildDir) {
+        mkdir($buildPath, 0755, true);
+    }
+
     $target = public_path('vendor/lunar-panel/example-addon');
 
     if (is_link($target)) {
@@ -175,11 +185,15 @@ it('symlinks the example add-on build directory via lunar:panel:link', function 
         $this->artisan('lunar:panel:link')->assertSuccessful();
 
         expect(is_link($target))->toBeTrue()
-            ->and(readlink($target))->toBe(dirname(__DIR__, 3).'/packages/panel-addon-example/build');
+            ->and(readlink($target))->toBe($buildPath);
     } finally {
         // The Testbench skeleton's public/ is shared across runs; leave it clean.
         if (is_link($target)) {
             unlink($target);
+        }
+
+        if ($createdBuildDir) {
+            rmdir($buildPath);
         }
     }
 });
