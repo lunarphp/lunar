@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
 import Combobox from '../../components/Combobox.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
@@ -33,6 +34,12 @@ const form = useForm({
 });
 
 const { t } = useI18n();
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    { label: t('nav.sales') },
+    { label: t('nav.customers'), href: props.urls.index },
+    { label: t('customers.new_title'), current: true },
+]);
 
 // Stored values stay canonical; only the visible labels are translated.
 const titleOptions = computed(() => [
@@ -69,6 +76,14 @@ const submit = (): void => {
 <template>
     <PanelLayout>
         <div data-screen-label="New customer" class="contents">
+            <Breadcrumbs :items="breadcrumbs">
+                <template #actions>
+                    <a href="https://docs.lunarphp.com/" target="_blank" rel="noopener">
+                        <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
+                    </a>
+                </template>
+            </Breadcrumbs>
+
             <PageHeader :title="t('customers.new_title')">
                 <template #icon>
                     <Link

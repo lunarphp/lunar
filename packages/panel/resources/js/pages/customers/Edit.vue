@@ -6,6 +6,7 @@ import Button from '../../components/Button.vue';
 import AddressCard from '../../components/AddressCard.vue';
 import AddressFormFields from '../../components/AddressFormFields.vue';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
+import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Combobox from '../../components/Combobox.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
@@ -94,6 +95,12 @@ const flashSuccess = computed(() => (usePage().props.flash as { success?: string
 
 const initials = (): string => ((props.customer.first_name?.[0] ?? '?') + (props.customer.last_name?.[0] ?? '')).toUpperCase();
 const fullName = computed(() => [props.customer.title, props.customer.first_name, props.customer.last_name].filter(Boolean).join(' '));
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    { label: t('nav.sales') },
+    { label: t('nav.customers'), href: props.urls.index },
+    { label: fullName.value, current: true },
+]);
 
 // Personal details + customer groups
 const detailsForm = useForm({
@@ -377,6 +384,14 @@ const tabDefs = computed(() => [
 <template>
     <PanelLayout>
         <div data-screen-label="Customer detail" class="contents">
+            <Breadcrumbs :items="breadcrumbs">
+                <template #actions>
+                    <a href="https://docs.lunarphp.com/" target="_blank" rel="noopener">
+                        <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
+                    </a>
+                </template>
+            </Breadcrumbs>
+
             <PageHeader :title="fullName">
                 <template #icon>
                     <div class="w-11 h-11 rounded-full overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700 text-[13px] font-semibold">
