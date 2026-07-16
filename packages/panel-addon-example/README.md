@@ -20,6 +20,10 @@ trimmed for brevity) — read the linked file if you want the full context.
   registers itself.
 - **Navigation registration** — the add-on adds its own nav group/item
   pointing at that route.
+- **Settings screen registration** — `resources/js/pages/Settings/Index.vue`
+  is a screen in the panel's Settings section, with its own sidebar
+  group/item registered via `Section::settingsNavigation()` and rendered
+  inside the panel's `SettingsShell`.
 - **Slot registration** — `InfoBanner.vue` is registered as
   `example-addon::InfoBanner` and injected into the real Customers edit
   page's `customers.edit:main:after` zone.
@@ -242,6 +246,80 @@ A named `#cell-{key}` slot overrides how that column renders each cell (the
 status badge above); columns without a slot render their raw row value as
 text. This is your own page's table — to add columns or actions to a
 *first-party* table instead, use a `TableExtension` (below).
+
+## Adding a settings screen
+
+The panel's Settings section extends the same way as the main sidebar: the
+`Section` overrides `settingsNavigation()` (mirroring `navigation()`, but
+driving the Settings sidebar) and registers routes under a `settings/...`
+prefix. From `src/ExampleSection.php`:
+
+```php
+public function settingsNavigation(NavigationRegistry $registry): void
+{
+    $registry->group('example-addon', 'example-addon::example.settings_group');
+    $registry->addItem('example-addon', new NavigationItem(
+        key: 'example-addon-settings',
+        label: 'example-addon::example.settings_label',
+        route: 'panel.settings.example-addon.index',
+        permission: self::PERMISSION,
+    ));
+}
+```
+
+An add-on can create its own group (as here) or add items to a first-party
+one (e.g. `general`). The item appears in the Settings sidebar for any staff
+member holding the permission; the `settings` entry route redirects to the
+first settings page the user can see, so an add-on item is reachable even if
+it's the only one.
+
+The page itself (`resources/js/pages/Settings/Index.vue`) renders inside
+`<SettingsShell>`, which scaffolds the whole screen the way first-party
+settings pages get it: the Settings sidebar, a `Settings > {title}` breadcrumb
+trail, the standard page header (`title`, optional `description`, your
+`#actions` buttons, and the shared page-action ellipsis), flash message
+display (so a route's `back()->with('success', …)` renders with no page
+code), and a centered content column (pass `wide` for the full listing width
+top-level pages use). One gotcha: `SettingsShell` is the page's *entire*
+chrome, so the page must opt out of the `PanelLayout` the panel would
+otherwise auto-apply, by declaring a no-op persistent layout:
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@inertiajs/vue3';
+import { SettingsShell, TextInput, Toggle, FieldLabel, Button } from '@lunarphp/panel';
+
+// SettingsShell replaces the auto-applied PanelLayout chrome wholesale, so
+// opt out with a no-op persistent layout — the resolver leaves an add-on
+// page with its own layout alone.
+defineOptions({
+    layout: (_h: unknown, page: unknown) => page,
+});
+
+const props = defineProps<{
+    settings: { webhook_url: string | null; ping_enabled: boolean };
+    urls: { update: string };
+}>();
+
+const form = useForm({
+    webhook_url: props.settings.webhook_url ?? '',
+    ping_enabled: props.settings.ping_enabled,
+});
+</script>
+
+<template>
+    <SettingsShell title="Widget pings" description="What this screen configures.">
+        <form @submit.prevent="form.post(props.urls.update, { preserveScroll: true })">
+            <!-- TextInput / Toggle / Button fields, as on any panel form -->
+        </form>
+    </SettingsShell>
+</template>
+```
+
+This example's settings values round-trip through the session so the demo
+stays side-effect free; a real add-on would persist them to its own model or
+config in the `POST` route (see the `settings/example-addon` routes in
+`src/ExampleSection.php`).
 
 ## Registering a slot and the zone-naming convention
 
@@ -549,6 +627,10 @@ pages, not only in an isolated fixture.
   name passed to `Inertia::render()` in your route matches the key used in
   `window.LunarPanel.registerPages({ 'namespace::Path': Component })` exactly,
   including the `namespace::` prefix.
+- **Settings page renders with a doubled sidebar** (main nav wrapped around
+  the settings shell): the page uses `<SettingsShell>` but didn't opt out of
+  the auto-applied `PanelLayout`. Declare the no-op persistent layout shown in
+  [Adding a settings screen](#adding-a-settings-screen).
 - **Table extension column missing**: confirm the table ID string passed to
   `Section::tableExtensions()` (e.g. `'customers.index'`) matches the ID the
   controller passes to `PanelManager::resolveExtensions()` — these are plain
@@ -575,9 +657,10 @@ pages, not only in an isolated fixture.
 - `src/ExampleAddonServiceProvider.php` — registers the section and the Vite
   module.
 - `src/ExampleSection.php` — the `Section` implementation (key, navigation,
-  routes, slots, table extensions).
+  settings navigation, routes, slots, table extensions).
 - `src/Tables/ExampleColumn.php` / `ExampleTableExtension.php` — the
   `customers.index` table extension.
 - `resources/js/addon.ts` — the IIFE entry point.
 - `resources/js/pages/Widgets/Index.vue`, `resources/js/components/InfoBanner.vue`
   — the example page and slot component.
+- `resources/js/pages/Settings/Index.vue` — the example settings screen.

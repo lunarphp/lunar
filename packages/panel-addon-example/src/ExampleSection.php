@@ -48,6 +48,20 @@ class ExampleSection extends Section
         ));
     }
 
+    public function settingsNavigation(NavigationRegistry $registry): void
+    {
+        // Same registry mechanism as the main sidebar, driving the Settings
+        // sidebar instead. An add-on can create its own group (as here) or add
+        // items to a first-party one (e.g. 'general').
+        $registry->group('example-addon', 'example-addon::example.settings_group');
+        $registry->addItem('example-addon', new NavigationItem(
+            key: 'example-addon-settings',
+            label: 'example-addon::example.settings_label',
+            route: 'panel.settings.example-addon.index',
+            permission: self::PERMISSION,
+        ));
+    }
+
     public function routes(): ?Closure
     {
         return function (): void {
@@ -93,6 +107,30 @@ class ExampleSection extends Section
                 Route::get('example-addon/customers/{customer}/audit', fn (Customer $customer) => back()
                     ->with('success', "Audit log opened for {$customer->full_name} (example record action)."))
                     ->name('panel.example-addon.audit');
+
+                // The settings screen registered by settingsNavigation() above. Values
+                // live in the session so the demo round-trips without a table; a real
+                // add-on would persist to its own model or config instead.
+                Route::prefix('settings/example-addon')
+                    ->name('panel.settings.example-addon.')
+                    ->group(function (): void {
+                        Route::get('/', fn (Request $request) => Inertia::render('example-addon::Settings/Index', [
+                            'settings' => $request->session()->get('example-addon.settings', [
+                                'webhook_url' => '',
+                                'ping_enabled' => true,
+                            ]),
+                            'urls' => ['update' => route('panel.settings.example-addon.update')],
+                        ]))->name('index');
+
+                        Route::post('/', function (Request $request) {
+                            $request->session()->put('example-addon.settings', $request->validate([
+                                'webhook_url' => ['nullable', 'url'],
+                                'ping_enabled' => ['required', 'boolean'],
+                            ]));
+
+                            return back()->with('success', __('example-addon::example.settings_saved'));
+                        })->name('update');
+                    });
             });
         };
     }

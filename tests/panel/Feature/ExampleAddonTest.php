@@ -242,3 +242,73 @@ it('serves the example add-on lang groups from the translations endpoint', funct
 
     expect($title)->not->toBe('Example Add-on');
 });
+
+it('renders the example add-on settings screen for an authenticated admin', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    $this->actingAs($staff, 'staff')
+        ->get(route('panel.settings.example-addon.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('example-addon::Settings/Index', false)
+            ->where('settings.webhook_url', '')
+            ->where('settings.ping_enabled', true)
+            ->where('urls.update', route('panel.settings.example-addon.update')));
+});
+
+it('adds the example add-on group to the settings navigation', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    $this->actingAs($staff, 'staff')
+        ->get(route('panel.settings.example-addon.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('settingsNavigation.groups', function ($groups) {
+                $group = collect($groups)->firstWhere('key', 'example-addon');
+
+                return $group !== null
+                    && $group['label'] === 'Example Add-on'
+                    && collect($group['items'])->firstWhere('key', 'example-addon-settings')['url']
+                        === route('panel.settings.example-addon.index');
+            })
+        );
+});
+
+it('round-trips the example add-on settings through the update endpoint', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    $this->actingAs($staff, 'staff')
+        ->from(route('panel.settings.example-addon.index'))
+        ->post(route('panel.settings.example-addon.update'), [
+            'webhook_url' => 'https://example.com/hooks',
+            'ping_enabled' => false,
+        ])
+        ->assertRedirect(route('panel.settings.example-addon.index'))
+        ->assertSessionHas('success');
+
+    $this->get(route('panel.settings.example-addon.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('settings.webhook_url', 'https://example.com/hooks')
+            ->where('settings.ping_enabled', false));
+});
+
+it('validates the example add-on settings update', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    $this->actingAs($staff, 'staff')
+        ->from(route('panel.settings.example-addon.index'))
+        ->post(route('panel.settings.example-addon.update'), [
+            'webhook_url' => 'not-a-url',
+            'ping_enabled' => true,
+        ])
+        ->assertRedirect(route('panel.settings.example-addon.index'))
+        ->assertSessionHasErrors('webhook_url');
+});
+
+it('denies the example add-on settings screen to staff without the permission', function () {
+    $staff = Staff::factory()->create(['admin' => false]);
+
+    $this->actingAs($staff, 'staff');
+
+    $this->get(route('panel.settings.example-addon.index'))->assertForbidden();
+    $this->post(route('panel.settings.example-addon.update'))->assertForbidden();
+});

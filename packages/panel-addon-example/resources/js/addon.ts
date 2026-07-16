@@ -1,4 +1,5 @@
 import WidgetsIndexPage from './pages/Widgets/Index.vue';
+import SettingsIndexPage from './pages/Settings/Index.vue';
 import InfoBannerComponent from './components/InfoBanner.vue';
 
 // Register eagerly. The panel's app.ts publishes window.LunarPanel and is emitted
@@ -9,6 +10,7 @@ import InfoBannerComponent from './components/InfoBanner.vue';
 // so they need nothing from a booted app; reserve booting() for post-mount work.
 window.LunarPanel.registerPages({
     'example-addon::Widgets/Index': WidgetsIndexPage,
+    'example-addon::Settings/Index': SettingsIndexPage,
 });
 
 window.LunarPanel.registerComponents('example-addon', {
