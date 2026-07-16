@@ -27,21 +27,30 @@ class ChannelIndexController
         $resolver = $this->resolveTable('channels.index');
 
         $channels = Channel::query()
+            ->tap(fn ($query) => $resolver->applyColumnQueries($query))
             ->tap(fn ($query) => $resolver->applyFilters($query, $request))
             ->orderBy('name')
             ->get()
-            ->map(fn (Channel $channel): array => [
-                'id' => $channel->id,
-                'name' => $channel->name,
-                'handle' => $channel->handle,
-                'url' => $channel->url,
-                'default' => $channel->default,
-                'status' => $channel->status ? (string) $channel->status : null,
-                'urls' => [
-                    'edit' => route('panel.settings.channels.edit', $channel),
-                ],
-                '_actions' => $resolver->resolveRowActionUrls($channel),
-            ]);
+            ->map(function (Channel $channel) use ($resolver): array {
+                $row = [
+                    'id' => $channel->id,
+                    'name' => $channel->name,
+                    'handle' => $channel->handle,
+                    'url' => $channel->url,
+                    'default' => $channel->default,
+                    'status' => $channel->status ? (string) $channel->status : null,
+                    'urls' => [
+                        'edit' => route('panel.settings.channels.edit', $channel),
+                    ],
+                    '_actions' => $resolver->resolveRowActionUrls($channel),
+                ];
+
+                foreach ($resolver->getColumnKeys() as $key) {
+                    $row[$key] = $channel->getAttribute($key);
+                }
+
+                return $row;
+            });
 
         return Inertia::render('settings/channels/Index', [
             'channels' => $channels,

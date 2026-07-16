@@ -2,6 +2,7 @@
 import { computed, reactive, ref, watch } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import BulkActionsToolbar, { type BulkAction } from '../../../components/BulkActionsToolbar.vue';
 import Button from '../../../components/Button.vue';
 import DataTable from '../../../components/DataTable.vue';
 import FilterDropdown, { type FilterOption } from '../../../components/FilterDropdown.vue';
@@ -33,12 +34,16 @@ const props = defineProps<{
     channels: Channel[];
     columns: ChannelColumn[];
     tableActions: RowAction[];
+    tableBulkActions: BulkAction[];
     tableFilters: ExtensionFilter[];
     tableFilterValues: Record<string, string>;
     urls: { index: string; store: string };
 }>();
 
 const { t } = useI18n();
+
+const selected = ref<(string | number)[]>([]);
+const hasBulkActions = computed(() => props.tableBulkActions.length > 0);
 
 // Add-on filter state, seeded from the server's current values ('' = off).
 const extensionFilterValues = reactive<Record<string, string>>({ ...props.tableFilterValues });
@@ -93,19 +98,42 @@ const submitCreate = (): void => {
             <Button variant="primary" icon="plus" size="sm" @click="openCreate">{{ t('channels.create_channel') }}</Button>
         </template>
 
-        <!-- Add-on filters registered through the table extension resolver. -->
-        <div v-if="renderableExtensionFilters.length" class="flex flex-wrap items-center gap-2 mb-4">
-            <FilterDropdown
-                v-for="filter in renderableExtensionFilters"
-                :key="filter.key"
-                v-model="extensionFilterValues[filter.key]"
-                :label="filter.label"
-                :options="extensionFilterOptions(filter)"
-                default-value=""
+        <!-- Toolbar: add-on filters, replaced in place by the bulk-action bar while
+             rows are selected so the table below never shifts. -->
+        <div
+            v-if="renderableExtensionFilters.length || (hasBulkActions && selected.length)"
+            class="flex flex-wrap items-center gap-2 mb-4 min-h-[34px]"
+        >
+            <!-- Add-on filters registered through the table extension resolver. -->
+            <template v-if="!(hasBulkActions && selected.length)">
+                <FilterDropdown
+                    v-for="filter in renderableExtensionFilters"
+                    :key="filter.key"
+                    v-model="extensionFilterValues[filter.key]"
+                    :label="filter.label"
+                    :options="extensionFilterOptions(filter)"
+                    default-value=""
+                />
+            </template>
+
+            <BulkActionsToolbar
+                v-else
+                :actions="props.tableBulkActions"
+                :selected="selected"
+                @clear="selected = []"
+                @done="selected = []"
             />
         </div>
 
-        <DataTable :columns="props.columns" :rows="channels" :row-to="rowTo" :row-actions="props.tableActions">
+        <DataTable
+            :columns="props.columns"
+            :rows="channels"
+            :row-to="rowTo"
+            :row-actions="props.tableActions"
+            :selectable="hasBulkActions"
+            :selected="selected"
+            @update:selected="selected = $event"
+        >
             <template #cell-handle="{ row }">
                 <span class="font-mono text-xs text-ink-700">{{ (row as unknown as Channel).handle }}</span>
             </template>
