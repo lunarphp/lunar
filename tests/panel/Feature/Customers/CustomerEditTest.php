@@ -83,6 +83,58 @@ it('reports empty lifetime stats when the customer has no placed orders', functi
         );
 });
 
+it('buckets placed order value into the order chart', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+
+    Order::factory()->placed()->for($customer)->create(['total' => 10000, 'exchange_rate' => 1, 'placed_at' => now()->subMonth()]);
+    Order::factory()->placed()->for($customer)->create(['total' => 5000, 'exchange_rate' => 1, 'placed_at' => now()]);
+    Order::factory()->for($customer)->create(['total' => 99999, 'placed_at' => null]);
+
+    $this->get(route('panel.customers.edit', $customer))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('orderChart.range', '12m')
+            ->has('orderChart.buckets', 12)
+            ->where('orderChart.buckets.10.value', 100)
+            ->where('orderChart.buckets.10.display', '£100.00')
+            ->where('orderChart.buckets.11.value', 50)
+            ->where('orderChart.buckets.0.value', 0)
+        );
+});
+
+it('zooms the order chart out to yearly buckets', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+
+    Order::factory()->placed()->for($customer)->create(['total' => 20000, 'exchange_rate' => 1, 'placed_at' => now()->subYears(2)]);
+
+    $this->get(route('panel.customers.edit', ['customer' => $customer, 'chart_range' => '10y']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('orderChart.range', '10y')
+            ->has('orderChart.buckets', 10)
+            ->where('orderChart.buckets.7.value', 200)
+            ->where('orderChart.buckets.9.value', 0)
+        );
+});
+
+it('falls back to the default chart range for unknown values', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $customer = Customer::factory()->create();
+
+    $this->get(route('panel.customers.edit', ['customer' => $customer, 'chart_range' => 'banana']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('orderChart.range', '12m')
+            ->has('orderChart.buckets', 12)
+        );
+});
+
 it('updates a customer and syncs its customer groups', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 

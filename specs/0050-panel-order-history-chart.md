@@ -1,6 +1,6 @@
 # 0050 — Panel order-value chart and public charting component
 
-- Status: draft
+- Status: accepted
 - Author: Glenn (via pairing session)
 - Created: 2026-07-16
 - TODO item: Panel order-value chart on the customer edit page + chart component on the add-on surface
@@ -144,10 +144,10 @@ across all 16 locales.
 
 ## Implementation plan
 
-- [ ] Slice 1 — `TimeSeriesChart` component with vitest coverage; export via
+- [x] Slice 1 — `TimeSeriesChart` component with vitest coverage; export via
   `ui.ts`, mirror in `@lunarphp/panel` `index.js`, regenerate types.
-- [ ] Slice 2 — `orderChart` data on `CustomerEditController` (range param,
+- [x] Slice 2 — `orderChart` data on `CustomerEditController` (range param,
   zero-filled buckets, default-currency conversion) with Pest coverage; edit-page
   card with range switcher and partial reload.
-- [ ] Slice 3 — translations across the 16 locales; update spec 0049's screen
+- [x] Slice 3 — translations across the 16 locales; update spec 0049's screen
   description; example add-on gains a small chart usage to prove the surface.

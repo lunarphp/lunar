@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
@@ -10,6 +10,7 @@ import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.v
 import Combobox from '../../components/Combobox.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
+import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
 import Icon from '../../components/Icon.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
 import PageHeader from '../../components/PageHeader.vue';
@@ -21,6 +22,7 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import Tabs from '../../components/Tabs.vue';
 import Textarea from '../../components/Textarea.vue';
 import TextInput from '../../components/TextInput.vue';
+import TimeSeriesChart, { type ChartPoint } from '../../components/TimeSeriesChart.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 
 interface OptionItem {
@@ -97,6 +99,10 @@ const props = defineProps<{
         totalSpend: string | null;
         avgOrder: string | null;
         latestOrderAt: string | null;
+    };
+    orderChart: {
+        range: string;
+        buckets: ChartPoint[];
     };
     urls: {
         index: string;
@@ -421,6 +427,35 @@ const submitNotes = (): void => {
     });
 };
 
+// Order-value chart: the range switcher partial-reloads only the chart prop;
+// while data is in flight the previous render holds at reduced opacity.
+const chartRange = ref(props.orderChart.range);
+const chartLoading = ref(false);
+
+const chartRangeOptions = computed<FilterOption[]>(() => [
+    { value: '12m', label: t('customers.chart_range_12m') },
+    { value: '3y', label: t('customers.chart_range_3y') },
+    { value: '5y', label: t('customers.chart_range_5y') },
+    { value: '10y', label: t('customers.chart_range_10y') },
+]);
+
+const onChartRangeChange = (): void => {
+    router.reload({
+        data: { chart_range: chartRange.value },
+        only: ['orderChart'],
+        onStart: () => {
+            chartLoading.value = true;
+        },
+        onFinish: () => {
+            chartLoading.value = false;
+        },
+    });
+};
+
+const chartHasData = computed(() => props.orderChart.buckets.some((bucket) => bucket.value > 0));
+
+watch(chartRange, onChartRangeChange);
+
 // Order history tab
 const orderStatusTone = (status: string): 'sage' | 'archived' | 'danger' | 'neutral' => {
     switch (status) {
@@ -491,6 +526,23 @@ const tabDefs = computed(() => [
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="min-w-0">
+                        <!-- Order value over time; the range switcher reloads only this card. -->
+                        <div class="bg-surface border border-line rounded-xl shadow-sm mb-6 overflow-hidden">
+                            <div class="flex items-center gap-2.5 px-4 py-3 border-b border-line">
+                                <h2 class="m-0 text-[13.5px] font-semibold tracking-[-0.01em]">{{ t('customers.chart_title') }}</h2>
+                                <div class="flex-1" />
+                                <FilterDropdown v-model="chartRange" :label="t('customers.chart_range_12m')" :options="chartRangeOptions" default-value="12m" />
+                            </div>
+                            <div class="px-4 py-3.5 transition-opacity duration-150" :class="chartLoading ? 'opacity-60' : ''">
+                                <TimeSeriesChart
+                                    v-if="chartHasData"
+                                    :points="orderChart.buckets"
+                                    :ariaLabel="t('customers.chart_title')"
+                                />
+                                <p v-else class="m-0 py-6 text-center text-[12px] text-ink-500 italic">{{ t('customers.chart_empty') }}</p>
+                            </div>
+                        </div>
+
                         <form @submit.prevent="submitDetails">
                             <Section :title="t('customers.personal_details')">
                                 <template #desc>{{ t('customers.personal_details_desc') }}</template>

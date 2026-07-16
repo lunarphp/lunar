@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Comandă medie',
     'stat_latest_order' => 'Ultima comandă',
 
+    'chart_title' => 'Valoarea comenzilor',
+    'chart_range_12m' => 'Ultimele 12 luni',
+    'chart_range_3y' => 'Ultimii 3 ani',
+    'chart_range_5y' => 'Ultimii 5 ani',
+    'chart_range_10y' => 'Ultimii 10 ani',
+    'chart_empty' => 'Nicio comandă plasată în această perioadă.',
+
     'notes' => 'Notițe administrative',
     'notes_empty' => 'Nicio notiță administrativă încă.',
     'edit_notes' => 'Editează notițele administrative',

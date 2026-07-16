@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Pedido medio',
     'stat_latest_order' => 'Último pedido',
 
+    'chart_title' => 'Valor de los pedidos',
+    'chart_range_12m' => 'Últimos 12 meses',
+    'chart_range_3y' => 'Últimos 3 años',
+    'chart_range_5y' => 'Últimos 5 años',
+    'chart_range_10y' => 'Últimos 10 años',
+    'chart_empty' => 'No se realizaron pedidos en este período.',
+
     'notes' => 'Notas de administración',
     'notes_empty' => 'Aún no hay notas de administración.',
     'edit_notes' => 'Editar notas de administración',

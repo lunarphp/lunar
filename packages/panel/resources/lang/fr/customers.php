@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Panier moyen',
     'stat_latest_order' => 'Dernière commande',
 
+    'chart_title' => 'Valeur des commandes',
+    'chart_range_12m' => '12 derniers mois',
+    'chart_range_3y' => '3 dernières années',
+    'chart_range_5y' => '5 dernières années',
+    'chart_range_10y' => '10 dernières années',
+    'chart_empty' => 'Aucune commande passée sur cette période.',
+
     'notes' => 'Notes admin',
     'notes_empty' => 'Aucune note admin pour le moment.',
     'edit_notes' => 'Modifier les notes admin',

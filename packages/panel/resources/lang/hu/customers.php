@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Átl. rendelés',
     'stat_latest_order' => 'Legutóbbi rendelés',
 
+    'chart_title' => 'Rendelési érték',
+    'chart_range_12m' => 'Elmúlt 12 hónap',
+    'chart_range_3y' => 'Elmúlt 3 év',
+    'chart_range_5y' => 'Elmúlt 5 év',
+    'chart_range_10y' => 'Elmúlt 10 év',
+    'chart_empty' => 'Ebben az időszakban nem volt rendelés.',
+
     'notes' => 'Admin jegyzetek',
     'notes_empty' => 'Még nincs admin jegyzet.',
     'edit_notes' => 'Admin jegyzetek szerkesztése',

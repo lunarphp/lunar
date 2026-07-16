@@ -3,6 +3,8 @@
 namespace Lunar\Panel\Http\Controllers\Customers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Core\Contracts\Actions\Customers\DeletesCustomer;
@@ -19,7 +21,19 @@ use Spatie\Activitylog\Models\Activity;
 
 class CustomerEditController
 {
-    public function edit(Customer $customer): Response
+    /**
+     * Order-value chart ranges: window length and bucket granularity.
+     *
+     * @var array<string, array{months: int, bucket: 'month'|'quarter'|'year'}>
+     */
+    protected const CHART_RANGES = [
+        '12m' => ['months' => 12, 'bucket' => 'month'],
+        '3y' => ['months' => 36, 'bucket' => 'quarter'],
+        '5y' => ['months' => 60, 'bucket' => 'quarter'],
+        '10y' => ['months' => 120, 'bucket' => 'year'],
+    ];
+
+    public function edit(Request $request, Customer $customer): Response
     {
         $customer->load('customerGroups:id,name');
 
@@ -126,6 +140,7 @@ class CustomerEditController
             'activities' => $activities,
             'orders' => $orders,
             'stats' => $stats,
+            'orderChart' => $this->orderChart($request, $customer),
             'urls' => [
                 'index' => route('panel.customers.index'),
                 'update' => route('panel.customers.update', $customer),
@@ -135,6 +150,77 @@ class CustomerEditController
                 'notesUpdate' => route('panel.customers.notes.update', $customer),
             ],
         ]);
+    }
+
+    /**
+     * Placed-order value bucketed over the requested chart range, zero-filled
+     * and valued in the default currency — the same basis as the lifetime
+     * stats, so the chart and the stats card always agree. Bucketing happens
+     * in PHP: a single customer's order count is small, and it avoids
+     * cross-database date-formatting SQL.
+     *
+     * @return array{range: string, buckets: array<int, array{label: string, value: float|int, display: string}>}
+     */
+    protected function orderChart(Request $request, Customer $customer): array
+    {
+        $range = $request->string('chart_range')->value();
+        $range = array_key_exists($range, self::CHART_RANGES) ? $range : '12m';
+
+        ['months' => $months, 'bucket' => $bucket] = self::CHART_RANGES[$range];
+
+        $stepMonths = match ($bucket) {
+            'month' => 1,
+            'quarter' => 3,
+            'year' => 12,
+        };
+
+        $start = match ($bucket) {
+            'month' => now()->startOfMonth(),
+            'quarter' => now()->firstOfQuarter(),
+            'year' => now()->startOfYear(),
+        };
+        $start = $start->subMonths($months - $stepMonths);
+
+        $bucketKey = fn (Carbon $date): string => match ($bucket) {
+            'month' => $date->format('Y-m'),
+            'quarter' => $date->year.'-'.$date->quarter,
+            'year' => (string) $date->year,
+        };
+
+        $bucketLabel = fn (Carbon $date): string => match ($bucket) {
+            'month' => $date->translatedFormat('M y'),
+            'quarter' => 'Q'.$date->quarter.' '.$date->year,
+            'year' => (string) $date->year,
+        };
+
+        $spendByBucket = $customer->orders()
+            ->whereNotNull('placed_at')
+            ->where('placed_at', '>=', $start)
+            ->get(['placed_at', 'total', 'exchange_rate'])
+            ->groupBy(fn (Order $order) => $bucketKey($order->placed_at))
+            ->map(fn ($orders) => (int) round($orders->sum(
+                fn (Order $order) => $order->total / ($order->exchange_rate ?: 1),
+            )));
+
+        $defaultCurrency = Currency::getDefault();
+
+        $buckets = [];
+
+        for ($date = $start->copy(); $date->lessThanOrEqualTo(now()); $date->addMonths($stepMonths)) {
+            $minor = $spendByBucket[$bucketKey($date)] ?? 0;
+
+            $buckets[] = [
+                'label' => $bucketLabel($date),
+                'value' => $defaultCurrency
+                    ? round($minor / $defaultCurrency->factor, $defaultCurrency->decimal_places)
+                    : $minor / 100,
+                'display' => $defaultCurrency
+                    ? (string) (new PriceValue($minor, $defaultCurrency))->format()
+                    : (string) ($minor / 100),
+            ];
+        }
+
+        return ['range' => $range, 'buckets' => $buckets];
     }
 
     public function update(CustomerRequest $request, Customer $customer, UpdatesCustomer $updatesCustomer): RedirectResponse

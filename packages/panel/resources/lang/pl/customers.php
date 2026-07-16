@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Śr. zamówienie',
     'stat_latest_order' => 'Ostatnie zamówienie',
 
+    'chart_title' => 'Wartość zamówień',
+    'chart_range_12m' => 'Ostatnie 12 miesięcy',
+    'chart_range_3y' => 'Ostatnie 3 lata',
+    'chart_range_5y' => 'Ostatnie 5 lat',
+    'chart_range_10y' => 'Ostatnie 10 lat',
+    'chart_empty' => 'Brak zamówień w tym okresie.',
+
     'notes' => 'Notatki administracyjne',
     'notes_empty' => 'Brak notatek administracyjnych.',
     'edit_notes' => 'Edytuj notatki administracyjne',

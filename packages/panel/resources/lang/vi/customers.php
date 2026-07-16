@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Đơn trung bình',
     'stat_latest_order' => 'Đơn gần nhất',
 
+    'chart_title' => 'Giá trị đơn hàng',
+    'chart_range_12m' => '12 tháng qua',
+    'chart_range_3y' => '3 năm qua',
+    'chart_range_5y' => '5 năm qua',
+    'chart_range_10y' => '10 năm qua',
+    'chart_empty' => 'Không có đơn hàng trong giai đoạn này.',
+
     'notes' => 'Ghi chú quản trị',
     'notes_empty' => 'Chưa có ghi chú quản trị.',
     'edit_notes' => 'Sửa ghi chú quản trị',

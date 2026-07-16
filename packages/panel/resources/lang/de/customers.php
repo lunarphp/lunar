@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Ø Bestellwert',
     'stat_latest_order' => 'Letzte Bestellung',
 
+    'chart_title' => 'Bestellwert',
+    'chart_range_12m' => 'Letzte 12 Monate',
+    'chart_range_3y' => 'Letzte 3 Jahre',
+    'chart_range_5y' => 'Letzte 5 Jahre',
+    'chart_range_10y' => 'Letzte 10 Jahre',
+    'chart_empty' => 'In diesem Zeitraum wurden keine Bestellungen aufgegeben.',
+
     'notes' => 'Admin-Notizen',
     'notes_empty' => 'Noch keine Admin-Notizen.',
     'edit_notes' => 'Admin-Notizen bearbeiten',

@@ -22,6 +22,9 @@ export const StatusBadge = ui().StatusBadge;
 export const FilterDropdown = ui().FilterDropdown;
 export const KpiCard = ui().KpiCard;
 
+// Charts
+export const TimeSeriesChart = ui().TimeSeriesChart;
+
 // Form inputs
 export const TextInput = ui().TextInput;
 export const Textarea = ui().Textarea;

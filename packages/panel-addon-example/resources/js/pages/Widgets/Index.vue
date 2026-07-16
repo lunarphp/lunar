@@ -12,7 +12,7 @@ import { computed } from 'vue';
 // under `example-addon::{group}` keys — served, cached and versioned by the
 // panel's translations endpoint like the panel's own strings.
 import { useI18n } from 'vue-i18n';
-import { Breadcrumbs, DataTable, PageHeader, PageZone, Button, SideCard, StatusBadge } from '@lunarphp/panel';
+import { Breadcrumbs, DataTable, PageHeader, PageZone, Button, SideCard, StatusBadge, TimeSeriesChart } from '@lunarphp/panel';
 
 defineProps<{
     message?: string;
@@ -42,6 +42,16 @@ const columns = [
 // _actions map, so an action only renders on rows that resolved a URL for it.
 const rowActions = [
     { key: 'ping', label: 'Ping', icon: 'refresh', method: 'get', primary: false },
+];
+
+// Static demo series for the panel's TimeSeriesChart, also on the public surface.
+const chartPoints = [
+    { label: 'Jan', value: 120, display: '£120.00' },
+    { label: 'Feb', value: 210, display: '£210.00' },
+    { label: 'Mar', value: 160, display: '£160.00' },
+    { label: 'Apr', value: 290, display: '£290.00' },
+    { label: 'May', value: 240, display: '£240.00' },
+    { label: 'Jun', value: 330, display: '£330.00' },
 ];
 </script>
 
@@ -97,6 +107,14 @@ const rowActions = [
                         Customers
                     </Link>
                 </div>
+            </SideCard>
+
+            <SideCard title="Charting from an add-on" class="mt-5 max-w-md">
+                <p class="text-[12.5px] text-ink-700 mb-2">
+                    The panel's <code>TimeSeriesChart</code> is on the same public
+                    surface, so add-ons can plot their own data.
+                </p>
+                <TimeSeriesChart :points="chartPoints" :height="140" ariaLabel="Example widget sales" />
             </SideCard>
 
             <PageZone region="main" position="after" />

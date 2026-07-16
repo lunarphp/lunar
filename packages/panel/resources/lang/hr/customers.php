@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Prosj. narudžba',
     'stat_latest_order' => 'Zadnja narudžba',
 
+    'chart_title' => 'Vrijednost narudžbi',
+    'chart_range_12m' => 'Zadnjih 12 mjeseci',
+    'chart_range_3y' => 'Zadnje 3 godine',
+    'chart_range_5y' => 'Zadnjih 5 godina',
+    'chart_range_10y' => 'Zadnjih 10 godina',
+    'chart_empty' => 'Nema narudžbi u ovom razdoblju.',
+
     'notes' => 'Administratorske bilješke',
     'notes_empty' => 'Još nema administratorskih bilješki.',
     'edit_notes' => 'Uredi administratorske bilješke',

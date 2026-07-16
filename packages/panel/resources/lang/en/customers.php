@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Avg order',
     'stat_latest_order' => 'Latest order',
 
+    'chart_title' => 'Order value',
+    'chart_range_12m' => 'Last 12 months',
+    'chart_range_3y' => 'Last 3 years',
+    'chart_range_5y' => 'Last 5 years',
+    'chart_range_10y' => 'Last 10 years',
+    'chart_empty' => 'No orders placed in this period.',
+
     'notes' => 'Admin notes',
     'notes_empty' => 'No admin notes yet.',
     'edit_notes' => 'Edit admin notes',

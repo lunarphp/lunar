@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'متوسط الطلب',
     'stat_latest_order' => 'آخر طلب',
 
+    'chart_title' => 'قيمة الطلبات',
+    'chart_range_12m' => 'آخر 12 شهرًا',
+    'chart_range_3y' => 'آخر 3 سنوات',
+    'chart_range_5y' => 'آخر 5 سنوات',
+    'chart_range_10y' => 'آخر 10 سنوات',
+    'chart_empty' => 'لا توجد طلبات في هذه الفترة.',
+
     'notes' => 'ملاحظات الإدارة',
     'notes_empty' => 'لا توجد ملاحظات إدارية بعد.',
     'edit_notes' => 'تعديل ملاحظات الإدارة',

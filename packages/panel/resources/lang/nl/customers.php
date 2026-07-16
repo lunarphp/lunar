@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Gem. bestelling',
     'stat_latest_order' => 'Laatste bestelling',
 
+    'chart_title' => 'Bestelwaarde',
+    'chart_range_12m' => 'Laatste 12 maanden',
+    'chart_range_3y' => 'Laatste 3 jaar',
+    'chart_range_5y' => 'Laatste 5 jaar',
+    'chart_range_10y' => 'Laatste 10 jaar',
+    'chart_empty' => 'Geen bestellingen geplaatst in deze periode.',
+
     'notes' => 'Adminnotities',
     'notes_empty' => 'Nog geen adminnotities.',
     'edit_notes' => 'Adminnotities bewerken',

@@ -130,6 +130,13 @@ return [
     'stat_avg_order' => 'Ort. sipariş',
     'stat_latest_order' => 'Son sipariş',
 
+    'chart_title' => 'Sipariş değeri',
+    'chart_range_12m' => 'Son 12 ay',
+    'chart_range_3y' => 'Son 3 yıl',
+    'chart_range_5y' => 'Son 5 yıl',
+    'chart_range_10y' => 'Son 10 yıl',
+    'chart_empty' => 'Bu dönemde sipariş verilmedi.',
+
     'notes' => 'Yönetici notları',
     'notes_empty' => 'Henüz yönetici notu yok.',
     'edit_notes' => 'Yönetici notlarını düzenle',
