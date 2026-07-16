@@ -9,6 +9,7 @@ import ActivityTimeline from '../../components/ActivityTimeline.vue';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Combobox from '../../components/Combobox.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
+import Dialog from '../../components/Dialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
 import Icon from '../../components/Icon.vue';
@@ -286,6 +287,11 @@ const emptyAddress = () => ({
 
 const showNewAddressForm = ref(false);
 const newAddressForm = useForm(emptyAddress());
+
+const openNewAddressForm = (): void => {
+    newAddressForm.clearErrors();
+    showNewAddressForm.value = true;
+};
 
 const submitNewAddress = (): void => {
     newAddressForm.post(props.urls.addressesStore, {
@@ -623,7 +629,7 @@ const tabDefs = computed(() => [
                         <div class="pt-2">
                             <Tabs v-model="activeTab" :tabs="tabDefs">
                                 <template #actions>
-                                    <Button v-if="activeTab === 'addresses'" size="sm" icon="plus" @click="showNewAddressForm = !showNewAddressForm">{{ t('customers.add_address') }}</Button>
+                                    <Button v-if="activeTab === 'addresses'" size="sm" icon="plus" @click="openNewAddressForm">{{ t('customers.add_address') }}</Button>
                                 </template>
 
                                 <template #addresses>
@@ -653,20 +659,15 @@ const tabDefs = computed(() => [
                                     </div>
                                     <PageEmpty v-else :title="t('customers.addresses_empty_title')">{{ t('customers.addresses_empty_body') }}</PageEmpty>
 
-                                    <form
-                                        v-if="showNewAddressForm"
-                                        class="mt-3 rounded-md border border-dashed border-line-strong p-4"
-                                        @submit.prevent="submitNewAddress"
-                                    >
-                                        <h3 class="text-[13px] font-semibold text-ink-900 mb-3">{{ t('customers.add_address') }}</h3>
-                                        <div class="flex flex-col gap-3">
+                                    <Dialog v-model:open="showNewAddressForm" :title="t('customers.add_address')" size="lg">
+                                        <form id="new-address-form" @submit.prevent="submitNewAddress">
                                             <AddressFormFields :form="newAddressForm" :countries="countries" id-prefix="new-address" />
-                                            <div class="flex gap-2">
-                                                <Button type="submit" variant="primary" size="sm" :disabled="newAddressForm.processing">{{ t('customers.add_address') }}</Button>
-                                                <Button type="button" size="sm" @click="showNewAddressForm = false">{{ t('common.cancel') }}</Button>
-                                            </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                        <template #footer>
+                                            <Button type="button" @click="showNewAddressForm = false">{{ t('common.cancel') }}</Button>
+                                            <Button type="submit" form="new-address-form" variant="primary" :disabled="newAddressForm.processing">{{ t('customers.add_address') }}</Button>
+                                        </template>
+                                    </Dialog>
                                 </template>
 
                                 <template #users>
