@@ -112,7 +112,7 @@ class CustomerEditController
                 'company_name' => $customer->company_name,
                 'tax_identifier' => $customer->tax_identifier,
                 'account_ref' => $customer->account_ref,
-                'notes' => $customer->notes,
+                'admin_notes' => $customer->admin_notes,
                 'created_at' => $customer->created_at,
                 'customer_groups' => $customer->customerGroups->map(fn (CustomerGroup $group) => [
                     'id' => $group->id,

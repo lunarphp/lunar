@@ -10,24 +10,24 @@ uses(TestCase::class);
 it('updates the customer notes', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
-    $customer = Customer::factory()->create(['notes' => null]);
+    $customer = Customer::factory()->create(['admin_notes' => null]);
 
     $this->put(route('panel.customers.notes.update', $customer), [
-        'notes' => 'Contact via email only; no marketing calls.',
+        'admin_notes' => 'Contact via email only; no marketing calls.',
     ])->assertRedirect()
         ->assertSessionHas('success', 'Admin notes updated.');
 
-    expect($customer->refresh()->notes)->toBe('Contact via email only; no marketing calls.');
+    expect($customer->refresh()->admin_notes)->toBe('Contact via email only; no marketing calls.');
 });
 
 it('clears the customer notes when null is given', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
-    $customer = Customer::factory()->create(['notes' => 'Old note.']);
+    $customer = Customer::factory()->create(['admin_notes' => 'Old note.']);
 
-    $this->put(route('panel.customers.notes.update', $customer), ['notes' => null]);
+    $this->put(route('panel.customers.notes.update', $customer), ['admin_notes' => null]);
 
-    expect($customer->refresh()->notes)->toBeNull();
+    expect($customer->refresh()->admin_notes)->toBeNull();
 });
 
 it('leaves customer group membership untouched when updating notes', function () {
@@ -37,7 +37,7 @@ it('leaves customer group membership untouched when updating notes', function ()
     $group = CustomerGroup::factory()->create();
     $customer->customerGroups()->sync([$group->id]);
 
-    $this->put(route('panel.customers.notes.update', $customer), ['notes' => 'A note.']);
+    $this->put(route('panel.customers.notes.update', $customer), ['admin_notes' => 'A note.']);
 
     expect($customer->customerGroups()->get()->pluck('id')->all())->toBe([$group->id]);
 });
@@ -48,14 +48,14 @@ it('requires the notes field to be present', function () {
     $customer = Customer::factory()->create();
 
     $this->put(route('panel.customers.notes.update', $customer), [])
-        ->assertSessionHasErrors(['notes']);
+        ->assertSessionHasErrors(['admin_notes']);
 });
 
 it('exposes the notes on the edit page', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
-    $customer = Customer::factory()->create(['notes' => 'VIP customer.']);
+    $customer = Customer::factory()->create(['admin_notes' => 'VIP customer.']);
 
     $this->get(route('panel.customers.edit', $customer))
-        ->assertInertia(fn ($page) => $page->where('customer.notes', 'VIP customer.'));
+        ->assertInertia(fn ($page) => $page->where('customer.admin_notes', 'VIP customer.'));
 });

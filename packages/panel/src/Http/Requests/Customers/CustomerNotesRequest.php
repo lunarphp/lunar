@@ -12,7 +12,7 @@ class CustomerNotesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'notes' => ['present', 'nullable', 'string', 'max:65535'],
+            'admin_notes' => ['present', 'nullable', 'string', 'max:65535'],
         ];
     }
 }

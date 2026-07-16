@@ -82,7 +82,7 @@ const props = defineProps<{
         company_name: string | null;
         tax_identifier: string | null;
         account_ref: string | null;
-        notes: string | null;
+        admin_notes: string | null;
         created_at: string;
         customer_groups: OptionItem[];
     };
@@ -402,13 +402,13 @@ const timelineEvents = computed(() =>
         actor: activity.causer_name ?? '',
     })));
 
-// Notes side card: view by default, pencil toggles an inline editor.
+// Admin notes side card: view by default, pencil toggles an inline editor.
 const notesEditing = ref(false);
-const notesForm = useForm({ notes: props.customer.notes ?? '' });
+const notesForm = useForm({ admin_notes: props.customer.admin_notes ?? '' });
 
 const startEditNotes = (): void => {
     notesForm.clearErrors();
-    notesForm.notes = props.customer.notes ?? '';
+    notesForm.admin_notes = props.customer.admin_notes ?? '';
     notesEditing.value = true;
 };
 
@@ -780,19 +780,19 @@ const tabDefs = computed(() => [
                                 </template>
                                 <form v-if="notesEditing" class="flex flex-col gap-2" @submit.prevent="submitNotes">
                                     <Textarea
-                                        v-model="notesForm.notes"
+                                        v-model="notesForm.admin_notes"
                                         :rows="4"
                                         :aria-label="t('customers.notes')"
-                                        :invalid="!!notesForm.errors.notes"
+                                        :invalid="!!notesForm.errors.admin_notes"
                                     />
-                                    <div v-if="notesForm.errors.notes" class="text-[11px] text-danger">{{ notesForm.errors.notes }}</div>
+                                    <div v-if="notesForm.errors.admin_notes" class="text-[11px] text-danger">{{ notesForm.errors.admin_notes }}</div>
                                     <div class="flex gap-2">
                                         <Button type="submit" variant="primary" size="sm" :disabled="notesForm.processing">{{ t('common.save_changes') }}</Button>
                                         <Button type="button" size="sm" @click="notesEditing = false">{{ t('common.cancel') }}</Button>
                                     </div>
                                 </form>
                                 <template v-else>
-                                    <p v-if="customer.notes" class="m-0 text-[12.5px] text-ink-700 leading-[1.55] whitespace-pre-line">{{ customer.notes }}</p>
+                                    <p v-if="customer.admin_notes" class="m-0 text-[12.5px] text-ink-700 leading-[1.55] whitespace-pre-line">{{ customer.admin_notes }}</p>
                                     <p v-else class="m-0 text-[12px] text-ink-500 italic">{{ t('customers.notes_empty') }}</p>
                                 </template>
                             </SideCard>

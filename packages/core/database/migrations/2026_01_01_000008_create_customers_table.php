@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
             $table->jsonb('attribute_data')->nullable();
             $table->string('account_ref')->nullable()->index();
-            $table->text('notes')->nullable();
+            $table->text('admin_notes')->nullable();
         });
     }
 
