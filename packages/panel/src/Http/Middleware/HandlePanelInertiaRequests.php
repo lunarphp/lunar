@@ -34,6 +34,7 @@ class HandlePanelInertiaRequests extends Middleware
                 'support_url' => config('lunar.panel.support_url'),
             ],
             'locale' => fn () => app()->getLocale(),
+            'availableLocales' => fn () => $this->manager->availableLocales(),
             'navigation' => fn () => $this->manager->navigation()->toArray($user),
             'settingsNavigation' => fn () => $this->manager->settingsNavigation()->toArray($user, skipMenus: true),
             'pageId' => fn () => $this->currentPagePrefix($request),

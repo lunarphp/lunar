@@ -28,6 +28,11 @@ trimmed for brevity) — read the linked file if you want the full context.
 - **IIFE compilation** — `resources/js/addon.ts` compiles to a single IIFE via
   the panel's exported `@lunarphp/panel-vite-plugin`, sharing the panel's own
   Vue instance (`window.Vue`) instead of bundling a second copy.
+- **Translations** — `resources/lang/{en,fr}/example.php` are ordinary Laravel
+  lang groups, opted into the panel's translations endpoint via
+  `Section::langNamespaces()`; the nav label resolves server-side through
+  `__()` and the page translates client-side through the panel's shared
+  vue-i18n instance (`t('example-addon::example.title')`).
 
 `tests/panel/Feature/ExampleAddonTest.php` in the monorepo exercises all of
 the above against this package's real, unmodified source — including
@@ -369,6 +374,44 @@ class HasAccountRefFilter extends TableFilter
 }
 ```
 
+## Translating an add-on
+
+Add-on strings live in ordinary Laravel lang groups — no JS-side message
+files to maintain. Three steps:
+
+1. **Register the translator namespace** in your service provider:
+
+   ```php
+   $this->loadTranslationsFrom(dirname(__DIR__).'/resources/lang', 'example-addon');
+   ```
+
+2. **Opt the namespace into the panel frontend** on your `Section` (or
+   `SectionExtension`):
+
+   ```php
+   public function langNamespaces(): array
+   {
+       return ['example-addon'];
+   }
+   ```
+
+   The panel's translations endpoint then serves every group under the
+   namespace as `example-addon::{group}` message keys, cached and versioned
+   together with the panel's own strings. (Non-section code can call
+   `Panel::translations('example-addon')` directly.)
+
+3. **Use the keys on both sides.** Server-side surfaces (navigation labels,
+   flash messages) take the key through Laravel's own `__()`/lang-key
+   resolution — `label: 'example-addon::example.nav_label'`. Vue pages import
+   `useI18n` from `vue-i18n` (externalised to the panel's shared instance by
+   the vite plugin) and call `t('example-addon::example.title')`.
+
+Ship whichever locales you support; a locale the add-on lacks falls back to
+the app fallback locale for that namespace only, so a partially translated
+add-on never blanks out the panel's own locale switcher. Staff pick their
+panel language from the user menu (persisted per staff member as
+`preferred_locale`).
+
 ## Compiling the add-on bundle with Vite
 
 `package.json` and `vite.config.js`:
@@ -467,11 +510,14 @@ that genuinely needs the mounted app, not for registration.
    via `composer.json`'s `extra.laravel.providers`, or add it manually).
 3. `npm install` inside this package, then `npm run build`. This produces a
    compiled IIFE + manifest in `build/`.
-4. `php artisan lunar:panel:link` symlinks `build/` to
-   `public/vendor/lunar-panel/example-addon/` in the host app (the command
-   reads the `__buildSourcePath` passed to `PanelManager::vite()` in
-   `ExampleAddonServiceProvider::boot()`). Prefer copying the directory to
-   the same location if your deployment can't serve symlinked paths.
+4. Get the compiled build into `public/vendor/lunar-panel/example-addon/`:
+   - **Production**: `php artisan vendor:publish --tag=example-addon-panel-assets --force`
+     copies it (the panel registers a `{key}-panel-assets` publish tag for
+     every module's `__buildSourcePath`; `--tag=panel-all-assets` publishes
+     the panel's own build plus every add-on in one go).
+   - **Local development**: `php artisan lunar:panel:link` symlinks the
+     `build/` directory instead, so a rebuild is picked up without
+     re-publishing.
 5. The panel's `app.blade.php` loops `PanelManager::registeredVites()` and
    emits a `<script>`/`<link>` tag for every registered module automatically —
    no panel changes required.

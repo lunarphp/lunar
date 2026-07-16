@@ -23,6 +23,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $last_name
  * @property string $full_name
  * @property string $email
+ * @property ?string $preferred_locale
  * @property string $password
  * @property string $remember_token
  * @property ?string $app_authentication_secret
@@ -50,6 +51,7 @@ class Staff extends Authenticatable
         'last_name',
         'admin',
         'email',
+        'preferred_locale',
         'password',
     ];
 

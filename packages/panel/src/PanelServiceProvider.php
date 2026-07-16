@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Panel\Auth\AppAuthentication;
 use Lunar\Panel\Auth\EmailTwoFactor;
+use Lunar\Panel\Console\Commands\InstallPanelCommand;
 use Lunar\Panel\Console\Commands\LinkPanelAssetsCommand;
 use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\Http\Middleware\Authenticate;
@@ -45,7 +46,7 @@ class PanelServiceProvider extends ServiceProvider
             collect($this->configFiles)->each(function ($config) {
                 $this->publishes([
                     "{$this->root}/config/$config.php" => config_path("lunar/$config.php"),
-                ], 'lunar');
+                ], ['lunar', 'panel-config']);
             });
 
             $this->publishes([
@@ -53,7 +54,10 @@ class PanelServiceProvider extends ServiceProvider
                 "{$this->root}/public/favicons" => public_path('vendor/lunar-panel/favicons'),
             ], ['panel-assets', 'panel-all-assets']);
 
-            $this->commands([LinkPanelAssetsCommand::class]);
+            $this->commands([
+                InstallPanelCommand::class,
+                LinkPanelAssetsCommand::class,
+            ]);
         }
 
         $this->registerPermissionGate();
@@ -64,7 +68,28 @@ class PanelServiceProvider extends ServiceProvider
         $this->app->booted(function (): void {
             $this->processRegisteredSections();
             $this->registerRoutes();
+
+            if ($this->app->runningInConsole()) {
+                $this->registerAddonAssetPublishing();
+            }
         });
+    }
+
+    /**
+     * Give every registered panel module a vendor:publish path to its public
+     * asset location, so production deployments copy add-on builds with
+     * `vendor:publish --tag=panel-all-assets` (or per-module
+     * `--tag={key}-panel-assets`) instead of hand-copying; `lunar:panel:link`
+     * symlinks the same mapping for local development. Deferred to app booted
+     * so add-ons registering in their own providers' boot are included.
+     */
+    protected function registerAddonAssetPublishing(): void
+    {
+        foreach ($this->app->make(PanelManager::class)->viteBuildPaths() as $key => $buildPath) {
+            $this->publishes([
+                $buildPath => public_path("vendor/lunar-panel/{$key}"),
+            ], ["{$key}-panel-assets", 'panel-all-assets']);
+        }
     }
 
     /**

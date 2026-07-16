@@ -19,6 +19,7 @@ declare global {
         LunarPanel: LunarPanelRuntime;
         Vue: typeof import('vue');
         InertiaVue3: typeof import('@inertiajs/vue3');
+        VueI18n: typeof import('vue-i18n');
         /**
          * Panel components exposed to add-on bundles. Derived from the ui.ts barrel
          * (the source of truth) so it never drifts from what is actually published.

@@ -18,6 +18,11 @@ import { join } from 'node:path';
  * makes them work inside add-on pages; a bundled second copy would read uninitialised
  * state.
  *
+ * Also externalises `vue-i18n` to the `window.VueI18n` global for the same reason:
+ * `useI18n()` must resolve the i18n instance the panel installed (which holds the
+ * messages served by the translations endpoint, including `{namespace}::{group}`
+ * add-on groups); a bundled copy would see no instance and no messages.
+ *
  * Also enables Vite's manifest and moves it from Vite's default `.vite/manifest.json`
  * to the build root as `manifest.json`, where Laravel's Vite resolves it (it only reads
  * `{buildDirectory}/manifest.json`). This lets the add-on's `build/` be published as-is
@@ -38,7 +43,7 @@ export default function lunarPanelPlugin(options = {}) {
                     manifest: true,
                     rollupOptions: {
                         ...config.build?.rollupOptions,
-                        external: ['vue', '@inertiajs/vue3', '@lunarphp/panel', ...(config.build?.rollupOptions?.external ?? [])],
+                        external: ['vue', '@inertiajs/vue3', 'vue-i18n', '@lunarphp/panel', ...(config.build?.rollupOptions?.external ?? [])],
                         output: {
                             ...config.build?.rollupOptions?.output,
                             format: 'iife',
@@ -46,6 +51,7 @@ export default function lunarPanelPlugin(options = {}) {
                             globals: {
                                 'vue': 'Vue',
                                 '@inertiajs/vue3': 'InertiaVue3',
+                                'vue-i18n': 'VueI18n',
                                 '@lunarphp/panel': 'LunarPanelUI',
                                 ...config.build?.rollupOptions?.output?.globals,
                             },

@@ -141,9 +141,11 @@ Ported from the architecture prototype, adapted to this monorepo's provider conv
   loading `routes/web.php` followed by every section's route registrar closures. Add-on
   routes therefore mount inside the panel's authenticated Inertia context.
 - **`HandlePanelInertiaRequests`** — shares `auth.user`, `flash`, panel config (name, path,
-  URLs), `locale`, `availableLocales`, a translations version hash, the resolved
-  permission-filtered `navigation` and `settingsNavigation` trees, and the current page's
-  slot entries.
+  URLs), `locale`, `availableLocales`, the resolved permission-filtered `navigation` and
+  `settingsNavigation` trees, and the current page's slot entries. (The translations version
+  hash travels in the translations endpoint's response rather than as a prop.) A `settings`
+  route redirects to the first settings page the user can see, giving add-ons a stable
+  settings entry point.
 
 First-party code registers through this same public API — a `SalesSection` (key `sales`,
 containing Customers) and a `ChannelsSection` (settings) live in the panel package but are
@@ -209,11 +211,18 @@ Ported from the architecture prototype:
   module (own build directory and hot file, so add-on HMR works in dev).
 - **Assets** — panel assets publish to `public/vendor/lunar-panel/build`; an add-on serves
   its compiled build from `public/vendor/lunar-panel/{key}` (the `buildDirectory` it passes
-  to `PanelManager::vite()`); `php artisan lunar:panel:link` symlinks a registered
-  `__buildSourcePath` there instead of copying for local development.
-- **i18n** — vue-i18n; PHP lang groups served as JSON per locale from a translations
-  endpoint, cached in localStorage keyed by an mtime-derived version hash. Add-ons can also
-  push messages at runtime via `registerTranslations()`.
+  to `PanelManager::vite()`). Every registered `__buildSourcePath` gets a vendor:publish
+  mapping automatically (`{key}-panel-assets`, aggregated under `panel-all-assets`) for
+  production deployment; `php artisan lunar:panel:link` symlinks it instead for local
+  development, and `php artisan lunar:panel:install` publishes config plus all assets.
+- **i18n** — vue-i18n (externalised to `window.VueI18n` so add-on pages share the panel's
+  instance); PHP lang groups served as JSON per locale from a translations endpoint, cached
+  in localStorage keyed by an mtime-derived version hash. Add-on lang namespaces opt in via
+  `Section::langNamespaces()` / `Panel::translations()` and are served as
+  `{namespace}::{group}` message keys with per-namespace fallback to the app fallback
+  locale; add-ons can also push messages at runtime via `registerTranslations()`. Staff pick
+  their panel language from the user menu (shared `availableLocales` prop, persisted as
+  `staff.preferred_locale`, applied by the `Authenticate` middleware).
 
 ### Frontend — design system and components
 
@@ -342,7 +351,7 @@ links to it from a `PageAction`, or injects into a slot zone.
 
 ## Migration impact
 
-- **Database migrations**: one — a core `staff_password_reset_tokens` table backing the staff password broker (registered alongside the staff guard). Auth otherwise uses the existing staff 2FA columns; Customers and Channels use existing core tables.
+- **Database migrations**: two — a core `staff_password_reset_tokens` table backing the staff password broker (registered alongside the staff guard), and a core `staff.preferred_locale` column backing the panel's per-staff locale switcher. Auth otherwise uses the existing staff 2FA columns; Customers and Channels use existing core tables.
 - **Dependencies**: new require on `inertiajs/inertia-laravel` and `pragmarx/google2fa`
   (+ QR renderer, e.g. `bacon/bacon-qr-code`) in the panel package — needs approval before
   implementation. Frontend deps (Vue, Reka UI, Tailwind v4, vue-i18n) are npm dev-time
@@ -358,8 +367,10 @@ links to it from a `PageAction`, or injects into a slot zone.
   facade, `Section`/`SectionExtension` (including the `pageActions()` hook), the registries,
   the `TableAction`/`TableBulkAction`/`PageAction` abstracts and their resolvers,
   `Lunar\Panel\Support\Position` + `OrderResolver`, the Inertia props (`navigation`,
-  `settingsNavigation`, slot entries, `tableColumns`/`tableActions`/`tableBulkActions`,
-  `pageActions`), the standard `{page}:main:before`/`{page}:main:after` slot zones,
+  `settingsNavigation`, `availableLocales`, slot entries,
+  `tableColumns`/`tableActions`/`tableBulkActions`, `pageActions`), the
+  `Section::langNamespaces()` hook and `{namespace}::{group}` message-key scheme, the
+  `{key}-panel-assets`/`panel-all-assets` publish tags, the standard `{page}:main:before`/`{page}:main:after` slot zones,
   `window.LunarPanel`, the `@lunarphp/panel` and `@lunarphp/panel-vite-plugin` npm packages,
   and the slot zone naming scheme. Zone names, registry APIs, and action abstracts are
   treated as contract from first release.

@@ -57,4 +57,15 @@ abstract class Section implements ProvidesNavigation
     {
         return null;
     }
+
+    /**
+     * Translator namespaces whose lang groups the panel serves to the
+     * frontend (as `{namespace}::{group}` message keys).
+     *
+     * @return array<int, string>
+     */
+    public function langNamespaces(): array
+    {
+        return [];
+    }
 }

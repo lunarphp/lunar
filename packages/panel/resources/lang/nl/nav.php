@@ -3,6 +3,12 @@
 return [
     'dashboard' => 'Dashboard',
     'settings' => 'Instellingen',
+    'theme' => 'Thema',
+    'theme_light' => 'Licht',
+    'theme_dark' => 'Donker',
+    'theme_system' => 'Systeem',
+    'language' => 'Taal',
+    'sign_out' => 'Uitloggen',
     'toggle_theme' => 'Thema wisselen',
     'toggle_sidebar' => 'Zijbalk wisselen',
     'sales' => 'Verkoop',

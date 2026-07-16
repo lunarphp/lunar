@@ -63,6 +63,18 @@ npm workspace over these two packages plus `packages/panel-addon-example`, so th
 example resolves the version-ranged deps to the local source during development.
 Run `npm install` at the monorepo root (not inside the example) to link them.
 
+## Translations
+
+Panel strings live in `resources/lang/{locale}/{group}.php` across 16 locales
+and are served to vue-i18n by the translations endpoint as `{group}.{key}`
+messages. Add-ons keep their strings in their own Laravel lang namespace and
+opt in via `Section::langNamespaces()` (or `Panel::translations()`); the
+endpoint then serves those groups as `{namespace}::{group}` keys, falling back
+per namespace to the app fallback locale. Server-side surfaces (nav labels,
+flash messages) take the same lang keys through `__()`. Staff pick their panel
+language from the user menu; the choice persists as `staff.preferred_locale`
+and is applied by the `Authenticate` middleware.
+
 ## Ordering
 
 Navigation items, table columns, and all action types carry a `Position`

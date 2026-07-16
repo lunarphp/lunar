@@ -34,10 +34,12 @@ class ExampleSection extends Section
 
     public function navigation(NavigationRegistry $registry): void
     {
-        $registry->group('example-addon-group', 'Example Add-on');
+        // Labels are ordinary namespaced lang keys — the registry resolves
+        // them through __() when the navigation tree is shared.
+        $registry->group('example-addon-group', 'example-addon::example.nav_group');
         $registry->addItem('example-addon-group', new NavigationItem(
             key: 'example-addon',
-            label: 'Example Add-on',
+            label: 'example-addon::example.nav_label',
             // Icon names come from the panel's built-in set (see the panel's
             // Icon.vue); add-ons cannot register their own SVGs.
             icon: 'tag',
@@ -120,5 +122,16 @@ class ExampleSection extends Section
     public function tableExtensions(): array
     {
         return ['customers.index' => ExampleTableExtension::class];
+    }
+
+    /**
+     * Opt this add-on's lang groups into the panel's translations endpoint,
+     * so its Vue pages can translate through vue-i18n with
+     * `t('example-addon::example.title')`. Locales the add-on doesn't ship
+     * fall back to the app fallback locale per namespace.
+     */
+    public function langNamespaces(): array
+    {
+        return ['example-addon'];
     }
 }

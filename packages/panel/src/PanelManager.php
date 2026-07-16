@@ -36,6 +36,9 @@ class PanelManager
     /** @var Closure[] */
     protected array $routeRegistrars = [];
 
+    /** @var array<int, string> */
+    protected array $langNamespaces = [];
+
     protected bool $sectionsProcessed = false;
 
     protected SectionRegistry $sectionRegistry;
@@ -133,6 +136,10 @@ class PanelManager
         if ($viteConfig = $entity->vite()) {
             $this->vite($this->viteKeyFor($sectionKey, $entity), $viteConfig);
         }
+
+        if ($namespaces = $entity->langNamespaces()) {
+            $this->translations(...$namespaces);
+        }
     }
 
     /**
@@ -200,6 +207,25 @@ class PanelManager
     public function resolvePageActions(string $pageId): PageActionResolver
     {
         return new PageActionResolver($this->getPageActions($pageId), $this->user());
+    }
+
+    /**
+     * Expose translator namespaces to the panel frontend: every lang group
+     * under each namespace is served by the translations endpoint as
+     * `{namespace}::{group}` message keys. Registered automatically from
+     * `Section::langNamespaces()`, or directly for non-section callers.
+     */
+    public function translations(string ...$namespaces): static
+    {
+        $this->langNamespaces = array_values(array_unique([...$this->langNamespaces, ...$namespaces]));
+
+        return $this;
+    }
+
+    /** @return array<int, string> */
+    public function translationNamespaces(): array
+    {
+        return $this->langNamespaces;
     }
 
     public function registerRoutes(Closure $callback): static
@@ -281,5 +307,26 @@ class PanelManager
     public function name(): string
     {
         return config('lunar.panel.name', 'Lunar');
+    }
+
+    /**
+     * The locales the panel UI ships translations for — the locale directories
+     * under the panel package's resources/lang. Drives the locale switcher and
+     * validates the preferred-locale update.
+     *
+     * @return array<int, string>
+     */
+    public function availableLocales(): array
+    {
+        $langPath = dirname(__DIR__).'/resources/lang';
+
+        $locales = array_map(
+            'basename',
+            glob("{$langPath}/*", GLOB_ONLYDIR) ?: [],
+        );
+
+        sort($locales);
+
+        return $locales ?: ['en'];
     }
 }

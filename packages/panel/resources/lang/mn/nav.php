@@ -3,6 +3,12 @@
 return [
     'dashboard' => 'Dashboard',
     'settings' => 'Тохиргоо',
+    'theme' => 'Загвар',
+    'theme_light' => 'Цайвар',
+    'theme_dark' => 'Бараан',
+    'theme_system' => 'Систем',
+    'language' => 'Хэл',
+    'sign_out' => 'Гарах',
     'toggle_theme' => 'Загвар солих',
     'toggle_sidebar' => 'Хажуугийн самбар солих',
     'sales' => 'Борлуулалт',

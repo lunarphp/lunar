@@ -220,3 +220,20 @@ it('normalises vite registrations', function () {
         'input' => 'resources/js/app.ts',
     ]);
 });
+
+it('registers translation namespaces once each', function () {
+    $manager = app(PanelManager::class);
+
+    $manager->translations('addon-a', 'addon-b');
+    $manager->translations('addon-b', 'addon-c');
+
+    expect($manager->translationNamespaces())->toBe(['addon-a', 'addon-b', 'addon-c']);
+});
+
+it('lists the panel lang locales as available locales', function () {
+    $locales = app(PanelManager::class)->availableLocales();
+
+    expect($locales)->toHaveCount(16)
+        ->toContain('en', 'pt_BR', 'ar')
+        ->and($locales)->toBe(collect($locales)->sort()->values()->all());
+});

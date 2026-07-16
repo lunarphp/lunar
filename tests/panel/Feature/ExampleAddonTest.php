@@ -215,3 +215,30 @@ it('symlinks the example add-on build directory via lunar:panel:link', function 
         }
     }
 });
+
+it('resolves the example add-on nav labels through its lang namespace', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    $this->actingAs($staff, 'staff')
+        ->get('/panel')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('navigation.groups', function ($groups) {
+                $group = collect($groups)->firstWhere('key', 'example-addon-group');
+
+                return $group !== null && $group['label'] === 'Example Add-on';
+            })
+        );
+});
+
+it('serves the example add-on lang groups from the translations endpoint', function () {
+    $this->getJson('/panel/translations/en')
+        ->assertOk()
+        ->assertJsonPath('messages.example-addon::example.title', 'Example Add-on');
+
+    // The example ships fr, so the namespaced group follows the locale.
+    $title = $this->getJson('/panel/translations/fr')
+        ->assertOk()
+        ->json('messages.example-addon::example.title');
+
+    expect($title)->not->toBe('Example Add-on');
+});

@@ -7,6 +7,11 @@
 // live Inertia instance rather than a bundled second copy.
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
+// `vue-i18n` is externalised to the panel's own instance, whose message store
+// holds this add-on's PHP lang groups (opted in via Section::langNamespaces())
+// under `example-addon::{group}` keys — served, cached and versioned by the
+// panel's translations endpoint like the panel's own strings.
+import { useI18n } from 'vue-i18n';
 import { Breadcrumbs, DataTable, PageHeader, PageZone, Button, SideCard, StatusBadge } from '@lunarphp/panel';
 
 defineProps<{
@@ -14,10 +19,12 @@ defineProps<{
     widgets?: Record<string, unknown>[];
 }>();
 
-const breadcrumbs = [
+const { t } = useI18n();
+
+const breadcrumbs = computed(() => [
     { label: 'Add-ons' },
-    { label: 'Example Add-on', current: true },
-];
+    { label: t('example-addon::example.title'), current: true },
+]);
 
 // Shared props the panel middleware provides to every page, add-on pages included.
 const panelName = computed(() => (usePage().props.panel as { name?: string } | undefined)?.name ?? 'Lunar');
@@ -43,8 +50,8 @@ const rowActions = [
         <Breadcrumbs :items="breadcrumbs" />
 
         <PageHeader
-            title="Example Add-on"
-            description="A page contributed by the example add-on package, using the panel's own layout and chrome."
+            :title="t('example-addon::example.title')"
+            :description="t('example-addon::example.description')"
             icon="tag"
         >
             <template #actions>
