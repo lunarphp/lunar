@@ -130,9 +130,9 @@ return [
     'stat_avg_order' => 'Átl. rendelés',
     'stat_latest_order' => 'Legutóbbi rendelés',
 
-    'notes' => 'Jegyzetek',
-    'notes_empty' => 'Még nincs jegyzet.',
-    'edit_notes' => 'Jegyzetek szerkesztése',
+    'notes' => 'Admin jegyzetek',
+    'notes_empty' => 'Még nincs admin jegyzet.',
+    'edit_notes' => 'Admin jegyzetek szerkesztése',
 
     'confirm_delete_customer' => 'Biztosan törli ezt az ügyfelet?',
     'confirm_delete_customer_title' => 'Törli ezt az ügyfelet?',
@@ -150,5 +150,5 @@ return [
     'flash_address_deleted' => 'A cím törölve.',
     'flash_user_linked' => 'A felhasználó összekapcsolva.',
     'flash_user_unlinked' => 'A felhasználó leválasztva.',
-    'flash_notes_updated' => 'Jegyzetek frissítve.',
+    'flash_notes_updated' => 'Admin jegyzetek frissítve.',
 ];

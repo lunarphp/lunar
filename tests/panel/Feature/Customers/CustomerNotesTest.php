@@ -15,7 +15,7 @@ it('updates the customer notes', function () {
     $this->put(route('panel.customers.notes.update', $customer), [
         'notes' => 'Contact via email only; no marketing calls.',
     ])->assertRedirect()
-        ->assertSessionHas('success', 'Notes updated.');
+        ->assertSessionHas('success', 'Admin notes updated.');
 
     expect($customer->refresh()->notes)->toBe('Contact via email only; no marketing calls.');
 });

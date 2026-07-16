@@ -130,9 +130,9 @@ return [
     'stat_avg_order' => 'Gem. bestelling',
     'stat_latest_order' => 'Laatste bestelling',
 
-    'notes' => 'Notities',
-    'notes_empty' => 'Nog geen notities.',
-    'edit_notes' => 'Notities bewerken',
+    'notes' => 'Adminnotities',
+    'notes_empty' => 'Nog geen adminnotities.',
+    'edit_notes' => 'Adminnotities bewerken',
 
     'confirm_delete_customer' => 'Weet je zeker dat je deze klant wilt verwijderen?',
     'confirm_delete_customer_title' => 'Deze klant verwijderen?',
@@ -150,5 +150,5 @@ return [
     'flash_address_deleted' => 'Adres verwijderd.',
     'flash_user_linked' => 'Gebruiker gekoppeld.',
     'flash_user_unlinked' => 'Gebruiker ontkoppeld.',
-    'flash_notes_updated' => 'Notities bijgewerkt.',
+    'flash_notes_updated' => 'Adminnotities bijgewerkt.',
 ];

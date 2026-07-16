@@ -130,9 +130,9 @@ return [
     'stat_avg_order' => 'Ort. sipariş',
     'stat_latest_order' => 'Son sipariş',
 
-    'notes' => 'Notlar',
-    'notes_empty' => 'Henüz not yok.',
-    'edit_notes' => 'Notları düzenle',
+    'notes' => 'Yönetici notları',
+    'notes_empty' => 'Henüz yönetici notu yok.',
+    'edit_notes' => 'Yönetici notlarını düzenle',
 
     'confirm_delete_customer' => 'Bu müşteriyi silmek istediğinizden emin misiniz?',
     'confirm_delete_customer_title' => 'Bu müşteri silinsin mi?',
@@ -150,5 +150,5 @@ return [
     'flash_address_deleted' => 'Adres silindi.',
     'flash_user_linked' => 'Kullanıcı bağlandı.',
     'flash_user_unlinked' => 'Kullanıcı bağlantısı kaldırıldı.',
-    'flash_notes_updated' => 'Notlar güncellendi.',
+    'flash_notes_updated' => 'Yönetici notları güncellendi.',
 ];

@@ -130,9 +130,9 @@ return [
     'stat_avg_order' => 'متوسط الطلب',
     'stat_latest_order' => 'آخر طلب',
 
-    'notes' => 'ملاحظات',
-    'notes_empty' => 'لا توجد ملاحظات بعد.',
-    'edit_notes' => 'تعديل الملاحظات',
+    'notes' => 'ملاحظات الإدارة',
+    'notes_empty' => 'لا توجد ملاحظات إدارية بعد.',
+    'edit_notes' => 'تعديل ملاحظات الإدارة',
 
     'confirm_delete_customer' => 'هل أنت متأكد من أنك تريد حذف هذا العميل؟',
     'confirm_delete_customer_title' => 'هل تريد حذف هذا العميل؟',
@@ -150,5 +150,5 @@ return [
     'flash_address_deleted' => 'تم حذف العنوان.',
     'flash_user_linked' => 'تم ربط المستخدم.',
     'flash_user_unlinked' => 'تم إلغاء ربط المستخدم.',
-    'flash_notes_updated' => 'تم تحديث الملاحظات.',
+    'flash_notes_updated' => 'تم تحديث ملاحظات الإدارة.',
 ];

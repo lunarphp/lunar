@@ -130,9 +130,9 @@ return [
     'stat_avg_order' => 'میانگین سفارش',
     'stat_latest_order' => 'آخرین سفارش',
 
-    'notes' => 'یادداشت‌ها',
-    'notes_empty' => 'هنوز یادداشتی وجود ندارد.',
-    'edit_notes' => 'ویرایش یادداشت‌ها',
+    'notes' => 'یادداشت‌های مدیریتی',
+    'notes_empty' => 'هنوز یادداشت مدیریتی وجود ندارد.',
+    'edit_notes' => 'ویرایش یادداشت‌های مدیریتی',
 
     'confirm_delete_customer' => 'آیا مطمئن هستید که می‌خواهید این مشتری را حذف کنید؟',
     'confirm_delete_customer_title' => 'این مشتری حذف شود؟',
@@ -150,5 +150,5 @@ return [
     'flash_address_deleted' => 'آدرس حذف شد.',
     'flash_user_linked' => 'کاربر پیوند داده شد.',
     'flash_user_unlinked' => 'پیوند کاربر قطع شد.',
-    'flash_notes_updated' => 'یادداشت‌ها به‌روزرسانی شد.',
+    'flash_notes_updated' => 'یادداشت‌های مدیریتی به‌روزرسانی شد.',
 ];

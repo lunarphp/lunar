@@ -130,9 +130,9 @@ return [
     'stat_avg_order' => 'Дундаж захиалга',
     'stat_latest_order' => 'Сүүлийн захиалга',
 
-    'notes' => 'Тэмдэглэл',
-    'notes_empty' => 'Одоогоор тэмдэглэл алга.',
-    'edit_notes' => 'Тэмдэглэл засах',
+    'notes' => 'Админ тэмдэглэл',
+    'notes_empty' => 'Одоогоор админ тэмдэглэл алга.',
+    'edit_notes' => 'Админ тэмдэглэл засах',
 
     'confirm_delete_customer' => 'Та энэ харилцагчийг устгахдаа итгэлтэй байна уу?',
     'confirm_delete_customer_title' => 'Энэ харилцагчийг устгах уу?',
@@ -150,5 +150,5 @@ return [
     'flash_address_deleted' => 'Хаяг устгагдлаа.',
     'flash_user_linked' => 'Хэрэглэгч холбогдлоо.',
     'flash_user_unlinked' => 'Хэрэглэгчийн холбоос тасаллаа.',
-    'flash_notes_updated' => 'Тэмдэглэл шинэчлэгдлээ.',
+    'flash_notes_updated' => 'Админ тэмдэглэл шинэчлэгдлээ.',
 ];

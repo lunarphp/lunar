@@ -130,9 +130,9 @@ return [
     'stat_avg_order' => 'Đơn trung bình',
     'stat_latest_order' => 'Đơn gần nhất',
 
-    'notes' => 'Ghi chú',
-    'notes_empty' => 'Chưa có ghi chú.',
-    'edit_notes' => 'Sửa ghi chú',
+    'notes' => 'Ghi chú quản trị',
+    'notes_empty' => 'Chưa có ghi chú quản trị.',
+    'edit_notes' => 'Sửa ghi chú quản trị',
 
     'confirm_delete_customer' => 'Bạn có chắc chắn muốn xóa khách hàng này không?',
     'confirm_delete_customer_title' => 'Xóa khách hàng này?',
@@ -150,5 +150,5 @@ return [
     'flash_address_deleted' => 'Đã xóa địa chỉ.',
     'flash_user_linked' => 'Đã liên kết người dùng.',
     'flash_user_unlinked' => 'Đã hủy liên kết người dùng.',
-    'flash_notes_updated' => 'Đã cập nhật ghi chú.',
+    'flash_notes_updated' => 'Đã cập nhật ghi chú quản trị.',
 ];

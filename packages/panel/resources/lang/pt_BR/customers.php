@@ -130,9 +130,9 @@ return [
     'stat_avg_order' => 'Pedido médio',
     'stat_latest_order' => 'Último pedido',
 
-    'notes' => 'Notas',
-    'notes_empty' => 'Nenhuma nota ainda.',
-    'edit_notes' => 'Editar notas',
+    'notes' => 'Notas administrativas',
+    'notes_empty' => 'Nenhuma nota administrativa ainda.',
+    'edit_notes' => 'Editar notas administrativas',
 
     'confirm_delete_customer' => 'Tem certeza de que deseja excluir este cliente?',
     'confirm_delete_customer_title' => 'Excluir este cliente?',
@@ -150,5 +150,5 @@ return [
     'flash_address_deleted' => 'Endereço excluído.',
     'flash_user_linked' => 'Usuário vinculado.',
     'flash_user_unlinked' => 'Usuário desvinculado.',
-    'flash_notes_updated' => 'Notas atualizadas.',
+    'flash_notes_updated' => 'Notas administrativas atualizadas.',
 ];
