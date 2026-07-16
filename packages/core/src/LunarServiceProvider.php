@@ -325,7 +325,7 @@ class LunarServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the staff auth guard + provider.
+     * Register the staff auth guard, provider and password broker.
      */
     protected function registerStaffAuthGuard(): void
     {
@@ -345,6 +345,13 @@ class LunarServiceProvider extends ServiceProvider
         $this->app['config']->set("auth.guards.{$guard}", [
             'driver' => 'session',
             'provider' => $provider,
+        ]);
+
+        $this->app['config']->set("auth.passwords.{$provider}", [
+            'provider' => $provider,
+            'table' => config('lunar.database.table_prefix').'staff_password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
         ]);
     }
 

@@ -15,12 +15,23 @@ use Lunar\Core\Actions\Carts\MergeCart;
 use Lunar\Core\Actions\Carts\RemovePurchasable;
 use Lunar\Core\Actions\Carts\SetShippingOption;
 use Lunar\Core\Actions\Carts\UpdateCartLine;
+use Lunar\Core\Actions\Channels\CreateChannel;
+use Lunar\Core\Actions\Channels\DeleteChannel;
+use Lunar\Core\Actions\Channels\UpdateChannel;
 use Lunar\Core\Actions\Collections\CreateChildCollection;
 use Lunar\Core\Actions\Collections\CreateRootCollection;
 use Lunar\Core\Actions\Collections\DeleteCollection;
 use Lunar\Core\Actions\Collections\MoveCollection;
 use Lunar\Core\Actions\Collections\SortProducts;
 use Lunar\Core\Actions\Currencies\CreateCurrencyPrices;
+use Lunar\Core\Actions\Customers\CreateCustomer;
+use Lunar\Core\Actions\Customers\CreateCustomerAddress;
+use Lunar\Core\Actions\Customers\DeleteCustomer;
+use Lunar\Core\Actions\Customers\DeleteCustomerAddress;
+use Lunar\Core\Actions\Customers\LinkCustomerUser;
+use Lunar\Core\Actions\Customers\UnlinkCustomerUser;
+use Lunar\Core\Actions\Customers\UpdateCustomer;
+use Lunar\Core\Actions\Customers\UpdateCustomerAddress;
 use Lunar\Core\Actions\Fulfilment\AddFulfilmentTracking;
 use Lunar\Core\Actions\Fulfilment\CancelFulfilment;
 use Lunar\Core\Actions\Fulfilment\ChangeFulfilmentLocation;
@@ -92,6 +103,11 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Carts\SetsShippingOption::class => SetShippingOption::class,
         Contracts\Carts\UpdatesCartLine::class => UpdateCartLine::class,
 
+        // Channels
+        Contracts\Channels\CreatesChannel::class => CreateChannel::class,
+        Contracts\Channels\DeletesChannel::class => DeleteChannel::class,
+        Contracts\Channels\UpdatesChannel::class => UpdateChannel::class,
+
         // Orders
         Contracts\Orders\CancelsOrder::class => CancelOrder::class,
         Contracts\Orders\CapturesOrder::class => CaptureOrder::class,
@@ -143,6 +159,16 @@ class ActionServiceProvider extends ServiceProvider
 
         // Currencies
         Contracts\Currencies\CreatesCurrencyPrices::class => CreateCurrencyPrices::class,
+
+        // Customers
+        Contracts\Customers\CreatesCustomer::class => CreateCustomer::class,
+        Contracts\Customers\CreatesCustomerAddress::class => CreateCustomerAddress::class,
+        Contracts\Customers\DeletesCustomer::class => DeleteCustomer::class,
+        Contracts\Customers\DeletesCustomerAddress::class => DeleteCustomerAddress::class,
+        Contracts\Customers\LinksCustomerUser::class => LinkCustomerUser::class,
+        Contracts\Customers\UnlinksCustomerUser::class => UnlinkCustomerUser::class,
+        Contracts\Customers\UpdatesCustomer::class => UpdateCustomer::class,
+        Contracts\Customers\UpdatesCustomerAddress::class => UpdateCustomerAddress::class,
 
         // Taxes
         Contracts\Taxes\GetsTaxZone::class => GetTaxZone::class,

@@ -145,3 +145,44 @@ jobs:
           DB_PASSWORD: postgres
         # See the mysql step above for why --do-not-fail-on-empty-test-suite is needed.
         run: ./vendor/bin/pest --group=cross-db --parallel --do-not-fail-on-empty-test-suite
+
+  panel-js:
+    runs-on: ubuntu-latest
+    name: panel JS - vitest, types, builds
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # npm install, not ci: the repo gitignores package-lock.json, so ranges
+      # resolve fresh each run (consistent with the daily full-matrix sweep).
+      # Two installs: the workspace root links the publishable packages and
+      # the example add-on to each other; packages/panel is intentionally
+      # outside the workspace with its own dependency tree.
+      - name: Install workspace dependencies
+        run: npm install
+
+      - name: Install panel dependencies
+        run: npm install
+        working-directory: packages/panel
+
+      - name: Run panel JS tests
+        run: npm test
+        working-directory: packages/panel
+
+      - name: Typecheck panel frontend
+        run: npm run type-check
+        working-directory: packages/panel
+
+      - name: Build panel bundle and package types
+        run: npm run build
+        working-directory: packages/panel
+
+      # Compiles through @lunarphp/panel-vite-plugin, proving the add-on build
+      # preset (IIFE output, externalised vue/inertia/panel globals) still works.
+      - name: Build example add-on bundle
+        run: npm run build --workspace @lunarphp/panel-addon-example

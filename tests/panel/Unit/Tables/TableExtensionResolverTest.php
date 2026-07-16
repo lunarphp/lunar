@@ -4,9 +4,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Lunar\Core\Models\Staff;
+use Lunar\Panel\Support\Position;
 use Lunar\Panel\Tables\Resolvers\TableExtensionResolver;
 use Lunar\Panel\Tables\Support\ColumnType;
-use Lunar\Panel\Tables\Support\Position;
 use Lunar\Panel\Tables\TableAction;
 use Lunar\Panel\Tables\TableColumn;
 use Lunar\Panel\Tables\TableExtension;
@@ -74,6 +74,24 @@ class FixtureAdminFilter extends TableFilter
     }
 }
 
+class FixtureStatusFilter extends TableFilter
+{
+    public function key(): string
+    {
+        return 'status';
+    }
+
+    public function position(): Position
+    {
+        return Position::before('is_admin');
+    }
+
+    public function query(Builder $query, mixed $value): void
+    {
+        $query->where('status', $value);
+    }
+}
+
 class FixturePingAction extends TableAction
 {
     public function key(): string
@@ -101,7 +119,7 @@ class FixtureTableExtension extends TableExtension
 
     public function filters(): array
     {
-        return [FixtureAdminFilter::class];
+        return [FixtureAdminFilter::class, FixtureStatusFilter::class];
     }
 
     public function actions(): array
@@ -116,25 +134,67 @@ it('collects columns, filters and actions from extension classes', function () {
     expect(array_column($resolver->getColumns(), 'key'))->toContain('rating')
         ->and($resolver->getColumns()[0]['type'])->toBe(['name' => 'badge', 'options' => []])
         ->and($resolver->getColumns()[0]['position'])->toBe(['type' => 'after', 'reference' => 'name'])
-        ->and(array_column($resolver->getFilters(), 'key'))->toBe(['is_admin'])
+        ->and(array_column($resolver->getFilters(), 'key'))->toBe(['status', 'is_admin'])
         ->and(array_column($resolver->getActions(), 'key'))->toBe(['ping']);
+});
+
+it('orders filters by position like every other table entry type', function () {
+    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
+
+    // FixtureStatusFilter registers after FixtureAdminFilter but anchors
+    // Position::before('is_admin'), so it must come out first.
+    expect(array_column($resolver->getFilters(), 'key'))->toBe(['status', 'is_admin']);
+});
+
+it('merges add-on columns into the first-party set and honours their position anchor', function () {
+    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
+
+    // FixtureRatingColumn declares Position::after('name'); FixtureSecretColumn is
+    // permission-gated and hidden here (no user passed), proving both the
+    // anchor placement and that permission filtering flows through the merge.
+    $columns = $resolver->mergeAndOrderColumns([
+        ['key' => 'name', 'label' => 'Name'],
+        ['key' => 'email', 'label' => 'Email'],
+    ]);
+
+    expect(array_column($columns, 'key'))->toBe(['name', 'rating', 'email']);
+});
+
+it('ships add-on column component and type through the merged payload', function () {
+    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
+
+    $columns = $resolver->mergeAndOrderColumns([
+        ['key' => 'name', 'label' => 'Name'],
+    ]);
+
+    $rating = collect($columns)->firstWhere('key', 'rating');
+
+    expect($rating)->toBe([
+        'key' => 'rating',
+        'label' => 'Rating',
+        'type' => ['name' => 'badge', 'options' => []],
+    ]);
 });
 
 it('hides columns whose permission the user lacks', function () {
     Gate::define('panel-test.table', fn ($user) => (bool) $user->admin);
 
-    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
+    $resolver = new TableExtensionResolver(
+        [FixtureTableExtension::class],
+        Staff::factory()->create(['admin' => false]),
+    );
 
-    $this->actingAs(Staff::factory()->create(['admin' => false]), 'staff');
     expect(array_column($resolver->getColumns(), 'key'))->not->toContain('secret');
 });
 
 it('shows permission-gated columns to authorised users', function () {
     Gate::define('panel-test.table', fn ($user) => (bool) $user->admin);
 
-    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+    $resolver = new TableExtensionResolver(
+        [FixtureTableExtension::class],
+        Staff::factory()->create(['admin' => true]),
+    );
 
-    $resolver = new TableExtensionResolver([FixtureTableExtension::class]);
     expect(array_column($resolver->getColumns(), 'key'))->toContain('secret');
 });
 

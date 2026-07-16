@@ -3,6 +3,8 @@
 namespace Lunar\Panel\Navigation;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Lunar\Panel\Support\OrderResolver;
+use Lunar\Panel\Support\Position;
 
 class NavigationItem
 {
@@ -17,11 +19,18 @@ class NavigationItem
         public array $children = [],
         public readonly ?string $badge = null,
         public readonly bool $exact = false,
+        public readonly ?Position $position = null,
     ) {}
 
     public function addChild(NavigationItem $child): void
     {
         $this->children[] = $child;
+    }
+
+    /** `priority` remains the ergonomic shortcut; an explicit Position wins when given. */
+    public function position(): Position
+    {
+        return $this->position ?? Position::priority($this->priority);
     }
 
     protected function resolveUrl(): ?string
@@ -40,7 +49,7 @@ class NavigationItem
     /** @return array<string, mixed> */
     public function toArray(?Authenticatable $user = null): array
     {
-        $filteredChildren = collect($this->children)
+        $visibleChildren = collect($this->children)
             ->filter(function (NavigationItem $child) use ($user): bool {
                 if ($child->permission === null) {
                     return true;
@@ -48,9 +57,15 @@ class NavigationItem
 
                 return $user !== null && $user->can($child->permission);
             })
-            ->sortBy('priority')
-            ->map(fn (NavigationItem $child) => $child->toArray($user))
             ->values()
+            ->all();
+
+        $filteredChildren = collect((new OrderResolver)->sort(
+            $visibleChildren,
+            fn (NavigationItem $child) => $child->key,
+            fn (NavigationItem $child) => $child->position(),
+        ))
+            ->map(fn (NavigationItem $child) => $child->toArray($user))
             ->all();
 
         return [

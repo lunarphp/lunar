@@ -17,6 +17,8 @@ jobs:
           - "filament"
           - "meilisearch"
           - "opayo"
+          - "panel"
+          - "panel-addon-example"
           - "paypal"
           - "search"
           - "stripe"

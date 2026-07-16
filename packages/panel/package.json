@@ -1,19 +1,28 @@
 {
-    "name": "@lunarphp/panel",
+    "name": "@lunarphp/panel-build",
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "build": "vite build && npm run build:types",
+        "build:types": "vue-tsc -p tsconfig.build-types.json && node scripts/copy-runtime-types.mjs",
+        "type-check": "vue-tsc -p tsconfig.json",
+        "dev": "vite",
+        "test": "vitest run"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0.0",
         "@tailwindcss/vite": "^4.0.6",
         "@vitejs/plugin-vue": "^5.2.0",
+        "@vue/test-utils": "^2.4.11",
+        "happy-dom": "^20.10.6",
         "laravel-vite-plugin": "^1.2.0",
+        "reka-ui": "^2.9.6",
         "tailwindcss": "^4.0.6",
         "typescript": "^5.6.0",
         "vite": "^6.0.0",
-        "vue": "^3.5.13"
+        "vitest": "^4.1.10",
+        "vue": "^3.5.13",
+        "vue-i18n": "^11.4.6",
+        "vue-tsc": "^2.2.12"
     }
 }

@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "bacon/bacon-qr-code": "^3.0",
         "barryvdh/laravel-dompdf": "^3.0",
         "dompdf/dompdf": "^3.1",
         "ext-bcmath": "*",
@@ -28,6 +29,7 @@
         "lunarphp/filament": "self.version",
         "meilisearch/meilisearch-php": "^1.10",
         "php": "^8.4",
+        "pragmarx/google2fa": "^9.0",
         "spatie/laravel-activitylog": "^4.10.1",
         "spatie/laravel-blink": "^1.7.1",
         "spatie/laravel-data": "^4.23",
@@ -93,7 +95,8 @@
             "Lunar\\Shipping\\Tests\\": "packages/table-rate-shipping/tests",
             "Lunar\\Tests\\Stripe\\": "tests/stripe",
             "Lunar\\Tests\\Search\\": "tests/search",
-            "Lunar\\Tests\\Upgrade\\": "tests/upgrade"
+            "Lunar\\Tests\\Upgrade\\": "tests/upgrade",
+            "LunarPanelExample\\": "packages/panel-addon-example/src/"
         }
     },
     "extra": {
@@ -134,6 +137,7 @@
         "lunarphp/meilisearch": "self.version",
         "lunarphp/opayo": "self.version",
         "lunarphp/panel": "self.version",
+        "lunarphp/panel-addon-example": "self.version",
         "lunarphp/paypal": "self.version",
         "lunarphp/search": "self.version",
         "lunarphp/stripe": "self.version",

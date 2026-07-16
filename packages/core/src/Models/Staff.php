@@ -23,8 +23,11 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $last_name
  * @property string $full_name
  * @property string $email
+ * @property ?string $preferred_locale
  * @property string $password
  * @property string $remember_token
+ * @property ?string $app_authentication_secret
+ * @property ?array $app_authentication_recovery_codes
  * @property ?Carbon $email_verified_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -48,16 +51,21 @@ class Staff extends Authenticatable
         'last_name',
         'admin',
         'email',
+        'preferred_locale',
         'password',
     ];
 
     protected $casts = [
         'admin' => 'bool',
+        'app_authentication_recovery_codes' => 'encrypted:array',
+        'app_authentication_secret' => 'encrypted',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
     protected $hidden = [
+        'app_authentication_recovery_codes',
+        'app_authentication_secret',
         'password',
         'remember_token',
     ];

@@ -8,7 +8,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
-- Inertia admin panel — new `lunarphp/panel` package: auth, extension points, Customers CRUD, Channels settings (spec 0049)
+- Inertia admin panel — new `lunarphp/panel` package: auth, extension points (navigation, slots, table columns, row/bulk/page actions with shared ordering), Customers CRUD, Channels settings (spec 0049)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Line-item refunds — refund specific lines/quantities via a dedicated refund page (spec 0028)

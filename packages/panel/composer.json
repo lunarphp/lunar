@@ -11,7 +11,9 @@
     "repositories": [],
     "require": {
         "lunarphp/core": "self.version",
-        "inertiajs/inertia-laravel": "^2.0"
+        "bacon/bacon-qr-code": "^3.0",
+        "inertiajs/inertia-laravel": "^2.0",
+        "pragmarx/google2fa": "^9.0"
     },
     "extra": {
         "laravel": {

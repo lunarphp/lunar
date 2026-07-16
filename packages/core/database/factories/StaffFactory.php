@@ -3,6 +3,7 @@
 namespace Lunar\Core\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Lunar\Core\Models\Staff;
@@ -41,5 +42,21 @@ class StaffFactory extends Factory
                 'email_verified_at' => null,
             ];
         });
+    }
+
+    /**
+     * Enable app authentication with a fixed test secret and eight
+     * bcrypt-hashed random recovery codes (plaintexts are discarded;
+     * tests needing known codes set the column explicitly).
+     */
+    public function withTwoFactor(): Factory
+    {
+        return $this->state(fn (array $attributes) => [
+            'app_authentication_secret' => 'JBSWY3DPEHPK3PXP',
+            'app_authentication_recovery_codes' => Collection::times(
+                8,
+                fn (): string => Hash::make(Str::random(10).'-'.Str::random(10)),
+            )->all(),
+        ]);
     }
 }
