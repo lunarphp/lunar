@@ -1,0 +1,50 @@
+name: publish-npm
+
+# Publishes the add-on-facing npm packages (@lunarphp/panel and
+# @lunarphp/panel-vite-plugin) alongside the Composer monorepo split.
+# Skips any version already on the registry, so tags that don't bump the
+# npm package versions pass without churn. Requires the NPM_TOKEN secret.
+
+on:
+  push:
+    tags: "*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - "@lunarphp/panel"
+          - "@lunarphp/panel-vite-plugin"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # Two installs, matching tests.yml: the workspace root links the
+      # publishable packages; packages/panel (which generates the
+      # @lunarphp/panel types via prepublishOnly) has its own tree.
+      - name: Install workspace dependencies
+        run: npm install
+
+      - name: Install panel dependencies
+        run: npm install
+        working-directory: packages/panel
+
+      - name: Publish ${{ matrix.package }}
+        run: |
+          version=$(npm pkg get version --workspace ${{ matrix.package }} | jq -r 'to_entries[0].value')
+          if npm view "${{ matrix.package }}@${version}" version > /dev/null 2>&1; then
+            echo "${{ matrix.package }}@${version} already published, skipping."
+          else
+            npm publish --workspace ${{ matrix.package }} --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
