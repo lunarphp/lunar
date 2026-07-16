@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { SwitchRoot, SwitchThumb } from 'reka-ui';
 
-defineProps<{ on?: boolean }>();
+defineProps<{ on?: boolean; disabled?: boolean }>();
 const emit = defineEmits<{ toggle: [] }>();
 </script>
 
 <template>
     <SwitchRoot
-        :checked="on"
+        :model-value="on"
+        :disabled="disabled"
         :class="[
-            'relative inline-block w-[34px] h-5 rounded-full cursor-pointer transition-colors duration-150 shrink-0 border border-transparent focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35',
+            'relative inline-block w-[34px] h-5 rounded-full transition-colors duration-150 shrink-0 border border-transparent focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35',
+            disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
             on ? 'bg-ink-900' : 'bg-line-strong',
         ]"
-        @update:checked="emit('toggle')"
+        @update:model-value="emit('toggle')"
     >
         <SwitchThumb
             :class="[
