@@ -165,7 +165,7 @@ without bundling any panel UI:
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { PageHeader, PageZone, Button } from '@lunarphp/panel';
+import { Icon, PageHeader, PageZone, Button } from '@lunarphp/panel';
 
 defineProps<{ message?: string }>();
 
@@ -176,6 +176,13 @@ const panelName = computed(() => (usePage().props.panel as { name?: string } | u
 <template>
     <div data-screen-label="Example Add-on" class="contents">
         <PageHeader title="Example Add-on" description="…">
+            <!-- Same icon-tile markup first-party pages use; icon names come from
+                 the panel's built-in set, matching the nav item's icon. -->
+            <template #icon>
+                <div class="w-11 h-11 rounded-md overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700">
+                    <Icon name="tag" />
+                </div>
+            </template>
             <template #actions>
                 <Button variant="primary" icon="plus">Example action</Button>
             </template>
