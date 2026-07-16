@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Comenzile acestui client vor apărea aici.',
 
     'users_intro' => 'Persoanele care se pot conecta ca acest client.',
+
+    'user_count' => '{count} utilizator | {count} utilizatori',
     'unlink_user' => 'Dezasociază utilizatorul',
     'users_empty_title' => 'Niciun utilizator încă',
     'users_empty_body' => 'Invită un utilizator pentru ca acest client să se poată conecta.',

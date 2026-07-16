@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Narudžbe ovog kupca pojavit će se ovdje.',
 
     'users_intro' => 'Osobe koje se mogu prijaviti kao ovaj kupac.',
+
+    'user_count' => '{count} korisnik | {count} korisnika',
     'unlink_user' => 'Odspoji korisnika',
     'users_empty_title' => 'Još nema korisnika',
     'users_empty_body' => 'Pozovite korisnika kako bi se ovaj kupac mogao prijaviti.',

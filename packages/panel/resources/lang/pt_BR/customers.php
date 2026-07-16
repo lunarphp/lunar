@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Os pedidos deste cliente aparecerão aqui.',
 
     'users_intro' => 'Pessoas que podem entrar como esse cliente.',
+
+    'user_count' => '{count} usuário | {count} usuários',
     'unlink_user' => 'Desvincular usuário',
     'users_empty_title' => 'Nenhum usuário ainda',
     'users_empty_body' => 'Convide um usuário para que esse cliente possa entrar.',

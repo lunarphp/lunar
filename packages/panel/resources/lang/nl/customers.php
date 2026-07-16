@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Bestellingen van deze klant verschijnen hier.',
 
     'users_intro' => 'Personen die kunnen inloggen als deze klant.',
+
+    'user_count' => '{count} gebruiker | {count} gebruikers',
     'unlink_user' => 'Gebruiker ontkoppelen',
     'users_empty_title' => 'Nog geen gebruikers',
     'users_empty_body' => 'Nodig een gebruiker uit zodat deze klant kan inloggen.',

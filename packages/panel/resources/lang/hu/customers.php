@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Az ügyfél rendelései itt jelennek meg.',
 
     'users_intro' => 'Azok a személyek, akik bejelentkezhetnek ennek az ügyfélnek a nevében.',
+
+    'user_count' => '{count} felhasználó | {count} felhasználó',
     'unlink_user' => 'Felhasználó leválasztása',
     'users_empty_title' => 'Még nincsenek felhasználók',
     'users_empty_body' => 'Hívjon meg egy felhasználót, hogy ez az ügyfél bejelentkezhessen.',

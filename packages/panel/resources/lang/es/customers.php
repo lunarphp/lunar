@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Los pedidos de este cliente aparecerán aquí.',
 
     'users_intro' => 'Personas que pueden iniciar sesión como este cliente.',
+
+    'user_count' => '{count} usuario | {count} usuarios',
     'unlink_user' => 'Desvincular usuario',
     'users_empty_title' => 'Aún no hay usuarios',
     'users_empty_body' => 'Invita a un usuario para que este cliente pueda iniciar sesión.',

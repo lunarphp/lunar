@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Bestellungen dieses Kunden erscheinen hier.',
 
     'users_intro' => 'Personen, die sich als dieser Kunde anmelden können.',
+
+    'user_count' => '{count} Benutzer | {count} Benutzer',
     'unlink_user' => 'Benutzer trennen',
     'users_empty_title' => 'Noch keine Benutzer',
     'users_empty_body' => 'Laden Sie einen Benutzer ein, damit sich dieser Kunde anmelden kann.',

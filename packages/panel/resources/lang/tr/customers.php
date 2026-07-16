@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Bu müşterinin siparişleri burada görünecek.',
 
     'users_intro' => 'Bu müşteri olarak giriş yapabilecek kişiler.',
+
+    'user_count' => '{count} kullanıcı | {count} kullanıcı',
     'unlink_user' => 'Kullanıcı bağlantısını kaldır',
     'users_empty_title' => 'Henüz kullanıcı yok',
     'users_empty_body' => 'Bu müşterinin giriş yapabilmesi için bir kullanıcı davet edin.',

@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Orders placed by this customer will appear here.',
 
     'users_intro' => 'People who can sign in as this customer.',
+
+    'user_count' => '{count} user | {count} users',
     'unlink_user' => 'Unlink user',
     'users_empty_title' => 'No users yet',
     'users_empty_body' => 'Invite a user so this customer can sign in.',

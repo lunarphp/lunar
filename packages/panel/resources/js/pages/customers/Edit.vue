@@ -122,7 +122,15 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 ]);
 
 // Most customers have a single storefront user; surface its email in the header.
-const headerEmail = computed(() => (props.users.length === 1 ? props.users[0].email : null));
+// With several linked users there is no single address to show, so fall back
+// to the user count.
+const headerUsers = computed(() => {
+    if (props.users.length === 1) {
+        return props.users[0].email;
+    }
+
+    return props.users.length > 1 ? t('customers.user_count', props.users.length) : null;
+});
 
 // Personal details + customer groups
 const detailsForm = useForm({
@@ -458,8 +466,8 @@ const tabDefs = computed(() => [
                 </template>
                 <template #description>
                     <div class="flex gap-2 items-center flex-wrap">
-                        <span v-if="headerEmail" class="text-ink-700">{{ headerEmail }}</span>
-                        <span v-if="headerEmail" class="text-ink-500">·</span>
+                        <span v-if="headerUsers" class="text-ink-700">{{ headerUsers }}</span>
+                        <span v-if="headerUsers" class="text-ink-500">·</span>
                         <span v-if="customer.company_name" class="text-ink-700">{{ customer.company_name }}</span>
                         <span v-if="customer.company_name" class="text-ink-500">·</span>
                         <template v-for="group in customer.customer_groups" :key="group.id">

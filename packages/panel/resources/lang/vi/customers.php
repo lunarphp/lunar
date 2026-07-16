@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Đơn hàng của khách này sẽ hiển thị ở đây.',
 
     'users_intro' => 'Những người có thể đăng nhập với tư cách là khách hàng này.',
+
+    'user_count' => '{count} người dùng | {count} người dùng',
     'unlink_user' => 'Hủy liên kết người dùng',
     'users_empty_title' => 'Chưa có người dùng nào',
     'users_empty_body' => 'Mời một người dùng để khách hàng này có thể đăng nhập.',

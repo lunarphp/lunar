@@ -95,6 +95,8 @@ return [
     'orders_empty_body' => 'Les commandes passées par ce client apparaîtront ici.',
 
     'users_intro' => 'Personnes pouvant se connecter en tant que ce client.',
+
+    'user_count' => '{count} utilisateur | {count} utilisateurs',
     'unlink_user' => "Dissocier l'utilisateur",
     'users_empty_title' => 'Aucun utilisateur pour le moment',
     'users_empty_body' => 'Invitez un utilisateur afin que ce client puisse se connecter.',
