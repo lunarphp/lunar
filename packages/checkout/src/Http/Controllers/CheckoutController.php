@@ -2,9 +2,11 @@
 
 namespace Lunar\Checkout\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Checkout\Contracts\CheckoutDriver;
@@ -180,6 +182,22 @@ class CheckoutController extends Controller
         $element->store($validated);
 
         return back();
+    }
+
+    /**
+     * Does this email belong to an existing account? Owned + rate-limited, and
+     * deliberately returns nothing but a boolean — passkey presence is revealed
+     * only by the sign-in ceremony, never here.
+     */
+    public function contactLookup(Request $request, CheckoutSessionModel $session): JsonResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate(['email' => ['required', 'email']]);
+
+        $exists = Auth::getProvider()->retrieveByCredentials(['email' => $data['email']]) !== null;
+
+        return response()->json(['exists' => $exists]);
     }
 
     /**

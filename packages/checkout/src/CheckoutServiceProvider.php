@@ -2,8 +2,11 @@
 
 namespace Lunar\Checkout;
 
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Session\Session as LaravelSession;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Checkout\Console\Commands\ExpireCheckoutSessions;
 use Lunar\Checkout\Console\Commands\ReconcileCheckoutSessions;
@@ -82,6 +85,8 @@ class CheckoutServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        RateLimiter::for('checkout-contact-lookup', fn (Request $request): Limit => Limit::perMinute(10)->by($request->ip()));
+
         $this->mergeConfigFrom(__DIR__.'/../config/checkout.php', 'lunar.checkout');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');

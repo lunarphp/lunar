@@ -68,3 +68,28 @@ it('forbids a signed-in customer from viewing another customer\'s session', func
 
     $this->get(route('lunar.checkout.show', $session->uuid))->assertForbidden();
 });
+
+it('reports whether an email has an account, for the session owner', function () {
+    [$user] = makeUserWithCustomer();
+    $user->update(['email' => 'known@example.test']);
+
+    $cart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->postJson(route('lunar.checkout.contact.lookup', $session->uuid), ['email' => 'known@example.test'])
+        ->assertOk()->assertExactJson(['exists' => true]);
+
+    $this->postJson(route('lunar.checkout.contact.lookup', $session->uuid), ['email' => 'nobody@example.test'])
+        ->assertOk()->assertExactJson(['exists' => false]);
+});
+
+it('forbids lookup on a session the requester does not own', function () {
+    $ownCart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($ownCart);
+    $otherCart = routeTestCart();
+    CartSession::use($otherCart); // different cart, guest
+
+    $this->postJson(route('lunar.checkout.contact.lookup', $session->uuid), ['email' => 'x@example.test'])
+        ->assertForbidden();
+});
