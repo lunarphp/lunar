@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import { type BreadcrumbItem } from '../../../components/Breadcrumbs.vue';
 import Button from '../../../components/Button.vue';
 import ConfirmDialog from '../../../components/ConfirmDialog.vue';
 import FieldLabel from '../../../components/FieldLabel.vue';
@@ -29,6 +30,12 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    { label: t('nav.settings') },
+    { label: t('channels.title'), href: props.urls.index },
+    { label: props.channel.name, current: true },
+]);
+
 const form = useForm({
     name: props.channel.name,
     url: props.channel.url ?? '',
@@ -48,13 +55,13 @@ const confirmDestroy = (): void => {
 </script>
 
 <template>
-    <SettingsShell :title="t('channels.edit_title', { name: channel.name })">
-        <div class="flex justify-end gap-2 mb-4">
+    <SettingsShell :title="t('channels.edit_title', { name: channel.name })" :breadcrumbs="breadcrumbs">
+        <template #actions>
             <Tooltip :text="hasOrderHistory ? t('channels.delete_blocked') : ''">
                 <Button variant="ghost" icon="trash" :disabled="hasOrderHistory" @click="deleting = true">{{ t('common.delete') }}</Button>
             </Tooltip>
             <Button variant="primary" icon="check" size="sm" :disabled="form.processing" @click="submit">{{ t('common.save') }}</Button>
-        </div>
+        </template>
 
         <Section :title="t('channels.section_details')">
             <div class="grid sm:grid-cols-2 gap-3">

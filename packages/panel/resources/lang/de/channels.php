@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Kanäle',
+    'description' => 'Kanäle repräsentieren Oberflächen, über die Kunden in Ihrem Shop einkaufen.',
     'create_channel' => 'Kanal erstellen',
     'create_description' => 'Kanäle repräsentieren Oberflächen, über die Kunden in Ihrem Shop einkaufen.',
     'default_badge' => 'Standard',

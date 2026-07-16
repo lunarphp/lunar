@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Kanallar',
+    'description' => 'Kanallar, müşterilerin mağazanızdan alışveriş yaptığı yüzeyleri temsil eder.',
     'create_channel' => 'Kanal oluştur',
     'create_description' => 'Kanallar, müşterilerin mağazanızdan alışveriş yaptığı yüzeyleri temsil eder.',
     'default_badge' => 'Varsayılan',

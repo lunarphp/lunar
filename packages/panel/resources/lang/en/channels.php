@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Channels',
+    'description' => 'Channels represent surfaces where customers buy from your store.',
     'create_channel' => 'Create channel',
     'create_description' => 'Channels represent surfaces where customers buy from your store.',
     'default_badge' => 'Default',

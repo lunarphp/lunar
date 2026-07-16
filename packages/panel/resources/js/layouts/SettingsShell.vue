@@ -1,18 +1,43 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { TooltipProvider, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, VisuallyHidden } from 'reka-ui';
-import { Head, usePage } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import SettingsNavBody from '../components/SettingsNavBody.vue';
+import Breadcrumbs, { type BreadcrumbItem } from '../components/Breadcrumbs.vue';
 import Icon from '../components/Icon.vue';
 import PageActions, { type PageAction } from '../components/PageActions.vue';
+import PageHeader from '../components/PageHeader.vue';
 import PageZone from '../components/PageZone.vue';
 import { useNavState } from '../composables/useNavState';
 
-defineProps<{ title?: string }>();
+// Settings pages get the same scaffold as top-level pages: a breadcrumb bar
+// ("Settings > {page}"; `breadcrumbs` overrides the trail for nested pages
+// like "Settings > Channels > Web store") and a PageHeader carrying the
+// title, an optional description, the page's own #actions, and the shared
+// page-action ellipsis. Content is a centered column: max-w-5xl for forms,
+// or the same max-w-[1400px] as top-level listing pages with `wide`.
+const props = defineProps<{
+    title?: string;
+    description?: string;
+    icon?: string;
+    breadcrumbs?: BreadcrumbItem[];
+    wide?: boolean;
+}>();
 
 const { state, toggleCollapsed, openDrawer } = useNavState();
 const { t } = useI18n();
+
+const crumbs = computed<BreadcrumbItem[]>(() => {
+    if (props.breadcrumbs) {
+        return props.breadcrumbs;
+    }
+
+    return [
+        { label: t('nav.settings'), current: !props.title },
+        ...(props.title ? [{ label: props.title, current: true }] : []),
+    ];
+});
 
 const panelName = computed(() => (usePage().props.panel as { name: string }).name);
 const pageActions = computed(() => (usePage().props.pageActions as PageAction[] | undefined) ?? []);
@@ -74,9 +99,6 @@ onUnmounted(() => {
 
 <template>
     <TooltipProvider :delay-duration="350">
-        <!-- Same scaffold-owned browser-tab title as PageHeader; settings pages
-             without a title fall back to the panel name via app.ts. -->
-        <Head v-if="title" :title="title" />
         <div
             :class="[
                 'min-h-screen lg:grid',
@@ -148,12 +170,25 @@ onUnmounted(() => {
                     <span class="text-[13px] font-medium text-ink-900 truncate">{{ panelName }}</span>
                 </div>
 
-                <div class="mx-auto w-full max-w-5xl px-6 py-10">
-                    <div v-if="title || pageActions.length" class="flex items-start justify-between gap-3 mb-5">
-                        <h1 v-if="title" class="text-xl font-semibold tracking-[-0.02em] text-ink-900">{{ title }}</h1>
+                <Breadcrumbs :items="crumbs">
+                    <!-- PageHeader is the ellipsis's home; without a title (no
+                         header) it falls back to the breadcrumb bar so add-on
+                         page actions always have somewhere to render. -->
+                    <template v-if="!title" #actions>
+                        <slot name="actions" />
                         <PageActions :actions="pageActions" />
-                    </div>
+                    </template>
+                </Breadcrumbs>
 
+                <!-- PageHeader owns the browser-tab <Head> title; pages without
+                     one fall back to the panel name via app.ts. -->
+                <PageHeader v-if="title" :title="title" :description="description" :icon="icon">
+                    <template #actions>
+                        <slot name="actions" />
+                    </template>
+                </PageHeader>
+
+                <div :class="wide ? 'px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7' : 'mx-auto w-full max-w-5xl px-6 pt-5 pb-7'">
                     <PageZone region="main" position="before" />
 
                     <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">

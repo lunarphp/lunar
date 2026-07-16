@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Canales',
+    'description' => 'Los canales representan los medios a través de los cuales los clientes compran en tu tienda.',
     'create_channel' => 'Crear canal',
     'create_description' => 'Los canales representan los medios a través de los cuales los clientes compran en tu tienda.',
     'default_badge' => 'Predeterminado',

@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Kanalen',
+    'description' => 'Kanalen vertegenwoordigen de plekken waar klanten in je winkel kopen.',
     'create_channel' => 'Kanaal aanmaken',
     'create_description' => 'Kanalen vertegenwoordigen de plekken waar klanten in je winkel kopen.',
     'default_badge' => 'Standaard',

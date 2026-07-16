@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Canaux',
+    'description' => 'Les canaux représentent les points de vente où les clients achètent auprès de votre boutique.',
     'create_channel' => 'Créer un canal',
     'create_description' => 'Les canaux représentent les points de vente où les clients achètent auprès de votre boutique.',
     'default_badge' => 'Par défaut',

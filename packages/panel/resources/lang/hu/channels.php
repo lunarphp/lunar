@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Csatornák',
+    'description' => 'A csatornák azokat a felületeket jelentik, ahol az ügyfelek vásárolnak az áruházból.',
     'create_channel' => 'Csatorna létrehozása',
     'create_description' => 'A csatornák azokat a felületeket jelentik, ahol az ügyfelek vásárolnak az áruházból.',
     'default_badge' => 'Alapértelmezett',

@@ -88,9 +88,13 @@ const submitCreate = (): void => {
 </script>
 
 <template>
-    <SettingsShell :title="t('channels.title')">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <!-- Add-on filters registered through the table extension resolver. -->
+    <SettingsShell :title="t('channels.title')" :description="t('channels.description')" wide>
+        <template #actions>
+            <Button variant="primary" icon="plus" size="sm" @click="openCreate">{{ t('channels.create_channel') }}</Button>
+        </template>
+
+        <!-- Add-on filters registered through the table extension resolver. -->
+        <div v-if="renderableExtensionFilters.length" class="flex flex-wrap items-center gap-2 mb-4">
             <FilterDropdown
                 v-for="filter in renderableExtensionFilters"
                 :key="filter.key"
@@ -99,8 +103,6 @@ const submitCreate = (): void => {
                 :options="extensionFilterOptions(filter)"
                 default-value=""
             />
-            <div class="flex-1" />
-            <Button variant="primary" icon="plus" size="sm" @click="openCreate">{{ t('channels.create_channel') }}</Button>
         </div>
 
         <DataTable :columns="props.columns" :rows="channels" :row-to="rowTo" :row-actions="props.tableActions">

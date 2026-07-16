@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Kanali',
+    'description' => 'Kanali predstavljaju površine na kojima kupci kupuju u vašoj trgovini.',
     'create_channel' => 'Kreiraj kanal',
     'create_description' => 'Kanali predstavljaju površine na kojima kupci kupuju u vašoj trgovini.',
     'default_badge' => 'Zadano',

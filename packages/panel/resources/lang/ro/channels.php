@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Canale',
+    'description' => 'Canalele reprezintă suprafețele prin care clienții cumpără din magazinul tău.',
     'create_channel' => 'Creează canal',
     'create_description' => 'Canalele reprezintă suprafețele prin care clienții cumpără din magazinul tău.',
     'default_badge' => 'Implicit',

@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Kanały',
+    'description' => 'Kanały reprezentują miejsca, w których klienci kupują w Twoim sklepie.',
     'create_channel' => 'Utwórz kanał',
     'create_description' => 'Kanały reprezentują miejsca, w których klienci kupują w Twoim sklepie.',
     'default_badge' => 'Domyślny',

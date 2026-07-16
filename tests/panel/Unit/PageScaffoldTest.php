@@ -83,9 +83,11 @@ it('has scaffold components that carry the page-action ellipsis and a main slot 
     $pageHeader = (string) file_get_contents(panelJsPath('components/PageHeader.vue'));
     $settingsShell = (string) file_get_contents(panelJsPath('layouts/SettingsShell.vue'));
 
+    // SettingsShell renders the browser-tab <Head> through PageHeader, so the
+    // scaffold still owns the title on every settings page.
     expect($pageHeader)->toContain('PageActions')
         ->and($pageHeader)->toContain('<Head ')
         ->and($settingsShell)->toContain('PageActions')
         ->and($settingsShell)->toContain('PageZone')
-        ->and($settingsShell)->toContain('<Head ');
+        ->and($settingsShell)->toContain('<PageHeader ');
 });

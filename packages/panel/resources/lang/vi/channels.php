@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Kênh',
+    'description' => 'Kênh đại diện cho các nền tảng nơi khách hàng mua sắm từ cửa hàng của bạn.',
     'create_channel' => 'Tạo kênh',
     'create_description' => 'Kênh đại diện cho các nền tảng nơi khách hàng mua sắm từ cửa hàng của bạn.',
     'default_badge' => 'Mặc định',
