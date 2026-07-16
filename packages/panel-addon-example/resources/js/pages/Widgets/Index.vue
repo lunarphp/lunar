@@ -12,7 +12,7 @@ import { computed } from 'vue';
 // under `example-addon::{group}` keys — served, cached and versioned by the
 // panel's translations endpoint like the panel's own strings.
 import { useI18n } from 'vue-i18n';
-import { Breadcrumbs, DataTable, PageHeader, PageZone, Button, SideCard, StatusBadge, TimeSeriesChart } from '@lunarphp/panel';
+import { Breadcrumbs, DataTable, FlashMessage, PageHeader, PageZone, Button, SideCard, StatusBadge, TimeSeriesChart } from '@lunarphp/panel';
 
 defineProps<{
     message?: string;
@@ -72,9 +72,7 @@ const chartPoints = [
         <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
             <PageZone region="main" position="before" />
 
-            <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
-                {{ flashSuccess }}
-            </div>
+            <FlashMessage :message="flashSuccess" class="mb-4" />
 
             <p class="text-[13px] text-ink-700">
                 {{ message ?? 'This page is served by a separately-compiled add-on package.' }}

@@ -13,6 +13,7 @@ import Icon from '../../components/Icon.vue';
 import Pagination from '../../components/Pagination.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
 import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
+import FlashMessage from '../../components/FlashMessage.vue';
 import KpiCard from '../../components/KpiCard.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import TextInput from '../../components/TextInput.vue';
@@ -224,9 +225,7 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
                 <PageZone region="main" position="before" />
 
-                <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
-                    {{ flashSuccess }}
-                </div>
+                <FlashMessage :message="flashSuccess" class="mb-4" />
 
                 <!-- KPI strip; dismissable, restored via "Show KPIs". -->
                 <div v-if="!kpisDismissed" class="mb-5 relative">

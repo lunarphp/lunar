@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import CodeInput from '../../components/CodeInput.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
+import FlashMessage from '../../components/FlashMessage.vue';
 import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
 
@@ -74,12 +75,7 @@ const copyCodes = () => {
             <Head :title="t('auth.security_title')" />
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.security_title') }}</h1>
 
-            <div
-                v-if="flashSuccess"
-                class="rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink"
-            >
-                {{ flashSuccess }}
-            </div>
+            <FlashMessage :message="flashSuccess" />
 
             <!-- Password -->
             <section class="rounded-lg border border-line bg-paper p-6">

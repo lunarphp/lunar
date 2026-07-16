@@ -9,6 +9,7 @@ import Icon from '../components/Icon.vue';
 import PageActions, { type PageAction } from '../components/PageActions.vue';
 import PageHeader from '../components/PageHeader.vue';
 import PageZone from '../components/PageZone.vue';
+import FlashMessage from '../components/FlashMessage.vue';
 import { useNavState } from '../composables/useNavState';
 
 // Settings pages get the same scaffold as top-level pages: a breadcrumb bar
@@ -191,12 +192,8 @@ onUnmounted(() => {
                 <div :class="wide ? 'px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7' : 'mx-auto w-full max-w-5xl px-6 pt-5 pb-7'">
                     <PageZone region="main" position="before" />
 
-                    <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
-                        {{ flashSuccess }}
-                    </div>
-                    <div v-if="flashError" class="mb-4 rounded-md border border-danger bg-danger/10 px-3 py-2 text-[12px] text-danger">
-                        {{ flashError }}
-                    </div>
+                    <FlashMessage :message="flashSuccess" class="mb-4" />
+                    <FlashMessage :message="flashError" tone="error" :timeout="0" class="mb-4" />
 
                     <slot />
 

@@ -17,6 +17,7 @@ export const DataTable = ui().DataTable;
 export const Pagination = ui().Pagination;
 export const PageEmpty = ui().PageEmpty;
 export const StatusBadge = ui().StatusBadge;
+export const FlashMessage = ui().FlashMessage;
 
 // Filters / stats
 export const FilterDropdown = ui().FilterDropdown;
