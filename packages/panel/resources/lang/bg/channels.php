@@ -26,6 +26,7 @@ return [
     'section_state' => 'Състояние',
     'edit_title' => 'Редактиране на канал — {name}',
 
+    'confirm_delete_channel' => 'Сигурни ли сте, че искате да изтриете този канал?',
     'confirm_delete_title' => 'Изтриване на канал?',
     'confirm_delete_body' => '"{name}" ще бъде премахнат за постоянно.',
     'delete_blocked' => 'Не може да се изтрие канал с история на поръчки.',

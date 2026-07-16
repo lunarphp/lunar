@@ -87,6 +87,7 @@ return [
     'shipping' => 'Gönderim',
     'none_set' => 'Ayarlanmadı.',
 
+    'confirm_delete_customer' => 'Bu müşteriyi silmek istediğinizden emin misiniz?',
     'confirm_delete_customer_title' => 'Bu müşteri silinsin mi?',
     'confirm_delete_customer_body' => 'Bu işlem geri alınamaz.',
     'confirm_delete_address_title' => 'Bu adres silinsin mi?',

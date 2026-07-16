@@ -87,6 +87,7 @@ return [
     'shipping' => 'Szállítás',
     'none_set' => 'Nincs beállítva.',
 
+    'confirm_delete_customer' => 'Biztosan törli ezt az ügyfelet?',
     'confirm_delete_customer_title' => 'Törli ezt az ügyfelet?',
     'confirm_delete_customer_body' => 'Ez a művelet nem vonható vissza.',
     'confirm_delete_address_title' => 'Törli ezt a címet?',

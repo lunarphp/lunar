@@ -87,6 +87,7 @@ return [
     'shipping' => 'Verzending',
     'none_set' => 'Niet ingesteld.',
 
+    'confirm_delete_customer' => 'Weet je zeker dat je deze klant wilt verwijderen?',
     'confirm_delete_customer_title' => 'Deze klant verwijderen?',
     'confirm_delete_customer_body' => 'Dit kan niet ongedaan worden gemaakt.',
     'confirm_delete_address_title' => 'Dit adres verwijderen?',

@@ -26,6 +26,7 @@ return [
     'section_state' => 'الحالة',
     'edit_title' => 'تعديل القناة — {name}',
 
+    'confirm_delete_channel' => 'هل أنت متأكد من أنك تريد حذف هذه القناة؟',
     'confirm_delete_title' => 'هل تريد حذف القناة؟',
     'confirm_delete_body' => 'سيتم حذف "{name}" نهائيًا.',
     'delete_blocked' => 'لا يمكن حذف قناة لها سجل طلبات.',

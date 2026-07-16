@@ -87,6 +87,7 @@ return [
     'shipping' => 'Livrare',
     'none_set' => 'Niciuna setată.',
 
+    'confirm_delete_customer' => 'Ești sigur că vrei să ștergi acest client?',
     'confirm_delete_customer_title' => 'Ștergi acest client?',
     'confirm_delete_customer_body' => 'Această acțiune nu poate fi anulată.',
     'confirm_delete_address_title' => 'Ștergi această adresă?',

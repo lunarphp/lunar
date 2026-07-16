@@ -26,6 +26,7 @@ return [
     'section_state' => 'Status',
     'edit_title' => 'Kanal bearbeiten — {name}',
 
+    'confirm_delete_channel' => 'Möchten Sie diesen Kanal wirklich löschen?',
     'confirm_delete_title' => 'Kanal löschen?',
     'confirm_delete_body' => '"{name}" wird dauerhaft entfernt.',
     'delete_blocked' => 'Ein Kanal mit Bestellhistorie kann nicht gelöscht werden.',

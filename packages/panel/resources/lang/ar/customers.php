@@ -87,6 +87,7 @@ return [
     'shipping' => 'الشحن',
     'none_set' => 'لم يتم التعيين.',
 
+    'confirm_delete_customer' => 'هل أنت متأكد من أنك تريد حذف هذا العميل؟',
     'confirm_delete_customer_title' => 'هل تريد حذف هذا العميل؟',
     'confirm_delete_customer_body' => 'لا يمكن التراجع عن هذا الإجراء.',
     'confirm_delete_address_title' => 'هل تريد حذف هذا العنوان؟',

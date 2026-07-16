@@ -15,7 +15,7 @@ class DeleteChannelAction extends TableAction
 
     public function label(): string
     {
-        return __('Delete');
+        return __('panel::common.delete');
     }
 
     public function icon(): ?string
@@ -35,7 +35,7 @@ class DeleteChannelAction extends TableAction
 
     public function confirmationMessage(): ?string
     {
-        return __('Are you sure you want to delete this channel?');
+        return __('panel::channels.confirm_delete_channel');
     }
 
     /** The default channel is protected, so it carries no delete action. */

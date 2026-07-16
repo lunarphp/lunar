@@ -87,6 +87,7 @@ return [
     'shipping' => 'Envio',
     'none_set' => 'Nenhum definido.',
 
+    'confirm_delete_customer' => 'Tem certeza de que deseja excluir este cliente?',
     'confirm_delete_customer_title' => 'Excluir este cliente?',
     'confirm_delete_customer_body' => 'Isso não pode ser desfeito.',
     'confirm_delete_address_title' => 'Excluir este endereço?',

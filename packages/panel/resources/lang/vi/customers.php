@@ -87,6 +87,7 @@ return [
     'shipping' => 'Giao hàng',
     'none_set' => 'Chưa được thiết lập.',
 
+    'confirm_delete_customer' => 'Bạn có chắc chắn muốn xóa khách hàng này không?',
     'confirm_delete_customer_title' => 'Xóa khách hàng này?',
     'confirm_delete_customer_body' => 'Hành động này không thể hoàn tác.',
     'confirm_delete_address_title' => 'Xóa địa chỉ này?',

@@ -87,6 +87,7 @@ return [
     'shipping' => 'Wysyłkowy',
     'none_set' => 'Nie ustawiono.',
 
+    'confirm_delete_customer' => 'Czy na pewno chcesz usunąć tego klienta?',
     'confirm_delete_customer_title' => 'Usunąć tego klienta?',
     'confirm_delete_customer_body' => 'Tej czynności nie można cofnąć.',
     'confirm_delete_address_title' => 'Usunąć ten adres?',

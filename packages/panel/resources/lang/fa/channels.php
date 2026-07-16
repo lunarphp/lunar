@@ -26,6 +26,7 @@ return [
     'section_state' => 'وضعیت',
     'edit_title' => 'ویرایش کانال — {name}',
 
+    'confirm_delete_channel' => 'آیا مطمئن هستید که می‌خواهید این کانال را حذف کنید؟',
     'confirm_delete_title' => 'کانال حذف شود؟',
     'confirm_delete_body' => '"{name}" به‌طور دائم حذف خواهد شد.',
     'delete_blocked' => 'حذف کانالی که دارای سابقه سفارش است امکان‌پذیر نیست.',

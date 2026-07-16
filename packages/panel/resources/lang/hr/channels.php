@@ -26,6 +26,7 @@ return [
     'section_state' => 'Stanje',
     'edit_title' => 'Uredi kanal — {name}',
 
+    'confirm_delete_channel' => 'Jeste li sigurni da želite izbrisati ovaj kanal?',
     'confirm_delete_title' => 'Izbrisati kanal?',
     'confirm_delete_body' => '"{name}" bit će trajno uklonjen.',
     'delete_blocked' => 'Nije moguće izbrisati kanal s poviješću narudžbi.',

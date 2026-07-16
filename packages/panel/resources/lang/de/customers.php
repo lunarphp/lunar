@@ -87,6 +87,7 @@ return [
     'shipping' => 'Versand',
     'none_set' => 'Nicht festgelegt.',
 
+    'confirm_delete_customer' => 'Möchten Sie diesen Kunden wirklich löschen?',
     'confirm_delete_customer_title' => 'Diesen Kunden löschen?',
     'confirm_delete_customer_body' => 'Dies kann nicht rückgängig gemacht werden.',
     'confirm_delete_address_title' => 'Diese Adresse löschen?',

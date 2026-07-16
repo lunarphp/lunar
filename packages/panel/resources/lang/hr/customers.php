@@ -87,6 +87,7 @@ return [
     'shipping' => 'Dostava',
     'none_set' => 'Nije postavljeno.',
 
+    'confirm_delete_customer' => 'Jeste li sigurni da želite izbrisati ovog kupca?',
     'confirm_delete_customer_title' => 'Izbrisati ovog kupca?',
     'confirm_delete_customer_body' => 'Ovo se ne može poništiti.',
     'confirm_delete_address_title' => 'Izbrisati ovu adresu?',

@@ -87,6 +87,7 @@ return [
     'shipping' => 'Хүргэлт',
     'none_set' => 'Тохируулаагүй.',
 
+    'confirm_delete_customer' => 'Та энэ харилцагчийг устгахдаа итгэлтэй байна уу?',
     'confirm_delete_customer_title' => 'Энэ харилцагчийг устгах уу?',
     'confirm_delete_customer_body' => 'Үүнийг буцаах боломжгүй.',
     'confirm_delete_address_title' => 'Энэ хаягийг устгах уу?',

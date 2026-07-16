@@ -87,6 +87,7 @@ return [
     'shipping' => 'ارسال',
     'none_set' => 'تنظیم نشده است.',
 
+    'confirm_delete_customer' => 'آیا مطمئن هستید که می‌خواهید این مشتری را حذف کنید؟',
     'confirm_delete_customer_title' => 'این مشتری حذف شود؟',
     'confirm_delete_customer_body' => 'این عملیات قابل بازگشت نیست.',
     'confirm_delete_address_title' => 'این آدرس حذف شود؟',

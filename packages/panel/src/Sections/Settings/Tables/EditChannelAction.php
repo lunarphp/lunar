@@ -14,7 +14,7 @@ class EditChannelAction extends TableAction
 
     public function label(): string
     {
-        return __('Edit');
+        return __('panel::common.edit');
     }
 
     public function icon(): ?string

@@ -26,6 +26,7 @@ return [
     'section_state' => 'État',
     'edit_title' => 'Modifier le canal — {name}',
 
+    'confirm_delete_channel' => 'Êtes-vous sûr de vouloir supprimer ce canal ?',
     'confirm_delete_title' => 'Supprimer le canal ?',
     'confirm_delete_body' => '« {name} » sera définitivement supprimé.',
     'delete_blocked' => 'Impossible de supprimer un canal ayant un historique de commandes.',

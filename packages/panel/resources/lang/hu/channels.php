@@ -26,6 +26,7 @@ return [
     'section_state' => 'Állapot',
     'edit_title' => 'Csatorna szerkesztése — {name}',
 
+    'confirm_delete_channel' => 'Biztosan törli ezt a csatornát?',
     'confirm_delete_title' => 'Törli a csatornát?',
     'confirm_delete_body' => '"{name}" véglegesen eltávolításra kerül.',
     'delete_blocked' => 'Nem törölhető olyan csatorna, amelynek rendelési előzményei vannak.',

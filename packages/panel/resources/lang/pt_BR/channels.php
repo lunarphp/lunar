@@ -26,6 +26,7 @@ return [
     'section_state' => 'Estado',
     'edit_title' => 'Editar canal — {name}',
 
+    'confirm_delete_channel' => 'Tem certeza de que deseja excluir este canal?',
     'confirm_delete_title' => 'Excluir canal?',
     'confirm_delete_body' => '"{name}" será removido permanentemente.',
     'delete_blocked' => 'Não é possível excluir um canal com histórico de pedidos.',

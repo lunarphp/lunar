@@ -87,6 +87,7 @@ return [
     'shipping' => 'Доставка',
     'none_set' => 'Не е зададено.',
 
+    'confirm_delete_customer' => 'Сигурни ли сте, че искате да изтриете този клиент?',
     'confirm_delete_customer_title' => 'Изтриване на този клиент?',
     'confirm_delete_customer_body' => 'Това не може да бъде отменено.',
     'confirm_delete_address_title' => 'Изтриване на този адрес?',

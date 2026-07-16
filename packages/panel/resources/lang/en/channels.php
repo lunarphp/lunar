@@ -26,6 +26,7 @@ return [
     'section_state' => 'State',
     'edit_title' => 'Edit channel — {name}',
 
+    'confirm_delete_channel' => 'Are you sure you want to delete this channel?',
     'confirm_delete_title' => 'Delete channel?',
     'confirm_delete_body' => '"{name}" will be permanently removed.',
     'delete_blocked' => 'Cannot delete a channel with order history.',

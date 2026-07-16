@@ -26,6 +26,7 @@ return [
     'section_state' => 'Stare',
     'edit_title' => 'Editează canal — {name}',
 
+    'confirm_delete_channel' => 'Ești sigur că vrei să ștergi acest canal?',
     'confirm_delete_title' => 'Ștergi canalul?',
     'confirm_delete_body' => '"{name}" va fi eliminat definitiv.',
     'delete_blocked' => 'Nu poți șterge un canal care are istoric de comenzi.',

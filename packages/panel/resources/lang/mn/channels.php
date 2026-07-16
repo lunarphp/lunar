@@ -26,6 +26,7 @@ return [
     'section_state' => 'Төлөв',
     'edit_title' => 'Суваг засах — {name}',
 
+    'confirm_delete_channel' => 'Та энэ сувгийг устгахдаа итгэлтэй байна уу?',
     'confirm_delete_title' => 'Сувгийг устгах уу?',
     'confirm_delete_body' => '"{name}" бүрмөсөн устах болно.',
     'delete_blocked' => 'Захиалгын түүхтэй сувгийг устгах боломжгүй.',

@@ -87,6 +87,7 @@ return [
     'shipping' => 'Livraison',
     'none_set' => 'Aucune définie.',
 
+    'confirm_delete_customer' => 'Êtes-vous sûr de vouloir supprimer ce client ?',
     'confirm_delete_customer_title' => 'Supprimer ce client ?',
     'confirm_delete_customer_body' => 'Cette action est irréversible.',
     'confirm_delete_address_title' => 'Supprimer cette adresse ?',

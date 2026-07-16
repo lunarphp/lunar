@@ -14,7 +14,7 @@ class DeleteCustomerAction extends TableAction
 
     public function label(): string
     {
-        return __('Delete');
+        return __('panel::common.delete');
     }
 
     public function icon(): ?string
@@ -34,7 +34,7 @@ class DeleteCustomerAction extends TableAction
 
     public function confirmationMessage(): ?string
     {
-        return __('Are you sure you want to delete this customer?');
+        return __('panel::customers.confirm_delete_customer');
     }
 
     public function url(mixed $record = null): ?string

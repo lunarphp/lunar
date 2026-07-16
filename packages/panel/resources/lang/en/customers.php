@@ -87,6 +87,7 @@ return [
     'shipping' => 'Shipping',
     'none_set' => 'None set.',
 
+    'confirm_delete_customer' => 'Are you sure you want to delete this customer?',
     'confirm_delete_customer_title' => 'Delete this customer?',
     'confirm_delete_customer_body' => 'This cannot be undone.',
     'confirm_delete_address_title' => 'Delete this address?',

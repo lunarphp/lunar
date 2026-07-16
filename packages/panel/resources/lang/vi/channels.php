@@ -26,6 +26,7 @@ return [
     'section_state' => 'Trạng thái',
     'edit_title' => 'Chỉnh sửa kênh — {name}',
 
+    'confirm_delete_channel' => 'Bạn có chắc chắn muốn xóa kênh này không?',
     'confirm_delete_title' => 'Xóa kênh?',
     'confirm_delete_body' => '"{name}" sẽ bị xóa vĩnh viễn.',
     'delete_blocked' => 'Không thể xóa kênh có lịch sử đơn hàng.',

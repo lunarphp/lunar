@@ -26,6 +26,7 @@ return [
     'section_state' => 'Durum',
     'edit_title' => 'Kanalı düzenle — {name}',
 
+    'confirm_delete_channel' => 'Bu kanalı silmek istediğinizden emin misiniz?',
     'confirm_delete_title' => 'Kanal silinsin mi?',
     'confirm_delete_body' => '"{name}" kalıcı olarak kaldırılacak.',
     'delete_blocked' => 'Sipariş geçmişi olan bir kanal silinemez.',

@@ -26,6 +26,7 @@ return [
     'section_state' => 'Status',
     'edit_title' => 'Kanaal bewerken — {name}',
 
+    'confirm_delete_channel' => 'Weet je zeker dat je dit kanaal wilt verwijderen?',
     'confirm_delete_title' => 'Kanaal verwijderen?',
     'confirm_delete_body' => '"{name}" wordt permanent verwijderd.',
     'delete_blocked' => 'Kan geen kanaal verwijderen met bestelgeschiedenis.',

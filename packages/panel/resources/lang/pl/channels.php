@@ -26,6 +26,7 @@ return [
     'section_state' => 'Stan',
     'edit_title' => 'Edytuj kanał — {name}',
 
+    'confirm_delete_channel' => 'Czy na pewno chcesz usunąć ten kanał?',
     'confirm_delete_title' => 'Usunąć kanał?',
     'confirm_delete_body' => '"{name}" zostanie trwale usunięty.',
     'delete_blocked' => 'Nie można usunąć kanału z historią zamówień.',
