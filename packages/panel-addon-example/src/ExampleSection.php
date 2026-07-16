@@ -38,6 +38,9 @@ class ExampleSection extends Section
         $registry->addItem('example-addon-group', new NavigationItem(
             key: 'example-addon',
             label: 'Example Add-on',
+            // Icon names come from the panel's built-in set (see the panel's
+            // Icon.vue); add-ons cannot register their own SVGs.
+            icon: 'tag',
             route: 'panel.example-addon.index',
             permission: self::PERMISSION,
         ));

@@ -59,9 +59,12 @@ it('shows the example add-on navigation to staff', function () {
     $this->actingAs($staff, 'staff')
         ->get('/panel')
         ->assertInertia(fn (Assert $page) => $page
-            ->where('navigation.groups', fn ($groups) => collect($groups)
-                ->pluck('key')
-                ->contains('example-addon-group'))
+            ->where('navigation.groups', function ($groups) {
+                $group = collect($groups)->firstWhere('key', 'example-addon-group');
+
+                return $group !== null
+                    && collect($group['items'])->firstWhere('key', 'example-addon')['icon'] === 'tag';
+            })
         );
 });
 
