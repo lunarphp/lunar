@@ -465,6 +465,15 @@ pages, not only in an isolated fixture.
   controller passes to `PanelManager::resolveExtensions()` — these are plain
   strings with no central registry, so a typo produces no error, just a
   column that never appears.
+- **`ReferenceError: InertiaVue3` (or `Vue` / `LunarPanelUI`) `is not defined`**
+  thrown from the add-on bundle: the served panel bundle is older than the
+  vite plugin the add-on was compiled with, so a `window` global the add-on
+  expects is never published — and the crash happens before the add-on
+  registers anything, so it cascades into "Panel page not found" and
+  unregistered-slot warnings. Re-publish the panel's compiled assets in the
+  host app (`php artisan vendor:publish --tag=panel-assets --force`; during
+  monorepo development, symlink the package's `public/build` instead) so the
+  panel and the add-on agree on the published globals.
 - **Add-on JS never runs**: check the compiled bundle is actually being
   served at the `buildDirectory` path passed to `PanelManager::vite()`, and
   that your registration calls run at the **top level** of the bundle — not
