@@ -7,7 +7,7 @@
 // live Inertia instance rather than a bundled second copy.
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { Breadcrumbs, DataTable, Icon, PageHeader, PageZone, Button, SideCard, StatusBadge } from '@lunarphp/panel';
+import { Breadcrumbs, DataTable, PageHeader, PageZone, Button, SideCard, StatusBadge } from '@lunarphp/panel';
 
 defineProps<{
     message?: string;
@@ -45,14 +45,8 @@ const rowActions = [
         <PageHeader
             title="Example Add-on"
             description="A page contributed by the example add-on package, using the panel's own layout and chrome."
+            icon="tag"
         >
-            <!-- Same icon-tile markup first-party pages use; icon names come from
-                 the panel's built-in set, matching the nav item's icon. -->
-            <template #icon>
-                <div class="w-11 h-11 rounded-md overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700">
-                    <Icon name="tag" />
-                </div>
-            </template>
             <template #actions>
                 <Button variant="primary" icon="plus">Example action</Button>
             </template>

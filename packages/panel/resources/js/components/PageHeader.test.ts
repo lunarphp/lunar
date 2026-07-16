@@ -26,4 +26,26 @@ describe('PageHeader', () => {
         expect(wrapper.find('[data-head-title]').attributes('data-head-title')).toBe('Customers');
         expect(wrapper.find('h1').text()).toBe('Customers');
     });
+
+    it('renders the standard icon tile from the icon prop', () => {
+        const wrapper = mount(PageHeader, { props: { title: 'Customers', icon: 'users' } });
+
+        expect(wrapper.find('.w-11.h-11 svg').exists()).toBe(true);
+    });
+
+    it('renders no tile without an icon prop', () => {
+        const wrapper = mount(PageHeader, { props: { title: 'Customers' } });
+
+        expect(wrapper.find('.w-11').exists()).toBe(false);
+    });
+
+    it('lets the #icon slot override the prop tile', () => {
+        const wrapper = mount(PageHeader, {
+            props: { title: 'Customers', icon: 'users' },
+            slots: { icon: '<div data-custom-avatar>GB</div>' },
+        });
+
+        expect(wrapper.find('[data-custom-avatar]').exists()).toBe(true);
+        expect(wrapper.find('.w-11.h-11 svg').exists()).toBe(false);
+    });
 });

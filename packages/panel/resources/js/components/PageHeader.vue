@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Head, usePage } from '@inertiajs/vue3';
+import Icon from './Icon.vue';
 import PageActions, { type PageAction } from './PageActions.vue';
 
-defineProps<{ title: string; description?: string }>();
+// `icon` renders the standard header tile from the built-in icon set; the
+// #icon slot overrides it for custom markup (avatars, images, initials).
+defineProps<{ title: string; description?: string; icon?: string }>();
 
 // Every page header carries the shared page-action ellipsis, so an add-on can
 // always inject a header action without the page opting in. It renders nothing
@@ -17,7 +20,11 @@ const pageActions = computed(() => (usePage().props.pageActions as PageAction[] 
              header gets one for free; app.ts suffixes the panel name. -->
         <Head :title="title" />
 
-        <slot name="icon" />
+        <slot name="icon">
+            <div v-if="icon" class="w-11 h-11 rounded-md overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700">
+                <Icon :name="icon" />
+            </div>
+        </slot>
 
         <div class="flex-1 min-w-0">
             <h1 class="m-0 text-lg sm:text-xl font-semibold tracking-[-0.015em] truncate">{{ title }}</h1>

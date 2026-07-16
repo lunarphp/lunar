@@ -176,12 +176,8 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
             <PageHeader
                 :title="t('customers.title')"
                 :description="t('customers.description')"
+                icon="users"
             >
-                <template #icon>
-                    <div class="w-11 h-11 rounded-md overflow-hidden shrink-0 bg-surface-2 border border-line grid place-items-center text-ink-700">
-                        <Icon name="users" />
-                    </div>
-                </template>
                 <template #actions>
                     <Button icon="download">{{ t('common.export') }}</Button>
                     <Link :href="urls.create">
