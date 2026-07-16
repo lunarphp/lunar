@@ -11,6 +11,11 @@ class ExampleTableExtension extends TableExtension
         return [ExampleColumn::class];
     }
 
+    public function filters(): array
+    {
+        return [HasAccountRefFilter::class];
+    }
+
     public function actions(): array
     {
         return [PingRowAction::class];

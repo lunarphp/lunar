@@ -29,3 +29,38 @@ it('merges add-on table extension columns onto the customer index', function () 
             ->where('customers.data.0.addresses_count', 2)
         );
 });
+
+it('shares add-on filter definitions and their current values', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $this->get(route('panel.customers.index', ['filter' => ['has_company' => 'yes']]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('tableFilters.0.key', 'has_company')
+            ->where('tableFilters.0.options', ['yes' => 'Has company', 'no' => 'No company'])
+            ->where('tableFilterValues.has_company', 'yes')
+        );
+});
+
+it('applies an add-on filter to the customer index query', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $business = Customer::factory()->create(['company_name' => 'Acme Ltd']);
+    Customer::factory()->create(['company_name' => null]);
+
+    $this->get(route('panel.customers.index', ['filter' => ['has_company' => 'yes']]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('customers.data', 1)
+            ->where('customers.data.0.id', $business->id)
+        );
+});
+
+it('ignores empty add-on filter values', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Customer::factory()->create(['company_name' => 'Acme Ltd']);
+    Customer::factory()->create(['company_name' => null]);
+
+    $this->get(route('panel.customers.index', ['filter' => ['has_company' => '']]))
+        ->assertInertia(fn (Assert $page) => $page->has('customers.data', 2));
+});

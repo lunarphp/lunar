@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all' => 'Tất cả',
     'active' => 'Đang hoạt động',
     'inactive' => 'Không hoạt động',
     'save' => 'Lưu',

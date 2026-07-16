@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all' => 'Svi',
     'active' => 'Aktivno',
     'inactive' => 'Neaktivno',
     'save' => 'Spremi',

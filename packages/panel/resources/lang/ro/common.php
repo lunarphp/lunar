@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all' => 'Toate',
     'active' => 'Activ',
     'inactive' => 'Inactiv',
     'save' => 'Salvează',

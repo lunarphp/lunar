@@ -160,6 +160,21 @@ it('injects an example record-page action with a per-record url on the customer 
         );
 });
 
+it('applies the example add-on filter to the real customer index', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $referenced = Customer::factory()->create(['account_ref' => 'ACME-001']);
+    Customer::factory()->create(['account_ref' => null]);
+
+    $this->get(route('panel.customers.index', ['filter' => ['has_account_ref' => 'yes']]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('tableFilters.0.key', 'has_account_ref')
+            ->has('customers.data', 1)
+            ->where('customers.data.0.id', $referenced->id)
+        );
+});
+
 it('registers the example add-on vite module', function () {
     $vites = app(PanelManager::class)->registeredVites();
 

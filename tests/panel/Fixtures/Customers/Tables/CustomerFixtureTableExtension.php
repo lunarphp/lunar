@@ -10,4 +10,9 @@ class CustomerFixtureTableExtension extends TableExtension
     {
         return [PublicIdColumn::class, AddressCountColumn::class];
     }
+
+    public function filters(): array
+    {
+        return [CompanyFilter::class];
+    }
 }

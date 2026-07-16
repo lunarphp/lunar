@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { computed, reactive, ref, watch } from 'vue';
+import { router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../../components/Button.vue';
 import DataTable from '../../../components/DataTable.vue';
+import FilterDropdown, { type FilterOption } from '../../../components/FilterDropdown.vue';
 import { type RowAction } from '../../../components/RowActions.vue';
 import Dialog from '../../../components/Dialog.vue';
 import FieldLabel from '../../../components/FieldLabel.vue';
@@ -26,14 +27,39 @@ type Channel = {
 
 type ChannelColumn = { key: string; label: string; width?: string; align?: 'left' | 'right' | 'center' };
 
+type ExtensionFilter = { key: string; label: string; component: string | null; options: Record<string, string> };
+
 const props = defineProps<{
     channels: Channel[];
     columns: ChannelColumn[];
     tableActions: RowAction[];
-    urls: { store: string };
+    tableFilters: ExtensionFilter[];
+    tableFilterValues: Record<string, string>;
+    urls: { index: string; store: string };
 }>();
 
 const { t } = useI18n();
+
+// Add-on filter state, seeded from the server's current values ('' = off).
+const extensionFilterValues = reactive<Record<string, string>>({ ...props.tableFilterValues });
+
+const renderableExtensionFilters = computed(() =>
+    props.tableFilters.filter((filter) => Object.keys(filter.options).length > 0));
+
+const extensionFilterOptions = (filter: ExtensionFilter): FilterOption[] => [
+    { value: '', label: t('common.all') },
+    ...Object.entries(filter.options).map(([value, label]) => ({ value, label })),
+];
+
+watch(extensionFilterValues, () => {
+    const active = Object.fromEntries(Object.entries(extensionFilterValues).filter(([, value]) => value !== ''));
+
+    router.get(
+        props.urls.index,
+        { filter: Object.keys(active).length ? active : undefined },
+        { preserveState: true, preserveScroll: true, replace: true },
+    );
+});
 
 const rowTo = (row: Record<string, unknown>): string => (row as unknown as Channel).urls.edit;
 
@@ -63,7 +89,17 @@ const submitCreate = (): void => {
 
 <template>
     <SettingsShell :title="t('channels.title')">
-        <div class="flex justify-end mb-4">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <!-- Add-on filters registered through the table extension resolver. -->
+            <FilterDropdown
+                v-for="filter in renderableExtensionFilters"
+                :key="filter.key"
+                v-model="extensionFilterValues[filter.key]"
+                :label="filter.label"
+                :options="extensionFilterOptions(filter)"
+                default-value=""
+            />
+            <div class="flex-1" />
             <Button variant="primary" icon="plus" size="sm" @click="openCreate">{{ t('channels.create_channel') }}</Button>
         </div>
 

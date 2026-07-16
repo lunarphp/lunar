@@ -58,6 +58,7 @@ class CustomerIndexController
             ->when($request->string('type')->value() === 'business', fn ($query) => $query->whereNotNull('company_name')->where('company_name', '!=', ''))
             ->when($request->string('type')->value() === 'individual', fn ($query) => $query->where(fn ($query) => $query->whereNull('company_name')->orWhere('company_name', '')))
             ->tap(fn ($query) => $resolver->applyColumnQueries($query))
+            ->tap(fn ($query) => $resolver->applyFilters($query, $request))
             ->orderBy($sort, $direction)
             ->paginate(15)
             ->withQueryString()
@@ -85,7 +86,7 @@ class CustomerIndexController
 
         return Inertia::render('customers/Index', [
             'customers' => $customers,
-            ...$this->tableProps($resolver, $this->columns),
+            ...$this->tableProps($resolver, $this->columns, $request),
             'customerGroups' => CustomerGroup::all(['id', 'name']),
             'totalCount' => Customer::count(),
             'filters' => $request->only(['q', 'customer_group_id', 'type', 'sort', 'direction']),

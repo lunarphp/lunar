@@ -332,6 +332,43 @@ renderer, or `component()` with a namespaced name registered via
 `window.LunarPanel.registerComponents()` for a fully custom cell — the
 component receives `row` and `value` props.
 
+Filters extend the same way: return `TableFilter` classes from `filters()`.
+A filter declares dropdown `options()` (`[submitted value => label]`) and a
+`query()` hook; the panel renders it in the table toolbar next to the
+first-party filters (with an automatic "All" default), submits the selection
+as a nested `filter[{key}]` query param, and applies `query()` server-side
+before pagination. From `src/Tables/HasAccountRefFilter.php`:
+
+```php
+class HasAccountRefFilter extends TableFilter
+{
+    public function key(): string
+    {
+        return 'has_account_ref';
+    }
+
+    public function label(): string
+    {
+        return 'Account ref (Example)';
+    }
+
+    public function options(): array
+    {
+        return [
+            'yes' => 'Has account ref',
+            'no' => 'No account ref',
+        ];
+    }
+
+    public function query(Builder $query, mixed $value): void
+    {
+        $value === 'yes'
+            ? $query->whereNotNull('account_ref')->where('account_ref', '!=', '')
+            : $query->where(fn (Builder $inner) => $inner->whereNull('account_ref')->orWhere('account_ref', ''));
+    }
+}
+```
+
 ## Compiling the add-on bundle with Vite
 
 `package.json` and `vite.config.js`:

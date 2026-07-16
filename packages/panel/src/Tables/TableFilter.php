@@ -16,7 +16,13 @@ abstract class TableFilter
         return str($this->key())->replace('_', ' ')->title()->toString();
     }
 
-    /** @return array<string, string> Label-keyed options for a select dropdown. */
+    /**
+     * Dropdown options as [submitted value => label]. A filter with no
+     * options is not rendered by the generic toolbar dropdown (reserved for
+     * component-rendered filters via {@see component()}).
+     *
+     * @return array<string|int, string>
+     */
     public function options(): array
     {
         return [];

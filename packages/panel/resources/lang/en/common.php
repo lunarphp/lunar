@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all' => 'All',
     'active' => 'Active',
     'inactive' => 'Inactive',
     'save' => 'Save',

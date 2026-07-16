@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all' => 'Tümü',
     'active' => 'Aktif',
     'inactive' => 'Pasif',
     'save' => 'Kaydet',

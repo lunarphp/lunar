@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all' => 'همه',
     'active' => 'فعال',
     'inactive' => 'غیرفعال',
     'save' => 'ذخیره',

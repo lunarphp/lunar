@@ -105,10 +105,13 @@ Ported from the architecture prototype, adapted to this monorepo's provider conv
   `searchQuery()`. Column/action classes may name a Vue component (resolved from the JS
   registry) or fall back to generic renderers. `TableExtensionResolver` merges every
   extension for a table id, orders the result (see Ordering below), and ships it as Inertia
-  props (`tableColumns`, `tableActions`, `tableBulkActions`). Index controllers pull columns
-  + row actions + bulk actions + search/filter queries through a shared
-  `ResolvesTableExtensions` concern (used by Customers and Channels), so table extension is a
-  cross-cutting pattern rather than one wired page. Row actions render in a per-row ellipsis
+  props (`columns`, `tableActions`, `tableBulkActions`, `tableFilters`, `tableFilterValues`).
+  Index controllers pull columns + row actions + bulk actions + search/filter queries
+  through a shared `ResolvesTableExtensions` concern (used by Customers and Channels), so
+  table extension is a cross-cutting pattern rather than one wired page. Filters render as
+  toolbar dropdowns next to the page's own (an automatic "All" default, options as
+  [value => label]); the selection round-trips as a nested `filter[{key}]` query param and
+  `applyFilters()` runs each filter's `query()` hook server-side before pagination. Row actions render in a per-row ellipsis
   dropdown; bulk actions render in the selection toolbar shown when rows are checked (acting
   on the selected row ids). First-party Edit/Delete are ordinary `TableAction` entries, so
   first-party and add-on actions share one render path.
@@ -296,10 +299,7 @@ checks.
 Inventory, Accounting, and Reviews screens (add-ons or prototype-only); the SEO product
 section (documented as the canonical slot example instead); Orders, Products, and all other
 resources; dashboard widgets; command palette; global search; dynamic attributes/field-type
-rendering; SSR; removal of the Filament admin. Table filters and `applyFilters()` (the other
-unwired `TableExtension` method) are also out of scope — filtering is a separate concern
-with its own UI affordances (chips, popovers, saved state); this foundation wires columns
-and actions only. An add-on **tabs** extension point for detail pages is deliberately not
+rendering; SSR; removal of the Filament admin. An add-on **tabs** extension point for detail pages is deliberately not
 provided (see Alternatives): an add-on wanting an in-context view registers a route/page and
 links to it from a `PageAction`, or injects into a slot zone.
 

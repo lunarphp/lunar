@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all' => 'الكل',
     'active' => 'نشط',
     'inactive' => 'غير نشط',
     'save' => 'حفظ',

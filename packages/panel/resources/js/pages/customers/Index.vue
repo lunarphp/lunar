@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
@@ -50,6 +50,16 @@ interface CustomerColumn {
     align?: 'left' | 'right' | 'center';
 }
 
+// Add-on filter definitions shared by the table extension resolver; options
+// map submitted value => label. Filters without options are skipped by the
+// generic dropdown rendering.
+interface ExtensionFilter {
+    key: string;
+    label: string;
+    component: string | null;
+    options: Record<string, string>;
+}
+
 interface Paginated<T> {
     data: T[];
     current_page: number;
@@ -66,6 +76,8 @@ const props = defineProps<{
     columns: CustomerColumn[];
     tableActions: RowAction[];
     tableBulkActions: BulkAction[];
+    tableFilters: ExtensionFilter[];
+    tableFilterValues: Record<string, string>;
     customerGroups: CustomerGroupOption[];
     totalCount: number;
     filters: { q?: string; customer_group_id?: string | number; type?: string; sort?: string; direction?: string };
@@ -89,6 +101,21 @@ const sortOptions: { value: string; label: string; sort: string; direction: stri
 const q = ref(props.filters.q ?? '');
 const groupFilter = ref<string | number>(props.filters.customer_group_id ?? 'all');
 const typeFilter = ref<string>(props.filters.type ?? 'all');
+
+// Add-on filter state, seeded from the server's current values ('' = off).
+// Submitted as nested filter[key] params, matching what applyFilters() reads.
+const extensionFilterValues = reactive<Record<string, string>>({ ...props.tableFilterValues });
+
+const renderableExtensionFilters = computed(() =>
+    props.tableFilters.filter((filter) => Object.keys(filter.options).length > 0));
+
+const extensionFilterOptions = (filter: ExtensionFilter): FilterOption[] => [
+    { value: '', label: t('common.all') },
+    ...Object.entries(filter.options).map(([value, label]) => ({ value, label })),
+];
+
+const activeExtensionFilters = (): Record<string, string> =>
+    Object.fromEntries(Object.entries(extensionFilterValues).filter(([, value]) => value !== ''));
 const sortKey = ref<string>(
     sortOptions.find((o) => o.sort === props.filters.sort && o.direction === (props.filters.direction ?? 'desc'))?.value ?? 'recent',
 );
@@ -107,6 +134,8 @@ const typeOptions: FilterOption[] = [
 const reload = (): void => {
     const sortOption = sortOptions.find((o) => o.value === sortKey.value) ?? sortOptions[0];
 
+    const extensionFilters = activeExtensionFilters();
+
     router.get(
         props.urls.index,
         {
@@ -115,6 +144,7 @@ const reload = (): void => {
             type: typeFilter.value === 'all' ? undefined : typeFilter.value,
             sort: sortOption.sort,
             direction: sortOption.direction,
+            filter: Object.keys(extensionFilters).length ? extensionFilters : undefined,
         },
         { preserveState: true, preserveScroll: true, replace: true },
     );
@@ -123,6 +153,7 @@ const reload = (): void => {
 // Dropdowns reload immediately; the search box debounces so a reload only fires
 // once typing settles (no Search button).
 watch([groupFilter, typeFilter, sortKey], reload);
+watch(extensionFilterValues, reload);
 
 let searchTimer: ReturnType<typeof setTimeout> | undefined;
 watch(q, () => {
@@ -131,12 +162,18 @@ watch(q, () => {
 });
 
 const hasActiveFilters = computed(
-    () => !!q.value.trim() || groupFilter.value !== 'all' || typeFilter.value !== 'all',
+    () => !!q.value.trim()
+        || groupFilter.value !== 'all'
+        || typeFilter.value !== 'all'
+        || Object.keys(activeExtensionFilters()).length > 0,
 );
 const clearFilters = (): void => {
     q.value = '';
     groupFilter.value = 'all';
     typeFilter.value = 'all';
+    Object.keys(extensionFilterValues).forEach((key) => {
+        extensionFilterValues[key] = '';
+    });
     reload();
 };
 
@@ -230,6 +267,15 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                         </div>
                         <FilterDropdown v-model="groupFilter" :label="t('customers.filter_group')" icon="flag" :options="groupOptions" default-value="all" />
                         <FilterDropdown v-model="typeFilter" :label="t('customers.filter_type')" :options="typeOptions" default-value="all" />
+                        <!-- Add-on filters registered through the table extension resolver. -->
+                        <FilterDropdown
+                            v-for="filter in renderableExtensionFilters"
+                            :key="filter.key"
+                            v-model="extensionFilterValues[filter.key]"
+                            :label="filter.label"
+                            :options="extensionFilterOptions(filter)"
+                            default-value=""
+                        />
                         <FilterDropdown v-model="sortKey" :label="t('common.sort')" :options="sortOptions" default-value="recent" />
                         <div class="flex-1" />
                         <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ t('customers.count_of', { shown: customers.total, total: totalCount }) }}</span>

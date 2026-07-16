@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all' => 'Összes',
     'active' => 'Aktív',
     'inactive' => 'Inaktív',
     'save' => 'Mentés',
