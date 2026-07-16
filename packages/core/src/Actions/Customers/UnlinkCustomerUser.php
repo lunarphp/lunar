@@ -10,5 +10,11 @@ class UnlinkCustomerUser implements UnlinksCustomerUser
     public function execute(Customer $customer, int|string $userId): void
     {
         $customer->users()->detach($userId);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($customer)
+            ->event('user-unlinked')
+            ->log('user-unlinked');
     }
 }

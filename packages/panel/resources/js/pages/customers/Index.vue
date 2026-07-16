@@ -34,6 +34,8 @@ interface CustomerGroupOption {
 interface CustomerRow {
     id: number;
     full_name: string;
+    first_name: string;
+    last_name: string;
     company_name: string | null;
     account_ref: string | null;
     created_at: string;
@@ -80,6 +82,7 @@ const props = defineProps<{
     tableFilterValues: Record<string, string>;
     customerGroups: CustomerGroupOption[];
     totalCount: number;
+    kpis: { total: number; newLast30Days: number; business: number; withAccount: number };
     filters: { q?: string; customer_group_id?: string | number; type?: string; sort?: string; direction?: string };
     urls: { index: string; create: string };
 }>();
@@ -177,26 +180,20 @@ const clearFilters = (): void => {
     reload();
 };
 
-// KPI strip: values are placeholders for now; the dismissed state persists locally.
+// KPI strip; the dismissed state persists locally.
 const KPI_STORAGE_KEY = 'lunar.panel.customers.kpisDismissed';
 const kpisDismissed = ref(localStorage.getItem(KPI_STORAGE_KEY) === '1');
 watch(kpisDismissed, (value) => localStorage.setItem(KPI_STORAGE_KEY, value ? '1' : '0'));
 
 const kpis = computed(() => [
-    { label: 'Total customers', value: props.totalCount, hint: 'across all groups', tone: 'neutral' as const, icon: 'users', delta: { value: '+12', tone: 'sage' as const } },
-    { label: 'New (30d)', value: 6, hint: 'joined in the last 30 days', tone: 'sage' as const, icon: 'userPlus', delta: { value: '+5', tone: 'sage' as const } },
-    { label: 'B2B accounts', value: 10, hint: 'customers with a company', tone: 'neutral' as const, icon: 'building', delta: { value: '+1', tone: 'sage' as const } },
-    { label: 'Avg lifetime value', value: '£3,575.00', hint: 'across customers with orders', tone: 'sage' as const, icon: 'chart', delta: { value: '+4%', tone: 'sage' as const } },
+    { label: t('customers.kpi_total_label'), value: props.kpis.total, hint: t('customers.kpi_total_hint'), tone: 'neutral' as const, icon: 'users' },
+    { label: t('customers.kpi_new_label'), value: props.kpis.newLast30Days, hint: t('customers.kpi_new_hint'), tone: 'sage' as const, icon: 'userPlus' },
+    { label: t('customers.kpi_business_label'), value: props.kpis.business, hint: t('customers.kpi_business_hint'), tone: 'neutral' as const, icon: 'building' },
+    { label: t('customers.kpi_with_account_label'), value: props.kpis.withAccount, hint: t('customers.kpi_with_account_hint'), tone: 'sage' as const, icon: 'user' },
 ]);
 
-const initials = (name: string): string =>
-    name
-        .split(' ')
-        .filter(Boolean)
-        .map((part) => part[0])
-        .slice(0, 2)
-        .join('')
-        .toUpperCase();
+const initials = (firstName: string, lastName: string): string =>
+    ((firstName?.[0] ?? '') + (lastName?.[0] ?? '')).toUpperCase() || '?';
 
 const formatDate = (value: string): string => new Date(value).toLocaleDateString();
 </script>
@@ -206,7 +203,9 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
         <div data-screen-label="Customers" class="contents">
             <Breadcrumbs :items="breadcrumbs">
                 <template #actions>
-                    <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
+                    <a href="https://docs.lunarphp.com/" target="_blank" rel="noopener">
+                        <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
+                    </a>
                 </template>
             </Breadcrumbs>
 
@@ -216,7 +215,6 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                 icon="users"
             >
                 <template #actions>
-                    <Button icon="download">{{ t('common.export') }}</Button>
                     <Link :href="urls.create">
                         <Button variant="primary" icon="plus">{{ t('customers.add_customer') }}</Button>
                     </Link>
@@ -230,7 +228,7 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     {{ flashSuccess }}
                 </div>
 
-                <!-- KPI strip (values are placeholders); dismissable, restored via "Show KPIs". -->
+                <!-- KPI strip; dismissable, restored via "Show KPIs". -->
                 <div v-if="!kpisDismissed" class="mb-5 relative">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <KpiCard
@@ -241,7 +239,6 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                             :hint="kpi.hint"
                             :tone="kpi.tone"
                             :icon="kpi.icon"
-                            :delta="kpi.delta"
                         />
                     </div>
                     <button
@@ -280,7 +277,7 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                         <div class="flex-1" />
                         <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ t('customers.count_of', { shown: customers.total, total: totalCount }) }}</span>
                         <Button v-if="kpisDismissed" icon="chart" @click="kpisDismissed = false">
-                            <span class="hidden sm:inline">Show KPIs</span>
+                            <span class="hidden sm:inline">{{ t('customers.show_kpis') }}</span>
                         </Button>
                         <Link :href="urls.create" class="sm:hidden">
                             <Button variant="primary" icon="plus">{{ t('common.new') }}</Button>
@@ -317,7 +314,7 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                     <template #cell-full_name="{ row }">
                         <div class="min-w-0 flex items-center gap-2.5">
                             <div class="w-7 h-7 rounded-full border border-line bg-surface-2 grid place-items-center text-ink-700 text-[10.5px] font-semibold shrink-0">
-                                {{ initials(row.full_name as string) }}
+                                {{ initials(row.first_name as string, row.last_name as string) }}
                             </div>
                             <div class="min-w-0">
                                 <div class="text-[12.5px] text-ink-900 truncate">{{ row.full_name }}</div>

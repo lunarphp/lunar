@@ -4,6 +4,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Staff;
+use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -77,6 +78,38 @@ it('falls back to created_at when given a non-sortable column', function () {
     $this->get(route('panel.customers.index', ['sort' => 'meta']))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page->where('filters.sort', 'meta'));
+});
+
+it('searches customers by linked user email', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $match = Customer::factory()->create(['first_name' => 'Ada', 'last_name' => 'Lovelace']);
+    $match->users()->attach(User::factory()->create(['email' => 'ada@example.com']));
+    Customer::factory()->create(['first_name' => 'Grace', 'last_name' => 'Hopper']);
+
+    $this->get(route('panel.customers.index', ['q' => 'ada@example.com']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('customers.data', 1)
+            ->where('customers.data.0.id', $match->id)
+        );
+});
+
+it('exposes real KPI counts', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Customer::factory()->create(['company_name' => 'Acme Ltd']);
+    Customer::factory()->create(['company_name' => null, 'created_at' => now()->subDays(40)]);
+
+    $withUser = Customer::factory()->create(['company_name' => null]);
+    $withUser->users()->attach(User::factory()->create());
+
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.total', 3)
+            ->where('kpis.newLast30Days', 2)
+            ->where('kpis.business', 1)
+            ->where('kpis.withAccount', 1)
+        );
 });
 
 it('paginates the customer index', function () {

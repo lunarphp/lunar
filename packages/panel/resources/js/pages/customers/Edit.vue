@@ -4,8 +4,8 @@ import { router, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import AddressCard from '../../components/AddressCard.vue';
+import AddressFormFields from '../../components/AddressFormFields.vue';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
-import Checkbox from '../../components/Checkbox.vue';
 import Combobox from '../../components/Combobox.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
@@ -18,7 +18,6 @@ import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import Tabs from '../../components/Tabs.vue';
-import Textarea from '../../components/Textarea.vue';
 import TextInput from '../../components/TextInput.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 
@@ -89,7 +88,7 @@ const props = defineProps<{
     };
 }>();
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 
 const flashSuccess = computed(() => (usePage().props.flash as { success?: string } | undefined)?.success);
 
@@ -107,7 +106,27 @@ const detailsForm = useForm({
     customer_group_ids: props.customer.customer_groups.map((group) => group.id),
 });
 
-const titleOptions = ['', 'Mr', 'Ms', 'Mrs', 'Mx', 'Dr'];
+// Stored values stay canonical; only the visible labels are translated. A stored
+// title outside the base list (e.g. entered at checkout) is kept as its own option
+// so it still displays and survives a save untouched.
+const titleOptions = computed(() => {
+    const options = [
+        { value: '', label: '—' },
+        { value: 'Mr', label: t('customers.title_mr') },
+        { value: 'Ms', label: t('customers.title_ms') },
+        { value: 'Mrs', label: t('customers.title_mrs') },
+        { value: 'Mx', label: t('customers.title_mx') },
+        { value: 'Dr', label: t('customers.title_dr') },
+    ];
+
+    const stored = props.customer.title;
+
+    if (stored && !options.some((option) => option.value === stored)) {
+        options.splice(1, 0, { value: stored, label: stored });
+    }
+
+    return options;
+});
 
 const groupName = (id: number): string => props.customerGroups.find((group) => group.id === id)?.name ?? String(id);
 
@@ -168,6 +187,10 @@ const confirmDescription = computed(() => {
             return '';
     }
 });
+
+// Unlinking is not a deletion — the confirm button says so.
+const confirmLabel = computed(() =>
+    confirmTarget.value?.kind === 'user' ? t('customers.unlink_user') : t('common.delete'));
 
 const confirmDestroy = (): void => {
     const target = confirmTarget.value;
@@ -326,6 +349,22 @@ const userInitials = (user: LinkedUser): string =>
         .join('')
         .toUpperCase();
 
+// Activity tab: activity descriptions are lang keys where one exists (spatie's
+// created/updated plus the customer action events); anything else shows as-is.
+const activityLabel = (description: string): string => {
+    const key = `customers.activity_${description.replaceAll('-', '_')}`;
+
+    return te(key) ? t(key) : description;
+};
+
+const timelineEvents = computed(() =>
+    props.activities.map((activity) => ({
+        type: activity.description.replaceAll('-', '_'),
+        label: activityLabel(activity.description),
+        when: new Date(activity.created_at).toLocaleString(),
+        actor: activity.causer_name ?? '',
+    })));
+
 // Tabs
 const activeTab = ref<'addresses' | 'users' | 'activity'>('addresses');
 const tabDefs = computed(() => [
@@ -373,33 +412,36 @@ const tabDefs = computed(() => [
                             <Section :title="t('customers.personal_details')">
                                 <template #desc>{{ t('customers.personal_details_desc') }}</template>
                                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                                    <label class="flex flex-col gap-1 sm:col-span-2">
-                                        <span class="text-[11.5px] text-ink-500">{{ t('customers.field_title') }}</span>
-                                        <Select v-model="detailsForm.title">
-                                            <option v-for="option in titleOptions" :key="option || 'none'" :value="option">{{ option || '—' }}</option>
+                                    <div class="flex flex-col gap-1 sm:col-span-2">
+                                        <FieldLabel for="customer-title" class="mb-0">{{ t('customers.field_title') }}</FieldLabel>
+                                        <Select id="customer-title" v-model="detailsForm.title">
+                                            <option v-for="option in titleOptions" :key="option.value || 'none'" :value="option.value">{{ option.label }}</option>
                                         </Select>
-                                    </label>
+                                    </div>
                                     <div class="sm:col-span-5">
-                                        <FieldLabel required>{{ t('customers.field_first_name') }}</FieldLabel>
-                                        <TextInput v-model="detailsForm.first_name" :invalid="!!detailsForm.errors.first_name" />
+                                        <FieldLabel for="customer-first-name" required>{{ t('customers.field_first_name') }}</FieldLabel>
+                                        <TextInput id="customer-first-name" v-model="detailsForm.first_name" :invalid="!!detailsForm.errors.first_name" />
                                         <div v-if="detailsForm.errors.first_name" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.first_name }}</div>
                                     </div>
                                     <div class="sm:col-span-5">
-                                        <FieldLabel required>{{ t('customers.field_last_name') }}</FieldLabel>
-                                        <TextInput v-model="detailsForm.last_name" :invalid="!!detailsForm.errors.last_name" />
+                                        <FieldLabel for="customer-last-name" required>{{ t('customers.field_last_name') }}</FieldLabel>
+                                        <TextInput id="customer-last-name" v-model="detailsForm.last_name" :invalid="!!detailsForm.errors.last_name" />
                                         <div v-if="detailsForm.errors.last_name" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.last_name }}</div>
                                     </div>
                                     <div class="sm:col-span-12">
-                                        <FieldLabel>{{ t('customers.field_company_name') }}</FieldLabel>
-                                        <TextInput v-model="detailsForm.company_name" :placeholder="t('common.optional')" :invalid="!!detailsForm.errors.company_name" />
+                                        <FieldLabel for="customer-company-name">{{ t('customers.field_company_name') }}</FieldLabel>
+                                        <TextInput id="customer-company-name" v-model="detailsForm.company_name" :placeholder="t('common.optional')" :invalid="!!detailsForm.errors.company_name" />
+                                        <div v-if="detailsForm.errors.company_name" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.company_name }}</div>
                                     </div>
                                     <div class="sm:col-span-6">
-                                        <FieldLabel>{{ t('customers.field_tax_identifier') }}</FieldLabel>
-                                        <TextInput v-model="detailsForm.tax_identifier" mono :invalid="!!detailsForm.errors.tax_identifier" />
+                                        <FieldLabel for="customer-tax-identifier">{{ t('customers.field_tax_identifier') }}</FieldLabel>
+                                        <TextInput id="customer-tax-identifier" v-model="detailsForm.tax_identifier" mono :invalid="!!detailsForm.errors.tax_identifier" />
+                                        <div v-if="detailsForm.errors.tax_identifier" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.tax_identifier }}</div>
                                     </div>
                                     <div class="sm:col-span-6">
-                                        <FieldLabel>{{ t('customers.field_account_ref') }}</FieldLabel>
-                                        <TextInput v-model="detailsForm.account_ref" mono :invalid="!!detailsForm.errors.account_ref" />
+                                        <FieldLabel for="customer-account-ref">{{ t('customers.field_account_ref') }}</FieldLabel>
+                                        <TextInput id="customer-account-ref" v-model="detailsForm.account_ref" mono :invalid="!!detailsForm.errors.account_ref" />
+                                        <div v-if="detailsForm.errors.account_ref" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.account_ref }}</div>
                                     </div>
                                 </div>
                             </Section>
@@ -457,62 +499,7 @@ const tabDefs = computed(() => [
                                                 class="bg-surface border border-line rounded-md p-3.5 flex flex-col gap-3"
                                                 @submit.prevent="submitEditAddress(address)"
                                             >
-                                                <div class="grid grid-cols-2 gap-3">
-                                                    <div>
-                                                        <FieldLabel required>{{ t('customers.field_first_name') }}</FieldLabel>
-                                                        <TextInput v-model="addressForm.first_name" />
-                                                    </div>
-                                                    <div>
-                                                        <FieldLabel required>{{ t('customers.field_last_name') }}</FieldLabel>
-                                                        <TextInput v-model="addressForm.last_name" />
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <FieldLabel>{{ t('customers.field_company_name') }}</FieldLabel>
-                                                    <TextInput v-model="addressForm.company_name" />
-                                                </div>
-                                                <div>
-                                                    <FieldLabel required>{{ t('customers.field_line_one') }}</FieldLabel>
-                                                    <TextInput v-model="addressForm.line_one" />
-                                                </div>
-                                                <div>
-                                                    <FieldLabel>{{ t('customers.field_line_two') }}</FieldLabel>
-                                                    <TextInput v-model="addressForm.line_two" />
-                                                </div>
-                                                <div class="grid grid-cols-2 gap-3">
-                                                    <div>
-                                                        <FieldLabel required>{{ t('customers.field_city') }}</FieldLabel>
-                                                        <TextInput v-model="addressForm.city" />
-                                                    </div>
-                                                    <div>
-                                                        <FieldLabel>{{ t('customers.field_postcode') }}</FieldLabel>
-                                                        <TextInput v-model="addressForm.postcode" />
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <FieldLabel required>{{ t('customers.field_country') }}</FieldLabel>
-                                                    <Select
-                                                        :model-value="addressForm.country_id"
-                                                        @update:model-value="(value) => (addressForm.country_id = value ? Number(value) : '')"
-                                                    >
-                                                        <option value="">{{ t('customers.select_country') }}</option>
-                                                        <option v-for="country in countries" :key="country.id" :value="country.id">{{ country.name }}</option>
-                                                    </Select>
-                                                </div>
-                                                <div>
-                                                    <FieldLabel>{{ t('customers.field_delivery_instructions') }}</FieldLabel>
-                                                    <Textarea v-model="addressForm.delivery_instructions" :rows="2" />
-                                                </div>
-                                                <div class="flex gap-4">
-                                                    <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
-                                                        <Checkbox v-model="addressForm.shipping_default" />
-                                                        {{ t('customers.default_shipping') }}
-                                                    </label>
-                                                    <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
-                                                        <Checkbox v-model="addressForm.billing_default" />
-                                                        {{ t('customers.default_billing') }}
-                                                    </label>
-                                                </div>
+                                                <AddressFormFields :form="addressForm" :countries="countries" id-prefix="edit-address" />
                                                 <div class="flex gap-2">
                                                     <Button type="submit" variant="primary" size="sm" :disabled="addressForm.processing">{{ t('customers.save_address') }}</Button>
                                                     <Button type="button" size="sm" @click="cancelEditAddress">{{ t('common.cancel') }}</Button>
@@ -538,63 +525,7 @@ const tabDefs = computed(() => [
                                     >
                                         <h3 class="text-[13px] font-semibold text-ink-900 mb-3">{{ t('customers.add_address') }}</h3>
                                         <div class="flex flex-col gap-3">
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div>
-                                                    <FieldLabel required>{{ t('customers.field_first_name') }}</FieldLabel>
-                                                    <TextInput v-model="newAddressForm.first_name" :invalid="!!newAddressForm.errors.first_name" />
-                                                </div>
-                                                <div>
-                                                    <FieldLabel required>{{ t('customers.field_last_name') }}</FieldLabel>
-                                                    <TextInput v-model="newAddressForm.last_name" :invalid="!!newAddressForm.errors.last_name" />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <FieldLabel>{{ t('customers.field_company_name') }}</FieldLabel>
-                                                <TextInput v-model="newAddressForm.company_name" />
-                                            </div>
-                                            <div>
-                                                <FieldLabel required>{{ t('customers.field_line_one') }}</FieldLabel>
-                                                <TextInput v-model="newAddressForm.line_one" :invalid="!!newAddressForm.errors.line_one" />
-                                            </div>
-                                            <div>
-                                                <FieldLabel>{{ t('customers.field_line_two') }}</FieldLabel>
-                                                <TextInput v-model="newAddressForm.line_two" />
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div>
-                                                    <FieldLabel required>{{ t('customers.field_city') }}</FieldLabel>
-                                                    <TextInput v-model="newAddressForm.city" :invalid="!!newAddressForm.errors.city" />
-                                                </div>
-                                                <div>
-                                                    <FieldLabel>{{ t('customers.field_postcode') }}</FieldLabel>
-                                                    <TextInput v-model="newAddressForm.postcode" />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <FieldLabel required>{{ t('customers.field_country') }}</FieldLabel>
-                                                <Select
-                                                    :model-value="newAddressForm.country_id"
-                                                    @update:model-value="(value) => (newAddressForm.country_id = value ? Number(value) : '')"
-                                                >
-                                                    <option value="">{{ t('customers.select_country') }}</option>
-                                                    <option v-for="country in countries" :key="country.id" :value="country.id">{{ country.name }}</option>
-                                                </Select>
-                                                <div v-if="newAddressForm.errors.country_id" class="mt-1 text-[11px] text-danger">{{ newAddressForm.errors.country_id }}</div>
-                                            </div>
-                                            <div>
-                                                <FieldLabel>{{ t('customers.field_delivery_instructions') }}</FieldLabel>
-                                                <Textarea v-model="newAddressForm.delivery_instructions" :rows="2" />
-                                            </div>
-                                            <div class="flex gap-4">
-                                                <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
-                                                    <Checkbox v-model="newAddressForm.shipping_default" />
-                                                    {{ t('customers.default_shipping') }}
-                                                </label>
-                                                <label class="inline-flex items-center gap-2 text-[12.5px] text-ink-700 select-none cursor-pointer">
-                                                    <Checkbox v-model="newAddressForm.billing_default" />
-                                                    {{ t('customers.default_billing') }}
-                                                </label>
-                                            </div>
+                                            <AddressFormFields :form="newAddressForm" :countries="countries" id-prefix="new-address" />
                                             <div class="flex gap-2">
                                                 <Button type="submit" variant="primary" size="sm" :disabled="newAddressForm.processing">{{ t('customers.add_address') }}</Button>
                                                 <Button type="button" size="sm" @click="showNewAddressForm = false">{{ t('common.cancel') }}</Button>
@@ -637,8 +568,8 @@ const tabDefs = computed(() => [
 
                                     <form class="mt-3 flex items-end gap-2 rounded-md border border-dashed border-line-strong p-4" @submit.prevent="submitLinkUser">
                                         <div class="flex-1">
-                                            <FieldLabel>{{ t('customers.link_user_label') }}</FieldLabel>
-                                            <TextInput v-model="linkUserForm.email" type="email" :invalid="!!linkUserForm.errors.email" />
+                                            <FieldLabel for="link-user-email">{{ t('customers.link_user_label') }}</FieldLabel>
+                                            <TextInput id="link-user-email" v-model="linkUserForm.email" type="email" :invalid="!!linkUserForm.errors.email" />
                                             <div v-if="linkUserForm.errors.email" class="mt-1 text-[11px] text-danger">{{ linkUserForm.errors.email }}</div>
                                         </div>
                                         <Button type="submit" :disabled="linkUserForm.processing">{{ t('customers.link_user_button') }}</Button>
@@ -646,7 +577,7 @@ const tabDefs = computed(() => [
                                 </template>
 
                                 <template #activity>
-                                    <ActivityTimeline :events="activities" :reverse="false" />
+                                    <ActivityTimeline :events="timelineEvents" :reverse="false" />
                                     <PageEmpty v-if="!activities.length" :title="t('customers.activity_empty')" />
                                 </template>
                             </Tabs>
@@ -715,7 +646,7 @@ const tabDefs = computed(() => [
                 :title="confirmTitle"
                 :description="confirmDescription"
                 tone="danger"
-                :confirm-label="t('common.delete')"
+                :confirm-label="confirmLabel"
                 @confirm="confirmDestroy"
             />
         </div>

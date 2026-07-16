@@ -76,3 +76,45 @@ it('deletes an address', function () {
 
     expect(Address::find($address->id))->toBeNull();
 });
+
+it('records address changes on the customer activity log', function () {
+    // The panel TestCase disables activity logging globally; this test is about the log.
+    activity()->enableLogging();
+
+    $staff = Staff::factory()->create(['admin' => true]);
+    $this->actingAs($staff, 'staff');
+
+    $customer = Customer::factory()->create();
+    $country = Country::factory()->create();
+
+    $this->post(route('panel.customers.addresses.store', $customer), [
+        'first_name' => 'Ada',
+        'last_name' => 'Lovelace',
+        'line_one' => '1 Analytical Engine Way',
+        'city' => 'London',
+        'country_id' => $country->id,
+    ]);
+
+    $address = $customer->addresses()->sole();
+
+    $this->put(route('panel.customers.addresses.update', [$customer, $address]), [
+        'first_name' => 'Ada',
+        'last_name' => 'Lovelace',
+        'line_one' => '2 Analytical Engine Way',
+        'city' => 'London',
+        'country_id' => $country->id,
+    ]);
+
+    $this->delete(route('panel.customers.addresses.destroy', [$customer, $address]));
+
+    $descriptions = $customer->activities()->pluck('description');
+
+    expect($descriptions)->toContain('address-created')
+        ->toContain('address-updated')
+        ->toContain('address-deleted');
+
+    $created = $customer->activities()->where('description', 'address-created')->sole();
+
+    expect($created->causer)->toBeInstanceOf(Staff::class)
+        ->and($created->causer->id)->toBe($staff->id);
+});

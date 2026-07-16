@@ -46,7 +46,8 @@ class CustomerIndexController
                         ->orWhere('last_name', 'like', $like)
                         ->orWhere('company_name', 'like', $like)
                         ->orWhere('tax_identifier', 'like', $like)
-                        ->orWhere('account_ref', 'like', $like);
+                        ->orWhere('account_ref', 'like', $like)
+                        ->orWhereHas('users', fn ($query) => $query->where('email', 'like', $like));
 
                     $resolver->applySearchQueries($query, $term);
                 });
@@ -66,6 +67,8 @@ class CustomerIndexController
                 $row = [
                     'id' => $customer->id,
                     'full_name' => $customer->full_name,
+                    'first_name' => $customer->first_name,
+                    'last_name' => $customer->last_name,
                     'company_name' => $customer->company_name,
                     'account_ref' => $customer->account_ref,
                     'created_at' => $customer->created_at,
@@ -84,11 +87,19 @@ class CustomerIndexController
                 return $row;
             });
 
+        $totalCount = Customer::count();
+
         return Inertia::render('customers/Index', [
             'customers' => $customers,
             ...$this->tableProps($resolver, $this->columns, $request),
             'customerGroups' => CustomerGroup::all(['id', 'name']),
-            'totalCount' => Customer::count(),
+            'totalCount' => $totalCount,
+            'kpis' => [
+                'total' => $totalCount,
+                'newLast30Days' => Customer::where('created_at', '>=', now()->subDays(30))->count(),
+                'business' => Customer::whereNotNull('company_name')->where('company_name', '!=', '')->count(),
+                'withAccount' => Customer::has('users')->count(),
+            ],
             'filters' => $request->only(['q', 'customer_group_id', 'type', 'sort', 'direction']),
             'urls' => [
                 'index' => route('panel.customers.index'),
