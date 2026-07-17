@@ -3,11 +3,13 @@
 namespace Lunar\Panel\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Lunar\Core\Models\Base;
 use Lunar\Core\Models\Staff;
+use Lunar\Panel\Database\Factories\EditDraftFactory;
 
 /**
  * A staff member's in-progress edit of one record: `data` holds the changed
@@ -16,6 +18,7 @@ use Lunar\Core\Models\Staff;
  */
 class EditDraft extends Base
 {
+    use HasFactory;
     use MassPrunable;
 
     /** @var array<int, string> */
@@ -26,6 +29,11 @@ class EditDraft extends Base
         'data' => 'array',
         'base_snapshot' => 'array',
     ];
+
+    protected static function newFactory(): EditDraftFactory
+    {
+        return EditDraftFactory::new();
+    }
 
     public function draftable(): MorphTo
     {

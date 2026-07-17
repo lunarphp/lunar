@@ -4,7 +4,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Lunar\\Panel\\": "src/"
+            "Lunar\\Panel\\": "src/",
+            "Lunar\\Panel\\Database\\Factories\\": "database/factories"
         }
     },
     "minimum-stability": "dev",

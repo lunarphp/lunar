@@ -265,18 +265,14 @@ it('removes drafts when their record is deleted', function () {
 });
 
 it('prunes drafts untouched beyond the configured ttl', function () {
-    $staff = Staff::factory()->create();
-    $stale = Customer::factory()->create();
-    $fresh = Customer::factory()->create();
-
-    draftManager()->merge(customerDraftResource(), $stale, $staff, ['first_name' => 'Old']);
+    EditDraft::factory()->create();
 
     $this->travel(8)->days();
 
-    draftManager()->merge(customerDraftResource(), $fresh, $staff, ['first_name' => 'New']);
+    $fresh = EditDraft::factory()->create();
 
     $this->artisan('model:prune', ['--model' => [EditDraft::class]]);
 
     expect(EditDraft::count())->toBe(1)
-        ->and(EditDraft::first()->draftable_id)->toBe($fresh->id);
+        ->and(EditDraft::first()->id)->toBe($fresh->id);
 });

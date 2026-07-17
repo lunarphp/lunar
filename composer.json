@@ -72,6 +72,7 @@
             "Lunar\\Meilisearch\\": "packages/meilisearch/src/",
             "Lunar\\Opayo\\": "packages/opayo/src/",
             "Lunar\\Panel\\": "packages/panel/src/",
+            "Lunar\\Panel\\Database\\Factories\\": "packages/panel/database/factories",
             "Lunar\\Paypal\\": "packages/paypal/src/",
             "Lunar\\Search\\": "packages/search/src/",
             "Lunar\\Shipping\\": "packages/table-rate-shipping/src",
