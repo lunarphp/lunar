@@ -9,11 +9,9 @@ use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Console\Commands\MakeLunarAdminCommand;
 use Lunar\Admin\Console\Commands\PublishAdminResourcesCommand;
 use Lunar\Admin\Events\CustomerUserEdited;
-use Lunar\Admin\Filament\Resources\CollectionResource;
-use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
-use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Listeners\FilamentUpgradedListener;
 use Lunar\Admin\Support\ActivityLog\Manifest as ActivityLogManifest;
+use Lunar\Admin\Support\RecordUrlResolvers;
 
 class LunarPanelProvider extends ServiceProvider
 {
@@ -98,17 +96,9 @@ class LunarPanelProvider extends ServiceProvider
      */
     protected function registerBridgeRecordUrls(): void
     {
-        $this->app['config']->set('lunar.filament.record_urls.order',
-            fn ($record, array $context = []) => ManageOrder::getUrl([...$context, 'record' => $record]),
-        );
-
-        $this->app['config']->set('lunar.filament.record_urls.product_variant',
-            fn ($record, array $context = []) => ProductVariantResource::getUrl('edit', [...$context, 'record' => $record]),
-        );
-
-        $this->app['config']->set('lunar.filament.record_urls.collection_edit',
-            fn ($record, array $context = []) => CollectionResource::getUrl('edit', [...$context, 'record' => $record]),
-        );
+        $this->app['config']->set('lunar.filament.record_urls.order', [RecordUrlResolvers::class, 'order']);
+        $this->app['config']->set('lunar.filament.record_urls.product_variant', [RecordUrlResolvers::class, 'productVariant']);
+        $this->app['config']->set('lunar.filament.record_urls.collection_edit', [RecordUrlResolvers::class, 'collectionEdit']);
     }
 
     /**
