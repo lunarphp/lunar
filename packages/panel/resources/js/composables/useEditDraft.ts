@@ -75,7 +75,10 @@ function encode(value: unknown): string {
 export function useEditDraft<T extends Record<string, unknown>>(options: EditDraftOptions<T>): EditDraftForm<T> {
     const debounceMs = options.debounceMs ?? 750;
 
-    const pristine: Record<string, unknown> = clone(options.initial);
+    // Reactive so isDirty recomputes when a successful commit re-baselines
+    // pristine to the committed values — a plain object would leave the stale
+    // dirty state cached until the next keystroke.
+    const pristine = reactive<Record<string, unknown>>(clone(options.initial));
     const values = reactive(clone(options.initial)) as T;
 
     for (const [key, value] of Object.entries(options.draft?.data ?? {})) {

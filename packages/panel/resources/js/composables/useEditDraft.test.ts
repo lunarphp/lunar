@@ -119,6 +119,10 @@ describe('useEditDraft', () => {
 
         form.values.first_name = 'Changed';
 
+        // Read (and cache) the computed before committing: the commit must
+        // invalidate it when it re-baselines pristine, not leave it stale.
+        expect(form.isDirty.value).toBe(true);
+
         await expect(form.commit()).resolves.toBe(true);
 
         expect(httpMock.post).toHaveBeenCalledWith(urls.commit, {
