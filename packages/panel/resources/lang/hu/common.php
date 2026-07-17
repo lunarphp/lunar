@@ -23,6 +23,7 @@ return [
     'more_actions' => 'További műveletek',
     'select_all_rows' => 'Összes sor kijelölése',
     'close' => 'Bezárás',
+    'clear' => 'Törlés',
     'locked' => 'Zárolva',
     'toggle_options' => 'Opciók megjelenítése vagy elrejtése',
     'breadcrumb' => 'Navigációs útvonal',

@@ -13,6 +13,7 @@ import Icon from '../../components/Icon.vue';
 import Pagination from '../../components/Pagination.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
 import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
+import FlashMessage from '../../components/FlashMessage.vue';
 import KpiCard from '../../components/KpiCard.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import TextInput from '../../components/TextInput.vue';
@@ -34,9 +35,15 @@ interface CustomerGroupOption {
 interface CustomerRow {
     id: number;
     full_name: string;
+    first_name: string;
+    last_name: string;
     company_name: string | null;
     account_ref: string | null;
+    email: string | null;
     created_at: string;
+    orders_count: number;
+    total_spend: string | null;
+    last_order_at: string | null;
     customer_groups: CustomerGroupOption[];
     edit_url: string;
     // Extension-contributed columns land here under their own key.
@@ -80,6 +87,13 @@ const props = defineProps<{
     tableFilterValues: Record<string, string>;
     customerGroups: CustomerGroupOption[];
     totalCount: number;
+    kpis: {
+        total: number;
+        newLast30Days: number;
+        business: number;
+        avgLifetimeValue: string | null;
+        avgLifetimeValueDelta: number | null;
+    };
     filters: { q?: string; customer_group_id?: string | number; type?: string; sort?: string; direction?: string };
     urls: { index: string; create: string };
 }>();
@@ -177,28 +191,45 @@ const clearFilters = (): void => {
     reload();
 };
 
-// KPI strip: values are placeholders for now; the dismissed state persists locally.
+// KPI strip; the dismissed state persists locally.
 const KPI_STORAGE_KEY = 'lunar.panel.customers.kpisDismissed';
 const kpisDismissed = ref(localStorage.getItem(KPI_STORAGE_KEY) === '1');
 watch(kpisDismissed, (value) => localStorage.setItem(KPI_STORAGE_KEY, value ? '1' : '0'));
 
+// The lifetime-value delta compares against the average as it stood 30 days
+// ago; a drop stays neutral rather than alarming.
+const lifetimeValueDelta = computed(() => {
+    const delta = props.kpis.avgLifetimeValueDelta;
+
+    if (delta === null) {
+        return undefined;
+    }
+
+    return { value: `${delta > 0 ? '+' : ''}${delta}%`, tone: delta >= 0 ? ('sage' as const) : ('neutral' as const) };
+});
+
 const kpis = computed(() => [
-    { label: 'Total customers', value: props.totalCount, hint: 'across all groups', tone: 'neutral' as const, icon: 'users', delta: { value: '+12', tone: 'sage' as const } },
-    { label: 'New (30d)', value: 6, hint: 'joined in the last 30 days', tone: 'sage' as const, icon: 'userPlus', delta: { value: '+5', tone: 'sage' as const } },
-    { label: 'B2B accounts', value: 10, hint: 'customers with a company', tone: 'neutral' as const, icon: 'building', delta: { value: '+1', tone: 'sage' as const } },
-    { label: 'Avg lifetime value', value: '£3,575.00', hint: 'across customers with orders', tone: 'sage' as const, icon: 'chart', delta: { value: '+4%', tone: 'sage' as const } },
+    { label: t('customers.kpi_total_label'), value: props.kpis.total, hint: t('customers.kpi_total_hint'), tone: 'neutral' as const, icon: 'users', delta: undefined },
+    { label: t('customers.kpi_new_label'), value: props.kpis.newLast30Days, hint: t('customers.kpi_new_hint'), tone: 'sage' as const, icon: 'userPlus', delta: undefined },
+    { label: t('customers.kpi_business_label'), value: props.kpis.business, hint: t('customers.kpi_business_hint'), tone: 'neutral' as const, icon: 'building', delta: undefined },
+    { label: t('customers.kpi_ltv_label'), value: props.kpis.avgLifetimeValue ?? '—', hint: t('customers.kpi_ltv_hint'), tone: 'sage' as const, icon: 'chart', delta: lifetimeValueDelta.value },
 ]);
 
-const initials = (name: string): string =>
-    name
-        .split(' ')
-        .filter(Boolean)
-        .map((part) => part[0])
-        .slice(0, 2)
-        .join('')
-        .toUpperCase();
+const initials = (firstName: string, lastName: string): string =>
+    ((firstName?.[0] ?? '') + (lastName?.[0] ?? '')).toUpperCase() || '?';
 
-const formatDate = (value: string): string => new Date(value).toLocaleDateString();
+// Soft avatar tints, assigned per customer id so a customer keeps their colour
+// across pages and reloads.
+const AVATAR_TONES = [
+    'bg-sage-soft border-sage-border',
+    'bg-warn-soft border-warn-border',
+    'bg-danger-soft border-danger-border',
+];
+
+const avatarTone = (id: number): string => AVATAR_TONES[id % AVATAR_TONES.length];
+
+const formatShortDate = (value: string): string =>
+    new Date(value).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 </script>
 
 <template>
@@ -206,7 +237,9 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
         <div data-screen-label="Customers" class="contents">
             <Breadcrumbs :items="breadcrumbs">
                 <template #actions>
-                    <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
+                    <a href="https://docs.lunarphp.com/" target="_blank" rel="noopener">
+                        <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
+                    </a>
                 </template>
             </Breadcrumbs>
 
@@ -216,7 +249,6 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                 icon="users"
             >
                 <template #actions>
-                    <Button icon="download">{{ t('common.export') }}</Button>
                     <Link :href="urls.create">
                         <Button variant="primary" icon="plus">{{ t('customers.add_customer') }}</Button>
                     </Link>
@@ -226,11 +258,9 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
                 <PageZone region="main" position="before" />
 
-                <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
-                    {{ flashSuccess }}
-                </div>
+                <FlashMessage :message="flashSuccess" class="mb-4" />
 
-                <!-- KPI strip (values are placeholders); dismissable, restored via "Show KPIs". -->
+                <!-- KPI strip; dismissable, restored via "Show KPIs". -->
                 <div v-if="!kpisDismissed" class="mb-5 relative">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <KpiCard
@@ -261,7 +291,7 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                 <div class="flex flex-wrap items-center gap-2 mb-4 min-h-[34px]">
                     <template v-if="!(hasBulkActions && selected.length)">
                         <div class="flex-1 max-w-[280px] min-w-[180px]">
-                            <TextInput v-model="q" :placeholder="t('customers.search_placeholder')">
+                            <TextInput v-model="q" clearable :placeholder="t('customers.search_placeholder')">
                                 <template #prefix><Icon name="search" cls="sm" /></template>
                             </TextInput>
                         </div>
@@ -277,10 +307,16 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                             default-value=""
                         />
                         <FilterDropdown v-model="sortKey" :label="t('common.sort')" :options="sortOptions" default-value="recent" />
+                        <button
+                            v-if="hasActiveFilters"
+                            type="button"
+                            class="text-[12px] text-ink-500 underline underline-offset-2 whitespace-nowrap rounded-sm hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35"
+                            @click="clearFilters"
+                        >{{ t('customers.clear_filters') }}</button>
                         <div class="flex-1" />
                         <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ t('customers.count_of', { shown: customers.total, total: totalCount }) }}</span>
                         <Button v-if="kpisDismissed" icon="chart" @click="kpisDismissed = false">
-                            <span class="hidden sm:inline">Show KPIs</span>
+                            <span class="hidden sm:inline">{{ t('customers.show_kpis') }}</span>
                         </Button>
                         <Link :href="urls.create" class="sm:hidden">
                             <Button variant="primary" icon="plus">{{ t('common.new') }}</Button>
@@ -316,12 +352,18 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
 
                     <template #cell-full_name="{ row }">
                         <div class="min-w-0 flex items-center gap-2.5">
-                            <div class="w-7 h-7 rounded-full border border-line bg-surface-2 grid place-items-center text-ink-700 text-[10.5px] font-semibold shrink-0">
-                                {{ initials(row.full_name as string) }}
+                            <div
+                                :class="[
+                                    'w-7 h-7 rounded-full border grid place-items-center text-ink-700 text-[10.5px] font-semibold shrink-0',
+                                    avatarTone(row.id as number),
+                                ]"
+                            >
+                                {{ initials(row.first_name as string, row.last_name as string) }}
                             </div>
                             <div class="min-w-0">
                                 <div class="text-[12.5px] text-ink-900 truncate">{{ row.full_name }}</div>
-                                <div v-if="row.account_ref" class="text-[11px] text-ink-500 truncate font-mono">{{ row.account_ref }}</div>
+                                <div v-if="row.email" class="text-[11px] text-ink-500 truncate">{{ row.email }}</div>
+                                <div v-else-if="row.account_ref" class="text-[11px] text-ink-500 truncate font-mono">{{ row.account_ref }}</div>
                             </div>
                         </div>
                     </template>
@@ -338,8 +380,18 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                         </div>
                     </template>
 
-                    <template #cell-created_at="{ value }">
-                        <span class="text-xs text-ink-700 [font-variant-numeric:tabular-nums]">{{ formatDate(value as string) }}</span>
+                    <template #cell-orders_count="{ value }">
+                        <span class="text-[12.5px] text-ink-700 [font-variant-numeric:tabular-nums]">{{ value }}</span>
+                    </template>
+
+                    <template #cell-total_spend="{ value }">
+                        <span v-if="value" class="text-[12.5px] text-ink-900 font-medium [font-variant-numeric:tabular-nums]">{{ value }}</span>
+                        <span v-else class="text-[12.5px] text-ink-400">—</span>
+                    </template>
+
+                    <template #cell-last_order_at="{ value }">
+                        <span v-if="value" class="text-xs text-ink-700 [font-variant-numeric:tabular-nums]">{{ formatShortDate(value as string) }}</span>
+                        <span v-else class="text-[12.5px] text-ink-400">—</span>
                     </template>
                 </DataTable>
 

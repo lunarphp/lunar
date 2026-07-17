@@ -12,7 +12,7 @@ import { computed } from 'vue';
 // under `example-addon::{group}` keys — served, cached and versioned by the
 // panel's translations endpoint like the panel's own strings.
 import { useI18n } from 'vue-i18n';
-import { Breadcrumbs, DataTable, PageHeader, PageZone, Button, SideCard, StatusBadge } from '@lunarphp/panel';
+import { Breadcrumbs, DataTable, FlashMessage, PageHeader, PageZone, Button, SideCard, StatusBadge, TimeSeriesChart } from '@lunarphp/panel';
 
 defineProps<{
     message?: string;
@@ -43,6 +43,16 @@ const columns = [
 const rowActions = [
     { key: 'ping', label: 'Ping', icon: 'refresh', method: 'get', primary: false },
 ];
+
+// Static demo series for the panel's TimeSeriesChart, also on the public surface.
+const chartPoints = [
+    { label: 'Jan', value: 120, display: '£120.00' },
+    { label: 'Feb', value: 210, display: '£210.00' },
+    { label: 'Mar', value: 160, display: '£160.00' },
+    { label: 'Apr', value: 290, display: '£290.00' },
+    { label: 'May', value: 240, display: '£240.00' },
+    { label: 'Jun', value: 330, display: '£330.00' },
+];
 </script>
 
 <template>
@@ -62,9 +72,7 @@ const rowActions = [
         <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
             <PageZone region="main" position="before" />
 
-            <div v-if="flashSuccess" class="mb-4 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink">
-                {{ flashSuccess }}
-            </div>
+            <FlashMessage :message="flashSuccess" class="mb-4" />
 
             <p class="text-[13px] text-ink-700">
                 {{ message ?? 'This page is served by a separately-compiled add-on package.' }}
@@ -97,6 +105,14 @@ const rowActions = [
                         Customers
                     </Link>
                 </div>
+            </SideCard>
+
+            <SideCard title="Charting from an add-on" class="mt-5 max-w-md">
+                <p class="text-[12.5px] text-ink-700 mb-2">
+                    The panel's <code>TimeSeriesChart</code> is on the same public
+                    surface, so add-ons can plot their own data.
+                </p>
+                <TimeSeriesChart :points="chartPoints" :height="140" ariaLabel="Example widget sales" />
             </SideCard>
 
             <PageZone region="main" position="after" />

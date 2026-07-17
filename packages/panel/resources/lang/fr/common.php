@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Plus d\'actions',
     'select_all_rows' => 'Sélectionner toutes les lignes',
     'close' => 'Fermer',
+    'clear' => 'Effacer',
     'locked' => 'Verrouillé',
     'toggle_options' => 'Afficher ou masquer les options',
     'breadcrumb' => 'Fil d\'Ariane',

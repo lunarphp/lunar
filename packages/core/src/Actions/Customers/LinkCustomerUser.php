@@ -20,5 +20,11 @@ class LinkCustomerUser implements LinksCustomerUser
         $user = $userModel::where('email', $email)->firstOrFail();
 
         $customer->users()->syncWithoutDetaching([$user->getKey()]);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($customer)
+            ->event('user-linked')
+            ->log('user-linked');
     }
 }

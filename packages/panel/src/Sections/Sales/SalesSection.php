@@ -8,6 +8,7 @@ use Lunar\Panel\Http\Controllers\Customers\CustomerAddressController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerCreateController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerEditController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerIndexController;
+use Lunar\Panel\Http\Controllers\Customers\CustomerNotesController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
@@ -63,6 +64,7 @@ class SalesSection extends Section
                 Route::get('/{customer}/edit', [CustomerEditController::class, 'edit'])->name('edit');
                 Route::put('/{customer}', [CustomerEditController::class, 'update'])->name('update');
                 Route::delete('/{customer}', [CustomerEditController::class, 'destroy'])->name('destroy');
+                Route::put('/{customer}/notes', [CustomerNotesController::class, 'update'])->name('notes.update');
 
                 Route::scopeBindings()->group(function (): void {
                     Route::post('/{customer}/addresses', [CustomerAddressController::class, 'store'])->name('addresses.store');

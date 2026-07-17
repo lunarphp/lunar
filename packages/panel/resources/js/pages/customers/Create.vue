@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
 import Combobox from '../../components/Combobox.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
@@ -34,7 +35,21 @@ const form = useForm({
 
 const { t } = useI18n();
 
-const titleOptions = ['', 'Mr', 'Ms', 'Mrs', 'Mx', 'Dr'];
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    { label: t('nav.sales') },
+    { label: t('nav.customers'), href: props.urls.index },
+    { label: t('customers.new_title'), current: true },
+]);
+
+// Stored values stay canonical; only the visible labels are translated.
+const titleOptions = computed(() => [
+    { value: '', label: '—' },
+    { value: 'Mr', label: t('customers.title_mr') },
+    { value: 'Ms', label: t('customers.title_ms') },
+    { value: 'Mrs', label: t('customers.title_mrs') },
+    { value: 'Mx', label: t('customers.title_mx') },
+    { value: 'Dr', label: t('customers.title_dr') },
+]);
 
 const groupName = (id: number): string => props.customerGroups.find((group) => group.id === id)?.name ?? String(id);
 
@@ -61,9 +76,21 @@ const submit = (): void => {
 <template>
     <PanelLayout>
         <div data-screen-label="New customer" class="contents">
+            <Breadcrumbs :items="breadcrumbs">
+                <template #actions>
+                    <a href="https://docs.lunarphp.com/" target="_blank" rel="noopener">
+                        <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
+                    </a>
+                </template>
+            </Breadcrumbs>
+
             <PageHeader :title="t('customers.new_title')">
                 <template #icon>
-                    <Link :href="urls.index" class="text-ink-500 hover:text-ink-900 shrink-0 self-center">
+                    <Link
+                        :href="urls.index"
+                        class="text-ink-500 hover:text-ink-900 shrink-0 self-center"
+                        :aria-label="t('customers.back_to_customers')"
+                    >
                         <Icon name="arrowLeft" />
                     </Link>
                 </template>
@@ -80,33 +107,36 @@ const submit = (): void => {
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                        <label class="flex flex-col gap-1 sm:col-span-2">
-                            <FieldLabel class="mb-0">{{ t('customers.field_title') }}</FieldLabel>
-                            <Select v-model="form.title">
-                                <option v-for="option in titleOptions" :key="option || 'none'" :value="option">{{ option || '—' }}</option>
+                        <div class="sm:col-span-2">
+                            <FieldLabel for="customer-title">{{ t('customers.field_title') }}</FieldLabel>
+                            <Select id="customer-title" v-model="form.title">
+                                <option v-for="option in titleOptions" :key="option.value || 'none'" :value="option.value">{{ option.label }}</option>
                             </Select>
-                        </label>
+                        </div>
                         <div class="sm:col-span-5">
-                            <FieldLabel required>{{ t('customers.field_first_name') }}</FieldLabel>
-                            <TextInput v-model="form.first_name" :invalid="!!form.errors.first_name" />
+                            <FieldLabel for="customer-first-name" required>{{ t('customers.field_first_name') }}</FieldLabel>
+                            <TextInput id="customer-first-name" v-model="form.first_name" :invalid="!!form.errors.first_name" />
                             <div v-if="form.errors.first_name" class="mt-1 text-[11px] text-danger">{{ form.errors.first_name }}</div>
                         </div>
                         <div class="sm:col-span-5">
-                            <FieldLabel required>{{ t('customers.field_last_name') }}</FieldLabel>
-                            <TextInput v-model="form.last_name" :invalid="!!form.errors.last_name" />
+                            <FieldLabel for="customer-last-name" required>{{ t('customers.field_last_name') }}</FieldLabel>
+                            <TextInput id="customer-last-name" v-model="form.last_name" :invalid="!!form.errors.last_name" />
                             <div v-if="form.errors.last_name" class="mt-1 text-[11px] text-danger">{{ form.errors.last_name }}</div>
                         </div>
                         <div class="sm:col-span-12">
-                            <FieldLabel>{{ t('customers.field_company_name') }}</FieldLabel>
-                            <TextInput v-model="form.company_name" :placeholder="t('common.optional')" :invalid="!!form.errors.company_name" />
+                            <FieldLabel for="customer-company-name">{{ t('customers.field_company_name') }}</FieldLabel>
+                            <TextInput id="customer-company-name" v-model="form.company_name" :placeholder="t('common.optional')" :invalid="!!form.errors.company_name" />
+                            <div v-if="form.errors.company_name" class="mt-1 text-[11px] text-danger">{{ form.errors.company_name }}</div>
                         </div>
                         <div class="sm:col-span-6">
-                            <FieldLabel>{{ t('customers.field_tax_identifier') }}</FieldLabel>
-                            <TextInput v-model="form.tax_identifier" mono placeholder="GB000000000" :invalid="!!form.errors.tax_identifier" />
+                            <FieldLabel for="customer-tax-identifier">{{ t('customers.field_tax_identifier') }}</FieldLabel>
+                            <TextInput id="customer-tax-identifier" v-model="form.tax_identifier" mono placeholder="GB000000000" :invalid="!!form.errors.tax_identifier" />
+                            <div v-if="form.errors.tax_identifier" class="mt-1 text-[11px] text-danger">{{ form.errors.tax_identifier }}</div>
                         </div>
                         <div class="sm:col-span-6">
-                            <FieldLabel>{{ t('customers.field_account_ref') }}</FieldLabel>
-                            <TextInput v-model="form.account_ref" mono placeholder="ACC-00000" :invalid="!!form.errors.account_ref" />
+                            <FieldLabel for="customer-account-ref">{{ t('customers.field_account_ref') }}</FieldLabel>
+                            <TextInput id="customer-account-ref" v-model="form.account_ref" mono placeholder="ACC-00000" :invalid="!!form.errors.account_ref" />
+                            <div v-if="form.errors.account_ref" class="mt-1 text-[11px] text-danger">{{ form.errors.account_ref }}</div>
                         </div>
                     </div>
 

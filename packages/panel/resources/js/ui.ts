@@ -17,10 +17,14 @@ export { default as DataTable } from './components/DataTable.vue';
 export { default as Pagination } from './components/Pagination.vue';
 export { default as PageEmpty } from './components/PageEmpty.vue';
 export { default as StatusBadge } from './components/StatusBadge.vue';
+export { default as FlashMessage } from './components/FlashMessage.vue';
 
 // Filters / stats
 export { default as FilterDropdown } from './components/FilterDropdown.vue';
 export { default as KpiCard } from './components/KpiCard.vue';
+
+// Charts
+export { default as TimeSeriesChart } from './components/TimeSeriesChart.vue';
 
 // Form inputs
 export { default as TextInput } from './components/TextInput.vue';

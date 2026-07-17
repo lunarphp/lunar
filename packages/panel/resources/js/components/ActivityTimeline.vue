@@ -74,6 +74,15 @@ const TYPE_META: Record<string, ToneMeta> = {
     group_removed: { icon: 'flag', tone: 'neutral' },
     address_added: { icon: 'pin', tone: 'neutral' },
     user_invited: { icon: 'mail', tone: 'neutral' },
+    // spatie/activitylog model events plus the customer action events.
+    created: { icon: 'userPlus', tone: 'sage' },
+    updated: { icon: 'edit', tone: 'neutral' },
+    deleted: { icon: 'trash', tone: 'danger' },
+    address_created: { icon: 'fileText', tone: 'neutral' },
+    address_updated: { icon: 'edit', tone: 'neutral' },
+    address_deleted: { icon: 'trash', tone: 'archived' },
+    user_linked: { icon: 'userPlus', tone: 'sage' },
+    user_unlinked: { icon: 'x', tone: 'archived' },
 };
 
 // intentionally omits 'archived' to match the prototype — it falls back to TONE.neutral below.

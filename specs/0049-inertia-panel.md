@@ -267,10 +267,11 @@ Against the core `staff` guard (`Lunar\Core\Models\Staff`), configurable via
 - **Customers** (a `sales` section) — index with search, customer-group filter, sort, and
   pagination on `DataTable`; create; detail/edit with personal details (title, names,
   company, tax identifier, account ref), customer-group assignment, and tabs for Saved
-  addresses (CRUD), Users (link/unlink to storefront users), and Activity (activity log);
-  delete with confirmation. The prototype's order-history tab and purchase-stat KPIs are
-  deferred until Orders exists; dynamic attribute rendering (`attribute_data`) is deferred
-  because it pulls in the whole field-type system. The layout leaves room for both.
+  addresses (CRUD), Users (link/unlink to storefront users), Order history (read-only list
+  over the core Order model), and Activity (activity log); lifetime purchase stats and an
+  editable notes card in the sidebar; delete with confirmation. Order rows do not link
+  anywhere until an Orders section exists; dynamic attribute rendering (`attribute_data`)
+  is deferred because it pulls in the whole field-type system.
 - **Settings layout** — the settings shell with its own grouped, permission-filtered
   sidebar driven by the settings-navigation registry, matching the design prototype's
   `SettingsNav`.

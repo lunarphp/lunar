@@ -11,6 +11,14 @@ class UpdateCustomerAddress implements UpdatesCustomerAddress
     {
         $address->update($attributes);
 
+        if ($address->customer) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($address->customer)
+                ->event('address-updated')
+                ->log('address-updated');
+        }
+
         return $address;
     }
 }

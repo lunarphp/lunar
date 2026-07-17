@@ -52,7 +52,17 @@ test('clears customer groups when an empty set is given', function () {
     $group = CustomerGroup::factory()->create();
     $customer->customerGroups()->attach($group);
 
-    app(UpdateCustomer::class)->execute($customer, []);
+    app(UpdateCustomer::class)->execute($customer, [], []);
 
     expect($customer->customerGroups()->get())->toHaveCount(0);
+});
+
+test('leaves customer groups untouched when no set is given', function () {
+    $customer = Customer::factory()->create();
+    $group = CustomerGroup::factory()->create();
+    $customer->customerGroups()->attach($group);
+
+    app(UpdateCustomer::class)->execute($customer, ['first_name' => 'Peter']);
+
+    expect($customer->customerGroups()->get())->toHaveCount(1);
 });

@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
 import Button from '../../components/Button.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
+import FlashMessage from '../../components/FlashMessage.vue';
 import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
 
@@ -36,12 +37,7 @@ const submit = () => form.post(props.urls.store);
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.forgot_title') }}</h1>
             <p class="mt-1.5 text-[13px] text-ink-500">{{ t('auth.forgot_subtitle') }}</p>
 
-            <div
-                v-if="flashSuccess"
-                class="mt-5 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink"
-            >
-                {{ flashSuccess }}
-            </div>
+            <FlashMessage :message="flashSuccess" :timeout="0" class="mt-5" />
 
             <div class="mt-7">
                 <FieldLabel>{{ t('auth.email') }}</FieldLabel>
