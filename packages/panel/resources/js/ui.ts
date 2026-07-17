@@ -43,6 +43,7 @@ export { default as SideCard } from './components/SideCard.vue';
 export { default as Tabs } from './components/Tabs.vue';
 
 // Edit drafts
+export { default as DraftActions } from './components/DraftActions.vue';
 export { default as DraftConflictDialog } from './components/DraftConflictDialog.vue';
 export { useEditDraft } from './composables/useEditDraft';
 export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/useEditDraft';

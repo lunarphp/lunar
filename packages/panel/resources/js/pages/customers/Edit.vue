@@ -10,6 +10,7 @@ import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.v
 import Combobox from '../../components/Combobox.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import Dialog from '../../components/Dialog.vue';
+import DraftActions from '../../components/DraftActions.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
@@ -147,19 +148,9 @@ const headerUsers = computed(() => {
 
 // Personal details + customer groups, driven by an autosaving edit draft:
 // dirty fields persist server-side and commit with field-level conflict
-// detection instead of a last-write-wins PUT.
-const {
-    values: details,
-    errors: detailsErrors,
-    conflicts: draftConflicts,
-    saving: draftSaving,
-    committing: draftCommitting,
-    savedAt: draftSavedAt,
-    restoredFrom: draftRestoredFrom,
-    commit: commitDetails,
-    resolve: resolveDraft,
-    discard: discardDraft,
-} = useEditDraft({
+// detection instead of a last-write-wins PUT. The save cluster lives in the
+// sticky breadcrumb bar via <DraftActions :form="draftForm" />.
+const draftForm = useEditDraft({
     initial: {
         title: props.customer.title ?? '',
         first_name: props.customer.first_name,
@@ -172,6 +163,15 @@ const {
     draft: props.draft,
     urls: { draft: props.urls.draft, commit: props.urls.draftCommit },
 });
+
+const {
+    values: details,
+    errors: detailsErrors,
+    conflicts: draftConflicts,
+    committing: draftCommitting,
+    commit: commitDetails,
+    resolve: resolveDraft,
+} = draftForm;
 
 const conflictOpen = computed({
     get: () => draftConflicts.value.length > 0,
@@ -540,9 +540,7 @@ const tabDefs = computed(() => [
         <div data-screen-label="Customer detail" class="contents">
             <Breadcrumbs :items="breadcrumbs">
                 <template #actions>
-                    <a href="https://docs.lunarphp.com/" target="_blank" rel="noopener">
-                        <Button icon="help"><span class="hidden sm:inline">{{ t('common.docs') }}</span></Button>
-                    </a>
+                    <DraftActions :form="draftForm" />
                 </template>
             </Breadcrumbs>
 
@@ -574,15 +572,6 @@ const tabDefs = computed(() => [
                 <PageZone region="main" position="before" />
 
                 <FlashMessage :message="flashSuccess" class="mb-4" />
-
-                <div
-                    v-if="draftRestoredFrom"
-                    class="mb-4 flex items-center gap-3 rounded-md border border-line bg-surface-2 px-3.5 py-2.5 text-[12.5px] text-ink-700"
-                >
-                    <Icon name="edit" cls="sm" />
-                    <span class="flex-1">{{ t('drafts.restored', { time: new Date(draftRestoredFrom).toLocaleString() }) }}</span>
-                    <Button size="sm" @click="discardDraft">{{ t('drafts.discard') }}</Button>
-                </div>
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="min-w-0">
@@ -672,13 +661,9 @@ const tabDefs = computed(() => [
                                 </div>
                             </Section>
 
-                            <div class="pt-2 pb-6">
-                                <div class="flex items-center gap-3">
-                                    <Button type="submit" variant="primary" :disabled="draftCommitting">{{ t('common.save_changes') }}</Button>
-                                    <span v-if="draftSaving" class="text-[11px] text-ink-500">{{ t('drafts.saving') }}</span>
-                                    <span v-else-if="draftSavedAt" class="text-[11px] text-ink-500">{{ t('drafts.saved') }}</span>
-                                </div>
-                            </div>
+                            <!-- The save cluster lives in the sticky breadcrumb bar; the
+                                 hidden submit keeps Enter-to-save working in the form. -->
+                            <button type="submit" class="hidden" aria-hidden="true" tabindex="-1" />
                         </form>
 
                         <PageZone region="main" position="after" :customer="customer" />
