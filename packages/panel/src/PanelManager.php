@@ -4,9 +4,12 @@ namespace Lunar\Panel;
 
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Lunar\Panel\Actions\PageActionResolver;
+use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\ProvidesNavigation;
 use Lunar\Panel\Sections\Section;
@@ -32,6 +35,9 @@ class PanelManager
 
     /** @var array<string, string[]> */
     protected array $pageActions = [];
+
+    /** @var array<class-string<Model>, DraftableResource> */
+    protected array $draftables = [];
 
     /** @var Closure[] */
     protected array $routeRegistrars = [];
@@ -133,6 +139,10 @@ class PanelManager
             }
         }
 
+        foreach ($entity->draftables() as $definitionClass) {
+            $this->draftable($definitionClass);
+        }
+
         if ($viteConfig = $entity->vite()) {
             $this->vite($this->viteKeyFor($sectionKey, $entity), $viteConfig);
         }
@@ -207,6 +217,41 @@ class PanelManager
     public function resolvePageActions(string $pageId): PageActionResolver
     {
         return new PageActionResolver($this->getPageActions($pageId), $this->user());
+    }
+
+    /**
+     * Register a draftable-resource definition, keyed by its model class.
+     * Registration also removes a record's drafts when the record is deleted,
+     * so drafts never point at gone records.
+     *
+     * @param  class-string<DraftableResource>  $definitionClass
+     */
+    public function draftable(string $definitionClass): static
+    {
+        /** @var DraftableResource $definition */
+        $definition = app($definitionClass);
+
+        $model = $definition->model();
+
+        if (isset($this->draftables[$model])) {
+            Log::warning("Lunar Panel: draftable resource for [{$model}] is already registered and will be overwritten.");
+        } else {
+            $model::deleted(function (Model $record): void {
+                EditDraft::query()
+                    ->where('draftable_type', $record->getMorphClass())
+                    ->where('draftable_id', $record->getKey())
+                    ->delete();
+            });
+        }
+
+        $this->draftables[$model] = $definition;
+
+        return $this;
+    }
+
+    public function draftableFor(Model $model): ?DraftableResource
+    {
+        return $this->draftables[$model::class] ?? null;
     }
 
     /**

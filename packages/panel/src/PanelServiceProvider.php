@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -9,9 +10,12 @@ use Lunar\Panel\Auth\AppAuthentication;
 use Lunar\Panel\Auth\EmailTwoFactor;
 use Lunar\Panel\Console\Commands\InstallPanelCommand;
 use Lunar\Panel\Console\Commands\LinkPanelAssetsCommand;
+use Lunar\Panel\Contracts\DraftManager as DraftManagerContract;
+use Lunar\Panel\Drafts\DraftManager;
 use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\Http\Middleware\Authenticate;
 use Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests;
+use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Sections\Sales\SalesSection;
 use Lunar\Panel\Sections\Settings\ChannelsSection;
@@ -35,12 +39,18 @@ class PanelServiceProvider extends ServiceProvider
 
         $this->app->singleton(AppAuthentication::class);
         $this->app->singleton(EmailTwoFactor::class);
+
+        $this->app->singleton(DraftManagerContract::class, DraftManager::class);
     }
 
     public function boot(): void
     {
         $this->loadViewsFrom("{$this->root}/resources/views", 'panel');
         $this->loadTranslationsFrom("{$this->root}/resources/lang", 'panel');
+
+        if (! config('lunar.database.disable_migrations', false)) {
+            $this->loadMigrationsFrom("{$this->root}/database/migrations");
+        }
 
         if ($this->app->runningInConsole()) {
             collect($this->configFiles)->each(function ($config) {
@@ -58,6 +68,10 @@ class PanelServiceProvider extends ServiceProvider
                 InstallPanelCommand::class,
                 LinkPanelAssetsCommand::class,
             ]);
+
+            $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
+                $schedule->command('model:prune', ['--model' => [EditDraft::class]])->daily();
+            });
         }
 
         $this->registerPermissionGate();

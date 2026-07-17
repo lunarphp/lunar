@@ -42,6 +42,19 @@ export const Tooltip = ui().Tooltip;
 export const SideCard = ui().SideCard;
 export const Tabs = ui().Tabs;
 
+// Edit drafts
+export const DraftConflictDialog = ui().DraftConflictDialog;
+export const useEditDraft = (...args) => ui().useEditDraft(...args);
+export const http = {
+    get: (...args) => ui().http.get(...args),
+    post: (...args) => ui().http.post(...args),
+    patch: (...args) => ui().http.patch(...args),
+    delete: (...args) => ui().http.delete(...args),
+};
+export const DraftConflictError = ui().DraftConflictError;
+export const HttpError = ui().HttpError;
+export const ValidationError = ui().ValidationError;
+
 // Primitives
 export const Button = ui().Button;
 export const Icon = ui().Icon;

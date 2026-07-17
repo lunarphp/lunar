@@ -42,6 +42,13 @@ export { default as Tooltip } from './components/Tooltip.vue';
 export { default as SideCard } from './components/SideCard.vue';
 export { default as Tabs } from './components/Tabs.vue';
 
+// Edit drafts
+export { default as DraftConflictDialog } from './components/DraftConflictDialog.vue';
+export { useEditDraft } from './composables/useEditDraft';
+export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/useEditDraft';
+export { DraftConflictError, HttpError, ValidationError, http } from './lib/http';
+export type { DraftConflict } from './lib/http';
+
 // Primitives
 export { default as Button } from './components/Button.vue';
 export { default as Icon } from './components/Icon.vue';

@@ -4,12 +4,14 @@ namespace Lunar\Panel\Sections\Sales;
 
 use Closure;
 use Illuminate\Support\Facades\Route;
+use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Http\Controllers\Customers\CustomerAddressController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerCreateController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerEditController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerIndexController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerNotesController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
+use Lunar\Panel\Http\Controllers\EditDraftController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Sales\Tables\CustomersTableExtension;
@@ -54,6 +56,14 @@ class SalesSection extends Section
         ];
     }
 
+    /** @return array<int, class-string<DraftableResource>> */
+    public function draftables(): array
+    {
+        return [
+            CustomerDraftResource::class,
+        ];
+    }
+
     public function routes(): ?Closure
     {
         return function (): void {
@@ -65,6 +75,10 @@ class SalesSection extends Section
                 Route::put('/{customer}', [CustomerEditController::class, 'update'])->name('update');
                 Route::delete('/{customer}', [CustomerEditController::class, 'destroy'])->name('destroy');
                 Route::put('/{customer}/notes', [CustomerNotesController::class, 'update'])->name('notes.update');
+
+                Route::patch('/{customer}/draft', [EditDraftController::class, 'update'])->name('draft.update');
+                Route::delete('/{customer}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');
+                Route::post('/{customer}/draft/commit', [EditDraftController::class, 'commit'])->name('draft.commit');
 
                 Route::scopeBindings()->group(function (): void {
                     Route::post('/{customer}/addresses', [CustomerAddressController::class, 'store'])->name('addresses.store');

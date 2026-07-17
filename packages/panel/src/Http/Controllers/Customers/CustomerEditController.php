@@ -16,7 +16,9 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Order;
+use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Customers\CustomerRequest;
+use Lunar\Panel\PanelManager;
 use Spatie\Activitylog\Models\Activity;
 
 class CustomerEditController
@@ -33,9 +35,12 @@ class CustomerEditController
         '10y' => ['months' => 120, 'bucket' => 'year'],
     ];
 
-    public function edit(Request $request, Customer $customer): Response
+    public function edit(Request $request, Customer $customer, PanelManager $panel, DraftManager $drafts): Response
     {
         $customer->load('customerGroups:id,name');
+
+        $staff = $panel->user();
+        $draft = $staff ? $drafts->find($customer, $staff) : null;
 
         $addresses = $customer->addresses()->latest()->get()->map(fn (Address $address) => [
             'id' => $address->id,
@@ -141,6 +146,10 @@ class CustomerEditController
             'orders' => $orders,
             'stats' => $stats,
             'orderChart' => $this->orderChart($request, $customer),
+            'draft' => $draft ? [
+                'data' => $draft->data,
+                'updated_at' => $draft->updated_at?->toJSON(),
+            ] : null,
             'urls' => [
                 'index' => route('panel.customers.index'),
                 'update' => route('panel.customers.update', $customer),
@@ -148,6 +157,8 @@ class CustomerEditController
                 'addressesStore' => route('panel.customers.addresses.store', $customer),
                 'usersStore' => route('panel.customers.users.store', $customer),
                 'notesUpdate' => route('panel.customers.notes.update', $customer),
+                'draft' => route('panel.customers.draft.update', $customer),
+                'draftCommit' => route('panel.customers.draft.commit', $customer),
             ],
         ]);
     }

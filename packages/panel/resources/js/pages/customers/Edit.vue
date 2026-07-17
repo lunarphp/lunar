@@ -10,6 +10,7 @@ import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.v
 import Combobox from '../../components/Combobox.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import Dialog from '../../components/Dialog.vue';
+import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
 import FlashMessage from '../../components/FlashMessage.vue';
@@ -26,6 +27,7 @@ import Textarea from '../../components/Textarea.vue';
 import TextInput from '../../components/TextInput.vue';
 import TimeSeriesChart, { type ChartPoint } from '../../components/TimeSeriesChart.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
+import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 
 interface OptionItem {
     id: number;
@@ -106,6 +108,7 @@ const props = defineProps<{
         range: string;
         buckets: ChartPoint[];
     };
+    draft: DraftState | null;
     urls: {
         index: string;
         update: string;
@@ -113,6 +116,8 @@ const props = defineProps<{
         addressesStore: string;
         usersStore: string;
         notesUpdate: string;
+        draft: string;
+        draftCommit: string;
     };
 }>();
 
@@ -140,16 +145,46 @@ const headerUsers = computed(() => {
     return props.users.length > 1 ? t('customers.user_count', props.users.length) : null;
 });
 
-// Personal details + customer groups
-const detailsForm = useForm({
-    title: props.customer.title ?? '',
-    first_name: props.customer.first_name,
-    last_name: props.customer.last_name,
-    company_name: props.customer.company_name ?? '',
-    tax_identifier: props.customer.tax_identifier ?? '',
-    account_ref: props.customer.account_ref ?? '',
-    customer_group_ids: props.customer.customer_groups.map((group) => group.id),
+// Personal details + customer groups, driven by an autosaving edit draft:
+// dirty fields persist server-side and commit with field-level conflict
+// detection instead of a last-write-wins PUT.
+const {
+    values: details,
+    errors: detailsErrors,
+    conflicts: draftConflicts,
+    saving: draftSaving,
+    committing: draftCommitting,
+    savedAt: draftSavedAt,
+    restoredFrom: draftRestoredFrom,
+    commit: commitDetails,
+    resolve: resolveDraft,
+    discard: discardDraft,
+} = useEditDraft({
+    initial: {
+        title: props.customer.title ?? '',
+        first_name: props.customer.first_name,
+        last_name: props.customer.last_name,
+        company_name: props.customer.company_name ?? '',
+        tax_identifier: props.customer.tax_identifier ?? '',
+        account_ref: props.customer.account_ref ?? '',
+        customer_group_ids: props.customer.customer_groups.map((group) => group.id),
+    },
+    draft: props.draft,
+    urls: { draft: props.urls.draft, commit: props.urls.draftCommit },
 });
+
+const conflictOpen = computed({
+    get: () => draftConflicts.value.length > 0,
+    set: (value: boolean) => {
+        if (!value) {
+            draftConflicts.value = [];
+        }
+    },
+});
+
+const onResolveConflicts = (resolutions: Record<string, unknown>, rebase: Record<string, unknown>): void => {
+    void resolveDraft(resolutions, rebase);
+};
 
 // Stored values stay canonical; only the visible labels are translated. A stored
 // title outside the base list (e.g. entered at checkout) is kept as its own option
@@ -176,22 +211,22 @@ const titleOptions = computed(() => {
 const groupName = (id: number): string => props.customerGroups.find((group) => group.id === id)?.name ?? String(id);
 
 const addableGroupOptions = computed(() => {
-    const taken = new Set(detailsForm.customer_group_ids);
+    const taken = new Set(details.customer_group_ids);
 
     return props.customerGroups.filter((group) => !taken.has(group.id)).map((group) => ({ value: group.id, label: group.name }));
 });
 
 const addGroupSelection = ref<string | number | null>(null);
 const onAddGroup = (value: string | number): void => {
-    detailsForm.customer_group_ids.push(Number(value));
+    details.customer_group_ids.push(Number(value));
     addGroupSelection.value = null;
 };
 const removeGroup = (id: number): void => {
-    detailsForm.customer_group_ids = detailsForm.customer_group_ids.filter((groupId) => groupId !== id);
+    details.customer_group_ids = details.customer_group_ids.filter((groupId) => groupId !== id);
 };
 
 const submitDetails = (): void => {
-    detailsForm.put(props.urls.update, { preserveScroll: true });
+    void commitDetails();
 };
 
 // Confirmation dialog (shared across customer delete / address delete / user unlink)
@@ -540,6 +575,15 @@ const tabDefs = computed(() => [
 
                 <FlashMessage :message="flashSuccess" class="mb-4" />
 
+                <div
+                    v-if="draftRestoredFrom"
+                    class="mb-4 flex items-center gap-3 rounded-md border border-line bg-surface-2 px-3.5 py-2.5 text-[12.5px] text-ink-700"
+                >
+                    <Icon name="edit" cls="sm" />
+                    <span class="flex-1">{{ t('drafts.restored', { time: new Date(draftRestoredFrom).toLocaleString() }) }}</span>
+                    <Button size="sm" @click="discardDraft">{{ t('drafts.discard') }}</Button>
+                </div>
+
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="min-w-0">
                         <!-- Order value over time; the range switcher reloads only this card. -->
@@ -565,34 +609,34 @@ const tabDefs = computed(() => [
                                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                                     <div class="sm:col-span-2">
                                         <FieldLabel for="customer-title">{{ t('customers.field_title') }}</FieldLabel>
-                                        <Select id="customer-title" v-model="detailsForm.title">
+                                        <Select id="customer-title" v-model="details.title">
                                             <option v-for="option in titleOptions" :key="option.value || 'none'" :value="option.value">{{ option.label }}</option>
                                         </Select>
                                     </div>
                                     <div class="sm:col-span-5">
                                         <FieldLabel for="customer-first-name" required>{{ t('customers.field_first_name') }}</FieldLabel>
-                                        <TextInput id="customer-first-name" v-model="detailsForm.first_name" :invalid="!!detailsForm.errors.first_name" />
-                                        <div v-if="detailsForm.errors.first_name" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.first_name }}</div>
+                                        <TextInput id="customer-first-name" v-model="details.first_name" :invalid="!!detailsErrors.first_name" />
+                                        <div v-if="detailsErrors.first_name" class="mt-1 text-[11px] text-danger">{{ detailsErrors.first_name }}</div>
                                     </div>
                                     <div class="sm:col-span-5">
                                         <FieldLabel for="customer-last-name" required>{{ t('customers.field_last_name') }}</FieldLabel>
-                                        <TextInput id="customer-last-name" v-model="detailsForm.last_name" :invalid="!!detailsForm.errors.last_name" />
-                                        <div v-if="detailsForm.errors.last_name" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.last_name }}</div>
+                                        <TextInput id="customer-last-name" v-model="details.last_name" :invalid="!!detailsErrors.last_name" />
+                                        <div v-if="detailsErrors.last_name" class="mt-1 text-[11px] text-danger">{{ detailsErrors.last_name }}</div>
                                     </div>
                                     <div class="sm:col-span-12">
                                         <FieldLabel for="customer-company-name">{{ t('customers.field_company_name') }}</FieldLabel>
-                                        <TextInput id="customer-company-name" v-model="detailsForm.company_name" :placeholder="t('common.optional')" :invalid="!!detailsForm.errors.company_name" />
-                                        <div v-if="detailsForm.errors.company_name" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.company_name }}</div>
+                                        <TextInput id="customer-company-name" v-model="details.company_name" :placeholder="t('common.optional')" :invalid="!!detailsErrors.company_name" />
+                                        <div v-if="detailsErrors.company_name" class="mt-1 text-[11px] text-danger">{{ detailsErrors.company_name }}</div>
                                     </div>
                                     <div class="sm:col-span-6">
                                         <FieldLabel for="customer-tax-identifier">{{ t('customers.field_tax_identifier') }}</FieldLabel>
-                                        <TextInput id="customer-tax-identifier" v-model="detailsForm.tax_identifier" mono :invalid="!!detailsForm.errors.tax_identifier" />
-                                        <div v-if="detailsForm.errors.tax_identifier" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.tax_identifier }}</div>
+                                        <TextInput id="customer-tax-identifier" v-model="details.tax_identifier" mono :invalid="!!detailsErrors.tax_identifier" />
+                                        <div v-if="detailsErrors.tax_identifier" class="mt-1 text-[11px] text-danger">{{ detailsErrors.tax_identifier }}</div>
                                     </div>
                                     <div class="sm:col-span-6">
                                         <FieldLabel for="customer-account-ref">{{ t('customers.field_account_ref') }}</FieldLabel>
-                                        <TextInput id="customer-account-ref" v-model="detailsForm.account_ref" mono :invalid="!!detailsForm.errors.account_ref" />
-                                        <div v-if="detailsForm.errors.account_ref" class="mt-1 text-[11px] text-danger">{{ detailsForm.errors.account_ref }}</div>
+                                        <TextInput id="customer-account-ref" v-model="details.account_ref" mono :invalid="!!detailsErrors.account_ref" />
+                                        <div v-if="detailsErrors.account_ref" class="mt-1 text-[11px] text-danger">{{ detailsErrors.account_ref }}</div>
                                     </div>
                                 </div>
                             </Section>
@@ -601,7 +645,7 @@ const tabDefs = computed(() => [
                                 <template #desc>{{ t('customers.groups_desc') }}</template>
                                 <div class="flex flex-wrap items-center gap-1.5">
                                     <span
-                                        v-for="id in detailsForm.customer_group_ids"
+                                        v-for="id in details.customer_group_ids"
                                         :key="id"
                                         class="inline-flex items-center gap-1 rounded-full border bg-surface-2 border-line text-ink-700 h-[22px] pl-2 pr-1 text-[11px] font-medium"
                                     >
@@ -615,7 +659,7 @@ const tabDefs = computed(() => [
                                             <Icon name="x" cls="sm" />
                                         </button>
                                     </span>
-                                    <span v-if="!detailsForm.customer_group_ids.length" class="text-[12px] text-ink-500">{{ t('customers.no_groups') }}</span>
+                                    <span v-if="!details.customer_group_ids.length" class="text-[12px] text-ink-500">{{ t('customers.no_groups') }}</span>
                                     <div class="ml-auto min-w-[180px] max-w-[220px] flex-1">
                                         <Combobox
                                             v-if="addableGroupOptions.length"
@@ -629,7 +673,11 @@ const tabDefs = computed(() => [
                             </Section>
 
                             <div class="pt-2 pb-6">
-                                <Button type="submit" variant="primary" :disabled="detailsForm.processing">{{ t('common.save_changes') }}</Button>
+                                <div class="flex items-center gap-3">
+                                    <Button type="submit" variant="primary" :disabled="draftCommitting">{{ t('common.save_changes') }}</Button>
+                                    <span v-if="draftSaving" class="text-[11px] text-ink-500">{{ t('drafts.saving') }}</span>
+                                    <span v-else-if="draftSavedAt" class="text-[11px] text-ink-500">{{ t('drafts.saved') }}</span>
+                                </div>
                             </div>
                         </form>
 
@@ -868,6 +916,13 @@ const tabDefs = computed(() => [
                 tone="danger"
                 :confirm-label="confirmLabel"
                 @confirm="confirmDestroy"
+            />
+
+            <DraftConflictDialog
+                v-model:open="conflictOpen"
+                :conflicts="draftConflicts"
+                :busy="draftCommitting"
+                @resolve="onResolveConflicts"
             />
         </div>
     </PanelLayout>
