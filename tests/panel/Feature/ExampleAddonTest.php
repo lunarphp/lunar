@@ -82,7 +82,7 @@ it('merges the example add-on table extension column onto the real customer inde
 
                 // First-party columns come first; the example add-on's
                 // ExampleColumn ("id") is appended by the table extension resolver.
-                return $keys === ['full_name', 'company_name', 'customer_groups', 'created_at', 'id'];
+                return $keys === ['full_name', 'company_name', 'customer_groups', 'orders_count', 'total_spend', 'last_order_at', 'id'];
             })
             ->where('customers.data.0.id', $customer->id)
         );

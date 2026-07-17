@@ -32,7 +32,6 @@ return [
     'column_customer' => 'Харилцагч',
     'column_company' => 'Компани',
     'column_groups' => 'Бүлгүүд',
-    'column_created' => 'Үүсгэсэн',
 
     'new_title' => 'Шинэ харилцагч',
     'detail_label' => 'Харилцагчийн дэлгэрэнгүй',

@@ -32,7 +32,6 @@ return [
     'column_customer' => 'Klant',
     'column_company' => 'Bedrijf',
     'column_groups' => 'Groepen',
-    'column_created' => 'Aangemaakt',
 
     'new_title' => 'Nieuwe klant',
     'detail_label' => 'Klantdetail',

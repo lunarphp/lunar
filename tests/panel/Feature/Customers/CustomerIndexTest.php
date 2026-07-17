@@ -1,8 +1,10 @@
 <?php
 
 use Inertia\Testing\AssertableInertia as Assert;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Order;
 use Lunar\Core\Models\Staff;
 use Lunar\Tests\Core\Stubs\User;
 use Lunar\Tests\Panel\TestCase;
@@ -109,6 +111,41 @@ it('exposes real KPI counts', function () {
             ->where('kpis.newLast30Days', 2)
             ->where('kpis.business', 1)
             ->where('kpis.withAccount', 1)
+        );
+});
+
+it('exposes per-row order stats and the linked user email', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+    $customer->users()->attach(User::factory()->create(['email' => 'ada@example.com']));
+
+    Order::factory()->placed()->for($customer)->create(['total' => 10000, 'exchange_rate' => 1]);
+    Order::factory()->placed()->for($customer)->create(['total' => 5000, 'exchange_rate' => 1]);
+    Order::factory()->for($customer)->create(['total' => 99999, 'placed_at' => null]);
+
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('customers.data.0.email', 'ada@example.com')
+            ->where('customers.data.0.orders_count', 2)
+            ->where('customers.data.0.total_spend', '£150.00')
+            ->whereNot('customers.data.0.last_order_at', null)
+        );
+});
+
+it('reports empty row stats for customers without placed orders', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Customer::factory()->create();
+
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('customers.data.0.email', null)
+            ->where('customers.data.0.orders_count', 0)
+            ->where('customers.data.0.total_spend', null)
+            ->where('customers.data.0.last_order_at', null)
         );
 });
 

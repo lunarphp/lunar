@@ -21,7 +21,7 @@ it('merges add-on table extension columns onto the customer index', function () 
                 $keys = collect($columns)->pluck('key')->all();
 
                 // First-party columns still come first, extension columns are appended.
-                return $keys === ['full_name', 'company_name', 'customer_groups', 'created_at', 'public_id', 'addresses_count'];
+                return $keys === ['full_name', 'company_name', 'customer_groups', 'orders_count', 'total_spend', 'last_order_at', 'public_id', 'addresses_count'];
             })
             ->where('customers.data.0.public_id', $customer->public_id)
             // "addresses_count" only appears with a real value because the extension

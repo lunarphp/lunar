@@ -32,7 +32,6 @@ return [
     'column_customer' => 'مشتری',
     'column_company' => 'شرکت',
     'column_groups' => 'گروه‌ها',
-    'column_created' => 'تاریخ ایجاد',
 
     'new_title' => 'مشتری جدید',
     'detail_label' => 'جزئیات مشتری',

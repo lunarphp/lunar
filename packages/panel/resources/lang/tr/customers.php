@@ -32,7 +32,6 @@ return [
     'column_customer' => 'Müşteri',
     'column_company' => 'Şirket',
     'column_groups' => 'Gruplar',
-    'column_created' => 'Oluşturulma',
 
     'new_title' => 'Yeni müşteri',
     'detail_label' => 'Müşteri detayı',

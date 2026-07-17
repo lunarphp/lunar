@@ -32,7 +32,6 @@ return [
     'column_customer' => 'Ügyfél',
     'column_company' => 'Cég',
     'column_groups' => 'Csoportok',
-    'column_created' => 'Létrehozva',
 
     'new_title' => 'Új ügyfél',
     'detail_label' => 'Ügyfél adatai',

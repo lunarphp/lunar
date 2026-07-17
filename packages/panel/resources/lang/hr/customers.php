@@ -32,7 +32,6 @@ return [
     'column_customer' => 'Kupac',
     'column_company' => 'Tvrtka',
     'column_groups' => 'Grupe',
-    'column_created' => 'Kreirano',
 
     'new_title' => 'Novi kupac',
     'detail_label' => 'Detalji kupca',

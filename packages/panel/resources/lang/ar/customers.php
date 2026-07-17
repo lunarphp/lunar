@@ -32,7 +32,6 @@ return [
     'column_customer' => 'العميل',
     'column_company' => 'الشركة',
     'column_groups' => 'المجموعات',
-    'column_created' => 'تاريخ الإنشاء',
 
     'new_title' => 'عميل جديد',
     'detail_label' => 'تفاصيل العميل',

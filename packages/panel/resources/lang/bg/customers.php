@@ -32,7 +32,6 @@ return [
     'column_customer' => 'Клиент',
     'column_company' => 'Фирма',
     'column_groups' => 'Групи',
-    'column_created' => 'Създаден',
 
     'new_title' => 'Нов клиент',
     'detail_label' => 'Детайли за клиента',

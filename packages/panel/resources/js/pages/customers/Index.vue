@@ -39,7 +39,11 @@ interface CustomerRow {
     last_name: string;
     company_name: string | null;
     account_ref: string | null;
+    email: string | null;
     created_at: string;
+    orders_count: number;
+    total_spend: string | null;
+    last_order_at: string | null;
     customer_groups: CustomerGroupOption[];
     edit_url: string;
     // Extension-contributed columns land here under their own key.
@@ -196,7 +200,18 @@ const kpis = computed(() => [
 const initials = (firstName: string, lastName: string): string =>
     ((firstName?.[0] ?? '') + (lastName?.[0] ?? '')).toUpperCase() || '?';
 
-const formatDate = (value: string): string => new Date(value).toLocaleDateString();
+// Soft avatar tints, assigned per customer id so a customer keeps their colour
+// across pages and reloads.
+const AVATAR_TONES = [
+    'bg-sage-soft border-sage-border',
+    'bg-warn-soft border-warn-border',
+    'bg-danger-soft border-danger-border',
+];
+
+const avatarTone = (id: number): string => AVATAR_TONES[id % AVATAR_TONES.length];
+
+const formatShortDate = (value: string): string =>
+    new Date(value).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 </script>
 
 <template>
@@ -312,12 +327,18 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
 
                     <template #cell-full_name="{ row }">
                         <div class="min-w-0 flex items-center gap-2.5">
-                            <div class="w-7 h-7 rounded-full border border-line bg-surface-2 grid place-items-center text-ink-700 text-[10.5px] font-semibold shrink-0">
+                            <div
+                                :class="[
+                                    'w-7 h-7 rounded-full border grid place-items-center text-ink-700 text-[10.5px] font-semibold shrink-0',
+                                    avatarTone(row.id as number),
+                                ]"
+                            >
                                 {{ initials(row.first_name as string, row.last_name as string) }}
                             </div>
                             <div class="min-w-0">
                                 <div class="text-[12.5px] text-ink-900 truncate">{{ row.full_name }}</div>
-                                <div v-if="row.account_ref" class="text-[11px] text-ink-500 truncate font-mono">{{ row.account_ref }}</div>
+                                <div v-if="row.email" class="text-[11px] text-ink-500 truncate">{{ row.email }}</div>
+                                <div v-else-if="row.account_ref" class="text-[11px] text-ink-500 truncate font-mono">{{ row.account_ref }}</div>
                             </div>
                         </div>
                     </template>
@@ -334,8 +355,18 @@ const formatDate = (value: string): string => new Date(value).toLocaleDateString
                         </div>
                     </template>
 
-                    <template #cell-created_at="{ value }">
-                        <span class="text-xs text-ink-700 [font-variant-numeric:tabular-nums]">{{ formatDate(value as string) }}</span>
+                    <template #cell-orders_count="{ value }">
+                        <span class="text-[12.5px] text-ink-700 [font-variant-numeric:tabular-nums]">{{ value }}</span>
+                    </template>
+
+                    <template #cell-total_spend="{ value }">
+                        <span v-if="value" class="text-[12.5px] text-ink-900 font-medium [font-variant-numeric:tabular-nums]">{{ value }}</span>
+                        <span v-else class="text-[12.5px] text-ink-400">—</span>
+                    </template>
+
+                    <template #cell-last_order_at="{ value }">
+                        <span v-if="value" class="text-xs text-ink-700 [font-variant-numeric:tabular-nums]">{{ formatShortDate(value as string) }}</span>
+                        <span v-else class="text-[12.5px] text-ink-400">—</span>
                     </template>
                 </DataTable>
 

@@ -32,7 +32,6 @@ return [
     'column_customer' => 'Cliente',
     'column_company' => 'Empresa',
     'column_groups' => 'Grupos',
-    'column_created' => 'Creado',
 
     'new_title' => 'Nuevo cliente',
     'detail_label' => 'Detalle del cliente',

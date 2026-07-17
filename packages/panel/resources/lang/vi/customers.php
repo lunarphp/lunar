@@ -32,7 +32,6 @@ return [
     'column_customer' => 'Khách hàng',
     'column_company' => 'Công ty',
     'column_groups' => 'Nhóm',
-    'column_created' => 'Ngày tạo',
 
     'new_title' => 'Khách hàng mới',
     'detail_label' => 'Chi tiết khách hàng',

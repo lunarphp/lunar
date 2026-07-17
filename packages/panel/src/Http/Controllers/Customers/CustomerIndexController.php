@@ -5,8 +5,11 @@ namespace Lunar\Panel\Http\Controllers\Customers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lunar\Core\DataObjects\PriceValue;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
+use Lunar\Core\Models\Order;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
 
 class CustomerIndexController
@@ -22,10 +25,12 @@ class CustomerIndexController
     public function index(Request $request): Response
     {
         $this->columns = [
-            ['key' => 'full_name', 'label' => __('panel::customers.column_customer'), 'width' => 'minmax(0,1.4fr)'],
+            ['key' => 'full_name', 'label' => __('panel::customers.column_customer'), 'width' => 'minmax(0,1.6fr)'],
             ['key' => 'company_name', 'label' => __('panel::customers.column_company'), 'width' => 'minmax(0,1fr)'],
             ['key' => 'customer_groups', 'label' => __('panel::customers.column_groups'), 'width' => 'minmax(0,1fr)'],
-            ['key' => 'created_at', 'label' => __('panel::customers.column_created'), 'width' => '120px', 'align' => 'right'],
+            ['key' => 'orders_count', 'label' => __('panel::customers.stat_orders'), 'width' => '80px', 'align' => 'right'],
+            ['key' => 'total_spend', 'label' => __('panel::customers.stat_total_spend'), 'width' => '120px', 'align' => 'right'],
+            ['key' => 'last_order_at', 'label' => __('panel::customers.stat_latest_order'), 'width' => '110px'],
         ];
 
         $sort = $request->string('sort')->value();
@@ -35,8 +40,28 @@ class CustomerIndexController
 
         $resolver = $this->resolveTable('customers.index');
 
+        $defaultCurrency = Currency::getDefault();
+
+        $customerKey = (new Customer)->qualifyColumn('id');
+
+        // Per-row order stats as correlated subqueries; the same placed-order
+        // and default-currency basis as the edit page's lifetime stats.
+        $placedOrders = fn () => Order::query()
+            ->whereColumn('customer_id', $customerKey)
+            ->whereNotNull('placed_at');
+
         $customers = Customer::query()
+            ->select((new Customer)->qualifyColumn('*'))
+            ->addSelect([
+                'placed_orders_count' => $placedOrders()->selectRaw('COUNT(*)'),
+                'total_spend_minor' => $placedOrders()->selectRaw('COALESCE(SUM(total / NULLIF(exchange_rate, 0)), 0)'),
+                'last_order_at' => $placedOrders()->select('placed_at')->latest('placed_at')->limit(1),
+            ])
             ->with('customerGroups:id,name')
+            ->with(['users' => fn ($query) => $query->select(
+                $query->getModel()->qualifyColumn('id'),
+                $query->getModel()->qualifyColumn('email'),
+            )])
             ->when($request->filled('q'), function ($query) use ($request, $resolver) {
                 $term = $request->string('q')->value();
                 $like = "%{$term}%";
@@ -63,7 +88,10 @@ class CustomerIndexController
             ->orderBy($sort, $direction)
             ->paginate(15)
             ->withQueryString()
-            ->through(function (Customer $customer) use ($resolver) {
+            ->through(function (Customer $customer) use ($resolver, $defaultCurrency) {
+                $ordersCount = (int) $customer->getAttribute('placed_orders_count');
+                $spendMinor = (int) round((float) $customer->getAttribute('total_spend_minor'));
+
                 $row = [
                     'id' => $customer->id,
                     'full_name' => $customer->full_name,
@@ -71,7 +99,13 @@ class CustomerIndexController
                     'last_name' => $customer->last_name,
                     'company_name' => $customer->company_name,
                     'account_ref' => $customer->account_ref,
+                    'email' => $customer->users->first()?->email,
                     'created_at' => $customer->created_at,
+                    'orders_count' => $ordersCount,
+                    'total_spend' => $ordersCount && $defaultCurrency
+                        ? (new PriceValue($spendMinor, $defaultCurrency))->format()
+                        : null,
+                    'last_order_at' => $customer->getAttribute('last_order_at'),
                     'customer_groups' => $customer->customerGroups->map(fn (CustomerGroup $group) => [
                         'id' => $group->id,
                         'name' => $group->name,
