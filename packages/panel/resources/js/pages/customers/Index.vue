@@ -307,6 +307,12 @@ const formatShortDate = (value: string): string =>
                             default-value=""
                         />
                         <FilterDropdown v-model="sortKey" :label="t('common.sort')" :options="sortOptions" default-value="recent" />
+                        <button
+                            v-if="hasActiveFilters"
+                            type="button"
+                            class="text-[12px] text-ink-500 underline underline-offset-2 whitespace-nowrap rounded-sm hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35"
+                            @click="clearFilters"
+                        >{{ t('customers.clear_filters') }}</button>
                         <div class="flex-1" />
                         <span class="text-[11.5px] text-ink-500 whitespace-nowrap">{{ t('customers.count_of', { shown: customers.total, total: totalCount }) }}</span>
                         <Button v-if="kpisDismissed" icon="chart" @click="kpisDismissed = false">
