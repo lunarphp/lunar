@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'присъединили се през последните 30 дни',
     'kpi_business_label' => 'B2B акаунти',
     'kpi_business_hint' => 'клиенти с фирма',
-    'kpi_with_account_label' => 'Може да влиза',
-    'kpi_with_account_hint' => 'свързани с потребителски акаунт',
+    'kpi_ltv_label' => 'Средна стойност на клиент',
+    'kpi_ltv_hint' => 'сред клиенти с поръчки',
 
     'column_customer' => 'Клиент',
     'column_company' => 'Фирма',

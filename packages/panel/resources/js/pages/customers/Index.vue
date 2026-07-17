@@ -87,7 +87,13 @@ const props = defineProps<{
     tableFilterValues: Record<string, string>;
     customerGroups: CustomerGroupOption[];
     totalCount: number;
-    kpis: { total: number; newLast30Days: number; business: number; withAccount: number };
+    kpis: {
+        total: number;
+        newLast30Days: number;
+        business: number;
+        avgLifetimeValue: string | null;
+        avgLifetimeValueDelta: number | null;
+    };
     filters: { q?: string; customer_group_id?: string | number; type?: string; sort?: string; direction?: string };
     urls: { index: string; create: string };
 }>();
@@ -190,11 +196,23 @@ const KPI_STORAGE_KEY = 'lunar.panel.customers.kpisDismissed';
 const kpisDismissed = ref(localStorage.getItem(KPI_STORAGE_KEY) === '1');
 watch(kpisDismissed, (value) => localStorage.setItem(KPI_STORAGE_KEY, value ? '1' : '0'));
 
+// The lifetime-value delta compares against the average as it stood 30 days
+// ago; a drop stays neutral rather than alarming.
+const lifetimeValueDelta = computed(() => {
+    const delta = props.kpis.avgLifetimeValueDelta;
+
+    if (delta === null) {
+        return undefined;
+    }
+
+    return { value: `${delta > 0 ? '+' : ''}${delta}%`, tone: delta >= 0 ? ('sage' as const) : ('neutral' as const) };
+});
+
 const kpis = computed(() => [
-    { label: t('customers.kpi_total_label'), value: props.kpis.total, hint: t('customers.kpi_total_hint'), tone: 'neutral' as const, icon: 'users' },
-    { label: t('customers.kpi_new_label'), value: props.kpis.newLast30Days, hint: t('customers.kpi_new_hint'), tone: 'sage' as const, icon: 'userPlus' },
-    { label: t('customers.kpi_business_label'), value: props.kpis.business, hint: t('customers.kpi_business_hint'), tone: 'neutral' as const, icon: 'building' },
-    { label: t('customers.kpi_with_account_label'), value: props.kpis.withAccount, hint: t('customers.kpi_with_account_hint'), tone: 'sage' as const, icon: 'user' },
+    { label: t('customers.kpi_total_label'), value: props.kpis.total, hint: t('customers.kpi_total_hint'), tone: 'neutral' as const, icon: 'users', delta: undefined },
+    { label: t('customers.kpi_new_label'), value: props.kpis.newLast30Days, hint: t('customers.kpi_new_hint'), tone: 'sage' as const, icon: 'userPlus', delta: undefined },
+    { label: t('customers.kpi_business_label'), value: props.kpis.business, hint: t('customers.kpi_business_hint'), tone: 'neutral' as const, icon: 'building', delta: undefined },
+    { label: t('customers.kpi_ltv_label'), value: props.kpis.avgLifetimeValue ?? '—', hint: t('customers.kpi_ltv_hint'), tone: 'sage' as const, icon: 'chart', delta: lifetimeValueDelta.value },
 ]);
 
 const initials = (firstName: string, lastName: string): string =>
@@ -253,6 +271,7 @@ const formatShortDate = (value: string): string =>
                             :hint="kpi.hint"
                             :tone="kpi.tone"
                             :icon="kpi.icon"
+                            :delta="kpi.delta"
                         />
                     </div>
                     <button

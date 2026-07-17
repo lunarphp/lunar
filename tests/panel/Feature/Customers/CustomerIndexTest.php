@@ -102,15 +102,52 @@ it('exposes real KPI counts', function () {
     Customer::factory()->create(['company_name' => 'Acme Ltd']);
     Customer::factory()->create(['company_name' => null, 'created_at' => now()->subDays(40)]);
 
-    $withUser = Customer::factory()->create(['company_name' => null]);
-    $withUser->users()->attach(User::factory()->create());
+    Customer::factory()->create(['company_name' => null]);
 
     $this->get(route('panel.customers.index'))
         ->assertInertia(fn (Assert $page) => $page
             ->where('kpis.total', 3)
             ->where('kpis.newLast30Days', 2)
             ->where('kpis.business', 1)
-            ->where('kpis.withAccount', 1)
+            ->where('kpis.avgLifetimeValue', null)
+            ->where('kpis.avgLifetimeValueDelta', null)
+        );
+});
+
+it('reports the average lifetime value across customers with orders', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $first = Customer::factory()->create();
+    Order::factory()->placed()->for($first)->create(['total' => 10000, 'exchange_rate' => 1]);
+    Order::factory()->placed()->for($first)->create(['total' => 5000, 'exchange_rate' => 1]);
+
+    $second = Customer::factory()->create();
+    Order::factory()->placed()->for($second)->create(['total' => 5000, 'exchange_rate' => 1]);
+
+    // (150 + 50) / 2 customers = £100.00; no orders predate the 30-day window, so no delta.
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.avgLifetimeValue', '£100.00')
+            ->where('kpis.avgLifetimeValueDelta', null)
+        );
+});
+
+it('reports the lifetime value delta against the average 30 days ago', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Currency::factory()->create(['code' => 'GBP', 'default' => true, 'exchange_rate' => 1]);
+
+    $customer = Customer::factory()->create();
+    Order::factory()->placed()->for($customer)->create(['total' => 10000, 'exchange_rate' => 1, 'placed_at' => now()->subDays(40)]);
+    Order::factory()->placed()->for($customer)->create(['total' => 2000, 'exchange_rate' => 1]);
+
+    // Average moved from £100.00 to £120.00: +20%.
+    $this->get(route('panel.customers.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('kpis.avgLifetimeValue', '£120.00')
+            ->where('kpis.avgLifetimeValueDelta', 20)
         );
 });
 

@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'انضموا خلال آخر 30 يومًا',
     'kpi_business_label' => 'حسابات B2B',
     'kpi_business_hint' => 'عملاء لديهم شركة',
-    'kpi_with_account_label' => 'يمكنه تسجيل الدخول',
-    'kpi_with_account_hint' => 'مرتبطون بحساب مستخدم',
+    'kpi_ltv_label' => 'متوسط القيمة الدائمة',
+    'kpi_ltv_hint' => 'بين العملاء الذين لديهم طلبات',
 
     'column_customer' => 'العميل',
     'column_company' => 'الشركة',

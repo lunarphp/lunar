@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'tham gia trong 30 ngày qua',
     'kpi_business_label' => 'Tài khoản B2B',
     'kpi_business_hint' => 'khách hàng có công ty',
-    'kpi_with_account_label' => 'Có thể đăng nhập',
-    'kpi_with_account_hint' => 'liên kết với tài khoản người dùng',
+    'kpi_ltv_label' => 'Giá trị trọn đời TB',
+    'kpi_ltv_hint' => 'trên khách hàng có đơn hàng',
 
     'column_customer' => 'Khách hàng',
     'column_company' => 'Công ty',

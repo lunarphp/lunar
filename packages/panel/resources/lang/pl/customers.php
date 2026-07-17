@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'dołączyli w ciągu ostatnich 30 dni',
     'kpi_business_label' => 'Konta B2B',
     'kpi_business_hint' => 'klienci z firmą',
-    'kpi_with_account_label' => 'Może się logować',
-    'kpi_with_account_hint' => 'powiązani z kontem użytkownika',
+    'kpi_ltv_label' => 'Śr. wartość klienta',
+    'kpi_ltv_hint' => 'wśród klientów z zamówieniami',
 
     'column_customer' => 'Klient',
     'column_company' => 'Firma',

@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'cadastrados nos últimos 30 dias',
     'kpi_business_label' => 'Contas B2B',
     'kpi_business_hint' => 'clientes com empresa',
-    'kpi_with_account_label' => 'Pode entrar',
-    'kpi_with_account_hint' => 'vinculados a uma conta de usuário',
+    'kpi_ltv_label' => 'Valor médio do cliente',
+    'kpi_ltv_hint' => 'entre clientes com pedidos',
 
     'column_customer' => 'Cliente',
     'column_company' => 'Empresa',

@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'aangesloten in de laatste 30 dagen',
     'kpi_business_label' => 'B2B-accounts',
     'kpi_business_hint' => 'klanten met een bedrijf',
-    'kpi_with_account_label' => 'Kan inloggen',
-    'kpi_with_account_hint' => 'gekoppeld aan een gebruikersaccount',
+    'kpi_ltv_label' => 'Gem. klantwaarde',
+    'kpi_ltv_hint' => 'over klanten met bestellingen',
 
     'column_customer' => 'Klant',
     'column_company' => 'Bedrijf',

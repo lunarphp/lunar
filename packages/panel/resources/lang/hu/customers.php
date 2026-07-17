@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'az elmúlt 30 napban csatlakozott',
     'kpi_business_label' => 'B2B fiókok',
     'kpi_business_hint' => 'céggel rendelkező ügyfelek',
-    'kpi_with_account_label' => 'Bejelentkezhet',
-    'kpi_with_account_hint' => 'felhasználói fiókhoz kapcsolva',
+    'kpi_ltv_label' => 'Átl. ügyfélérték',
+    'kpi_ltv_hint' => 'rendeléssel rendelkező ügyfelek között',
 
     'column_customer' => 'Ügyfél',
     'column_company' => 'Cég',

@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'joined in the last 30 days',
     'kpi_business_label' => 'B2B accounts',
     'kpi_business_hint' => 'customers with a company',
-    'kpi_with_account_label' => 'Can sign in',
-    'kpi_with_account_hint' => 'linked to a user account',
+    'kpi_ltv_label' => 'Avg lifetime value',
+    'kpi_ltv_hint' => 'across customers with orders',
 
     'column_customer' => 'Customer',
     'column_company' => 'Company',

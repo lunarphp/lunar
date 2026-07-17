@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'сүүлийн 30 хоногт нэгдсэн',
     'kpi_business_label' => 'B2B данс',
     'kpi_business_hint' => 'компанитай харилцагчид',
-    'kpi_with_account_label' => 'Нэвтрэх боломжтой',
-    'kpi_with_account_hint' => 'хэрэглэгчийн данстай холбогдсон',
+    'kpi_ltv_label' => 'Дундаж насан туршийн үнэ цэн',
+    'kpi_ltv_hint' => 'захиалгатай харилцагчдын дунд',
 
     'column_customer' => 'Харилцагч',
     'column_company' => 'Компани',

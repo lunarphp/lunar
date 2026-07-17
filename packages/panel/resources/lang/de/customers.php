@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'in den letzten 30 Tagen beigetreten',
     'kpi_business_label' => 'B2B-Konten',
     'kpi_business_hint' => 'Kunden mit Firma',
-    'kpi_with_account_label' => 'Anmeldefähig',
-    'kpi_with_account_hint' => 'mit einem Benutzerkonto verknüpft',
+    'kpi_ltv_label' => 'Ø Kundenwert',
+    'kpi_ltv_hint' => 'über Kunden mit Bestellungen',
 
     'column_customer' => 'Kunde',
     'column_company' => 'Firma',

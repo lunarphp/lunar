@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'registrados en los últimos 30 días',
     'kpi_business_label' => 'Cuentas B2B',
     'kpi_business_hint' => 'clientes con empresa',
-    'kpi_with_account_label' => 'Puede iniciar sesión',
-    'kpi_with_account_hint' => 'vinculados a una cuenta de usuario',
+    'kpi_ltv_label' => 'Valor medio de por vida',
+    'kpi_ltv_hint' => 'entre clientes con pedidos',
 
     'column_customer' => 'Cliente',
     'column_company' => 'Empresa',

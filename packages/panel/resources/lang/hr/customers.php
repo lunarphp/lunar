@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'pridružili se u zadnjih 30 dana',
     'kpi_business_label' => 'B2B računi',
     'kpi_business_hint' => 'kupci s tvrtkom',
-    'kpi_with_account_label' => 'Može se prijaviti',
-    'kpi_with_account_hint' => 'povezani s korisničkim računom',
+    'kpi_ltv_label' => 'Prosj. vrijednost kupca',
+    'kpi_ltv_hint' => 'među kupcima s narudžbama',
 
     'column_customer' => 'Kupac',
     'column_company' => 'Tvrtka',

@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'در ۳۰ روز گذشته پیوسته‌اند',
     'kpi_business_label' => 'حساب‌های B2B',
     'kpi_business_hint' => 'مشتریان دارای شرکت',
-    'kpi_with_account_label' => 'امکان ورود',
-    'kpi_with_account_hint' => 'متصل به حساب کاربری',
+    'kpi_ltv_label' => 'میانگین ارزش مشتری',
+    'kpi_ltv_hint' => 'در میان مشتریان دارای سفارش',
 
     'column_customer' => 'مشتری',
     'column_company' => 'شرکت',

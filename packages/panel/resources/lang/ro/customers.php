@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'înscriși în ultimele 30 de zile',
     'kpi_business_label' => 'Conturi B2B',
     'kpi_business_hint' => 'clienți cu companie',
-    'kpi_with_account_label' => 'Se poate autentifica',
-    'kpi_with_account_hint' => 'legați de un cont de utilizator',
+    'kpi_ltv_label' => 'Valoare medie pe client',
+    'kpi_ltv_hint' => 'între clienții cu comenzi',
 
     'column_customer' => 'Client',
     'column_company' => 'Companie',

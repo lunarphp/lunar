@@ -26,8 +26,8 @@ return [
     'kpi_new_hint' => 'son 30 günde katıldı',
     'kpi_business_label' => 'B2B hesapları',
     'kpi_business_hint' => 'şirketi olan müşteriler',
-    'kpi_with_account_label' => 'Giriş yapabilir',
-    'kpi_with_account_hint' => 'bir kullanıcı hesabına bağlı',
+    'kpi_ltv_label' => 'Ort. yaşam boyu değer',
+    'kpi_ltv_hint' => 'siparişi olan müşteriler arasında',
 
     'column_customer' => 'Müşteri',
     'column_company' => 'Şirket',
