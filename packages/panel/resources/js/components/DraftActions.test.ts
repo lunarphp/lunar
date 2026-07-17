@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { computed, reactive, ref } from 'vue';
+import { computed, nextTick, reactive, ref } from 'vue';
 import DraftActions from './DraftActions.vue';
 import type { EditDraftForm } from '../composables/useEditDraft';
 
@@ -49,16 +49,45 @@ describe('DraftActions', () => {
         expect(buttons(wrapper)).toHaveLength(2);
     });
 
-    it('shows the autosave status text', () => {
-        const saving = mount(DraftActions, {
+    it('shows the saving status text while an autosave is in flight', () => {
+        const wrapper = mount(DraftActions, {
             props: { form: fakeForm({ isDirty: computed(() => true), saving: ref(true) }) },
         });
-        const saved = mount(DraftActions, {
-            props: { form: fakeForm({ isDirty: computed(() => true), savedAt: ref('2026-07-17T00:00:00Z') }) },
+
+        expect(wrapper.find('[role="status"]').text()).toBe('drafts.saving');
+    });
+
+    it('shows the saved note after a save lands and clears it after 10 seconds', async () => {
+        vi.useFakeTimers();
+
+        try {
+            const saving = ref(true);
+            const savedAt = ref<string | null>(null);
+            const wrapper = mount(DraftActions, {
+                props: { form: fakeForm({ isDirty: computed(() => true), saving, savedAt }) },
+            });
+
+            saving.value = false;
+            savedAt.value = '2026-07-17T00:00:00Z';
+            await nextTick();
+
+            expect(wrapper.find('[role="status"]').text()).toBe('drafts.saved');
+
+            await vi.advanceTimersByTimeAsync(10_000);
+
+            expect(wrapper.find('[role="status"]').exists()).toBe(false);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    it('does not show a stale saved note for a restored draft on load', () => {
+        const wrapper = mount(DraftActions, {
+            props: { form: fakeForm({ hasDraft: ref(true), savedAt: ref('2026-07-16T00:00:00Z') }) },
         });
 
-        expect(saving.find('[role="status"]').text()).toBe('drafts.saving');
-        expect(saved.find('[role="status"]').text()).toBe('drafts.saved');
+        expect(wrapper.find('[role="status"]').exists()).toBe(false);
+        expect(buttons(wrapper)).toHaveLength(2);
     });
 
     it('commits on save and discards on discard', async () => {

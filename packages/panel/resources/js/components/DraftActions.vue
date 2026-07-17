@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
 import type { EditDraftForm } from '../composables/useEditDraft';
@@ -16,12 +16,44 @@ const { t } = useI18n();
 
 const active = computed(() => props.form.isDirty.value || props.form.hasDraft.value);
 
+// "Draft saved" is a confirmation, not a permanent label: it shows for a few
+// seconds after each autosave lands, then clears until the next one.
+const SAVED_NOTE_MS = 10_000;
+
+const showSaved = ref(false);
+let savedNoteTimer: ReturnType<typeof setTimeout> | null = null;
+
+watch(
+    [() => props.form.saving.value, () => props.form.savedAt.value],
+    ([saving, savedAt]) => {
+        if (savedNoteTimer !== null) {
+            clearTimeout(savedNoteTimer);
+            savedNoteTimer = null;
+        }
+
+        showSaved.value = !saving && savedAt !== null;
+
+        if (showSaved.value) {
+            savedNoteTimer = setTimeout(() => {
+                showSaved.value = false;
+                savedNoteTimer = null;
+            }, SAVED_NOTE_MS);
+        }
+    },
+);
+
+onBeforeUnmount(() => {
+    if (savedNoteTimer !== null) {
+        clearTimeout(savedNoteTimer);
+    }
+});
+
 const status = computed(() => {
     if (props.form.saving.value) {
         return t('drafts.saving');
     }
 
-    return props.form.savedAt.value ? t('drafts.saved') : null;
+    return showSaved.value ? t('drafts.saved') : null;
 });
 
 const save = (): void => {
