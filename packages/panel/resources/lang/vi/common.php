@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Thao tác khác',
     'select_all_rows' => 'Chọn tất cả các hàng',
     'close' => 'Đóng',
+    'clear' => 'Xóa',
     'locked' => 'Đã khóa',
     'toggle_options' => 'Hiện hoặc ẩn tùy chọn',
     'breadcrumb' => 'Đường dẫn điều hướng',

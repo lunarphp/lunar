@@ -23,6 +23,7 @@ return [
     'more_actions' => 'اقدامات بیشتر',
     'select_all_rows' => 'انتخاب همه ردیف‌ها',
     'close' => 'بستن',
+    'clear' => 'پاک کردن',
     'locked' => 'قفل شده',
     'toggle_options' => 'نمایش یا پنهان کردن گزینه‌ها',
     'breadcrumb' => 'مسیر راهنما',

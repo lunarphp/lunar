@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Więcej akcji',
     'select_all_rows' => 'Zaznacz wszystkie wiersze',
     'close' => 'Zamknij',
+    'clear' => 'Wyczyść',
     'locked' => 'Zablokowane',
     'toggle_options' => 'Pokaż lub ukryj opcje',
     'breadcrumb' => 'Ścieżka nawigacji',

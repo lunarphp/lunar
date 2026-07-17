@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Više radnji',
     'select_all_rows' => 'Odaberi sve retke',
     'close' => 'Zatvori',
+    'clear' => 'Očisti',
     'locked' => 'Zaključano',
     'toggle_options' => 'Prikaži ili sakrij opcije',
     'breadcrumb' => 'Navigacijska staza',

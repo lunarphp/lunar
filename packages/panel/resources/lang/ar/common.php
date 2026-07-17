@@ -23,6 +23,7 @@ return [
     'more_actions' => 'المزيد من الإجراءات',
     'select_all_rows' => 'تحديد كل الصفوف',
     'close' => 'إغلاق',
+    'clear' => 'مسح',
     'locked' => 'مقفل',
     'toggle_options' => 'إظهار أو إخفاء الخيارات',
     'breadcrumb' => 'مسار التنقل',

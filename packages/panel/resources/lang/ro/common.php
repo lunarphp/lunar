@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Mai multe acțiuni',
     'select_all_rows' => 'Selectează toate rândurile',
     'close' => 'Închide',
+    'clear' => 'Golește',
     'locked' => 'Blocat',
     'toggle_options' => 'Afișează sau ascunde opțiunile',
     'breadcrumb' => 'Cale de navigare',

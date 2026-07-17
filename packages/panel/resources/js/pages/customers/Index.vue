@@ -291,7 +291,7 @@ const formatShortDate = (value: string): string =>
                 <div class="flex flex-wrap items-center gap-2 mb-4 min-h-[34px]">
                     <template v-if="!(hasBulkActions && selected.length)">
                         <div class="flex-1 max-w-[280px] min-w-[180px]">
-                            <TextInput v-model="q" :placeholder="t('customers.search_placeholder')">
+                            <TextInput v-model="q" clearable :placeholder="t('customers.search_placeholder')">
                                 <template #prefix><Icon name="search" cls="sm" /></template>
                             </TextInput>
                         </div>

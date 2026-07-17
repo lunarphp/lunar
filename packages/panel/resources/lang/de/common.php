@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Weitere Aktionen',
     'select_all_rows' => 'Alle Zeilen auswählen',
     'close' => 'Schließen',
+    'clear' => 'Leeren',
     'locked' => 'Gesperrt',
     'toggle_options' => 'Optionen ein- oder ausblenden',
     'breadcrumb' => 'Breadcrumb-Navigation',

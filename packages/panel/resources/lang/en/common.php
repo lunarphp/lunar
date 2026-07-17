@@ -23,6 +23,7 @@ return [
     'more_actions' => 'More actions',
     'select_all_rows' => 'Select all rows',
     'close' => 'Close',
+    'clear' => 'Clear',
     'locked' => 'Locked',
     'toggle_options' => 'Toggle options',
     'breadcrumb' => 'Breadcrumb',

@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Бусад үйлдэл',
     'select_all_rows' => 'Бүх мөрийг сонгох',
     'close' => 'Хаах',
+    'clear' => 'Цэвэрлэх',
     'locked' => 'Түгжээтэй',
     'toggle_options' => 'Сонголтуудыг харуулах эсвэл нуух',
     'breadcrumb' => 'Навигацийн зам',

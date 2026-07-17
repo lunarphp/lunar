@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Meer acties',
     'select_all_rows' => 'Alle rijen selecteren',
     'close' => 'Sluiten',
+    'clear' => 'Wissen',
     'locked' => 'Vergrendeld',
     'toggle_options' => 'Opties tonen of verbergen',
     'breadcrumb' => 'Kruimelpad',

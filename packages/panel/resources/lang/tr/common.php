@@ -23,6 +23,7 @@ return [
     'more_actions' => 'Diğer işlemler',
     'select_all_rows' => 'Tüm satırları seç',
     'close' => 'Kapat',
+    'clear' => 'Temizle',
     'locked' => 'Kilitli',
     'toggle_options' => 'Seçenekleri göster veya gizle',
     'breadcrumb' => 'Gezinme yolu',
