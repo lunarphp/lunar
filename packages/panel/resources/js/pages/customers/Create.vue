@@ -107,8 +107,8 @@ const submit = (): void => {
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                        <div class="flex flex-col gap-1 sm:col-span-2">
-                            <FieldLabel for="customer-title" class="mb-0">{{ t('customers.field_title') }}</FieldLabel>
+                        <div class="sm:col-span-2">
+                            <FieldLabel for="customer-title">{{ t('customers.field_title') }}</FieldLabel>
                             <Select id="customer-title" v-model="form.title">
                                 <option v-for="option in titleOptions" :key="option.value || 'none'" :value="option.value">{{ option.label }}</option>
                             </Select>
