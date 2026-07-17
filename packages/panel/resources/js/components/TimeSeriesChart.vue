@@ -107,9 +107,13 @@ const showLabel = (index: number): boolean => {
 
 // Remounting the series paths (via :key) restarts their draw-in animation
 // whenever the data changes, e.g. when a range switcher swaps the buckets.
+// Compared by value: partial reloads hand over a fresh but identical array
+// (e.g. after a draft commit), which must not replay the animation.
 const animationKey = ref(0);
-watch(() => props.points, () => {
-    animationKey.value++;
+watch(() => props.points, (points, previous) => {
+    if (JSON.stringify(points) !== JSON.stringify(previous)) {
+        animationKey.value++;
+    }
 });
 
 // Hover/focus: a crosshair snaps to the nearest bucket; the same readout is

@@ -75,3 +75,5 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0047 | Promotions: a campaign layer over discounts | declined    |
 | 0048 | Rename `product_variants.purchasable` to `selling_policy` | implemented |
 | 0049 | Inertia admin panel (`lunarphp/panel`) | implemented |
+| 0050 | Panel order-value chart and public charting component | accepted    |
+| 0051 | Panel edit drafts and field-level conflict detection | implemented |

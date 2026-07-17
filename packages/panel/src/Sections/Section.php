@@ -3,6 +3,7 @@
 namespace Lunar\Panel\Sections;
 
 use Closure;
+use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Slots\SlotRegistry;
 
@@ -44,6 +45,17 @@ abstract class Section implements ProvidesNavigation
      * @return array<string, array<int, class-string>>
      */
     public function pageActions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return draftable-resource definitions for edit forms in this section,
+     * e.g. [CustomerDraftResource::class].
+     *
+     * @return array<int, class-string<DraftableResource>>
+     */
+    public function draftables(): array
     {
         return [];
     }

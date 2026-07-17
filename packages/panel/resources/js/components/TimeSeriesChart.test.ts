@@ -69,6 +69,21 @@ describe('TimeSeriesChart', () => {
         expect(wrapper.find('path.tsc-area').exists()).toBe(true);
     });
 
+    it('replays the draw-in only when point values actually change', async () => {
+        const wrapper = mountChart();
+
+        const lineBefore = wrapper.findAll('path')[1].element;
+
+        // A fresh but value-identical array (a partial reload after a draft
+        // commit) must not remount the series paths.
+        await wrapper.setProps({ points: points.map((point) => ({ ...point })) });
+        expect(wrapper.findAll('path')[1].element).toBe(lineBefore);
+
+        // Different values (a range switch) restart the animation via remount.
+        await wrapper.setProps({ points: [...points, { label: 'Apr', value: 25 }] });
+        expect(wrapper.findAll('path')[1].element).not.toBe(lineBefore);
+    });
+
     it('scales a flat zero series without dividing by zero', () => {
         const wrapper = mountChart({ points: [{ label: 'Jan', value: 0 }, { label: 'Feb', value: 0 }] });
 

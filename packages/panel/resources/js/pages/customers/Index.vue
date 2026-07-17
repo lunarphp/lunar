@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
-import { Link, router, usePage } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import DataTable from '../../components/DataTable.vue';
@@ -13,7 +13,6 @@ import Icon from '../../components/Icon.vue';
 import Pagination from '../../components/Pagination.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
 import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
-import FlashMessage from '../../components/FlashMessage.vue';
 import KpiCard from '../../components/KpiCard.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
 import TextInput from '../../components/TextInput.vue';
@@ -100,8 +99,6 @@ const props = defineProps<{
 
 const selected = ref<(string | number)[]>([]);
 const hasBulkActions = computed(() => props.tableBulkActions.length > 0);
-
-const flashSuccess = computed(() => (usePage().props.flash as { success?: string } | undefined)?.success);
 
 // Sort options fold the backend's sort + direction pair into a single dropdown value,
 // matching the prototype's one-control sort.
@@ -257,8 +254,6 @@ const formatShortDate = (value: string): string =>
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
                 <PageZone region="main" position="before" />
-
-                <FlashMessage :message="flashSuccess" class="mb-4" />
 
                 <!-- KPI strip; dismissable, restored via "Show KPIs". -->
                 <div v-if="!kpisDismissed" class="mb-5 relative">

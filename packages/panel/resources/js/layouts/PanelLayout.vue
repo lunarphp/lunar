@@ -5,6 +5,7 @@ import { usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import NavBody from '../components/NavBody.vue';
 import Icon from '../components/Icon.vue';
+import Toaster from '../components/Toaster.vue';
 import { useNavState } from '../composables/useNavState';
 
 const { state, toggleCollapsed, openDrawer } = useNavState();
@@ -144,5 +145,7 @@ onUnmounted(() => {
                 <slot />
             </main>
         </div>
+
+        <Toaster />
     </TooltipProvider>
 </template>

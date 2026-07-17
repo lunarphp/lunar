@@ -3,6 +3,7 @@
 namespace Lunar\Panel\Sections;
 
 use Closure;
+use Lunar\Panel\Contracts\DraftableResource;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Slots\SlotRegistry;
 
@@ -27,6 +28,14 @@ interface ProvidesNavigation
      * @return array<string, array<int, class-string>>
      */
     public function pageActions(): array;
+
+    /**
+     * Draftable-resource definitions for edit forms, e.g.
+     * [CustomerDraftResource::class].
+     *
+     * @return array<int, class-string<DraftableResource>>
+     */
+    public function draftables(): array;
 
     /**
      * @return array{input?: string|string[], hotFile?: string|null, buildDirectory?: string, __buildSourcePath?: string}|string|null

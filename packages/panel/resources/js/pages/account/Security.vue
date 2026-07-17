@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import CodeInput from '../../components/CodeInput.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
-import FlashMessage from '../../components/FlashMessage.vue';
 import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
 
@@ -23,8 +22,6 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-
-const flashSuccess = computed(() => (usePage().props.flash as { success?: string })?.success);
 
 const passwordForm = useForm({
     current_password: '',
@@ -74,8 +71,6 @@ const copyCodes = () => {
         <div class="mx-auto flex max-w-xl flex-col gap-6 px-6">
             <Head :title="t('auth.security_title')" />
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.security_title') }}</h1>
-
-            <FlashMessage :message="flashSuccess" />
 
             <!-- Password -->
             <section class="rounded-lg border border-line bg-paper p-6">

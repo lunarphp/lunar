@@ -17,7 +17,11 @@ export { default as DataTable } from './components/DataTable.vue';
 export { default as Pagination } from './components/Pagination.vue';
 export { default as PageEmpty } from './components/PageEmpty.vue';
 export { default as StatusBadge } from './components/StatusBadge.vue';
-export { default as FlashMessage } from './components/FlashMessage.vue';
+
+// Notifications
+export { default as Toaster } from './components/Toaster.vue';
+export { useToasts } from './composables/useToasts';
+export type { ServerFlash, Toast, ToastApi, ToastTone } from './composables/useToasts';
 
 // Filters / stats
 export { default as FilterDropdown } from './components/FilterDropdown.vue';
@@ -41,6 +45,14 @@ export { default as ConfirmDialog } from './components/ConfirmDialog.vue';
 export { default as Tooltip } from './components/Tooltip.vue';
 export { default as SideCard } from './components/SideCard.vue';
 export { default as Tabs } from './components/Tabs.vue';
+
+// Edit drafts
+export { default as DraftActions } from './components/DraftActions.vue';
+export { default as DraftConflictDialog } from './components/DraftConflictDialog.vue';
+export { useEditDraft } from './composables/useEditDraft';
+export type { DraftState, EditDraftForm, EditDraftOptions } from './composables/useEditDraft';
+export { DraftConflictError, HttpError, ValidationError, http } from './lib/http';
+export type { DraftConflict } from './lib/http';
 
 // Primitives
 export { default as Button } from './components/Button.vue';
