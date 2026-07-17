@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 import AuthLayout from '../../layouts/AuthLayout.vue';
 import Button from '../../components/Button.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
-import FlashMessage from '../../components/FlashMessage.vue';
 import Icon from '../../components/Icon.vue';
 import TextInput from '../../components/TextInput.vue';
 
@@ -37,7 +36,16 @@ const submit = () => form.post(props.urls.store);
             <h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink-900">{{ t('auth.forgot_title') }}</h1>
             <p class="mt-1.5 text-[13px] text-ink-500">{{ t('auth.forgot_subtitle') }}</p>
 
-            <FlashMessage :message="flashSuccess" :timeout="0" class="mt-5" />
+            <!-- Persistent inline note rather than a toast: "check your email"
+                 must stay readable for as long as the page is open. -->
+            <div
+                v-if="flashSuccess"
+                role="status"
+                class="mt-5 flex items-center gap-2 rounded-md border border-sage-border bg-sage-soft px-3 py-2 text-[12px] text-sage-ink"
+            >
+                <Icon name="check" cls="sm" class="shrink-0" />
+                <span class="flex-1 min-w-0">{{ flashSuccess }}</span>
+            </div>
 
             <div class="mt-7">
                 <FieldLabel>{{ t('auth.email') }}</FieldLabel>

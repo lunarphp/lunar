@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import AddressCard from '../../components/AddressCard.vue';
@@ -14,7 +14,6 @@ import DraftActions from '../../components/DraftActions.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import FilterDropdown, { type FilterOption } from '../../components/FilterDropdown.vue';
-import FlashMessage from '../../components/FlashMessage.vue';
 import Icon from '../../components/Icon.vue';
 import PageEmpty from '../../components/PageEmpty.vue';
 import PageHeader from '../../components/PageHeader.vue';
@@ -123,8 +122,6 @@ const props = defineProps<{
 }>();
 
 const { t, te } = useI18n();
-
-const flashSuccess = computed(() => (usePage().props.flash as { success?: string } | undefined)?.success);
 
 const initials = (): string => ((props.customer.first_name?.[0] ?? '?') + (props.customer.last_name?.[0] ?? '')).toUpperCase();
 const fullName = computed(() => [props.customer.title, props.customer.first_name, props.customer.last_name].filter(Boolean).join(' '));
@@ -570,8 +567,6 @@ const tabDefs = computed(() => [
 
             <div class="px-4 sm:px-5 lg:px-7 max-w-[1400px] w-full mx-auto pt-5 pb-7">
                 <PageZone region="main" position="before" />
-
-                <FlashMessage :message="flashSuccess" class="mb-4" />
 
                 <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="min-w-0">

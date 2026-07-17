@@ -26,6 +26,7 @@ class HandlePanelInertiaRequests extends Middleware
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
+                'info' => fn () => $request->session()->get('info'),
             ],
             'panel' => [
                 'name' => config('lunar.panel.name', 'Lunar'),
