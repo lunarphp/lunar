@@ -563,8 +563,8 @@ const tabDefs = computed(() => [
                             <Section :title="t('customers.personal_details')">
                                 <template #desc>{{ t('customers.personal_details_desc') }}</template>
                                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                                    <div class="flex flex-col gap-1 sm:col-span-2">
-                                        <FieldLabel for="customer-title" class="mb-0">{{ t('customers.field_title') }}</FieldLabel>
+                                    <div class="sm:col-span-2">
+                                        <FieldLabel for="customer-title">{{ t('customers.field_title') }}</FieldLabel>
                                         <Select id="customer-title" v-model="detailsForm.title">
                                             <option v-for="option in titleOptions" :key="option.value || 'none'" :value="option.value">{{ option.label }}</option>
                                         </Select>
@@ -754,7 +754,7 @@ const tabDefs = computed(() => [
                     </div>
 
                     <aside>
-                        <div class="lg:sticky lg:top-4 flex flex-col gap-0">
+                        <div class="lg:sticky lg:top-[60px] flex flex-col gap-0">
                             <SideCard :title="t('customers.at_a_glance')">
                                 <div class="flex flex-col gap-2 text-[12px]">
                                     <div class="flex items-center justify-between gap-2">
