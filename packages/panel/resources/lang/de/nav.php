@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Seitenleiste umschalten',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Collections',
     'sales' => 'Verkäufe',
     'customers' => 'Kunden',
     'general' => 'Allgemein',

@@ -12,20 +12,28 @@ use Lunar\Panel\Http\Controllers\Brands\BrandIndexController;
 use Lunar\Panel\Http\Controllers\Brands\BrandMediaController;
 use Lunar\Panel\Http\Controllers\Brands\BrandUrlController;
 use Lunar\Panel\Http\Controllers\Catalog\CollectionSearchController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionCreateController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionEditController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionGroupController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionIndexController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionMoveController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Catalog\Tables\BrandsTableExtension;
+use Lunar\Panel\Sections\Catalog\Tables\CollectionsTableExtension;
 use Lunar\Panel\Sections\Section;
 
 class CatalogSection extends Section
 {
     /**
-     * Manifest permission handle gating both the routes (via can: middleware)
-     * and the navigation item, so what a user can see and what they can reach
-     * stay in lockstep. Same handle as the Filament admin's BrandResource.
+     * Manifest permission handles gating both the routes (via can: middleware)
+     * and the navigation items, so what a user can see and what they can reach
+     * stay in lockstep. Same handles as the Filament admin's resources.
      */
     public const BRANDS_PERMISSION = 'catalog:manage-products';
+
+    public const COLLECTIONS_PERMISSION = 'catalog:manage-collections';
 
     public function key(): string
     {
@@ -47,6 +55,13 @@ class CatalogSection extends Section
             route: 'panel.brands.index',
             permission: self::BRANDS_PERMISSION,
         ));
+        $registry->addItem('catalog', new NavigationItem(
+            key: 'collections',
+            label: __('panel::nav.collections'),
+            icon: 'folder',
+            route: 'panel.collections.index',
+            permission: self::COLLECTIONS_PERMISSION,
+        ));
     }
 
     /** @return array<string, class-string> */
@@ -54,6 +69,7 @@ class CatalogSection extends Section
     {
         return [
             'brands.index' => BrandsTableExtension::class,
+            'collections.index' => CollectionsTableExtension::class,
         ];
     }
 
@@ -62,6 +78,7 @@ class CatalogSection extends Section
     {
         return [
             BrandDraftResource::class,
+            CollectionDraftResource::class,
         ];
     }
 
@@ -97,6 +114,25 @@ class CatalogSection extends Section
                     Route::put('/{brand}/media/{media}', [BrandMediaController::class, 'update'])->name('media.update');
                     Route::delete('/{brand}/media/{media}', [BrandMediaController::class, 'destroy'])->name('media.destroy');
                 });
+            });
+
+            Route::prefix('collections')->name('panel.collections.')->middleware('can:'.self::COLLECTIONS_PERMISSION)->group(function (): void {
+                Route::get('/', [CollectionIndexController::class, 'index'])->name('index');
+                Route::get('/create', [CollectionCreateController::class, 'create'])->name('create');
+                Route::post('/', [CollectionCreateController::class, 'store'])->name('store');
+
+                Route::post('/groups', [CollectionGroupController::class, 'store'])->name('groups.store');
+                Route::put('/groups/{collectionGroup}', [CollectionGroupController::class, 'update'])->name('groups.update');
+                Route::delete('/groups/{collectionGroup}', [CollectionGroupController::class, 'destroy'])->name('groups.destroy');
+
+                Route::get('/{collection}/edit', [CollectionEditController::class, 'edit'])->name('edit');
+                Route::put('/{collection}', [CollectionEditController::class, 'update'])->name('update');
+                Route::delete('/{collection}', [CollectionEditController::class, 'destroy'])->name('destroy');
+                Route::put('/{collection}/move', [CollectionMoveController::class, 'update'])->name('move');
+
+                Route::patch('/{collection}/draft', [EditDraftController::class, 'update'])->name('draft.update');
+                Route::delete('/{collection}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');
+                Route::post('/{collection}/draft/commit', [EditDraftController::class, 'commit'])->name('draft.commit');
             });
         };
     }

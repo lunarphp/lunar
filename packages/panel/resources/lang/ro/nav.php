@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Comută bara laterală',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Collections',
     'sales' => 'Vânzări',
     'customers' => 'Clienți',
     'general' => 'General',

@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Promijeni bočnu traku',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Collections',
     'sales' => 'Prodaja',
     'customers' => 'Kupci',
     'general' => 'Općenito',

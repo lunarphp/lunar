@@ -5,6 +5,9 @@ namespace Lunar\Core\Database\Factories;
 use Illuminate\Support\Str;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
+use Lunar\Core\States\Collection\Archived;
+use Lunar\Core\States\Collection\Draft;
+use Lunar\Core\States\Collection\Published;
 
 class CollectionFactory extends BaseFactory
 {
@@ -26,5 +29,20 @@ class CollectionFactory extends BaseFactory
             'short_description' => collect(['en' => $this->faker->sentence]),
             'attribute_data' => collect(),
         ];
+    }
+
+    public function published(): self
+    {
+        return $this->state(['status' => Published::$name]);
+    }
+
+    public function draft(): self
+    {
+        return $this->state(['status' => Draft::$name]);
+    }
+
+    public function archived(): self
+    {
+        return $this->state(['status' => Archived::$name]);
     }
 }

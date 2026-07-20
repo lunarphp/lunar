@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Basculer la barre latérale',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Collections',
     'sales' => 'Ventes',
     'customers' => 'Clients',
     'general' => 'Général',

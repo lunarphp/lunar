@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Превключи страничната лента',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Collections',
     'sales' => 'Продажби',
     'customers' => 'Клиенти',
     'general' => 'Общи',

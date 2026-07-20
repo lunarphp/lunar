@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'تبديل الشريط الجانبي',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Collections',
     'sales' => 'المبيعات',
     'customers' => 'العملاء',
     'general' => 'عام',

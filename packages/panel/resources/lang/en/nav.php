@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Toggle sidebar',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Collections',
     'sales' => 'Sales',
     'customers' => 'Customers',
     'general' => 'General',
