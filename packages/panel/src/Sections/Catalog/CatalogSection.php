@@ -12,12 +12,14 @@ use Lunar\Panel\Http\Controllers\Brands\BrandIndexController;
 use Lunar\Panel\Http\Controllers\Brands\BrandMediaController;
 use Lunar\Panel\Http\Controllers\Brands\BrandUrlController;
 use Lunar\Panel\Http\Controllers\Catalog\CollectionSearchController;
+use Lunar\Panel\Http\Controllers\Catalog\ProductSearchController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionCreateController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionEditController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionGroupController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionIndexController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionMediaController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionMoveController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionProductsController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionUrlController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
 use Lunar\Panel\Navigation\NavigationItem;
@@ -89,6 +91,7 @@ class CatalogSection extends Section
         return function (): void {
             Route::prefix('catalog')->name('panel.catalog.')->middleware('can:'.self::BRANDS_PERMISSION)->group(function (): void {
                 Route::get('/collections/search', [CollectionSearchController::class, 'search'])->name('collections.search');
+                Route::get('/products/search', [ProductSearchController::class, 'search'])->name('products.search');
             });
 
             Route::prefix('brands')->name('panel.brands.')->middleware('can:'.self::BRANDS_PERMISSION)->group(function (): void {
@@ -135,6 +138,10 @@ class CatalogSection extends Section
                 Route::patch('/{collection}/draft', [EditDraftController::class, 'update'])->name('draft.update');
                 Route::delete('/{collection}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');
                 Route::post('/{collection}/draft/commit', [EditDraftController::class, 'commit'])->name('draft.commit');
+
+                Route::post('/{collection}/products', [CollectionProductsController::class, 'attach'])->name('products.attach');
+                Route::post('/{collection}/products/reorder', [CollectionProductsController::class, 'reorder'])->name('products.reorder');
+                Route::delete('/{collection}/products/{product}', [CollectionProductsController::class, 'detach'])->name('products.detach');
 
                 Route::scopeBindings()->group(function (): void {
                     Route::post('/{collection}/urls', [CollectionUrlController::class, 'store'])->name('urls.store');

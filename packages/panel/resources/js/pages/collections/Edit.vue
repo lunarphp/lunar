@@ -10,11 +10,15 @@ import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
+import Icon from '../../components/Icon.vue';
 import MediaManager from '../../components/MediaManager.vue';
 import { type MediaItem } from '../../components/MediaEditDialog.vue';
+import PageEmpty from '../../components/PageEmpty.vue';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
+import Pagination from '../../components/Pagination.vue';
 import ParentCollectionPicker, { type ParentOption } from '../../components/ParentCollectionPicker.vue';
+import ProductPickerDialog from '../../components/ProductPickerDialog.vue';
 import Section from '../../components/Section.vue';
 import Select from '../../components/Select.vue';
 import SideCard from '../../components/SideCard.vue';
@@ -30,6 +34,28 @@ interface ActivityEntry {
     description: string;
     created_at: string;
     causer_name: string | null;
+}
+
+interface ProductRow {
+    id: number;
+    name: string | null;
+    sku: string | null;
+    thumbnail: string | null;
+    brand: string | null;
+    status: string;
+    position: number;
+    detach_url: string;
+}
+
+interface Paginated<T> {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    from: number | null;
+    to: number | null;
+    total: number;
 }
 
 const props = defineProps<{
@@ -56,6 +82,7 @@ const props = defineProps<{
     groups: { id: number; name: string }[];
     collectionUrls: UrlRow[];
     media: MediaItem[];
+    products: Paginated<ProductRow>;
     attributeGroups: AttributeGroup[];
     attributeValues: Record<string, unknown>;
     storefrontUrl: string | null;
@@ -70,7 +97,10 @@ const props = defineProps<{
         urlsStore: string;
         mediaStore: string;
         mediaReorder: string;
+        productsAttach: string;
+        productsReorder: string;
         collectionsSearch: string;
+        productsSearch: string;
     };
 }>();
 
@@ -191,6 +221,80 @@ const applyMove = (): void => {
         },
     );
 };
+
+// Products: an immediate sub-resource — attach/detach/reorder persist per
+// operation with partial reloads; only the sort rule rides the draft.
+const productDialogOpen = ref(false);
+
+const sortOptions = computed(() => [
+    { value: 'custom', label: t('collections.sort_custom') },
+    { value: 'min_price:asc', label: t('collections.sort_min_price_asc') },
+    { value: 'min_price:desc', label: t('collections.sort_min_price_desc') },
+    { value: 'sku:asc', label: t('collections.sort_sku_asc') },
+    { value: 'sku:desc', label: t('collections.sort_sku_desc') },
+]);
+
+const addProducts = (ids: number[]): void => {
+    router.post(props.urls.productsAttach, { ids }, { preserveScroll: true });
+};
+
+const removeProduct = (row: ProductRow): void => {
+    router.delete(row.detach_url, { preserveScroll: true });
+};
+
+// Drag reorder within the current page, persisted with the page's position
+// window; only offered while the saved sort rule is custom.
+const canReorder = computed(() => props.collection.sort === 'custom');
+const orderedProducts = ref<ProductRow[]>([...props.products.data]);
+
+watch(
+    () => props.products.data,
+    (rows) => {
+        orderedProducts.value = [...rows];
+    },
+);
+
+const draggingProductId = ref<number | null>(null);
+
+const onProductDragStart = (row: ProductRow): void => {
+    draggingProductId.value = row.id;
+};
+
+const onProductDragOver = (target: ProductRow): void => {
+    if (draggingProductId.value === null || draggingProductId.value === target.id) {
+        return;
+    }
+
+    const current = [...orderedProducts.value];
+    const from = current.findIndex((row) => row.id === draggingProductId.value);
+    const to = current.findIndex((row) => row.id === target.id);
+
+    current.splice(to, 0, ...current.splice(from, 1));
+    orderedProducts.value = current;
+};
+
+const onProductDragEnd = (): void => {
+    if (draggingProductId.value === null) {
+        return;
+    }
+
+    draggingProductId.value = null;
+
+    const ids = orderedProducts.value.map((row) => row.id);
+
+    if (ids.join(',') !== props.products.data.map((row) => row.id).join(',')) {
+        router.post(
+            props.urls.productsReorder,
+            { ids, offset: (props.products.from ?? 1) - 1 },
+            { preserveScroll: true },
+        );
+    }
+};
+
+const productStatusTone = (status: string): 'sage' | 'warn' | 'archived' =>
+    status === 'published' ? 'sage' : status === 'draft' ? 'warn' : 'archived';
+
+const productInitials = (name: string | null): string => name?.trim().slice(0, 1).toUpperCase() || '?';
 
 // Delete confirmation
 const confirmOpen = ref(false);
@@ -338,6 +442,83 @@ const timelineEvents = computed(() =>
                             :description="t('collections.attributes_description')"
                         />
 
+                        <Section :title="t('collections.section_products')">
+                            <template #desc>{{ t('collections.section_products_description', { count: products.total }) }}</template>
+                            <template #actions>
+                                <Button variant="primary" icon="plus" @click="productDialogOpen = true">
+                                    {{ t('collections.products_add') }}
+                                </Button>
+                            </template>
+
+                            <div class="mb-3 max-w-[280px]">
+                                <FieldLabel for="collection-sort">{{ t('collections.field_sort') }}</FieldLabel>
+                                <Select id="collection-sort" v-model="details.sort" :invalid="!!detailsErrors.sort">
+                                    <option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+                                </Select>
+                                <div class="mt-1 text-[11.5px] text-ink-500">{{ t('collections.sort_hint') }}</div>
+                            </div>
+
+                            <div v-if="orderedProducts.length" class="border border-line rounded-lg bg-surface overflow-hidden">
+                                <div class="grid grid-cols-[24px_minmax(0,1.6fr)_120px_110px_44px] items-center gap-3 px-3 py-2 bg-surface-2 border-b border-line text-[10.5px] uppercase tracking-[0.06em] text-ink-500 font-medium">
+                                    <div />
+                                    <div>{{ t('collections.products_column_product') }}</div>
+                                    <div>{{ t('collections.products_column_brand') }}</div>
+                                    <div>{{ t('collections.products_column_status') }}</div>
+                                    <div />
+                                </div>
+                                <div
+                                    v-for="row in orderedProducts"
+                                    :key="row.id"
+                                    class="grid grid-cols-[24px_minmax(0,1.6fr)_120px_110px_44px] items-center gap-3 px-3 py-2 border-b border-line last:border-b-0"
+                                    :class="draggingProductId === row.id ? 'opacity-50' : ''"
+                                    :draggable="canReorder"
+                                    @dragstart="onProductDragStart(row)"
+                                    @dragover.prevent="onProductDragOver(row)"
+                                    @dragend="onProductDragEnd"
+                                >
+                                    <div class="text-ink-300" :class="canReorder ? 'cursor-grab' : 'opacity-30'">
+                                        <Icon name="grip" cls="sm" />
+                                    </div>
+                                    <div class="flex items-center gap-2.5 min-w-0">
+                                        <span class="w-8 h-8 rounded-md overflow-hidden shrink-0 border border-line grid place-items-center bg-surface-2">
+                                            <img v-if="row.thumbnail" :src="row.thumbnail" :alt="row.name ?? ''" class="w-full h-full object-cover" />
+                                            <span v-else class="text-[10.5px] font-semibold text-ink-700">{{ productInitials(row.name) }}</span>
+                                        </span>
+                                        <div class="min-w-0">
+                                            <div class="text-[13px] text-ink-900 truncate">{{ row.name }}</div>
+                                            <div v-if="row.sku" class="text-[11px] font-mono text-ink-500 truncate">{{ row.sku }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-ink-700 truncate">{{ row.brand ?? '—' }}</div>
+                                    <div>
+                                        <StatusBadge :tone="productStatusTone(row.status)" size="sm" dot>{{ row.status }}</StatusBadge>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            icon="x"
+                                            :aria-label="t('collections.products_remove')"
+                                            class="!w-[26px] !h-[26px] text-ink-400 hover:!text-danger"
+                                            @click="removeProduct(row)"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <PageEmpty v-else :title="t('collections.products_empty_title')">
+                                {{ t('collections.products_empty_description') }}
+                                <div class="mt-3">
+                                    <Button variant="primary" icon="plus" @click="productDialogOpen = true">
+                                        {{ t('collections.products_add') }}
+                                    </Button>
+                                </div>
+                            </PageEmpty>
+
+                            <div v-if="products.last_page > 1" class="mt-3">
+                                <Pagination :meta="products" />
+                            </div>
+                        </Section>
+
                         <UrlSlugs
                             :urls="collectionUrls"
                             :languages="languages"
@@ -400,6 +581,13 @@ const timelineEvents = computed(() =>
                 :description="t('collections.hierarchy_confirm')"
                 :confirm-label="t('collections.hierarchy_apply')"
                 @confirm="applyMove"
+            />
+
+            <ProductPickerDialog
+                v-model:open="productDialogOpen"
+                :search-url="urls.productsSearch"
+                :existing-ids="products.data.map((row) => row.id)"
+                @add="addProducts"
             />
 
             <DraftConflictDialog

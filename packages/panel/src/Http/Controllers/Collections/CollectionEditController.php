@@ -12,6 +12,7 @@ use Lunar\Core\Contracts\Actions\Collections\UpdatesCollection;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
 use Lunar\Core\Models\Url;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Collections\CollectionRequest;
@@ -72,6 +73,23 @@ class CollectionEditController
         /** @var ?Collection $parent */
         $parent = $collection->parent;
 
+        // Curated products paginate with their own page parameter so partial
+        // reloads after attach/detach/reorder leave the rest of the page alone.
+        $products = $collection->products()
+            ->with(['thumbnail', 'brand:id,name', 'variants:id,product_id,sku'])
+            ->paginate(10, pageName: 'products_page')
+            ->withQueryString()
+            ->through(fn (Product $product) => [
+                'id' => $product->id,
+                'name' => $product->translate('name'),
+                'sku' => $product->variants->first()?->sku,
+                'thumbnail' => $product->thumbnail?->getAvailableUrl(['small']),
+                'brand' => $product->brand?->name,
+                'status' => $product->status->getValue(),
+                'position' => (int) $product->getRelationValue('pivot')->position,
+                'detach_url' => route('panel.collections.products.detach', [$collection, $product]),
+            ]);
+
         return Inertia::render('collections/Edit', [
             'collection' => [
                 'id' => $collection->id,
@@ -106,6 +124,7 @@ class CollectionEditController
             'groups' => CollectionGroup::query()->orderBy('name')->get(['id', 'name']),
             'collectionUrls' => $urls,
             'media' => $media,
+            'products' => $products,
             'attributeGroups' => $attributeSchema->groups($collection),
             'attributeValues' => $attributeSchema->values($collection) ?: (object) [],
             'storefrontUrl' => config('lunar.panel.storefront_url'),
@@ -120,7 +139,10 @@ class CollectionEditController
                 'urlsStore' => route('panel.collections.urls.store', $collection),
                 'mediaStore' => route('panel.collections.media.store', $collection),
                 'mediaReorder' => route('panel.collections.media.reorder', $collection),
+                'productsAttach' => route('panel.collections.products.attach', $collection),
+                'productsReorder' => route('panel.collections.products.reorder', $collection),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
+                'productsSearch' => route('panel.catalog.products.search'),
             ],
         ]);
     }
