@@ -1,6 +1,6 @@
 # 0055 — Panel Collections section
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-07-20
 - TODO item: Panel Collections section — group tree, hierarchy, curated products, availability (spec 0055)
@@ -62,9 +62,10 @@ migration (alpha fold-in), for the same reason brands got one (spec 0052): store
 code and seeders need a stable programmatic key that survives renames and isn't
 per-language. Kebab-case via `Str::slug($name)` — the convention brands settled;
 the prototype's snake_case handles are a prototype-ism. Auto-generated with
-numeric-suffix uniqueness by the create actions when not supplied; `CollectionFactory`
-derives it from the name; the upgrade package backfills v1 collections from their
-default-language name.
+numeric-suffix uniqueness by the model's creating hook (the brands convention) when
+not supplied, with a replicating hook clearing the handle on duplication;
+`CollectionFactory` derives it from the name; the upgrade package backfills v1
+collections from their default-language name.
 
 **Create actions accept attributes.** `CreatesRootCollection` and
 `CreatesChildCollection` currently take only a name. Both gain an optional
@@ -89,9 +90,13 @@ but delegates the check, exactly as `DeletesBrand` did.
 **`LogsActivity` on `Collection`.** Trait added so the Activity side card has data,
 matching Brand and Product.
 
-The existing `MovesCollection` (cycle-guarded re-parent) and `DeletesCollection`
-(re-parent-or-refuse for descendants) are reused as-is. The vestigial `type` column
-(`static` default, never read outside the schema) is out of scope.
+**Cross-group moves.** `MovesCollection` gains an optional `?CollectionGroup $group`
+parameter (the cycle guards stay): same-group moves ride the nested-set trait as
+before, while a group change re-scopes the whole subtree and rebuilds both groups'
+trees from their `parent_id` links (`fixTree`), recording cache invalidations for the
+node and its descendants. `DeletesCollection` (re-parent-or-refuse for descendants) is
+reused as-is. The vestigial `type` column (`static` default, never read outside the
+schema) is out of scope.
 
 ### Panel server side
 
@@ -160,13 +165,15 @@ row shapes), `CollectionMoveRequest`, `CollectionGroupRequest` (name required, h
 nullable unique), `CollectionProductsRequest`, plus the brand-shaped media/URL requests.
 
 **`CollectionDraftResource`** — draftable fields: `name`, `handle`, `status`,
-`short_description`, `description`, `sort`, per-attribute keys (`attribute.{handle}`),
-and per-row availability keys (`availability.channels.{id}`,
-`availability.customer_groups.{id}` — each a small object of
-`enabled`/`visible`/`starts_at`/`ends_at`), so two staff scheduling different channels
-never conflict. `rules()` delegates to `CollectionRequest`; `commit()` to
-`UpdatesCollection`. Media, URLs, product membership and hierarchy moves are immediate,
-outside the draft.
+`short_description`, `description`, `sort`, per-attribute keys (`attribute:{handle}`),
+and per-row availability keys (`channel:{id}`, `customer_group:{id}` — the panel's
+colon-prefix draft-key convention — each a small object of
+`enabled`/`visible`/`starts_at`/`ends_at` serialized by a new
+`Support/AvailabilitySchema`), so two staff scheduling different channels never
+conflict. `rules()` delegates to `CollectionRequest`; `commit()` to
+`UpdatesCollection`, rebuilding the full pivot maps from the stored rows overlaid
+with the drafted ones so untouched rows survive the sync. Media, URLs, product
+membership and hierarchy moves are immediate, outside the draft.
 
 **`CollectionsTableExtension`** — row actions rendered on tree rows through the shared
 `RowActions` component: `EditCollectionAction`, `AddChildCollectionAction` (links to
@@ -358,22 +365,25 @@ None outstanding. Resolved during review:
 
 ## Implementation plan
 
-- [ ] Slice 1 — Core: `handle` column + generation + factory + upgrade backfill;
+- [x] Slice 1 — Core: `handle` column + generation + factory + upgrade backfill;
       `LogsActivity` on Collection; `$attributes` on the create actions;
       `UpdatesCollection`; collection-group actions with the delete guard and
-      Filament delegation; core tests.
-- [ ] Slice 2 — Panel scaffold + list: nav item, routes, `CollectionIndexController`
-      (tree payload, search + ancestors, status filter), `CollectionTree` +
-      `CollectionTreeRow`, group dialog + endpoints, create page, row actions +
-      delete flow; lang keys (16 locales).
-- [ ] Slice 3 — Edit page core: Basics, status sidebar, Usage, Activity,
+      Filament delegation; core tests. (Also landed here: the `MovesCollection`
+      cross-group extension.)
+- [x] Slice 2 — Panel scaffold + list: nav item, routes, `CollectionIndexController`
+      (tree payload, search + ancestors, status filter), `CollectionTreeRow`,
+      group dialog + endpoints, create page, row actions + delete flow; lang keys
+      (16 locales). (Landed together with slice 3 — the list's row links anchor on
+      the edit page.)
+- [x] Slice 3 — Edit page core: Basics, status sidebar, Usage, Activity,
       `CollectionDraftResource` + draft lifecycle, `AttributeFields` wiring;
       Hierarchy section + `move` endpoint + `ParentCollectionPicker`
       (search endpoint `group_id`/`exclude` params).
-- [ ] Slice 4 — Media + URLs: nested endpoints reusing the spec 0052 actions and
+- [x] Slice 4 — Media + URLs: nested endpoints reusing the spec 0052 actions and
       components; feature tests.
-- [ ] Slice 5 — Products: `products.search` endpoint, curated table + sort rule +
+- [x] Slice 5 — Products: `products.search` endpoint, curated table + sort rule +
       drag reorder, `ProductPickerDialog`, attach/detach/reorder endpoints,
       `products.php` lang group, tests.
-- [ ] Slice 6 — Availability: `AvailabilityCard`, draft integration, pivot sync in
-      `UpdatesCollection`, `availability.php` lang group, tests.
+- [x] Slice 6 — Availability: `AvailabilityCard` + `AvailabilitySchema`, draft
+      integration, pivot sync in `UpdatesCollection`, `availability.php` lang
+      group, tests.
