@@ -4,6 +4,7 @@ import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
 import AttributeFields, { type AttributeGroup } from '../../components/AttributeFields.vue';
+import AvailabilityCard, { type AvailabilityRow } from '../../components/AvailabilityCard.vue';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
@@ -85,6 +86,8 @@ const props = defineProps<{
     products: Paginated<ProductRow>;
     attributeGroups: AttributeGroup[];
     attributeValues: Record<string, unknown>;
+    availability: { channels: AvailabilityRow[]; customer_groups: AvailabilityRow[] };
+    availabilityValues: Record<string, unknown>;
     storefrontUrl: string | null;
     activities: ActivityEntry[];
     urls: {
@@ -126,8 +129,10 @@ const draftForm = useEditDraft({
         sort: props.collection.sort,
         short_description: { ...props.collection.short_description },
         description: { ...props.collection.description },
-        // Mapped attribute values ride the same draft under attribute:{handle} keys.
+        // Mapped attribute values ride the same draft under attribute:{handle}
+        // keys; availability pivots under channel:{id} / customer_group:{id}.
         ...props.attributeValues,
+        ...props.availabilityValues,
     },
     draft: props.draft,
     urls: { draft: props.urls.draft, commit: props.urls.draftCommit },
@@ -554,6 +559,12 @@ const timelineEvents = computed(() =>
                                     </div>
                                 </div>
                             </SideCard>
+
+                            <AvailabilityCard
+                                :channels="availability.channels"
+                                :customer-groups="availability.customer_groups"
+                                :values="details"
+                            />
 
                             <SideCard :title="t('collections.side_activity')">
                                 <ActivityTimeline v-if="activities.length" :events="timelineEvents" :reverse="false" />

@@ -18,13 +18,19 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Collections\CollectionRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
+use Lunar\Panel\Support\AvailabilitySchema;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class CollectionEditController
 {
-    public function edit(Collection $collection, PanelManager $panel, DraftManager $drafts, AttributeSchema $attributeSchema): Response
-    {
+    public function edit(
+        Collection $collection,
+        PanelManager $panel,
+        DraftManager $drafts,
+        AttributeSchema $attributeSchema,
+        AvailabilitySchema $availabilitySchema,
+    ): Response {
         $collection->loadCount('products');
         $collection->load('parent');
 
@@ -127,6 +133,8 @@ class CollectionEditController
             'products' => $products,
             'attributeGroups' => $attributeSchema->groups($collection),
             'attributeValues' => $attributeSchema->values($collection) ?: (object) [],
+            'availability' => $availabilitySchema->rows(),
+            'availabilityValues' => $availabilitySchema->values($collection) ?: (object) [],
             'storefrontUrl' => config('lunar.panel.storefront_url'),
             'activities' => $activities,
             'urls' => [

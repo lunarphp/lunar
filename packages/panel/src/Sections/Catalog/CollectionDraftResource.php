@@ -8,6 +8,7 @@ use Lunar\Core\Models\Collection;
 use Lunar\Panel\Drafts\DraftableResource;
 use Lunar\Panel\Http\Requests\Collections\CollectionRequest;
 use Lunar\Panel\Support\AttributeSchema;
+use Lunar\Panel\Support\AvailabilitySchema;
 
 class CollectionDraftResource extends DraftableResource
 {
@@ -17,6 +18,7 @@ class CollectionDraftResource extends DraftableResource
     public function __construct(
         protected UpdatesCollection $updatesCollection,
         protected AttributeSchema $attributeSchema,
+        protected AvailabilitySchema $availabilitySchema,
     ) {}
 
     public function model(): string
@@ -34,6 +36,7 @@ class CollectionDraftResource extends DraftableResource
             'short_description',
             'description',
             ...$this->attributeSchema->fields(new Collection),
+            ...$this->availabilitySchema->fields(),
         ];
     }
 
@@ -50,6 +53,7 @@ class CollectionDraftResource extends DraftableResource
             ...collect($this->attributeSchema->values($record))
                 ->map(fn (mixed $value, string $key) => $this->normalizeAttributeValue($value, $this->attributeTokens()[$key] ?? null))
                 ->all(),
+            ...$this->availabilitySchema->values($record),
         ];
     }
 
@@ -65,6 +69,11 @@ class CollectionDraftResource extends DraftableResource
             if (str_starts_with($key, AttributeSchema::PREFIX)) {
                 $data[$key] = $this->normalizeAttributeValue($value, $this->attributeTokens()[$key] ?? null);
             }
+
+            if (str_starts_with($key, AvailabilitySchema::CHANNEL_PREFIX)
+                || str_starts_with($key, AvailabilitySchema::CUSTOMER_GROUP_PREFIX)) {
+                $data[$key] = $this->availabilitySchema->normalizeValue((array) $value);
+            }
         }
 
         return $data;
@@ -76,16 +85,21 @@ class CollectionDraftResource extends DraftableResource
         return [
             ...CollectionRequest::rulesFor($record),
             ...$this->attributeSchema->rules($record),
+            ...$this->availabilitySchema->rules(),
         ];
     }
 
     public function commit(Model $record, array $values): void
     {
         /** @var Collection $record */
-        $attributeValues = collect($values)
+        // Drafted availability rows split off and rebuild the full pivot maps
+        // (untouched rows ride along — the sync replaces the whole set).
+        $availability = $this->availabilitySchema->extract($record, $values);
+
+        $attributeValues = collect($availability['attributes'])
             ->filter(fn (mixed $value, string $key) => str_starts_with($key, AttributeSchema::PREFIX));
 
-        $attributes = collect($values)
+        $attributes = collect($availability['attributes'])
             ->except($attributeValues->keys())
             ->all();
 
@@ -101,7 +115,12 @@ class CollectionDraftResource extends DraftableResource
             $attributes['attribute_data'] = $data;
         }
 
-        $this->updatesCollection->execute($record, $attributes);
+        $this->updatesCollection->execute(
+            $record,
+            $attributes,
+            $availability['channels'],
+            $availability['customerGroups'],
+        );
     }
 
     public function labels(): array
@@ -114,6 +133,7 @@ class CollectionDraftResource extends DraftableResource
             'short_description' => 'panel::collections.field_short_description',
             'description' => 'panel::collections.field_description',
             ...$this->attributeSchema->labels(new Collection),
+            ...$this->availabilitySchema->labels(),
         ];
     }
 
