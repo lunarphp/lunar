@@ -25,9 +25,20 @@ class Number extends AbstractFieldType
     {
         return [
             'options' => [
-                'min' => 'numeric|min:1',
-                'max' => 'numeric',
+                'min' => 'nullable|numeric',
+                'max' => 'nullable|numeric',
             ],
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfigurationFields(): array
+    {
+        return [
+            ['key' => 'min', 'type' => 'number', 'label' => __('lunar::fieldtypes.min')],
+            ['key' => 'max', 'type' => 'number', 'label' => __('lunar::fieldtypes.max')],
         ];
     }
 }

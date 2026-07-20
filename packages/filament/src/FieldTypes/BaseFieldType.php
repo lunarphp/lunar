@@ -2,6 +2,7 @@
 
 namespace Lunar\Filament\FieldTypes;
 
+use Filament\Forms\Components\Field;
 use Filament\Schemas\Components\Component;
 use Livewire\Livewire;
 use Lunar\Core\Models\Attribute;
@@ -20,6 +21,13 @@ abstract class BaseFieldType
         return $configuration;
     }
 
+    /**
+     * Override to replace the config form derived from the core field type's
+     * descriptors (see ConfigurationFieldMapper) with bespoke components; an
+     * empty array means "use the descriptors".
+     *
+     * @return array<int, Field>
+     */
     public static function getConfigurationFields(): array
     {
         return [];

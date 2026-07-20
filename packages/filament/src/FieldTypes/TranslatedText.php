@@ -11,11 +11,6 @@ class TranslatedText extends BaseFieldType
 {
     protected static string $synthesizer = TranslatedTextSynth::class;
 
-    public static function getConfigurationFields(): array
-    {
-        return TextField::getConfigurationFields();
-    }
-
     public static function getFilamentComponent(Attribute $attribute): Component
     {
         return TranslatedTextComponent::make($attribute->handle)

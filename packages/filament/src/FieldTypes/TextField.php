@@ -4,7 +4,6 @@ namespace Lunar\Filament\FieldTypes;
 
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
 use Lunar\Core\Models\Attribute;
 use Lunar\Filament\Synthesizers\TextSynth;
@@ -12,15 +11,6 @@ use Lunar\Filament\Synthesizers\TextSynth;
 class TextField extends BaseFieldType
 {
     protected static string $synthesizer = TextSynth::class;
-
-    public static function getConfigurationFields(): array
-    {
-        return [
-            Toggle::make('richtext')->label(
-                __('lunar-filament::fieldtypes.text.form.richtext.label')
-            ),
-        ];
-    }
 
     public static function getFilamentComponent(Attribute $attribute): Component
     {

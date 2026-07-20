@@ -22,7 +22,7 @@ class Text extends AbstractFieldType
     {
         return [
             'options' => [
-                'richtext' => 'nullable',
+                'richtext' => 'nullable|boolean',
                 'options' => [
                     'nullable',
                     function ($attribute, $value, $fail) {
@@ -31,6 +31,21 @@ class Text extends AbstractFieldType
                         }
                     },
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfigurationFields(): array
+    {
+        return [
+            [
+                'key' => 'richtext',
+                'type' => 'toggle',
+                'label' => __('lunar::fieldtypes.richtext'),
+                'hint' => __('lunar::fieldtypes.richtext_hint'),
             ],
         ];
     }

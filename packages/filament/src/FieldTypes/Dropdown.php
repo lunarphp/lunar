@@ -2,7 +2,6 @@
 
 namespace Lunar\Filament\FieldTypes;
 
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Component;
 use Lunar\Core\Models\Attribute;
@@ -55,29 +54,5 @@ class Dropdown extends BaseFieldType
             ->when(filled($attribute->validation_rules), fn (Select $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
             ->helperText(null);
-    }
-
-    public static function getConfigurationFields(): array
-    {
-        return [
-            KeyValue::make('lookups')->label(
-                __('lunar-filament::fieldtypes.dropdown.form.lookups.label')
-            )
-                ->keyLabel(__('lunar-filament::fieldtypes.dropdown.form.lookups.key_label'))
-                ->valueLabel(__('lunar-filament::fieldtypes.dropdown.form.lookups.value_label'))
-                ->afterStateHydrated(function (KeyValue $component, $state): void {
-                    $component->state(static::mutateConfigurationForForm([
-                        'lookups' => is_array($state) ? $state : [],
-                    ])['lookups'] ?? []);
-                })
-                ->mutateDehydratedStateUsing(function ($state) {
-                    return collect($state)->map(function ($value, $label) {
-                        return [
-                            'label' => $label ?? $value,
-                            'value' => $value,
-                        ];
-                    })->values()->toArray();
-                }),
-        ];
     }
 }
