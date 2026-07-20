@@ -120,6 +120,29 @@ it('promotes children of a root to root level', function () {
     expect($child->fresh()->parent_id)->toBeNull();
 });
 
+it('promotes several children (and their subtrees) without breaking the tree', function () {
+    $parent = Collection::factory()->create(['collection_group_id' => $this->group->id]);
+    $children = Collection::factory()->count(3)->create(['collection_group_id' => $this->group->id]);
+    $grandchild = Collection::factory()->create(['collection_group_id' => $this->group->id]);
+
+    foreach ($children as $child) {
+        $parent->refresh()->appendNode($child);
+    }
+
+    $children[1]->refresh()->appendNode($grandchild);
+
+    $this->delete(route('panel.collections.destroy', [$parent->fresh(), 'reparent' => 1]));
+
+    $this->assertDatabaseMissing('lunar_collections', ['id' => $parent->id]);
+
+    foreach ($children as $child) {
+        expect($child->fresh()->parent_id)->toBeNull();
+    }
+
+    expect($grandchild->fresh()->parent_id)->toBe($children[1]->id)
+        ->and(Collection::scoped(['collection_group_id' => $this->group->id])->isBroken())->toBeFalse();
+});
+
 it('gates collection routes behind the collections permission', function () {
     $collection = Collection::factory()->create(['collection_group_id' => $this->group->id]);
 

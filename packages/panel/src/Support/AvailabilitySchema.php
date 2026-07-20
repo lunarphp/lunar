@@ -207,6 +207,10 @@ class AvailabilitySchema
             $value = $this->normalizeValue((array) $value);
 
             if (str_starts_with($key, static::CHANNEL_PREFIX)) {
+                // The channelables pivot has no visible column; drop a stray
+                // key rather than letting it reach the sync.
+                unset($value['visible']);
+
                 $channels[(int) substr($key, strlen(static::CHANNEL_PREFIX))] = $value;
             } else {
                 $customerGroups[(int) substr($key, strlen(static::CUSTOMER_GROUP_PREFIX))] = $value;
