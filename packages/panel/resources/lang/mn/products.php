@@ -2,10 +2,10 @@
 
 return [
     // Relation picker (shared by collections and later catalog screens).
-    'dialog_title' => 'Add products',
-    'dialog_description' => 'Search the catalogue and pick the products to add.',
-    'search_placeholder' => 'Search products',
-    'no_results' => 'No products match.',
-    'add_selected' => 'Add {count} selected',
-    'already_added' => 'Already added',
+    'dialog_title' => 'Бүтээгдэхүүн нэмэх',
+    'dialog_description' => 'Каталогоос хайж, нэмэх бүтээгдэхүүнүүдээ сонгоно уу.',
+    'search_placeholder' => 'Бүтээгдэхүүн хайх',
+    'no_results' => 'Тохирох бүтээгдэхүүн алга.',
+    'add_selected' => 'Сонгосон {count}-г нэмэх',
+    'already_added' => 'Аль хэдийн нэмэгдсэн',
 ];

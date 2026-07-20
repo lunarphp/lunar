@@ -16,7 +16,7 @@ return [
     'toggle_sidebar' => 'Chuyển đổi thanh bên',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
-    'collections' => 'Collections',
+    'collections' => 'Bộ sưu tập',
     'sales' => 'Bán hàng',
     'customers' => 'Khách hàng',
     'general' => 'Chung',

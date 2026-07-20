@@ -2,10 +2,10 @@
 
 return [
     // Relation picker (shared by collections and later catalog screens).
-    'dialog_title' => 'Add products',
-    'dialog_description' => 'Search the catalogue and pick the products to add.',
-    'search_placeholder' => 'Search products',
-    'no_results' => 'No products match.',
-    'add_selected' => 'Add {count} selected',
-    'already_added' => 'Already added',
+    'dialog_title' => 'Dodaj proizvode',
+    'dialog_description' => 'Pretražite katalog i odaberite proizvode za dodavanje.',
+    'search_placeholder' => 'Pretraži proizvode',
+    'no_results' => 'Nijedan proizvod ne odgovara.',
+    'add_selected' => 'Dodaj odabrane ({count})',
+    'already_added' => 'Već dodan',
 ];

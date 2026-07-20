@@ -2,10 +2,10 @@
 
 return [
     // Relation picker (shared by collections and later catalog screens).
-    'dialog_title' => 'Add products',
-    'dialog_description' => 'Search the catalogue and pick the products to add.',
-    'search_placeholder' => 'Search products',
-    'no_results' => 'No products match.',
-    'add_selected' => 'Add {count} selected',
-    'already_added' => 'Already added',
+    'dialog_title' => 'Ajouter des produits',
+    'dialog_description' => 'Recherchez dans le catalogue et choisissez les produits à ajouter.',
+    'search_placeholder' => 'Rechercher des produits',
+    'no_results' => 'Aucun produit ne correspond.',
+    'add_selected' => 'Ajouter {count} sélectionné(s)',
+    'already_added' => 'Déjà ajouté',
 ];

@@ -16,7 +16,7 @@ return [
     'toggle_sidebar' => 'تغییر نوار کناری',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
-    'collections' => 'Collections',
+    'collections' => 'مجموعه‌ها',
     'sales' => 'فروش',
     'customers' => 'مشتریان',
     'general' => 'عمومی',

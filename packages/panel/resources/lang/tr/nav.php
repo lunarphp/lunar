@@ -16,7 +16,7 @@ return [
     'toggle_sidebar' => 'Kenar çubuğunu değiştir',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
-    'collections' => 'Collections',
+    'collections' => 'Koleksiyonlar',
     'sales' => 'Satışlar',
     'customers' => 'Müşteriler',
     'general' => 'Genel',

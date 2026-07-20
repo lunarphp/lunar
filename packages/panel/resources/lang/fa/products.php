@@ -2,10 +2,10 @@
 
 return [
     // Relation picker (shared by collections and later catalog screens).
-    'dialog_title' => 'Add products',
-    'dialog_description' => 'Search the catalogue and pick the products to add.',
-    'search_placeholder' => 'Search products',
-    'no_results' => 'No products match.',
-    'add_selected' => 'Add {count} selected',
-    'already_added' => 'Already added',
+    'dialog_title' => 'افزودن محصولات',
+    'dialog_description' => 'در کاتالوگ جستجو کنید و محصولات موردنظر برای افزودن را برگزینید.',
+    'search_placeholder' => 'جستجوی محصولات',
+    'no_results' => 'هیچ محصولی مطابقت ندارد.',
+    'add_selected' => 'افزودن {count} مورد انتخاب‌شده',
+    'already_added' => 'قبلاً افزوده شده',
 ];

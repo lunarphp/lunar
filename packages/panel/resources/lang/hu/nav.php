@@ -16,7 +16,7 @@ return [
     'toggle_sidebar' => 'Oldalsáv váltása',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
-    'collections' => 'Collections',
+    'collections' => 'Kollekciók',
     'sales' => 'Értékesítés',
     'customers' => 'Ügyfelek',
     'general' => 'Általános',
