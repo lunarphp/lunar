@@ -12,11 +12,13 @@ use Lunar\Core\Contracts\Actions\Collections\UpdatesCollection;
 use Lunar\Core\Models\Collection;
 use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Url;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Collections\CollectionRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class CollectionEditController
 {
@@ -27,6 +29,34 @@ class CollectionEditController
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($collection, $staff) : null;
+
+        $media = $collection->getMedia(config('lunar.media.collection'))->map(fn (Media $item) => [
+            'id' => $item->id,
+            'url' => $item->getAvailableUrl(['small']),
+            'original_url' => $item->getUrl(),
+            'name' => $item->getCustomProperty('name'),
+            'alt' => $item->getCustomProperty('alt'),
+            'caption' => $item->getCustomProperty('caption'),
+            'focal' => $item->getCustomProperty('focal'),
+            'primary' => (bool) $item->getCustomProperty('primary'),
+            'update_url' => route('panel.collections.media.update', [$collection, $item]),
+            'destroy_url' => route('panel.collections.media.destroy', [$collection, $item]),
+        ])->values();
+
+        $urls = $collection->urls()
+            ->with('language:id,code,name')
+            ->orderByDesc('default')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (Url $url) => [
+                'id' => $url->id,
+                'slug' => $url->slug,
+                'default' => $url->default,
+                'language_id' => $url->language_id,
+                'language_code' => $url->language->code,
+                'update_url' => route('panel.collections.urls.update', [$collection, $url]),
+                'destroy_url' => route('panel.collections.urls.destroy', [$collection, $url]),
+            ]);
 
         $activities = $collection->activities()
             ->with('causer')
@@ -74,8 +104,11 @@ class CollectionEditController
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
             'groups' => CollectionGroup::query()->orderBy('name')->get(['id', 'name']),
+            'collectionUrls' => $urls,
+            'media' => $media,
             'attributeGroups' => $attributeSchema->groups($collection),
             'attributeValues' => $attributeSchema->values($collection) ?: (object) [],
+            'storefrontUrl' => config('lunar.panel.storefront_url'),
             'activities' => $activities,
             'urls' => [
                 'index' => route('panel.collections.index'),
@@ -84,6 +117,9 @@ class CollectionEditController
                 'move' => route('panel.collections.move', $collection),
                 'draft' => route('panel.collections.draft.update', $collection),
                 'draftCommit' => route('panel.collections.draft.commit', $collection),
+                'urlsStore' => route('panel.collections.urls.store', $collection),
+                'mediaStore' => route('panel.collections.media.store', $collection),
+                'mediaReorder' => route('panel.collections.media.reorder', $collection),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
             ],
         ]);

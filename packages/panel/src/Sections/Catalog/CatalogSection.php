@@ -16,7 +16,9 @@ use Lunar\Panel\Http\Controllers\Collections\CollectionCreateController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionEditController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionGroupController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionIndexController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionMediaController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionMoveController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionUrlController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
@@ -133,6 +135,17 @@ class CatalogSection extends Section
                 Route::patch('/{collection}/draft', [EditDraftController::class, 'update'])->name('draft.update');
                 Route::delete('/{collection}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');
                 Route::post('/{collection}/draft/commit', [EditDraftController::class, 'commit'])->name('draft.commit');
+
+                Route::scopeBindings()->group(function (): void {
+                    Route::post('/{collection}/urls', [CollectionUrlController::class, 'store'])->name('urls.store');
+                    Route::put('/{collection}/urls/{url}', [CollectionUrlController::class, 'update'])->name('urls.update');
+                    Route::delete('/{collection}/urls/{url}', [CollectionUrlController::class, 'destroy'])->name('urls.destroy');
+
+                    Route::post('/{collection}/media', [CollectionMediaController::class, 'store'])->name('media.store');
+                    Route::post('/{collection}/media/reorder', [CollectionMediaController::class, 'reorder'])->name('media.reorder');
+                    Route::put('/{collection}/media/{media}', [CollectionMediaController::class, 'update'])->name('media.update');
+                    Route::delete('/{collection}/media/{media}', [CollectionMediaController::class, 'destroy'])->name('media.destroy');
+                });
             });
         };
     }

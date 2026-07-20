@@ -10,6 +10,8 @@ import ConfirmDialog from '../../components/ConfirmDialog.vue';
 import DraftActions from '../../components/DraftActions.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
+import MediaManager from '../../components/MediaManager.vue';
+import { type MediaItem } from '../../components/MediaEditDialog.vue';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
 import ParentCollectionPicker, { type ParentOption } from '../../components/ParentCollectionPicker.vue';
@@ -20,6 +22,7 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import StatusSegmentedControl from '../../components/StatusSegmentedControl.vue';
 import TextInput from '../../components/TextInput.vue';
 import TranslatedInput, { type LanguageOption } from '../../components/TranslatedInput.vue';
+import UrlSlugs, { type UrlRow } from '../../components/UrlSlugs.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
 
@@ -51,8 +54,11 @@ const props = defineProps<{
     draft: DraftState | null;
     languages: LanguageOption[];
     groups: { id: number; name: string }[];
+    collectionUrls: UrlRow[];
+    media: MediaItem[];
     attributeGroups: AttributeGroup[];
     attributeValues: Record<string, unknown>;
+    storefrontUrl: string | null;
     activities: ActivityEntry[];
     urls: {
         index: string;
@@ -61,6 +67,9 @@ const props = defineProps<{
         move: string;
         draft: string;
         draftCommit: string;
+        urlsStore: string;
+        mediaStore: string;
+        mediaReorder: string;
         collectionsSearch: string;
     };
 }>();
@@ -315,12 +324,26 @@ const timelineEvents = computed(() =>
                             </div>
                         </Section>
 
+                        <MediaManager
+                            :items="media"
+                            :store-url="urls.mediaStore"
+                            :reorder-url="urls.mediaReorder"
+                        />
+
                         <AttributeFields
                             :groups="attributeGroups"
                             :values="details"
                             :errors="detailsErrors"
                             :languages="languages"
                             :description="t('collections.attributes_description')"
+                        />
+
+                        <UrlSlugs
+                            :urls="collectionUrls"
+                            :languages="languages"
+                            :store-url="urls.urlsStore"
+                            path-prefix="/collections/"
+                            :storefront-url="storefrontUrl"
                         />
 
                         <PageZone region="main" position="after" :collection="collection" />
