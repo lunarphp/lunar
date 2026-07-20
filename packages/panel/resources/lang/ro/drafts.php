@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Modificările au fost salvate.',
     'restored' => 'Modificările nesalvate din {time} au fost restaurate.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Renunță',
     'saving' => 'Se salvează ciorna…',
     'saved' => 'Ciornă salvată',

@@ -3,13 +3,14 @@ import { nextTick } from 'vue';
 import { DraftConflictError, ValidationError } from '../lib/http';
 import { useEditDraft } from './useEditDraft';
 
-const { httpMock, reloadMock } = vi.hoisted(() => ({
+const { httpMock, reloadMock, routerOnMock } = vi.hoisted(() => ({
     httpMock: {
         patch: vi.fn(),
         post: vi.fn(),
         delete: vi.fn(),
     },
     reloadMock: vi.fn(),
+    routerOnMock: vi.fn((_event: string, _handler: unknown) => () => {}),
 }));
 
 vi.mock('../lib/http', async (importOriginal) => ({
@@ -18,7 +19,7 @@ vi.mock('../lib/http', async (importOriginal) => ({
 }));
 
 vi.mock('@inertiajs/vue3', () => ({
-    router: { reload: reloadMock },
+    router: { reload: reloadMock, on: routerOnMock },
 }));
 
 const urls = { draft: '/customers/1/draft', commit: '/customers/1/draft/commit' };
@@ -231,5 +232,65 @@ describe('useEditDraft', () => {
 
         expect(order).toEqual(['first', 'second']);
         expect(form.savedAt.value).toBe('second');
+    });
+
+    describe('navigation guard', () => {
+        type BeforeHandler = (event: {
+            detail: { visit: { url: URL; method: string } };
+            preventDefault: () => void;
+        }) => void;
+
+        const guardEvent = (path: string, method = 'get') => ({
+            detail: { visit: { url: new URL(path, window.location.origin), method } },
+            preventDefault: vi.fn(),
+        });
+
+        const lastGuard = (): BeforeHandler => routerOnMock.mock.calls.at(-1)![1] as BeforeHandler;
+
+        afterEach(() => {
+            vi.unstubAllGlobals();
+        });
+
+        it('prompts before navigating away with uncommitted changes and cancels on decline', () => {
+            const confirmMock = vi.fn().mockReturnValue(false);
+            vi.stubGlobal('confirm', confirmMock);
+
+            const form = useEditDraft({ initial: { first_name: 'Original' }, draft: null, urls });
+            form.values.first_name = 'Changed';
+
+            const event = guardEvent('/somewhere-else');
+            lastGuard()(event);
+
+            expect(confirmMock).toHaveBeenCalledWith('drafts.leave_confirm');
+            expect(event.preventDefault).toHaveBeenCalled();
+        });
+
+        it('allows navigation when the prompt is accepted', () => {
+            vi.stubGlobal('confirm', vi.fn().mockReturnValue(true));
+
+            const form = useEditDraft({ initial: { first_name: 'Original' }, draft: null, urls });
+            form.values.first_name = 'Changed';
+
+            const event = guardEvent('/somewhere-else');
+            lastGuard()(event);
+
+            expect(event.preventDefault).not.toHaveBeenCalled();
+        });
+
+        it('never prompts when clean, for same-page visits, or non-GET actions', () => {
+            const confirmMock = vi.fn();
+            vi.stubGlobal('confirm', confirmMock);
+
+            const form = useEditDraft({ initial: { first_name: 'Original' }, draft: null, urls });
+
+            lastGuard()(guardEvent('/somewhere-else'));
+
+            form.values.first_name = 'Changed';
+
+            lastGuard()(guardEvent(window.location.pathname));
+            lastGuard()(guardEvent('/somewhere-else', 'post'));
+
+            expect(confirmMock).not.toHaveBeenCalled();
+        });
     });
 });

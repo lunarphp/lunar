@@ -25,7 +25,7 @@ it('merges add-on table extension columns onto the channels index', function () 
             })
             // "handle_length" only appears with a real value because the extension
             // column's query() hook was actually applied to the channel query.
-            ->where('channels.0.handle_length', 8)
+            ->where('channels.data.0.handle_length', 8)
         );
 });
 

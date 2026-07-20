@@ -20,11 +20,11 @@ test('the channels index renders with the real channel list', function () {
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('settings/channels/Index')
-            ->has('channels', 2)
-            ->where('channels.0.name', 'Retail')
-            ->where('channels.1.name', 'Webstore')
-            ->where('channels.1.default', true)
-            ->where('channels.0.default', false)
+            ->has('channels.data', 2)
+            ->where('channels.data.0.name', 'Retail')
+            ->where('channels.data.1.name', 'Webstore')
+            ->where('channels.data.1.default', true)
+            ->where('channels.data.0.default', false)
             ->has('urls.store')
         );
 
@@ -41,9 +41,9 @@ test('channels carry first-party row actions, with delete omitted for the defaul
         ->assertInertia(fn (Assert $page) => $page
             ->where('tableActions', fn ($actions) => collect($actions)->pluck('key')->all() === ['edit', 'delete'])
             // Non-default channel: both edit and delete resolve a url.
-            ->where('channels.0._actions', fn ($actions) => isset($actions['edit'], $actions['delete']))
+            ->where('channels.data.0._actions', fn ($actions) => isset($actions['edit'], $actions['delete']))
             // Default channel: edit only, delete is protected/omitted.
-            ->where('channels.1._actions', fn ($actions) => isset($actions['edit']) && ! isset($actions['delete']))
+            ->where('channels.data.1._actions', fn ($actions) => isset($actions['edit']) && ! isset($actions['delete']))
         );
 });
 
@@ -52,7 +52,7 @@ test('the default flag is serialized as a real boolean', function () {
 
     $this->get(route('panel.settings.channels.index'))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('channels.0.default', true)
-            ->whereType('channels.0.default', 'boolean')
+            ->where('channels.data.0.default', true)
+            ->whereType('channels.data.0.default', 'boolean')
         );
 });

@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Өөрчлөлтүүд хадгалагдлаа.',
     'restored' => '{time}-ийн хадгалагдаагүй өөрчлөлтүүдийг сэргээлээ.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Цуцлах',
     'saving' => 'Ноорог хадгалж байна…',
     'saved' => 'Ноорог хадгалагдлаа',

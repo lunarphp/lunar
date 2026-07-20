@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'تم حفظ التغييرات.',
     'restored' => 'تمت استعادة التغييرات غير المحفوظة من {time}.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'تجاهل',
     'saving' => 'جارٍ حفظ المسودة…',
     'saved' => 'تم حفظ المسودة',

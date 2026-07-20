@@ -17,8 +17,24 @@ use Lunar\Panel\Http\Middleware\Authenticate;
 use Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationItem;
+use Lunar\Panel\Sections\Catalog\CatalogSection;
 use Lunar\Panel\Sections\Sales\SalesSection;
+use Lunar\Panel\Sections\Settings\ActivityLogSection;
+use Lunar\Panel\Sections\Settings\AttributeGroupsSection;
+use Lunar\Panel\Sections\Settings\AttributesSection;
 use Lunar\Panel\Sections\Settings\ChannelsSection;
+use Lunar\Panel\Sections\Settings\CountriesSection;
+use Lunar\Panel\Sections\Settings\CurrenciesSection;
+use Lunar\Panel\Sections\Settings\CustomerGroupsSection;
+use Lunar\Panel\Sections\Settings\LanguagesSection;
+use Lunar\Panel\Sections\Settings\LocationsSection;
+use Lunar\Panel\Sections\Settings\ProductOptionsSection;
+use Lunar\Panel\Sections\Settings\RegionsSection;
+use Lunar\Panel\Sections\Settings\RolesSection;
+use Lunar\Panel\Sections\Settings\StaffSection;
+use Lunar\Panel\Sections\Settings\TagsSection;
+use Lunar\Panel\Sections\Settings\TaxClassesSection;
+use Lunar\Panel\Sections\Settings\TaxZonesSection;
 
 class PanelServiceProvider extends ServiceProvider
 {
@@ -76,8 +92,24 @@ class PanelServiceProvider extends ServiceProvider
 
         $this->registerPermissionGate();
 
+        Panel::section(new CatalogSection);
         Panel::section(new SalesSection);
+        Panel::section(new ActivityLogSection);
+        Panel::section(new AttributeGroupsSection);
+        Panel::section(new AttributesSection);
         Panel::section(new ChannelsSection);
+        Panel::section(new CountriesSection);
+        Panel::section(new CurrenciesSection);
+        Panel::section(new CustomerGroupsSection);
+        Panel::section(new LanguagesSection);
+        Panel::section(new LocationsSection);
+        Panel::section(new ProductOptionsSection);
+        Panel::section(new RegionsSection);
+        Panel::section(new RolesSection);
+        Panel::section(new StaffSection);
+        Panel::section(new TagsSection);
+        Panel::section(new TaxClassesSection);
+        Panel::section(new TaxZonesSection);
 
         $this->app->booted(function (): void {
             $this->processRegisteredSections();

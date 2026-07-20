@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->ulid('public_id')->unique();
             $table->string('name');
+            $table->string('handle')->unique();
+            $table->string('status')->default('active')->index();
             $table->jsonb('description')->nullable();
             $table->jsonb('short_description')->nullable();
             $table->timestamps();

@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'title' => 'URL slugs',
+    'description' => '{count} slugs · one default for non-localized links',
+    'column_language' => 'Language',
+    'column_slug' => 'Slug & preview',
+    'column_default' => 'Default',
+    'default_badge' => 'Default',
+    'set_default' => 'Set',
+    'add_url' => 'Add URL',
+    'add_description' => 'Add a slug for any language. A record can carry several slugs per language — the default is the canonical link, the rest act as alias or redirect slugs.',
+    'field_slug' => 'Slug',
+    'make_default' => 'Make this the default URL',
+    'non_default_hint' => 'Non-default slugs still resolve on the storefront and suit renamed pages or campaign links.',
+    'add' => 'Add',
+    'slug_placeholder' => 'brand-slug',
+    'remove' => 'Remove slug',
+    'empty' => 'No URLs yet — add a slug so the storefront can route to this page.',
+    'confirm_remove_title' => 'Remove this slug?',
+    'confirm_remove_body' => 'Links using it will stop resolving. The default re-points to the next slug automatically.',
+    'flash_created' => 'URL added.',
+    'flash_updated' => 'URL updated.',
+    'flash_deleted' => 'URL removed.',
+];

@@ -30,8 +30,9 @@ class ChannelIndexController
             ->tap(fn ($query) => $resolver->applyColumnQueries($query))
             ->tap(fn ($query) => $resolver->applyFilters($query, $request))
             ->orderBy('name')
-            ->get()
-            ->map(function (Channel $channel) use ($resolver): array {
+            ->paginate(25)
+            ->withQueryString()
+            ->through(function (Channel $channel) use ($resolver): array {
                 $row = [
                     'id' => $channel->id,
                     'name' => $channel->name,

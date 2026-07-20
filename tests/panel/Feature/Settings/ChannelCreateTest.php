@@ -57,3 +57,13 @@ test('status must be a valid channel state', function () {
         'status' => 'not-a-real-state',
     ])->assertSessionHasErrors('status');
 });
+
+test('a name whose derived handle collides with an existing channel is rejected', function () {
+    Channel::factory()->create(['name' => 'Retail', 'handle' => 'retail']);
+
+    $this->post(route('panel.settings.channels.store'), [
+        'name' => 'retail',
+    ])->assertSessionHasErrors('name');
+
+    expect(Channel::count())->toBe(1);
+});

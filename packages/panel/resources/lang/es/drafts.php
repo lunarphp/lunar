@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Cambios guardados.',
     'restored' => 'Cambios sin guardar de {time} restaurados.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Descartar',
     'saving' => 'Guardando borrador…',
     'saved' => 'Borrador guardado',

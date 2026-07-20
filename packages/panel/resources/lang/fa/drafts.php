@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'تغییرات ذخیره شد.',
     'restored' => 'تغییرات ذخیره‌نشده از {time} بازیابی شد.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'صرف‌نظر',
     'saving' => 'در حال ذخیره پیش‌نویس…',
     'saved' => 'پیش‌نویس ذخیره شد',

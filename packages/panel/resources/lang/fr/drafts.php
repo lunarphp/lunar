@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Modifications enregistrées.',
     'restored' => 'Modifications non enregistrées du {time} restaurées.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Abandonner',
     'saving' => 'Enregistrement du brouillon…',
     'saved' => 'Brouillon enregistré',
