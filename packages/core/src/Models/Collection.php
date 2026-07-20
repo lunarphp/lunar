@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Contracts\CacheInvalidator;
 use Lunar\Core\Contracts\HasThumbnailImage;
@@ -24,6 +25,7 @@ use Lunar\Core\Models\Concerns\HasPublicId;
 use Lunar\Core\Models\Concerns\HasTranslations;
 use Lunar\Core\Models\Concerns\HasUrls;
 use Lunar\Core\Models\Concerns\InvalidatesCache;
+use Lunar\Core\Models\Concerns\LogsActivity;
 use Lunar\Core\Models\Concerns\Searchable;
 use Lunar\Core\States\Collection\CollectionState;
 use Lunar\Core\States\Collection\Published;
@@ -38,6 +40,7 @@ use Spatie\ModelStates\HasStates;
  * @property-read  int $_lft
  * @property-read  int $_rgt
  * @property ?int $parent_id
+ * @property string $handle
  * @property string $type
  * @property \Illuminate\Support\Collection $name
  * @property ?\Illuminate\Support\Collection $description
@@ -61,6 +64,7 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
         HasTranslations,
         HasUrls,
         InvalidatesCache,
+        LogsActivity,
         NodeTrait,
         Searchable {
             NodeTrait::usesSoftDelete insteadof Searchable;
@@ -95,6 +99,20 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
 
     protected static function booted(): void
     {
+        static::creating(function (self $collection) {
+            if (blank($collection->handle)) {
+                $collection->handle = static::uniqueHandle(
+                    $collection->translate('name') ?? ''
+                );
+            }
+        });
+
+        // A replica must not clone the unique handle; clearing it lets the
+        // creating hook mint a fresh suffixed one.
+        static::replicating(function (self $collection) {
+            $collection->handle = null;
+        });
+
         // A re-parent changes every descendant's ancestry (path / breadcrumb),
         // so the moved node's subtree is invalidated alongside the node itself.
         static::saved(function (self $collection) {
@@ -116,6 +134,22 @@ class Collection extends Base implements HasThumbnailImage, SpatieHasMedia
     public function newCacheInvalidationEvent(CacheInvalidationReason $reason): CacheInvalidationEvent
     {
         return new CollectionInvalidated($this, $reason);
+    }
+
+    /**
+     * Generate a kebab-case handle from the name, suffixed until unique:
+     * collection, collection-2, collection-3, ...
+     */
+    protected static function uniqueHandle(string $name): string
+    {
+        $base = Str::slug($name) ?: 'collection';
+        $handle = $base;
+
+        for ($suffix = 2; static::where('handle', $handle)->exists(); $suffix++) {
+            $handle = $base.'-'.$suffix;
+        }
+
+        return $handle;
     }
 
     /**

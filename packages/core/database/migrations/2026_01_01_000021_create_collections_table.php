@@ -13,6 +13,7 @@ return new class extends Migration
             $table->ulid('public_id')->unique();
             $table->foreignId('collection_group_id')->constrained($this->prefix.'collection_groups');
             $table->nestedSet();
+            $table->string('handle')->unique();
             $table->string('type')->default('static')->index();
             $table->jsonb('name');
             $table->jsonb('description')->nullable();

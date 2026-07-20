@@ -27,11 +27,15 @@ use Lunar\Core\Actions\Carts\UpdateCartLine;
 use Lunar\Core\Actions\Channels\CreateChannel;
 use Lunar\Core\Actions\Channels\DeleteChannel;
 use Lunar\Core\Actions\Channels\UpdateChannel;
+use Lunar\Core\Actions\CollectionGroups\CreateCollectionGroup;
+use Lunar\Core\Actions\CollectionGroups\DeleteCollectionGroup;
+use Lunar\Core\Actions\CollectionGroups\UpdateCollectionGroup;
 use Lunar\Core\Actions\Collections\CreateChildCollection;
 use Lunar\Core\Actions\Collections\CreateRootCollection;
 use Lunar\Core\Actions\Collections\DeleteCollection;
 use Lunar\Core\Actions\Collections\MoveCollection;
 use Lunar\Core\Actions\Collections\SortProducts;
+use Lunar\Core\Actions\Collections\UpdateCollection;
 use Lunar\Core\Actions\Countries\CreateCountryState;
 use Lunar\Core\Actions\Countries\DeleteCountry;
 use Lunar\Core\Actions\Countries\DeleteCountryState;
@@ -229,6 +233,12 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Collections\DeletesCollection::class => DeleteCollection::class,
         Contracts\Collections\MovesCollection::class => MoveCollection::class,
         Contracts\Collections\SortsProducts::class => SortProducts::class,
+        Contracts\Collections\UpdatesCollection::class => UpdateCollection::class,
+
+        // Collection groups
+        Contracts\CollectionGroups\CreatesCollectionGroup::class => CreateCollectionGroup::class,
+        Contracts\CollectionGroups\DeletesCollectionGroup::class => DeleteCollectionGroup::class,
+        Contracts\CollectionGroups\UpdatesCollectionGroup::class => UpdateCollectionGroup::class,
 
         // Countries
         Contracts\Countries\CreatesCountryState::class => CreateCountryState::class,

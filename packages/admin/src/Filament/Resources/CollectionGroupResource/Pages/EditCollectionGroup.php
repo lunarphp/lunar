@@ -6,6 +6,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Lunar\Admin\Filament\Resources\CollectionGroupResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Core\Actions\CollectionGroups\DeleteCollectionGroup;
 use Lunar\Filament\Widgets\Collections\CollectionTreeView;
 
 class EditCollectionGroup extends BaseEditRecord
@@ -17,7 +18,7 @@ class EditCollectionGroup extends BaseEditRecord
         return [
             DeleteAction::make()
                 ->before(function ($record, DeleteAction $action) {
-                    if ($record->collections->count() > 0) {
+                    if (DeleteCollectionGroup::isProtected($record)) {
                         Notification::make()
                             ->warning()
                             ->body(__('lunarpanel::collectiongroup.action.delete.notification.error_protected'))
