@@ -10,6 +10,7 @@ import { type RowAction } from '../../../components/RowActions.vue';
 import Dialog from '../../../components/Dialog.vue';
 import FieldLabel from '../../../components/FieldLabel.vue';
 import PageEmpty from '../../../components/PageEmpty.vue';
+import Pagination from '../../../components/Pagination.vue';
 import Select from '../../../components/Select.vue';
 import StatusBadge from '../../../components/StatusBadge.vue';
 import TextInput from '../../../components/TextInput.vue';
@@ -30,8 +31,19 @@ type ChannelColumn = { key: string; label: string; width?: string; align?: 'left
 
 type ExtensionFilter = { key: string; label: string; component: string | null; options: Record<string, string> };
 
+type Paginated<T> = {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    from: number | null;
+    to: number | null;
+    total: number;
+};
+
 const props = defineProps<{
-    channels: Channel[];
+    channels: Paginated<Channel>;
     columns: ChannelColumn[];
     tableActions: RowAction[];
     tableBulkActions: BulkAction[];
@@ -127,7 +139,7 @@ const submitCreate = (): void => {
 
         <DataTable
             :columns="props.columns"
-            :rows="channels"
+            :rows="channels.data"
             :row-to="rowTo"
             :row-actions="props.tableActions"
             :selectable="hasBulkActions"
@@ -153,6 +165,10 @@ const submitCreate = (): void => {
                 <PageEmpty :title="t('channels.empty_title')" />
             </template>
         </DataTable>
+
+        <div class="mt-4">
+            <Pagination :meta="channels" />
+        </div>
     </SettingsShell>
 
     <Dialog

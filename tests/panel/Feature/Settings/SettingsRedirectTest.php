@@ -10,7 +10,7 @@ it('redirects to the first settings page the user can see', function () {
 
     $this->actingAs($staff, 'staff')
         ->get('/panel/settings')
-        ->assertRedirect(route('panel.settings.channels.index'));
+        ->assertRedirect(route('panel.settings.staff.index'));
 });
 
 it('falls back to the dashboard when no settings page is visible', function () {

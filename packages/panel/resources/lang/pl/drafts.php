@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Zmiany zapisane.',
     'restored' => 'Przywrócono niezapisane zmiany z {time}.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Odrzuć',
     'saving' => 'Zapisywanie wersji roboczej…',
     'saved' => 'Wersja robocza zapisana',

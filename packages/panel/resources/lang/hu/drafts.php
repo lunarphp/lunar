@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'A módosítások mentve.',
     'restored' => 'A(z) {time} időpontból származó nem mentett módosítások visszaállítva.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Elvetés',
     'saving' => 'Piszkozat mentése…',
     'saved' => 'Piszkozat mentve',

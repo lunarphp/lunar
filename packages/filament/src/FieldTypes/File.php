@@ -3,10 +3,6 @@
 namespace Lunar\Filament\FieldTypes;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Component;
 use Lunar\Core\Models\Attribute;
 use Lunar\Filament\Synthesizers\FileSynth;
@@ -54,52 +50,5 @@ class File extends BaseFieldType
         }
 
         return $input;
-    }
-
-    public static function getConfigurationFields(): array
-    {
-        $disks = array_keys(config('filesystems.disks', []));
-
-        return [
-            TagsInput::make('file_types')
-                ->label(
-                    __('lunar-filament::fieldtypes.file.form.file_types.label')
-                )->suggestions([
-                    'image/*',
-                    'image/jpeg',
-                    'image/png',
-                    'image/gif',
-                    'audio/*',
-                    'audio/mpeg',
-                    'audio/aac',
-                    'audio/wav',
-                    'video/*',
-                    'video/mp4',
-                    'video/mpeg',
-                    'application/msword',
-                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    'application/rtf',
-                    'application/pdf',
-                ])
-                ->placeholder(__('lunar-filament::fieldtypes.file.form.file_types.placeholder'))
-                ->reorderable(),
-            Toggle::make('multiple')->label(
-                __('lunar-filament::fieldtypes.file.form.multiple.label')
-            ),
-            TextInput::make('min_files')
-                ->label(
-                    __('lunar-filament::fieldtypes.file.form.min_files.label')
-                )->nullable()->numeric(),
-            TextInput::make('max_files')->label(
-                __('lunar-filament::fieldtypes.file.form.max_files.label')
-            )->nullable()->numeric(),
-            Select::make('disk')
-                ->label(__('lunar-filament::fieldtypes.file.form.disk.label'))
-                ->options(! empty($disks) ? array_combine($disks, $disks) : [])
-                ->nullable(),
-            TextInput::make('directory')
-                ->label(__('lunar-filament::fieldtypes.file.form.directory.label'))
-                ->nullable(),
-        ];
     }
 }

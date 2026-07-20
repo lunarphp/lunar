@@ -28,4 +28,14 @@ class Dropdown extends AbstractFieldType
             ],
         ];
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfigurationFields(): array
+    {
+        return [
+            ['key' => 'lookups', 'type' => 'lookups', 'label' => __('lunar::fieldtypes.lookups')],
+        ];
+    }
 }

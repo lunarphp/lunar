@@ -36,6 +36,7 @@ class CustomerGroup extends Base
      * {@inheritDoc}
      */
     protected $casts = [
+        'default' => 'boolean',
     ];
 
     /**

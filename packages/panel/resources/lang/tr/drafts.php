@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Değişiklikler kaydedildi.',
     'restored' => '{time} tarihli kaydedilmemiş değişiklikler geri yüklendi.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Vazgeç',
     'saving' => 'Taslak kaydediliyor…',
     'saved' => 'Taslak kaydedildi',

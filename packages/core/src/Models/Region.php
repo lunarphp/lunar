@@ -36,6 +36,7 @@ class Region extends Base
     protected $guarded = [];
 
     protected $casts = [
+        'default' => 'boolean',
         'prices_inc_tax' => 'boolean',
     ];
 

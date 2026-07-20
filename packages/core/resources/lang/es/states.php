@@ -6,6 +6,11 @@ return [
         'inactive' => 'Inactive',
     ],
 
+    'brand' => [
+        'active' => 'Active',
+        'draft' => 'Draft',
+    ],
+
     'product' => [
         'draft' => 'Draft',
         'published' => 'Published',

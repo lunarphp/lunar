@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Promjene su spremljene.',
     'restored' => 'Vraćene su nespremljene promjene od {time}.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Odbaci',
     'saving' => 'Spremanje skice…',
     'saved' => 'Skica spremljena',

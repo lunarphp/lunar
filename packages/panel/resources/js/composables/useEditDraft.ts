@@ -1,5 +1,6 @@
-import { computed, reactive, ref, watch, type ComputedRef, type Ref } from 'vue';
+import { computed, getCurrentInstance, getCurrentScope, onScopeDispose, reactive, ref, watch, type ComputedRef, type Ref } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { DraftConflictError, ValidationError, http, type DraftConflict } from '../lib/http';
 
 export interface DraftState {
@@ -110,6 +111,43 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
     };
 
     const isDirty = computed(() => Object.keys(diff()).length > 0);
+
+    // Leaving the page with uncommitted changes prompts first — the edits
+    // survive as a draft, but staff shouldn't navigate away believing they
+    // went live. Same-page visits (partial reloads, widget posts) pass
+    // through untouched. Outside a component (unit tests) t() falls back to
+    // the raw key.
+    const t = getCurrentInstance() ? useI18n().t : (key: string): string => key;
+
+    const unlistenNavigationGuard = router.on('before', (event) => {
+        const { url, method } = event.detail.visit;
+
+        if (!isDirty.value || method !== 'get' || url.pathname === window.location.pathname) {
+            return;
+        }
+
+        if (!window.confirm(t('drafts.leave_confirm'))) {
+            event.preventDefault();
+        }
+    });
+
+    // Hard navigation (close tab, external link, refresh) gets the browser's
+    // native prompt; it also covers edits still inside the autosave debounce,
+    // which a draft would otherwise lose.
+    const onBeforeUnload = (event: BeforeUnloadEvent): void => {
+        if (isDirty.value) {
+            event.preventDefault();
+        }
+    };
+
+    window.addEventListener('beforeunload', onBeforeUnload);
+
+    if (getCurrentScope()) {
+        onScopeDispose(() => {
+            unlistenNavigationGuard();
+            window.removeEventListener('beforeunload', onBeforeUnload);
+        });
+    }
 
     // In-flight requests chain so responses apply in request order.
     let queue: Promise<unknown> = Promise.resolve();

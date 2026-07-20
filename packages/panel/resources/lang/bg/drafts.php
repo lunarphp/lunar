@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Промените са запазени.',
     'restored' => 'Възстановени са незапазени промени от {time}.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Отхвърляне',
     'saving' => 'Записване на черновата…',
     'saved' => 'Черновата е запазена',

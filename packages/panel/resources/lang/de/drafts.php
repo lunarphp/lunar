@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Änderungen gespeichert.',
     'restored' => 'Ungespeicherte Änderungen von {time} wiederhergestellt.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Verwerfen',
     'saving' => 'Entwurf wird gespeichert…',
     'saved' => 'Entwurf gespeichert',

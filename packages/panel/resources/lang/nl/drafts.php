@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Wijzigingen opgeslagen.',
     'restored' => 'Niet-opgeslagen wijzigingen van {time} hersteld.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Verwerpen',
     'saving' => 'Concept opslaan…',
     'saved' => 'Concept opgeslagen',

@@ -2,6 +2,8 @@
 
 namespace Lunar\Core\Manifests;
 
+use Illuminate\Contracts\Routing\UrlRoutable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -66,7 +68,7 @@ class ModelManifest implements ModelManifestContract
     protected function registerModels(array $modelClasses): void
     {
         foreach ($modelClasses as $modelClass) {
-            Route::model($this->bindingName($modelClass), $modelClass);
+            $this->bindRouteParameter($this->bindingName($modelClass), $modelClass);
 
             if (App::isBooted()) {
                 Relation::morphMap([
@@ -74,6 +76,36 @@ class ModelManifest implements ModelManifestContract
                 ]);
             }
         }
+    }
+
+    /**
+     * Bind the route parameter for a model.
+     *
+     * Not Route::model(): explicit binders run before Laravel's implicit
+     * binding pass and resolve every parameter independently, so a nested
+     * route wrapped in Route::scopeBindings() would never scope the child
+     * through its parent (e.g. a URL under the wrong brand would still
+     * resolve). This binder applies the implicit resolver's scoping rules
+     * first and only then falls back to a plain lookup.
+     */
+    protected function bindRouteParameter(string $name, string $modelClass): void
+    {
+        Route::bind($name, function (mixed $value, $route) use ($name, $modelClass) {
+            $field = $route?->bindingFieldFor($name);
+            $parent = $route?->parentOfParameter($name);
+
+            // Explicit binders run in URI-segment order, so a scoped parent
+            // has already been resolved to a model by the time this runs.
+            $shouldScope = $parent instanceof UrlRoutable
+                && ! $route->preventsScopedBindings()
+                && ($route->enforcesScopedBindings() || $field !== null);
+
+            $resolved = $shouldScope
+                ? $parent->resolveChildRouteBinding($name, $value, $field)
+                : app($modelClass)->resolveRouteBinding($value, $field);
+
+            return $resolved ?? throw (new ModelNotFoundException)->setModel($modelClass, [$value]);
+        });
     }
 
     protected function bindingName(string $modelClass): string

@@ -3,6 +3,7 @@
 return [
     'flash_committed' => 'Đã lưu các thay đổi.',
     'restored' => 'Đã khôi phục các thay đổi chưa lưu từ {time}.',
+    'leave_confirm' => 'You have unsaved changes. Leave this page? Your edits will be kept as a draft.',
     'discard' => 'Hủy bỏ',
     'saving' => 'Đang lưu bản nháp…',
     'saved' => 'Đã lưu bản nháp',

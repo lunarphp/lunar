@@ -39,6 +39,13 @@ class Language extends Base
      */
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'default' => 'boolean',
+        ];
+    }
+
     public function urls(): HasMany
     {
         return $this->hasMany(Url::class);

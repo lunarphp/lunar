@@ -68,6 +68,27 @@ test('a channel can be updated', function () {
     expect((string) $channel->status)->toBe('inactive');
 });
 
+test('renaming a channel onto another channel handle is rejected', function () {
+    Channel::factory()->create(['name' => 'Webstore', 'handle' => 'webstore']);
+    $channel = Channel::factory()->create(['name' => 'Retail', 'handle' => 'retail']);
+
+    $this->put(route('panel.settings.channels.update', $channel), [
+        'name' => 'Webstore',
+    ])->assertSessionHasErrors('name');
+
+    expect($channel->fresh()->handle)->toBe('retail');
+});
+
+test('a channel can keep its own name on update', function () {
+    $channel = Channel::factory()->create(['name' => 'Retail', 'handle' => 'retail']);
+
+    $this->put(route('panel.settings.channels.update', $channel), [
+        'name' => 'Retail',
+    ])->assertSessionHasNoErrors()
+        ->assertRedirect(route('panel.settings.channels.index'))
+        ->assertSessionHas('success');
+});
+
 test('updating a channel to default un-defaults whichever channel was default', function () {
     $default = Channel::factory()->create(['name' => 'Webstore', 'default' => true]);
     $channel = Channel::factory()->create(['name' => 'Retail', 'default' => false]);
