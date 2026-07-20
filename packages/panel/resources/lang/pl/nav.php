@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Przełącz panel boczny',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Kolekcje',
     'sales' => 'Sprzedaż',
     'customers' => 'Klienci',
     'general' => 'Ogólne',

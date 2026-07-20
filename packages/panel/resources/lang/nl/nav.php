@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Zijbalk wisselen',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Collecties',
     'sales' => 'Verkoop',
     'customers' => 'Klanten',
     'general' => 'Algemeen',

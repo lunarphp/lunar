@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Alternar barra lateral',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Colecciones',
     'sales' => 'Ventas',
     'customers' => 'Clientes',
     'general' => 'General',

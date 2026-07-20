@@ -16,6 +16,7 @@ return [
     'toggle_sidebar' => 'Хажуугийн самбар солих',
     'catalog' => 'Catalog',
     'brands' => 'Brands',
+    'collections' => 'Цуглуулгууд',
     'sales' => 'Борлуулалт',
     'customers' => 'Харилцагчид',
     'general' => 'Ерөнхий',
