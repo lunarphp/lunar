@@ -23,6 +23,7 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Products\ProductVariantRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
+use Lunar\Panel\Support\TimelineActivity;
 use Lunar\Panel\Support\VariantFields;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -69,11 +70,7 @@ class ProductVariantController
             ->latest()
             ->limit(25)
             ->get()
-            ->map(fn (Activity $activity) => [
-                'description' => $activity->description,
-                'created_at' => $activity->created_at,
-                'causer_name' => $activity->causer?->full_name ?? $activity->causer?->name ?? null,
-            ]);
+            ->map(fn (Activity $activity) => TimelineActivity::toArray($activity));
 
         $measurements = Converter::getMeasurements();
 
@@ -173,6 +170,7 @@ class ProductVariantController
             },
             'urls' => [
                 'productEdit' => route('panel.products.edit', $product),
+                'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $productVariant->getMorphClass()]),
                 'update' => route('panel.products.variants.update', [$product, $productVariant]),
                 'destroy' => route('panel.products.variants.destroy', [$product, $productVariant]),
                 'draft' => route('panel.products.variants.draft.update', [$product, $productVariant]),

@@ -106,6 +106,7 @@ return [
     'side_collections' => 'Collections',
     'side_activity' => 'Activity',
     'side_activity_empty' => 'No activity recorded yet.',
+    'side_activity_see_all' => 'See all',
     'status_archived_help' => 'Hidden everywhere. Kept for records and re-publishing.',
     'action_duplicate' => 'Duplicate',
     'confirm_duplicate' => 'Duplicate this product? Variants, prices, option links and attribute values are copied; the copy starts as a draft.',

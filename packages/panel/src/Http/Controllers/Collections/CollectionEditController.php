@@ -19,6 +19,7 @@ use Lunar\Panel\Http\Requests\Collections\CollectionRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -70,11 +71,7 @@ class CollectionEditController
             ->latest()
             ->limit(25)
             ->get()
-            ->map(fn (Activity $activity) => [
-                'description' => $activity->description,
-                'created_at' => $activity->created_at,
-                'causer_name' => $activity->causer?->full_name ?? $activity->causer?->name ?? null,
-            ]);
+            ->map(fn (Activity $activity) => TimelineActivity::toArray($activity));
 
         /** @var ?Collection $parent */
         $parent = $collection->parent;
@@ -139,6 +136,7 @@ class CollectionEditController
             'activities' => $activities,
             'urls' => [
                 'index' => route('panel.collections.index'),
+                'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $collection->getMorphClass()]),
                 'update' => route('panel.collections.update', $collection),
                 'destroy' => route('panel.collections.destroy', $collection),
                 'move' => route('panel.collections.move', $collection),

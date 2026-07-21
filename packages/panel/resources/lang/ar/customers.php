@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'لم يتم العثور على مستخدم بهذا البريد الإلكتروني.',
 
     'activity_empty' => 'لا يوجد نشاط مسجل بعد',
+    'activity_see_all' => 'See all',
     'activity_created' => 'تم إنشاء العميل',
     'activity_updated' => 'تم تحديث العميل',
     'activity_deleted' => 'تم حذف العميل',

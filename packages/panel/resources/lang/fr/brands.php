@@ -63,6 +63,7 @@ return [
     'side_usage_collections' => 'collections feature it',
     'side_activity' => 'Activity',
     'side_activity_empty' => 'No activity recorded yet.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Last updated',
 
     'confirm_delete_brand' => 'Delete this brand? Products keep their data but lose the brand link.',

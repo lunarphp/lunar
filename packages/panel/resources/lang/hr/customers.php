@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Nije pronađen korisnik s tom e-poštom.',
 
     'activity_empty' => 'Još nema zabilježene aktivnosti',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Kupac je kreiran',
     'activity_updated' => 'Kupac je ažuriran',
     'activity_deleted' => 'Kupac je izbrisan',

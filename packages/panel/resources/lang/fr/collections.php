@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'sous-collections imbriquées',
     'side_activity' => 'Activité',
     'side_activity_empty' => 'Aucune activité enregistrée pour le moment.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Dernière modification',
 
     'status_published' => 'Publiée',

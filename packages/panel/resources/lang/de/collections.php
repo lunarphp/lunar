@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'verschachtelte Unterkollektionen',
     'side_activity' => 'Aktivität',
     'side_activity_empty' => 'Noch keine Aktivität aufgezeichnet.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Zuletzt geändert',
 
     'status_published' => 'Veröffentlicht',

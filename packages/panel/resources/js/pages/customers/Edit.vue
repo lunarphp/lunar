@@ -68,6 +68,8 @@ interface ActivityEntry {
     description: string;
     created_at: string;
     causer_name: string | null;
+    avatar: string | null;
+    changes: string[];
 }
 
 interface OrderRow {
@@ -111,6 +113,7 @@ const props = defineProps<{
     draft: DraftState | null;
     urls: {
         index: string;
+        activityLog: string;
         update: string;
         destroy: string;
         addressesStore: string;
@@ -452,10 +455,11 @@ const activityLabel = (description: string): string => {
 
 const timelineEvents = computed(() =>
     props.activities.map((activity) => ({
-        type: activity.description.replaceAll('-', '_'),
         label: activityLabel(activity.description),
-        when: new Date(activity.created_at).toLocaleString(),
+        when: activity.created_at,
         actor: activity.causer_name ?? '',
+        avatar: activity.avatar,
+        changes: activity.changes,
     })));
 
 // Admin notes side card: view by default, pencil toggles an inline editor.
@@ -774,6 +778,9 @@ const tabDefs = computed(() => [
                                 </template>
 
                                 <template #activity>
+                                    <div v-if="activities.length" class="mb-3 flex justify-end">
+                                        <a :href="urls.activityLog" class="text-[11.5px] font-medium text-ink-500 hover:text-ink-900">{{ t('customers.activity_see_all') }}</a>
+                                    </div>
                                     <ActivityTimeline :events="timelineEvents" :reverse="false" />
                                     <PageEmpty v-if="!activities.length" :title="t('customers.activity_empty')" />
                                 </template>

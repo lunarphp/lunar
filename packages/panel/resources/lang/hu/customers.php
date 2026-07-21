@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Nem található felhasználó ezzel az e-mail címmel.',
 
     'activity_empty' => 'Még nincs rögzített tevékenység',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Az ügyfél létrehozva',
     'activity_updated' => 'Az ügyfél frissítve',
     'activity_deleted' => 'Az ügyfél törölve',

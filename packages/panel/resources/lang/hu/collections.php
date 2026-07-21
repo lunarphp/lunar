@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'beágyazott alkollekció',
     'side_activity' => 'Tevékenység',
     'side_activity_empty' => 'Még nincs rögzített tevékenység.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Utolsó módosítás',
 
     'status_published' => 'Közzétéve',

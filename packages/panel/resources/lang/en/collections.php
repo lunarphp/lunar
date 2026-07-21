@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'nested sub-collections',
     'side_activity' => 'Activity',
     'side_activity_empty' => 'No activity recorded yet.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Last updated',
 
     'status_published' => 'Published',

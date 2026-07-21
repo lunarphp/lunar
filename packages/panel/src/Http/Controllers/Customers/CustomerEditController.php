@@ -19,6 +19,7 @@ use Lunar\Core\Models\Order;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Customers\CustomerRequest;
 use Lunar\Panel\PanelManager;
+use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
 
 class CustomerEditController
@@ -80,11 +81,7 @@ class CustomerEditController
             ->latest()
             ->limit(25)
             ->get()
-            ->map(fn (Activity $activity) => [
-                'description' => $activity->description,
-                'created_at' => $activity->created_at,
-                'causer_name' => $activity->causer?->full_name ?? $activity->causer?->name ?? null,
-            ]);
+            ->map(fn (Activity $activity) => TimelineActivity::toArray($activity));
 
         $placedOrders = $customer->orders()->whereNotNull('placed_at');
 
@@ -152,6 +149,7 @@ class CustomerEditController
             ] : null,
             'urls' => [
                 'index' => route('panel.customers.index'),
+                'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $customer->getMorphClass()]),
                 'update' => route('panel.customers.update', $customer),
                 'destroy' => route('panel.customers.destroy', $customer),
                 'addressesStore' => route('panel.customers.addresses.store', $customer),

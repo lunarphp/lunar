@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'کاربری با این آدرس ایمیل یافت نشد.',
 
     'activity_empty' => 'هنوز فعالیتی ثبت نشده است',
+    'activity_see_all' => 'See all',
     'activity_created' => 'مشتری ایجاد شد',
     'activity_updated' => 'مشتری به‌روزرسانی شد',
     'activity_deleted' => 'مشتری حذف شد',

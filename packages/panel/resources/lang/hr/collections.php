@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'ugniježđenih podkolekcija',
     'side_activity' => 'Aktivnost',
     'side_activity_empty' => 'Još nema zabilježene aktivnosti.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Zadnja izmjena',
 
     'status_published' => 'Objavljena',

@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'iç içe alt koleksiyon',
     'side_activity' => 'Etkinlik',
     'side_activity_empty' => 'Henüz kayıtlı etkinlik yok.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Son güncelleme',
 
     'status_published' => 'Yayında',

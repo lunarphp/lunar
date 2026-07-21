@@ -23,7 +23,7 @@ import { useTheme, type ThemePreference } from '../composables/useTheme';
 
 withDefaults(defineProps<{ collapsed?: boolean }>(), { collapsed: false });
 
-type AuthUser = { name: string; email: string | null } | null;
+type AuthUser = { name: string; email: string | null; avatar?: string | null } | null;
 
 const { t } = useI18n();
 const { theme, setTheme } = useTheme();
@@ -32,6 +32,10 @@ const user = computed<AuthUser>(() => (usePage().props.auth as { user: AuthUser 
 const displayName = computed(() => user.value?.name || 'Account');
 const displayEmail = computed(() => user.value?.email ?? '');
 const initial = computed(() => displayName.value.charAt(0).toUpperCase() || 'U');
+
+// Gravatar with initial fallback when absent or unreachable (d=404).
+const avatarFailed = ref(false);
+const avatarUrl = computed(() => (user.value?.avatar && !avatarFailed.value ? user.value.avatar : ''));
 
 const themeModel = computed<ThemePreference>({
     get: () => theme.value,
@@ -112,7 +116,15 @@ const radioBase =
                 :aria-label="t('common.open_user_menu')"
             >
                 <Tooltip :text="collapsed ? displayName : ''">
+                    <img
+                        v-if="avatarUrl"
+                        :src="avatarUrl"
+                        :alt="displayName"
+                        class="w-7 h-7 rounded-full object-cover shrink-0 ring-1 ring-line bg-surface-2"
+                        @error="avatarFailed = true"
+                    />
                     <span
+                        v-else
                         class="w-7 h-7 rounded-full bg-ink-900 text-paper text-xs font-semibold grid place-items-center shrink-0 ring-1 ring-line"
                     >{{ initial }}</span>
                 </Tooltip>

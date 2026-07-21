@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'zagnieżdżonych podkolekcji',
     'side_activity' => 'Aktywność',
     'side_activity_empty' => 'Brak zarejestrowanej aktywności.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Ostatnia zmiana',
 
     'status_published' => 'Opublikowana',

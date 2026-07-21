@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Не е намерен потребител с този имейл адрес.',
 
     'activity_empty' => 'Все още няма записана активност',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Клиентът е създаден',
     'activity_updated' => 'Клиентът е актуализиран',
     'activity_deleted' => 'Клиентът е изтрит',

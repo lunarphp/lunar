@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Không tìm thấy người dùng nào với địa chỉ email đó.',
 
     'activity_empty' => 'Chưa có hoạt động nào được ghi lại',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Đã tạo khách hàng',
     'activity_updated' => 'Đã cập nhật khách hàng',
     'activity_deleted' => 'Đã xóa khách hàng',

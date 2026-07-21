@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Энэ и-мэйл хаягтай хэрэглэгч олдсонгүй.',
 
     'activity_empty' => 'Одоогоор бүртгэгдсэн үйл ажиллагаа алга',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Харилцагч үүсгэгдлээ',
     'activity_updated' => 'Харилцагч шинэчлэгдлээ',
     'activity_deleted' => 'Харилцагч устгагдлаа',

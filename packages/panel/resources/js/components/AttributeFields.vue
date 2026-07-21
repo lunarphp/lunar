@@ -125,6 +125,47 @@ const removeListRow = (field: AttributeField, index: number): void => {
     writeListRows(field, listRows(field).filter((_, i) => i !== index));
 };
 
+// Plain (sequential) lists render an always-present trailing input so typing
+// adds an entry inline (dirty-on-type), with no separate add step — an empty
+// list no longer looks inert. The trailing row is index === listRows().length.
+const plainDisplayRows = (field: AttributeField): ListRow[] =>
+    canAddListRow(field) ? [...listRows(field), { key: null, value: '' }] : listRows(field);
+
+const isTrailingRow = (field: AttributeField, index: number): boolean => index === listRows(field).length;
+
+const onPlainInput = (field: AttributeField, index: number, value: string): void => {
+    const rows = listRows(field);
+
+    if (index < rows.length) {
+        rows[index] = { key: null, value };
+        writeListRows(field, rows);
+    } else if (value !== '') {
+        // First keystroke in the trailing row promotes it to a real entry; the
+        // input keeps focus (rows are keyed by index) and a fresh blank appears.
+        writeListRows(field, [...rows, { key: null, value }]);
+    }
+};
+
+// Prune a row emptied by the user once they leave it; the trailing input keeps
+// the "add another" affordance, so nothing is silently lost.
+const onPlainBlur = (field: AttributeField, index: number): void => {
+    const rows = listRows(field);
+
+    if (index < rows.length && rows[index].value.trim() === '') {
+        writeListRows(field, rows.filter((_, i) => i !== index));
+    }
+};
+
+// Keyed lists auto-commit a complete draft row on blur, so a typed key + value
+// is never lost by clicking away or saving without pressing enter/plus.
+const commitListDraft = (field: AttributeField): void => {
+    const draft = listDraft(field);
+
+    if (draft.key.trim() && draft.value.trim()) {
+        addListRow(field);
+    }
+};
+
 const listDrafts = ref<Record<string, { key: string; value: string }>>({});
 
 const listDraft = (field: AttributeField): { key: string; value: string } =>
@@ -279,74 +320,110 @@ const embedUrl = (field: AttributeField): string | null => {
                         </div>
 
                         <div v-else-if="field.type === 'list'" class="border border-line-strong rounded-md bg-surface overflow-hidden">
-                            <div v-if="listRows(field).length" class="divide-y divide-line">
+                            <!-- Plain lists: inline editable rows plus an always-present
+                                 trailing input, so typing adds an entry with no extra step. -->
+                            <div v-if="!isKeyedList(field)" class="divide-y divide-line">
                                 <div
-                                    v-for="(row, index) in listRows(field)"
-                                    :key="row.key ?? index"
-                                    class="grid items-center gap-1.5 px-1.5 py-1"
+                                    v-for="(row, index) in plainDisplayRows(field)"
+                                    :key="index"
+                                    class="grid items-center gap-1.5 px-1.5 py-1 grid-cols-[auto_minmax(0,1fr)_auto]"
                                     :class="[
-                                        row.key !== null ? 'grid-cols-[auto_minmax(0,1fr)_minmax(0,2fr)_auto]' : 'grid-cols-[auto_minmax(0,1fr)_auto]',
+                                        isTrailingRow(field, index) ? 'bg-surface-2' : '',
                                         listDrag?.field === field.key && listDrag?.index === index ? 'opacity-60' : '',
                                     ]"
-                                    @dragover.prevent="onListRowDragOver(field, index)"
+                                    @dragover.prevent="isTrailingRow(field, index) ? undefined : onListRowDragOver(field, index)"
                                 >
                                     <button
                                         type="button"
                                         draggable="true"
                                         class="w-5 h-6 grid place-items-center text-ink-400 cursor-grab active:cursor-grabbing hover:text-ink-700"
+                                        :class="isTrailingRow(field, index) ? 'invisible pointer-events-none' : ''"
+                                        :tabindex="isTrailingRow(field, index) ? -1 : 0"
                                         :aria-label="t('attributes.reorder_item')"
                                         @dragstart="onListRowDragStart(field, index)"
                                         @dragend="onListRowDragEnd"
                                     ><Icon name="grip" cls="sm" /></button>
-                                    <span
-                                        v-if="row.key !== null"
-                                        class="px-1 text-[11.5px] font-mono text-ink-500 truncate"
-                                        :title="row.key"
-                                    >{{ row.key }}</span>
                                     <TextInput
                                         :model-value="row.value"
-                                        :aria-label="row.key !== null ? `${field.label}: ${row.key}` : `${field.label} ${index + 1}`"
-                                        @update:model-value="(value) => setListRowValue(field, index, value)"
+                                        :placeholder="isTrailingRow(field, index) ? t('attributes.list_placeholder') : ''"
+                                        :aria-label="isTrailingRow(field, index) ? field.label : `${field.label} ${index + 1}`"
+                                        @update:model-value="(value) => onPlainInput(field, index, value)"
+                                        @blur="onPlainBlur(field, index)"
                                     />
                                     <button
                                         type="button"
                                         class="w-6 h-6 rounded-md grid place-items-center text-ink-400 hover:bg-surface-2 hover:text-danger"
+                                        :class="isTrailingRow(field, index) ? 'invisible pointer-events-none' : ''"
+                                        :tabindex="isTrailingRow(field, index) ? -1 : 0"
                                         :aria-label="t('attributes.remove_item')"
                                         @click="removeListRow(field, index)"
                                     ><Icon name="x" cls="sm" /></button>
                                 </div>
                             </div>
 
-                            <div
-                                v-if="canAddListRow(field)"
-                                class="grid items-center gap-1.5 px-1.5 py-1 bg-surface-2"
-                                :class="[
-                                    isKeyedList(field) ? 'grid-cols-[auto_minmax(0,1fr)_minmax(0,2fr)_auto]' : 'grid-cols-[auto_minmax(0,1fr)_auto]',
-                                    listRows(field).length ? 'border-t border-line' : '',
-                                ]"
-                            >
-                                <span class="w-5" aria-hidden="true" />
-                                <TextInput
-                                    v-if="isKeyedList(field)"
-                                    v-model="listDraft(field).key"
-                                    mono
-                                    :placeholder="t('attributes.list_key_placeholder')"
-                                    :aria-label="`${field.label}: ${t('attributes.list_key_placeholder')}`"
-                                    @keydown.enter.prevent="addListRow(field)"
-                                />
-                                <TextInput
-                                    v-model="listDraft(field).value"
-                                    :placeholder="isKeyedList(field) ? t('attributes.list_value_placeholder') : t('attributes.list_placeholder')"
-                                    :aria-label="field.label"
-                                    @keydown.enter.prevent="addListRow(field)"
-                                />
-                                <button
-                                    type="button"
-                                    class="w-6 h-6 rounded-md grid place-items-center text-ink-500 hover:bg-surface hover:text-ink-900"
-                                    :aria-label="t('attributes.add_item')"
-                                    @click="addListRow(field)"
-                                ><Icon name="plus" cls="sm" /></button>
-                            </div>
+                            <!-- Keyed lists (Filament KeyValue shape): key + value rows with
+                                 an add row that auto-commits a complete draft on blur. -->
+                            <template v-else>
+                                <div class="divide-y divide-line">
+                                    <div
+                                        v-for="(row, index) in listRows(field)"
+                                        :key="row.key ?? index"
+                                        class="grid items-center gap-1.5 px-1.5 py-1 grid-cols-[auto_minmax(0,1fr)_minmax(0,2fr)_auto]"
+                                        :class="listDrag?.field === field.key && listDrag?.index === index ? 'opacity-60' : ''"
+                                        @dragover.prevent="onListRowDragOver(field, index)"
+                                    >
+                                        <button
+                                            type="button"
+                                            draggable="true"
+                                            class="w-5 h-6 grid place-items-center text-ink-400 cursor-grab active:cursor-grabbing hover:text-ink-700"
+                                            :aria-label="t('attributes.reorder_item')"
+                                            @dragstart="onListRowDragStart(field, index)"
+                                            @dragend="onListRowDragEnd"
+                                        ><Icon name="grip" cls="sm" /></button>
+                                        <span class="px-1 text-[11.5px] font-mono text-ink-500 truncate" :title="row.key ?? ''">{{ row.key }}</span>
+                                        <TextInput
+                                            :model-value="row.value"
+                                            :aria-label="`${field.label}: ${row.key}`"
+                                            @update:model-value="(value) => setListRowValue(field, index, value)"
+                                        />
+                                        <button
+                                            type="button"
+                                            class="w-6 h-6 rounded-md grid place-items-center text-ink-400 hover:bg-surface-2 hover:text-danger"
+                                            :aria-label="t('attributes.remove_item')"
+                                            @click="removeListRow(field, index)"
+                                        ><Icon name="x" cls="sm" /></button>
+                                    </div>
+                                </div>
+
+                                <div
+                                    v-if="canAddListRow(field)"
+                                    class="grid items-center gap-1.5 px-1.5 py-1 bg-surface-2 grid-cols-[auto_minmax(0,1fr)_minmax(0,2fr)_auto]"
+                                    :class="listRows(field).length ? 'border-t border-line' : ''"
+                                >
+                                    <span class="w-5" aria-hidden="true" />
+                                    <TextInput
+                                        v-model="listDraft(field).key"
+                                        mono
+                                        :placeholder="t('attributes.list_key_placeholder')"
+                                        :aria-label="`${field.label}: ${t('attributes.list_key_placeholder')}`"
+                                        @keydown.enter.prevent="addListRow(field)"
+                                        @blur="commitListDraft(field)"
+                                    />
+                                    <TextInput
+                                        v-model="listDraft(field).value"
+                                        :placeholder="t('attributes.list_value_placeholder')"
+                                        :aria-label="field.label"
+                                        @keydown.enter.prevent="addListRow(field)"
+                                        @blur="commitListDraft(field)"
+                                    />
+                                    <button
+                                        type="button"
+                                        class="w-6 h-6 rounded-md grid place-items-center text-ink-500 hover:bg-surface hover:text-ink-900"
+                                        :aria-label="t('attributes.add_item')"
+                                        @click="addListRow(field)"
+                                    ><Icon name="plus" cls="sm" /></button>
+                                </div>
+                            </template>
                         </div>
 
                         <div v-else-if="field.type === 'youtube' || field.type === 'vimeo'">

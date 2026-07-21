@@ -67,6 +67,7 @@ return [
     'side_defaults' => 'Defaults',
     'side_activity' => 'Activity',
     'side_activity_empty' => 'No activity recorded yet.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Last updated',
 
     'confirm_delete_title' => 'Delete product type?',
