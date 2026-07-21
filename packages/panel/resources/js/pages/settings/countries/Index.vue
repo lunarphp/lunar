@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import BulkActionsToolbar, { type BulkAction } from '../../../components/BulkActionsToolbar.vue';
 import DataTable from '../../../components/DataTable.vue';
 import FilterDropdown, { type FilterOption } from '../../../components/FilterDropdown.vue';
+import Flag from '../../../components/Flag.vue';
 import { type RowAction } from '../../../components/RowActions.vue';
 import PageEmpty from '../../../components/PageEmpty.vue';
 import Pagination from '../../../components/Pagination.vue';
@@ -134,7 +135,10 @@ const rowTo = (row: Record<string, unknown>): string => (row as unknown as Count
                 <span class="font-mono text-xs text-ink-500">{{ (row as unknown as Country).iso3 }}</span>
             </template>
             <template #cell-name="{ row }">
-                <span class="text-[12.5px] text-ink-900">{{ (row as unknown as Country).emoji }} {{ (row as unknown as Country).name }}</span>
+                <span class="inline-flex items-center gap-2 text-[12.5px] text-ink-900">
+                    <Flag :code="(row as unknown as Country).iso2" />
+                    {{ (row as unknown as Country).name }}
+                </span>
             </template>
             <template #cell-states_count="{ row }">
                 <span class="text-xs text-ink-700 [font-variant-numeric:tabular-nums]">{{ (row as unknown as Country).states_count }}</span>

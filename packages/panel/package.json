@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@tiptap/starter-kit": "^3.28.0",
-        "@tiptap/vue-3": "^3.28.0"
+        "@tiptap/vue-3": "^3.28.0",
+        "flag-icons": "^7.5.0"
     }
 }

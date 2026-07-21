@@ -7,6 +7,7 @@ import Button from '../../../components/Button.vue';
 import Combobox from '../../../components/Combobox.vue';
 import ConfirmDialog from '../../../components/ConfirmDialog.vue';
 import FieldLabel from '../../../components/FieldLabel.vue';
+import Flag from '../../../components/Flag.vue';
 import Section from '../../../components/Section.vue';
 import Select from '../../../components/Select.vue';
 import TextInput from '../../../components/TextInput.vue';
@@ -28,7 +29,7 @@ type Region = {
 };
 
 type NamedOption = { id: number; name: string };
-type CountryOption = { id: number; name: string; emoji: string };
+type CountryOption = { id: number; name: string; iso2: string | null };
 
 const props = defineProps<{
     region: Region;
@@ -69,13 +70,10 @@ const submit = (): void => {
     })).put(props.urls.update, { preserveScroll: true });
 };
 
-const countryName = (id: number): string => {
-    const country = props.countries.find((c) => c.id === id);
-    return country ? `${country.emoji} ${country.name}` : String(id);
-};
+const countryFor = (id: number): CountryOption | undefined => props.countries.find((c) => c.id === id);
 
 const availableCountries = computed(() =>
-    props.countries.filter((c) => !form.countries.includes(c.id)).map((c) => ({ value: c.id, label: `${c.emoji} ${c.name}` })));
+    props.countries.filter((c) => !form.countries.includes(c.id)).map((c) => ({ value: c.id, label: c.name, flag: c.iso2 })));
 
 const addCountry = (id: string | number): void => {
     form.countries.push(Number(id));
@@ -161,7 +159,8 @@ const confirmDestroy = (): void => {
                     :key="id"
                     class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full bg-surface-2 border border-line text-xs text-ink-900"
                 >
-                    {{ countryName(id) }}
+                    <Flag v-if="countryFor(id)?.iso2" :code="countryFor(id)!.iso2" class="text-[13px]" />
+                    {{ countryFor(id)?.name ?? id }}
                     <button
                         type="button"
                         class="w-4 h-4 inline-flex items-center justify-center rounded-full text-ink-500 hover:text-danger"
