@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'subcolecciones anidadas',
     'side_activity' => 'Actividad',
     'side_activity_empty' => 'Aún no hay actividad registrada.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Última modificación',
 
     'status_published' => 'Publicada',

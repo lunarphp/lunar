@@ -16,6 +16,7 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Brands\BrandRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
+use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -61,11 +62,7 @@ class BrandEditController
             ->latest()
             ->limit(25)
             ->get()
-            ->map(fn (Activity $activity) => [
-                'description' => $activity->description,
-                'created_at' => $activity->created_at,
-                'causer_name' => $activity->causer?->full_name ?? $activity->causer?->name ?? null,
-            ]);
+            ->map(fn (Activity $activity) => TimelineActivity::toArray($activity));
 
         return Inertia::render('brands/Edit', [
             'brand' => [
@@ -102,6 +99,7 @@ class BrandEditController
             'activities' => $activities,
             'urls' => [
                 'index' => route('panel.brands.index'),
+                'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $brand->getMorphClass()]),
                 'update' => route('panel.brands.update', $brand),
                 'destroy' => route('panel.brands.destroy', $brand),
                 'draft' => route('panel.brands.draft.update', $brand),

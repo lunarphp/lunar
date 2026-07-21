@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Lunar\Panel\PanelManager;
+use Lunar\Panel\Support\Gravatar;
 
 class HandlePanelInertiaRequests extends Middleware
 {
@@ -70,7 +71,7 @@ class HandlePanelInertiaRequests extends Middleware
         return null;
     }
 
-    /** @return array{id: mixed, name: string, email: string|null, admin: bool} */
+    /** @return array{id: mixed, name: string, email: string|null, avatar: string|null, admin: bool} */
     protected function serializeUser(Authenticatable $user): array
     {
         $name = trim(($user->first_name ?? '').' '.($user->last_name ?? ''));
@@ -79,6 +80,7 @@ class HandlePanelInertiaRequests extends Middleware
             'id' => $user->getAuthIdentifier(),
             'name' => $name !== '' ? $name : (string) ($user->email ?? ''),
             'email' => $user->email ?? null,
+            'avatar' => Gravatar::url($user->email ?? null),
             'admin' => (bool) ($user->admin ?? false),
         ];
     }

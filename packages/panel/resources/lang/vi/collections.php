@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'bộ sưu tập con lồng nhau',
     'side_activity' => 'Hoạt động',
     'side_activity_empty' => 'Chưa có hoạt động nào được ghi lại.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Cập nhật gần nhất',
 
     'status_published' => 'Đã xuất bản',

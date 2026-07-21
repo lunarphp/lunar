@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'geneste subcollecties',
     'side_activity' => 'Activiteit',
     'side_activity_empty' => 'Nog geen activiteit vastgelegd.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Laatst bijgewerkt',
 
     'status_published' => 'Gepubliceerd',

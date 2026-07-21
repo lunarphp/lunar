@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'вложени подколекции',
     'side_activity' => 'Активност',
     'side_activity_empty' => 'Все още няма записана активност.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Последна промяна',
 
     'status_published' => 'Публикувана',

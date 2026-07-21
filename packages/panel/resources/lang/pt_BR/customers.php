@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Nenhum usuário foi encontrado com esse endereço de e-mail.',
 
     'activity_empty' => 'Nenhuma atividade registrada ainda',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Cliente criado',
     'activity_updated' => 'Cliente atualizado',
     'activity_deleted' => 'Cliente excluído',

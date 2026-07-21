@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'زیرمجموعه تو در تو',
     'side_activity' => 'فعالیت',
     'side_activity_empty' => 'هنوز فعالیتی ثبت نشده است.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'آخرین به‌روزرسانی',
 
     'status_published' => 'منتشرشده',

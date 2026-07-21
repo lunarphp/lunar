@@ -57,7 +57,7 @@ describe('AttributeFields', () => {
         expect(values['attribute:cta']).toBe('New CTA');
     });
 
-    it('renders sequential list values as editable rows and appends new ones', async () => {
+    it('renders sequential list values as editable rows and appends via the trailing input', async () => {
         const values = reactive<Record<string, unknown>>({ 'attribute:tags': ['alpha'] });
 
         const wrapper = mountFields([field({ handle: 'tags', label: 'Tags', type: 'list' })], values);
@@ -70,10 +70,46 @@ describe('AttributeFields', () => {
 
         expect(values['attribute:tags']).toEqual(['alpha edited']);
 
+        // Typing in the always-present trailing input appends immediately, with
+        // no + button or Enter key needed.
         await wrapper.find('input[aria-label="Tags"]').setValue('beta');
-        await wrapper.find('input[aria-label="Tags"]').trigger('keydown.enter');
 
         expect(values['attribute:tags']).toEqual(['alpha edited', 'beta']);
+    });
+
+    it('appends to an empty plain list as soon as the user types', async () => {
+        const values = reactive<Record<string, unknown>>({ 'attribute:specs': [] });
+
+        const wrapper = mountFields([field({ handle: 'specs', label: 'Specs', type: 'list' })], values);
+
+        await wrapper.find('input[aria-label="Specs"]').setValue('200g');
+
+        expect(values['attribute:specs']).toEqual(['200g']);
+    });
+
+    it('prunes a plain row the user empties, on blur', async () => {
+        const values = reactive<Record<string, unknown>>({ 'attribute:tags': ['alpha', 'beta'] });
+
+        const wrapper = mountFields([field({ handle: 'tags', label: 'Tags', type: 'list' })], values);
+
+        const first = wrapper.find('input[aria-label="Tags 1"]');
+        await first.setValue('');
+        await first.trigger('blur');
+
+        expect(values['attribute:tags']).toEqual(['beta']);
+    });
+
+    it('auto-commits a complete keyed draft row on blur', async () => {
+        const values = reactive<Record<string, unknown>>({ 'attribute:specs': { width: '10cm' } });
+
+        const wrapper = mountFields([field({ handle: 'specs', label: 'Specs', type: 'list' })], values);
+
+        await wrapper.find('input[aria-label="Specs: attributes.list_key_placeholder"]').setValue('height');
+        const value = wrapper.find('input[aria-label="Specs"]');
+        await value.setValue('20cm');
+        await value.trigger('blur');
+
+        expect(values['attribute:specs']).toEqual({ width: '10cm', height: '20cm' });
     });
 
     it('reorders list rows by dragging the handle', async () => {

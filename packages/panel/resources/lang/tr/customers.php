@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Bu e-posta adresine sahip bir kullanıcı bulunamadı.',
 
     'activity_empty' => 'Henüz kaydedilmiş etkinlik yok',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Müşteri oluşturuldu',
     'activity_updated' => 'Müşteri güncellendi',
     'activity_deleted' => 'Müşteri silindi',

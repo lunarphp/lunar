@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'subcolecții imbricate',
     'side_activity' => 'Activitate',
     'side_activity_empty' => 'Nicio activitate înregistrată încă.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Ultima actualizare',
 
     'status_published' => 'Publicată',

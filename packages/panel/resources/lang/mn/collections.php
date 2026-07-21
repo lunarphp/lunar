@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'үүрлэсэн дэд цуглуулга',
     'side_activity' => 'Үйл ажиллагаа',
     'side_activity_empty' => 'Одоогоор бүртгэгдсэн үйл ажиллагаа алга.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'Сүүлд шинэчилсэн',
 
     'status_published' => 'Нийтлэгдсэн',

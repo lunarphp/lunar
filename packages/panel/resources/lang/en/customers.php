@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'No user was found with that email address.',
 
     'activity_empty' => 'No activity recorded yet',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Customer created',
     'activity_updated' => 'Customer updated',
     'activity_deleted' => 'Customer deleted',

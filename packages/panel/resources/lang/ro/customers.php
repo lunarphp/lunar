@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Niciun utilizator nu a fost găsit cu această adresă de e-mail.',
 
     'activity_empty' => 'Nicio activitate înregistrată încă',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Client creat',
     'activity_updated' => 'Client actualizat',
     'activity_deleted' => 'Client șters',

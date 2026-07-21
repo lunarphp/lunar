@@ -32,6 +32,7 @@ use Lunar\Panel\PanelManager;
 use Lunar\Panel\Sections\Catalog\ProductDraftResource;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\TimelineActivity;
 use Lunar\Panel\Support\VariantFields;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -107,11 +108,7 @@ class ProductEditController
             ->latest()
             ->limit(25)
             ->get()
-            ->map(fn (Activity $activity) => [
-                'description' => $activity->description,
-                'created_at' => $activity->created_at,
-                'causer_name' => $activity->causer?->full_name ?? $activity->causer?->name ?? null,
-            ]);
+            ->map(fn (Activity $activity) => TimelineActivity::toArray($activity));
 
         $associations = $product->associations()
             ->with(['target.thumbnail', 'target.variants:id,product_id,sku', 'target.brand:id,name'])
@@ -260,6 +257,7 @@ class ProductEditController
             'activities' => $activities,
             'urls' => [
                 'index' => route('panel.products.index'),
+                'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $product->getMorphClass()]),
                 'update' => route('panel.products.update', $product),
                 'destroy' => route('panel.products.destroy', $product),
                 'draft' => route('panel.products.draft.update', $product),

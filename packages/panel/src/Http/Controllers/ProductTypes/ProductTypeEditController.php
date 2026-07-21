@@ -18,6 +18,7 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\ProductTypes\ProductTypeRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
+use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -48,11 +49,7 @@ class ProductTypeEditController
             ->latest()
             ->limit(25)
             ->get()
-            ->map(fn (Activity $activity) => [
-                'description' => $activity->description,
-                'created_at' => $activity->created_at,
-                'causer_name' => $activity->causer?->full_name ?? $activity->causer?->name ?? null,
-            ]);
+            ->map(fn (Activity $activity) => TimelineActivity::toArray($activity));
 
         // Mapped ids pluck through the filtered relations (allRelatedIds()
         // queries the pivot directly and would skip the morph filter); the
@@ -90,6 +87,7 @@ class ProductTypeEditController
             'activities' => $activities,
             'urls' => [
                 'index' => route('panel.product-types.index'),
+                'activityLog' => route('panel.settings.activity-log.index', ['subject_type' => $productType->getMorphClass()]),
                 'update' => route('panel.product-types.update', $productType),
                 'destroy' => route('panel.product-types.destroy', $productType),
                 'draft' => route('panel.product-types.draft.update', $productType),

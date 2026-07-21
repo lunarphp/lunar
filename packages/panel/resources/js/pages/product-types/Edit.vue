@@ -31,6 +31,8 @@ interface ActivityEntry {
     description: string;
     created_at: string;
     causer_name: string | null;
+    avatar: string | null;
+    changes: string[];
 }
 
 const props = defineProps<{
@@ -58,6 +60,7 @@ const props = defineProps<{
     activities: ActivityEntry[];
     urls: {
         index: string;
+        activityLog: string;
         update: string;
         destroy: string;
         draft: string;
@@ -151,10 +154,11 @@ const activityLabel = (description: string): string => {
 
 const timelineEvents = computed(() =>
     props.activities.map((activity) => ({
-        type: activity.description.replaceAll('-', '_'),
         label: activityLabel(activity.description),
-        when: new Date(activity.created_at).toLocaleString(),
+        when: activity.created_at,
         actor: activity.causer_name ?? '',
+        avatar: activity.avatar,
+        changes: activity.changes,
     })));
 </script>
 
@@ -285,6 +289,9 @@ const timelineEvents = computed(() =>
                             </SideCard>
 
                             <SideCard :title="t('product-types.side_activity')">
+                                <template #actions>
+                                    <a :href="urls.activityLog" class="text-[11.5px] font-medium text-ink-500 hover:text-ink-900">{{ t('product-types.side_activity_see_all') }}</a>
+                                </template>
                                 <ActivityTimeline v-if="activities.length" :events="timelineEvents" :reverse="false" />
                                 <div v-else class="text-[11.5px] text-ink-500">{{ t('product-types.side_activity_empty') }}</div>
                             </SideCard>

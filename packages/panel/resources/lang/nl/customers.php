@@ -105,6 +105,7 @@ return [
     'link_user_not_found' => 'Er is geen gebruiker gevonden met dat e-mailadres.',
 
     'activity_empty' => 'Nog geen activiteit geregistreerd',
+    'activity_see_all' => 'See all',
     'activity_created' => 'Klant aangemaakt',
     'activity_updated' => 'Klant bijgewerkt',
     'activity_deleted' => 'Klant verwijderd',

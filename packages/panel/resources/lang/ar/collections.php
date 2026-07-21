@@ -91,6 +91,7 @@ return [
     'side_usage_descendants' => 'تشكيلات فرعية متداخلة',
     'side_activity' => 'النشاط',
     'side_activity_empty' => 'لا يوجد نشاط مسجل بعد.',
+    'side_activity_see_all' => 'See all',
     'last_updated' => 'آخر تحديث',
 
     'status_published' => 'منشورة',
