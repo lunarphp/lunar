@@ -39,4 +39,10 @@ return [
     'confirm' => 'Bevestigen',
     'back_to_main' => 'Terug naar hoofdmenu',
     'address' => 'Adres',
+
+    // Products section additions (spec 0057).
+    'add' => 'Add',
+    'apply' => 'Apply',
+    'loading' => 'Loading',
+    'select_all' => 'Select all',
 ];

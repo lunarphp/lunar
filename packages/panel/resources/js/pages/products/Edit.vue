@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
@@ -8,6 +8,8 @@ import AvailabilityCard, { type AvailabilityRow } from '../../components/Availab
 import IdentifiersCard from '../../components/IdentifiersCard.vue';
 import InventoryCard, { type StockAggregate, type StockLevelRow } from '../../components/InventoryCard.vue';
 import PricingEditor, { type CurrencyOption, type PriceRow } from '../../components/PricingEditor.vue';
+import ProductOptionsBuilder, { type AttachedOption, type VariantRow } from '../../components/ProductOptionsBuilder.vue';
+import VariantsTable from '../../components/VariantsTable.vue';
 import ShippingCard from '../../components/ShippingCard.vue';
 import TaxCard from '../../components/TaxCard.vue';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
@@ -74,6 +76,8 @@ const props = defineProps<{
         updated_at: string;
     };
     shape: 'simple' | 'multi';
+    attachedOptions: AttachedOption[];
+    variants: VariantRow[];
     variant: {
         id: number;
         prices: PriceRow[];
@@ -112,6 +116,9 @@ const props = defineProps<{
         associationsStore: string;
         collectionsSearch: string;
         productsSearch: string;
+        productOptionsSearch: string;
+        optionsGenerate: string;
+        variantsBulk: string;
     };
 }>();
 
@@ -191,6 +198,51 @@ const statusBadgeTone = computed(() =>
 
 // Delete confirmation; products with order history archive instead.
 const confirmOpen = ref(false);
+
+// -----------------------------------------------------------------------
+// Variant shape. Derived server-side; switching to multi just reveals the
+// options builder (nothing persists until Generate), switching back to
+// simple collapses to one variant through the generate endpoint.
+// -----------------------------------------------------------------------
+
+const wantsMulti = ref(props.shape === 'multi');
+
+watch(() => props.shape, (value) => {
+    wantsMulti.value = value === 'multi';
+});
+
+const collapseLocked = computed(() =>
+    props.variants.slice(1).some((variant) => variant.locked));
+
+const confirmCollapse = ref(false);
+
+const onShapeSelect = (next: 'simple' | 'multi'): void => {
+    if (next === 'multi') {
+        wantsMulti.value = true;
+
+        return;
+    }
+
+    if (props.shape === 'simple') {
+        wantsMulti.value = false;
+
+        return;
+    }
+
+    if (collapseLocked.value) {
+        return;
+    }
+
+    confirmCollapse.value = true;
+};
+
+const collapse = (): void => {
+    confirmCollapse.value = false;
+    router.post(props.urls.optionsGenerate, { selections: [] }, { preserveScroll: true });
+};
+
+// Rows the builder's pending selection would remove; dimmed in the table.
+const staleIds = ref<number[]>([]);
 
 const confirmDestroy = (): void => {
     confirmOpen.value = false;
@@ -355,9 +407,61 @@ const timelineEvents = computed(() =>
                              between the content cluster and the variants block. -->
                         <PageZone region="content" position="after" :product="product" />
 
+                        <!-- Variant shape: simple products edit their sole variant
+                             inline; multiple variants get the options builder and
+                             the variants table. Derived state, not a column. -->
+                        <div class="py-6 border-b border-line">
+                            <h2 class="text-sm font-semibold tracking-[-0.01em] text-ink-900 mb-1">{{ t('products.section_shape') }}</h2>
+                            <p class="text-xs text-ink-500 max-w-[640px] mb-3">{{ t('products.section_shape_description') }}</p>
+                            <div class="inline-flex p-0.5 rounded-md border border-line bg-surface-2" role="tablist">
+                                <button
+                                    v-for="option in [
+                                        { value: 'simple' as const, label: t('products.shape_simple'), disabled: collapseLocked && shape === 'multi' },
+                                        { value: 'multi' as const, label: t('products.shape_multi'), disabled: false },
+                                    ]"
+                                    :key="option.value"
+                                    type="button"
+                                    role="tab"
+                                    :aria-selected="(option.value === 'multi') === wantsMulti"
+                                    :disabled="option.disabled"
+                                    :class="[
+                                        'inline-flex items-center gap-1.5 h-7 px-3 rounded-[5px] text-[12px] font-medium transition-[background-color,color,box-shadow] duration-100 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sage/35',
+                                        (option.value === 'multi') === wantsMulti
+                                            ? 'bg-ink-900 text-paper shadow-sm'
+                                            : 'text-ink-500 hover:text-ink-900 hover:bg-paper/70',
+                                        option.disabled ? 'opacity-50 cursor-not-allowed' : '',
+                                    ]"
+                                    @click="onShapeSelect(option.value)"
+                                >
+                                    <Icon v-if="option.disabled" name="lock" cls="sm" />
+                                    {{ option.label }}
+                                </button>
+                            </div>
+                            <div v-if="collapseLocked && shape === 'multi'" class="mt-1.5 text-[11.5px] text-ink-500">
+                                {{ t('products.shape_locked_hint') }}
+                            </div>
+                        </div>
+
+                        <template v-if="wantsMulti">
+                            <ProductOptionsBuilder
+                                :attached-options="attachedOptions"
+                                :variants="variants"
+                                :search-url="urls.productOptionsSearch"
+                                :generate-url="urls.optionsGenerate"
+                                @update:stale-ids="staleIds = $event"
+                            />
+                            <VariantsTable
+                                v-if="shape === 'multi'"
+                                :variants="variants"
+                                :currencies="currencies"
+                                :bulk-url="urls.variantsBulk"
+                                :stale-ids="staleIds"
+                            />
+                        </template>
+
                         <!-- Simple shape: the sole variant's fields edit inline,
                              riding the product draft under variant:{field} keys. -->
-                        <template v-if="shape === 'simple' && variant">
+                        <template v-if="!wantsMulti && shape === 'simple' && variant">
                             <PricingEditor
                                 :prices="variant.prices"
                                 :currencies="currencies"
@@ -517,6 +621,15 @@ const timelineEvents = computed(() =>
                 :existing-ids="existingAssociationIds"
                 @update:open="pickerOpen = $event"
                 @add="addAssociations"
+            />
+
+            <ConfirmDialog
+                v-model:open="confirmCollapse"
+                :title="t('products.shape_collapse_title')"
+                :description="t('products.shape_collapse_confirm', { count: Math.max(0, variants.length - 1) })"
+                tone="danger"
+                :confirm-label="t('products.shape_collapse_apply')"
+                @confirm="collapse"
             />
 
             <ConfirmDialog

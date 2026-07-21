@@ -39,4 +39,10 @@ return [
     'confirm' => 'Xác nhận',
     'back_to_main' => 'Quay lại menu chính',
     'address' => 'Địa chỉ',
+
+    // Products section additions (spec 0057).
+    'add' => 'Add',
+    'apply' => 'Apply',
+    'loading' => 'Loading',
+    'select_all' => 'Select all',
 ];

@@ -12,6 +12,7 @@ use Lunar\Panel\Http\Controllers\Brands\BrandIndexController;
 use Lunar\Panel\Http\Controllers\Brands\BrandMediaController;
 use Lunar\Panel\Http\Controllers\Brands\BrandUrlController;
 use Lunar\Panel\Http\Controllers\Catalog\CollectionSearchController;
+use Lunar\Panel\Http\Controllers\Catalog\ProductOptionSearchController;
 use Lunar\Panel\Http\Controllers\Catalog\ProductSearchController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionCreateController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionEditController;
@@ -28,8 +29,12 @@ use Lunar\Panel\Http\Controllers\Products\ProductCreateController;
 use Lunar\Panel\Http\Controllers\Products\ProductEditController;
 use Lunar\Panel\Http\Controllers\Products\ProductIndexController;
 use Lunar\Panel\Http\Controllers\Products\ProductMediaController;
+use Lunar\Panel\Http\Controllers\Products\ProductOptionsController;
 use Lunar\Panel\Http\Controllers\Products\ProductPriceController;
 use Lunar\Panel\Http\Controllers\Products\ProductUrlController;
+use Lunar\Panel\Http\Controllers\Products\ProductVariantBulkController;
+use Lunar\Panel\Http\Controllers\Products\ProductVariantController;
+use Lunar\Panel\Http\Controllers\Products\ProductVariantMediaController;
 use Lunar\Panel\Http\Controllers\Products\ProductVariantStockController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeBulkStatusController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeCreateController;
@@ -134,6 +139,7 @@ class CatalogSection extends Section
             BrandDraftResource::class,
             CollectionDraftResource::class,
             ProductDraftResource::class,
+            ProductVariantDraftResource::class,
             ProductTypeDraftResource::class,
         ];
     }
@@ -154,6 +160,7 @@ class CatalogSection extends Section
             Route::prefix('catalog')->name('panel.catalog.')->middleware('can:'.self::BRANDS_PERMISSION)->group(function (): void {
                 Route::get('/collections/search', [CollectionSearchController::class, 'search'])->name('collections.search');
                 Route::get('/products/search', [ProductSearchController::class, 'search'])->name('products.search');
+                Route::get('/product-options/search', [ProductOptionSearchController::class, 'search'])->name('product-options.search');
             });
 
             Route::prefix('brands')->name('panel.brands.')->middleware('can:'.self::BRANDS_PERMISSION)->group(function (): void {
@@ -217,6 +224,19 @@ class CatalogSection extends Section
                     Route::delete('/{product}/variants/{productVariant}/prices/{price}', [ProductPriceController::class, 'destroy'])->name('variants.prices.destroy');
 
                     Route::post('/{product}/variants/{productVariant}/stock', [ProductVariantStockController::class, 'update'])->name('variants.stock.adjust');
+
+                    Route::post('/{product}/options/generate', [ProductOptionsController::class, 'generate'])->name('options.generate');
+                    Route::post('/{product}/variants/bulk', [ProductVariantBulkController::class, 'update'])->name('variants.bulk');
+
+                    Route::get('/{product}/variants/{productVariant}/edit', [ProductVariantController::class, 'edit'])->name('variants.edit');
+                    Route::put('/{product}/variants/{productVariant}', [ProductVariantController::class, 'update'])->name('variants.update');
+                    Route::delete('/{product}/variants/{productVariant}', [ProductVariantController::class, 'destroy'])->name('variants.destroy');
+
+                    Route::patch('/{product}/variants/{productVariant}/draft', [EditDraftController::class, 'update'])->name('variants.draft.update');
+                    Route::delete('/{product}/variants/{productVariant}/draft', [EditDraftController::class, 'destroy'])->name('variants.draft.destroy');
+                    Route::post('/{product}/variants/{productVariant}/draft/commit', [EditDraftController::class, 'commit'])->name('variants.draft.commit');
+
+                    Route::put('/{product}/variants/{productVariant}/media', [ProductVariantMediaController::class, 'sync'])->name('variants.media.sync');
                 });
             });
 

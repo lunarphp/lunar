@@ -16,6 +16,7 @@ use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
+use Lunar\Core\Models\OrderLine;
 use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductAssociation;
@@ -47,7 +48,7 @@ class ProductEditController
     ): Response {
         $availabilitySchema = $availabilitySchema->withPurchasable();
 
-        $product->load(['variants.values.option', 'productType:id,name', 'brand:id,name', 'tags']);
+        $product->load(['variants.values.option', 'variants.prices', 'productType:id,name', 'brand:id,name', 'tags']);
 
         // Simple shape: one variant and no attached options — its fields are
         // edited inline on this page rather than on a variant page.
@@ -113,8 +114,57 @@ class ProductEditController
 
         $measurements = Converter::getMeasurements();
 
+        $defaultCurrency = Currency::getDefault();
+
+        $orderedVariantIds = $this->orderedVariantIds($product);
+
+        $attachedOptions = $product->productOptions()->with('values')->get()
+            ->map(function ($option) use ($product) {
+                $usedValueIds = $product->variants
+                    ->flatMap(fn (ProductVariant $variant) => $variant->values->pluck('id'))
+                    ->unique();
+
+                return [
+                    'id' => $option->id,
+                    'name' => $option->translate('name'),
+                    'shared' => (bool) $option->shared,
+                    'values' => $option->values->sortBy('position')->map(fn ($value) => [
+                        'id' => $value->id,
+                        'name' => $value->translate('name'),
+                    ])->values(),
+                    // The persisted selection is whatever the generated
+                    // variants actually use; pending edits live client-side.
+                    'selected_value_ids' => $option->values
+                        ->filter(fn ($value) => $usedValueIds->contains($value->id))
+                        ->pluck('id')
+                        ->values(),
+                ];
+            })->values();
+
         return Inertia::render('products/Edit', [
             'shape' => $isSimple ? 'simple' : 'multi',
+            'attachedOptions' => $attachedOptions,
+            'variants' => $product->variants->sortBy('id')->values()->map(fn (ProductVariant $variant) => [
+                'id' => $variant->id,
+                'label' => $variant->values
+                    ->map(fn ($value) => $value->translate('name'))
+                    ->filter()
+                    ->implode(' / ') ?: ($variant->sku ?? '#'.$variant->id),
+                'value_ids' => $variant->values->pluck('id')->sort()->values(),
+                'sku' => $variant->sku,
+                'price' => $defaultCurrency
+                    ? $variant->prices
+                        ->first(fn (Price $price) => $price->currency_id === $defaultCurrency->id
+                            && $price->customer_group_id === null
+                            && $price->min_quantity === 1)
+                        ?->price
+                    : null,
+                'stock' => $variant->stock_available,
+                'enabled' => $variant->enabled,
+                'locked' => in_array($variant->id, $orderedVariantIds, true),
+                'thumbnail' => $variant->getThumbnailImage() ?: null,
+                'edit_url' => route('panel.products.variants.edit', [$product, $variant]),
+            ]),
             'variant' => $soleVariant ? $this->variantPayload($product, $soleVariant) : null,
             'variantValues' => $soleVariant
                 ? collect($variantFields->values($soleVariant))
@@ -200,8 +250,28 @@ class ProductEditController
                 'associationsStore' => route('panel.products.associations.store', $product),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
                 'productsSearch' => route('panel.catalog.products.search'),
+                'productOptionsSearch' => route('panel.catalog.product-options.search'),
+                'optionsGenerate' => route('panel.products.options.generate', $product),
+                'variantsBulk' => route('panel.products.variants.bulk', $product),
             ],
         ]);
+    }
+
+    /**
+     * Ids of the product's variants that appear on order lines — the rows a
+     * regeneration or bulk delete cannot remove. One query for the set.
+     *
+     * @return array<int, int>
+     */
+    protected function orderedVariantIds(Product $product): array
+    {
+        return OrderLine::query()
+            ->where('purchasable_type', (new ProductVariant)->getMorphClass())
+            ->whereIn('purchasable_id', $product->variants->modelKeys())
+            ->distinct()
+            ->pluck('purchasable_id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
     }
 
     /**

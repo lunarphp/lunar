@@ -39,4 +39,10 @@ return [
     'confirm' => 'تأیید',
     'back_to_main' => 'بازگشت به منوی اصلی',
     'address' => 'نشانی',
+
+    // Products section additions (spec 0057).
+    'add' => 'Add',
+    'apply' => 'Apply',
+    'loading' => 'Loading',
+    'select_all' => 'Select all',
 ];

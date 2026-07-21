@@ -39,4 +39,10 @@ return [
     'confirm' => 'Confirmer',
     'back_to_main' => 'Retour au menu principal',
     'address' => 'Adresse',
+
+    // Products section additions (spec 0057).
+    'add' => 'Add',
+    'apply' => 'Apply',
+    'loading' => 'Loading',
+    'select_all' => 'Select all',
 ];

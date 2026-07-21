@@ -39,4 +39,10 @@ return [
     'confirm' => 'Onayla',
     'back_to_main' => 'Ana menüye dön',
     'address' => 'Adres',
+
+    // Products section additions (spec 0057).
+    'add' => 'Add',
+    'apply' => 'Apply',
+    'loading' => 'Loading',
+    'select_all' => 'Select all',
 ];
