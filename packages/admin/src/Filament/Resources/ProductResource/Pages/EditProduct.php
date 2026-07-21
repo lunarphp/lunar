@@ -5,9 +5,11 @@ namespace Lunar\Admin\Filament\Resources\ProductResource\Pages;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Radio;
+use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
+use Lunar\Core\Actions\Products\DeleteProduct;
 use Lunar\Core\Models\Product;
 
 class EditProduct extends BaseEditRecord
@@ -58,7 +60,16 @@ class EditProduct extends BaseEditRecord
                 ->disabled(fn (Product $record): bool => $record->hasOrderHistory())
                 ->tooltip(fn (Product $record): ?string => $record->hasOrderHistory()
                     ? __('lunarpanel::product.actions.delete.disabled_tooltip')
-                    : null),
+                    : null)
+                ->before(function (Product $record, DeleteAction $action) {
+                    if (DeleteProduct::isProtected($record)) {
+                        Notification::make()
+                            ->warning()
+                            ->body(__('lunarpanel::product.actions.delete.blocked'))
+                            ->send();
+                        $action->cancel();
+                    }
+                }),
         ];
     }
 

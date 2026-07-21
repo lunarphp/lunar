@@ -2,6 +2,7 @@
 
 namespace Lunar\Core\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -28,6 +29,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property int $id
  * @property string $public_id
  * @property int $product_id
+ * @property bool $enabled
  * @property int $tax_class_id
  * @property ?Collection $attribute_data
  * @property ?string $tax_ref
@@ -84,6 +86,7 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
      * {@inheritDoc}
      */
     protected $casts = [
+        'enabled' => 'bool',
         'shippable' => 'bool',
         'selling_policy' => SellingPolicy::class,
         'stock_on_hand' => 'integer',
@@ -246,10 +249,29 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
             || $quantity <= $this->getTotalInventory();
     }
 
+    public function scopeEnabled(Builder $query): Builder
+    {
+        return $query->where('enabled', true);
+    }
+
     public function isPurchasable(): bool
     {
-        return $this->product
+        return $this->enabled
+            && $this->product
             && (string) $this->product->status === 'published';
+    }
+
+    /**
+     * Whether this variant appears on any historical order line. Used to gate
+     * hard deletion — a variant with order history must stay so the merchant
+     * can still drill into old orders (disable it instead).
+     */
+    public function hasOrderHistory(): bool
+    {
+        return OrderLine::query()
+            ->where('purchasable_type', $this->getMorphClass())
+            ->where('purchasable_id', $this->id)
+            ->exists();
     }
 
     public function getTotalInventory(): int

@@ -42,6 +42,7 @@ class ProductVariantFactory extends BaseFactory
             'gtin' => $this->faker->unique()->isbn13,
             'mpn' => $this->faker->unique()->isbn13,
             'ean' => $this->faker->unique()->ean13,
+            'enabled' => true,
             'shippable' => true,
             'selling_policy' => SellingPolicy::Always,
         ];

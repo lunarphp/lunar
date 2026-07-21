@@ -95,7 +95,11 @@ use Lunar\Core\Actions\ProductOptions\DeleteProductOption;
 use Lunar\Core\Actions\ProductOptions\UpdateProductOption;
 use Lunar\Core\Actions\Products\AdjustStock;
 use Lunar\Core\Actions\Products\CommitReservation;
+use Lunar\Core\Actions\Products\CreateProduct;
+use Lunar\Core\Actions\Products\DeleteProduct;
+use Lunar\Core\Actions\Products\DeleteProductVariant;
 use Lunar\Core\Actions\Products\DuplicateProduct;
+use Lunar\Core\Actions\Products\GenerateProductVariants;
 use Lunar\Core\Actions\Products\MapVariantsToProductOptions;
 use Lunar\Core\Actions\Products\RecomputeStockReserved;
 use Lunar\Core\Actions\Products\RecomputeStockRollup;
@@ -103,7 +107,9 @@ use Lunar\Core\Actions\Products\RecordStockMovement;
 use Lunar\Core\Actions\Products\ReleaseReservation;
 use Lunar\Core\Actions\Products\ReserveStock;
 use Lunar\Core\Actions\Products\SyncStockCommitment;
+use Lunar\Core\Actions\Products\UpdateProduct;
 use Lunar\Core\Actions\Products\UpdateProductStatus;
+use Lunar\Core\Actions\Products\UpdateProductVariant;
 use Lunar\Core\Actions\ProductTypes\CreateProductType;
 use Lunar\Core\Actions\ProductTypes\DeleteProductType;
 use Lunar\Core\Actions\ProductTypes\UpdateProductType;
@@ -225,7 +231,11 @@ class ActionServiceProvider extends ServiceProvider
         // Products
         Contracts\Products\AdjustsStock::class => AdjustStock::class,
         Contracts\Products\CommitsReservation::class => CommitReservation::class,
+        Contracts\Products\CreatesProduct::class => CreateProduct::class,
+        Contracts\Products\DeletesProduct::class => DeleteProduct::class,
+        Contracts\Products\DeletesProductVariant::class => DeleteProductVariant::class,
         Contracts\Products\DuplicatesProduct::class => DuplicateProduct::class,
+        Contracts\Products\GeneratesProductVariants::class => GenerateProductVariants::class,
         Contracts\Products\RecomputesStockReserved::class => RecomputeStockReserved::class,
         Contracts\Products\RecomputesStockRollup::class => RecomputeStockRollup::class,
         Contracts\Products\RecordsStockMovement::class => RecordStockMovement::class,
@@ -233,7 +243,9 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\Products\ReservesStock::class => ReserveStock::class,
         Contracts\Products\SyncsStockCommitment::class => SyncStockCommitment::class,
         Contracts\Products\MapsVariantsToProductOptions::class => MapVariantsToProductOptions::class,
+        Contracts\Products\UpdatesProduct::class => UpdateProduct::class,
         Contracts\Products\UpdatesProductStatus::class => UpdateProductStatus::class,
+        Contracts\Products\UpdatesProductVariant::class => UpdateProductVariant::class,
 
         // Collections
         Contracts\Collections\CreatesChildCollection::class => CreateChildCollection::class,
