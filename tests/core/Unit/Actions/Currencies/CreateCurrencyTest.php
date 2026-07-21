@@ -26,7 +26,7 @@ test('creates a currency with the given attributes', function () {
 });
 
 test('demotes the previous default when created as default', function () {
-    $previous = Currency::factory()->create(['default' => true]);
+    $previous = Currency::factory()->create(['code' => 'USD', 'default' => true]);
 
     app(CreateCurrency::class)->execute([
         'code' => 'GBP',
