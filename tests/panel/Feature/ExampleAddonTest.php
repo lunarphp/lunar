@@ -3,6 +3,8 @@
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Models\Address;
 use Lunar\Core\Models\Customer;
+use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Product;
 use Lunar\Core\Models\Staff;
 use Lunar\Panel\PanelManager;
 use Lunar\Tests\Panel\Fixtures\ExampleAddonTestCase;
@@ -104,6 +106,27 @@ it('shares the example add-on slot entry on the real customer edit page', functi
                 return $zone !== null
                     && collect($zone)->contains(
                         fn ($entry) => $entry['component'] === 'example-addon::InfoBanner'
+                    );
+            })
+        );
+});
+
+it('shares the SEO card slot entry on the product edit page', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    Language::factory()->create(['default' => true, 'code' => 'en']);
+
+    $product = Product::factory()->create();
+
+    $this->get(route('panel.products.edit', $product))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('slots', function ($slots) {
+                $zone = $slots->get('products.edit:content:after');
+
+                return $zone !== null
+                    && collect($zone)->contains(
+                        fn ($entry) => $entry['component'] === 'example-addon::SeoCard'
                     );
             })
         );
