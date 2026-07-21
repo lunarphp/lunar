@@ -32,6 +32,7 @@ const node = (overrides: Partial<CollectionTreeNode> = {}): CollectionTreeNode =
     descendants_count: 1,
     matched: true,
     edit_url: '/panel/collections/1/edit',
+    children_url: '/panel/collections/1/children',
     children: [],
     _actions: {},
     ...overrides,
@@ -39,13 +40,17 @@ const node = (overrides: Partial<CollectionTreeNode> = {}): CollectionTreeNode =
 
 const child = node({ id: 2, parent_id: 1, name: 'Raincoats', handle: 'raincoats', descendants_count: 0 });
 
-const mountRow = (collection: CollectionTreeNode, options: { expanded?: number[]; forceExpanded?: boolean } = {}) =>
+const mountRow = (
+    collection: CollectionTreeNode,
+    options: { expanded?: number[]; forceExpanded?: boolean; loading?: number[] } = {},
+) =>
     mount(CollectionTreeRow, {
         props: {
             collection,
             depth: 0,
             expandedIds: new Set(options.expanded ?? []),
             forceExpanded: options.forceExpanded ?? false,
+            loadingIds: new Set(options.loading ?? []),
             actions: [],
         },
     });
@@ -67,12 +72,21 @@ describe('CollectionTreeRow', () => {
         expect(mountRow(parent, { expanded: [1] }).text()).toContain('Raincoats');
     });
 
-    it('emits toggle from the chevron', async () => {
-        const wrapper = mountRow(node({ children: [child] }));
+    it('emits the node to toggle from the chevron', async () => {
+        const parent = node({ children: [child] });
+        const wrapper = mountRow(parent);
 
         await wrapper.find('button').trigger('click');
 
-        expect(wrapper.emitted('toggle')).toEqual([[1]]);
+        expect(wrapper.emitted('toggle')?.[0][0]).toMatchObject({ id: 1 });
+    });
+
+    it('shows a chevron for an unloaded subtree and a skeleton while it loads', () => {
+        // descendants_count > 0 with no loaded children: children fetch on expand.
+        const lazy = node({ children: [] });
+
+        expect(mountRow(lazy).find('button[aria-expanded]').exists()).toBe(true);
+        expect(mountRow(lazy, { expanded: [1], loading: [1] }).find('.animate-pulse').exists()).toBe(true);
     });
 
     it('force-expands and disables the chevron while filtering', () => {
@@ -83,7 +97,7 @@ describe('CollectionTreeRow', () => {
     });
 
     it('renders no chevron for leaves', () => {
-        const wrapper = mountRow(node());
+        const wrapper = mountRow(node({ descendants_count: 0 }));
 
         expect(wrapper.find('button[aria-expanded]').exists()).toBe(false);
     });

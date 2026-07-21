@@ -18,7 +18,7 @@ it('redirects guests to the login screen', function () {
     $this->get(route('panel.collections.index'))->assertRedirect(route('panel.login'));
 });
 
-it('renders the grouped collection tree', function () {
+it('renders only root collections, deferring children to lazy loading', function () {
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $group = CollectionGroup::factory()->create(['name' => 'Navigation']);
@@ -33,17 +33,45 @@ it('renders the grouped collection tree', function () {
             ->has('groups', 1)
             ->where('groups.0.name', 'Navigation')
             ->where('groups.0.collections_count', 2)
+            // Only the root ships; its child is fetched on expand.
             ->has('groups.0.tree', 1)
             ->has('groups.0.tree.0', fn (Assert $row) => $row
-                ->hasAll(['id', 'name', 'handle', 'thumbnail', 'short_description', 'status', 'status_label', 'products_count', 'descendants_count', 'matched', 'edit_url', '_actions', 'children'])
+                ->hasAll(['id', 'name', 'handle', 'thumbnail', 'short_description', 'status', 'status_label', 'products_count', 'descendants_count', 'matched', 'edit_url', 'children_url', '_actions', 'children'])
                 ->where('id', $root->id)
                 ->where('descendants_count', 1)
-                ->has('children', 1)
+                ->has('children', 0)
                 ->etc()
             )
             ->has('tableActions')
             ->has('urls.create')
         );
+});
+
+it('lazy-loads a collection\'s immediate children', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
+
+    $group = CollectionGroup::factory()->create();
+    $root = Collection::factory()->create(['collection_group_id' => $group->id]);
+    $child = Collection::factory()->create(['collection_group_id' => $group->id]);
+    $grandchild = Collection::factory()->create(['collection_group_id' => $group->id]);
+    $root->appendNode($child);
+    $child->refresh()->appendNode($grandchild);
+
+    $this->getJson(route('panel.collections.children', $root))
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.id', $child->id)
+        // The grandchild is a descendant but not an immediate child.
+        ->assertJsonPath('data.0.descendants_count', 1)
+        ->assertJsonPath('data.0.children', []);
+});
+
+it('gates the children endpoint behind the collections permission', function () {
+    $this->actingAs(Staff::factory()->create(['admin' => false]), 'staff');
+
+    $collection = Collection::factory()->create();
+
+    $this->getJson(route('panel.collections.children', $collection))->assertForbidden();
 });
 
 it('searches by name and includes ancestors for context', function () {
