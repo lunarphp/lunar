@@ -14,6 +14,7 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Panel Brands section + shared catalog editing surfaces (media, attributes, URL slugs, collection picker) (spec 0052)
 - Panel Collections section — group tree, hierarchy, curated products, availability (spec 0055)
 - Panel Product Types section — attribute mapping, type-level content, media, tax defaults (spec 0056)
+- Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Line-item refunds — refund specific lines/quantities via a dedicated refund page (spec 0028)
