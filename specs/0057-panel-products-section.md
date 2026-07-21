@@ -1,6 +1,6 @@
 # 0057 — Panel Products section
 
-- Status: accepted
+- Status: implemented
 - Author: Glenn Jacobs
 - Created: 2026-07-21
 - TODO item: Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)
@@ -486,7 +486,19 @@ each group.
 
 ## Open questions
 
-None outstanding. Resolved during drafting:
+None outstanding. Settled during implementation:
+
+- The variant order-history guard lives on the observer (every delete path);
+  the last-variant rule lives in `DeletesProductVariant` only, so deleting a
+  whole product can still cascade through its final variant.
+- The per-location stock table always renders (spec 0038 made locations
+  always-on); with one location it is naturally a single row — no module
+  toggle.
+- `ProductVariant::mappedAttributes()` now returns the type's variant mapping
+  (the spec 0056 semantics), and the panel's `AttributeSchema` filters a
+  model's mapping by its own morph type.
+
+Resolved during drafting:
 
 - Variant enable/disable ships as a plain `enabled` boolean honoured by
   `isPurchasable()`.
@@ -513,29 +525,36 @@ None outstanding. Resolved during drafting:
 
 ## Implementation plan
 
-- [ ] Slice 1 — Core: `enabled` column + scope + `isPurchasable()` + upgrade backfill;
+- [x] Slice 1 — Core: `enabled` column + scope + `isPurchasable()` + upgrade backfill;
       `ProductVariant::hasOrderHistory()`; `CreatesProduct` / `UpdatesProduct` /
       `DeletesProduct` and `UpdatesProductVariant` / `DeletesProductVariant` /
       `GeneratesProductVariants` (+ exception, model-hook guards, Filament
       delegation); core + upgrade tests.
-- [ ] Slice 2 — Panel scaffold + list: navigation restructure (products parent +
+- [x] Slice 2 — Panel scaffold + list: navigation restructure (products parent +
       children, product-types moved), routes, `ProductIndexController` (KPIs,
       filters), `ProductsTableExtension`, bulk status, create flow, Index/Create
-      pages, lang keys (16 locales), feature + nav tests.
-- [ ] Slice 3 — Edit page core: edit controller, `ProductDraftResource`, Edit page
+      pages, lang keys (16 locales), feature + nav tests. (Landed together with
+      slice 3 — the list's row links and create redirect anchor on the edit page,
+      the collections precedent.)
+- [x] Slice 3 — Edit page core: edit controller, `ProductDraftResource`, Edit page
       with Basics / `MediaManager` / `AttributeFields` / `UrlSlugs` / Associations,
       sidebar (Status, `AvailabilityCard` + purchasable, Product type, Organization
       with `TagsInput`, Activity), slot zones, `DuplicateProductPageAction`,
       media/URL endpoints, tests.
-- [ ] Slice 4 — Pricing + simple shape: price endpoints + `PricingEditor`,
+- [x] Slice 4 — Pricing + simple shape: price endpoints + `PricingEditor`,
       `InventoryCard` + stock-adjust endpoint, Shipping/Identifiers/Tax cards, the
       sole-variant `variant:*` draft surface and shape toggle, `pricing.php`
-      (16 locales), tests.
-- [ ] Slice 5 — Options + variants: `ProductOptionsBuilder` component family,
+      (16 locales), tests. (Also landed here: nested variant routes bind as
+      `{productVariant}` so the core model binder scopes children in segment
+      order, with `Product` mapping the guessed relation name, and the shared
+      `EditDraftController` targeting the deepest bound model.)
+- [x] Slice 5 — Options + variants: `ProductOptionsBuilder` component family,
       product-options search endpoint, `options.generate` flow (drift, regenerate
       dialog, collapse), `VariantsTable` + bulk endpoints, vitest + feature tests.
-- [ ] Slice 6 — Variant edit page: controller + `ProductVariantDraftResource`,
+      (Landed together with slice 6 — the table rows anchor on the variant edit
+      page.)
+- [x] Slice 6 — Variant edit page: controller + `ProductVariantDraftResource`,
       VariantEdit page (pricing, `VariantMediaPicker`, inventory, cards, sidebar,
       prev/next), variant media/stock endpoints, tests.
-- [ ] Slice 7 — Extension example: SEO card in `packages/panel-addon-example`
+- [x] Slice 7 — Extension example: SEO card in `packages/panel-addon-example`
       injected into `products.edit:content:after`, `TMP-DOCS.md` slot walkthrough.
