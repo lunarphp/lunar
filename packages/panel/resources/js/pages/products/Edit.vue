@@ -313,47 +313,116 @@ const toggleGroup = (type: string): void => {
     expandedGroups.value = { ...expandedGroups.value, [type]: !expandedGroups.value[type] };
 };
 
-// HTML5 drag & drop reorder, scoped to a single type: dragging a row over
-// another slots it into that position; dropping persists the new order.
-const draggingId = ref<number | null>(null);
-const draggingType = ref<string | null>(null);
+// Animated drag-to-reorder using slot transforms (the dnd-kit technique).
+// The entry order never changes mid-drag: the target slot is a pure function
+// of the pointer against row geometry captured at dragstart, displaced rows
+// are shifted with animated CSS transforms, and the reorder commits once on
+// drop. The animation therefore cannot feed back into the slot computation -
+// the oscillation a hover-swap + FLIP combination suffers from is impossible
+// by construction.
+interface EntryDrag {
+    type: string;
+    id: number;
+    from: number;
+    to: number;
+    // Row geometry at dragstart, relative to the list container.
+    offsets: number[];
+    heights: number[];
+}
 
-const onEntryDragStart = (type: string, entry: AssociationEntry): void => {
-    draggingId.value = entry.id;
-    draggingType.value = type;
+const entryDrag = ref<EntryDrag | null>(null);
+
+const onEntryDragStart = (event: DragEvent, type: string, entry: AssociationEntry, index: number): void => {
+    const row = event.currentTarget as HTMLElement;
+    const container = row.parentElement as HTMLElement;
+    const containerTop = container.getBoundingClientRect().top;
+    const rects = Array.from(container.children).map((el) => el.getBoundingClientRect());
+
+    if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', '');
+    }
+
+    entryDrag.value = {
+        type,
+        id: entry.id,
+        from: index,
+        to: index,
+        offsets: rects.map((rect) => rect.top - containerTop),
+        heights: rects.map((rect) => rect.height),
+    };
 };
 
-const onEntryDragOver = (type: string, target: AssociationEntry): void => {
-    if (draggingType.value !== type || draggingId.value === null || draggingId.value === target.id) {
+const onEntryListDragOver = (event: DragEvent, type: string): void => {
+    const drag = entryDrag.value;
+
+    if (!drag || drag.type !== type) {
         return;
     }
 
-    const current = [...(orderedEntries.value[type] ?? [])];
-    const from = current.findIndex((entry) => entry.id === draggingId.value);
-    const to = current.findIndex((entry) => entry.id === target.id);
+    const containerTop = (event.currentTarget as HTMLElement).getBoundingClientRect().top;
+    const y = event.clientY - containerTop;
 
-    current.splice(to, 0, ...current.splice(from, 1));
-    orderedEntries.value = { ...orderedEntries.value, [type]: current };
+    let to = drag.offsets.length - 1;
+
+    for (let i = 0; i < drag.offsets.length; i++) {
+        if (y < drag.offsets[i] + drag.heights[i]) {
+            to = i;
+            break;
+        }
+    }
+
+    drag.to = to;
+};
+
+const entryDragStyle = (type: string, index: number): Record<string, string> => {
+    const drag = entryDrag.value;
+
+    if (!drag || drag.type !== type) {
+        return {};
+    }
+
+    const { from, to, heights } = drag;
+
+    let shift = 0;
+
+    if (index === from) {
+        // The dragged row slides to its target slot.
+        shift = to > from
+            ? heights.slice(from + 1, to + 1).reduce((sum, height) => sum + height, 0)
+            : -heights.slice(to, from).reduce((sum, height) => sum + height, 0);
+    } else if (index > from && index <= to) {
+        shift = -heights[from];
+    } else if (index >= to && index < from) {
+        shift = heights[from];
+    }
+
+    return {
+        transform: `translateY(${shift}px)`,
+        transition: 'transform 150ms ease',
+    };
 };
 
 const onEntryDragEnd = (): void => {
-    const type = draggingType.value;
+    const drag = entryDrag.value;
 
-    draggingId.value = null;
-    draggingType.value = null;
+    entryDrag.value = null;
 
-    if (!type) {
+    if (!drag || drag.to === drag.from) {
         return;
     }
 
-    const ids = (orderedEntries.value[type] ?? []).map((entry) => entry.id);
-    const original = (props.associations.find((group) => group.type === type)?.entries ?? []).map((entry) => entry.id);
+    // Committing the previewed order in the same tick the transforms clear
+    // leaves the settled DOM exactly where the preview was - no snap.
+    const current = [...(orderedEntries.value[drag.type] ?? [])];
+    current.splice(drag.to, 0, ...current.splice(drag.from, 1));
+    orderedEntries.value = { ...orderedEntries.value, [drag.type]: current };
 
-    if (ids.join(',') === original.join(',')) {
-        return;
-    }
-
-    router.post(props.urls.associationsReorder, { type, ids }, { preserveScroll: true });
+    router.post(
+        props.urls.associationsReorder,
+        { type: drag.type, ids: current.map((entry) => entry.id) },
+        { preserveScroll: true },
+    );
 };
 
 // Associations: one picker dialog, opened per relationship type.
@@ -637,16 +706,21 @@ const timelineEvents = computed(() =>
                                         <span class="shrink-0 text-[11.5px] font-mono text-ink-500 tabular-nums">{{ t('products.assoc_count', group.entries.length) }}</span>
                                         <Button size="sm" variant="ghost" icon="plus" @click="picking = group.type">{{ t('products.assoc_add') }}</Button>
                                     </div>
-                                    <div v-if="expandedGroups[group.type]" class="border-t border-line">
+                                    <div
+                                        v-if="expandedGroups[group.type]"
+                                        class="border-t border-line"
+                                        @dragover.prevent="onEntryListDragOver($event, group.type)"
+                                        @drop.prevent
+                                    >
                                         <template v-if="group.entries.length">
                                             <div
-                                                v-for="entry in group.entries"
+                                                v-for="(entry, index) in group.entries"
                                                 :key="entry.id"
-                                                class="group/row flex items-center gap-3 pl-2 pr-3 py-2 border-b border-line last:border-b-0"
-                                                :class="draggingId === entry.id ? 'opacity-60' : ''"
+                                                class="group/row flex items-center gap-3 pl-2 pr-3 py-2 border-b border-line last:border-b-0 bg-surface"
+                                                :class="entryDrag?.id === entry.id ? 'opacity-60 relative z-10' : ''"
+                                                :style="entryDragStyle(group.type, index)"
                                                 draggable="true"
-                                                @dragstart="onEntryDragStart(group.type, entry)"
-                                                @dragover.prevent="onEntryDragOver(group.type, entry)"
+                                                @dragstart="onEntryDragStart($event, group.type, entry, index)"
                                                 @dragend="onEntryDragEnd"
                                             >
                                                 <Icon
