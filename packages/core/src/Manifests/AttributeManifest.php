@@ -10,6 +10,7 @@ use Lunar\Core\Models\Collection as ModelsCollection;
 use Lunar\Core\Models\Customer;
 use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductType;
 use Lunar\Core\Models\ProductVariant;
 
 class AttributeManifest
@@ -24,6 +25,7 @@ class AttributeManifest
     protected $baseTypes = [
         Product::class,
         ProductVariant::class,
+        ProductType::class,
         ModelsCollection::class,
         Customer::class,
         Brand::class,

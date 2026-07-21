@@ -125,7 +125,11 @@ Prices are stored as plain integers with a `FormatsPrices` trait, and a new
 attribute system is redesigned around id-keyed storage with a handle-keyed field
 collection in memory. `name`, `description` and `short_description` are now
 dedicated translatable columns instead of living in `attribute_data`, and
-`compare_price` is renamed to `list_price`.
+`compare_price` is renamed to `list_price`. Product types are attributable
+themselves (media, status, handle and a default tax class too), so their pivot
+relation `mappedAttributes()` is renamed to `attributeMapping()` — freeing
+`mappedAttributes()` for the standard "my own fields" meaning every other
+attributable model shares.
 
 ## Admin & Filament v5
 

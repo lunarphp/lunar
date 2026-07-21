@@ -17,6 +17,7 @@ return [
     'catalog' => 'Catalog',
     'brands' => 'Brands',
     'collections' => 'Kolekcije',
+    'product_types' => 'Product types',
     'sales' => 'Prodaja',
     'customers' => 'Kupci',
     'general' => 'Općenito',

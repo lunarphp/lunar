@@ -19,4 +19,12 @@ return [
     'vimeo_placeholder' => 'Vimeo video ID',
     'file_readonly' => 'No file. File fields are managed in the Filament admin for now.',
     'unsupported' => 'The {type} field type has no panel editor yet.',
+    'picker_search' => 'Search attributes',
+    'picker_all' => 'All',
+    'picker_none' => 'None',
+    'picker_selected_count' => '{selected} of {total} selected',
+    'picker_group_count' => '{selected}/{total}',
+    'picker_required' => 'Required',
+    'picker_empty' => 'No attributes for this surface yet. Create them in Settings.',
+    'picker_manage' => 'Manage attributes in Settings',
 ];

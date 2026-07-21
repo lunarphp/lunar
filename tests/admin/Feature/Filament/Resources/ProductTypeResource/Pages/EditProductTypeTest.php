@@ -18,35 +18,35 @@ it('can associate attributes', function () {
     $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')->test(EditProductType::class, [
         'record' => $productType->getRouteKey(),
     ])->fillForm([
-        'mappedAttributes' => [$attributeA->id, $attributeB->id],
+        'attributeMapping' => [$attributeA->id, $attributeB->id],
     ])
         ->call('save')
         ->assertHasNoFormErrors();
 
-    $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
+    $this->assertDatabaseHas((new ProductType)->attributeMapping()->getTable(), [
         'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeA->id,
     ]);
 
-    $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
+    $this->assertDatabaseHas((new ProductType)->attributeMapping()->getTable(), [
         'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeB->id,
     ]);
 
     $component = Livewire::actingAs($this->makeStaff(admin: true), 'staff')->test(EditProductType::class, [
         'record' => $productType->getRouteKey(),
-    ])->set('data.mappedAttributes', [$attributeA->id])->assertFormSet([
-        'mappedAttributes' => [$attributeA->id],
+    ])->set('data.attributeMapping', [$attributeA->id])->assertFormSet([
+        'attributeMapping' => [$attributeA->id],
     ])
         ->call('save')
         ->assertHasNoFormErrors();
 
-    $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
+    $this->assertDatabaseHas((new ProductType)->attributeMapping()->getTable(), [
         'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeA->id,
     ]);
 
-    $this->assertDatabaseMissing((new ProductType)->mappedAttributes()->getTable(), [
+    $this->assertDatabaseMissing((new ProductType)->attributeMapping()->getTable(), [
         'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeB->id,
     ]);

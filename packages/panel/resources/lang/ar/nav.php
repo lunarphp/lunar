@@ -17,6 +17,7 @@ return [
     'catalog' => 'Catalog',
     'brands' => 'Brands',
     'collections' => 'التشكيلات',
+    'product_types' => 'Product types',
     'sales' => 'المبيعات',
     'customers' => 'العملاء',
     'general' => 'عام',

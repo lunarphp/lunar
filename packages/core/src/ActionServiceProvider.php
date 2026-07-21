@@ -104,6 +104,9 @@ use Lunar\Core\Actions\Products\ReleaseReservation;
 use Lunar\Core\Actions\Products\ReserveStock;
 use Lunar\Core\Actions\Products\SyncStockCommitment;
 use Lunar\Core\Actions\Products\UpdateProductStatus;
+use Lunar\Core\Actions\ProductTypes\CreateProductType;
+use Lunar\Core\Actions\ProductTypes\DeleteProductType;
+use Lunar\Core\Actions\ProductTypes\UpdateProductType;
 use Lunar\Core\Actions\Regions\CreateRegion;
 use Lunar\Core\Actions\Regions\DeleteRegion;
 use Lunar\Core\Actions\Regions\UpdateRegion;
@@ -213,6 +216,11 @@ class ActionServiceProvider extends ServiceProvider
         Contracts\ProductOptions\CreatesProductOption::class => CreateProductOption::class,
         Contracts\ProductOptions\DeletesProductOption::class => DeleteProductOption::class,
         Contracts\ProductOptions\UpdatesProductOption::class => UpdateProductOption::class,
+
+        // Product types
+        Contracts\ProductTypes\CreatesProductType::class => CreateProductType::class,
+        Contracts\ProductTypes\DeletesProductType::class => DeleteProductType::class,
+        Contracts\ProductTypes\UpdatesProductType::class => UpdateProductType::class,
 
         // Products
         Contracts\Products\AdjustsStock::class => AdjustStock::class,

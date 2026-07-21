@@ -17,6 +17,7 @@ return [
     'catalog' => 'Catalog',
     'brands' => 'Brands',
     'collections' => 'Kollekciók',
+    'product_types' => 'Product types',
     'sales' => 'Értékesítés',
     'customers' => 'Ügyfelek',
     'general' => 'Általános',

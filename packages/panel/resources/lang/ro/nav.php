@@ -17,6 +17,7 @@ return [
     'catalog' => 'Catalog',
     'brands' => 'Brands',
     'collections' => 'Colecții',
+    'product_types' => 'Product types',
     'sales' => 'Vânzări',
     'customers' => 'Clienți',
     'general' => 'General',

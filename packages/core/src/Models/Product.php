@@ -118,7 +118,7 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
 
     public function mappedAttributes(): Collection
     {
-        return $this->productType->mappedAttributes;
+        return $this->productType->attributeMapping;
     }
 
     public function newCacheInvalidationEvent(CacheInvalidationReason $reason): CacheInvalidationEvent

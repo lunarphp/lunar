@@ -5,8 +5,12 @@ namespace Lunar\Filament\Tables\ProductType;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
+use Lunar\Core\Actions\ProductTypes\DeleteProductType;
+use Lunar\Core\Models\ProductType;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class ProductTypeTable
@@ -25,7 +29,16 @@ class ProductTypeTable
                 ])
                 ->toolbarActions([
                     BulkActionGroup::make([
-                        DeleteBulkAction::make(),
+                        DeleteBulkAction::make()
+                            ->before(function (DeleteBulkAction $action, Collection $records) {
+                                if ($records->contains(fn (ProductType $productType) => DeleteProductType::isProtected($productType))) {
+                                    Notification::make()
+                                        ->warning()
+                                        ->body(__('lunarpanel::producttype.action.delete.notification.error_protected'))
+                                        ->send();
+                                    $action->cancel();
+                                }
+                            }),
                     ]),
                 ]),
         );

@@ -17,6 +17,7 @@ return [
     'catalog' => 'Catalog',
     'brands' => 'Brands',
     'collections' => 'Bộ sưu tập',
+    'product_types' => 'Product types',
     'sales' => 'Bán hàng',
     'customers' => 'Khách hàng',
     'general' => 'Chung',
