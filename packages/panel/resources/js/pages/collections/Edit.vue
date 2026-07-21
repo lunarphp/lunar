@@ -30,6 +30,7 @@ import TranslatedInput, { type LanguageOption } from '../../components/Translate
 import UrlSlugs, { type UrlRow } from '../../components/UrlSlugs.vue';
 import PanelLayout from '../../layouts/PanelLayout.vue';
 import { useEditDraft, type DraftState } from '../../composables/useEditDraft';
+import { useDragSort } from '../../composables/useDragSort';
 
 interface ActivityEntry {
     description: string;
@@ -262,42 +263,21 @@ watch(
     },
 );
 
-const draggingProductId = ref<number | null>(null);
+// Animated drag-to-reorder (single list). Offset carries the page's start
+// index so the persisted order stays correct across paginated pages.
+const productSort = useDragSort({
+    onCommit: (_listId, from, to) => {
+        const current = [...orderedProducts.value];
+        current.splice(to, 0, ...current.splice(from, 1));
+        orderedProducts.value = current;
 
-const onProductDragStart = (row: ProductRow): void => {
-    draggingProductId.value = row.id;
-};
-
-const onProductDragOver = (target: ProductRow): void => {
-    if (draggingProductId.value === null || draggingProductId.value === target.id) {
-        return;
-    }
-
-    const current = [...orderedProducts.value];
-    const from = current.findIndex((row) => row.id === draggingProductId.value);
-    const to = current.findIndex((row) => row.id === target.id);
-
-    current.splice(to, 0, ...current.splice(from, 1));
-    orderedProducts.value = current;
-};
-
-const onProductDragEnd = (): void => {
-    if (draggingProductId.value === null) {
-        return;
-    }
-
-    draggingProductId.value = null;
-
-    const ids = orderedProducts.value.map((row) => row.id);
-
-    if (ids.join(',') !== props.products.data.map((row) => row.id).join(',')) {
         router.post(
             props.urls.productsReorder,
-            { ids, offset: (props.products.from ?? 1) - 1 },
+            { ids: current.map((row) => row.id), offset: (props.products.from ?? 1) - 1 },
             { preserveScroll: true },
         );
-    }
-};
+    },
+});
 
 const productStatusTone = (status: string): 'sage' | 'warn' | 'archived' =>
     status === 'published' ? 'sage' : status === 'draft' ? 'warn' : 'archived';
@@ -475,15 +455,16 @@ const timelineEvents = computed(() =>
                                     <div>{{ t('collections.products_column_status') }}</div>
                                     <div />
                                 </div>
+                                <div @dragover.prevent="canReorder && productSort.over($event, 'products')" @drop.prevent>
                                 <div
-                                    v-for="row in orderedProducts"
+                                    v-for="(row, index) in orderedProducts"
                                     :key="row.id"
-                                    class="grid grid-cols-[24px_minmax(0,1.6fr)_120px_110px_44px] items-center gap-3 px-3 py-2 border-b border-line last:border-b-0"
-                                    :class="draggingProductId === row.id ? 'opacity-50' : ''"
+                                    class="grid grid-cols-[24px_minmax(0,1.6fr)_120px_110px_44px] items-center gap-3 px-3 py-2 border-b border-line last:border-b-0 bg-surface"
+                                    :class="productSort.isDragging('products', index) ? 'opacity-50 relative z-10' : ''"
+                                    :style="productSort.style('products', index)"
                                     :draggable="canReorder"
-                                    @dragstart="onProductDragStart(row)"
-                                    @dragover.prevent="onProductDragOver(row)"
-                                    @dragend="onProductDragEnd"
+                                    @dragstart="productSort.start($event, 'products', index)"
+                                    @dragend="productSort.end()"
                                 >
                                     <div class="text-ink-300" :class="canReorder ? 'cursor-grab' : 'opacity-30'">
                                         <Icon name="grip" cls="sm" />
@@ -512,6 +493,7 @@ const timelineEvents = computed(() =>
                                             @click="removeProduct(row)"
                                         />
                                     </div>
+                                </div>
                                 </div>
                             </div>
                             <PageEmpty v-else :title="t('collections.products_empty_title')">
