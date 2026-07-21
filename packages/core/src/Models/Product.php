@@ -174,7 +174,8 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
 
     public function associations(): HasMany
     {
-        return $this->hasMany(ProductAssociation::class, 'product_parent_id');
+        return $this->hasMany(ProductAssociation::class, 'product_parent_id')
+            ->orderBy('sort')->orderBy('id');
     }
 
     public function inverseAssociations(): HasMany

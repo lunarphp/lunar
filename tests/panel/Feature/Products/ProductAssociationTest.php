@@ -2,7 +2,9 @@
 
 use Inertia\Testing\AssertableInertia as Assert;
 use Lunar\Core\Enums\Concerns\ProvidesProductAssociationType;
+use Lunar\Core\Models\Currency;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
 use Lunar\Core\Models\Staff;
@@ -108,6 +110,63 @@ it('renders and accepts a registered custom association type', function () {
     ])->assertRedirect()->assertSessionHasNoErrors();
 
     expect($this->product->associations()->where('type', 'bundle')->count())->toBe(1);
+});
+
+it('persists a new linking order and ignores foreign ids', function () {
+    $targets = Product::factory()->count(3)->create();
+
+    foreach ($targets as $target) {
+        $this->product->associate($target, 'cross-sell');
+    }
+
+    $links = $this->product->associations()->where('type', 'cross-sell')->orderBy('sort')->get();
+    expect($links->pluck('sort')->all())->toBe([1, 2, 3]);
+
+    // A link from another product must not be touched by this product's reorder.
+    $other = Product::factory()->create();
+    $foreign = $other->associations()->create([
+        'product_target_id' => Product::factory()->create()->id,
+        'type' => 'cross-sell',
+        'sort' => 5,
+    ]);
+
+    $reordered = $links->reverse()->pluck('id')->values()->all();
+
+    $this->post(route('panel.products.associations.reorder', $this->product), [
+        'type' => 'cross-sell',
+        'ids' => [...$reordered, $foreign->id],
+    ])->assertRedirect()->assertSessionHas('success');
+
+    expect($this->product->associations()->where('type', 'cross-sell')->orderBy('sort')->pluck('id')->all())
+        ->toBe($reordered)
+        ->and($foreign->refresh()->sort)->toBe(5);
+});
+
+it('exposes the cheapest default-currency price for each linked product', function () {
+    $currency = Currency::factory()->create(['default' => true, 'enabled' => true, 'decimal_places' => 2]);
+
+    $target = Product::factory()->create(['name' => collect(['en' => 'Charger'])]);
+    $cheap = ProductVariant::factory()->create(['product_id' => $target->id]);
+    $dear = ProductVariant::factory()->create(['product_id' => $target->id]);
+
+    $cheapPrice = Price::factory()->create([
+        'priceable_type' => $cheap->getMorphClass(), 'priceable_id' => $cheap->id,
+        'currency_id' => $currency->id, 'customer_group_id' => null, 'min_quantity' => 1, 'price' => 79900,
+    ]);
+    Price::factory()->create([
+        'priceable_type' => $dear->getMorphClass(), 'priceable_id' => $dear->id,
+        'currency_id' => $currency->id, 'customer_group_id' => null, 'min_quantity' => 1, 'price' => 99900,
+    ]);
+
+    $this->product->associate($target, 'cross-sell');
+
+    // The cheaper variant's price is surfaced, formatted for the "From ..." label.
+    $this->get(route('panel.products.edit', $this->product))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('associations.0.type', 'cross-sell')
+            ->where('associations.0.entries.0.name', 'Charger')
+            ->where('associations.0.entries.0.price', $cheapPrice->format('price'))
+        );
 });
 
 it('scopes association routes to the owning product', function () {
