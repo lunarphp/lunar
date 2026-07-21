@@ -17,7 +17,7 @@ test('conversions are loaded', function () {
 
     $definitions = config('lunar.media.definitions');
 
-    expect($definitions)->toHaveCount(6);
+    expect($definitions)->toHaveCount(7);
 
     expect($definitions['product'])->toEqual(StandardMediaDefinitions::class);
 

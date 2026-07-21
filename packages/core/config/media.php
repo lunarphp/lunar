@@ -11,6 +11,7 @@ return [
         'product' => StandardDefinitions::class,
         'product-option' => StandardDefinitions::class,
         'product-option-value' => StandardDefinitions::class,
+        'product_type' => StandardDefinitions::class,
     ],
 
     'collection' => 'images',

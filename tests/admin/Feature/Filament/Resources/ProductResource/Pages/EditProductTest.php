@@ -49,7 +49,7 @@ it('can edit variant attributes', function ($attributeType, $attributeValue) {
         'searchable' => false,
     ]);
 
-    $product->productType->mappedAttributes()->attach($attribute->id);
+    $product->productType->attributeMapping()->attach($attribute->id);
 
     $this->asStaff(admin: true);
 
@@ -101,7 +101,7 @@ it('can load edit page with existing number attribute', function () {
         'searchable' => false,
     ]);
 
-    $product->productType->mappedAttributes()->attach($attribute->id);
+    $product->productType->attributeMapping()->attach($attribute->id);
 
     $product->update([
         'attribute_data' => collect([
@@ -147,7 +147,7 @@ it('can save attributes', function () {
         'searchable' => false,
     ]);
 
-    $record->productType->mappedAttributes()->attach($attribute->id);
+    $record->productType->attributeMapping()->attach($attribute->id);
 
     $this->asStaff(admin: true);
 
@@ -295,7 +295,7 @@ function createTranslatedRichTextProductAttribute(Product $product, string $hand
         ],
     ]);
 
-    $product->productType->mappedAttributes()->attach($attribute->id);
+    $product->productType->attributeMapping()->attach($attribute->id);
 }
 
 it('warns when the product is hidden from guests but visible to other groups', function () {

@@ -17,6 +17,11 @@ return [
         'archived' => 'Archived',
     ],
 
+    'product_type' => [
+        'active' => 'Active',
+        'draft' => 'Draft',
+    ],
+
     'collection' => [
         'draft' => 'Draft',
         'published' => 'Published',
