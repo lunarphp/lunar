@@ -7,6 +7,7 @@ import Button from '../../../components/Button.vue';
 import Combobox from '../../../components/Combobox.vue';
 import ConfirmDialog from '../../../components/ConfirmDialog.vue';
 import FieldLabel from '../../../components/FieldLabel.vue';
+import Flag from '../../../components/Flag.vue';
 import Section from '../../../components/Section.vue';
 import Select from '../../../components/Select.vue';
 import TextInput from '../../../components/TextInput.vue';
@@ -31,7 +32,7 @@ type ZoneRate = {
     amounts: Record<number, number>;
 };
 
-type CountryOption = { id: number; name: string; iso2: string | null; emoji: string };
+type CountryOption = { id: number; name: string; iso2: string | null };
 type StateOption = { id: number; name: string; code: string; country: string | null };
 type NamedOption = { id: number; name: string };
 
@@ -77,10 +78,7 @@ const submit = (): void => {
 
 // --- Coverage pickers -------------------------------------------------------
 
-const countryName = (id: number): string => {
-    const country = props.countries.find((c) => c.id === id);
-    return country ? `${country.emoji} ${country.name}` : String(id);
-};
+const countryFor = (id: number): CountryOption | undefined => props.countries.find((c) => c.id === id);
 
 const stateName = (id: number): string => {
     const state = props.states.find((s) => s.id === id);
@@ -90,7 +88,7 @@ const stateName = (id: number): string => {
 const groupName = (id: number): string => props.customerGroups.find((g) => g.id === id)?.name ?? String(id);
 
 const availableCountries = computed(() =>
-    props.countries.filter((c) => !form.countries.includes(c.id)).map((c) => ({ value: c.id, label: `${c.emoji} ${c.name}` })));
+    props.countries.filter((c) => !form.countries.includes(c.id)).map((c) => ({ value: c.id, label: c.name, flag: c.iso2 })));
 
 const availableStates = computed(() =>
     props.states.filter((s) => !form.states.includes(s.id)).map((s) => ({ value: s.id, label: `${s.name}${s.country ? ` (${s.country})` : ''}` })));
@@ -112,7 +110,7 @@ const addGroup = (id: string | number): void => {
 
 const newPostcode = ref<{ country_id: number | null; postcode: string }>({ country_id: null, postcode: '' });
 
-const countryOptions = computed(() => props.countries.map((c) => ({ value: c.id, label: `${c.emoji} ${c.name}` })));
+const countryOptions = computed(() => props.countries.map((c) => ({ value: c.id, label: c.name, flag: c.iso2 })));
 
 const addPostcode = (): void => {
     if (!newPostcode.value.country_id || !newPostcode.value.postcode.trim()) return;
@@ -210,7 +208,8 @@ const confirmDestroy = (): void => {
                     :key="id"
                     class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full bg-surface-2 border border-line text-xs text-ink-900"
                 >
-                    {{ countryName(id) }}
+                    <Flag v-if="countryFor(id)?.iso2" :code="countryFor(id)!.iso2" class="text-[13px]" />
+                    {{ countryFor(id)?.name ?? id }}
                     <button
                         type="button"
                         class="w-4 h-4 inline-flex items-center justify-center rounded-full text-ink-500 hover:text-danger"
@@ -264,7 +263,10 @@ const confirmDestroy = (): void => {
                     :key="`${row.country_id}-${row.postcode}`"
                     class="flex items-center gap-3 px-3 py-1.5 rounded-md border border-line bg-surface text-xs"
                 >
-                    <span class="text-ink-900">{{ countryName(row.country_id) }}</span>
+                    <span class="inline-flex items-center gap-1.5 text-ink-900">
+                        <Flag v-if="countryFor(row.country_id)?.iso2" :code="countryFor(row.country_id)!.iso2" class="text-[13px]" />
+                        {{ countryFor(row.country_id)?.name ?? row.country_id }}
+                    </span>
                     <span class="font-mono text-ink-700">{{ row.postcode }}</span>
                     <button
                         type="button"

@@ -2,12 +2,13 @@
 import { computed, reactive, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { flagForLanguage } from '../lib/flags';
+import { regionForLanguage } from '../lib/flags';
 import Button from './Button.vue';
 import Checkbox from './Checkbox.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import Dialog from './Dialog.vue';
 import FieldLabel from './FieldLabel.vue';
+import Flag from './Flag.vue';
 import Icon from './Icon.vue';
 import Section from './Section.vue';
 import Select from './Select.vue';
@@ -196,7 +197,7 @@ const previewHref = (url: UrlRow): string | null => {
                     <tr v-for="url in urls" :key="url.id" class="last:[&_td]:border-b-0">
                         <td class="pl-4 whitespace-nowrap align-top pt-3.5 pb-2.5 px-3 border-b border-line">
                             <span class="inline-flex items-center gap-1.5">
-                                <span v-if="flagForLanguage(url.language_code)" class="text-sm leading-none">{{ flagForLanguage(url.language_code) }}</span>
+                                <Flag :code="regionForLanguage(url.language_code)" class="text-[13px]" />
                                 <span class="font-mono text-[11.5px] text-ink-700">{{ url.language_code }}</span>
                             </span>
                         </td>
@@ -263,7 +264,7 @@ const previewHref = (url: UrlRow): string | null => {
                     <FieldLabel for="url-language">{{ t('urls.column_language') }}</FieldLabel>
                     <Select id="url-language" v-model="addLanguageId" :invalid="!!addErrors.language_id">
                         <option v-for="language in languages" :key="language.id" :value="language.id">
-                            {{ [flagForLanguage(language.code), language.name ?? language.code].filter(Boolean).join(' ') }}
+                            {{ language.name ?? language.code }}
                         </option>
                     </Select>
                     <div v-if="addErrors.language_id" class="mt-1 text-[11px] text-danger">{{ addErrors.language_id }}</div>

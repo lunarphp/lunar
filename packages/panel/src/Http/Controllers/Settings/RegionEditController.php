@@ -38,7 +38,7 @@ class RegionEditController
             'currencies' => Currency::query()->orderBy('code')->get(['id', 'code', 'name']),
             'languages' => Language::query()->orderBy('code')->get(['id', 'code', 'name']),
             'taxZones' => TaxZone::query()->orderBy('name')->get(['id', 'name']),
-            'countries' => Country::query()->orderBy('name')->get(['id', 'name', 'emoji']),
+            'countries' => Country::query()->orderBy('name')->get(['id', 'name', 'iso2']),
             'hasOrderHistory' => Order::query()->where('region_id', $region->id)->exists(),
             'urls' => [
                 'update' => route('panel.settings.regions.update', $region),

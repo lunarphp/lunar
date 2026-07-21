@@ -1,23 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { flagForLanguage } from './flags';
+import { regionForLanguage } from './flags';
 
-const flag = (region: string): string =>
-    String.fromCodePoint(...[...region].map((char) => char.charCodeAt(0) - 0x61 + 0x1f1e6));
-
-describe('flagForLanguage', () => {
+describe('regionForLanguage', () => {
     it('uses the region subtag when present', () => {
-        expect(flagForLanguage('en-GB')).toBe(flag('gb'));
-        expect(flagForLanguage('pt_BR')).toBe(flag('br'));
+        expect(regionForLanguage('en-GB')).toBe('gb');
+        expect(regionForLanguage('pt_BR')).toBe('br');
     });
 
     it('maps bare language codes to a representative region', () => {
-        expect(flagForLanguage('en')).toBe(flag('gb'));
-        expect(flagForLanguage('de')).toBe(flag('de'));
-        expect(flagForLanguage('vi')).toBe(flag('vn'));
+        expect(regionForLanguage('en')).toBe('gb');
+        expect(regionForLanguage('de')).toBe('de');
+        expect(regionForLanguage('vi')).toBe('vn');
     });
 
     it('returns an empty string for unknown shapes', () => {
-        expect(flagForLanguage('eng')).toBe('');
-        expect(flagForLanguage('')).toBe('');
+        expect(regionForLanguage('eng')).toBe('');
+        expect(regionForLanguage('')).toBe('');
     });
 });

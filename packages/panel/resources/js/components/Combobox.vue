@@ -12,9 +12,10 @@ import {
     ComboboxViewport,
 } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
+import Flag from './Flag.vue';
 import Icon from './Icon.vue';
 
-type ComboboxOption = { value: string | number; label: string };
+type ComboboxOption = { value: string | number; label: string; flag?: string | null };
 
 const props = withDefaults(
     defineProps<{
@@ -115,6 +116,7 @@ const inputCls = computed(() => [
                             cls="sm"
                             :class="opt.value === modelValue ? 'text-ink-900' : 'invisible'"
                         />
+                        <Flag v-if="opt.flag" :code="opt.flag" class="shrink-0 text-[13px]" />
                         <span class="truncate">{{ opt.label }}</span>
                     </ComboboxItem>
                 </ComboboxViewport>
