@@ -11,10 +11,12 @@ use Lunar\Core\Models\CollectionGroup;
 use Lunar\Core\States\Collection\Archived;
 use Lunar\Core\States\Collection\Draft;
 use Lunar\Core\States\Collection\Published;
+use Lunar\Panel\Http\Controllers\Concerns\PresentsCollectionRows;
 use Lunar\Panel\Http\Controllers\Concerns\ResolvesTableExtensions;
 
 class CollectionIndexController
 {
+    use PresentsCollectionRows;
     use ResolvesTableExtensions;
 
     public function index(Request $request): Response
@@ -66,32 +68,19 @@ class CollectionIndexController
             $visibleIds = $visible;
         }
 
+        // Browse mode ships only root collections; each subtree is fetched on
+        // demand as rows are expanded. Filtering keeps the eager set (matches
+        // plus their ancestors) so deep matches stay reachable.
         $collections = Collection::query()
             ->withCount('products')
             ->with('thumbnail')
+            ->when(! $filtering, fn ($query) => $query->whereNull('parent_id'))
             ->when($visibleIds !== null, fn ($query) => $query->whereIn('id', array_keys($visibleIds)))
             ->orderBy('collection_group_id')
             ->orderBy('_lft')
             ->get();
 
-        $rows = $collections->map(fn (Collection $collection) => [
-            'id' => $collection->id,
-            'parent_id' => $collection->parent_id,
-            'group_id' => $collection->collection_group_id,
-            'name' => $collection->translate('name'),
-            'handle' => $collection->handle,
-            'thumbnail' => $collection->thumbnail?->getAvailableUrl(['small']),
-            'short_description' => $collection->translate('short_description'),
-            'status' => $collection->status->getValue(),
-            'status_label' => $collection->status->label(),
-            'products_count' => (int) $collection->getAttribute('products_count'),
-            // Nested-set bounds carry the subtree size without another query.
-            'descendants_count' => (int) (($collection->getRgt() - $collection->getLft() - 1) / 2),
-            'matched' => $matchedIds === null || $matchedIds->has($collection->id),
-            'edit_url' => route('panel.collections.edit', $collection),
-            '_actions' => $resolver->resolveRowActionUrls($collection),
-            'children' => [],
-        ]);
+        $rows = $collections->map(fn (Collection $collection) => $this->collectionRow($collection, $resolver, $matchedIds));
 
         $groups = CollectionGroup::query()
             ->withCount('collections')
@@ -111,12 +100,14 @@ class CollectionIndexController
             ])
             ->values();
 
+        $totalCount = Collection::count();
+
         return Inertia::render('collections/Index', [
             'groups' => $groups,
             'tableActions' => $resolver->getActions(),
             'filtering' => $filtering,
-            'matchedCount' => $filtering ? ($matchedIds?->count() ?? 0) : $collections->count(),
-            'totalCount' => Collection::count(),
+            'matchedCount' => $filtering ? ($matchedIds?->count() ?? 0) : $totalCount,
+            'totalCount' => $totalCount,
             'filters' => $request->only(['q', 'status']),
             'urls' => [
                 'index' => route('panel.collections.index'),
@@ -128,8 +119,8 @@ class CollectionIndexController
 
     /**
      * Nest the flat, _lft-ordered rows of one group into a children tree.
-     * Every row's parent is guaranteed present: unfiltered payloads carry the
-     * whole group, filtered ones include every match's ancestors.
+     * Every row's parent is guaranteed present: browse payloads carry only
+     * roots (nothing to nest), filtered ones include every match's ancestors.
      *
      * @param  SupportCollection<int, array<string, mixed>>  $rows
      * @return array<int, array<string, mixed>>

@@ -77,9 +77,8 @@ const clearFilters = (): void => {
     reload();
 };
 
-// Per-group open state persists across visits; per-row expansion is
-// in-memory with everything open by default (the payload nests children, so
-// arriving rows render expanded until toggled).
+// Per-group open state persists across visits; per-row expansion is in-memory
+// and collapsed by default, fetching each subtree on first open.
 const groupOpenKey = (id: number): string => `lunar_collgrp_${id}`;
 
 const initialGroupOpen = (id: number): boolean => {
@@ -121,38 +120,37 @@ const toggleGroup = (id: number): void => {
 
 const isGroupOpen = (id: number): boolean => props.filtering || groupOpen[id] !== false;
 
-const collectIds = (nodes: CollectionTreeNode[], into: number[] = []): number[] => {
-    nodes.forEach((node) => {
-        into.push(node.id);
-        collectIds(node.children, into);
-    });
+// Browse mode starts fully collapsed: only roots ship in the payload and each
+// subtree is fetched the first time its row opens, then cached on the node.
+const expandedIds = reactive(new Set<number>());
+const loadingIds = reactive(new Set<number>());
 
-    return into;
+const loadChildren = async (node: CollectionTreeNode): Promise<void> => {
+    loadingIds.add(node.id);
+
+    try {
+        const response = await fetch(node.children_url, { headers: { Accept: 'application/json' } });
+        const payload = (await response.json()) as { data: CollectionTreeNode[] };
+        node.children = payload.data;
+    } catch {
+        // Leave the node collapsed on failure so the next open retries.
+        expandedIds.delete(node.id);
+    } finally {
+        loadingIds.delete(node.id);
+    }
 };
 
-const expandedIds = reactive(new Set<number>(props.groups.flatMap((group) => collectIds(group.tree))));
-const closedIds = reactive(new Set<number>());
+const toggleRow = (node: CollectionTreeNode): void => {
+    if (expandedIds.has(node.id)) {
+        expandedIds.delete(node.id);
 
-watch(
-    () => props.groups,
-    (groups) => {
-        // New rows from a reload arrive expanded; collapsed state sticks for
-        // rows staff explicitly closed this visit.
-        groups.flatMap((group) => collectIds(group.tree)).forEach((id) => {
-            if (!closedIds.has(id)) {
-                expandedIds.add(id);
-            }
-        });
-    },
-);
+        return;
+    }
 
-const toggleRow = (id: number): void => {
-    if (expandedIds.has(id)) {
-        expandedIds.delete(id);
-        closedIds.add(id);
-    } else {
-        expandedIds.add(id);
-        closedIds.delete(id);
+    expandedIds.add(node.id);
+
+    if (node.children.length === 0 && node.descendants_count > 0) {
+        void loadChildren(node);
     }
 };
 
@@ -312,6 +310,7 @@ const groupHasVisibleRows = (group: CollectionGroupRow): boolean => group.tree.l
                                     :depth="0"
                                     :expanded-ids="expandedIds"
                                     :force-expanded="filtering"
+                                    :loading-ids="loadingIds"
                                     :actions="tableActions"
                                     @toggle="toggleRow"
                                 />

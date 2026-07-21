@@ -20,6 +20,7 @@ export interface CollectionTreeNode {
     descendants_count: number;
     matched: boolean;
     edit_url: string;
+    children_url: string;
     children: CollectionTreeNode[];
     // Extension-contributed row-action URLs land here under their action key.
     _actions?: Record<string, string>;
@@ -32,15 +33,21 @@ const props = defineProps<{
     // While filtering every node is force-expanded and the chevron disabled,
     // so matches are never hidden behind a collapsed parent.
     forceExpanded: boolean;
+    // Nodes whose children are currently being fetched (browse mode).
+    loadingIds: Set<number>;
     actions: RowAction[];
 }>();
 
-const emit = defineEmits<{ toggle: [id: number] }>();
+const emit = defineEmits<{ toggle: [node: CollectionTreeNode] }>();
 
 const { t } = useI18n();
 
-const hasChildren = computed(() => props.collection.children.length > 0);
+// Nested-set bounds tell us a node has children before they are fetched, so
+// the chevron shows even while the subtree is still unloaded.
+const hasChildren = computed(() => props.collection.descendants_count > 0 || props.collection.children.length > 0);
 const isOpen = computed(() => props.forceExpanded || props.expandedIds.has(props.collection.id));
+const isLoading = computed(() => props.loadingIds.has(props.collection.id));
+const childPad = computed(() => ({ paddingLeft: `${12 + (props.depth + 1) * 22 + 20}px` }));
 
 const statusTone = (status: string): 'sage' | 'warn' | 'archived' =>
     status === 'published' ? 'sage' : status === 'draft' ? 'warn' : 'archived';
@@ -62,7 +69,7 @@ const rowPad = computed(() => ({ paddingLeft: `${12 + props.depth * 22}px` }));
                     class="w-5 h-5 grid place-items-center rounded-sm text-ink-400 hover:text-ink-700 hover:bg-surface-2 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage/35"
                     :aria-label="isOpen ? t('collections.row_collapse') : t('collections.row_expand')"
                     :aria-expanded="isOpen"
-                    @click="emit('toggle', collection.id)"
+                    @click="emit('toggle', collection)"
                 >
                     <span :class="['inline-flex transition-transform duration-150', isOpen ? 'rotate-90' : '']">
                         <Icon name="chevRight" cls="sm" />
@@ -118,7 +125,17 @@ const rowPad = computed(() => ({ paddingLeft: `${12 + props.depth * 22}px` }));
             </div>
         </div>
 
-        <template v-if="hasChildren && isOpen">
+        <template v-if="isOpen">
+            <!-- Subtree loading: pulsing placeholder until children arrive -->
+            <div
+                v-if="isLoading && collection.children.length === 0"
+                :style="childPad"
+                class="flex items-center gap-2.5 py-2.5 pr-2 border-b border-line"
+            >
+                <div class="w-7 h-7 rounded-md bg-surface-2 animate-pulse shrink-0" />
+                <div class="h-3 w-40 rounded bg-surface-2 animate-pulse" />
+            </div>
+
             <CollectionTreeRow
                 v-for="child in collection.children"
                 :key="child.id"
@@ -126,8 +143,9 @@ const rowPad = computed(() => ({ paddingLeft: `${12 + props.depth * 22}px` }));
                 :depth="depth + 1"
                 :expanded-ids="expandedIds"
                 :force-expanded="forceExpanded"
+                :loading-ids="loadingIds"
                 :actions="actions"
-                @toggle="(id) => emit('toggle', id)"
+                @toggle="(node) => emit('toggle', node)"
             />
         </template>
     </div>

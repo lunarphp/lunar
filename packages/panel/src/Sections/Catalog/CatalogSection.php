@@ -14,6 +14,7 @@ use Lunar\Panel\Http\Controllers\Brands\BrandUrlController;
 use Lunar\Panel\Http\Controllers\Catalog\CollectionSearchController;
 use Lunar\Panel\Http\Controllers\Catalog\ProductOptionSearchController;
 use Lunar\Panel\Http\Controllers\Catalog\ProductSearchController;
+use Lunar\Panel\Http\Controllers\Collections\CollectionChildrenController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionCreateController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionEditController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionGroupController;
@@ -271,6 +272,8 @@ class CatalogSection extends Section
                 Route::post('/groups', [CollectionGroupController::class, 'store'])->name('groups.store');
                 Route::put('/groups/{collectionGroup}', [CollectionGroupController::class, 'update'])->name('groups.update');
                 Route::delete('/groups/{collectionGroup}', [CollectionGroupController::class, 'destroy'])->name('groups.destroy');
+
+                Route::get('/{collection}/children', [CollectionChildrenController::class, 'index'])->name('children');
 
                 Route::get('/{collection}/edit', [CollectionEditController::class, 'edit'])->name('edit');
                 Route::put('/{collection}', [CollectionEditController::class, 'update'])->name('update');
