@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <title inertia>{{ config('lunar.panel.name', 'Lunar') }}</title>
+        <title data-inertia>{{ config('lunar.panel.name', 'Lunar') }}</title>
 
         <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/lunar-panel/favicons/favicon.svg') }}" />
         <link rel="icon" type="image/x-icon" href="{{ asset('vendor/lunar-panel/favicons/favicon.ico') }}" sizes="any" />

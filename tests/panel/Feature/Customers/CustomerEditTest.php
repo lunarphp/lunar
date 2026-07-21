@@ -96,12 +96,15 @@ it('buckets placed order value into the order chart', function () {
 
     $this->get(route('panel.customers.edit', $customer))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('orderChart.range', '12m')
-            ->has('orderChart.buckets', 12)
-            ->where('orderChart.buckets.10.value', 100)
-            ->where('orderChart.buckets.10.display', '£100.00')
-            ->where('orderChart.buckets.11.value', 50)
-            ->where('orderChart.buckets.0.value', 0)
+            ->component('customers/Edit')
+            ->loadDeferredProps(fn (Assert $chart) => $chart
+                ->where('orderChart.range', '12m')
+                ->has('orderChart.buckets', 12)
+                ->where('orderChart.buckets.10.value', 100)
+                ->where('orderChart.buckets.10.display', '£100.00')
+                ->where('orderChart.buckets.11.value', 50)
+                ->where('orderChart.buckets.0.value', 0)
+            )
         );
 });
 
@@ -116,10 +119,13 @@ it('zooms the order chart out to yearly buckets', function () {
 
     $this->get(route('panel.customers.edit', ['customer' => $customer, 'chart_range' => '10y']))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('orderChart.range', '10y')
-            ->has('orderChart.buckets', 10)
-            ->where('orderChart.buckets.7.value', 200)
-            ->where('orderChart.buckets.9.value', 0)
+            ->component('customers/Edit')
+            ->loadDeferredProps(fn (Assert $chart) => $chart
+                ->where('orderChart.range', '10y')
+                ->has('orderChart.buckets', 10)
+                ->where('orderChart.buckets.7.value', 200)
+                ->where('orderChart.buckets.9.value', 0)
+            )
         );
 });
 
@@ -130,8 +136,11 @@ it('falls back to the default chart range for unknown values', function () {
 
     $this->get(route('panel.customers.edit', ['customer' => $customer, 'chart_range' => 'banana']))
         ->assertInertia(fn (Assert $page) => $page
-            ->where('orderChart.range', '12m')
-            ->has('orderChart.buckets', 12)
+            ->component('customers/Edit')
+            ->loadDeferredProps(fn (Assert $chart) => $chart
+                ->where('orderChart.range', '12m')
+                ->has('orderChart.buckets', 12)
+            )
         );
 });
 

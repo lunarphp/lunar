@@ -142,7 +142,10 @@ class CustomerEditController
             'activities' => $activities,
             'orders' => $orders,
             'stats' => $stats,
-            'orderChart' => $this->orderChart($request, $customer),
+            // Deferred: the heaviest query on the page (order value bucketed over
+            // up to 10 years). It loads in a follow-up request after first paint,
+            // and the range switcher reloads it the same way (only: ['orderChart']).
+            'orderChart' => Inertia::defer(fn () => $this->orderChart($request, $customer)),
             'draft' => $draft ? [
                 'data' => $draft->data,
                 'updated_at' => $draft->updated_at?->toJSON(),
