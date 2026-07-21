@@ -22,10 +22,16 @@ use Lunar\Panel\Http\Controllers\Collections\CollectionMoveController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionProductsController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionUrlController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
+use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeBulkStatusController;
+use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeCreateController;
+use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeEditController;
+use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeIndexController;
+use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeMediaController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Catalog\Tables\BrandsTableExtension;
 use Lunar\Panel\Sections\Catalog\Tables\CollectionsTableExtension;
+use Lunar\Panel\Sections\Catalog\Tables\ProductTypesTableExtension;
 use Lunar\Panel\Sections\Section;
 
 class CatalogSection extends Section
@@ -38,6 +44,8 @@ class CatalogSection extends Section
     public const BRANDS_PERMISSION = 'catalog:manage-products';
 
     public const COLLECTIONS_PERMISSION = 'catalog:manage-collections';
+
+    public const PRODUCT_TYPES_PERMISSION = 'catalog:manage-products';
 
     public function key(): string
     {
@@ -66,6 +74,13 @@ class CatalogSection extends Section
             route: 'panel.collections.index',
             permission: self::COLLECTIONS_PERMISSION,
         ));
+        $registry->addItem('catalog', new NavigationItem(
+            key: 'product-types',
+            label: __('panel::nav.product_types'),
+            icon: 'boxes',
+            route: 'panel.product-types.index',
+            permission: self::PRODUCT_TYPES_PERMISSION,
+        ));
     }
 
     /** @return array<string, class-string> */
@@ -74,6 +89,7 @@ class CatalogSection extends Section
         return [
             'brands.index' => BrandsTableExtension::class,
             'collections.index' => CollectionsTableExtension::class,
+            'product-types.index' => ProductTypesTableExtension::class,
         ];
     }
 
@@ -83,6 +99,7 @@ class CatalogSection extends Section
         return [
             BrandDraftResource::class,
             CollectionDraftResource::class,
+            ProductTypeDraftResource::class,
         ];
     }
 
@@ -118,6 +135,29 @@ class CatalogSection extends Section
                     Route::post('/{brand}/media/reorder', [BrandMediaController::class, 'reorder'])->name('media.reorder');
                     Route::put('/{brand}/media/{media}', [BrandMediaController::class, 'update'])->name('media.update');
                     Route::delete('/{brand}/media/{media}', [BrandMediaController::class, 'destroy'])->name('media.destroy');
+                });
+            });
+
+            Route::prefix('product-types')->name('panel.product-types.')->middleware('can:'.self::PRODUCT_TYPES_PERMISSION)->group(function (): void {
+                Route::get('/', [ProductTypeIndexController::class, 'index'])->name('index');
+                Route::get('/create', [ProductTypeCreateController::class, 'create'])->name('create');
+                Route::post('/', [ProductTypeCreateController::class, 'store'])->name('store');
+                Route::post('/bulk/status/{status}', [ProductTypeBulkStatusController::class, 'update'])
+                    ->whereIn('status', ['active', 'draft'])
+                    ->name('bulk-status');
+                Route::get('/{productType}/edit', [ProductTypeEditController::class, 'edit'])->name('edit');
+                Route::put('/{productType}', [ProductTypeEditController::class, 'update'])->name('update');
+                Route::delete('/{productType}', [ProductTypeEditController::class, 'destroy'])->name('destroy');
+
+                Route::patch('/{productType}/draft', [EditDraftController::class, 'update'])->name('draft.update');
+                Route::delete('/{productType}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');
+                Route::post('/{productType}/draft/commit', [EditDraftController::class, 'commit'])->name('draft.commit');
+
+                Route::scopeBindings()->group(function (): void {
+                    Route::post('/{productType}/media', [ProductTypeMediaController::class, 'store'])->name('media.store');
+                    Route::post('/{productType}/media/reorder', [ProductTypeMediaController::class, 'reorder'])->name('media.reorder');
+                    Route::put('/{productType}/media/{media}', [ProductTypeMediaController::class, 'update'])->name('media.update');
+                    Route::delete('/{productType}/media/{media}', [ProductTypeMediaController::class, 'destroy'])->name('media.destroy');
                 });
             });
 

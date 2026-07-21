@@ -17,6 +17,7 @@ return [
     'catalog' => 'Catalog',
     'brands' => 'Brands',
     'collections' => 'Collections',
+    'product_types' => 'Product types',
     'sales' => 'Sales',
     'customers' => 'Customers',
     'general' => 'General',

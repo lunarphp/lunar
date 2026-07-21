@@ -2,6 +2,7 @@
 
 namespace Lunar\Panel\Support;
 
+use Closure;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
@@ -27,16 +28,57 @@ class AttributeSchema
      */
     public function groups(Model $model): array
     {
-        return $this->attributes($model)
+        return $this->grouped(
+            $this->attributes($model),
+            'fields',
+            fn (Attribute $attribute) => $this->field($attribute),
+        );
+    }
+
+    /**
+     * Every attribute assignable to the given morph type, grouped for an
+     * attribute picker (the product type mapping UI): group header plus
+     * attribute rows, both in position order.
+     *
+     * @return array<int, array{handle: string, name: string, attributes: array<int, array<string, mixed>>}>
+     */
+    public function pickerGroups(string $morphType): array
+    {
+        $attributes = Attribute::query()
+            ->whereHas('models', fn ($query) => $query->where('model_type', $morphType))
+            ->with('group')
+            ->orderBy('position')
+            ->get();
+
+        return $this->grouped($attributes, 'attributes', fn (Attribute $attribute) => [
+            'id' => $attribute->id,
+            'name' => $attribute->name,
+            'handle' => $attribute->handle,
+            'type' => $attribute->type,
+            'required' => (bool) $attribute->required,
+        ]);
+    }
+
+    /**
+     * Group attribute rows by their AttributeGroup: group header plus the
+     * mapped items under $itemsKey, both in position order.
+     *
+     * @param  Collection<int, Attribute>  $attributes
+     * @param  Closure(Attribute): array<string, mixed>  $mapItem
+     * @return array<int, array<string, mixed>>
+     */
+    protected function grouped(Collection $attributes, string $itemsKey, Closure $mapItem): array
+    {
+        return $attributes
             ->groupBy(fn (Attribute $attribute) => $attribute->attribute_group_id ?? 0)
-            ->map(function ($attributes) {
+            ->map(function ($attributes) use ($itemsKey, $mapItem) {
                 $group = $attributes->first()->group;
 
                 return [
                     'handle' => $group?->handle ?? 'other',
                     'name' => $group?->name ?? __('panel::attributes.ungrouped'),
                     'position' => $group?->position ?? PHP_INT_MAX,
-                    'fields' => $attributes->map(fn (Attribute $attribute) => $this->field($attribute))->values()->all(),
+                    $itemsKey => $attributes->map($mapItem)->values()->all(),
                 ];
             })
             ->sortBy('position')

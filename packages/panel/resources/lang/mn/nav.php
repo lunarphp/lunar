@@ -17,6 +17,7 @@ return [
     'catalog' => 'Catalog',
     'brands' => 'Brands',
     'collections' => 'Цуглуулгууд',
+    'product_types' => 'Product types',
     'sales' => 'Борлуулалт',
     'customers' => 'Харилцагчид',
     'general' => 'Ерөнхий',
