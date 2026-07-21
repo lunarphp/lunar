@@ -155,6 +155,15 @@ class ExampleSection extends Section
             component: 'example-addon::InfoBanner',
             props: ['message' => 'This banner was injected by the example add-on via a slot.'],
         ));
+
+        // The canonical slot example (spec 0049/0057): the product edit page
+        // deliberately ships no SEO section — an add-on injects one into the
+        // content-adjacent zone between the content cluster and the variants
+        // block. The zone passes the page's product to the component.
+        $registry->add(new Slot(
+            zone: 'products.edit:content:after',
+            component: 'example-addon::SeoCard',
+        ));
     }
 
     public function tableExtensions(): array

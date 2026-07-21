@@ -39,4 +39,10 @@ return [
     'confirm' => 'Потвърди',
     'back_to_main' => 'Обратно към основното меню',
     'address' => 'Адрес',
+
+    // Products section additions (spec 0057).
+    'add' => 'Add',
+    'apply' => 'Apply',
+    'loading' => 'Loading',
+    'select_all' => 'Select all',
 ];

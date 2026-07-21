@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Alternar tema',
     'toggle_sidebar' => 'Alternar barra lateral',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Coleções',
     'product_types' => 'Product types',

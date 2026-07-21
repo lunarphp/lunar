@@ -77,3 +77,4 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Optional order-line purchasables & shipping-option de-morph (spec 0045)
 - `public_id` (ULID) external addressing (spec 0046)
 - Rename `product_variants.purchasable` to `selling_policy` (spec 0048)
+- Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)

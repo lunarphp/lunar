@@ -15,6 +15,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lunar\Core\Enums\StockMovementType;
+use Lunar\Core\Exceptions\ProductActionException;
 use Lunar\Core\Facades\DB;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Location;
@@ -354,102 +355,121 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
     {
         return Action::make('saveVariants')
             ->action(function () {
-                DB::beginTransaction();
+                try {
+                    $this->saveVariants();
+                } catch (ProductActionException $exception) {
+                    DB::rollBack();
 
-                $this->storeConfiguredOptions();
-
-                if (! count($this->variants)) {
-                    $variant = $this->record->variants()->first();
-                    $variant->values()->detach();
-                    $this->record->productOptions()->exclusive()->each(
-                        fn (ProductOption $productOption) => $productOption->delete()
-                    );
-
-                    $this->record->productOptions()->shared()->detach();
-                    $this->record->variants()
-                        ->where('id', '!=', $variant->id)
-                        ->get()
-                        ->each(
-                            fn (ProductVariant $variant) => $variant->delete()
-                        );
-
-                    DB::commit();
-
-                    Notification::make()->title(
-                        __('lunar-filament::productoption.widgets.product-options.notifications.save-variants.success.title')
-                    )->success()->send();
-
-                    return;
+                    Notification::make()
+                        ->warning()
+                        ->body($exception->getMessage())
+                        ->send();
                 }
-
-                foreach ($this->variants as $variantIndex => $variantData) {
-                    $variant = new ProductVariant([
-                        'product_id' => $this->record->id,
-                    ]);
-                    $basePrice = null;
-
-                    if (! empty($variantData['variant_id'])) {
-                        $variant = ProductVariant::find($variantData['variant_id']);
-                        $basePrice = $variant->basePrices->first();
-                    }
-
-                    if (! empty($variantData['copied_id'])) {
-                        $copiedVariant = ProductVariant::find(
-                            $variantData['copied_id']
-                        );
-
-                        $variant = $copiedVariant->replicate();
-                        $variant->save();
-
-                        $basePrice = $copiedVariant->basePrices->first()->replicate();
-                        $basePrice->priceable_id = $variant->id;
-                    }
-
-                    $variant->sku = $variantData['sku'];
-                    $variant->save();
-
-                    // Stock is ledger-derived now — reconcile on_hand at the default
-                    // location with a movement rather than writing the column.
-                    $stockDelta = (int) ($variantData['stock'] ?? 0) - $variant->stock_on_hand;
-
-                    if ($stockDelta !== 0) {
-                        $variant->adjustStock(Location::getDefault(), $stockDelta, StockMovementType::Adjustment);
-                    }
-
-                    $basePrice->price = (int) bcmul($variantData['price'], $basePrice->currency->factor);
-                    $basePrice->save();
-
-                    $optionsValues = $this->mapOptionValuesToIds($variantData['values']);
-
-                    $variant->values()->sync($optionsValues);
-
-                    $this->variants[$variantIndex]['variant_id'] = $variant->id;
-                }
-
-                $productOptions = collect($this->configuredOptions)
-                    ->mapWithKeys(function ($option) {
-                        return [
-                            $option['id'] => [
-                                'position' => $option['position'],
-                            ],
-                        ];
-                    });
-
-                $this->record->productOptions()->sync($productOptions);
-
-                $variantIds = collect($this->variants)->pluck('variant_id');
-
-                $this->record->variants()->whereNotIn('id', $variantIds)
-                    ->get()
-                    ->each(
-                        fn ($variant) => $variant->delete()
-                    );
-                DB::commit();
-
-                Notification::make()->title(
-                    __('lunar-filament::productoption.widgets.product-options.notifications.save-variants.success.title')
-                )->success()->send();
             });
+    }
+
+    /**
+     * Persist the configured options and variant table. Variant removals run
+     * through the model's order-history guard — the caller surfaces the
+     * domain exception as a notification.
+     */
+    protected function saveVariants(): void
+    {
+        DB::beginTransaction();
+
+        $this->storeConfiguredOptions();
+
+        if (! count($this->variants)) {
+            $variant = $this->record->variants()->first();
+            $variant->values()->detach();
+            $this->record->productOptions()->exclusive()->each(
+                fn (ProductOption $productOption) => $productOption->delete()
+            );
+
+            $this->record->productOptions()->shared()->detach();
+            $this->record->variants()
+                ->where('id', '!=', $variant->id)
+                ->get()
+                ->each(
+                    fn (ProductVariant $variant) => $variant->delete()
+                );
+
+            DB::commit();
+
+            Notification::make()->title(
+                __('lunar-filament::productoption.widgets.product-options.notifications.save-variants.success.title')
+            )->success()->send();
+
+            return;
+        }
+
+        foreach ($this->variants as $variantIndex => $variantData) {
+            $variant = new ProductVariant([
+                'product_id' => $this->record->id,
+            ]);
+            $basePrice = null;
+
+            if (! empty($variantData['variant_id'])) {
+                $variant = ProductVariant::find($variantData['variant_id']);
+                $basePrice = $variant->basePrices->first();
+            }
+
+            if (! empty($variantData['copied_id'])) {
+                $copiedVariant = ProductVariant::find(
+                    $variantData['copied_id']
+                );
+
+                $variant = $copiedVariant->replicate();
+                $variant->save();
+
+                $basePrice = $copiedVariant->basePrices->first()->replicate();
+                $basePrice->priceable_id = $variant->id;
+            }
+
+            $variant->sku = $variantData['sku'];
+            $variant->save();
+
+            // Stock is ledger-derived now — reconcile on_hand at the default
+            // location with a movement rather than writing the column.
+            $stockDelta = (int) ($variantData['stock'] ?? 0) - $variant->stock_on_hand;
+
+            if ($stockDelta !== 0) {
+                $variant->adjustStock(Location::getDefault(), $stockDelta, StockMovementType::Adjustment);
+            }
+
+            $basePrice->price = (int) bcmul($variantData['price'], $basePrice->currency->factor);
+            $basePrice->save();
+
+            $optionsValues = $this->mapOptionValuesToIds($variantData['values']);
+
+            $variant->values()->sync($optionsValues);
+
+            $this->variants[$variantIndex]['variant_id'] = $variant->id;
+        }
+
+        $productOptions = collect($this->configuredOptions)
+            ->mapWithKeys(function ($option) {
+                return [
+                    $option['id'] => [
+                        'position' => $option['position'],
+                    ],
+                ];
+            });
+
+        $this->record->productOptions()->sync($productOptions);
+
+        $variantIds = collect($this->variants)->pluck('variant_id');
+
+        $this->record->variants()->whereNotIn('id', $variantIds)
+            ->get()
+            ->each(
+                fn ($variant) => $variant->delete()
+            );
+        DB::commit();
+
+        Notification::make()->title(
+            __('lunar-filament::productoption.widgets.product-options.notifications.save-variants.success.title')
+        )->success()->send();
     }
 
     public function getVariantLink($variantId)

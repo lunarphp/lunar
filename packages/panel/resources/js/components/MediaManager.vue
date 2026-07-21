@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
@@ -14,6 +14,16 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+
+// Upload ceiling shared once via the panel prop; the same config value backs
+// the server-side validation rule, so hint and limit can't drift apart.
+const maxUploadKb = computed(
+    () => ((usePage().props.panel as { media_max_kb?: number } | undefined)?.media_max_kb ?? 8192),
+);
+const maxUploadMb = computed(() => {
+    const mb = maxUploadKb.value / 1024;
+    return Number.isInteger(mb) ? String(mb) : mb.toFixed(1);
+});
 
 // Local order mirrors the prop; drag reordering mutates it optimistically and
 // persists on drop, so tiles don't snap back while the request runs.
@@ -211,7 +221,7 @@ const focalStyle = (item: MediaItem): Record<string, string> => ({
                     </span>
                 </button>
             </div>
-            <div class="text-[11.5px] text-ink-500 mt-2.5">{{ t('media.file_hint') }}</div>
+            <div class="text-[11.5px] text-ink-500 mt-2.5">{{ t('media.file_hint', { size: maxUploadMb }) }}</div>
         </template>
 
         <div v-if="uploadError" class="mt-2 text-[11px] text-danger">{{ uploadError }}</div>

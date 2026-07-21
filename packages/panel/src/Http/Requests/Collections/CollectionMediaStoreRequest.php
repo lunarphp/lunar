@@ -13,7 +13,7 @@ class CollectionMediaStoreRequest extends FormRequest
     {
         return [
             'files' => ['required', 'array', 'min:1'],
-            'files.*' => ['file', 'image', 'max:8192'],
+            'files.*' => ['file', 'image', 'max:'.config('lunar.media.max_upload_kb', 8192)],
         ];
     }
 }

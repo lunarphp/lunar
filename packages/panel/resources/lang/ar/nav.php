@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'تبديل المظهر',
     'toggle_sidebar' => 'تبديل الشريط الجانبي',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'التشكيلات',
     'product_types' => 'Product types',

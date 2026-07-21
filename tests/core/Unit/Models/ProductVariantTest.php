@@ -265,3 +265,23 @@ test('reports unpurchasable when the parent product is archived', function () {
 
     expect($variant->fresh()->isPurchasable())->toBeFalse();
 });
+
+test('reports unpurchasable while disabled, regardless of product status', function () {
+    $product = Product::factory()->create(['status' => 'published']);
+    $variant = ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    expect($variant->enabled)->toBeTrue()
+        ->and($variant->isPurchasable())->toBeTrue();
+
+    $variant->update(['enabled' => false]);
+
+    expect($variant->fresh()->isPurchasable())->toBeFalse();
+});
+
+test('scopeEnabled filters out disabled variants', function () {
+    $product = Product::factory()->create();
+    $enabled = ProductVariant::factory()->create(['product_id' => $product->id]);
+    ProductVariant::factory()->create(['product_id' => $product->id, 'enabled' => false]);
+
+    expect($product->variants()->enabled()->pluck('id')->all())->toBe([$enabled->id]);
+});

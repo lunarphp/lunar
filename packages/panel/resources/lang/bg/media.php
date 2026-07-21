@@ -10,7 +10,7 @@ return [
     'empty_body' => 'Drop images here or upload from your device. The first image becomes the hero.',
     'add_image' => 'Add image',
     'hero' => 'Hero',
-    'file_hint' => 'JPG, PNG or WebP. Max 8 MB each.',
+    'file_hint' => 'JPG, PNG or WebP. Max {size} MB each.',
     'edit_image' => 'Edit image',
     'edit_description' => 'Set alt text, an optional caption, and a focal point so cropped renditions keep the part of the image that matters.',
     'field_name' => 'Name',

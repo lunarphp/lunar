@@ -87,4 +87,39 @@ describe('AvailabilityCard', () => {
         expect(values['customer_group:5'].visible).toBe(false);
         expect(wrapper.text()).toContain('availability.hidden');
     });
+
+    it('hides the purchasable controls unless the card opts in', async () => {
+        const wrapper = mountCard(defaults());
+
+        const groupHeaders = wrapper.findAll('button[aria-expanded]');
+        await groupHeaders[1].trigger('click');
+
+        expect(wrapper.find('button[aria-label="availability.make_view_only"]').exists()).toBe(false);
+    });
+
+    it('toggles the customer-group purchasable flag when opted in', async () => {
+        const values = defaults();
+        values['customer_group:5'].purchasable = true;
+
+        const wrapper = mount(AvailabilityCard, {
+            props: {
+                channels: [],
+                customerGroups: [{ id: 5, name: 'Retail', field: 'customer_group:5' }],
+                values: reactive(values),
+                withPurchasable: true,
+            },
+            attachTo: document.body,
+            global: {
+                stubs: { Tooltip: { template: '<span><slot /></span>' } },
+            },
+        });
+
+        const groupHeaders = wrapper.findAll('button[aria-expanded]');
+        await groupHeaders[1].trigger('click');
+
+        await wrapper.find('button[aria-label="availability.make_view_only"]').trigger('click');
+
+        expect(values['customer_group:5'].purchasable).toBe(false);
+        expect(wrapper.text()).toContain('availability.view_only');
+    });
 });

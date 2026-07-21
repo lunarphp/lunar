@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Comută tema',
     'toggle_sidebar' => 'Comută bara laterală',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Colecții',
     'product_types' => 'Product types',

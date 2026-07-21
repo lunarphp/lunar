@@ -28,4 +28,9 @@ return [
     'make_hidden' => 'Gezinmeden gizle',
     'make_visible' => 'Gezinmede göster',
     'hidden_hint' => 'Doğrudan bağlantıyla erişilebilir ancak gezinmede görünmez.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
 ];

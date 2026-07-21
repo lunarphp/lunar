@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'تغییر تم',
     'toggle_sidebar' => 'تغییر نوار کناری',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'مجموعه‌ها',
     'product_types' => 'Product types',

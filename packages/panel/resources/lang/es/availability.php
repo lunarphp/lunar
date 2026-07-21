@@ -28,4 +28,9 @@ return [
     'make_hidden' => 'Ocultar de la navegación',
     'make_visible' => 'Mostrar en la navegación',
     'hidden_hint' => 'Accesible por enlace directo pero no aparece en la navegación.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
 ];

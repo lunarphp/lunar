@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Design umschalten',
     'toggle_sidebar' => 'Seitenleiste umschalten',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Kollektionen',
     'product_types' => 'Product types',

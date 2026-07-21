@@ -1,6 +1,7 @@
 import WidgetsIndexPage from './pages/Widgets/Index.vue';
 import SettingsIndexPage from './pages/Settings/Index.vue';
 import InfoBannerComponent from './components/InfoBanner.vue';
+import SeoCardComponent from './components/SeoCard.vue';
 
 // Register eagerly. The panel's app.ts publishes window.LunarPanel and is emitted
 // before any add-on script, so it is always present here. Pages in particular MUST
@@ -15,4 +16,5 @@ window.LunarPanel.registerPages({
 
 window.LunarPanel.registerComponents('example-addon', {
     InfoBanner: InfoBannerComponent,
+    SeoCard: SeoCardComponent,
 });

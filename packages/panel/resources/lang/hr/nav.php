@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Promijeni temu',
     'toggle_sidebar' => 'Promijeni bočnu traku',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Kolekcije',
     'product_types' => 'Product types',

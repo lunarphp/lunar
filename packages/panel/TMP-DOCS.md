@@ -217,6 +217,34 @@ Two npm packages are published per release for add-on authors:
 (the IIFE build preset). Inside this monorepo the root npm workspace resolves
 both to local source.
 
+### The canonical slot walkthrough: an SEO card on the product edit page
+
+The product edit page deliberately ships no SEO section — it is the reference
+example of what an add-on injects via a slot (specs 0049/0057). The page
+exposes named zones at every meaningful seam:
+
+- `products.edit:main:before` / `products.edit:main:after`
+- `products.edit:content:after` — after the Basics/Media/Attributes cluster,
+  before the variants block (where a content-adjacent card like SEO belongs)
+- `products.edit:variants:after` — after the options/variants cluster
+- `products.edit:sidebar:before` / `products.edit:sidebar:after`
+
+(The variant edit page carries `products.variants.edit:main:before|after` and
+`:sidebar:after`.) Zones receive the page's record as a prop — `:product` here
+— so the injected component can read what it decorates. The example add-on
+ships the whole flow (`SeoCard.vue`, registered in `addon.ts`, injected from
+`ExampleSection::slots()`):
+
+```php
+$registry->add(new Slot(
+    zone: 'products.edit:content:after',
+    component: 'example-addon::SeoCard',
+));
+```
+
+A real SEO add-on would persist its fields through its own registered routes;
+the example card keeps them local to stay a pure slot demonstration.
+
 ### Shipping add-on assets
 
 The add-on registers its compiled build with

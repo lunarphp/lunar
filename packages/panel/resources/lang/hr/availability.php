@@ -28,4 +28,9 @@ return [
     'make_hidden' => 'Sakrij iz navigacije',
     'make_visible' => 'Prikaži u navigaciji',
     'hidden_hint' => 'Dostupno izravnom poveznicom, ali se ne prikazuje u navigaciji.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
 ];

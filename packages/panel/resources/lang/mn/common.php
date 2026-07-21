@@ -39,4 +39,10 @@ return [
     'confirm' => 'Батлах',
     'back_to_main' => 'Үндсэн цэс рүү буцах',
     'address' => 'Хаяг',
+
+    // Products section additions (spec 0057).
+    'add' => 'Add',
+    'apply' => 'Apply',
+    'loading' => 'Loading',
+    'select_all' => 'Select all',
 ];

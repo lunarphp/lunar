@@ -28,4 +28,9 @@ return [
     'make_hidden' => 'إخفاء عن التنقّل',
     'make_visible' => 'إظهار في التنقّل',
     'hidden_hint' => 'يمكن الوصول إليه برابط مباشر لكنه لا يظهر في التنقّل.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
 ];

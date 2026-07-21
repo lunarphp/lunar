@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'title' => 'Pricing',
+    'description' => 'Base price plus optional customer-group prices and tiered pricing for bulk buyers. Add a comparison price to show an RRP on the storefront.',
+    'base_price' => 'Base price',
+    'base_price_per_currency' => '- one row per enabled currency',
+    'amount' => 'Price',
+    'compare_at' => 'List price',
+    'compare_at_hint' => 'shown as an RRP strikethrough',
+    'currency' => 'Currency',
+    'group_title' => 'Customer-group pricing',
+    'group_hint' => 'overrides the base price for selected customer groups',
+    'group_column' => 'Customer group',
+    'group_empty' => 'Add a price override for a specific customer group - wholesale, staff, VIP.',
+    'group_add' => 'Add group price',
+    'tier_title' => 'Tier pricing',
+    'tier_hint' => 'a lower price kicks in at the minimum quantity',
+    'tier_empty' => 'Reward bulk buyers with a lower price once they hit a minimum quantity.',
+    'tier_add' => 'Add tier',
+    'tier_min_qty' => 'Min qty',
+    'tier_min_prefix' => '≥',
+    'tier_any_customer' => 'Any customer',
+    'remove_row' => 'Remove price row',
+    'flash_created' => 'Price added.',
+    'flash_updated' => 'Price updated.',
+    'flash_deleted' => 'Price removed.',
+];

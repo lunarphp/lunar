@@ -22,6 +22,21 @@ class AvailabilitySchema
     public const CUSTOMER_GROUP_PREFIX = 'customer_group:';
 
     /**
+     * Whether customer-group rows carry the product pivot's extra
+     * `purchasable` flag. Off for collections, whose pivot has no such
+     * column.
+     */
+    protected bool $withPurchasable = false;
+
+    public function withPurchasable(): static
+    {
+        $schema = clone $this;
+        $schema->withPurchasable = true;
+
+        return $schema;
+    }
+
+    /**
      * Every draftable availability field key.
      *
      * @return array<int, string>
@@ -59,12 +74,18 @@ class AvailabilitySchema
         foreach (CustomerGroup::query()->get(['id']) as $group) {
             $pivot = $groupPivots->get($group->id)?->pivot;
 
-            $values[static::CUSTOMER_GROUP_PREFIX.$group->id] = $this->normalizeValue([
+            $value = [
                 'enabled' => (bool) ($pivot->enabled ?? false),
                 'visible' => (bool) ($pivot->visible ?? true),
                 'starts_at' => $pivot->starts_at ?? null,
                 'ends_at' => $pivot->ends_at ?? null,
-            ]);
+            ];
+
+            if ($this->withPurchasable) {
+                $value['purchasable'] = (bool) ($pivot->purchasable ?? true);
+            }
+
+            $values[static::CUSTOMER_GROUP_PREFIX.$group->id] = $this->normalizeValue($value);
         }
 
         return $values;
@@ -110,6 +131,10 @@ class AvailabilitySchema
 
             if (str_starts_with($field, static::CUSTOMER_GROUP_PREFIX)) {
                 $rules["{$field}.visible"] = ['boolean'];
+
+                if ($this->withPurchasable) {
+                    $rules["{$field}.purchasable"] = ['boolean'];
+                }
             }
         }
 
@@ -153,6 +178,10 @@ class AvailabilitySchema
 
         if (array_key_exists('visible', $value)) {
             $normalized['visible'] = (bool) $value['visible'];
+        }
+
+        if ($this->withPurchasable && array_key_exists('purchasable', $value)) {
+            $normalized['purchasable'] = (bool) $value['purchasable'];
         }
 
         ksort($normalized);
@@ -207,12 +236,16 @@ class AvailabilitySchema
             $value = $this->normalizeValue((array) $value);
 
             if (str_starts_with($key, static::CHANNEL_PREFIX)) {
-                // The channelables pivot has no visible column; drop a stray
-                // key rather than letting it reach the sync.
-                unset($value['visible']);
+                // The channelables pivot has no visible or purchasable column;
+                // drop stray keys rather than letting them reach the sync.
+                unset($value['visible'], $value['purchasable']);
 
                 $channels[(int) substr($key, strlen(static::CHANNEL_PREFIX))] = $value;
             } else {
+                if (! $this->withPurchasable) {
+                    unset($value['purchasable']);
+                }
+
                 $customerGroups[(int) substr($key, strlen(static::CUSTOMER_GROUP_PREFIX))] = $value;
             }
         }

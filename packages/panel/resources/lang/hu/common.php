@@ -39,4 +39,10 @@ return [
     'confirm' => 'Megerősítés',
     'back_to_main' => 'Vissza a főmenübe',
     'address' => 'Cím',
+
+    // Products section additions (spec 0057).
+    'add' => 'Add',
+    'apply' => 'Apply',
+    'loading' => 'Loading',
+    'select_all' => 'Select all',
 ];
