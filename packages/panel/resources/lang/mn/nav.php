@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Загвар солих',
     'toggle_sidebar' => 'Хажуугийн самбар солих',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Цуглуулгууд',
     'product_types' => 'Product types',

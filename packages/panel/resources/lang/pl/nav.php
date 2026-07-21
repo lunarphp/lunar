@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Przełącz motyw',
     'toggle_sidebar' => 'Przełącz panel boczny',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Kolekcje',
     'product_types' => 'Product types',

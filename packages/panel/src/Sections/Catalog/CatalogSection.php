@@ -22,6 +22,13 @@ use Lunar\Panel\Http\Controllers\Collections\CollectionMoveController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionProductsController;
 use Lunar\Panel\Http\Controllers\Collections\CollectionUrlController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
+use Lunar\Panel\Http\Controllers\Products\ProductAssociationController;
+use Lunar\Panel\Http\Controllers\Products\ProductBulkStatusController;
+use Lunar\Panel\Http\Controllers\Products\ProductCreateController;
+use Lunar\Panel\Http\Controllers\Products\ProductEditController;
+use Lunar\Panel\Http\Controllers\Products\ProductIndexController;
+use Lunar\Panel\Http\Controllers\Products\ProductMediaController;
+use Lunar\Panel\Http\Controllers\Products\ProductUrlController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeBulkStatusController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeCreateController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeEditController;
@@ -31,6 +38,7 @@ use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Catalog\Tables\BrandsTableExtension;
 use Lunar\Panel\Sections\Catalog\Tables\CollectionsTableExtension;
+use Lunar\Panel\Sections\Catalog\Tables\ProductsTableExtension;
 use Lunar\Panel\Sections\Catalog\Tables\ProductTypesTableExtension;
 use Lunar\Panel\Sections\Section;
 
@@ -41,6 +49,8 @@ class CatalogSection extends Section
      * and the navigation items, so what a user can see and what they can reach
      * stay in lockstep. Same handles as the Filament admin's resources.
      */
+    public const PRODUCTS_PERMISSION = 'catalog:manage-products';
+
     public const BRANDS_PERMISSION = 'catalog:manage-products';
 
     public const COLLECTIONS_PERMISSION = 'catalog:manage-collections';
@@ -60,6 +70,34 @@ class CatalogSection extends Section
     public function navigation(NavigationRegistry $registry): void
     {
         $registry->group('catalog', __('panel::nav.catalog'));
+        // Products leads the group and carries Product types as a contextual
+        // child (rendered while a products/product-types page is active) —
+        // the design prototype's sub-nav; types are schema-for-products, not
+        // a peer resource.
+        $registry->addItem('catalog', new NavigationItem(
+            key: 'products',
+            label: __('panel::nav.products'),
+            icon: 'box',
+            route: 'panel.products.index',
+            permission: self::PRODUCTS_PERMISSION,
+            children: [
+                new NavigationItem(
+                    key: 'all-products',
+                    label: __('panel::nav.all_products'),
+                    route: 'panel.products.index',
+                    permission: self::PRODUCTS_PERMISSION,
+                    priority: 10,
+                    exact: true,
+                ),
+                new NavigationItem(
+                    key: 'product-types',
+                    label: __('panel::nav.product_types'),
+                    route: 'panel.product-types.index',
+                    permission: self::PRODUCT_TYPES_PERMISSION,
+                    priority: 20,
+                ),
+            ],
+        ));
         $registry->addItem('catalog', new NavigationItem(
             key: 'brands',
             label: __('panel::nav.brands'),
@@ -74,19 +112,13 @@ class CatalogSection extends Section
             route: 'panel.collections.index',
             permission: self::COLLECTIONS_PERMISSION,
         ));
-        $registry->addItem('catalog', new NavigationItem(
-            key: 'product-types',
-            label: __('panel::nav.product_types'),
-            icon: 'boxes',
-            route: 'panel.product-types.index',
-            permission: self::PRODUCT_TYPES_PERMISSION,
-        ));
     }
 
     /** @return array<string, class-string> */
     public function tableExtensions(): array
     {
         return [
+            'products.index' => ProductsTableExtension::class,
             'brands.index' => BrandsTableExtension::class,
             'collections.index' => CollectionsTableExtension::class,
             'product-types.index' => ProductTypesTableExtension::class,
@@ -99,7 +131,18 @@ class CatalogSection extends Section
         return [
             BrandDraftResource::class,
             CollectionDraftResource::class,
+            ProductDraftResource::class,
             ProductTypeDraftResource::class,
+        ];
+    }
+
+    /** @return array<string, array<int, class-string>> */
+    public function pageActions(): array
+    {
+        return [
+            'products.edit' => [
+                DuplicateProductPageAction::class,
+            ],
         ];
     }
 
@@ -135,6 +178,37 @@ class CatalogSection extends Section
                     Route::post('/{brand}/media/reorder', [BrandMediaController::class, 'reorder'])->name('media.reorder');
                     Route::put('/{brand}/media/{media}', [BrandMediaController::class, 'update'])->name('media.update');
                     Route::delete('/{brand}/media/{media}', [BrandMediaController::class, 'destroy'])->name('media.destroy');
+                });
+            });
+
+            Route::prefix('products')->name('panel.products.')->middleware('can:'.self::PRODUCTS_PERMISSION)->group(function (): void {
+                Route::get('/', [ProductIndexController::class, 'index'])->name('index');
+                Route::get('/create', [ProductCreateController::class, 'create'])->name('create');
+                Route::post('/', [ProductCreateController::class, 'store'])->name('store');
+                Route::post('/bulk/status/{status}', [ProductBulkStatusController::class, 'update'])
+                    ->whereIn('status', ['published', 'draft'])
+                    ->name('bulk-status');
+                Route::get('/{product}/edit', [ProductEditController::class, 'edit'])->name('edit');
+                Route::put('/{product}', [ProductEditController::class, 'update'])->name('update');
+                Route::delete('/{product}', [ProductEditController::class, 'destroy'])->name('destroy');
+                Route::post('/{product}/duplicate', [ProductEditController::class, 'duplicate'])->name('duplicate');
+
+                Route::patch('/{product}/draft', [EditDraftController::class, 'update'])->name('draft.update');
+                Route::delete('/{product}/draft', [EditDraftController::class, 'destroy'])->name('draft.destroy');
+                Route::post('/{product}/draft/commit', [EditDraftController::class, 'commit'])->name('draft.commit');
+
+                Route::scopeBindings()->group(function (): void {
+                    Route::post('/{product}/urls', [ProductUrlController::class, 'store'])->name('urls.store');
+                    Route::put('/{product}/urls/{url}', [ProductUrlController::class, 'update'])->name('urls.update');
+                    Route::delete('/{product}/urls/{url}', [ProductUrlController::class, 'destroy'])->name('urls.destroy');
+
+                    Route::post('/{product}/media', [ProductMediaController::class, 'store'])->name('media.store');
+                    Route::post('/{product}/media/reorder', [ProductMediaController::class, 'reorder'])->name('media.reorder');
+                    Route::put('/{product}/media/{media}', [ProductMediaController::class, 'update'])->name('media.update');
+                    Route::delete('/{product}/media/{media}', [ProductMediaController::class, 'destroy'])->name('media.destroy');
+
+                    Route::post('/{product}/associations', [ProductAssociationController::class, 'store'])->name('associations.store');
+                    Route::delete('/{product}/associations/{association}', [ProductAssociationController::class, 'destroy'])->name('associations.destroy');
                 });
             });
 

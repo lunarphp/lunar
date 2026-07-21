@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Toggle theme',
     'toggle_sidebar' => 'Toggle sidebar',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Collections',
     'product_types' => 'Product types',

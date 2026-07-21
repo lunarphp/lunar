@@ -28,4 +28,9 @@ return [
     'make_hidden' => 'Verbergen in navigatie',
     'make_visible' => 'Tonen in navigatie',
     'hidden_hint' => 'Bereikbaar via een directe link maar niet zichtbaar in de navigatie.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
 ];

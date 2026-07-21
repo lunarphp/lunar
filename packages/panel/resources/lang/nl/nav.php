@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Thema wisselen',
     'toggle_sidebar' => 'Zijbalk wisselen',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Collecties',
     'product_types' => 'Product types',

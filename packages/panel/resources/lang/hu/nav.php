@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Téma váltása',
     'toggle_sidebar' => 'Oldalsáv váltása',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Kollekciók',
     'product_types' => 'Product types',

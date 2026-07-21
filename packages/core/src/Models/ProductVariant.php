@@ -110,6 +110,19 @@ class ProductVariant extends Base implements HasThumbnailImage, Purchasable, Tra
         return $this->belongsTo(Product::class);
     }
 
+    /**
+     * A variant's applicable attributes are the ones its product's type maps
+     * onto variants (spec 0056), not the global variant-morph set.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, Attribute>
+     */
+    public function mappedAttributes(): \Illuminate\Database\Eloquent\Collection
+    {
+        $this->loadMissing('product.productType');
+
+        return $this->product->productType->variantAttributes()->orderBy('position')->get();
+    }
+
     public function cacheInvalidationTargets(): iterable
     {
         $this->loadMissing('product');

@@ -131,6 +131,24 @@ class AttributeSchema
     }
 
     /**
+     * Every draft field key assignable to a morph type, regardless of any
+     * per-record mapping — the allow-list shape for resources (products)
+     * whose applicable attribute set depends on the record.
+     *
+     * @return array<int, string>
+     */
+    public function fieldsForMorph(string $morphType): array
+    {
+        return Attribute::query()
+            ->whereHas('models', fn ($query) => $query->where('model_type', $morphType))
+            ->orderBy('position')
+            ->get()
+            ->map(fn (Attribute $attribute) => static::PREFIX.$attribute->handle)
+            ->values()
+            ->all();
+    }
+
+    /**
      * Human labels keyed by draft field key.
      *
      * @return array<string, string>
@@ -274,6 +292,14 @@ class AttributeSchema
     protected function attributes(Model $model): Collection
     {
         // mappedAttributes() returns a loaded, position-ordered collection.
-        return $model->mappedAttributes()->load('group');
+        // A product's mapping carries both morphs (its type's product AND
+        // variant attributes), so the set is filtered down to the attributes
+        // applicable to this model's own morph type.
+        $morph = $model->getMorphClass();
+
+        return $model->mappedAttributes()
+            ->load(['group', 'models'])
+            ->filter(fn (Attribute $attribute) => $attribute->models->contains('model_type', $morph))
+            ->values();
     }
 }

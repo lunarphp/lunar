@@ -15,6 +15,8 @@ return [
     'toggle_theme' => 'Temayı değiştir',
     'toggle_sidebar' => 'Kenar çubuğunu değiştir',
     'catalog' => 'Catalog',
+    'products' => 'Products',
+    'all_products' => 'All products',
     'brands' => 'Brands',
     'collections' => 'Koleksiyonlar',
     'product_types' => 'Product types',

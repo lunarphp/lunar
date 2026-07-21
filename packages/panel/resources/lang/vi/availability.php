@@ -28,4 +28,9 @@ return [
     'make_hidden' => 'Ẩn khỏi điều hướng',
     'make_visible' => 'Hiện trong điều hướng',
     'hidden_hint' => 'Truy cập được bằng liên kết trực tiếp nhưng không hiển thị trong điều hướng.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
 ];

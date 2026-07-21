@@ -19,6 +19,7 @@ export interface AvailabilityRow {
 export interface AvailabilityValue {
     enabled: boolean;
     visible?: boolean;
+    purchasable?: boolean;
     starts_at: string | null;
     ends_at: string | null;
 }
@@ -29,6 +30,9 @@ const props = defineProps<{
     // The edit page's draft values object; rows mutate their own key so
     // autosave, dirty tracking and conflicts ride the shared draft.
     values: Record<string, unknown>;
+    // Products expose the customer-group pivot's extra purchasable flag;
+    // collections (whose pivot has no such column) leave this off.
+    withPurchasable?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -66,6 +70,12 @@ const toggleVisible = (row: AvailabilityRow): void => {
     const value = valueFor(row);
 
     write(row, { ...value, visible: !(value.visible ?? true) });
+};
+
+const togglePurchasable = (row: AvailabilityRow): void => {
+    const value = valueFor(row);
+
+    write(row, { ...value, purchasable: !(value.purchasable ?? true) });
 };
 
 // Schedule dialog: start date (the "turns on" moment) plus an optional end.
@@ -316,6 +326,31 @@ const calendarPillClass = (row: AvailabilityRow): string =>
                         >
                             <Icon name="eyeOff" cls="!w-[10px] !h-[10px]" />
                             <span>{{ t('availability.hidden') }}</span>
+                        </button>
+                    </Tooltip>
+
+                    <!-- View-only flag: enabled but not purchasable (products only) -->
+                    <Tooltip v-if="withPurchasable && valueFor(row).enabled && valueFor(row).purchasable === false" :text="t('availability.make_purchasable')">
+                        <button
+                            type="button"
+                            class="inline-flex items-center gap-[3px] rounded-full text-[10.5px] font-medium leading-none cursor-pointer shrink-0 bg-warn-soft text-warn-ink border border-warn-border pt-[2px] pb-[2px] pl-[6px] pr-[7px]"
+                            :aria-label="t('availability.make_purchasable')"
+                            @click="togglePurchasable(row)"
+                        >
+                            <Icon name="cart" cls="!w-[10px] !h-[10px]" />
+                            <span>{{ t('availability.view_only') }}</span>
+                        </button>
+                    </Tooltip>
+
+                    <!-- Ghost-cart (hover only) to make a purchasable group view-only -->
+                    <Tooltip v-if="withPurchasable && valueFor(row).enabled && valueFor(row).purchasable !== false" :text="t('availability.make_view_only')">
+                        <button
+                            type="button"
+                            class="hidden group-hover/row:grid place-items-center w-[18px] h-[18px] rounded-full bg-transparent cursor-pointer shrink-0 p-0 border border-dashed border-ink-300 text-ink-400"
+                            :aria-label="t('availability.make_view_only')"
+                            @click="togglePurchasable(row)"
+                        >
+                            <Icon name="cart" cls="!w-[9px] !h-[9px]" />
                         </button>
                     </Tooltip>
 

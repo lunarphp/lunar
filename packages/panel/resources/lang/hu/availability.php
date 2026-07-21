@@ -28,4 +28,9 @@ return [
     'make_hidden' => 'Elrejtés a navigációból',
     'make_visible' => 'Megjelenítés a navigációban',
     'hidden_hint' => 'Közvetlen hivatkozással elérhető, de a navigációban nem jelenik meg.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
 ];
