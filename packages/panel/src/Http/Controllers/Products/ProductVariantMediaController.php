@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductVariant;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * A variant's images are an ordered selection from its product's media pool
@@ -22,7 +23,7 @@ class ProductVariantMediaController
             'ids' => ['present', 'array'],
             'ids.*' => [
                 'integer',
-                Rule::exists('media', 'id')
+                Rule::exists((new Media)->getTable(), 'id')
                     ->where('model_type', $product->getMorphClass())
                     ->where('model_id', $product->id),
             ],

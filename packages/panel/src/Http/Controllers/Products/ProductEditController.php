@@ -48,11 +48,27 @@ class ProductEditController
     ): Response {
         $availabilitySchema = $availabilitySchema->withPurchasable();
 
-        $product->load(['variants.values.option', 'variants.prices', 'productType:id,name', 'brand:id,name', 'tags']);
+        $product->load([
+            'variants.values.option',
+            'variants.prices',
+            // Eager-loaded so the per-variant getThumbnailImage() below reads
+            // from memory rather than lazy-loading images (and the product
+            // inverse) once per row.
+            'variants.images',
+            'productOptions.values',
+            'productType:id,name',
+            'brand:id,name',
+            'tags',
+        ]);
+
+        // Hydrate the variant to product inverse so getThumbnail()'s
+        // loadMissing('product') is a no-op instead of a per-variant query.
+        $product->variants->each->setRelation('product', $product);
 
         // Simple shape: one variant and no attached options — its fields are
-        // edited inline on this page rather than on a variant page.
-        $isSimple = $product->variants->count() === 1 && $product->productOptions()->count() === 0;
+        // edited inline on this page rather than on a variant page. Both counts
+        // read the eager-loaded relations rather than re-querying.
+        $isSimple = $product->variants->count() === 1 && $product->productOptions->count() === 0;
         $soleVariant = $isSimple ? $product->variants->first() : null;
 
         $staff = $panel->user();
@@ -118,28 +134,28 @@ class ProductEditController
 
         $orderedVariantIds = $this->orderedVariantIds($product);
 
-        $attachedOptions = $product->productOptions()->with('values')->get()
-            ->map(function ($option) use ($product) {
-                $usedValueIds = $product->variants
-                    ->flatMap(fn (ProductVariant $variant) => $variant->values->pluck('id'))
-                    ->unique();
+        $usedValueIds = $product->variants
+            ->flatMap(fn (ProductVariant $variant) => $variant->values->pluck('id'))
+            ->unique();
 
-                return [
-                    'id' => $option->id,
-                    'name' => $option->translate('name'),
-                    'shared' => (bool) $option->shared,
-                    'values' => $option->values->sortBy('position')->map(fn ($value) => [
-                        'id' => $value->id,
-                        'name' => $value->translate('name'),
-                    ])->values(),
-                    // The persisted selection is whatever the generated
-                    // variants actually use; pending edits live client-side.
-                    'selected_value_ids' => $option->values
-                        ->filter(fn ($value) => $usedValueIds->contains($value->id))
-                        ->pluck('id')
-                        ->values(),
-                ];
-            })->values();
+        // Reads the eager-loaded productOptions.values relation rather than
+        // re-querying it per render.
+        $attachedOptions = $product->productOptions
+            ->map(fn ($option) => [
+                'id' => $option->id,
+                'name' => $option->translate('name'),
+                'shared' => (bool) $option->shared,
+                'values' => $option->values->sortBy('position')->map(fn ($value) => [
+                    'id' => $value->id,
+                    'name' => $value->translate('name'),
+                ])->values(),
+                // The persisted selection is whatever the generated variants
+                // actually use; pending edits live client-side.
+                'selected_value_ids' => $option->values
+                    ->filter(fn ($value) => $usedValueIds->contains($value->id))
+                    ->pluck('id')
+                    ->values(),
+            ])->values();
 
         return Inertia::render('products/Edit', [
             'shape' => $isSimple ? 'simple' : 'multi',
