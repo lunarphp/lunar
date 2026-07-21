@@ -70,15 +70,16 @@ class EditDraftController
 
     /**
      * The bound draftable record and its registered resource definition: the
-     * first route-bound Eloquent model, 404 when nothing is bound or no
-     * definition covers it.
+     * deepest route-bound Eloquent model (on nested routes like a product's
+     * variant, the child is the draft target), 404 when nothing is bound or
+     * no definition covers it.
      *
      * @return array{0: Model, 1: DraftableResource}
      */
     protected function draftable(Request $request, PanelManager $panel): array
     {
         $record = collect($request->route()?->parameters() ?? [])
-            ->first(fn (mixed $parameter): bool => $parameter instanceof Model);
+            ->last(fn (mixed $parameter): bool => $parameter instanceof Model);
 
         abort_unless($record instanceof Model, 404);
 

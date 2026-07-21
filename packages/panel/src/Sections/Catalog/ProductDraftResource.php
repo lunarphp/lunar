@@ -4,14 +4,24 @@ namespace Lunar\Panel\Sections\Catalog;
 
 use Illuminate\Database\Eloquent\Model;
 use Lunar\Core\Contracts\Actions\Products\UpdatesProduct;
+use Lunar\Core\Contracts\Actions\Products\UpdatesProductVariant;
 use Lunar\Core\Models\Product;
+use Lunar\Core\Models\ProductVariant;
 use Lunar\Panel\Drafts\DraftableResource;
 use Lunar\Panel\Http\Requests\Products\ProductRequest;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\VariantFields;
 
 class ProductDraftResource extends DraftableResource
 {
+    /**
+     * Simple-shape products (one variant, no options) edit their sole
+     * variant inline, so its fields ride this draft under this prefix and
+     * keep a single save cluster.
+     */
+    public const VARIANT_PREFIX = 'variant:';
+
     /** @var array<string, string>|null */
     protected ?array $attributeTokens = null;
 
@@ -19,7 +29,9 @@ class ProductDraftResource extends DraftableResource
 
     public function __construct(
         protected UpdatesProduct $updatesProduct,
+        protected UpdatesProductVariant $updatesProductVariant,
         protected AttributeSchema $attributeSchema,
+        protected VariantFields $variantFields,
         AvailabilitySchema $availabilitySchema,
     ) {
         // Product customer-group rows carry the pivot's extra purchasable flag.
@@ -46,6 +58,10 @@ class ProductDraftResource extends DraftableResource
             // depends on the record's product type, which rules() enforces.
             ...$this->attributeSchema->fieldsForMorph(Product::morphName()),
             ...$this->availabilitySchema->fields(),
+            ...array_map(
+                fn (string $field) => self::VARIANT_PREFIX.$field,
+                $this->variantFields->fields(),
+            ),
         ];
     }
 
@@ -65,7 +81,34 @@ class ProductDraftResource extends DraftableResource
                 ->map(fn (mixed $value, string $key) => $this->normalizeAttributeValue($value, $this->attributeTokens($record)[$key] ?? null))
                 ->all(),
             ...$this->availabilitySchema->values($record),
+            ...$this->soleVariantValues($record),
         ];
+    }
+
+    /**
+     * The sole variant's prefixed field values on simple-shape products;
+     * multi-variant products edit variants on their own pages instead.
+     *
+     * @return array<string, mixed>
+     */
+    protected function soleVariantValues(Product $record): array
+    {
+        $variant = $this->soleVariant($record);
+
+        if (! $variant) {
+            return [];
+        }
+
+        return collect($this->variantFields->values($variant))
+            ->mapWithKeys(fn (mixed $value, string $key) => [self::VARIANT_PREFIX.$key => $value])
+            ->all();
+    }
+
+    protected function soleVariant(Product $record): ?ProductVariant
+    {
+        $variants = $record->variants()->limit(2)->get();
+
+        return $variants->count() === 1 ? $variants->first() : null;
     }
 
     public function normalize(array $data): array
@@ -93,6 +136,14 @@ class ProductDraftResource extends DraftableResource
                 || str_starts_with($key, AvailabilitySchema::CUSTOMER_GROUP_PREFIX)) {
                 $data[$key] = $this->availabilitySchema->normalizeValue((array) $value);
             }
+
+            if (str_starts_with($key, self::VARIANT_PREFIX)) {
+                $field = substr($key, strlen(self::VARIANT_PREFIX));
+
+                $data[$key] = str_starts_with($field, AttributeSchema::PREFIX)
+                    ? $this->normalizeAttributeValue($value)
+                    : $this->variantFields->normalizeValue($field, $value);
+            }
         }
 
         return $data;
@@ -101,10 +152,23 @@ class ProductDraftResource extends DraftableResource
     public function rules(Model $record): array
     {
         /** @var Product $record */
+        $variant = $this->soleVariant($record);
+
+        // The variant surface only exists on simple-shape products; with
+        // multiple variants every variant key is refused outright.
+        $variantRules = $variant
+            ? collect($this->variantFields->rules($variant))
+                ->mapWithKeys(fn (array $rules, string $field) => [self::VARIANT_PREFIX.$field => $rules])
+                ->all()
+            : collect($this->variantFields->fields())
+                ->mapWithKeys(fn (string $field) => [self::VARIANT_PREFIX.$field => ['prohibited']])
+                ->all();
+
         return [
             ...ProductRequest::rulesFor($record),
             ...$this->attributeSchema->rules($record),
             ...$this->availabilitySchema->rules(),
+            ...$variantRules,
         ];
     }
 
@@ -116,6 +180,16 @@ class ProductDraftResource extends DraftableResource
         $availability = $this->availabilitySchema->extract($record, $values);
 
         $values = $availability['attributes'];
+
+        // Simple-shape variant fields split off and commit through the
+        // variant action on the sole variant.
+        $variantValues = collect($values)
+            ->filter(fn (mixed $value, string $key) => str_starts_with($key, self::VARIANT_PREFIX))
+            ->mapWithKeys(fn (mixed $value, string $key) => [substr($key, strlen(self::VARIANT_PREFIX)) => $value]);
+
+        $values = collect($values)
+            ->reject(fn (mixed $value, string $key) => str_starts_with($key, self::VARIANT_PREFIX))
+            ->all();
 
         $tags = array_key_exists('tags', $values)
             ? array_map('strval', (array) $values['tags'])
@@ -152,6 +226,13 @@ class ProductDraftResource extends DraftableResource
             $availability['channels'],
             $availability['customerGroups'],
         );
+
+        if ($variantValues->isNotEmpty() && ($variant = $this->soleVariant($record))) {
+            $this->updatesProductVariant->execute(
+                $variant,
+                $this->variantFields->commitPayload($variant, $variantValues->all()),
+            );
+        }
     }
 
     public function labels(): array
@@ -166,6 +247,9 @@ class ProductDraftResource extends DraftableResource
             'tags' => 'panel::products.field_tags',
             'collection_ids' => 'panel::products.side_collections',
             ...$this->availabilitySchema->labels(),
+            ...collect($this->variantFields->labels())
+                ->mapWithKeys(fn (string $label, string $field) => [self::VARIANT_PREFIX.$field => $label])
+                ->all(),
         ];
     }
 

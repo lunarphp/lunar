@@ -5,6 +5,11 @@ import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
 import AttributeFields, { type AttributeGroup } from '../../components/AttributeFields.vue';
 import AvailabilityCard, { type AvailabilityRow } from '../../components/AvailabilityCard.vue';
+import IdentifiersCard from '../../components/IdentifiersCard.vue';
+import InventoryCard, { type StockAggregate, type StockLevelRow } from '../../components/InventoryCard.vue';
+import PricingEditor, { type CurrencyOption, type PriceRow } from '../../components/PricingEditor.vue';
+import ShippingCard from '../../components/ShippingCard.vue';
+import TaxCard from '../../components/TaxCard.vue';
 import Breadcrumbs, { type BreadcrumbItem } from '../../components/Breadcrumbs.vue';
 import Button from '../../components/Button.vue';
 import CollectionPicker, { type CollectionOption } from '../../components/CollectionPicker.vue';
@@ -68,6 +73,19 @@ const props = defineProps<{
         created_at: string;
         updated_at: string;
     };
+    shape: 'simple' | 'multi';
+    variant: {
+        id: number;
+        prices: PriceRow[];
+        stock: { aggregate: StockAggregate; levels: StockLevelRow[] };
+        urls: { pricesStore: string; stockAdjust: string };
+    } | null;
+    variantValues: Record<string, unknown>;
+    variantAttributeGroups: AttributeGroup[];
+    currencies: CurrencyOption[];
+    customerGroups: { id: number; name: string }[];
+    taxClasses: { id: number; name: string }[];
+    measurements: { length: string[]; weight: string[] };
     draft: DraftState | null;
     languages: LanguageOption[];
     media: MediaItem[];
@@ -119,9 +137,11 @@ const draftForm = useEditDraft({
         tags: [...props.product.tags],
         collection_ids: props.collections.map((collection) => collection.id),
         // Mapped attribute values ride the same draft under attribute:{handle}
-        // keys; availability rows under channel:{id} / customer_group:{id}.
+        // keys; availability rows under channel:{id} / customer_group:{id};
+        // on the simple shape the sole variant's fields under variant:{field}.
         ...props.attributeValues,
         ...props.availabilityValues,
+        ...props.variantValues,
     },
     draft: props.draft,
     urls: { draft: props.urls.draft, commit: props.urls.draftCommit },
@@ -334,6 +354,51 @@ const timelineEvents = computed(() =>
                         <!-- Content-adjacent injection point (e.g. an SEO card)
                              between the content cluster and the variants block. -->
                         <PageZone region="content" position="after" :product="product" />
+
+                        <!-- Simple shape: the sole variant's fields edit inline,
+                             riding the product draft under variant:{field} keys. -->
+                        <template v-if="shape === 'simple' && variant">
+                            <PricingEditor
+                                :prices="variant.prices"
+                                :currencies="currencies"
+                                :customer-groups="customerGroups"
+                                :store-url="variant.urls.pricesStore"
+                            />
+                            <InventoryCard
+                                :values="details"
+                                field-prefix="variant:"
+                                :stock="variant.stock"
+                                :adjust-url="variant.urls.stockAdjust"
+                                :errors="detailsErrors"
+                            />
+                            <ShippingCard
+                                :values="details"
+                                field-prefix="variant:"
+                                :measurements="measurements"
+                                :errors="detailsErrors"
+                            />
+                            <IdentifiersCard
+                                :values="details"
+                                field-prefix="variant:"
+                                :errors="detailsErrors"
+                            />
+                            <TaxCard
+                                :values="details"
+                                field-prefix="variant:"
+                                :tax-classes="taxClasses"
+                                :errors="detailsErrors"
+                            />
+                            <AttributeFields
+                                v-if="variantAttributeGroups.length"
+                                :groups="variantAttributeGroups"
+                                :values="details"
+                                :errors="detailsErrors"
+                                :languages="languages"
+                                :description="t('products.variant_attributes_description')"
+                            />
+                        </template>
+
+                        <PageZone region="variants" position="after" :product="product" />
 
                         <Section :title="t('products.section_associations')">
                             <template #desc>{{ t('products.section_associations_description') }}</template>

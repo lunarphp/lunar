@@ -126,6 +126,44 @@ it('commits drafted availability rows including the purchasable flag', function 
         ->and((bool) $pivot->purchasable)->toBeFalse();
 });
 
+it('commits simple-shape variant fields through the variant action', function () {
+    $variant = $this->product->variants()->sole();
+
+    $this->patchJson(route('panel.products.draft.update', $this->product), [
+        'data' => [
+            'variant:sku' => 'WID-NEW',
+            'variant:shippable' => false,
+            'variant:min_quantity' => 4,
+            'variant:selling_policy' => 'in_stock',
+        ],
+    ])->assertOk();
+
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => [],
+        'rebase' => [],
+    ])->assertOk();
+
+    $variant->refresh();
+
+    expect($variant->sku)->toBe('WID-NEW')
+        ->and($variant->shippable)->toBeFalse()
+        ->and($variant->min_quantity)->toBe(4)
+        ->and($variant->selling_policy->value)->toBe('in_stock');
+});
+
+it('refuses variant fields while the product has several variants', function () {
+    ProductVariant::factory()->create(['product_id' => $this->product->id]);
+
+    $this->patchJson(route('panel.products.draft.update', $this->product), [
+        'data' => ['variant:sku' => 'NOPE'],
+    ])->assertOk();
+
+    $this->postJson(route('panel.products.draft.commit', $this->product), [
+        'data' => [],
+        'rebase' => [],
+    ])->assertUnprocessable();
+});
+
 it('detects a field conflict on commit', function () {
     $this->patchJson(route('panel.products.draft.update', $this->product), [
         'data' => ['name' => ['en' => 'Mine']],

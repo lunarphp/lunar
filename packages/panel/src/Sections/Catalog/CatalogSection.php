@@ -28,7 +28,9 @@ use Lunar\Panel\Http\Controllers\Products\ProductCreateController;
 use Lunar\Panel\Http\Controllers\Products\ProductEditController;
 use Lunar\Panel\Http\Controllers\Products\ProductIndexController;
 use Lunar\Panel\Http\Controllers\Products\ProductMediaController;
+use Lunar\Panel\Http\Controllers\Products\ProductPriceController;
 use Lunar\Panel\Http\Controllers\Products\ProductUrlController;
+use Lunar\Panel\Http\Controllers\Products\ProductVariantStockController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeBulkStatusController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeCreateController;
 use Lunar\Panel\Http\Controllers\ProductTypes\ProductTypeEditController;
@@ -209,6 +211,12 @@ class CatalogSection extends Section
 
                     Route::post('/{product}/associations', [ProductAssociationController::class, 'store'])->name('associations.store');
                     Route::delete('/{product}/associations/{association}', [ProductAssociationController::class, 'destroy'])->name('associations.destroy');
+
+                    Route::post('/{product}/variants/{productVariant}/prices', [ProductPriceController::class, 'store'])->name('variants.prices.store');
+                    Route::put('/{product}/variants/{productVariant}/prices/{price}', [ProductPriceController::class, 'update'])->name('variants.prices.update');
+                    Route::delete('/{product}/variants/{productVariant}/prices/{price}', [ProductPriceController::class, 'destroy'])->name('variants.prices.destroy');
+
+                    Route::post('/{product}/variants/{productVariant}/stock', [ProductVariantStockController::class, 'update'])->name('variants.stock.adjust');
                 });
             });
 

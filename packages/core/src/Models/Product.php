@@ -141,6 +141,17 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
         return $this->hasMany(ProductVariant::class);
     }
 
+    /**
+     * Scoped route bindings guess a `productVariants` relation from the
+     * `{productVariant}` parameter; the relation is named `variants`.
+     */
+    protected function childRouteBindingRelationshipName($childType): string
+    {
+        return $childType === 'productVariant'
+            ? 'variants'
+            : parent::childRouteBindingRelationshipName($childType);
+    }
+
     public function variant(): HasOne
     {
         return $this->hasOne(ProductVariant::class);

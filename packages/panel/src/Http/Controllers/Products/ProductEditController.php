@@ -9,19 +9,29 @@ use Lunar\Core\Contracts\Actions\Products\DeletesProduct;
 use Lunar\Core\Contracts\Actions\Products\DuplicatesProduct;
 use Lunar\Core\Contracts\Actions\Products\UpdatesProduct;
 use Lunar\Core\Exceptions\ProductActionException;
+use Lunar\Core\Facades\Converter;
 use Lunar\Core\Models\Brand;
 use Lunar\Core\Models\Collection;
+use Lunar\Core\Models\Currency;
+use Lunar\Core\Models\CustomerGroup;
 use Lunar\Core\Models\Language;
+use Lunar\Core\Models\Location;
+use Lunar\Core\Models\Price;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\ProductAssociation;
 use Lunar\Core\Models\ProductType;
+use Lunar\Core\Models\ProductVariant;
+use Lunar\Core\Models\StockLevel;
+use Lunar\Core\Models\TaxClass;
 use Lunar\Core\Models\Url;
 use Lunar\Core\States\ProductType\Active;
 use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Products\ProductRequest;
 use Lunar\Panel\PanelManager;
+use Lunar\Panel\Sections\Catalog\ProductDraftResource;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\VariantFields;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -33,10 +43,16 @@ class ProductEditController
         DraftManager $drafts,
         AttributeSchema $attributeSchema,
         AvailabilitySchema $availabilitySchema,
+        VariantFields $variantFields,
     ): Response {
         $availabilitySchema = $availabilitySchema->withPurchasable();
 
         $product->load(['variants.values.option', 'productType:id,name', 'brand:id,name', 'tags']);
+
+        // Simple shape: one variant and no attached options — its fields are
+        // edited inline on this page rather than on a variant page.
+        $isSimple = $product->variants->count() === 1 && $product->productOptions()->count() === 0;
+        $soleVariant = $isSimple ? $product->variants->first() : null;
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($product, $staff) : null;
@@ -95,7 +111,28 @@ class ProductEditController
                 'destroy_url' => route('panel.products.associations.destroy', [$product, $association]),
             ])->values());
 
+        $measurements = Converter::getMeasurements();
+
         return Inertia::render('products/Edit', [
+            'shape' => $isSimple ? 'simple' : 'multi',
+            'variant' => $soleVariant ? $this->variantPayload($product, $soleVariant) : null,
+            'variantValues' => $soleVariant
+                ? collect($variantFields->values($soleVariant))
+                    ->mapWithKeys(fn (mixed $value, string $key) => [ProductDraftResource::VARIANT_PREFIX.$key => $value])
+                    ->all()
+                : (object) [],
+            'variantAttributeGroups' => $soleVariant
+                ? $this->prefixedGroups($attributeSchema->groups($soleVariant))
+                : [],
+            'currencies' => Currency::query()->where('enabled', true)
+                ->orderByDesc('default')->orderBy('code')
+                ->get(['id', 'code', 'decimal_places', 'default']),
+            'customerGroups' => CustomerGroup::query()->orderBy('name')->get(['id', 'name']),
+            'taxClasses' => TaxClass::query()->orderBy('name')->get(['id', 'name']),
+            'measurements' => [
+                'length' => array_keys($measurements['length'] ?? []),
+                'weight' => array_keys($measurements['weight'] ?? []),
+            ],
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name?->all() ?: (object) [],
@@ -165,6 +202,83 @@ class ProductEditController
                 'productsSearch' => route('panel.catalog.products.search'),
             ],
         ]);
+    }
+
+    /**
+     * The sole variant's sub-resource payload for the simple shape: price
+     * rows, per-location stock, and its endpoint map. Field values travel
+     * separately as prefixed draft values.
+     *
+     * @return array<string, mixed>
+     */
+    protected function variantPayload(Product $product, ProductVariant $variant): array
+    {
+        $levels = $variant->stockLevels()->get()->keyBy('location_id');
+
+        return [
+            'id' => $variant->id,
+            'prices' => $variant->prices()->orderBy('min_quantity')->orderBy('id')->get()
+                ->map(fn (Price $price) => [
+                    'id' => $price->id,
+                    'currency_id' => $price->currency_id,
+                    'customer_group_id' => $price->customer_group_id,
+                    'min_quantity' => $price->min_quantity,
+                    'price' => $price->price,
+                    'list_price' => $price->list_price,
+                    'update_url' => route('panel.products.variants.prices.update', [$product, $variant, $price]),
+                    'destroy_url' => route('panel.products.variants.prices.destroy', [$product, $variant, $price]),
+                ])->values(),
+            'stock' => [
+                'aggregate' => [
+                    'on_hand' => $variant->stock_on_hand,
+                    'incoming' => $variant->stock_incoming,
+                    'committed' => $variant->stock_committed,
+                    'reserved' => $variant->stock_reserved,
+                    'unavailable' => $variant->stock_unavailable,
+                    'available' => $variant->stock_available,
+                ],
+                'levels' => Location::query()->orderByDesc('default')->orderBy('name')->get()
+                    ->map(function (Location $location) use ($levels) {
+                        /** @var ?StockLevel $level */
+                        $level = $levels->get($location->id);
+
+                        return [
+                            'location_id' => $location->id,
+                            'location_name' => $location->name,
+                            'default' => (bool) $location->default,
+                            'on_hand' => (int) ($level?->on_hand ?? 0),
+                            'incoming' => (int) ($level?->incoming ?? 0),
+                            'committed' => (int) ($level?->committed ?? 0),
+                            'unavailable' => (int) ($level?->unavailable ?? 0),
+                        ];
+                    })->values(),
+            ],
+            'urls' => [
+                'pricesStore' => route('panel.products.variants.prices.store', [$product, $variant]),
+                'stockAdjust' => route('panel.products.variants.stock.adjust', [$product, $variant]),
+            ],
+        ];
+    }
+
+    /**
+     * Attribute groups whose field keys carry the simple-shape variant
+     * prefix, so AttributeFields reads and writes the product draft's
+     * variant:attribute:{handle} keys untouched.
+     *
+     * @param  array<int, array<string, mixed>>  $groups
+     * @return array<int, array<string, mixed>>
+     */
+    protected function prefixedGroups(array $groups): array
+    {
+        return array_map(function (array $group): array {
+            $group['fields'] = array_map(function (array $field): array {
+                $field['key'] = ProductDraftResource::VARIANT_PREFIX.$field['key'];
+
+                return $field;
+            }, $group['fields']);
+
+            return $group;
+        }, $groups);
     }
 
     public function update(ProductRequest $request, Product $product, UpdatesProduct $updatesProduct): RedirectResponse

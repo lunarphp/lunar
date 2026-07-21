@@ -46,6 +46,29 @@ it('renders the edit page with product, availability and option payloads', funct
         );
 });
 
+it('serves the simple shape with the sole variant payload', function () {
+    $this->get(route('panel.products.edit', $this->product))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('shape', 'simple')
+            ->where('variant.id', $this->variant->id)
+            ->where('variantValues.variant:sku', 'WID-1')
+            ->has('variant.stock.levels')
+            ->has('currencies')
+            ->has('taxClasses')
+            ->has('measurements.length')
+        );
+});
+
+it('serves the multi shape without a sole variant payload', function () {
+    ProductVariant::factory()->create(['product_id' => $this->product->id]);
+
+    $this->get(route('panel.products.edit', $this->product))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('shape', 'multi')
+            ->where('variant', null)
+        );
+});
+
 it('keeps a drafted product type selectable on its own products', function () {
     $this->product->productType->update(['status' => 'draft']);
 
