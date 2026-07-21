@@ -19,8 +19,14 @@ export function createPageResolver(
             // Auto-apply the shell layout so add-on pages get the sidebar chrome
             // without wrapping it. First-party pages wrap their own layout in the
             // template, so this only touches add-on pages. `??=` leaves an add-on
-            // that set its own persistent layout alone.
-            addonPage.layout ??= runtime.getLayout('default');
+            // that set its own persistent layout alone. v3 tightened `layout`'s
+            // type from a bare `Component` to `LayoutCallbackReturn`, so narrow the
+            // registry's `Component | undefined` return once it is known present.
+            const defaultLayout = runtime.getLayout('default');
+
+            if (defaultLayout) {
+                addonPage.layout ??= defaultLayout as DefineComponent;
+            }
 
             return addonPage;
         }

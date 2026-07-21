@@ -430,6 +430,7 @@ const timelineEvents = computed(() =>
                             :items="media"
                             :store-url="urls.mediaStore"
                             :reorder-url="urls.mediaReorder"
+                            optimistic-key="media"
                         />
 
                         <AttributeFields

@@ -11,6 +11,10 @@ const props = defineProps<{
     items: MediaItem[];
     storeUrl: string;
     reorderUrl: string;
+    // Page-prop key holding this list (e.g. "media"). When set, a drop persists
+    // with an optimistic patch on that prop so the new order is authoritative
+    // while the request runs and rolls back automatically if it fails.
+    optimisticKey?: string;
 }>();
 
 const { t } = useI18n();
@@ -108,9 +112,21 @@ const onTileDragEnd = (): void => {
 
     const ids = ordered.value.map((item) => item.id);
 
-    if (ids.join(',') !== props.items.map((item) => item.id).join(',')) {
-        router.post(props.reorderUrl, { ids }, { preserveScroll: true });
+    if (ids.join(',') === props.items.map((item) => item.id).join(',')) {
+        return;
     }
+
+    // Snapshot the dropped order so the optimistic patch reflects exactly what
+    // the user sees; the watch on `props.items` re-syncs `ordered` on both the
+    // optimistic apply and an automatic rollback if the request fails.
+    const reordered = [...ordered.value];
+
+    router.post(props.reorderUrl, { ids }, {
+        preserveScroll: true,
+        ...(props.optimisticKey
+            ? { optimistic: () => ({ [props.optimisticKey as string]: reordered }) }
+            : {}),
+    });
 };
 
 const editing = ref<MediaItem | null>(null);

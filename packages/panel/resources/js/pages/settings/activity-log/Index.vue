@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, usePoll } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import BulkActionsToolbar, { type BulkAction } from '../../../components/BulkActionsToolbar.vue';
 import DataTable from '../../../components/DataTable.vue';
@@ -97,6 +97,11 @@ const reload = (): void => {
 
 watch([subjectType, event], reload);
 watch(extensionFilterValues, reload);
+
+// Live view: re-fetch only the paginated activities every 15s so new entries
+// surface without a manual refresh. Inertia suspends polling while the tab is
+// hidden and reloads preserve scroll/state and the current URL's filters/page.
+usePoll(15000, { only: ['activities'] });
 
 const eventTone = (row: ActivityRow): 'sage' | 'archived' | 'danger' => {
     if (row.event === 'created') return 'sage';

@@ -59,7 +59,7 @@ function childCls(child: NavItemShape) {
 
 <template>
     <Tooltip :text="collapsed ? item.label : ''">
-        <Link :href="item.url ?? '#'" :class="itemCls" @click="closeDrawer">
+        <Link :href="item.url ?? '#'" :prefetch="!!item.url" :class="itemCls" @click="closeDrawer">
             <Icon v-if="item.icon" :name="item.icon" />
             <span v-if="!collapsed" class="truncate">{{ item.label }}</span>
             <span
@@ -74,6 +74,7 @@ function childCls(child: NavItemShape) {
             v-for="child in item.children"
             :key="child.key"
             :href="child.url ?? '#'"
+            :prefetch="!!child.url"
             :class="childCls(child)"
             @click="closeDrawer"
         >{{ child.label }}</Link>

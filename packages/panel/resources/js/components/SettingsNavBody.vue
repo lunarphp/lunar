@@ -36,7 +36,7 @@ const backCls = computed(() => [
 
 <template>
     <Tooltip :text="collapsed ? t('common.back_to_main') : ''">
-        <Link :href="backToMainUrl" :class="backCls" @click="closeDrawer">
+        <Link :href="backToMainUrl" prefetch :class="backCls" @click="closeDrawer">
             <Icon name="arrowLeft" /> <span v-if="!collapsed">{{ t('common.back_to_main') }}</span>
         </Link>
     </Tooltip>

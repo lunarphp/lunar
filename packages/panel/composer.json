@@ -13,7 +13,7 @@
     "require": {
         "lunarphp/core": "self.version",
         "bacon/bacon-qr-code": "^3.0",
-        "inertiajs/inertia-laravel": "^2.0",
+        "inertiajs/inertia-laravel": "^3.0",
         "pragmarx/google2fa": "^9.0"
     },
     "extra": {

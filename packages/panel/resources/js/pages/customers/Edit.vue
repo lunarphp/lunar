@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { Deferred, router, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import Button from '../../components/Button.vue';
 import AddressCard from '../../components/AddressCard.vue';
@@ -106,7 +106,8 @@ const props = defineProps<{
         avgOrder: string | null;
         latestOrderAt: string | null;
     };
-    orderChart: {
+    // Deferred prop: absent on first paint, delivered by a follow-up request.
+    orderChart?: {
         range: string;
         buckets: ChartPoint[];
     };
@@ -483,7 +484,7 @@ const submitNotes = (): void => {
 
 // Order-value chart: the range switcher partial-reloads only the chart prop;
 // while data is in flight the previous render holds at reduced opacity.
-const chartRange = ref(props.orderChart.range);
+const chartRange = ref(props.orderChart?.range ?? '12m');
 const chartLoading = ref(false);
 
 const chartRangeOptions = computed<FilterOption[]>(() => [
@@ -506,7 +507,7 @@ const onChartRangeChange = (): void => {
     });
 };
 
-const chartHasData = computed(() => props.orderChart.buckets.some((bucket) => bucket.value > 0));
+const chartHasData = computed(() => (props.orderChart?.buckets ?? []).some((bucket) => bucket.value > 0));
 
 watch(chartRange, onChartRangeChange);
 
@@ -582,12 +583,17 @@ const tabDefs = computed(() => [
                                 <FilterDropdown v-model="chartRange" :label="t('customers.chart_range_12m')" :options="chartRangeOptions" default-value="12m" />
                             </div>
                             <div class="px-4 py-3.5 transition-opacity duration-150" :class="chartLoading ? 'opacity-60' : ''">
-                                <TimeSeriesChart
-                                    v-if="chartHasData"
-                                    :points="orderChart.buckets"
-                                    :ariaLabel="t('customers.chart_title')"
-                                />
-                                <p v-else class="m-0 py-6 text-center text-[12px] text-ink-500 italic">{{ t('customers.chart_empty') }}</p>
+                                <Deferred data="orderChart">
+                                    <template #fallback>
+                                        <div class="h-[168px] rounded-md bg-surface-2 animate-pulse" role="status" :aria-label="t('common.loading')" />
+                                    </template>
+                                    <TimeSeriesChart
+                                        v-if="chartHasData"
+                                        :points="orderChart?.buckets ?? []"
+                                        :ariaLabel="t('customers.chart_title')"
+                                    />
+                                    <p v-else class="m-0 py-6 text-center text-[12px] text-ink-500 italic">{{ t('customers.chart_empty') }}</p>
+                                </Deferred>
                             </div>
                         </div>
 
