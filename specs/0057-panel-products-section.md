@@ -1,6 +1,6 @@
 # 0057 — Panel Products section
 
-- Status: proposed
+- Status: accepted
 - Author: Glenn Jacobs
 - Created: 2026-07-21
 - TODO item: Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)

@@ -81,4 +81,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0054 | Field-type configuration schema | accepted    |
 | 0055 | Panel Collections section | implemented |
 | 0056 | Panel Product Types section | implemented |
-| 0057 | Panel Products section | proposed    |
+| 0057 | Panel Products section | accepted    |
