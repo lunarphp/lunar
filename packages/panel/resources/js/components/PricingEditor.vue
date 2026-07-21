@@ -209,6 +209,41 @@ const addTierRow = (): void => {
 };
 
 const currencyCode = (id: number): string => currencyById(id)?.code ?? '';
+
+// Narrow currency symbol derived from the ISO code (no symbol column exists);
+// falls back to the code itself for non-standard codes Intl can't resolve.
+const symbolCache = new Map<string, string>();
+const currencySymbol = (id: number): string => {
+    const code = currencyCode(id);
+
+    if (!code) {
+        return '';
+    }
+
+    const cached = symbolCache.get(code);
+
+    if (cached !== undefined) {
+        return cached;
+    }
+
+    let symbol = code;
+
+    try {
+        const parts = new Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: code,
+            currencyDisplay: 'narrowSymbol',
+        }).formatToParts(0);
+
+        symbol = parts.find((part) => part.type === 'currency')?.value ?? code;
+    } catch {
+        symbol = code;
+    }
+
+    symbolCache.set(code, symbol);
+
+    return symbol;
+};
 </script>
 
 <template>
@@ -232,7 +267,9 @@ const currencyCode = (id: number): string => currencyById(id)?.code ?? '';
                             step="any"
                             :aria-label="`${t('pricing.amount')} ${currencyCode(row.currency_id)}`"
                             @update:model-value="queueSave(row)"
-                        />
+                        >
+                            <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
+                        </TextInput>
                     </div>
                     <div>
                         <FieldLabel :hint="t('pricing.compare_at_hint')">{{ t('pricing.compare_at') }}</FieldLabel>
@@ -242,7 +279,9 @@ const currencyCode = (id: number): string => currencyById(id)?.code ?? '';
                             min="0"
                             step="any"
                             @update:model-value="queueSave(row)"
-                        />
+                        >
+                            <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
+                        </TextInput>
                     </div>
                     <div class="text-[12px] font-mono text-ink-500 pb-2">{{ currencyCode(row.currency_id) }}</div>
                 </div>
@@ -260,13 +299,17 @@ const currencyCode = (id: number): string => currencyById(id)?.code ?? '';
                 <div
                     v-for="row in rows.groups"
                     :key="row.key"
-                    class="grid grid-cols-[minmax(120px,1fr)_110px_110px_90px_36px] gap-2.5 items-center px-3 py-2 border-b border-line last:border-b-0"
+                    class="grid grid-cols-[minmax(120px,1fr)_minmax(132px,1fr)_minmax(132px,1fr)_90px_36px] gap-2.5 items-center px-3 py-2 border-b border-line last:border-b-0"
                 >
                     <Select v-model="row.customer_group_id" :aria-label="t('pricing.group_column')" @update:model-value="queueSave(row)">
                         <option v-for="group in customerGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
                     </Select>
-                    <TextInput v-model="row.amount" type="number" min="0" step="any" :placeholder="t('pricing.amount')" @update:model-value="queueSave(row)" />
-                    <TextInput v-model="row.compare" type="number" min="0" step="any" :placeholder="t('pricing.compare_at')" @update:model-value="queueSave(row)" />
+                    <TextInput v-model="row.amount" type="number" min="0" step="any" :placeholder="t('pricing.amount')" @update:model-value="queueSave(row)">
+                        <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
+                    </TextInput>
+                    <TextInput v-model="row.compare" type="number" min="0" step="any" :placeholder="t('pricing.compare_at')" @update:model-value="queueSave(row)">
+                        <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
+                    </TextInput>
                     <Select v-model="row.currency_id" :aria-label="t('pricing.currency')" @update:model-value="queueSave(row)">
                         <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.code }}</option>
                     </Select>
@@ -294,7 +337,7 @@ const currencyCode = (id: number): string => currencyById(id)?.code ?? '';
                 <div
                     v-for="row in rows.tiers"
                     :key="row.key"
-                    class="grid grid-cols-[90px_minmax(120px,1fr)_110px_110px_90px_36px] gap-2.5 items-center px-3 py-2 border-b border-line last:border-b-0"
+                    class="grid grid-cols-[90px_minmax(120px,1fr)_minmax(132px,1fr)_minmax(132px,1fr)_90px_36px] gap-2.5 items-center px-3 py-2 border-b border-line last:border-b-0"
                 >
                     <TextInput
                         :model-value="String(row.min_quantity)"
@@ -302,7 +345,9 @@ const currencyCode = (id: number): string => currencyById(id)?.code ?? '';
                         min="2"
                         :aria-label="t('pricing.tier_min_qty')"
                         @update:model-value="(value) => { row.min_quantity = Math.max(2, Number(value) || 2); queueSave(row); }"
-                    />
+                    >
+                        <template #prefix>{{ t('pricing.tier_min_prefix') }}</template>
+                    </TextInput>
                     <Select
                         :model-value="row.customer_group_id ?? ''"
                         :aria-label="t('pricing.group_column')"
@@ -311,8 +356,12 @@ const currencyCode = (id: number): string => currencyById(id)?.code ?? '';
                         <option value="">{{ t('pricing.tier_any_customer') }}</option>
                         <option v-for="group in customerGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
                     </Select>
-                    <TextInput v-model="row.amount" type="number" min="0" step="any" :placeholder="t('pricing.amount')" @update:model-value="queueSave(row)" />
-                    <TextInput v-model="row.compare" type="number" min="0" step="any" :placeholder="t('pricing.compare_at')" @update:model-value="queueSave(row)" />
+                    <TextInput v-model="row.amount" type="number" min="0" step="any" :placeholder="t('pricing.amount')" @update:model-value="queueSave(row)">
+                        <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
+                    </TextInput>
+                    <TextInput v-model="row.compare" type="number" min="0" step="any" :placeholder="t('pricing.compare_at')" @update:model-value="queueSave(row)">
+                        <template #prefix>{{ currencySymbol(row.currency_id) }}</template>
+                    </TextInput>
                     <Select v-model="row.currency_id" :aria-label="t('pricing.currency')" @update:model-value="queueSave(row)">
                         <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.code }}</option>
                     </Select>

@@ -54,6 +54,14 @@ describe('PricingEditor', () => {
         expect(wrapper.text()).toContain('USD');
     });
 
+    it('prefixes each currency row input with its narrow currency symbol', () => {
+        const wrapper = mountEditor([basePrice]);
+
+        // Base section renders a GBP row and a USD row.
+        expect(wrapper.text()).toContain('£');
+        expect(wrapper.text()).toContain('$');
+    });
+
     it('debounces and posts a base price as integer minor units', async () => {
         const put = vi.spyOn(router, 'put').mockImplementation(() => undefined as never);
 

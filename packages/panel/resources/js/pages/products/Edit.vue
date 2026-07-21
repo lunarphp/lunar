@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import ActivityTimeline from '../../components/ActivityTimeline.vue';
@@ -53,7 +53,11 @@ interface AssociationEntry {
     destroy_url: string;
 }
 
-type AssociationType = 'alternate' | 'cross-sell' | 'up-sell';
+interface AssociationGroup {
+    type: string;
+    label: string;
+    entries: AssociationEntry[];
+}
 
 const props = defineProps<{
     product: {
@@ -101,7 +105,7 @@ const props = defineProps<{
     brandOptions: { value: number; label: string }[];
     typeOptions: { value: number; label: string }[];
     collections: CollectionOption[];
-    associations: Record<AssociationType, AssociationEntry[]>;
+    associations: AssociationGroup[];
     storefrontUrl: string | null;
     activities: ActivityEntry[];
     urls: {
@@ -244,19 +248,48 @@ const collapse = (): void => {
 // Rows the builder's pending selection would remove; dimmed in the table.
 const staleIds = ref<number[]>([]);
 
+// Deep links (e.g. a variant page's "Manage variant options") land on the
+// matching section rather than the top of the page.
+onMounted(() => {
+    const hash = window.location.hash;
+
+    if (!hash) {
+        return;
+    }
+
+    nextTick(() => {
+        document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+
 const confirmDestroy = (): void => {
     confirmOpen.value = false;
     router.delete(props.urls.destroy);
 };
 
-// Associations: one picker dialog, opened per relationship type.
-const ASSOCIATION_TYPES: { type: AssociationType; label: string; hint: string }[] = [
-    { type: 'alternate', label: t('products.assoc_related'), hint: t('products.assoc_related_hint') },
-    { type: 'cross-sell', label: t('products.assoc_cross_sell'), hint: t('products.assoc_cross_sell_hint') },
-    { type: 'up-sell', label: t('products.assoc_up_sell'), hint: t('products.assoc_up_sell_hint') },
-];
+// Curated label/hint for the built-in types, keyed by type value. The type
+// list itself is server-driven, so a registered custom type still renders -
+// it just falls back to the enum label the server sends and shows no hint.
+const ASSOCIATION_META: Record<string, { label: string; hint: string }> = {
+    'alternate': { label: t('products.assoc_related'), hint: t('products.assoc_related_hint') },
+    'cross-sell': { label: t('products.assoc_cross_sell'), hint: t('products.assoc_cross_sell_hint') },
+    'up-sell': { label: t('products.assoc_up_sell'), hint: t('products.assoc_up_sell_hint') },
+};
 
-const picking = ref<AssociationType | null>(null);
+const associationGroups = computed(() =>
+    props.associations.map((group) => ({
+        type: group.type,
+        label: ASSOCIATION_META[group.type]?.label ?? group.label,
+        hint: ASSOCIATION_META[group.type]?.hint ?? '',
+        entries: group.entries,
+    })),
+);
+
+const entriesFor = (type: string): AssociationEntry[] =>
+    props.associations.find((group) => group.type === type)?.entries ?? [];
+
+// Associations: one picker dialog, opened per relationship type.
+const picking = ref<string | null>(null);
 
 const pickerOpen = computed({
     get: () => picking.value !== null,
@@ -274,7 +307,7 @@ const existingAssociationIds = computed(() => {
 
     return [
         props.product.id,
-        ...props.associations[picking.value].map((entry) => entry.product_id),
+        ...entriesFor(picking.value).map((entry) => entry.product_id),
     ];
 });
 
@@ -443,13 +476,15 @@ const timelineEvents = computed(() =>
                         </div>
 
                         <template v-if="wantsMulti">
-                            <ProductOptionsBuilder
-                                :attached-options="attachedOptions"
-                                :variants="variants"
-                                :search-url="urls.productOptionsSearch"
-                                :generate-url="urls.optionsGenerate"
-                                @update:stale-ids="staleIds = $event"
-                            />
+                            <div id="product-options" class="scroll-mt-[70px]">
+                                <ProductOptionsBuilder
+                                    :attached-options="attachedOptions"
+                                    :variants="variants"
+                                    :search-url="urls.productOptionsSearch"
+                                    :generate-url="urls.optionsGenerate"
+                                    @update:stale-ids="staleIds = $event"
+                                />
+                            </div>
                             <VariantsTable
                                 v-if="shape === 'multi'"
                                 :variants="variants"
@@ -507,17 +542,17 @@ const timelineEvents = computed(() =>
                         <Section :title="t('products.section_associations')">
                             <template #desc>{{ t('products.section_associations_description') }}</template>
                             <div class="flex flex-col gap-5">
-                                <div v-for="group in ASSOCIATION_TYPES" :key="group.type">
+                                <div v-for="group in associationGroups" :key="group.type">
                                     <div class="flex items-center justify-between gap-3 mb-2">
                                         <div>
                                             <div class="text-[12.5px] font-semibold text-ink-900">{{ group.label }}</div>
-                                            <div class="text-[11.5px] text-ink-500">{{ group.hint }}</div>
+                                            <div v-if="group.hint" class="text-[11.5px] text-ink-500">{{ group.hint }}</div>
                                         </div>
                                         <Button size="sm" icon="link" @click="picking = group.type">{{ t('products.assoc_add') }}</Button>
                                     </div>
-                                    <div v-if="associations[group.type].length" class="border border-line rounded-lg bg-surface overflow-hidden">
+                                    <div v-if="group.entries.length" class="border border-line rounded-lg bg-surface overflow-hidden">
                                         <div
-                                            v-for="entry in associations[group.type]"
+                                            v-for="entry in group.entries"
                                             :key="entry.id"
                                             class="flex items-center gap-3 px-3 py-2 border-b border-line last:border-b-0"
                                         >

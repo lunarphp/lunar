@@ -39,6 +39,32 @@ it('renders the variant edit page with navigation and payloads', function () {
             ->has('variant.stock.levels')
             ->has('mediaPool')
             ->has('urls.draft')
+            ->where('canDelete', true)
+            ->where('deleteBlockedReason', null)
+        );
+});
+
+it('explains why a variant cannot be deleted', function () {
+    // Last remaining variant.
+    $this->sibling->forceDelete();
+
+    $this->get(route('panel.products.variants.edit', [$this->product, $this->variant]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('canDelete', false)
+            ->where('deleteBlockedReason', 'last_variant')
+        );
+
+    // Order history takes precedence once a sibling exists again.
+    ProductVariant::factory()->create(['product_id' => $this->product->id]);
+    OrderLine::factory()->create([
+        'purchasable_type' => $this->variant->getMorphClass(),
+        'purchasable_id' => $this->variant->id,
+    ]);
+
+    $this->get(route('panel.products.variants.edit', [$this->product, $this->variant]))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('canDelete', false)
+            ->where('deleteBlockedReason', 'order_history')
         );
 });
 

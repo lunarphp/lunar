@@ -33,6 +33,7 @@ class HandlePanelInertiaRequests extends Middleware
                 'path' => config('lunar.panel.path', 'panel'),
                 'storefront_url' => config('lunar.panel.storefront_url'),
                 'support_url' => config('lunar.panel.support_url'),
+                'media_max_kb' => (int) config('lunar.media.max_upload_kb', 8192),
             ],
             'locale' => fn () => app()->getLocale(),
             'availableLocales' => fn () => $this->manager->availableLocales(),

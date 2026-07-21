@@ -79,6 +79,8 @@ class ProductVariantController
 
         $levels = $productVariant->stockLevels()->get()->keyBy('location_id');
 
+        $canDelete = $siblings->count() > 1 && ! $productVariant->hasOrderHistory();
+
         return Inertia::render('products/VariantEdit', [
             'product' => [
                 'id' => $product->id,
@@ -161,7 +163,14 @@ class ProductVariantController
                 'weight' => array_keys($measurements['weight'] ?? []),
             ],
             'activities' => $activities,
-            'canDelete' => $siblings->count() > 1 && ! $productVariant->hasOrderHistory(),
+            'canDelete' => $canDelete,
+            // Why deletion is blocked, so the UI can explain the disabled button.
+            // Order history takes precedence over the last-variant rule.
+            'deleteBlockedReason' => match (true) {
+                $canDelete => null,
+                $productVariant->hasOrderHistory() => 'order_history',
+                default => 'last_variant',
+            },
             'urls' => [
                 'productEdit' => route('panel.products.edit', $product),
                 'update' => route('panel.products.variants.update', [$product, $productVariant]),

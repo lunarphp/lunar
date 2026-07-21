@@ -247,11 +247,15 @@ class ProductEditController
                 'name' => $collection->translate('name'),
                 'breadcrumb' => $collection->breadcrumb->implode(' > '),
             ])->values(),
-            'associations' => [
-                'alternate' => $associations->get('alternate', collect())->values(),
-                'cross-sell' => $associations->get('cross-sell', collect())->values(),
-                'up-sell' => $associations->get('up-sell', collect())->values(),
-            ],
+            // One group per registered association type (the configured enum,
+            // via ProductAssociation::getTypes()), so a consumer's custom type
+            // shows here without touching the panel.
+            'associations' => collect(ProductAssociation::getTypes())
+                ->map(fn (string $label, string $type): array => [
+                    'type' => $type,
+                    'label' => $label,
+                    'entries' => $associations->get($type, collect())->values(),
+                ])->values(),
             'storefrontUrl' => config('lunar.panel.storefront_url'),
             'activities' => $activities,
             'urls' => [

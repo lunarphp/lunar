@@ -179,7 +179,7 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-3.5 gap-y-3">
             <div v-for="entry in quantityFields" :key="entry.name">
-                <FieldLabel :hint="entry.hint">{{ entry.label }}</FieldLabel>
+                <FieldLabel>{{ entry.label }}</FieldLabel>
                 <TextInput
                     :model-value="String(quantityModels[entry.name].value ?? entry.min)"
                     type="number"
@@ -187,6 +187,7 @@ const quantityModels: Record<string, ReturnType<typeof field>> = {
                     :invalid="!!(errors ?? {})[key(entry.name)]"
                     @update:model-value="(value) => { quantityModels[entry.name].value = Math.max(entry.min, Number(value) || entry.min); }"
                 />
+                <div class="text-[11px] text-ink-400 mt-1.5 leading-snug">{{ entry.hint }}</div>
             </div>
         </div>
     </Section>

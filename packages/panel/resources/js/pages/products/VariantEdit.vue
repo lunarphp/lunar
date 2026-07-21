@@ -59,6 +59,7 @@ const props = defineProps<{
     measurements: { length: string[]; weight: string[] };
     activities: ActivityEntry[];
     canDelete: boolean;
+    deleteBlockedReason: 'order_history' | 'last_variant' | null;
     urls: {
         productEdit: string;
         update: string;
@@ -116,6 +117,10 @@ const toggleEnabled = (): void => {
 
 const confirmOpen = ref(false);
 
+const deleteBlockedText = computed(() =>
+    props.deleteBlockedReason ? t(`products.variant_delete_blocked_${props.deleteBlockedReason}`) : '',
+);
+
 const confirmDestroy = (): void => {
     confirmOpen.value = false;
     router.delete(props.urls.destroy);
@@ -163,22 +168,40 @@ const timelineEvents = computed(() =>
                         </template>
                         <span class="text-ink-500">·</span>
                         <Link :href="urls.productEdit" class="text-ink-700 hover:text-ink-900">{{ product.name }}</Link>
-                        <span class="text-ink-500">·</span>
-                        <span>{{ t('products.variant_position', { position: variant.position, total: variant.total }) }}</span>
                     </div>
                 </template>
                 <template #actions>
-                    <Tooltip :text="t('products.variant_prev')">
-                        <Link v-if="variant.prev_url" :href="variant.prev_url"><Button icon="chevronLeft" :aria-label="t('products.variant_prev')" /></Link>
-                        <Button v-else icon="chevronLeft" disabled :aria-label="t('products.variant_prev')" />
-                    </Tooltip>
-                    <Tooltip :text="t('products.variant_next')">
-                        <Link v-if="variant.next_url" :href="variant.next_url"><Button icon="chevronRight" :aria-label="t('products.variant_next')" /></Link>
-                        <Button v-else icon="chevronRight" disabled :aria-label="t('products.variant_next')" />
-                    </Tooltip>
+                    <div class="inline-flex items-center h-8 border border-line-strong rounded-md bg-surface overflow-hidden">
+                        <Link
+                            v-if="variant.prev_url"
+                            :href="variant.prev_url"
+                            :aria-label="t('products.variant_prev')"
+                            class="flex items-center justify-center h-full w-9 text-ink-700 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sage/35"
+                        ><Icon name="chevronLeft" cls="sm" /></Link>
+                        <span v-else class="flex items-center justify-center h-full w-9 text-ink-300" :aria-label="t('products.variant_prev')"><Icon name="chevronLeft" cls="sm" /></span>
+
+                        <span class="px-3.5 text-[12.5px] text-ink-900 border-x border-line whitespace-nowrap self-stretch flex items-center">
+                            {{ t('products.variant_position', { position: variant.position, total: variant.total }) }}
+                        </span>
+
+                        <Link
+                            v-if="variant.next_url"
+                            :href="variant.next_url"
+                            :aria-label="t('products.variant_next')"
+                            class="flex items-center justify-center h-full w-9 text-ink-700 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sage/35"
+                        ><Icon name="chevronRight" cls="sm" /></Link>
+                        <span v-else class="flex items-center justify-center h-full w-9 text-ink-300" :aria-label="t('products.variant_next')"><Icon name="chevronRight" cls="sm" /></span>
+                    </div>
                     <Button v-if="canDelete" icon="trash" class="!text-danger" @click="confirmOpen = true">
                         {{ t('common.delete') }}
                     </Button>
+                    <Tooltip v-else :text="deleteBlockedText">
+                        <span class="inline-flex cursor-not-allowed">
+                            <Button icon="trash" class="!text-danger pointer-events-none" disabled>
+                                {{ t('common.delete') }}
+                            </Button>
+                        </span>
+                    </Tooltip>
                 </template>
             </PageHeader>
 
@@ -261,7 +284,7 @@ const timelineEvents = computed(() =>
                                     </div>
                                 </div>
                                 <div class="mt-3 pt-3 border-t border-line">
-                                    <Link :href="urls.productEdit" class="inline-flex items-center gap-1 text-[11.5px] text-sage-ink hover:text-ink-900">
+                                    <Link :href="`${urls.productEdit}#product-options`" class="inline-flex items-center gap-1 text-[11.5px] text-sage-ink hover:text-ink-900">
                                         <Icon name="settings" cls="sm" />
                                         {{ t('products.side_variant_axes_manage') }}
                                     </Link>

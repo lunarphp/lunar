@@ -15,7 +15,11 @@ const mountCard = (values: Record<string, unknown>, fieldPrefix = '') =>
         global: {
             stubs: {
                 Toggle: { props: ['on'], emits: ['toggle'], template: '<button :aria-pressed="on" @click="$emit(\'toggle\')" />' },
-                Select: { template: '<select><slot /></select>' },
+                Select: {
+                    props: ['modelValue'],
+                    emits: ['update:modelValue'],
+                    template: '<select :value="modelValue" @change="$emit(\'update:modelValue\', $event.target.value)"><slot /></select>',
+                },
             },
         },
     });
@@ -61,5 +65,28 @@ describe('ShippingCard', () => {
         await wrapper.findAll('input[type="number"]')[0].setValue('');
 
         expect(values['variant:weight_value']).toBeNull();
+    });
+
+    it('drives length, width and height from the single dimension unit', async () => {
+        const values: Record<string, unknown> = { 'variant:shippable': true, 'variant:length_unit': 'mm' };
+        const wrapper = mountCard(values, 'variant:');
+
+        // Selects render in order: weight unit, then dimension unit.
+        await wrapper.findAll('select')[1].setValue('cm');
+
+        expect(values['variant:length_unit']).toBe('cm');
+        expect(values['variant:width_unit']).toBe('cm');
+        expect(values['variant:height_unit']).toBe('cm');
+    });
+
+    it('auto-calculates volume as length times width times height', () => {
+        const wrapper = mountCard({
+            shippable: true,
+            length_value: 2,
+            width_value: 3,
+            height_value: 4,
+        });
+
+        expect(wrapper.text()).toContain('24');
     });
 });
