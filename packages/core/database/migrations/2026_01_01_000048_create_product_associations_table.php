@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('product_parent_id')->constrained($this->prefix.'products');
             $table->foreignId('product_target_id')->constrained($this->prefix.'products');
             $table->string('type')->index();
+            $table->unsignedInteger('sort')->default(0);
             $table->timestamps();
         });
     }

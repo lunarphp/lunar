@@ -10,6 +10,7 @@ import Textarea from './Textarea.vue';
 import TextInput from './TextInput.vue';
 import Toggle from './Toggle.vue';
 import TranslatedInput, { type LanguageOption } from './TranslatedInput.vue';
+import { useDragSort } from '../composables/useDragSort';
 
 export interface AttributeField {
     key: string;
@@ -191,26 +192,26 @@ const addListRow = (field: AttributeField): void => {
 
 // Drag & drop reorder, following MediaManager: dragging a row's handle over
 // another row moves it into that position; the draft store updates live.
-const listDrag = ref<{ field: string; index: number } | null>(null);
+const fieldByKey = computed<Record<string, AttributeField>>(() =>
+    Object.fromEntries(props.groups.flatMap((group) => group.fields).map((field) => [field.key, field])),
+);
 
-const onListRowDragStart = (field: AttributeField, index: number): void => {
-    listDrag.value = { field: field.key, index };
-};
+// Animated drag-to-reorder for keyed lists, one list per field (keyed by
+// field.key). Only the keyed list carries a drag handle; plain lists stay
+// as-is.
+const listSort = useDragSort({
+    onCommit: (fieldKey, from, to) => {
+        const field = fieldByKey.value[fieldKey];
 
-const onListRowDragOver = (field: AttributeField, index: number): void => {
-    if (!listDrag.value || listDrag.value.field !== field.key || listDrag.value.index === index) {
-        return;
-    }
+        if (!field) {
+            return;
+        }
 
-    const rows = listRows(field);
-    rows.splice(index, 0, ...rows.splice(listDrag.value.index, 1));
-    writeListRows(field, rows);
-    listDrag.value.index = index;
-};
-
-const onListRowDragEnd = (): void => {
-    listDrag.value = null;
-};
+        const rows = listRows(field);
+        rows.splice(to, 0, ...rows.splice(from, 1));
+        writeListRows(field, rows);
+    },
+});
 
 const embedUrl = (field: AttributeField): string | null => {
     const id = stringValue(field);
@@ -322,26 +323,31 @@ const embedUrl = (field: AttributeField): string | null => {
                         <div v-else-if="field.type === 'list'" class="border border-line-strong rounded-md bg-surface overflow-hidden">
                             <!-- Plain lists: inline editable rows plus an always-present
                                  trailing input, so typing adds an entry with no extra step. -->
-                            <div v-if="!isKeyedList(field)" class="divide-y divide-line">
+                            <div
+                                v-if="!isKeyedList(field)"
+                                class="divide-y divide-line"
+                                @dragover.prevent="listSort.over($event, field.key, listRows(field).length)"
+                                @drop.prevent
+                            >
                                 <div
                                     v-for="(row, index) in plainDisplayRows(field)"
                                     :key="index"
-                                    class="grid items-center gap-1.5 px-1.5 py-1 grid-cols-[auto_minmax(0,1fr)_auto]"
+                                    class="grid items-center gap-1.5 px-1.5 py-1 grid-cols-[auto_minmax(0,1fr)_auto] bg-surface"
                                     :class="[
                                         isTrailingRow(field, index) ? 'bg-surface-2' : '',
-                                        listDrag?.field === field.key && listDrag?.index === index ? 'opacity-60' : '',
+                                        listSort.isDragging(field.key, index) ? 'opacity-60 relative z-10' : '',
                                     ]"
-                                    @dragover.prevent="isTrailingRow(field, index) ? undefined : onListRowDragOver(field, index)"
+                                    :style="listSort.style(field.key, index)"
                                 >
                                     <button
                                         type="button"
-                                        draggable="true"
+                                        :draggable="!isTrailingRow(field, index)"
                                         class="w-5 h-6 grid place-items-center text-ink-400 cursor-grab active:cursor-grabbing hover:text-ink-700"
                                         :class="isTrailingRow(field, index) ? 'invisible pointer-events-none' : ''"
                                         :tabindex="isTrailingRow(field, index) ? -1 : 0"
                                         :aria-label="t('attributes.reorder_item')"
-                                        @dragstart="onListRowDragStart(field, index)"
-                                        @dragend="onListRowDragEnd"
+                                        @dragstart="listSort.start($event, field.key, index)"
+                                        @dragend="listSort.end()"
                                     ><Icon name="grip" cls="sm" /></button>
                                     <TextInput
                                         :model-value="row.value"
@@ -364,21 +370,25 @@ const embedUrl = (field: AttributeField): string | null => {
                             <!-- Keyed lists (Filament KeyValue shape): key + value rows with
                                  an add row that auto-commits a complete draft on blur. -->
                             <template v-else>
-                                <div class="divide-y divide-line">
+                                <div
+                                    class="divide-y divide-line"
+                                    @dragover.prevent="listSort.over($event, field.key)"
+                                    @drop.prevent
+                                >
                                     <div
                                         v-for="(row, index) in listRows(field)"
                                         :key="row.key ?? index"
-                                        class="grid items-center gap-1.5 px-1.5 py-1 grid-cols-[auto_minmax(0,1fr)_minmax(0,2fr)_auto]"
-                                        :class="listDrag?.field === field.key && listDrag?.index === index ? 'opacity-60' : ''"
-                                        @dragover.prevent="onListRowDragOver(field, index)"
+                                        class="grid items-center gap-1.5 px-1.5 py-1 grid-cols-[auto_minmax(0,1fr)_minmax(0,2fr)_auto] bg-surface"
+                                        :class="listSort.isDragging(field.key, index) ? 'opacity-60 relative z-10' : ''"
+                                        :style="listSort.style(field.key, index)"
                                     >
                                         <button
                                             type="button"
                                             draggable="true"
                                             class="w-5 h-6 grid place-items-center text-ink-400 cursor-grab active:cursor-grabbing hover:text-ink-700"
                                             :aria-label="t('attributes.reorder_item')"
-                                            @dragstart="onListRowDragStart(field, index)"
-                                            @dragend="onListRowDragEnd"
+                                            @dragstart="listSort.start($event, field.key, index)"
+                                            @dragend="listSort.end()"
                                         ><Icon name="grip" cls="sm" /></button>
                                         <span class="px-1 text-[11.5px] font-mono text-ink-500 truncate" :title="row.key ?? ''">{{ row.key }}</span>
                                         <TextInput

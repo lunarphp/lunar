@@ -110,15 +110,17 @@ class ProductEditController
             ->get()
             ->map(fn (Activity $activity) => TimelineActivity::toArray($activity));
 
+        $defaultCurrency = Currency::getDefault();
+
         $associations = $product->associations()
-            ->with(['target.thumbnail', 'target.variants:id,product_id,sku', 'target.brand:id,name'])
+            ->with(['target.thumbnail', 'target.variants.prices', 'target.brand:id,name'])
             ->get()
             ->groupBy(fn (ProductAssociation $association) => (string) $association->type)
             ->map(fn ($group) => $group->map(fn (ProductAssociation $association) => [
                 'id' => $association->id,
                 'product_id' => $association->target->id,
                 'name' => $association->target->translate('name'),
-                'sku' => $association->target->variants->first()?->sku,
+                'price' => $this->associationFromPrice($association->target, $defaultCurrency),
                 'variants_count' => $association->target->variants->count(),
                 'thumbnail' => $association->target->thumbnail?->getAvailableUrl(['small']),
                 'status' => $association->target->status->getValue(),
@@ -126,8 +128,6 @@ class ProductEditController
             ])->values());
 
         $measurements = Converter::getMeasurements();
-
-        $defaultCurrency = Currency::getDefault();
 
         $orderedVariantIds = $this->orderedVariantIds($product);
 
@@ -266,6 +266,7 @@ class ProductEditController
                 'mediaStore' => route('panel.products.media.store', $product),
                 'mediaReorder' => route('panel.products.media.reorder', $product),
                 'associationsStore' => route('panel.products.associations.store', $product),
+                'associationsReorder' => route('panel.products.associations.reorder', $product),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
                 'productsSearch' => route('panel.catalog.products.search'),
                 'productOptionsSearch' => route('panel.catalog.product-options.search'),
@@ -290,6 +291,27 @@ class ProductEditController
             ->pluck('purchasable_id')
             ->map(fn ($id) => (int) $id)
             ->all();
+    }
+
+    /**
+     * The lowest base price across the target's variants in the default
+     * currency, formatted for the "From ..." label. Null when there is no
+     * default currency or the target carries no matching base price.
+     */
+    protected function associationFromPrice(Product $target, ?Currency $currency): ?string
+    {
+        if (! $currency) {
+            return null;
+        }
+
+        return $target->variants
+            ->flatMap(fn (ProductVariant $variant) => $variant->prices)
+            ->filter(fn (Price $price) => $price->currency_id === $currency->id
+                && $price->customer_group_id === null
+                && $price->min_quantity === 1)
+            ->sortBy('price')
+            ->first()
+            ?->format('price');
     }
 
     /**

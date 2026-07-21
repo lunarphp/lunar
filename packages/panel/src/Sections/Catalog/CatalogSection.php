@@ -218,6 +218,7 @@ class CatalogSection extends Section
                     Route::delete('/{product}/media/{media}', [ProductMediaController::class, 'destroy'])->name('media.destroy');
 
                     Route::post('/{product}/associations', [ProductAssociationController::class, 'store'])->name('associations.store');
+                    Route::post('/{product}/associations/reorder', [ProductAssociationController::class, 'reorder'])->name('associations.reorder');
                     Route::delete('/{product}/associations/{association}', [ProductAssociationController::class, 'destroy'])->name('associations.destroy');
 
                     Route::post('/{product}/variants/{productVariant}/prices', [ProductPriceController::class, 'store'])->name('variants.prices.store');

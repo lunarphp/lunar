@@ -45,7 +45,25 @@ const mountManager = (items = [item(1, true), item(2)]) =>
             reorderUrl: '/panel/brands/1/media/reorder',
         },
         global: { plugins: [i18n] },
+        attachTo: document.body,
     });
+
+// jsdom reports zero-sized rects, so the grid-sort composable (which targets
+// the cell nearest the pointer) has no geometry. Lay the cells out in a row so
+// a dragover with a clientX/clientY resolves to a known tile.
+const CELL = 50;
+
+const rect = (left: number): DOMRect =>
+    ({ left, top: 0, width: CELL, height: CELL, right: left + CELL, bottom: CELL, x: left, y: 0, toJSON: () => ({}) }) as DOMRect;
+
+const stubCellGeometry = (grid: Element): void => {
+    Array.from(grid.children).forEach((child, index) => {
+        child.getBoundingClientRect = () => rect(index * CELL);
+    });
+};
+
+// clientX at the centre of the target cell.
+const cellX = (index: number): number => index * CELL + CELL / 2;
 
 describe('MediaManager', () => {
     beforeEach(() => {
@@ -73,9 +91,12 @@ describe('MediaManager', () => {
         const wrapper = mountManager();
 
         const tiles = wrapper.findAll('[draggable="true"]');
+        const grid = wrapper.find('.grid');
+
+        stubCellGeometry(grid.element);
 
         await tiles[1].trigger('dragstart');
-        await tiles[0].trigger('dragover');
+        await grid.trigger('dragover', { clientX: cellX(0), clientY: CELL / 2 });
         await tiles[1].trigger('dragend');
 
         expect(router.post).toHaveBeenCalledWith(

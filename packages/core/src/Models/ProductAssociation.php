@@ -17,6 +17,7 @@ use Lunar\Core\Models\Concerns\InvalidatesRelatedCache;
  * @property int $product_parent_id
  * @property int $product_target_id
  * @property string $type
+ * @property int $sort
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  */
@@ -59,6 +60,7 @@ class ProductAssociation extends Base
         'product_parent_id',
         'product_target_id',
         'type',
+        'sort',
     ];
 
     /**

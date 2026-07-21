@@ -64,11 +64,16 @@ class Associate implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
+            $type = is_string($this->type) ? $this->type : $this->type->value;
+
+            $sort = (int) $this->product->associations()->where('type', $type)->max('sort');
+
             $this->product->associations()->createMany(
-                $this->targets->map(function ($model) {
+                $this->targets->values()->map(function ($model, $index) use ($type, $sort) {
                     return [
                         'product_target_id' => $model->id,
-                        'type' => is_string($this->type) ? $this->type : $this->type->value,
+                        'type' => $type,
+                        'sort' => $sort + $index + 1,
                     ];
                 })
             );

@@ -23,7 +23,26 @@ const mountFields = (fields: ReturnType<typeof field>[], values: Record<string, 
             errors: {},
             languages,
         },
+        attachTo: document.body,
     });
+
+// jsdom reports zero-sized rects, so the drag composable (which reads row
+// geometry off the container) has nothing to target. Stub each row at a fixed
+// height so a container dragover with a clientY resolves to a known slot.
+const ROW_HEIGHT = 30;
+
+const rect = (top: number, height: number): DOMRect =>
+    ({ top, height, bottom: top + height, left: 0, right: 0, width: 0, x: 0, y: top, toJSON: () => ({}) }) as DOMRect;
+
+const stubRowGeometry = (container: Element): void => {
+    container.getBoundingClientRect = () => rect(0, 0);
+    Array.from(container.children).forEach((child, index) => {
+        child.getBoundingClientRect = () => rect(index * ROW_HEIGHT, ROW_HEIGHT);
+    });
+};
+
+// clientY at the vertical centre of the target slot.
+const slotY = (index: number): number => index * ROW_HEIGHT + ROW_HEIGHT / 2;
 
 describe('AttributeFields', () => {
     it('maps tokens onto the right inputs', () => {
@@ -118,10 +137,13 @@ describe('AttributeFields', () => {
         const wrapper = mountFields([field({ handle: 'tags', label: 'Tags', type: 'list' })], values);
 
         const handles = wrapper.findAll('button[aria-label="attributes.reorder_item"]');
+        const list = wrapper.find('.divide-y');
+
+        stubRowGeometry(list.element);
 
         await handles[0].trigger('dragstart');
-        await handles[2].trigger('dragover');
-        await handles[2].trigger('dragend');
+        await list.trigger('dragover', { clientY: slotY(2) });
+        await handles[0].trigger('dragend');
 
         expect(values['attribute:tags']).toEqual(['beta', 'gamma', 'alpha']);
     });
@@ -134,10 +156,13 @@ describe('AttributeFields', () => {
         const wrapper = mountFields([field({ handle: 'specs', label: 'Specs', type: 'list' })], values);
 
         const handles = wrapper.findAll('button[aria-label="attributes.reorder_item"]');
+        const list = wrapper.find('.divide-y');
+
+        stubRowGeometry(list.element);
 
         await handles[1].trigger('dragstart');
-        await handles[0].trigger('dragover');
-        await handles[0].trigger('dragend');
+        await list.trigger('dragover', { clientY: slotY(0) });
+        await handles[1].trigger('dragend');
 
         expect(Object.entries(values['attribute:specs'] as Record<string, string>)).toEqual([
             ['height', '20cm'],
