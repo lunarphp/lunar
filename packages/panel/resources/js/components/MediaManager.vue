@@ -6,6 +6,7 @@ import Button from './Button.vue';
 import Icon from './Icon.vue';
 import MediaEditDialog, { type MediaItem } from './MediaEditDialog.vue';
 import Section from './Section.vue';
+import { useGridSort } from '../composables/useGridSort';
 
 const props = defineProps<{
     items: MediaItem[];
@@ -82,52 +83,24 @@ const onDrop = (event: DragEvent): void => {
     upload(event.dataTransfer?.files ?? null);
 };
 
-// HTML5 drag & drop reorder: dragging a tile over another swaps it into that
-// position; dropping persists the order (first tile becomes the hero).
-const draggingId = ref<number | null>(null);
+// Animated drag-to-reorder over the 2-D tile grid (first tile is the hero).
+// The reordered snapshot drives the optimistic patch so it reflects exactly
+// what the user sees; the watch on `props.items` re-syncs `ordered` on both
+// the optimistic apply and an automatic rollback if the request fails.
+const tileSort = useGridSort({
+    onCommit: (_listId, from, to) => {
+        const current = [...ordered.value];
+        current.splice(to, 0, ...current.splice(from, 1));
+        ordered.value = current;
 
-const onTileDragStart = (item: MediaItem): void => {
-    draggingId.value = item.id;
-};
-
-const onTileDragOver = (target: MediaItem): void => {
-    if (draggingId.value === null || draggingId.value === target.id) {
-        return;
-    }
-
-    const current = [...ordered.value];
-    const from = current.findIndex((item) => item.id === draggingId.value);
-    const to = current.findIndex((item) => item.id === target.id);
-
-    current.splice(to, 0, ...current.splice(from, 1));
-    ordered.value = current;
-};
-
-const onTileDragEnd = (): void => {
-    if (draggingId.value === null) {
-        return;
-    }
-
-    draggingId.value = null;
-
-    const ids = ordered.value.map((item) => item.id);
-
-    if (ids.join(',') === props.items.map((item) => item.id).join(',')) {
-        return;
-    }
-
-    // Snapshot the dropped order so the optimistic patch reflects exactly what
-    // the user sees; the watch on `props.items` re-syncs `ordered` on both the
-    // optimistic apply and an automatic rollback if the request fails.
-    const reordered = [...ordered.value];
-
-    router.post(props.reorderUrl, { ids }, {
-        preserveScroll: true,
-        ...(props.optimisticKey
-            ? { optimistic: () => ({ [props.optimisticKey as string]: reordered }) }
-            : {}),
-    });
-};
+        router.post(props.reorderUrl, { ids: current.map((item) => item.id) }, {
+            preserveScroll: true,
+            ...(props.optimisticKey
+                ? { optimistic: () => ({ [props.optimisticKey as string]: current }) }
+                : {}),
+        });
+    },
+});
 
 const editing = ref<MediaItem | null>(null);
 const dialogOpen = computed({
@@ -180,19 +153,23 @@ const focalStyle = (item: MediaItem): Record<string, string> => ({
         </div>
 
         <template v-else>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
+            <div
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5"
+                @dragover.prevent="tileSort.over($event, 'media', ordered.length)"
+            >
                 <div
                     v-for="(item, index) in ordered"
                     :key="item.id"
                     :class="[
                         'group relative aspect-square rounded-md overflow-hidden border bg-surface-2 cursor-grab transition-[border-color,box-shadow,opacity] duration-100 hover:border-ink-300 hover:shadow-md',
                         index === 0 ? 'col-span-2 row-span-2' : '',
-                        draggingId === item.id ? 'opacity-60 border-sage' : 'border-line',
+                        tileSort.isDragging('media', index) ? 'opacity-60 border-sage z-10' : 'border-line',
                     ]"
+                    :style="tileSort.style('media', index)"
                     draggable="true"
-                    @dragstart="onTileDragStart(item)"
-                    @dragover.prevent="onTileDragOver(item)"
-                    @dragend="onTileDragEnd"
+                    @dragstart="tileSort.start($event, 'media', index)"
+                    @dragend="tileSort.end()"
+                    @drop.prevent
                 >
                     <img
                         :src="item.url"
