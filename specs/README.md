@@ -78,3 +78,6 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0050 | Panel order-value chart and public charting component | accepted    |
 | 0051 | Panel edit drafts and field-level conflict detection | implemented |
 | 0052 | Panel Brands section and shared catalog editing surfaces | implemented |
+| 0054 | Field-type configuration schema | accepted    |
+| 0055 | Panel Collections section | implemented |
+| 0056 | Panel Product Types section | implemented |
