@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Alle rijen selecteren',
     'close' => 'Sluiten',
     'clear' => 'Wissen',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Vergrendeld',
     'toggle_options' => 'Opties tonen of verbergen',

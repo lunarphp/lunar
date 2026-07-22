@@ -245,6 +245,8 @@ return [
     'flash_variants_generated' => 'Variants updated: {kept} kept, {added} added, {removed} removed.',
     'section_variants' => 'Variants',
     'variants_count' => '{shown} of {total} variants',
+    'variants_summary' => '{count} variants · {options}',
+    'variants_edit_options' => 'Edit options',
     'variants_filter' => 'Filter',
     'variants_filter_all' => 'All variants',
     'variants_filter_enabled' => 'Enabled',

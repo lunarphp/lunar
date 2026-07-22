@@ -28,6 +28,7 @@ use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
  * @property ?AsArrayObject $label
  * @property int $position
  * @property ?string $handle
+ * @property string $type
  * @property bool $shared
  * @property ?AsArrayObject $meta
  * @property ?Carbon $created_at
@@ -57,6 +58,15 @@ class ProductOption extends Base implements SpatieHasMedia
     ];
 
     /**
+     * Default attribute values.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'type' => 'text',
+    ];
+
+    /**
      * Return a new factory instance for the model.
      */
     protected static function newFactory()
@@ -80,6 +90,11 @@ class ProductOption extends Base implements SpatieHasMedia
     public function scopeShared(Builder $builder): Builder
     {
         return $builder->where('shared', '=', true);
+    }
+
+    public function scopeType(Builder $builder, string $type): Builder
+    {
+        return $builder->where('type', '=', $type);
     }
 
     public function scopeExclusive(Builder $builder): Builder

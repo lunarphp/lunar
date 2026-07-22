@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Alle Zeilen auswählen',
     'close' => 'Schließen',
     'clear' => 'Leeren',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Gesperrt',
     'toggle_options' => 'Optionen ein- oder ausblenden',

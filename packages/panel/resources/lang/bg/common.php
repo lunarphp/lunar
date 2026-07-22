@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Избиране на всички редове',
     'close' => 'Затвори',
     'clear' => 'Изчисти',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Заключено',
     'toggle_options' => 'Показване или скриване на опциите',

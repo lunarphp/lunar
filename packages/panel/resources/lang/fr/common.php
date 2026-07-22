@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Sélectionner toutes les lignes',
     'close' => 'Fermer',
     'clear' => 'Effacer',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Verrouillé',
     'toggle_options' => 'Afficher ou masquer les options',

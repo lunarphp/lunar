@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Odaberi sve retke',
     'close' => 'Zatvori',
     'clear' => 'Očisti',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Zaključano',
     'toggle_options' => 'Prikaži ili sakrij opcije',

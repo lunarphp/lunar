@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Select all rows',
     'close' => 'Close',
     'clear' => 'Clear',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Locked',
     'toggle_options' => 'Toggle options',

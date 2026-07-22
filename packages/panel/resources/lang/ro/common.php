@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Selectează toate rândurile',
     'close' => 'Închide',
     'clear' => 'Golește',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Blocat',
     'toggle_options' => 'Afișează sau ascunde opțiunile',

@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Chọn tất cả các hàng',
     'close' => 'Đóng',
     'clear' => 'Xóa',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Đã khóa',
     'toggle_options' => 'Hiện hoặc ẩn tùy chọn',

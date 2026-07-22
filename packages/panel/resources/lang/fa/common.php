@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'انتخاب همه ردیف‌ها',
     'close' => 'بستن',
     'clear' => 'پاک کردن',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'قفل شده',
     'toggle_options' => 'نمایش یا پنهان کردن گزینه‌ها',

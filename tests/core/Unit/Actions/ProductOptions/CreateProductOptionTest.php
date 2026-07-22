@@ -22,3 +22,11 @@ test('creates a product option with the given attributes', function () {
         'handle' => 'colour',
     ]);
 });
+
+test('defaults the type to text and persists a supplied type', function () {
+    $text = app(CreateProductOption::class)->execute(['name' => ['en' => 'Size'], 'handle' => 'size']);
+    $colour = app(CreateProductOption::class)->execute(['name' => ['en' => 'Colour'], 'handle' => 'colour', 'type' => 'colour']);
+
+    expect($text->type)->toBe('text')
+        ->and($colour->type)->toBe('colour');
+});

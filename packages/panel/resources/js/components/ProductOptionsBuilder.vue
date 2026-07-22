@@ -9,18 +9,35 @@ import FieldLabel from './FieldLabel.vue';
 import Icon from './Icon.vue';
 import Section from './Section.vue';
 import TextInput from './TextInput.vue';
+import ValuePreviewChip from './ValuePreviewChip.vue';
+
+export interface OptionValue {
+    id: number;
+    name: string;
+    colour?: string | null;
+    swatch?: string | null;
+}
 
 export interface AttachedOption {
     id: number;
     name: string;
+    type?: string;
     shared: boolean;
-    values: { id: number; name: string }[];
+    values: OptionValue[];
     selected_value_ids: number[];
+}
+
+export interface VariantPreviewValue {
+    name: string;
+    type: string;
+    colour: string | null;
+    swatch: string | null;
 }
 
 export interface VariantRow {
     id: number;
     label: string;
+    values?: VariantPreviewValue[];
     value_ids: number[];
     sku: string | null;
     price: number | null;
@@ -38,7 +55,7 @@ const props = defineProps<{
     generateUrl: string;
 }>();
 
-const emit = defineEmits<{ 'update:staleIds': [ids: number[]] }>();
+const emit = defineEmits<{ 'update:staleIds': [ids: number[]]; generated: [] }>();
 
 const { t } = useI18n();
 
@@ -53,15 +70,18 @@ const MAX_OPTIONS = 3;
 interface ValueToken {
     id: number | null;
     name: string;
+    colour?: string | null;
+    swatch?: string | null;
 }
 
 interface OptionRowState {
     key: string;
     id: number | null;
     shared: boolean;
+    type: string;
     name: string;
     // Shared rows pick from the canonical set; exclusive rows own their values.
-    canonical: { id: number; name: string }[];
+    canonical: OptionValue[];
     selectedIds: number[];
     values: ValueToken[];
 }
@@ -73,6 +93,7 @@ const seedRows = (): OptionRowState[] =>
         key: `opt-${option.id}`,
         id: option.id,
         shared: option.shared,
+        type: option.type ?? 'text',
         name: option.name,
         canonical: option.values,
         selectedIds: [...option.selected_value_ids],
@@ -179,7 +200,7 @@ watch(hasDrift, () => {
 // ---------------------------------------------------------------------------
 
 const addOpen = ref(false);
-const sharedOptions = ref<{ id: number; name: string; values: { id: number; name: string }[] }[]>([]);
+const sharedOptions = ref<{ id: number; name: string; type: string; values: OptionValue[] }[]>([]);
 const loadingShared = ref(false);
 
 const openAdd = async (): Promise<void> => {
@@ -201,7 +222,7 @@ const availableShared = computed(() =>
 
 const atCapacity = computed(() => rows.list.length >= MAX_OPTIONS);
 
-const addShared = (option: { id: number; name: string; values: { id: number; name: string }[] }): void => {
+const addShared = (option: { id: number; name: string; type: string; values: OptionValue[] }): void => {
     if (atCapacity.value) {
         return;
     }
@@ -210,6 +231,7 @@ const addShared = (option: { id: number; name: string; values: { id: number; nam
         key: `opt-${option.id}`,
         id: option.id,
         shared: true,
+        type: option.type,
         name: option.name,
         canonical: option.values,
         selectedIds: [],
@@ -228,6 +250,7 @@ const addExclusive = (): void => {
         key: `new-${++localKey}`,
         id: null,
         shared: false,
+        type: 'text',
         name: '',
         canonical: [],
         selectedIds: [],
@@ -287,6 +310,8 @@ const generate = (): void => {
 
     router.post(props.generateUrl, { selections: selectionsPayload() }, {
         preserveScroll: true,
+        // Regenerating collapses the editor back to the summary, same as Done.
+        onSuccess: () => emit('generated'),
         onFinish: () => {
             generating.value = false;
         },
@@ -373,6 +398,7 @@ const reset = (): void => {
                         @click="toggleSharedValue(row, value.id)"
                     >
                         <Icon v-if="row.selectedIds.includes(value.id)" name="check" cls="!w-3 !h-3" />
+                        <ValuePreviewChip v-if="row.type === 'colour' || row.type === 'swatch'" :type="row.type" :value="value" :size="16" />
                         {{ value.name }}
                     </button>
                 </div>
