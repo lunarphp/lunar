@@ -13,6 +13,7 @@ import Section from './Section.vue';
 import StatusBadge from './StatusBadge.vue';
 import TextInput from './TextInput.vue';
 import Tooltip from './Tooltip.vue';
+import ValuePreviewChip from './ValuePreviewChip.vue';
 import type { CurrencyOption } from './PricingEditor.vue';
 import type { VariantRow } from './ProductOptionsBuilder.vue';
 
@@ -22,7 +23,13 @@ const props = defineProps<{
     bulkUrl: string;
     // Rows the pending option selection would remove; dimmed while drift exists.
     staleIds?: number[];
+    // "Size × Colour" summary; enables the Edit-options affordance in the header.
+    optionsSummary?: string;
+    // Whether the option editor is currently expanded above the table.
+    editingOptions?: boolean;
 }>();
+
+const emit = defineEmits<{ 'toggle-options': [] }>();
 
 const { t } = useI18n();
 
@@ -122,15 +129,17 @@ const isStale = (variant: VariantRow): boolean => (props.staleIds ?? []).include
 <template>
     <Section :title="t('products.section_variants')">
         <template #desc>
-            {{ t('products.variants_count', { shown: filtered.length, total: variants.length }) }}
+            <template v-if="optionsSummary">{{ t('products.variants_summary', { count: variants.length, options: optionsSummary }) }}</template>
+            <template v-else>{{ t('products.variants_count', { shown: filtered.length, total: variants.length }) }}</template>
         </template>
-        <template #actions>
-            <div class="w-[170px]">
-                <FilterDropdown v-model="filter" :label="t('products.variants_filter')" :options="filterOptions" default-value="all" />
-            </div>
+        <template v-if="optionsSummary" #actions>
+            <Button variant="ghost" size="sm" icon="sliders" @click="emit('toggle-options')">
+                {{ editingOptions ? t('common.done') : t('products.variants_edit_options') }}
+            </Button>
         </template>
 
-        <!-- Bulk bar replaces the header row while rows are selected. -->
+        <!-- Toolbar: variant count and the filter, aligned; replaced by the bulk
+             bar while rows are selected. -->
         <div v-if="selected.length" class="flex flex-wrap items-center gap-2 mb-3 px-3 py-2 rounded-md border border-line bg-surface-2">
             <span class="text-xs text-ink-700 whitespace-nowrap">
                 <span class="font-semibold text-ink-900 [font-variant-numeric:tabular-nums]">{{ selected.length }}</span>
@@ -144,6 +153,13 @@ const isStale = (variant: VariantRow): boolean => (props.staleIds ?? []).include
             <Button size="sm" icon="trash" class="!text-danger" @click="confirmDelete = true">{{ t('common.delete') }}</Button>
             <div class="flex-1" />
             <Button size="sm" variant="ghost" @click="selected = []">{{ t('common.clear') }}</Button>
+        </div>
+
+        <div v-else class="flex items-center justify-between gap-3 mb-3">
+            <span class="text-[12.5px] font-medium text-ink-900 [font-variant-numeric:tabular-nums]">
+                {{ t('products.variants_count', { shown: filtered.length, total: variants.length }) }}
+            </span>
+            <FilterDropdown v-model="filter" :label="t('products.variants_filter')" :options="filterOptions" default-value="all" />
         </div>
 
         <div class="border border-line rounded-lg bg-surface overflow-hidden">
@@ -185,6 +201,15 @@ const isStale = (variant: VariantRow): boolean => (props.staleIds ?? []).include
                     <Icon v-else name="box" cls="sm" />
                 </div>
                 <div class="min-w-0 flex items-center gap-1.5">
+                    <span class="flex items-center gap-1 shrink-0">
+                        <ValuePreviewChip
+                            v-for="(value, index) in (variant.values ?? []).filter((entry) => entry.type === 'colour' || entry.type === 'swatch')"
+                            :key="index"
+                            :type="value.type"
+                            :value="value"
+                            :size="18"
+                        />
+                    </span>
                     <span class="text-[12.5px] font-medium text-ink-900 truncate">{{ variant.label }}</span>
                     <Tooltip v-if="variant.locked" :text="t('products.variants_locked_tip')">
                         <Icon name="lock" cls="sm" class="text-ink-400 shrink-0" />

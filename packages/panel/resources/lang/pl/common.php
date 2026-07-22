@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Zaznacz wszystkie wiersze',
     'close' => 'Zamknij',
     'clear' => 'Wyczyść',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Zablokowane',
     'toggle_options' => 'Pokaż lub ukryj opcje',

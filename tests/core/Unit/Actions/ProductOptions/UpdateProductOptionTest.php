@@ -53,6 +53,30 @@ test('keeps the values when none are supplied', function () {
     expect($option->values()->count())->toBe(1);
 });
 
+test('stores a value colour on meta for colour options', function () {
+    $option = ProductOption::factory()->colour()->create();
+
+    app(UpdateProductOption::class)->execute($option, [
+        'values' => [
+            ['name' => ['en' => 'Navy'], 'position' => 1, 'colour' => '#1f2a44'],
+        ],
+    ]);
+
+    $value = $option->values()->first();
+
+    expect($value->meta['colour'])->toBe('#1F2A44');
+});
+
+test('changing the type clears the value colour payload', function () {
+    $option = ProductOption::factory()->colour()->create();
+    $value = ProductOptionValue::factory()->colour('#1F2A44')->create(['product_option_id' => $option->id]);
+
+    app(UpdateProductOption::class)->execute($option, ['type' => 'text']);
+
+    expect($option->fresh()->type)->toBe('text')
+        ->and($value->fresh()->meta['colour'] ?? null)->toBeNull();
+});
+
 test('refuses to remove a value carried by variants', function () {
     $option = ProductOption::factory()->create();
     $value = ProductOptionValue::factory()->create(['product_option_id' => $option->id]);

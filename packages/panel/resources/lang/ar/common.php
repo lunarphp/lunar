@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'تحديد كل الصفوف',
     'close' => 'إغلاق',
     'clear' => 'مسح',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'مقفل',
     'toggle_options' => 'إظهار أو إخفاء الخيارات',

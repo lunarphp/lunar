@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Бүх мөрийг сонгох',
     'close' => 'Хаах',
     'clear' => 'Цэвэрлэх',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Түгжээтэй',
     'toggle_options' => 'Сонголтуудыг харуулах эсвэл нуух',

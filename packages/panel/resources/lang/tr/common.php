@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Tüm satırları seç',
     'close' => 'Kapat',
     'clear' => 'Temizle',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Kilitli',
     'toggle_options' => 'Seçenekleri göster veya gizle',

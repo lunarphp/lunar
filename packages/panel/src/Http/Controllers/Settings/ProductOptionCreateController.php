@@ -15,7 +15,10 @@ class ProductOptionCreateController
         // The option's values are managed on the edit screen.
         unset($attributes['values']);
 
-        $attributes['shared'] ??= true;
+        // Settings is the shared-options area: anything created here is shared
+        // by default (a dedicated option would never surface to be used). It can
+        // be demoted later on the edit screen.
+        $attributes['shared'] = true;
 
         $productOption = $createsProductOption->execute($attributes);
 

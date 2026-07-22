@@ -26,6 +26,7 @@ return [
     'select_all_rows' => 'Összes sor kijelölése',
     'close' => 'Bezárás',
     'clear' => 'Törlés',
+    'done' => 'Done',
     'language' => 'Language',
     'locked' => 'Zárolva',
     'toggle_options' => 'Opciók megjelenítése vagy elrejtése',

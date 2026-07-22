@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Lunar\Panel\Http\Controllers\Settings\ProductOptionCreateController;
 use Lunar\Panel\Http\Controllers\Settings\ProductOptionEditController;
 use Lunar\Panel\Http\Controllers\Settings\ProductOptionIndexController;
+use Lunar\Panel\Http\Controllers\Settings\ProductOptionValueSwatchController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Section;
@@ -57,6 +58,11 @@ class ProductOptionsSection extends Section
                     Route::get('/{productOption}/edit', [ProductOptionEditController::class, 'edit'])->name('edit');
                     Route::put('/{productOption}', [ProductOptionEditController::class, 'update'])->name('update');
                     Route::delete('/{productOption}', [ProductOptionEditController::class, 'destroy'])->name('destroy');
+
+                    Route::post('/{productOption}/values/{value}/swatch', [ProductOptionValueSwatchController::class, 'store'])
+                        ->scopeBindings()->name('values.swatch.store');
+                    Route::delete('/{productOption}/values/{value}/swatch', [ProductOptionValueSwatchController::class, 'destroy'])
+                        ->scopeBindings()->name('values.swatch.destroy');
                 });
         };
     }

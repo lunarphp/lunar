@@ -251,6 +251,24 @@ const collapse = (): void => {
 // Rows the builder's pending selection would remove; dimmed in the table.
 const staleIds = ref<number[]>([]);
 
+// Once variants are generated, the option editor collapses to a summary on the
+// variants table; "Edit options" re-expands it. Generating reloads the page,
+// which resets this back to collapsed.
+const hasGeneratedVariants = computed(() => props.variants.some((variant) => variant.value_ids.length > 0));
+const editingOptions = ref(false);
+const showOptionsBuilder = computed(() => !hasGeneratedVariants.value || editingOptions.value);
+const optionsSummary = computed(() => props.attachedOptions.map((option) => option.name).join(' × '));
+
+const toggleOptions = (): void => {
+    editingOptions.value = !editingOptions.value;
+
+    if (editingOptions.value) {
+        nextTick(() => {
+            document.getElementById('product-options')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+};
+
 // Deep links (e.g. a variant page's "Manage variant options") land on the
 // matching section rather than the top of the page.
 onMounted(() => {
@@ -514,13 +532,14 @@ const timelineEvents = computed(() =>
                         </div>
 
                         <template v-if="wantsMulti">
-                            <div id="product-options" class="scroll-mt-[70px]">
+                            <div v-show="showOptionsBuilder" id="product-options" class="scroll-mt-[70px]">
                                 <ProductOptionsBuilder
                                     :attached-options="attachedOptions"
                                     :variants="variants"
                                     :search-url="urls.productOptionsSearch"
                                     :generate-url="urls.optionsGenerate"
                                     @update:stale-ids="staleIds = $event"
+                                    @generated="editingOptions = false"
                                 />
                             </div>
                             <VariantsTable
@@ -529,6 +548,9 @@ const timelineEvents = computed(() =>
                                 :currencies="currencies"
                                 :bulk-url="urls.variantsBulk"
                                 :stale-ids="staleIds"
+                                :options-summary="hasGeneratedVariants ? optionsSummary : undefined"
+                                :editing-options="editingOptions"
+                                @toggle-options="toggleOptions"
                             />
                         </template>
 

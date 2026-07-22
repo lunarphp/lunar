@@ -51,12 +51,14 @@ class ProductEditController
 
         $product->load([
             'variants.values.option',
+            'variants.values.media',
             'variants.prices',
             // Eager-loaded so the per-variant getThumbnailImage() below reads
             // from memory rather than lazy-loading images (and the product
             // inverse) once per row.
             'variants.images',
             'productOptions.values',
+            'productOptions.values.media',
             'productType:id,name',
             'brand:id,name',
             'tags',
@@ -122,16 +124,24 @@ class ProductEditController
             ->flatMap(fn (ProductVariant $variant) => $variant->values->pluck('id'))
             ->unique();
 
+        $mediaCollection = config('lunar.media.collection');
+        $valuePreview = fn ($value): array => [
+            'colour' => $value->meta['colour'] ?? null,
+            'swatch' => $value->getFirstMediaUrl($mediaCollection, 'small') ?: ($value->getFirstMediaUrl($mediaCollection) ?: null),
+        ];
+
         // Reads the eager-loaded productOptions.values relation rather than
         // re-querying it per render.
         $attachedOptions = $product->productOptions
             ->map(fn ($option) => [
                 'id' => $option->id,
                 'name' => $option->translate('name'),
+                'type' => $option->type,
                 'shared' => (bool) $option->shared,
                 'values' => $option->values->sortBy('position')->map(fn ($value) => [
                     'id' => $value->id,
                     'name' => $value->translate('name'),
+                    ...$valuePreview($value),
                 ])->values(),
                 // The persisted selection is whatever the generated variants
                 // actually use; pending edits live client-side.
@@ -150,6 +160,11 @@ class ProductEditController
                     ->map(fn ($value) => $value->translate('name'))
                     ->filter()
                     ->implode(' / ') ?: ($variant->sku ?? '#'.$variant->id),
+                'values' => $variant->values->map(fn ($value) => [
+                    'name' => $value->translate('name'),
+                    'type' => $value->option?->type ?? 'text',
+                    ...$valuePreview($value),
+                ])->values(),
                 'value_ids' => $variant->values->pluck('id')->sort()->values(),
                 'sku' => $variant->sku,
                 'price' => $defaultCurrency
