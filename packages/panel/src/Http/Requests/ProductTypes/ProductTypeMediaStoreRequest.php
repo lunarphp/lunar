@@ -2,18 +2,17 @@
 
 namespace Lunar\Panel\Http\Requests\ProductTypes;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Lunar\Core\Models\ProductType;
+use Lunar\Panel\Http\Requests\Media\MediaStoreRequest;
+use Spatie\MediaLibrary\HasMedia;
 
-class ProductTypeMediaStoreRequest extends FormRequest
+class ProductTypeMediaStoreRequest extends MediaStoreRequest
 {
-    /**
-     * @return array<string, array<int, mixed>>
-     */
-    public function rules(): array
+    protected function mediaModel(): HasMedia
     {
-        return [
-            'files' => ['required', 'array', 'min:1'],
-            'files.*' => ['file', 'image', 'max:'.config('lunar.media.max_upload_kb', 8192)],
-        ];
+        /** @var ProductType $productType */
+        $productType = $this->route('productType');
+
+        return $productType;
     }
 }

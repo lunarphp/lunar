@@ -40,7 +40,10 @@ it('renders the edit page with type, picker payloads and mapped id sets', functi
             ->has('taxClasses')
             ->has('languages')
             ->where('draft', null)
-            ->hasAll(['urls.update', 'urls.destroy', 'urls.draft', 'urls.draftCommit', 'urls.mediaStore', 'urls.mediaReorder'])
+            ->hasAll(['urls.update', 'urls.destroy', 'urls.draft', 'urls.draftCommit'])
+            ->has('mediaGroups', 1)
+            ->where('mediaGroups.0.type', 'image')
+            ->hasAll(['mediaGroups.0.urls.store', 'mediaGroups.0.urls.reorder'])
         );
 });
 

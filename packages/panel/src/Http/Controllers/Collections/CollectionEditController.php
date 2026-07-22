@@ -19,9 +19,9 @@ use Lunar\Panel\Http\Requests\Collections\CollectionRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\Media\MediaGroups;
 use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class CollectionEditController
 {
@@ -37,19 +37,6 @@ class CollectionEditController
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($collection, $staff) : null;
-
-        $media = $collection->getMedia(config('lunar.media.collection'))->map(fn (Media $item) => [
-            'id' => $item->id,
-            'url' => $item->getAvailableUrl(['small']),
-            'original_url' => $item->getUrl(),
-            'name' => $item->getCustomProperty('name'),
-            'alt' => $item->getCustomProperty('alt'),
-            'caption' => $item->getCustomProperty('caption'),
-            'focal' => $item->getCustomProperty('focal'),
-            'primary' => (bool) $item->getCustomProperty('primary'),
-            'update_url' => route('panel.collections.media.update', [$collection, $item]),
-            'destroy_url' => route('panel.collections.media.destroy', [$collection, $item]),
-        ])->values();
 
         $urls = $collection->urls()
             ->with('language:id,code,name')
@@ -126,7 +113,7 @@ class CollectionEditController
                 ->get(['id', 'code', 'name', 'default']),
             'groups' => CollectionGroup::query()->orderBy('name')->get(['id', 'name']),
             'collectionUrls' => $urls,
-            'media' => $media,
+            'mediaGroups' => MediaGroups::for($collection, 'panel.collections'),
             'products' => $products,
             'attributeGroups' => $attributeSchema->groups($collection),
             'attributeValues' => $attributeSchema->values($collection) ?: (object) [],
@@ -143,8 +130,6 @@ class CollectionEditController
                 'draft' => route('panel.collections.draft.update', $collection),
                 'draftCommit' => route('panel.collections.draft.commit', $collection),
                 'urlsStore' => route('panel.collections.urls.store', $collection),
-                'mediaStore' => route('panel.collections.media.store', $collection),
-                'mediaReorder' => route('panel.collections.media.reorder', $collection),
                 'productsAttach' => route('panel.collections.products.attach', $collection),
                 'productsReorder' => route('panel.collections.products.reorder', $collection),
                 'collectionsSearch' => route('panel.catalog.collections.search'),

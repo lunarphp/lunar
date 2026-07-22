@@ -18,9 +18,9 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\ProductTypes\ProductTypeRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
+use Lunar\Panel\Support\Media\MediaGroups;
 use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductTypeEditController
 {
@@ -30,19 +30,6 @@ class ProductTypeEditController
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($productType, $staff) : null;
-
-        $media = $productType->getMedia(config('lunar.media.collection'))->map(fn (Media $item) => [
-            'id' => $item->id,
-            'url' => $item->getAvailableUrl(['small']),
-            'original_url' => $item->getUrl(),
-            'name' => $item->getCustomProperty('name'),
-            'alt' => $item->getCustomProperty('alt'),
-            'caption' => $item->getCustomProperty('caption'),
-            'focal' => $item->getCustomProperty('focal'),
-            'primary' => (bool) $item->getCustomProperty('primary'),
-            'update_url' => route('panel.product-types.media.update', [$productType, $item]),
-            'destroy_url' => route('panel.product-types.media.destroy', [$productType, $item]),
-        ])->values();
 
         $activities = $productType->activities()
             ->with('causer')
@@ -72,7 +59,7 @@ class ProductTypeEditController
                 'data' => $draft->data,
                 'updated_at' => $draft->updated_at,
             ] : null,
-            'media' => $media,
+            'mediaGroups' => MediaGroups::for($productType, 'panel.product-types'),
             'languages' => Language::query()
                 ->orderByDesc('default')
                 ->orderBy('code')
@@ -92,8 +79,6 @@ class ProductTypeEditController
                 'destroy' => route('panel.product-types.destroy', $productType),
                 'draft' => route('panel.product-types.draft.update', $productType),
                 'draftCommit' => route('panel.product-types.draft.commit', $productType),
-                'mediaStore' => route('panel.product-types.media.store', $productType),
-                'mediaReorder' => route('panel.product-types.media.reorder', $productType),
                 'manageAttributes' => route('panel.settings.attributes.index'),
             ],
         ]);

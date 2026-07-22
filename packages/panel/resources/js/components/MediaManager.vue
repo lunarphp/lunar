@@ -6,16 +6,11 @@ import Button from './Button.vue';
 import Icon from './Icon.vue';
 import MediaEditDialog, { type MediaItem } from './MediaEditDialog.vue';
 import Section from './Section.vue';
+import type { ImageMediaGroup } from './media';
 import { useGridSort } from '../composables/useGridSort';
 
 const props = defineProps<{
-    items: MediaItem[];
-    storeUrl: string;
-    reorderUrl: string;
-    // Page-prop key holding this list (e.g. "media"). When set, a drop persists
-    // with an optimistic patch on that prop so the new order is authoritative
-    // while the request runs and rolls back automatically if it fails.
-    optimisticKey?: string;
+    group: ImageMediaGroup;
 }>();
 
 const { t } = useI18n();
@@ -32,10 +27,10 @@ const maxUploadMb = computed(() => {
 
 // Local order mirrors the prop; drag reordering mutates it optimistically and
 // persists on drop, so tiles don't snap back while the request runs.
-const ordered = ref<MediaItem[]>([...props.items]);
+const ordered = ref<MediaItem[]>([...props.group.items]);
 
 watch(
-    () => props.items,
+    () => props.group.items,
     (items) => {
         ordered.value = [...items];
     },
@@ -57,8 +52,8 @@ const upload = (files: FileList | null): void => {
     uploadError.value = '';
 
     router.post(
-        props.storeUrl,
-        { files: Array.from(files) },
+        props.group.urls.store,
+        { collection: props.group.collection, files: Array.from(files) },
         {
             preserveScroll: true,
             forceFormData: true,
@@ -84,20 +79,19 @@ const onDrop = (event: DragEvent): void => {
 };
 
 // Animated drag-to-reorder over the 2-D tile grid (first tile is the hero).
-// The reordered snapshot drives the optimistic patch so it reflects exactly
-// what the user sees; the watch on `props.items` re-syncs `ordered` on both
-// the optimistic apply and an automatic rollback if the request fails.
+// The local `ordered` snapshot holds the new order while the request runs; the
+// watch on `props.group.items` re-syncs once the reloaded props arrive.
 const tileSort = useGridSort({
     onCommit: (_listId, from, to) => {
         const current = [...ordered.value];
         current.splice(to, 0, ...current.splice(from, 1));
         ordered.value = current;
 
-        router.post(props.reorderUrl, { ids: current.map((item) => item.id) }, {
+        router.post(props.group.urls.reorder, {
+            collection: props.group.collection,
+            ids: current.map((item) => item.id),
+        }, {
             preserveScroll: true,
-            ...(props.optimisticKey
-                ? { optimistic: () => ({ [props.optimisticKey as string]: current }) }
-                : {}),
         });
     },
 });
@@ -118,9 +112,9 @@ const focalStyle = (item: MediaItem): Record<string, string> => ({
 </script>
 
 <template>
-    <Section :title="t('media.title')">
+    <Section :title="group.title">
         <template #desc>
-            {{ items.length ? t('media.description', { count: items.length }) : t('media.description_empty') }}
+            {{ ordered.length ? t('media.description', { count: ordered.length }) : t('media.description_empty') }}
         </template>
         <template #actions>
             <Button icon="upload" size="sm" :disabled="uploading" @click="pickFiles">{{ t('media.upload') }}</Button>
@@ -129,7 +123,7 @@ const focalStyle = (item: MediaItem): Record<string, string> => ({
         <input
             ref="fileInput"
             type="file"
-            accept="image/*"
+            :accept="group.accept"
             multiple
             class="hidden"
             @change="upload(($event.target as HTMLInputElement).files)"

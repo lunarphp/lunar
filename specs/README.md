@@ -83,3 +83,4 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0056 | Panel Product Types section | implemented |
 | 0057 | Panel Products section | implemented |
 | 0058 | Panel dashboard widgets | proposed    |
+| 0060 | Panel media groups | proposed    |

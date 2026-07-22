@@ -30,6 +30,12 @@ class ReorderMedia implements ReordersMedia
 
         Media::setNewOrder($ids);
 
+        // Only the image collection carries a primary/thumbnail; other
+        // collections (e.g. document downloads) reorder without one.
+        if ($collection !== config('lunar.media.collection')) {
+            return;
+        }
+
         $first = $media->firstWhere('id', (int) $ids[0]);
 
         if ($first && $first->getCustomProperty('primary') !== true) {

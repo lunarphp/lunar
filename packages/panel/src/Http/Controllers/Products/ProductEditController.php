@@ -32,10 +32,10 @@ use Lunar\Panel\PanelManager;
 use Lunar\Panel\Sections\Catalog\ProductDraftResource;
 use Lunar\Panel\Support\AttributeSchema;
 use Lunar\Panel\Support\AvailabilitySchema;
+use Lunar\Panel\Support\Media\MediaGroups;
 use Lunar\Panel\Support\TimelineActivity;
 use Lunar\Panel\Support\VariantFields;
 use Spatie\Activitylog\Models\Activity;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductEditController
 {
@@ -74,19 +74,6 @@ class ProductEditController
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($product, $staff) : null;
-
-        $media = $product->getMedia(config('lunar.media.collection'))->map(fn (Media $item) => [
-            'id' => $item->id,
-            'url' => $item->getAvailableUrl(['small']),
-            'original_url' => $item->getUrl(),
-            'name' => $item->getCustomProperty('name'),
-            'alt' => $item->getCustomProperty('alt'),
-            'caption' => $item->getCustomProperty('caption'),
-            'focal' => $item->getCustomProperty('focal'),
-            'primary' => (bool) $item->getCustomProperty('primary'),
-            'update_url' => route('panel.products.media.update', [$product, $item]),
-            'destroy_url' => route('panel.products.media.destroy', [$product, $item]),
-        ])->values();
 
         $urls = $product->urls()
             ->with('language:id,code,name')
@@ -223,7 +210,7 @@ class ProductEditController
                 ->orderByDesc('default')
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
-            'media' => $media,
+            'mediaGroups' => MediaGroups::for($product, 'panel.products'),
             'productUrls' => $urls,
             'attributeGroups' => $attributeSchema->groups($product),
             'attributeValues' => $attributeSchema->values($product) ?: (object) [],
@@ -263,8 +250,6 @@ class ProductEditController
                 'draft' => route('panel.products.draft.update', $product),
                 'draftCommit' => route('panel.products.draft.commit', $product),
                 'urlsStore' => route('panel.products.urls.store', $product),
-                'mediaStore' => route('panel.products.media.store', $product),
-                'mediaReorder' => route('panel.products.media.reorder', $product),
                 'associationsStore' => route('panel.products.associations.store', $product),
                 'associationsReorder' => route('panel.products.associations.reorder', $product),
                 'collectionsSearch' => route('panel.catalog.collections.search'),

@@ -16,9 +16,9 @@ use Lunar\Panel\Contracts\DraftManager;
 use Lunar\Panel\Http\Requests\Brands\BrandRequest;
 use Lunar\Panel\PanelManager;
 use Lunar\Panel\Support\AttributeSchema;
+use Lunar\Panel\Support\Media\MediaGroups;
 use Lunar\Panel\Support\TimelineActivity;
 use Spatie\Activitylog\Models\Activity;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class BrandEditController
 {
@@ -28,19 +28,6 @@ class BrandEditController
 
         $staff = $panel->user();
         $draft = $staff ? $drafts->find($brand, $staff) : null;
-
-        $media = $brand->getMedia(config('lunar.media.collection'))->map(fn (Media $item) => [
-            'id' => $item->id,
-            'url' => $item->getAvailableUrl(['small']),
-            'original_url' => $item->getUrl(),
-            'name' => $item->getCustomProperty('name'),
-            'alt' => $item->getCustomProperty('alt'),
-            'caption' => $item->getCustomProperty('caption'),
-            'focal' => $item->getCustomProperty('focal'),
-            'primary' => (bool) $item->getCustomProperty('primary'),
-            'update_url' => route('panel.brands.media.update', [$brand, $item]),
-            'destroy_url' => route('panel.brands.media.destroy', [$brand, $item]),
-        ])->values();
 
         $urls = $brand->urls()
             ->with('language:id,code,name')
@@ -87,7 +74,7 @@ class BrandEditController
                 ->orderBy('code')
                 ->get(['id', 'code', 'name', 'default']),
             'brandUrls' => $urls,
-            'media' => $media,
+            'mediaGroups' => MediaGroups::for($brand, 'panel.brands'),
             'attributeGroups' => $attributeSchema->groups($brand),
             'attributeValues' => $attributeSchema->values($brand) ?: (object) [],
             'collections' => $brand->collections()->with('ancestors')->get()->map(fn (Collection $collection) => [
@@ -105,8 +92,6 @@ class BrandEditController
                 'draft' => route('panel.brands.draft.update', $brand),
                 'draftCommit' => route('panel.brands.draft.commit', $brand),
                 'urlsStore' => route('panel.brands.urls.store', $brand),
-                'mediaStore' => route('panel.brands.media.store', $brand),
-                'mediaReorder' => route('panel.brands.media.reorder', $brand),
                 'collectionsSearch' => route('panel.catalog.collections.search'),
             ],
         ]);

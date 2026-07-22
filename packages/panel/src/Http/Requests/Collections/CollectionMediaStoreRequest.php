@@ -2,18 +2,17 @@
 
 namespace Lunar\Panel\Http\Requests\Collections;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Lunar\Core\Models\Collection;
+use Lunar\Panel\Http\Requests\Media\MediaStoreRequest;
+use Spatie\MediaLibrary\HasMedia;
 
-class CollectionMediaStoreRequest extends FormRequest
+class CollectionMediaStoreRequest extends MediaStoreRequest
 {
-    /**
-     * @return array<string, array<int, mixed>>
-     */
-    public function rules(): array
+    protected function mediaModel(): HasMedia
     {
-        return [
-            'files' => ['required', 'array', 'min:1'],
-            'files.*' => ['file', 'image', 'max:'.config('lunar.media.max_upload_kb', 8192)],
-        ];
+        /** @var Collection $collection */
+        $collection = $this->route('collection');
+
+        return $collection;
     }
 }

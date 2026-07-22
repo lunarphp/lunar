@@ -123,8 +123,15 @@ it('serves media props on the edit page', function () {
     $this->get(route('panel.brands.edit', $this->brand))
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
-            ->has('media', 1)
-            ->where('media.0.focal', ['x' => 10, 'y' => 90])
-            ->hasAll(['media.0.url', 'media.0.update_url', 'media.0.destroy_url', 'urls.mediaStore', 'urls.mediaReorder'])
+            ->has('mediaGroups', 1)
+            ->where('mediaGroups.0.type', 'image')
+            ->where('mediaGroups.0.items.0.focal', ['x' => 10, 'y' => 90])
+            ->hasAll([
+                'mediaGroups.0.items.0.url',
+                'mediaGroups.0.items.0.update_url',
+                'mediaGroups.0.items.0.destroy_url',
+                'mediaGroups.0.urls.store',
+                'mediaGroups.0.urls.reorder',
+            ])
         );
 });
