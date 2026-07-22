@@ -74,6 +74,7 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
 export const http = {
     get: <T>(url: string): Promise<T> => request<T>('GET', url),
     post: <T>(url: string, body?: unknown): Promise<T> => request<T>('POST', url, body),
+    put: <T>(url: string, body?: unknown): Promise<T> => request<T>('PUT', url, body),
     patch: <T>(url: string, body?: unknown): Promise<T> => request<T>('PATCH', url, body),
     delete: <T = null>(url: string): Promise<T> => request<T>('DELETE', url),
 };

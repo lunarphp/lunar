@@ -4,6 +4,7 @@ namespace Lunar\Panel\Sections;
 
 use Closure;
 use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Slots\SlotRegistry;
 
@@ -36,6 +37,13 @@ interface ProvidesNavigation
      * @return array<int, class-string<DraftableResource>>
      */
     public function draftables(): array;
+
+    /**
+     * Dashboard widget classes, e.g. [RevenueChartWidget::class].
+     *
+     * @return array<int, class-string<Widget>>
+     */
+    public function widgets(): array;
 
     /**
      * @return array{input?: string|string[], hotFile?: string|null, buildDirectory?: string, __buildSourcePath?: string}|string|null

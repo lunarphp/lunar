@@ -10,6 +10,14 @@ describe('KpiCard', () => {
         expect(wrapper.find('div').classes().join(' ')).not.toContain('hover:');
     });
 
+    it('exposes the exact value as a tooltip when abbreviated', () => {
+        const wrapper = mount(KpiCard, { props: { label: 'Revenue', value: '£1.4M', valueTitle: '£1,398,635.13' } });
+
+        const value = wrapper.find('[title]');
+        expect(value.text()).toBe('£1.4M');
+        expect(value.attributes('title')).toBe('£1,398,635.13');
+    });
+
     it('renders a clickable button when a click handler is bound', async () => {
         const onClick = vi.fn();
         const wrapper = mount(KpiCard, { props: { label: 'Total', value: 40 }, attrs: { onClick } });

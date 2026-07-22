@@ -14,6 +14,7 @@ use Lunar\Panel\Slots\Slot;
 use Lunar\Panel\Slots\SlotRegistry;
 use LunarPanelExample\Actions\AuditPageAction;
 use LunarPanelExample\Actions\ImportPageAction;
+use LunarPanelExample\Dashboard\CustomerCountWidget;
 use LunarPanelExample\Tables\ExampleTableExtension;
 
 class ExampleSection extends Section
@@ -169,6 +170,15 @@ class ExampleSection extends Section
     public function tableExtensions(): array
     {
         return ['customers.index' => ExampleTableExtension::class];
+    }
+
+    /**
+     * Contribute a dashboard widget. Staff reorder, hide, and re-add it like
+     * any first-party widget; its data ships as a deferred Inertia prop.
+     */
+    public function widgets(): array
+    {
+        return [CustomerCountWidget::class];
     }
 
     /**

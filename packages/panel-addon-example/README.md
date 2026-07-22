@@ -33,6 +33,12 @@ trimmed for brevity) — read the linked file if you want the full context.
 - **Page action registration** — `ImportPageAction` (listing header) and
   `AuditPageAction` (record header, built from the `$context` record) appear
   in the real Customers pages' header ellipsis via `Section::pageActions()`.
+- **Dashboard widget registration** — `CustomerCountWidget` contributes a
+  card to the panel dashboard via `Section::widgets()`: its PHP `data()`
+  ships as a deferred Inertia prop and its Vue body
+  (`example-addon::CustomerCountWidget`) renders inside the panel-owned card
+  chrome, reorderable and hideable per staff member like any first-party
+  widget.
 - **IIFE compilation** — `resources/js/addon.ts` compiles to a single IIFE via
   the panel's exported `@lunarphp/panel-vite-plugin`, sharing the panel's own
   Vue instance (`window.Vue`) instead of bundling a second copy.
@@ -604,6 +610,42 @@ cooperation from the target page. Actions collapse into the header's "more
 actions" ellipsis by default; `primary(): true` promotes one to an
 always-visible header button. `method()`, `confirmationMessage()`,
 `permission()` and `position()` mirror `TableAction`.
+
+## Registering a dashboard widget
+
+The panel dashboard is a per-staff grid of widgets; an add-on contributes one
+by returning a `Widget` class from `Section::widgets()`:
+
+```php
+public function widgets(): array
+{
+    return [CustomerCountWidget::class];
+}
+```
+
+`src/Dashboard/CustomerCountWidget.php` shows the shape. A widget declares:
+
+- `key()` — its stable identity (order and visibility preferences store it).
+- `component()` — the namespaced Vue component name, registered from the
+  bundle exactly like a slot component
+  (`window.LunarPanel.registerComponents('example-addon', { CustomerCountWidget })`).
+- `label()` / `description()` / `icon()` — shown in the card header and the
+  "Add a widget" dialog. Labels resolve server-side through `__()`, so use
+  your namespaced lang keys.
+- `span()` (`WidgetSpan::Half` or `Full`), `permission()`, `position()`
+  (the shared `Position` primitive), and `visibleByDefault()`.
+- `data(DashboardRange $range)` — the payload, computed server-side against
+  the selected range (`$range->start()`, `->end()`, `->buckets()`, plus the
+  previous-period equivalents). It ships as a **deferred Inertia prop in its
+  own group**, so a slow widget never blocks the rest of the dashboard, and
+  nothing is computed for widgets the staff member has hidden.
+
+The dashboard owns the card chrome — header, drag handle, hide button — so the
+component renders only the body. It receives `data` (the `data()` payload) and
+`range` (the current range value) as props, and can build with the panel's
+chart primitives (`TimeSeriesChart`, `Sparkline`, `DonutChart`, `KpiCard`)
+from `@lunarphp/panel`. Staff reorder, hide, and re-add widgets per user; a
+widget whose `permission()` the staff member lacks never reaches the page.
 
 ## Ordering with `Position`
 

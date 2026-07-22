@@ -29,6 +29,27 @@ it('renders the example add-on own page for an authenticated admin', function ()
             ->where('widgets.0._actions.ping', route('panel.example-addon.widgets.ping', 1)));
 });
 
+it('contributes a dashboard widget with deferred data', function () {
+    $staff = Staff::factory()->create(['admin' => true]);
+
+    Customer::factory()->count(2)->create();
+
+    $this->actingAs($staff, 'staff')
+        ->get(route('panel.dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Dashboard')
+            ->has('widgets', 10)
+            ->where('widgets.9.key', 'example-addon-customers')
+            ->where('widgets.9.component', 'example-addon::CustomerCountWidget')
+            // Hidden by default: it appears in the Customise dialog, and no
+            // data is deferred for it until the staff member adds it.
+            ->where('widgets.9.visible', false)
+            ->loadDeferredProps(fn (Assert $props) => $props
+                ->missing('widgetData.example-addon-customers')
+            )
+        );
+});
+
 it('flashes back from the widget table row action', function () {
     $staff = Staff::factory()->create(['admin' => true]);
 
