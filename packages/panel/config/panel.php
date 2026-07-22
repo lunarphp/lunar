@@ -35,7 +35,7 @@ return [
     | Route Middleware
     |--------------------------------------------------------------------------
     */
-    'route_middleware' => ['web'],
+    'route_middleware' => ['lunar.panel'],
 
     'storefront_url' => null,
 

@@ -3,9 +3,14 @@
 namespace Lunar\Panel;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Lunar\Panel\Auth\AppAuthentication;
 use Lunar\Panel\Auth\EmailTwoFactor;
 use Lunar\Panel\Console\Commands\InstallPanelCommand;
@@ -157,11 +162,36 @@ class PanelServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * The panel's own web middleware group, so it never inherits app-appended
+     * middleware on the host `web` group (e.g. the app's own Inertia middleware,
+     * which would double-stack with HandlePanelInertiaRequests). Mirrors the
+     * framework `web` group; session/cookie/CSRF config is still read from the app.
+     */
+    protected function registerMiddlewareGroup(): void
+    {
+        // Laravel 13 renamed ValidateCsrfToken to PreventRequestForgery; support both.
+        $csrf = class_exists('Illuminate\Foundation\Http\Middleware\PreventRequestForgery')
+            ? 'Illuminate\Foundation\Http\Middleware\PreventRequestForgery'
+            : 'Illuminate\Foundation\Http\Middleware\ValidateCsrfToken';
+
+        Route::middlewareGroup('lunar.panel', [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            $csrf,
+            SubstituteBindings::class,
+        ]);
+    }
+
     protected function registerRoutes(): void
     {
+        $this->registerMiddlewareGroup();
+
         $manager = $this->app->make(PanelManager::class);
         $prefix = $manager->path();
-        $middleware = config('lunar.panel.route_middleware', ['web']);
+        $middleware = config('lunar.panel.route_middleware', ['lunar.panel']);
 
         Route::middleware([...$middleware, HandlePanelInertiaRequests::class])
             ->prefix($prefix)
