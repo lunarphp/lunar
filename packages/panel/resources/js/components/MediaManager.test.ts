@@ -40,9 +40,15 @@ const item = (id: number, primary = false) => ({
 const mountManager = (items = [item(1, true), item(2)]) =>
     mount(MediaManager, {
         props: {
-            items,
-            storeUrl: '/panel/brands/1/media',
-            reorderUrl: '/panel/brands/1/media/reorder',
+            group: {
+                collection: 'images',
+                title: 'Images',
+                description: '',
+                type: 'image' as const,
+                accept: 'image/*',
+                items,
+                urls: { store: '/panel/brands/1/media', reorder: '/panel/brands/1/media/reorder' },
+            },
         },
         global: { plugins: [i18n] },
         attachTo: document.body,
@@ -101,7 +107,7 @@ describe('MediaManager', () => {
 
         expect(router.post).toHaveBeenCalledWith(
             '/panel/brands/1/media/reorder',
-            { ids: [2, 1] },
+            { collection: 'images', ids: [2, 1] },
             expect.anything(),
         );
     });

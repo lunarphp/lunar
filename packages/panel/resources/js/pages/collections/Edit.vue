@@ -12,8 +12,8 @@ import DraftActions from '../../components/DraftActions.vue';
 import DraftConflictDialog from '../../components/DraftConflictDialog.vue';
 import FieldLabel from '../../components/FieldLabel.vue';
 import Icon from '../../components/Icon.vue';
-import MediaManager from '../../components/MediaManager.vue';
-import { type MediaItem } from '../../components/MediaEditDialog.vue';
+import MediaGroups from '../../components/MediaGroups.vue';
+import { type MediaGroup } from '../../components/media';
 import PageEmpty from '../../components/PageEmpty.vue';
 import PageHeader from '../../components/PageHeader.vue';
 import PageZone from '../../components/PageZone.vue';
@@ -85,7 +85,7 @@ const props = defineProps<{
     languages: LanguageOption[];
     groups: { id: number; name: string }[];
     collectionUrls: UrlRow[];
-    media: MediaItem[];
+    mediaGroups: MediaGroup[];
     products: Paginated<ProductRow>;
     attributeGroups: AttributeGroup[];
     attributeValues: Record<string, unknown>;
@@ -102,8 +102,6 @@ const props = defineProps<{
         draft: string;
         draftCommit: string;
         urlsStore: string;
-        mediaStore: string;
-        mediaReorder: string;
         productsAttach: string;
         productsReorder: string;
         collectionsSearch: string;
@@ -417,11 +415,7 @@ const timelineEvents = computed(() =>
                             </div>
                         </Section>
 
-                        <MediaManager
-                            :items="media"
-                            :store-url="urls.mediaStore"
-                            :reorder-url="urls.mediaReorder"
-                        />
+                        <MediaGroups :groups="mediaGroups" />
 
                         <AttributeFields
                             :groups="attributeGroups"

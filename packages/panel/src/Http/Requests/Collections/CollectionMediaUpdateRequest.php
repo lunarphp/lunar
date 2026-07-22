@@ -2,23 +2,6 @@
 
 namespace Lunar\Panel\Http\Requests\Collections;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Lunar\Panel\Http\Requests\Media\MediaUpdateRequest;
 
-class CollectionMediaUpdateRequest extends FormRequest
-{
-    /**
-     * @return array<string, array<int, mixed>>
-     */
-    public function rules(): array
-    {
-        return [
-            'name' => ['nullable', 'string', 'max:255'],
-            'alt' => ['required', 'string', 'max:255'],
-            'caption' => ['nullable', 'string', 'max:1000'],
-            'focal' => ['nullable', 'array:x,y'],
-            'focal.x' => ['required_with:focal', 'integer', 'between:0,100'],
-            'focal.y' => ['required_with:focal', 'integer', 'between:0,100'],
-            'primary' => ['nullable', 'boolean'],
-        ];
-    }
-}
+class CollectionMediaUpdateRequest extends MediaUpdateRequest {}
