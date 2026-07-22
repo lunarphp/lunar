@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Lunar\Panel\Actions\PageActionResolver;
 use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Dashboard\WidgetRegistry;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\ProvidesNavigation;
@@ -55,12 +56,15 @@ class PanelManager
 
     protected SlotRegistry $slotRegistry;
 
+    protected WidgetRegistry $widgetRegistry;
+
     public function __construct()
     {
         $this->sectionRegistry = new SectionRegistry;
         $this->navigationRegistry = new NavigationRegistry;
         $this->settingsNavigationRegistry = new NavigationRegistry;
         $this->slotRegistry = new SlotRegistry;
+        $this->widgetRegistry = new WidgetRegistry;
     }
 
     public function section(Section $section): static
@@ -143,6 +147,10 @@ class PanelManager
             $this->draftable($definitionClass);
         }
 
+        foreach ($entity->widgets() as $widgetClass) {
+            $this->widget($widgetClass);
+        }
+
         if ($viteConfig = $entity->vite()) {
             $this->vite($this->viteKeyFor($sectionKey, $entity), $viteConfig);
         }
@@ -180,6 +188,19 @@ class PanelManager
     public function slots(): SlotRegistry
     {
         return $this->slotRegistry;
+    }
+
+    /** @param class-string<Dashboard\Widget> $widgetClass */
+    public function widget(string $widgetClass): static
+    {
+        $this->widgetRegistry->add($widgetClass);
+
+        return $this;
+    }
+
+    public function widgets(): WidgetRegistry
+    {
+        return $this->widgetRegistry;
     }
 
     public function extendTable(string $tableId, string $extensionClass): static

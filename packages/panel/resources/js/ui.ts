@@ -29,6 +29,8 @@ export { default as KpiCard } from './components/KpiCard.vue';
 
 // Charts
 export { default as TimeSeriesChart } from './components/TimeSeriesChart.vue';
+export { default as Sparkline } from './components/Sparkline.vue';
+export { default as DonutChart } from './components/DonutChart.vue';
 
 // Form inputs
 export { default as TextInput } from './components/TextInput.vue';

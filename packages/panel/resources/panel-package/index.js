@@ -28,6 +28,8 @@ export const KpiCard = ui().KpiCard;
 
 // Charts
 export const TimeSeriesChart = ui().TimeSeriesChart;
+export const Sparkline = ui().Sparkline;
+export const DonutChart = ui().DonutChart;
 
 // Form inputs
 export const TextInput = ui().TextInput;

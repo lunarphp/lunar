@@ -182,6 +182,7 @@ ignored (with a logged warning).
 | `slots(SlotRegistry)` | Inject a Vue component into a named zone on a page you don't own — zone names are `{routeNameMinusPanelPrefix}:{region}[:position]`, e.g. `customers.edit:main:after`. |
 | `tableExtensions(): array` | `['customers.index' => MyTableExtension::class]` — extra `TableColumn`s, `TableFilter`s, row `TableAction`s, `TableBulkAction`s, and a `searchQuery()` hook on a first-party (or other add-on) table. |
 | `pageActions(): array` | `PageAction` classes for a page's header ellipsis, keyed by page id; record pages pass the bound model as `$context`. |
+| `widgets(): array` | `Widget` classes for the dashboard. Each names a Vue component (namespaced for add-ons), declares span/icon/label/permission/default visibility, and returns its component's props from `data(DashboardRange $range)` — shipped as a per-widget deferred Inertia prop. Staff reorder/hide/re-add widgets per user. |
 | `vite(): ?array` | The add-on's compiled JS module — the panel's blade emits its script tag automatically. |
 | `langNamespaces(): array` | Laravel translator namespaces whose lang groups the translations endpoint should serve to vue-i18n as `{namespace}::{group}` keys. |
 

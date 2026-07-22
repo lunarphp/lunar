@@ -211,14 +211,14 @@ const tooltipStyle = computed(() => {
                 >{{ tickLabel(tick) }}</text>
 
                 <!-- Series; keyed so new data replays the draw-in animation. -->
-                <path :key="`area-${animationKey}`" class="tsc-area" :d="areaPath" style="fill: var(--color-sage-soft)" fill-opacity="0.6" />
+                <path :key="`area-${animationKey}`" class="tsc-area" :d="areaPath" style="fill: var(--color-chart-1-soft)" fill-opacity="0.6" />
                 <path
                     :key="`line-${animationKey}`"
                     class="tsc-line"
                     :d="linePath"
                     pathLength="1"
                     fill="none"
-                    style="stroke: var(--color-sage-ink)"
+                    style="stroke: var(--color-chart-1)"
                     stroke-width="2"
                     stroke-linejoin="round"
                     stroke-linecap="round"
@@ -250,7 +250,7 @@ const tooltipStyle = computed(() => {
                         :cx="xAt(activeIndex)"
                         :cy="yAt(activePoint.value)"
                         r="4"
-                        style="fill: var(--color-sage-ink); stroke: var(--color-surface)"
+                        style="fill: var(--color-chart-1); stroke: var(--color-surface)"
                         stroke-width="2"
                     />
                 </template>

@@ -30,6 +30,15 @@
   --color-warn-soft: oklch(0.97 0.04 75);
   --color-warn-border: oklch(0.88 0.08 75);
 
+  /* Chart palette: slot 1 is the brand hue (the icon blue, stepped into the
+     readable band); slots are assigned in fixed order and never cycled.
+     Values validated per the dataviz checks against both surfaces. */
+  --color-chart-1: oklch(0.60 0.13 228);
+  --color-chart-2: oklch(0.62 0.13 75);
+  --color-chart-3: oklch(0.60 0.11 165);
+  --color-chart-4: oklch(0.55 0.13 300);
+  --color-chart-1-soft: oklch(0.95 0.03 228);
+
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 10px;
@@ -81,6 +90,11 @@
   --color-warn-ink: oklch(0.85 0.10 75);
   --color-warn-soft: oklch(0.30 0.05 75);
   --color-warn-border: oklch(0.45 0.08 75);
+  --color-chart-1: oklch(0.66 0.12 228);
+  --color-chart-2: oklch(0.66 0.12 75);
+  --color-chart-3: oklch(0.63 0.11 165);
+  --color-chart-4: oklch(0.60 0.12 300);
+  --color-chart-1-soft: oklch(0.30 0.05 228);
 
   color-scheme: dark;
 }

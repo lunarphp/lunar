@@ -8,13 +8,15 @@ const props = withDefaults(
     defineProps<{
         label: string;
         value: string | number;
+        /** Exact value shown on hover when value is abbreviated. */
+        valueTitle?: string;
         hint?: string;
         tone?: Tone;
         icon?: string | null;
         delta?: { value: string; tone?: Tone } | null;
         active?: boolean;
     }>(),
-    { hint: '', tone: 'neutral', icon: null, delta: null, active: false },
+    { valueTitle: undefined, hint: '', tone: 'neutral', icon: null, delta: null, active: false },
 );
 
 const TONE: Record<Tone, string> = {
@@ -52,12 +54,13 @@ const interactive = computed(() => !!attrs.onClick);
             <div class="text-[10px] uppercase tracking-[0.06em] text-ink-500 font-medium">{{ label }}</div>
         </div>
         <div class="flex items-end gap-2 mt-0.5">
-            <div class="text-[26px] leading-none font-semibold tracking-[-0.02em] [font-variant-numeric:tabular-nums] text-ink-900">{{ value }}</div>
+            <div class="text-[26px] leading-none font-semibold tracking-[-0.02em] [font-variant-numeric:tabular-nums] text-ink-900 truncate" :title="valueTitle">{{ value }}</div>
             <div
                 v-if="delta"
                 :class="['inline-flex items-center h-[18px] px-1.5 rounded-full border text-[10px] font-medium', deltaCls]"
             >{{ delta.value }}</div>
         </div>
         <div v-if="hint" class="text-[11px] text-ink-500">{{ hint }}</div>
+        <slot />
     </component>
 </template>

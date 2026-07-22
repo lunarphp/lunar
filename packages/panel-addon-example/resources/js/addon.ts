@@ -1,5 +1,6 @@
 import WidgetsIndexPage from './pages/Widgets/Index.vue';
 import SettingsIndexPage from './pages/Settings/Index.vue';
+import CustomerCountWidgetComponent from './components/CustomerCountWidget.vue';
 import InfoBannerComponent from './components/InfoBanner.vue';
 import SeoCardComponent from './components/SeoCard.vue';
 
@@ -15,6 +16,7 @@ window.LunarPanel.registerPages({
 });
 
 window.LunarPanel.registerComponents('example-addon', {
+    CustomerCountWidget: CustomerCountWidgetComponent,
     InfoBanner: InfoBannerComponent,
     SeoCard: SeoCardComponent,
 });

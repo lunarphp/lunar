@@ -4,6 +4,7 @@ namespace Lunar\Panel\Sections;
 
 use Closure;
 use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Slots\SlotRegistry;
 
@@ -48,6 +49,17 @@ abstract class SectionExtension implements ProvidesNavigation
      * @return array<int, class-string<DraftableResource>>
      */
     public function draftables(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return dashboard widget classes this extension contributes, e.g.
+     * [RevenueChartWidget::class].
+     *
+     * @return array<int, class-string<Widget>>
+     */
+    public function widgets(): array
     {
         return [];
     }

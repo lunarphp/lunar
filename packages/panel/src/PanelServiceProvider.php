@@ -18,6 +18,7 @@ use Lunar\Panel\Http\Middleware\HandlePanelInertiaRequests;
 use Lunar\Panel\Models\EditDraft;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Sections\Catalog\CatalogSection;
+use Lunar\Panel\Sections\DashboardSection;
 use Lunar\Panel\Sections\Sales\SalesSection;
 use Lunar\Panel\Sections\Settings\ActivityLogSection;
 use Lunar\Panel\Sections\Settings\AttributeGroupsSection;
@@ -92,6 +93,7 @@ class PanelServiceProvider extends ServiceProvider
 
         $this->registerPermissionGate();
 
+        Panel::section(new DashboardSection);
         Panel::section(new CatalogSection);
         Panel::section(new SalesSection);
         Panel::section(new ActivityLogSection);

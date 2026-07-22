@@ -14,6 +14,7 @@ class AddonServiceProvider extends ServiceProvider
 
         Panel::section(new WidgetsSection);
         Panel::extendSection(new WidgetsSectionExtension);
+        Panel::extendSection(new Dashboard\DashboardSectionExtension);
 
         $this->app->make(PanelManager::class)->vite('widgets-addon', [
             'input' => 'resources/js/app.ts',
