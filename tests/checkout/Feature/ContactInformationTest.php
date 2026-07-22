@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\ElementRegistry;
 use Lunar\Checkout\Elements\ContactInformation;
@@ -125,6 +126,45 @@ it('associates the customer when authenticated', function () {
 
     expect($session->fresh()->customer_reference)->toBe((string) $customer->id)
         ->and($session->fresh()->customer_email)->toBe('trade@example.test');
+});
+
+it('projects the persisted guest email into the contact element', function () {
+    app(ElementRegistry::class)->add(ContactInformation::class);
+
+    $cart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    $session->customer_email = 'guest@example.test';
+    $session->save();
+    CartSession::use($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('props.checkout.elements.0.props.email', 'guest@example.test');
+});
+
+it('projects a login url when the host names a login route', function () {
+    Route::get('login-test-stub', fn () => '')->name('login');
+    app(ElementRegistry::class)->add(ContactInformation::class);
+
+    $cart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('props.checkout.elements.0.props.loginUrl', route('login'));
+});
+
+it('projects a null login url when the host has no login route', function () {
+    app(ElementRegistry::class)->add(ContactInformation::class);
+
+    $cart = routeTestCart();
+    $session = app(CheckoutDriver::class)->createSession($cart);
+    CartSession::use($cart);
+
+    $this->get(route('lunar.checkout.show', $session->uuid), ['X-Inertia' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('props.checkout.elements.0.props.loginUrl', null);
 });
 
 it('injects contact urls into the projected contact element', function () {

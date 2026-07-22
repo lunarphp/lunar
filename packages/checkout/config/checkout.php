@@ -19,6 +19,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Merchant
+    |--------------------------------------------------------------------------
+    |
+    | The store display name shown in the checkout header (and the accessible
+    | name of the brand mark). A value, not a brand-asset substitution, so it
+    | lives in config — the header logo itself is swapped via CheckoutTheme.
+    | Falls back to the application name when null.
+    |
+    */
+
+    'merchant' => env('CHECKOUT_MERCHANT'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Package routes
     |--------------------------------------------------------------------------
     |

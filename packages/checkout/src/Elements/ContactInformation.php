@@ -2,6 +2,7 @@
 
 namespace Lunar\Checkout\Elements;
 
+use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 /**
@@ -36,7 +37,7 @@ class ContactInformation extends AbstractCheckoutElement
     }
 
     /**
-     * @return array{signedIn: bool, displayName: string|null, email: string|null, passkeysEnabled: bool}
+     * @return array{signedIn: bool, displayName: string|null, email: string|null, passkeysEnabled: bool, loginUrl: string|null}
      */
     public function props(): array
     {
@@ -47,6 +48,10 @@ class ContactInformation extends AbstractCheckoutElement
             'displayName' => $user?->name,
             'email' => $user?->email,
             'passkeysEnabled' => $this->passkeysEnabled(),
+            // The inline sign-in posts credentials to the host's named login
+            // route (Fortify or otherwise); without one the section only
+            // offers the guest path.
+            'loginUrl' => Route::has('login') ? route('login') : null,
         ];
     }
 

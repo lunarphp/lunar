@@ -41,6 +41,7 @@ final class CheckoutTheme
         'radiusLg' => ['--radius-lg', 'length'],
         'fontSans' => ['--font-sans', 'font'],
         'fontMono' => ['--font-mono', 'font'],
+        'logoHeight' => ['--logo-height', 'length'],
     ];
 
     public function __construct(
@@ -56,6 +57,9 @@ final class CheckoutTheme
         public readonly ?string $radiusLg = null,
         public readonly ?string $fontSans = null,
         public readonly ?string $fontMono = null,
+        // Rendered height of the header logo (a CSS length, e.g. '48px'). Width
+        // follows from the image's aspect ratio. Null keeps the CSS default.
+        public readonly ?string $logoHeight = null,
         // Brand logo shown in the checkout header. Not a CSS token — an image
         // URL/path rendered as <img>, validated by {@see branding()}. Null keeps
         // the shipped default mark.
@@ -92,6 +96,7 @@ final class CheckoutTheme
         ?string $radiusLg = null,
         ?string $fontSans = null,
         ?string $fontMono = null,
+        ?string $logoHeight = null,
         ?string $logo = null,
         ?string $logoAlt = null,
         ?string $stylesheet = null,
@@ -109,6 +114,7 @@ final class CheckoutTheme
             radiusLg: $radiusLg ?? $this->radiusLg,
             fontSans: $fontSans ?? $this->fontSans,
             fontMono: $fontMono ?? $this->fontMono,
+            logoHeight: $logoHeight ?? $this->logoHeight,
             logo: $logo ?? $this->logo,
             logoAlt: $logoAlt ?? $this->logoAlt,
             stylesheet: $stylesheet ?? $this->stylesheet,

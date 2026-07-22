@@ -15,7 +15,13 @@ import {
   hasCheckoutElement,
 } from './composables/elements.js'
 import { useCheckout } from './composables/useCheckout.js'
+import ContactSection from './components/ContactSection.vue'
 import '../css/checkout.css'
+
+// Built-in element components (spec 0009 §A). Registered before boot so the
+// server's component hints resolve on first render; a consumer swaps one by
+// registering a different element (server) + component (here) for the region.
+registerCheckoutElement('contact-information', ContactSection)
 
 // --- The shared runtime contributed chunks build against -----------------------
 //

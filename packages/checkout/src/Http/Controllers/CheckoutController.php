@@ -269,6 +269,10 @@ class CheckoutController extends Controller
             $props = $element->props();
 
             if ($element->handle() === 'contact') {
+                // Guest round-trip: the element projects the auth user's email
+                // (null for guests), so fall back to the email already persisted
+                // on the session model — persistence bypasses the element bag.
+                $props['email'] ??= $session->customer_email;
                 $props['lookupUrl'] = route('lunar.checkout.contact.lookup', $session->uuid);
                 $props['contactUrl'] = route('lunar.checkout.contact.store', $session->uuid);
             }

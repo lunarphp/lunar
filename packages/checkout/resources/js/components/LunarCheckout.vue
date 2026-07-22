@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import Icon from './primitives/Icon.vue'
 import BrandHead from './BrandHead.vue'
 import FulfilmentToggle from './FulfilmentToggle.vue'
@@ -26,12 +26,21 @@ const props = defineProps({
 const store = createCheckout(props.checkout)
 const { state, totalLabel, pay, elementsIn } = store
 
-// Registered custom elements placed in the main form column, paired with their
-// resolved component. An element whose component has not been registered on the
-// frontend is skipped rather than breaking the render.
-const mainElements = elementsIn('main')
-  .map((el) => ({ el, comp: resolveElement(el.component) }))
-  .filter((x) => x.comp)
+// Registered elements paired with their resolved component, per region.
+// Computed so a chunk that registers its component after first render slots in
+// (the registry map is reactive); an unresolved hint is skipped, never a crash.
+const resolveRegion = (region) =>
+  computed(() =>
+    elementsIn(region)
+      .map((el) => ({ el, comp: resolveElement(el.component) }))
+      .filter((x) => x.comp),
+  )
+
+const mainElements = resolveRegion('main')
+// The contact region renders through the same registry; when the host hasn't
+// registered a contact element server-side, fall back to the presentational
+// built-in section so the prototype layout still holds together.
+const contactElements = resolveRegion('contact')
 
 const root = ref(null)
 useCheckoutTheme(root, () => props.theme)
@@ -66,7 +75,13 @@ const mSummaryOpen = ref(false)
           <ExpressWallets />
 
           <form @submit.prevent="pay">
-            <ContactSection />
+            <component
+              :is="comp"
+              v-for="{ el, comp } in contactElements"
+              :key="el.handle"
+              :element="el"
+            />
+            <ContactSection v-if="!contactElements.length" />
 
             <template v-if="state.fulfilment === 'delivery'">
               <DeliverySection />
