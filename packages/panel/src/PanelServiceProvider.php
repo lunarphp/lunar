@@ -5,7 +5,6 @@ namespace Lunar\Panel;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Gate;
@@ -171,12 +170,17 @@ class PanelServiceProvider extends ServiceProvider
      */
     protected function registerMiddlewareGroup(): void
     {
+        // Laravel 13 renamed ValidateCsrfToken to PreventRequestForgery; support both.
+        $csrf = class_exists('Illuminate\Foundation\Http\Middleware\PreventRequestForgery')
+            ? 'Illuminate\Foundation\Http\Middleware\PreventRequestForgery'
+            : 'Illuminate\Foundation\Http\Middleware\ValidateCsrfToken';
+
         Route::middlewareGroup('lunar.panel', [
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
-            PreventRequestForgery::class,
+            $csrf,
             SubstituteBindings::class,
         ]);
     }

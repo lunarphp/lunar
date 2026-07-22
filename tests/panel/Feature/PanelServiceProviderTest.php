@@ -2,7 +2,6 @@
 
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -18,6 +17,10 @@ it('merges the panel config', function () {
 });
 
 it('registers the panel middleware group insulated from the host web group', function () {
+    $csrf = class_exists('Illuminate\Foundation\Http\Middleware\PreventRequestForgery')
+        ? 'Illuminate\Foundation\Http\Middleware\PreventRequestForgery'
+        : 'Illuminate\Foundation\Http\Middleware\ValidateCsrfToken';
+
     $group = app('router')->getMiddlewareGroups()['lunar.panel'] ?? null;
 
     expect($group)->toBe([
@@ -25,7 +28,7 @@ it('registers the panel middleware group insulated from the host web group', fun
         AddQueuedCookiesToResponse::class,
         StartSession::class,
         ShareErrorsFromSession::class,
-        PreventRequestForgery::class,
+        $csrf,
         SubstituteBindings::class,
     ]);
 });
