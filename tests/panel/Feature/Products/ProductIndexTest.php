@@ -124,6 +124,9 @@ it('filters by status, brand, type, tag and stock state', function () {
 
     $this->get(route('panel.products.index', ['stock_state' => 'out']))
         ->assertInertia(fn (Assert $page) => $page->has('products.data', 1)->where('products.data.0.id', $draft->id));
+
+    $this->get(route('panel.products.index', ['stock_state' => 'in']))
+        ->assertInertia(fn (Assert $page) => $page->has('products.data', 1)->where('products.data.0.id', $published->id));
 });
 
 it('sorts by the allow-listed columns and falls back on unknown sorts', function () {

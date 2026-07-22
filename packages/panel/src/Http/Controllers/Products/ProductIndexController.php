@@ -84,6 +84,10 @@ class ProductIndexController
                 $request->string('stock_state')->value() === 'out',
                 fn ($query) => $query->whereDoesntHave('variants', fn ($query) => $query->where('stock_available', '>', 0)),
             )
+            ->when(
+                $request->string('stock_state')->value() === 'in',
+                fn ($query) => $query->whereHas('variants', fn ($query) => $query->where('stock_available', '>', 0)),
+            )
             ->tap(fn ($query) => $resolver->applyColumnQueries($query))
             ->tap(fn ($query) => $resolver->applyFilters($query, $request))
             ->orderBy($sort === 'stock' ? 'stock' : $sort, $direction)

@@ -142,6 +142,12 @@ const statusOptions: FilterOption[] = [
     { value: 'archived', label: t('products.status_archived') },
 ];
 
+const stockOptions: FilterOption[] = [
+    { value: 'all', label: t('products.filter_all_stock') },
+    { value: 'in', label: t('products.stock_in') },
+    { value: 'out', label: t('products.stock_out') },
+];
+
 const withAll = (label: string, options: FilterOption[]): FilterOption[] => [
     { value: 'all', label },
     ...options,
@@ -309,6 +315,7 @@ const statusTone = (status: string): 'sage' | 'warn' | 'archived' =>
                         <FilterDropdown v-model="brandFilter" :label="t('products.filter_brand')" :options="withAll(t('products.filter_all_brands'), brandOptions)" default-value="all" />
                         <FilterDropdown v-model="typeFilter" :label="t('products.filter_type')" :options="withAll(t('products.filter_all_types'), typeOptions)" default-value="all" />
                         <FilterDropdown v-model="statusFilter" :label="t('products.filter_status')" :options="statusOptions" default-value="all" />
+                        <FilterDropdown v-model="stockFilter" :label="t('products.filter_stock')" :options="stockOptions" default-value="all" />
                         <FilterDropdown v-model="tagFilter" :label="t('products.filter_tag')" icon="tag" :options="withAll(t('products.filter_all_tags'), tagOptions)" default-value="all" />
                         <!-- Add-on filters registered through the table extension resolver. -->
                         <FilterDropdown
