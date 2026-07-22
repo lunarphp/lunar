@@ -57,26 +57,26 @@ class ProductForm
             Callout::make()
                 ->heading(__('lunar-filament::product.status.draft.content'))
                 ->status('info')
-                ->hidden(fn (Model $record) => ! static::isDraft($record)),
+                ->hidden(fn (?Model $record) => ! static::isDraft($record)),
             Callout::make()
                 ->heading(__('lunar-filament::product.status.archived.content'))
                 ->status('warning')
-                ->hidden(fn (Model $record) => ! static::isArchived($record)),
+                ->hidden(fn (?Model $record) => ! static::isArchived($record)),
             Callout::make()
                 ->heading(__('lunar-filament::product.status.availability.customer_groups'))
                 ->status('warning')
-                ->hidden(fn (Model $record) => ! static::isPublished($record) || static::hasEnabledCustomerGroup($record)),
+                ->hidden(fn (?Model $record) => ! static::isPublished($record) || static::hasEnabledCustomerGroup($record)),
             Callout::make()
                 ->heading(__('lunar-filament::product.status.availability.no_default_customer_group'))
                 ->status('warning')
-                ->hidden(fn (Model $record) => ! static::isPublished($record)
+                ->hidden(fn (?Model $record) => ! static::isPublished($record)
                     || ! static::hasEnabledCustomerGroup($record)
                     || (bool) CustomerGroup::getDefault()
                 ),
             Callout::make()
                 ->heading(__('lunar-filament::product.status.availability.hidden_from_guests'))
                 ->status('warning')
-                ->hidden(fn (Model $record) => ! static::isPublished($record)
+                ->hidden(fn (?Model $record) => ! static::isPublished($record)
                     || ! static::hasEnabledCustomerGroup($record)
                     || ! CustomerGroup::getDefault()
                     || static::isDefaultGroupVisibleToGuests($record)
@@ -84,7 +84,10 @@ class ProductForm
             Callout::make()
                 ->heading(__('lunar-filament::product.status.availability.channels'))
                 ->status('warning')
-                ->hidden(fn (Model $record) => ! static::isPublished($record) || $record->channels()->where('enabled', true)->count()),
+                ->hidden(fn (?Model $record) => $record === null
+                    || ! static::isPublished($record)
+                    || $record->channels()->where('enabled', true)->count()
+                ),
         ];
     }
 
@@ -178,7 +181,7 @@ class ProductForm
         return Attributes::make()
             ->using(ProductVariant::class)
             ->relationship('variant')
-            ->hidden(fn (Product $record) => $record->hasVariants);
+            ->hidden(fn (?Product $record) => $record === null || $record->hasVariants);
     }
 
     protected static function isPublished(?Model $record): bool
@@ -196,16 +199,16 @@ class ProductForm
         return $record !== null && (string) $record->status === 'archived';
     }
 
-    protected static function hasEnabledCustomerGroup(Model $record): bool
+    protected static function hasEnabledCustomerGroup(?Model $record): bool
     {
-        return $record->customerGroups()->where('enabled', true)->exists();
+        return $record !== null && $record->customerGroups()->where('enabled', true)->exists();
     }
 
-    protected static function isDefaultGroupVisibleToGuests(Model $record): bool
+    protected static function isDefaultGroupVisibleToGuests(?Model $record): bool
     {
         $default = CustomerGroup::getDefault();
 
-        return $default && $record->newQuery()
+        return $record !== null && $default && $record->newQuery()
             ->whereKey($record->getKey())
             ->customerGroup($default)
             ->exists();
