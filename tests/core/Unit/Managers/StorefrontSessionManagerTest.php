@@ -32,8 +32,12 @@ beforeEach(function (): void {
         'default' => true,
     ]);
 
+    // Pin the code: the factory draws a random currencyCode from a ~150-value
+    // pool, which can collide with the explicit 'EUR' currencies other tests
+    // create, violating the unique constraint on lunar_currencies.code.
     Currency::factory()->create([
         'default' => true,
+        'code' => 'USD',
     ]);
 });
 
@@ -176,6 +180,7 @@ test('can set currency', function (): void {
     /** @var Currency */
     $otherCurrency = Currency::factory()->create([
         'default' => false,
+        'code' => 'GBP',
     ]);
 
     /** @var StorefrontSessionManager */
