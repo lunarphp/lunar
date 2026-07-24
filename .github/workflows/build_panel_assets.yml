@@ -1,0 +1,67 @@
+name: build-panel-assets
+
+# The panel ships PREBUILT assets: PanelServiceProvider publishes
+# public/build -> public/vendor/lunar-panel/build, so consumers never run Vite.
+# But the monorepo-split action (split_packages.yml) only carries git-tracked
+# files into lunarphp/panel, and packages/panel/public/build is gitignored --
+# so a plain split would produce a package with no compiled assets.
+#
+# Build the bundle on every push to 2.x and commit it back (force-added, since
+# it's gitignored) so any tag cut from 2.x already contains fresh assets and the
+# split -- and therefore composer installs -- ship a working panel.
+
+on:
+  push:
+    branches: [2.x]
+    # public/build is deliberately absent here: the commit this workflow makes
+    # touches only that dir, so it can't retrigger itself.
+    paths:
+      - "packages/panel/resources/**"
+      - "packages/panel/vite.config.ts"
+      - "packages/panel/package.json"
+      - ".github/workflows/build_panel_assets.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-panel-assets-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # npm install, not ci: the repo gitignores package-lock.json (see
+      # tests.yml). Two installs -- the workspace root links the publishable
+      # packages, packages/panel has its own tree.
+      - name: Install workspace dependencies
+        run: npm install
+
+      - name: Install panel dependencies
+        run: npm install
+        working-directory: packages/panel
+
+      # Only the servable bundle -- not `npm run build`, which also runs vue-tsc
+      # to emit the @lunarphp/panel npm types (the publish_npm path's concern).
+      # Keeping asset shipping decoupled from typecheck means a type error can't
+      # block a fresh bundle from reaching the split.
+      - name: Build panel bundle
+        run: npx vite build
+        working-directory: packages/panel
+
+      - name: Commit built assets
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(panel): rebuild compiled assets"
+          file_pattern: packages/panel/public/build
+          # public/build is gitignored; force it into the commit.
+          add_options: "--force"
