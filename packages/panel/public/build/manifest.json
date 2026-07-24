@@ -1,0 +1,2729 @@
+{
+  "node_modules/flag-icons/flags/1x1/ad.svg": {
+    "file": "assets/flags/1x1/ad.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ad.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ae.svg": {
+    "file": "assets/flags/1x1/ae.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ae.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/af.svg": {
+    "file": "assets/flags/1x1/af.svg",
+    "src": "node_modules/flag-icons/flags/1x1/af.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ag.svg": {
+    "file": "assets/flags/1x1/ag.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ag.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ai.svg": {
+    "file": "assets/flags/1x1/ai.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ai.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/al.svg": {
+    "file": "assets/flags/1x1/al.svg",
+    "src": "node_modules/flag-icons/flags/1x1/al.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/am.svg": {
+    "file": "assets/flags/1x1/am.svg",
+    "src": "node_modules/flag-icons/flags/1x1/am.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ao.svg": {
+    "file": "assets/flags/1x1/ao.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ao.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/aq.svg": {
+    "file": "assets/flags/1x1/aq.svg",
+    "src": "node_modules/flag-icons/flags/1x1/aq.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ar.svg": {
+    "file": "assets/flags/1x1/ar.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ar.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/arab.svg": {
+    "file": "assets/flags/1x1/arab.svg",
+    "src": "node_modules/flag-icons/flags/1x1/arab.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/as.svg": {
+    "file": "assets/flags/1x1/as.svg",
+    "src": "node_modules/flag-icons/flags/1x1/as.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/asean.svg": {
+    "file": "assets/flags/1x1/asean.svg",
+    "src": "node_modules/flag-icons/flags/1x1/asean.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/at.svg": {
+    "file": "assets/flags/1x1/at.svg",
+    "src": "node_modules/flag-icons/flags/1x1/at.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/au.svg": {
+    "file": "assets/flags/1x1/au.svg",
+    "src": "node_modules/flag-icons/flags/1x1/au.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/aw.svg": {
+    "file": "assets/flags/1x1/aw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/aw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ax.svg": {
+    "file": "assets/flags/1x1/ax.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ax.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/az.svg": {
+    "file": "assets/flags/1x1/az.svg",
+    "src": "node_modules/flag-icons/flags/1x1/az.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ba.svg": {
+    "file": "assets/flags/1x1/ba.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ba.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bb.svg": {
+    "file": "assets/flags/1x1/bb.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bb.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bd.svg": {
+    "file": "assets/flags/1x1/bd.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bd.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/be.svg": {
+    "file": "assets/flags/1x1/be.svg",
+    "src": "node_modules/flag-icons/flags/1x1/be.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bf.svg": {
+    "file": "assets/flags/1x1/bf.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bf.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bg.svg": {
+    "file": "assets/flags/1x1/bg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bh.svg": {
+    "file": "assets/flags/1x1/bh.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bh.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bi.svg": {
+    "file": "assets/flags/1x1/bi.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bi.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bj.svg": {
+    "file": "assets/flags/1x1/bj.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bj.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bl.svg": {
+    "file": "assets/flags/1x1/bl.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bl.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bm.svg": {
+    "file": "assets/flags/1x1/bm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bn.svg": {
+    "file": "assets/flags/1x1/bn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bo.svg": {
+    "file": "assets/flags/1x1/bo.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bo.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bq.svg": {
+    "file": "assets/flags/1x1/bq.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bq.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/br.svg": {
+    "file": "assets/flags/1x1/br.svg",
+    "src": "node_modules/flag-icons/flags/1x1/br.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bs.svg": {
+    "file": "assets/flags/1x1/bs.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bs.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bt.svg": {
+    "file": "assets/flags/1x1/bt.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bt.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bv.svg": {
+    "file": "assets/flags/1x1/bv.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bv.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bw.svg": {
+    "file": "assets/flags/1x1/bw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/by.svg": {
+    "file": "assets/flags/1x1/by.svg",
+    "src": "node_modules/flag-icons/flags/1x1/by.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/bz.svg": {
+    "file": "assets/flags/1x1/bz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/bz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ca.svg": {
+    "file": "assets/flags/1x1/ca.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ca.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cc.svg": {
+    "file": "assets/flags/1x1/cc.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cc.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cd.svg": {
+    "file": "assets/flags/1x1/cd.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cd.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cefta.svg": {
+    "file": "assets/flags/1x1/cefta.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cefta.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cf.svg": {
+    "file": "assets/flags/1x1/cf.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cf.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cg.svg": {
+    "file": "assets/flags/1x1/cg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ch.svg": {
+    "file": "assets/flags/1x1/ch.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ch.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ci.svg": {
+    "file": "assets/flags/1x1/ci.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ci.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ck.svg": {
+    "file": "assets/flags/1x1/ck.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ck.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cl.svg": {
+    "file": "assets/flags/1x1/cl.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cl.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cm.svg": {
+    "file": "assets/flags/1x1/cm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cn.svg": {
+    "file": "assets/flags/1x1/cn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/co.svg": {
+    "file": "assets/flags/1x1/co.svg",
+    "src": "node_modules/flag-icons/flags/1x1/co.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cp.svg": {
+    "file": "assets/flags/1x1/cp.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cp.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cr.svg": {
+    "file": "assets/flags/1x1/cr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cu.svg": {
+    "file": "assets/flags/1x1/cu.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cu.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cv.svg": {
+    "file": "assets/flags/1x1/cv.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cv.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cw.svg": {
+    "file": "assets/flags/1x1/cw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cx.svg": {
+    "file": "assets/flags/1x1/cx.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cx.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cy.svg": {
+    "file": "assets/flags/1x1/cy.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cy.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/cz.svg": {
+    "file": "assets/flags/1x1/cz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/cz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/de.svg": {
+    "file": "assets/flags/1x1/de.svg",
+    "src": "node_modules/flag-icons/flags/1x1/de.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/dg.svg": {
+    "file": "assets/flags/1x1/dg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/dg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/dj.svg": {
+    "file": "assets/flags/1x1/dj.svg",
+    "src": "node_modules/flag-icons/flags/1x1/dj.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/dk.svg": {
+    "file": "assets/flags/1x1/dk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/dk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/dm.svg": {
+    "file": "assets/flags/1x1/dm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/dm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/do.svg": {
+    "file": "assets/flags/1x1/do.svg",
+    "src": "node_modules/flag-icons/flags/1x1/do.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/dz.svg": {
+    "file": "assets/flags/1x1/dz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/dz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/eac.svg": {
+    "file": "assets/flags/1x1/eac.svg",
+    "src": "node_modules/flag-icons/flags/1x1/eac.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ec.svg": {
+    "file": "assets/flags/1x1/ec.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ec.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ee.svg": {
+    "file": "assets/flags/1x1/ee.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ee.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/eg.svg": {
+    "file": "assets/flags/1x1/eg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/eg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/eh.svg": {
+    "file": "assets/flags/1x1/eh.svg",
+    "src": "node_modules/flag-icons/flags/1x1/eh.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/er.svg": {
+    "file": "assets/flags/1x1/er.svg",
+    "src": "node_modules/flag-icons/flags/1x1/er.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/es-ct.svg": {
+    "file": "assets/flags/1x1/es-ct.svg",
+    "src": "node_modules/flag-icons/flags/1x1/es-ct.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/es-ga.svg": {
+    "file": "assets/flags/1x1/es-ga.svg",
+    "src": "node_modules/flag-icons/flags/1x1/es-ga.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/es-pv.svg": {
+    "file": "assets/flags/1x1/es-pv.svg",
+    "src": "node_modules/flag-icons/flags/1x1/es-pv.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/es.svg": {
+    "file": "assets/flags/1x1/es.svg",
+    "src": "node_modules/flag-icons/flags/1x1/es.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/et.svg": {
+    "file": "assets/flags/1x1/et.svg",
+    "src": "node_modules/flag-icons/flags/1x1/et.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/eu.svg": {
+    "file": "assets/flags/1x1/eu.svg",
+    "src": "node_modules/flag-icons/flags/1x1/eu.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/fi.svg": {
+    "file": "assets/flags/1x1/fi.svg",
+    "src": "node_modules/flag-icons/flags/1x1/fi.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/fj.svg": {
+    "file": "assets/flags/1x1/fj.svg",
+    "src": "node_modules/flag-icons/flags/1x1/fj.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/fk.svg": {
+    "file": "assets/flags/1x1/fk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/fk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/fm.svg": {
+    "file": "assets/flags/1x1/fm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/fm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/fo.svg": {
+    "file": "assets/flags/1x1/fo.svg",
+    "src": "node_modules/flag-icons/flags/1x1/fo.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/fr.svg": {
+    "file": "assets/flags/1x1/fr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/fr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ga.svg": {
+    "file": "assets/flags/1x1/ga.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ga.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gb-eng.svg": {
+    "file": "assets/flags/1x1/gb-eng.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gb-eng.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gb-nir.svg": {
+    "file": "assets/flags/1x1/gb-nir.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gb-nir.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gb-sct.svg": {
+    "file": "assets/flags/1x1/gb-sct.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gb-sct.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gb-wls.svg": {
+    "file": "assets/flags/1x1/gb-wls.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gb-wls.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gb.svg": {
+    "file": "assets/flags/1x1/gb.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gb.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gd.svg": {
+    "file": "assets/flags/1x1/gd.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gd.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ge.svg": {
+    "file": "assets/flags/1x1/ge.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ge.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gf.svg": {
+    "file": "assets/flags/1x1/gf.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gf.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gg.svg": {
+    "file": "assets/flags/1x1/gg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gh.svg": {
+    "file": "assets/flags/1x1/gh.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gh.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gi.svg": {
+    "file": "assets/flags/1x1/gi.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gi.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gl.svg": {
+    "file": "assets/flags/1x1/gl.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gl.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gm.svg": {
+    "file": "assets/flags/1x1/gm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gn.svg": {
+    "file": "assets/flags/1x1/gn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gp.svg": {
+    "file": "assets/flags/1x1/gp.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gp.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gq.svg": {
+    "file": "assets/flags/1x1/gq.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gq.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gr.svg": {
+    "file": "assets/flags/1x1/gr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gs.svg": {
+    "file": "assets/flags/1x1/gs.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gs.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gt.svg": {
+    "file": "assets/flags/1x1/gt.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gt.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gu.svg": {
+    "file": "assets/flags/1x1/gu.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gu.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gw.svg": {
+    "file": "assets/flags/1x1/gw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/gy.svg": {
+    "file": "assets/flags/1x1/gy.svg",
+    "src": "node_modules/flag-icons/flags/1x1/gy.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/hk.svg": {
+    "file": "assets/flags/1x1/hk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/hk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/hm.svg": {
+    "file": "assets/flags/1x1/hm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/hm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/hn.svg": {
+    "file": "assets/flags/1x1/hn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/hn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/hr.svg": {
+    "file": "assets/flags/1x1/hr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/hr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ht.svg": {
+    "file": "assets/flags/1x1/ht.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ht.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/hu.svg": {
+    "file": "assets/flags/1x1/hu.svg",
+    "src": "node_modules/flag-icons/flags/1x1/hu.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ic.svg": {
+    "file": "assets/flags/1x1/ic.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ic.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/id.svg": {
+    "file": "assets/flags/1x1/id.svg",
+    "src": "node_modules/flag-icons/flags/1x1/id.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ie.svg": {
+    "file": "assets/flags/1x1/ie.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ie.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/il.svg": {
+    "file": "assets/flags/1x1/il.svg",
+    "src": "node_modules/flag-icons/flags/1x1/il.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/im.svg": {
+    "file": "assets/flags/1x1/im.svg",
+    "src": "node_modules/flag-icons/flags/1x1/im.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/in.svg": {
+    "file": "assets/flags/1x1/in.svg",
+    "src": "node_modules/flag-icons/flags/1x1/in.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/io.svg": {
+    "file": "assets/flags/1x1/io.svg",
+    "src": "node_modules/flag-icons/flags/1x1/io.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/iq.svg": {
+    "file": "assets/flags/1x1/iq.svg",
+    "src": "node_modules/flag-icons/flags/1x1/iq.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ir.svg": {
+    "file": "assets/flags/1x1/ir.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ir.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/is.svg": {
+    "file": "assets/flags/1x1/is.svg",
+    "src": "node_modules/flag-icons/flags/1x1/is.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/it.svg": {
+    "file": "assets/flags/1x1/it.svg",
+    "src": "node_modules/flag-icons/flags/1x1/it.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/je.svg": {
+    "file": "assets/flags/1x1/je.svg",
+    "src": "node_modules/flag-icons/flags/1x1/je.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/jm.svg": {
+    "file": "assets/flags/1x1/jm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/jm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/jo.svg": {
+    "file": "assets/flags/1x1/jo.svg",
+    "src": "node_modules/flag-icons/flags/1x1/jo.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/jp.svg": {
+    "file": "assets/flags/1x1/jp.svg",
+    "src": "node_modules/flag-icons/flags/1x1/jp.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ke.svg": {
+    "file": "assets/flags/1x1/ke.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ke.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/kg.svg": {
+    "file": "assets/flags/1x1/kg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/kg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/kh.svg": {
+    "file": "assets/flags/1x1/kh.svg",
+    "src": "node_modules/flag-icons/flags/1x1/kh.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ki.svg": {
+    "file": "assets/flags/1x1/ki.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ki.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/km.svg": {
+    "file": "assets/flags/1x1/km.svg",
+    "src": "node_modules/flag-icons/flags/1x1/km.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/kn.svg": {
+    "file": "assets/flags/1x1/kn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/kn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/kp.svg": {
+    "file": "assets/flags/1x1/kp.svg",
+    "src": "node_modules/flag-icons/flags/1x1/kp.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/kr.svg": {
+    "file": "assets/flags/1x1/kr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/kr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/kw.svg": {
+    "file": "assets/flags/1x1/kw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/kw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ky.svg": {
+    "file": "assets/flags/1x1/ky.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ky.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/kz.svg": {
+    "file": "assets/flags/1x1/kz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/kz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/la.svg": {
+    "file": "assets/flags/1x1/la.svg",
+    "src": "node_modules/flag-icons/flags/1x1/la.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/lb.svg": {
+    "file": "assets/flags/1x1/lb.svg",
+    "src": "node_modules/flag-icons/flags/1x1/lb.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/lc.svg": {
+    "file": "assets/flags/1x1/lc.svg",
+    "src": "node_modules/flag-icons/flags/1x1/lc.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/li.svg": {
+    "file": "assets/flags/1x1/li.svg",
+    "src": "node_modules/flag-icons/flags/1x1/li.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/lk.svg": {
+    "file": "assets/flags/1x1/lk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/lk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/lr.svg": {
+    "file": "assets/flags/1x1/lr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/lr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ls.svg": {
+    "file": "assets/flags/1x1/ls.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ls.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/lt.svg": {
+    "file": "assets/flags/1x1/lt.svg",
+    "src": "node_modules/flag-icons/flags/1x1/lt.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/lu.svg": {
+    "file": "assets/flags/1x1/lu.svg",
+    "src": "node_modules/flag-icons/flags/1x1/lu.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/lv.svg": {
+    "file": "assets/flags/1x1/lv.svg",
+    "src": "node_modules/flag-icons/flags/1x1/lv.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ly.svg": {
+    "file": "assets/flags/1x1/ly.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ly.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ma.svg": {
+    "file": "assets/flags/1x1/ma.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ma.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mc.svg": {
+    "file": "assets/flags/1x1/mc.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mc.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/md.svg": {
+    "file": "assets/flags/1x1/md.svg",
+    "src": "node_modules/flag-icons/flags/1x1/md.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/me.svg": {
+    "file": "assets/flags/1x1/me.svg",
+    "src": "node_modules/flag-icons/flags/1x1/me.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mf.svg": {
+    "file": "assets/flags/1x1/mf.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mf.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mg.svg": {
+    "file": "assets/flags/1x1/mg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mh.svg": {
+    "file": "assets/flags/1x1/mh.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mh.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mk.svg": {
+    "file": "assets/flags/1x1/mk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ml.svg": {
+    "file": "assets/flags/1x1/ml.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ml.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mm.svg": {
+    "file": "assets/flags/1x1/mm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mn.svg": {
+    "file": "assets/flags/1x1/mn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mo.svg": {
+    "file": "assets/flags/1x1/mo.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mo.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mp.svg": {
+    "file": "assets/flags/1x1/mp.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mp.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mq.svg": {
+    "file": "assets/flags/1x1/mq.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mq.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mr.svg": {
+    "file": "assets/flags/1x1/mr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ms.svg": {
+    "file": "assets/flags/1x1/ms.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ms.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mt.svg": {
+    "file": "assets/flags/1x1/mt.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mt.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mu.svg": {
+    "file": "assets/flags/1x1/mu.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mu.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mv.svg": {
+    "file": "assets/flags/1x1/mv.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mv.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mw.svg": {
+    "file": "assets/flags/1x1/mw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mx.svg": {
+    "file": "assets/flags/1x1/mx.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mx.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/my.svg": {
+    "file": "assets/flags/1x1/my.svg",
+    "src": "node_modules/flag-icons/flags/1x1/my.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/mz.svg": {
+    "file": "assets/flags/1x1/mz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/mz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/na.svg": {
+    "file": "assets/flags/1x1/na.svg",
+    "src": "node_modules/flag-icons/flags/1x1/na.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/nc.svg": {
+    "file": "assets/flags/1x1/nc.svg",
+    "src": "node_modules/flag-icons/flags/1x1/nc.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ne.svg": {
+    "file": "assets/flags/1x1/ne.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ne.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/nf.svg": {
+    "file": "assets/flags/1x1/nf.svg",
+    "src": "node_modules/flag-icons/flags/1x1/nf.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ng.svg": {
+    "file": "assets/flags/1x1/ng.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ng.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ni.svg": {
+    "file": "assets/flags/1x1/ni.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ni.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/nl.svg": {
+    "file": "assets/flags/1x1/nl.svg",
+    "src": "node_modules/flag-icons/flags/1x1/nl.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/no.svg": {
+    "file": "assets/flags/1x1/no.svg",
+    "src": "node_modules/flag-icons/flags/1x1/no.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/np.svg": {
+    "file": "assets/flags/1x1/np.svg",
+    "src": "node_modules/flag-icons/flags/1x1/np.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/nr.svg": {
+    "file": "assets/flags/1x1/nr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/nr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/nu.svg": {
+    "file": "assets/flags/1x1/nu.svg",
+    "src": "node_modules/flag-icons/flags/1x1/nu.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/nz.svg": {
+    "file": "assets/flags/1x1/nz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/nz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/om.svg": {
+    "file": "assets/flags/1x1/om.svg",
+    "src": "node_modules/flag-icons/flags/1x1/om.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pa.svg": {
+    "file": "assets/flags/1x1/pa.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pa.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pc.svg": {
+    "file": "assets/flags/1x1/pc.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pc.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pe.svg": {
+    "file": "assets/flags/1x1/pe.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pe.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pf.svg": {
+    "file": "assets/flags/1x1/pf.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pf.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pg.svg": {
+    "file": "assets/flags/1x1/pg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ph.svg": {
+    "file": "assets/flags/1x1/ph.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ph.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pk.svg": {
+    "file": "assets/flags/1x1/pk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pl.svg": {
+    "file": "assets/flags/1x1/pl.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pl.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pm.svg": {
+    "file": "assets/flags/1x1/pm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pn.svg": {
+    "file": "assets/flags/1x1/pn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pr.svg": {
+    "file": "assets/flags/1x1/pr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ps.svg": {
+    "file": "assets/flags/1x1/ps.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ps.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pt.svg": {
+    "file": "assets/flags/1x1/pt.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pt.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/pw.svg": {
+    "file": "assets/flags/1x1/pw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/pw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/py.svg": {
+    "file": "assets/flags/1x1/py.svg",
+    "src": "node_modules/flag-icons/flags/1x1/py.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/qa.svg": {
+    "file": "assets/flags/1x1/qa.svg",
+    "src": "node_modules/flag-icons/flags/1x1/qa.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/re.svg": {
+    "file": "assets/flags/1x1/re.svg",
+    "src": "node_modules/flag-icons/flags/1x1/re.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ro.svg": {
+    "file": "assets/flags/1x1/ro.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ro.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/rs.svg": {
+    "file": "assets/flags/1x1/rs.svg",
+    "src": "node_modules/flag-icons/flags/1x1/rs.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ru.svg": {
+    "file": "assets/flags/1x1/ru.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ru.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/rw.svg": {
+    "file": "assets/flags/1x1/rw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/rw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sa.svg": {
+    "file": "assets/flags/1x1/sa.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sa.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sb.svg": {
+    "file": "assets/flags/1x1/sb.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sb.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sc.svg": {
+    "file": "assets/flags/1x1/sc.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sc.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sd.svg": {
+    "file": "assets/flags/1x1/sd.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sd.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/se.svg": {
+    "file": "assets/flags/1x1/se.svg",
+    "src": "node_modules/flag-icons/flags/1x1/se.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sg.svg": {
+    "file": "assets/flags/1x1/sg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sh-ac.svg": {
+    "file": "assets/flags/1x1/sh-ac.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sh-ac.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sh-hl.svg": {
+    "file": "assets/flags/1x1/sh-hl.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sh-hl.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sh-ta.svg": {
+    "file": "assets/flags/1x1/sh-ta.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sh-ta.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sh.svg": {
+    "file": "assets/flags/1x1/sh.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sh.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/si.svg": {
+    "file": "assets/flags/1x1/si.svg",
+    "src": "node_modules/flag-icons/flags/1x1/si.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sj.svg": {
+    "file": "assets/flags/1x1/sj.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sj.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sk.svg": {
+    "file": "assets/flags/1x1/sk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sl.svg": {
+    "file": "assets/flags/1x1/sl.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sl.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sm.svg": {
+    "file": "assets/flags/1x1/sm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sn.svg": {
+    "file": "assets/flags/1x1/sn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/so.svg": {
+    "file": "assets/flags/1x1/so.svg",
+    "src": "node_modules/flag-icons/flags/1x1/so.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sr.svg": {
+    "file": "assets/flags/1x1/sr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ss.svg": {
+    "file": "assets/flags/1x1/ss.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ss.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/st.svg": {
+    "file": "assets/flags/1x1/st.svg",
+    "src": "node_modules/flag-icons/flags/1x1/st.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sv.svg": {
+    "file": "assets/flags/1x1/sv.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sv.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sx.svg": {
+    "file": "assets/flags/1x1/sx.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sx.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sy.svg": {
+    "file": "assets/flags/1x1/sy.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sy.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/sz.svg": {
+    "file": "assets/flags/1x1/sz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/sz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tc.svg": {
+    "file": "assets/flags/1x1/tc.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tc.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/td.svg": {
+    "file": "assets/flags/1x1/td.svg",
+    "src": "node_modules/flag-icons/flags/1x1/td.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tf.svg": {
+    "file": "assets/flags/1x1/tf.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tf.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tg.svg": {
+    "file": "assets/flags/1x1/tg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/th.svg": {
+    "file": "assets/flags/1x1/th.svg",
+    "src": "node_modules/flag-icons/flags/1x1/th.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tj.svg": {
+    "file": "assets/flags/1x1/tj.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tj.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tk.svg": {
+    "file": "assets/flags/1x1/tk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tl.svg": {
+    "file": "assets/flags/1x1/tl.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tl.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tm.svg": {
+    "file": "assets/flags/1x1/tm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tn.svg": {
+    "file": "assets/flags/1x1/tn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/to.svg": {
+    "file": "assets/flags/1x1/to.svg",
+    "src": "node_modules/flag-icons/flags/1x1/to.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tr.svg": {
+    "file": "assets/flags/1x1/tr.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tr.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tt.svg": {
+    "file": "assets/flags/1x1/tt.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tt.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tv.svg": {
+    "file": "assets/flags/1x1/tv.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tv.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tw.svg": {
+    "file": "assets/flags/1x1/tw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tw.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/tz.svg": {
+    "file": "assets/flags/1x1/tz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/tz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ua.svg": {
+    "file": "assets/flags/1x1/ua.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ua.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ug.svg": {
+    "file": "assets/flags/1x1/ug.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ug.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/um.svg": {
+    "file": "assets/flags/1x1/um.svg",
+    "src": "node_modules/flag-icons/flags/1x1/um.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/un.svg": {
+    "file": "assets/flags/1x1/un.svg",
+    "src": "node_modules/flag-icons/flags/1x1/un.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/us.svg": {
+    "file": "assets/flags/1x1/us.svg",
+    "src": "node_modules/flag-icons/flags/1x1/us.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/uy.svg": {
+    "file": "assets/flags/1x1/uy.svg",
+    "src": "node_modules/flag-icons/flags/1x1/uy.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/uz.svg": {
+    "file": "assets/flags/1x1/uz.svg",
+    "src": "node_modules/flag-icons/flags/1x1/uz.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/va.svg": {
+    "file": "assets/flags/1x1/va.svg",
+    "src": "node_modules/flag-icons/flags/1x1/va.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/vc.svg": {
+    "file": "assets/flags/1x1/vc.svg",
+    "src": "node_modules/flag-icons/flags/1x1/vc.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ve.svg": {
+    "file": "assets/flags/1x1/ve.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ve.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/vg.svg": {
+    "file": "assets/flags/1x1/vg.svg",
+    "src": "node_modules/flag-icons/flags/1x1/vg.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/vi.svg": {
+    "file": "assets/flags/1x1/vi.svg",
+    "src": "node_modules/flag-icons/flags/1x1/vi.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/vn.svg": {
+    "file": "assets/flags/1x1/vn.svg",
+    "src": "node_modules/flag-icons/flags/1x1/vn.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/vu.svg": {
+    "file": "assets/flags/1x1/vu.svg",
+    "src": "node_modules/flag-icons/flags/1x1/vu.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/wf.svg": {
+    "file": "assets/flags/1x1/wf.svg",
+    "src": "node_modules/flag-icons/flags/1x1/wf.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ws.svg": {
+    "file": "assets/flags/1x1/ws.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ws.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/xk.svg": {
+    "file": "assets/flags/1x1/xk.svg",
+    "src": "node_modules/flag-icons/flags/1x1/xk.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/xx.svg": {
+    "file": "assets/flags/1x1/xx.svg",
+    "src": "node_modules/flag-icons/flags/1x1/xx.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/ye.svg": {
+    "file": "assets/flags/1x1/ye.svg",
+    "src": "node_modules/flag-icons/flags/1x1/ye.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/yt.svg": {
+    "file": "assets/flags/1x1/yt.svg",
+    "src": "node_modules/flag-icons/flags/1x1/yt.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/za.svg": {
+    "file": "assets/flags/1x1/za.svg",
+    "src": "node_modules/flag-icons/flags/1x1/za.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/zm.svg": {
+    "file": "assets/flags/1x1/zm.svg",
+    "src": "node_modules/flag-icons/flags/1x1/zm.svg"
+  },
+  "node_modules/flag-icons/flags/1x1/zw.svg": {
+    "file": "assets/flags/1x1/zw.svg",
+    "src": "node_modules/flag-icons/flags/1x1/zw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ad.svg": {
+    "file": "assets/flags/4x3/ad.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ad.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ae.svg": {
+    "file": "assets/flags/4x3/ae.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ae.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/af.svg": {
+    "file": "assets/flags/4x3/af.svg",
+    "src": "node_modules/flag-icons/flags/4x3/af.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ag.svg": {
+    "file": "assets/flags/4x3/ag.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ag.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ai.svg": {
+    "file": "assets/flags/4x3/ai.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ai.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/al.svg": {
+    "file": "assets/flags/4x3/al.svg",
+    "src": "node_modules/flag-icons/flags/4x3/al.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/am.svg": {
+    "file": "assets/flags/4x3/am.svg",
+    "src": "node_modules/flag-icons/flags/4x3/am.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ao.svg": {
+    "file": "assets/flags/4x3/ao.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ao.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/aq.svg": {
+    "file": "assets/flags/4x3/aq.svg",
+    "src": "node_modules/flag-icons/flags/4x3/aq.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ar.svg": {
+    "file": "assets/flags/4x3/ar.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ar.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/arab.svg": {
+    "file": "assets/flags/4x3/arab.svg",
+    "src": "node_modules/flag-icons/flags/4x3/arab.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/as.svg": {
+    "file": "assets/flags/4x3/as.svg",
+    "src": "node_modules/flag-icons/flags/4x3/as.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/asean.svg": {
+    "file": "assets/flags/4x3/asean.svg",
+    "src": "node_modules/flag-icons/flags/4x3/asean.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/at.svg": {
+    "file": "assets/flags/4x3/at.svg",
+    "src": "node_modules/flag-icons/flags/4x3/at.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/au.svg": {
+    "file": "assets/flags/4x3/au.svg",
+    "src": "node_modules/flag-icons/flags/4x3/au.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/aw.svg": {
+    "file": "assets/flags/4x3/aw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/aw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ax.svg": {
+    "file": "assets/flags/4x3/ax.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ax.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/az.svg": {
+    "file": "assets/flags/4x3/az.svg",
+    "src": "node_modules/flag-icons/flags/4x3/az.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ba.svg": {
+    "file": "assets/flags/4x3/ba.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ba.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bb.svg": {
+    "file": "assets/flags/4x3/bb.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bb.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bd.svg": {
+    "file": "assets/flags/4x3/bd.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bd.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/be.svg": {
+    "file": "assets/flags/4x3/be.svg",
+    "src": "node_modules/flag-icons/flags/4x3/be.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bf.svg": {
+    "file": "assets/flags/4x3/bf.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bf.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bg.svg": {
+    "file": "assets/flags/4x3/bg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bh.svg": {
+    "file": "assets/flags/4x3/bh.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bh.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bi.svg": {
+    "file": "assets/flags/4x3/bi.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bi.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bj.svg": {
+    "file": "assets/flags/4x3/bj.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bj.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bl.svg": {
+    "file": "assets/flags/4x3/bl.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bl.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bm.svg": {
+    "file": "assets/flags/4x3/bm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bn.svg": {
+    "file": "assets/flags/4x3/bn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bo.svg": {
+    "file": "assets/flags/4x3/bo.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bo.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bq.svg": {
+    "file": "assets/flags/4x3/bq.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bq.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/br.svg": {
+    "file": "assets/flags/4x3/br.svg",
+    "src": "node_modules/flag-icons/flags/4x3/br.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bs.svg": {
+    "file": "assets/flags/4x3/bs.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bs.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bt.svg": {
+    "file": "assets/flags/4x3/bt.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bt.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bv.svg": {
+    "file": "assets/flags/4x3/bv.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bv.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bw.svg": {
+    "file": "assets/flags/4x3/bw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/by.svg": {
+    "file": "assets/flags/4x3/by.svg",
+    "src": "node_modules/flag-icons/flags/4x3/by.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/bz.svg": {
+    "file": "assets/flags/4x3/bz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/bz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ca.svg": {
+    "file": "assets/flags/4x3/ca.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ca.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cc.svg": {
+    "file": "assets/flags/4x3/cc.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cc.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cd.svg": {
+    "file": "assets/flags/4x3/cd.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cd.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cefta.svg": {
+    "file": "assets/flags/4x3/cefta.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cefta.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cf.svg": {
+    "file": "assets/flags/4x3/cf.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cf.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cg.svg": {
+    "file": "assets/flags/4x3/cg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ch.svg": {
+    "file": "assets/flags/4x3/ch.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ch.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ci.svg": {
+    "file": "assets/flags/4x3/ci.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ci.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ck.svg": {
+    "file": "assets/flags/4x3/ck.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ck.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cl.svg": {
+    "file": "assets/flags/4x3/cl.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cl.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cm.svg": {
+    "file": "assets/flags/4x3/cm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cn.svg": {
+    "file": "assets/flags/4x3/cn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/co.svg": {
+    "file": "assets/flags/4x3/co.svg",
+    "src": "node_modules/flag-icons/flags/4x3/co.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cp.svg": {
+    "file": "assets/flags/4x3/cp.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cp.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cr.svg": {
+    "file": "assets/flags/4x3/cr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cu.svg": {
+    "file": "assets/flags/4x3/cu.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cu.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cv.svg": {
+    "file": "assets/flags/4x3/cv.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cv.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cw.svg": {
+    "file": "assets/flags/4x3/cw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cx.svg": {
+    "file": "assets/flags/4x3/cx.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cx.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cy.svg": {
+    "file": "assets/flags/4x3/cy.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cy.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/cz.svg": {
+    "file": "assets/flags/4x3/cz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/cz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/de.svg": {
+    "file": "assets/flags/4x3/de.svg",
+    "src": "node_modules/flag-icons/flags/4x3/de.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/dg.svg": {
+    "file": "assets/flags/4x3/dg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/dg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/dj.svg": {
+    "file": "assets/flags/4x3/dj.svg",
+    "src": "node_modules/flag-icons/flags/4x3/dj.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/dk.svg": {
+    "file": "assets/flags/4x3/dk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/dk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/dm.svg": {
+    "file": "assets/flags/4x3/dm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/dm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/do.svg": {
+    "file": "assets/flags/4x3/do.svg",
+    "src": "node_modules/flag-icons/flags/4x3/do.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/dz.svg": {
+    "file": "assets/flags/4x3/dz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/dz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/eac.svg": {
+    "file": "assets/flags/4x3/eac.svg",
+    "src": "node_modules/flag-icons/flags/4x3/eac.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ec.svg": {
+    "file": "assets/flags/4x3/ec.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ec.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ee.svg": {
+    "file": "assets/flags/4x3/ee.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ee.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/eg.svg": {
+    "file": "assets/flags/4x3/eg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/eg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/eh.svg": {
+    "file": "assets/flags/4x3/eh.svg",
+    "src": "node_modules/flag-icons/flags/4x3/eh.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/er.svg": {
+    "file": "assets/flags/4x3/er.svg",
+    "src": "node_modules/flag-icons/flags/4x3/er.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/es-ct.svg": {
+    "file": "assets/flags/4x3/es-ct.svg",
+    "src": "node_modules/flag-icons/flags/4x3/es-ct.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/es-ga.svg": {
+    "file": "assets/flags/4x3/es-ga.svg",
+    "src": "node_modules/flag-icons/flags/4x3/es-ga.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/es-pv.svg": {
+    "file": "assets/flags/4x3/es-pv.svg",
+    "src": "node_modules/flag-icons/flags/4x3/es-pv.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/es.svg": {
+    "file": "assets/flags/4x3/es.svg",
+    "src": "node_modules/flag-icons/flags/4x3/es.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/et.svg": {
+    "file": "assets/flags/4x3/et.svg",
+    "src": "node_modules/flag-icons/flags/4x3/et.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/eu.svg": {
+    "file": "assets/flags/4x3/eu.svg",
+    "src": "node_modules/flag-icons/flags/4x3/eu.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/fi.svg": {
+    "file": "assets/flags/4x3/fi.svg",
+    "src": "node_modules/flag-icons/flags/4x3/fi.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/fj.svg": {
+    "file": "assets/flags/4x3/fj.svg",
+    "src": "node_modules/flag-icons/flags/4x3/fj.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/fk.svg": {
+    "file": "assets/flags/4x3/fk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/fk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/fm.svg": {
+    "file": "assets/flags/4x3/fm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/fm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/fo.svg": {
+    "file": "assets/flags/4x3/fo.svg",
+    "src": "node_modules/flag-icons/flags/4x3/fo.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/fr.svg": {
+    "file": "assets/flags/4x3/fr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/fr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ga.svg": {
+    "file": "assets/flags/4x3/ga.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ga.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gb-eng.svg": {
+    "file": "assets/flags/4x3/gb-eng.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gb-eng.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gb-nir.svg": {
+    "file": "assets/flags/4x3/gb-nir.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gb-nir.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gb-sct.svg": {
+    "file": "assets/flags/4x3/gb-sct.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gb-sct.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gb-wls.svg": {
+    "file": "assets/flags/4x3/gb-wls.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gb-wls.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gb.svg": {
+    "file": "assets/flags/4x3/gb.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gb.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gd.svg": {
+    "file": "assets/flags/4x3/gd.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gd.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ge.svg": {
+    "file": "assets/flags/4x3/ge.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ge.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gf.svg": {
+    "file": "assets/flags/4x3/gf.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gf.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gg.svg": {
+    "file": "assets/flags/4x3/gg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gh.svg": {
+    "file": "assets/flags/4x3/gh.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gh.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gi.svg": {
+    "file": "assets/flags/4x3/gi.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gi.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gl.svg": {
+    "file": "assets/flags/4x3/gl.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gl.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gm.svg": {
+    "file": "assets/flags/4x3/gm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gn.svg": {
+    "file": "assets/flags/4x3/gn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gp.svg": {
+    "file": "assets/flags/4x3/gp.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gp.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gq.svg": {
+    "file": "assets/flags/4x3/gq.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gq.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gr.svg": {
+    "file": "assets/flags/4x3/gr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gs.svg": {
+    "file": "assets/flags/4x3/gs.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gs.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gt.svg": {
+    "file": "assets/flags/4x3/gt.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gt.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gu.svg": {
+    "file": "assets/flags/4x3/gu.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gu.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gw.svg": {
+    "file": "assets/flags/4x3/gw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/gy.svg": {
+    "file": "assets/flags/4x3/gy.svg",
+    "src": "node_modules/flag-icons/flags/4x3/gy.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/hk.svg": {
+    "file": "assets/flags/4x3/hk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/hk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/hm.svg": {
+    "file": "assets/flags/4x3/hm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/hm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/hn.svg": {
+    "file": "assets/flags/4x3/hn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/hn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/hr.svg": {
+    "file": "assets/flags/4x3/hr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/hr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ht.svg": {
+    "file": "assets/flags/4x3/ht.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ht.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/hu.svg": {
+    "file": "assets/flags/4x3/hu.svg",
+    "src": "node_modules/flag-icons/flags/4x3/hu.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ic.svg": {
+    "file": "assets/flags/4x3/ic.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ic.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/id.svg": {
+    "file": "assets/flags/4x3/id.svg",
+    "src": "node_modules/flag-icons/flags/4x3/id.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ie.svg": {
+    "file": "assets/flags/4x3/ie.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ie.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/il.svg": {
+    "file": "assets/flags/4x3/il.svg",
+    "src": "node_modules/flag-icons/flags/4x3/il.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/im.svg": {
+    "file": "assets/flags/4x3/im.svg",
+    "src": "node_modules/flag-icons/flags/4x3/im.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/in.svg": {
+    "file": "assets/flags/4x3/in.svg",
+    "src": "node_modules/flag-icons/flags/4x3/in.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/io.svg": {
+    "file": "assets/flags/4x3/io.svg",
+    "src": "node_modules/flag-icons/flags/4x3/io.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/iq.svg": {
+    "file": "assets/flags/4x3/iq.svg",
+    "src": "node_modules/flag-icons/flags/4x3/iq.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ir.svg": {
+    "file": "assets/flags/4x3/ir.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ir.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/is.svg": {
+    "file": "assets/flags/4x3/is.svg",
+    "src": "node_modules/flag-icons/flags/4x3/is.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/it.svg": {
+    "file": "assets/flags/4x3/it.svg",
+    "src": "node_modules/flag-icons/flags/4x3/it.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/je.svg": {
+    "file": "assets/flags/4x3/je.svg",
+    "src": "node_modules/flag-icons/flags/4x3/je.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/jm.svg": {
+    "file": "assets/flags/4x3/jm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/jm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/jo.svg": {
+    "file": "assets/flags/4x3/jo.svg",
+    "src": "node_modules/flag-icons/flags/4x3/jo.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/jp.svg": {
+    "file": "assets/flags/4x3/jp.svg",
+    "src": "node_modules/flag-icons/flags/4x3/jp.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ke.svg": {
+    "file": "assets/flags/4x3/ke.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ke.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/kg.svg": {
+    "file": "assets/flags/4x3/kg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/kg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/kh.svg": {
+    "file": "assets/flags/4x3/kh.svg",
+    "src": "node_modules/flag-icons/flags/4x3/kh.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ki.svg": {
+    "file": "assets/flags/4x3/ki.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ki.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/km.svg": {
+    "file": "assets/flags/4x3/km.svg",
+    "src": "node_modules/flag-icons/flags/4x3/km.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/kn.svg": {
+    "file": "assets/flags/4x3/kn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/kn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/kp.svg": {
+    "file": "assets/flags/4x3/kp.svg",
+    "src": "node_modules/flag-icons/flags/4x3/kp.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/kr.svg": {
+    "file": "assets/flags/4x3/kr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/kr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/kw.svg": {
+    "file": "assets/flags/4x3/kw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/kw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ky.svg": {
+    "file": "assets/flags/4x3/ky.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ky.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/kz.svg": {
+    "file": "assets/flags/4x3/kz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/kz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/la.svg": {
+    "file": "assets/flags/4x3/la.svg",
+    "src": "node_modules/flag-icons/flags/4x3/la.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/lb.svg": {
+    "file": "assets/flags/4x3/lb.svg",
+    "src": "node_modules/flag-icons/flags/4x3/lb.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/lc.svg": {
+    "file": "assets/flags/4x3/lc.svg",
+    "src": "node_modules/flag-icons/flags/4x3/lc.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/li.svg": {
+    "file": "assets/flags/4x3/li.svg",
+    "src": "node_modules/flag-icons/flags/4x3/li.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/lk.svg": {
+    "file": "assets/flags/4x3/lk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/lk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/lr.svg": {
+    "file": "assets/flags/4x3/lr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/lr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ls.svg": {
+    "file": "assets/flags/4x3/ls.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ls.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/lt.svg": {
+    "file": "assets/flags/4x3/lt.svg",
+    "src": "node_modules/flag-icons/flags/4x3/lt.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/lu.svg": {
+    "file": "assets/flags/4x3/lu.svg",
+    "src": "node_modules/flag-icons/flags/4x3/lu.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/lv.svg": {
+    "file": "assets/flags/4x3/lv.svg",
+    "src": "node_modules/flag-icons/flags/4x3/lv.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ly.svg": {
+    "file": "assets/flags/4x3/ly.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ly.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ma.svg": {
+    "file": "assets/flags/4x3/ma.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ma.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mc.svg": {
+    "file": "assets/flags/4x3/mc.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mc.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/md.svg": {
+    "file": "assets/flags/4x3/md.svg",
+    "src": "node_modules/flag-icons/flags/4x3/md.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/me.svg": {
+    "file": "assets/flags/4x3/me.svg",
+    "src": "node_modules/flag-icons/flags/4x3/me.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mf.svg": {
+    "file": "assets/flags/4x3/mf.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mf.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mg.svg": {
+    "file": "assets/flags/4x3/mg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mh.svg": {
+    "file": "assets/flags/4x3/mh.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mh.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mk.svg": {
+    "file": "assets/flags/4x3/mk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ml.svg": {
+    "file": "assets/flags/4x3/ml.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ml.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mm.svg": {
+    "file": "assets/flags/4x3/mm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mn.svg": {
+    "file": "assets/flags/4x3/mn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mo.svg": {
+    "file": "assets/flags/4x3/mo.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mo.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mp.svg": {
+    "file": "assets/flags/4x3/mp.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mp.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mq.svg": {
+    "file": "assets/flags/4x3/mq.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mq.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mr.svg": {
+    "file": "assets/flags/4x3/mr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ms.svg": {
+    "file": "assets/flags/4x3/ms.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ms.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mt.svg": {
+    "file": "assets/flags/4x3/mt.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mt.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mu.svg": {
+    "file": "assets/flags/4x3/mu.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mu.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mv.svg": {
+    "file": "assets/flags/4x3/mv.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mv.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mw.svg": {
+    "file": "assets/flags/4x3/mw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mx.svg": {
+    "file": "assets/flags/4x3/mx.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mx.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/my.svg": {
+    "file": "assets/flags/4x3/my.svg",
+    "src": "node_modules/flag-icons/flags/4x3/my.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/mz.svg": {
+    "file": "assets/flags/4x3/mz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/mz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/na.svg": {
+    "file": "assets/flags/4x3/na.svg",
+    "src": "node_modules/flag-icons/flags/4x3/na.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/nc.svg": {
+    "file": "assets/flags/4x3/nc.svg",
+    "src": "node_modules/flag-icons/flags/4x3/nc.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ne.svg": {
+    "file": "assets/flags/4x3/ne.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ne.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/nf.svg": {
+    "file": "assets/flags/4x3/nf.svg",
+    "src": "node_modules/flag-icons/flags/4x3/nf.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ng.svg": {
+    "file": "assets/flags/4x3/ng.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ng.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ni.svg": {
+    "file": "assets/flags/4x3/ni.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ni.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/nl.svg": {
+    "file": "assets/flags/4x3/nl.svg",
+    "src": "node_modules/flag-icons/flags/4x3/nl.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/no.svg": {
+    "file": "assets/flags/4x3/no.svg",
+    "src": "node_modules/flag-icons/flags/4x3/no.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/np.svg": {
+    "file": "assets/flags/4x3/np.svg",
+    "src": "node_modules/flag-icons/flags/4x3/np.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/nr.svg": {
+    "file": "assets/flags/4x3/nr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/nr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/nu.svg": {
+    "file": "assets/flags/4x3/nu.svg",
+    "src": "node_modules/flag-icons/flags/4x3/nu.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/nz.svg": {
+    "file": "assets/flags/4x3/nz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/nz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/om.svg": {
+    "file": "assets/flags/4x3/om.svg",
+    "src": "node_modules/flag-icons/flags/4x3/om.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pa.svg": {
+    "file": "assets/flags/4x3/pa.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pa.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pc.svg": {
+    "file": "assets/flags/4x3/pc.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pc.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pe.svg": {
+    "file": "assets/flags/4x3/pe.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pe.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pf.svg": {
+    "file": "assets/flags/4x3/pf.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pf.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pg.svg": {
+    "file": "assets/flags/4x3/pg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ph.svg": {
+    "file": "assets/flags/4x3/ph.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ph.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pk.svg": {
+    "file": "assets/flags/4x3/pk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pl.svg": {
+    "file": "assets/flags/4x3/pl.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pl.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pm.svg": {
+    "file": "assets/flags/4x3/pm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pn.svg": {
+    "file": "assets/flags/4x3/pn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pr.svg": {
+    "file": "assets/flags/4x3/pr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ps.svg": {
+    "file": "assets/flags/4x3/ps.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ps.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pt.svg": {
+    "file": "assets/flags/4x3/pt.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pt.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/pw.svg": {
+    "file": "assets/flags/4x3/pw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/pw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/py.svg": {
+    "file": "assets/flags/4x3/py.svg",
+    "src": "node_modules/flag-icons/flags/4x3/py.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/qa.svg": {
+    "file": "assets/flags/4x3/qa.svg",
+    "src": "node_modules/flag-icons/flags/4x3/qa.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/re.svg": {
+    "file": "assets/flags/4x3/re.svg",
+    "src": "node_modules/flag-icons/flags/4x3/re.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ro.svg": {
+    "file": "assets/flags/4x3/ro.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ro.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/rs.svg": {
+    "file": "assets/flags/4x3/rs.svg",
+    "src": "node_modules/flag-icons/flags/4x3/rs.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ru.svg": {
+    "file": "assets/flags/4x3/ru.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ru.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/rw.svg": {
+    "file": "assets/flags/4x3/rw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/rw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sa.svg": {
+    "file": "assets/flags/4x3/sa.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sa.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sb.svg": {
+    "file": "assets/flags/4x3/sb.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sb.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sc.svg": {
+    "file": "assets/flags/4x3/sc.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sc.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sd.svg": {
+    "file": "assets/flags/4x3/sd.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sd.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/se.svg": {
+    "file": "assets/flags/4x3/se.svg",
+    "src": "node_modules/flag-icons/flags/4x3/se.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sg.svg": {
+    "file": "assets/flags/4x3/sg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sh-ac.svg": {
+    "file": "assets/flags/4x3/sh-ac.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sh-ac.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sh-hl.svg": {
+    "file": "assets/flags/4x3/sh-hl.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sh-hl.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sh-ta.svg": {
+    "file": "assets/flags/4x3/sh-ta.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sh-ta.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sh.svg": {
+    "file": "assets/flags/4x3/sh.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sh.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/si.svg": {
+    "file": "assets/flags/4x3/si.svg",
+    "src": "node_modules/flag-icons/flags/4x3/si.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sj.svg": {
+    "file": "assets/flags/4x3/sj.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sj.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sk.svg": {
+    "file": "assets/flags/4x3/sk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sl.svg": {
+    "file": "assets/flags/4x3/sl.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sl.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sm.svg": {
+    "file": "assets/flags/4x3/sm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sn.svg": {
+    "file": "assets/flags/4x3/sn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/so.svg": {
+    "file": "assets/flags/4x3/so.svg",
+    "src": "node_modules/flag-icons/flags/4x3/so.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sr.svg": {
+    "file": "assets/flags/4x3/sr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ss.svg": {
+    "file": "assets/flags/4x3/ss.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ss.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/st.svg": {
+    "file": "assets/flags/4x3/st.svg",
+    "src": "node_modules/flag-icons/flags/4x3/st.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sv.svg": {
+    "file": "assets/flags/4x3/sv.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sv.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sx.svg": {
+    "file": "assets/flags/4x3/sx.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sx.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sy.svg": {
+    "file": "assets/flags/4x3/sy.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sy.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/sz.svg": {
+    "file": "assets/flags/4x3/sz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/sz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tc.svg": {
+    "file": "assets/flags/4x3/tc.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tc.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/td.svg": {
+    "file": "assets/flags/4x3/td.svg",
+    "src": "node_modules/flag-icons/flags/4x3/td.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tf.svg": {
+    "file": "assets/flags/4x3/tf.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tf.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tg.svg": {
+    "file": "assets/flags/4x3/tg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/th.svg": {
+    "file": "assets/flags/4x3/th.svg",
+    "src": "node_modules/flag-icons/flags/4x3/th.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tj.svg": {
+    "file": "assets/flags/4x3/tj.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tj.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tk.svg": {
+    "file": "assets/flags/4x3/tk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tl.svg": {
+    "file": "assets/flags/4x3/tl.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tl.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tm.svg": {
+    "file": "assets/flags/4x3/tm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tn.svg": {
+    "file": "assets/flags/4x3/tn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/to.svg": {
+    "file": "assets/flags/4x3/to.svg",
+    "src": "node_modules/flag-icons/flags/4x3/to.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tr.svg": {
+    "file": "assets/flags/4x3/tr.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tr.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tt.svg": {
+    "file": "assets/flags/4x3/tt.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tt.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tv.svg": {
+    "file": "assets/flags/4x3/tv.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tv.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tw.svg": {
+    "file": "assets/flags/4x3/tw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tw.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/tz.svg": {
+    "file": "assets/flags/4x3/tz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/tz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ua.svg": {
+    "file": "assets/flags/4x3/ua.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ua.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ug.svg": {
+    "file": "assets/flags/4x3/ug.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ug.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/um.svg": {
+    "file": "assets/flags/4x3/um.svg",
+    "src": "node_modules/flag-icons/flags/4x3/um.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/un.svg": {
+    "file": "assets/flags/4x3/un.svg",
+    "src": "node_modules/flag-icons/flags/4x3/un.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/us.svg": {
+    "file": "assets/flags/4x3/us.svg",
+    "src": "node_modules/flag-icons/flags/4x3/us.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/uy.svg": {
+    "file": "assets/flags/4x3/uy.svg",
+    "src": "node_modules/flag-icons/flags/4x3/uy.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/uz.svg": {
+    "file": "assets/flags/4x3/uz.svg",
+    "src": "node_modules/flag-icons/flags/4x3/uz.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/va.svg": {
+    "file": "assets/flags/4x3/va.svg",
+    "src": "node_modules/flag-icons/flags/4x3/va.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/vc.svg": {
+    "file": "assets/flags/4x3/vc.svg",
+    "src": "node_modules/flag-icons/flags/4x3/vc.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ve.svg": {
+    "file": "assets/flags/4x3/ve.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ve.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/vg.svg": {
+    "file": "assets/flags/4x3/vg.svg",
+    "src": "node_modules/flag-icons/flags/4x3/vg.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/vi.svg": {
+    "file": "assets/flags/4x3/vi.svg",
+    "src": "node_modules/flag-icons/flags/4x3/vi.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/vn.svg": {
+    "file": "assets/flags/4x3/vn.svg",
+    "src": "node_modules/flag-icons/flags/4x3/vn.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/vu.svg": {
+    "file": "assets/flags/4x3/vu.svg",
+    "src": "node_modules/flag-icons/flags/4x3/vu.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/wf.svg": {
+    "file": "assets/flags/4x3/wf.svg",
+    "src": "node_modules/flag-icons/flags/4x3/wf.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ws.svg": {
+    "file": "assets/flags/4x3/ws.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ws.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/xk.svg": {
+    "file": "assets/flags/4x3/xk.svg",
+    "src": "node_modules/flag-icons/flags/4x3/xk.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/xx.svg": {
+    "file": "assets/flags/4x3/xx.svg",
+    "src": "node_modules/flag-icons/flags/4x3/xx.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/ye.svg": {
+    "file": "assets/flags/4x3/ye.svg",
+    "src": "node_modules/flag-icons/flags/4x3/ye.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/yt.svg": {
+    "file": "assets/flags/4x3/yt.svg",
+    "src": "node_modules/flag-icons/flags/4x3/yt.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/za.svg": {
+    "file": "assets/flags/4x3/za.svg",
+    "src": "node_modules/flag-icons/flags/4x3/za.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/zm.svg": {
+    "file": "assets/flags/4x3/zm.svg",
+    "src": "node_modules/flag-icons/flags/4x3/zm.svg"
+  },
+  "node_modules/flag-icons/flags/4x3/zw.svg": {
+    "file": "assets/flags/4x3/zw.svg",
+    "src": "node_modules/flag-icons/flags/4x3/zw.svg"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-jH5JGWV6.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.ts": {
+    "file": "assets/app-8Jtkbq7k.js",
+    "name": "app",
+    "src": "resources/js/app.ts",
+    "isEntry": true,
+    "css": [
+      "assets/app-BnXPSN9y.css",
+      "assets/app-jH5JGWV6.css"
+    ],
+    "assets": [
+      "assets/flags/4x3/xx.svg",
+      "assets/flags/1x1/xx.svg",
+      "assets/flags/4x3/ad.svg",
+      "assets/flags/1x1/ad.svg",
+      "assets/flags/4x3/ae.svg",
+      "assets/flags/1x1/ae.svg",
+      "assets/flags/4x3/af.svg",
+      "assets/flags/1x1/af.svg",
+      "assets/flags/4x3/ag.svg",
+      "assets/flags/1x1/ag.svg",
+      "assets/flags/4x3/ai.svg",
+      "assets/flags/1x1/ai.svg",
+      "assets/flags/4x3/al.svg",
+      "assets/flags/1x1/al.svg",
+      "assets/flags/4x3/am.svg",
+      "assets/flags/1x1/am.svg",
+      "assets/flags/4x3/ao.svg",
+      "assets/flags/1x1/ao.svg",
+      "assets/flags/4x3/aq.svg",
+      "assets/flags/1x1/aq.svg",
+      "assets/flags/4x3/ar.svg",
+      "assets/flags/1x1/ar.svg",
+      "assets/flags/4x3/as.svg",
+      "assets/flags/1x1/as.svg",
+      "assets/flags/4x3/at.svg",
+      "assets/flags/1x1/at.svg",
+      "assets/flags/4x3/au.svg",
+      "assets/flags/1x1/au.svg",
+      "assets/flags/4x3/aw.svg",
+      "assets/flags/1x1/aw.svg",
+      "assets/flags/4x3/ax.svg",
+      "assets/flags/1x1/ax.svg",
+      "assets/flags/4x3/az.svg",
+      "assets/flags/1x1/az.svg",
+      "assets/flags/4x3/ba.svg",
+      "assets/flags/1x1/ba.svg",
+      "assets/flags/4x3/bb.svg",
+      "assets/flags/1x1/bb.svg",
+      "assets/flags/4x3/bd.svg",
+      "assets/flags/1x1/bd.svg",
+      "assets/flags/4x3/be.svg",
+      "assets/flags/1x1/be.svg",
+      "assets/flags/4x3/bf.svg",
+      "assets/flags/1x1/bf.svg",
+      "assets/flags/4x3/bg.svg",
+      "assets/flags/1x1/bg.svg",
+      "assets/flags/4x3/bh.svg",
+      "assets/flags/1x1/bh.svg",
+      "assets/flags/4x3/bi.svg",
+      "assets/flags/1x1/bi.svg",
+      "assets/flags/4x3/bj.svg",
+      "assets/flags/1x1/bj.svg",
+      "assets/flags/4x3/bl.svg",
+      "assets/flags/1x1/bl.svg",
+      "assets/flags/4x3/bm.svg",
+      "assets/flags/1x1/bm.svg",
+      "assets/flags/4x3/bn.svg",
+      "assets/flags/1x1/bn.svg",
+      "assets/flags/4x3/bo.svg",
+      "assets/flags/1x1/bo.svg",
+      "assets/flags/4x3/bq.svg",
+      "assets/flags/1x1/bq.svg",
+      "assets/flags/4x3/br.svg",
+      "assets/flags/1x1/br.svg",
+      "assets/flags/4x3/bs.svg",
+      "assets/flags/1x1/bs.svg",
+      "assets/flags/4x3/bt.svg",
+      "assets/flags/1x1/bt.svg",
+      "assets/flags/4x3/bv.svg",
+      "assets/flags/1x1/bv.svg",
+      "assets/flags/4x3/bw.svg",
+      "assets/flags/1x1/bw.svg",
+      "assets/flags/4x3/by.svg",
+      "assets/flags/1x1/by.svg",
+      "assets/flags/4x3/bz.svg",
+      "assets/flags/1x1/bz.svg",
+      "assets/flags/4x3/ca.svg",
+      "assets/flags/1x1/ca.svg",
+      "assets/flags/4x3/cc.svg",
+      "assets/flags/1x1/cc.svg",
+      "assets/flags/4x3/cd.svg",
+      "assets/flags/1x1/cd.svg",
+      "assets/flags/4x3/cf.svg",
+      "assets/flags/1x1/cf.svg",
+      "assets/flags/4x3/cg.svg",
+      "assets/flags/1x1/cg.svg",
+      "assets/flags/4x3/ch.svg",
+      "assets/flags/1x1/ch.svg",
+      "assets/flags/4x3/ci.svg",
+      "assets/flags/1x1/ci.svg",
+      "assets/flags/4x3/ck.svg",
+      "assets/flags/1x1/ck.svg",
+      "assets/flags/4x3/cl.svg",
+      "assets/flags/1x1/cl.svg",
+      "assets/flags/4x3/cm.svg",
+      "assets/flags/1x1/cm.svg",
+      "assets/flags/4x3/cn.svg",
+      "assets/flags/1x1/cn.svg",
+      "assets/flags/4x3/co.svg",
+      "assets/flags/1x1/co.svg",
+      "assets/flags/4x3/cr.svg",
+      "assets/flags/1x1/cr.svg",
+      "assets/flags/4x3/cu.svg",
+      "assets/flags/1x1/cu.svg",
+      "assets/flags/4x3/cv.svg",
+      "assets/flags/1x1/cv.svg",
+      "assets/flags/4x3/cw.svg",
+      "assets/flags/1x1/cw.svg",
+      "assets/flags/4x3/cx.svg",
+      "assets/flags/1x1/cx.svg",
+      "assets/flags/4x3/cy.svg",
+      "assets/flags/1x1/cy.svg",
+      "assets/flags/4x3/cz.svg",
+      "assets/flags/1x1/cz.svg",
+      "assets/flags/4x3/de.svg",
+      "assets/flags/1x1/de.svg",
+      "assets/flags/4x3/dj.svg",
+      "assets/flags/1x1/dj.svg",
+      "assets/flags/4x3/dk.svg",
+      "assets/flags/1x1/dk.svg",
+      "assets/flags/4x3/dm.svg",
+      "assets/flags/1x1/dm.svg",
+      "assets/flags/4x3/do.svg",
+      "assets/flags/1x1/do.svg",
+      "assets/flags/4x3/dz.svg",
+      "assets/flags/1x1/dz.svg",
+      "assets/flags/4x3/ec.svg",
+      "assets/flags/1x1/ec.svg",
+      "assets/flags/4x3/ee.svg",
+      "assets/flags/1x1/ee.svg",
+      "assets/flags/4x3/eg.svg",
+      "assets/flags/1x1/eg.svg",
+      "assets/flags/4x3/eh.svg",
+      "assets/flags/1x1/eh.svg",
+      "assets/flags/4x3/er.svg",
+      "assets/flags/1x1/er.svg",
+      "assets/flags/4x3/es.svg",
+      "assets/flags/1x1/es.svg",
+      "assets/flags/4x3/et.svg",
+      "assets/flags/1x1/et.svg",
+      "assets/flags/4x3/fi.svg",
+      "assets/flags/1x1/fi.svg",
+      "assets/flags/4x3/fj.svg",
+      "assets/flags/1x1/fj.svg",
+      "assets/flags/4x3/fk.svg",
+      "assets/flags/1x1/fk.svg",
+      "assets/flags/4x3/fm.svg",
+      "assets/flags/1x1/fm.svg",
+      "assets/flags/4x3/fo.svg",
+      "assets/flags/1x1/fo.svg",
+      "assets/flags/4x3/fr.svg",
+      "assets/flags/1x1/fr.svg",
+      "assets/flags/4x3/ga.svg",
+      "assets/flags/1x1/ga.svg",
+      "assets/flags/4x3/gb.svg",
+      "assets/flags/1x1/gb.svg",
+      "assets/flags/4x3/gd.svg",
+      "assets/flags/1x1/gd.svg",
+      "assets/flags/4x3/ge.svg",
+      "assets/flags/1x1/ge.svg",
+      "assets/flags/4x3/gf.svg",
+      "assets/flags/1x1/gf.svg",
+      "assets/flags/4x3/gg.svg",
+      "assets/flags/1x1/gg.svg",
+      "assets/flags/4x3/gh.svg",
+      "assets/flags/1x1/gh.svg",
+      "assets/flags/4x3/gi.svg",
+      "assets/flags/1x1/gi.svg",
+      "assets/flags/4x3/gl.svg",
+      "assets/flags/1x1/gl.svg",
+      "assets/flags/4x3/gm.svg",
+      "assets/flags/1x1/gm.svg",
+      "assets/flags/4x3/gn.svg",
+      "assets/flags/1x1/gn.svg",
+      "assets/flags/4x3/gp.svg",
+      "assets/flags/1x1/gp.svg",
+      "assets/flags/4x3/gq.svg",
+      "assets/flags/1x1/gq.svg",
+      "assets/flags/4x3/gr.svg",
+      "assets/flags/1x1/gr.svg",
+      "assets/flags/4x3/gs.svg",
+      "assets/flags/1x1/gs.svg",
+      "assets/flags/4x3/gt.svg",
+      "assets/flags/1x1/gt.svg",
+      "assets/flags/4x3/gu.svg",
+      "assets/flags/1x1/gu.svg",
+      "assets/flags/4x3/gw.svg",
+      "assets/flags/1x1/gw.svg",
+      "assets/flags/4x3/gy.svg",
+      "assets/flags/1x1/gy.svg",
+      "assets/flags/4x3/hk.svg",
+      "assets/flags/1x1/hk.svg",
+      "assets/flags/4x3/hm.svg",
+      "assets/flags/1x1/hm.svg",
+      "assets/flags/4x3/hn.svg",
+      "assets/flags/1x1/hn.svg",
+      "assets/flags/4x3/hr.svg",
+      "assets/flags/1x1/hr.svg",
+      "assets/flags/4x3/ht.svg",
+      "assets/flags/1x1/ht.svg",
+      "assets/flags/4x3/hu.svg",
+      "assets/flags/1x1/hu.svg",
+      "assets/flags/4x3/id.svg",
+      "assets/flags/1x1/id.svg",
+      "assets/flags/4x3/ie.svg",
+      "assets/flags/1x1/ie.svg",
+      "assets/flags/4x3/il.svg",
+      "assets/flags/1x1/il.svg",
+      "assets/flags/4x3/im.svg",
+      "assets/flags/1x1/im.svg",
+      "assets/flags/4x3/in.svg",
+      "assets/flags/1x1/in.svg",
+      "assets/flags/4x3/io.svg",
+      "assets/flags/1x1/io.svg",
+      "assets/flags/4x3/iq.svg",
+      "assets/flags/1x1/iq.svg",
+      "assets/flags/4x3/ir.svg",
+      "assets/flags/1x1/ir.svg",
+      "assets/flags/4x3/is.svg",
+      "assets/flags/1x1/is.svg",
+      "assets/flags/4x3/it.svg",
+      "assets/flags/1x1/it.svg",
+      "assets/flags/4x3/je.svg",
+      "assets/flags/1x1/je.svg",
+      "assets/flags/4x3/jm.svg",
+      "assets/flags/1x1/jm.svg",
+      "assets/flags/4x3/jo.svg",
+      "assets/flags/1x1/jo.svg",
+      "assets/flags/4x3/jp.svg",
+      "assets/flags/1x1/jp.svg",
+      "assets/flags/4x3/ke.svg",
+      "assets/flags/1x1/ke.svg",
+      "assets/flags/4x3/kg.svg",
+      "assets/flags/1x1/kg.svg",
+      "assets/flags/4x3/kh.svg",
+      "assets/flags/1x1/kh.svg",
+      "assets/flags/4x3/ki.svg",
+      "assets/flags/1x1/ki.svg",
+      "assets/flags/4x3/km.svg",
+      "assets/flags/1x1/km.svg",
+      "assets/flags/4x3/kn.svg",
+      "assets/flags/1x1/kn.svg",
+      "assets/flags/4x3/kp.svg",
+      "assets/flags/1x1/kp.svg",
+      "assets/flags/4x3/kr.svg",
+      "assets/flags/1x1/kr.svg",
+      "assets/flags/4x3/kw.svg",
+      "assets/flags/1x1/kw.svg",
+      "assets/flags/4x3/ky.svg",
+      "assets/flags/1x1/ky.svg",
+      "assets/flags/4x3/kz.svg",
+      "assets/flags/1x1/kz.svg",
+      "assets/flags/4x3/la.svg",
+      "assets/flags/1x1/la.svg",
+      "assets/flags/4x3/lb.svg",
+      "assets/flags/1x1/lb.svg",
+      "assets/flags/4x3/lc.svg",
+      "assets/flags/1x1/lc.svg",
+      "assets/flags/4x3/li.svg",
+      "assets/flags/1x1/li.svg",
+      "assets/flags/4x3/lk.svg",
+      "assets/flags/1x1/lk.svg",
+      "assets/flags/4x3/lr.svg",
+      "assets/flags/1x1/lr.svg",
+      "assets/flags/4x3/ls.svg",
+      "assets/flags/1x1/ls.svg",
+      "assets/flags/4x3/lt.svg",
+      "assets/flags/1x1/lt.svg",
+      "assets/flags/4x3/lu.svg",
+      "assets/flags/1x1/lu.svg",
+      "assets/flags/4x3/lv.svg",
+      "assets/flags/1x1/lv.svg",
+      "assets/flags/4x3/ly.svg",
+      "assets/flags/1x1/ly.svg",
+      "assets/flags/4x3/ma.svg",
+      "assets/flags/1x1/ma.svg",
+      "assets/flags/4x3/mc.svg",
+      "assets/flags/1x1/mc.svg",
+      "assets/flags/4x3/md.svg",
+      "assets/flags/1x1/md.svg",
+      "assets/flags/4x3/me.svg",
+      "assets/flags/1x1/me.svg",
+      "assets/flags/4x3/mf.svg",
+      "assets/flags/1x1/mf.svg",
+      "assets/flags/4x3/mg.svg",
+      "assets/flags/1x1/mg.svg",
+      "assets/flags/4x3/mh.svg",
+      "assets/flags/1x1/mh.svg",
+      "assets/flags/4x3/mk.svg",
+      "assets/flags/1x1/mk.svg",
+      "assets/flags/4x3/ml.svg",
+      "assets/flags/1x1/ml.svg",
+      "assets/flags/4x3/mm.svg",
+      "assets/flags/1x1/mm.svg",
+      "assets/flags/4x3/mn.svg",
+      "assets/flags/1x1/mn.svg",
+      "assets/flags/4x3/mo.svg",
+      "assets/flags/1x1/mo.svg",
+      "assets/flags/4x3/mp.svg",
+      "assets/flags/1x1/mp.svg",
+      "assets/flags/4x3/mq.svg",
+      "assets/flags/1x1/mq.svg",
+      "assets/flags/4x3/mr.svg",
+      "assets/flags/1x1/mr.svg",
+      "assets/flags/4x3/ms.svg",
+      "assets/flags/1x1/ms.svg",
+      "assets/flags/4x3/mt.svg",
+      "assets/flags/1x1/mt.svg",
+      "assets/flags/4x3/mu.svg",
+      "assets/flags/1x1/mu.svg",
+      "assets/flags/4x3/mv.svg",
+      "assets/flags/1x1/mv.svg",
+      "assets/flags/4x3/mw.svg",
+      "assets/flags/1x1/mw.svg",
+      "assets/flags/4x3/mx.svg",
+      "assets/flags/1x1/mx.svg",
+      "assets/flags/4x3/my.svg",
+      "assets/flags/1x1/my.svg",
+      "assets/flags/4x3/mz.svg",
+      "assets/flags/1x1/mz.svg",
+      "assets/flags/4x3/na.svg",
+      "assets/flags/1x1/na.svg",
+      "assets/flags/4x3/nc.svg",
+      "assets/flags/1x1/nc.svg",
+      "assets/flags/4x3/ne.svg",
+      "assets/flags/1x1/ne.svg",
+      "assets/flags/4x3/nf.svg",
+      "assets/flags/1x1/nf.svg",
+      "assets/flags/4x3/ng.svg",
+      "assets/flags/1x1/ng.svg",
+      "assets/flags/4x3/ni.svg",
+      "assets/flags/1x1/ni.svg",
+      "assets/flags/4x3/nl.svg",
+      "assets/flags/1x1/nl.svg",
+      "assets/flags/4x3/no.svg",
+      "assets/flags/1x1/no.svg",
+      "assets/flags/4x3/np.svg",
+      "assets/flags/1x1/np.svg",
+      "assets/flags/4x3/nr.svg",
+      "assets/flags/1x1/nr.svg",
+      "assets/flags/4x3/nu.svg",
+      "assets/flags/1x1/nu.svg",
+      "assets/flags/4x3/nz.svg",
+      "assets/flags/1x1/nz.svg",
+      "assets/flags/4x3/om.svg",
+      "assets/flags/1x1/om.svg",
+      "assets/flags/4x3/pa.svg",
+      "assets/flags/1x1/pa.svg",
+      "assets/flags/4x3/pe.svg",
+      "assets/flags/1x1/pe.svg",
+      "assets/flags/4x3/pf.svg",
+      "assets/flags/1x1/pf.svg",
+      "assets/flags/4x3/pg.svg",
+      "assets/flags/1x1/pg.svg",
+      "assets/flags/4x3/ph.svg",
+      "assets/flags/1x1/ph.svg",
+      "assets/flags/4x3/pk.svg",
+      "assets/flags/1x1/pk.svg",
+      "assets/flags/4x3/pl.svg",
+      "assets/flags/1x1/pl.svg",
+      "assets/flags/4x3/pm.svg",
+      "assets/flags/1x1/pm.svg",
+      "assets/flags/4x3/pn.svg",
+      "assets/flags/1x1/pn.svg",
+      "assets/flags/4x3/pr.svg",
+      "assets/flags/1x1/pr.svg",
+      "assets/flags/4x3/ps.svg",
+      "assets/flags/1x1/ps.svg",
+      "assets/flags/4x3/pt.svg",
+      "assets/flags/1x1/pt.svg",
+      "assets/flags/4x3/pw.svg",
+      "assets/flags/1x1/pw.svg",
+      "assets/flags/4x3/py.svg",
+      "assets/flags/1x1/py.svg",
+      "assets/flags/4x3/qa.svg",
+      "assets/flags/1x1/qa.svg",
+      "assets/flags/4x3/re.svg",
+      "assets/flags/1x1/re.svg",
+      "assets/flags/4x3/ro.svg",
+      "assets/flags/1x1/ro.svg",
+      "assets/flags/4x3/rs.svg",
+      "assets/flags/1x1/rs.svg",
+      "assets/flags/4x3/ru.svg",
+      "assets/flags/1x1/ru.svg",
+      "assets/flags/4x3/rw.svg",
+      "assets/flags/1x1/rw.svg",
+      "assets/flags/4x3/sa.svg",
+      "assets/flags/1x1/sa.svg",
+      "assets/flags/4x3/sb.svg",
+      "assets/flags/1x1/sb.svg",
+      "assets/flags/4x3/sc.svg",
+      "assets/flags/1x1/sc.svg",
+      "assets/flags/4x3/sd.svg",
+      "assets/flags/1x1/sd.svg",
+      "assets/flags/4x3/se.svg",
+      "assets/flags/1x1/se.svg",
+      "assets/flags/4x3/sg.svg",
+      "assets/flags/1x1/sg.svg",
+      "assets/flags/4x3/sh.svg",
+      "assets/flags/1x1/sh.svg",
+      "assets/flags/4x3/si.svg",
+      "assets/flags/1x1/si.svg",
+      "assets/flags/4x3/sj.svg",
+      "assets/flags/1x1/sj.svg",
+      "assets/flags/4x3/sk.svg",
+      "assets/flags/1x1/sk.svg",
+      "assets/flags/4x3/sl.svg",
+      "assets/flags/1x1/sl.svg",
+      "assets/flags/4x3/sm.svg",
+      "assets/flags/1x1/sm.svg",
+      "assets/flags/4x3/sn.svg",
+      "assets/flags/1x1/sn.svg",
+      "assets/flags/4x3/so.svg",
+      "assets/flags/1x1/so.svg",
+      "assets/flags/4x3/sr.svg",
+      "assets/flags/1x1/sr.svg",
+      "assets/flags/4x3/ss.svg",
+      "assets/flags/1x1/ss.svg",
+      "assets/flags/4x3/st.svg",
+      "assets/flags/1x1/st.svg",
+      "assets/flags/4x3/sv.svg",
+      "assets/flags/1x1/sv.svg",
+      "assets/flags/4x3/sx.svg",
+      "assets/flags/1x1/sx.svg",
+      "assets/flags/4x3/sy.svg",
+      "assets/flags/1x1/sy.svg",
+      "assets/flags/4x3/sz.svg",
+      "assets/flags/1x1/sz.svg",
+      "assets/flags/4x3/tc.svg",
+      "assets/flags/1x1/tc.svg",
+      "assets/flags/4x3/td.svg",
+      "assets/flags/1x1/td.svg",
+      "assets/flags/4x3/tf.svg",
+      "assets/flags/1x1/tf.svg",
+      "assets/flags/4x3/tg.svg",
+      "assets/flags/1x1/tg.svg",
+      "assets/flags/4x3/th.svg",
+      "assets/flags/1x1/th.svg",
+      "assets/flags/4x3/tj.svg",
+      "assets/flags/1x1/tj.svg",
+      "assets/flags/4x3/tk.svg",
+      "assets/flags/1x1/tk.svg",
+      "assets/flags/4x3/tl.svg",
+      "assets/flags/1x1/tl.svg",
+      "assets/flags/4x3/tm.svg",
+      "assets/flags/1x1/tm.svg",
+      "assets/flags/4x3/tn.svg",
+      "assets/flags/1x1/tn.svg",
+      "assets/flags/4x3/to.svg",
+      "assets/flags/1x1/to.svg",
+      "assets/flags/4x3/tr.svg",
+      "assets/flags/1x1/tr.svg",
+      "assets/flags/4x3/tt.svg",
+      "assets/flags/1x1/tt.svg",
+      "assets/flags/4x3/tv.svg",
+      "assets/flags/1x1/tv.svg",
+      "assets/flags/4x3/tw.svg",
+      "assets/flags/1x1/tw.svg",
+      "assets/flags/4x3/tz.svg",
+      "assets/flags/1x1/tz.svg",
+      "assets/flags/4x3/ua.svg",
+      "assets/flags/1x1/ua.svg",
+      "assets/flags/4x3/ug.svg",
+      "assets/flags/1x1/ug.svg",
+      "assets/flags/4x3/um.svg",
+      "assets/flags/1x1/um.svg",
+      "assets/flags/4x3/us.svg",
+      "assets/flags/1x1/us.svg",
+      "assets/flags/4x3/uy.svg",
+      "assets/flags/1x1/uy.svg",
+      "assets/flags/4x3/uz.svg",
+      "assets/flags/1x1/uz.svg",
+      "assets/flags/4x3/va.svg",
+      "assets/flags/1x1/va.svg",
+      "assets/flags/4x3/vc.svg",
+      "assets/flags/1x1/vc.svg",
+      "assets/flags/4x3/ve.svg",
+      "assets/flags/1x1/ve.svg",
+      "assets/flags/4x3/vg.svg",
+      "assets/flags/1x1/vg.svg",
+      "assets/flags/4x3/vi.svg",
+      "assets/flags/1x1/vi.svg",
+      "assets/flags/4x3/vn.svg",
+      "assets/flags/1x1/vn.svg",
+      "assets/flags/4x3/vu.svg",
+      "assets/flags/1x1/vu.svg",
+      "assets/flags/4x3/wf.svg",
+      "assets/flags/1x1/wf.svg",
+      "assets/flags/4x3/ws.svg",
+      "assets/flags/1x1/ws.svg",
+      "assets/flags/4x3/ye.svg",
+      "assets/flags/1x1/ye.svg",
+      "assets/flags/4x3/yt.svg",
+      "assets/flags/1x1/yt.svg",
+      "assets/flags/4x3/za.svg",
+      "assets/flags/1x1/za.svg",
+      "assets/flags/4x3/zm.svg",
+      "assets/flags/1x1/zm.svg",
+      "assets/flags/4x3/zw.svg",
+      "assets/flags/1x1/zw.svg",
+      "assets/flags/4x3/arab.svg",
+      "assets/flags/1x1/arab.svg",
+      "assets/flags/4x3/asean.svg",
+      "assets/flags/1x1/asean.svg",
+      "assets/flags/4x3/cefta.svg",
+      "assets/flags/1x1/cefta.svg",
+      "assets/flags/4x3/cp.svg",
+      "assets/flags/1x1/cp.svg",
+      "assets/flags/4x3/dg.svg",
+      "assets/flags/1x1/dg.svg",
+      "assets/flags/4x3/eac.svg",
+      "assets/flags/1x1/eac.svg",
+      "assets/flags/4x3/es-ct.svg",
+      "assets/flags/1x1/es-ct.svg",
+      "assets/flags/4x3/es-ga.svg",
+      "assets/flags/1x1/es-ga.svg",
+      "assets/flags/4x3/es-pv.svg",
+      "assets/flags/1x1/es-pv.svg",
+      "assets/flags/4x3/eu.svg",
+      "assets/flags/1x1/eu.svg",
+      "assets/flags/4x3/gb-eng.svg",
+      "assets/flags/1x1/gb-eng.svg",
+      "assets/flags/4x3/gb-nir.svg",
+      "assets/flags/1x1/gb-nir.svg",
+      "assets/flags/4x3/gb-sct.svg",
+      "assets/flags/1x1/gb-sct.svg",
+      "assets/flags/4x3/gb-wls.svg",
+      "assets/flags/1x1/gb-wls.svg",
+      "assets/flags/4x3/ic.svg",
+      "assets/flags/1x1/ic.svg",
+      "assets/flags/4x3/pc.svg",
+      "assets/flags/1x1/pc.svg",
+      "assets/flags/4x3/sh-ac.svg",
+      "assets/flags/1x1/sh-ac.svg",
+      "assets/flags/4x3/sh-hl.svg",
+      "assets/flags/1x1/sh-hl.svg",
+      "assets/flags/4x3/sh-ta.svg",
+      "assets/flags/1x1/sh-ta.svg",
+      "assets/flags/4x3/un.svg",
+      "assets/flags/1x1/un.svg",
+      "assets/flags/4x3/xk.svg",
+      "assets/flags/1x1/xk.svg"
+    ]
+  }
+}
