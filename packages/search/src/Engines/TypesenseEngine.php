@@ -86,13 +86,27 @@ class TypesenseEngine extends AbstractEngine
         $results = $paginator->items();
 
         $documents = collect($results['hits'])->map(fn ($hit) => SearchHit::from([
-            'highlights' => collect($hit['highlights'] ?? [])->map(
-                fn ($highlight) => SearchHitHighlight::from([
+            'highlights' => collect($hit['highlights'] ?? [])->flatMap(function ($highlight) {
+                // Matches on string[] fields are highlighted per element:
+                // a `snippets` list with index-aligned nested `matched_tokens`.
+                // Scalar fields return a single `snippet` with a flat token
+                // list.
+                if (isset($highlight['snippets'])) {
+                    return collect($highlight['snippets'])->map(
+                        fn ($snippet, $index) => SearchHitHighlight::from([
+                            'field' => $highlight['field'],
+                            'matches' => $highlight['matched_tokens'][$index] ?? [],
+                            'snippet' => $snippet,
+                        ])
+                    )->values();
+                }
+
+                return [SearchHitHighlight::from([
                     'field' => $highlight['field'],
-                    'matches' => $highlight['matched_tokens'],
-                    'snippet' => $highlight['snippet'],
-                ])
-            ),
+                    'matches' => $highlight['matched_tokens'] ?? [],
+                    'snippet' => $highlight['snippet'] ?? null,
+                ])];
+            }),
             'document' => $hit['document'],
         ]));
 
@@ -108,6 +122,7 @@ class TypesenseEngine extends AbstractEngine
                         'label' => $value['value'],
                         'value' => $value['value'],
                         'count' => $value['count'],
+                        'active' => in_array($value['value'], $this->facets[$facet['field_name']] ?? []),
                     ])
                 ),
             ])
@@ -204,22 +219,47 @@ class TypesenseEngine extends AbstractEngine
             }
 
             $queryBy = $options['query_by'];
+            $queryByWeights = $options['query_by_weights'] ?? null;
+            $infix = $options['infix'] ?? null;
 
+            // Without a search term there is nothing to embed, so drop the
+            // embedding field from query_by — together with its entries in the
+            // position-aligned weight/infix lists, otherwise Typesense rejects
+            // the whole request over the count mismatch.
             if (! $this->query) {
-                $queryBy = str_replace('embedding,', '', $queryBy);
+                $fields = array_map('trim', explode(',', $queryBy));
+                $embeddingIndex = array_search('embedding', $fields, true);
+
+                if ($embeddingIndex !== false) {
+                    unset($fields[$embeddingIndex]);
+                    $queryBy = implode(',', $fields);
+                    $queryByWeights = $this->stripListEntry($queryByWeights, $embeddingIndex);
+                    $infix = $this->stripListEntry($infix, $embeddingIndex);
+                }
             }
 
             $params = [
                 ...$options,
                 'query_by' => $queryBy,
-                'q' => $searchQuery->query,
+                // Typesense requires q; '*' is its match-all for browse mode.
+                'q' => $searchQuery->query ?: '*',
                 'facet_query' => $facetQuery,
                 'prefix' => false,
-                'exlude_fields' => 'embedding',
-                'max_facet_values' => 50,
+                'exclude_fields' => 'embedding',
+                // Typesense defaults to 10 and caps at 250; hierarchical
+                // category facets need far more than the old fixed 50.
+                'max_facet_values' => (int) config('lunar.search.max_facet_values', 50),
                 'sort_by' => $this->sortRaw ?: ($this->sortByIsValid() ? $this->sort : '_text_match:desc'),
                 'facet_by' => implode(',', $searchQuery->facets),
             ];
+
+            if ($queryByWeights !== null) {
+                $params['query_by_weights'] = $queryByWeights;
+            }
+
+            if ($infix !== null) {
+                $params['infix'] = $infix;
+            }
 
             // Hybrid semantic search only works when the collection schema
             // actually declares an auto-embed `embedding` field; requesting a
@@ -246,6 +286,23 @@ class TypesenseEngine extends AbstractEngine
         return $typesense->getCollections()[$index]->documents->delete([
             'filter_by' => 'id: ['.$ids->join(',').']',
         ]);
+    }
+
+    /**
+     * Remove one entry from a comma-separated, position-aligned parameter
+     * list (query_by_weights, infix). Returns the list untouched when it is
+     * not a string.
+     */
+    protected function stripListEntry(mixed $list, int $index): mixed
+    {
+        if (! is_string($list)) {
+            return $list;
+        }
+
+        $values = array_map('trim', explode(',', $list));
+        unset($values[$index]);
+
+        return implode(',', $values);
     }
 
     protected function schemaHasEmbeddingField(): bool
