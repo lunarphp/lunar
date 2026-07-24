@@ -22,6 +22,7 @@ return [
     'product_types' => 'Product types',
     'sales' => 'Satışlar',
     'customers' => 'Müşteriler',
+    'orders' => 'Orders',
     'general' => 'Genel',
     'team' => 'Team',
     'store' => 'Store',

@@ -1,0 +1,166 @@
+<?php
+
+return [
+    'title' => 'Orders',
+    'description' => 'Every order, across every channel. Track payments and fulfilment, issue refunds, and keep an eye on what is still moving.',
+
+    'search_placeholder' => 'Search orders, customers…',
+    'count_of' => '{shown} of {total}',
+    'clear_filters' => 'Clear filters',
+    'show_kpis' => 'Show KPIs',
+    'guest' => 'Guest',
+    'view_order' => 'View order',
+
+    'filter_payment' => 'Payment',
+    'filter_fulfilment' => 'Fulfilment',
+    'filter_channel' => 'Channel',
+    'filter_tag' => 'Tag',
+    'filter_date' => 'Date',
+    'filter_lifecycle' => 'State',
+
+    'all_payments' => 'All payments',
+    'all_fulfilment' => 'All fulfilment',
+    'all_channels' => 'All channels',
+    'all_tags' => 'All tags',
+
+    'lifecycle_all' => 'All states',
+    'lifecycle_open' => 'Open',
+    'lifecycle_closed' => 'Closed',
+    'lifecycle_cancelled' => 'Cancelled',
+
+    'date_all' => 'Any date',
+    'date_today' => 'Today',
+    'date_7d' => 'Last 7 days',
+    'date_30d' => 'Last 30 days',
+    'date_this_month' => 'This month',
+    'date_last_month' => 'Last month',
+    'date_ytd' => 'Year to date',
+
+    'sort_recent' => 'Newest first',
+    'sort_oldest' => 'Oldest first',
+    'sort_total_high' => 'Total: high to low',
+    'sort_total_low' => 'Total: low to high',
+
+    'kpi_orders_label' => 'Orders (30d)',
+    'kpi_orders_hint' => 'placed in the last 30 days',
+    'kpi_revenue_label' => 'Revenue (30d)',
+    'kpi_revenue_hint' => 'placed in the last 30 days',
+    'kpi_awaiting_payment_label' => 'Awaiting payment',
+    'kpi_awaiting_payment_hint' => 'pending or authorized',
+    'kpi_awaiting_fulfilment_label' => 'Awaiting fulfilment',
+    'kpi_awaiting_fulfilment_hint' => 'paid but not yet fulfilled',
+
+    'column_order' => 'Order',
+    'column_date' => 'Date',
+    'column_customer' => 'Customer',
+    'column_items' => 'Items',
+    'column_payment' => 'Payment',
+    'column_fulfilment' => 'Fulfilment',
+    'column_tags' => 'Tags',
+    'column_total' => 'Total',
+
+    'empty_title' => 'No orders match these filters',
+    'empty_body' => 'Try clearing the search or filters to see more orders.',
+
+    // Order view
+    'section_fulfilments' => 'Fulfilments',
+    'section_items' => 'Items',
+    'section_totals' => 'Totals',
+    'section_transactions' => 'Transactions',
+    'section_shipping' => 'Shipping',
+    'section_activity' => 'Activity',
+
+    'fulfilments_empty' => 'Nothing has been fulfilled yet.',
+    'items_empty' => 'This order has no items.',
+    'transactions_empty' => 'No transactions recorded yet.',
+    'activity_empty' => 'No activity recorded yet.',
+
+    'col_product' => 'Product',
+    'col_sku' => 'SKU',
+    'col_qty' => 'Qty',
+    'col_unit' => 'Unit',
+    'col_total' => 'Total',
+
+    'totals_subtotal' => 'Subtotal',
+    'totals_discount' => 'Discount',
+    'totals_shipping' => 'Shipping',
+    'totals_tax' => 'Tax',
+    'totals_total' => 'Total',
+    'totals_refunded' => 'Refunded',
+    'totals_net' => 'Net',
+
+    'txn_type' => 'Type',
+    'txn_method' => 'Method',
+    'txn_reference' => 'Reference',
+    'txn_date' => 'Date',
+    'txn_amount' => 'Amount',
+    'txn_type_capture' => 'Payment',
+    'txn_type_refund' => 'Refund',
+    'txn_type_intent' => 'Authorization',
+
+    'side_status' => 'Status',
+    'side_customer' => 'Customer',
+    'side_shipping_address' => 'Shipping address',
+    'side_billing_address' => 'Billing address',
+    'side_tags' => 'Tags',
+    'side_notes' => 'Notes',
+    'side_metadata' => 'Metadata',
+
+    'cancel_reason' => 'Reason',
+    'new_customer' => 'New',
+    'returning_customer' => 'Returning',
+    'view_customer' => 'View customer',
+    'no_tags' => 'No tags yet.',
+    'no_notes' => 'No internal notes.',
+    'no_metadata' => 'No metadata.',
+
+    // Actions
+    'action_capture' => 'Capture',
+    'action_refund' => 'Refund',
+    'action_cancel' => 'Cancel order',
+    'action_notify' => 'Notify customer',
+    'action_close' => 'Close order',
+    'action_reopen' => 'Reopen order',
+
+    'confirm_close' => 'Close this order? It will be archived.',
+    'confirm_reopen' => 'Reopen this order?',
+
+    'capture_transaction' => 'Payment',
+    'capture_amount' => 'Amount to capture',
+
+    'refund_transaction' => 'Charge',
+    'refund_amount' => 'Amount to refund',
+    'refund_notes' => 'Notes',
+
+    'cancel_note' => 'Note',
+    'cancel_notify' => 'Notify the customer',
+    'no_reason' => 'No reason given',
+
+    'notify_notification' => 'Notification',
+    'notify_message' => 'Message',
+    'notify_message_placeholder' => 'Optional message to include.',
+
+    'add_tag' => 'Add tag…',
+    'note_placeholder' => 'Internal note, visible to staff only.',
+
+    'flash_captured' => 'Payment captured.',
+    'flash_refunded' => 'Refund issued.',
+    'flash_cancelled' => 'Order cancelled.',
+    'flash_closed' => 'Order closed.',
+    'flash_reopened' => 'Order reopened.',
+    'flash_notified' => 'Notification sent.',
+    'flash_note_saved' => 'Note saved.',
+    'flash_tags_saved' => 'Tags updated.',
+
+    // Fulfilments
+    'create_fulfilment' => 'Create fulfilment',
+    'mark_shipped' => 'Mark shipped',
+    'ship_carrier' => 'Carrier',
+    'ship_carrier_none' => 'No carrier',
+    'ship_tracking_number' => 'Tracking number',
+    'ship_tracking_url' => 'Tracking URL',
+    'ship_notify' => 'Notify the customer',
+    'fulfilment_nothing_outstanding' => 'There is nothing left to fulfil on this order.',
+    'flash_fulfilment_created' => 'Fulfilment created.',
+    'flash_fulfilment_shipped' => 'Fulfilment marked as shipped.',
+];

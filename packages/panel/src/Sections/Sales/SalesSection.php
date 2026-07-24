@@ -12,9 +12,14 @@ use Lunar\Panel\Http\Controllers\Customers\CustomerIndexController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerNotesController;
 use Lunar\Panel\Http\Controllers\Customers\CustomerUserController;
 use Lunar\Panel\Http\Controllers\EditDraftController;
+use Lunar\Panel\Http\Controllers\Orders\OrderActionController;
+use Lunar\Panel\Http\Controllers\Orders\OrderFulfilmentController;
+use Lunar\Panel\Http\Controllers\Orders\OrderIndexController;
+use Lunar\Panel\Http\Controllers\Orders\OrderShowController;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Sections\Sales\Tables\CustomersTableExtension;
+use Lunar\Panel\Sections\Sales\Tables\OrdersTableExtension;
 use Lunar\Panel\Sections\Section;
 
 class SalesSection extends Section
@@ -25,6 +30,9 @@ class SalesSection extends Section
      * stay in lockstep. Same handle as the Filament admin's CustomerResource.
      */
     private const CUSTOMERS_PERMISSION = 'sales:manage-customers';
+
+    /** Same handle as the Filament admin's OrderResource. */
+    private const ORDERS_PERMISSION = 'sales:manage-orders';
 
     public function key(): string
     {
@@ -40,11 +48,20 @@ class SalesSection extends Section
     {
         $registry->group('sales', __('panel::nav.sales'));
         $registry->addItem('sales', new NavigationItem(
+            key: 'orders',
+            label: __('panel::nav.orders'),
+            icon: 'cart',
+            route: 'panel.orders.index',
+            permission: self::ORDERS_PERMISSION,
+            priority: 10,
+        ));
+        $registry->addItem('sales', new NavigationItem(
             key: 'customers',
             label: __('panel::nav.customers'),
             icon: 'users',
             route: 'panel.customers.index',
             permission: self::CUSTOMERS_PERMISSION,
+            priority: 20,
         ));
     }
 
@@ -52,7 +69,19 @@ class SalesSection extends Section
     public function tableExtensions(): array
     {
         return [
+            'orders.index' => OrdersTableExtension::class,
             'customers.index' => CustomersTableExtension::class,
+        ];
+    }
+
+    /** @return array<string, array<int, class-string>> */
+    public function pageActions(): array
+    {
+        return [
+            'orders.show' => [
+                CloseOrderPageAction::class,
+                ReopenOrderPageAction::class,
+            ],
         ];
     }
 
@@ -67,6 +96,24 @@ class SalesSection extends Section
     public function routes(): ?Closure
     {
         return function (): void {
+            Route::prefix('orders')->name('panel.orders.')->middleware('can:'.self::ORDERS_PERMISSION)->group(function (): void {
+                Route::get('/', [OrderIndexController::class, 'index'])->name('index');
+                Route::get('/{order}', [OrderShowController::class, 'show'])->name('show');
+                Route::post('/{order}/capture', [OrderActionController::class, 'capture'])->name('capture');
+                Route::post('/{order}/refund', [OrderActionController::class, 'refund'])->name('refund');
+                Route::post('/{order}/cancel', [OrderActionController::class, 'cancel'])->name('cancel');
+                Route::post('/{order}/close', [OrderActionController::class, 'close'])->name('close');
+                Route::post('/{order}/reopen', [OrderActionController::class, 'reopen'])->name('reopen');
+                Route::post('/{order}/notify', [OrderActionController::class, 'notify'])->name('notify');
+                Route::put('/{order}/note', [OrderActionController::class, 'note'])->name('note.update');
+                Route::put('/{order}/tags', [OrderActionController::class, 'tags'])->name('tags.update');
+                Route::post('/{order}/fulfilments', [OrderFulfilmentController::class, 'store'])->name('fulfilments.store');
+
+                Route::scopeBindings()->group(function (): void {
+                    Route::post('/{order}/fulfilments/{fulfilment}/ship', [OrderFulfilmentController::class, 'ship'])->name('fulfilments.ship');
+                });
+            });
+
             Route::prefix('customers')->name('panel.customers.')->middleware('can:'.self::CUSTOMERS_PERMISSION)->group(function (): void {
                 Route::get('/', [CustomerIndexController::class, 'index'])->name('index');
                 Route::get('/create', [CustomerCreateController::class, 'create'])->name('create');
