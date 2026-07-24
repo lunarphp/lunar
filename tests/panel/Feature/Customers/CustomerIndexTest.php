@@ -35,7 +35,15 @@ it('searches customers by name, company, tax identifier and account ref', functi
     $this->actingAs(Staff::factory()->create(['admin' => true]), 'staff');
 
     $match = Customer::factory()->create(['first_name' => 'Ada', 'last_name' => 'Lovelace']);
-    Customer::factory()->create(['first_name' => 'Grace', 'last_name' => 'Hopper']);
+    // Pin the decoy's searchable fields: the factory otherwise fills company_name
+    // and tax_identifier with faker values that can contain "ada" and inflate the
+    // result count. account_ref defaults to null.
+    Customer::factory()->create([
+        'first_name' => 'Grace',
+        'last_name' => 'Hopper',
+        'company_name' => null,
+        'tax_identifier' => null,
+    ]);
 
     $this->get(route('panel.customers.index', ['q' => 'Ada']))
         ->assertInertia(fn (Assert $page) => $page
