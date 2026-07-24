@@ -236,12 +236,12 @@ describe('useEditDraft', () => {
 
     describe('navigation guard', () => {
         type BeforeHandler = (event: {
-            detail: { visit: { url: URL; method: string } };
+            detail: { visit: { url: URL; method: string; prefetch: boolean } };
             preventDefault: () => void;
         }) => void;
 
-        const guardEvent = (path: string, method = 'get') => ({
-            detail: { visit: { url: new URL(path, window.location.origin), method } },
+        const guardEvent = (path: string, method = 'get', prefetch = false) => ({
+            detail: { visit: { url: new URL(path, window.location.origin), method, prefetch } },
             preventDefault: vi.fn(),
         });
 
@@ -289,6 +289,18 @@ describe('useEditDraft', () => {
 
             lastGuard()(guardEvent(window.location.pathname));
             lastGuard()(guardEvent('/somewhere-else', 'post'));
+
+            expect(confirmMock).not.toHaveBeenCalled();
+        });
+
+        it('never prompts for prefetch visits (sidebar link hover)', () => {
+            const confirmMock = vi.fn();
+            vi.stubGlobal('confirm', confirmMock);
+
+            const form = useEditDraft({ initial: { first_name: 'Original' }, draft: null, urls });
+            form.values.first_name = 'Changed';
+
+            lastGuard()(guardEvent('/somewhere-else', 'get', true));
 
             expect(confirmMock).not.toHaveBeenCalled();
         });
