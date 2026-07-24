@@ -16,19 +16,24 @@ test('can get full name', function () {
 });
 
 test('can search staff by name', function () {
+    // Pin emails: scopeSearch also matches on email, so an unconstrained faker
+    // email containing a search term ("joe", "bill") would inflate the counts.
     Staff::factory()->create([
         'first_name' => 'Joe',
         'last_name' => 'Bloggs',
+        'email' => 'joe.bloggs@example.com',
     ]);
 
     Staff::factory()->create([
         'first_name' => 'Tim',
         'last_name' => 'Bloggs',
+        'email' => 'tim.bloggs@example.com',
     ]);
 
     Staff::factory()->create([
         'first_name' => 'Bill',
         'last_name' => 'Chance',
+        'email' => 'bill.chance@example.com',
     ]);
 
     expect(Staff::search('Bloggs')->get())->toHaveCount(2)
