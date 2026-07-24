@@ -63,5 +63,3 @@ jobs:
         with:
           commit_message: "chore(panel): rebuild compiled assets"
           file_pattern: packages/panel/public/build
-          # public/build is gitignored; force it into the commit.
-          add_options: "--force"
