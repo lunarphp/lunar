@@ -101,6 +101,9 @@ class ManageCollectionProducts extends BaseManageRelatedRecords
 
                             return get_search_builder($relationModel, $search)
                                 ->get()
+                                ->reject(
+                                    fn (ProductContract $record) => $livewire->getRelationship()->get()->contains($record->getKey())
+                                )
                                 ->mapWithKeys(fn (ProductContract $record): array => [$record->getKey() => $record->translateAttribute('name')])
                                 ->all();
                         }),

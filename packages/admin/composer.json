@@ -23,7 +23,7 @@
         "leandrocfe/filament-apex-charts": "^3.2.0",
         "awcodes/shout": "^2.0.4",
         "awcodes/filament-badgeable-column": "^2.3.2",
-        "stephenjude/filament-two-factor-authentication": "^2.0"
+        "lunarphp/filament3-2fa": "^2.1.0"
     },
     "extra": {
         "laravel": {
