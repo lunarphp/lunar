@@ -109,13 +109,20 @@ key/invalidation vocabulary without hand-rolled busting.
 
 Every engine (Database, Meilisearch, Typesense) returns a typed `SearchResults`
 data object with a consistent shape: camelCase keys (`perPage`, `totalPages`),
-the active sort echoed back as `sortField` / `sortDirection`, and facets always
-serialised as a plain array. The search data objects are annotated with
+the active sort echoed back as `sortField` / `sortDirection`, facets always
+serialised as a plain array, and each facet value carrying an `active` flag for
+the filters currently applied. The search data objects are annotated with
 `spatie/typescript-transformer` v3 attributes (`#[TypeScript]`), so storefronts
 can generate accurate TypeScript definitions for the whole results payload. The
 Typesense engine degrades gracefully — a missing collection yields an empty
-result set instead of an exception, and hybrid semantic search is only requested
-when the collection schema actually declares an embedding field.
+result set instead of an exception, hybrid semantic search is only requested
+when the collection schema actually declares an embedding field, and an empty
+query browses the full collection rather than erroring. Highlights on array
+fields (e.g. SKU lists) map per element, `query_by_weights` / `infix` search
+options pass through, and `maxFacetValues()` on the builder lifts the
+per-facet value limit for deep hierarchies like category trees. The database
+engine runs on Scout alone, so search works without the admin package
+installed.
 
 ## Pricing & attributes
 

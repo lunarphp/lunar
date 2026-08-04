@@ -19,6 +19,19 @@ use Typesense\Exceptions\ServiceUnavailable;
 
 class TypesenseEngine extends AbstractEngine
 {
+    /**
+     * Typesense defaults to 10 values per facet and caps the parameter at
+     * 250; hierarchical category facets need far more than either default.
+     */
+    protected int $maxFacetValues = 50;
+
+    public function maxFacetValues(int $count): self
+    {
+        $this->maxFacetValues = $count;
+
+        return $this;
+    }
+
     public function get(): SearchResults
     {
         try {
@@ -246,9 +259,7 @@ class TypesenseEngine extends AbstractEngine
                 'facet_query' => $facetQuery,
                 'prefix' => false,
                 'exclude_fields' => 'embedding',
-                // Typesense defaults to 10 and caps at 250; hierarchical
-                // category facets need far more than the old fixed 50.
-                'max_facet_values' => (int) config('lunar.search.max_facet_values', 50),
+                'max_facet_values' => $this->maxFacetValues,
                 'sort_by' => $this->sortRaw ?: ($this->sortByIsValid() ? $this->sort : '_text_match:desc'),
                 'facet_by' => implode(',', $searchQuery->facets),
             ];

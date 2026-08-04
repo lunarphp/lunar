@@ -331,15 +331,13 @@ it('excludes the embedding field from hit payloads', function () {
         ->not->toHaveKey('exlude_fields');
 });
 
-it('reads max_facet_values from config with a default of 50', function () {
+it('requests max facet values from the builder with a default of 50', function () {
     $options = ['query_by' => 'name', 'filter_by' => []];
 
     expect(typesenseTestEngine()->exposedBuildSearch($options)[0]['max_facet_values'])
         ->toBe(50);
 
-    Config::set('lunar.search.max_facet_values', 200);
-
-    expect(typesenseTestEngine()->exposedBuildSearch($options)[0]['max_facet_values'])
+    expect(typesenseTestEngine()->maxFacetValues(200)->exposedBuildSearch($options)[0]['max_facet_values'])
         ->toBe(200);
 });
 
