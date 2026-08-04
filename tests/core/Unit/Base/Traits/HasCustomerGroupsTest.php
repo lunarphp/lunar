@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Core\Exceptions\SchedulingException;
 use Lunar\Core\Models\Channel;
@@ -241,6 +242,29 @@ test('can scope results to a customer group', function () {
     expect(Product::customerGroup($groupA)->get())->toHaveCount(0);
 
     expect(Product::customerGroup($groupA, $startsAt, $endsAt)->get())->toHaveCount(1);
+});
+
+test('can schedule and scope using immutable dates', function () {
+    $group = CustomerGroup::factory()->create();
+
+    $product = Product::factory()->create();
+
+    $startsAt = CarbonImmutable::now()->addDay();
+    $endsAt = CarbonImmutable::now()->addDays(2);
+
+    $product->scheduleCustomerGroup($group, $startsAt, $endsAt);
+
+    $this->assertDatabaseHas(
+        'lunar_customer_group_product',
+        [
+            'customer_group_id' => $group->id,
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
+            'enabled' => 1,
+        ],
+    );
+
+    expect(Product::customerGroup($group, $startsAt, $endsAt)->get())->toHaveCount(1);
 });
 
 test('customer groups are synced on model creation', function () {
