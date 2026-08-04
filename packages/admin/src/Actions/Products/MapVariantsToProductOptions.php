@@ -28,7 +28,7 @@ class MapVariantsToProductOptions
                 $valueDifference = array_diff_assoc($permutation, $variant['values']);
 
                 if (! count($valueDifference)) {
-                    return $variant;
+                    return true;
                 }
 
                 $amountMatched = count($permutation) - count($valueDifference);
@@ -36,12 +36,17 @@ class MapVariantsToProductOptions
                 return $amountMatched == count($variant['values']);
             });
 
-            $variant = $variants[$variantIndex] ?? null;
+            // search() returns false when nothing matches; PHP coerces false to 0 as an array index.
+            $variant = $variantIndex === false ? null : ($variants[$variantIndex] ?? null);
 
             $variantId = $variant['id'] ?? null;
             $sku = $variant['sku'] ?? null;
             $copiedFrom = null;
             $shouldFill = true;
+
+            if (! $variant && ! $fillMissing) {
+                $shouldFill = false;
+            }
 
             if ($variant) {
                 // Does this variant already exist in our permutations?
