@@ -120,9 +120,11 @@ export function useEditDraft<T extends Record<string, unknown>>(options: EditDra
     const t = getCurrentInstance() ? useI18n().t : (key: string): string => key;
 
     const unlistenNavigationGuard = router.on('before', (event) => {
-        const { url, method } = event.detail.visit;
+        const { url, method, prefetch } = event.detail.visit;
 
-        if (!isDirty.value || method !== 'get' || url.pathname === window.location.pathname) {
+        // Prefetch visits (sidebar <Link prefetch> on hover) fire the same
+        // 'before' event but never leave the page, so they must not prompt.
+        if (!isDirty.value || prefetch || method !== 'get' || url.pathname === window.location.pathname) {
             return;
         }
 

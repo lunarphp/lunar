@@ -17,7 +17,7 @@ class ProductFactory extends BaseFactory
             'public_id' => (string) Str::ulid(),
             'product_type_id' => ProductType::factory(),
             'status' => 'published',
-            'brand_id' => Brand::factory()->create()->id,
+            'brand_id' => Brand::factory(),
             'name' => collect(['en' => $this->faker->words(3, true)]),
             'description' => collect(['en' => $this->faker->paragraph]),
             'short_description' => collect(['en' => $this->faker->sentence]),
