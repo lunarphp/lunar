@@ -110,6 +110,49 @@ test('can create lines', function () {
     expect($order->refresh()->lines)->toHaveCount(1);
 });
 
+test('product lines include both physical and digital lines', function () {
+    Currency::factory()->create([
+        'default' => true,
+    ]);
+
+    $order = Order::factory()->create([
+        'user_id' => null,
+    ]);
+
+    $shippableVariant = ProductVariant::factory()->create([
+        'shippable' => true,
+    ]);
+
+    $nonShippableVariant = ProductVariant::factory()->create([
+        'shippable' => false,
+    ]);
+
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'purchasable_type' => $shippableVariant->getMorphClass(),
+        'purchasable_id' => $shippableVariant->id,
+        'type' => 'physical',
+    ]);
+
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'purchasable_type' => $nonShippableVariant->getMorphClass(),
+        'purchasable_id' => $nonShippableVariant->id,
+        'type' => 'digital',
+    ]);
+
+    OrderLine::factory()->create([
+        'order_id' => $order->id,
+        'type' => 'shipping',
+    ]);
+
+    $order = $order->refresh();
+
+    expect($order->physicalLines)->toHaveCount(1);
+    expect($order->digitalLines)->toHaveCount(1);
+    expect($order->productLines)->toHaveCount(2);
+});
+
 test('can update status', function () {
     $order = Order::factory()->create([
         'user_id' => null,
