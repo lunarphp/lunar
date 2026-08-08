@@ -51,7 +51,6 @@ class Dropdown extends BaseFieldType
                     fn ($lookup) => [$lookup['value'] => $lookup['label'] ?? $lookup['value']]
                 )
             )
-            ->when(filled($attribute->validation_rules), fn (Select $component) => $component->rules($attribute->validation_rules))
             ->required((bool) $attribute->required)
             ->helperText(null);
     }
