@@ -308,3 +308,63 @@ test('cache tags use the morph alias and key', function () {
     expect($product->cacheTags())->toBe(["product:{$product->id}"]);
     expect($option->cacheTags())->toBe(["product_option:{$option->id}"]);
 });
+
+test('a deleted product invalidation survives real queue serialization', function () {
+    $product = Product::factory()->create();
+    $id = $product->id;
+
+    $event = new ProductInvalidated($product, CacheInvalidationReason::Deleted);
+
+    $product->delete();
+
+    $restored = unserialize(serialize($event));
+
+    expect($restored->morphType())->toBe($product->getMorphClass());
+    expect($restored->cacheKey())->toBe($id);
+    expect($restored->cacheTags())->toBe(["product:{$id}"]);
+    expect($restored->reason())->toBe(CacheInvalidationReason::Deleted);
+    expect($restored->cacheModel())->toBeInstanceOf(Product::class);
+    expect($restored->cacheModel()->id)->toBe($id);
+});
+
+test('a deleted collection invalidation survives real queue serialization', function () {
+    $collection = Collection::factory()->create();
+    $id = $collection->id;
+
+    $event = new CollectionInvalidated($collection, CacheInvalidationReason::Deleted);
+
+    $collection->delete();
+
+    $restored = unserialize(serialize($event));
+
+    expect($restored->cacheKey())->toBe($id);
+    expect($restored->cacheTags())->toBe(["collection:{$id}"]);
+});
+
+test('a deleted brand invalidation survives real queue serialization', function () {
+    $brand = Brand::factory()->create();
+    $id = $brand->id;
+
+    $event = new BrandInvalidated($brand, CacheInvalidationReason::Deleted);
+
+    $brand->delete();
+
+    $restored = unserialize(serialize($event));
+
+    expect($restored->cacheKey())->toBe($id);
+    expect($restored->cacheTags())->toBe(["brand:{$id}"]);
+});
+
+test('a deleted product option invalidation survives real queue serialization', function () {
+    $option = ProductOption::factory()->create();
+    $id = $option->id;
+
+    $event = new ProductOptionInvalidated($option, CacheInvalidationReason::Deleted);
+
+    $option->delete();
+
+    $restored = unserialize(serialize($event));
+
+    expect($restored->cacheKey())->toBe($id);
+    expect($restored->cacheTags())->toBe(["product_option:{$id}"]);
+});

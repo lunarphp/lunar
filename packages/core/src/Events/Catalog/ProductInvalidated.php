@@ -5,7 +5,7 @@ namespace Lunar\Core\Events\Catalog;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
+use Lunar\Core\Concerns\SerializesInvalidatedModel;
 use Lunar\Core\Contracts\CacheInvalidationEvent;
 use Lunar\Core\Enums\CacheInvalidationReason;
 use Lunar\Core\Models\Product;
@@ -17,7 +17,7 @@ use Lunar\Core\Models\Product;
  */
 class ProductInvalidated implements CacheInvalidationEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesInvalidatedModel;
 
     /** @var array<string> */
     public readonly array $cacheTags;
