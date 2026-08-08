@@ -218,23 +218,61 @@ class StripeManager
     }
 
     /**
+     * Zero-decimal currencies, per Stripe. The amount sent to Stripe is the
+     * major unit amount as-is.
+     *
+     * @see https://docs.stripe.com/currencies#zero-decimal
+     */
+    protected const ZERO_DECIMAL_CURRENCIES = [
+        'bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg',
+        'rwf', 'ugx', 'vnd', 'vuv', 'xaf', 'xof', 'xpf',
+    ];
+
+    /**
+     * Three-decimal currencies, per Stripe. The amount sent to Stripe is the
+     * major unit amount multiplied by 1000.
+     *
+     * @see https://docs.stripe.com/currencies#three-decimal
+     */
+    protected const THREE_DECIMAL_CURRENCIES = ['bhd', 'jod', 'kwd', 'omr', 'tnd'];
+
+    /**
+     * HUF, TWD and UGX are ISO zero-decimal currencies, but Stripe still
+     * requires amounts to be sent as if they had two decimal places.
+     *
+     * @see https://docs.stripe.com/currencies#special-cases
+     */
+    protected const SPECIAL_ZERO_DECIMAL_CURRENCIES = ['huf', 'twd', 'ugx'];
+
+    /**
      * Convert a Lunar price value to the amount expected by Stripe.
      *
-     * For most currencies Stripe expects the amount in the same sub-unit
-     * Lunar already stores it in (controlled by `Currency::decimal_places`).
-     * HUF, TWD and UGX are the exception: although they are ISO zero-decimal
-     * currencies, Stripe requires amounts to be sent as if they had two
-     * decimal places.
+     * Lunar stores prices as integers scaled by `Currency::decimal_places`,
+     * which merchants can set independently of what Stripe expects for a
+     * given currency. This converts back to the major unit amount first,
+     * then re-scales it to whatever sub-unit Stripe requires for the
+     * currency, so the result is correct regardless of how the merchant has
+     * configured `Currency::decimal_places`.
      *
      * @see https://docs.stripe.com/currencies
      */
     public static function toStripeAmount(int $value, CurrencyContract $currency): int
     {
-        if (! in_array(strtolower($currency->code), ['huf', 'twd', 'ugx'], true)) {
-            return $value;
+        $code = strtolower($currency->code);
+
+        $majorAmount = $value / (10 ** max($currency->decimal_places, 0));
+
+        if (in_array($code, self::SPECIAL_ZERO_DECIMAL_CURRENCIES, true)) {
+            return (int) round($majorAmount * 100);
         }
 
-        $majorAmount = $value / (10 ** $currency->decimal_places);
+        if (in_array($code, self::ZERO_DECIMAL_CURRENCIES, true)) {
+            return (int) round($majorAmount);
+        }
+
+        if (in_array($code, self::THREE_DECIMAL_CURRENCIES, true)) {
+            return (int) round($majorAmount * 1000);
+        }
 
         return (int) round($majorAmount * 100);
     }

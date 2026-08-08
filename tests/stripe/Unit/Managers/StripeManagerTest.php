@@ -99,3 +99,22 @@ it('is case-insensitive on the currency code', function () {
 
     expect(StripeManager::toStripeAmount(500, $currency))->toBe(50000);
 });
+
+it('normalises amounts for currencies configured with more than 2 decimal places', function () {
+    // A $60.0000 cart stored with 4 decimal places is 600000, not 6000.
+    $currency = Currency::factory()->make([
+        'code' => 'USD',
+        'decimal_places' => 4,
+    ]);
+
+    expect(StripeManager::toStripeAmount(600000, $currency))->toBe(6000);
+});
+
+it('normalises amounts for zero-decimal currencies misconfigured with extra decimal places', function () {
+    $currency = Currency::factory()->make([
+        'code' => 'JPY',
+        'decimal_places' => 2,
+    ]);
+
+    expect(StripeManager::toStripeAmount(100000, $currency))->toBe(1000);
+});
