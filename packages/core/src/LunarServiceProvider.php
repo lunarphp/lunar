@@ -440,7 +440,7 @@ class LunarServiceProvider extends ServiceProvider
             return $app->make(AttributeCacheImpl::class);
         });
 
-        $this->app->singleton(CacheInvalidator::class, function ($app) {
+        $this->app->scoped(CacheInvalidator::class, function ($app) {
             return new CacheInvalidatorImpl($app['db'], config('lunar.database.connection'));
         });
 

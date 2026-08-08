@@ -301,6 +301,125 @@ test('a direct change is left to scout and not reindexed by the listener', funct
     $engine->shouldNotHaveReceived('update');
 });
 
+test('a root rollback does not leak into a later autocommit mutation', function () {
+    $rolledBack = Product::factory()->create();
+    $later = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    rescue(function () use ($rolledBack) {
+        DB::transaction(function () use ($rolledBack) {
+            $rolledBack->touch();
+
+            throw new RuntimeException('roll back');
+        });
+    }, report: false);
+
+    $later->touch();
+
+    Event::assertDispatchedTimes(ProductInvalidated::class, 1);
+    Event::assertDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($later),
+    );
+});
+
+test('a root rollback does not leak into a later committed transaction', function () {
+    $rolledBack = Product::factory()->create();
+    $later = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    rescue(function () use ($rolledBack) {
+        DB::transaction(function () use ($rolledBack) {
+            $rolledBack->touch();
+
+            throw new RuntimeException('roll back');
+        });
+    }, report: false);
+
+    DB::transaction(function () use ($later) {
+        $later->touch();
+    });
+
+    Event::assertDispatchedTimes(ProductInvalidated::class, 1);
+    Event::assertDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($later),
+    );
+});
+
+test('a later transaction for the same target still invalidates after a rollback', function () {
+    $product = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    rescue(function () use ($product) {
+        DB::transaction(function () use ($product) {
+            $product->touch();
+
+            throw new RuntimeException('roll back');
+        });
+    }, report: false);
+
+    DB::transaction(function () use ($product) {
+        $product->touch();
+    });
+
+    Event::assertDispatchedTimes(ProductInvalidated::class, 1);
+});
+
+test('a nested rollback does not prevent the outer commit from invalidating', function () {
+    $outer = Product::factory()->create();
+    $nested = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    DB::transaction(function () use ($outer, $nested) {
+        $outer->touch();
+
+        rescue(function () use ($nested) {
+            DB::transaction(function () use ($nested) {
+                $nested->touch();
+
+                throw new RuntimeException('roll back nested');
+            });
+        }, report: false);
+    });
+
+    Event::assertDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($outer),
+    );
+    Event::assertNotDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($nested),
+    );
+});
+
+test('a target touched in both outer and nested frames survives the nested rollback', function () {
+    $product = Product::factory()->create();
+
+    Event::fake([ProductInvalidated::class]);
+
+    DB::transaction(function () use ($product) {
+        $product->touch();
+
+        rescue(function () use ($product) {
+            DB::transaction(function () use ($product) {
+                $product->touch();
+
+                throw new RuntimeException('roll back nested');
+            });
+        }, report: false);
+    });
+
+    Event::assertDispatched(
+        ProductInvalidated::class,
+        fn (ProductInvalidated $e) => $e->product->is($product),
+    );
+});
+
 test('cache tags use the morph alias and key', function () {
     $product = Product::factory()->create();
     $option = ProductOption::factory()->create();
