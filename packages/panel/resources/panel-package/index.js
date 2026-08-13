@@ -35,9 +35,11 @@ export const DonutChart = ui().DonutChart;
 export const TextInput = ui().TextInput;
 export const Textarea = ui().Textarea;
 export const Select = ui().Select;
+export const Combobox = ui().Combobox;
 export const Checkbox = ui().Checkbox;
 export const Toggle = ui().Toggle;
 export const FieldLabel = ui().FieldLabel;
+export const DatePicker = ui().DatePicker;
 
 // Overlays / display
 export const Dialog = ui().Dialog;
