@@ -1,0 +1,23 @@
+{
+    "name": "lunarphp/lunar-blog",
+    "description": "Blog authoring add-on for the Lunar Inertia panel.",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lunar\\Blog\\": "src/",
+            "Lunar\\Blog\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.4",
+        "lunarphp/panel": "self.version",
+        "lunarphp/core": "self.version"
+    },
+    "extra": {
+        "laravel": {
+            "providers": ["Lunar\\Blog\\BlogServiceProvider"]
+        }
+    },
+    "require-dev": { "phpstan/phpstan": "^2.1.17" }
+}

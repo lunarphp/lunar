@@ -21,6 +21,10 @@
             <directory suffix="Test.php">tests/panel/Feature</directory>
             <directory suffix="Test.php">tests/panel/Unit</directory>
         </testsuite>
+        <testsuite name="blog">
+            <directory suffix="Test.php">tests/blog/Feature</directory>
+            <directory suffix="Test.php">tests/blog/Unit</directory>
+        </testsuite>
         <testsuite name="demo-data">
             <directory suffix="Test.php">tests/demo-data/Feature</directory>
             <directory suffix="Test.php">tests/demo-data/Unit</directory>

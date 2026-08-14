@@ -60,6 +60,7 @@
             "packages/search/src/helpers.php"
         ],
         "psr-4": {
+            "Lunar\\Blog\\": "packages/blog/src/",
             "Lunar\\Core\\": "packages/core/src",
             "Lunar\\Admin\\": "packages/admin/src/",
             "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
@@ -86,6 +87,7 @@
         "psr-4": {
             "Lunar\\Tests\\": "tests",
             "Lunar\\Tests\\Admin\\": "tests/admin",
+            "Lunar\\Tests\\Blog\\": "tests/blog",
             "Lunar\\Tests\\Core\\": "tests/core",
             "Lunar\\Tests\\DemoData\\": "tests/demo-data",
             "Lunar\\Tests\\Filament\\": "tests/filament",
