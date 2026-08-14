@@ -231,6 +231,15 @@ class TypesenseEngine extends AbstractEngine
                 $filters->push($field.':='.collect($values)->join(','));
             }
 
+            // Scout's buildSearchParameters() only forwards query_by and
+            // prefix from the model's search-parameters config; merge the
+            // full set so weights, infix, vector_query, exclude_fields and
+            // friends actually reach Typesense.
+            $options = [
+                ...$options,
+                ...config('scout.typesense.model-settings.'.$this->modelType.'.search-parameters', []),
+            ];
+
             $queryBy = $options['query_by'];
             $queryByWeights = $options['query_by_weights'] ?? null;
             $infix = $options['infix'] ?? null;
