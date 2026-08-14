@@ -3,6 +3,8 @@
 namespace Lunar\Blog;
 
 use Illuminate\Support\ServiceProvider;
+use Lunar\Blog\Panel\BlogSection;
+use Lunar\Panel\Facades\Panel;
 use Lunar\Panel\PanelManager;
 
 class BlogServiceProvider extends ServiceProvider
@@ -30,8 +32,8 @@ class BlogServiceProvider extends ServiceProvider
 
     protected function registerPanel(): void
     {
-        // Section + vite are added in Tasks 3 and 4; keep this method so both
-        // land in one place. Until then it is intentionally empty.
+        Panel::section(new BlogSection);
+
         $this->app->make(PanelManager::class)->vite('lunar-blog', [
             'input' => 'resources/js/addon.ts',
             'hotFile' => null,
