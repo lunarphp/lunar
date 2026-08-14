@@ -1,0 +1,8 @@
+{
+  "resources/js/addon.ts": {
+    "file": "assets/addon-DwXwJo5J.js",
+    "name": "addon",
+    "src": "resources/js/addon.ts",
+    "isEntry": true
+  }
+}
