@@ -65,6 +65,19 @@ it('removes the featured image when asked', function () {
     expect($article->fresh()->getMedia('featured'))->toHaveCount(0);
 });
 
+it('uses the configured media collection instead of the hardcoded default', function () {
+    config(['lunar-blog.media.collection' => 'hero']);
+
+    $this->post(route('panel.blog.articles.store'), [
+        ...$this->payload,
+        'featured_image' => UploadedFile::fake()->image('hero.jpg', 20, 20),
+    ]);
+
+    $article = Article::sole();
+    expect($article->getMedia('hero'))->toHaveCount(1)
+        ->and($article->featuredImageUrl())->not->toBeNull();
+});
+
 it('rejects a non-image upload', function () {
     $this->post(route('panel.blog.articles.store'), [
         ...$this->payload,

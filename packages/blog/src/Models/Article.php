@@ -53,7 +53,11 @@ class Article extends Model implements HasMedia
      */
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(config('lunar-blog.media.collection'))->singleFile();
+        $collection = $this->addMediaCollection(config('lunar-blog.media.collection'))->singleFile();
+
+        if (config('lunar-blog.media.disk') !== null) {
+            $collection->useDisk(config('lunar-blog.media.disk'));
+        }
     }
 
     /**

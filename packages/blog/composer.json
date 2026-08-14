@@ -12,7 +12,9 @@
     "require": {
         "php": "^8.4",
         "lunarphp/panel": "self.version",
-        "lunarphp/core": "self.version"
+        "lunarphp/core": "self.version",
+        "spatie/laravel-medialibrary": "^11.12.7",
+        "spatie/laravel-permission": "^6.12"
     },
     "extra": {
         "laravel": {

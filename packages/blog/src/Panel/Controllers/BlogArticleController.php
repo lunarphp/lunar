@@ -98,9 +98,9 @@ class BlogArticleController
     private function handleFeaturedImage(BlogArticleRequest $request, Article $article): void
     {
         if ($request->hasFile('featured_image')) {
-            $article->addMediaFromRequest('featured_image')->toMediaCollection('featured');
+            $article->addMediaFromRequest('featured_image')->toMediaCollection(config('lunar-blog.media.collection'));
         } elseif ($request->boolean('remove_featured_image')) {
-            $article->clearMediaCollection('featured');
+            $article->clearMediaCollection(config('lunar-blog.media.collection'));
         }
     }
 
@@ -134,7 +134,7 @@ class BlogArticleController
                 'slug' => $article->slug,
                 'excerpt' => $article->excerpt,
                 'body' => $article->body,
-                'featured_image' => $article->getFirstMediaUrl('featured') ?: null,
+                'featured_image' => $article->getFirstMediaUrl(config('lunar-blog.media.collection')) ?: null,
                 'featured_image_alt' => $article->featured_image_alt,
                 'author_id' => $article->author_id,
                 'seo_title' => $article->seo_title,

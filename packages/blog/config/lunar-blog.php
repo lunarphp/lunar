@@ -1,16 +1,8 @@
 <?php
 
-use Lunar\Blog\Models\Article;
-use Lunar\Blog\Models\Category;
-use Lunar\Blog\Models\Tag;
 use Lunar\Core\Models\Staff;
 
 return [
-    'models' => [
-        'article' => Article::class,
-        'category' => Category::class,
-        'tag' => Tag::class,
-    ],
     'author_model' => Staff::class,
     'permission' => 'blog:manage',
     'media' => [

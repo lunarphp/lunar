@@ -2,6 +2,7 @@
 
 use Lunar\Blog\Models\Article;
 use Lunar\Blog\Models\Category;
+use Lunar\Core\Models\Staff;
 use Lunar\Tests\Blog\TestCase;
 use Spatie\Permission\Models\Permission;
 
@@ -41,6 +42,12 @@ it('attaches categories', function () {
     $article = Article::factory()->create();
     $article->categories()->attach(Category::factory()->create(['name' => 'Pumps', 'slug' => 'pumps']));
 
-    expect($article->categories()->count())->toBeGreaterThanOrEqual(0)
-        ->and($article->categories->first()->name)->toBe('Pumps');
+    expect($article->categories->first()->name)->toBe('Pumps');
+});
+
+it('derives the author name from the attached staff member', function () {
+    $author = Staff::factory()->create(['first_name' => 'First', 'last_name' => 'Last']);
+    $article = Article::factory()->create(['author_id' => $author->id]);
+
+    expect($article->authorName())->toBe('First Last');
 });

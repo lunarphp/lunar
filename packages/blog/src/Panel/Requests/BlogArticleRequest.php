@@ -156,8 +156,12 @@ class BlogArticleRequest extends FormRequest
             'author_id', 'seo_title', 'seo_description', 'published_at',
         ]);
 
+        // The value merged in prepareForValidation() is already a UTC instant,
+        // but casting it to a string loses that timezone (Carbon's __toString
+        // omits it), so it must be re-parsed explicitly as UTC rather than
+        // left to fall back to app.timezone.
         $data['published_at'] = $this->filled('published_at')
-            ? CarbonImmutable::parse((string) $this->input('published_at'))
+            ? CarbonImmutable::parse((string) $this->input('published_at'), 'UTC')
             : null;
 
         return $data;

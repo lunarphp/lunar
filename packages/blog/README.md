@@ -79,11 +79,6 @@ Staff with the `admin` flag bypass permission checks entirely, as elsewhere in L
 
 ```php
 return [
-    'models' => [
-        'article' => Article::class,
-        'category' => Category::class,
-        'tag' => Tag::class,
-    ],
     'author_model' => Staff::class,
     'permission' => 'blog:manage',
     'media' => [
@@ -98,19 +93,18 @@ return [
 ];
 ```
 
-* **`models.article` / `models.category` / `models.tag`**: the fully qualified model classes, defaulting to `Lunar\Blog\Models\Article`, `Lunar\Blog\Models\Category`, `Lunar\Blog\Models\Tag`. See "Extending the Article model" below for what overriding these does and does not affect today.
 * **`author_model`**: the model an article's `author_id` belongs to. Defaults to `Lunar\Core\Models\Staff`, the model `lunarphp/panel` authenticates staff against, so the "Author" picker on the create/edit form is populated from real panel users out of the box. Point this at your own staff model if your app extends or replaces it (it must have `first_name`, `last_name` and `email` columns, used to label the picker options).
 * **`permission`**: the spatie permission handle gating the nav item and all article routes. Defaults to `blog:manage`.
-* **`media.disk`**: reserved for a future release, currently not read by the package. Leave it `null` and the featured image is stored on Spatie Media Library's own default disk.
+* **`media.disk`**: the Media Library disk the featured image is stored on. Leave it `null` and the featured image is stored on Spatie Media Library's own default disk, or set it to a configured disk name to store featured images there instead.
 * **`media.collection`**: the media library collection name the featured image is attached to. Defaults to `featured`, and is a single file collection (a new upload replaces the previous image).
 * **`publish_timezone`**: the timezone the "Publish at" field is entered and displayed in on the create/edit form. Stored timestamps are always UTC, this only affects the trading facing wall clock time shown to staff. Defaults to `config('app.timezone')`, and can be overridden per environment with `LUNAR_BLOG_PUBLISH_TIMEZONE`.
 * **`navigation.group`** and **`navigation.item`**: the panel navigation group and item the Articles link is registered under (key, label, priority, and icon). Change these to move or relabel the entry, or to group it under an existing navigation group by matching its key.
 
 ## Extending the Article model
 
-`config('lunar-blog.models.article')` (and its `category` / `tag` counterparts) declare the model classes the package ships with. Today, `author_model` is the config entry the package fully resolves through, the article's `author()` relation and the `authorExists()` validation rule are both built from `config('lunar-blog.author_model')`, so pointing it at your own staff model is a supported extension point.
+`author_model` is the config entry the package fully resolves through: the article's `author()` relation and the `authorExists()` validation rule are both built from `config('lunar-blog.author_model')`, so pointing it at your own staff model is a supported extension point.
 
-The `models.article` / `models.category` / `models.tag` entries are not yet threaded through the panel's own routes and controllers, which currently type hint the concrete `Lunar\Blog\Models\Article` class directly for route model binding and its relations. Overriding these config values will not retarget those internal usages. If you need extra behaviour, the current options are to add methods, scopes, casts or an observer to your own subclass and reference `config('lunar-blog.models.article')` from your own code (factories, jobs, storefront queries), or to fork the relevant controller/relation. Wiring the config value fully through the package is tracked as a follow up.
+The `Article`, `Category` and `Tag` model classes themselves are not configurable. The panel's routes and controllers type hint the concrete `Lunar\Blog\Models\Article` class directly for route model binding and its relations. If you need extra behaviour, add methods, scopes, casts or an observer to your own subclass, or fork the relevant controller/relation.
 
 ## Testing
 
