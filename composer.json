@@ -61,6 +61,7 @@
         ],
         "psr-4": {
             "Lunar\\Blog\\": "packages/blog/src/",
+            "Lunar\\Blog\\Database\\Factories\\": "packages/blog/database/factories",
             "Lunar\\Core\\": "packages/core/src",
             "Lunar\\Admin\\": "packages/admin/src/",
             "Lunar\\Core\\Database\\Factories\\": "packages/core/database/factories",
