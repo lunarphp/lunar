@@ -3,7 +3,7 @@
 use Lunar\Blog\Models\Article;
 use Lunar\Blog\Models\Category;
 use Lunar\Blog\Models\Tag;
-use Lunar\Filament\Models\Staff;
+use Lunar\Core\Models\Staff;
 
 return [
     'models' => [

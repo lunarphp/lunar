@@ -3,6 +3,7 @@
 namespace Lunar\Blog\Panel\Requests;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -130,7 +131,10 @@ class BlogArticleRequest extends FormRequest
 
     private function authorExists(): Exists
     {
-        return Rule::exists('lunar_staff', 'id');
+        /** @var class-string<Model> $authorModel */
+        $authorModel = config('lunar-blog.author_model');
+
+        return Rule::exists((new $authorModel)->getTable(), 'id');
     }
 
     private function routeArticle(): ?Article

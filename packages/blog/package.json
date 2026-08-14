@@ -7,6 +7,7 @@
         "dev": "vite"
     },
     "devDependencies": {
+        "@inertiajs/vue3": "^2.0.0",
         "@lunarphp/panel": "file:../panel/resources/panel-package",
         "@lunarphp/panel-vite-plugin": "file:../panel/resources/package",
         "@vitejs/plugin-vue": "^5.2.0",
