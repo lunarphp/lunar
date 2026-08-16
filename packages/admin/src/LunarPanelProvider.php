@@ -25,7 +25,6 @@ use Lunar\Admin\Events\ProductAssociationsUpdated;
 use Lunar\Admin\Events\ProductCollectionsUpdated;
 use Lunar\Admin\Events\ProductCustomerGroupsUpdated;
 use Lunar\Admin\Events\ProductPricingUpdated;
-use Lunar\Admin\Events\ProductVariantInventoryUpdated;
 use Lunar\Admin\Events\ProductVariantOptionsUpdated;
 use Lunar\Admin\Listeners\FilamentUpgradedListener;
 use Lunar\Admin\Models\Staff;
@@ -108,7 +107,6 @@ class LunarPanelProvider extends ServiceProvider
             ProductCollectionsUpdated::class,
             ProductPricingUpdated::class,
             ProductCustomerGroupsUpdated::class,
-            ProductVariantInventoryUpdated::class,
             ProductVariantOptionsUpdated::class,
             ModelChannelsUpdated::class,
             ModelPricesUpdated::class,

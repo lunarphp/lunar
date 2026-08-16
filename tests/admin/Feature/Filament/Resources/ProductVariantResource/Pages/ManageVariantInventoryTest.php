@@ -43,6 +43,15 @@ it('dispatches ProductVariantInventoryUpdated event when updating variant stock 
         ])->call('save')->assertHasNoErrors();
 
     Event::assertDispatched(ProductVariantInventoryUpdated::class, function ($event) use ($variant) {
-        return $event->model->is($variant);
+        return $event->model->is($variant)
+            && $event->model->stock == 250
+            && $event->model->backorder == 25;
     });
+
+    $this->assertDatabaseHas((new ProductVariant)->getTable(), [
+        'id' => $variant->id,
+        'stock' => 250,
+        'backorder' => 25,
+        'purchasable' => 'in_stock_or_on_backorder',
+    ]);
 });
