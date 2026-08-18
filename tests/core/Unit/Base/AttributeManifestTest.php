@@ -7,6 +7,7 @@ use Lunar\Core\Enums\FieldTypeEnum;
 use Lunar\Core\Manifests\AttributeManifest as AttributeManifestImpl;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\ProductType;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -43,6 +44,12 @@ test('has base types set', function () {
     expect($manifest->getTypes())->toBeInstanceOf(Collection::class);
 
     expect($manifest->getTypes())->not->toBeEmpty();
+});
+
+test('registers product types as an attributable type', function () {
+    $manifest = app(AttributeManifest::class);
+
+    expect($manifest->getType('producttype'))->toBe(ProductType::class);
 });
 
 test('can add type', function () {

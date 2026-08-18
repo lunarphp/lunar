@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Tình trạng bán',
+    'channels' => 'Kênh bán hàng',
+    'customer_groups' => 'Nhóm khách hàng',
+    'summary_all' => 'Tất cả',
+    'summary_some' => 'Một phần',
+    'summary_none' => 'Không có',
+    'summary_channels' => '{enabled} trên {total} kênh',
+    'summary_groups' => '{enabled} trên {total} nhóm',
+    'scheduled_count' => '{count} đã lên lịch',
+    'enabled' => 'Đang bật',
+    'disabled' => 'Đang tắt',
+    'scheduled_tip' => 'Đã lên lịch — bật vào {date}',
+    'scheduled_locked' => 'Đã lên lịch — xóa lịch để chuyển đổi',
+    'not_scheduled' => 'Chưa lên lịch',
+    'clear_schedule' => 'Xóa lịch',
+    'turns_on' => 'Bật vào',
+    'turns_off' => 'Tắt vào',
+    'schedule_title' => 'Lên lịch tình trạng bán',
+    'schedule_description' => 'Chọn thời điểm mục này khả dụng. Ngày kết thúc là tùy chọn.',
+    'schedule_starts' => 'Bắt đầu',
+    'schedule_ends' => 'Kết thúc',
+    'schedule_apply' => 'Áp dụng lịch',
+    'visible' => 'Hiện trong điều hướng',
+    'hidden' => 'Ẩn khỏi điều hướng',
+    'make_hidden' => 'Ẩn khỏi điều hướng',
+    'make_visible' => 'Hiện trong điều hướng',
+    'hidden_hint' => 'Truy cập được bằng liên kết trực tiếp nhưng không hiển thị trong điều hướng.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

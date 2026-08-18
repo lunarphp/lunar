@@ -118,7 +118,7 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
 
     public function mappedAttributes(): Collection
     {
-        return $this->productType->mappedAttributes;
+        return $this->productType->attributeMapping;
     }
 
     public function newCacheInvalidationEvent(CacheInvalidationReason $reason): CacheInvalidationEvent
@@ -139,6 +139,17 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    /**
+     * Scoped route bindings guess a `productVariants` relation from the
+     * `{productVariant}` parameter; the relation is named `variants`.
+     */
+    protected function childRouteBindingRelationshipName($childType): string
+    {
+        return $childType === 'productVariant'
+            ? 'variants'
+            : parent::childRouteBindingRelationshipName($childType);
     }
 
     public function variant(): HasOne
@@ -163,7 +174,8 @@ class Product extends Base implements HasThumbnailImage, SpatieHasMedia
 
     public function associations(): HasMany
     {
-        return $this->hasMany(ProductAssociation::class, 'product_parent_id');
+        return $this->hasMany(ProductAssociation::class, 'product_parent_id')
+            ->orderBy('sort')->orderBy('id');
     }
 
     public function inverseAssociations(): HasMany

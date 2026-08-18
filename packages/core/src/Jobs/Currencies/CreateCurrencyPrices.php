@@ -33,7 +33,7 @@ class CreateCurrencyPrices implements ShouldQueue
         // Check whether this new currency has been made default
         // if that is the case we will need to find which
         // currency has just been made non default.
-        if ($default->id == $this->currency->id) {
+        if ($default && $default->id == $this->currency->id) {
             $default = Currency::whereBetween(
                 'updated_at',
                 [now()->subSeconds(15), now()]

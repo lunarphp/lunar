@@ -32,7 +32,15 @@ class StandardDefinitions implements MediaDefinitions
 
         $collection = $model->addMediaCollection(
             config('lunar.media.collection')
-        );
+        )->acceptsMimeTypes([
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'image/avif',
+            'image/bmp',
+            'image/svg+xml',
+        ]);
 
         if ($fallbackUrl) {
             $collection = $collection->useFallbackUrl($fallbackUrl);

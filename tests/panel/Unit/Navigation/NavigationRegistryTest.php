@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Lunar\Core\Models\Staff;
 use Lunar\Panel\Navigation\NavigationItem;
 use Lunar\Panel\Navigation\NavigationRegistry;
+use Lunar\Panel\Support\Position;
 use Lunar\Tests\Panel\TestCase;
 
 uses(TestCase::class);
@@ -20,6 +21,21 @@ it('groups items and sorts by priority', function () {
     expect($result['groups'])->toHaveCount(1)
         ->and($result['groups'][0]['key'])->toBe('catalog')
         ->and(array_column($result['groups'][0]['items'], 'key'))->toBe(['brands', 'products']);
+});
+
+it('places an item with a before/after position anchor relative to its target', function () {
+    $registry = new NavigationRegistry;
+    $registry->addItem('catalog', new NavigationItem(key: 'products', label: 'Products', priority: 10));
+    $registry->addItem('catalog', new NavigationItem(key: 'brands', label: 'Brands', priority: 20));
+    $registry->addItem('catalog', new NavigationItem(
+        key: 'reviews',
+        label: 'Reviews',
+        position: Position::after('products'),
+    ));
+
+    $items = array_column($registry->toArray()['groups'][0]['items'], 'key');
+
+    expect($items)->toBe(['products', 'reviews', 'brands']);
 });
 
 it('auto-creates a group when adding to an unknown group key', function () {

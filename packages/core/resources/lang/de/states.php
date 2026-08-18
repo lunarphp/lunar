@@ -6,10 +6,20 @@ return [
         'inactive' => 'Inactive',
     ],
 
+    'brand' => [
+        'active' => 'Active',
+        'draft' => 'Draft',
+    ],
+
     'product' => [
         'draft' => 'Draft',
         'published' => 'Published',
         'archived' => 'Archived',
+    ],
+
+    'product_type' => [
+        'active' => 'Active',
+        'draft' => 'Draft',
     ],
 
     'collection' => [

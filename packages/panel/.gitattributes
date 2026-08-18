@@ -1,0 +1,4 @@
+# Compiled panel bundle -- committed so composer installs ship working assets,
+# but it's generated output: collapse it in diffs and exclude from language
+# stats so PRs stay reviewable.
+public/build/** linguist-generated=true -diff

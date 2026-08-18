@@ -443,6 +443,20 @@ class ColorPicker extends BaseFieldType
 AttributeData::registerFieldType(ColorPicker::class);
 ```
 
+### Field type configuration forms
+
+The "configure this attribute" form (min/max, dropdown options, richtext toggle, …) is built
+from the **core** field type's renderer-agnostic descriptors — `FieldType::getConfigurationFields()`
+on `Lunar\Core\FieldTypes\*` — mapped onto Filament components by
+`Lunar\Filament\Support\Forms\ConfigurationFieldMapper`. A custom field type registered with
+core's `FieldTypeManifest` therefore gets a working configuration form here (and in the Inertia
+panel) without any bridge code: declare descriptors (`text`, `number`, `toggle`, `select`,
+`tags`, `lookups`) and validation via `getConfig()`.
+
+To replace the derived form with bespoke Filament components, override
+`getConfigurationFields()` on your `BaseFieldType` subclass — a non-empty return wins over the
+descriptor mapping.
+
 ---
 
 ## Customisation strategies

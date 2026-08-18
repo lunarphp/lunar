@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Хүртээмж',
+    'channels' => 'Борлуулалтын сувгууд',
+    'customer_groups' => 'Хэрэглэгчийн бүлгүүд',
+    'summary_all' => 'Бүгд',
+    'summary_some' => 'Зарим',
+    'summary_none' => 'Алга',
+    'summary_channels' => '{total} сувгаас {enabled}',
+    'summary_groups' => '{total} бүлгээс {enabled}',
+    'scheduled_count' => '{count} товлогдсон',
+    'enabled' => 'Идэвхтэй',
+    'disabled' => 'Идэвхгүй',
+    'scheduled_tip' => 'Товлогдсон — {date}-нд идэвхжинэ',
+    'scheduled_locked' => 'Товлогдсон — сэлгэхийн тулд товлолтыг цэвэрлэнэ үү',
+    'not_scheduled' => 'Товлогдоогүй',
+    'clear_schedule' => 'Товлолтыг цэвэрлэх',
+    'turns_on' => 'Идэвхжих огноо',
+    'turns_off' => 'Идэвхгүй болох огноо',
+    'schedule_title' => 'Хүртээмж товлох',
+    'schedule_description' => 'Хэзээ хүртээмжтэй болохыг сонгоно уу. Дуусах огноо заавал биш.',
+    'schedule_starts' => 'Эхлэх',
+    'schedule_ends' => 'Дуусах',
+    'schedule_apply' => 'Товлолтыг хэрэгжүүлэх',
+    'visible' => 'Навигацад харагдана',
+    'hidden' => 'Навигацаас нуугдсан',
+    'make_hidden' => 'Навигацаас нуух',
+    'make_visible' => 'Навигацад харуулах',
+    'hidden_hint' => 'Шууд холбоосоор нэвтэрч болох ч навигацад харагдахгүй.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

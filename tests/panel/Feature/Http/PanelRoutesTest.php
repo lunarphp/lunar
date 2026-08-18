@@ -10,11 +10,6 @@ it('redirects guests to the panel login', function () {
     $this->get('/panel')->assertRedirect(route('panel.login'));
 });
 
-it('registers the login stub route under the configured prefix', function () {
-    expect(route('panel.login', absolute: false))->toBe('/panel/login');
-    $this->get('/panel/login')->assertStatus(501);
-});
-
 it('renders the dashboard for authenticated staff', function () {
     $staff = Staff::factory()->create(['admin' => true]);
 

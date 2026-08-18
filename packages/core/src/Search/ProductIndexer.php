@@ -38,15 +38,18 @@ class ProductIndexer extends ScoutIndexer
 
     public function toSearchableArray(Model $model): array
     {
+        // Scout's database engine calls this on an empty model prototype to
+        // derive the searchable columns, so every relation and date here must
+        // be null-safe.
         // Do this here so other additions to the data appear under the attributes,
         // more of a vanity thing than anything else.
         $data = array_merge([
             'id' => (string) $model->id,
             'public_id' => (string) $model->public_id,
             'status' => (string) $model->status,
-            'product_type' => $model->productType->name,
+            'product_type' => $model->productType?->name,
             'brand' => $model->brand?->name,
-            'created_at' => (int) $model->created_at->timestamp,
+            'created_at' => (int) $model->created_at?->timestamp,
         ],
             $this->mapTranslatableFields($model, ['name', 'description', 'short_description']),
             $this->mapSearchableAttributes($model),

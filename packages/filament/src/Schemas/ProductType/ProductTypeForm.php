@@ -26,17 +26,17 @@ class ProductTypeForm
                 Tabs::make('Attributes')->tabs([
                     Tab::make(__('lunar-filament::producttype.tabs.product_attributes.label'))
                         ->schema([
-                            AttributeSelector::make('mappedAttributes')
+                            AttributeSelector::make('attributeMapping')
                                 ->withType(Product::morphName())
-                                ->relationship(name: 'mappedAttributes')
+                                ->relationship(name: 'attributeMapping')
                                 ->label('')
                                 ->columnSpan(2),
                         ]),
                     Tab::make(__('lunar-filament::producttype.tabs.variant_attributes.label'))
                         ->schema([
-                            AttributeSelector::make('mappedAttributes')
+                            AttributeSelector::make('attributeMapping')
                                 ->withType(ProductVariant::morphName())
-                                ->relationship(name: 'mappedAttributes')
+                                ->relationship(name: 'attributeMapping')
                                 ->label('')
                                 ->columnSpan(2),
                         ])->visible(

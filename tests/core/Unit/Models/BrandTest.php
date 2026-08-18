@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Lunar\Core\Exceptions\BrandActionException;
 use Lunar\Core\Generators\UrlGenerator;
 use Lunar\Core\Models\Attribute;
 use Lunar\Core\Models\AttributeModel;
@@ -11,6 +12,7 @@ use Lunar\Core\Models\Discount;
 use Lunar\Core\Models\Language;
 use Lunar\Core\Models\Product;
 use Lunar\Core\Models\Url;
+use Lunar\Core\States\Brand\Active;
 use Lunar\Tests\Core\TestCase;
 
 uses(TestCase::class);
@@ -25,6 +27,19 @@ test('can make a brand', function () {
         'name' => 'Test Brand',
     ]);
     expect($brand->name)->toEqual('Test Brand');
+});
+
+test('defaults to the active state', function () {
+    $brand = Brand::create(['name' => 'Test Brand', 'handle' => 'test-brand']);
+
+    expect($brand->status)->toBeInstanceOf(Active::class);
+});
+
+test('active scope filters out draft brands', function () {
+    Brand::factory()->active()->create();
+    Brand::factory()->draft()->create();
+
+    expect(Brand::active()->count())->toBe(1);
 });
 
 test('can generate url', function () {
@@ -88,18 +103,9 @@ test('can return mapped attributes', function () {
     expect($brand->mappedAttributes)->toHaveCount(1);
 });
 
-test('can delete a brand', function () {
+test('can delete a brand without products', function () {
     $brand = Brand::factory()->create([
         'name' => 'Test Brand',
-    ]);
-
-    $activeProduct = Product::factory()->create([
-        'brand_id' => $brand->id,
-    ]);
-
-    $archivedProduct = Product::factory()->create([
-        'brand_id' => $brand->id,
-        'status' => 'archived',
     ]);
 
     $discount = Discount::factory()->create();
@@ -133,14 +139,26 @@ test('can delete a brand', function () {
     assertDatabaseMissing(Brand::class, [
         'id' => $brand->id,
     ]);
+});
 
-    assertDatabaseHas(Product::class, [
-        'id' => $activeProduct->id,
-        'brand_id' => null,
+test('refuses to delete a brand with products on any path', function () {
+    $brand = Brand::factory()->create([
+        'name' => 'Test Brand',
     ]);
 
-    assertDatabaseHas(Product::class, [
-        'id' => $archivedProduct->id,
-        'brand_id' => null,
+    $product = Product::factory()->create([
+        'brand_id' => $brand->id,
     ]);
+
+    expect(fn () => $brand->delete())
+        ->toThrow(BrandActionException::class);
+
+    assertDatabaseHas(Brand::class, ['id' => $brand->id]);
+    assertDatabaseHas(Product::class, ['id' => $product->id, 'brand_id' => $brand->id]);
+
+    // Reassigning the product unblocks deletion.
+    $product->update(['brand_id' => null]);
+    $brand->refresh()->delete();
+
+    assertDatabaseMissing(Brand::class, ['id' => $brand->id]);
 });

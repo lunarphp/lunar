@@ -62,6 +62,13 @@ class TaxClass extends Base
      */
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'default' => 'boolean',
+        ];
+    }
+
     public function taxRateAmounts(): HasMany
     {
         return $this->hasMany(TaxRateAmount::class);

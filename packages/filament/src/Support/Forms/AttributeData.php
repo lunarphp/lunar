@@ -2,6 +2,7 @@
 
 namespace Lunar\Filament\Support\Forms;
 
+use Filament\Forms\Components\Field;
 use Filament\Schemas\Components\Component;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
@@ -108,11 +109,28 @@ class AttributeData
         return $fieldType ? $fieldType::mutateConfigurationForForm($configuration) : $configuration;
     }
 
+    /**
+     * Configuration components for a field type. A bridge class overrides by
+     * returning its own components; otherwise the core field type's
+     * renderer-agnostic descriptors are mapped onto Filament components, so
+     * consumer-registered core field types get a config form with no bridge
+     * class at all.
+     *
+     * @return array<int, Field|Component>
+     */
     public function getConfigurationFields(?string $type = null): array
     {
         $fieldType = $this->fieldTypes[$type] ?? null;
 
-        return $fieldType ? $fieldType::getConfigurationFields() : [];
+        if ($fieldType && ($fields = $fieldType::getConfigurationFields()) !== []) {
+            return $fields;
+        }
+
+        $coreFieldType = $type ? FieldTypeManifest::getType($type) : null;
+
+        return $coreFieldType
+            ? ConfigurationFieldMapper::map((new $coreFieldType)->getConfigurationFields())
+            : [];
     }
 
     public function synthesizeLivewireProperties(): void

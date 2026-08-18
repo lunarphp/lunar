@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Disponibilidade',
+    'channels' => 'Canais de venda',
+    'customer_groups' => 'Grupos de clientes',
+    'summary_all' => 'Todos',
+    'summary_some' => 'Alguns',
+    'summary_none' => 'Nenhum',
+    'summary_channels' => '{enabled} de {total} canais',
+    'summary_groups' => '{enabled} de {total} grupos',
+    'scheduled_count' => '{count} agendados',
+    'enabled' => 'Ativado',
+    'disabled' => 'Desativado',
+    'scheduled_tip' => 'Agendado — ativa em {date}',
+    'scheduled_locked' => 'Agendado — limpe o agendamento para alternar',
+    'not_scheduled' => 'Não agendado',
+    'clear_schedule' => 'Limpar agendamento',
+    'turns_on' => 'Ativa em',
+    'turns_off' => 'Desativa em',
+    'schedule_title' => 'Agendar disponibilidade',
+    'schedule_description' => 'Escolha quando isto fica disponível. A data de término é opcional.',
+    'schedule_starts' => 'Início',
+    'schedule_ends' => 'Término',
+    'schedule_apply' => 'Aplicar agendamento',
+    'visible' => 'Visível na navegação',
+    'hidden' => 'Oculto da navegação',
+    'make_hidden' => 'Ocultar da navegação',
+    'make_visible' => 'Mostrar na navegação',
+    'hidden_hint' => 'Acessível por link direto, mas não aparece na navegação.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

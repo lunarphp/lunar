@@ -4,8 +4,8 @@ Lunar is a headless PHP/Laravel e-commerce package. This directory is the **pack
 
 ## Layout
 
-- `packages/` — sub-packages published from this monorepo (`core`, `admin`, `filament`, `search`, `stripe`, `paypal`, `opayo`, `table-rate-shipping`, `meilisearch`, `upgrade`).
-- `tests/` — Pest tests grouped per sub-package (admin, core, search, stripe, shipping, upgrade); see `phpunit.xml` for the testsuites.
+- `packages/` — sub-packages published from this monorepo (`core`, `admin`, `filament`, `panel`, `panel-addon-example`, `search`, `stripe`, `paypal`, `opayo`, `table-rate-shipping`, `meilisearch`, `upgrade`, `demo-data`).
+- `tests/` — Pest tests grouped per sub-package (admin, core, panel, search, stripe, shipping, upgrade); see `phpunit.xml` for the testsuites.
 - `specs/` — design docs for v2 work (see below).
 - `TODO.md` — the v2 work tracker.
 - `composer.json` / `monorepo-builder.php` — the monorepo config; sub-packages are split out on release.
@@ -34,7 +34,7 @@ When asked to start a new piece of work that isn't already specced, write the sp
 
 - **Translations**: 16 locales live under each sub-package's `resources/lang/` (`ar, bg, de, en, es, fa, fr, hr, hu, mn, nl, pl, pt_BR, ro, tr, vi`). When adding or renaming a translation key, update **every** locale — English first, then mirror the key (English value is acceptable as a placeholder) across the other 15.
 - **Public contract surface**: this package is consumed by downstream apps. Treat anything outside `Models/Concerns/`, `Support/`, and internal namespaces as a contract — breaking changes require a spec and a Rector rule in the `upgrade` package.
-- **Migrations**: v2 ships a flat baseline. Schema changes go in a new migration; do not edit the baseline. The `upgrade` package handles v1 → v2 transformations.
+- **Migrations**: v2 ships a flat baseline. While v2 is in alpha, fold schema changes into the existing baseline migrations rather than adding change migrations; once v2 is released, schema changes go in new migrations instead. The `upgrade` package handles v1 → v2 transformations.
 - **Filament**: v5 with the schemas refactor applied. Use schemas, not the deprecated wrapper traits.
 - **Comments**: describe code in its own vocabulary — use the terms the API actually exposes (a `Fulfilment` is a "fulfilment", not a "parcel"). Don't introduce a metaphor that appears nowhere in the code. Keep comments and docblocks ASCII-only, except the established house style — em dash (`—`), arrow (`→`) in state-transition notes, and ellipsis (`…`). No other non-ASCII symbols (`§`, `Σ`, `⟹`, `≥`, emoji, …); spell them out (`section A`, `sum of`, `implies`, `>=`). This applies to comments, docblocks, and user-facing strings — the `resources/lang/` translation files are the only place non-ASCII text belongs.
 - **Namespace**: `Lunar\Core\…` for core, `Lunar\Admin\…`, `Lunar\Search\…`, etc. for other sub-packages.
@@ -45,8 +45,9 @@ When asked to start a new piece of work that isn't already specced, write the sp
 ## Tests
 
 - **Run one suite at a time, exactly as CI does.** Each suite is a separate job in `.github/workflows/tests.yml`; run them the same way locally rather than in a single combined pass. Do **not** run `vendor/bin/pest` with no `--testsuite`.
-- From inside this package: `vendor/bin/pest --testsuite <name> --parallel` (matches CI). Suites (the CI matrix): `core`, `admin`, `filament`, `shipping`, `stripe`, `search`, `upgrade`. (A `demo-data` suite also exists in `phpunit.xml` but is not in the CI matrix.)
-- Full local sweep — loop the suites: `for s in core admin filament shipping stripe search upgrade; do vendor/bin/pest --testsuite "$s" --parallel || break; done`.
+- From inside this package: `vendor/bin/pest --testsuite <name> --parallel` (matches CI). Suites (the CI matrix): `core`, `admin`, `panel`, `filament`, `shipping`, `stripe`, `search`, `upgrade`. (A `demo-data` suite also exists in `phpunit.xml` but is not in the CI matrix.)
+- Full local sweep — loop the suites: `for s in core admin panel filament shipping stripe search upgrade; do vendor/bin/pest --testsuite "$s" --parallel || break; done`.
+- Panel frontend checks run via npm from `packages/panel` (own dependency tree, `npm install` there first): `npm test` (vitest), `npm run type-check`, `npm run build`. The example add-on builds through the npm workspace at this directory's root: `npm run build --workspace @lunarphp/panel-addon-example`. CI runs all four in the `panel-js` job.
 - Cross-database tests run as a group, not a suite: `vendor/bin/pest --group=cross-db --parallel --do-not-fail-on-empty-test-suite`.
 - `php artisan test` from the host app runs only the host app's own tests, not these package suites — it is not a substitute for running the suites above.
 - Use factories; do not invent ad-hoc test data when a factory state already covers it.

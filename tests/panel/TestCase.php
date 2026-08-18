@@ -53,8 +53,9 @@ class TestCase extends BaseTestCase
 
         // Inertia's testing component-exists check looks under the Testbench
         // skeleton's resource_path() by default; point it at the panel
-        // package's own page components instead.
-        $app['config']->set('inertia.testing.page_paths', [
+        // package's own page components instead. v3 moved this key from
+        // `inertia.testing.page_paths` to `inertia.pages.paths`.
+        $app['config']->set('inertia.pages.paths', [
             dirname(__DIR__, 2).'/packages/panel/resources/js/pages',
         ]);
     }

@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Dostupnost',
+    'channels' => 'Prodajni kanali',
+    'customer_groups' => 'Grupe kupaca',
+    'summary_all' => 'Svi',
+    'summary_some' => 'Neki',
+    'summary_none' => 'Nijedan',
+    'summary_channels' => '{enabled} od {total} kanala',
+    'summary_groups' => '{enabled} od {total} grupa',
+    'scheduled_count' => 'Zakazano: {count}',
+    'enabled' => 'Uključeno',
+    'disabled' => 'Isključeno',
+    'scheduled_tip' => 'Zakazano — uključuje se {date}',
+    'scheduled_locked' => 'Zakazano — obrišite raspored da biste preklopili',
+    'not_scheduled' => 'Nije zakazano',
+    'clear_schedule' => 'Obriši raspored',
+    'turns_on' => 'Uključuje se',
+    'turns_off' => 'Isključuje se',
+    'schedule_title' => 'Zakaži dostupnost',
+    'schedule_description' => 'Odaberite kada ovo postaje dostupno. Datum završetka nije obavezan.',
+    'schedule_starts' => 'Početak',
+    'schedule_ends' => 'Završetak',
+    'schedule_apply' => 'Primijeni raspored',
+    'visible' => 'Vidljivo u navigaciji',
+    'hidden' => 'Skriveno iz navigacije',
+    'make_hidden' => 'Sakrij iz navigacije',
+    'make_visible' => 'Prikaži u navigaciji',
+    'hidden_hint' => 'Dostupno izravnom poveznicom, ali se ne prikazuje u navigaciji.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

@@ -50,4 +50,9 @@ class WidgetsSection extends Section
     {
         return ['widgets.index' => WidgetTableExtension::class];
     }
+
+    public function langNamespaces(): array
+    {
+        return ['widgets-addon'];
+    }
 }

@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Dostępność',
+    'channels' => 'Kanały sprzedaży',
+    'customer_groups' => 'Grupy klientów',
+    'summary_all' => 'Wszystkie',
+    'summary_some' => 'Niektóre',
+    'summary_none' => 'Żadne',
+    'summary_channels' => '{enabled} z {total} kanałów',
+    'summary_groups' => '{enabled} z {total} grup',
+    'scheduled_count' => 'Zaplanowane: {count}',
+    'enabled' => 'Włączone',
+    'disabled' => 'Wyłączone',
+    'scheduled_tip' => 'Zaplanowane — włączy się {date}',
+    'scheduled_locked' => 'Zaplanowane — usuń harmonogram, aby przełączyć',
+    'not_scheduled' => 'Niezaplanowane',
+    'clear_schedule' => 'Usuń harmonogram',
+    'turns_on' => 'Włącza się',
+    'turns_off' => 'Wyłącza się',
+    'schedule_title' => 'Zaplanuj dostępność',
+    'schedule_description' => 'Wybierz, od kiedy ma być dostępne. Data zakończenia jest opcjonalna.',
+    'schedule_starts' => 'Początek',
+    'schedule_ends' => 'Koniec',
+    'schedule_apply' => 'Zastosuj harmonogram',
+    'visible' => 'Widoczne w nawigacji',
+    'hidden' => 'Ukryte w nawigacji',
+    'make_hidden' => 'Ukryj w nawigacji',
+    'make_visible' => 'Pokaż w nawigacji',
+    'hidden_hint' => 'Dostępne przez bezpośredni link, ale niewidoczne w nawigacji.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

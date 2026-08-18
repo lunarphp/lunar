@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'التوفر',
+    'channels' => 'قنوات البيع',
+    'customer_groups' => 'مجموعات العملاء',
+    'summary_all' => 'الكل',
+    'summary_some' => 'بعضها',
+    'summary_none' => 'لا شيء',
+    'summary_channels' => '{enabled} من {total} قنوات',
+    'summary_groups' => '{enabled} من {total} مجموعات',
+    'scheduled_count' => '{count} مجدولة',
+    'enabled' => 'مفعّل',
+    'disabled' => 'معطّل',
+    'scheduled_tip' => 'مجدول — يُفعَّل في {date}',
+    'scheduled_locked' => 'مجدول — امسح الجدولة للتبديل',
+    'not_scheduled' => 'غير مجدول',
+    'clear_schedule' => 'مسح الجدولة',
+    'turns_on' => 'يُفعَّل في',
+    'turns_off' => 'يُعطَّل في',
+    'schedule_title' => 'جدولة التوفر',
+    'schedule_description' => 'اختر متى يصبح هذا متاحًا. تاريخ الانتهاء اختياري.',
+    'schedule_starts' => 'البداية',
+    'schedule_ends' => 'النهاية',
+    'schedule_apply' => 'تطبيق الجدولة',
+    'visible' => 'ظاهر في التنقّل',
+    'hidden' => 'مخفي عن التنقّل',
+    'make_hidden' => 'إخفاء عن التنقّل',
+    'make_visible' => 'إظهار في التنقّل',
+    'hidden_hint' => 'يمكن الوصول إليه برابط مباشر لكنه لا يظهر في التنقّل.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

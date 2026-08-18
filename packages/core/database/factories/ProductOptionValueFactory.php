@@ -18,4 +18,11 @@ class ProductOptionValueFactory extends BaseFactory
             ],
         ];
     }
+
+    public function colour(?string $hex = null): static
+    {
+        return $this->state(fn () => [
+            'meta' => ['colour' => strtoupper($hex ?? $this->faker->hexColor())],
+        ]);
+    }
 }

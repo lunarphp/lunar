@@ -50,6 +50,20 @@ test('Product::hasOrderHistory ignores order lines for other products', function
     expect($product->hasOrderHistory())->toBeFalse();
 });
 
+test('ProductVariant::hasOrderHistory is scoped to the one variant', function () {
+    $product = Product::factory()->create();
+    $ordered = ProductVariant::factory()->create(['product_id' => $product->id]);
+    $sibling = ProductVariant::factory()->create(['product_id' => $product->id]);
+
+    OrderLine::factory()->create([
+        'purchasable_type' => $ordered->getMorphClass(),
+        'purchasable_id' => $ordered->id,
+    ]);
+
+    expect($ordered->hasOrderHistory())->toBeTrue()
+        ->and($sibling->hasOrderHistory())->toBeFalse();
+});
+
 test('Channel::hasOrderHistory is false when no orders reference the channel', function () {
     $channel = Channel::factory()->create();
 

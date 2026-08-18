@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "rootDir": "resources/js",
+        "outDir": "resources/panel-package/dist",
+        "types": []
+    },
+    "include": ["resources/js/ui.ts", "resources/js/runtime/lunar-panel.d.ts"]
+}

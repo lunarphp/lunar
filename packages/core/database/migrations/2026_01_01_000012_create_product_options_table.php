@@ -13,6 +13,7 @@ return new class extends Migration
             $table->ulid('public_id')->unique();
             $table->jsonb('name');
             $table->string('handle')->nullable()->index();
+            $table->string('type')->default('text')->index();
             $table->boolean('shared')->default(false)->index();
             $table->jsonb('label')->nullable();
             $table->jsonb('meta')->nullable();

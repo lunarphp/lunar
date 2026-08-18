@@ -3,6 +3,8 @@
 namespace Lunar\Panel\Sections;
 
 use Closure;
+use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Slots\SlotRegistry;
 
@@ -22,9 +24,10 @@ abstract class SectionExtension implements ProvidesNavigation
     }
 
     /**
-     * Return an array of [tableId => extensionClass] pairs.
+     * Return extension classes keyed by table id; each value is one class
+     * or a list of them.
      *
-     * @return array<string, string>
+     * @return array<string, class-string|array<int, class-string>>
      */
     public function tableExtensions(): array
     {
@@ -32,12 +35,56 @@ abstract class SectionExtension implements ProvidesNavigation
     }
 
     /**
-     * Return a Vite config to register for this section, or null to skip.
+     * @return array<string, array<int, class-string>>
+     */
+    public function pageActions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return draftable-resource definitions for edit forms this extension
+     * contributes, e.g. [CustomerDraftResource::class].
+     *
+     * @return array<int, class-string<DraftableResource>>
+     */
+    public function draftables(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return dashboard widget classes this extension contributes, e.g.
+     * [RevenueChartWidget::class].
+     *
+     * @return array<int, class-string<Widget>>
+     */
+    public function widgets(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return a Vite config to register for this extension, or null to skip.
+     * Registered under a key derived from the target section and this class
+     * ("{section}-{kebab-class-name}"), so it never collides with the
+     * section's own config or a sibling extension's.
      *
      * @return array{input?: string|string[], hotFile?: string|null, buildDirectory?: string, __buildSourcePath?: string}|string|null
      */
     public function vite(): array|string|null
     {
         return null;
+    }
+
+    /**
+     * Translator namespaces whose lang groups the panel serves to the
+     * frontend (as `{namespace}::{group}` message keys).
+     *
+     * @return array<int, string>
+     */
+    public function langNamespaces(): array
+    {
+        return [];
     }
 }

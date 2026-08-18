@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Elérhetőség',
+    'channels' => 'Értékesítési csatornák',
+    'customer_groups' => 'Vevőcsoportok',
+    'summary_all' => 'Mind',
+    'summary_some' => 'Néhány',
+    'summary_none' => 'Egyik sem',
+    'summary_channels' => '{enabled} / {total} csatorna',
+    'summary_groups' => '{enabled} / {total} csoport',
+    'scheduled_count' => '{count} időzítve',
+    'enabled' => 'Bekapcsolva',
+    'disabled' => 'Kikapcsolva',
+    'scheduled_tip' => 'Időzítve — bekapcsol: {date}',
+    'scheduled_locked' => 'Időzítve — a váltáshoz törölje az időzítést',
+    'not_scheduled' => 'Nincs időzítve',
+    'clear_schedule' => 'Időzítés törlése',
+    'turns_on' => 'Bekapcsol',
+    'turns_off' => 'Kikapcsol',
+    'schedule_title' => 'Elérhetőség időzítése',
+    'schedule_description' => 'Válassza ki, mikortól legyen elérhető. A záró dátum nem kötelező.',
+    'schedule_starts' => 'Kezdete',
+    'schedule_ends' => 'Vége',
+    'schedule_apply' => 'Időzítés alkalmazása',
+    'visible' => 'Látható a navigációban',
+    'hidden' => 'Rejtve a navigációból',
+    'make_hidden' => 'Elrejtés a navigációból',
+    'make_visible' => 'Megjelenítés a navigációban',
+    'hidden_hint' => 'Közvetlen hivatkozással elérhető, de a navigációban nem jelenik meg.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

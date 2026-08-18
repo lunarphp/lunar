@@ -21,8 +21,8 @@ class AddonTestCase extends TestCase
 
         // The fixture add-on ships its own page component (Widgets/Index);
         // register its path alongside the panel's own for Inertia's testing finder.
-        $app['config']->set('inertia.testing.page_paths', [
-            ...$app['config']->get('inertia.testing.page_paths', []),
+        $app['config']->set('inertia.pages.paths', [
+            ...$app['config']->get('inertia.pages.paths', []),
             __DIR__.'/resources/js/pages',
         ]);
     }

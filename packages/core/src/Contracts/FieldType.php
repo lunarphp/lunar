@@ -26,7 +26,12 @@ interface FieldType extends JsonSerializable
     /**
      * Describe the configuration fields used to build the field type's config UI.
      *
-     * @return array<int|string, mixed>
+     * Descriptors are renderer-agnostic so any admin UI can build the form:
+     * `key` is the configuration array key the input binds to, `type` one of
+     * `text`, `number`, `toggle`, `select` (with `options`), `tags` (list of
+     * strings, optional `suggestions`) or `lookups` (label/value rows).
+     *
+     * @return array<int, array{key: string, type: string, label: string, hint?: string, suggestions?: array<int, string>, options?: array<int, array{label: string, value: string}>}>
      */
     public function getConfigurationFields(): array;
 }

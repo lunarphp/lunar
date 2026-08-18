@@ -74,3 +74,14 @@ Each spec carries a `Status:` line in its frontmatter / header:
 | 0046 | `public_id` for externally-addressable models | implemented |
 | 0047 | Promotions: a campaign layer over discounts | declined    |
 | 0048 | Rename `product_variants.purchasable` to `selling_policy` | implemented |
+| 0049 | Inertia admin panel (`lunarphp/panel`) | implemented |
+| 0050 | Panel order-value chart and public charting component | accepted    |
+| 0051 | Panel edit drafts and field-level conflict detection | implemented |
+| 0052 | Panel Brands section and shared catalog editing surfaces | implemented |
+| 0054 | Field-type configuration schema | accepted    |
+| 0055 | Panel Collections section | implemented |
+| 0056 | Panel Product Types section | implemented |
+| 0057 | Panel Products section | implemented |
+| 0058 | Panel dashboard widgets | proposed    |
+| 0060 | Panel media groups | proposed    |
+| 0061 | Product option types (Text / Colour / Swatch) | accepted    |

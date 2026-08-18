@@ -6,5 +6,9 @@ use Lunar\Core\Models\Collection;
 
 interface CreatesChildCollection
 {
-    public function execute(Collection $parent, string|array $name): Collection;
+    /**
+     * @param  string|array<string, string>  $name
+     * @param  array<string, mixed>  $attributes  further column values (handle, status, translated descriptions, ...)
+     */
+    public function execute(Collection $parent, string|array $name, array $attributes = []): Collection;
 }

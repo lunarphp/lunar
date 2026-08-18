@@ -12,6 +12,9 @@ return new class extends Migration
             $table->id();
             $table->ulid('public_id')->unique();
             $table->foreignId('product_id')->constrained($this->prefix.'products');
+            // Merchant availability toggle: a disabled variant is never
+            // purchasable, regardless of product status or stock.
+            $table->boolean('enabled')->default(true)->index();
             $table->foreignId('tax_class_id')->constrained($this->prefix.'tax_classes');
             $table->string('tax_ref')->index()->nullable();
             $table->integer('unit_quantity')->unsigned()->index()->default(1);

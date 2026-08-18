@@ -13,8 +13,10 @@ use Lunar\Panel\PanelManager;
  * @method static \Lunar\Panel\Slots\SlotRegistry slots()
  * @method static \Lunar\Panel\PanelManager extendTable(string $tableId, string $extensionClass)
  * @method static \Lunar\Panel\PanelManager registerRoutes(\Closure $callback)
+ * @method static \Lunar\Panel\PanelManager translations(string ...$namespaces)
  * @method static string guard()
  * @method static string path()
+ * @method static array availableLocales()
  *
  * @see PanelManager
  */

@@ -13,9 +13,21 @@ use function Pest\Laravel\artisan;
 
 uses(TestCase::class)->group('migrations');
 
+const RESCALE_MIGRATION = '2026_01_03_000016_rescale_weight_based_shipping_min_quantity';
+
+// The rescale migration's down() is a deliberate no-op, so we cannot re-run it
+// with rollback+migrate; and a `--step` rollback is fragile because later
+// migrations (e.g. staff-auth) sort after it. Forget just this migration's
+// ledger row so the next `migrate` re-applies its up() regardless of ordering.
+function rerunRescaleMigration(): void
+{
+    DB::table('migrations')->where('migration', RESCALE_MIGRATION)->delete();
+    artisan('migrate');
+}
+
 test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw kg', function () {
     artisan('migrate');
-    artisan('migrate:rollback', ['--step' => 1]);
+    DB::table('migrations')->where('migration', RESCALE_MIGRATION)->delete();
 
     $currency = Currency::factory()->create(['default' => true]);
     TaxClass::factory()->create(['default' => true]);
@@ -89,10 +101,9 @@ test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw k
     expect((int) DB::table("{$prefix}prices")->where('id', $weightTier10KgId)->value('min_quantity'))->toBe(10);
     expect((int) DB::table("{$prefix}prices")->where('id', $cartTotalTierId)->value('min_quantity'))->toBe(5000);
 
-    // Idempotency: rolling back and re-applying must be a no-op because the
-    // rescaled values (5, 10) don't match the `min_quantity % 100 = 0` guard.
-    artisan('migrate:rollback', ['--step' => 1]);
-    artisan('migrate');
+    // Idempotency: re-applying must be a no-op because the rescaled values
+    // (5, 10) don't match the `min_quantity % 100 = 0` guard.
+    rerunRescaleMigration();
 
     expect((int) DB::table("{$prefix}prices")->where('id', $weightTier5KgId)->value('min_quantity'))->toBe(5);
     expect((int) DB::table("{$prefix}prices")->where('id', $weightTier10KgId)->value('min_quantity'))->toBe(10);
@@ -114,7 +125,7 @@ test('rescales legacy weight-based shipping min_quantity from kg × 100 to raw k
 
 test('migration is a no-op when there are no weight-based shipping methods', function () {
     artisan('migrate');
-    artisan('migrate:rollback', ['--step' => 1]);
+    DB::table('migrations')->where('migration', RESCALE_MIGRATION)->delete();
 
     $currency = Currency::factory()->create(['default' => true]);
     TaxClass::factory()->create(['default' => true]);

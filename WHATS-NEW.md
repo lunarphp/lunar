@@ -109,13 +109,20 @@ key/invalidation vocabulary without hand-rolled busting.
 
 Every engine (Database, Meilisearch, Typesense) returns a typed `SearchResults`
 data object with a consistent shape: camelCase keys (`perPage`, `totalPages`),
-the active sort echoed back as `sortField` / `sortDirection`, and facets always
-serialised as a plain array. The search data objects are annotated with
+the active sort echoed back as `sortField` / `sortDirection`, facets always
+serialised as a plain array, and each facet value carrying an `active` flag for
+the filters currently applied. The search data objects are annotated with
 `spatie/typescript-transformer` v3 attributes (`#[TypeScript]`), so storefronts
 can generate accurate TypeScript definitions for the whole results payload. The
 Typesense engine degrades gracefully — a missing collection yields an empty
-result set instead of an exception, and hybrid semantic search is only requested
-when the collection schema actually declares an embedding field.
+result set instead of an exception, hybrid semantic search is only requested
+when the collection schema actually declares an embedding field, and an empty
+query browses the full collection rather than erroring. Highlights on array
+fields (e.g. SKU lists) map per element, `query_by_weights` / `infix` search
+options pass through, and `maxFacetValues()` on the builder lifts the
+per-facet value limit for deep hierarchies like category trees. The database
+engine runs on Scout alone, so search works without the admin package
+installed.
 
 ## Pricing & attributes
 
@@ -125,7 +132,11 @@ Prices are stored as plain integers with a `FormatsPrices` trait, and a new
 attribute system is redesigned around id-keyed storage with a handle-keyed field
 collection in memory. `name`, `description` and `short_description` are now
 dedicated translatable columns instead of living in `attribute_data`, and
-`compare_price` is renamed to `list_price`.
+`compare_price` is renamed to `list_price`. Product types are attributable
+themselves (media, status, handle and a default tax class too), so their pivot
+relation `mappedAttributes()` is renamed to `attributeMapping()` — freeing
+`mappedAttributes()` for the standard "my own fields" meaning every other
+attributable model shares.
 
 ## Admin & Filament v5
 
@@ -136,6 +147,34 @@ entity-selector components, a first-party actions library (refund, capture,
 fulfilment status, stock adjust, bulk publish, and more) and global-search
 descriptors. Admin resources are publishable, and Staff moved into core so
 non-Filament panels can share it.
+
+## A new admin panel, built on Inertia + Vue
+
+Alongside the Filament admin, a first-party `lunarphp/panel` package now ships
+a Vue 3 + Inertia.js v2 admin with its own design system and a runtime
+extension mechanism — add-on packages register pages, navigation, table
+columns, actions and page-slot content through a `PanelManager`/`Section` API,
+and their prebuilt JS bundles are picked up by the host app without a recompile.
+The two panels coexist during the transition; nothing about Filament changes
+because of this.
+
+Every staff login now requires a second factor: an authenticator app (TOTP)
+when one is configured, or an emailed 6-digit code as an automatic fallback
+otherwise. There is no password-only login path.
+
+Add it to a Laravel app that already has Lunar installed:
+
+```
+composer require lunarphp/panel
+php artisan vendor:publish --tag=lunar          # config/lunar/panel.php
+php artisan vendor:publish --tag=panel-assets   # published Vue build
+```
+
+Set `path`, `name` and `guard` in `config/lunar/panel.php`, then visit the
+panel at `/{path}` (`/panel` by default). The service provider is
+auto-discovered — no manual registration needed. Building the panel's own
+assets (`npm run build` inside the package, before publishing) is only
+required if you're developing the panel or an add-on for it locally.
 
 ## Foundations & external addressing
 

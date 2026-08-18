@@ -5,9 +5,13 @@ namespace Lunar\Filament\Tables\Brand;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
+use Lunar\Core\Actions\Brands\DeleteBrand;
+use Lunar\Core\Models\Brand;
 use Lunar\Filament\Support\Concerns\CallsHooks;
 
 class BrandTable
@@ -26,7 +30,16 @@ class BrandTable
                 ])
                 ->toolbarActions([
                     BulkActionGroup::make([
-                        DeleteBulkAction::make(),
+                        DeleteBulkAction::make()
+                            ->before(function (DeleteBulkAction $action, Collection $records) {
+                                if ($records->contains(fn (Brand $brand) => DeleteBrand::isProtected($brand))) {
+                                    Notification::make()
+                                        ->warning()
+                                        ->body(__('lunarpanel::brand.action.delete.notification.error_protected'))
+                                        ->send();
+                                    $action->cancel();
+                                }
+                            }),
                     ]),
                 ])
                 ->searchable(),

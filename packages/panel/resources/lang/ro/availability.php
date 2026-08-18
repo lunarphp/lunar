@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Disponibilitate',
+    'channels' => 'Canale de vânzare',
+    'customer_groups' => 'Grupuri de clienți',
+    'summary_all' => 'Toate',
+    'summary_some' => 'Unele',
+    'summary_none' => 'Niciunul',
+    'summary_channels' => '{enabled} din {total} canale',
+    'summary_groups' => '{enabled} din {total} grupuri',
+    'scheduled_count' => '{count} programate',
+    'enabled' => 'Activat',
+    'disabled' => 'Dezactivat',
+    'scheduled_tip' => 'Programat — se activează pe {date}',
+    'scheduled_locked' => 'Programat — șterge programarea pentru a comuta',
+    'not_scheduled' => 'Neprogramat',
+    'clear_schedule' => 'Șterge programarea',
+    'turns_on' => 'Se activează pe',
+    'turns_off' => 'Se dezactivează pe',
+    'schedule_title' => 'Programează disponibilitatea',
+    'schedule_description' => 'Alege când devine disponibil. Data de sfârșit este opțională.',
+    'schedule_starts' => 'Început',
+    'schedule_ends' => 'Sfârșit',
+    'schedule_apply' => 'Aplică programarea',
+    'visible' => 'Vizibil în navigare',
+    'hidden' => 'Ascuns din navigare',
+    'make_hidden' => 'Ascunde din navigare',
+    'make_visible' => 'Afișează în navigare',
+    'hidden_hint' => 'Accesibil prin link direct, dar nu apare în navigare.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

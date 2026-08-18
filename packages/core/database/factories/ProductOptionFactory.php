@@ -24,7 +24,18 @@ class ProductOptionFactory extends BaseFactory
             'label' => [
                 'en' => $name,
             ],
+            'type' => 'text',
             'shared' => true,
         ];
+    }
+
+    public function colour(): static
+    {
+        return $this->state(['type' => 'colour']);
+    }
+
+    public function swatch(): static
+    {
+        return $this->state(['type' => 'swatch']);
     }
 }

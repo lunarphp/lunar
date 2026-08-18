@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Disponibilité',
+    'channels' => 'Canaux de vente',
+    'customer_groups' => 'Groupes de clients',
+    'summary_all' => 'Tous',
+    'summary_some' => 'Certains',
+    'summary_none' => 'Aucun',
+    'summary_channels' => '{enabled} canaux sur {total}',
+    'summary_groups' => '{enabled} groupes sur {total}',
+    'scheduled_count' => '{count} planifié(s)',
+    'enabled' => 'Activé',
+    'disabled' => 'Désactivé',
+    'scheduled_tip' => 'Planifié — s\'active le {date}',
+    'scheduled_locked' => 'Planifié — effacez la planification pour basculer',
+    'not_scheduled' => 'Non planifié',
+    'clear_schedule' => 'Effacer la planification',
+    'turns_on' => 'S\'active le',
+    'turns_off' => 'Se désactive le',
+    'schedule_title' => 'Planifier la disponibilité',
+    'schedule_description' => 'Choisissez quand ceci devient disponible. La date de fin est facultative.',
+    'schedule_starts' => 'Début',
+    'schedule_ends' => 'Fin',
+    'schedule_apply' => 'Appliquer la planification',
+    'visible' => 'Visible en navigation',
+    'hidden' => 'Masqué de la navigation',
+    'make_hidden' => 'Masquer de la navigation',
+    'make_visible' => 'Rendre visible en navigation',
+    'hidden_hint' => 'Accessible par lien direct mais absent de la navigation.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

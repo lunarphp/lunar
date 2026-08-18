@@ -31,11 +31,13 @@ trait HasMedia
     }
 
     /**
-     * Relationship for thumbnail.
+     * Relationship for thumbnail. Scoped to the image collection so media in
+     * other collections (e.g. document downloads) never becomes the thumbnail.
      */
     public function thumbnail(): MorphOne
     {
         return $this->morphOne(config('media-library.media_model'), 'model')
+            ->where('collection_name', config('lunar.media.collection'))
             ->where('custom_properties->primary', true);
     }
 

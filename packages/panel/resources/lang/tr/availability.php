@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Kullanılabilirlik',
+    'channels' => 'Satış kanalları',
+    'customer_groups' => 'Müşteri grupları',
+    'summary_all' => 'Tümü',
+    'summary_some' => 'Bazıları',
+    'summary_none' => 'Hiçbiri',
+    'summary_channels' => '{total} kanaldan {enabled}',
+    'summary_groups' => '{total} gruptan {enabled}',
+    'scheduled_count' => '{count} zamanlanmış',
+    'enabled' => 'Etkin',
+    'disabled' => 'Devre dışı',
+    'scheduled_tip' => 'Zamanlanmış — {date} tarihinde etkinleşir',
+    'scheduled_locked' => 'Zamanlanmış — değiştirmek için zamanlamayı temizleyin',
+    'not_scheduled' => 'Zamanlanmamış',
+    'clear_schedule' => 'Zamanlamayı temizle',
+    'turns_on' => 'Etkinleşme',
+    'turns_off' => 'Devre dışı kalma',
+    'schedule_title' => 'Kullanılabilirliği zamanla',
+    'schedule_description' => 'Ne zaman kullanılabilir olacağını seçin. Bitiş tarihi isteğe bağlıdır.',
+    'schedule_starts' => 'Başlangıç',
+    'schedule_ends' => 'Bitiş',
+    'schedule_apply' => 'Zamanlamayı uygula',
+    'visible' => 'Gezinmede görünür',
+    'hidden' => 'Gezinmeden gizli',
+    'make_hidden' => 'Gezinmeden gizle',
+    'make_visible' => 'Gezinmede göster',
+    'hidden_hint' => 'Doğrudan bağlantıyla erişilebilir ancak gezinmede görünmez.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

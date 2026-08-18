@@ -328,6 +328,21 @@ test('product can have associations', function () {
     expect($parent->refresh()->associations)->toHaveCount(1);
 });
 
+test('associating assigns an incrementing sort per type', function () {
+    $parent = Product::factory()->create();
+    $targets = Product::factory()->count(3)->create();
+
+    foreach ($targets as $target) {
+        $parent->associate($target, 'cross-sell');
+    }
+
+    $parent->associate(Product::factory()->create(), 'up-sell');
+
+    expect($parent->associations()->where('type', 'cross-sell')->orderBy('sort')->pluck('sort')->all())
+        ->toBe([1, 2, 3])
+        ->and($parent->associations()->where('type', 'up-sell')->value('sort'))->toBe(1);
+});
+
 test('product can get core associations with helpers', function () {
     $parent = Product::factory()->create();
     $target = Product::factory()->create();

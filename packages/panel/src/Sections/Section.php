@@ -3,6 +3,8 @@
 namespace Lunar\Panel\Sections;
 
 use Closure;
+use Lunar\Panel\Contracts\DraftableResource;
+use Lunar\Panel\Dashboard\Widget;
 use Lunar\Panel\Navigation\NavigationRegistry;
 use Lunar\Panel\Slots\SlotRegistry;
 
@@ -27,11 +29,45 @@ abstract class Section implements ProvidesNavigation
     }
 
     /**
-     * Return an array of [tableId => extensionClass] pairs.
+     * Return extension classes keyed by table id; each value is one class
+     * or a list of them.
      *
-     * @return array<string, string>
+     * @return array<string, class-string|array<int, class-string>>
      */
     public function tableExtensions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return page actions keyed by page id, e.g.
+     * ['customers.edit' => [ImpersonateAction::class]].
+     *
+     * @return array<string, array<int, class-string>>
+     */
+    public function pageActions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return draftable-resource definitions for edit forms in this section,
+     * e.g. [CustomerDraftResource::class].
+     *
+     * @return array<int, class-string<DraftableResource>>
+     */
+    public function draftables(): array
+    {
+        return [];
+    }
+
+    /**
+     * Return dashboard widget classes this section contributes, e.g.
+     * [RevenueChartWidget::class].
+     *
+     * @return array<int, class-string<Widget>>
+     */
+    public function widgets(): array
     {
         return [];
     }
@@ -44,5 +80,16 @@ abstract class Section implements ProvidesNavigation
     public function vite(): array|string|null
     {
         return null;
+    }
+
+    /**
+     * Translator namespaces whose lang groups the panel serves to the
+     * frontend (as `{namespace}::{group}` message keys).
+     *
+     * @return array<int, string>
+     */
+    public function langNamespaces(): array
+    {
+        return [];
     }
 }

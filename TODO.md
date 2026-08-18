@@ -8,7 +8,14 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 
 ## Outstanding
 
-- Inertia admin panel — new `lunarphp/panel` package: auth, extension points, Customers CRUD, Channels settings (spec 0049)
+- Inertia admin panel — new `lunarphp/panel` package: auth, extension points (navigation, slots, table columns, row/bulk/page actions with shared ordering), Customers CRUD, Channels settings (spec 0049)
+- Panel order-value chart on the customer edit page + `TimeSeriesChart` on the add-on surface (spec 0050)
+- Panel edit drafts — autosaved pending edits with field-level conflict detection (spec 0051)
+- Panel Brands section + shared catalog editing surfaces (media, attributes, URL slugs, collection picker) (spec 0052)
+- Panel Collections section — group tree, hierarchy, curated products, availability (spec 0055)
+- Panel Product Types section — attribute mapping, type-level content, media, tax defaults (spec 0056)
+- Panel dashboard — registrable widgets, per-staff layout, brand chart palette (spec 0058)
+- Panel media groups — render every registered media collection on catalog edit screens, with a file uploader for non-image groups (spec 0060)
 - Default professional customer notifications for the order lifecycle (spec 0036) _(judgement)_
 - Bulk order operations — goal-oriented bulk actions on the orders table (spec 0026)
 - Line-item refunds — refund specific lines/quantities via a dedicated refund page (spec 0028)
@@ -72,3 +79,4 @@ Items tagged _(judgement)_ are genuine line-calls worth revisiting.
 - Optional order-line purchasables & shipping-option de-morph (spec 0045)
 - `public_id` (ULID) external addressing (spec 0046)
 - Rename `product_variants.purchasable` to `selling_policy` (spec 0048)
+- Panel Products section — list KPIs, product editing with options/variant builder, variant editing, catalog nav restructure (spec 0057)

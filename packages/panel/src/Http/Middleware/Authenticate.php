@@ -16,6 +16,17 @@ class Authenticate extends Middleware
     /** @param  string[]  $guards */
     protected function authenticate($request, array $guards): void
     {
-        parent::authenticate($request, [app(PanelManager::class)->guard()]);
+        $manager = app(PanelManager::class);
+
+        parent::authenticate($request, [$manager->guard()]);
+
+        // Serve the panel in the staff member's preferred locale for the whole
+        // request — server-rendered labels (navigation, validation messages)
+        // and the shared `locale` prop the frontend boots vue-i18n from.
+        $preferredLocale = $manager->user()?->preferred_locale ?? null;
+
+        if ($preferredLocale && in_array($preferredLocale, $manager->availableLocales(), true)) {
+            app()->setLocale($preferredLocale);
+        }
     }
 }

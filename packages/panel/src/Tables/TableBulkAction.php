@@ -2,17 +2,26 @@
 
 namespace Lunar\Panel\Tables;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Lunar\Panel\Support\Position;
+
 abstract class TableBulkAction
 {
     abstract public function key(): string;
 
     abstract public function label(): string;
 
-    public function component(): ?string
+    public function position(): Position
+    {
+        return Position::last();
+    }
+
+    public function icon(): ?string
     {
         return null;
     }
 
+    /** The endpoint the selected row ids are submitted to. */
     public function url(): ?string
     {
         return null;
@@ -33,10 +42,10 @@ abstract class TableBulkAction
         return null;
     }
 
-    public function visible(): bool
+    public function visible(?Authenticatable $user = null): bool
     {
         if ($permission = $this->permission()) {
-            return auth()->check() && auth()->user()->can($permission);
+            return $user !== null && $user->can($permission);
         }
 
         return true;
@@ -48,11 +57,11 @@ abstract class TableBulkAction
         return [
             'key' => $this->key(),
             'label' => $this->label(),
-            'component' => $this->component(),
+            'icon' => $this->icon(),
             'url' => $this->url(),
             'method' => $this->method(),
             'confirmation' => $this->confirmationMessage(),
-            'visible' => $this->visible(),
+            'position' => $this->position()->toArray(),
         ];
     }
 }

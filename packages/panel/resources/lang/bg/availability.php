@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Наличност',
+    'channels' => 'Канали за продажба',
+    'customer_groups' => 'Групи клиенти',
+    'summary_all' => 'Всички',
+    'summary_some' => 'Някои',
+    'summary_none' => 'Никои',
+    'summary_channels' => '{enabled} от {total} канала',
+    'summary_groups' => '{enabled} от {total} групи',
+    'scheduled_count' => '{count} насрочени',
+    'enabled' => 'Включено',
+    'disabled' => 'Изключено',
+    'scheduled_tip' => 'Насрочено — включва се на {date}',
+    'scheduled_locked' => 'Насрочено — изчистете графика, за да превключите',
+    'not_scheduled' => 'Не е насрочено',
+    'clear_schedule' => 'Изчистване на графика',
+    'turns_on' => 'Включва се на',
+    'turns_off' => 'Изключва се на',
+    'schedule_title' => 'Насрочване на наличност',
+    'schedule_description' => 'Изберете кога това да стане налично. Крайната дата не е задължителна.',
+    'schedule_starts' => 'Начало',
+    'schedule_ends' => 'Край',
+    'schedule_apply' => 'Прилагане на графика',
+    'visible' => 'Видимо в навигацията',
+    'hidden' => 'Скрито от навигацията',
+    'make_hidden' => 'Скриване от навигацията',
+    'make_visible' => 'Показване в навигацията',
+    'hidden_hint' => 'Достъпно чрез директна връзка, но не се показва в навигацията.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

@@ -37,6 +37,16 @@ class ListField extends AbstractFieldType implements Arrayable
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getConfigurationFields(): array
+    {
+        return [
+            ['key' => 'max_items', 'type' => 'number', 'label' => __('lunar::fieldtypes.max_items')],
+        ];
+    }
+
+    /**
      * Return the value as an array (implements Arrayable for Filament 4 compatibility).
      *
      * @return array<int|string, mixed>

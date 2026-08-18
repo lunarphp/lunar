@@ -46,12 +46,12 @@ it('can associate attributes', function () {
         ->test(CreateProductType::class)
         ->fillForm([
             ...$formData,
-            'mappedAttributes' => [$attributeA->id, $attributeB->id],
+            'attributeMapping' => [$attributeA->id, $attributeB->id],
         ])
         ->call('create')
         ->assertHasNoFormErrors();
 
-    $this->assertDatabaseHas((new ProductType)->mappedAttributes()->getTable(), [
+    $this->assertDatabaseHas((new ProductType)->attributeMapping()->getTable(), [
         'product_type_id' => $component->get('record')->id,
         'attribute_id' => $attributeA->id,
     ]);

@@ -16,15 +16,15 @@ class LinkPanelAssetsCommand extends Command
 
     public function handle(PanelManager $manager): int
     {
-        $assets = array_merge($manager->assets(), $manager->viteBuildPaths());
+        $buildPaths = $manager->viteBuildPaths();
 
-        if (empty($assets)) {
-            warning('No panel module assets are registered.');
+        if (empty($buildPaths)) {
+            warning('No panel module build paths are registered. Pass __buildSourcePath to PanelManager::vite() to register one.');
 
             return self::SUCCESS;
         }
 
-        foreach ($assets as $key => $buildPath) {
+        foreach ($buildPaths as $key => $buildPath) {
             $target = public_path("vendor/lunar-panel/{$key}");
 
             if (is_link($target)) {

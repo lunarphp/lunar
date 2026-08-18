@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'Beschikbaarheid',
+    'channels' => 'Verkoopkanalen',
+    'customer_groups' => 'Klantgroepen',
+    'summary_all' => 'Alle',
+    'summary_some' => 'Sommige',
+    'summary_none' => 'Geen',
+    'summary_channels' => '{enabled} van {total} kanalen',
+    'summary_groups' => '{enabled} van {total} groepen',
+    'scheduled_count' => '{count} ingepland',
+    'enabled' => 'Ingeschakeld',
+    'disabled' => 'Uitgeschakeld',
+    'scheduled_tip' => 'Ingepland — gaat aan op {date}',
+    'scheduled_locked' => 'Ingepland — wis de planning om te schakelen',
+    'not_scheduled' => 'Niet ingepland',
+    'clear_schedule' => 'Planning wissen',
+    'turns_on' => 'Gaat aan op',
+    'turns_off' => 'Gaat uit op',
+    'schedule_title' => 'Beschikbaarheid inplannen',
+    'schedule_description' => 'Kies wanneer dit beschikbaar wordt. De einddatum is optioneel.',
+    'schedule_starts' => 'Begint',
+    'schedule_ends' => 'Eindigt',
+    'schedule_apply' => 'Planning toepassen',
+    'visible' => 'Zichtbaar in navigatie',
+    'hidden' => 'Verborgen in navigatie',
+    'make_hidden' => 'Verbergen in navigatie',
+    'make_visible' => 'Tonen in navigatie',
+    'hidden_hint' => 'Bereikbaar via een directe link maar niet zichtbaar in de navigatie.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];

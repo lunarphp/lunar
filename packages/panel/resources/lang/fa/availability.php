@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'title' => 'دسترس‌پذیری',
+    'channels' => 'کانال‌های فروش',
+    'customer_groups' => 'گروه‌های مشتری',
+    'summary_all' => 'همه',
+    'summary_some' => 'برخی',
+    'summary_none' => 'هیچ‌کدام',
+    'summary_channels' => '{enabled} از {total} کانال',
+    'summary_groups' => '{enabled} از {total} گروه',
+    'scheduled_count' => '{count} زمان‌بندی‌شده',
+    'enabled' => 'فعال',
+    'disabled' => 'غیرفعال',
+    'scheduled_tip' => 'زمان‌بندی‌شده — در {date} فعال می‌شود',
+    'scheduled_locked' => 'زمان‌بندی‌شده — برای تغییر، زمان‌بندی را پاک کنید',
+    'not_scheduled' => 'زمان‌بندی نشده',
+    'clear_schedule' => 'پاک کردن زمان‌بندی',
+    'turns_on' => 'فعال می‌شود در',
+    'turns_off' => 'غیرفعال می‌شود در',
+    'schedule_title' => 'زمان‌بندی دسترس‌پذیری',
+    'schedule_description' => 'زمان در دسترس قرار گرفتن را انتخاب کنید. تاریخ پایان اختیاری است.',
+    'schedule_starts' => 'شروع',
+    'schedule_ends' => 'پایان',
+    'schedule_apply' => 'اعمال زمان‌بندی',
+    'visible' => 'قابل مشاهده در ناوبری',
+    'hidden' => 'پنهان از ناوبری',
+    'make_hidden' => 'پنهان کردن از ناوبری',
+    'make_visible' => 'نمایش در ناوبری',
+    'hidden_hint' => 'با پیوند مستقیم در دسترس است اما در ناوبری نمایش داده نمی‌شود.',
+
+    // Product purchasable flag (spec 0057).
+    'view_only' => 'View only',
+    'make_purchasable' => 'Group can see but not buy this product - click to allow purchase',
+    'make_view_only' => 'Allow this group to see the product without buying it',
+];
