@@ -19,7 +19,7 @@
         "filament/spatie-laravel-media-library-plugin": "^5.0",
         "guzzlehttp/guzzle": "^7.3",
         "http-interop/http-factory-guzzle": "^1.2",
-        "inertiajs/inertia-laravel": "^3.0",
+        "inertiajs/inertia-laravel": "^2.0|^3.0",
         "lunarphp/nestedset": "^1.0",
         "laravel/framework": "^12.0|^13.0",
         "laravel/scout": "^10.13.1",
@@ -40,8 +40,7 @@
         "spatie/typescript-transformer": "^3.3",
         "stripe/stripe-php": "^16.0",
         "mallardduck/blade-lucide-icons": "^1.26",
-        "typesense/typesense-php": "^4.9",
-        "inertiajs/inertia-laravel": "^2.0|^3.0"
+        "typesense/typesense-php": "^4.9"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
@@ -119,6 +118,7 @@
         },
         "laravel": {
             "providers": [
+                "Lunar\\Checkout\\CheckoutServiceProvider",
                 "Lunar\\Stripe\\StripePaymentsServiceProvider",
                 "Lunar\\Paypal\\PaypalServiceProvider",
                 "Lunar\\Meilisearch\\MeilisearchServiceProvider",
