@@ -36,7 +36,7 @@ class MapVariantsToProductOptions
                 return $amountMatched == count($variant['values']);
             });
 
-            // search() returns false when nothing matches; PHP coerces false to 0 as an array index.
+            // search() returns false when nothing matches; PHP coerces false to index 0.
             $variant = $variantIndex === false ? null : ($variants[$variantIndex] ?? null);
 
             $variantId = $variant['id'] ?? null;
@@ -48,13 +48,9 @@ class MapVariantsToProductOptions
                 $shouldFill = false;
             }
 
-            // Unmatched permutations (e.g. a newly enabled Size/Colour value) have
-            // no variant_id. Copy the first existing variant so saveVariantsAction
-            // can replicate() tax_class_id and a base price instead of inserting a
-            // bare row (tax_class_id is NOT NULL with no default).
+            // New option combinations still need tax_class_id on insert; copy a sibling.
             if (! $variant && $fillMissing) {
-                $firstExisting = collect($variants)->first();
-                $copiedFrom = is_array($firstExisting) ? ($firstExisting['id'] ?? null) : null;
+                $copiedFrom = collect($variants)->pluck('id')->first();
             }
 
             if ($variant) {

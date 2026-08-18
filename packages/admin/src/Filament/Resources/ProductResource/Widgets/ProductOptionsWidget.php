@@ -21,12 +21,10 @@ use Lunar\Facades\DB;
 use Lunar\Models\Contracts\ProductOption as ProductOptionContract;
 use Lunar\Models\Contracts\ProductOptionValue as ProductOptionValueContract;
 use Lunar\Models\Contracts\ProductVariant as ProductVariantContract;
-use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductVariant;
-use Lunar\Models\TaxClass;
 
 class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
 {
@@ -415,38 +413,9 @@ class ProductOptionsWidget extends BaseWidget implements HasActions, HasForms
                         $basePrice->priceable_id = $variant->id;
                     }
 
-                    /**
-                     * After MapVariantsToProductOptions skips false-index matches,
-                     * a new permutation can have neither variant_id nor copied_id.
-                     * Inserting a bare variant omits tax_class_id, which is NOT NULL
-                     * without a default. Replicate the first existing variant so tax
-                     * class and a base price are present.
-                     */
-                    if (! $variant->exists) {
-                        $sourceVariant = $this->record->variants()->first();
-
-                        if ($sourceVariant) {
-                            $variant = $sourceVariant->replicate();
-                            $variant->product_id = $this->record->id;
-                            $basePrice = $sourceVariant->basePrices->first()?->replicate();
-                        } else {
-                            $variant->tax_class_id = TaxClass::getDefault()?->id;
-                        }
-                    }
-
                     $variant->sku = $variantData['sku'];
                     $variant->stock = $variantData['stock'];
                     $variant->save();
-
-                    if (! $basePrice) {
-                        $basePrice = $variant->prices()->make([
-                            'min_quantity' => 1,
-                            'currency_id' => Currency::getDefault()->id,
-                            'price' => 0,
-                        ]);
-                    } elseif ($basePrice->priceable_id !== $variant->id) {
-                        $basePrice->priceable_id = $variant->id;
-                    }
 
                     $basePrice->price = (int) bcmul($variantData['price'], $basePrice->currency->factor);
                     $basePrice->save();
