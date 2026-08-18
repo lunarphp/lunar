@@ -77,3 +77,37 @@ it('can map variants given three sets of option values', function () {
 
     expect($result)->toHaveCount(4);
 });
+
+it('copies the first existing variant onto unmatched permutations', function () {
+    $result = MapVariantsToProductOptions::map(
+        [
+            'Wattage' => [
+                '12W',
+                '18W',
+            ],
+        ],
+        [
+            [
+                'id' => 10,
+                'sku' => 'ABC-12W',
+                'price' => 15,
+                'stock' => 4,
+                'values' => [
+                    'Wattage' => '12W',
+                ],
+            ],
+        ]
+    );
+
+    $twelve = collect($result)->first(
+        fn (array $row): bool => ($row['values']['Wattage'] ?? null) === '12W'
+    );
+    $eighteen = collect($result)->first(
+        fn (array $row): bool => ($row['values']['Wattage'] ?? null) === '18W'
+    );
+
+    expect($twelve['variant_id'])->toBe(10)
+        ->and($twelve['copied_id'])->toBeNull()
+        ->and($eighteen['variant_id'])->toBeNull()
+        ->and($eighteen['copied_id'])->toBe(10);
+});

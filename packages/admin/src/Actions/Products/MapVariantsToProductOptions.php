@@ -36,12 +36,26 @@ class MapVariantsToProductOptions
                 return $amountMatched == count($variant['values']);
             });
 
-            $variant = $variants[$variantIndex] ?? null;
+            // search() returns false when nothing matches; PHP coerces false to 0 as an array index.
+            $variant = $variantIndex === false ? null : ($variants[$variantIndex] ?? null);
 
             $variantId = $variant['id'] ?? null;
             $sku = $variant['sku'] ?? null;
             $copiedFrom = null;
             $shouldFill = true;
+
+            if (! $variant && ! $fillMissing) {
+                $shouldFill = false;
+            }
+
+            // Unmatched permutations (e.g. a newly enabled option value) have no
+            // variant_id. Copy the first existing variant so saveVariantsAction
+            // can replicate() tax_class_id and a base price instead of inserting
+            // a bare row (tax_class_id is NOT NULL with no default).
+            if (! $variant && $fillMissing) {
+                $firstExisting = collect($variants)->first();
+                $copiedFrom = is_array($firstExisting) ? ($firstExisting['id'] ?? null) : null;
+            }
 
             if ($variant) {
                 // Does this variant already exist in our permutations?
