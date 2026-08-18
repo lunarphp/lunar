@@ -33,12 +33,22 @@ export function createCheckout(data) {
     // Server-projected custom elements (spec 0001). Rendered via the frontend
     // component registry; see composables/elements.js.
     elements: data.elements ?? [],
+    // Registered payment methods (spec 0002) — empty when the host has
+    // enabled no gateway, in which case the payment region renders empty.
+    paymentMethods: data.paymentMethods ?? [],
+    // The fingerprint of the cart state being shown; echoed to the pay
+    // boundary so the server pins exactly what the customer confirmed.
+    fingerprint: data.fingerprint ?? null,
+    billingSame: true,
+    payError: '',
     discount: null, // { code, type, value, label }
     discountError: '',
     addressValid: Boolean(data.shippingAddress?.postcode),
     processing: false,
     paid: false,
   })
+
+  state.method = state.paymentMethods[0]?.handle ?? null
 
   // Re-sync from a fresh `checkout` prop after an Inertia partial reload —
   // options, selection and totals are all server-owned.
@@ -50,7 +60,13 @@ export function createCheckout(data) {
     state.totals = fresh.totals ?? null
     state.urls = fresh.urls ?? {}
     state.elements = fresh.elements ?? []
+    state.paymentMethods = fresh.paymentMethods ?? []
+    state.fingerprint = fresh.fingerprint ?? null
     state.addressValid = Boolean(fresh.shippingAddress?.postcode)
+
+    if (!state.paymentMethods.some((m) => m.handle === state.method)) {
+      state.method = state.paymentMethods[0]?.handle ?? null
+    }
   }
 
   const validCodes = data.validCodes ?? {}
@@ -171,14 +187,105 @@ export function createCheckout(data) {
     }
   }
 
-  function pay() {
-    if (state.processing) return
+  const activePaymentMethod = computed(
+    () => state.paymentMethods.find((m) => m.handle === state.method) ?? null,
+  )
+
+  // The active method's component registers how to confirm with the gateway
+  // (e.g. stripe.confirmPayment). Null means nothing client-side to confirm.
+  let paymentConfirm = null
+  function registerPaymentConfirm(fn) {
+    paymentConfirm = fn
+  }
+
+  // Plain JSON POST outside Inertia — the pay boundary and gateway calls are
+  // request/response, not page visits.
+  async function postJson(url, body) {
+    const xsrf = decodeURIComponent(
+      document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/)?.[1] ?? '',
+    )
+
+    const response = await fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-XSRF-TOKEN': xsrf,
+      },
+      body: JSON.stringify(body),
+    })
+
+    const payload = await response.json().catch(() => ({}))
+
+    if (!response.ok) {
+      const message = Object.values(payload.errors ?? {}).flat()[0] ?? payload.message
+      throw new Error(message || 'Payment could not be started.')
+    }
+
+    return payload
+  }
+
+  // Poll the session URL until the server moves it somewhere terminal (the
+  // Completed redirect) — completion arrives via the gateway's webhook.
+  async function awaitCompletion() {
+    for (let attempt = 0; attempt < 20; attempt++) {
+      const response = await fetch(window.location.href, {
+        credentials: 'same-origin',
+        redirect: 'follow',
+        headers: { Accept: 'text/html' },
+      })
+
+      if (response.url && response.url !== window.location.href) {
+        window.location.assign(response.url)
+        return
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+    }
+  }
+
+  async function pay() {
+    if (state.processing || !state.addressValid || !activePaymentMethod.value) return
+
     state.processing = true
-    // Cosmetic — real placement gates on the checkout session (spec 0004).
-    setTimeout(() => {
-      state.processing = false
+    state.payError = ''
+
+    try {
+      // Billing defaults to the delivery address until a billing element
+      // captures its own.
+      if (state.billingSame && state.shippingAddress) {
+        const a = state.shippingAddress
+        await postJson(state.urls.billingAddress, {
+          first_name: a.firstName,
+          last_name: a.lastName,
+          company_name: a.companyName,
+          line1: a.line1,
+          line2: a.line2,
+          city: a.city,
+          state: a.state,
+          postcode: a.postcode,
+          country_code: a.countryCode,
+          phone: a.phone,
+        })
+      }
+
+      // Pin the session against exactly what the customer confirmed.
+      await postJson(state.urls.pay, { fingerprint: state.fingerprint })
+
+      // Hand over to the gateway component (3DS, wallet sheets…).
+      if (paymentConfirm) {
+        await paymentConfirm()
+      }
+
       state.paid = true
-    }, 1400)
+      await awaitCompletion()
+    } catch (error) {
+      state.payError = error?.message || 'Payment failed — you have not been charged.'
+      state.paid = false
+    } finally {
+      state.processing = false
+    }
   }
 
   const store = {
@@ -200,6 +307,9 @@ export function createCheckout(data) {
     storeShippingAddress,
     selectShipping,
     setFulfilment,
+    activePaymentMethod,
+    registerPaymentConfirm,
+    postJson,
     pay,
   }
 

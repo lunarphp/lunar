@@ -8,17 +8,24 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutElement;
 use Lunar\Checkout\Contracts\CheckoutSession;
 use Lunar\Checkout\Contracts\ElementRegistry;
+use Lunar\Checkout\Contracts\PaymentMethod;
+use Lunar\Checkout\Contracts\PaymentMethodRegistry;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Exceptions\PaymentConfirmationException;
 use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
 use Lunar\Checkout\States\CheckoutSession\Cancelled;
 use Lunar\Checkout\States\CheckoutSession\Completed;
+use Lunar\Core\Contracts\CreatesPaymentIntents;
 use Lunar\Core\Facades\CartSession;
+use Lunar\Core\Facades\Payments;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Country;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -195,9 +202,25 @@ class CheckoutController extends Controller
             'shippingAddress' => $driver->getShippingAddress($session),
             'totals' => $driver->getTotals($session),
             'coupon' => $driver->getCoupon($session),
+            // The pay boundary echoes back the fingerprint of the state the
+            // customer confirmed (spec 0010 §E).
+            'fingerprint' => $driver->fingerprint($session),
+            'paymentMethods' => array_map(fn (PaymentMethod $method): array => [
+                'handle' => $method->handle(),
+                'label' => $method->label(),
+                'driver' => $method->driver(),
+                'requiresIntent' => $method->requiresIntent(),
+                'component' => $method->component(),
+                'config' => $method->config(),
+                'supportsExpress' => $method->supportsExpress(),
+                'expressComponent' => $method->expressComponent(),
+            ], app(PaymentMethodRegistry::class)->all()),
             'urls' => [
                 'shippingAddress' => route('lunar.checkout.shipping-address.store', $session->uuid),
+                'billingAddress' => route('lunar.checkout.billing-address.store', $session->uuid),
                 'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
+                'paymentIntent' => route('lunar.checkout.payment-intent.store', $session->uuid),
+                'pay' => route('lunar.checkout.pay', $session->uuid),
             ],
         ];
     }
@@ -270,7 +293,22 @@ class CheckoutController extends Controller
     {
         $this->ensureOwnership($session);
 
-        $data = $request->validate([
+        $data = $request->validate($this->addressRules());
+
+        $checkoutDriver->storeShippingAddress($session, $data);
+
+        return back();
+    }
+
+    /**
+     * The backend-neutral address payload (spec 0010 §B), shared by the
+     * shipping and billing stores.
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    private function addressRules(): array
+    {
+        return [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'company_name' => ['nullable', 'string', 'max:255'],
@@ -281,11 +319,7 @@ class CheckoutController extends Controller
             'postcode' => ['required', 'string', 'max:12'],
             'country_code' => ['required', 'string', Rule::exists(Country::class, 'iso2')],
             'phone' => ['nullable', 'string', 'max:32'],
-        ]);
-
-        $checkoutDriver->storeShippingAddress($session, $data);
-
-        return back();
+        ];
     }
 
     /**
@@ -303,6 +337,85 @@ class CheckoutController extends Controller
         $checkoutDriver->setShippingOption($session, $data['shipping_option']);
 
         return back();
+    }
+
+    /**
+     * Store the billing address through the driver — same neutral payload as
+     * the shipping address; the frontend defaults it to the delivery address.
+     */
+    public function storeBillingAddress(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate($this->addressRules());
+
+        $checkoutDriver->storeBillingAddress($session, $data);
+
+        return back();
+    }
+
+    /**
+     * Create (or resume) a confirmable intent for the chosen payment method
+     * and record it on the session. The method must be registered and its
+     * gateway driver must opt into the CreatesPaymentIntents capability.
+     */
+    public function storePaymentIntent(Request $request, CheckoutSessionModel $session, PaymentMethodRegistry $methods): JsonResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate(['payment_method' => ['required', 'string']]);
+
+        $method = $methods->get($data['payment_method']);
+
+        if ($method === null) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'The selected payment method is not available.',
+            ]);
+        }
+
+        $gateway = Payments::driver($method->driver());
+
+        if (! $gateway instanceof CreatesPaymentIntents) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'The selected payment method cannot create a payment intent.',
+            ]);
+        }
+
+        $cart = Cart::query()->findOrFail((int) $session->cart_reference);
+
+        $descriptor = $gateway->createIntent($cart->calculate());
+
+        // The intent reference + driver key are what reconciliation resolves
+        // by (PaymentIntentGateway reads meta.payment_method).
+        $session->payment_intent_ref = $descriptor->reference;
+        $session->meta = array_merge((array) $session->meta, ['payment_method' => $method->driver()]);
+        $session->save();
+
+        return response()->json([
+            'intent' => $descriptor->reference,
+            'clientSecret' => $descriptor->clientSecret,
+        ]);
+    }
+
+    /**
+     * The pay boundary: pin the session (Open → PaymentProcessing, amounts +
+     * fingerprint frozen) against the state the customer confirmed. Client-side
+     * gateway confirmation follows; completion arrives via the gateway's
+     * success path or reconciliation — never this endpoint.
+     */
+    public function pay(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): JsonResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate(['fingerprint' => ['required', 'string']]);
+
+        try {
+            $checkoutDriver->assertReadyForPayment($session, $data['fingerprint']);
+        } catch (PaymentConfirmationException $e) {
+            throw ValidationException::withMessages(['fingerprint' => $e->getMessage()]);
+        }
+
+        return response()->json(['pinned' => true]);
     }
 
     /**

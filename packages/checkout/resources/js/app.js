@@ -16,12 +16,16 @@ import {
 } from './composables/elements.js'
 import { useCheckout } from './composables/useCheckout.js'
 import ContactSection from './components/ContactSection.vue'
+import StripeCard from './components/payments/StripeCard.vue'
 import '../css/checkout.css'
 
 // Built-in element components (spec 0009 §A). Registered before boot so the
 // server's component hints resolve on first render; a consumer swaps one by
 // registering a different element (server) + component (here) for the region.
 registerCheckoutElement('contact-information', ContactSection)
+// First-party gateway components are prebuilt into the app (spec 0002 §C);
+// third-party gateways self-register via a contributed runtime chunk.
+registerCheckoutElement('stripe-card', StripeCard)
 
 // --- The shared runtime contributed chunks build against -----------------------
 //

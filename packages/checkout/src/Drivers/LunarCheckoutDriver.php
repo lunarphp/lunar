@@ -148,7 +148,12 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
                 throw new PaymentConfirmationException('cart_not_orderable');
             }
 
-            $order = $cart->createOrder();
+            /*
+             * Adopt the order the gateway's authorize() path already created
+             * for this cart (webhook-first race) rather than minting a second
+             * one; only a cart with no order yet creates here.
+             */
+            $order = $cart->completedOrder ?: $cart->draftOrder ?: $cart->createOrder();
 
             $attributes = [
                 'order_reference' => (string) $order->id,

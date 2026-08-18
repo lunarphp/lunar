@@ -161,7 +161,13 @@ class MockClient implements ClientInterface
         }
 
         if ($method == 'post' && str_contains($absUrl, 'payment_intents')) {
-            $this->rBody = $this->getResponse('payment_intent_created');
+            // Merge next() overrides over the fixture so a test can mint an
+            // intent under a magic id (e.g. PI_CAPTURE) and have later
+            // retrieves resolve it; the fixture has no {tokens} to template.
+            $this->rBody = json_encode(array_merge(
+                json_decode($this->getResponse('payment_intent_created'), true),
+                $this->nextData,
+            ));
 
             return [$this->rBody, $this->rcode, $this->rheaders];
         }

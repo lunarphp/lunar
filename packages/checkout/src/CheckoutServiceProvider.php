@@ -6,6 +6,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Session\Session as LaravelSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Checkout\Console\Commands\ExpireCheckoutSessions;
@@ -15,11 +16,14 @@ use Lunar\Checkout\Contracts\CheckoutDriver;
 use Lunar\Checkout\Contracts\CheckoutSession as CheckoutSessionContract;
 use Lunar\Checkout\Contracts\CheckoutSessionStateConfig;
 use Lunar\Checkout\Contracts\ElementRegistry as ElementRegistryContract;
+use Lunar\Checkout\Contracts\PaymentMethodRegistry as PaymentMethodRegistryContract;
 use Lunar\Checkout\DataObjects\CheckoutTheme;
+use Lunar\Checkout\Listeners\CompleteSessionOnPaymentSuccess;
 use Lunar\Checkout\Managers\CheckoutSessionManager;
 use Lunar\Checkout\Session\CheckoutSession;
 use Lunar\Checkout\States\CheckoutSession\DefaultCheckoutSessionStateConfig;
 use Lunar\Checkout\Support\CheckoutAssets;
+use Lunar\Core\Events\PaymentAttemptEvent;
 
 class CheckoutServiceProvider extends ServiceProvider
 {
@@ -60,6 +64,11 @@ class CheckoutServiceProvider extends ServiceProvider
         // app at runtime — no fork, no rebuild, no publish of the app's assets.
         $this->app->singleton(CheckoutAssetsContract::class, fn () => new CheckoutAssets);
 
+        // Payment-method registry (spec 0002 §B). Core ships no methods —
+        // gateway packages or the host app register them in boot(); with none
+        // registered the payment region projects empty.
+        $this->app->singleton(PaymentMethodRegistryContract::class, fn ($app) => new PaymentMethodRegistry($app));
+
         // Checkout session (prototype) — request-scoped value store backing the
         // data elements capture. Swapped for the spec 0004 model by rebinding.
         $this->app->scoped(
@@ -92,6 +101,10 @@ class CheckoutServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'lunar-checkout');
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'lunar-checkout');
+
+        // The gateway-agnostic success bridge (spec 0002 §D): any gateway's
+        // authorize() success completes the paying session for its cart.
+        Event::listen(PaymentAttemptEvent::class, CompleteSessionOnPaymentSuccess::class);
 
         if (! config('lunar.database.disable_migrations', false)) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');

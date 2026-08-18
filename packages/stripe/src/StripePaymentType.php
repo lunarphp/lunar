@@ -2,14 +2,19 @@
 
 namespace Lunar\Stripe;
 
+use Lunar\Core\Contracts\CreatesPaymentIntents;
+use Lunar\Core\Contracts\SupportsPaymentIntents;
 use Lunar\Core\DataObjects\PaymentAuthorize;
 use Lunar\Core\DataObjects\PaymentCapture;
 use Lunar\Core\DataObjects\PaymentCheck;
 use Lunar\Core\DataObjects\PaymentChecks;
+use Lunar\Core\DataObjects\PaymentIntentDescriptor;
 use Lunar\Core\DataObjects\PaymentRefund;
+use Lunar\Core\Enums\PaymentIntentStatus;
 use Lunar\Core\Events\PaymentAttemptEvent;
 use Lunar\Core\Exceptions\Carts\CartException;
 use Lunar\Core\Exceptions\DisallowMultipleCartOrdersException;
+use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\Transaction;
 use Lunar\Core\PaymentTypes\AbstractPayment;
 use Lunar\Stripe\Actions\UpdateOrderFromIntent;
@@ -20,7 +25,7 @@ use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
 use Stripe\StripeClient;
 
-class StripePaymentType extends AbstractPayment
+class StripePaymentType extends AbstractPayment implements CreatesPaymentIntents, SupportsPaymentIntents
 {
     /**
      * The Stripe instance.
@@ -50,6 +55,67 @@ class StripePaymentType extends AbstractPayment
 
         $this->policy = config('lunar.stripe.policy', 'automatic');
         $this->allowPartialPayment = config('lunar.stripe.allow_partial_payment', false);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Delegates to the manager, which reuses the cart's existing confirmable
+     * intent when one is still active — idempotent per cart.
+     */
+    public function createIntent(Cart $cart): PaymentIntentDescriptor
+    {
+        $intent = Stripe::createIntent($cart);
+
+        return new PaymentIntentDescriptor(
+            reference: $intent->id,
+            clientSecret: $intent->client_secret,
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function fetchIntent(string $reference): PaymentIntentStatus
+    {
+        $intent = $this->stripe->paymentIntents->retrieve($reference);
+
+        return match ($intent->status) {
+            PaymentIntent::STATUS_SUCCEEDED => PaymentIntentStatus::Captured,
+            PaymentIntent::STATUS_REQUIRES_CAPTURE => PaymentIntentStatus::RequiresCapture,
+            PaymentIntent::STATUS_CANCELED => PaymentIntentStatus::Voided,
+            // A declined confirmation drops back to requires_payment_method
+            // with the error recorded — that is a failure, not "pending".
+            PaymentIntent::STATUS_REQUIRES_PAYMENT_METHOD => $intent->last_payment_error
+                ? PaymentIntentStatus::Failed
+                : PaymentIntentStatus::Pending,
+            default => PaymentIntentStatus::Pending,
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function voidIntent(string $reference): void
+    {
+        // Throws on failure — an unconfirmed void must never read as voided.
+        $this->stripe->paymentIntents->cancel($reference);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function refundIntent(string $reference, int $amountMinor, string $idempotencyKey): string
+    {
+        $refund = $this->stripe->refunds->create(
+            [
+                'payment_intent' => $reference,
+                'amount' => $amountMinor,
+            ],
+            ['idempotency_key' => $idempotencyKey],
+        );
+
+        return $refund->id;
     }
 
     /**

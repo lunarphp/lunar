@@ -40,6 +40,24 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
         Route::post($path.'/{session}/shipping-option', [CheckoutController::class, 'storeShippingOption'])
             ->name('lunar.checkout.shipping-option.store');
 
+        // Store the billing address (same payload shape as shipping). The
+        // frontend defaults to copying the delivery address; a later billing
+        // element can post its own capture here.
+        Route::post($path.'/{session}/billing-address', [CheckoutController::class, 'storeBillingAddress'])
+            ->name('lunar.checkout.billing-address.store');
+
+        // Create (or resume) the active payment method's confirmable intent
+        // and record its reference on the session (spec 0002 §A). Delegates to
+        // the gateway driver via the CreatesPaymentIntents capability.
+        Route::post($path.'/{session}/payment-intent', [CheckoutController::class, 'storePaymentIntent'])
+            ->name('lunar.checkout.payment-intent.store');
+
+        // The pay boundary (spec 0010 §E): pin the session against the
+        // fingerprint of the state the customer confirmed. The gateway's
+        // client-side confirmation happens after this returns.
+        Route::post($path.'/{session}/pay', [CheckoutController::class, 'pay'])
+            ->name('lunar.checkout.pay');
+
         // Render the self-contained Inertia checkout app for one session,
         // addressed by its UUID capability token (spec 0008). Safe/idempotent:
         // a refresh re-renders, it never mints or mutates a session. Ownership
