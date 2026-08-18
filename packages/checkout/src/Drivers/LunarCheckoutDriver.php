@@ -31,6 +31,7 @@ use Lunar\Core\Managers\DiscountManager;
 use Lunar\Core\Models\Cart;
 use Lunar\Core\Models\CartAddress;
 use Lunar\Core\Models\Channel;
+use Lunar\Core\Models\Country;
 
 /**
  * The default checkout driver — ingests a Lunar {@see Cart} into a session,
@@ -265,7 +266,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
     {
         $cart = $this->operableCart($session);
 
-        $cart->setShippingAddress($data);
+        $cart->setShippingAddress($this->toCartAddressData($data));
 
         $snapshot = $this->resync($session, $cart);
 
@@ -278,7 +279,7 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
     {
         $cart = $this->operableCart($session);
 
-        $cart->setBillingAddress($data);
+        $cart->setBillingAddress($this->toCartAddressData($data));
 
         $snapshot = $this->resync($session, $cart);
 
@@ -422,6 +423,19 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         return $this->resolveCart($session)->coupon_code;
     }
 
+    public function getTotals(CheckoutSession $session): array
+    {
+        $cart = $this->resolveCart($session)->calculate();
+
+        return [
+            'sub_total' => $cart->subTotal?->value ?? 0,
+            'discount_total' => $cart->discountTotal?->value ?? 0,
+            'shipping_total' => $cart->shippingTotal?->value ?? 0,
+            'tax_total' => $cart->taxTotal?->value ?? 0,
+            'total' => $cart->total?->value ?? 0,
+        ];
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Internals
@@ -555,6 +569,36 @@ class LunarCheckoutDriver extends AbstractCheckoutDriver
         $this->invalidateCheckoutSession->execute($session, 'context_diverged');
 
         throw new PaymentConfirmationException('context_diverged');
+    }
+
+    /**
+     * Inverse of {@see toCheckoutAddress()}: the backend-neutral address
+     * payload (spec 0010 §B) mapped onto Lunar's CartAddress columns. Absent
+     * keys are dropped so partial updates never null-out stored fields.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function toCartAddressData(array $data): array
+    {
+        $countryCode = $data['country_code'] ?? null;
+
+        return array_filter([
+            'first_name' => $data['first_name'] ?? null,
+            'last_name' => $data['last_name'] ?? null,
+            'company_name' => $data['company_name'] ?? null,
+            'line_one' => $data['line1'] ?? null,
+            'line_two' => $data['line2'] ?? null,
+            'line_three' => $data['line3'] ?? null,
+            'city' => $data['city'] ?? null,
+            'state' => $data['state'] ?? null,
+            'postcode' => $data['postcode'] ?? null,
+            'contact_phone' => $data['phone'] ?? null,
+            'contact_email' => $data['email'] ?? null,
+            'country_id' => is_string($countryCode)
+                ? Country::query()->where('iso2', strtoupper($countryCode))->value('id')
+                : null,
+        ], fn (mixed $value): bool => $value !== null);
     }
 
     private function toCheckoutAddress(?CartAddress $address): ?CheckoutAddress

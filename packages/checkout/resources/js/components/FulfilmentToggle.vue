@@ -2,7 +2,7 @@
 import Icon from './primitives/Icon.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 
-const { state } = useCheckout()
+const { state, setFulfilment } = useCheckout()
 </script>
 
 <template>
@@ -13,7 +13,7 @@ const { state } = useCheckout()
       class="seg-btn"
       role="radio"
       :aria-checked="state.fulfilment === 'delivery'"
-      @click="state.fulfilment = 'delivery'"
+      @click="setFulfilment('delivery')"
     >
       <span class="ico"><Icon name="truck" :size="17" /></span> Deliver
     </button>
@@ -22,7 +22,7 @@ const { state } = useCheckout()
       class="seg-btn"
       role="radio"
       :aria-checked="state.fulfilment === 'collect'"
-      @click="state.fulfilment = 'collect'"
+      @click="setFulfilment('collect')"
     >
       <span class="ico"><Icon name="store" :size="17" /></span> Click &amp; collect
     </button>

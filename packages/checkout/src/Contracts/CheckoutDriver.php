@@ -130,4 +130,11 @@ interface CheckoutDriver
     public function getLines(CheckoutSession $session): array;
 
     public function getCoupon(CheckoutSession $session): ?string;
+
+    /**
+     * Live money figures for the order summary, in minor units.
+     *
+     * @return array{sub_total: int, discount_total: int, shipping_total: int, tax_total: int, total: int}
+     */
+    public function getTotals(CheckoutSession $session): array;
 }

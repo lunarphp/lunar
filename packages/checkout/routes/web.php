@@ -28,6 +28,18 @@ Route::middleware(config('lunar.checkout.middleware', ['web']))
         Route::post($path.'/{session}/contact', [CheckoutController::class, 'storeContact'])
             ->name('lunar.checkout.contact.store');
 
+        // Store the delivery address through the driver (spec 0010 §B coarse
+        // cart write). Shipping options are address-dependent, so the page
+        // re-projects them on the following render — no stale rates.
+        Route::post($path.'/{session}/shipping-address', [CheckoutController::class, 'storeShippingAddress'])
+            ->name('lunar.checkout.shipping-address.store');
+
+        // Select a shipping option. The driver validates the identifier against
+        // the live manifest before writing it to the cart, so anything a
+        // modifier removed (exclusions, oversized blocklist) cannot be chosen.
+        Route::post($path.'/{session}/shipping-option', [CheckoutController::class, 'storeShippingOption'])
+            ->name('lunar.checkout.shipping-option.store');
+
         // Render the self-contained Inertia checkout app for one session,
         // addressed by its UUID capability token (spec 0008). Safe/idempotent:
         // a refresh re-renders, it never mints or mutates a session. Ownership

@@ -2,7 +2,7 @@
 import Icon from './primitives/Icon.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 
-const { state, fmt } = useCheckout()
+const { state, fmt, deliveryMethods, selectShipping } = useCheckout()
 </script>
 
 <template>
@@ -18,15 +18,19 @@ const { state, fmt } = useCheckout()
       <span class="ico"><Icon name="lock" :size="17" /></span> Enter your delivery address to see shipping options.
     </div>
 
+    <div v-else-if="!deliveryMethods.length" class="locked">
+      <span class="ico"><Icon name="truck" :size="17" /></span> No delivery options are available for this address.
+    </div>
+
     <div v-else role="radiogroup" aria-label="Select a shipping method">
       <button
-        v-for="m in state.shippingMethods"
+        v-for="m in deliveryMethods"
         :key="m.id"
         type="button"
         class="pick"
         role="radio"
         :aria-checked="state.shippingId === m.id"
-        @click="state.shippingId = m.id"
+        @click="selectShipping(m.id)"
       >
         <span class="radio" aria-hidden="true"></span>
         <span class="pbody">

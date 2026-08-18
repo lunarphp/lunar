@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import Icon from './primitives/Icon.vue'
 import BrandHead from './BrandHead.vue'
 import FulfilmentToggle from './FulfilmentToggle.vue'
@@ -24,7 +24,11 @@ const props = defineProps({
 })
 
 const store = createCheckout(props.checkout)
-const { state, totalLabel, pay, elementsIn } = store
+const { state, totalLabel, pay, elementsIn, collectOption } = store
+
+// Partial reloads replace the `checkout` prop wholesale (only: ['checkout']);
+// pull the server-owned pieces back into the store.
+watch(() => props.checkout, (fresh) => store.sync(fresh), { deep: true })
 
 // Registered elements paired with their resolved component, per region.
 // Computed so a chunk that registers its component after first render slots in
@@ -88,9 +92,15 @@ const mSummaryOpen = ref(false)
               <ShippingMethods />
             </template>
             <section v-else class="block">
-              <div class="locked">
+              <div v-if="collectOption" class="locked">
                 <span class="ico"><Icon name="store" :size="17" /></span>
-                Click &amp; collect — store finder coming soon.
+                <span>
+                  <strong>{{ collectOption.name }}</strong> — {{ collectOption.sub || 'collect from your local branch at no charge.' }}
+                </span>
+              </div>
+              <div v-else class="locked">
+                <span class="ico"><Icon name="store" :size="17" /></span>
+                Click &amp; collect isn't available for this order.
               </div>
             </section>
 

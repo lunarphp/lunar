@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lunar\Checkout\Contracts\CheckoutDriver;
@@ -18,6 +19,7 @@ use Lunar\Checkout\Models\CheckoutSession as CheckoutSessionModel;
 use Lunar\Checkout\States\CheckoutSession\Cancelled;
 use Lunar\Checkout\States\CheckoutSession\Completed;
 use Lunar\Core\Facades\CartSession;
+use Lunar\Core\Models\Country;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class CheckoutController extends Controller
@@ -187,9 +189,16 @@ class CheckoutController extends Controller
                 'name' => $option['name'],
                 'sub' => $option['description'],
                 'price' => $option['price'] ?? 0,
+                'collect' => (bool) ($option['collect'] ?? false),
             ], $driver->getShippingOptions($session)),
             'shippingId' => $driver->getSelectedShippingOption($session),
+            'shippingAddress' => $driver->getShippingAddress($session),
+            'totals' => $driver->getTotals($session),
             'coupon' => $driver->getCoupon($session),
+            'urls' => [
+                'shippingAddress' => route('lunar.checkout.shipping-address.store', $session->uuid),
+                'shippingOption' => route('lunar.checkout.shipping-option.store', $session->uuid),
+            ],
         ];
     }
 
@@ -248,6 +257,50 @@ class CheckoutController extends Controller
             $session->customer_email = $data['email'];
             $session->save();
         }
+
+        return back();
+    }
+
+    /**
+     * Store the delivery address on the cart through the driver. The payload
+     * is the backend-neutral address shape (spec 0010 §B); shipping options
+     * are address-dependent, so the next render re-projects them fresh.
+     */
+    public function storeShippingAddress(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'company_name' => ['nullable', 'string', 'max:255'],
+            'line1' => ['required', 'string', 'max:255'],
+            'line2' => ['nullable', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['nullable', 'string', 'max:255'],
+            'postcode' => ['required', 'string', 'max:12'],
+            'country_code' => ['required', 'string', Rule::exists(Country::class, 'iso2')],
+            'phone' => ['nullable', 'string', 'max:32'],
+        ]);
+
+        $checkoutDriver->storeShippingAddress($session, $data);
+
+        return back();
+    }
+
+    /**
+     * Select a shipping option for the cart. The driver validates the
+     * identifier against the live shipping manifest, so an option a cart
+     * modifier withheld (exclusion lists, oversized blocklists) is rejected
+     * with a validation error rather than silently accepted.
+     */
+    public function storeShippingOption(Request $request, CheckoutSessionModel $session, CheckoutDriver $checkoutDriver): RedirectResponse
+    {
+        $this->ensureOwnership($session);
+
+        $data = $request->validate(['shipping_option' => ['required', 'string']]);
+
+        $checkoutDriver->setShippingOption($session, $data['shipping_option']);
 
         return back();
     }

@@ -29,16 +29,23 @@ class ShippingManifest implements ShippingManifestContract
 
     /**
      * {@inheritDoc}
+     *
+     * Adding an identifier that is already present REPLACES the stored option
+     * in place. Options are re-resolved against the live cart on every
+     * getOptions() pipeline run; keeping the first instance would pin prices
+     * from an earlier cart state (a previous shipping address, an earlier
+     * request on a long-lived worker) over the freshly resolved ones.
      */
     public function addOption(ShippingOption $option)
     {
-        $exists = $this->options->first(function ($opt) use ($option) {
+        $index = $this->options->search(function ($opt) use ($option) {
             return $opt->getIdentifier() == $option->getIdentifier();
         });
 
-        // Does this option already exist?
-        if (! $exists) {
+        if ($index === false) {
             $this->options->push($option);
+        } else {
+            $this->options->put($index, $option);
         }
 
         return $this;

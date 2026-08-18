@@ -21,16 +21,37 @@ export function createCheckout(data) {
     currency: data.currency ?? 'GBP',
     vatRate: data.vatRate ?? 0.2,
     shippingMethods: data.shippingMethods ?? [],
-    shippingId: data.shippingMethods?.[0]?.id ?? null,
+    // Selection is server state (the cart's stored option) — no client-side
+    // default; nothing is "chosen" until the cart says so.
+    shippingId: data.shippingId ?? null,
+    shippingAddress: data.shippingAddress ?? null,
+    // Server-derived money figures (minor units). When present they are the
+    // single source of truth for the summary; the client calc below is the
+    // prototype fallback for payloads without them.
+    totals: data.totals ?? null,
+    urls: data.urls ?? {},
     // Server-projected custom elements (spec 0001). Rendered via the frontend
     // component registry; see composables/elements.js.
     elements: data.elements ?? [],
     discount: null, // { code, type, value, label }
     discountError: '',
-    addressValid: false,
+    addressValid: Boolean(data.shippingAddress?.postcode),
     processing: false,
     paid: false,
   })
+
+  // Re-sync from a fresh `checkout` prop after an Inertia partial reload —
+  // options, selection and totals are all server-owned.
+  function sync(fresh) {
+    state.items = fresh.items ?? []
+    state.shippingMethods = fresh.shippingMethods ?? []
+    state.shippingId = fresh.shippingId ?? null
+    state.shippingAddress = fresh.shippingAddress ?? null
+    state.totals = fresh.totals ?? null
+    state.urls = fresh.urls ?? {}
+    state.elements = fresh.elements ?? []
+    state.addressValid = Boolean(fresh.shippingAddress?.postcode)
+  }
 
   const validCodes = data.validCodes ?? {}
 
@@ -44,6 +65,20 @@ export function createCheckout(data) {
   )
 
   const breakdown = computed(() => {
+    // Server totals win outright — shipping, VAT and discounts are cart
+    // calculations, not client arithmetic.
+    if (state.totals) {
+      return {
+        subtotal: state.totals.sub_total,
+        baseShipping: state.totals.shipping_total,
+        shipping: state.totals.shipping_total,
+        discGoods: state.totals.discount_total,
+        discShip: 0,
+        total: state.totals.total,
+        vat: state.totals.tax_total,
+      }
+    }
+
     const d = state.discount
     let discGoods = 0
     let discShip = 0
@@ -94,6 +129,48 @@ export function createCheckout(data) {
     })
   }
 
+  // Options a courier delivers; collection renders through the fulfilment
+  // toggle, not the radio list.
+  const deliveryMethods = computed(() => state.shippingMethods.filter((m) => !m.collect))
+  const collectOption = computed(() => state.shippingMethods.find((m) => m.collect) ?? null)
+
+  // Store the delivery address on the cart. Options are address-dependent, so
+  // the partial reload re-projects them (and the totals) fresh.
+  function storeShippingAddress(payload, options = {}) {
+    router.post(state.urls.shippingAddress, payload, {
+      preserveScroll: true,
+      preserveState: true,
+      only: ['checkout'],
+      ...options,
+    })
+  }
+
+  // Select a shipping option. Optimistic highlight, server-confirmed — the
+  // reload brings back the cart's stored selection and recalculated totals.
+  function selectShipping(id) {
+    const previous = state.shippingId
+    state.shippingId = id
+
+    router.post(state.urls.shippingOption, { shipping_option: id }, {
+      preserveScroll: true,
+      preserveState: true,
+      only: ['checkout'],
+      onError: () => {
+        state.shippingId = previous
+      },
+    })
+  }
+
+  // Switching to click & collect selects the collect-flagged option so the
+  // cart carries a real zero-charge shipping choice, not a UI-only mode.
+  function setFulfilment(mode) {
+    state.fulfilment = mode
+
+    if (mode === 'collect' && collectOption.value && state.shippingId !== collectOption.value.id) {
+      selectShipping(collectOption.value.id)
+    }
+  }
+
   function pay() {
     if (state.processing) return
     state.processing = true
@@ -106,10 +183,13 @@ export function createCheckout(data) {
 
   const store = {
     state,
+    sync,
     fmt,
     subtotal,
     itemCount,
     shippingMethod,
+    deliveryMethods,
+    collectOption,
     baseShipping,
     breakdown,
     totalLabel,
@@ -117,6 +197,9 @@ export function createCheckout(data) {
     removeDiscount,
     elementsIn,
     storeElement,
+    storeShippingAddress,
+    selectShipping,
+    setFulfilment,
     pay,
   }
 

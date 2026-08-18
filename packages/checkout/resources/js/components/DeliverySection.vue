@@ -1,29 +1,57 @@
 <script setup>
-import { reactive, watch } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import Icon from './primitives/Icon.vue'
 import FloatingField from './primitives/FloatingField.vue'
 import { useCheckout } from '../composables/useCheckout.js'
 
-const { state } = useCheckout()
+const { state, storeShippingAddress } = useCheckout()
+
+// Hydrate from the cart's stored address so a returning session round-trips.
+const stored = state.shippingAddress
 
 const form = reactive({
-  name: '',
-  line1: '',
-  line2: '',
-  city: '',
-  postcode: '',
-  country: 'GB',
-  phone: '',
+  name: [stored?.firstName, stored?.lastName].filter(Boolean).join(' '),
+  line1: stored?.line1 ?? '',
+  line2: stored?.line2 ?? '',
+  city: stored?.city ?? '',
+  postcode: stored?.postcode ?? '',
+  country: stored?.countryCode ?? 'GB',
+  phone: stored?.phone ?? '',
 })
 
-// Unlock the shipping step once the required address fields are present.
-watch(
-  form,
-  () => {
-    state.addressValid = Boolean(form.name && form.line1 && form.city && form.postcode)
-  },
-  { deep: true },
-)
+const complete = computed(() => Boolean(form.name && form.line1 && form.city && form.postcode))
+const saving = ref(false)
+const errors = ref({})
+
+// The cart address is the source of truth for whether the shipping step is
+// unlocked (state.addressValid) — the local form only gates the save button.
+function save() {
+  if (!complete.value || saving.value) return
+
+  const name = form.name.trim()
+  const splitAt = name.lastIndexOf(' ')
+
+  storeShippingAddress(
+    {
+      first_name: splitAt === -1 ? name : name.slice(0, splitAt),
+      last_name: splitAt === -1 ? name : name.slice(splitAt + 1),
+      line1: form.line1,
+      line2: form.line2 || null,
+      city: form.city,
+      postcode: form.postcode,
+      country_code: form.country,
+      phone: form.phone || null,
+    },
+    {
+      onStart: () => {
+        saving.value = true
+        errors.value = {}
+      },
+      onError: (err) => (errors.value = err),
+      onFinish: () => (saving.value = false),
+    },
+  )
+}
 </script>
 
 <template>
@@ -71,6 +99,15 @@ watch(
         <span class="chev ico"><Icon name="chevron-down" :size="18" /></span>
       </div>
       <FloatingField id="phone" v-model="form.phone" label="Phone (for delivery updates)" type="tel" autocomplete="tel" inputmode="tel" optional />
+
+      <p v-for="(message, field) in errors" :key="field" class="help" style="color: var(--error-700)">
+        {{ message }}
+      </p>
+
+      <button type="button" class="btn btn-secondary" :disabled="!complete || saving" @click="save">
+        <span v-if="saving" class="spinner"></span>
+        <template v-else>{{ state.addressValid ? 'Update address' : 'Save & see delivery options' }}</template>
+      </button>
     </div>
   </section>
 </template>
