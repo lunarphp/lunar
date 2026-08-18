@@ -183,12 +183,12 @@ it('keeps unmatched permutations without binding the first variant when fillMiss
     );
 
     expect($exact['sku'])->toBe('SMALL-RED')
-        ->and($exact['variant_id'])->toBe(10);
+        ->and($exact['variant_id'])->toBe(10)
+        ->and($exact['copied_id'])->toBeNull();
 
-    $unmatchedSkus = collect($result)
-        ->reject(fn (array $row) => $row['variant_id'] === 10)
-        ->pluck('sku')
-        ->all();
+    $unmatched = collect($result)
+        ->reject(fn (array $row) => $row['variant_id'] === 10);
 
-    expect($unmatchedSkus)->each->toBeNull();
+    expect($unmatched->pluck('sku')->all())->each->toBeNull();
+    expect($unmatched->pluck('copied_id')->unique()->all())->toBe([10]);
 });
